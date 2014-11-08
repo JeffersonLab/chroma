@@ -27,8 +27,8 @@ int main(int argc, char *argv[])
   // </test>
   //
   multi1d<int> nrow(Nd);
-  string filename_stem;
-  string filename;
+  std::string filename_stem;
+  std::string filename;
 
 
   read(xml_in, "/test/nrow", nrow);
@@ -40,20 +40,20 @@ int main(int argc, char *argv[])
   Layout::create();
 
   QDPIO::cout << "Lattice: Lx = " << nrow[0] << " Ly = " << nrow[1] << " Lz = " << nrow[2]
-	      << " Lt =" << nrow[3] << endl;
+	      << " Lt =" << nrow[3] << std::endl;
 
 
-  QDPIO::cout << "About to read propagators" << endl;
+  QDPIO::cout << "About to read propagators" << std::endl;
 
   int i;
   multi1d<LatticePropagator> props(NUM_STAG_PROPS);
 
   for(i = 0;  i < NUM_STAG_PROPS; i++) { 
-    ostringstream istring;
+    std::ostringstream istring;
     istring << "." << i;
 
     filename = filename_stem + istring.str();;
-    QDPIO::cout << "Reading Propagator from file " << filename.c_str() << endl;
+    QDPIO::cout << "Reading Propagator from file " << filename.c_str() << std::endl;
 
     // Try and read the propagator;
 
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
     readQpropFollana((char *)filename.c_str(), props[i], true);
   }
 
-  QDPIO::cout << "Computing the meaning of life..." << endl;
+  QDPIO::cout << "Computing the meaning of life..." << std::endl;
   
   multi2d<DComplex> pions(NUM_STAG_PIONS, nrow[3]);
   staggeredPionsFollana(props, pions, Nd-1);
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 
   push(xml_out, "follanaIO");
   for(i=0; i < NUM_STAG_PIONS; i++) { 
-    ostringstream tag;
+    std::ostringstream tag;
     tag << "pion" << i;
     push(xml_out, tag.str());
     write(xml_out, "pions_i", pions[i]);
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
   pop(xml_out);
 
-  QDPIO::cout << "That's all folks" << endl;
+  QDPIO::cout << "That's all folks" << std::endl;
   // Time to bolt
   Chroma::finalize();
   exit(0);

@@ -70,7 +70,7 @@ struct Propagator_input_t
 // Reader for input parameters
 //
 
-void read(XMLReader& xml, const string& path, Propagator_input_t& input)
+void read(XMLReader& xml, const std::string& path, Propagator_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -84,9 +84,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   {
     read(inputtop, "IO_version/version", input.io_version.version);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading IO version: " << e << endl;
+    QDPIO::cerr << "Error reading IO version: " << e << std::endl;
     throw;
   }
 
@@ -101,9 +101,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
        read(paramtop, "gauge_trans", input.param.do_gauge_transform);
 
      }
-   catch (const string& e) 
+   catch (const std::string& e) 
      {
-       QDPIO::cerr << "Error parameters: " << e << endl;
+       QDPIO::cerr << "Error parameters: " << e << std::endl;
        throw;
      }
 
@@ -118,9 +118,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   {
     read(inputtop, "Cfg", input.cfg);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error gauge name data: " << e << endl;
+    QDPIO::cerr << "Error gauge name data: " << e << std::endl;
     throw;
   }
 }
@@ -140,8 +140,8 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
 
-  QDPIO::cout << "Measure the Wilson flow " << endl;
-  QDPIO::cout << "Calculation for SU(" << Nc << ")" << endl;
+  QDPIO::cout << "Measure the Wilson flow " << std::endl;
+  QDPIO::cout << "Calculation for SU(" << Nc << ")" << std::endl;
   linkageHack();
 
   // Input parameter structure
@@ -149,16 +149,16 @@ int main(int argc, char **argv)
 
   // Instantiate xml reader for DATA
   XMLReader xml_in ; 
-  string in_name = Chroma::getXMLInputFileName() ; 
+  std::string in_name = Chroma::getXMLInputFileName() ; 
   try
   {
     xml_in.open(in_name);
   }
     catch (...) 
   {
-    QDPIO::cerr << "Error reading input file " << in_name << endl;
-    QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
-    QDPIO::cerr << "The default name is ./DATA" << endl;
+    QDPIO::cerr << "Error reading input file " << in_name << std::endl;
+    QDPIO::cerr << "The input file name can be passed via the -i flag " << std::endl;
+    QDPIO::cerr << "The default name is ./DATA" << std::endl;
     throw;
   }
 
@@ -224,12 +224,12 @@ int main(int argc, char **argv)
 	   u[dir] = u_trans[dir] ;
 	 }
 
-       QDPIO::cout << "Random gauge transform done" << endl;
+       QDPIO::cout << "Random gauge transform done" << std::endl;
 
     } // end of gauge transform
   else
     {
-       QDPIO::cout << "NO RANDOM GAUGE TRANSFORM" << endl;
+       QDPIO::cout << "NO RANDOM GAUGE TRANSFORM" << std::endl;
     }
 
 
@@ -246,7 +246,7 @@ int main(int argc, char **argv)
 
 
   // Time to bolt
-  QDPIO::cout << "End of measurements " << endl;
+  QDPIO::cout << "End of measurements " << std::endl;
   Chroma::finalize();
 
   exit(0);

@@ -14,7 +14,6 @@
 #include "chroma.h"
 
 using namespace Chroma;
-using namespace std;
 
 struct App_input_t {
   ChromaProp_t param;
@@ -22,7 +21,7 @@ struct App_input_t {
 };
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, App_input_t& input)
+void read(XMLReader& xml, const std::string& path, App_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -35,9 +34,9 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -56,8 +55,8 @@ int main(int argc, char **argv)
   try {
     read(xml_in, "/ovlapTest", input);
   }
-   catch( const string& e) { 
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+   catch( const std::string& e) { 
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -82,7 +81,7 @@ int main(int argc, char **argv)
   Handle<FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
 
 
-  QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
+  QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << std::endl;
   const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
       
   // Construct Fermact -- now uses constructor from the zolo4d params
@@ -128,8 +127,8 @@ int main(int argc, char **argv)
 
   t = swatch.getTimeInSeconds();
 
-  QDPIO::cout << "GMRESRSUMR on point source took: " << n_count << " iterations" << endl;
-  QDPIO::cout << "Wall clock time : " << t << " seconds" << endl;
+  QDPIO::cout << "GMRESRSUMR on point source took: " << n_count << " iterations" << std::endl;
+  QDPIO::cout << "Wall clock time : " << t << " seconds" << std::endl;
   push(xml_out, "GMRESRSUMRPointSource");
   write(xml_out, "n_count", n_count);
   write(xml_out, "t",       t);
@@ -152,8 +151,8 @@ int main(int argc, char **argv)
 
   t = swatch.getTimeInSeconds();
 
-  QDPIO::cout << "GMRESRCG on point source took: " << n_count << " iterations" << endl;
-  QDPIO::cout << "Wall clock time : " << t << " seconds" << endl;
+  QDPIO::cout << "GMRESRCG on point source took: " << n_count << " iterations" << std::endl;
+  QDPIO::cout << "Wall clock time : " << t << " seconds" << std::endl;
   push(xml_out, "GMRESRCGPointSource");
   write(xml_out, "n_count", n_count);
   write(xml_out, "t",       t);
@@ -171,8 +170,8 @@ int main(int argc, char **argv)
 	  n_count);
   swatch.stop();
   t = swatch.getTimeInSeconds();
-  QDPIO::cout << "SUMR on point source took: " << n_count << " iterations" << endl;
-  QDPIO::cout << "Wall clock time : " << t << " seconds" << endl;
+  QDPIO::cout << "SUMR on point source took: " << n_count << " iterations" << std::endl;
+  QDPIO::cout << "Wall clock time : " << t << " seconds" << std::endl;
   push(xml_out, "SUMRPointSource");
   write(xml_out, "n_count", n_count);
   write(xml_out, "t",       t);
@@ -196,8 +195,8 @@ int main(int argc, char **argv)
   swatch.stop();
   t = swatch.getTimeInSeconds();
 
-  QDPIO::cout << "CG on gaussian source took: " << n_count << " iterations" << endl;
-  QDPIO::cout << "Wall clock time : " << t << " seconds" << endl;
+  QDPIO::cout << "CG on gaussian source took: " << n_count << " iterations" << std::endl;
+  QDPIO::cout << "Wall clock time : " << t << " seconds" << std::endl;
   push(xml_out, "CGGaussianSource");
   write(xml_out, "n_count", n_count);
   write(xml_out, "t",       t);
@@ -216,8 +215,8 @@ int main(int argc, char **argv)
   swatch.stop();
   t = swatch.getTimeInSeconds();
 
-  QDPIO::cout << "SUMR on gaussian source took: " << n_count << " iterations" << endl;
-  QDPIO::cout << "Wall clock time : " << t << " seconds" << endl;
+  QDPIO::cout << "SUMR on gaussian source took: " << n_count << " iterations" << std::endl;
+  QDPIO::cout << "Wall clock time : " << t << " seconds" << std::endl;
   push(xml_out, "SUMRGaussianSource");
   write(xml_out, "n_count", n_count);
   write(xml_out, "t",       t);

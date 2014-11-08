@@ -37,8 +37,8 @@ int main(int argc, char **argv)
   try { 
     read(xml_in, "/WilsonRitzEigen", input);
   }
-  catch( const string& e ) { 
-    QDPIO::cerr << "Caught Exception: " << e << endl;
+  catch( const std::string& e ) { 
+    QDPIO::cerr << "Caught Exception: " << e << std::endl;
     QDP_error_exit("Exiting\n");
   }
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 
   QDP::RNG::setrn(input.seed);
 
-  QDPIO::cout << "RitzEigen" << endl;
+  QDPIO::cout << "RitzEigen" << std::endl;
 
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
@@ -74,24 +74,24 @@ int main(int argc, char **argv)
   // Initialise Fermion action
   std::istringstream xml_fermact_string(input.fermact);
   XMLReader fermacttop(xml_fermact_string);
-  const string fermact_path = "/FermionAction";
-  string fermact;
+  const std::string fermact_path = "/FermionAction";
+  std::string fermact;
   try
   {
     read(fermacttop, fermact_path + "/FermAct", fermact);
   }
   catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading fermact: " << e << endl;
+    QDPIO::cerr << "Error reading fermact: " << e << std::endl;
     throw;
   }
 
-  QDPIO::cout << "FermAct = " << fermact << endl;
+  QDPIO::cout << "FermAct = " << fermact << std::endl;
 
   // Make a reader for the stateInfo
   std::istringstream state_info_is(input.state_info);
   XMLReader state_info_xml(state_info_is);
-  string state_info_path="/StateInfo";
+  std::string state_info_path="/StateInfo";
 
   bool success = false;
 
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 #if 1
   if( ! success ) { 
     try { 
-      QDPIO::cout << "Trying 5D actions" << endl;
+      QDPIO::cout << "Trying 5D actions" << std::endl;
 
       // DWF-like 5D Wilson-Type stuff
       Handle< WilsonTypeFermAct5D<T,P,Q> >
@@ -118,14 +118,14 @@ int main(int argc, char **argv)
       Handle< LinearOperatorArray<LatticeFermion> > MM(S_f->lMdagM(state));
 
 
-      QDPIO::cout << "Call 5D ritz code" << endl;
+      QDPIO::cout << "Call 5D ritz code" << std::endl;
       RitzCode5D(MM, input, xml_out);
-      QDPIO::cout << "Done with 5D ritz code" << endl;
+      QDPIO::cout << "Done with 5D ritz code" << std::endl;
 
       success = true;
     }
     catch(const std::string& e ) { 
-       QDPIO::cout << "5d: " << e << endl;
+       QDPIO::cout << "5d: " << e << std::endl;
     }
   }
 #endif
@@ -134,12 +134,12 @@ int main(int argc, char **argv)
     try { 
       
       // Special case UNPRECONDITIONED_WILSON
-      QDPIO::cout << "Trying 4D Wilson Like actions: " << endl;
+      QDPIO::cout << "Trying 4D Wilson Like actions: " << std::endl;
 
       if( fermact == "UNPRECONDITIONED_WILSON" 
 	  || fermact == "UNPRECONDITIONED_DWFTRANSF" ) {
 
-	QDPIO::cout << "Special case. Computing Hw e-values and evecs too" << endl;
+	QDPIO::cout << "Special case. Computing Hw e-values and evecs too" << std::endl;
 	// DWF-like 5D Wilson-Type stuff
 	Handle< WilsonTypeFermAct<T,P,Q> >
 	  S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
@@ -177,7 +177,7 @@ int main(int argc, char **argv)
       }
     }
     catch(const std::string& e ) { 
-       QDPIO::cout << "4D: " << e << endl;
+       QDPIO::cout << "4D: " << e << std::endl;
     }
   }
 
@@ -302,7 +302,7 @@ void RitzCode4D(Handle< LinearOperator<LatticeFermion> >& MM,
 		 high_xml);
   
   lambda_high_aux[0] = fabs(lambda_high_aux[0]);
-  QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << endl;
+  QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << std::endl;
   
   pop(high_xml);
   xml_out << high_xml;
@@ -428,15 +428,15 @@ void RitzCode4DHw(Handle< LinearOperator<LatticeFermion> >& MM,
     }
    
     QDPIO::cout << "lambda_lo[" << i << "] = " << lambda[i] << "  "; 
-    QDPIO::cout << "check_norm["<<i<<"] = " << check_norm[i] << endl;
+    QDPIO::cout << "check_norm["<<i<<"] = " << check_norm[i] << std::endl;
   }
   write(xml_out, "check_norm", check_norm);
   
   for(int i=0; i < input.ritz_params.Neig; i++) { 
     check_norm[i] /= fabs(lambda[i]);
-    QDPIO::cout << "check_norm_rel["<< i <<"] = " << check_norm[i] << endl;
+    QDPIO::cout << "check_norm_rel["<< i <<"] = " << check_norm[i] << std::endl;
   }
-  QDPIO::cout << flush ;
+  QDPIO::cout << std::flush ;
   write(xml_out, "check_norm_rel", check_norm);
   pop(xml_out);
   
@@ -479,7 +479,7 @@ void RitzCode4DHw(Handle< LinearOperator<LatticeFermion> >& MM,
 		 high_xml);
   
   lambda_high_aux[0] = sqrt(fabs(lambda_high_aux[0]));
-  QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << endl;
+  QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << std::endl;
   
   pop(high_xml);
   xml_out << high_xml;
@@ -488,7 +488,7 @@ void RitzCode4DHw(Handle< LinearOperator<LatticeFermion> >& MM,
   write(xml_out, "lambda_hi", lambda_high_aux[0]);
   pop(xml_out);
 
-  QDPIO::cout << "Writing low eigenvalues/vectors" << endl;
+  QDPIO::cout << "Writing low eigenvalues/vectors" << std::endl;
   writeEigen(input, lambda, psi, lambda_high_aux[0], QDPIO_SERIAL);
 
 }
@@ -523,7 +523,7 @@ void RitzCode5D(Handle< LinearOperatorArray<LatticeFermion> >& MM,
   int n_jacob_count = 0;
   
 #if 1
-  QDPIO::cout << "Call EigSpecRitzKS" << endl;
+  QDPIO::cout << "Call EigSpecRitzKS" << std::endl;
 
   EigSpecRitzKS(*MM, 
 		lambda, 
@@ -546,7 +546,7 @@ void RitzCode5D(Handle< LinearOperatorArray<LatticeFermion> >& MM,
 		eig_spec_xml);
 #else
 
-  QDPIO::cout << "Call EigSpecRitzCG" << endl;
+  QDPIO::cout << "Call EigSpecRitzCG" << std::endl;
 
   EigSpecRitzCG( *MM,
 		 lambda,
@@ -637,7 +637,7 @@ void RitzCode5D(Handle< LinearOperatorArray<LatticeFermion> >& MM,
 		 high_xml);
   
   lambda_high_aux[0] = fabs(lambda_high_aux[0]);
-  QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << endl;
+  QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << std::endl;
   
   pop(high_xml);
   xml_out << high_xml;

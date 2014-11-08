@@ -23,7 +23,6 @@
 #include "actions/ferm/linop/eoprec_clover_dumb_linop_w.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_cg_chrono_clover.h"
 using namespace Chroma;
-using namespace std;
 
 struct AppParams { 
   multi1d<int> nrow;
@@ -85,7 +84,7 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
   }
   else {
     
-    QDPIO::cerr << "MdagMMultiSysSolverCGChronoClover: shifts incompatible" << endl;
+    QDPIO::cerr << "MdagMMultiSysSolverCGChronoClover: shifts incompatible" << std::endl;
     QDP_abort(1);
   }
 
@@ -118,9 +117,9 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
     r[D_op->subset()] -= tmp2;
     Double norm = norm2(r, D_op->subset())/norm2(chi, D_op->subset());
 
-    QDPIO::cout << "soln "<< i <<" : RsdCG=" << RsdCG[i] << "  r=" << sqrt(norm) << endl;
+    QDPIO::cout << "soln "<< i <<" : RsdCG=" << RsdCG[i] << "  r=" << sqrt(norm) << std::endl;
   }
-  QDPIO::cout << "MinvCG: n_count = " << res.n_count << "  Time=" << swatch.getTimeInSeconds() << endl; 
+  QDPIO::cout << "MinvCG: n_count = " << res.n_count << "  Time=" << swatch.getTimeInSeconds() << std::endl; 
 
   swatch.reset();
   swatch.start();
@@ -138,9 +137,9 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
     r[D_op->subset()] -= tmp2;
     Double norm = norm2(r, D_op->subset())/norm2(chi, D_op->subset());
 
-    QDPIO::cout << "soln "<< i <<" : RsdCG=" << RsdCG[i] << "  r=" << sqrt(norm) << endl;
+    QDPIO::cout << "soln "<< i <<" : RsdCG=" << RsdCG[i] << "  r=" << sqrt(norm) << std::endl;
   }
-  QDPIO::cout << "Chrono: n_count = " << res2.n_count << "  Time=" << swatch.getTimeInSeconds() << endl; 
+  QDPIO::cout << "Chrono: n_count = " << res2.n_count << "  Time=" << swatch.getTimeInSeconds() << std::endl; 
 
 }
 
@@ -169,7 +168,7 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
-  QDPIO::cout << "Linkage = " << linkageHack() << endl;
+  QDPIO::cout << "Linkage = " << linkageHack() << std::endl;
 
 
   AppParams params;
@@ -182,7 +181,7 @@ int main(int argc, char **argv)
   }
   catch(const std::string& e) 
   {
-    QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+    QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
     QDP_abort(1);
   }
   Layout::setLattSize(params.nrow);

@@ -38,7 +38,7 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
 
-  QDPIO::cout << "linkage=" << linkage_hack() << endl;
+  QDPIO::cout << "linkage=" << linkage_hack() << std::endl;
 
 
   multi1d<int> nrow(Nd);
@@ -51,7 +51,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  QDPIO::cout << "t_temp_prec" << endl;
+  QDPIO::cout << "t_temp_prec" << std::endl;
   
   // Start up a weak field
   struct Cfg_t config = { CFG_TYPE_WEAK_FIELD, "dummy" };
@@ -87,19 +87,19 @@ int main(int argc, char **argv)
 					  "./FermionAction5D",
 					  "FermAct");
 
-    QDPIO::cout << "fermact group read" << endl;
+    QDPIO::cout << "fermact group read" << std::endl;
      inv_param_group=readXMLGroup(paramtop, 
 					    "./InvertParam", 
 					    "invType");
 
-     QDPIO::cout << "inv_param_group read" << endl;
+     QDPIO::cout << "inv_param_group read" << std::endl;
 
     
     read(paramtop, "./Approximation", rat_approx_param);
-    QDPIO::cout << "Approx Read" << endl;
+    QDPIO::cout << "Approx Read" << std::endl;
   }
   catch(const std::string& e) { 
-    QDPIO::cerr << "XML Error returned : " << e << endl;
+    QDPIO::cerr << "XML Error returned : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -139,10 +139,10 @@ int main(int argc, char **argv)
     approx_reader(pfe, ipfe);
     
     // Work with pfe
-    QDPIO::cout << "Working With PFE:  A = " << pfe.norm << endl;
+    QDPIO::cout << "Working With PFE:  A = " << pfe.norm << std::endl;
     for(int i=0; i < pfe.pole.size(); i++) { 
       QDPIO::cout << "  res["<<i<<"]=" << pfe.res[i] << " pole[" << i 
-		  << "]=" << pfe.pole[i] << endl;
+		  << "]=" << pfe.pole[i] << std::endl;
     }
 
     {
@@ -176,8 +176,8 @@ int main(int argc, char **argv)
     Double n1 = sqrt(norm2(diff, subset));
     Double n2 = sqrt(norm2(psi1, subset));
     
-    QDPIO::cout << "|| psi1 - psi2 ||=" << n1 << endl;
-    QDPIO::cout << "|| psi1 - psi2 ||/||psi1||= " << n1/n2 << endl;
+    QDPIO::cout << "|| psi1 - psi2 ||=" << n1 << std::endl;
+    QDPIO::cout << "|| psi1 - psi2 ||/||psi1||= " << n1/n2 << std::endl;
 
     }
 
@@ -242,12 +242,12 @@ int main(int argc, char **argv)
     }
     Double norm5_diff = norm2(diff5, sub5);
     Double norm5_psi = norm2(psi5, sub5);
-    QDPIO::cout << "|| psi5_1 - psi5_2 ||=" << norm5_diff << endl;
-    QDPIO::cout << "|| psi5_1 - psi5_2 ||/||psi5_1||= " << norm5_diff/norm5_psi << endl;
+    QDPIO::cout << "|| psi5_1 - psi5_2 ||=" << norm5_diff << std::endl;
+    QDPIO::cout << "|| psi5_1 - psi5_2 ||/||psi5_1||= " << norm5_diff/norm5_psi << std::endl;
 
   } 
   catch(const std::string& e) { 
-    QDPIO::cerr << "Caught exception: " << e << endl;
+    QDPIO::cerr << "Caught exception: " << e << std::endl;
   }
 
   // Time to bolt

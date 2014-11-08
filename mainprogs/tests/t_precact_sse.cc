@@ -78,18 +78,18 @@ int main(int argc, char **argv)
     }
     psi5b = psi5a;
 
-    QDPIO::cout << "Prec inverter: " << endl;
-    QDPIO::cout << "  iterations = " << (*QDPqpropT)(psi5a, chi5) << endl;
-    QDPIO::cout << "SSE prec inverter" << endl;
-    QDPIO::cout << "  iterations = " << (*SSEqpropT)(psi5b, chi5) << endl;
+    QDPIO::cout << "Prec inverter: " << std::endl;
+    QDPIO::cout << "  iterations = " << (*QDPqpropT)(psi5a, chi5) << std::endl;
+    QDPIO::cout << "SSE prec inverter" << std::endl;
+    QDPIO::cout << "  iterations = " << (*SSEqpropT)(psi5b, chi5) << std::endl;
     
     for(int m=0; m < N5; ++m)
       tmp1[m] = psi5a[m] - psi5b[m];
 
-    QDPIO::cout << "Test eo-prec and SSE opt eo-prec DWF qpropT" << endl
-		<< "|pDWF|^2 = " << norm2(psi5a) << endl
-		<< "|sDWF|^2 = " << norm2(psi5b) << endl
-		<< "|pDWF - sDWF|^2 = " << norm2(tmp1) << endl;
+    QDPIO::cout << "Test eo-prec and SSE opt eo-prec DWF qpropT" << std::endl
+		<< "|pDWF|^2 = " << norm2(psi5a) << std::endl
+		<< "|sDWF|^2 = " << norm2(psi5b) << std::endl
+		<< "|pDWF - sDWF|^2 = " << norm2(tmp1) << std::endl;
   }
 
   {
@@ -102,18 +102,18 @@ int main(int argc, char **argv)
     random(psia);
     psib = psia;
 
-    QDPIO::cout << "Prec inverter" << endl;
-    QDPIO::cout << "  iterations = " << (*qprop)(psia, chi) << endl;
-    QDPIO::cout << "SSE prec inverter" << endl;
-    QDPIO::cout << "  iterations = " << (*qprop)(psib, chi) << endl;
+    QDPIO::cout << "Prec inverter" << std::endl;
+    QDPIO::cout << "  iterations = " << (*qprop)(psia, chi) << std::endl;
+    QDPIO::cout << "SSE prec inverter" << std::endl;
+    QDPIO::cout << "  iterations = " << (*qprop)(psib, chi) << std::endl;
     
-    QDPIO::cout << "Test eo-prec and SSE opt eo-prec DWF qprop" << endl
-		<< "|pDWF|^2 = " << norm2(psia) << endl
-		<< "|sDWF|^2 = " << norm2(psib) << endl
-		<< "|pDWF - sDWF|^2 = " << norm2(psia-psib) << endl;
+    QDPIO::cout << "Test eo-prec and SSE opt eo-prec DWF qprop" << std::endl
+		<< "|pDWF|^2 = " << norm2(psia) << std::endl
+		<< "|sDWF|^2 = " << norm2(psib) << std::endl
+		<< "|pDWF - sDWF|^2 = " << norm2(psia-psib) << std::endl;
   }
 
-  QDPIO::cout << "\n\n\nDone" << endl;
+  QDPIO::cout << "\n\n\nDone" << std::endl;
 
   pop(xml);
 

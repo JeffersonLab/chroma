@@ -22,8 +22,8 @@ struct Param_t
 //! Propagators
 struct Prop_t
 {
-  string           prop_file;  // The files is expected to be in SciDAC format!
-  multi1d<string>  seqprop_files;  // The files is expected to be in SciDAC format!
+  std::string           prop_file;  // The files is expected to be in SciDAC format!
+  multi1d<std::string>  seqprop_files;  // The files is expected to be in SciDAC format!
 };
 
 
@@ -37,7 +37,7 @@ struct Seqsource_input_t
 
 
 //! Propagator parameters
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -47,7 +47,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Param_t& param)
+void read(XMLReader& xml, const std::string& path, Param_t& param)
 {
   XMLReader paramtop(xml, path);
 
@@ -56,7 +56,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Seqsource_input_t& input)
+void read(XMLReader& xml, const std::string& path, Seqsource_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -72,9 +72,9 @@ void read(XMLReader& xml, const string& path, Seqsource_input_t& input)
     // Read in the propagator(s) info
     read(inputtop, "Prop", input.prop);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading prop data: " << e << endl;
+    QDPIO::cerr << "Error reading prop data: " << e << std::endl;
     QDP_abort(1);
   }
 }
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
   ChromaProp_t prop_header;
   PropSourceConst_t source_header;
   {
-    QDPIO::cout << "Attempt to read forward propagator" << endl;
+    QDPIO::cout << "Attempt to read forward propagator" << std::endl;
     readQprop(prop_file_xml, 
 	      prop_record_xml, quark_propagator,
 	      input.prop.prop_file, QDPIO_SERIAL);
@@ -126,9 +126,9 @@ int main(int argc, char *argv[])
       read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
       read(prop_record_xml, "/Propagator/PropSource", source_header);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+      QDPIO::cerr << "Error extracting forward_prop header: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
     write(xml_out, "Propagator_file_info", prop_file_xml);
     write(xml_out, "Propagator_record_info", prop_record_xml);
   }
-  QDPIO::cout << "Forward propagator successfully read" << endl;
+  QDPIO::cout << "Forward propagator successfully read" << std::endl;
 
   // Derived from input prop
   int  j_decay = source_header.j_decay;
@@ -183,9 +183,9 @@ int main(int argc, char *argv[])
       {
 	read(seqprop_record_xml, "/SequentialProp/SeqSource", seqsource_header);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << "Error extracting seqprop header: " << e << endl;
+	QDPIO::cerr << "Error extracting seqprop header: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -193,7 +193,7 @@ int main(int argc, char *argv[])
       write(xml_seq_src, "SequentialProp_file_info", seqprop_file_xml);
       write(xml_seq_src, "SequentialProp_record_info", seqprop_record_xml);
     }
-    QDPIO::cout << "Sequential propagator successfully read" << endl;
+    QDPIO::cout << "Sequential propagator successfully read" << std::endl;
 
     // Sanity check - write out the norm2 of the forward prop in the j_decay direction
     // Use this for any possible verification
@@ -212,8 +212,8 @@ int main(int argc, char *argv[])
     xml_out.flush();
 
     // Derived from input seqprop
-    string seq_src = seqsource_header.seq_src;
-    QDPIO::cout << "Seqsource name = " << seqsource_header.seq_src << endl;
+    std::string seq_src = seqsource_header.seq_src;
+    QDPIO::cout << "Seqsource name = " << seqsource_header.seq_src << std::endl;
     int           t_sink   = seqsource_header.t_sink;
     multi1d<int>  sink_mom = seqsource_header.sink_mom;
 

@@ -57,7 +57,7 @@ namespace Chroma
 	bool parioP=false;
 	read(paramtop, "./ParallelIO", parioP);
 	if ( parioP ) {
-	  QDPIO::cout << "Setting parallel write mode" << endl;
+	  QDPIO::cout << "Setting parallel write mode" << std::endl;
 	  p.save_pario = QDPIO_PARALLEL;
 	}
       }
@@ -118,14 +118,14 @@ namespace Chroma
 	std::ostringstream inline_os;
 	measurements_xml.print(inline_os);
 	p.inline_measurement_xml = inline_os.str();
-	QDPIO::cout << "InlineMeasurements are: " << endl;
-	QDPIO::cout << p.inline_measurement_xml << endl;
+	QDPIO::cout << "InlineMeasurements are: " << std::endl;
+	QDPIO::cout << p.inline_measurement_xml << std::endl;
       }
 
       
     }
     catch(const std::string& e ) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
+      QDPIO::cerr << "Caught Exception: " << e << std::endl;
       QDP_abort(1);
     }
     
@@ -167,7 +167,7 @@ namespace Chroma
       
     }
     catch(const std::string& e ) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
+      QDPIO::cerr << "Caught Exception: " << e << std::endl;
       QDP_abort(1);
     }
     
@@ -198,7 +198,7 @@ namespace Chroma
       pop(xml);
     }
     catch(const std::string& e ) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
+      QDPIO::cerr << "Caught Exception: " << e << std::endl;
       QDP_abort(1);
     }
     
@@ -218,8 +218,8 @@ namespace Chroma
       std::ostringstream os_Monomials;
       Monomials_xml_reader.print(os_Monomials);
       p.Monomials_xml = os_Monomials.str();
-      QDPIO::cout << "Monomials xml is:" << endl;
-      QDPIO::cout << p.Monomials_xml << endl;
+      QDPIO::cout << "Monomials xml is:" << std::endl;
+      QDPIO::cout << p.Monomials_xml << std::endl;
 
       // Now the XML for the Hamiltonians
       XMLReader H_MC_xml(paramtop, "./Hamiltonian");
@@ -227,7 +227,7 @@ namespace Chroma
       H_MC_xml.print(os_H_MC);
       p.H_MC_xml = os_H_MC.str();
       
-      QDPIO::cout << "HMC_xml is: " << endl;
+      QDPIO::cout << "HMC_xml is: " << std::endl;
       QDPIO::cout << p.H_MC_xml;
       
       
@@ -237,11 +237,11 @@ namespace Chroma
       MD_integrator_xml.print(os_integrator);
       p.Integrator_xml = os_integrator.str();
 
-      QDPIO::cout << "Integrator XML is: " << endl;
-      QDPIO::cout << p.Integrator_xml << endl;
+      QDPIO::cout << "Integrator XML is: " << std::endl;
+      QDPIO::cout << p.Integrator_xml << std::endl;
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading XML : " << e << endl;
+      QDPIO::cerr << "Error reading XML : " << e << std::endl;
       QDP_abort(1);
     }
     
@@ -365,7 +365,7 @@ namespace Chroma
 
 
     // Turn monitoring off/on
-    QDPIO::cout << "Setting Force monitoring to " << mc_control.monitorForcesP  << endl;
+    QDPIO::cout << "Setting Force monitoring to " << mc_control.monitorForcesP  << std::endl;
     setForceMonitoring(mc_control.monitorForcesP) ;
     QDP::StopWatch swatch;
 
@@ -406,7 +406,7 @@ namespace Chroma
 	to_do = total_updates - cur_update ;
       }
       
-      QDPIO::cout << "MC Control: About to do " << to_do << " updates" << endl;
+      QDPIO::cout << "MC Control: About to do " << to_do << " updates" << std::endl;
 
       // XML Output
       push(xml_out, "MCUpdates");
@@ -424,7 +424,7 @@ namespace Chroma
 	
 	// Decide if the next update is a warm up or not
 	bool warm_up_p = cur_update  <= mc_control.n_warm_up_updates;
-	QDPIO::cout << "Doing Update: " << cur_update << " warm_up_p = " << warm_up_p << endl;
+	QDPIO::cout << "Doing Update: " << cur_update << " warm_up_p = " << warm_up_p << std::endl;
 
 	// Log
 	write(xml_out, "update_no", cur_update);
@@ -437,7 +437,7 @@ namespace Chroma
 	if( mc_control.rev_checkP 
 	    && ( cur_update % mc_control.rev_check_frequency == 0 )) {
 	  do_reverse = true;
-	  QDPIO::cout << "Doing Reversibility Test this traj" << endl;
+	  QDPIO::cout << "Doing Reversibility Test this traj" << std::endl;
 	}
 
 
@@ -448,14 +448,14 @@ namespace Chroma
 
 	  // Yes - reproducibility trajectory
 	  // Save fields and RNG at start of trajectory
-	  QDPIO::cout << "Saving start config and RNG seed for reproducability test" << endl;
+	  QDPIO::cout << "Saving start config and RNG seed for reproducability test" << std::endl;
 
 	  GaugeFieldState repro_bkup_start( gauge_state.getP(), gauge_state.getQ());
 	  QDP::Seed rng_seed_bkup_start;
 	  QDP::RNG::savern(rng_seed_bkup_start);
 	  
 	  // DO the trajectory
-	  QDPIO::cout << "Before HMC trajectory call" << endl;
+	  QDPIO::cout << "Before HMC trajectory call" << std::endl;
 	  swatch.reset(); 
 	  swatch.start();
 
@@ -465,26 +465,26 @@ namespace Chroma
 	  
 	  QDPIO::cout << "After HMC trajectory call: time= "
 		      << swatch.getTimeInSeconds() 
-		      << " secs" << endl;
+		      << " secs" << std::endl;
 	  
 	  write(xml_out, "seconds_for_trajectory", swatch.getTimeInSeconds());
 	  write(xml_log, "seconds_for_trajectory", swatch.getTimeInSeconds());
 
 	  // Save the fields and RNG at the end
-	  QDPIO::cout << "Saving end config and RNG seed for reproducability test" << endl;
+	  QDPIO::cout << "Saving end config and RNG seed for reproducability test" << std::endl;
 	  GaugeFieldState repro_bkup_end( gauge_state.getP(), gauge_state.getQ());
 	  QDP::Seed rng_seed_bkup_end;
 	  QDP::RNG::savern(rng_seed_bkup_end);
 
 	  // Restore the starting field and the starting RNG
-	  QDPIO::cout << "Restoring start config and RNG for reproducability test" << endl;
+	  QDPIO::cout << "Restoring start config and RNG for reproducability test" << std::endl;
 
 	  gauge_state.getP() = repro_bkup_start.getP(); 
 	  gauge_state.getQ() = repro_bkup_start.getQ(); 
 	  QDP::RNG::setrn(rng_seed_bkup_start); 
 
 	  // Do the repro trajectory
-	  QDPIO::cout << "Before HMC repro trajectory call" << endl;
+	  QDPIO::cout << "Before HMC repro trajectory call" << std::endl;
 	  swatch.reset(); 
 	  swatch.start();
 	  // Dont repeat the reversibility check in the repro test
@@ -493,7 +493,7 @@ namespace Chroma
 	  
 	  QDPIO::cout << "After HMC repro trajectory call: time= "
 		      << swatch.getTimeInSeconds() 
-		      << " secs" << endl;
+		      << " secs" << std::endl;
 	  
 	  write(xml_out, "seconds_for_repro_trajectory", swatch.getTimeInSeconds());
 	  write(xml_log, "seconds_for_repro_trajectory", swatch.getTimeInSeconds());
@@ -513,14 +513,14 @@ namespace Chroma
 
 	  
 	  if( !pass ) { 
-	    QDPIO::cout << "Reproducability check failed on update " << cur_update << endl;
-	    QDPIO::cout << "Aborting" << endl;
+	    QDPIO::cout << "Reproducability check failed on update " << cur_update << std::endl;
+	    QDPIO::cout << "Aborting" << std::endl;
 	    write(xml_out, "ReproCheck", pass);
 	    write(xml_log, "ReproCheck", pass);
 	    QDP_abort(1);
 	  }
 	  else { 
-	    QDPIO::cout << "Reproducability check passed on update " << cur_update << endl;
+	    QDPIO::cout << "Reproducability check passed on update " << cur_update << std::endl;
 	    write(xml_out, "ReproCheck", pass);
 	    write(xml_log, "ReproCheck", pass);
 	  }
@@ -530,7 +530,7 @@ namespace Chroma
 	else { 
 
 	  // Do the trajectory without accepting
-	  QDPIO::cout << "Before HMC trajectory call" << endl;
+	  QDPIO::cout << "Before HMC trajectory call" << std::endl;
 	  swatch.reset();
 	  swatch.start();
 	  theHMCTrj( gauge_state, warm_up_p, do_reverse  );
@@ -538,7 +538,7 @@ namespace Chroma
 	
 	  QDPIO::cout << "After HMC trajectory call: time= "
 		      << swatch.getTimeInSeconds() 
-		      << " secs" << endl;
+		      << " secs" << std::endl;
 	  
 	  write(xml_out, "seconds_for_trajectory", swatch.getTimeInSeconds());
 	  write(xml_log, "seconds_for_trajectory", swatch.getTimeInSeconds());
@@ -553,7 +553,7 @@ namespace Chroma
 	//
 	// NOTE: THIS HEADER STUFF NEEDS A LOT MORE THOUGHT
 	//
-	QDPIO::cout << "HMC: start inline measurements" << endl;
+	QDPIO::cout << "HMC: start inline measurements" << std::endl;
 	{
 	  XMLBufferWriter gauge_xml;
 	  push(gauge_xml, "ChromaHMC");
@@ -562,11 +562,11 @@ namespace Chroma
 	  pop(gauge_xml);
 
 	  // Reset and set the default gauge field
-	  QDPIO::cout << "HMC: initial resetting default gauge field" << endl;
+	  QDPIO::cout << "HMC: initial resetting default gauge field" << std::endl;
 	  InlineDefaultGaugeField::reset();
-	  QDPIO::cout << "HMC: set default gauge field" << endl;
+	  QDPIO::cout << "HMC: set default gauge field" << std::endl;
 	  InlineDefaultGaugeField::set(gauge_state.getQ(), gauge_xml);
-	  QDPIO::cout << "HMC: finished setting default gauge field" << endl;
+	  QDPIO::cout << "HMC: finished setting default gauge field" << std::endl;
 
 	  // Measure inline observables 
 	  push(xml_out, "InlineObservables");
@@ -574,8 +574,8 @@ namespace Chroma
 	  // Always measure defaults
 	  for(int m=0; m < default_measurements.size(); m++) 
 	  {
-	    QDPIO::cout << "HMC: do default measurement = " << m << endl;
-	    QDPIO::cout << "HMC: dump named objects" << endl;
+	    QDPIO::cout << "HMC: do default measurement = " << m << std::endl;
+	    QDPIO::cout << "HMC: dump named objects" << std::endl;
 	    TheNamedObjMap::Instance().dump();
 
 	    // Caller writes elem rule 
@@ -584,42 +584,42 @@ namespace Chroma
 	    the_meas(cur_update, xml_out);
 	    pop(xml_out);
 
-	    QDPIO::cout << "HMC: finished default measurement = " << m << endl;
+	    QDPIO::cout << "HMC: finished default measurement = " << m << std::endl;
 	  }
 	
 	  // Only measure user measurements after warm up
 	  if( ! warm_up_p ) 
 	  {
 	    QDPIO::cout << "Doing " << user_measurements.size() 
-			<<" user measurements" << endl;
+			<<" user measurements" << std::endl;
 	    for(int m=0; m < user_measurements.size(); m++) 
 	    {
-	      QDPIO::cout << "HMC: considering user measurement number = " << m << endl;
+	      QDPIO::cout << "HMC: considering user measurement number = " << m << std::endl;
 	      AbsInlineMeasurement& the_meas = *(user_measurements[m]);
 	      if( cur_update % the_meas.getFrequency() == 0 ) 
 	      { 
 		// Caller writes elem rule
 		push(xml_out, "elem");
-		QDPIO::cout << "HMC: calling user measurement number = " << m << endl;
+		QDPIO::cout << "HMC: calling user measurement number = " << m << std::endl;
 		the_meas(cur_update, xml_out);
-		QDPIO::cout << "HMC: finished user measurement number = " << m << endl;
+		QDPIO::cout << "HMC: finished user measurement number = " << m << std::endl;
 		pop(xml_out); 
 	      }
 	    }
-	    QDPIO::cout << "HMC: finished user measurements" << endl;
+	    QDPIO::cout << "HMC: finished user measurements" << std::endl;
 	  }
 	  pop(xml_out); // pop("InlineObservables");
 
 	  // Reset the default gauge field
-	  QDPIO::cout << "HMC: final resetting default gauge field" << endl;
+	  QDPIO::cout << "HMC: final resetting default gauge field" << std::endl;
 	  InlineDefaultGaugeField::reset();
-	  QDPIO::cout << "HMC: finished final resetting default gauge field" << endl;
+	  QDPIO::cout << "HMC: finished final resetting default gauge field" << std::endl;
 	}
 
 	swatch.stop();
 	QDPIO::cout << "After all measurements: time= "
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
 
 	write(xml_out, "seconds_for_measurements", swatch.getTimeInSeconds());
 	write(xml_log, "seconds_for_measurements", swatch.getTimeInSeconds());
@@ -635,7 +635,7 @@ namespace Chroma
 	  swatch.stop();
 	  QDPIO::cout << "After saving state: time= "
 		      << swatch.getTimeInSeconds() 
-		      << " secs" << endl;
+		      << " secs" << std::endl;
 	}
 
 	pop(xml_log); // pop("Update");
@@ -701,7 +701,7 @@ int main(int argc, char *argv[])
   START_CODE();
 
   // Chroma Init stuff -- Open DATA and XMLDAT
-  QDPIO::cout << "Linkage = " << linkageHack() << endl;
+  QDPIO::cout << "Linkage = " << linkageHack() << std::endl;
 
   StopWatch snoop;
   snoop.reset();
@@ -729,22 +729,22 @@ int main(int argc, char *argv[])
     write(xml_log, "Input", xml_in);
   }
   catch(const std::string& e) {
-    QDPIO::cerr << "hmc: Caught Exception while reading file: " << e << endl;
+    QDPIO::cerr << "hmc: Caught Exception while reading file: " << e << std::endl;
     QDP_abort(1);
   }
 
   if (mc_control.start_update_num >= mc_control.n_production_updates)
   {
-    QDPIO::cout << "hmc: run is finished" << endl;
+    QDPIO::cout << "hmc: run is finished" << std::endl;
     pop(xml_log);
     pop(xml_out);
     exit(0);
   }
 
-  QDPIO::cout << "Call QDP create layout" << endl;
+  QDPIO::cout << "Call QDP create layout" << std::endl;
   Layout::setLattSize(trj_params.nrow);
   Layout::create();
-  QDPIO::cout << "Finished with QDP create layout" << endl;
+  QDPIO::cout << "Finished with QDP create layout" << std::endl;
 
   proginfo(xml_out);    // Print out basic program info
   proginfo(xml_log);    // Print out basic program info
@@ -756,14 +756,14 @@ int main(int argc, char *argv[])
     XMLReader file_xml;
     XMLReader config_xml;
     
-    QDPIO::cout << "Initialize gauge field" << endl;
+    QDPIO::cout << "Initialize gauge field" << std::endl;
     StopWatch swatch;
     swatch.reset();
     swatch.start();
     {
       std::istringstream  xml_c(mc_control.cfg.xml);
       XMLReader  cfgtop(xml_c);
-      QDPIO::cout << "Gauge initialization: cfg_type = " << mc_control.cfg.id << endl;
+      QDPIO::cout << "Gauge initialization: cfg_type = " << mc_control.cfg.id << std::endl;
 
       Handle< GaugeInit >
 	gaugeInit(TheGaugeInitFactory::Instance().createObject(mc_control.cfg.id,
@@ -774,7 +774,7 @@ int main(int argc, char *argv[])
     swatch.stop();
     QDPIO::cout << "Gauge field successfully initialized: time= " 
 		<< swatch.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
     swatch.reset();
     swatch.start();
@@ -786,7 +786,7 @@ int main(int argc, char *argv[])
     swatch.stop();
     QDPIO::cout << "Gauge field reunitarized: time="
 		<< swatch.getTimeInSeconds()
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
     // Write out the config header
     write(xml_out, "Config_info", config_xml);
@@ -794,22 +794,22 @@ int main(int argc, char *argv[])
   }
   catch(std::bad_cast) 
   {
-    QDPIO::cerr << "hmc: caught cast error" << endl;
+    QDPIO::cerr << "hmc: caught cast error" << std::endl;
     QDP_abort(1);
   }
   catch(const std::string& e) 
   {
-    QDPIO::cerr << "hmc: Caught Exception: " << e << endl;
+    QDPIO::cerr << "hmc: Caught Exception: " << e << std::endl;
     QDP_abort(1);
   }
   catch(std::exception& e) 
   {
-    QDPIO::cerr << "hmc: Caught standard library exception: " << e.what() << endl;
+    QDPIO::cerr << "hmc: Caught standard library exception: " << e.what() << std::endl;
     QDP_abort(1);
   }
   catch(...)
   {
-    QDPIO::cerr << "hmc: caught generic exception during measurement" << endl;
+    QDPIO::cerr << "hmc: caught generic exception during measurement" << std::endl;
     QDP_abort(1);
   }
 
@@ -821,7 +821,7 @@ int main(int argc, char *argv[])
     readNamedMonomialArray(monomial_reader, "/Monomials");
   }
   catch(const std::string& e) { 
-    QDPIO::cout << "Caught Exception reading Monomials" << endl;
+    QDPIO::cout << "Caught Exception reading Monomials" << std::endl;
     QDP_abort(1);
   }
 
@@ -854,18 +854,18 @@ int main(int argc, char *argv[])
 
     std::ostringstream os;
     MeasXML.print(os);
-    QDPIO::cout << os.str() << endl << flush;
+    QDPIO::cout << os.str() << std::endl << std::flush;
 
     read(MeasXML, "/InlineMeasurements", the_measurements);
   }
   catch(const std::string& e) { 
-    QDPIO::cerr << "hmc: Caught exception while reading measurements: " << e << endl
-		<< flush;
+    QDPIO::cerr << "hmc: Caught exception while reading measurements: " << e << std::endl
+		<< std::flush;
 
     QDP_abort(1);
   }
 
-  QDPIO::cout << "There are " << the_measurements.size() << " user measurements " << endl;
+  QDPIO::cout << "There are " << the_measurements.size() << " user measurements " << std::endl;
 
   
   // Run
@@ -874,28 +874,28 @@ int main(int argc, char *argv[])
   } 
   catch(std::bad_cast) 
   {
-    QDPIO::cerr << "HMC: caught cast error" << endl;
+    QDPIO::cerr << "HMC: caught cast error" << std::endl;
     QDP_abort(1);
   }
   catch(std::bad_alloc) 
   { 
     // This might happen on any node, so report it
-    cerr << "HMC: caught bad memory allocation" << endl;
+    std::cerr << "HMC: caught bad memory allocation" << std::endl;
     QDP_abort(1);
   }
   catch(const std::string& e) 
   { 
-    QDPIO::cerr << "HMC: Caught string exception: " << e << endl;
+    QDPIO::cerr << "HMC: Caught std::string exception: " << e << std::endl;
     QDP_abort(1);
   }
   catch(std::exception& e) 
   {
-    QDPIO::cerr << "HMC: Caught standard library exception: " << e.what() << endl;
+    QDPIO::cerr << "HMC: Caught standard library exception: " << e.what() << std::endl;
     QDP_abort(1);
   }
   catch(...) 
   {
-    QDPIO::cerr << "HMC: Caught generic/unknown exception" << endl;
+    QDPIO::cerr << "HMC: Caught generic/unknown exception" << std::endl;
     QDP_abort(1);
   }
 
@@ -905,7 +905,7 @@ int main(int argc, char *argv[])
   snoop.stop();
   QDPIO::cout << "HMC: total time = "
 	      << snoop.getTimeInSeconds() 
-	      << " secs" << endl;
+	      << " secs" << std::endl;
 
   END_CODE();
 
@@ -957,7 +957,7 @@ namespace Chroma {
     QDPInternal::globalSum(diffs_found);
     
     if( diffs_found != 0 ) { 
-      QDPIO::cout << "Found " << diffs_found << " different bytes in momentum repro check" << endl;
+      QDPIO::cout << "Found " << diffs_found << " different bytes in momentum repro check" << std::endl;
       return false;
     }
     
@@ -976,12 +976,12 @@ namespace Chroma {
     QDPInternal::globalSum(diffs_found);
     
     if( diffs_found != 0 ) { 
-      QDPIO::cout << "Found " << diffs_found << " different bytes in gauge repro check" << endl;
+      QDPIO::cout << "Found " << diffs_found << " different bytes in gauge repro check" << std::endl;
       return false;
     }
   
     if( ! toBool( seed_new == seed_old ) ) { 
-      QDPIO::cout << "New and old RNG seeds do not match " << endl;
+      QDPIO::cout << "New and old RNG seeds do not match " << std::endl;
       return false;
     }
     

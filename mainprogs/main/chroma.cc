@@ -36,8 +36,8 @@ void read(XMLReader& xml, const std::string& path, Params_t& p)
   std::ostringstream inline_os;
   measurements_xml.print(inline_os);
   p.inline_measurement_xml = inline_os.str();
-  QDPIO::cout << "InlineMeasurements are: " << endl;
-  QDPIO::cout << p.inline_measurement_xml << endl;
+  QDPIO::cout << "InlineMeasurements are: " << std::endl;
+  QDPIO::cout << p.inline_measurement_xml << std::endl;
 }
 
 
@@ -56,7 +56,7 @@ void read(XMLReader& xml, const std::string& path, Inline_input_t& p)
   }
   catch( const std::string& e ) 
   {
-    QDPIO::cerr << "Error reading XML : " << e << endl;
+    QDPIO::cerr << "Error reading XML : " << e << std::endl;
     QDP_abort(1);
   }
 }
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
   
   START_CODE();
 
-  QDPIO::cout << "Linkage = " << linkageHack() << endl;
+  QDPIO::cout << "Linkage = " << linkageHack() << std::endl;
 
   StopWatch snoop;
   snoop.reset();
@@ -105,17 +105,17 @@ int main(int argc, char *argv[])
   }
   catch(const std::string& e) 
   {
-    QDPIO::cerr << "CHROMA: Caught Exception reading XML: " << e << endl;
+    QDPIO::cerr << "CHROMA: Caught Exception reading XML: " << e << std::endl;
     QDP_abort(1);
   }
   catch(std::exception& e) 
   {
-    QDPIO::cerr << "CHROMA: Caught standard library exception: " << e.what() << endl;
+    QDPIO::cerr << "CHROMA: Caught standard library exception: " << e.what() << std::endl;
     QDP_abort(1);
   }
   catch(...)
   {
-    QDPIO::cerr << "CHROMA: caught generic exception reading XML" << endl;
+    QDPIO::cerr << "CHROMA: caught generic exception reading XML" << std::endl;
     QDP_abort(1);
   }
 
@@ -141,13 +141,13 @@ int main(int argc, char *argv[])
   XMLReader gauge_file_xml, gauge_xml;
 
   // Start up the gauge field
-  QDPIO::cout << "Attempt to read gauge field" << endl;
+  QDPIO::cout << "Attempt to read gauge field" << std::endl;
   swatch.start();
   try 
   {
     std::istringstream  xml_c(input.cfg.xml);
     XMLReader  cfgtop(xml_c);
-    QDPIO::cout << "Gauge initialization: cfg_type = " << input.cfg.id << endl;
+    QDPIO::cout << "Gauge initialization: cfg_type = " << input.cfg.id << std::endl;
 
     Handle< GaugeInit >
       gaugeInit(TheGaugeInitFactory::Instance().createObject(input.cfg.id,
@@ -157,29 +157,29 @@ int main(int argc, char *argv[])
   }
   catch(std::bad_cast) 
   {
-    QDPIO::cerr << "CHROMA: caught cast error" << endl;
+    QDPIO::cerr << "CHROMA: caught cast error" << std::endl;
     QDP_abort(1);
   }
   catch(std::bad_alloc) 
   { 
     // This might happen on any node, so report it
-    cerr << "CHROMA: caught bad memory allocation" << endl;
+    std::cerr << "CHROMA: caught bad memory allocation" << std::endl;
     QDP_abort(1);
   }
   catch(const std::string& e) 
   {
-    QDPIO::cerr << "CHROMA: Caught Exception: " << e << endl;
+    QDPIO::cerr << "CHROMA: Caught Exception: " << e << std::endl;
     QDP_abort(1);
   }
   catch(std::exception& e) 
   {
-    QDPIO::cerr << "CHROMA: Caught standard library exception: " << e.what() << endl;
+    QDPIO::cerr << "CHROMA: Caught standard library exception: " << e.what() << std::endl;
     QDP_abort(1);
   }
   catch(...)
   {
     // This might happen on any node, so report it
-    cerr << "CHROMA: caught generic exception during gaugeInit" << endl;
+    std::cerr << "CHROMA: caught generic exception during gaugeInit" << std::endl;
     //QDP_abort(1);
     throw;
   }
@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
 
   QDPIO::cout << "Gauge field successfully read: time= " 
 	      << swatch.getTimeInSeconds() 
-	      << " secs" << endl;
+	      << " secs" << std::endl;
 
   XMLBufferWriter config_xml;
   config_xml << gauge_xml;
@@ -206,7 +206,7 @@ int main(int argc, char *argv[])
     multi1d < Handle< AbsInlineMeasurement > > the_measurements;
     read(MeasXML, "/InlineMeasurements", the_measurements);
 
-    QDPIO::cout << "There are " << the_measurements.size() << " measurements " << endl;
+    QDPIO::cout << "There are " << the_measurements.size() << " measurements " << std::endl;
 
     // Reset and set the default gauge field
     InlineDefaultGaugeField::reset();
@@ -217,7 +217,7 @@ int main(int argc, char *argv[])
     xml_out.flush();
 
     QDPIO::cout << "Doing " << the_measurements.size() 
-		<<" measurements" << endl;
+		<<" measurements" << std::endl;
     swatch.start();
     unsigned long cur_update = 0;
     for(int m=0; m < the_measurements.size(); m++) 
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
 
     QDPIO::cout << "CHROMA measurements: time= " 
 		<< swatch.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
 
     pop(xml_out); // pop("InlineObservables");
@@ -247,35 +247,35 @@ int main(int argc, char *argv[])
   }
   catch(std::bad_cast) 
   {
-    QDPIO::cerr << "CHROMA: caught cast error" << endl;
+    QDPIO::cerr << "CHROMA: caught cast error" << std::endl;
     QDP_abort(1);
   }
   catch(std::bad_alloc) 
   { 
     // This might happen on any node, so report it
-    cerr << "CHROMA: caught bad memory allocation" << endl;
+    std::cerr << "CHROMA: caught bad memory allocation" << std::endl;
     QDP_abort(1);
   }
   catch(const std::string& e) 
   {
-    QDPIO::cerr << "CHROMA: Caught Exception: " << e << endl;
+    QDPIO::cerr << "CHROMA: Caught Exception: " << e << std::endl;
     QDP_abort(1);
   }
   catch(const char* e) 
   { 
-    QDPIO::cout << "CHROMA: Caught const char * exception: " << e << endl;
+    QDPIO::cout << "CHROMA: Caught const char * exception: " << e << std::endl;
     QDP_abort(1);
   }
   catch(std::exception& e) 
   {
-    QDPIO::cerr << "CHROMA: Caught standard library exception: " << e.what() << endl;
+    QDPIO::cerr << "CHROMA: Caught standard library exception: " << e.what() << std::endl;
     QDP_abort(1);
   }
   catch(...)
   {
     // This might happen on any node, so report it
-    cerr << "CHROMA: caught generic exception during measurement" << endl;
-    cerr << "Rethrowing" << endl;
+    std::cerr << "CHROMA: caught generic exception during measurement" << std::endl;
+    std::cerr << "Rethrowing" << std::endl;
     throw;
   }
   pop(xml_out);
@@ -283,9 +283,9 @@ int main(int argc, char *argv[])
   snoop.stop();
   QDPIO::cout << "CHROMA: total time = "
 	      << snoop.getTimeInSeconds() 
-	      << " secs" << endl;
+	      << " secs" << std::endl;
 
-  QDPIO::cout << "CHROMA: ran successfully" << endl;
+  QDPIO::cout << "CHROMA: ran successfully" << std::endl;
 
   END_CODE();
 

@@ -14,7 +14,6 @@
 #include "chroma.h"
 
 using namespace Chroma;
-using namespace std;
 
 struct App_input_t {
   ChromaProp_t param;
@@ -22,7 +21,7 @@ struct App_input_t {
 };
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, App_input_t& input)
+void read(XMLReader& xml, const std::string& path, App_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -35,9 +34,9 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -54,8 +53,8 @@ int main(int argc, char **argv)
   try {
     read(xml_in, "/ovlapTest", input);
   }
-   catch( const string& e) { 
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+   catch( const std::string& e) { 
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -80,7 +79,7 @@ int main(int argc, char **argv)
   Handle<FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
 
 
-  QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
+  QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << std::endl;
   const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
       
   // Construct Fermact -- now uses constructor from the zolo4d params
@@ -116,7 +115,7 @@ int main(int argc, char **argv)
   LatticeFermion diff = chi2 - chi1;
   Double norm_diff = sqrt(norm2(diff));
 
-  QDPIO::cout << "||PLUS: lovlapms - explicit epsilon construct ||=" << norm_diff << endl;
+  QDPIO::cout << "||PLUS: lovlapms - explicit epsilon construct ||=" << norm_diff << std::endl;
 
   (*D_op)(chi1, psi, MINUS);
 
@@ -137,7 +136,7 @@ int main(int argc, char **argv)
   diff = chi1 - chi2;
   norm_diff = sqrt(norm2(diff));
 
-  QDPIO::cout << "||MINUS: lovlapms - explicit epsilon construct ||=" << norm_diff << endl;
+  QDPIO::cout << "||MINUS: lovlapms - explicit epsilon construct ||=" << norm_diff << std::endl;
 
 
   // Now do U^dagger = epsilon^dagger gamma_5 
@@ -152,7 +151,7 @@ int main(int argc, char **argv)
   diff = chi1 - chi2;
   norm_diff = sqrt(norm2(diff));
 
-  QDPIO::cout << "||MINUS2: lovlapms - explicit epsilon construct ||=" << norm_diff << endl;
+  QDPIO::cout << "||MINUS2: lovlapms - explicit epsilon construct ||=" << norm_diff << std::endl;
 
 
   // Test unitarity
@@ -162,14 +161,14 @@ int main(int argc, char **argv)
   diff = psi - chi2;
   norm_diff = sqrt(norm2(diff));
 
-  QDPIO::cout << "||UNITARITY: 1 - U^{dag} U ||=" << norm_diff << endl;
+  QDPIO::cout << "||UNITARITY: 1 - U^{dag} U ||=" << norm_diff << std::endl;
 
   (*g5eps)(chi1, psi, PLUS);
   (*g5eps)(chi2, psi, MINUS);
   diff = chi1 - chi2;
   norm_diff = sqrt(norm2(diff));
 
-  QDPIO::cout << "||HERMITICITY: U - U^{dag} ||=" << norm_diff << endl;
+  QDPIO::cout << "||HERMITICITY: U - U^{dag} ||=" << norm_diff << std::endl;
 
 
   chi1 = Gamma(G5)*psi;
@@ -180,7 +179,7 @@ int main(int argc, char **argv)
   diff = chi1 - chi2;
   norm_diff = sqrt(norm2(diff));
 
-  QDPIO::cout << "||gamma_5 HERMITICITY: g5 U g5 - U^+||=" << norm_diff << endl;
+  QDPIO::cout << "||gamma_5 HERMITICITY: g5 U g5 - U^+||=" << norm_diff << std::endl;
 
   chi1 = Gamma(G5)*psi;
   (*g5eps)(tmp, chi1, MINUS);
@@ -190,7 +189,7 @@ int main(int argc, char **argv)
   diff = chi1 - chi2;
   norm_diff = sqrt(norm2(diff));
 
-  QDPIO::cout << "||gamma_5 HERMITICITY: g5 U^+ g5  - U ||=" << norm_diff << endl;
+  QDPIO::cout << "||gamma_5 HERMITICITY: g5 U^+ g5  - U ||=" << norm_diff << std::endl;
 
   // Get g5 (g5 eps) psi = eps psi
   (*g5eps)(tmp, psi, PLUS);
@@ -203,7 +202,7 @@ int main(int argc, char **argv)
   diff = chi1 - chi2;
   norm_diff = sqrt(norm2(diff));
 
-  QDPIO::cout << "|| sgn HERMITICITY: eps - eps^{dag} || = " << norm_diff <<endl;
+  QDPIO::cout << "|| sgn HERMITICITY: eps - eps^{dag} || = " << norm_diff <<std::endl;
 
 
   // Chi2 is eps^{dag}
@@ -216,7 +215,7 @@ int main(int argc, char **argv)
   diff = psi - chi2;
   norm_diff = sqrt(norm2(diff));
 
-  QDPIO::cout << "||sgn UNITARITY: 1 - eps eps^{dag} || = " << norm_diff << endl;
+  QDPIO::cout << "||sgn UNITARITY: 1 - eps eps^{dag} || = " << norm_diff << std::endl;
   pop(xml_out);
   Chroma::finalize();
     

@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 //    pop(xml_out);
   
     Double sum_diff=norm2(dsdu_1[mu] - adj(g)*dsdu_2[mu]*g);
-    QDPIO::cout << "Mu = " << mu << " Sum Diff=" << sum_diff << endl;
+    QDPIO::cout << "Mu = " << mu << " Sum Diff=" << sum_diff << std::endl;
 
     push(xml_out, "ForceDiff");
     write(xml_out, "mu", mu);

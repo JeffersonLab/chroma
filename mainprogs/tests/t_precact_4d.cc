@@ -24,7 +24,7 @@ bool linkage_hack()
 }
 
 //! Check Qprop
-void check_qprop(XMLWriter& xml_out, const string& prefix, 
+void check_qprop(XMLWriter& xml_out, const std::string& prefix, 
 		 const SystemSolver< LatticeFermion >& PP,
 		 const SystemSolver< LatticeFermion >& UP)
 {
@@ -43,14 +43,14 @@ void check_qprop(XMLWriter& xml_out, const string& prefix,
 
   // Do solution one;
   SystemSolverResults_t res1 = PP(sol_prec, source);
-  cout << "QPROP Prec done" << endl << flush ; 
+  std::cout << "QPROP Prec done" << std::endl << std::flush ; 
 
   SystemSolverResults_t res2 = UP(sol_unprec, source);
 
   LatticeFermion diff = sol_prec - sol_unprec;
   Double norm_diff = sqrt(norm2(diff));
 
-  QDPIO::cout << "Prop Diff: " << norm_diff << endl;
+  QDPIO::cout << "Prop Diff: " << norm_diff << std::endl;
   push(xml_out, prefix);
   write(xml_out, "n_count1", res1.n_count);
   write(xml_out, "n_count2", res2.n_count);
@@ -60,11 +60,11 @@ void check_qprop(XMLWriter& xml_out, const string& prefix,
 
 
 //! Check linops
-void check_linops(XMLWriter& xml_out, const string& prefix,
+void check_linops(XMLWriter& xml_out, const std::string& prefix,
   const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>  >& AP,
   const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>  >& AU)
 {
-  QDPIO::cout << "Check linops" << endl;
+  QDPIO::cout << "Check linops" << std::endl;
 
   LatticeFermion  psi, chi;
   LatticeFermion  tmpx, tmpy;
@@ -73,34 +73,34 @@ void check_linops(XMLWriter& xml_out, const string& prefix,
   gaussian(chi);
 
   LatticeFermion  tmp1, tmp2;
-  QDPIO::cout << "AP plus" << endl;
-  QDPIO::cout << "Checking evenEvenInv(PLUS): " << endl;
+  QDPIO::cout << "AP plus" << std::endl;
+  QDPIO::cout << "Checking evenEvenInv(PLUS): " << std::endl;
   AP.evenEvenLinOp(tmpx, psi, PLUS);
   AP.evenEvenInvLinOp(tmpy, tmpx, PLUS);
   Double trivial_diff_plus = norm2(tmpy-psi,even);
   QDPIO::cout << "  psi - EvenEvenInv*EvenEven psi: diff = " << trivial_diff_plus 
-	      << "   norm2(psi) = " << Real(norm2(psi,even)) << endl;
+	      << "   norm2(psi) = " << Real(norm2(psi,even)) << std::endl;
 
   AP.unprecLinOp(tmp1, psi, PLUS);
   DComplex nnP_plus = innerProduct(chi, tmp1);
 
-  QDPIO::cout << "AP minus" << endl;
-  QDPIO::cout << "Checking evenEvenInv(MINUS): " << endl;
+  QDPIO::cout << "AP minus" << std::endl;
+  QDPIO::cout << "Checking evenEvenInv(MINUS): " << std::endl;
   AP.evenEvenLinOp(tmpx, psi, MINUS);
   AP.evenEvenInvLinOp(tmpy, tmpx, MINUS);
   Double trivial_diff_minus = norm2(tmpy-psi,even);
   QDPIO::cout << "  psi - EvenEvenInv*EvenEven psi: diff = " << trivial_diff_minus
-	      << "   norm2(psi) = " << Real(norm2(psi,even)) << endl;
+	      << "   norm2(psi) = " << Real(norm2(psi,even)) << std::endl;
 
   AP.unprecLinOp(tmp2, chi, MINUS);
   DComplex nnP_minus = innerProduct(tmp2, psi);
 
   LatticeFermion tmp3, tmp4;
-  QDPIO::cout << "AU plus" << endl;
+  QDPIO::cout << "AU plus" << std::endl;
   AU(tmp3, psi, PLUS);
   DComplex nnU_plus = innerProduct(chi, tmp3);
 
-  QDPIO::cout << "AU minus" << endl;
+  QDPIO::cout << "AU minus" << std::endl;
   AU(tmp4, chi, MINUS);
   DComplex nnU_minus = innerProduct(tmp4, psi);
 
@@ -112,8 +112,8 @@ void check_linops(XMLWriter& xml_out, const string& prefix,
   Double norm_diff_plus_e = norm2(tmp1-tmp3,even);
   Double norm_diff_plus_o = norm2(tmp1-tmp3,odd);
   norm_diff_plus += norm_diff_plus_e + norm_diff_plus_o;
-  QDPIO::cout << "PLUS, EVEN: Prec(Full) - Unprec: diff = " << norm_diff_plus_e << endl;
-  QDPIO::cout << "PLUS, ODD:  Prec(Full) - Unprec: diff = " << norm_diff_plus_o << endl;
+  QDPIO::cout << "PLUS, EVEN: Prec(Full) - Unprec: diff = " << norm_diff_plus_e << std::endl;
+  QDPIO::cout << "PLUS, ODD:  Prec(Full) - Unprec: diff = " << norm_diff_plus_o << std::endl;
 
   write(xml_out, "norm_diff_plus", norm_diff_plus);
   write(xml_out, "norm_diff_plus_even", norm_diff_plus_e);
@@ -126,8 +126,8 @@ void check_linops(XMLWriter& xml_out, const string& prefix,
   Double norm_diff_minus_e = norm2(tmp2-tmp4,even);
   Double norm_diff_minus_o = norm2(tmp2-tmp4, odd);
   norm_diff_minus += norm_diff_minus_e + norm_diff_minus_o;
-  QDPIO::cout << "MINUS,EVEN: Prec(Full) - Unprec: diff = " << norm_diff_minus_e << endl;
-  QDPIO::cout << "MINUS,ODD:  Prec(Full) - Unprec: diff = " << norm_diff_minus_o << endl;
+  QDPIO::cout << "MINUS,EVEN: Prec(Full) - Unprec: diff = " << norm_diff_minus_e << std::endl;
+  QDPIO::cout << "MINUS,ODD:  Prec(Full) - Unprec: diff = " << norm_diff_minus_o << std::endl;
 
   write(xml_out, "norm_diff_minus", norm_diff_minus);
   write(xml_out, "norm_diff_minus_even", norm_diff_minus_e);
@@ -136,7 +136,7 @@ void check_linops(XMLWriter& xml_out, const string& prefix,
 }
 
 
-//! Apply the operator onto a source vector
+//! Apply the operator onto a source std::vector
 /*! User should make sure deriv routines do a resize  */
 multi1d<LatticeColorMatrix>
 deriv(const EvenOddPrecLinearOperator<LatticeFermion, 
@@ -187,11 +187,11 @@ deriv(const EvenOddPrecLinearOperator<LatticeFermion,
 
 
 //! Check linops
-void check_derivs(XMLWriter& xml_out, const string& prefix,
+void check_derivs(XMLWriter& xml_out, const std::string& prefix,
   const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>  >& AP,
   const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>  >& AU)
 {
-  QDPIO::cout << "Check derivs" << endl;
+  QDPIO::cout << "Check derivs" << std::endl;
 
   LatticeFermion  psi, chi;
   
@@ -199,11 +199,11 @@ void check_derivs(XMLWriter& xml_out, const string& prefix,
   gaussian(chi);
 
   multi1d<LatticeColorMatrix>  ds_1, ds_2;
-  QDPIO::cout << "AP plus" << endl;
+  QDPIO::cout << "AP plus" << std::endl;
   AP.derivUnprecLinOp(ds_1, chi, psi, PLUS);
   Double nnP_plus = norm2(ds_1);
 
-  QDPIO::cout << "AP minus" << endl;
+  QDPIO::cout << "AP minus" << std::endl;
   AP.derivUnprecLinOp(ds_2, chi, psi, MINUS);
   Double nnP_minus = norm2(ds_2);
   Double norm_diff_prec = zero;
@@ -220,11 +220,11 @@ void check_derivs(XMLWriter& xml_out, const string& prefix,
   Double norm_diff_check_prec_minus = norm2(ds_tmp);
 
   multi1d<LatticeColorMatrix>  ds_3, ds_4;
-  QDPIO::cout << "AU plus" << endl;
+  QDPIO::cout << "AU plus" << std::endl;
   AU.deriv(ds_3, chi, psi, PLUS);
   Double nnU_plus = norm2(ds_3);
 
-  QDPIO::cout << "AP minus" << endl;
+  QDPIO::cout << "AP minus" << std::endl;
   AU.deriv(ds_4, chi, psi, MINUS);
   Double nnU_minus = norm2(ds_4);
   Double norm_diff_unprec = zero;
@@ -270,12 +270,12 @@ struct Test_input_t
 {
   Param_t          param;
   Cfg_t            cfg;
-  string           action_eo;
-  string           action_un;
+  std::string           action_eo;
+  std::string           action_un;
 };
 
 //! Parameters for running code
-void read(XMLReader& xml, const string& path, Param_t& param)
+void read(XMLReader& xml, const std::string& path, Param_t& param)
 {
   XMLReader paramtop(xml, path);
   read(paramtop, "nrow", param.nrow);
@@ -284,7 +284,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Test_input_t& input)
+void read(XMLReader& xml, const std::string& path, Test_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -313,9 +313,9 @@ void read(XMLReader& xml, const string& path, Test_input_t& input)
       input.action_eo = os.str();
     }
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading test data: " << e << endl;
+    QDPIO::cerr << "Error reading test data: " << e << std::endl;
     throw;
   }
 }
@@ -328,7 +328,7 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
 
-  QDPIO::cout << "linkage=" << linkage_hack() << endl;
+  QDPIO::cout << "linkage=" << linkage_hack() << std::endl;
 
   // Input parameter structure
   Test_input_t  input;
@@ -344,12 +344,12 @@ int main(int argc, char **argv)
   }
   catch(const std::string& e) 
   {
-    QDPIO::cerr << "t_precact_4d: Caught Exception reading XML: " << e << endl;
+    QDPIO::cerr << "t_precact_4d: Caught Exception reading XML: " << e << std::endl;
     QDP_abort(1);
   }
   catch(...)
   {
-    QDPIO::cerr << "t_precact_4d: caught generic exception reading XML" << endl;
+    QDPIO::cerr << "t_precact_4d: caught generic exception reading XML" << std::endl;
     QDP_abort(1);
   }
 
@@ -357,7 +357,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  QDPIO::cout << "t_precact" << endl;
+  QDPIO::cout << "t_precact" << std::endl;
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
@@ -392,10 +392,10 @@ int main(int argc, char **argv)
   std::istringstream  xml_s_un(input.action_un);
   XMLReader  fermacttop_eo(xml_s_eo);
   XMLReader  fermacttop_un(xml_s_un);
-  const string fermact_path_eo = "/PrecAction/FermionAction";
-  const string fermact_path_un = "/UnprecAction/FermionAction";
-  string fermact_eo;
-  string fermact_un;
+  const std::string fermact_path_eo = "/PrecAction/FermionAction";
+  const std::string fermact_path_un = "/UnprecAction/FermionAction";
+  std::string fermact_eo;
+  std::string fermact_un;
 
   try
   {
@@ -404,28 +404,28 @@ int main(int argc, char **argv)
   }
   catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading fermact: " << e << endl;
+    QDPIO::cerr << "Error reading fermact: " << e << std::endl;
     throw;
   }
   catch (const char* e) 
   {
-    QDPIO::cerr << "Error reading fermact: " << e << endl;
+    QDPIO::cerr << "Error reading fermact: " << e << std::endl;
     throw;
   }
 
-  QDPIO::cout << "PrecFermAct = " << fermact_eo << endl;
-  QDPIO::cout << "UnprecFermAct = " << fermact_un << endl;
+  QDPIO::cout << "PrecFermAct = " << fermact_eo << std::endl;
+  QDPIO::cout << "UnprecFermAct = " << fermact_un << std::endl;
 
 
   // Deal with auxiliary (and polymorphic) state information
   // eigenvectors, eigenvalues etc. The XML for this should be
-  // stored as a string called "stateInfo" in the param struct.
+  // stored as a std::string called "stateInfo" in the param struct.
 
   try {
 
     // Make a reader for the stateInfo
-    const string state_info_path_eo = "/PrecAction/StateInfo";
-    const string state_info_path_un = "/UnprecAction/StateInfo";
+    const std::string state_info_path_eo = "/PrecAction/StateInfo";
+    const std::string state_info_path_un = "/UnprecAction/StateInfo";
     XMLReader state_info_xml_eo(fermacttop_eo,state_info_path_eo);
     XMLReader state_info_xml_un(fermacttop_un,state_info_path_un);
 
@@ -437,7 +437,7 @@ int main(int argc, char **argv)
     // Preconditioned operator
     bool success = false; 
 
-    QDPIO::cerr << "create prec = " << fermact_eo << endl;
+    QDPIO::cerr << "create prec = " << fermact_eo << std::endl;
     typedef EvenOddPrecWilsonTypeFermAct<T,P,Q>  EO4D;
 
     Handle<EO4D>
@@ -450,7 +450,7 @@ int main(int argc, char **argv)
 							    state_info_path_eo));
   
     // Unpreconditioned operator
-    QDPIO::cerr << "create unprec = " << fermact_un << endl;
+    QDPIO::cerr << "create unprec = " << fermact_un << std::endl;
     typedef UnprecWilsonTypeFermAct<T,P,Q>  U4D;
     Handle<U4D>
       S_f_un(dynamic_cast<U4D*>(TheWilsonTypeFermActFactory::Instance().createObject(fermact_un,
@@ -467,24 +467,24 @@ int main(int argc, char **argv)
       Handle< EvenOddPrecLinearOperator<T,P,Q> > AP(S_f_eo->linOp(state_eo));
       Handle< UnprecLinearOperator<T,P,Q> > AU(S_f_un->linOp(state_un));
       
-      QDPIO::cout << "Check bulk linops" << endl;
+      QDPIO::cout << "Check bulk linops" << std::endl;
       check_linops(xml_out, "Bulk", *AP, *AU);
       xml_out.flush();
 
       Handle< SystemSolver<T> > PP = S_f_eo->qprop(state_eo,
 						   input.param.invParam);
 
-      QDPIO::cout << "Got Preconditioned System Solver" << endl;
+      QDPIO::cout << "Got Preconditioned System Solver" << std::endl;
      
       Handle< SystemSolver<T> > UP = S_f_un->qprop(state_un,
 						   input.param.invParam);
-      QDPIO::cout << "Got Unprec System Solver " << endl;
+      QDPIO::cout << "Got Unprec System Solver " << std::endl;
 
-      QDPIO::cout << "Check qprop" << endl;
+      QDPIO::cout << "Check qprop" << std::endl;
       check_qprop(xml_out, "Qprop", *PP, *UP);
       xml_out.flush();
 
-      QDPIO::cout << "Check bulk derivatives" << endl;
+      QDPIO::cout << "Check bulk derivatives" << std::endl;
       check_derivs(xml_out, "Bulk", *AP, *AU);
       xml_out.flush();
     }
@@ -492,12 +492,12 @@ int main(int argc, char **argv)
   }
   catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error in t_precact: " << e << endl;
+    QDPIO::cerr << "Error in t_precact: " << e << std::endl;
     throw;
   }
   catch (const char* e) 
   {
-    QDPIO::cerr << "Error in t_precact: " << e << endl;
+    QDPIO::cerr << "Error in t_precact: " << e << std::endl;
     throw;
   }
   

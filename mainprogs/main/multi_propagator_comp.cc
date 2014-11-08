@@ -20,8 +20,8 @@ using namespace Chroma;
  */
 struct Prop_t
 {
-  string          source_file;
-  string          prop_file;
+  std::string          source_file;
+  std::string          prop_file;
   QDP_volfmt_t    prop_volfmt;
 };
 
@@ -40,29 +40,29 @@ struct PropagatorComponent_input_t
 };
 
 
-void read(XMLReader& xml, const string& path, Component_t &comp)
+void read(XMLReader& xml, const std::string& path, Component_t &comp)
 {
   XMLReader top(xml,path);
   try {
     read(top, "color", comp.color);
     read(top, "spin",  comp.spin);
   }
-  catch( const string& e ) {
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+  catch( const std::string& e ) {
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }  
   if( comp.color < 0 || comp.color >= Nc ) { 
-    QDPIO::cerr << "Component color >= Nc. color = " << comp.color << endl;
+    QDPIO::cerr << "Component color >= Nc. color = " << comp.color << std::endl;
     QDP_abort(1);
   }
 
   if( comp.spin < 0 || comp.spin >= Ns ) { 
-    QDPIO::cerr << "Component spin >= Ns.  spin = " << comp.spin << endl;
+    QDPIO::cerr << "Component spin >= Ns.  spin = " << comp.spin << std::endl;
     QDP_abort(1);
   }
 }
 
-void write(XMLWriter& xml, const string& path, const Component_t &comp)
+void write(XMLWriter& xml, const std::string& path, const Component_t &comp)
 {
   
   push( xml, path );
@@ -75,7 +75,7 @@ void write(XMLWriter& xml, const string& path, const Component_t &comp)
 
 
 // Propagator parameters
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -86,7 +86,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, PropagatorComponent_input_t& input)
+void read(XMLReader& xml, const std::string& path, PropagatorComponent_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -104,9 +104,9 @@ void read(XMLReader& xml, const string& path, PropagatorComponent_input_t& input
 
     read(inputtop, "Components", input.components);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -147,7 +147,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  QDPIO::cout << "multiPropagatorComp" << endl;
+  QDPIO::cout << "multiPropagatorComp" << std::endl;
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
@@ -172,9 +172,9 @@ int main(int argc, char **argv)
   {
     read(source_record_xml, "/MakeSource/PropSource", source_header);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error extracting source_header: " << e << endl;
+    QDPIO::cerr << "Error extracting source_header: " << e << std::endl;
     throw;
   }
 
@@ -253,7 +253,7 @@ int main(int argc, char **argv)
     /***********************************************************************/
   case FERM_ACT_ZOLOTAREV_4D:
     {
-      QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
+      QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << std::endl;
       const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
       
       // Construct Fermact -- now uses constructor from the zolo4d params
@@ -262,7 +262,7 @@ int main(int argc, char **argv)
     }
     break;
   default:
-    QDPIO::cerr << "Unsupported fermion action" << endl;
+    QDPIO::cerr << "Unsupported fermion action" << std::endl;
     QDP_abort(1);
   }
 
@@ -285,7 +285,7 @@ int main(int argc, char **argv)
     }
     break;
   default:
-    QDPIO::cerr << "Unsupported fermion action (state creation)" << endl;
+    QDPIO::cerr << "Unsupported fermion action (state creation)" << std::endl;
     QDP_abort(1);
   }
   
@@ -329,7 +329,7 @@ int main(int argc, char **argv)
       }
       break;
     default:
-      QDPIO::cerr << "Fermion action unsupported " << endl;
+      QDPIO::cerr << "Fermion action unsupported " << std::endl;
       break;
     }
     
@@ -419,12 +419,12 @@ void saveComponents(const ChromaMultiProp_t& param,
    
     pop(record_xml);
     
-    ostringstream outfile;
+    std::ostringstream outfile;
     outfile << prop.prop_file << "_component_s" << component.spin
 	    << "_c" << component.color << "_" 
-	    << setw(3) << setfill('0') << m;
+	    << std::setw(3) << std::setfill('0') << m;
 	  
-    QDPIO::cout << "Attempting to write " << outfile.str() << endl;
+    QDPIO::cout << "Attempting to write " << outfile.str() << std::endl;
 	  
     // Write the source
     writeFermion(file_xml, record_xml, psi[m],

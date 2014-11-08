@@ -58,8 +58,8 @@ struct Param_t
 
 struct Prop_t
 {
-  string       source_file;
-  string       prop_file;
+  std::string       source_file;
+  std::string       prop_file;
 };
 
 struct Propagator_input_t
@@ -71,7 +71,7 @@ struct Propagator_input_t
 
 
 //
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -81,7 +81,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Propagator_input_t& input)
+void read(XMLReader& xml, const std::string& path, Propagator_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -96,9 +96,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   {
     read(inputtop, "IO_version/version", version);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -121,13 +121,13 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     default :
       /**************************************************************************/
 
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -138,7 +138,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
     {
-      string ferm_type_str;
+      std::string ferm_type_str;
       read(paramtop, "FermTypeP", ferm_type_str);
       if (ferm_type_str == "STAGGERED") {
 	input.param.FermTypeP = FERM_TYPE_STAGGERED;
@@ -150,7 +150,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     switch (input.param.FermTypeP) {
     case FERM_TYPE_STAGGERED :
 
-      QDPIO::cout << " PROPAGATOR: Disconnected loops for Staggered fermions" << endl;
+      QDPIO::cout << " PROPAGATOR: Disconnected loops for Staggered fermions" << std::endl;
 
       read(paramtop, "Mass", input.param.Mass);
       read(paramtop, "u0" , input.param.u0);
@@ -162,7 +162,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     }
 
     {
-      string prop_type_str;
+      std::string prop_type_str;
       read(paramtop, "prop_type", prop_type_str);
       if (prop_type_str == "SZIN") {
 	input.param.prop_type = PROP_TYPE_SZIN;
@@ -172,7 +172,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     }
 
     {
-      string vol_type_str;
+      std::string vol_type_str;
       read(paramtop, "volume_source", vol_type_str);
       if (vol_type_str == "Z2NOISE") 
 	{
@@ -209,9 +209,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(paramtop, "use_gauge_invar_oper", input.param.use_gauge_invar_oper);
 
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -222,9 +222,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(inputtop, "Cfg", input.cfg);
     read(inputtop, "Prop", input.prop);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -247,14 +247,14 @@ int main(int argc, char **argv)
 
   // Instantiate xml reader for DATA
   XMLReader xml_in ; 
-  string in_name = Chroma::getXMLInputFileName() ; 
+  std::string in_name = Chroma::getXMLInputFileName() ; 
   try
   {
     xml_in.open(in_name);
   }
     catch (...) 
   {
-  QDPIO::cerr << "Error reading input file " << in_name << endl;
+  QDPIO::cerr << "Error reading input file " << in_name << std::endl;
     throw;
   }
 
@@ -301,7 +301,7 @@ int main(int argc, char **argv)
   int j_decay = Nd-1;
 
   //  coulGauge(u, n_gf, j_decay, input.param.GFAccu, input.param.GFMax, true, input.param.OrPara); 
-  //  QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << endl;
+  //  QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << std::endl;
 
   // Calcluate plaq on the gauge fixed field
   MesPlq(xml_out, "Is_this_gauge_invariant", u);
@@ -394,14 +394,14 @@ int main(int argc, char **argv)
   write(xml_out, "use_gauge_invar_oper", use_gauge_invar_oper);
   if( use_gauge_invar_oper )
     {
-      cout << "Using gauge invariant operators "  << endl ; 
+      std::cout << "Using gauge invariant operators "  << std::endl ; 
       // pseudoscalar.use_gauge_invar() ;
       // scalar_meson.use_gauge_invar() ;
       // pion_singlet.use_gauge_invar() ;
     }
   else
     {
-      cout << "Using NON-gauge invariant operators "  << endl ; 
+      std::cout << "Using NON-gauge invariant operators "  << std::endl ; 
       //      pseudoscalar.use_NON_gauge_invar()  ;
       // scalar_meson.use_NON_gauge_invar()  ;
       // pion_singlet.use_NON_gauge_invar()  ;
@@ -482,6 +482,6 @@ int main(int argc, char **argv)
   // Time to bolt
   Chroma::finalize();
 
-  QDPIO::cout << "CHROMA_RUN_COMPLETE " << endl;
+  QDPIO::cout << "CHROMA_RUN_COMPLETE " << std::endl;
   exit(0);
 }

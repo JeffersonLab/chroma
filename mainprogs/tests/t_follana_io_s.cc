@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
   // </test>
   //
   multi1d<int> nrow(Nd);
-  string filename;
+  std::string filename;
 
   read(xml_in, "/test/nrow", nrow);
   read(xml_in, "/test/infile", filename);
@@ -55,9 +55,9 @@ int main(int argc, char *argv[])
   Layout::create();
 
   QDPIO::cout << "Lattice: Lx = " << nrow[0] << " Ly = " << nrow[1] << " Lz = " << nrow[2]
-	      << " Lt =" << nrow[3] << endl;
+	      << " Lt =" << nrow[3] << std::endl;
 
-  QDPIO::cout << "Reading Propagator from file " << filename << endl;
+  QDPIO::cout << "Reading Propagator from file " << filename << std::endl;
 
   // Try and read the propagator;
 

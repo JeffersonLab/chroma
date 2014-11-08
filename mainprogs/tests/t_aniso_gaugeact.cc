@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 
   Double norm_diff = ( S_all_S - S_old_S ) / S_old_S;
 
-  QDPIO::cout <<"( S_new - S_old ) / S_old  = " <<  norm_diff << endl;
+  QDPIO::cout <<"( S_new - S_old ) / S_old  = " <<  norm_diff << std::endl;
 
   U F_old(Nd);
   U F_new(Nd);
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
   for(int mu=0; mu < Nd; mu++) { 
     LatticeColorMatrix f_d = F_new[mu]- F_old[mu];
 
-    QDPIO::cout <<" F_old = " << sqrt(norm2(F_old[mu])) << " F_new=" << sqrt(norm2(F_new[mu])) << "  (F_new-F_old) = " << sqrt(norm2(f_d)) << " (F_new - F_old) / F_old = " << sqrt(norm2(f_d)/norm2(F_old[mu]))<< endl;
+    QDPIO::cout <<" F_old = " << sqrt(norm2(F_old[mu])) << " F_new=" << sqrt(norm2(F_new[mu])) << "  (F_new-F_old) = " << sqrt(norm2(f_d)) << " (F_new - F_old) / F_old = " << sqrt(norm2(f_d)/norm2(F_old[mu]))<< std::endl;
   }
 
   
@@ -120,7 +120,7 @@ int main(int argc, char **argv)
     Double S_candidate = S_p_1.S(gstate)+S_pp_1.S(gstate)+S_r.S(gstate);
     Double S_ref = S_aniso.S(gstate);
 
-    QDPIO::cout << " S_candidate ="<< S_candidate << " S_aniso=" << S_ref <<  " diff =" << S_candidate - S_ref << "  Rel_diff=" << (S_candidate - S_ref)/S_ref << endl;
+    QDPIO::cout << " S_candidate ="<< S_candidate << " S_aniso=" << S_ref <<  " diff =" << S_candidate - S_ref << "  Rel_diff=" << (S_candidate - S_ref)/S_ref << std::endl;
 
   S_aniso.deriv(F_new, gstate);
   S_p_1.deriv(F_old, gstate); 
@@ -136,7 +136,7 @@ int main(int argc, char **argv)
   for(int mu=0; mu < Nd; mu++) { 
     LatticeColorMatrix f_d = F_new[mu]- F_old[mu];
 
-    QDPIO::cout <<" F_old = " << sqrt(norm2(F_old[mu])) << " F_new=" << sqrt(norm2(F_new[mu])) << "  (F_new-F_old) = " << sqrt(norm2(f_d)) << " (F_new - F_old) / F_old = " << sqrt(norm2(f_d)/norm2(F_old[mu]))<< endl;
+    QDPIO::cout <<" F_old = " << sqrt(norm2(F_old[mu])) << " F_new=" << sqrt(norm2(F_new[mu])) << "  (F_new-F_old) = " << sqrt(norm2(f_d)) << " (F_new - F_old) / F_old = " << sqrt(norm2(f_d)/norm2(F_old[mu]))<< std::endl;
   }
     
   Chroma::finalize();

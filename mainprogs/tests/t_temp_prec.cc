@@ -32,7 +32,7 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
 
-  QDPIO::cout << "linkage=" << linkage_hack() << endl;
+  QDPIO::cout << "linkage=" << linkage_hack() << std::endl;
 
 
   multi1d<int> nrow(Nd);
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  QDPIO::cout << "t_temp_prec" << endl;
+  QDPIO::cout << "t_temp_prec" << std::endl;
   
   // Start up a weak field
   struct Cfg_t config = { CFG_TYPE_WEAK_FIELD, "dummy" };
@@ -149,7 +149,7 @@ int main(int argc, char **argv)
   // psi2 = ( C_L^{-1} )^\dagger  \chi
   D_temp_prec.invCLeftLinOp(psi2, chi, MINUS);
   diff = psi2 - psi1;
-  QDPIO::cout << " Gamma5_1  = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  QDPIO::cout << " Gamma5_1  = " << sqrt( norm2(diff) / norm2(psi1) ) << std::endl;
   
 
   // Other way 
@@ -161,7 +161,7 @@ int main(int argc, char **argv)
   // psi2 = ( C_R^{-1} )^\dagger  \chi
   D_temp_prec.invCRightLinOp(psi2, chi, MINUS);
   diff = psi2 - psi1;
-  QDPIO::cout << " Gamma5_2  = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  QDPIO::cout << " Gamma5_2  = " << sqrt( norm2(diff) / norm2(psi1) ) << std::endl;
   
   // Check  D_w = CL^{-1} CR^{-1} + D_s 
   // D_w
@@ -174,7 +174,7 @@ int main(int argc, char **argv)
   psi2+=tmp2;
 
   diff = psi2 - psi1;
-  QDPIO::cout << " D_1 + = " << sqrt( norm2(diff)/norm2(psi1) ) << endl;
+  QDPIO::cout << " D_1 + = " << sqrt( norm2(diff)/norm2(psi1) ) << std::endl;
 
   
   // Check  D_w^\dag = CR^{-dagger} CL^{-dagger}  + D_s^\dag  (MINUS)
@@ -188,7 +188,7 @@ int main(int argc, char **argv)
   psi2+=tmp2;
 
   diff = psi2 - psi1;
-  QDPIO::cout << " D_1 - = " << sqrt( norm2(diff)/norm2(psi1) ) << endl;
+  QDPIO::cout << " D_1 - = " << sqrt( norm2(diff)/norm2(psi1) ) << std::endl;
 
 #if 0
   multi1d<LatticeColorMatrix> u_2(1);
@@ -216,7 +216,7 @@ int main(int argc, char **argv)
     ident.elem(site) = munit;
   }
 
-  QDPIO::cout << "|| I  - u_2*inv ||/ || 1 || = " << sqrt( norm2( identityP ) / norm2(ident)  ) << endl;
+  QDPIO::cout << "|| I  - u_2*inv ||/ || 1 || = " << sqrt( norm2( identityP ) / norm2(ident)  ) << std::endl;
 #endif
 
 
@@ -232,14 +232,14 @@ int main(int argc, char **argv)
   D_temp_prec.invTOp(chi2_half, psi_half, PLUS);
 
   diff_half = chi2_half - chi_half;
-  QDPIO::cout << " || diff || / || chi_half || = " << sqrt(norm2(diff_half) / norm2(chi_half)) << endl;
+  QDPIO::cout << " || diff || / || chi_half || = " << sqrt(norm2(diff_half) / norm2(chi_half)) << std::endl;
 
   
   D_temp_prec.TOp(psi_half, chi_half, MINUS);
   D_temp_prec.invTOp(chi2_half, psi_half, MINUS);
 
   diff_half = chi2_half - chi_half;
-  QDPIO::cout << " || diff || / || chi_half || = " << sqrt(norm2(diff_half) / norm2(chi_half)) << endl;
+  QDPIO::cout << " || diff || / || chi_half || = " << sqrt(norm2(diff_half) / norm2(chi_half)) << std::endl;
 #endif
 
   // Test LeftInverse is inverse of Left (Both orderings, PLUS and MINUS)
@@ -250,26 +250,26 @@ int main(int argc, char **argv)
   D_temp_prec.invCLeftLinOp(tmp1, psi1, PLUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CL CL_INV + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CL CL_INV + = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
 
   D_temp_prec.cLeftLinOp(psi1, chi, MINUS);
   D_temp_prec.invCLeftLinOp(tmp1, psi1, MINUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CL CL_INV - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CL CL_INV - = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec.invCLeftLinOp(psi1, chi, PLUS);
   D_temp_prec.cLeftLinOp(tmp1, psi1, PLUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CL_INV CL + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CL_INV CL + = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec.invCLeftLinOp(psi1, chi, MINUS);
   D_temp_prec.cLeftLinOp(tmp1, psi1, MINUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CL_INV CL - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CL_INV CL - = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
 
   // Test C_R is inverse of C_R_Inverse both orders, PLUS & Minus
@@ -279,37 +279,37 @@ int main(int argc, char **argv)
   D_temp_prec.invCRightLinOp(tmp1, psi1, PLUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CR CR_INV + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CR CR_INV + = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec.cRightLinOp(psi1, chi, MINUS);
   D_temp_prec.invCRightLinOp(tmp1, psi1, MINUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CR CR_INV - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CR CR_INV - = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec.invCRightLinOp(psi1, chi, PLUS);
   D_temp_prec.cRightLinOp(tmp1, psi1, PLUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CR_INV CR + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CR_INV CR + = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec.invCRightLinOp(psi1, chi, MINUS);
   D_temp_prec.cRightLinOp(tmp1, psi1, MINUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CR_INV CR - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CR_INV CR - = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
 
   // Now test against the normal D_op =  C_L^{-1}( 1 + C^L D_s C^R ) C_R^{-1}
   D_w(psi1, chi, PLUS);
   D_temp_prec.unprecLinOp(psi2, chi, PLUS);
   diff = psi2 - psi1;
-  QDPIO::cout << " D_2 + = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  QDPIO::cout << " D_2 + = " << sqrt( norm2(diff) / norm2(psi1) ) << std::endl;
   
   D_w(psi1, chi, MINUS);
   D_temp_prec.unprecLinOp(psi2, chi, MINUS);
   diff = psi2 - psi1;
-  QDPIO::cout << " D_2 - = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  QDPIO::cout << " D_2 - = " << sqrt( norm2(diff) / norm2(psi1) ) << std::endl;
 
 
   // ==============================================================================================
@@ -317,7 +317,7 @@ int main(int argc, char **argv)
   // ===========================================================================================
 
 
-  QDPIO::cout << "ILU Prec Op: " << endl;
+  QDPIO::cout << "ILU Prec Op: " << std::endl;
   //  ILUPrecSCprecTWilsonLinOp D_temp_prec2(fs, Mass, aniso );
 
   tmp1 = Gamma(15)*chi;
@@ -327,7 +327,7 @@ int main(int argc, char **argv)
   // psi2 = ( C_L^{-1} )^\dagger  \chi
   D_temp_prec2.invCLeftLinOp(psi2, chi, MINUS);
   diff = psi2 - psi1;
-  QDPIO::cout << " Gamma5_1  = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  QDPIO::cout << " Gamma5_1  = " << sqrt( norm2(diff) / norm2(psi1) ) << std::endl;
   
 
   // Other way 
@@ -339,7 +339,7 @@ int main(int argc, char **argv)
   // psi2 = ( C_R^{-1} )^\dagger  \chi
   D_temp_prec2.invCRightLinOp(psi2, chi, MINUS);
   diff = psi2 - psi1;
-  QDPIO::cout << " Gamma5_2  = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  QDPIO::cout << " Gamma5_2  = " << sqrt( norm2(diff) / norm2(psi1) ) << std::endl;
 
   // Test LeftInverse is inverse of Left (Both orderings, PLUS and MINUS)
   gaussian(chi);
@@ -348,26 +348,26 @@ int main(int argc, char **argv)
   D_temp_prec2.invCLeftLinOp(tmp1, psi1, PLUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CL CL_INV + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CL CL_INV + = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
 
   D_temp_prec2.cLeftLinOp(psi1, chi, MINUS);
   D_temp_prec2.invCLeftLinOp(tmp1, psi1, MINUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CL CL_INV - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CL CL_INV - = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec2.invCLeftLinOp(psi1, chi, PLUS);
   D_temp_prec2.cLeftLinOp(tmp1, psi1, PLUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CL_INV CL + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CL_INV CL + = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec2.invCLeftLinOp(psi1, chi, MINUS);
   D_temp_prec2.cLeftLinOp(tmp1, psi1, MINUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CL_INV CL - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CL_INV CL - = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
 
   // Test C_R is inverse of C_R_Inverse both orders, PLUS & Minus
@@ -377,37 +377,37 @@ int main(int argc, char **argv)
   D_temp_prec2.invCRightLinOp(tmp1, psi1, PLUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CR CR_INV + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CR CR_INV + = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec2.cRightLinOp(psi1, chi, MINUS);
   D_temp_prec2.invCRightLinOp(tmp1, psi1, MINUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CR CR_INV - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CR CR_INV - = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec2.invCRightLinOp(psi1, chi, PLUS);
   D_temp_prec2.cRightLinOp(tmp1, psi1, PLUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CR_INV CR + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CR_INV CR + = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec2.invCRightLinOp(psi1, chi, MINUS);
   D_temp_prec2.cRightLinOp(tmp1, psi1, MINUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CR_INV CR - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CR_INV CR - = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
 
   // Now test against the normal  D_op =  C_L^{-1} unprecOp() C_R^{-1}
   D_w(psi1, chi, PLUS);
   D_temp_prec2.unprecLinOp(psi2, chi, PLUS);
   diff = psi2 - psi1;
-  QDPIO::cout << " D_2 + = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  QDPIO::cout << " D_2 + = " << sqrt( norm2(diff) / norm2(psi1) ) << std::endl;
   
   D_w(psi1, chi, MINUS);
   D_temp_prec2.unprecLinOp(psi2, chi, MINUS);
   diff = psi2 - psi1;
-  QDPIO::cout << " D_2 - = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  QDPIO::cout << " D_2 - = " << sqrt( norm2(diff) / norm2(psi1) ) << std::endl;
 
   // ==============================================================================================
   // ILU Prec Clover Op
@@ -425,7 +425,7 @@ int main(int argc, char **argv)
   p.anisoParam.nu = 0.95;
   
 
-  QDPIO::cout << "ILU Prec Clover Op: " << endl;
+  QDPIO::cout << "ILU Prec Clover Op: " << std::endl;
   ILUPrecSCprecTCloverLinOp D_temp_prec_clover(fs, p );
 
   UnprecCloverLinOp D_clov(fs, p);
@@ -437,7 +437,7 @@ int main(int argc, char **argv)
   // psi2 = ( C_L^{-1} )^\dagger  \chi
   D_temp_prec_clover.invCLeftLinOp(psi2, chi, MINUS);
   diff = psi2 - psi1;
-  QDPIO::cout << " Gamma5_1  = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  QDPIO::cout << " Gamma5_1  = " << sqrt( norm2(diff) / norm2(psi1) ) << std::endl;
   
 
   // Other way 
@@ -449,7 +449,7 @@ int main(int argc, char **argv)
   // psi2 = ( C_R^{-1} )^\dagger  \chi
   D_temp_prec_clover.invCRightLinOp(psi2, chi, MINUS);
   diff = psi2 - psi1;
-  QDPIO::cout << " Gamma5_2  = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  QDPIO::cout << " Gamma5_2  = " << sqrt( norm2(diff) / norm2(psi1) ) << std::endl;
 
   // Test LeftInverse is inverse of Left (Both orderings, PLUS and MINUS)
   gaussian(chi);
@@ -458,26 +458,26 @@ int main(int argc, char **argv)
   D_temp_prec_clover.invCLeftLinOp(tmp1, psi1, PLUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CL CL_INV + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CL CL_INV + = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
 
   D_temp_prec_clover.cLeftLinOp(psi1, chi, MINUS);
   D_temp_prec_clover.invCLeftLinOp(tmp1, psi1, MINUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CL CL_INV - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CL CL_INV - = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec_clover.invCLeftLinOp(psi1, chi, PLUS);
   D_temp_prec_clover.cLeftLinOp(tmp1, psi1, PLUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CL_INV CL + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CL_INV CL + = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec_clover.invCLeftLinOp(psi1, chi, MINUS);
   D_temp_prec_clover.cLeftLinOp(tmp1, psi1, MINUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CL_INV CL - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CL_INV CL - = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
 
   // Test C_R is inverse of C_R_Inverse both orders, PLUS & Minus
@@ -487,44 +487,44 @@ int main(int argc, char **argv)
   D_temp_prec_clover.invCRightLinOp(tmp1, psi1, PLUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CR CR_INV + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CR CR_INV + = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec_clover.cRightLinOp(psi1, chi, MINUS);
   D_temp_prec_clover.invCRightLinOp(tmp1, psi1, MINUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CR CR_INV - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CR CR_INV - = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec_clover.invCRightLinOp(psi1, chi, PLUS);
   D_temp_prec_clover.cRightLinOp(tmp1, psi1, PLUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CR_INV CR + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CR_INV CR + = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
   D_temp_prec_clover.invCRightLinOp(psi1, chi, MINUS);
   D_temp_prec_clover.cRightLinOp(tmp1, psi1, MINUS);
 
   diff = tmp1 - chi;
-  QDPIO::cout << " CR_INV CR - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+  QDPIO::cout << " CR_INV CR - = " << sqrt(norm2(diff)/norm2(chi)) << std::endl;
 
 
   // Now test against the normal  D_op =  C_L^{-1} unprecOp() C_R^{-1}
   D_clov(psi1, chi, PLUS);
   D_temp_prec_clover.unprecLinOp(psi2, chi, PLUS);
   diff = psi2 - psi1;
-  QDPIO::cout << " D_2 + = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  QDPIO::cout << " D_2 + = " << sqrt( norm2(diff) / norm2(psi1) ) << std::endl;
   
   D_clov(psi1, chi, MINUS);
   D_temp_prec_clover.unprecLinOp(psi2, chi, MINUS);
   diff = psi2 - psi1;
-  QDPIO::cout << " D_2 - = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  QDPIO::cout << " D_2 - = " << sqrt( norm2(diff) / norm2(psi1) ) << std::endl;
   
 #if 0
   // Schur Style preconditioning
   EO3DPrecSCprecTWilsonLinOp D_schur_tprec(fs, Mass, aniso);
 
-  QDPIO::cout << "Schur Style preconditioning tests " << endl;
-  QDPIO::cout << "================================= " << endl;
+  QDPIO::cout << "Schur Style preconditioning tests " << std::endl;
+  QDPIO::cout << "================================= " << std::endl;
 
 
 
@@ -538,7 +538,7 @@ int main(int argc, char **argv)
     // psi2 = ( C_L^{-1} )^\dagger  \chi
     D_schur_tprec.invCLeftLinOp(psi2, chi, MINUS,cb);
     diff[rb3[cb]] = psi2 - psi1;
-    QDPIO::cout << "cb="<<cb<<" Gamma5_1  = " << sqrt( norm2(diff,rb3[cb]) / norm2(psi1,rb3[cb]) ) << endl;
+    QDPIO::cout << "cb="<<cb<<" Gamma5_1  = " << sqrt( norm2(diff,rb3[cb]) / norm2(psi1,rb3[cb]) ) << std::endl;
 
 
     // Other way 
@@ -550,7 +550,7 @@ int main(int argc, char **argv)
     // psi2 = ( C_R^{-1} )^\dagger  \chi
     D_schur_tprec.invCRightLinOp(psi2, chi, MINUS, cb);
     diff[rb3[cb]] = psi2 - psi1;
-    QDPIO::cout << "cb="<<cb<< " Gamma5_2  = " << sqrt( norm2(diff, rb3[cb]) / norm2(psi1,rb3[cb]) ) << endl;
+    QDPIO::cout << "cb="<<cb<< " Gamma5_2  = " << sqrt( norm2(diff, rb3[cb]) / norm2(psi1,rb3[cb]) ) << std::endl;
 
     // Test LeftInverse is inverse of Left (Both orderings, PLUS and MINUS)
     gaussian(chi,rb3[cb]);
@@ -558,26 +558,26 @@ int main(int argc, char **argv)
     D_schur_tprec.invCLeftLinOp(tmp1, psi1, PLUS,cb);
 
     diff[rb3[cb]] = tmp1 - chi;
-    QDPIO::cout << "cb="<<cb<<" CL CL_INV + = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<<" CL CL_INV + = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
 
 
     D_schur_tprec.cLeftLinOp(psi1, chi, MINUS,cb);
     D_schur_tprec.invCLeftLinOp(tmp1, psi1, MINUS,cb);
 
     diff[rb3[cb]] = tmp1 - chi;
-    QDPIO::cout << "cb="<<cb<<" CL CL_INV - = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<<" CL CL_INV - = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
 
     D_schur_tprec.invCLeftLinOp(psi1, chi, PLUS,cb);
     D_schur_tprec.cLeftLinOp(tmp1, psi1, PLUS,cb);
 
     diff[rb3[cb]] = tmp1 - chi;
-    QDPIO::cout << "cb="<<cb<<" CL_INV CL + = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<<" CL_INV CL + = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
 
     D_schur_tprec.invCLeftLinOp(psi1, chi, MINUS,cb);
     D_schur_tprec.cLeftLinOp(tmp1, psi1, MINUS,cb);
 
     diff[rb3[cb]] = tmp1 - chi;
-    QDPIO::cout << "cb="<<cb<<" CL_INV CL - = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<<" CL_INV CL - = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
 
     // Test C_R is inverse of C_R_Inverse both orders, PLUS & Minus
     gaussian(chi,rb3[cb]);
@@ -585,25 +585,25 @@ int main(int argc, char **argv)
     D_schur_tprec.invCRightLinOp(tmp1, psi1, PLUS,cb);
     
     diff[rb3[cb]] = tmp1 - chi;
-    QDPIO::cout << "cb="<<cb<< " CR CR_INV + = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<< " CR CR_INV + = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
     
     D_schur_tprec.cRightLinOp(psi1, chi, MINUS,cb);
     D_schur_tprec.invCRightLinOp(tmp1, psi1, MINUS,cb);
     
     diff[rb3[cb]] = tmp1 - chi;
-    QDPIO::cout << "cb="<<cb<< " CR CR_INV - = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<< " CR CR_INV - = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
     
     D_schur_tprec.invCRightLinOp(psi1, chi, PLUS,cb);
     D_schur_tprec.cRightLinOp(tmp1, psi1, PLUS,cb);
 
     diff[rb3[cb]] = tmp1 - chi;
-    QDPIO::cout << "cb="<<cb<<" CR_INV CR + = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<<" CR_INV CR + = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
     
     D_schur_tprec.invCRightLinOp(psi1, chi, MINUS,cb);
     D_schur_tprec.cRightLinOp(tmp1, psi1, MINUS,cb);
     
     diff[rb3[cb]] = tmp1 - chi;
-    QDPIO::cout << "cb="<<cb<<" CR_INV CR - = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<<" CR_INV CR - = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
   }
 
   // D_w is unpreconditioned
@@ -630,7 +630,7 @@ int main(int argc, char **argv)
  
   for(int cb=0; cb < 2; cb++) { 
     diff[rb3[cb]] = psi2 - psi1;
-    QDPIO::cout << "cb="<<cb<<" D+ = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<<" D+ = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
   }
 
   gaussian(chi);
@@ -638,7 +638,7 @@ int main(int argc, char **argv)
   D_schur_tprec.unprecLinOp(psi2,chi,PLUS);
   for(int cb=0; cb < 2; cb++) { 
     diff[rb3[cb]] = psi2 - psi1;
-    QDPIO::cout << "cb="<<cb<<" D+ = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<<" D+ = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
   }
 
 
@@ -665,7 +665,7 @@ int main(int argc, char **argv)
  
   for(int cb=0; cb < 2; cb++) { 
     diff[rb3[cb]] = psi2 - psi1;
-    QDPIO::cout << "cb="<<cb<<" D- = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<<" D- = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
   }
 
   gaussian(chi);
@@ -673,7 +673,7 @@ int main(int argc, char **argv)
   D_schur_tprec.unprecLinOp(psi2,chi,MINUS);
   for(int cb=0; cb < 2; cb++) { 
     diff[rb3[cb]] = psi2 - psi1;
-    QDPIO::cout << "cb="<<cb<<" D- = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<<" D- = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
   }
 
 
@@ -685,7 +685,7 @@ int main(int argc, char **argv)
   D_schur_clov_tprec.unprecLinOp(psi2,chi,PLUS);
   for(int cb=0; cb < 2; cb++) { 
     diff[rb3[cb]] = psi2 - psi1;
-    QDPIO::cout << "cb="<<cb<<" D+ = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<<" D+ = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
   }
 
   gaussian(chi);
@@ -693,7 +693,7 @@ int main(int argc, char **argv)
   D_schur_clov_tprec.unprecLinOp(psi2,chi,MINUS);
   for(int cb=0; cb < 2; cb++) { 
     diff[rb3[cb]] = psi2 - psi1;
-    QDPIO::cout << "cb="<<cb<<" D- = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    QDPIO::cout << "cb="<<cb<<" D- = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << std::endl;
   }
 #endif
   

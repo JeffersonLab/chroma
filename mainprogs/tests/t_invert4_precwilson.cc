@@ -21,7 +21,6 @@
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include <string>
 using namespace Chroma;
-using namespace std;
 
 struct AppParams { 
   multi1d<int> nrow;
@@ -70,8 +69,8 @@ T tmp;
 r[rb[1]] -= tmp; 
 
 
-QDPIO::cout << "||r||= " << sqrt(norm2(r, rb[1])) << endl;
-QDPIO::cout << "||r||/||b||= " << sqrt(norm2(r, rb[1]))/sqrt(norm2(chi,rb[1])) << endl;
+QDPIO::cout << "||r||= " << sqrt(norm2(r, rb[1])) << std::endl;
+QDPIO::cout << "||r||/||b||= " << sqrt(norm2(r, rb[1]))/sqrt(norm2(chi,rb[1])) << std::endl;
 
   
   
@@ -101,7 +100,7 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
-  QDPIO::cout << "Linkage = " << linkageHack() << endl;
+  QDPIO::cout << "Linkage = " << linkageHack() << std::endl;
 
 
   AppParams params;
@@ -114,7 +113,7 @@ int main(int argc, char **argv)
   }
   catch(const std::string& e) 
   {
-    QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+    QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
     QDP_abort(1);
   }
   Layout::setLattSize(params.nrow);

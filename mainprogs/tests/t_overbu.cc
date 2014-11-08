@@ -65,7 +65,7 @@ int main(int argc, char **argv)
   over(tmp, psi, PLUS);
   Double solnorm = sqrt(norm2(tmp-chi));
   Double ratio = solnorm / sqrt(norm2(chi));
-  QDPIO::cout << "|solution| / |source| = " << ratio << endl;
+  QDPIO::cout << "|solution| / |source| = " << ratio << std::endl;
 
   pop(xml);
 

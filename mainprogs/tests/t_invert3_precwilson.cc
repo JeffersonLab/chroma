@@ -35,13 +35,13 @@ int main(int argc, char **argv)
   // Read params
   XMLReader reader(Chroma::getXMLInputFileName());
 
-  string stype;
+  std::string stype;
   try { 
     read(reader, "/t_invert/params/nrow", params.nrow);
     read(reader, "/t_invert/params/gauge_start_type", stype);
   }
-  catch(const string &error) { 
-    QDPIO::cerr << "Error : " << error << endl;
+  catch(const std::string &error) { 
+    QDPIO::cerr << "Error : " << error << std::endl;
     throw;
   }
   reader.close();
@@ -56,14 +56,14 @@ int main(int argc, char **argv)
   QDPIO::cout << "Gauge start type " ;
   switch (params.gauge_start_type) { 
   case HOT_START:
-    QDPIO::cout << "hot start" << endl;
+    QDPIO::cout << "hot start" << std::endl;
     break;
   case COLD_START:
-    QDPIO::cout << "cold start" << endl;
+    QDPIO::cout << "cold start" << std::endl;
     break;
   default:
-    QDPIO::cout << endl;
-    QDPIO::cerr << "Unknown gauge start type " << endl;
+    QDPIO::cout << std::endl;
+    QDPIO::cerr << "Unknown gauge start type " << std::endl;
   }
 
   params.boundary.resize(4);
@@ -107,8 +107,8 @@ int main(int argc, char **argv)
     }
     break;
   default:
-    ostringstream startup_error;
-    startup_error << "Unknown start type " << params.gauge_start_type <<endl;
+    std::ostringstream startup_error;
+    startup_error << "Unknown start type " << params.gauge_start_type <<std::endl;
     throw startup_error.str();
   }
 
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
   int j;
   for(iter =1; ; iter <<= 1) { 
     gaussian(bpsi);
-    QDPIO::cout << "Applying PrecWilsonLinOp " <<iter << " times" << endl;
+    QDPIO::cout << "Applying PrecWilsonLinOp " <<iter << " times" << std::endl;
     swatch.reset();
     swatch.start();
     for(j=0 ; j < iter; j++) { 
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
   Double flops_cpu_iter = Double(2*1320+3*24)*Layout::sitesOnNode()/Double(2);
   Double linop_flops_in_mflops  = flops_cpu_iter / mydt;
 
-  QDPIO::cout << "PrecWilsonOp perf: " << linop_flops_in_mflops << " Mflop/s/node" << endl;
+  QDPIO::cout << "PrecWilsonOp perf: " << linop_flops_in_mflops << " Mflop/s/node" << std::endl;
   push(xml, "TimeLinOp");
   write(xml, "time", mydt);
   write(xml, "mflops", linop_flops_in_mflops);
@@ -178,7 +178,7 @@ int main(int argc, char **argv)
   for(iter=1; ; iter <<= 1)
   {
     psi = zero;
-    QDPIO::cout << "Let 0 action inverter iterate "<< iter << " times" << endl;
+    QDPIO::cout << "Let 0 action inverter iterate "<< iter << " times" << std::endl;
 
     gaussian(chi);
     swatch.reset();
@@ -197,7 +197,7 @@ int main(int argc, char **argv)
     QDPInternal::globalSum(mydt);
     mydt /= Double(Layout::numNodes());
                                                                                 
-    QDPIO::cout << "Time was " << mydt << " seconds" << endl;
+    QDPIO::cout << "Time was " << mydt << " seconds" << std::endl;
 
     if ( toBool(mydt > Double(1) ) )
       break;

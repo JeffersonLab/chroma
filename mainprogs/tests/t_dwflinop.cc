@@ -18,7 +18,7 @@ using namespace Chroma;
  * \param file       path ( Read )
  */    
 
-void readSzinFerm(multi1d<LatticeFermion>& q, const string& file)
+void readSzinFerm(multi1d<LatticeFermion>& q, const std::string& file)
 {
   BinaryFileReader cfg_in(file);
 
@@ -177,12 +177,12 @@ int main(int argc, char **argv)
 #if 0
 
   // Test inverter
-  QDPIO::cout << "|psi|^2 = " << norm2(psi) << endl;
-  QDPIO::cout << "|chi|^2 = " << norm2(chi) << endl;
+  QDPIO::cout << "|psi|^2 = " << norm2(psi) << std::endl;
+  QDPIO::cout << "|chi|^2 = " << norm2(chi) << std::endl;
 
   chi = A(psi, PLUS);
 
-  QDPIO::cout << "|chi|^2 = " << norm2(chi) << endl;
+  QDPIO::cout << "|chi|^2 = " << norm2(chi) << std::endl;
 
   Real RsdCG = 1.0e-5;
   int  MaxCG = 1000;
@@ -201,8 +201,8 @@ int main(int argc, char **argv)
     tmp2[m] = chi2[m] - chi[m];
   }
 
-  QDPIO::cout << "|psi2-psi|^2 = " << norm2(tmp1) << endl;
-  QDPIO::cout << "|chi2-chi|^2 = " << norm2(tmp2) << endl;
+  QDPIO::cout << "|psi2-psi|^2 = " << norm2(tmp1) << std::endl;
+  QDPIO::cout << "|chi2-chi|^2 = " << norm2(tmp2) << std::endl;
 
 
   LatticePropagator quark_propagator, quark_prop_source;
@@ -219,9 +219,9 @@ int main(int argc, char **argv)
   XMLReader prop_xml;
   readSzinQprop(prop_xml, q2, "szin.prop");
 
-  QDPIO::cout << "|quark_prop|^2 = " << norm2(quark_propagator) << endl;
-  QDPIO::cout << "|q2|^2 = "         << norm2(q2) << endl;
-  QDPIO::cout << "|q2-quark_prop|^2 = " << norm2(q2-quark_propagator) << endl;
+  QDPIO::cout << "|quark_prop|^2 = " << norm2(quark_propagator) << std::endl;
+  QDPIO::cout << "|q2|^2 = "         << norm2(q2) << std::endl;
+  QDPIO::cout << "|q2-quark_prop|^2 = " << norm2(q2-quark_propagator) << std::endl;
 #endif
 
   pop(xml);

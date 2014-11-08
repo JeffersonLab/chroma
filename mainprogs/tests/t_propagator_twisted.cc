@@ -52,8 +52,8 @@ struct Param_t
 
 struct Prop_t
 {
-  string       source_file;
-  string       prop_file;
+  std::string       source_file;
+  std::string       prop_file;
 };
 
 struct Propagator_input_t
@@ -66,7 +66,7 @@ struct Propagator_input_t
 
 
 //
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -79,7 +79,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 //  first called
 //
 
-void read(XMLReader& xml, const string& path, Propagator_input_t& input)
+void read(XMLReader& xml, const std::string& path, Propagator_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -93,9 +93,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   {
     read(inputtop, "IO_version/version", input.io_version.version);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -118,13 +118,13 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     default :
       /**************************************************************************/
 
-      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << std::endl;
       QDP_abort(1);
     }
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -135,7 +135,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
     {
-      string ferm_type_str;
+      std::string ferm_type_str;
       read(paramtop, "FermTypeP", ferm_type_str);
       if (ferm_type_str == "WILSON") {
 	input.param.FermTypeP = FERM_TYPE_WILSON;
@@ -153,9 +153,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(paramtop, "t_srce", input.param.t_srce);
 
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -170,9 +170,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(inputtop, "Cfg", input.cfg);
     read(inputtop, "Prop", input.prop);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -206,8 +206,8 @@ int main(int argc, char **argv)
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
 
-  QDPIO::cout << "Computation of Meson Correlators for Twisted Mass QCD" << endl;
-  QDPIO::cout << "Calculation for SU(" << Nc << ")" << endl;
+  QDPIO::cout << "Computation of Meson Correlators for Twisted Mass QCD" << std::endl;
+  QDPIO::cout << "Calculation for SU(" << Nc << ")" << std::endl;
   XMLReader gauge_file_xml, gauge_xml;
  
   // Start up the gauge field
@@ -264,7 +264,7 @@ int main(int argc, char **argv)
 	   u[dir] = u_trans[dir] ;
 	 }
 
-       QDPIO::cout << "Random gauge transform done" << endl;
+       QDPIO::cout << "Random gauge transform done" << std::endl;
 
     } // end of gauge transform
 
@@ -304,7 +304,7 @@ int main(int argc, char **argv)
   coord = input.param.t_srce ; 
   //  coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
   int t_source = coord[Nd - 1] ;
-  QDPIO::cout << "Source time slice = " << t_source << endl;
+  QDPIO::cout << "Source time slice = " << t_source << std::endl;
 
   //
   // Loop over the source color and spin , creating the source
@@ -315,7 +315,7 @@ int main(int argc, char **argv)
     for(int spin_source = 0 ; spin_source < Ns ; ++spin_source)
       {
 	QDPIO::cout << "Inversion for Color =  " << color_source ; 
-	QDPIO::cout << " Spin =  " << spin_source << endl;
+	QDPIO::cout << " Spin =  " << spin_source << std::endl;
 
 	q_source = zero ;
 	srcfil(q_source, coord, color_source, spin_source);

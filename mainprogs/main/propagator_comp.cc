@@ -20,8 +20,8 @@ using namespace Chroma;
  */
 struct Prop_t
 {
-  string          source_file;
-  string          prop_file;
+  std::string          source_file;
+  std::string          prop_file;
   QDP_volfmt_t    prop_volfmt;
 };
 
@@ -40,29 +40,29 @@ struct PropagatorComponent_input_t
 };
 
 
-void read(XMLReader& xml, const string& path, Component_t &comp)
+void read(XMLReader& xml, const std::string& path, Component_t &comp)
 {
   XMLReader top(xml,path);
   try {
     read(top, "color", comp.color);
     read(top, "spin",  comp.spin);
   }
-  catch( const string& e ) {
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+  catch( const std::string& e ) {
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }  
   if( comp.color < 0 || comp.color >= Nc ) { 
-    QDPIO::cerr << "Component color >= Nc. color = " << comp.color << endl;
+    QDPIO::cerr << "Component color >= Nc. color = " << comp.color << std::endl;
     QDP_abort(1);
   }
 
   if( comp.spin < 0 || comp.spin >= Ns ) { 
-    QDPIO::cerr << "Component spin >= Ns.  spin = " << comp.spin << endl;
+    QDPIO::cerr << "Component spin >= Ns.  spin = " << comp.spin << std::endl;
     QDP_abort(1);
   }
 }
 
-void write(XMLWriter& xml, const string& path, const Component_t &comp)
+void write(XMLWriter& xml, const std::string& path, const Component_t &comp)
 {
   
   push( xml, path );
@@ -75,7 +75,7 @@ void write(XMLWriter& xml, const string& path, const Component_t &comp)
 
 
 // Propagator parameters
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -86,7 +86,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, PropagatorComponent_input_t& input)
+void read(XMLReader& xml, const std::string& path, PropagatorComponent_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -104,9 +104,9 @@ void read(XMLReader& xml, const string& path, PropagatorComponent_input_t& input
 
     read(inputtop, "Components", input.components);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -146,8 +146,8 @@ int main(int argc, char **argv)
   try {
     read(xml_in, "/propagatorComp", input);
   }
-  catch( const string& e) { 
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+  catch( const std::string& e) { 
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  QDPIO::cout << "propagatorComp" << endl;
+  QDPIO::cout << "propagatorComp" << std::endl;
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
@@ -181,11 +181,11 @@ int main(int argc, char **argv)
   bool seqsourceP = false;
   {
     // ONLY SciDAC mode is supported for propagators!!
-    QDPIO::cout << "Attempt to read source" << endl;
+    QDPIO::cout << "Attempt to read source" << std::endl;
     readQprop(source_file_xml, 
 	      source_record_xml, quark_prop_source,
 	      input.prop.source_file, QDPIO_SERIAL);
-    QDPIO::cout << "Forward propagator successfully read" << endl;
+    QDPIO::cout << "Forward propagator successfully read" << std::endl;
 
     // Try to invert this record XML into a source struct
     try
@@ -221,9 +221,9 @@ int main(int argc, char **argv)
       else
 	throw std::string("No appropriate header found");
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error extracting source_header: " << e << endl;
+      QDPIO::cerr << "Error extracting source_header: " << e << std::endl;
       QDP_abort(1);
     }
   }    
@@ -234,7 +234,7 @@ int main(int argc, char **argv)
     for(int i=0; i < boundary.size(); ++i)
       if (boundary[i] != input.param.boundary[i])
       {
-	QDPIO::cerr << "Incompatible boundary between input and seqsource" << endl;
+	QDPIO::cerr << "Incompatible boundary between input and seqsource" << std::endl;
 	QDP_abort(1);
       }
   }
@@ -303,7 +303,7 @@ int main(int argc, char **argv)
     {
       const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams&>(*(input.param.FermActHandle));
       
-      QDPIO::cout << "FERM_ACT_WILSON" << endl;
+      QDPIO::cout << "FERM_ACT_WILSON" << std::endl;
       S_f_ptr = new EvenOddPrecWilsonFermAct(fbc, wils.Mass,
 					     wils.anisoParam);
     }
@@ -313,14 +313,14 @@ int main(int argc, char **argv)
     {
       const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams&>(*(input.param.FermActHandle));
       
-      QDPIO::cout << "FERM_ACT_UNPRECONDITIONED_WILSON" << endl;
+      QDPIO::cout << "FERM_ACT_UNPRECONDITIONED_WILSON" << std::endl;
       S_f_ptr = new UnprecWilsonFermAct(fbc, wils.Mass);
     }
     break;
     
   case FERM_ACT_OVLAP_PARTFRAC_4D:
     {
-      QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
+      QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << std::endl;
       const OvlapPartFrac4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
       
       // Construct Fermact -- now uses constructor from the zolo4d params
@@ -331,7 +331,7 @@ int main(int argc, char **argv)
   
   case FERM_ACT_ZOLOTAREV_5D:
     {
-      QDPIO::cout << "FERM_ACT_ZOLOTAREV_5D" << endl;
+      QDPIO::cout << "FERM_ACT_ZOLOTAREV_5D" << std::endl;
       const Zolotarev5DFermActParams& zolo5d = dynamic_cast<const Zolotarev5DFermActParams& > (*(input.param.FermActHandle));
     
       // Construct Fermact -- now uses constructor from the zolo4d params
@@ -344,7 +344,7 @@ int main(int argc, char **argv)
     {
       const DWFFermActParams& dwf = dynamic_cast<const DWFFermActParams&>(*(input.param.FermActHandle));
       
-      QDPIO::cout << "FERM_ACT_DWF" << endl;
+      QDPIO::cout << "FERM_ACT_DWF" << std::endl;
       S_f_a_ptr = new EvenOddPrecDWFermActArray(fbc_a,
 						dwf.chiralParam.OverMass, 
 						dwf.Mass, 
@@ -356,7 +356,7 @@ int main(int argc, char **argv)
     {
       const DWFFermActParams& dwf = dynamic_cast<const DWFFermActParams&>(*(input.param.FermActHandle));
       
-      QDPIO::cout << "FERM_ACT_UNPRECONDITONED_DWF" << endl;
+      QDPIO::cout << "FERM_ACT_UNPRECONDITONED_DWF" << std::endl;
       S_f_a_ptr = new UnprecDWFermActArray(fbc_a,
 					   dwf.chiralParam.OverMass, 
 					   dwf.Mass, 
@@ -364,7 +364,7 @@ int main(int argc, char **argv)
     }
     break;
   default:
-    QDPIO::cerr << "Unsupported fermion action" << endl;
+    QDPIO::cerr << "Unsupported fermion action" << std::endl;
     QDP_abort(1);
   }
 
@@ -411,7 +411,7 @@ int main(int argc, char **argv)
     break;
     
   default:
-    QDPIO::cerr << "Unsupported fermion action (state creation)" << endl;
+    QDPIO::cerr << "Unsupported fermion action (state creation)" << std::endl;
     QDP_abort(1);
   }
   
@@ -501,7 +501,7 @@ int main(int argc, char **argv)
 		   n_count);
     }
     else {
-      QDPIO::cerr << "Both S_f_ptr and S_f_a_ptr == 0 " << endl;
+      QDPIO::cerr << "Both S_f_ptr and S_f_a_ptr == 0 " << std::endl;
       QDP_abort(1);
     }
       
@@ -592,14 +592,14 @@ void saveComponent(const ChromaProp_t& param,
     write(record_xml, "Component", component);
     pop(record_xml);
   }
-  ostringstream outfile;
+  std::ostringstream outfile;
 
   // Zero suffix for compatibility with multi mass version
   outfile << prop.prop_file << "_component_s" << component.spin
 	  << "_c" << component.color ;
 	  
 	  
-  QDPIO::cout << "Attempting to write " << outfile.str() << endl;
+  QDPIO::cout << "Attempting to write " << outfile.str() << std::endl;
   
   // Write the source
   writeFermion(file_xml, record_xml, psi,

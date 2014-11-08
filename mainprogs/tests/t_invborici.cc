@@ -27,7 +27,7 @@ struct App_input_t {
 };
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, App_input_t& input)
+void read(XMLReader& xml, const std::string& path, App_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -41,9 +41,9 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
     read(inputtop, "InvertParam", input.invParam);
     read(inputtop, "Cfg", input.cfg);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -60,8 +60,8 @@ int main(int argc, char **argv)
   try {
     read(xml_in, "/BoriciTest", input);
   }
-   catch( const string& e) { 
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+   catch( const std::string& e) { 
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -136,14 +136,14 @@ int main(int argc, char **argv)
 
   swatch.stop();
 
-  QDPIO::cout << "InvBorici: " << n_iters << " iterations " << endl;
+  QDPIO::cout << "InvBorici: " << n_iters << " iterations " << std::endl;
 
   LatticeFermion tmp;
   (*D_4)(tmp, x, PLUS);
   tmp -= b;
   Double tmpnorm = sqrt(norm2(tmp)/norm2(b));
-  QDPIO::cout << "Final residue: " << tmpnorm << endl;
-  QDPIO::cout << "Time: " << swatch.getTimeInSeconds() << " s" << endl;
+  QDPIO::cout << "Final residue: " << tmpnorm << std::endl;
+  QDPIO::cout << "Time: " << swatch.getTimeInSeconds() << " s" << std::endl;
 
   x = zero;
 
@@ -158,7 +158,7 @@ int main(int argc, char **argv)
 	     n_iters);
 
   swatch.stop();
-  QDPIO::cout << "Time: " << swatch.getTimeInSeconds() << " s" << endl;
+  QDPIO::cout << "Time: " << swatch.getTimeInSeconds() << " s" << std::endl;
   
   pop(xml_out);
   Chroma::finalize();

@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
     LatticeColorMatrix dsdu_diff=dsdu_1[mu] - dsdu_2[mu];
 
     Double sum_diff=norm2(dsdu_diff);
-    QDPIO::cout << "Mu = " << mu << " Sum Diff=" << sum_diff << endl;
+    QDPIO::cout << "Mu = " << mu << " Sum Diff=" << sum_diff << std::endl;
 
     push(xml_out, "ForceDiff");
     write(xml_out, "mu", mu);

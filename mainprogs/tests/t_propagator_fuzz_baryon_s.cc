@@ -60,8 +60,8 @@ struct Param_t
 
 struct Prop_t
 {
-  string       source_file;
-  string       prop_file;
+  std::string       source_file;
+  std::string       prop_file;
 };
 
 struct Propagator_input_t
@@ -74,7 +74,7 @@ struct Propagator_input_t
 
 
 //
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -85,7 +85,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Propagator_input_t& input)
+void read(XMLReader& xml, const std::string& path, Propagator_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -99,9 +99,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   {
     read(inputtop, "IO_version/version", input.io_version.version);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -124,13 +124,13 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     default :
       /**************************************************************************/
 
-      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << std::endl;
       QDP_abort(1);
     }
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -141,7 +141,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
     {
-      string ferm_type_str;
+      std::string ferm_type_str;
       read(paramtop, "FermTypeP", ferm_type_str);
       if (ferm_type_str == "STAGGERED") {
 	input.param.FermTypeP = FERM_TYPE_STAGGERED;
@@ -153,7 +153,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     switch (input.param.FermTypeP) {
     case FERM_TYPE_STAGGERED :
 
-      QDPIO::cout << " PROPAGATOR: Propagator for Staggered fermions" << endl;
+      QDPIO::cout << " PROPAGATOR: Propagator for Staggered fermions" << std::endl;
 
       read(paramtop, "Mass", input.param.Mass);
       read(paramtop, "u0" , input.param.u0);
@@ -175,9 +175,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(paramtop, "boundary", input.param.boundary);
     read(paramtop, "t_srce", input.param.t_srce);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -188,9 +188,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(inputtop, "Cfg", input.cfg);
     read(inputtop, "Prop", input.prop);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -204,39 +204,39 @@ typedef   stag_src_enum stag_src_type ;
   source.
 */
 
-stag_src_type get_stag_src(XMLReader& xml, const string& path)
+stag_src_type get_stag_src(XMLReader& xml, const std::string& path)
 {
   stag_src_type ans ; 
 
   try
   {
-    string src_name;
+    std::string src_name;
     read(xml, path, src_name);
     if (src_name == "LOCAL_SRC") 
     {
-      QDPIO::cout << "****> LOCAL SOURCE <****" << endl;
+      QDPIO::cout << "****> LOCAL SOURCE <****" << std::endl;
       ans = LOCAL_SRC ; 
     } 
     else if (src_name == "GAUGE_INVAR_LOCAL_SOURCE") 
     {
-      QDPIO::cout << "****> GAUGE INVARIANT LOCAL SOURCE <****" << endl;
+      QDPIO::cout << "****> GAUGE INVARIANT LOCAL SOURCE <****" << std::endl;
       ans = GAUGE_INVAR_LOCAL_SOURCE ; 
     } 
     else if (src_name == "FUZZED_SRC") 
     {
-      QDPIO::cout << "***> FUZZED SOURCE ****" << endl;
+      QDPIO::cout << "***> FUZZED SOURCE ****" << std::endl;
       ans = FUZZED_SRC ; 
     } 
 
     else
     {
-      QDPIO::cerr << "src_name " << src_name << " out of range " << endl;
+      QDPIO::cerr << "src_name " << src_name << " out of range " << std::endl;
       QDP_abort(1);
     }
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -246,13 +246,13 @@ stag_src_type get_stag_src(XMLReader& xml, const string& path)
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-void ks_compute_baryon(string name,
+void ks_compute_baryon(std::string name,
 		       LatticeStaggeredPropagator & quark_propagator, 
 		       XMLFileWriter & xml_out, 
 		       int j_decay, int tlength) ;
 
 
-void ks_compute_baryon(string name,
+void ks_compute_baryon(std::string name,
 		       LatticeStaggeredPropagator & quark_propagator_a, 
 		       LatticeStaggeredPropagator & quark_propagator_b, 
 		       LatticeStaggeredPropagator & quark_propagator_c, 
@@ -272,7 +272,7 @@ int ks_compute_quark_propagator(LatticeStaggeredFermion & psi,
 				int src_ind, int color_source) ;
 
 
-void write_smearing_info(string name, stag_src_type type_of_src,
+void write_smearing_info(std::string name, stag_src_type type_of_src,
 			 XMLFileWriter &xml_out, int fuzz_width ) ;
 
 ////////////////////////////////////////////////////////////
@@ -296,16 +296,16 @@ int main(int argc, char **argv)
   // Get the name of the input file and read its contents
 
   XMLReader xml_in ; 
-  string in_name = Chroma::getXMLInputFileName() ; 
+  std::string in_name = Chroma::getXMLInputFileName() ; 
   try
   {
     xml_in.open(in_name);
   }
   catch (...) 
   {
-    QDPIO::cerr << "Error reading input file " << in_name << endl;
-    QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
-    QDPIO::cerr << "The default name is ./DATA" << endl;
+    QDPIO::cerr << "Error reading input file " << in_name << std::endl;
+    QDPIO::cerr << "The input file name can be passed via the -i flag " << std::endl;
+    QDPIO::cerr << "The default name is ./DATA" << std::endl;
     throw;
   }
 
@@ -329,12 +329,12 @@ int main(int argc, char **argv)
   {
     read(xml_in, "/propagator/param/fuzz_width",fuzz_width );
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading fuzzing width " << e << endl;
+    QDPIO::cerr << "Error reading fuzzing width " << e << std::endl;
     throw;
   }
-  QDPIO::cout << "fuzz width = " << fuzz_width  << endl;
+  QDPIO::cout << "fuzz width = " << fuzz_width  << std::endl;
 
 
   bool use_gauge_invar_oper ;
@@ -368,7 +368,7 @@ int main(int argc, char **argv)
       u[dir] = u_trans[dir] ;
     }
 
-    QDPIO::cout << "Random gauge transform done" << endl;
+    QDPIO::cout << "Random gauge transform done" << std::endl;
 
   } // end of gauge transform
 
@@ -404,9 +404,9 @@ int main(int argc, char **argv)
 
   if( ! use_gauge_invar_oper )
   {
-    QDPIO::cout << "Starting Coulomb gauge fixing" << endl;
+    QDPIO::cout << "Starting Coulomb gauge fixing" << std::endl;
     coulGauge(u, n_gf, j_decay, input.param.GFAccu, input.param.GFMax, true, input.param.OrPara);
-    QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << endl;
+    QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << std::endl;
   }
 
   // 
@@ -416,7 +416,7 @@ int main(int argc, char **argv)
   multi1d<LatticeColorMatrix> u_smr(Nd);
 
 
-  QDPIO::cout << "Starting to APE smear the gauge configuration" << endl;
+  QDPIO::cout << "Starting to APE smear the gauge configuration" << std::endl;
   
   Real sm_fact = 2.5;   // typical parameter
   int sm_numb = 10;     // number of smearing hits
@@ -488,7 +488,7 @@ int main(int argc, char **argv)
 
   // pass the origin from input file
   int t_source = 0;
-  QDPIO::cout << "Source time slice = " << t_source << endl;
+  QDPIO::cout << "Source time slice = " << t_source << std::endl;
 
 
 
@@ -497,7 +497,7 @@ int main(int argc, char **argv)
   //
 
   stag_src_type type_of_src = LOCAL_SRC ;
-  QDPIO::cout << "LOCAL INVERSIONS"  << endl;
+  QDPIO::cout << "LOCAL INVERSIONS"  << std::endl;
 
   for(int color_source = 0; color_source < Nc; ++color_source) 
   {
@@ -535,7 +535,7 @@ int main(int argc, char **argv)
   //
 
   type_of_src = FUZZED_SRC ;
-  QDPIO::cout << "FUZZED SOURCE INVERSIONS"  << endl;
+  QDPIO::cout << "FUZZED SOURCE INVERSIONS"  << std::endl;
 
   for(int color_source = 0; color_source < Nc; ++color_source) 
   {
@@ -575,7 +575,7 @@ int main(int argc, char **argv)
   push(xml_out, "baryon_correlators");
 
   // describe the source
-  string NN ;
+  std::string NN ;
   write(xml_out, "source_time", t_source);
   push(xml_out, "smearing_info");
   NN = "L" ; 
@@ -587,7 +587,7 @@ int main(int argc, char **argv)
   pop(xml_out);
 
   // write out the baryon correlators 
-  string b_tag("srcLLL_sinkLLL_nucleon") ;  
+  std::string b_tag("srcLLL_sinkLLL_nucleon") ;  
   ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc, 
 		    quark_propagator_Lsink_Lsrc, 
 		    quark_propagator_Lsink_Lsrc, 
@@ -686,7 +686,7 @@ int main(int argc, char **argv)
 
   // Time to bolt
   Chroma::finalize();
-  QDPIO::cout << "CHROMA_RUN_COMPLETE " << endl;
+  QDPIO::cout << "CHROMA_RUN_COMPLETE " << std::endl;
   exit(0);
 }
 
@@ -695,7 +695,7 @@ int main(int argc, char **argv)
 // wrapper routine for baryon operators
 //
 
-void ks_compute_baryon(string name,
+void ks_compute_baryon(std::string name,
 		       LatticeStaggeredPropagator & quark_propagator, 
 		       XMLFileWriter & xml_out, 
 		       int j_decay, int tlength)
@@ -722,7 +722,7 @@ void ks_compute_baryon(string name,
 // wrapper routine for baryon operators
 //
 
-void ks_compute_baryon(string name,
+void ks_compute_baryon(std::string name,
 		       LatticeStaggeredPropagator & quark_propagator_a, 
 		       LatticeStaggeredPropagator & quark_propagator_b, 
 		       LatticeStaggeredPropagator & quark_propagator_c, 
@@ -760,7 +760,7 @@ int ks_compute_quark_propagator(LatticeStaggeredFermion & psi,
   LatticeStaggeredFermion q_source_fuzz ; 
   int ncg_had = 0 ;
 
-  QDPIO::cout << "Inversion for Color =  " << color_source << endl;
+  QDPIO::cout << "Inversion for Color =  " << color_source << std::endl;
   q_source = zero ;
 
   if( type_of_src == LOCAL_SRC )
@@ -837,7 +837,7 @@ int ks_compute_quark_propagator(LatticeStaggeredFermion & psi,
 
 
 
-void write_smearing_info(string name, stag_src_type type_of_src,
+void write_smearing_info(std::string name, stag_src_type type_of_src,
 			 XMLFileWriter &xml_out, int fuzz_width )
 {
 

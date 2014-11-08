@@ -31,7 +31,7 @@ using namespace Chroma;
  *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
  *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
  *      a[k] := |r[k-1]|**2 / <Mp[k],Mp[k]> ;
- *      Psi[k] += a[k] p[k] ;   	       New solution vector
+ *      Psi[k] += a[k] p[k] ;   	       New solution std::vector
  *      r[k] -= a[k] M^dag . M . p[k] ;        New residual
  *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
  *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
@@ -48,8 +48,8 @@ using namespace Chroma;
  *
  * Local Variables:
  *
- *  p   	       Direction vector
- *  r   	       Residual vector
+ *  p   	       Direction std::vector
+ *  r   	       Residual std::vector
  *  cp  	       | r[k] |**2
  *  c   	       | r[k-1] |**2
  *  k   	       CG iteration counter
@@ -60,7 +60,7 @@ using namespace Chroma;
  *
  * Subroutines:
  *                             +               
- *  A       Apply matrix M or M  to vector
+ *  A       Apply matrix M or M  to std::vector
  *
  * Operations:
  *
@@ -99,7 +99,7 @@ void WlInvCG2(const LinearOperator& M,
   //  Cp = |r[0]|^2
   Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
 
-  QDPIO::cout << "WlInvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
+  QDPIO::cout << "WlInvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << std::endl;
 
   //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
   if ( toBool(cp  <=  rsd_sq) )
@@ -140,7 +140,7 @@ void WlInvCG2(const LinearOperator& M,
     //  cp  =  | r[k] |**2
     cp = norm2(r, s);	                /* 2 Nc Ns  flops */
 
-    QDPIO::cout << "WlInvCG: k = " << k << "  cp = " << cp << endl;
+    QDPIO::cout << "WlInvCG: k = " << k << "  cp = " << cp << std::endl;
 
     if ( toBool(cp  <=  rsd_sq) )
     {

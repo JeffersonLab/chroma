@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
   START_CODE();
 
   // Chroma Init stuff -- Open DATA and XMLDAT
-  QDPIO::cout << "Linkage = " << linkageHack() << endl;
+  QDPIO::cout << "Linkage = " << linkageHack() << std::endl;
 
   // Snarf it all
   XMLReader param_in(Chroma::getXMLInputFileName());
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     read(paramtop, "nrow", nrow);
   }
   catch(const std::string& e) { 
-    QDPIO::cerr << "Unable to read nrow from XML: " << e << endl;
+    QDPIO::cerr << "Unable to read nrow from XML: " << e << std::endl;
     QDP_abort(1);
   }
     
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     read(paramtop, "./GaugeStartup", cfg);
   }
   catch( const std::string& e ) { 
-    QDPIO::cerr << " Error reading XML " << e << endl;
+    QDPIO::cerr << " Error reading XML " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
       read(paramtop, "./MonitorForces", monitorForcesP );
     }
 
-    QDPIO::cout << "MonitorForces is " << monitorForcesP << endl;
+    QDPIO::cout << "MonitorForces is " << monitorForcesP << std::endl;
     setForceMonitoring( monitorForcesP );
   }
 
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
     readNamedMonomialArray(paramtop, "./Monomials");
   }
   catch(const std::string& e) { 
-    QDPIO::cout << "Failed to read monomials " << endl;
+    QDPIO::cout << "Failed to read monomials " << std::endl;
     QDP_abort(1);
   }
 
@@ -127,33 +127,33 @@ int main(int argc, char *argv[])
     taproj(p[mu]);
   }
 
-  QDPIO::cout << "create state" << endl;
+  QDPIO::cout << "create state" << std::endl;
 
   // Create a field state
   GaugeFieldState gauge_state(p,u);
  
   
-  QDPIO::cout << "exact ham" << endl;
+  QDPIO::cout << "exact ham" << std::endl;
 
 
   Double KE_old, PE_old;
 
-  QDPIO::cout << "fields" << endl;
+  QDPIO::cout << "fields" << std::endl;
 
 
   H.refreshInternalFields(gauge_state);
 
-  QDPIO::cout << "mesE" << endl;
+  QDPIO::cout << "mesE" << std::endl;
 
   H.mesE(gauge_state, KE_old, PE_old);
 
-  QDPIO::cout << "Initial energies: KE =" << KE_old << " PE = " << PE_old <<endl;
+  QDPIO::cout << "Initial energies: KE =" << KE_old << " PE = " << PE_old <<std::endl;
 
-  QDPIO::cout << "Copying copy list" << endl;
+  QDPIO::cout << "Copying copy list" << std::endl;
   // Setup fields 
   the_integrator.copyFields();
 
-  QDPIO::cout << "Performing tajectory" << endl;
+  QDPIO::cout << "Performing tajectory" << std::endl;
   QDP::StopWatch swatch;
   swatch.reset();
   swatch.start();
@@ -161,40 +161,40 @@ int main(int argc, char *argv[])
   the_integrator(gauge_state, the_integrator.getTrajLength());
   swatch.stop();
   double total_time = swatch.getTimeInSeconds();
-  QDPIO::cout << "Trajectory took: " << total_time << " sec" <<endl;
+  QDPIO::cout << "Trajectory took: " << total_time << " sec" <<std::endl;
 
   QDPIO::cout << "Rect force took: " << RectGaugeActEnv::getTime() 
 	      << " sec.  " << Real(100)*RectGaugeActEnv::getTime()/total_time 
-	      << " % of total" << endl;
+	      << " % of total" << std::endl;
 
   QDPIO::cout << "Other force took: "
 	      << PlaqPlusSpatialTwoPlaqGaugeActEnv::getTime() << " sec.   " 
 	      << Real(100)*PlaqPlusSpatialTwoPlaqGaugeActEnv::getTime()/total_time 
-	      << " % of total" << endl;
+	      << " % of total" << std::endl;
 
   QDPIO::cout << "Expmat took: "<< ExpMatEnv::getTime()  << " sec.   " 
 	      << Real(100)*ExpMatEnv::getTime()/total_time
-	      << " % of total" << endl;
+	      << " % of total" << std::endl;
 
   QDPIO::cout << "Reunit took: "<< ReunitEnv::getTime()  << " sec.   " 
 	      << Real(100)*ReunitEnv::getTime()/total_time
-	      << " % of total" << endl;
+	      << " % of total" << std::endl;
 
   QDPIO::cout << "Taproj took: "<< TaprojEnv::getTime()  << " sec.   " 
 	      << Real(100)*TaprojEnv::getTime()/total_time
-	      << " % of total" << endl;
+	      << " % of total" << std::endl;
 
   QDPIO::cout << "Stout Smearing Took:"<< StoutLinkTimings::getSmearingTime() << " secs.  "
 	      << Real(100)*StoutLinkTimings::getSmearingTime()/total_time
-	      <<" % of total " << endl;
+	      <<" % of total " << std::endl;
 
   QDPIO::cout << "Stout Force Recursion Took:"<< StoutLinkTimings::getForceTime() << " secs.  "
 	      << Real(100)*StoutLinkTimings::getForceTime()/total_time
-	      <<" % of total " << endl;
+	      <<" % of total " << std::endl;
 
   QDPIO::cout << "Stout Force Functions Took:" << StoutLinkTimings::getFunctionsTime() << " secs   "
 	      << Real(100)*StoutLinkTimings::getFunctionsTime()/total_time
-	      <<" % of total " << endl;
+	      <<" % of total " << std::endl;
 
   double deficit = swatch.getTimeInSeconds() 
     - RectGaugeActEnv::getTime() 
@@ -205,22 +205,22 @@ int main(int argc, char *argv[])
     - StoutLinkTimings::getSmearingTime()
     - StoutLinkTimings::getForceTime();
 
-  QDPIO::cout << "Time deficit : " << deficit << " sec.  "<< Real(100)*deficit/ total_time << " % of total" << endl;
+  QDPIO::cout << "Time deficit : " << deficit << " sec.  "<< Real(100)*deficit/ total_time << " % of total" << std::endl;
 
-  QDPIO::cout << "Measuring final energies" << endl;
+  QDPIO::cout << "Measuring final energies" << std::endl;
   
   Double KE_new, PE_new;
   H.mesE(gauge_state, KE_new, PE_new);
-  QDPIO::cout << "Final energies: KE =" << KE_new << " PE = " << PE_new <<endl;
+  QDPIO::cout << "Final energies: KE =" << KE_new << " PE = " << PE_new <<std::endl;
   
 
   Double deltaPE = PE_new - PE_old;
   Double deltaKE = KE_new - KE_old;
 
-  QDPIO::cout << "DeltaPE = " << deltaPE << endl;
-  QDPIO::cout << "DeltaKE = " << deltaKE << endl;
+  QDPIO::cout << "DeltaPE = " << deltaPE << std::endl;
+  QDPIO::cout << "DeltaKE = " << deltaKE << std::endl;
 
-  QDPIO::cout << "DeltaE = " << deltaKE + deltaPE <<endl;
+  QDPIO::cout << "DeltaE = " << deltaKE + deltaPE <<std::endl;
   push(xml_log, "DeltaE");
    write(xml_log, "DeltaKE", deltaKE);
    write(xml_log, "DeltaPE", deltaPE);

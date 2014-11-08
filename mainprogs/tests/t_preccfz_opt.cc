@@ -96,10 +96,10 @@ int main(int argc, char **argv)
     tmp1 = chi5a;
     tmp1 -= chi5b;
 
-    QDPIO::cout << "Test eo-prec and opt eo-prec CFZ linop PLUS" << endl
-		<< "|qCFZ|^2 = " << norm2(chi5a) << endl
-		<< "|oCFZ|^2 = " << norm2(chi5b) << endl
-		<< "|qCFZ - oCFZ|^2 = " << norm2(tmp1) << endl;
+    QDPIO::cout << "Test eo-prec and opt eo-prec CFZ linop PLUS" << std::endl
+		<< "|qCFZ|^2 = " << norm2(chi5a) << std::endl
+		<< "|oCFZ|^2 = " << norm2(chi5b) << std::endl
+		<< "|qCFZ - oCFZ|^2 = " << norm2(tmp1) << std::endl;
 
     D_qdp(chi5a, psi5, MINUS);
     D_opt(chi5b, psi5, MINUS);
@@ -112,13 +112,13 @@ int main(int argc, char **argv)
     tmp1 = chi5a;
     tmp1 -= chi5b;
 
-    QDPIO::cout << "Test eo-prec and opt eo-prec CFZ linop MINUS" << endl
-		<< "|qCFZ|^2 = " << norm2(chi5a) << endl
-		<< "|oCFZ|^2 = " << norm2(chi5b) << endl
-		<< "|qCFZ - oCFZ|^2 = " << norm2(tmp1) << endl;
+    QDPIO::cout << "Test eo-prec and opt eo-prec CFZ linop MINUS" << std::endl
+		<< "|qCFZ|^2 = " << norm2(chi5a) << std::endl
+		<< "|oCFZ|^2 = " << norm2(chi5b) << std::endl
+		<< "|qCFZ - oCFZ|^2 = " << norm2(tmp1) << std::endl;
   }
 
-  QDPIO::cout << "\n\n\nDone" << endl;
+  QDPIO::cout << "\n\n\nDone" << std::endl;
 
   pop(xml);
 

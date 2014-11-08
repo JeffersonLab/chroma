@@ -27,7 +27,7 @@ double time_func(const EvenOddPrecLinearOperator< MLF, LCM >& p, func which,
 
   for(iter=1; ; iter <<= 1)
   {
-    QDPIO::cout << "Applying D " << iter << " times" << endl;
+    QDPIO::cout << "Applying D " << iter << " times" << std::endl;
 
     switch ( which )  {
     case EE:
@@ -191,14 +191,14 @@ int main(int argc, char **argv)
 
   //! Test out dslash
   multi1d<LatticeColorMatrix> u(Nd);
-  QDPIO::cout << "1" << endl << flush;
+  QDPIO::cout << "1" << std::endl << std::flush;
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
-  QDPIO::cout << "2" << endl << flush;
+  QDPIO::cout << "2" << std::endl << std::flush;
 
   //! Create a linear operator
-  QDPIO::cout << "Constructing DWDslash" << endl;
+  QDPIO::cout << "Constructing DWDslash" << std::endl;
 
   // Create a FermBC with only periodic BC. Note the handle is on an abstract type.
   Handle<FermBC<MLF> >  fbc_a(new PeriodicFermBC<MLF>);
@@ -226,7 +226,7 @@ int main(int argc, char **argv)
   Handle<const ConnectState> state(S_pdwf.createState(u));
   const EvenOddPrecLinearOperator< MLF, LCM >* D_pdwf = S_pdwf.linOp(state); 
 
-  QDPIO::cout << "Done" << endl;
+  QDPIO::cout << "Done" << std::endl;
 
   MLF psi(S_pdwf.size()), chi(S_pdwf.size());
   psi.moveToFastMemoryHint();
@@ -238,8 +238,8 @@ int main(int argc, char **argv)
 
   for(int isign = 1; isign >= -1; isign -= 2) 
   {
-    QDPIO::cout << "Applying D" << endl;
-    QDPIO::cout << " isign = " << isign << endl;
+    QDPIO::cout << "Applying D" << std::endl;
+    QDPIO::cout << " isign = " << isign << std::endl;
       
     PlusMinus is = (isign == 1 ? PLUS : MINUS);
     clock_t myt1;
@@ -257,31 +257,31 @@ int main(int argc, char **argv)
     // even-even-inv piece
     mydt = time_func(*D_pdwf, EEI, chi, psi, is);
     QDPIO::cout << "EvenEvenInv: The time per lattice point is "<< mydt << " micro sec" 
-		<< " (" <<  ((double)(NdiagInv)/mydt) << ") Mflops " << endl;
+		<< " (" <<  ((double)(NdiagInv)/mydt) << ") Mflops " << std::endl;
 
     mydt = time_func(*D_pdwf, EE, chi, psi, is);
     QDPIO::cout << "EvenEven: The time per lattice point is "<< mydt << " micro sec" 
-		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
+		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << std::endl;
       
     // odd-odd piece
     mydt = time_func(*D_pdwf, OO, chi, psi, is);
     QDPIO::cout << "OddOdd: The time per lattice point is "<< mydt << " micro sec" 
-		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
+		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << std::endl;
     
    
     // even-odd
     mydt = time_func(*D_pdwf, EO, chi, psi, is);
     QDPIO::cout << "EvenOdd: The time per lattice point is "<< mydt << " micro sec" 
-		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << endl;
+		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << std::endl;
     // odd-even
     mydt = time_func(*D_pdwf, OE, chi, psi, is);
     QDPIO::cout << "Odd-Even: The time per lattice point is "<< mydt << " micro sec" 
-		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << endl;
+		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << std::endl;
 
     // Total thing
     mydt = time_func(*D_pdwf, TOT, chi, psi, is);
     QDPIO::cout << "Total: The time per lattice point is "<< mydt << " micro sec" 
-		<< " (" <<  ((double)(Nflops)/mydt) << ") Mflops " << endl;
+		<< " (" <<  ((double)(Nflops)/mydt) << ") Mflops " << std::endl;
   }
 
   {
@@ -291,7 +291,7 @@ int main(int argc, char **argv)
     int isign=1;
 
     for(iter=1; ; iter <<= 1) {
-      QDPIO::cout << "Applying D " << iter << " times" << endl;
+      QDPIO::cout << "Applying D " << iter << " times" << std::endl;
       
       myt1=clock();
       for(int i=iter; i-- > 0; )

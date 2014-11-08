@@ -22,9 +22,9 @@ struct Param_t
 
 struct Prop_t
 {
-  string    prop_in_file;
+  std::string    prop_in_file;
 
-  string    prop_out_file;
+  std::string    prop_out_file;
   QDP_volfmt_t prop_out_volfmt; // volume format (SINGLEFILE or MULTIFILE)
 };
 
@@ -37,7 +37,7 @@ struct QpropTRev_input_t
 
 
 //! Propagator parameters
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -49,7 +49,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 //! Parameters for running code
-void read(XMLReader& xml, const string& path, Param_t& param)
+void read(XMLReader& xml, const std::string& path, Param_t& param)
 {
   XMLReader paramtop(xml, path);
 
@@ -64,7 +64,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
   default :
     /**************************************************************************/
-    QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+    QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
     QDP_abort(1);
   }
 
@@ -74,7 +74,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, QpropTRev_input_t& input)
+void read(XMLReader& xml, const std::string& path, QpropTRev_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -87,9 +87,9 @@ void read(XMLReader& xml, const string& path, QpropTRev_input_t& input)
     // Read in the propagator file info
     read(inputtop, "Prop", input.prop);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading qproptransf data: " << e << endl;
+    QDPIO::cerr << "Error reading qproptransf data: " << e << std::endl;
     throw;
   }
 }
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  QDPIO::cout << "QPROPTREV: propagator gauge fixing utility" << endl;
+  QDPIO::cout << "QPROPTREV: propagator gauge fixing utility" << std::endl;
 
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "qproptrev");
@@ -161,9 +161,9 @@ int main(int argc, char *argv[])
     read(prop_in_xml, "/Propagator/ForwardProp", prop_header);
     read(prop_in_xml, "/Propagator/PropSource", source_header);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+    QDPIO::cerr << "Error extracting forward_prop header: " << e << std::endl;
     throw;
   }
 
@@ -269,12 +269,12 @@ int main(int argc, char *argv[])
     write(prop_out_record_xml, "ForwardProp", prop_header);
     write(prop_out_record_xml, "PropSource", source_header);
     {
-      QDPIO::cout << "Create config info" << endl;
+      QDPIO::cout << "Create config info" << std::endl;
       XMLReader gauge_xml(prop_in_xml, "/Propagator/Config_info");
-      ostringstream gauge_str;
+      std::ostringstream gauge_str;
       gauge_xml.print(gauge_str);
       write(prop_out_record_xml, "Config_info", gauge_str);
-      QDPIO::cout << "Done config info" << endl;
+      QDPIO::cout << "Done config info" << std::endl;
     }
     pop(prop_out_record_xml);
     

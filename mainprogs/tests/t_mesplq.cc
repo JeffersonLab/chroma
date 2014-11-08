@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 #else
   {
     XMLReader gauge_xml;
-    readSzin(gauge_xml, u, string("CFGIN"));
+    readSzin(gauge_xml, u, std::string("CFGIN"));
     xml << gauge_xml;
   }
 
@@ -53,8 +53,8 @@ int main(int argc, char *argv[])
 
   // Try out the plaquette routine
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq = " << w_plaq << endl;
-  QDPIO::cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << std::endl;
+  QDPIO::cout << "link = " << link << std::endl;
 
   // Test polyakov routine
   multi1d<DComplex> pollp(Nd);
@@ -76,8 +76,8 @@ int main(int argc, char *argv[])
   for(int mu = 0; mu < Nd; ++mu)
     polylp(u, pollp[mu], mu);
 
-  QDPIO::cout << "w_plaq = " << w_plaq << endl;
-  QDPIO::cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << std::endl;
+  QDPIO::cout << "link = " << link << std::endl;
 
   push(xml,"Observables_after_gt");
   write(xml,"w_plaq", w_plaq);

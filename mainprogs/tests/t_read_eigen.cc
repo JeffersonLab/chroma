@@ -30,7 +30,7 @@ struct ReadEigen_t {
   EigenIO_t      eigen_io_params;
 };
 
-void read(XMLReader& xml, const string& path, ReadEigen_t& param)
+void read(XMLReader& xml, const std::string& path, ReadEigen_t& param)
 {
   XMLReader paramtop(xml, path);
   read(paramtop, "Param/version", param.version);
@@ -54,8 +54,8 @@ int main(int argc, char **argv)
   try { 
     read(xml_in, "/ReadEigen", input);
   }
-  catch( const string& e ) { 
-    QDPIO::cerr << "Caught Exception: " << e << endl;
+  catch( const std::string& e ) { 
+    QDPIO::cerr << "Caught Exception: " << e << std::endl;
     QDP_error_exit("Exiting\n");
   }
 
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 
   QDP::RNG::setrn(input.seed);
 
-  QDPIO::cout << "ReadEigen" << endl;
+  QDPIO::cout << "ReadEigen" << std::endl;
 
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
@@ -74,17 +74,17 @@ int main(int argc, char **argv)
   switch (input.cfg.cfg_type) 
   {
   case CFG_TYPE_SZIN :
-    QDPIO::cout << "Reading SZIN Gauge config" << endl;
+    QDPIO::cout << "Reading SZIN Gauge config" << std::endl;
     readSzin(gauge_xml, u, input.cfg.cfg_file);
     break;
 
   case CFG_TYPE_SZINQIO:
-    QDPIO::cout << "Reading SZIN QIO gauge config" << endl;
+    QDPIO::cout << "Reading SZIN QIO gauge config" << std::endl;
     readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
     break;
 
   case CFG_TYPE_NERSC:
-    QDPIO::cout << "Reading NERSC gauge config" << endl;
+    QDPIO::cout << "Reading NERSC gauge config" << std::endl;
     readArchiv(gauge_xml, u, input.cfg.cfg_file);
     break;
   default :

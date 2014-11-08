@@ -31,15 +31,15 @@ int main(int argc, char **argv)
   chi = zero;
 
   int iter = 10000;
-  QDPIO::cout << "Iters is " << iter << endl;
+  QDPIO::cout << "Iters is " << iter << std::endl;
 
   //! Create a linear operator
-  QDPIO::cout << "Constructing WilsonDslash" << endl;
+  QDPIO::cout << "Constructing WilsonDslash" << std::endl;
 
   // WilsonDslash class can be optimised
   WilsonDslash D(u);
 
-  QDPIO::cout << "Done" << endl;
+  QDPIO::cout << "Done" << std::endl;
 
   int i;
 
@@ -51,7 +51,7 @@ int main(int argc, char **argv)
       clock_t myt2;
       double mydt;
       
-      QDPIO::cout << "Applying D" << endl;
+      QDPIO::cout << "Applying D" << std::endl;
       
       myt1=clock();
       for(i=0; i < iter; i++) { 
@@ -62,9 +62,9 @@ int main(int argc, char **argv)
       mydt=(double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
       mydt=1.0e6*mydt/((double)(iter*(Layout::vol()/2)));
       
-      QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
+      QDPIO::cout << "cb = " << cb << " isign = " << isign << std::endl;
       QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
-		  << " (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
+		  << " (" <<  (double)(1392.0f/mydt) << ") Mflops " << std::endl;
     }
   }
   

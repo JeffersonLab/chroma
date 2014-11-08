@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 
   }
   catch( const std::string& e) { 
-    QDPIO::cerr << "Error Reading Hamiltonian " << e <<  endl;
+    QDPIO::cerr << "Error Reading Hamiltonian " << e <<  std::endl;
     QDP_abort(1);
   }
 
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
   // Compute action from monomial
   Double KE, PE;
   H_handle->mesE(gauge_state, KE, PE);
-  QDPIO::cout << "KE = " << KE << "  PE = " << PE << endl;
+  QDPIO::cout << "KE = " << KE << "  PE = " << PE << std::endl;
 
   pop(xml_log);
   pop(xml_out);

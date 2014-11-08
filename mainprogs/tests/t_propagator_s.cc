@@ -55,8 +55,8 @@ struct Param_t
 
 struct Prop_t
 {
-  string       source_file;
-  string       prop_file;
+  std::string       source_file;
+  std::string       prop_file;
 };
 
 struct Propagator_input_t
@@ -70,7 +70,7 @@ struct Propagator_input_t
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Propagator_input_t& input)
+void read(XMLReader& xml, const std::string& path, Propagator_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -85,9 +85,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   {
     read(inputtop, "IO_version/version", version);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -110,17 +110,17 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
      default :
        /**************************************************************************/
 
-       QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+       QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
        QDP_abort(1);
      }
    }
-   catch (const string& e) 
+   catch (const std::string& e) 
    {
-     QDPIO::cerr << "Error reading data: " << e << endl;
+     QDPIO::cerr << "Error reading data: " << e << std::endl;
      throw;
    }
 
-  QDPIO::cout << "Propagator for Staggered fermions" << endl;
+  QDPIO::cout << "Propagator for Staggered fermions" << std::endl;
   //    Read the common bits
    try 
    {
@@ -140,9 +140,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
      read(paramtop, "nrow", input.param.nrow);
      read(paramtop, "t_srce", input.param.t_srce);
    }
-   catch (const string& e) 
+   catch (const std::string& e) 
    {
-     QDPIO::cerr << "Error reading data: " << e << endl;
+     QDPIO::cerr << "Error reading data: " << e << std::endl;
      throw;
    }
 
@@ -152,9 +152,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
    {
      read(inputtop, "Cfg", input.cfg);
    }
-   catch (const string& e) 
+   catch (const std::string& e) 
    {
-     QDPIO::cerr << "Error reading data: " << e << endl;
+     QDPIO::cerr << "Error reading data: " << e << std::endl;
      throw;
    }
  }
@@ -189,16 +189,16 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
    // Instantiate xml reader for DATA
    XMLReader xml_in ; 
-   string in_name = Chroma::getXMLInputFileName() ; 
+   std::string in_name = Chroma::getXMLInputFileName() ; 
    try
    {
      xml_in.open(in_name);
    }
      catch (...) 
    {
-   QDPIO::cerr << "Error reading input file " << in_name << endl;
-   QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
-   QDPIO::cerr << "The default name is ./DATA" << endl;
+   QDPIO::cerr << "Error reading input file " << in_name << std::endl;
+   QDPIO::cerr << "The input file name can be passed via the -i flag " << std::endl;
+   QDPIO::cerr << "The default name is ./DATA" << std::endl;
      throw;
    }
 
@@ -210,7 +210,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   }
     catch (...) 
   {
-    QDPIO::cerr << "Error parsing the input file " << in_name << endl;
+    QDPIO::cerr << "Error parsing the input file " << in_name << std::endl;
     throw;
   }
   // Specify lattice size, shape, etc.
@@ -277,7 +277,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   }
   catch (...)
     {
-    QDPIO::cerr << "Error reading action name " << endl;
+    QDPIO::cerr << "Error reading action name " << std::endl;
     throw;
     }
 
@@ -325,7 +325,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   /** do inversions **************************/
 
   for(int t_source = 0; t_source < 1; t_source += 2) {
-    QDPIO::cout << "Source time slice = " << t_source << endl;
+    QDPIO::cout << "Source time slice = " << t_source << std::endl;
 
       psi = zero;   // note this is ``zero'' and not 0
       multi1d<int>  coord(4)   ;  
@@ -335,7 +335,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       coord[3] =  t_source ; 
 
       for(int color_source = 0; color_source < Nc; ++color_source) {
-        QDPIO::cout << "Inversion for Color =  " << color_source << endl;
+        QDPIO::cout << "Inversion for Color =  " << color_source << std::endl;
 
         q_source = zero ;
         

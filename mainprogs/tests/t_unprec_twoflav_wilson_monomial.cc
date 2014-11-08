@@ -109,11 +109,11 @@ int main(int argc, char *argv[])
     
     // Snarf it all
     XMLReader paramtop(param_in, "/MonomialTest");
-    // Get the string for the factory
+    // Get the std::string for the factory
     read(paramtop, "Monomial", S_w);
   }
-  catch(const string& e) { 
-    QDPIO::cerr << "Error reading XML" << endl;
+  catch(const std::string& e) { 
+    QDPIO::cerr << "Error reading XML" << std::endl;
     QDP_abort(1);
   }
 
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 
   // Compute action from monomial
   Double monomial_S = S_w->S(gauge_state);
-  QDPIO::cout << "monomial_S = " << monomial_S << endl;
+  QDPIO::cout << "monomial_S = " << monomial_S << std::endl;
 
   // Check against normal version
   // Downcast for direct handling
@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 
   // My energy measurement
   Double my_S = innerProductReal(phi,X);
-  QDPIO::cout << "My S = " << my_S << endl;
+  QDPIO::cout << "My S = " << my_S << std::endl;
 
   // Compute force the old fashioned way
   // Get at the FermAct
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
     LatticeColorMatrix dsdu_diff=dsdq[mu] - dsdq2[mu];
     
     Double sum_diff=norm2(dsdu_diff);
-    QDPIO::cout << "Mu = " << mu << " Sum Diff=" << sum_diff << endl;
+    QDPIO::cout << "Mu = " << mu << " Sum Diff=" << sum_diff << std::endl;
     
     push(xml_out, "ForceDiff");
     write(xml_out, "mu", mu);

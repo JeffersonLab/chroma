@@ -40,7 +40,7 @@ typedef struct {
   bool szin_eig;
   int gauge_start_type;
   int gauge_file_format;
-  string gauge_filename;
+  std::string gauge_filename;
   
   Real  wilson_mass;
   Real  quark_mass;
@@ -58,7 +58,7 @@ typedef struct {
 
 
 // Declare routine to read the parameters
-void readParams(const string& filename, Param_t& params)
+void readParams(const std::string& filename, Param_t& params)
 {
   XMLReader reader(filename);
 
@@ -140,7 +140,7 @@ void readParams(const string& filename, Param_t& params)
    }
 
   }
-  catch(const string& e) { 
+  catch(const std::string& e) { 
     throw e;
   }
 }
@@ -262,21 +262,21 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
   // Create Space for the eigen vecs
   eigen_vec.resize(lambda_lo.size());
   
-  // Create Space for the eigenvector norms
+  // Create Space for the eigenstd::vector norms
   multi1d<Real> e_norms(lambda_lo.size());
   multi1d<Real> evec_norms(lambda_lo.size());
 
   for(int i = 0; i < lambda_lo.size(); i++) { 
  
     // Make up the filename
-    ostringstream filename;
+    std::ostringstream filename;
 
     // this will produce eigenvector_XXX
     // where XXX is a 0 padded integer -- eg 001, 002, 010 etc
-    filename << root_prefix << "eigenvector_" << setw(3) << setfill('0') << i;
+    filename << root_prefix << "eigenvector_" << std::setw(3) << std::setfill('0') << i;
 
     
-    cout << "Reading eigenvector: " << filename.str() << endl;
+    std::cout << "Reading eigenstd::vector: " << filename.str() << std::endl;
     readSzinFerm(eigen_vec[i], filename.str());
 
     // Check e-vectors are normalized
@@ -297,7 +297,7 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
 
     e_norms[i] = (Real)sqrt(norm2(D_ev));        
   }    
-  push(xml_out, "EigenvectorTest");
+  push(xml_out, "Eigenstd::vectorTest");
   push(xml_out, "EigenVecNorms");
   write(xml_out, "evec_norms", evec_norms);
   pop(xml_out);
@@ -314,7 +314,7 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
     write(xml_out, "szin_enorms",szin_enorms);
     pop(xml_out);
   }
-  pop(xml_out); // eigenvector test
+  pop(xml_out); // eigenstd::vector test
 }
   
 int main(int argc, char **argv)
@@ -335,8 +335,8 @@ int main(int argc, char **argv)
   try { 
     readParams(root_prefix+"DATA", params);
   }
-  catch(const string& s) { 
-    QDPIO::cerr << "Caught exception " << s << endl;
+  catch(const std::string& s) { 
+    QDPIO::cerr << "Caught exception " << s << std::endl;
     exit(1);
   }
 
@@ -385,8 +385,8 @@ int main(int argc, char **argv)
 	  pop(xml_out);
 
 	}
-	catch(const string& e) {
-	  cerr << "Error: " << e << endl;
+	catch(const std::string& e) {
+	  std::cerr << "Error: " << e << std::endl;
 	}
 	
       }
@@ -403,21 +403,21 @@ int main(int argc, char **argv)
 	  pop(xml_out);
 
 	}
-	catch(const string& e) {
-	  cerr << "Error: " << e << endl;
+	catch(const std::string& e) {
+	  std::cerr << "Error: " << e << std::endl;
 	}
       }
       break;
 
     default:
-      ostringstream file_read_error;
+      std::ostringstream file_read_error;
       file_read_error << "Unknown gauge file format" << params.gauge_file_format ;
       throw file_read_error.str();
     }
     break;
   default:
-    ostringstream startup_error;
-    startup_error << "Unknown start type " << params.gauge_start_type <<endl;
+    std::ostringstream startup_error;
+    startup_error << "Unknown start type " << params.gauge_start_type <<std::endl;
     throw startup_error.str();
   }
 
@@ -558,14 +558,14 @@ int main(int argc, char **argv)
 
   // Should be zero
   Double gwr_norm = sqrt(norm2(s3));
-  cout << "GWR Norm: " << gwr_norm << endl;
+  std::cout << "GWR Norm: " << gwr_norm << std::endl;
   write(xml_out, "gwr_norm", gwr_norm);
 
   // Now test Naive MdagM
   Handle< const LinearOperator<LatticeFermion> > MdagM( S.lMdagM(connect_state));
 
   // MdagM created.
-  cout << "MdagM created" << endl;
+  std::cout << "MdagM created" << std::endl;
   // Apply MdagM to psi
   (*MdagM)(s1, psi, PLUS);
   
@@ -576,7 +576,7 @@ int main(int argc, char **argv)
   s3 = s2 - s1;
   // Time to bolt
   Double internal_norm = sqrt(norm2(s3));
-  cout << " || MdagM - M^{dag}M || = " << internal_norm << endl;
+  std::cout << " || MdagM - M^{dag}M || = " << internal_norm << std::endl;
   write(xml_out, "internal_norm", internal_norm);
 
 
@@ -593,13 +593,13 @@ int main(int argc, char **argv)
     Chirality c = isChiralVector(source);
     switch ( c ) { 
     case CH_NONE:
-      cout << "Ns = " << i <<" : No definite chirality" <<endl;
+      std::cout << "Ns = " << i <<" : No definite chirality" <<std::endl;
       break;
     case CH_PLUS:
-      cout << "Ns = " << i << " : Chirality is positive " << endl;
+      std::cout << "Ns = " << i << " : Chirality is positive " << std::endl;
       break;
     case CH_MINUS:
-      cout << "Ns = " << i << " : Chirality is negative " << endl;
+      std::cout << "Ns = " << i << " : Chirality is negative " << std::endl;
       break;
     default:
       QDP_error_exit("What the heck?: %d\n", (int)c);
@@ -625,18 +625,18 @@ int main(int argc, char **argv)
   // Poke the site into source
   pokeSite(source, f, coord);
 
-  cout << "(1,0,1,0) has chirality " << isChiralVector(source) << endl;
+  std::cout << "(1,0,1,0) has chirality " << isChiralVector(source) << std::endl;
  
   gaussian(source);
-  cout << "Gaussian source has chirality: " << isChiralVector(source) << endl;
+  std::cout << "Gaussian source has chirality: " << isChiralVector(source) << std::endl;
 
   int G5 = Ns * Ns  - 1;
 
   s1 = 0.5*(source + Gamma(G5)*source);
   s2 = 0.5*(source - Gamma(G5)*source);
   
-  cout << "+ve chirality projection has chirality: " << isChiralVector(s1) << endl;
-  cout << "-ve chirality projection has chirality: " << isChiralVector(s2) << endl;
+  std::cout << "+ve chirality projection has chirality: " << isChiralVector(s1) << std::endl;
+  std::cout << "-ve chirality projection has chirality: " << isChiralVector(s2) << std::endl;
 
   
 
@@ -651,11 +651,11 @@ int main(int argc, char **argv)
     (*MdagM_ch)(s2, source, PLUS);
     
     s3 = s1 - s2;
-    cout << "Spin Comp: " << i << ": || M dag M - lovddag || = " << sqrt(norm2(s3)) << endl;
+    std::cout << "Spin Comp: " << i << ": || M dag M - lovddag || = " << sqrt(norm2(s3)) << std::endl;
   }
 
 
-  cout << "Now non chiral work. Should get back Normal MdagM" << endl;
+  std::cout << "Now non chiral work. Should get back Normal MdagM" << std::endl;
   source = zero;
   gaussian(source);
 
@@ -665,22 +665,22 @@ int main(int argc, char **argv)
   (*MdagM)(s1, source, PLUS);
   (*MdagM2)(s2, source, PLUS);
   s3 = s1 - s2;
-  cout << "Non Chiral Source: || M dag M - MdagM(chi=0)  || = " << sqrt(norm2(s3)) << endl;
+  std::cout << "Non Chiral Source: || M dag M - MdagM(chi=0)  || = " << sqrt(norm2(s3)) << std::endl;
 
 
-  cout << "Beginning qprop test" << endl;
-  cout << "Chiral Sources" << endl;
+  std::cout << "Beginning qprop test" << std::endl;
+  std::cout << "Chiral Sources" << std::endl;
 
   /*
   try { 
     push(xml_out, "QpropTest");
-  } catch( string& e) { 
-    cerr << e << endl;
+  } catch( std::string& e) { 
+    std::cerr << e << std::endl;
     throw;
   }
 
   source = zero;
-  cout << "No chirality" << endl;
+  std::cout << "No chirality" << std::endl;
   gaussian(source);
 
   // D_dag source
@@ -696,7 +696,7 @@ int main(int argc, char **argv)
 
   Real r = sqrt(norm2(s3)/norm2(source));
 
-  cout << " || source - M solution || / || source || = " << r << endl;
+  std::cout << " || source - M solution || / || source || = " << r << std::endl;
   push(xml_out, "NonChiralInv2");
   write(xml_out, "r", r);
   pop(xml_out);
@@ -716,7 +716,7 @@ int main(int argc, char **argv)
     s3 -= source;
     
     Real r = sqrt(norm2(s3)/norm2(source));
-    cout << "Chiral:" << i << " || source - M solution || / || source || = " <<r  << endl;
+    std::cout << "Chiral:" << i << " || source - M solution || / || source || = " <<r  << std::endl;
 
     push(xml_out, "ChiralInv1");
     write(xml_out, "spin", i);

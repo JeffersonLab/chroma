@@ -6,7 +6,7 @@ using namespace Chroma;
 
 struct Prop_t
 {
-  string          prop_file;
+  std::string          prop_file;
 };
 
 struct AppInput_t 
@@ -31,14 +31,14 @@ bool linkage_hack()
 }
 
 
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
   read(inputtop, "prop_file", input.prop_file);
 }
 
 
-void read(XMLReader& xml, const string& path, AppInput_t& input)
+void read(XMLReader& xml, const std::string& path, AppInput_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -74,9 +74,9 @@ void read(XMLReader& xml, const string& path, AppInput_t& input)
     // Read in the source/propagator info
     read(inputtop, "Prop", input.prop);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -96,8 +96,8 @@ int main(int argc, char **argv)
   try {
     read(xml_in, "/mres4D", input);
   }
-  catch( const string& e) { 
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+  catch( const std::string& e) { 
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -140,8 +140,8 @@ int main(int argc, char **argv)
       read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
       read(prop_record_xml, "/Propagator/PropSource", source_header);
     }
-    catch (const string& e) {
-      QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+    catch (const std::string& e) {
+      QDPIO::cerr << "Error extracting forward_prop header: " << e << std::endl;
       throw;
     }
   }
@@ -168,8 +168,8 @@ int main(int argc, char **argv)
   //
   std::istringstream  xml_s(input.fermact);
   XMLReader  fermacttop(xml_s);
-  const string fermact_path = "/FermionAction";
-  string fermact;
+  const std::string fermact_path = "/FermionAction";
+  std::string fermact;
 
   try
   {
@@ -177,16 +177,16 @@ int main(int argc, char **argv)
   }
   catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading fermact: " << e << endl;
+    QDPIO::cerr << "Error reading fermact: " << e << std::endl;
     throw;
   }
 
-  QDPIO::cout << "FermAct = " << fermact << endl;
+  QDPIO::cout << "FermAct = " << fermact << std::endl;
  
   // Make a reader for the stateInfo
   std::istringstream state_info_is(input.stateInfo);
   XMLReader state_info_xml(state_info_is);
-  string state_info_path="/StateInfo";
+  std::string state_info_path="/StateInfo";
 
 
   // 
@@ -223,7 +223,7 @@ int main(int argc, char **argv)
     }
     else
     {
-      throw string("no suitable cast found");
+      throw std::string("no suitable cast found");
     }
 	
     for(int col = 0; col < Nc; col++) 
@@ -245,12 +245,12 @@ int main(int argc, char **argv)
     delete DelLs;
     delete S_f;
   }
-  catch(const string& e) { 
-    QDPIO::cout << "Wilson Factory Error: " << e << endl;
+  catch(const std::string& e) { 
+    QDPIO::cout << "Wilson Factory Error: " << e << std::endl;
     QDP_abort(1);
   }
-  catch(bad_cast) { 
-    QDPIO::cout << "Action entered is not suitable to be cast to OverlapFermActBase " << endl;
+  catch(std::bad_cast) { 
+    QDPIO::cout << "Action entered is not suitable to be cast to OverlapFermActBase " << std::endl;
   }
 
 

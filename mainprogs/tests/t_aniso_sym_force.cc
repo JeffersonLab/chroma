@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
   write(xml_out, "DIFF_PLAQ", diff_plaq);
 
   for(int mu=0; mu < Nd; mu++) {
-    QDPIO::cout << "Diff Plaq["<<mu<<"] = " << norm2(diff_plaq[mu]) << endl;
+    QDPIO::cout << "Diff Plaq["<<mu<<"] = " << norm2(diff_plaq[mu]) << std::endl;
   }
 
 
@@ -218,9 +218,9 @@ int main(int argc, char *argv[])
   Double s_old = plaq->S(gs) + rect->S(gs);
   
 
-  QDPIO::cout << "Manual S=  " << s_manual << endl;
-  QDPIO::cout << "New    S=  " << s_old << endl;
-  QDPIO::cout << "Diff    =  " << s_old - s_manual << endl;
+  QDPIO::cout << "Manual S=  " << s_manual << std::endl;
+  QDPIO::cout << "New    S=  " << s_old << std::endl;
+  QDPIO::cout << "Diff    =  " << s_old - s_manual << std::endl;
     // Finish
   Chroma::finalize();
 

@@ -11,28 +11,28 @@
 using namespace Chroma;
 using namespace GroupBaryonOperatorEnv;
 
-  void write( XMLWriter& xml, const string& path, 
+  void write( XMLWriter& xml, const std::string& path, 
 	            const GroupBaryonOperatorEnv::BaryonOperator_t::BaryonOperatorInsertion_t::BaryonOperatorIndex_t::BaryonOperatorElement_t& input )
   {
     push( xml, path );
     write( xml, "BaryonOpElement", input );
     pop( xml );
   }
-  void write( XMLWriter& xml, const string& path, 
+  void write( XMLWriter& xml, const std::string& path, 
 	            const GroupBaryonOperatorEnv::BaryonOperator_t::BaryonOperatorInsertion_t::BaryonOperatorIndex_t& input )
   {
     push( xml, path );
     write( xml, "BaryonOpIndex", input );
     pop( xml );
   }
-  void write( XMLWriter& xml, const string& path, 
+  void write( XMLWriter& xml, const std::string& path, 
 	            const GroupBaryonOperatorEnv::BaryonOperator_t::BaryonOperatorInsertion_t& input )
   {
     push( xml, path );
     write( xml, "BaryonOpIns", input );
     pop( xml );
   }
-  void write( XMLWriter& xml, const string& path, 
+  void write( XMLWriter& xml, const std::string& path, 
 	            const GroupBaryonOperatorEnv::Params::NamedObject_t& input )
   {
     push( xml, path );
@@ -41,7 +41,7 @@ using namespace GroupBaryonOperatorEnv;
     pop( xml );
   }
   //! BaryonOperator header writer
-  void write( XMLWriter& xml, const string& path, const BaryonOperator_t& param )
+  void write( XMLWriter& xml, const std::string& path, const BaryonOperator_t& param )
   {
     if( path != "." ) push( xml, path );
     int version = 1;
@@ -77,8 +77,8 @@ int main( int argc, char *argv[] )
 	// ==================================
   Chroma::initialize( &argc, &argv );
   START_CODE();
-  QDPIO::cout << "GroupBaryonAll2All: Group Baryon Operators with All2All" << endl;
-  QDPIO::cout << "Linkage = " << linkageHack() << endl;
+  QDPIO::cout << "GroupBaryonAll2All: Group Baryon Operators with All2All" << std::endl;
+  QDPIO::cout << "Linkage = " << linkageHack() << std::endl;
 	StopWatch swatch;
 	// ===============
   // Read input data
@@ -108,14 +108,14 @@ int main( int argc, char *argv[] )
 		// test the config
 		Double w_plaq, s_plaq, t_plaq, link;
   	MesPlq(params.gaugestuff.u, w_plaq, s_plaq, t_plaq, link);
-		QDPIO::cout<< "Gauge field measurements " << w_plaq <<" "<< s_plaq <<" "<< t_plaq <<" "<< link <<" "<<endl;	
+		QDPIO::cout<< "Gauge field measurements " << w_plaq <<" "<< s_plaq <<" "<< t_plaq <<" "<< link <<" "<<std::endl;	
 
 	// Smear the gauge field if needed
 	swatch.start();
   std::istringstream xml_l( params.gaugestuff.link_smearing.xml );
   XMLReader linktop( xml_l );
-  const string link_path = "/LinkSmearing";
-  QDPIO::cout << "Link smearing type = " << params.gaugestuff.link_smearing.id << endl;	
+  const std::string link_path = "/LinkSmearing";
+  QDPIO::cout << "Link smearing type = " << params.gaugestuff.link_smearing.id << std::endl;	
   Handle< LinkSmearing >
   linkSmearing( TheLinkSmearingFactory::Instance().createObject( 
 	              params.gaugestuff.link_smearing.id,
@@ -123,9 +123,9 @@ int main( int argc, char *argv[] )
                 link_path ) );
   ( *linkSmearing ) ( params.gaugestuff.u );
 	swatch.stop();
-	QDPIO::cout << "Gauge links smeared : time = " << swatch.getTimeInSeconds() << " secs" << endl;
+	QDPIO::cout << "Gauge links smeared : time = " << swatch.getTimeInSeconds() << " secs" << std::endl;
   	MesPlq(params.gaugestuff.u, w_plaq, s_plaq, t_plaq, link);
-		QDPIO::cout<< "gauge meas " << w_plaq <<" "<< s_plaq <<" "<< t_plaq <<" "<< link <<" "<<endl;	
+		QDPIO::cout<< "gauge meas " << w_plaq <<" "<< s_plaq <<" "<< t_plaq <<" "<< link <<" "<<std::endl;	
 	// ====================
 	// qqq's and baryonop's
 	// ====================
@@ -148,9 +148,9 @@ int main( int argc, char *argv[] )
 		swatch.start();
     for(int n=0; n < quarks.size(); ++n)
     {
-			QDPIO::cout << "Attempt to read solutions for source number=" << n << endl;
+			QDPIO::cout << "Attempt to read solutions for source number=" << n << std::endl;
 			quarks[n].dilutions.resize( params.qprop.solns[n].soln_file_names.size() );
-			QDPIO::cout << "dilutions.size= " << quarks[n].dilutions.size() << endl;
+			QDPIO::cout << "dilutions.size= " << quarks[n].dilutions.size() << std::endl;
 			for(int i=0; i < quarks[n].dilutions.size(); ++i)
 			{
 				XMLReader file_xml, record_xml;
@@ -167,12 +167,12 @@ int main( int argc, char *argv[] )
     }
 		swatch.stop();
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error extracting headers: " << e << endl;
+    QDPIO::cerr << "Error extracting headers: " << e << std::endl;
     QDP_abort(1);
   }
-	QDPIO::cout << "Read SOLUTION vectors from files : time = " << swatch.getTimeInSeconds() << " secs" << endl;
+	QDPIO::cout << "Read SOLUTION vectors from files : time = " << swatch.getTimeInSeconds() << " secs" << std::endl;
 	// ====================================
 	//
 	//       Main Part of Program
@@ -205,7 +205,7 @@ int main( int argc, char *argv[] )
 		swatch.start();
     for(int n=0; n < quarks.size(); ++n)
     {
-			QDPIO::cout << "Reducing spin-colour dilution levels for quark " << n << endl;
+			QDPIO::cout << "Reducing spin-colour dilution levels for quark " << n << std::endl;
 			int indx, indx2;
 			//
 			// Fix these for now ... temporary fix
@@ -248,17 +248,17 @@ int main( int argc, char *argv[] )
 	} // try
 	catch ( const std::string& e )
 	{
-	  QDPIO::cerr << ": Caught Exception removing COLOUR and SPIN-dilution: " << e << endl;
+	  QDPIO::cerr << ": Caught Exception removing COLOUR and SPIN-dilution: " << e << std::endl;
 	  QDP_abort( 1 );
 	}
   swatch.stop();
-	QDPIO::cout << "COLOUR and SPIN dilution removed: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+	QDPIO::cout << "COLOUR and SPIN dilution removed: time= " << swatch.getTimeInSeconds() << " secs" << std::endl;
 #endif
 	try
 	{ //
 		// Annihilation Operator (plus) first (only one term)
 		//
-  	QDPIO::cout << "Making the SINK operators" << endl;
+  	QDPIO::cout << "Making the SINK operators" << std::endl;
 		int ordering = 0;
 		for(int n=0; n < params.Noperators; ++n)
 		{
@@ -299,7 +299,7 @@ int main( int argc, char *argv[] )
 		}
 #endif
 		swatch.stop();
-		QDPIO::cout << "SINK smearings done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+		QDPIO::cout << "SINK smearings done: time= " << swatch.getTimeInSeconds() << " secs" << std::endl;
 		
 		swatch.start();
 		for(int qqq=0; qqq < params.NQQQs; ++qqq)
@@ -341,10 +341,10 @@ int main( int argc, char *argv[] )
 	} // try
 	catch ( const std::string& e )
 	{
-	  QDPIO::cerr << ": Caught Exception creating sink baryon operator: " << e << endl;
+	  QDPIO::cerr << ": Caught Exception creating sink baryon operator: " << e << std::endl;
 	  QDP_abort( 1 );
 	}
-	QDPIO::cout << "SINK operators done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+	QDPIO::cout << "SINK operators done: time= " << swatch.getTimeInSeconds() << " secs" << std::endl;
   // Save the operators
   // ONLY SciDAC output format is supported!
   swatch.start();
@@ -355,7 +355,7 @@ int main( int argc, char *argv[] )
     file_xml << params.param.baryon_operator;
     write( file_xml, "Config_info", gauge_xml );
     pop( file_xml );
-		string output=params.Names[ b ]+"_snk";
+		std::string output=params.Names[ b ]+"_snk";
 		
     QDPFileWriter to( file_xml, output,
                       QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN );
@@ -376,14 +376,14 @@ int main( int argc, char *argv[] )
     close( to );
   }
   swatch.stop();
-  QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+  QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << std::endl;
 #endif // end annihilation operators
 
 #ifdef MAKE_SOURCE_OPERATORS
 	// =============
 	// Noise Sources ... re-generate from the rng seeds
 	// =============
-  QDPIO::cout << "Re-generating the noise SOURCES" << endl;
+  QDPIO::cout << "Re-generating the noise SOURCES" << std::endl;
 	try
 	{
 		swatch.start();
@@ -396,13 +396,13 @@ int main( int argc, char *argv[] )
 	    {
 	      std::istringstream xml_s( quarks[ n ].dilutions[ i ].source_header.source.xml );
 	      XMLReader sourcetop( xml_s );
-	      //QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << endl;
+	      //QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << std::endl;
 	      if ( quarks[ n ].dilutions[ i ].source_header.source.id != DiluteZNQuarkSourceConstEnv::name )
 	      {
-	        QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
+	        QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << std::endl;
 	        QDP_abort( 1 );
 	      }
-	      //QDPIO::cout << "Quark num= " << n << "  dilution num= " << i << endl;
+	      //QDPIO::cout << "Quark num= " << n << "  dilution num= " << i << std::endl;
 	      DiluteZNQuarkSourceConstEnv::Params srcParams( sourcetop,
 	                                                     quarks[ n ].dilutions[ i ].source_header.source.path );
 	      DiluteZNQuarkSourceConstEnv::SourceConst<LatticeFermion> srcConst( srcParams );
@@ -421,13 +421,13 @@ int main( int argc, char *argv[] )
 	      // The seeds must always agree - here the seed is the unique id of the source
 	      if ( toBool( srcParams.ran_seed != quarks[ n ].seed ) )
 	      {
-	        QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " seed does not match" << endl;
+	        QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " seed does not match" << std::endl;
 	        QDP_abort( 1 );
 	      }
 	      // The N's must always agree
 	      if ( toBool( srcParams.N != N ) )
 	      {
-	        QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " N does not match" << endl;
+	        QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " N does not match" << std::endl;
 	        QDP_abort( 1 );
 	      }
 	      // Use a trick here, create the source and subtract it from the global noisy
@@ -439,7 +439,7 @@ int main( int argc, char *argv[] )
 	    Double dcnt = norm2( quark_noise );
 	    if ( toDouble( dcnt ) != 0.0 )   // problematic - seems to work with unnormalized sources
 	    {
-	      QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << endl;
+	      QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << std::endl;
 	      QDP_abort( 1 );
 	    }
 	  } // end for n
@@ -447,10 +447,10 @@ int main( int argc, char *argv[] )
 	} // end try
 	catch ( const std::string& e )
 	{
-	  QDPIO::cerr << ": Caught Exception creating source: " << e << endl;
+	  QDPIO::cerr << ": Caught Exception creating source: " << e << std::endl;
 	  QDP_abort( 1 );
 	}
-	QDPIO::cout << "SOURCE vectors reconstructed from Seeds : time = " << swatch.getTimeInSeconds() << " secs" << endl;
+	QDPIO::cout << "SOURCE vectors reconstructed from Seeds : time = " << swatch.getTimeInSeconds() << " secs" << std::endl;
 
 #ifdef REDUCETOTIMEDILUTION
 	// =========================================
@@ -464,7 +464,7 @@ int main( int argc, char *argv[] )
 		swatch.start();
     for(int n=0; n < quarks.size(); ++n)
     {
-			QDPIO::cout << "REDUCING spin-colour dilution levels for quark " << n << endl;
+			QDPIO::cout << "REDUCING spin-colour dilution levels for quark " << n << std::endl;
 			int indx, indx2;
 			//
 			// Fix these for now ... temporary fix
@@ -511,11 +511,11 @@ int main( int argc, char *argv[] )
 	} // try
 	catch ( const std::string& e )
 	{
-	  QDPIO::cerr << ": Caught Exception removing COLOUR and SPIN-dilution: " << e << endl;
+	  QDPIO::cerr << ": Caught Exception removing COLOUR and SPIN-dilution: " << e << std::endl;
 	  QDP_abort( 1 );
 	}
   swatch.stop();
-	QDPIO::cout << "COLOUR and SPIN DILUTION REMOVED: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+	QDPIO::cout << "COLOUR and SPIN DILUTION REMOVED: time= " << swatch.getTimeInSeconds() << " secs" << std::endl;
 #endif
 	//
 	// setting the seeds for output (baryon_operator file)
@@ -539,7 +539,7 @@ int main( int argc, char *argv[] )
 		//
 		for(int ordering=0; ordering < params.NsrcOrderings; ++ordering)
 		{
-		  QDPIO::cout << "SOURCE Operator: ordering = " << ordering << endl;
+		  QDPIO::cout << "SOURCE Operator: ordering = " << ordering << std::endl;
 			swatch.start();
 			Real signs;
 			int not_used;
@@ -636,15 +636,15 @@ int main( int argc, char *argv[] )
 				} // iL,iM,iR
 			} // qqq
 			swatch.stop();
-			QDPIO::cout << "SOURCE operator " << ordering << " done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+			QDPIO::cout << "SOURCE operator " << ordering << " done: time= " << swatch.getTimeInSeconds() << " secs" << std::endl;
 		} // ordering
 	} // try
 	catch ( const std::string& e )
 	{
-	  QDPIO::cerr << ": Caught Exception creating source baryon operator: " << e << endl;
+	  QDPIO::cerr << ": Caught Exception creating source baryon operator: " << e << std::endl;
 	  QDP_abort( 1 );
 	}
-	QDPIO::cout << "All SOURCE operators done" << endl;
+	QDPIO::cout << "All SOURCE operators done" << std::endl;
 
   // Save the operators
   // ONLY SciDAC output format is supported!
@@ -656,7 +656,7 @@ int main( int argc, char *argv[] )
     file_xml << params.param.baryon_operator;
     write( file_xml, "Config_info", gauge_xml );
     pop( file_xml );
-		string output=params.Names[ b ]+"_src";
+		std::string output=params.Names[ b ]+"_src";
 		
     QDPFileWriter to( file_xml, output,
                       QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN );
@@ -677,10 +677,10 @@ int main( int argc, char *argv[] )
     close( to );
   }
   swatch.stop();
-  QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+  QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << std::endl;
 #endif // end of creation operators
 
-	QDPIO::cout<<"end of group baryon operator calculation"<<endl;
+	QDPIO::cout<<"end of group baryon operator calculation"<<std::endl;
 
 #ifdef WRITE_ALL_OUT
 	// Now writing all the operators out
@@ -711,7 +711,7 @@ int main( int argc, char *argv[] )
     close( to );
   }
   swatch.stop();
-  QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+  QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << std::endl;
 #endif
 
   // Close the namelist output file XMLDAT

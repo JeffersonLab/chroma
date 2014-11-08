@@ -40,7 +40,7 @@ typedef struct {
   bool szin_eig;
   int gauge_start_type;
   int gauge_file_format;
-  string gauge_filename;
+  std::string gauge_filename;
   
   Real  wilson_mass;
   Real  quark_mass;
@@ -58,7 +58,7 @@ typedef struct {
 
 
 // Declare routine to read the parameters
-void readParams(const string& filename, Param_t& params)
+void readParams(const std::string& filename, Param_t& params)
 {
   XMLReader reader(filename);
 
@@ -140,7 +140,7 @@ void readParams(const string& filename, Param_t& params)
    }
 
   }
-  catch(const string& e) { 
+  catch(const std::string& e) { 
     throw e;
   }
 }
@@ -262,21 +262,21 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
   // Create Space for the eigen vecs
   eigen_vec.resize(lambda_lo.size());
   
-  // Create Space for the eigenvector norms
+  // Create Space for the eigenstd::vector norms
   multi1d<Real> e_norms(lambda_lo.size());
   multi1d<Real> evec_norms(lambda_lo.size());
 
   for(int i = 0; i < lambda_lo.size(); i++) { 
  
     // Make up the filename
-    ostringstream filename;
+    std::ostringstream filename;
 
     // this will produce eigenvector_XXX
     // where XXX is a 0 padded integer -- eg 001, 002, 010 etc
-    filename << root_prefix << "eigenvector_" << setw(3) << setfill('0') << i;
+    filename << root_prefix << "eigenvector_" << std::setw(3) << std::setfill('0') << i;
 
     
-    cout << "Reading eigenvector: " << filename.str() << endl;
+    std::cout << "Reading eigenstd::vector: " << filename.str() << std::endl;
     readSzinFerm(eigen_vec[i], filename.str());
 
     // Check e-vectors are normalized
@@ -297,7 +297,7 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
 
     e_norms[i] = (Real)sqrt(norm2(D_ev));        
   }    
-  push(xml_out, "EigenvectorTest");
+  push(xml_out, "Eigenstd::vectorTest");
   push(xml_out, "EigenVecNorms");
   write(xml_out, "evec_norms", evec_norms);
   pop(xml_out);
@@ -314,7 +314,7 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
     write(xml_out, "szin_enorms",szin_enorms);
     pop(xml_out);
   }
-  pop(xml_out); // eigenvector test
+  pop(xml_out); // eigenstd::vector test
 }
   
 int main(int argc, char **argv)
@@ -335,8 +335,8 @@ int main(int argc, char **argv)
   try { 
     readParams(root_prefix+"DATA", params);
   }
-  catch(const string& s) { 
-    QDPIO::cerr << "Caught exception " << s << endl;
+  catch(const std::string& s) { 
+    QDPIO::cerr << "Caught exception " << s << std::endl;
     exit(1);
   }
 
@@ -385,8 +385,8 @@ int main(int argc, char **argv)
 	  pop(xml_out);
 
 	}
-	catch(const string& e) {
-	  cerr << "Error: " << e << endl;
+	catch(const std::string& e) {
+	  std::cerr << "Error: " << e << std::endl;
 	}
 	
       }
@@ -403,21 +403,21 @@ int main(int argc, char **argv)
 	  pop(xml_out);
 
 	}
-	catch(const string& e) {
-	  cerr << "Error: " << e << endl;
+	catch(const std::string& e) {
+	  std::cerr << "Error: " << e << std::endl;
 	}
       }
       break;
 
     default:
-      ostringstream file_read_error;
+      std::ostringstream file_read_error;
       file_read_error << "Unknown gauge file format" << params.gauge_file_format ;
       throw file_read_error.str();
     }
     break;
   default:
-    ostringstream startup_error;
-    startup_error << "Unknown start type " << params.gauge_start_type <<endl;
+    std::ostringstream startup_error;
+    startup_error << "Unknown start type " << params.gauge_start_type <<std::endl;
     throw startup_error.str();
   }
 
@@ -561,7 +561,7 @@ int main(int argc, char **argv)
 
   // Should be zero
   Double gwr_norm = sqrt(norm2(s3));
-  cout << "GWR Norm: " << gwr_norm << endl;
+  std::cout << "GWR Norm: " << gwr_norm << std::endl;
   write(xml_out, "gwr_norm", gwr_norm);
 
 #endif
@@ -589,7 +589,7 @@ int main(int argc, char **argv)
   (*D_op)(s1, psi, PLUS);
   swatch.stop();
   Double t1 = swatch.getTimeInSeconds();
-  QDPIO::cout << "Single Pass algorithm took " << t1 << " seconds" << endl;
+  QDPIO::cout << "Single Pass algorithm took " << t1 << " seconds" << std::endl;
   // Apply double pass
 
   swatch.reset();
@@ -597,13 +597,13 @@ int main(int argc, char **argv)
   (*D_dp)(s2, psi, PLUS);
   swatch.stop();
   t1 = swatch.getTimeInSeconds();
-  QDPIO::cout << "Double Pass algorithm took " << t1 << " seconds" << endl;
+  QDPIO::cout << "Double Pass algorithm took " << t1 << " seconds" << std::endl;
   // Get the difference
   s3 = s2 - s1;
 
   Double diff = norm2(s3);
 
-  QDPIO::cout << "Diff between single and double passes = " << sqrt(diff) << endl;
+  QDPIO::cout << "Diff between single and double passes = " << sqrt(diff) << std::endl;
 
 
   // Now do a chiral D^{dag} D
@@ -632,7 +632,7 @@ int main(int argc, char **argv)
   (*MdagM_ch)(s1, psi, PLUS);
   swatch.stop();
   t1 = swatch.getTimeInSeconds();
-  QDPIO::cout << "Single Pass algorithm took " << t1 << " seconds" << endl;
+  QDPIO::cout << "Single Pass algorithm took " << t1 << " seconds" << std::endl;
 
 
   swatch.reset();
@@ -640,13 +640,13 @@ int main(int argc, char **argv)
   (*MdagM_ch_dp)(s2, psi, PLUS);
   swatch.stop();
   t1 = swatch.getTimeInSeconds();
-  QDPIO::cout << "Double Pass algorithm took " << t1 << " seconds" << endl;
+  QDPIO::cout << "Double Pass algorithm took " << t1 << " seconds" << std::endl;
 
   s3 = s1 - s2;
 
   diff = norm2(s3);
 
-  QDPIO::cout << "Diff between single and double passes = " << sqrt(diff) << endl;
+  QDPIO::cout << "Diff between single and double passes = " << sqrt(diff) << std::endl;
 
 
   gaussian(psi);
@@ -672,7 +672,7 @@ int main(int argc, char **argv)
   (*MdagM_ch2)(s1, psi, PLUS);
   swatch.stop();
   t1 = swatch.getTimeInSeconds();
-  QDPIO::cout << "Single Pass algorithm took " << t1 << " seconds" << endl;
+  QDPIO::cout << "Single Pass algorithm took " << t1 << " seconds" << std::endl;
 
 
   swatch.reset();
@@ -680,13 +680,13 @@ int main(int argc, char **argv)
   (*MdagM_ch2_dp)(s2, psi, PLUS);
   swatch.stop();
   t1 = swatch.getTimeInSeconds();
-  QDPIO::cout << "Double Pass algorithm took " << t1 << " seconds" << endl;
+  QDPIO::cout << "Double Pass algorithm took " << t1 << " seconds" << std::endl;
 
   s3 = s1 - s2;
 
   diff = norm2(s3);
 
-  QDPIO::cout << "Diff between single and double passes = " << sqrt(diff) << endl;
+  QDPIO::cout << "Diff between single and double passes = " << sqrt(diff) << std::endl;
 
   
   pop(xml_out);

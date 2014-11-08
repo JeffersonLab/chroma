@@ -16,7 +16,7 @@ struct App_input_t {
 };
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, App_input_t& input)
+void read(XMLReader& xml, const std::string& path, App_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -29,9 +29,9 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
     read(inputtop, "UnprecFermAct", input.p_unprec);
     read(inputtop, "PrecFermAct", input.p_prec);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -48,8 +48,8 @@ int main(int argc, char **argv)
   try {
     read(xml_in, "/ContFracTest", input);
   }
-   catch( const string& e) { 
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+   catch( const std::string& e) { 
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
   // Create an overlap state
   std::istringstream state_info_is(input.stateInfo);
   XMLReader state_info_xml(state_info_is);
-  string state_info_path="/StateInfo";
+  std::string state_info_path="/StateInfo";
 
   Handle< const ConnectState > state(S_prec.createState(u, state_info_xml, state_info_path));
 
@@ -88,8 +88,8 @@ int main(int argc, char **argv)
   // Make the prec linOp
   Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > M_e( S_prec.linOp(state));
 
-  QDPIO::cout << "Unprec LinOp size = " << M_u->size() << endl;
-  QDPIO::cout << "Prec   LinOp size = " << M_e->size() << endl;
+  QDPIO::cout << "Unprec LinOp size = " << M_u->size() << std::endl;
+  QDPIO::cout << "Prec   LinOp size = " << M_e->size() << std::endl;
 
   int N5 = M_u->size();
   multi1d<LatticeFermion> s(N5);
@@ -121,9 +121,9 @@ int main(int argc, char **argv)
   for(int i=0; i < N5; i++) { 
     r[i] = Mu_s[i] - Me_s[i];
     QDPIO::cout << "i[0]= " << i << " || r [" << i << "] || = " 
-		<< sqrt(norm2(r[i], rb[0])) << endl;
+		<< sqrt(norm2(r[i], rb[0])) << std::endl;
     QDPIO::cout << "i[1]= " << i << " || r [" << i << "] || = " 
-		<< sqrt(norm2(r[i], rb[1])) << endl;
+		<< sqrt(norm2(r[i], rb[1])) << std::endl;
   }
 
   Mu_s = zero;
@@ -134,7 +134,7 @@ int main(int argc, char **argv)
   for(int i=0; i < N5; i++) { 
     r[i] = Mu_s[i] - Me_s[i];
     QDPIO::cout << "i = " << i << " || r [" << i << "] || = " 
-		<< sqrt(norm2(r[i])) << endl;
+		<< sqrt(norm2(r[i])) << std::endl;
   }
 
   // Now some solver tests
@@ -227,7 +227,7 @@ int main(int argc, char **argv)
     r[i] -= source[i];
     r_norm += norm2(r[i]);
   }
-  QDPIO::cout << "|| source - M_u unprec_soln || = " << sqrt(r_norm) << endl;
+  QDPIO::cout << "|| source - M_u unprec_soln || = " << sqrt(r_norm) << std::endl;
 
   (*M_u)(r, prec_soln, PLUS);
   r_norm=0;
@@ -235,7 +235,7 @@ int main(int argc, char **argv)
     r[i] -= source[i];
     r_norm += norm2(r[i]);
   }
-  QDPIO::cout << "|| source - M_u prec_soln || = " << sqrt(r_norm) << endl;
+  QDPIO::cout << "|| source - M_u prec_soln || = " << sqrt(r_norm) << std::endl;
 
  (*M_e).unprecLinOp(r, unprec_soln, PLUS);
   r_norm=0;
@@ -243,7 +243,7 @@ int main(int argc, char **argv)
     r[i] -= source[i];
     r_norm += norm2(r[i]);
   }
-  QDPIO::cout << "|| source - M_e unprec_soln || = " << sqrt(r_norm) << endl;
+  QDPIO::cout << "|| source - M_e unprec_soln || = " << sqrt(r_norm) << std::endl;
 
  (*M_e).unprecLinOp(r, prec_soln, PLUS);
   r_norm=0;
@@ -251,7 +251,7 @@ int main(int argc, char **argv)
     r[i] -= source[i];
     r_norm += norm2(r[i]);
   }
-  QDPIO::cout << "|| source - M_e prec_soln || = " << sqrt(r_norm) << endl;
+  QDPIO::cout << "|| source - M_e prec_soln || = " << sqrt(r_norm) << std::endl;
 
   // Test EvenEvenInv LinOp
   {
@@ -278,7 +278,7 @@ int main(int argc, char **argv)
       r_norm += norm2(r[i], rb[0]);
   }
   QDPIO::cout << "|| source_even - Qee^{-1}Qee sorce_even || = " 
-	      << sqrt(r_norm) << endl;
+	      << sqrt(r_norm) << std::endl;
 
   }
   pop(xml_out);

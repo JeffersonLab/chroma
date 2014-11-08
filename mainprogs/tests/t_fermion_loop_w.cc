@@ -31,7 +31,7 @@ void loops(const LatticeFermion &q_source,
            const LatticeFermion &psi,
            int length,
            XMLWriter& xml_gamma,
-           const string& xml_tag) ;
+           const std::string& xml_tag) ;
 
 void z2_src(LatticeFermion& a) ;
 
@@ -68,8 +68,8 @@ struct Param_t
 
 struct Prop_t
 {
-  string       source_file;
-  string       prop_file;
+  std::string       source_file;
+  std::string       prop_file;
 };
 
 struct Propagator_input_t
@@ -82,7 +82,7 @@ struct Propagator_input_t
 
 
 //
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -93,7 +93,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Propagator_input_t& input)
+void read(XMLReader& xml, const std::string& path, Propagator_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -107,9 +107,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   {
     read(inputtop, "IO_version/version", input.io_version.version);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -132,13 +132,13 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     default :
       /**************************************************************************/
 
-      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << std::endl;
       QDP_abort(1);
     }
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -149,7 +149,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
     {
-      string ferm_type_str;
+      std::string ferm_type_str;
       read(paramtop, "FermTypeP", ferm_type_str);
       if (ferm_type_str == "WILSON") {
 	input.param.FermTypeP = FERM_TYPE_WILSON;
@@ -161,7 +161,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     switch (input.param.FermTypeP) {
     case FERM_TYPE_WILSON  :
 
-      QDPIO::cout << "Compute fermion loops for Wilson fermions" << endl;
+      QDPIO::cout << "Compute fermion loops for Wilson fermions" << std::endl;
 
       read(paramtop, "Mass", input.param.Mass);
       read(paramtop, "u0" , input.param.u0);
@@ -170,11 +170,11 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 #if 0
       for (int i=0; i < input.param.numKappa; ++i) {
 	if (toBool(input.param.Kappa[i] < 0.0)) {
-	  QDPIO::cerr << "Unreasonable value for Kappa." << endl;
-	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
+	  QDPIO::cerr << "Unreasonable value for Kappa." << std::endl;
+	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << std::endl;
 	  QDP_abort(1);
 	} else {
-	  QDPIO::cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
+	  QDPIO::cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << std::endl;
 	}
       }
 #endif
@@ -186,7 +186,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     }
 
     {
-      string cfg_type_str;
+      std::string cfg_type_str;
       read(paramtop, "cfg_type", cfg_type_str);
       if (cfg_type_str == "NERSC") {
 	input.param.cfg_type = FILE_START_NERSC  ;
@@ -202,7 +202,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     }
 
     {
-      string prop_type_str;
+      std::string prop_type_str;
       read(paramtop, "prop_type", prop_type_str);
       if (prop_type_str == "SZIN") {
 	input.param.prop_type = PROP_TYPE_SZIN;
@@ -223,9 +223,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(paramtop, "boundary", input.param.boundary);
     read(paramtop, "t_srce", input.param.t_srce);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -236,9 +236,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(inputtop, "Cfg", input.cfg);
     read(inputtop, "Prop", input.prop);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -272,7 +272,7 @@ int main(int argc, char **argv)
   
   XMLReader gauge_xml;
 
-  QDPIO::cout << "Calculation for SU(" << Nc << ")" << endl;
+  QDPIO::cout << "Calculation for SU(" << Nc << ")" << std::endl;
   switch (input.param.cfg_type) 
   {
   case FILE_START_NERSC :
@@ -286,7 +286,7 @@ int main(int argc, char **argv)
 	gaussian(u[dir]);
 	reunit(u[dir]) ; 
       }
-    QDPIO::cout << "Hot/Random configuration created" <<  endl;
+    QDPIO::cout << "Hot/Random configuration created" <<  std::endl;
     break;
   default :
     QDP_error_exit("Configuration type is unsupported.");
@@ -346,7 +346,7 @@ int main(int argc, char **argv)
 	   u[dir] = u_trans[dir] ;
 	 }
 
-       QDPIO::cout << "Random gauge transform done" << endl;
+       QDPIO::cout << "Random gauge transform done" << std::endl;
 
     } // end of gauge transform
 
@@ -399,7 +399,7 @@ int main(int argc, char **argv)
 
   for(int sample = 0 ; sample < input.param.number_sample ; ++sample)
     {
-      QDPIO::cout << "Inversion for sample =  " << sample << endl;
+      QDPIO::cout << "Inversion for sample =  " << sample << std::endl;
       
       q_source = zero ;
       //      gaussian(q_source);
@@ -427,7 +427,7 @@ int main(int argc, char **argv)
       pop(xml_out);
 
 
-      string  xml_tag = "dis_loops" ;
+      std::string  xml_tag = "dis_loops" ;
       ::loops(q_source,psi,input.param.nrow[3],xml_out,xml_tag) ;
       
     }  // numnber of samples

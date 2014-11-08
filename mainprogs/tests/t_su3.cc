@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
                     <<w_plaq<<" "<<s_plaq<<" "<<t_plaq << " " 
 		    <<link<<" "
                     << real(poly_loop) << " " <<imag(poly_loop)
-		    <<endl;
+		    <<std::endl;
 	}
 	
 	Layout::destroy();

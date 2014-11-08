@@ -55,11 +55,11 @@ int main(int argc, char *argv[])
   
   }
   catch(const std::string& s) { 
-    QDPIO::cout << "Caught Exception reading parameters: " << s << endl;
+    QDPIO::cout << "Caught Exception reading parameters: " << s << std::endl;
     QDP_abort(1);
   }
   catch(...) { 
-    QDPIO::cout << "Caught unknown exception while processing input " << endl;
+    QDPIO::cout << "Caught unknown exception while processing input " << std::endl;
     QDP_abort(1);
   }
 
@@ -68,11 +68,11 @@ int main(int argc, char *argv[])
   long multmp = power_num*power_den;
   if( multmp > 0 ) { 
     invertP = false;
-    QDPIO::cout << "Either both num and den powers are + or both are -" << endl;
+    QDPIO::cout << "Either both num and den powers are + or both are -" << std::endl;
   }
   else { 
     invertP = true;
-    QDPIO::cout << "One of num or den powers is -" << endl;
+    QDPIO::cout << "One of num or den powers is -" << std::endl;
   }
 
   unsigned long pn = power_num > 0 ? power_num : -power_num ;
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
   Real error;
   error=remez.generateApprox(degree, pn, pd);
 
-  QDPIO::cout << "Start getPFE" << endl;
+  QDPIO::cout << "Start getPFE" << std::endl;
   RemezCoeff_t pfe;
 
   if( ! invertP ) {
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     pfe = remez.getIPFE();
   }
 
-  QDPIO::cout << "Finished getPFE" << endl;
+  QDPIO::cout << "Finished getPFE" << std::endl;
 
   push(xml_out, "ApproxInfo");
   write(xml_out, "lowerMin", lower);
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
   write(xml_out, "pole", pfe.pole);
   pop(xml_out);
 
-  QDPIO::cout << "Start getIPFE" << endl;
+  QDPIO::cout << "Start getIPFE" << std::endl;
   RemezCoeff_t ipfe;
 
   if( !invertP )  {
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
   else { 
     ipfe = remez.getPFE();
   }
-  QDPIO::cout << "Finished getIPFE" << endl;
+  QDPIO::cout << "Finished getIPFE" << std::endl;
 
   push(xml_out, "IPFECoeffs");
   write(xml_out, "norm", ipfe.norm);
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 
   pop(xml_out);
 
-  QDPIO::cout << "Approximation with degree " << degree << " has maximum error=" << error << endl;
+  QDPIO::cout << "Approximation with degree " << degree << " has maximum error=" << error << std::endl;
   
 
   // Time to bolt

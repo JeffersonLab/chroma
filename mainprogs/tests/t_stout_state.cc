@@ -55,8 +55,8 @@ int main(int argc, char *argv[])
 
   // Try out the plaquette routine
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq = " << w_plaq << endl;
-  QDPIO::cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << std::endl;
+  QDPIO::cout << "link = " << link << std::endl;
 
   // Write out the results
   push(xml,"Observables");
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
    
 
   // -----------------  CHECK SMEARING ----------------------------------------
-  QDPIO::cout << endl << "Stout Smearing Checks " << endl;
+  QDPIO::cout << std::endl << "Stout Smearing Checks " << std::endl;
 
 
   push(xml, "SmearingParams");
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
   }
   
   MesPlq(u_smear, w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq ("<< n_smear << " levels of old stout smearing) = " << w_plaq << endl;
+  QDPIO::cout << "w_plaq ("<< n_smear << " levels of old stout smearing) = " << w_plaq << std::endl;
 
   push(xml, "CheckStoutStateSmear");
   write(xml, "w_plaq_old_smear", w_plaq);
@@ -148,17 +148,17 @@ int main(int argc, char *argv[])
 
   // Get the plaquette
   MesPlq((*s_state).getLinks(), w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq ("<< n_smear << " levels of new stout smearing) = " << w_plaq << endl;
+  QDPIO::cout << "w_plaq ("<< n_smear << " levels of new stout smearing) = " << w_plaq << std::endl;
   write(xml, "new_smearing_from_state", w_plaq);
   
   // Try out the plaquette routine
   MesPlq((*s_state2).getLinks(), w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq (After gauge transf and " << n_smear << " levels new stout smearing) = " << w_plaq << endl << endl;
+  QDPIO::cout << "w_plaq (After gauge transf and " << n_smear << " levels new stout smearing) = " << w_plaq << std::endl << std::endl;
 
   write(xml, "new_smearing_from_state_gtrans", w_plaq);
 
   for(int mu=0; mu < Nd; mu++) {
-    QDPIO::cout << "mu: " << mu << endl;
+    QDPIO::cout << "mu: " << mu << std::endl;
     LatticeColorMatrix Q1, Q2;
     LatticeColorMatrix QQ1,QQ2;
 
@@ -169,9 +169,9 @@ int main(int argc, char *argv[])
     Stouting::getQsandCs(u,Q1,QQ1, C_tmp, mu, s_p.smear_in_this_dirP, s_p.rho);
 
     QDPIO::cout << "Gauge invatiance check for Q: " << norm2( Q2-g*Q1*adj(g) ) 
-		<< endl;
+		<< std::endl;
     QDPIO::cout << "Gauge invariance check for Q^2: " 
-		<< norm2( QQ2 - g*QQ1*adj(g)) << endl;
+		<< norm2( QQ2 - g*QQ1*adj(g)) << std::endl;
 
    
 
@@ -183,28 +183,28 @@ int main(int argc, char *argv[])
     LatticeColorMatrix expiQ = (f[0]+f[1]*Q1+f[2]*QQ1);
     LatticeColorMatrix rg_expiQ    = (f_rg[0]+f_rg[1]*Q2+f_rg[2]*QQ2);
     QDPIO::cout << "Gauge invariance check for e(iQ): " 
-		<< norm2( rg_expiQ - g*expiQ*adj(g)) << endl;
+		<< norm2( rg_expiQ - g*expiQ*adj(g)) << std::endl;
 
 
     LatticeColorMatrix stout_link = expiQ*u[mu];
     LatticeColorMatrix rg_stout_link = rg_expiQ*u_rg[mu];
     QDPIO::cout << "Gauge invariance check for stout_link: " 
 		<< norm2( rg_stout_link - g*stout_link*shift(adj(g),FORWARD,mu) ) 
-		<< endl;
+		<< std::endl;
 
     QDPIO::cout << "Diff getLink(): " << norm2(stout_link-s_state->getLinks()[mu])
-		<<endl;
+		<<std::endl;
 
     QDPIO::cout << "Diff getLink() gtrans ["<<mu<<"] = " 
-		<< norm2(rg_stout_link- s_state2->getLinks()[mu]) << endl;
+		<< norm2(rg_stout_link- s_state2->getLinks()[mu]) << std::endl;
 
     LatticeColorMatrix stout_smeared;
     Stouting::stout_smear(stout_smeared, u, mu, s_p.smear_in_this_dirP, s_p.rho);
     LatticeColorMatrix rg_stout_smeared;
     Stouting::stout_smear(rg_stout_smeared, u_rg, mu, s_p.smear_in_this_dirP, s_p.rho);
 
-    QDPIO::cout << "NonStateStoutSmear - StateStoutSmear: " << norm2(stout_smeared - s_state->getLinks()[mu]) << endl;
-    QDPIO::cout << "RG: NOnStateStoutSmeared -StateStoutSmeared: " <<norm2( rg_stout_smeared - s_state2->getLinks()[mu]) << endl;
+    QDPIO::cout << "NonStateStoutSmear - StateStoutSmear: " << norm2(stout_smeared - s_state->getLinks()[mu]) << std::endl;
+    QDPIO::cout << "RG: NOnStateStoutSmeared -StateStoutSmeared: " <<norm2( rg_stout_smeared - s_state2->getLinks()[mu]) << std::endl;
     
 
   }
@@ -231,11 +231,11 @@ int main(int argc, char *argv[])
   s_state2->deriv(F2);
 
   for(int mu=0; mu < Nd; mu++) { 
-    QDPIO::cout << "tr(RG F - F) = "<< norm2(trace(F2[mu]-F1[mu])) << endl;
+    QDPIO::cout << "tr(RG F - F) = "<< norm2(trace(F2[mu]-F1[mu])) << std::endl;
   }
 
   for(int mu=0; mu < Nd; mu++) { 
-    QDPIO::cout << "RG F - gtrans(F) = "<< norm2(F2[mu]-g*F1[mu]*adj(g)) << endl;
+    QDPIO::cout << "RG F - gtrans(F) = "<< norm2(F2[mu]-g*F1[mu]*adj(g)) << std::endl;
   }
 
   
@@ -289,14 +289,14 @@ int main(int argc, char *argv[])
 
     LatticeColorMatrix diff_mat = adj(g)*tmp_m2*shift(g,FORWARD, mu) - tmp_m;
 
-    QDPIO::cout << "Diff ["<<mu<<"] = " << norm2(diff_mat) << endl;
+    QDPIO::cout << "Diff ["<<mu<<"] = " << norm2(diff_mat) << std::endl;
   }
 
 #endif
 
 #if 0
-  QDPIO::cout << "Force norms before derivative with respect to thin links" << endl;
-  QDPIO::cout << "========================================================" << endl << endl;
+  QDPIO::cout << "Force norms before derivative with respect to thin links" << std::endl;
+  QDPIO::cout << "========================================================" << std::endl << std::endl;
 
   // Get Force norms
   Double F_norm;
@@ -304,11 +304,11 @@ int main(int argc, char *argv[])
   push(xml, "ForcesCheck");
 
   F_norm = norm2(fat_force1);
-  QDPIO::cout << "F_norm for fat force is " << F_norm << endl;
+  QDPIO::cout << "F_norm for fat force is " << F_norm << std::endl;
   write(xml, "forceNormPreGaugeDeriv", F_norm);
 
   F_norm = norm2(fat_force2);
-  QDPIO::cout << "F_norm for RG transformed fat_force is " << F_norm << endl;
+  QDPIO::cout << "F_norm for RG transformed fat_force is " << F_norm << std::endl;
   write(xml, "forceNormPreGaugeDerivGt", F_norm);
 
 
@@ -316,17 +316,17 @@ int main(int argc, char *argv[])
   (*s_state).deriv(fat_force);
   (*s_state2).deriv(fat_force2);
 
-  QDPIO::cout << endl << endl;
-  QDPIO::cout << "Force norms after derivative with respect to thin links" << endl;
-  QDPIO::cout << "========================================================" << endl << endl;
+  QDPIO::cout << std::endl << std::endl;
+  QDPIO::cout << "Force norms after derivative with respect to thin links" << std::endl;
+  QDPIO::cout << "========================================================" << std::endl << std::endl;
 
   // Get Force norms
   F_norm = norm2(fat_force1);
-  QDPIO::cout << "F_norm for fat force is " << F_norm << endl;
+  QDPIO::cout << "F_norm for fat force is " << F_norm << std::endl;
   write(xml, "ForceNormPostGaugeDeriv", F_norm);
 
   F_norm = norm2(fat_force2);
-  QDPIO::cout << "F_norm for RG transformed fat_force is " << F_norm << endl;
+  QDPIO::cout << "F_norm for RG transformed fat_force is " << F_norm << std::endl;
   write(xml, "ForceNormPostGaugeDerivGt", F_norm);
 
   multi1d<LatticeColorMatrix> force_diff(Nd);
@@ -335,15 +335,15 @@ int main(int argc, char *argv[])
   { 
     force_diff[mu]  = fat_force1[mu] - adj(g)*fat_force2[mu]*g;
     F_norm = sqrt(norm2(force_diff[mu]));
-    QDPIO::cout << "|| force - RG force in dir "<< mu <<" ||=  "<< F_norm <<   endl;
-    ostringstream tagname;
+    QDPIO::cout << "|| force - RG force in dir "<< mu <<" ||=  "<< F_norm <<   std::endl;
+    std::ostringstream tagname;
     tagname << "force_diff_norm_" << mu;
     write(xml, tagname.str(), F_norm);
   }
   pop(xml);
 
   F_norm = sqrt(norm2(force_diff));
-  QDPIO::cout << "Total difference between original and gauge transformed force: " << F_norm << endl;
+  QDPIO::cout << "Total difference between original and gauge transformed force: " << F_norm << std::endl;
   push(xml, "ForceDiffNorm");
   write(xml, "totalForceDiffNorm", F_norm);
   pop(xml);

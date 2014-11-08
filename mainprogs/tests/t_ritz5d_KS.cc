@@ -31,7 +31,7 @@ struct Param_t {
 };
 
 // Declare routine to read the parameters
-void readParams(const string& filename, Param_t& params)
+void readParams(const std::string& filename, Param_t& params)
 {
   XMLReader reader(filename);
 
@@ -60,7 +60,7 @@ void readParams(const string& filename, Param_t& params)
     read(reader, "/params/zolotarev/wilsonMass", params.wilson_mass);
 
   }
-  catch(const string& e) { 
+  catch(const std::string& e) { 
     throw e;
   }
 }
@@ -112,8 +112,8 @@ int main(int argc, char **argv)
   try { 
     readParams(Chroma::getXMLInputFileName(), params);
   }
-  catch(const string& s) { 
-    QDPIO::cerr << "Caught exception " << s << endl;
+  catch(const std::string& s) { 
+    QDPIO::cerr << "Caught exception " << s << std::endl;
     exit(1);
   }
 
@@ -291,13 +291,13 @@ UnprecOvlapContFrac5DFermActArray S(fbc5,
       check_norm[i] = sqrt(check_norm[i]);
     }
 
-    QDPIO::cout << "check_norm["<<i+1<<"] = " << check_norm[i] << endl;
+    QDPIO::cout << "check_norm["<<i+1<<"] = " << check_norm[i] << std::endl;
   }
   write(xml_out, "check_norm", check_norm);
 
   for(int i=0; i < params.n_eig; i++) { 
     check_norm[i] /= fabs(lambda[i]);
-    QDPIO::cout << "check_norm_rel["<< i+1 <<"] = " << check_norm[i] << endl;
+    QDPIO::cout << "check_norm_rel["<< i+1 <<"] = " << check_norm[i] << std::endl;
   }
   write(xml_out, "check_norm_rel", check_norm);
   pop(xml_out);

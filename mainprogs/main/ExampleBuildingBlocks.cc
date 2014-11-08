@@ -13,7 +13,7 @@
 //                                                                                   //
 // description:                                                                      //
 //                                                                                   //
-// Note that the file name patterns for the u and d building blocks must be a string //
+// Note that the file name patterns for the u and d building blocks must be a std::string //
 // of the form "...%c%i...%c%i...%c%i..." where the first %c%i corresponds to qz,    //
 // the second to qy, and the third to qx.                                            //
 //                                                                                   //
@@ -77,7 +77,7 @@ int main( int argc, char** argv )
   {
     read(xml_in, "/ExampleBuildingBlocks/Cfg", cfg);
   }
-  catch(const string& e)
+  catch(const std::string& e)
   {
     QDP_error_exit("Error reading in ExampleBuildingBlocks: %s", e.c_str());
   }
@@ -88,9 +88,9 @@ int main( int argc, char** argv )
   {
     XMLReader gauge_file_xml, gauge_xml;
 
-    QDPIO::cout << "Initialize Gauge field" << endl;
+    QDPIO::cout << "Initialize Gauge field" << std::endl;
     gaugeStartup(gauge_file_xml, gauge_xml, u, cfg);
-    QDPIO::cout << "Gauge field initialized!" << endl;
+    QDPIO::cout << "Gauge field initialized!" << std::endl;
 
     config_xml << gauge_xml;
   }

@@ -14,7 +14,7 @@ namespace Chroma
   //! Holds gauge action
   struct HBGauge
   {
-    string  gauge_act;     /*!<  Holds gauge action xml */
+    std::string  gauge_act;     /*!<  Holds gauge action xml */
   };
 
 
@@ -28,12 +28,12 @@ namespace Chroma
       xml_tmp.print(os);
       p.gauge_act = os.str();
     }
-    catch(const string& s) {
-      QDPIO::cerr << "Caught Exception while reading gauge action: " << s <<endl;
+    catch(const std::string& s) {
+      QDPIO::cerr << "Caught Exception while reading gauge action: " << s <<std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "Gauge action: read \n" << p.gauge_act << endl;
+    QDPIO::cout << "Gauge action: read \n" << p.gauge_act << std::endl;
   }
 
 
@@ -53,7 +53,7 @@ namespace Chroma
       read(paramtop, "nOver", p.nOver);
     }
     catch(const std::string& e ) { 
-      QDPIO::cerr << "Caught Exception reading HBParams: " << e << endl;
+      QDPIO::cerr << "Caught Exception reading HBParams: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -97,10 +97,10 @@ namespace Chroma
       read(paramtop, "./SaveVolfmt", p.save_volfmt);
 
       if (p.n_updates_this_run % p.save_interval != 0)
-	throw string("UpdateThisRun not a multiple of SaveInterval");
+	throw std::string("UpdateThisRun not a multiple of SaveInterval");
     }
     catch(const std::string& e ) { 
-      QDPIO::cerr << "Caught Exception reading MCControl: " << e << endl;
+      QDPIO::cerr << "Caught Exception reading MCControl: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -151,7 +151,7 @@ namespace Chroma
       read(paramtop, "HBParams", p.hb_params);
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading HBItrParams XML : " << e << endl;
+      QDPIO::cerr << "Error reading HBItrParams XML : " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -188,12 +188,12 @@ namespace Chroma
 	std::ostringstream inline_os;
 	measurements_xml.print(inline_os);
 	p.inline_measurement_xml = inline_os.str();
-	QDPIO::cout << "InlineMeasurements are: " << endl;
-	QDPIO::cout << p.inline_measurement_xml << endl;
+	QDPIO::cout << "InlineMeasurements are: " << std::endl;
+	QDPIO::cout << p.inline_measurement_xml << std::endl;
       }
     }
     catch(const std::string& e) {
-      QDPIO::cerr << "Caught Exception reading HBControl: " << e << endl;
+      QDPIO::cerr << "Caught Exception reading HBControl: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -252,7 +252,7 @@ namespace Chroma
   void saveState(const HBItrParams& update_params, 
 		 MCControl& mc_control,
 		 unsigned long update_no,
-		 const string& inline_measurement_xml,
+		 const std::string& inline_measurement_xml,
 		 const multi1d<LatticeColorMatrix>& u)
   {
     START_CODE();
@@ -359,7 +359,7 @@ namespace Chroma
     if( ! warm_up_p ) 
     {
       QDPIO::cout << "Doing " << user_measurements.size() 
-		  <<" user measurements" << endl;
+		  <<" user measurements" << std::endl;
       for(int m=0; m < user_measurements.size(); m++) 
       {
 	AbsInlineMeasurement& the_meas = *(user_measurements[m]);
@@ -398,7 +398,7 @@ namespace Chroma
     // Compute how many updates to do
     unsigned long to_do = hb_control.mc_control.n_warm_up_updates;
       
-    QDPIO::cout << "WarmUp Control: About to do " << to_do << " updates" << endl;
+    QDPIO::cout << "WarmUp Control: About to do " << to_do << " updates" << std::endl;
 
     // XML Output
     push(xml_out, "WarmUpdates");
@@ -456,7 +456,7 @@ namespace Chroma
       to_do = total_updates - cur_update ;
     }
       
-    QDPIO::cout << "MC Control: About to do " << to_do << " updates" << endl;
+    QDPIO::cout << "MC Control: About to do " << to_do << " updates" << std::endl;
 
     // XML Output
     push(xml_out, "MCUpdates");
@@ -470,7 +470,7 @@ namespace Chroma
       cur_update++;
 	
       // Decide if the next update is a warm up or not
-      QDPIO::cout << "Doing Update: " << cur_update << " warm_up_p = " << false << endl;
+      QDPIO::cout << "Doing Update: " << cur_update << " warm_up_p = " << false << std::endl;
 
       // Log
       write(xml_out, "update_no", cur_update);
@@ -534,7 +534,7 @@ namespace Chroma
       doProd(xml_out, u, S_g, hb_control, default_measurements, user_measurements);
     }
     catch( const std::string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
+      QDPIO::cerr << "Caught Exception: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -591,15 +591,15 @@ int main(int argc, char *argv[])
     write(xml_out, "Input", xml_in);
   }
   catch( const std::string& e ) {
-    QDPIO::cerr << "Caught Exception reading input XML: " << e << endl;
+    QDPIO::cerr << "Caught Exception reading input XML: " << e << std::endl;
     QDP_abort(1);
   }
   catch( std::exception& e ) {
-    QDPIO::cerr << "Caught standard library exception: " << e.what() << endl;
+    QDPIO::cerr << "Caught standard library exception: " << e.what() << std::endl;
     QDP_abort(1);
   }
   catch(...) {
-    QDPIO::cerr << "Caught unknown exception " << endl;
+    QDPIO::cerr << "Caught unknown exception " << std::endl;
     QDP_abort(1);
   }
 
@@ -642,7 +642,7 @@ int main(int argc, char *argv[])
     }
     catch( const std::string& e) 
     {
-      QDPIO::cerr << "Error grepping the gaugeact name: " << e<<  endl;
+      QDPIO::cerr << "Error grepping the gaugeact name: " << e<<  std::endl;
       QDP_abort(1);
     }
 
@@ -658,29 +658,29 @@ int main(int argc, char *argv[])
   }
   catch(std::bad_cast) 
   {
-    QDPIO::cerr << "PURGAUG: caught cast error" << endl;
+    QDPIO::cerr << "PURGAUG: caught cast error" << std::endl;
     QDP_abort(1);
   }
   catch(std::bad_alloc) 
   { 
     // This might happen on any node, so report it
-    cerr << "PURGAUG: caught bad memory allocation" << endl;
+    std::cerr << "PURGAUG: caught bad memory allocation" << std::endl;
     QDP_abort(1);
   }
   catch(const std::string& e) 
   {
-    QDPIO::cerr << "PURGAUG: Caught Exception: " << e << endl;
+    QDPIO::cerr << "PURGAUG: Caught Exception: " << e << std::endl;
     QDP_abort(1);
   }
   catch(std::exception& e) 
   {
-    QDPIO::cerr << "PURGAUG: Caught standard library exception: " << e.what() << endl;
+    QDPIO::cerr << "PURGAUG: Caught standard library exception: " << e.what() << std::endl;
     QDP_abort(1);
   }
   catch(...)
   {
     // This might happen on any node, so report it
-    cerr << "PURGAUG: caught generic exception during measurement" << endl;
+    std::cerr << "PURGAUG: caught generic exception during measurement" << std::endl;
     QDP_abort(1);
   }
 
@@ -695,18 +695,18 @@ int main(int argc, char *argv[])
 
     std::ostringstream os;
     MeasXML.print(os);
-    QDPIO::cout << os.str() << endl << flush;
+    QDPIO::cout << os.str() << std::endl << std::flush;
 
     read(MeasXML, "/InlineMeasurements", the_measurements);
   }
   catch(const std::string& e) { 
-    QDPIO::cerr << "Caugth exception while reading measurements: " << e << endl
-		<< flush;
+    QDPIO::cerr << "Caugth exception while reading measurements: " << e << std::endl
+		<< std::flush;
 
     QDP_abort(1);
   }
 
-  QDPIO::cout << "There are " << the_measurements.size() << " user measurements " << endl;
+  QDPIO::cout << "There are " << the_measurements.size() << " user measurements " << std::endl;
 
   
   // Run
@@ -716,27 +716,27 @@ int main(int argc, char *argv[])
   } 
   catch(std::bad_cast) 
   {
-    QDPIO::cerr << "PURGAUG: caught cast error" << endl;
+    QDPIO::cerr << "PURGAUG: caught cast error" << std::endl;
     QDP_abort(1);
   }
   catch(std::bad_alloc) 
   { 
-    QDPIO::cerr << "PURGAUG: caught bad memory allocation" << endl;
+    QDPIO::cerr << "PURGAUG: caught bad memory allocation" << std::endl;
     QDP_abort(1);
   }
   catch(const std::string& e) 
   { 
-    QDPIO::cerr << "PURGAUG: Caught string exception: " << e << endl;
+    QDPIO::cerr << "PURGAUG: Caught std::string exception: " << e << std::endl;
     QDP_abort(1);
   }
   catch(std::exception& e) 
   {
-    QDPIO::cerr << "PURGAUG: Caught standard library exception: " << e.what() << endl;
+    QDPIO::cerr << "PURGAUG: Caught standard library exception: " << e.what() << std::endl;
     QDP_abort(1);
   }
   catch(...) 
   {
-    QDPIO::cerr << "PURGAUG: Caught generic/unknown exception" << endl;
+    QDPIO::cerr << "PURGAUG: Caught generic/unknown exception" << std::endl;
     QDP_abort(1);
   }
 

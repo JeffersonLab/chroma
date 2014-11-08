@@ -20,9 +20,9 @@ enum SciDACPropType {
 };
 
 //! Read a SciDACPropType enum
-void read(XMLReader& xml, const string& path, SciDACPropType& param)
+void read(XMLReader& xml, const std::string& path, SciDACPropType& param)
 {
-  string prop_type_str;
+  std::string prop_type_str;
   read(xml, path, prop_type_str);
   if (prop_type_str == "PROPAGATOR")
     param = SCIDAC_PROP;
@@ -34,7 +34,7 @@ void read(XMLReader& xml, const string& path, SciDACPropType& param)
     param = SCIDAC_SEQPROP;
   else 
   {
-    QDPIO::cerr << "Unsupported propagator type" << endl;
+    QDPIO::cerr << "Unsupported propagator type" << std::endl;
     QDP_abort(1);
   }
 }
@@ -51,10 +51,10 @@ struct Param_t
 struct Prop_t
 {
   PropType  prop_in_type;       // propagator format
-  string    prop_in_file;
+  std::string    prop_in_file;
 
   PropType  prop_out_type;      // propagator format
-  string    prop_out_file;
+  std::string    prop_out_file;
   QDP_volfmt_t prop_out_volfmt; // volume format (SINGLEFILE or MULTIFILE)
 
   SciDACPropType   scidac_prop_type;   // Either "PROPAGATOR", or "SEQPROP", etc.
@@ -69,7 +69,7 @@ struct QpropTransf_input_t
 
 
 //! Propagator parameters
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -86,7 +86,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 //! Parameters for running code
-void read(XMLReader& xml, const string& path, Param_t& param)
+void read(XMLReader& xml, const std::string& path, Param_t& param)
 {
   XMLReader paramtop(xml, path);
 
@@ -103,7 +103,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
   default :
     /**************************************************************************/
-    QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+    QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
     QDP_abort(1);
   }
 
@@ -113,7 +113,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, QpropTransf_input_t& input)
+void read(XMLReader& xml, const std::string& path, QpropTransf_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -126,9 +126,9 @@ void read(XMLReader& xml, const string& path, QpropTransf_input_t& input)
     // Read in the propagator file info
     read(inputtop, "Prop", input.prop);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading qproptransf data: " << e << endl;
+    QDPIO::cerr << "Error reading qproptransf data: " << e << std::endl;
     throw;
   }
 }
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  QDPIO::cout << "QPROPTRANSF: propagator transformation utility" << endl;
+  QDPIO::cout << "QPROPTRANSF: propagator transformation utility" << std::endl;
 
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "qproptransf");
@@ -261,8 +261,8 @@ int main(int argc, char *argv[])
     // SciDAC output expects to find the relevant structures in the xml input.
     // xml input file
     // There are various forms of SciDAC prop types
-    string propHeaderTag;
-    string fileHeaderTag;
+    std::string propHeaderTag;
+    std::string fileHeaderTag;
     
     switch (input.prop.scidac_prop_type)
     {
@@ -295,16 +295,16 @@ int main(int argc, char *argv[])
     break;
 
     default:
-      QDPIO::cerr << "Unknown SciDAC prop type" << endl;
+      QDPIO::cerr << "Unknown SciDAC prop type" << std::endl;
       QDP_abort(1);
     }
 
     //
-    // Suck the header into a string
+    // Suck the header into a std::string
     //
-    string header;
+    std::string header;
 
-    QDPIO::cout << "Read " << propHeaderTag << endl;
+    QDPIO::cout << "Read " << propHeaderTag << std::endl;
 
     try
     {
@@ -313,13 +313,13 @@ int main(int argc, char *argv[])
       header_xml.print(header_os);
       header = header_os.str();
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error extracting " << propHeaderTag << ": " << e << endl;
+      QDPIO::cerr << "Error extracting " << propHeaderTag << ": " << e << std::endl;
       throw;
     }
 
-    QDPIO::cout << "Header = " << header << endl;
+    QDPIO::cout << "Header = " << header << std::endl;
 
     {
       XMLBufferWriter prop_out_file_xml;
@@ -328,14 +328,14 @@ int main(int argc, char *argv[])
       write(prop_out_file_xml, "id", id);
       pop(prop_out_file_xml);
 
-      istringstream header_is(header);
+      std::istringstream header_is(header);
       XMLReader xml_header(header_is);
       XMLBufferWriter prop_out_record_xml;
 //      write(prop_out_record_xml, ".", header);
       
-      QDPIO::cout << "string out header" << endl;
+      QDPIO::cout << "std::string out header" << std::endl;
       prop_out_record_xml << xml_header;
-      QDPIO::cout << "string out header done" << endl;
+      QDPIO::cout << "std::string out header done" << std::endl;
     
       // Write it
       writeQprop(prop_out_file_xml, prop_out_record_xml, prop,
@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
   break;
 
   default:
-    QDPIO::cerr << "unknown output type = " << input.prop.prop_out_type << endl;
+    QDPIO::cerr << "unknown output type = " << input.prop.prop_out_type << std::endl;
     QDP_abort(1);
   }
 

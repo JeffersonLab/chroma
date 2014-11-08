@@ -22,7 +22,7 @@ struct App_input_t {
   Cfg_t        cfg;
 };
 
-void read(XMLReader& xml, const string& path, App_input_t& input)
+void read(XMLReader& xml, const std::string& path, App_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -35,9 +35,9 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -54,8 +54,8 @@ int main(int argc, char **argv)
   try {
     read(xml_in, "/ovlapTest", input);
   }
-   catch( const string& e) { 
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+   catch( const std::string& e) { 
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
  
   Handle< FermBC< multi1d<LatticeFermion> > >  fbc5(new SimpleFermBC<multi1d<LatticeFermion> >(input.param.boundary));
 
-  QDPIO::cout << "FERM_ACT_ZOLOTAREV_5D" << endl;
+  QDPIO::cout << "FERM_ACT_ZOLOTAREV_5D" << std::endl;
   const Zolotarev5DFermActParams& zolo5d = dynamic_cast<const Zolotarev5DFermActParams& > (*(input.param.FermActHandle));
   
   //! N order Zolo approx, with wilson action.
@@ -162,8 +162,8 @@ int main(int argc, char **argv)
   
   
   Double r_norm5 = sqrt(dnorm/g5chi_norm);
-  QDPIO::cout << "|| chi - D psi ||/ || chi || = " << r_norm5 << endl;
-  QDPIO::cout << "time = " << t << " seconds " << endl;
+  QDPIO::cout << "|| chi - D psi ||/ || chi || = " << r_norm5 << std::endl;
+  QDPIO::cout << "time = " << t << " seconds " << std::endl;
   push(xml_out, "Inv5DCheck");
   write(xml_out, "r_norm", r_norm5);
   pop(xml_out);
@@ -209,8 +209,8 @@ int main(int argc, char **argv)
   
   
   r_norm5 = sqrt(dnorm/g5chi_norm);
-  QDPIO::cout << "|| chi - D psi ||/ || chi || = " << r_norm5 << endl;
-  QDPIO::cout << "time = " << t << " seconds " << endl;
+  QDPIO::cout << "|| chi - D psi ||/ || chi || = " << r_norm5 << std::endl;
+  QDPIO::cout << "time = " << t << " seconds " << std::endl;
   push(xml_out, "Inv5DCheck");
   write(xml_out, "r_norm", r_norm5);
   pop(xml_out);

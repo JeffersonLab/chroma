@@ -29,8 +29,8 @@ enum WallFormFacType
 
 struct Prop_t
 {
-  string       forwprop_file;
-  string       backprop_file;
+  std::string       forwprop_file;
+  std::string       backprop_file;
 };
 
 
@@ -56,7 +56,7 @@ struct WallFormFac_input_t
 struct WallFormFac_bar_t
 {
   int                     formfac_value;
-  string                  formfac_type;
+  std::string                  formfac_type;
   WallFormFac_formfacs_t  formfacs;
 };
 
@@ -75,9 +75,9 @@ struct WallFormFac_output_t
 
 
 //! Read a Wall-formfactor enum
-void read(XMLReader& xml, const string& path, WallFormFacType& param)
+void read(XMLReader& xml, const std::string& path, WallFormFacType& param)
 {
-  string wallff_str;
+  std::string wallff_str;
   read(xml, path, wallff_str);
   if (wallff_str == "PION")
     param = WALLFF_PION;
@@ -95,16 +95,16 @@ void read(XMLReader& xml, const string& path, WallFormFacType& param)
     param = WALLFF_DELTA_P;
   else 
   {
-    QDPIO::cerr << "Unsupported wallformfac type" << endl;
+    QDPIO::cerr << "Unsupported wallformfac type" << std::endl;
     QDP_abort(1);
   }
 }
 
 
 //! Write a Wall-formfactor enum
-void write(XMLWriter& xml, const string& path, const WallFormFacType& param)
+void write(XMLWriter& xml, const std::string& path, const WallFormFacType& param)
 {
-  string wallff_str;
+  std::string wallff_str;
   if (param == WALLFF_PION)
     wallff_str = "PION";
   else if (param == WALLFF_RHO)
@@ -121,7 +121,7 @@ void write(XMLWriter& xml, const string& path, const WallFormFacType& param)
     wallff_str = "DELTA_P";
   else 
   {
-    QDPIO::cerr << "Unsupported formfac type" << endl;
+    QDPIO::cerr << "Unsupported formfac type" << std::endl;
     QDP_abort(1);
   }
   write(xml, path, wallff_str);
@@ -129,7 +129,7 @@ void write(XMLWriter& xml, const string& path, const WallFormFacType& param)
 
 
 //! Propagator filenames
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -139,7 +139,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 //! Parameter input
-void read(XMLReader& xml, const string& path, Param_t& param)
+void read(XMLReader& xml, const std::string& path, Param_t& param)
 {
   XMLReader paramtop(xml, path);
 
@@ -161,7 +161,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   default:
     /**************************************************************************/
     QDPIO::cerr << "Input parameter version " << version 
-		<< " unsupported." << endl;
+		<< " unsupported." << std::endl;
     QDP_abort(1);
   }
 
@@ -173,7 +173,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, WallFormFac_input_t& input)
+void read(XMLReader& xml, const std::string& path, WallFormFac_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -189,7 +189,7 @@ void read(XMLReader& xml, const string& path, WallFormFac_input_t& input)
     // Read in the output propagator/source configuration info
     read(inputtop, "Prop", input.prop);
   }
-  catch(const string& e)
+  catch(const std::string& e)
   {
     QDP_error_exit("Error reading in wallformfac: %s", e.c_str());
   }
@@ -246,16 +246,16 @@ int main(int argc, char *argv[])
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  QDPIO::cout << " WALLFORMFAC: Form factors for Wilson-like fermions" << endl;
-  QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
+  QDPIO::cout << " WALLFORMFAC: Form factors for Wilson-like fermions" << std::endl;
+  QDPIO::cout << std::endl << "     Gauge group: SU(" << Nc << ")" << std::endl;
   QDPIO::cout << "     volume: " << input.param.nrow[0];
   for (int i=1; i<Nd; ++i) {
     QDPIO::cout << " x " << input.param.nrow[i];
   }
-  QDPIO::cout << endl;
+  QDPIO::cout << std::endl;
 
   // Read in the configuration along with relevant information.
-  QDPIO::cout << "Attempt to initialize the gauge field" << endl;
+  QDPIO::cout << "Attempt to initialize the gauge field" << std::endl;
 
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
@@ -266,7 +266,7 @@ int main(int argc, char *argv[])
   // Next check the gauge field configuration by reunitarizing.
   unitarityCheck(u);
 
-  QDPIO::cout << "Gauge field successfully initialized" << endl;
+  QDPIO::cout << "Gauge field successfully initialized" << std::endl;
 
 
   // Instantiate XML writer for XMLDAT
@@ -299,11 +299,11 @@ int main(int argc, char *argv[])
   ChromaProp_t forward_prop_header;
   PropSourceConst_t forward_source_header;
   {
-    QDPIO::cout << "Attempt to read forward propagator" << endl;
+    QDPIO::cout << "Attempt to read forward propagator" << std::endl;
     readQprop(forwprop_file_xml, 
 	      forwprop_record_xml, forward_quark_prop,
 	      input.prop.forwprop_file, QDPIO_SERIAL);
-    QDPIO::cout << "Forward propagator successfully read" << endl;
+    QDPIO::cout << "Forward propagator successfully read" << std::endl;
    
     // Try to invert this record XML into a ChromaProp struct
     // Also pull out the id of this source
@@ -312,9 +312,9 @@ int main(int argc, char *argv[])
       read(forwprop_record_xml, "/Propagator/ForwardProp", forward_prop_header);
       read(forwprop_record_xml, "/Propagator/PropSource", forward_source_header);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+      QDPIO::cerr << "Error extracting forward_prop header: " << e << std::endl;
       throw;
     }
   }
@@ -322,7 +322,7 @@ int main(int argc, char *argv[])
   // Sanity check
   if (input.param.wall_source && forward_source_header.source.id != "WALL_SOURCE")
   {
-    QDPIO::cerr << "Wallformfac: wall_source flag set but not a wall source forward prop" << endl;
+    QDPIO::cerr << "Wallformfac: wall_source flag set but not a wall source forward prop" << std::endl;
     QDP_abort(1);
   }
 
@@ -357,7 +357,7 @@ int main(int argc, char *argv[])
   ChromaProp_t backward_prop_header;
   PropSourceConst_t backward_source_header;
   {
-    QDPIO::cout << "Attempt to read backward propagator" << endl;
+    QDPIO::cout << "Attempt to read backward propagator" << std::endl;
     readQprop(backprop_file_xml, 
 	      backprop_record_xml, backward_quark_prop,
 	      input.prop.backprop_file, QDPIO_SERIAL);
@@ -369,18 +369,18 @@ int main(int argc, char *argv[])
       read(backprop_record_xml, "/Propagator/ForwardProp", backward_prop_header);
       read(backprop_record_xml, "/Propagator/PropSource", backward_source_header);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error extracting backward_prop header: " << e << endl;
+      QDPIO::cerr << "Error extracting backward_prop header: " << e << std::endl;
       throw;
     }
   }
-  QDPIO::cout << "Backward propagator successfully read" << endl;
+  QDPIO::cout << "Backward propagator successfully read" << std::endl;
    
   // Sanity check
   if (! input.param.wall_source && backward_source_header.source.id != "WALL_SOURCE")
   {
-    QDPIO::cerr << "Wallformfac: wall_source flag false but not a wall source backward prop" << endl;
+    QDPIO::cerr << "Wallformfac: wall_source flag false but not a wall source backward prop" << std::endl;
     QDP_abort(1);
   }
 
@@ -445,7 +445,7 @@ int main(int argc, char *argv[])
     {
       std::istringstream  xml_s(backward_source_header.source.xml);
       XMLReader  sinktop(xml_s);
-      QDPIO::cout << "Source = " << backward_source_header.source.id << endl;
+      QDPIO::cout << "Source = " << backward_source_header.source.id << std::endl;
 
       Handle< QuarkSourceSink<LatticePropagator> >
 	sinkSmearing(ThePropSinkSmearingFactory::Instance().createObject(backward_source_header.source.id,
@@ -456,7 +456,7 @@ int main(int argc, char *argv[])
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "wallformfac: Caught Exception creating sink smear: " << e << endl;
+      QDPIO::cerr << "wallformfac: Caught Exception creating sink smear: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -495,7 +495,7 @@ int main(int argc, char *argv[])
   form.mom2_max = input.param.mom2_max;
   form.wall_source = input.param.wall_source;
 
-  multi1d<string> wallformfac_names(7);
+  multi1d<std::string> wallformfac_names(7);
   wallformfac_names[0] = "PION";
   wallformfac_names[1] = "RHO";
   wallformfac_names[2] = "RHO_PI";
@@ -512,7 +512,7 @@ int main(int argc, char *argv[])
   push(xml_seq_src, "Wilson_3Pt_fn_measurements");
 
   QDPIO::cout << "Looping over " << input.param.formfac_type.size() 
-	      << " kinds of form-factors" << endl;
+	      << " kinds of form-factors" << std::endl;
 
   // Loop over types of form-factor
   for (int formfac_ctr = 0; formfac_ctr < input.param.formfac_type.size(); ++formfac_ctr) 
@@ -528,7 +528,7 @@ int main(int argc, char *argv[])
     form.bar[formfac_ctr].formfac_value = formfac_value;
     form.bar[formfac_ctr].formfac_type = wallformfac_names[formfac_value];
 
-    QDPIO::cout << "Measurements for formfac_value = " << formfac_value << endl;
+    QDPIO::cout << "Measurements for formfac_value = " << formfac_value << std::endl;
 
     switch (formfac_type)
     {
@@ -612,7 +612,7 @@ int main(int argc, char *argv[])
       break;
 
     default:
-      QDPIO::cerr << "Unknown value of formfac_ctr " << formfac_ctr << endl;
+      QDPIO::cerr << "Unknown value of formfac_ctr " << formfac_ctr << std::endl;
       QDP_abort(1);
     }
 

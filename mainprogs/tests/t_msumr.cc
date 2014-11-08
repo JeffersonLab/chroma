@@ -22,7 +22,7 @@ struct App_input_t {
 };
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, App_input_t& input)
+void read(XMLReader& xml, const std::string& path, App_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -35,9 +35,9 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -56,8 +56,8 @@ int main(int argc, char **argv)
   try {
     read(xml_in, "/ovlapTest", input);
   }
-   catch( const string& e) { 
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+   catch( const std::string& e) { 
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -127,9 +127,9 @@ int main(int argc, char **argv)
   t = swatch.getTimeInSeconds();
 
   QDPIO::cout << "Multi Qprop with Relaxed SUMR on Point source: " << n_count
-	      << " iters " << endl;
+	      << " iters " << std::endl;
 
-  QDPIO::cout << "Wall Clock Time (Rel SUMR, Point) = " << t << " seconds" << endl;
+  QDPIO::cout << "Wall Clock Time (Rel SUMR, Point) = " << t << " seconds" << std::endl;
 
   push(xml_out, "RelSUMRPoint");
   write(xml_out, "n_count", n_count);
@@ -155,9 +155,9 @@ int main(int argc, char **argv)
   t = swatch.getTimeInSeconds();
 
   QDPIO::cout << "Multi Qprop with Relaxed CG on Point source: " << n_count
-	      << " iters " << endl;
+	      << " iters " << std::endl;
 
-  QDPIO::cout << "Wall Clock Time (RelCG, Point) = " << t << " seconds" << endl;
+  QDPIO::cout << "Wall Clock Time (RelCG, Point) = " << t << " seconds" << std::endl;
 
   push(xml_out, "RelCGPoint");
   write(xml_out, "n_count", n_count);
@@ -182,9 +182,9 @@ int main(int argc, char **argv)
   t = swatch.getTimeInSeconds();
 
   QDPIO::cout << "Multi Qprop with Relaxed SUMR on Point source: " << n_count
-	      << " iters " << endl;
+	      << " iters " << std::endl;
 
-  QDPIO::cout << "Wall Clock Time (SUMR, Point) = " << t << " seconds" << endl;
+  QDPIO::cout << "Wall Clock Time (SUMR, Point) = " << t << " seconds" << std::endl;
 
   push(xml_out, "SUMRPoint");
   write(xml_out, "n_count", n_count);
@@ -210,9 +210,9 @@ int main(int argc, char **argv)
   t = swatch.getTimeInSeconds();
 
   QDPIO::cout << "Multi Qprop with CG on Point source: " << n_count
-	      << " iters " << endl;
+	      << " iters " << std::endl;
 
-  QDPIO::cout << "Wall Clock Time (CG, Point) = " << t << " seconds" << endl;
+  QDPIO::cout << "Wall Clock Time (CG, Point) = " << t << " seconds" << std::endl;
 
   push(xml_out, "CGPoint");
   write(xml_out, "n_count", n_count);
@@ -242,9 +242,9 @@ int main(int argc, char **argv)
   t = swatch.getTimeInSeconds();
 
   QDPIO::cout << "Multi Qprop with SUMR on Gaussian source: " << n_count
-	      << " iters " << endl;
+	      << " iters " << std::endl;
 
-  QDPIO::cout << "Wall Clock Time (SUMR, Gaussian) = " << t << " seconds" << endl;
+  QDPIO::cout << "Wall Clock Time (SUMR, Gaussian) = " << t << " seconds" << std::endl;
 
   push(xml_out, "MSUMRGauss");
   write(xml_out, "n_count", n_count);
@@ -270,9 +270,9 @@ int main(int argc, char **argv)
   t = swatch.getTimeInSeconds();
 
   QDPIO::cout << "Multi Qprop with CG on Gaussian source: " << n_count
-	      << " iters " << endl;
+	      << " iters " << std::endl;
 
-  QDPIO::cout << "Wall Clock Time (CG, Gaussian) = " << t << " seconds" << endl;
+  QDPIO::cout << "Wall Clock Time (CG, Gaussian) = " << t << " seconds" << std::endl;
 
   push(xml_out, "CGGauss");
   write(xml_out, "n_count", n_count);

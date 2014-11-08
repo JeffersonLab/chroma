@@ -51,17 +51,17 @@ int main(int argc, char *argv[])
 
     WilsonDslash D(state);
 
-    QDPIO::cout << "before dslash call" << endl;
+    QDPIO::cout << "before dslash call" << std::endl;
     D.apply(chi, psi, PLUS, 0); 
     D.apply(chi, psi, PLUS, 1); 
-    QDPIO::cout << "after dslash call" << endl;
+    QDPIO::cout << "after dslash call" << std::endl;
 
-    QDPIO::cout << "before wilson construct" << endl;
+    QDPIO::cout << "before wilson construct" << std::endl;
     Real Mass = 0.1;
     UnprecWilsonLinOp M(state,Mass);
-    QDPIO::cout << "after wilson construct" << endl;
+    QDPIO::cout << "after wilson construct" << std::endl;
     M(chi, psi, PLUS); 
-    QDPIO::cout << "after wilson call" << endl;
+    QDPIO::cout << "after wilson call" << std::endl;
   }
 
   {  

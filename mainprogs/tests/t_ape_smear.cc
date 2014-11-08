@@ -43,8 +43,8 @@ int main(int argc, char *argv[])
 
   // Try out the plaquette routine
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq = " << w_plaq << endl;
-  QDPIO::cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << std::endl;
+  QDPIO::cout << "link = " << link << std::endl;
 
   // Write out the results
   push(xml,"observables");
@@ -79,8 +79,8 @@ int main(int argc, char *argv[])
 
   // Compute plaquette on smeared links
   MesPlq(u_smr, w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq = " << w_plaq << endl;
-  QDPIO::cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << std::endl;
+  QDPIO::cout << "link = " << link << std::endl;
 
   // Write out the results
   push(xml,"Smeared_observables");

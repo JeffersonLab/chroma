@@ -21,7 +21,7 @@ typedef OScalar< PScalar < PScalar < RScalar< PScalar < DOUBLE > > > > > LDble;
 // Get at the REAL embedded in an LScal
 #define AT_REAL(a)  (a.elem().elem().elem().elem().elem())
                                                                                 
-// Get the first element of a vector over a subset
+// Get the first element of a std::vector over a subset
 #define FIRST_ELEM(a,s) (&(a.elem(s.start()).elem(0).elem(0).real().elem()))
                                                                                
 void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,

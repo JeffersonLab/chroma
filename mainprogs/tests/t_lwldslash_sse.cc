@@ -39,13 +39,13 @@ int main(int argc, char **argv)
     gaussian(u[m]);
 
 
-  // Make up a gaussian source and a zero result vector
+  // Make up a gaussian source and a zero result std::vector
   LatticeFermion psi, chi, chi2;
   gaussian(psi);
   chi = zero;
 
   //! Create a linear operator
-  QDPIO::cout << "Constructing naive QDPWilsonDslash" << endl;
+  QDPIO::cout << "Constructing naive QDPWilsonDslash" << std::endl;
 
   Handle< FermState<LatticeFermion,
     multi1d<LatticeColorMatrix>,
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
   // Naive Dslash
   QDPWilsonDslash D(state);
 
-  QDPIO::cout << "Done" << endl;
+  QDPIO::cout << "Done" << std::endl;
 
 
   push(xml,"Unoptimized_test");
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
       {
 	for(iter=1; ; iter <<= 1)
 	{
-	  QDPIO::cout << "Applying D " << iter << " times" << endl;
+	  QDPIO::cout << "Applying D " << iter << " times" << std::endl;
 
 	  swatch.reset();
   	  swatch.start();
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 	}
       }
 	
-      QDPIO::cout << "Applying D for timings" << endl;
+      QDPIO::cout << "Applying D for timings" << std::endl;
     
       swatch.reset();
       swatch.start(); 
@@ -108,9 +108,9 @@ int main(int argc, char **argv)
       mydt /= Layout::numNodes();
  
       float mflops = float(1320.0f/mydt);
-      QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
+      QDPIO::cout << "cb = " << cb << " isign = " << isign << std::endl;
       QDPIO::cout << "The time per lattice point is "<< mydt 
-		  << " micro sec (" <<  mflops << ") Mflops " << endl;
+		  << " micro sec (" <<  mflops << ") Mflops " << std::endl;
 
       push(xml,"test");
       write(xml,"cb",cb);
@@ -123,11 +123,11 @@ int main(int argc, char **argv)
   pop(xml);
 
   //! Create a linear operator
-  QDPIO::cout << "Constructing (possibly optimized) WilsonDslash" << endl;
+  QDPIO::cout << "Constructing (possibly optimized) WilsonDslash" << std::endl;
 
   WilsonDslash D_opt(state);
 
-  QDPIO::cout << "Done" << endl;
+  QDPIO::cout << "Done" << std::endl;
 
   push(xml,"Optimized_test");
 
@@ -142,7 +142,7 @@ int main(int argc, char **argv)
       {
 	for(iter=1; ; iter <<= 1)
 	{
-	  QDPIO::cout << "Applying D " << iter << " times" << endl;
+	  QDPIO::cout << "Applying D " << iter << " times" << std::endl;
 	
 	  swatch.reset();
 	  swatch.start();
@@ -164,7 +164,7 @@ int main(int argc, char **argv)
 	}
       }
 
-      QDPIO::cout << "Applying D for timings" << endl;
+      QDPIO::cout << "Applying D for timings" << std::endl;
      
       swatch.reset();
       swatch.start(); 
@@ -178,9 +178,9 @@ int main(int argc, char **argv)
       mydt /= Layout::numNodes();
  
       float mflops = float(1320.0f/mydt);
-      QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
+      QDPIO::cout << "cb = " << cb << " isign = " << isign << std::endl;
       QDPIO::cout << "After " << iter << " calls, the time per lattice point is "<< mydt 
-		  << " micro sec (" <<  mflops << ") Mflops " << endl;
+		  << " micro sec (" <<  mflops << ") Mflops " << std::endl;
 
       push(xml,"test");
       write(xml,"cb",cb);
@@ -211,7 +211,7 @@ int main(int argc, char **argv)
 		  << (isign > 0 ? "+, " : "-, ") <<  cb 
 		  << ") - D(psi, " 
 		  << (isign > 0 ? "+, " : "-, ") <<  cb << " ) ||  = " << n2 
-		  << endl;
+		  << std::endl;
     }
   }
 
@@ -231,7 +231,7 @@ int main(int argc, char **argv)
 		  << (isign > 0 ? "+, " : "-, ") <<  cb 
 		  << ") - D_opt(psi, " 
 		  << (isign > 0 ? "+, " : "-, ") <<  cb << " ) ||  = " << n2 
-		  << endl;
+		  << std::endl;
 
       push(xml,"OPT test");
       write(xml,"isign", isign);

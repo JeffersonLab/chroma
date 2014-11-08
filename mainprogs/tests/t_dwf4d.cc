@@ -39,12 +39,12 @@ struct Test_input_t
 {
   Param_t          param;
   Cfg_t            cfg;
-  string           action_5d;
-  string           action_4d;
+  std::string           action_5d;
+  std::string           action_4d;
 };
 
 //! Parameters for running code
-void read(XMLReader& xml, const string& path, Param_t& param)
+void read(XMLReader& xml, const std::string& path, Param_t& param)
 {
   XMLReader paramtop(xml, path);
   read(paramtop, "nrow", param.nrow);
@@ -53,7 +53,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Test_input_t& input)
+void read(XMLReader& xml, const std::string& path, Test_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -82,9 +82,9 @@ void read(XMLReader& xml, const string& path, Test_input_t& input)
       input.action_5d = os.str();
     }
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading test data: " << e << endl;
+    QDPIO::cerr << "Error reading test data: " << e << std::endl;
     throw;
   }
 }
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
 
-  QDPIO::cout << "linkage=" << linkage_hack() << endl;
+  QDPIO::cout << "linkage=" << linkage_hack() << std::endl;
 
   // Input parameter structure
   Test_input_t  input;
@@ -112,7 +112,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  QDPIO::cout << "t_dwf4d" << endl;
+  QDPIO::cout << "t_dwf4d" << std::endl;
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
@@ -148,10 +148,10 @@ int main(int argc, char **argv)
   std::istringstream  xml_s_4d(input.action_4d);
   XMLReader  fermacttop_5d(xml_s_5d);
   XMLReader  fermacttop_4d(xml_s_4d);
-  const string fermact_path_5d = "/Action5D/FermionAction";
-  const string fermact_path_4d = "/Action4D/FermionAction";
-  string fermact_5d;
-  string fermact_4d;
+  const std::string fermact_path_5d = "/Action5D/FermionAction";
+  const std::string fermact_path_4d = "/Action4D/FermionAction";
+  std::string fermact_5d;
+  std::string fermact_4d;
 
   try
   {
@@ -160,28 +160,28 @@ int main(int argc, char **argv)
   }
   catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading fermact: " << e << endl;
+    QDPIO::cerr << "Error reading fermact: " << e << std::endl;
     throw;
   }
   catch (const char* e) 
   {
-    QDPIO::cerr << "Error reading fermact: " << e << endl;
+    QDPIO::cerr << "Error reading fermact: " << e << std::endl;
     throw;
   }
 
-  QDPIO::cout << "FermAct5D = " << fermact_5d << endl;
-  QDPIO::cout << "FermAct4D = " << fermact_4d << endl;
+  QDPIO::cout << "FermAct5D = " << fermact_5d << std::endl;
+  QDPIO::cout << "FermAct4D = " << fermact_4d << std::endl;
 
 
   // Deal with auxiliary (and polymorphic) state information
   // eigenvectors, eigenvalues etc. The XML for this should be
-  // stored as a string called "stateInfo" in the param struct.
+  // stored as a std::string called "stateInfo" in the param struct.
 
   try {
 
     // Make a reader for the stateInfo
-    const string state_info_path_5d = "/Action5D/StateInfo";
-    const string state_info_path_4d = "/Action4D/StateInfo";
+    const std::string state_info_path_5d = "/Action5D/StateInfo";
+    const std::string state_info_path_4d = "/Action4D/StateInfo";
     XMLReader state_info_xml_5d(fermacttop_5d,state_info_path_5d);
     XMLReader state_info_xml_4d(fermacttop_4d,state_info_path_4d);
 
@@ -193,7 +193,7 @@ int main(int argc, char **argv)
     // DWF-like 5D Wilson-Type stuff 
     bool success = false; 
 
-    QDPIO::cerr << "create dwf = " << fermact_5d << endl;
+    QDPIO::cerr << "create dwf = " << fermact_5d << std::endl;
 
     Handle< WilsonTypeFermAct5D<T,P,Q> >
       S_f_5d(TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_5d,
@@ -205,7 +205,7 @@ int main(int argc, char **argv)
 							    state_info_path_5d));
   
     // Overlap-like stuff
-    QDPIO::cerr << "create overlap" << endl;
+    QDPIO::cerr << "create overlap" << std::endl;
     Handle< WilsonTypeFermAct<T,P,Q> >
       S_f_4d(TheWilsonTypeFermActFactory::Instance().createObject(fermact_4d,
 								  fermacttop_4d,
@@ -227,18 +227,18 @@ int main(int argc, char **argv)
     random(chi);
     
     LatticeFermion tmp1,tmp2;
-    QDPIO::cout << "A5 plus" << endl;
+    QDPIO::cout << "A5 plus" << std::endl;
     (*A5)(tmp1, psi, PLUS);
     DComplex nn5_plus  = innerProduct(chi, tmp1);
-    QDPIO::cout << "A5 minus" << endl;
+    QDPIO::cout << "A5 minus" << std::endl;
     (*A5)(tmp2, chi, MINUS);
     DComplex nn5_minus = innerProduct(tmp2, psi);
   
     LatticeFermion tmp3,tmp4;
-    QDPIO::cout << "A4 plus" << endl;
+    QDPIO::cout << "A4 plus" << std::endl;
     (*A4)(tmp3, psi, PLUS);
     DComplex nn4_plus  = innerProduct(chi, tmp3);
-    QDPIO::cout << "A4 minus" << endl;
+    QDPIO::cout << "A4 minus" << std::endl;
     (*A4)(tmp4, chi, MINUS);
     DComplex nn4_minus = innerProduct(tmp4, psi);
   
@@ -254,12 +254,12 @@ int main(int argc, char **argv)
   }
   catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error in t_dwf4d: " << e << endl;
+    QDPIO::cerr << "Error in t_dwf4d: " << e << std::endl;
     throw;
   }
   catch (const char* e) 
   {
-    QDPIO::cerr << "Error in t_dwf4d: " << e << endl;
+    QDPIO::cerr << "Error in t_dwf4d: " << e << std::endl;
     throw;
   }
   

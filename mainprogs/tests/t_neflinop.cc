@@ -18,7 +18,7 @@ using namespace Chroma;
  * \param file       path ( Read )
  */    
 
-void readSzinFerm(multi1d<LatticeFermion>& q, const string& file)
+void readSzinFerm(multi1d<LatticeFermion>& q, const std::string& file)
 {
   BinaryFileReader cfg_in(file);
 

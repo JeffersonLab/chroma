@@ -49,13 +49,13 @@ int main(int argc, char *argv[])
 */
 
  XMLReader gauge_xml;
- string gaugeFilename;
+ std::string gaugeFilename;
 
  gaugeFilename="../../tests/t_asqtad_prop/t_nersc.cfg";
 // gaugeFilename="/raidz/aci/configs/getlat.1200";
 // gaugeFilename="/raidz/aci/configs/u_MILC_2064f21b681m030m050.246";
 
-  QDPIO::cout << "Reading config: " << gaugeFilename << endl;
+  QDPIO::cout << "Reading config: " << gaugeFilename << std::endl;
    readArchiv(gauge_xml, u, gaugeFilename);
 
   // Reunitarize the gauge field
@@ -64,10 +64,10 @@ int main(int argc, char *argv[])
 
 // Check gauge invariance here if required
 //    rgauge(u);
-//    QDPIO::cout << "Random gauge transformation for testing " << endl;
+//    QDPIO::cout << "Random gauge transformation for testing " << std::endl;
 
   // Try out the plaquette routine
-  QDPIO::cout << "Measure the plaquette and link " << endl;
+  QDPIO::cout << "Measure the plaquette and link " << std::endl;
 
   StopWatch swatch;
   swatch.start();
@@ -77,13 +77,13 @@ int main(int argc, char *argv[])
   swatch.stop();
   double time_in_sec  = swatch.getTimeInSeconds();
 
-  QDPIO::cout << "w_plaq = " << w_plaq << endl;
-  QDPIO::cout << "s_plaq = " << s_plaq << endl;
-  QDPIO::cout << "t_plaq = " << t_plaq << endl;
-  QDPIO::cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << std::endl;
+  QDPIO::cout << "s_plaq = " << s_plaq << std::endl;
+  QDPIO::cout << "t_plaq = " << t_plaq << std::endl;
+  QDPIO::cout << "link = " << link << std::endl;
 
   QDPIO::cout << "Measurement took " << time_in_sec 
-	<< " secs" << endl;
+	<< " secs" << std::endl;
 
   // Write out the results
   push(xml,"observables");
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 
 
   // Now try calling the Wilson loop routine
-  QDPIO::cout << "Measure Wilson loops" << endl;
+  QDPIO::cout << "Measure Wilson loops" << std::endl;
   int j_decay = Nd - 1;
   int t_dir = j_decay;
 
@@ -108,8 +108,8 @@ int main(int argc, char *argv[])
 //  int BlkMax = 100;    // max iterations in max-ing trace
 // Real BlkAccu = 1.0e-5;  // accuracy of max-ing
   
-//  QDPIO::cout << "sm_fact: " << sm_fact << endl;
-//  QDPIO::cout << "n_smear: " << n_smear << endl;
+//  QDPIO::cout << "sm_fact: " << sm_fact << std::endl;
+//  QDPIO::cout << "n_smear: " << n_smear << std::endl;
 
   swatch.reset();
   swatch.start();
@@ -119,9 +119,9 @@ int main(int argc, char *argv[])
 
   swatch.stop();
   time_in_sec  = swatch.getTimeInSeconds();
-  QDPIO::cout << "Loop measurements complete" << endl;
+  QDPIO::cout << "Loop measurements complete" << std::endl;
   QDPIO::cout << "Measurement took " << time_in_sec 
-	<< " secs" << endl;
+	<< " secs" << std::endl;
 
   pop(xml);
   pop(xml);

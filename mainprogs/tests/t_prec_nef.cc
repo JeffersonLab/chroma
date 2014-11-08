@@ -11,7 +11,7 @@ struct App_input_t {
 };
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, App_input_t& input)
+void read(XMLReader& xml, const std::string& path, App_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -23,9 +23,9 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
     read(inputtop, "nrow", input.nrow);
     input.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -42,8 +42,8 @@ int main(int argc, char **argv)
   try {
     read(xml_in, "/NEFTest", input);
   }
-   catch( const string& e) { 
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+   catch( const std::string& e) { 
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -67,19 +67,19 @@ int main(int argc, char **argv)
   xml_out.flush();
 
   // Create actions
-  string zpath = "/NEFTest/ZNEF";
+  std::string zpath = "/NEFTest/ZNEF";
   EvenOddPrecZoloNEFFermActArray  S_znef(WilsonTypeFermBCArrayEnv::reader(xml_in, zpath), 
 					 EvenOddPrecZoloNEFFermActArrayParams(xml_in, zpath));
 
-  string npath = "/NEFTest/NEF";
+  std::string npath = "/NEFTest/NEF";
   EvenOddPrecNEFFermActArray  S_nef(WilsonTypeFermBCArrayEnv::reader(xml_in, npath), 
 				    EvenOddPrecNEFFermActArrayParams(xml_in, npath));
 
   Handle<const ConnectState> state(S_znef.createState(u));
 
   int N5 = S_znef.size();
-  QDPIO::cout << "Znef size = " << S_znef.size() << endl;
-  QDPIO::cout << "Nef  size = " << S_nef.size() << endl;
+  QDPIO::cout << "Znef size = " << S_znef.size() << std::endl;
+  QDPIO::cout << "Nef  size = " << S_nef.size() << std::endl;
 
   {
     // Make the znef linOp
@@ -107,7 +107,7 @@ int main(int argc, char **argv)
       tmp5[n][M_z->subset()] = psi5a[n];
       tmp5[n][M_z->subset()] -= psi5b[n];
     }
-    QDPIO::cout << "PLUS: norm2(psi5a-psi5b)=" << norm2(tmp5,M_z->subset()) << endl;
+    QDPIO::cout << "PLUS: norm2(psi5a-psi5b)=" << norm2(tmp5,M_z->subset()) << std::endl;
 
     (*M_z)(psi5a, chi5, MINUS);
     (*M_n)(psi5b, chi5, MINUS);
@@ -116,7 +116,7 @@ int main(int argc, char **argv)
       tmp5[n][M_z->subset()] = psi5a[n];
       tmp5[n][M_z->subset()] -= psi5b[n];
     }
-    QDPIO::cout << "MINUS: norm2(psi5a-psi5b)=" << norm2(tmp5,M_z->subset()) << endl;
+    QDPIO::cout << "MINUS: norm2(psi5a-psi5b)=" << norm2(tmp5,M_z->subset()) << std::endl;
 
 
     // Make the znef unprec linOp
@@ -134,7 +134,7 @@ int main(int argc, char **argv)
       tmp5[n][U_z->subset()] = psi5a[n];
       tmp5[n][U_z->subset()] -= psi5b[n];
     }
-    QDPIO::cout << "PLUS: norm2(psi5a-psi5b)=" << norm2(tmp5,U_z->subset()) << endl;
+    QDPIO::cout << "PLUS: norm2(psi5a-psi5b)=" << norm2(tmp5,U_z->subset()) << std::endl;
 
     (*U_z)(psi5a, chi5, MINUS);
     (*U_n)(psi5b, chi5, MINUS);
@@ -143,7 +143,7 @@ int main(int argc, char **argv)
       tmp5[n][U_z->subset()] = psi5a[n];
       tmp5[n][U_z->subset()] -= psi5b[n];
     }
-    QDPIO::cout << "MINUS: norm2(psi5a-psi5b)=" << norm2(tmp5,U_z->subset()) << endl;
+    QDPIO::cout << "MINUS: norm2(psi5a-psi5b)=" << norm2(tmp5,U_z->subset()) << std::endl;
   }
 
   {
@@ -171,14 +171,14 @@ int main(int argc, char **argv)
     QDPIO::cout << "norm(qpropT_diff)=" << Real(norm2(tmp5)) 
 		<< "  norm2(psi5a)=" << Real(norm2(psi5a)) 
 		<< "  norm2(psi5b)=" << Real(norm2(psi5b)) 
-		<< endl;
+		<< std::endl;
     for(int n=0; n < N5; ++n)
     {
       QDPIO::cout << "QpropT:" 
 		  << " norm2(tmp5[" << n << "])= " << Real(norm2(tmp5[n])) 
 		  << " norm2(psi5a[])= " << Real(norm2(psi5a[n])) 
 		  << " norm2(psi5b[])= " << Real(norm2(psi5b[n])) 
-		  << endl;
+		  << std::endl;
     }
 
 #if 1
@@ -205,7 +205,7 @@ int main(int argc, char **argv)
     QDPIO::cout << "norm(qprop_diff)=" << Real(norm2(psib - psia))
 		<< "  norm2(psia)=" << Real(norm2(psia)) 
 		<< "  norm2(psib)=" << Real(norm2(psib)) 
-		<< endl;
+		<< std::endl;
   }
 
   pop(xml_out);

@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     QDPIO::cout << "Enter the time direction, t_dir\n";
     QDPIO::cin >> t_dir;
 
-    QDPIO::cerr << "Currently do not support anisotropy" << endl;
+    QDPIO::cerr << "Currently do not support anisotropy" << std::endl;
     exit(1);
   }
 #endif
@@ -95,9 +95,9 @@ int main(int argc, char **argv)
 
   if ( input_type == 9 )
   {
-    QDPIO::cout << "This will be a Schroedinger style config used for c_sw measurements\n" << endl;
+    QDPIO::cout << "This will be a Schroedinger style config used for c_sw measurements\n" << std::endl;
 
-    QDPIO::cout << "Enter extent of loops in decay direction\n" << endl;
+    QDPIO::cout << "Enter extent of loops in decay direction\n" << std::endl;
     QDPIO::cin >> loop_extent;;
   
     QDPIO::cout << "Enter multiplier for Schroedinger boundary fields\n";
@@ -127,11 +127,11 @@ int main(int argc, char **argv)
 	      << "  (9) replicated in time dir SZIN config in szin format\n";
   QDPIO::cin >> output_type;
   
-  string cfg_input_file;
+  std::string cfg_input_file;
   QDPIO::cout << "Enter input file name\n";
   QDPIO::cin >> cfg_input_file;
 
-  string cfg_output_file;
+  std::string cfg_output_file;
   QDPIO::cout << "Enter output file name\n";
   QDPIO::cin >> cfg_output_file;
   
@@ -208,7 +208,7 @@ int main(int argc, char **argv)
   bool OrlxDo;
   Real GFAccu;
   Real OrPara;
-  string gauge_rotate_file;
+  std::string gauge_rotate_file;
 
   if ( GFixP )
   {
@@ -307,7 +307,7 @@ int main(int argc, char **argv)
     write(xml_out, "cfg_input_file", cfg_input_file);
     pop(xml_out);
     
-    QDPIO::cout << "Read SZIN u from FE file " << cfg_input_file << endl;
+    QDPIO::cout << "Read SZIN u from FE file " << cfg_input_file << std::endl;
     readSzin(gauge_xml_in, u, cfg_input_file);
     read(gauge_xml_in, "/szin", szin_gauge_header);
     szin_gauge_header_initP = true;
@@ -364,7 +364,7 @@ int main(int argc, char **argv)
     write(xml_out, "input_type", input_type);
     write(xml_out, "cfg_input_file", cfg_input_file);
     pop(xml_out);
-    QDPIO::cout << "Read fund to adj SZIN from file " << cfg_input_file << endl;
+    QDPIO::cout << "Read fund to adj SZIN from file " << cfg_input_file << std::endl;
     readFunToAdj (u, cfg_input_file);
     break;
 #endif
@@ -376,7 +376,7 @@ int main(int argc, char **argv)
     write(xml_out, "input_type", input_type);
     write(xml_out, "cfg_input_file", cfg_input_file);
     pop(xml_out);
-    QDPIO::cout << "Read O(3) to U(1) SZIN from file " << cfg_input_file << endl;
+    QDPIO::cout << "Read O(3) to U(1) SZIN from file " << cfg_input_file << std::endl;
     ReadO3toU1 (u, cfg_input_file);
     break;
 #endif
@@ -492,7 +492,7 @@ int main(int argc, char **argv)
     write(xml_out, "cfg_input_file", cfg_input_file);
     pop(xml_out);
     
-    QDPIO::cout << "Read SZIN u from QIO file " << cfg_input_file << endl;
+    QDPIO::cout << "Read SZIN u from QIO file " << cfg_input_file << std::endl;
     readGauge(gauge_file_xml_in, gauge_xml_in, u, cfg_input_file,
 	      QDPIO_SERIAL);
     read(gauge_xml_in, "/szin", szin_gauge_header);
@@ -505,7 +505,7 @@ int main(int argc, char **argv)
     // U = diag(exp(i t_1), exp(i t_2), exp(-i(t_1 + t_2))
 
     for(int mu = 0; mu < Nd; mu++){
-      QDPIO::cout << "Enter angles for direction " << mu << endl;
+      QDPIO::cout << "Enter angles for direction " << mu << std::endl;
       QDPIO::cin >> theta(0, mu) >> theta(1, mu);
     }
 
@@ -557,7 +557,7 @@ int main(int argc, char **argv)
       uin = peekSite(u[mu], posn);
       uout = peekSite(u_tmp, posn);
 
-      QDPIO::cout << "MU IS " << mu << endl << endl;
+      QDPIO::cout << "MU IS " << mu << std::endl << std::endl;
       Complex element_in, element_out;
       for(int i = 0; i < Nc; i++)
 	for(int j = 0; j < Nc; j++){
@@ -566,7 +566,7 @@ int main(int argc, char **argv)
 	  element_out = peekColor(uout, i ,j);
 	  QDPIO::cout << "(i,j)= " << i << j <<
 	    ", U is " << element_in << ",U dagger is "
-		      << element_out << endl;
+		      << element_out << std::endl;
 	}
       u[mu] = u_tmp;
     
@@ -657,7 +657,7 @@ int main(int argc, char **argv)
   case 9:
   {
     bool new_headerP;
-    QDPIO::cout << "Enter new szin header?" << endl;
+    QDPIO::cout << "Enter new szin header?" << std::endl;
     QDPIO::cin >> new_headerP;
 
     if ( new_headerP )

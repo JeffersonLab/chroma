@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
   // Read the lattice size
   multi1d<int> nrow(Nd);
-  QDPIO::cout << "Enter lattice size" << endl;
+  QDPIO::cout << "Enter lattice size" << std::endl;
   QDPIO::cin >> nrow;
 
   // Setup the layout
@@ -27,33 +27,33 @@ int main(int argc, char *argv[])
 	      << "  (2) Random-transformed free field\n"
 	      << "  (3) Hot start (call hotst)\n"
 	      << "  (4) SZIN configuration\n"
-	      << "  (5) NERSC configuration" << endl;
+	      << "  (5) NERSC configuration" << std::endl;
   QDPIO::cin >> type;
 
   int j_decay;
-  QDPIO::cout << "Enter the direction of decay" << endl;
+  QDPIO::cout << "Enter the direction of decay" << std::endl;
   QDPIO::cin >> j_decay;
 
   Real GFAccu;
-  QDPIO::cout << "Enter the gauge fixing accuracy" << endl;
+  QDPIO::cout << "Enter the gauge fixing accuracy" << std::endl;
   QDPIO::cin >> GFAccu;
 
   int GFMax;
-  QDPIO::cout << "Enter the maximum number of gauge fixing sweeps" << endl;
+  QDPIO::cout << "Enter the maximum number of gauge fixing sweeps" << std::endl;
   QDPIO::cin >> GFMax;
 
   bool OrlxDo;
-  QDPIO::cout << "Want over-relaxation? (yes=YES)" << endl;
+  QDPIO::cout << "Want over-relaxation? (yes=YES)" << std::endl;
   QDPIO::cin >> OrlxDo;
 
   Real OrPara = 1;
   if (OrlxDo)
   {
-    QDPIO::cout << "Enter the over-relaxtion parameter" << endl;
+    QDPIO::cout << "Enter the over-relaxtion parameter" << std::endl;
     QDPIO::cin >> OrPara;
   }
 
-  QDPIO::cout << "Now, I am running..." << endl;
+  QDPIO::cout << "Now, I am running..." << std::endl;
 
   XMLFileWriter xml_out("t_gfix.xml");
   push(xml_out, "t_gfix");
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     push(xml_out,"Free_Field");
     write(xml_out, "type", type);
     pop(xml_out);
-    QDPIO::cout << "Fill u with free field" << endl;
+    QDPIO::cout << "Fill u with free field" << std::endl;
     u = 1;
     break;
 
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     push(xml_out,"Free_Field_with_random_gauge_transformation");
     write(xml_out, "type", type);
     pop(xml_out);
-    QDPIO::cout << "Fill u with random gauge transformed free field" << endl;
+    QDPIO::cout << "Fill u with random gauge transformed free field" << std::endl;
     u = 1;
     rgauge(u, g);
     break;
@@ -90,20 +90,20 @@ int main(int argc, char *argv[])
     push(xml_out,"Semi-Haar_measure");
     write(xml_out, "type", type);
     pop(xml_out);
-    QDPIO::cout << "Fill u with semi-Haar" << endl;
+    QDPIO::cout << "Fill u with semi-Haar" << std::endl;
     HotSt(u);
     break;
 
   case 4:
   {
-    string cfg_file_in;
-    QDPIO::cout << "Enter SZIN input file name" << endl;
+    std::string cfg_file_in;
+    QDPIO::cout << "Enter SZIN input file name" << std::endl;
     QDPIO::cin >> cfg_file_in;
 
     push(xml_out,"Configuration");
     write(xml_out, "type", type);
     pop(xml_out);
-    QDPIO::cout << "Read SZIN config from " << cfg_file_in << endl;
+    QDPIO::cout << "Read SZIN config from " << cfg_file_in << std::endl;
 
     XMLReader gauge_xml;
     readSzin(gauge_xml, u, cfg_file_in);
@@ -112,14 +112,14 @@ int main(int argc, char *argv[])
 
   case 5:
   {
-    string cfg_file_in;
-    QDPIO::cout << "Enter NERSC input file name" << endl;
+    std::string cfg_file_in;
+    QDPIO::cout << "Enter NERSC input file name" << std::endl;
     QDPIO::cin >> cfg_file_in;
 
     push(xml_out,"Configuration");
     write(xml_out, "type", type);
     pop(xml_out);
-    QDPIO::cout << "Read NERSC config from " << cfg_file_in << endl;
+    QDPIO::cout << "Read NERSC config from " << cfg_file_in << std::endl;
 
     XMLReader gauge_xml;
     readArchiv(gauge_xml, u, cfg_file_in);
@@ -130,8 +130,8 @@ int main(int argc, char *argv[])
     QDP_error_exit("unknown type", type);
   }
 
-  string cfg_file_out;
-  QDPIO::cout << "Enter NERSC output file name" << endl;
+  std::string cfg_file_out;
+  QDPIO::cout << "Enter NERSC output file name" << std::endl;
   QDPIO::cin >> cfg_file_out;
 
 
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
   Double w_plaq, s_plaq, t_plaq, link;
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
   QDPIO::cout << " Initial plaqettes and link: " << w_plaq
-	      << " " << s_plaq << " " << t_plaq << " " << link << endl;
+	      << " " << s_plaq << " " << t_plaq << " " << link << std::endl;
 
   push(xml_out,"Initial_gauge_invariant_observables");
   write(xml_out, "w_plaq", w_plaq);
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
 
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
   QDPIO::cout << " Final plaqettes and link: " << w_plaq
-	      << " " << s_plaq << " " << t_plaq << " " << link << endl;
+	      << " " << s_plaq << " " << t_plaq << " " << link << std::endl;
 
   push(xml_out,"Final_gauge_invariant_observables");
   write(xml_out, "w_plaq",w_plaq);
@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
   pop(xml_out);
 
   // Now write the gauge field in NERSC format
-  QDPIO::cout << "Trying to write NERSC Archive to file  " << cfg_file_out << endl;
+  QDPIO::cout << "Trying to write NERSC Archive to file  " << cfg_file_out << std::endl;
   writeArchiv(u, cfg_file_out);
     
   pop(xml_out);

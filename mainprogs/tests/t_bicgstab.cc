@@ -15,7 +15,6 @@
 #include "actions/ferm/invert/invsumr.h"
 
 using namespace Chroma;
-using namespace std;
 
 struct App_input_t {
   ChromaProp_t param;
@@ -23,7 +22,7 @@ struct App_input_t {
 };
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, App_input_t& input)
+void read(XMLReader& xml, const std::string& path, App_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -36,9 +35,9 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -55,8 +54,8 @@ int main(int argc, char **argv)
   try {
     read(xml_in, "/BiCGStabTest", input);
   }
-   catch( const string& e) { 
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+   catch( const std::string& e) { 
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -95,7 +94,7 @@ int main(int argc, char **argv)
     {
       const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams&>(*(input.param.FermActHandle));
       
-      QDPIO::cout << "FERM_ACT_WILSON" << endl;
+      QDPIO::cout << "FERM_ACT_WILSON" << std::endl;
       S_f_ptr = new EvenOddPrecWilsonFermAct(fbc, wils.Mass,
 					     wils.anisoParam);
     }
@@ -105,14 +104,14 @@ int main(int argc, char **argv)
     {
       const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams&>(*(input.param.FermActHandle));
       
-      QDPIO::cout << "FERM_ACT_UNPRECONDITIONED_WILSON" << endl;
+      QDPIO::cout << "FERM_ACT_UNPRECONDITIONED_WILSON" << std::endl;
       S_f_ptr = new UnprecWilsonFermAct(fbc, wils.Mass);
     }
     break;
     
   case FERM_ACT_ZOLOTAREV_4D:
     {
-      QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
+      QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << std::endl;
       const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
       
       // Construct Fermact -- now uses constructor from the zolo4d params
@@ -123,7 +122,7 @@ int main(int argc, char **argv)
   
   case FERM_ACT_ZOLOTAREV_5D:
     {
-      QDPIO::cout << "FERM_ACT_ZOLOTAREV_5D" << endl;
+      QDPIO::cout << "FERM_ACT_ZOLOTAREV_5D" << std::endl;
       const Zolotarev5DFermActParams& zolo5d = dynamic_cast<const Zolotarev5DFermActParams& > (*(input.param.FermActHandle));
     
       // Construct Fermact -- now uses constructor from the zolo4d params
@@ -136,7 +135,7 @@ int main(int argc, char **argv)
     {
       const DWFFermActParams& dwf = dynamic_cast<const DWFFermActParams&>(*(input.param.FermActHandle));
       
-      QDPIO::cout << "FERM_ACT_DWF" << endl;
+      QDPIO::cout << "FERM_ACT_DWF" << std::endl;
       S_f_a_ptr = new EvenOddPrecDWFermActArray(fbc,
 						dwf.chiralParam.OverMass, 
 						dwf.Mass, 
@@ -148,7 +147,7 @@ int main(int argc, char **argv)
     {
       const DWFFermActParams& dwf = dynamic_cast<const DWFFermActParams&>(*(input.param.FermActHandle));
       
-      QDPIO::cout << "FERM_ACT_UNPRECONDITONED_DWF" << endl;
+      QDPIO::cout << "FERM_ACT_UNPRECONDITONED_DWF" << std::endl;
       S_f_a_ptr = new UnprecDWFermActArray(fbc,
 					   dwf.chiralParam.OverMass, 
 					   dwf.Mass, 
@@ -156,11 +155,11 @@ int main(int argc, char **argv)
     }
     break;
   default:
-    QDPIO::cerr << "Unsupported fermion action" << endl;
+    QDPIO::cerr << "Unsupported fermion action" << std::endl;
     QDP_abort(1);
   }
 
-  QDPIO::cout << "Ferm Act Created " << endl;
+  QDPIO::cout << "Ferm Act Created " << std::endl;
 
   // Create a useable handle on the action
   // The handle now owns the pointer
@@ -204,7 +203,7 @@ int main(int argc, char **argv)
     break;
     
   default:
-    QDPIO::cerr << "Unsupported fermion action (state creation)" << endl;
+    QDPIO::cerr << "Unsupported fermion action (state creation)" << std::endl;
     QDP_abort(1);
   }
   
@@ -212,7 +211,7 @@ int main(int argc, char **argv)
   // action pointers is not null
   Handle<const ConnectState> state(state_ptr);  // inserts any BC
 
-  QDPIO::cout << "ConnectState Created" << endl;
+  QDPIO::cout << "ConnectState Created" << std::endl;
 
   switch(input.param.FermActHandle->getFermActType()) {
   case FERM_ACT_WILSON:
@@ -243,7 +242,7 @@ int main(int argc, char **argv)
       (*D)(r, psi, PLUS);
       r[s] -= chi;
       
-      QDPIO::cout << " || chi - D psi || / || chi || = " << sqrt(norm2(r,s))/chi_norm << endl;
+      QDPIO::cout << " || chi - D psi || / || chi || = " << sqrt(norm2(r,s))/chi_norm << std::endl;
     }
     break;
   case FERM_ACT_DWF:
@@ -283,12 +282,12 @@ int main(int argc, char **argv)
 	r[n][s] -= chi[n];
       }
 
-      QDPIO::cout << " || chi - D psi || / || chi || = " << sqrt(norm2(r,s))/chi_norm << endl;
+      QDPIO::cout << " || chi - D psi || / || chi || = " << sqrt(norm2(r,s))/chi_norm << std::endl;
 
     }
     break;
   default:
-    QDPIO::cerr << "Unsupported fermion action (state creation)" << endl;
+    QDPIO::cerr << "Unsupported fermion action (state creation)" << std::endl;
     QDP_abort(1);
   }
 

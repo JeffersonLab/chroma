@@ -22,10 +22,10 @@ struct Param_t
 //! Propagators
 struct Prop_t
 {
-  string           prop_file1;  // The files is expected to be in SciDAC format!
-  string           prop_file2;  // The files is expected to be in SciDAC format!
+  std::string           prop_file1;  // The files is expected to be in SciDAC format!
+  std::string           prop_file2;  // The files is expected to be in SciDAC format!
 
-  string           prop_file;   // The files is expected to be in SciDAC format!
+  std::string           prop_file;   // The files is expected to be in SciDAC format!
   QDP_volfmt_t     prop_volfmt;
 };
 
@@ -39,7 +39,7 @@ struct Qpropadd_input_t
 
 
 //! Propagator parameters
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -51,7 +51,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Param_t& param)
+void read(XMLReader& xml, const std::string& path, Param_t& param)
 {
   XMLReader paramtop(xml, path);
 
@@ -67,7 +67,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   default :
     /**************************************************************************/
 
-    QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+    QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
     QDP_abort(1);
   }
 
@@ -76,7 +76,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Qpropadd_input_t& input)
+void read(XMLReader& xml, const std::string& path, Qpropadd_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -89,9 +89,9 @@ void read(XMLReader& xml, const string& path, Qpropadd_input_t& input)
     // Read in the propagator(s) info
     read(inputtop, "Prop", input.prop);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading qpropadd data: " << e << endl;
+    QDPIO::cerr << "Error reading qpropadd data: " << e << std::endl;
     throw;
   }
 }
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  QDPIO::cout << " QPROPADD: Add 2 propagators" << endl;
+  QDPIO::cout << " QPROPADD: Add 2 propagators" << std::endl;
 
   // Instantiate XML writer for XMLDAT
   // XMLFileWriter  xml_out(Chroma::getXMLOutputFileName());
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
   ChromaProp_t prop_header1;
   PropSourceConst_t source_header1;
   {
-    QDPIO::cout << "Attempt to read first forward propagator" << endl;
+    QDPIO::cout << "Attempt to read first forward propagator" << std::endl;
     readQprop(prop_file_xml1, 
 	      prop_record_xml1, quark_propagator1,
 	      input.prop.prop_file1, QDPIO_SERIAL);
@@ -166,13 +166,13 @@ int main(int argc, char *argv[])
       read(prop_record_xml1, "/Propagator/ForwardProp", prop_header1);
       read(prop_record_xml1, "/Propagator/PropSource", source_header1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+      QDPIO::cerr << "Error extracting forward_prop header: " << e << std::endl;
       throw;
     }
   }
-  QDPIO::cout << "First forward propagator successfully read\n" << endl;
+  QDPIO::cout << "First forward propagator successfully read\n" << std::endl;
 
 
   // Sanity check - write out the norm2 of the forward prop in the j_decay direction
@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
   ChromaProp_t prop_header2;
   PropSourceConst_t source_header2;
   {
-    QDPIO::cout << "Attempt to read second forward propagator" << endl;
+    QDPIO::cout << "Attempt to read second forward propagator" << std::endl;
     readQprop(prop_file_xml2, 
 	      prop_record_xml2, quark_propagator2,
 	      input.prop.prop_file2, QDPIO_SERIAL);
@@ -216,13 +216,13 @@ int main(int argc, char *argv[])
       read(prop_record_xml2, "/Propagator/ForwardProp", prop_header2);
       read(prop_record_xml2, "/Propagator/PropSource", source_header2);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+      QDPIO::cerr << "Error extracting forward_prop header: " << e << std::endl;
       throw;
     }
   }
-  QDPIO::cout << "Second forward propagator successfully read" << endl;
+  QDPIO::cout << "Second forward propagator successfully read" << std::endl;
 
   // Sanity check - write out the norm2 of the forward prop in the j_decay direction
   // Use this for any possible verification
@@ -249,14 +249,14 @@ int main(int argc, char *argv[])
   // More sanity checks
   if (source_header1.j_decay != source_header2.j_decay)
   {
-    QDPIO::cerr << "Prop j_decay mismatch" << endl;
+    QDPIO::cerr << "Prop j_decay mismatch" << std::endl;
     QDP_abort(1);
   }
 
   for(int i=0; i < source_header1.t_source.size(); ++i)
     if (source_header1.t_source[i] != source_header2.t_source[i])
     {
-      QDPIO::cerr << "Prop t_source mismatch" << endl;
+      QDPIO::cerr << "Prop t_source mismatch" << std::endl;
       QDP_abort(1);
     }
 
@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
 
   // Save the propagator
   // ONLY SciDAC output format is supported!
-  QDPIO::cout << "Save the new forward propagator" << endl;
+  QDPIO::cout << "Save the new forward propagator" << std::endl;
   {
     XMLBufferWriter file_xml;
     push(file_xml, "propagator");
@@ -285,12 +285,12 @@ int main(int argc, char *argv[])
     write(record_xml, "PropSource", source_header);
 #if 0
     {
-      QDPIO::cout << "Create config info" << endl;
+      QDPIO::cout << "Create config info" << std::endl;
       XMLReader gauge_xml(prop_record_xml1, "/Propagator/Config_info");
-      ostringstream gauge_str;
+      std::ostringstream gauge_str;
       gauge_xml.print(gauge_str);
       write(record_xml, "Config_info", gauge_str);
-      QDPIO::cout << "Done config info" << endl;
+      QDPIO::cout << "Done config info" << std::endl;
     }
 #endif
     pop(record_xml);
@@ -301,7 +301,7 @@ int main(int argc, char *argv[])
 	       input.prop.prop_file, input.prop.prop_volfmt, 
 	       QDPIO_SERIAL);
   }
-  QDPIO::cout << "New forward propagator successfully written" << endl;
+  QDPIO::cout << "New forward propagator successfully written" << std::endl;
 
 
   // Close the namelist output file XMLDAT

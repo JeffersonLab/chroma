@@ -25,7 +25,7 @@ typedef struct {
 } Param_t;
 
 // Declare routine to read the parameters
-void readParams(const string& filename, Param_t& params)
+void readParams(const std::string& filename, Param_t& params)
 {
   XMLReader reader(filename);
 
@@ -48,7 +48,7 @@ void readParams(const string& filename, Param_t& params)
     read(reader, "/params/eig/Neig", params.n_eig);
 
   }
-  catch(const string& e) { 
+  catch(const std::string& e) { 
     throw e;
   }
 }
@@ -91,8 +91,8 @@ int main(int argc, char **argv)
   try { 
     readParams(Chroma::getXMLInputFileName(), params);
   }
-  catch(const string& s) { 
-    QDPIO::cerr << "Caught exception " << s << endl;
+  catch(const std::string& s) { 
+    QDPIO::cerr << "Caught exception " << s << std::endl;
     exit(1);
   }
 
@@ -166,7 +166,7 @@ int main(int argc, char **argv)
 
 
   {
-    QDPIO::cout << "Look for highest ev" << endl;
+    QDPIO::cout << "Look for highest ev" << std::endl;
 
     Handle< LinearOperator<T> > MinusMM(new lopscl<LatticeFermion, Real>(MM, Real(-1.0)));
   
@@ -174,7 +174,7 @@ int main(int argc, char **argv)
     for(int i =0; i < params.n_eig; i++)
       gaussian(psi[i]);
     
-    QDPIO::cout << "ritz call" << endl;
+    QDPIO::cout << "ritz call" << std::endl;
 
     XMLBufferWriter eig_spec_xml;
 

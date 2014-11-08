@@ -14,7 +14,6 @@
 #include "chroma.h"
 #include <string>
 using namespace Chroma;
-using namespace std;
 
 typedef LatticeFermionF  TF;
 typedef LatticeColorMatrixF  UF;
@@ -240,8 +239,8 @@ bool testQudaDslashD(const QD& u, enum PlusMinus isign, int cb)
 
     TD diff = dst1-dst2;
     RealD diff_norm = sqrt( norm2(diff, rb[cb]) );
-    QDPIO::cout << "diff_norm = " << diff_norm << endl;
-    QDPIO::cout << "diff_norm / site = " << diff_norm/((double)Layout::vol()/(double)2) << endl;
+    QDPIO::cout << "diff_norm = " << diff_norm << std::endl;
+    QDPIO::cout << "diff_norm / site = " << diff_norm/((double)Layout::vol()/(double)2) << std::endl;
   }
 #endif
 
@@ -653,7 +652,7 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
-  QDPIO::cout << "Linkage = " << linkageHack() << endl;
+  QDPIO::cout << "Linkage = " << linkageHack() << std::endl;
 
 
   //  AppParams params;
@@ -698,47 +697,47 @@ int main(int argc, char **argv)
   xml_out.flush();
 
   // Write code here?
-  QDPIO::cout << "Howdy" << endl;
+  QDPIO::cout << "Howdy" << std::endl;
   bool result;
 
 #if 1
   // Single Precision tests 
   QDPIO::cout << "Test: Dslash PLUS, cb=0";
   if ( ! testQudaDslash(u, PLUS, 0)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
+    QDPIO::cout << "\t FAILED" << std::endl;
     //  QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "\t OK" << endl;
+    QDPIO::cout << "\t OK" << std::endl;
   }
 
   QDPIO::cout << "Test: Dslash PLUS, cb=1" ;
   if ( ! testQudaDslash(u, PLUS, 1)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
+    QDPIO::cout << "\t FAILED" << std::endl;
     // QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "\t OK" << endl;
+    QDPIO::cout << "\t OK" << std::endl;
   }
 
 
   QDPIO::cout << "Test: Dslash MINUS, cb=0";
   if ( ! testQudaDslash(u, MINUS, 0)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
+    QDPIO::cout << "\t FAILED" << std::endl;
     // QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "\t OK" << endl;
+    QDPIO::cout << "\t OK" << std::endl;
   }
 
 
   QDPIO::cout << "Test: Dslash MINUS, cb=1" ;
   if ( ! testQudaDslash(u, MINUS, 1)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
+    QDPIO::cout << "\t FAILED" << std::endl;
     // QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "\t OK" << endl;
+    QDPIO::cout << "\t OK" << std::endl;
   }
 
 #endif
@@ -748,40 +747,40 @@ int main(int argc, char **argv)
   // Double Precision tests 
   QDPIO::cout << "Test: Dslash PLUS, cb=0";
   if ( ! testQudaDslashD(ud, PLUS, 0)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
+    QDPIO::cout << "\t FAILED" << std::endl;
     // QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "\t OK" << endl;
+    QDPIO::cout << "\t OK" << std::endl;
   }
 
   QDPIO::cout << "Test: Dslash PLUS, cb=1" ;
   if ( ! testQudaDslashD(ud, PLUS, 1)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
+    QDPIO::cout << "\t FAILED" << std::endl;
     // QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "\t OK" << endl;
+    QDPIO::cout << "\t OK" << std::endl;
   }
 
 
   QDPIO::cout << "Test: Dslash MINUS, cb=0";
   if ( ! testQudaDslashD(ud, MINUS, 0)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
+    QDPIO::cout << "\t FAILED" << std::endl;
     //QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "\t OK" << endl;
+    QDPIO::cout << "\t OK" << std::endl;
   }
 
 
   QDPIO::cout << "Test: Dslash MINUS, cb=1" ;
   if ( ! testQudaDslashD(ud, MINUS, 1)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
+    QDPIO::cout << "\t FAILED" << std::endl;
     // QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "\t OK" << endl;
+    QDPIO::cout << "\t OK" << std::endl;
   }
 #endif
 
@@ -791,44 +790,44 @@ int main(int argc, char **argv)
 
   QDPIO::cout << "Test: Dslash3D PLUS, cb=0";
   if ( ! testQudaDslash3D(u, PLUS, 0)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
+    QDPIO::cout << "\t FAILED" << std::endl;
     QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "\t OK" << endl;
+    QDPIO::cout << "\t OK" << std::endl;
   }
 
   QDPIO::cout << "Test: Dslash3D MINUS, cb=0";
   if ( ! testQudaDslash3D(u, MINUS, 0)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
+    QDPIO::cout << "\t FAILED" << std::endl;
     QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "\t OK" << endl;
+    QDPIO::cout << "\t OK" << std::endl;
   }
 
   QDPIO::cout << "Test: Dslash3D PLUS, cb=1" ;
   if ( ! testQudaDslash3D(u, PLUS, 1)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
+    QDPIO::cout << "\t FAILED" << std::endl;
     QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "\t OK" << endl;
+    QDPIO::cout << "\t OK" << std::endl;
   }
 
   QDPIO::cout << "Test: Dslash3D MINUS, cb=1" ;
   if ( ! testQudaDslash3D(u, MINUS, 1)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
+    QDPIO::cout << "\t FAILED" << std::endl;
     QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "\t OK" << endl;
+    QDPIO::cout << "\t OK" << std::endl;
   }
 #endif
 
 
 
-  QDPIO::cout << "All tests passed" << endl;
+  QDPIO::cout << "All tests passed" << std::endl;
   pop(xml_out);
   xml_out.close();
 

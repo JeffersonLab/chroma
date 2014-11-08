@@ -3,7 +3,6 @@
 #include <iostream>
 
 using namespace Chroma;
-using namespace std;
 
 void wilson_dsdu(const UnprecWilsonFermAct& S,
 		 multi1d<LatticeColorMatrix> & ds_u,
@@ -170,7 +169,7 @@ int main(int argc, char *argv[])
     LatticeColorMatrix dsdu_diff=dsdu_1[mu] - dsdu_2[mu];
 
     Double sum_diff=norm2(dsdu_diff);
-    QDPIO::cout << "Mu = " << mu << " Sum Diff=" << sum_diff << endl;
+    QDPIO::cout << "Mu = " << mu << " Sum Diff=" << sum_diff << std::endl;
 
     push(xml_out, "ForceDiff");
     write(xml_out, "mu", mu);
@@ -268,16 +267,16 @@ int main(int argc, char *argv[])
     write(lf_xml, "ddFE", ddFE);
     pop(lf_xml);
 
-    QDPIO::cout << " dt = " << dtau << " deltaH = " << deltaH <<  endl;
+    QDPIO::cout << " dt = " << dtau << " deltaH = " << deltaH <<  std::endl;
     QDPIO::cout << " delta KE = " << deltaKE 
                 << " delta PE = " << deltaPE
 		<< " delta GE = " << deltaGE 
                 << " delta FE = " << deltaFE
-                << " dPE/dKE = " << deltaPE/deltaKE << endl;
+                << " dPE/dKE = " << deltaPE/deltaKE << std::endl;
 
     QDPIO::cout << " delta delta H  = " << ddH 
 		<< " delta delta KE = " << ddKE
-		<< " delta delta PE = " << ddPE<< endl << endl;
+		<< " delta delta PE = " << ddPE<< std::endl << std::endl;
   }    
   pop(lf_xml);
   lf_xml.close();
@@ -308,7 +307,7 @@ int main(int argc, char *argv[])
 
     pop(monitorHMC);
 
-    QDPIO::cout << "Traj: " << HMC.getTrajNum()-1 << " w_plaq = " << w_plaq << endl;
+    QDPIO::cout << "Traj: " << HMC.getTrajNum()-1 << " w_plaq = " << w_plaq << std::endl;
     
   }
 

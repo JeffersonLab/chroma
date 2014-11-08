@@ -72,7 +72,7 @@ struct Propagator_input_t
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Propagator_input_t& input)
+void read(XMLReader& xml, const std::string& path, Propagator_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -87,9 +87,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   {
     read(inputtop, "IO_version/version", version);
   }
-  catch (const string& e)
+  catch (const std::string& e)
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -112,17 +112,17 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
      default :
        /**************************************************************************/
 
-       QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+       QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
        QDP_abort(1);
      }
    }
-   catch (const string& e)
+   catch (const std::string& e)
    {
-     QDPIO::cerr << "Error reading data: " << e << endl;
+     QDPIO::cerr << "Error reading data: " << e << std::endl;
      throw;
    }
 
-  QDPIO::cout << "Propagator for Staggered fermions" << endl;
+  QDPIO::cout << "Propagator for Staggered fermions" << std::endl;
   //    Read the common bits
    try
    {
@@ -159,7 +159,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
        }
      else 
        {
-       QDPIO::cerr << "Input src = " << input.param.src_type_str << " unknown." << endl;
+       QDPIO::cerr << "Input src = " << input.param.src_type_str << " unknown." << std::endl;
        QDP_abort(1);
        }
 
@@ -168,9 +168,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
      read(paramtop, "nrow", input.param.nrow);
      read(paramtop, "t_srce", input.param.t_srce);
    }
-   catch (const string& e)
+   catch (const std::string& e)
    {
-     QDPIO::cerr << "Error reading data: " << e << endl;
+     QDPIO::cerr << "Error reading data: " << e << std::endl;
      throw;
    }
 
@@ -180,9 +180,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
    {
      read(inputtop, "Cfg", input.cfg);
    }
-   catch (const string& e)
+   catch (const std::string& e)
    {
-     QDPIO::cerr << "Error reading data: " << e << endl;
+     QDPIO::cerr << "Error reading data: " << e << std::endl;
      throw;
    }
  }
@@ -207,7 +207,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 void dump_text_src(LatticeStaggeredFermion psi, multi1d<int> nrow) 
 {
 
-  QDPIO::cout << "Dump of source " << endl;
+  QDPIO::cout << "Dump of source " << std::endl;
   StaggeredFermion psi_local ; 
   ColorVector psi_color ;
   multi1d<int> coords ;
@@ -223,7 +223,7 @@ void dump_text_src(LatticeStaggeredFermion psi, multi1d<int> nrow)
       for(int i=0 ; i < Nc ; ++i)
 	  {
 	    z = peekColor(psi_color,i) ;
-	    QDPIO::cout <<  i << " " <<  z << endl;
+	    QDPIO::cout <<  i << " " <<  z << std::endl;
 	  }
       
     }
@@ -458,7 +458,7 @@ void create_stagg_source(LatticeStaggeredFermion & q_source,
     }    
   else
     {
-      QDPIO::cerr << "Error,  src_type  " <<  src_type << " out of range" << endl;
+      QDPIO::cerr << "Error,  src_type  " <<  src_type << " out of range" << std::endl;
       exit(0) ;
     }
 
@@ -485,16 +485,16 @@ void create_stagg_source(LatticeStaggeredFermion & q_source,
 
    // Instantiate xml reader for DATA
    XMLReader xml_in ;
-   string in_name = Chroma::getXMLInputFileName() ;
+   std::string in_name = Chroma::getXMLInputFileName() ;
    try
    {
      xml_in.open(in_name);
    }
      catch (...)
    {
-   QDPIO::cerr << "Error reading input file " << in_name << endl;
-   QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
-   QDPIO::cerr << "The default name is ./DATA" << endl;
+   QDPIO::cerr << "Error reading input file " << in_name << std::endl;
+   QDPIO::cerr << "The input file name can be passed via the -i flag " << std::endl;
+   QDPIO::cerr << "The default name is ./DATA" << std::endl;
      throw;
    }
 
@@ -506,7 +506,7 @@ void create_stagg_source(LatticeStaggeredFermion & q_source,
   }
     catch (...)
   {
-    QDPIO::cerr << "Error parsing the input file " << in_name << endl;
+    QDPIO::cerr << "Error parsing the input file " << in_name << std::endl;
     throw;
   }
   // Specify lattice size, shape, etc.
@@ -521,9 +521,9 @@ void create_stagg_source(LatticeStaggeredFermion & q_source,
 
   if( input.param.gauge_trans )
     {
-      QDPIO::cout << "DOING GAUGE TRANSFORM "  << endl;
+      QDPIO::cout << "DOING GAUGE TRANSFORM "  << std::endl;
       rgauge(u); 
-      QDPIO::cout << "Random gauge transform on gauge fields done." << endl;
+      QDPIO::cout << "Random gauge transform on gauge fields done." << std::endl;
 
 
     }
@@ -571,7 +571,7 @@ void create_stagg_source(LatticeStaggeredFermion & q_source,
   }
   catch (...)
     {
-      QDPIO::cerr << "Error reading first action name " << endl;
+      QDPIO::cerr << "Error reading first action name " << std::endl;
       throw;
     }
 
@@ -588,7 +588,7 @@ void create_stagg_source(LatticeStaggeredFermion & q_source,
   }
   catch (...)
     {
-      QDPIO::cerr << "Error reading first action name " << endl;
+      QDPIO::cerr << "Error reading first action name " << std::endl;
       throw;
     }
 
@@ -637,7 +637,7 @@ void create_stagg_source(LatticeStaggeredFermion & q_source,
   coord[2] = 0 ;
   coord[j_decay] = input.param.t_srce ;
   int t_source = input.param.t_srce ;
-  QDPIO::cout << "Source time slice = " << input.param.t_srce << endl;
+  QDPIO::cout << "Source time slice = " << input.param.t_srce << std::endl;
 
   psi = zero;   // note this is ``zero'' and not 0
 
@@ -656,7 +656,7 @@ void create_stagg_source(LatticeStaggeredFermion & q_source,
   pop(xml_out);
   
   for(int color_source = 0; color_source < Nc; ++color_source) {
-    QDPIO::cout << "Inversion[A] for Color =  " << color_source << endl;
+    QDPIO::cout << "Inversion[A] for Color =  " << color_source << std::endl;
     
     create_stagg_source(q_source,input.param.src_type,
 			color_source, j_decay, t_source) ;
@@ -692,7 +692,7 @@ void create_stagg_source(LatticeStaggeredFermion & q_source,
   pop(xml_out);
   
   for(int color_source = 0; color_source < Nc; ++color_source) {
-    QDPIO::cout << "Inversion[B] for Color =  " << color_source << endl;
+    QDPIO::cout << "Inversion[B] for Color =  " << color_source << std::endl;
     
     create_stagg_source(q_source,input.param.src_type,
 			color_source, j_decay, t_source) ;

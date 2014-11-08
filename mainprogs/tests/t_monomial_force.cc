@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
   START_CODE();
 
   // Chroma Init stuff -- Open DATA and XMLDAT
-  QDPIO::cout << "Linkage = " << linkageHack() << endl;
+  QDPIO::cout << "Linkage = " << linkageHack() << std::endl;
 
   // Snarf it all
   XMLReader param_in(Chroma::getXMLInputFileName());
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     read(paramtop, "nrow", nrow);
   }
   catch(const std::string& e) { 
-    QDPIO::cerr << "Unable to read nrow from XML: " << e << endl;
+    QDPIO::cerr << "Unable to read nrow from XML: " << e << std::endl;
     QDP_abort(1);
   }
     
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     read(paramtop, "./GaugeStartup", cfg);
   }
   catch( const std::string& e ) { 
-    QDPIO::cerr << " Error reading XML " << e << endl;
+    QDPIO::cerr << " Error reading XML " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
     readNamedMonomialArray(paramtop, "./Monomials");
   }
   catch(const std::string& e) { 
-    QDPIO::cout << "Failed to read monomials " << endl;
+    QDPIO::cout << "Failed to read monomials " << std::endl;
     QDP_abort(1);
   }
 
@@ -112,12 +112,12 @@ int main(int argc, char *argv[])
     taproj(p[mu]);
   }
 
-  QDPIO::cout << "create state" << endl;
+  QDPIO::cout << "create state" << std::endl;
 
   // Create a field state
   GaugeFieldState gauge_state(p,u);
 
-  QDPIO::cout << "There are " << monomial_test_ids.size() << " monomials to test" << endl;
+  QDPIO::cout << "There are " << monomial_test_ids.size() << " monomials to test" << std::endl;
   typedef multi1d<LatticeColorMatrix> P;
   typedef multi1d<LatticeColorMatrix> Q;
 
@@ -132,8 +132,8 @@ int main(int argc, char *argv[])
   for( int mon = 0; mon < monomial_test_ids.size(); mon++) { 
     // Get a monomial
     Monomial<P,Q>& the_mon = *( mon_handles[mon] );
-    QDPIO::cout << "Timing monomial force: " << monomial_test_ids[mon] << endl;
-    QDPIO::cout << "Refreshing internal fields: " << endl;
+    QDPIO::cout << "Timing monomial force: " << monomial_test_ids[mon] << std::endl;
+    QDPIO::cout << "Refreshing internal fields: " << std::endl;
 
     the_mon.refreshInternalFields(gauge_state);
     P F;
@@ -153,12 +153,12 @@ int main(int argc, char *argv[])
       seconds = swatch.getTimeInSeconds();
       QDPInternal::globalSum(seconds);
       seconds /= (double)Layout::numNodes();
-      QDPIO::cout << "." << flush;
+      QDPIO::cout << "." << std::flush;
     }
 
-    QDPIO::cout << " " << seconds << "(s)"<< endl;
+    QDPIO::cout << " " << seconds << "(s)"<< std::endl;
 
-    QDPIO::cout << "Timing monomial force: " << monomial_test_ids[mon] << " with " << hits << " hits " << endl;
+    QDPIO::cout << "Timing monomial force: " << monomial_test_ids[mon] << " with " << hits << " hits " << std::endl;
     swatch.reset();
     swatch.start();
     for(int i=0; i < hits; i++) { 
@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "monomial_id = " << monomial_test_ids[mon]
 		<< ", Nhits = " << hits 
                 << ", Time = " << seconds << "(s)" 
-                << ", Time per hit = " << seconds/(double)hits << "(s)"<< endl;
+                << ", Time per hit = " << seconds/(double)hits << "(s)"<< std::endl;
 
     push(xml_out, "ForceTiming");
     write(xml_out, "monomial_id", monomial_test_ids[mon]);
@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
   // Time taproj
   seconds = 0;
   hits = 1;
-  QDPIO::cout << "Timing taproj()" << endl;
+  QDPIO::cout << "Timing taproj()" << std::endl;
   QDPIO::cout << "Calibrating";
   while( seconds < 10 ) { 
     hits *= 2;
@@ -201,13 +201,13 @@ int main(int argc, char *argv[])
     seconds = swatch.getTimeInSeconds();
     QDPInternal::globalSum(seconds);
     seconds /= (double)Layout::numNodes();
-    QDPIO::cout << "." << flush;
+    QDPIO::cout << "." << std::flush;
   }
 
-  QDPIO::cout << " " << seconds << "(s)"<< endl;
+  QDPIO::cout << " " << seconds << "(s)"<< std::endl;
 
   
-  QDPIO::cout << "Timing taproj with " << hits << " hits " << endl;
+  QDPIO::cout << "Timing taproj with " << hits << " hits " << std::endl;
   swatch.reset();
   swatch.start();
   for(int i=0; i < hits; i++) { 
@@ -223,7 +223,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << "taproj"
 	      << ", Nhits = " << hits 
 	      << ", Time = " << seconds << "(s)" 
-	      << ", Time per hit = " << seconds/(double)hits << "(s)" << endl;
+	      << ", Time per hit = " << seconds/(double)hits << "(s)" << std::endl;
 
   push(xml_out, "TaprojTiming");
   write(xml_out, "nhits", hits);
@@ -234,7 +234,7 @@ int main(int argc, char *argv[])
   // Time expmat
   seconds = 0;
   hits = 1;
-  QDPIO::cout << "Timing expmat()" << endl;
+  QDPIO::cout << "Timing expmat()" << std::endl;
   QDPIO::cout << "Calibrating";
   
   while( seconds < 10 ) { 
@@ -251,11 +251,11 @@ int main(int argc, char *argv[])
     QDPInternal::globalSum(seconds);
     seconds /= (double)Layout::numNodes();
 
-    QDPIO::cout << "." << flush;
+    QDPIO::cout << "." << std::flush;
   }
-  QDPIO::cout << " " << seconds << "(s)"<< endl;
+  QDPIO::cout << " " << seconds << "(s)"<< std::endl;
 
-  QDPIO::cout << "Timing expmat with " << hits << " hits " << endl;
+  QDPIO::cout << "Timing expmat with " << hits << " hits " << std::endl;
   swatch.reset();
   swatch.start();
   for(int i=0; i < hits; i++) { 
@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << "expmat"
 	      << ", Nhits = " << hits 
 	      << ", Time = " << seconds << "(s)" 
-	      << ", Time per hit = " << seconds/(double)hits << "(s)" << endl;
+	      << ", Time per hit = " << seconds/(double)hits << "(s)" << std::endl;
 
   push(xml_out, "ExpmatTiming");
   write(xml_out, "nhits", hits);
@@ -283,7 +283,7 @@ int main(int argc, char *argv[])
   seconds = 0;
   hits = 1;
   int numbad;
-  QDPIO::cout << "Timing reunit()" << endl;
+  QDPIO::cout << "Timing reunit()" << std::endl;
   QDPIO::cout << "Calibrating";
   
   while( seconds < 10 ) { 
@@ -300,11 +300,11 @@ int main(int argc, char *argv[])
     QDPInternal::globalSum(seconds);
     seconds /= (double)Layout::numNodes();
 
-    QDPIO::cout << "." << flush;
+    QDPIO::cout << "." << std::flush;
   }
-  QDPIO::cout << " " << seconds << "(s)"<< endl;
+  QDPIO::cout << " " << seconds << "(s)"<< std::endl;
 
-  QDPIO::cout << "Timing reunit with " << hits << " hits " << endl;
+  QDPIO::cout << "Timing reunit with " << hits << " hits " << std::endl;
   swatch.reset();
   swatch.start(); 
   for(int i=0; i < hits; i++) { 
@@ -320,7 +320,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << "reunit" 
 	      << ", Nhits = " << hits 
 	      << ", Time = " << seconds << "(s)" 
-	      << ", Time per hit = " << seconds/(double)hits << "(s)" << endl;
+	      << ", Time per hit = " << seconds/(double)hits << "(s)" << std::endl;
 
   push(xml_out, "ReunitTiming");
   write(xml_out, "nhits", hits);

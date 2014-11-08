@@ -97,15 +97,15 @@ int main(int argc, char **argv)
 
   CoeffType t1;
   CoeffType t2;
-  istringstream foo_xml_is(foo_xml);
+  std::istringstream foo_xml_is(foo_xml);
   XMLReader fooreader(foo_xml_is);
 
   try { 
     read(fooreader, "/foo/coeffs1", t1);
     read(fooreader, "/foo/coeffs2", t2);
   }
-  catch(const string& e) { 
-    QDPIO::cerr << "Caught error : " << e << endl;
+  catch(const std::string& e) { 
+    QDPIO::cerr << "Caught error : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -113,8 +113,8 @@ int main(int argc, char **argv)
     write(xml_out, "coeffs1", t1);
     write(xml_out, "coeffs2", t2);
   }
-  catch(const string& e) { 
-    QDPIO::cerr << "Caught error : " << e << endl;
+  catch(const std::string& e) { 
+    QDPIO::cerr << "Caught error : " << e << std::endl;
     QDP_abort(1);
   }
 

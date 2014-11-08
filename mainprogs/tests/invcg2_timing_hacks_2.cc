@@ -28,7 +28,7 @@
  *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
  *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
  *      a[k] := |r[k-1]|**2 / <Mp[k],Mp[k]> ;
- *      Psi[k] += a[k] p[k] ;   	       New solution vector
+ *      Psi[k] += a[k] p[k] ;   	       New solution std::vector
  *      r[k] -= a[k] M^dag . M . p[k] ;        New residual
  *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
  *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
@@ -45,8 +45,8 @@
  *
  * Local Variables:
  *
- *  p   	       Direction vector
- *  r   	       Residual vector
+ *  p   	       Direction std::vector
+ *  r   	       Residual std::vector
  *  cp  	       | r[k] |**2
  *  c   	       | r[k-1] |**2
  *  k   	       CG iteration counter
@@ -57,7 +57,7 @@
  *
  * Subroutines:
  *                             +               
- *  A       Apply matrix M or M  to vector
+ *  A       Apply matrix M or M  to std::vector
  *
  * Operations:
  *
@@ -96,7 +96,7 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
 
   // Initial norm -- could be passed in I suppose
   REAL chi_sq =(REAL)AT_REAL(norm2(chi,s));
-  //QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
+  //QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << std::endl;
 
   // ( Target residuum * || chi || )^2. Ignored in this test
   REAL rsd_sq = (AT_REAL(RsdCG) * AT_REAL(RsdCG)) * chi_sq;
@@ -146,7 +146,7 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
   p[s] = r;
   
 
-  //QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
+  //QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << std::endl;
   
   // Disable early termination
 #if 0
@@ -231,7 +231,7 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
      cp = (REAL)AT_REAL(sum);
 
 
-     //QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+     //QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << std::endl;
 
     // Disable termination
 #if 0

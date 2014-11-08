@@ -21,7 +21,7 @@ typedef OScalar< PScalar < PScalar < RScalar< PScalar < DOUBLE > > > > > LDble;
 // Get at the REAL embedded in an LScal
 #define AT_REAL(a)  (a.elem().elem().elem().elem().elem())
                                                                                 
-// Get the first element of a vector over a subset
+// Get the first element of a std::vector over a subset
 #define FIRST_ELEM(a,s) (&(a.elem(s.start()).elem(0).elem(0).real().elem()))
                                                                                
 void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
@@ -33,7 +33,7 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
                                 int& n_count);
  
 
-// GNUC vector type
+// GNUC std::vector type
 typedef float v4sf __attribute__((mode(V4SF),aligned(16)));
 
 // vaxpy3 and norm put together
@@ -42,7 +42,7 @@ void vaxpy3_norm(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec,
 		 REAL* dsum)
 {
 #ifdef DEBUG_BLAS
-  QDPIO::cout << "SSE_TEST: vaxpy3_norm" << endl;
+  QDPIO::cout << "SSE_TEST: vaxpy3_norm" << std::endl;
 #endif
 
   int n_loops = n_3vec;

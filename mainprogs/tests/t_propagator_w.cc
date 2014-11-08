@@ -50,8 +50,8 @@ struct Param_t
 
 struct Prop_t
 {
-  string       source_file;
-  string       prop_file;
+  std::string       source_file;
+  std::string       prop_file;
 };
 
 struct Propagator_input_t
@@ -64,7 +64,7 @@ struct Propagator_input_t
 
 
 //
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -78,7 +78,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 //  first called
 //
 
-void read(XMLReader& xml, const string& path, Propagator_input_t& input)
+void read(XMLReader& xml, const std::string& path, Propagator_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -92,9 +92,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   {
     read(inputtop, "IO_version/version", input.io_version.version);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -117,13 +117,13 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     default :
       /**************************************************************************/
 
-      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << std::endl;
       QDP_abort(1);
     }
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -134,7 +134,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
     {
-      string ferm_type_str;
+      std::string ferm_type_str;
       read(paramtop, "FermTypeP", ferm_type_str);
       if (ferm_type_str == "WILSON") {
 	input.param.FermTypeP = FERM_TYPE_WILSON;
@@ -146,7 +146,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     switch (input.param.FermTypeP) {
     case FERM_TYPE_WILSON  :
 
-      QDPIO::cout << " PROPAGATOR: Propagator for Wilson fermions" << endl;
+      QDPIO::cout << " PROPAGATOR: Propagator for Wilson fermions" << std::endl;
 
       //      read(paramtop, "Mass", input.param.Mass);
       read(paramtop, "u0" , input.param.u0);
@@ -156,7 +156,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 	  read(paramtop, "Mass", input.param.Mass);
 	  if (paramtop.count("Kappa") != 0)
 	    {
-	      QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
+	      QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << std::endl;
 	      QDP_abort(1);
 	    }
 	}
@@ -168,7 +168,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 	}
       else
 	{
-	  QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
+	  QDPIO::cerr << "Error: neither Mass or Kappa found" << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -195,9 +195,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(paramtop, "t_srce", input.param.t_srce);
 
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 
@@ -212,9 +212,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(inputtop, "Cfg", input.cfg);
     read(inputtop, "Prop", input.prop);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -236,16 +236,16 @@ int main(int argc, char **argv)
 
   // Instantiate xml reader for DATA
   XMLReader xml_in ; 
-  string in_name = Chroma::getXMLInputFileName() ; 
+  std::string in_name = Chroma::getXMLInputFileName() ; 
   try
   {
     xml_in.open(in_name);
   }
     catch (...) 
   {
-    QDPIO::cerr << "Error reading input file " << in_name << endl;
-    QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
-    QDPIO::cerr << "The default name is ./DATA" << endl;
+    QDPIO::cerr << "Error reading input file " << in_name << std::endl;
+    QDPIO::cerr << "The input file name can be passed via the -i flag " << std::endl;
+    QDPIO::cerr << "The default name is ./DATA" << std::endl;
     throw;
   }
 
@@ -260,7 +260,7 @@ int main(int argc, char **argv)
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
-  QDPIO::cout << "Calculation for SU(" << Nc << ")" << endl;
+  QDPIO::cout << "Calculation for SU(" << Nc << ")" << std::endl;
 
 
   XMLReader gauge_file_xml, gauge_xml;
@@ -319,7 +319,7 @@ int main(int argc, char **argv)
 	   u[dir] = u_trans[dir] ;
 	 }
 
-       QDPIO::cout << "Random gauge transform done" << endl;
+       QDPIO::cout << "Random gauge transform done" << std::endl;
 
     } // end of gauge transform
 
@@ -363,13 +363,13 @@ int main(int argc, char **argv)
 
   int t_source = 0;
 
-  QDPIO::cout << "Source time slice = " << t_source << endl;
+  QDPIO::cout << "Source time slice = " << t_source << std::endl;
 
   for(int color_source = 0; color_source < Nc; ++color_source) 
     for(int spin_source = 0 ; spin_source < Ns ; ++spin_source)
       {
-	QDPIO::cout << "Inversion for Color =  " << color_source << endl;
-	QDPIO::cout << "Inversion for Spin =  " << spin_source << endl;
+	QDPIO::cout << "Inversion for Color =  " << color_source << std::endl;
+	QDPIO::cout << "Inversion for Spin =  " << spin_source << std::endl;
 
 
 	q_source = zero ;

@@ -46,7 +46,7 @@
 // Removed explict FermBC args to FermAct factory functions.
 //
 // Revision 1.8  2004/11/17 15:23:00  bjoo
-// t_su3 removed from make check. Throws stringified
+// t_su3 removed from make check. Throws std::stringified
 //
 // Revision 1.7  2004/09/08 14:41:36  edwards
 // Ifdef'ed out old FermActHandle code to get to compile.
@@ -102,7 +102,7 @@
 // Put in sse hack for the short term.
 //
 // Revision 1.42  2004/02/06 17:39:05  edwards
-// Added a flush to xml_out.
+// Added a std::flush to xml_out.
 //
 // Revision 1.41  2004/02/05 04:18:56  edwards
 // Changed call of quarkProp4 to write to xml_out instead of xml buffer.
@@ -132,8 +132,8 @@ using namespace Chroma;
  */
 struct Prop_t
 {
-  string          source_file;
-  string          prop_file;
+  std::string          source_file;
+  std::string          prop_file;
   QDP_volfmt_t    prop_volfmt;
 };
 
@@ -153,29 +153,29 @@ struct PropagatorComponent_input_t
 };
 
 
-void read(XMLReader& xml, const string& path, Component_t &comp)
+void read(XMLReader& xml, const std::string& path, Component_t &comp)
 {
   XMLReader top(xml,path);
   try {
     read(top, "color", comp.color);
     read(top, "spin",  comp.spin);
   }
-  catch( const string& e ) {
-    QDPIO::cerr << "Caught Exception : " << e << endl;
+  catch( const std::string& e ) {
+    QDPIO::cerr << "Caught Exception : " << e << std::endl;
     QDP_abort(1);
   }  
   if( comp.color < 0 || comp.color >= Nc ) { 
-    QDPIO::cerr << "Component color >= Nc. color = " << comp.color << endl;
+    QDPIO::cerr << "Component color >= Nc. color = " << comp.color << std::endl;
     QDP_abort(1);
   }
 
   if( comp.spin < 0 || comp.spin >= Ns ) { 
-    QDPIO::cerr << "Component spin >= Ns.  spin = " << comp.spin << endl;
+    QDPIO::cerr << "Component spin >= Ns.  spin = " << comp.spin << std::endl;
     QDP_abort(1);
   }
 }
 
-void write(XMLWriter& xml, const string& path, const Component_t &comp)
+void write(XMLWriter& xml, const std::string& path, const Component_t &comp)
 {
   
   push( xml, path );
@@ -188,7 +188,7 @@ void write(XMLWriter& xml, const string& path, const Component_t &comp)
 
 
 // Propagator parameters
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -199,7 +199,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, PropagatorComponent_input_t& input)
+void read(XMLReader& xml, const std::string& path, PropagatorComponent_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -217,9 +217,9 @@ void read(XMLReader& xml, const string& path, PropagatorComponent_input_t& input
 
     read(inputtop, "Components", input.components);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -244,8 +244,8 @@ int main(int argc, char **argv)
   try { 
     read(xml_in, "/propagatorComp", input);
   }
-  catch ( const string& e ) { 
-    QDPIO::cerr << "Caught exception " << e << endl;
+  catch ( const std::string& e ) { 
+    QDPIO::cerr << "Caught exception " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -253,7 +253,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(input.nrow);
   Layout::create();
 
-  QDPIO::cout << "propagatorComp" << endl;
+  QDPIO::cout << "propagatorComp" << std::endl;
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
@@ -271,11 +271,11 @@ int main(int argc, char **argv)
   bool seqsourceP = false;
   {
     // ONLY SciDAC mode is supported for propagators!!
-    QDPIO::cout << "Attempt to read source" << endl;
+    QDPIO::cout << "Attempt to read source" << std::endl;
     readQprop(source_file_xml, 
 	      source_record_xml, quark_prop_source,
 	      input.prop.source_file, QDPIO_SERIAL);
-    QDPIO::cout << "Forward propagator successfully read" << endl;
+    QDPIO::cout << "Forward propagator successfully read" << std::endl;
 
     // Try to invert this record XML into a source struct
     try
@@ -298,9 +298,9 @@ int main(int argc, char **argv)
       else
 	throw std::string("No appropriate header found");
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error extracting source_header: " << e << endl;
+      QDPIO::cerr << "Error extracting source_header: " << e << std::endl;
       QDP_abort(1);
     }
   }    
@@ -394,11 +394,11 @@ int main(int argc, char **argv)
 
   for(int spin=start_spin; spin < end_spin; spin++) { 
     for(int color=0; color < Nc; color++) {
-      ostringstream filename ;
+      std::ostringstream filename ;
       filename << input.prop.prop_file << "_component_s" << spin
 	       << "_c" << color ;
       
-      QDPIO::cout << "Attempting to read " << filename.str() << endl;
+      QDPIO::cout << "Attempting to read " << filename.str() << std::endl;
       
       // Write the source
       readFermion(file_xml_in, record_xml_in, psi,
@@ -495,7 +495,7 @@ int main(int argc, char **argv)
     }
 
 
-  QDPIO::cout << "Attempting to write " << input.prop.prop_file << endl;
+  QDPIO::cout << "Attempting to write " << input.prop.prop_file << std::endl;
   
   // Write the source
   writeQprop(file_xml, record_xml, quark_prop,

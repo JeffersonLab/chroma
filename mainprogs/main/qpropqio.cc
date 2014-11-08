@@ -15,7 +15,7 @@ struct QpropQIO_t
 };
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, QpropQIO_t& input)
+void read(XMLReader& xml, const std::string& path, QpropQIO_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -29,9 +29,9 @@ void read(XMLReader& xml, const string& path, QpropQIO_t& input)
     // Read the lattice size
     read(inputtop, "nrow", input.nrow);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }

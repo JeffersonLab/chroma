@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
   unsigned long iters=1;
   double time;
 
-  QDPIO::cout << "Calibrating QDPCloverTerm" << endl;
+  QDPIO::cout << "Calibrating QDPCloverTerm" << std::endl;
   do { 
     iters *= 2;
     StopWatch swatch;
@@ -70,15 +70,15 @@ int main(int argc, char *argv[])
     time=swatch.getTimeInSeconds();
     QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
-    QDPIO::cout << "." << flush;
+    QDPIO::cout << "." << std::flush;
   }
   while(time < (double)n_sec );
 
 
-  QDPIO::cout << endl;
+  QDPIO::cout << std::endl;
 
   {
-    QDPIO::cout << "Timing with " << iters << " iterations" << endl;
+    QDPIO::cout << "Timing with " << iters << " iterations" << std::endl;
     StopWatch swatch;
     swatch.reset();
     swatch.start();
@@ -91,10 +91,10 @@ int main(int argc, char *argv[])
     time /= (double)Layout::numNodes();
 
     // Flopcount
-    QDPIO::cout << "Layout volume=" << Layout::vol() << endl;
-    QDPIO::cout << "FLOPS=" << qdp_clov.nFlops() << endl;
-    QDPIO::cout << "iters=" << iters <<endl;
-    QDPIO::cout << "time=" << time << endl;
+    QDPIO::cout << "Layout volume=" << Layout::vol() << std::endl;
+    QDPIO::cout << "FLOPS=" << qdp_clov.nFlops() << std::endl;
+    QDPIO::cout << "iters=" << iters <<std::endl;
+    QDPIO::cout << "time=" << time << std::endl;
     double flops=(double)qdp_clov.nFlops();
     flops *= (double)(Layout::sitesOnNode())/(double)2;
     flops *= (double)(iters);
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
   opt_clov.create(fs, params);
 
   iters = 1;
-  QDPIO::cout << "Calibrating CloverTerm" << endl;
+  QDPIO::cout << "Calibrating CloverTerm" << std::endl;
   do { 
     iters *= 2;
     StopWatch swatch;
@@ -121,15 +121,15 @@ int main(int argc, char *argv[])
     time=swatch.getTimeInSeconds();
     QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
-    QDPIO::cout << "." << flush;
+    QDPIO::cout << "." << std::flush;
   }
   while(time < (double)n_sec );
 
 
-  QDPIO::cout << endl;
+  QDPIO::cout << std::endl;
 
   {
-    QDPIO::cout << "Timing with " << iters << " iterations" << endl;
+    QDPIO::cout << "Timing with " << iters << " iterations" << std::endl;
     StopWatch swatch;
     swatch.reset();
     swatch.start();
@@ -142,10 +142,10 @@ int main(int argc, char *argv[])
     time /= (double)Layout::numNodes();
 
     // Flopcount
-    QDPIO::cout << "Layout volume=" << Layout::vol() << endl;
-    QDPIO::cout << "FLOPS=" << qdp_clov.nFlops() << endl;
-    QDPIO::cout << "iters=" << iters <<endl;
-    QDPIO::cout << "time=" << time << endl;
+    QDPIO::cout << "Layout volume=" << Layout::vol() << std::endl;
+    QDPIO::cout << "FLOPS=" << qdp_clov.nFlops() << std::endl;
+    QDPIO::cout << "iters=" << iters <<std::endl;
+    QDPIO::cout << "time=" << time << std::endl;
     double flops=(double)qdp_clov.nFlops();
     flops *= (double)(Layout::sitesOnNode())/(double)2;
     flops *= (double)(iters);
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
   EvenOddPrecCloverLinOp D;
   D.create(fs, params);
 
-  QDPIO::cout << "Calibrating Possibly optimized EOPREC Clov Op" << endl;
+  QDPIO::cout << "Calibrating Possibly optimized EOPREC Clov Op" << std::endl;
   do { 
     iters *= 2;
     StopWatch swatch;
@@ -176,13 +176,13 @@ int main(int argc, char *argv[])
     time=swatch.getTimeInSeconds();
     QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
-    QDPIO::cout << "." << flush;
+    QDPIO::cout << "." << std::flush;
   }
   while(time < (double)n_sec );
-  QDPIO::cout << endl;
+  QDPIO::cout << std::endl;
 
   {
-    QDPIO::cout << "Timing with " << iters << " iterations" << endl;
+    QDPIO::cout << "Timing with " << iters << " iterations" << std::endl;
     StopWatch swatch;
     swatch.reset();
     swatch.start();

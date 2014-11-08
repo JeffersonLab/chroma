@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
     }
     break;
   default: 
-    QDPIO::cerr << "Integrator not yet implemented " << endl;
+    QDPIO::cerr << "Integrator not yet implemented " << std::endl;
     QDP_abort(1);
   }
 
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
     // setrn(input.MC_startup.seed);
   }
   else { 
-    QDPIO::cerr << "Restart from saved state not yet implemented" << endl;
+    QDPIO::cerr << "Restart from saved state not yet implemented" << std::endl;
     QDP_abort(1);
   }
 

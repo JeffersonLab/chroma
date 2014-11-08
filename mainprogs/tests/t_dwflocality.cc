@@ -63,7 +63,7 @@ int main(int argc, char **argv)
   push(xml,"Configuration");
   write(xml, "cfg", cfg);
   pop(xml);
-  QDPIO::cout << "Read config from " << cfg.cfg_file << endl;
+  QDPIO::cout << "Read config from " << cfg.cfg_file << std::endl;
 
 
   multi1d<LatticeColorMatrix> u(Nd);    // Gauge field
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
   Double w_plaq, s_plaq, t_plaq, link;
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
   QDPIO::cout << " Initial plaqettes and link: " << w_plaq
-              << " " << s_plaq << " " << t_plaq << " " << link << endl;
+              << " " << s_plaq << " " << t_plaq << " " << link << std::endl;
   push(xml,"gauge_observables");
   write(xml, "w_plaq", w_plaq);
   write(xml, "s_plaq", s_plaq);
@@ -102,15 +102,15 @@ int main(int argc, char **argv)
   LatticeFermion res4;
 
   //! Create source
-  QDPIO::cout << "Constructing source" << endl;
+  QDPIO::cout << "Constructing source" << std::endl;
   multi1d<int> coor(4) ;
   coor[0]=coor[1]=coor[2]=0 ;
   coor[3]=Nt/2 ;
   chi4=zero ;
   srcfil(chi4, coor, 0,0);
-  QDPIO::cout << "Done" << endl;
+  QDPIO::cout << "Done" << std::endl;
   
-  QDPIO::cout << "source norm :" << norm2(chi4)<< endl;
+  QDPIO::cout << "source norm :" << norm2(chi4)<< std::endl;
   LatticeReal tt ;
   tt = localNorm2(chi4) ;
   
@@ -119,7 +119,7 @@ int main(int argc, char **argv)
   chi[0   ] = chiralProjectPlus(chi4) ;
   chi[N5-1] = chiralProjectMinus(chi4) ; 
   
-  QDPIO::cout << "5D source norm :" << norm2(chi)<< endl;
+  QDPIO::cout << "5D source norm :" << norm2(chi)<< std::endl;
 
   {
     XMLBufferWriter xml_buf;
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
     for (int x(0);x<nrow[1];x++){
       c[1] = x ;
       val[x] = peekSite(mag,c) ;
-      //QDPIO::cout << "source norm ("<<x<<"):" << peekSite(tt,c)<< endl;
+      //QDPIO::cout << "source norm ("<<x<<"):" << peekSite(tt,c)<< std::endl;
     }
     push(xml, "y_axis");
     write(xml,"val",val);
