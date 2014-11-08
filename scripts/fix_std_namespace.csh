@@ -31,4 +31,4 @@ sed 's/_std::/_/g' |\
 sed 's/_objstd::/_obj/g' |\
 grep -v 'using namespace std;' > ${f}.tmp
 
-mv ${f}.tmp $f
+/bin/mv ${f}.tmp $f
