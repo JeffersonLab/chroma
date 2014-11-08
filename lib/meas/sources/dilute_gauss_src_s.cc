@@ -52,7 +52,7 @@ void gaussian_on_timeslice(LatticeStaggeredFermion& a, int slice, int mu){
   // compute a source of z2 noise on slice x_mu = slice
   LatticeStaggeredFermion tmp; 
   gaussian(tmp) ;
-  printf("slice=%d\n",slice);fflush(stdout);
+  QDPIO::cout << __func__ << ": slice= " << slice << std::endl;
   a = where(Layout::latticeCoordinate(mu) == slice, tmp, LatticeStaggeredFermion(zero));
 }
 
@@ -181,7 +181,7 @@ void gaussian_on_mod_timeslice(LatticeStaggeredFermion& a, int slice, int mu,
   // compute a source of z2 noise on slice x_mu % seperation = slice
   LatticeStaggeredFermion tmp; 
   gaussian(tmp) ;
-  printf("slice=%d\n",slice);fflush(stdout);
+  QDPIO::cout << __func__ << ": slice= " << slice << std::endl;
   //  a = where((Layout::latticeCoordinate(mu))%seperation == slice, tmp, 
   //	    LatticeStaggeredFermion(zero));
 

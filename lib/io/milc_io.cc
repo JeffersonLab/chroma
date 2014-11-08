@@ -20,7 +20,7 @@ namespace Chroma
     {
       char *tmp = ctime(&now);
       int date_size = strlen(tmp);
-      char *datetime = new(nothrow) char[date_size+1];
+      char *datetime = new(std::nothrow) char[date_size+1];
       if( datetime == 0x0 ) { 
 	QDP_error_exit("Unable to allocate datetime in qdp_iogauge.cc\n");
       }
@@ -43,7 +43,7 @@ namespace Chroma
 
 
   //! Source header read
-  void read(XMLReader& xml, const string& path, MILCGauge_t& header)
+  void read(XMLReader& xml, const std::string& path, MILCGauge_t& header)
   {
     XMLReader paramtop(xml, path);
 
@@ -53,7 +53,7 @@ namespace Chroma
 
 
   //! Source header writer
-  void write(XMLWriter& xml, const string& path, const MILCGauge_t& header)
+  void write(XMLWriter& xml, const std::string& path, const MILCGauge_t& header)
   {
     push(xml, path);
 
