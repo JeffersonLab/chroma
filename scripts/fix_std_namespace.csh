@@ -23,4 +23,4 @@ sed 's/include <std::string>/include <string>/' |\
 sed 's/error_std::string/error_string/g' |\
 grep -v 'using namespace std;' > ${f}.tmp
 
-mv ${f}.tmp $f
+/bin/mv ${f}.tmp $f
