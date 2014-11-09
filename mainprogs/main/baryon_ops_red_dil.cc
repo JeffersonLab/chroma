@@ -10,7 +10,6 @@
 #include "meas/inline/make_xml_file.h"
 
 #include "stdio.h"
-#include "std::string.h"
 
 using namespace QDP;
 using namespace Chroma;

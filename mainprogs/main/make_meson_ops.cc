@@ -1,4 +1,3 @@
-// $Id: make_meson_ops.cc,v 3.3 2008-04-25 05:46:55 edwards Exp $
 /*! \file
  *  \brief Combine elemental meson ops into a meson operator
  *
@@ -10,7 +9,6 @@
 #include "chroma.h"
 
 #include "stdio.h"
-#include "std::string.h"
 
 using namespace QDP;
 using namespace Chroma;
