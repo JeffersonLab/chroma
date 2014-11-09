@@ -169,7 +169,7 @@ namespace Chroma
 	write(file_xml_buf,  "object_type", params.named_obj.object_type);
 	write(file_xml_buf,  "object_id", params.named_obj.object_id);
 	write(file_xml_buf,  "file_name", params.file.file_name);
-	write(file_xml_buf,  "std::map_size", size);
+	write(file_xml_buf,  "map_size", size);
 	pop(file_xml_buf);
 
 	XMLReader file_xml(file_xml_buf);
