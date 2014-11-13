@@ -281,7 +281,7 @@ namespace Chroma
 
       //only symmetric DWF supported at the moment:
       QDPIO::cout << "Using Symmetric Linop: A_oo - D_oe A^{-1}_ee D_eo" << std::endl;
-      quda_inv_param.matpc_type = QUDA_MATPC_EVEN_EVEN;
+      quda_inv_param.matpc_type = QUDA_MATPC_EVEN_EVEN_ASYMMETRIC;
       quda_inv_param.dagger = QUDA_DAG_NO;
       quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
       quda_inv_param.cpu_prec = cpu_prec;
