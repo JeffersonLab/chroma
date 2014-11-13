@@ -271,11 +271,11 @@ namespace Chroma
       // Solve type, only CG-types supported so far:
       switch( invParam.solverType ) { 
       case CG: 
-	quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
+	quda_inv_param.solve_type = QUDA_NORMERR_PC_SOLVE;
 	break;
 	
       default:
-	quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
+	quda_inv_param.solve_type = QUDA_NORMERR_PC_SOLVE;
 	break;
       }
 
