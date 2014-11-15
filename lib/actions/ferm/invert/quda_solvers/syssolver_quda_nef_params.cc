@@ -120,8 +120,13 @@ namespace Chroma {
     else { 
       dump_on_failP  = false;
     }
-    
-
+   
+    if ( paramtop.count("DoCGNR")  > 0 ) { 
+       read(paramtop, "DoCGNR", cgnrP);
+    }
+    else { 
+	cgnrP = false ; // Do CGNE by default
+    }
   }
 
   void read(XMLReader& xml, const std::string& path, 
@@ -156,6 +161,7 @@ namespace Chroma {
     }
 
     write(xml, "DumpOnFail", p.dump_on_failP);
+    write(xml, "DoCGNR", p.cgnrP );
 
     if( p.backup_invP ) { 
       // Need to dump out the XML for the back up solver here...

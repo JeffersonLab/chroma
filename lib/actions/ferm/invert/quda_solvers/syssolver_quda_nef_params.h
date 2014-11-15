@@ -29,6 +29,7 @@ namespace Chroma
       innerParamsP = false;
       backup_invP = false;
       dump_on_failP = false;
+      cgnrP=false;
     };
 
     SysSolverQUDANEFParams( const SysSolverQUDANEFParams& p) {
@@ -53,6 +54,8 @@ namespace Chroma
       backup_invP = p.backup_invP;
       backup_inv_param = p.backup_inv_param;
       dump_on_failP = p.dump_on_failP;
+      cgnrP= p.cgnrP;
+
     }
 
    
@@ -82,7 +85,7 @@ namespace Chroma
     bool backup_invP;
     GroupXML_t backup_inv_param;
     bool dump_on_failP;
-    
+    bool cgnrP;    
 
   };
 
