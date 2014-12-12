@@ -1,0 +1,9 @@
+Makefile.in
+aclocal.m4
+configure
+docs/Makefile.in
+lib/Makefile.in
+mainprogs/Makefile.in
+mainprogs/main/Makefile.in
+mainprogs/tests/Makefile.in
+other_libs/Makefile.in
