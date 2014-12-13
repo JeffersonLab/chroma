@@ -51,8 +51,6 @@ sub regresDirs
 	    "$test_dir/chroma/hadron/qqq/regres.pl",
 	    "$test_dir/chroma/hadron/qqqNucNuc/regres.pl",
 	    "$test_dir/chroma/hadron/static_light/regres.pl",
-	    "$test_dir/chroma/hadron/stoch_group_meson/regres.pl",
-	    "$test_dir/chroma/hadron/stoch_group_baryon/regres.pl",
 	    "$test_dir/chroma/hadron_s/make_source/regres.pl",
 	    "$test_dir/chroma/hadron_s/propagator/regres.pl",
 	    "$test_dir/chroma/hadron_s/sink_smear/regres.pl",
