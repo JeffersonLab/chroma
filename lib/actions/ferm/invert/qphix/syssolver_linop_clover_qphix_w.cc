@@ -30,6 +30,8 @@ namespace Chroma
     }
 
 
+
+#ifndef CHROMA_QPHIX_ARCH_QPX
     // Strictly single precision
     LinOpSystemSolver<LatticeFermionF>* createFermF(XMLReader& xml_in,	
 						  const std::string& path,
@@ -39,6 +41,7 @@ namespace Chroma
     {
       return new LinOpSysSolverQPhiXClover<LatticeFermionF, LatticeColorMatrixF>(A, state,SysSolverQPhiXCloverParams(xml_in, path));
     }
+#endif
 
     // Double precision
     LinOpSystemSolver<LatticeFermionD>* createFermD(XMLReader& xml_in,	
@@ -67,7 +70,10 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+#ifndef CHROMA_QPHIX_ARCH_QPX
 	success &= Chroma::TheLinOpFFermSystemSolverFactory::Instance().registerObject(name, createFermF);
+#endif
+
 	success &= Chroma::TheLinOpDFermSystemSolverFactory::Instance().registerObject(name, createFermD);
 	success &= Chroma::TheLinOpFermSystemSolverFactory::Instance().registerObject(name, createFerm);
 	registered = true;

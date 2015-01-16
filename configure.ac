@@ -255,7 +255,7 @@ AC_ARG_WITH(qphix-solver,
 
 AC_ARG_ENABLE(qphix-solver-arch,
   AC_HELP_STRING(
-   [--enable-qphix-solver-arch=avx|mic],
+   [--enable-qphix-solver-arch=avx|mic|qpx],
    [Set Architecture for the QPhiX solver (avx or mic)]
   ),
   [ qphix_arch="${enable_qphix_solver_arch}" ],
@@ -389,6 +389,9 @@ then
      ;;
   mic|MIC)
      AC_DEFINE(CHROMA_QPHIX_ARCH_MIC,[], [QPhiX Arch is MIC])
+     ;;
+  qpx|QPX)
+     AC_DEFINE(CHROMA_QPHIX_ARCH_QPX,[], [QPhiX Arch is QPX])
      ;;
   *) 
      AC_MSG_WARN([ QPhiX Arch not specified: Defaulting to AVX ])

@@ -81,6 +81,9 @@
 /* QPhiX Arch is MIC */
 #undef CHROMA_QPHIX_ARCH_MIC
 
+/* QPhiX Arch is QPX */
+#undef CHROMA_QPHIX_ARCH_QPX
+
 /* Disable Intel Solver Compression */
 #undef CHROMA_QPHIX_COMPRESS12
 

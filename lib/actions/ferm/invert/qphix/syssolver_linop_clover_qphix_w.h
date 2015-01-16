@@ -30,7 +30,10 @@
 #include "qphix/geometry.h"
 #include "qphix/qdp_packer.h"
 #include "qphix/clover.h"
+#if 0
 #include "qphix/invcg.h"
+#endif
+
 #include "qphix/invbicgstab.h"
 
 using namespace QDP;
@@ -89,6 +92,16 @@ namespace Chroma
     };
 #endif
 
+#if defined CHROMA_QPHIX_ARCH_QPX
+#warning QPhiX for QPX
+     // QPX Traits
+     template<>
+     struct VecTraits<double> {
+        static const int Vec=4;
+	static const int Soa=CHROMA_QPHIX_SOALEN;
+	static const bool compress12=CHROMA_QPHIX_COMPRESS12;
+     };
+#endif
 
   }
 
@@ -301,11 +314,13 @@ namespace Chroma
       /* Factories here later? */
       SystemSolverResults_t res;
       switch( invParam.SolverType ) { 
+#if 0
       case CG:
 	{
 	  res = cgSolve(psi,chi);
 	}
 	break;
+#endif
       case BICGSTAB:
 	{
 	  res = biCGStabSolve(psi,chi);
@@ -338,7 +353,9 @@ namespace Chroma
     
     Handle< QPhiX::EvenOddCloverOperator<REALT, VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12> > M;
 
+#if 0
     Handle< QPhiX::InvCG<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12> > cg_solver;
+#endif
 
     Handle< QPhiX::InvBiCGStab<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>  > bicgstab_solver;
     
@@ -352,10 +369,11 @@ namespace Chroma
     QPhiX_Spinor* c_odd;
     QPhiX_Spinor* psi_s[2];
     QPhiX_Spinor* chi_s[2];
-    
+
+#if 0    
     SystemSolverResults_t cgSolve(T& psi, const T& chi) const
     {
-#if 0
+
       SystemSolverResults_t res;
       psi = zero;
 
@@ -395,12 +413,12 @@ namespace Chroma
 
       QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: || r || / || b || = " << rel_resid << std::endl;
 
-#if 0
+
       if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
 	QDPIO::cout << "SOLVE FAILED" << std::endl;
 	QDP_abort(1);
       }
-#endif
+
 
       int num_cb_sites = Layout::vol()/2;
       unsigned long total_flops = (site_flops + (1320+504+1320+504+48)*mv_apps)*num_cb_sites;
@@ -411,8 +429,9 @@ namespace Chroma
 
       END_CODE();
       return res;
-#endif
+
     }
+#endif
 
     SystemSolverResults_t biCGStabSolve(T& psi, const T& chi) const
     {
