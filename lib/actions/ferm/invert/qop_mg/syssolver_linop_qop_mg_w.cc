@@ -52,7 +52,7 @@ namespace Chroma
       for (int c2=0; c2<3; c2++) {\
         real = U.elem().elem().elem(c1,c2).real();\
         imag = U.elem().elem().elem(c1,c2).imag();\
-        if (0&&c1==0&&c2==0) {fstd::flush(stdout);printf("Chroma: gauge[%d] I am node %d, parsing %d %d %d %d; I see %g + I %g\n",d,Layout::nodeNumber(),x[0],x[1],x[2],x[3],real,imag); fstd::flush(stdout);}\
+        if (0&&c1==0&&c2==0) {std::flush(stdout);printf("Chroma: gauge[%d] I am node %d, parsing %d %d %d %d; I see %g + I %g\n",d,Layout::nodeNumber(),x[0],x[1],x[2],x[3],real,imag); std::flush(stdout);}\
         QLA(C_eq_R_plus_i_R)(&z, &real, &imag);\
         QLA_elem_M(*dest,c1,c2) = z;\
       }\
