@@ -272,11 +272,11 @@ namespace Chroma
       switch( invParam.solverType ) { 
       case CG:
         if( invParam.cgnrP ) {
-          QDPIO::cout << "Doing CGNR solve" << endl;
+          QDPIO::cout << "Doing CGNR solve" << std::endl;
           quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
         }
 	else {
-          QDPIO::cout << "Doing CGNE solve" << endl; 
+          QDPIO::cout << "Doing CGNE solve" << std::endl; 
   	  quda_inv_param.solve_type = QUDA_NORMERR_PC_SOLVE;
         }
 
@@ -284,11 +284,11 @@ namespace Chroma
 	
       default:
         if( invParam.cgnrP ) {
-          QDPIO::cout << "Doing CGNR solve" << endl;
+          QDPIO::cout << "Doing CGNR solve" << std::endl;
           quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
         }
         else {
-          QDPIO::cout << "Doing CGNE solve" << endl;
+          QDPIO::cout << "Doing CGNE solve" << std::endl;
           quda_inv_param.solve_type = QUDA_NORMERR_PC_SOLVE;
         }
 
