@@ -1,3 +1,9 @@
+Feb 6, 2015 - Balint Joo
+	 Pulled in QPhiX Mods for BG/Q
+         Updated std:: namespace issues 
+         Updated CPP-Wilson Dslash with threading patches from Jacques Bloch, Regensburg University
+	 Fixed CLANG compilation issue in the qdp-lapack submodule
+
 Sept 11, 2014 - Balint Joo
          QPhiX library for Xeon and Xeon Phi (re) integrated. 
 	 See https://http://jeffersonlab.github.io/qphix
