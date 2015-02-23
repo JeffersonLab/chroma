@@ -116,6 +116,7 @@ namespace Chroma
     QDPIO::cout << "  ... constructing PrecFermActQprop " ;
     swatch2.reset(); swatch2.start();
     PrecFermActQprop<LF,LCM,LCM>* ret_val = new PrecFermActQprop<LF,LCM,LCM>(lh , ilh);
+     swatch2.stop();
     QDPIO::cout << " ..." << swatch2.getTimeInSeconds() << " sec" << std::endl;
 
     return ret_val;
