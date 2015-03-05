@@ -1375,12 +1375,13 @@ endif
 if BUILD_QPHIX
 nobase_include_HEADERS += actions/ferm/invert/qphix/syssolver_qphix_clover_params.h \
 	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.h \
-	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h	
-
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h\
+	actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_w.h
 
 libchroma_a_SOURCES += actions/ferm/invert/qphix/syssolver_qphix_clover_params.cc \
 	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.cc \
-	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.cc
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.cc \
+	actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_w.cc
 
 endif
 
