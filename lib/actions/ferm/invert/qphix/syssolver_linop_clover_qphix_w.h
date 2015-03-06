@@ -30,9 +30,7 @@
 #include "qphix/geometry.h"
 #include "qphix/qdp_packer.h"
 #include "qphix/clover.h"
-#if 0
 #include "qphix/invcg.h"
-#endif
 
 #include "qphix/invbicgstab.h"
 
@@ -243,14 +241,20 @@ namespace Chroma
       
       
       switch( invParam.SolverType ) { 
+      case CG:
+	{
+	  QDPIO::cout << "Creating the CG Solver" << std::endl;
+	  cg_solver = new QPhiX::InvCG<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>((*M), invParam.MaxIter);
+	  if( invParam.TuneP ) cg_solver->tune();
+
+	}
+	break;
+
       case BICGSTAB:
 	{
 	  QDPIO::cout << "Creating the BiCGStab Solver" << std::endl;
-	  bicgstab_solver = new QPhiX::InvBiCGStab<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>((*M), invParam.MaxIter,1);
-
-#if 1
+	  bicgstab_solver = new QPhiX::InvBiCGStab<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>((*M), invParam.MaxIter);
 	  if( invParam.TuneP ) bicgstab_solver->tune();
-#endif
 
 	}
 	break;
@@ -314,13 +318,11 @@ namespace Chroma
       /* Factories here later? */
       SystemSolverResults_t res;
       switch( invParam.SolverType ) { 
-#if 0
       case CG:
 	{
-	  res = cgSolve(psi,chi);
+	  res = cgnrSolve(psi,chi);
 	}
 	break;
-#endif
       case BICGSTAB:
 	{
 	  res = biCGStabSolve(psi,chi);
@@ -353,9 +355,8 @@ namespace Chroma
     
     Handle< QPhiX::EvenOddCloverOperator<REALT, VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12> > M;
 
-#if 0
+
     Handle< QPhiX::InvCG<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12> > cg_solver;
-#endif
 
     Handle< QPhiX::InvBiCGStab<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>  > bicgstab_solver;
     
@@ -370,8 +371,7 @@ namespace Chroma
     QPhiX_Spinor* psi_s[2];
     QPhiX_Spinor* chi_s[2];
 
-#if 0    
-    SystemSolverResults_t cgSolve(T& psi, const T& chi) const
+    SystemSolverResults_t cgnrSolve(T& psi, const T& chi) const
     {
 
       SystemSolverResults_t res;
@@ -386,19 +386,20 @@ namespace Chroma
       
       //      QDPIO::cout << "Allocating Spinor fields" << std::endl;
       // Pack Spinors psi and chi
-      QPhiX::qdp_pack_spinor<>(psi, psi_s[0], psi_s[1], *geom);
-      QPhiX::qdp_pack_spinor<>(mdag_chi, chi_s[0], chi_s[1], *geom);
+      QPhiX::qdp_pack_cb_spinor<>(psi, psi_s[1], *geom,1);
+      QPhiX::qdp_pack_cb_spinor<>(mdag_chi, chi_s[1], *geom,1);
       
       double rsd_final;
       unsigned long site_flops=0;
       unsigned long mv_apps=0;
-      
+      int my_isign=1;
+
       double start = omp_get_wtime();
-      (*cg_solver)(psi_s[1],chi_s[1], res.n_count, rsd_final, site_flops, mv_apps, invParam.VerboseP);
+      (*cg_solver)(psi_s[1],chi_s[1], toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, my_isign,invParam.VerboseP);
       double end = omp_get_wtime();
 
       QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
-      QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, (*M).getGeometry());
+      QPhiX::qdp_unpack_cb_spinor<>(psi_s[1], psi,*geom,1);
 
       // Chi Should now hold the result spinor 
       // Check it against chroma.
@@ -431,7 +432,6 @@ namespace Chroma
       return res;
 
     }
-#endif
 
     SystemSolverResults_t biCGStabSolve(T& psi, const T& chi) const
     {
@@ -440,8 +440,8 @@ namespace Chroma
 
       // Pack Spinors psi and chi
       QDPIO::cout << "Packing" << std::endl << std::flush ;
-      QPhiX::qdp_pack_spinor<>(psi, psi_s[0], psi_s[1], *geom);
-      QPhiX::qdp_pack_spinor<>(chi, chi_s[0], chi_s[1], *geom);
+      QPhiX::qdp_pack_cb_spinor<>(psi, psi_s[1], *geom,1);
+      QPhiX::qdp_pack_cb_spinor<>(chi, chi_s[1], *geom,1);
       QDPIO::cout << "Done" << std::endl << std::flush;
       double rsd_final;
       unsigned long site_flops=0;
@@ -449,11 +449,12 @@ namespace Chroma
       
       QDPIO::cout << "Starting solve" << std::endl << std::flush ;
       double start = omp_get_wtime();
-      (*bicgstab_solver)(psi_s[1],chi_s[1], toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, invParam.VerboseP);
+      (*bicgstab_solver)(psi_s[1],chi_s[1], toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, 1, invParam.VerboseP);
       double end = omp_get_wtime();
 
       QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
-      QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, *geom);
+      //      QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, *geom);
+      QPhiX::qdp_unpack_cb_spinor<>( psi_s[1], psi, *geom,1);
 
       // Chi Should now hold the result spinor 
       // Check it against chroma.
