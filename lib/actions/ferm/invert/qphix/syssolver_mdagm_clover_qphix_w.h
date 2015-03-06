@@ -399,7 +399,6 @@ namespace Chroma
       (*cg_solver)(psi_qphix, chi_qphix, toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, my_isign, invParam.VerboseP);
       double end = omp_get_wtime();
 
-      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
       QPhiX::qdp_unpack_cb_spinor<>(psi_qphix, psi, *geom,1);
       predictor.newVector(psi);
 
@@ -415,8 +414,11 @@ namespace Chroma
 	Double r2 = norm2(r,A->subset());
 	Double b2 = norm2(chi, A->subset());
 	Double rel_resid = sqrt(r2/b2);
-	QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: || r || / || b || = " << rel_resid << std::endl;
+	res.resid = rel_resid;
+      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rel_resid << std::endl;      
 
+	QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: || r || / || b || = " << rel_resid << std::endl;
+	
 #if 0
 	if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
 	  QDPIO::cout << "SOLVE FAILED" << std::endl;
@@ -509,7 +511,7 @@ namespace Chroma
 	(*A)(tmp, psi, PLUS);
 	(*A)(tmp2, tmp, MINUS);
 	
-	Y[ A->subset() ] -= tmp;
+	Y[ A->subset() ] -= tmp2;
       }
 
       Double r2 = norm2(Y,A->subset());
@@ -517,7 +519,7 @@ namespace Chroma
       Double rel_resid = sqrt(r2/b2);
       
       QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: || r || / || b || = " << rel_resid << std::endl;
-      
+      res.resid=rel_resid;
 #if 0
       if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
 	QDPIO::cout << "SOLVE FAILED" << std::endl;

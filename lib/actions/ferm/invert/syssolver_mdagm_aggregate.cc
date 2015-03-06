@@ -24,6 +24,10 @@
 #include "actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h"
 #endif
 
+#ifdef BUILD_QPHIX
+#include "actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_w.h"
+#endif
+
 namespace Chroma
 {
 
@@ -53,6 +57,10 @@ namespace Chroma
 #ifdef BUILD_QUDA
 	success &= MdagMSysSolverQUDACloverEnv::registerAll();
 	success &= MdagMSysSolverQUDAWilsonEnv::registerAll();
+#endif
+
+#ifdef BUILD_QPHIX
+	success &= MdagMSysSolverQPhiXCloverEnv::registerAll();
 #endif
 	registered = true;
       }
