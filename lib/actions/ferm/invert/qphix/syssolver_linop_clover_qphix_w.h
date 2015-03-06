@@ -179,14 +179,8 @@ namespace Chroma
 														   invParam.MinCt);
       
       QDPIO::cout << " Allocating p and c" << std::endl << std::flush ;
-      p_even=(QPhiX_Spinor *)geom->allocCBFourSpinor();
-      p_odd=(QPhiX_Spinor *)geom->allocCBFourSpinor();
-      c_even=(QPhiX_Spinor *)geom->allocCBFourSpinor();
-      c_odd=(QPhiX_Spinor *)geom->allocCBFourSpinor();
-      psi_s[0]=p_even;
-      psi_s[1]=p_odd;
-      chi_s[0]=c_even;
-      chi_s[1]=c_odd;
+      psi_qphix=(QPhiX_Spinor *)geom->allocCBFourSpinor();
+      chi_qphix=(QPhiX_Spinor *)geom->allocCBFourSpinor();
 
       QDPIO::cout << " Allocating Clover" << std::endl << std::flush ;
       QPhiX_Clover* A_cb0=(QPhiX_Clover *)geom->allocCBClov();
@@ -273,14 +267,10 @@ namespace Chroma
       // Need to unalloc all the memory...
       QDPIO::cout << "Destructing" << std::endl;
 
-      geom->free(p_even);
-      geom->free(p_odd);
-      geom->free(c_even);
-      geom->free(c_odd);
-      psi_s[0] = 0x0;
-      psi_s[1] = 0x0;
-      chi_s[0] = 0x0;
-      chi_s[1] = 0x0;
+      geom->free(psi_qphix);
+      geom->free(chi_qphix);
+      psi_qphix = 0x0;
+      chi_qphix = 0x0;
       
       geom->free(invclov_packed[0]);
       geom->free(invclov_packed[1]);
@@ -364,12 +354,8 @@ namespace Chroma
     QPhiX_Clover* clov_packed[2];
     QPhiX_Gauge* u_packed[2];
     
-    QPhiX_Spinor* p_even;
-    QPhiX_Spinor* p_odd;
-    QPhiX_Spinor* c_even;
-    QPhiX_Spinor* c_odd;
-    QPhiX_Spinor* psi_s[2];
-    QPhiX_Spinor* chi_s[2];
+    QPhiX_Spinor* psi_qphix;
+    QPhiX_Spinor* chi_qphix;
 
     SystemSolverResults_t cgnrSolve(T& psi, const T& chi) const
     {
@@ -386,8 +372,8 @@ namespace Chroma
       
       //      QDPIO::cout << "Allocating Spinor fields" << std::endl;
       // Pack Spinors psi and chi
-      QPhiX::qdp_pack_cb_spinor<>(psi, psi_s[1], *geom,1);
-      QPhiX::qdp_pack_cb_spinor<>(mdag_chi, chi_s[1], *geom,1);
+      QPhiX::qdp_pack_cb_spinor<>(psi, psi_qphix, *geom,1);
+      QPhiX::qdp_pack_cb_spinor<>(mdag_chi, chi_qphix, *geom,1);
       
       double rsd_final;
       unsigned long site_flops=0;
@@ -395,11 +381,11 @@ namespace Chroma
       int my_isign=1;
 
       double start = omp_get_wtime();
-      (*cg_solver)(psi_s[1],chi_s[1], toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, my_isign,invParam.VerboseP);
+      (*cg_solver)(psi_qphix,chi_qphix, toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, my_isign,invParam.VerboseP);
       double end = omp_get_wtime();
 
       QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
-      QPhiX::qdp_unpack_cb_spinor<>(psi_s[1], psi,*geom,1);
+      QPhiX::qdp_unpack_cb_spinor<>(psi_qphix, psi,*geom,1);
 
       // Chi Should now hold the result spinor 
       // Check it against chroma.
@@ -440,8 +426,8 @@ namespace Chroma
 
       // Pack Spinors psi and chi
       QDPIO::cout << "Packing" << std::endl << std::flush ;
-      QPhiX::qdp_pack_cb_spinor<>(psi, psi_s[1], *geom,1);
-      QPhiX::qdp_pack_cb_spinor<>(chi, chi_s[1], *geom,1);
+      QPhiX::qdp_pack_cb_spinor<>(psi, psi_qphix, *geom,1);
+      QPhiX::qdp_pack_cb_spinor<>(chi, chi_qphix, *geom,1);
       QDPIO::cout << "Done" << std::endl << std::flush;
       double rsd_final;
       unsigned long site_flops=0;
@@ -449,12 +435,12 @@ namespace Chroma
       
       QDPIO::cout << "Starting solve" << std::endl << std::flush ;
       double start = omp_get_wtime();
-      (*bicgstab_solver)(psi_s[1],chi_s[1], toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, 1, invParam.VerboseP);
+      (*bicgstab_solver)(psi_qphix,chi_qphix, toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, 1, invParam.VerboseP);
       double end = omp_get_wtime();
 
       QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
-      //      QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, *geom);
-      QPhiX::qdp_unpack_cb_spinor<>( psi_s[1], psi, *geom,1);
+      //      QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_qphix, psi, *geom);
+      QPhiX::qdp_unpack_cb_spinor<>( psi_qphix, psi, *geom,1);
 
       // Chi Should now hold the result spinor 
       // Check it against chroma.
