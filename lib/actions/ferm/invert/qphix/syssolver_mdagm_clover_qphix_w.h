@@ -307,6 +307,8 @@ namespace Chroma
     {
       
       START_CODE();
+      StopWatch swatch;
+      swatch.reset(); swatch.start();
       /* Factories here later? */
       SystemSolverResults_t res;
       switch( invParam.SolverType ) { 
@@ -324,7 +326,9 @@ namespace Chroma
 	QDPIO::cout << "Unknown Solver " << std::endl;
 	break;
       }
-      
+
+      swatch.stop();
+      QDPIO::cout << "QPHIX_MDAGM_SOLVER: total time: " << swatch.getTimeInSeconds() << " (sec)" << endl;
       END_CODE();
       return res;
     }
@@ -444,7 +448,7 @@ namespace Chroma
     {
       SystemSolverResults_t res;
       Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
-
+    
       T Y;
       Y[ A->subset() ] = psi; // Y is initial guess
       
@@ -475,23 +479,49 @@ namespace Chroma
       
       QDPIO::cout << "Done" << std::endl << std::flush;
       double rsd_final;
-      unsigned long site_flops=0;
-      unsigned long mv_apps=0;
-      
-      QDPIO::cout << "Starting solve" << std::endl << std::flush ;
+      int num_cb_sites = Layout::vol()/2;
+
+      unsigned long site_flops1=0;
+      unsigned long mv_apps1=0;
+      int n_count1=0;
+
+      unsigned long site_flops2=0;
+      unsigned long mv_apps2=0;
+      int n_count2=0;
+
+      QDPIO::cout << "Starting Y solve" << std::endl << std::flush ;
       double start = omp_get_wtime();
-      (*bicgstab_solver)(tmp_qphix,chi_qphix, toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, -1, invParam.VerboseP);
-      (*bicgstab_solver)(psi_qphix,tmp_qphix, toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, +1, invParam.VerboseP);
+      (*bicgstab_solver)(tmp_qphix,chi_qphix, toDouble(invParam.RsdTarget), n_count1, rsd_final, site_flops1, mv_apps1, -1, invParam.VerboseP);
       double end = omp_get_wtime();
-      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
-      QPhiX::qdp_unpack_cb_spinor<>(tmp_qphix, Y, *geom,1);
+
+
+      unsigned long total_flops = (site_flops1 + (1320+504+1320+504+48)*mv_apps1)*num_cb_sites;
+      double gflops = (double)(total_flops)/(1.0e9);
+      double total_time = end - start;
+
+      Double r_final = sqrt(toDouble(rsd_final)/norm2(chi,A->subset()));
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: " << n_count1 << " iters,  rsd_sq_final=" << rsd_final << " ||r||/||b|| (acc) = " << r_final <<std::endl;
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
+
+      QDPIO::cout << "Starting X solve" << std::endl << std::flush ;
+      start = omp_get_wtime();
+      (*bicgstab_solver)(psi_qphix,tmp_qphix, toDouble(invParam.RsdTarget), n_count2, rsd_final, site_flops2, mv_apps2, +1, invParam.VerboseP);
+      end = omp_get_wtime();
+      total_flops = (site_flops2 + (1320+504+1320+504+48)*mv_apps2)*num_cb_sites;
+      gflops = (double)(total_flops)/(1.0e9);
+      total_time = end - start;
+
+      QPhiX::qdp_unpack_cb_spinor<>(tmp_qphix, Y, *geom,1);	
+      r_final = sqrt(toDouble(rsd_final)/norm2(Y,A->subset()));
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: " << n_count2 << " iters,  rsd_sq_final=" << rsd_final << " ||r||/||b|| (acc) = " << r_final << std::endl;
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
+
       QPhiX::qdp_unpack_cb_spinor<>(psi_qphix, psi, *geom,1);
 
       try  {
 	// Try to cast the predictor to a two step predictor 
 	AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor = 
 	  dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>& >(predictor);
-	
 	two_step_predictor.newYVector(Y);	
 	two_step_predictor.newXVector(psi);
 
@@ -517,9 +547,11 @@ namespace Chroma
       Double r2 = norm2(Y,A->subset());
       Double b2 = norm2(chi, A->subset());
       Double rel_resid = sqrt(r2/b2);
-      
-      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: || r || / || b || = " << rel_resid << std::endl;
       res.resid=rel_resid;
+      res.n_count = n_count1 + n_count2;
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: total_iters="<<res.n_count<<" || r || / || b || = " << res.resid << std::endl;
+
+
 #if 0
       if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
 	QDPIO::cout << "SOLVE FAILED" << std::endl;
@@ -527,12 +559,6 @@ namespace Chroma
       }
 #endif
       
-      int num_cb_sites = Layout::vol()/2;
-      unsigned long total_flops = (site_flops + (1320+504+1320+504+48)*mv_apps)*num_cb_sites;
-      double gflops = (double)(total_flops)/(1.0e9);
-      
-      double total_time = end - start;
-      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
 
       END_CODE();
       return res;
