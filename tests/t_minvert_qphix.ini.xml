@@ -24,7 +24,7 @@
            <orthog_dir>3</orthog_dir>
            <FermionBC>
              <FermBC>SIMPLE_FERMBC</FermBC>
-             <boundary>1 1 1 1</boundary>
+             <boundary>1 1 1 -1</boundary>
            </FermionBC>
          </FermState>
         </FermionAction>
@@ -47,7 +47,8 @@
 	    </AnisoParam>
           </CloverParams>
 	  <AntiPeriodicT>true</AntiPeriodicT>
-	  <Verbose>true</Verbose>
+	  <Verbose>false</Verbose>
+	  <SolutionCheck>true</SolutionCheck>
 	  <NCores>16</NCores>
 	  <ThreadsPerCore>2</ThreadsPerCore>
 	  <By>8</By>
@@ -56,7 +57,7 @@
 	  <Sz>2</Sz>
 	  <PadXY>1</PadXY>
 	  <PadXYZ>0</PadXYZ>
-	  <MinCt>2</MinCt>
+	  <MinCt>4</MinCt>
 	  <RsdToleranceFactor>5.0</RsdToleranceFactor>
 	  <Tune>true</Tune>
 
