@@ -103,6 +103,9 @@ if BUILD_QUDA
 check_PROGRAMS += t_quda_tprec t_minvert_quda
 endif
 
+if BUILD_QPHIX
+check_PROGRAMS += t_minvert_qphix
+endif
 
 #
 ## Move programs under development to EXTRA_PROGRAMS if they currently
@@ -236,6 +239,10 @@ t_minvert_SOURCES = t_minvert.cc
 if BUILD_QUDA
 t_quda_tprec_SOURCES = t_quda_tprec.cc
 t_minvert_quda_SOURCES = t_minvert_quda.cc
+endif
+
+if BUILD_QPHIX
+t_minvert_qphix_SOURCES= t_minvert_qphix.cc
 endif
 
 # build lib is a target that goes to the build dir of the library and 

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<Param>
+  <nrow>16 16 16 16</nrow>
+  <Cfg>
+    <cfg_type>WEAK_FIELD</cfg_type>
+    <cfg_file>dummy</cfg_file>
+ </Cfg>
+ <FermionAction>
+   <FermAct>CLOVER</FermAct>
+   <Mass>0.1</Mass> 
+   <clovCoeff>1</clovCoeff>
+   <AnisoParam>
+     <anisoP>false</anisoP>
+     <t_dir>3</t_dir>
+     <xi_0>1</xi_0>
+     <nu>1</nu>
+   </AnisoParam>
+   
+   <FermState>
+     <Name>STOUT_FERM_STATE</Name>
+     <rho>0.14</rho>
+     <n_smear>2</n_smear>
+     <orthog_dir>3</orthog_dir>
+     <FermionBC>
+       <FermBC>SIMPLE_FERMBC</FermBC>
+       <boundary>1 1 1 -1</boundary>
+     </FermionBC>
+   </FermState>
+ </FermionAction>
+ <InvertParam>
+   <invType>MULTI_CG_QUDA_CLOVER_INVERTER</invType>
+   <CloverParams>
+     <Mass>0.1</Mass> 
+     <clovCoeff>1</clovCoeff>
+     <AnisoParam>
+       <anisoP>false</anisoP>
+       <t_dir>3</t_dir>
+       <xi_0>1</xi_0>
+       <nu>1</nu>
+     </AnisoParam>
+   </CloverParams>
+   <RsdTarget>1.0e-10</RsdTarget>
+   <Delta>0.1</Delta>
+   <MaxIter>10000</MaxIter>
+   <AntiPeriodicT>true</AntiPeriodicT>
+   <SolverType>CG</SolverType>
+   <Verbose>false</Verbose>
+   <AsymmetricLinop>false</AsymmetricLinop>
+   <CudaReconstruct>RECONS_NONE</CudaReconstruct>
+   <CudaSloppyPrecision>HALF</CudaSloppyPrecision>
+   <CudaSloppyReconstruct>RECONS_12</CudaSloppyReconstruct>
+   <AxialGaugeFix>false</AxialGaugeFix>
+   <AutotuneDslash>true</AutotuneDslash>
+ </InvertParam>
+
+
+</Param>
