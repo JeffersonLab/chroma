@@ -12,6 +12,7 @@
 #include "actions/ferm/fermbcs/schr_coupling_fermbc_w.h"
 #include "actions/ferm/fermbcs/schr_chromomag_fermbc_w.h"
 #include "actions/ferm/fermbcs/schr_dirich_fermbc_w.h"
+#include "actions/ferm/fermbcs/background_fermbc_w.h"
 
 namespace Chroma
 {
@@ -34,6 +35,7 @@ namespace Chroma
 	success &= SchrCouplingFermBCEnv::registerAll();
 	success &= SchrChromoMagFermBCEnv::registerAll();
 	success &= SchrDirichletFermBCEnv::registerAll();
+	success &= WilsonTypeBackgroundFermBCEnv::registerAll();
 	registered = true;
       }
       return success;

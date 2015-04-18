@@ -503,6 +503,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermbcs/periodic_fermbc_w.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/fermbcs/twisted_fermbc_w.h \
+	actions/ferm/fermbcs/background_fermbc_w.h \
 	actions/ferm/fermbcs/schroedinger_fermbc_w.h \
 	actions/ferm/fermbcs/schr_fermbc_params_w.h \
 	actions/ferm/fermbcs/schr_sf_fermbc_w.h \
@@ -1441,6 +1442,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermbcs/fermbcs_reader_w.cc \
 	actions/ferm/fermbcs/simple_fermbc_w.cc \
 	actions/ferm/fermbcs/twisted_fermbc_w.cc \
+	actions/ferm/fermbcs/background_fermbc_w.cc \
 	actions/ferm/fermbcs/periodic_fermbc_w.cc \
 	actions/ferm/fermbcs/schr_fermbc_params_w.cc \
 	actions/ferm/fermbcs/schr_sf_fermbc_w.cc \
