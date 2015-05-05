@@ -850,6 +850,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
 	meas/inline/hadron/inline_disco_eigcg_w.h \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
+	meas/inline/hadron/inline_PRIMME_w.h \
 	meas/inline/hadron/inline_distillution_noise.h \
 	meas/inline/hadron/inline_prop_distillation_w.h \
 	meas/inline/hadron/inline_prop_distillution_w.h \
@@ -1683,6 +1684,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
 	meas/inline/hadron/inline_disco_eigcg_w.cc \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
+	meas/inline/hadron/inline_PRIMME_w.cc \
 	meas/inline/hadron/inline_distillution_noise.cc \
 	meas/inline/hadron/inline_prop_distillation_w.cc \
 	meas/inline/hadron/inline_prop_distillution_w.cc \
@@ -1976,11 +1978,13 @@ libchroma_a_SOURCES += \
 if BUILD_QOP_MG
 nobase_include_HEADERS += \
 	actions/ferm/invert/qop_mg/syssolver_qop_mg_params.h \
-	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h
+	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h \
+	actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.h 
 
 libchroma_a_SOURCES += \
 	actions/ferm/invert/qop_mg/syssolver_qop_mg_params.cc \
-	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.cc
+	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.cc \
+	actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.cc
 endif
 
 
