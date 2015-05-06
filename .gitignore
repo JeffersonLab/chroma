@@ -7,3 +7,4 @@ mainprogs/Makefile.in
 mainprogs/main/Makefile.in
 mainprogs/tests/Makefile.in
 other_libs/Makefile.in
+lib/chroma_config_internal.h.in~
