@@ -115,7 +115,7 @@ namespace Chroma
     namespace
     {
       //! Name to be used
-      const std::string name("QOP_MDAGM_CLOVER_MULTIGRID_INVERTER");
+      const std::string name("QOP_CLOVER_MULTIGRID_INVERTER");
 
       //! Local registration flag
       bool registered = false;
