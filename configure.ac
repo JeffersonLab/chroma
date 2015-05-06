@@ -2,7 +2,6 @@ AC_INIT(chroma,3.43.0,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
-AM_INIT_AUTOMAKE
 AM_INIT_AUTOMAKE([subdir-objects])
 
 dnl stupid templates to shut up stupid autoheader
