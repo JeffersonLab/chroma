@@ -417,11 +417,13 @@ nobase_include_HEADERS = \
 	update/molecdyn/monomial/comp_approx.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
+	update/molecdyn/predictor/abs_MG_chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
 	update/molecdyn/predictor/predictor_aggregate.h \
 	update/molecdyn/predictor/null_predictor.h \
 	update/molecdyn/predictor/zero_guess_predictor.h \
 	update/molecdyn/predictor/last_solution_predictor.h \
+	update/molecdyn/predictor/MG_predictor.h \
 	update/molecdyn/predictor/circular_buffer.h \
 	update/molecdyn/predictor/linear_extrap_predictor.h \
 	update/molecdyn/predictor/lu_solve.h \
@@ -1329,6 +1331,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/predictor/null_predictor.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
 	update/molecdyn/predictor/last_solution_predictor.cc \
+	update/molecdyn/predictor/MG_predictor.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \

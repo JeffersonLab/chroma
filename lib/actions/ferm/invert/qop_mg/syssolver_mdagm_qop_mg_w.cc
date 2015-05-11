@@ -12,6 +12,8 @@
 
 #include "actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h"
 #include "actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.h"
+//Added support for MG predictor.
+#include "update/molecdyn/predictor/MG_predictor.h"
 
 
 
@@ -104,8 +106,14 @@ namespace Chroma
   SystemSolverResults_t
   MdagMSysSolverQOPMG::operator() (LatticeFermion& psi, const LatticeFermion& chi, AbsChronologicalPredictor4D<LatticeFermion>& predictor) const
   {
-    // Ignore chrono for now.
+    MG4DChronoPredictor<LatticeFermion>* MG_predictor = dynamic_cast<MG4DChronoPredictor<LatticeFermion>*>(&predictor);
+    if( MG_predictor == 0x0 ) {
+      QDPIO::cerr << "Unable to downcast AbsChronologicalPredictor4D to MG4DChronoPredictor." << std::endl;
+      QDP_abort(1);
+    }
+    MG_predictor->getSubspace();
     (*this)(psi,chi);
+    MG_predictor->resetSubspace(5);
   }//! Solve the linear system
   
   //! QDP multigrid system solver namespace
