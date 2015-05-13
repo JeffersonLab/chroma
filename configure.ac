@@ -94,6 +94,14 @@ AC_ARG_WITH(mdwf,
 	 build_mdwf="no"]
 )
 
+AC_ARG_WITH(PRIMME,
+	AC_HELP_STRING([--with-PRIMME=<install location>]),
+	[primme_path=${withval}
+	 build_primme="yes"],
+	[primme_path=""
+	 build_primme="no"]
+)
+
 AC_ARG_WITH(llvm-wilson-dslash,
 	AC_HELP_STRING([--with-llvm-wilson-dslash=<install location>]),
 	[llvm_wd_path=${withval}
@@ -1063,6 +1071,33 @@ fi
 dnl set a conditional in automake for MDWF Specific files etc.
 AM_CONDITIONAL(BUILD_MDWF,
 	[test "x${build_mdwf}x" = "xyesx" ])
+
+dnl
+dnl ************************************************************
+dnl PRIMME stuff
+dnl ************************************************************
+dnl
+if [ test "x${build_primme}x" = "xyesx" ];
+then
+  
+  AC_MSG_NOTICE([Configuring to use PRIMME package])
+
+  dnl set a preprocessor macro
+  AC_DEFINE([BUILD_PRIMME],[], [ Build with the PRIMME (eigensolver) library ])
+  AC_SUBST(PRIMME_CXXFLAGS, "-I${primme_path}/include")
+  AC_MSG_NOTICE([PRIMME compile flags: ${PRIMME_CXXFLAGS}])
+  AC_SUBST(PRIMME_LDFLAGS,  "-L${primme_path}/lib")
+  AC_MSG_NOTICE([PRIMME linking flags: ${PRIMME_LDFLAGS}])
+  AC_SUBST(PRIMME_LIBS,     "-lprimme")
+  AC_MSG_NOTICE([PRIMME libraries flags: ${PRIMME_LIBS}])
+  
+  dnl for the chroma-config file
+  AC_SUBST(PRIMME_ENABLED, [yes])
+fi
+
+dnl set a conditional in automake for MDWF Specific files etc.
+AM_CONDITIONAL(BUILD_PRIMME,
+	[test "x${build_primme}x" = "xyesx" ])
 
 
 

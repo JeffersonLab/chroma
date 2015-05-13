@@ -852,7 +852,6 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
 	meas/inline/hadron/inline_disco_eigcg_w.h \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
-	meas/inline/hadron/inline_PRIMME_w.h \
 	meas/inline/hadron/inline_distillution_noise.h \
 	meas/inline/hadron/inline_prop_distillation_w.h \
 	meas/inline/hadron/inline_prop_distillution_w.h \
@@ -994,6 +993,10 @@ endif
 
 if BUILD_MDWF
 AM_CXXFLAGS += @MDWF_CXXFLAGS@
+endif
+
+if BUILD_PRIMME
+AM_CXXFLAGS += @PRIMME_CXXFLAGS@
 endif
 
 if USE_LLVM_WD
@@ -1687,7 +1690,6 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
 	meas/inline/hadron/inline_disco_eigcg_w.cc \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
-	meas/inline/hadron/inline_PRIMME_w.cc \
 	meas/inline/hadron/inline_distillution_noise.cc \
 	meas/inline/hadron/inline_prop_distillation_w.cc \
 	meas/inline/hadron/inline_prop_distillution_w.cc \
@@ -1847,6 +1849,14 @@ nobase_include_HEADERS += actions/ferm/qprop/mdwf_solver.h \
 libchroma_a_SOURCES += actions/ferm/qprop/mdwf_solver.cc \
 	actions/ferm/invert/mdwf_solver/syssolver_mdwf_params.cc \
 	actions/ferm/invert/mdwf_solver/syssolver_linop_mdwf_array.cc
+endif
+
+if BUILD_PRIMME
+nobase_include_HEADERS += \
+	meas/inline/hadron/inline_PRIMME_w.h
+
+libchroma_a_SOURCES += \
+	meas/inline/hadron/inline_PRIMME_w.cc
 endif
 
 

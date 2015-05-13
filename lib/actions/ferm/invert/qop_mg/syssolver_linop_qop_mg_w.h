@@ -29,10 +29,10 @@ namespace Chroma
   //! Solve a M*psi=chi linear system using the external QDP multigrid inverter
   /*! \ingroup invert
    */
-  template<typename T> // T is the Lattice Fermion type
-  class LinOpSysSolverQOPMG : public LinOpSystemSolver<T>
+  class LinOpSysSolverQOPMG : public LinOpSystemSolver<LatticeFermion>
   {
   public:
+    typedef LatticeFermion T;
     typedef LatticeColorMatrix U;
     typedef multi1d<LatticeColorMatrix> Q;
  
