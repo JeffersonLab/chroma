@@ -67,7 +67,6 @@ namespace Chroma
 #undef pepo
 #undef index
 
-  template<typename T> // T is the Lattice Fermion type
   LinOpSysSolverQOPMG::
     LinOpSysSolverQOPMG(Handle< LinearOperator<T> > A_,
 			Handle< FermState<T,Q,Q> > state_, 
@@ -138,7 +137,6 @@ namespace Chroma
     }
   }
       
-  template<typename T> // T is the Lattice Fermion type
   LinOpSysSolverQOPMG::
     ~LinOpSysSolverQOPMG()
   {
@@ -199,7 +197,6 @@ namespace Chroma
    * \param chi      source ( Read )
    * \return syssolver results
    */
-  template<typename T> // T is the Lattice Fermion type
   SystemSolverResults_t
     LinOpSysSolverQOPMG::operator() (T& psi, const T& chi) const
   {
@@ -257,7 +254,7 @@ namespace Chroma
 
 
     //! Callback function for standard precision
-    LinOpSystemSolver>*
+    LinOpSystemSolver<LatticeFermion>*
       createFerm( XMLReader& xml_in,
                   const std::string& path,
                   Handle< FermState< LatticeFermion, 
@@ -265,8 +262,7 @@ namespace Chroma
                                      multi1d<LatticeColorMatrix> > > state, 
                   Handle< LinearOperator<LatticeFermion> >           A)
     {
-      return new LinOpSysSolverQOPMG<LatticeFermion>
-	(A, state, SysSolverQOPMGParams(xml_in, path));
+      return new LinOpSysSolverQOPMG(A, state, SysSolverQOPMGParams(xml_in, path));
     }
 
     /*//! Callback function for single precision
