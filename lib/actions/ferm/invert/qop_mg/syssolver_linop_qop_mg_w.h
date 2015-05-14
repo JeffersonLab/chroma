@@ -35,7 +35,10 @@ namespace Chroma
     typedef LatticeFermion T;
     typedef LatticeColorMatrix U;
     typedef multi1d<LatticeColorMatrix> Q;
- 
+
+
+    typedef void WilsonMGSubspace;
+
     //! Constructor
     /*!
      * \param A_        Linear operator ( Read )
@@ -61,12 +64,23 @@ namespace Chroma
     SystemSolverResults_t operator() (T& psi, const T& chi) const;
 
 
+    //! Solver the linear system
+    /*!
+     * \param psi      solution ( Modify )
+     * \param chi      source ( Read )
+     * \param external_subspace MG Subspace e.g. from MdagM solver (Read) 
+     * \return syssolver results
+     */
+
+    SystemSolverResults_t operator() (T& psi, const T& chi, WilsonMGSubspace* external_subspace) const ;
+
   private:
     // Hide default constructor
     LinOpSysSolverQOPMG() {}
     Handle< FermState<T,Q,Q> > state;
     Handle< LinearOperator<T> > A;
     SysSolverQOPMGParams invParam;
+    mutable WilsonMGSubspace* subspace;
   };
 
 } // End namespace
