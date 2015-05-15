@@ -27,6 +27,7 @@ using namespace std;
 extern "C" {
   // This should be placed on the include path.
 #include "wilsonmg-interface.h"
+extern struct MGP(Clover_Params) PC(g_param);
 }
 
 #include "meas/glue/mesplq.h"
@@ -330,7 +331,7 @@ namespace Chroma
       else { 
 	QDPIO::cout << "Load subspace was selected, but object ID: " << invParam.LoadSubspaceId << " is not present in the NamedObject store." << std:: endl;
 	QDPIO::cout << "Will create a subspace for use by this solver" << std::endl;
-	if ( subspace != 0x0 ) { 
+	if ( subspace == 0x0 ) { 
 	  subspace = MGP(create_subspace)(latsize);
 	}
       }
