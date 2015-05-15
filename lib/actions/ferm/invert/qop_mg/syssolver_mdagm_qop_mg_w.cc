@@ -64,8 +64,9 @@ namespace Chroma
     // we will solve for g5 D g5 D psi = chi
     // so psi = D^(-1)g5 D^(-1) g5 chi
 
-    T g5chi = Gamma(Nd*Nd-1)*chi ; //
-    T tmpsol  ;
+    T g5chi = zero;
+    g5chi[A->subset()] = Gamma(Nd*Nd-1)*chi ; //
+    T tmpsol = zero ;
     T tmpsol2 = zero ;
     (*Dinv)(tmpsol,g5chi);
     tmpsol2[A->subset()] =  Gamma(Nd*Nd-1)*tmpsol ;
@@ -106,14 +107,20 @@ namespace Chroma
   SystemSolverResults_t
   MdagMSysSolverQOPMG::operator() (LatticeFermion& psi, const LatticeFermion& chi, AbsChronologicalPredictor4D<LatticeFermion>& predictor) const
   {
+#if 0
     MG4DChronoPredictor<LatticeFermion>* MG_predictor = dynamic_cast<MG4DChronoPredictor<LatticeFermion>*>(&predictor);
     if( MG_predictor == 0x0 ) {
       QDPIO::cerr << "Unable to downcast AbsChronologicalPredictor4D to MG4DChronoPredictor." << std::endl;
       QDP_abort(1);
     }
     MG_predictor->getSubspace();
+#endif
+
     (*this)(psi,chi);
+#if 0
     MG_predictor->resetSubspace(5);
+#endif
+
   }//! Solve the linear system
   
   //! QDP multigrid system solver namespace
