@@ -1084,9 +1084,9 @@ then
 
   dnl set a preprocessor macro
   AC_DEFINE([BUILD_PRIMME],[], [ Build with the PRIMME (eigensolver) library ])
-  AC_SUBST(PRIMME_CXXFLAGS, "-I${primme_path}/include")
+  AC_SUBST(PRIMME_CXXFLAGS, "-I${primme_path}")
   AC_MSG_NOTICE([PRIMME compile flags: ${PRIMME_CXXFLAGS}])
-  AC_SUBST(PRIMME_LDFLAGS,  "-L${primme_path}/lib")
+  AC_SUBST(PRIMME_LDFLAGS,  "-L${primme_path}")
   AC_MSG_NOTICE([PRIMME linking flags: ${PRIMME_LDFLAGS}])
   AC_SUBST(PRIMME_LIBS,     "-lprimme")
   AC_MSG_NOTICE([PRIMME libraries flags: ${PRIMME_LIBS}])
