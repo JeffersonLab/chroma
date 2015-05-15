@@ -66,6 +66,12 @@ namespace Chroma
     // Solver will run until one of the following two stopping criteria is met
     multi1d<int>  CoarseMaxIter;   /*!< Coarse-level maximum number of iterations */
     multi1d<Real> CoarseResidual;  /*!< Coarse-level relative stopping residual */
+
+
+    bool SaveSubspace; /*!< Save MG Subspace to NamedObject store at the end */
+    std::string SaveSubspaceId; /*!< The object ID under which to save the space */
+    bool LoadSubspace; /*!< Load an MG Subspace from Named Object Store */
+    std::string LoadSubspaceId; /*!< The ID of the subspace to load */
   };
 
 

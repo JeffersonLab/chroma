@@ -1992,12 +1992,14 @@ if BUILD_QOP_MG
 nobase_include_HEADERS += \
 	actions/ferm/invert/qop_mg/syssolver_qop_mg_params.h \
 	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h \
-	actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.h 
+	actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.h \
+	meas/inline/io/inline_erase_mg_space.h
 
 libchroma_a_SOURCES += \
 	actions/ferm/invert/qop_mg/syssolver_qop_mg_params.cc \
 	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.cc \
-	actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.cc
+	actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.cc \
+	meas/inline/io/inline_erase_mg_space.cc
 endif
 
 

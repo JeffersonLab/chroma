@@ -44,6 +44,16 @@ namespace Chroma
     defaultread( Verbose,    0 );
     defaultread( Levels,     1 );
 
+    defaultread( SaveSubspace, false);
+    if ( param.SaveSubspace ) { 
+      read(paramtop, "SaveSubspaceId", param.SaveSubspaceId );
+    }
+
+    defaultread( LoadSubspace, false);
+    if ( param.LoadSubspace ) { 
+      read(paramtop, "LoadSubspaceId", param.LoadSubspaceId );
+    }
+
     if (param.Levels > 0) {
       if (paramtop.count("Blocking")) {
         read(paramtop, "Blocking", param.Blocking);
@@ -56,6 +66,7 @@ namespace Chroma
         }
       }
     
+
 #define defaultreadvec(PARAM,DEFAULT) if (paramtop.count(#PARAM)) { \
       read(paramtop, #PARAM, param.PARAM); \
     } else { \
@@ -123,6 +134,17 @@ namespace Chroma
       writeparam(CoarseNumGCRVecs);
       writeparam(CoarseMaxIter);
       writeparam(CoarseResidual);
+
+      writeparam(SaveSubspace);
+      if (param.SaveSubspace) { 
+	writeparam(SaveSubspaceId);
+      }
+
+      writeparam(LoadSubspace);
+      if( param.LoadSubspace ) { 
+	writeparam(LoadSubspaceId);
+      }
+      
     }
 #undef writeparam
     pop(xml);
