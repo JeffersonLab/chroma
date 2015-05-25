@@ -39,6 +39,8 @@ namespace Chroma
   // Solver Parameters
     Real Residual;   /*!< Stopping residual for solver */
     int  MaxIter;    /*!< Maximum number of iterations to allow in solver */
+    int  RefreshThreshold; /*!< If this number of iterations is reached in an MdagM solver, the space will be refreshed */
+
     int  NumGCRVecs; /*!< Number of GCR vectors at top level */
   // Diagnostic Parameters
     int  Verbose;    /*!< Level of diagnostic verbosity */
@@ -68,10 +70,9 @@ namespace Chroma
     multi1d<Real> CoarseResidual;  /*!< Coarse-level relative stopping residual */
 
 
-    bool SaveSubspace; /*!< Save MG Subspace to NamedObject store at the end */
-    std::string SaveSubspaceId; /*!< The object ID under which to save the space */
-    bool LoadSubspace; /*!< Load an MG Subspace from Named Object Store */
-    std::string LoadSubspaceId; /*!< The ID of the subspace to load */
+    bool ExternalSubspace; /*!< Load an MG Subspace from Named Object Store */
+    std::string SubspaceId; /*!< The ID of the subspace to load/save */
+    bool TerminateOnFail; /*!< If true, the solver will terminate the program if MaxIters is reached and RsdTarget is not met */
   };
 
 

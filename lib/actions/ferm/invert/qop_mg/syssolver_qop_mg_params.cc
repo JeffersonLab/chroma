@@ -40,20 +40,19 @@ namespace Chroma
     defaultread( CloverT,    param.Clover );   
     defaultread( Residual,   1e-6 );
     defaultread( MaxIter,    40 );
+    defaultread( RefreshThreshold, param.MaxIter);
     defaultread( NumGCRVecs, 8 );
     defaultread( Verbose,    0 );
     defaultread( Levels,     1 );
 
-    defaultread( SaveSubspace, false);
-    if ( param.SaveSubspace ) { 
-      read(paramtop, "SaveSubspaceId", param.SaveSubspaceId );
+    defaultread( ExternalSubspace, false);
+    
+    if ( param.ExternalSubspace ) {
+      read(paramtop, "SubspaceId", param.SubspaceId );
     }
 
-    defaultread( LoadSubspace, false);
-    if ( param.LoadSubspace ) { 
-      read(paramtop, "LoadSubspaceId", param.LoadSubspaceId );
-    }
-
+    defaultread( TerminateOnFail, true);
+    
     if (param.Levels > 0) {
       if (paramtop.count("Blocking")) {
         read(paramtop, "Blocking", param.Blocking);
@@ -113,6 +112,7 @@ namespace Chroma
     
     writeparam(Residual);
     writeparam(MaxIter);
+    writeparam(RefreshThreshold);
     writeparam(NumGCRVecs);
     
     writeparam(Verbose);
@@ -135,16 +135,11 @@ namespace Chroma
       writeparam(CoarseMaxIter);
       writeparam(CoarseResidual);
 
-      writeparam(SaveSubspace);
-      if (param.SaveSubspace) { 
-	writeparam(SaveSubspaceId);
+      writeparam(ExternalSubspace);
+      if( param.ExternalSubspace ) { 
+	writeparam(SubspaceId);
       }
-
-      writeparam(LoadSubspace);
-      if( param.LoadSubspace ) { 
-	writeparam(LoadSubspaceId);
-      }
-      
+      writeparam(TerminateOnFail);
     }
 #undef writeparam
     pop(xml);

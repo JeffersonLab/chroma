@@ -137,58 +137,12 @@ namespace Chroma
 	//MGP(teststuff)();
     }
   }      
+
   LinOpSysSolverQOPMG::
     ~LinOpSysSolverQOPMG()
   {
-    if( invParam.SaveSubspace ) {
-
-      if( TheNamedObjMap::Instance().check(invParam.SaveSubspaceId) )  {
-	WilsonMGSubspace *named_obj_space = TheNamedObjMap::Instance().getData< WilsonMGSubspace* >(invParam.SaveSubspaceId);
-
-	// If the current space is the same as our subspace 
-	// we need to do nothing. Since we hold by pointer, if our
-	// pointers are identical, we are pointing to the same space.
-	// 
-	// In a similar vein if our space pointers are different
-	// we need to destroy the existing space and re-add our own one.
-
-
-	if ( named_obj_space != subspace ) {
-	  QDPIO::cout << "Subspace with ID " << invParam.SaveSubspaceId << " found  and points to a different subspace from ours. We will free that and add our pointer" << std::endl;
-
-	  MGP(destroy_subspace)(named_obj_space);
-	  // Add in our subspace as the data
-	  TheNamedObjMap::Instance().getData< WilsonMGSubspace* >(invParam.SaveSubspaceId) = subspace;
-
-	  
-	}
-	else {
-	  QDPIO::cout << "Subspace with ID" << invParam.SaveSubspaceId << " found and is pointing to same space as our subspace. No need to update pointer" << std::endl;
-	  
-	}
-	
-      }
-      else { 
-
-	QDPIO::cout << "Creating Named Object Map Entry for subspace" << endl;
-	XMLBufferWriter file_xml;
-	push(file_xml, "FileXML");
-	pop(file_xml);
-
-	XMLBufferWriter record_xml;
-	push(record_xml, "RecordXML");
-	write(record_xml, "InvertParam", invParam);
-	pop(record_xml);
-
-	TheNamedObjMap::Instance().create< WilsonMGSubspace *>(invParam.SaveSubspaceId);
-	TheNamedObjMap::Instance().get(invParam.SaveSubspaceId).setFileXML(file_xml);
-	TheNamedObjMap::Instance().get(invParam.SaveSubspaceId).setRecordXML(record_xml);
-	TheNamedObjMap::Instance().getData<WilsonMGSubspace*>(invParam.SaveSubspaceId)= subspace;
-      }
-
-    }
-    
-    if( (! invParam.LoadSubspace) && (! invParam.SaveSubspace) ) {
+    // If we don't use an Externa subspace we should free it here.
+    if ( !invParam.ExternalSubspace ) { 
       if ( subspace != 0x0 ) MGP(destroy_subspace)(subspace);
     }
     MGP(finalize)();
@@ -250,57 +204,6 @@ namespace Chroma
    * \return syssolver results
    */
   SystemSolverResults_t
-  LinOpSysSolverQOPMG::operator() (T& psi, const T& chi, WilsonMGSubspace* external_subspace) const
-  {
-    START_CODE();
-    
-    SystemSolverResults_t res;
-    
-    StopWatch swatch;
-    swatch.reset();
-    swatch.start();
-
-    int latsize[4];
-    for (int d=0;d<4;d++) latsize[d]  = Layout::lattSize()[d];
-    MGP(reset_subspace)(latsize,external_subspace);
-    
-   
-    // Set global pointers to our source and solution fermion fields
-    fermionsrc = (void*)&chi;
-    fermionsol = (void*)&psi;
-    double bsq = norm2(chi,all).elem().elem().elem().elem();
-    QDPIO::cout << "Chroma:   chi all norm2 = " << bsq << std::endl;
-    res.n_count = MGP(solve)(peekpokesrc<T>, peekpokesol<T>,external_subspace);
-    bsq = norm2(psi,all).elem().elem().elem().elem();
-    QDPIO::cout << "Chroma:   psi all norm2 = " << bsq << std::endl;
- 
-    swatch.stop();
-    double time = swatch.getTimeInSeconds();
-    { 
-      T r;
-      r[A->subset()] = chi;
-      T tmp;
-      (*A)(tmp, psi, PLUS);
-      r[A->subset()] -= tmp;
-      res.resid = sqrt(norm2(r, A->subset()));
-    }
-
-    QDPIO::cout << "QOPMG_SOLVER: " << res.n_count << " iterations."
-                << " Rsd = " << res.resid
-                << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset()))
-                << std::endl;
-    QDPIO::cout << "QOPMG_SOLVER_TIME: " << time << " secs" << std::endl;
-
-    END_CODE();
-    return res;
-  }
-  //! Solve the linear system
-  /*!
-   * \param psi      solution ( Modify )
-   * \param chi      source ( Read )
-   * \return syssolver results
-   */
-  SystemSolverResults_t
     LinOpSysSolverQOPMG::operator() (T& psi, const T& chi) const
   {
     START_CODE();
@@ -314,39 +217,26 @@ namespace Chroma
     int machsize[4], latsize[4];
     for (int d=0;d<4;d++) machsize[d] = Layout::logicalSize()[d];
     for (int d=0;d<4;d++) latsize[d]  = Layout::lattSize()[d];
-    
-    if( ! invParam.LoadSubspace ) {
-      if( subspace == 0x0 ) { 
-	QDPIO::cout << "Generating Subspae" << endl;
-	subspace = MGP(create_subspace)(latsize);
-      }
-    }
-    else { 
-      // Check if ID exists in the map.
-      if( TheNamedObjMap::Instance().check(invParam.LoadSubspaceId)  ) {
-	QDPIO::cout << "Retreiving Subspace Pointer from NamedObject Map" << endl;	
-	subspace = TheNamedObjMap::Instance().getData< WilsonMGSubspace * >(invParam.LoadSubspaceId);
-	MGP(reset_subspace)(latsize,subspace);
-      }
-      else { 
-	QDPIO::cout << "Load subspace was selected, but object ID: " << invParam.LoadSubspaceId << " is not present in the NamedObject store." << std:: endl;
-	QDPIO::cout << "Will create a subspace for use by this solver" << std::endl;
-	if ( subspace == 0x0 ) { 
-	  subspace = MGP(create_subspace)(latsize);
-	}
-      }
-    }
+
+    // This will get the subspace
+    //   If the subspace is externally managed it will be loaded/created
+    //   If the subspace is internally managed it will be used/created
+    WilsonMGSubspace* solve_subspace = getSubspace();
+
 
     // Set global pointers to our source and solution fermion fields
     fermionsrc = (void*)&chi;
     fermionsol = (void*)&psi;
-    double bsq = norm2(chi,all).elem().elem().elem().elem();
+    Double bsq = norm2(chi,all);
     QDPIO::cout << "Chroma:   chi all norm2 = " << bsq << std::endl;
-    res.n_count = MGP(solve)(peekpokesrc<T>, peekpokesol<T>,subspace);
-    bsq = norm2(psi,all).elem().elem().elem().elem();
+
+    // DOING SOLVE HERE
+    res.n_count = MGP(solve)(peekpokesrc<T>, peekpokesol<T>,solve_subspace);
+
+    bsq = norm2(psi,all);
     QDPIO::cout << "Chroma:   psi all norm2 = " << bsq << std::endl;
- 
     swatch.stop();
+    Double rel_resid;
     double time = swatch.getTimeInSeconds();
     { 
       T r;
@@ -355,18 +245,131 @@ namespace Chroma
       (*A)(tmp, psi, PLUS);
       r[A->subset()] -= tmp;
       res.resid = sqrt(norm2(r, A->subset()));
+      rel_resid = res.resid / sqrt(norm2(chi, A->subset()));
     }
 
-    QDPIO::cout << "QOPMG_SOLVER: " << res.n_count << " iterations."
-                << " Rsd = " << res.resid
-                << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset()))
+    QDPIO::cout << "QOPMG_LINOP_SOLVER: " 
+		<< " Mass: " << invParam.Mass 
+		<< " iterations: " << res.n_count
+                << " time: " << time << " secs"
+                << " Rsd: " << res.resid
+                << " Relative Rsd: " << rel_resid
                 << std::endl;
-    QDPIO::cout << "QOPMG_SOLVER_TIME: " << time << " secs" << std::endl;
 
+    if ( invParam.TerminateOnFail ) { 
+      if ( toBool( rel_resid >= invParam.Residual ) ) {
+	QDPIO::cout << "!!!!! QOPMG_LINOP_SOLVER: " 
+		    << "Mass: "  << invParam.Mass
+		    << " did NOT CONVERGE: Target RelRsd = " << invParam.Residual
+		    << " Actual RelRsd = " << rel_resid << std::endl;
+	QDPIO::cout << "Exiting !!!!! " << std::endl;
+	QDP_abort(1);
+      }
+    }
+	
+     
     END_CODE();
     return res;
   }
 
+  LinOpSysSolverQOPMG::WilsonMGSubspace* LinOpSysSolverQOPMG::getSubspace() const
+  {
+    WilsonMGSubspace *ret_val=0x0;
+    int machsize[4], latsize[4];
+    for (int d=0;d<4;d++) machsize[d] = Layout::logicalSize()[d];
+    for (int d=0;d<4;d++) latsize[d]  = Layout::lattSize()[d];
+
+    QDPIO::cout << "LinOpSysSolverQOPMG::getSubspace() " << std::endl;
+    if( !invParam.ExternalSubspace ) {
+      if( !subspace ) { 
+	QDPIO::cout << "Internal doesn't yet exist... creating" << std::endl;
+	subspace = MGP(create_subspace)(latsize);
+      }
+      ret_val=subspace;
+    }
+    else {
+      // Check if ID exists in the map.
+      if( TheNamedObjMap::Instance().check(invParam.SubspaceId)  ) {
+	QDPIO::cout << "Retreiving Subspace Pointer from NamedObject Map" << endl;	
+	ret_val = TheNamedObjMap::Instance().getData< WilsonMGSubspace * >(invParam.SubspaceId);
+	MGP(reset_subspace)(latsize,ret_val);
+      }
+      else { 
+	QDPIO::cout << "Using External Subspace but object ID: " << invParam.SubspaceId << " is not present in the NamedObject store." << std:: endl;
+	QDPIO::cout << "Creating a new one" << std::endl;
+	ret_val = MGP(create_subspace)(latsize);
+	
+	QDPIO::cout << "Saving in Map" << std::endl;
+	QDPIO::cout << "Creating Named Object Map Entry for subspace" << std::endl;
+	XMLBufferWriter file_xml;
+	push(file_xml, "FileXML");
+	pop(file_xml);
+
+	XMLBufferWriter record_xml;
+	push(record_xml, "RecordXML");
+	write(record_xml, "InvertParam", invParam);
+	pop(record_xml);
+
+	TheNamedObjMap::Instance().create< WilsonMGSubspace *>(invParam.SubspaceId);
+	TheNamedObjMap::Instance().get(invParam.SubspaceId).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(invParam.SubspaceId).setRecordXML(record_xml);
+	TheNamedObjMap::Instance().getData<WilsonMGSubspace*>(invParam.SubspaceId)=ret_val;
+      } // else of if Subspace ID is in the map
+    } // else of if !External Subspace
+
+    return ret_val; // Return whichever pointer was the good one.
+  }
+
+  void  LinOpSysSolverQOPMG::eraseSubspace()  
+  {
+    QDPIO::cout << "LinOpSysSolverQOPMG: Erasing Subspace" << endl;
+    if( !invParam.ExternalSubspace ) { 
+
+      QDPIO::cout << "My subspace does not come from the NamedObjMap" << std::endl;
+
+      // Internal subspace case, if subspace is not null then free it.
+      if ( subspace != 0x0 ) {
+	QDPIO::cout << "My subspace pointer is not null... Destroying" 
+		    << std::endl;
+
+	MGP(destroy_subspace)(subspace);
+	subspace = 0x0;
+      }
+    }
+    else { 
+      // Using external subspace. If it exists free it.
+      if ( TheNamedObjMap::Instance().check(invParam.SubspaceId) ) {
+	QDPIO::cout << "MG Subspace: " << invParam.SubspaceId << " found. " << std::endl;
+	
+	// The loaded subspace ID is in the Map. Get it.
+	WilsonMGSubspace *named_obj_subspace = TheNamedObjMap::Instance().getData<WilsonMGSubspace*>(invParam.SubspaceId);
+	MGP(destroy_subspace)(named_obj_subspace);
+	try { 
+	  QDPIO::cout << "Attempting to delete from named object store" << std:: endl;
+	  // Now erase the object
+	  TheNamedObjMap::Instance().erase(invParam.SubspaceId);
+	  
+	  QDPIO::cout << "Object erased" << std::endl;
+	}
+	catch( std::bad_cast ) {
+	  QDPIO::cerr <<" MGMdagMInternal::eraseSubspace: cast error" 
+		      << std::endl;
+	  QDP_abort(1);
+	}
+	catch (const std::string& e) {
+	  
+	  QDPIO::cerr << " MGMdagMInternal::eraseSubspace: error message: " << e 
+		      << std::endl;
+	  QDP_abort(1);
+	}
+	
+	QDPIO::cout << "Subspace: " << invParam.SubspaceId << " destroyed and removed from map" << std::endl;
+      }
+      else { 
+	QDPIO::cout << "MG Subspace: " << invParam.SubspaceId << " is not in the map. Nothing to desroy" << std::endl;
+      }
+    }
+  }
 
   //! QDP multigrid system solver namespace
   namespace LinOpSysSolverQOPMGEnv

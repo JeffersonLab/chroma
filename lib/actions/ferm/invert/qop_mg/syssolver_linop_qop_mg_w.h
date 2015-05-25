@@ -64,15 +64,17 @@ namespace Chroma
     SystemSolverResults_t operator() (T& psi, const T& chi) const;
 
 
-    //! Solver the linear system
-    /*!
-     * \param psi      solution ( Modify )
-     * \param chi      source ( Read )
-     * \param external_subspace MG Subspace e.g. from MdagM solver (Read) 
-     * \return syssolver results
-     */
+    //! Erasee the subspace 
+    void  eraseSubspace();
 
-    SystemSolverResults_t operator() (T& psi, const T& chi, WilsonMGSubspace* external_subspace) const ;
+    //! Get the subspace to use
+    /*! If the subspace is internal this creates it if needed and returns the pointer
+     *  if it is external, this will look it up in the map and return the pointer. If
+     *  the entry in the map does not exist, it will create and add the space to the map.
+     *  so there is no need to separately save..  NB: External subspace creation allocates
+     *  memory. Which may persist beyond the life of an object (that's the point actually).
+     *  There is an ERASE_MG_SUBSPACE measurement that can erase this space later */
+    WilsonMGSubspace* getSubspace() const;
 
   private:
     // Hide default constructor
