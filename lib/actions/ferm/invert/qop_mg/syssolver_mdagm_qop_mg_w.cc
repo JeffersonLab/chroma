@@ -205,7 +205,7 @@ namespace Chroma
 		<< " Relative Rsd: " << rel_resid
 		<< std::endl;
     
-    if ( toBool( rel_resid > invParam.Residual ) ) { 
+    if ( toBool( rel_resid > invParam.RsdToleranceFactor*invParam.Residual ) ) { 
       if( invParam.TerminateOnFail ) { 
 	QDPIO::cout << "***** !!! ERROR !!! NONCONVERGENCE !!! Mass="<<invParam.Mass <<" Aborting !!! *******" << std::endl;
 	QDP_abort(1);

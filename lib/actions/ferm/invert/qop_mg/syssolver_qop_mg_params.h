@@ -72,6 +72,7 @@ namespace Chroma
 
     bool ExternalSubspace; /*!< Load an MG Subspace from Named Object Store */
     std::string SubspaceId; /*!< The ID of the subspace to load/save */
+    Real RsdToleranceFactor; /*!< Slack in tolerance we are willing to accept -- e.g. a factor of 10, or 20% or somesuch */
     bool TerminateOnFail; /*!< If true, the solver will terminate the program if MaxIters is reached and RsdTarget is not met */
   };
 

@@ -257,7 +257,7 @@ namespace Chroma
                 << std::endl;
 
     if ( invParam.TerminateOnFail ) { 
-      if ( toBool( rel_resid >= invParam.Residual ) ) {
+      if ( toBool( rel_resid >= invParam.RsdToleranceFactor*invParam.Residual ) ) {
 	QDPIO::cout << "!!!!! QOPMG_LINOP_SOLVER: " 
 		    << "Mass: "  << invParam.Mass
 		    << " did NOT CONVERGE: Target RelRsd = " << invParam.Residual

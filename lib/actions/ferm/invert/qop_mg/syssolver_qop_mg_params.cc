@@ -52,7 +52,8 @@ namespace Chroma
     }
 
     defaultread( TerminateOnFail, true);
-    
+    defaultread( RsdToleranceFactor, Real(1.0)); // Default: No slack
+
     if (param.Levels > 0) {
       if (paramtop.count("Blocking")) {
         read(paramtop, "Blocking", param.Blocking);
@@ -140,6 +141,7 @@ namespace Chroma
 	writeparam(SubspaceId);
       }
       writeparam(TerminateOnFail);
+      writeparam(RsdToleranceFactor);
     }
 #undef writeparam
     pop(xml);
