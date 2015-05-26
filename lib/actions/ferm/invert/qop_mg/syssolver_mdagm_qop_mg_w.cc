@@ -99,10 +99,12 @@ namespace Chroma
     g5chi[A->subset()] = Gamma(Nd*Nd-1)*chi ; 
     Double g5chi_norm = sqrt(norm2(g5chi, A->subset())); //
     
-    T tmpsol = zero ;
-    individual_res = (*Dinv)(tmpsol,g5chi);
+    T tmpsol_tmp = zero ;
+    T tmpsol = zero;
+    individual_res = (*Dinv)(tmpsol_tmp,g5chi);
+    tmpsol[ A->subset() ] = tmpsol_tmp; // Do this in case tmpsol_tmp is dirtied up outside its target
     res.n_count = individual_res.n_count;
-    
+
     Double rel_resid = individual_res.resid / g5chi_norm;
     
     // If we've reached iteration-threshold, then destroy the subspace. The next solve will
@@ -122,7 +124,10 @@ namespace Chroma
 	QDPIO::cout << "QOPMG_MDAGM_SOLVER: First solve failed with RelResid = " << rel_resid 
 		    << " Re-trying with refreshed subspace " << std::endl;
 	
-	individual_res = (*Dinv)(tmpsol,g5chi);
+	// tmpsol_tmp may already be a good guess... 
+	individual_res = (*Dinv)(tmpsol_tmp,g5chi);
+	tmpsol=zero;
+	tmpsol[ A->subset() ] = tmpsol_tmp; // Do this in case tmpsol_tmp is dirtied up outside of its target subset
 	res.n_count += individual_res.n_count;
 	
 	rel_resid = individual_res.resid / g5chi_norm;
@@ -141,10 +146,15 @@ namespace Chroma
     // -- In either case, tmpsol, should be good.
     
     T tmpsol2 = zero ;
+    tmpsol_tmp = zero;
+
     tmpsol2[A->subset()] =  Gamma(Nd*Nd-1)*tmpsol ;
     
     Double tmpsol2_norm = sqrt(norm2(tmpsol2,A->subset()));
-    individual_res = (*Dinv)(psi,tmpsol2);
+    individual_res = (*Dinv)(tmpsol_tmp,tmpsol2);
+    psi = zero;
+    psi[ A->subset() ] = tmpsol_tmp; // Do this in case tmpsol tmp is dirty outside subset
+
     res.n_count += individual_res.n_count;
     rel_resid = individual_res.resid / tmpsol2_norm;
     
@@ -166,7 +176,10 @@ namespace Chroma
 	QDPIO::cout << "QOPMG_MDAGM_SOLVER: Second solve failed with RelResid = " << rel_resid 
 		    << " Re-trying with refreshed subspace " << std::endl;
 	
-	individual_res = (*Dinv)(psi,tmpsol2); // This will internally refresh the subspace
+	// tmpsol_tmp may already be a good initial guess
+	individual_res = (*Dinv)(tmpsol_tmp,tmpsol2); // This will internally refresh the subspace
+	psi=zero;
+	psi[ A->subset() ] = tmpsol_tmp; // Do this in case tmpsol_tmp is dirty outside subset
 	res.n_count += individual_res.n_count;
 	
 	rel_resid = individual_res.resid / tmpsol2_norm;
@@ -232,7 +245,8 @@ namespace Chroma
     /* Ignoring the predictor for now, since I am solving the UNPREC system anyway as a gateway to solve the PREC system. The prec
        solutions provided by the predictory are good for the PREC system, but may not be good enoug (missing half of) the solution
        of the the UNPREC system */
-    (*this)(psi,chi);
+    SystemSolverResults_t res  = (*this)(psi,chi);
+    return res;
   }//! Solve the linear system
   
   
