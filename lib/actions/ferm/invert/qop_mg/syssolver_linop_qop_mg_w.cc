@@ -150,6 +150,43 @@ namespace Chroma
 
   
   void *fermionsrc, *fermionsol;
+ 
+  template<typename T>
+  void importFermion(QLA(DiracFermion) *dest, T* vec_src, int coords[])
+  {
+    multi1d<int> x(4); for (int i=0; i<4; i++) x[i] = coords[i];
+    Fermion src; src.elem() = ((T*)vec_src)->elem(Layout::linearSiteIndex(x));
+
+    /*START_CODE();
+    double bsq = norm2(*(T*)fermionsrc).elem().elem().elem().elem();
+    printf("Chroma:   in norm2 = %g\n",bsq);
+    END_CODE();*/
+    //printf("Chroma: x = %i %i %i %i:\n",x[0],x[1],x[2],x[3]);
+    QLA(Complex) z;
+    QLA(Real) real, imag;
+    for (int s=0; s<4; s++)
+      for (int c=0; c<3; c++) {
+        real = src.elem().elem(s).elem(c).real();
+        imag = src.elem().elem(s).elem(c).imag();
+        //printf("Chroma:   s=%i,c=%i == %g + I %g\n",s,c,real,imag);
+        QLA(C_eq_R_plus_i_R)(&z, &real, &imag);
+        QLA(elem_D)(*dest,c,s) = z;
+      }
+  }
+
+  template<typename T>
+  void peekpokesrc(QLA(DiracFermion) *dest, int coords[])
+  {
+    importFermion(dest, (T *)fermionsrc, coords);
+  }
+
+  template<typename T>
+  void peekpokeguess(QLA(DiracFermion) *dest, int coords[])
+  {
+    importFermion(dest, (T *)fermionsol, coords);
+  }
+
+#if 0
   template<typename T>
   void peekpokesrc(QLA(DiracFermion) *dest, int coords[])
   {
@@ -171,6 +208,8 @@ namespace Chroma
         QLA(elem_D)(*dest,c,s) = z;
       }
   }
+#endif
+
   template<typename T>
   void peekpokesol(QLA(DiracFermion) *src, int coords[])
   {
@@ -227,11 +266,12 @@ namespace Chroma
     // Set global pointers to our source and solution fermion fields
     fermionsrc = (void*)&chi;
     fermionsol = (void*)&psi;
+
     Double bsq = norm2(chi,all);
     QDPIO::cout << "Chroma:   chi all norm2 = " << bsq << std::endl;
 
     // DOING SOLVE HERE
-    res.n_count = MGP(solve)(peekpokesrc<T>, peekpokesol<T>,solve_subspace);
+    res.n_count = MGP(solve)(peekpokesrc<T>, peekpokeguess<T>, peekpokesol<T>,solve_subspace);
 
     bsq = norm2(psi,all);
     QDPIO::cout << "Chroma:   psi all norm2 = " << bsq << std::endl;

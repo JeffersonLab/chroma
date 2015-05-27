@@ -16,7 +16,6 @@
 #include "update/molecdyn/predictor/null_predictor.h"
 #include "actions/ferm/linop/lunprec_w.h"
 
-
 #include "meas/glue/mesplq.h"
 
 #if BASE_PRECISION == 32
@@ -97,7 +96,6 @@ namespace Chroma
       // This is the unpreconditioned operator
       // Whenever we call its op() it will underneath call unprecLinOp()
       Lunprec<T,P,Q> A_unprec(A);
-      
   
       SystemSolverResults_t individual_res;
       StopWatch swatch;
