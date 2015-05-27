@@ -526,6 +526,7 @@ nobase_include_HEADERS += \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/lg5Rherm_w.h \
+	actions/ferm/linop/lunprec_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_nonhermop_array_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_pv_linop_array_w.h \
