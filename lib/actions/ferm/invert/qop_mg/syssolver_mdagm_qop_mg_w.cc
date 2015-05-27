@@ -111,7 +111,7 @@ namespace Chroma
       Double g5chi_norm = sqrt(norm2(g5chi, A->subset()));
       
       T tmpsol_tmp;  // This will hold our temporary solution
-      T tmpferm;
+      T tmpferm=zero;
 
       // OK: predictY will predict the solution of M^\dagger Y = b
       // which is the same as Y = g_5 (M^{-1}) g_5 b
@@ -128,7 +128,9 @@ namespace Chroma
 
       // hit tmpferm with g_5 to get the initial guess
       tmpsol_tmp = Gamma(Nd*Nd -1 )*tmpferm;
-
+      Double init_norm = norm2(tmpsol_tmp, all);
+      QDPIO::cout << "Initial guess norm_sq = " << init_norm << " norm = " << sqrt(init_norm) << std::endl;
+ 
       // Now do the solve
       individual_res = (*Dinv)(tmpsol_tmp,g5chi);
 
@@ -188,6 +190,10 @@ namespace Chroma
       // no gamma_5 tricks needed
       tmpsol_tmp = zero;
       two_step_predictor.predictX(tmpsol_tmp, A_unprec, tmpsol2);
+
+      init_norm = norm2(tmpsol_tmp, all);
+      QDPIO::cout << "Initial guess norm_sq = " << init_norm << " norm = " << sqrt(init_norm) << std::endl;
+
       individual_res = (*Dinv)(tmpsol_tmp,tmpsol2);
 
       psi = zero;
