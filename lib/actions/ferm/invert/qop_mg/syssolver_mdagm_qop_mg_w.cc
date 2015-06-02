@@ -46,7 +46,10 @@ namespace Chroma
     SysSolverQOPMGParams remapParams(const SysSolverQOPMGParams& invParam_)
     {
       SysSolverQOPMGParams ret_val = invParam_;
-      ret_val.TerminateOnFail = false;
+      ret_val.TerminateOnFail = false; // Turn off terminate on fail as we 
+				       // will retry from MdagM
+
+      ret_val.MaxIter = invParam_.MaxIter/2; // MdagM is 2 solves, so I want a maxIter that is for 1 solve, which hopefully should be about 1/2 of MdagM
       return ret_val;
     }
   };
