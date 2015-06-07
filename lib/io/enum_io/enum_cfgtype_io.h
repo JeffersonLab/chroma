@@ -33,6 +33,7 @@ namespace Chroma {
       CFG_TYPE_DISORDERED,
       CFG_TYPE_UNIT,
       CFG_TYPE_CPPACS,
+      CFG_TYPE_CERN,
       CFG_TYPE_WEAK_FIELD,
       CFG_TYPE_CLASSICAL_SF,
       CFG_TYPE_WUPP,

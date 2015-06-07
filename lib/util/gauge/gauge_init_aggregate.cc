@@ -13,6 +13,7 @@
 #include "util/gauge/disordered_gauge_init.h"
 #include "util/gauge/unit_gauge_init.h"
 #include "util/gauge/cppacs_gauge_init.h"
+#include "util/gauge/cern_gauge_init.h"
 #include "util/gauge/weak_gauge_init.h"
 #include "util/gauge/sf_gauge_init.h"
 #include "util/gauge/wupp_gauge_init.h"
@@ -41,6 +42,7 @@ namespace Chroma
 	success &= DisorderedGaugeInitEnv::registerAll();
 	success &= UnitGaugeInitEnv::registerAll();
 	success &= CPPACSGaugeInitEnv::registerAll();
+	success &= CERNGaugeInitEnv::registerAll();
 	success &= WeakGaugeInitEnv::registerAll();
 	success &= SFGaugeInitEnv::registerAll();
 	success &= WUPPGaugeInitEnv::registerAll();

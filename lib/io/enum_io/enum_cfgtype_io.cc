@@ -23,11 +23,10 @@ namespace Chroma {
       
       success &= theCfgTypeMap::Instance().registerPair( std::string("KYU"), CFG_TYPE_KYU );
       success &= theCfgTypeMap::Instance().registerPair( std::string("WUP"), CFG_TYPE_WUPP);
-
-
       success &= theCfgTypeMap::Instance().registerPair( std::string("DISORDERED"), CFG_TYPE_DISORDERED );
       success &= theCfgTypeMap::Instance().registerPair( std::string("UNIT"), CFG_TYPE_UNIT );
       success &= theCfgTypeMap::Instance().registerPair( std::string("CPPACS"), CFG_TYPE_CPPACS );
+      success &= theCfgTypeMap::Instance().registerPair( std::string("CERN"), CFG_TYPE_CERN );
       success &= theCfgTypeMap::Instance().registerPair( std::string("WEAK_FIELD"), CFG_TYPE_WEAK_FIELD);
       success &= theCfgTypeMap::Instance().registerPair( std::string("CLASSICAL_SF"), CFG_TYPE_CLASSICAL_SF);
       

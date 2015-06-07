@@ -272,7 +272,7 @@ nobase_include_HEADERS = \
 	meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h \
 	meas/smear/hyp_smear.h meas/smear/hyp_smear3d.h \
-      meas/smear/hex_smear.h \
+        meas/smear/hex_smear.h \
 	meas/smear/laplacian.h meas/smear/smear.h \
 	meas/smear/link_smearing.h \
 	meas/smear/link_smearing_aggregate.h \
@@ -427,7 +427,10 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/lu_solve.h \
 	update/molecdyn/predictor/mre_extrap_predictor.h \
 	update/molecdyn/predictor/mre_shifted_predictor.h \
-	update/molecdyn/predictor/mre_initcg_extrap_predictor.h
+	update/molecdyn/predictor/mre_initcg_extrap_predictor.h \
+        util/gauge/cern_gauge_init.h \
+        io/cern_io.h \
+        io/readcern.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -1333,9 +1336,9 @@ libchroma_a_SOURCES = \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
 	update/molecdyn/predictor/mre_initcg_extrap_predictor.cc \
-	meas/hadron/dilution_quark_source_const_w.cc
-#	actions/ferm/invert/invbicg.cc
-#       util/gauge/eesu2.cc 
+	meas/hadron/dilution_quark_source_const_w.cc \
+        util/gauge/cern_gauge_init.cc \
+        io/readcern.cc
 
 
 if BUILD_GMP_REMEZ

@@ -15,6 +15,7 @@
 #include "io/readmilc.h"
 #include "io/kyugauge_io.h"
 #include "io/readcppacs.h"
+#include "io/cern_io.h"
 
 #include "util/gauge/hotst.h"
 #include "util/gauge/weak_field.h"
@@ -67,6 +68,10 @@ namespace Chroma
 
     case CFG_TYPE_WUPP :
       readWupp(gauge_xml, u, cfg.cfg_file);
+      break;
+
+    case CFG_TYPE_CERN :
+      readCERN(u, cfg.cfg_file);
       break;
 
 
