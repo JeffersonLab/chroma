@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: enum_cfgtype_io.h,v 3.1 2006-04-16 03:06:49 edwards Exp $
 /*! \file
  * \brief CfgType enum
  */

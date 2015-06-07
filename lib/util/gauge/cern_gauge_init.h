@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: cern_gauge_init.h,v 3.1 2007/02/04 22:06:42 edwards Exp $
 /*! \file
  *  \brief Read a CERN config
  */
