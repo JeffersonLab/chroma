@@ -1,4 +1,3 @@
-// $Id: dsdu.cc,v 3.0 2006-04-03 04:59:10 edwards Exp $
 
 //! Computes the derivative of the Wilson (and Symanzik improved)
 /*!

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_static_light_spec_w.h,v 1.4 2008-07-21 18:15:36 kostas Exp $
 /*! \file
  * \brief Inline static light spectrum calculations
  *

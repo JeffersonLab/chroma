@@ -1,4 +1,3 @@
-// $Id: remez_rat_approx.cc,v 3.1 2008-05-23 21:31:34 edwards Exp $
 /*! @file
  * @brief Remez-type rational approximation
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_mdagm_cg_accumulate_array.h,v 3.1 2008-09-06 18:35:35 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by multi-shift CG
  */

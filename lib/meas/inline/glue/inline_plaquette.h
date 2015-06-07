@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_plaquette.h,v 3.4 2007-09-21 04:38:45 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */

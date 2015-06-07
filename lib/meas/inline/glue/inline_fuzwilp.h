@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_fuzwilp.h,v 3.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  * \brief Inline fuzzed Wilson loops
  */

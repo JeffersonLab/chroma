@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_disco_eigcg_w.h,v 1.7 2009-04-08 18:34:11 caubin Exp $
 /*! \file
  * \brief Inline measurement of stochastic 3pt functions.
  *

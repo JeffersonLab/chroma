@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_heavyhadspec_w.h,v 1.1 2008-07-21 18:15:36 kostas Exp $
 /*! \file
  * \brief Inline hadron spectrum calculations
  *

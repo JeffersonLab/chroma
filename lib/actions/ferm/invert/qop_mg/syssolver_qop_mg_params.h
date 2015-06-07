@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_qop_mg_params.h, v1.0 2012-07-06 16:00 sdcohen $
 /*! \file
  *  \brief Parameters for the external QDP clover multigrid solver
  */

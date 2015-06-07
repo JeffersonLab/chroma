@@ -1,4 +1,3 @@
-// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 3.5 2007-02-22 21:11:45 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */

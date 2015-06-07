@@ -1,4 +1,3 @@
-// $Id: ferm_createstate_aggregate_s.cc,v 1.2 2006-09-20 20:31:41 edwards Exp $
 /*! \file
  *  \brief All ferm create-state method
  */

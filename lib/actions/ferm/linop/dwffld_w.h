@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: dwffld_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief DWF parity/rotation operator
  *

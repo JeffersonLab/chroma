@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: asqtad_cps_wrapper_qprop.h,v 3.7 2007-12-08 11:26:53 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *

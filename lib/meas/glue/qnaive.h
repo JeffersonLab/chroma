@@ -1,4 +1,3 @@
-// $Id: qnaive.h,v 3.2 2008-04-24 14:17:14 edwards Exp $
 /*! \file
  *  \brief Calculate the topological charge from the gluonic definition
  *

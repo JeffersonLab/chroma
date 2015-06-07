@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: staggered_operators_s.h,v 1.4 2008-07-21 02:33:28 edwards Exp $
 /*! \file
  *  \brief Staggered  operators
  *

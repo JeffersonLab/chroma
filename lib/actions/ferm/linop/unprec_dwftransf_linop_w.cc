@@ -1,4 +1,3 @@
-// $Id: unprec_dwftransf_linop_w.cc,v 3.2 2007-08-27 18:24:05 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */

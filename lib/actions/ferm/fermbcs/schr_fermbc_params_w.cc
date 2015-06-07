@@ -1,4 +1,3 @@
-// $Id: schr_fermbc_params_w.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional ferm boundary conditions
  */

@@ -1,4 +1,3 @@
-// $Id: inline_hadron_aggregate.cc,v 3.58 2009-09-16 21:23:09 colin Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */

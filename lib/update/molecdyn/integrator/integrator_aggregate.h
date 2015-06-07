@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: integrator_aggregate.h,v 3.4 2006-12-25 21:40:17 bjoo Exp $
 
 #ifndef INTEGRATOR_AGGREGATE_H
 #define INTEGRATOR_AGGREGATE_H

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: simple_fermstate.h,v 1.1 2006-09-19 17:53:37 edwards Exp $
 
 /*! @file
  * @brief Simple ferm state and a creator

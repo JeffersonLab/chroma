@@ -1,4 +1,3 @@
-// $Id: inline_qpropqio_w.cc,v 3.2 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropqio
  *

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lcm_integrator_leaps.h,v 3.4 2007-03-23 20:21:39 bjoo Exp $
 
 #ifndef LCM_INTEGRATOR_LEAPS
 #define LCM_INTEGRATOR_LEAPS

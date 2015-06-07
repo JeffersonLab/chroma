@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: dslash_array_w.h,v 3.3 2008-01-24 15:18:53 edwards Exp $
 /*! \file
  *  \brief Include possibly optimized Wilson dslash
  */

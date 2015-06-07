@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: one_flavor_ratio_rat_conv_monomial_w.h,v 3.1 2008-05-23 21:31:33 edwards Exp $
 
 /*! @file
  * @brief One flavor ratio of rational monomials using RHMC

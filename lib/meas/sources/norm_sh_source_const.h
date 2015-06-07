@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: norm_sh_source_const.h,v 3.1 2009-04-11 01:50:45 kostas Exp $
 /*! \file
  *  \brief Normalized Shell source construction
  */

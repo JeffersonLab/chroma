@@ -1,4 +1,3 @@
-// $Id: klein_gord.cc,v 3.1 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  *  \brief Apply Klein-Gordon operator
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: gaus_quark_smearing.h,v 3.2 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color std::vector and propagator
  */

@@ -1,4 +1,3 @@
-// $Id: syssolver_linop_qdp_mg.cc, v1.0 2013-06-20 22:12 sdcohen $
 /*! \file
  *  \brief Make contact with the QDP clover multigrid solver, transfer
  *         the gauge field, generate the coarse grids, solve systems

@@ -1,4 +1,3 @@
-// $Id: hybmeson_w.cc,v 3.2 2008-09-05 13:59:18 edwards Exp $
 /*! \file
  *  \brief Hybrid meson 2-pt functions
  */

@@ -1,4 +1,3 @@
-// $Id: eoprec_clover_linop_w.cc,v 3.5 2009-04-17 02:05:33 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */

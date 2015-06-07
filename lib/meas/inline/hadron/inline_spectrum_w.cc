@@ -1,4 +1,3 @@
-// $Id: inline_spectrum_w.cc,v 3.7 2006-12-10 02:02:42 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *

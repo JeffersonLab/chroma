@@ -1,4 +1,3 @@
-// $Id: t_dwf4d.cc,v 3.2 2006-09-20 20:28:06 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

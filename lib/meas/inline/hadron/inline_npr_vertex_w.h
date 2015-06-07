@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_npr_vertex_w.h,v 1.4 2007-11-28 04:05:37 kostas Exp $
 /*! \file
  * \brief Inline construction of NPR vertices
  *

@@ -1,4 +1,3 @@
-// $Id: asqtad_fermact_s.cc,v 3.2 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */

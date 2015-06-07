@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: unprec_hamberwu_linop_w.h,v 3.1 2006-05-30 19:56:58 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Hamber-Wu fermion linear operator
  */

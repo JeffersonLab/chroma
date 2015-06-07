@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: invert.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
 
 /*! \file
  * \brief Inverters

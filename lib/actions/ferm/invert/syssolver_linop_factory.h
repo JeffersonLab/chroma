@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_factory.h,v 3.2 2009-04-17 02:05:31 bjoo Exp $
 /*! \file
  *  \brief Factory for solving M*psi=chi where M is not hermitian or pos. def.
  */

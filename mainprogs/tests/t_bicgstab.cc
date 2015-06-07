@@ -1,4 +1,3 @@
-// $Id: t_bicgstab.cc,v 3.1 2007-02-22 21:11:50 bjoo Exp $
 
 #include <iostream>
 #include <sstream>

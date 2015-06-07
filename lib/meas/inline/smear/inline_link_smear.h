@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_link_smear.h,v 3.3 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Inline link smearing
  */

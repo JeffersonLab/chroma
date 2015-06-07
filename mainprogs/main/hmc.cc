@@ -1,4 +1,3 @@
-// $Id: hmc.cc,v 3.24 2009-06-01 16:24:54 bjoo Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */

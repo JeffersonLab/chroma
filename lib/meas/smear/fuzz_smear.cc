@@ -1,4 +1,3 @@
-// $Id: fuzz_smear.cc,v 3.1 2006-08-11 16:13:29 edwards Exp $
 /*! \file
  *  \brief Fuzzed sources
  */

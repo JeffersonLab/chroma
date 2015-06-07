@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_mdagm_cg_accumulate.h,v 3.1 2008-09-02 20:10:18 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */

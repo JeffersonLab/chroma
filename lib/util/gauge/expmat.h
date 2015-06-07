@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: expmat.h,v 3.2 2006-08-25 23:46:37 edwards Exp $
 /*! \file
  *  \brief Exponentiate a SU(n) lie algebra element by some method,
  */

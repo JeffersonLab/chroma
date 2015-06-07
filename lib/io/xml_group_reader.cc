@@ -1,4 +1,3 @@
-// $Id: xml_group_reader.cc,v 1.3 2007-06-11 03:26:43 edwards Exp $
 /*! \file
  *  \brief Read an XML group as a std::string
  */

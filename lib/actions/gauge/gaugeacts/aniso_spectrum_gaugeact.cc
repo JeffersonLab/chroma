@@ -1,4 +1,3 @@
-// $Id: aniso_spectrum_gaugeact.cc,v 1.7 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *

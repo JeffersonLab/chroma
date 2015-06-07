@@ -1,4 +1,3 @@
-// $Id: stout_gaugestate.cc,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Simple gauge state and a creator
  */

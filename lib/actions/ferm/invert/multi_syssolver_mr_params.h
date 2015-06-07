@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_mr_params.h,v 1.1 2007-04-11 03:41:36 edwards Exp $
 /*! \file
  *  \brief Params of MR inverter
  */

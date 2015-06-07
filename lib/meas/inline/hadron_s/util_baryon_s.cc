@@ -1,4 +1,3 @@
-// $Id: util_baryon_s.cc,v 3.1 2009-05-08 11:09:21 mcneile Exp $
 /*! \file
  *  \brief Wrappers to compute staggered baryon correlators
  *

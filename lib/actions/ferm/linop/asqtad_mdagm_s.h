@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: asqtad_mdagm_s.h,v 3.1 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */

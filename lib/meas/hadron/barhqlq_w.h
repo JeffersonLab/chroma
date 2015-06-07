@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: barhqlq_w.h,v 3.2 2007-11-30 06:38:20 kostas Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */

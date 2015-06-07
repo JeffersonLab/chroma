@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_usqcd_write_ddpairs_prop.h,v 1.2 2008-05-01 19:32:56 bjoo Exp $
 /*! \file
  * \brief Inline task to read a USQCD DD Pairs Prop 
  *

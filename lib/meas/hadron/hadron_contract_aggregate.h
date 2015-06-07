@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: hadron_contract_aggregate.h,v 3.2 2007-06-10 14:49:06 edwards Exp $
 /*! \file
  *  \brief All hadron contraction constructors
  */

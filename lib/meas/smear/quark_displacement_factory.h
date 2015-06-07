@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: quark_displacement_factory.h,v 3.2 2006-11-17 02:17:32 edwards Exp $
 /*! \file
  *  \brief Factory for producing quark displacement objects
  */

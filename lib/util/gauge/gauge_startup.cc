@@ -1,4 +1,3 @@
-// $Id: gauge_startup.cc,v 3.5 2009-05-13 13:12:19 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */

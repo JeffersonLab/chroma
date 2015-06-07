@@ -1,4 +1,3 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 3.2 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */

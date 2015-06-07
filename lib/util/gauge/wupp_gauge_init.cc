@@ -1,4 +1,3 @@
-// $Id: milc_gauge_init.cc,v 3.3 2009-05-13 13:12:19 edwards Exp $
 /*! \file
  *  \brief Read an expanded BMW config
  */

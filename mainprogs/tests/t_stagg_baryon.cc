@@ -1,4 +1,3 @@
-// $Id: t_stagg_baryon.cc,v 1.1 2009-03-18 16:00:13 mcneile Exp $
 /*! \file
  *  \brief Main code for staggered charmed baryons
  *

@@ -1,4 +1,3 @@
-// $Id: syssolver_qdp_mg_params.cc, v1.0 2012-07-06 16:03 sdcohen $
 /*! \file
  *  \brief Parameters for the external QDP clover multigrid solver
  */

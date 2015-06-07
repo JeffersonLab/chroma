@@ -1,4 +1,3 @@
-// $Id: gauge_init_aggregate.cc,v 3.2 2007-02-11 22:57:40 edwards Exp $
 /*! \file
  * @brief Gauge initialization
  */

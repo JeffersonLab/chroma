@@ -1,4 +1,3 @@
-// $Id: overlap_state.cc,v 1.1 2006-09-19 17:53:37 edwards Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: vector_quark_smearing.h,v 3.4 2008-11-10 22:05:54 jbulava Exp $
 /*! \file
  *  \brief Vector Smearing: Use an outerproduct of vectors as the 
  *  smearing scheme. 

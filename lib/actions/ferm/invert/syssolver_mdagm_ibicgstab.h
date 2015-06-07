@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_ibicgstab.h,v 3.2 2009-07-08 18:46:47 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */

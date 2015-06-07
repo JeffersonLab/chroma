@@ -1,4 +1,3 @@
-// $Id: predictor_aggregate.cc,v 3.4 2009-06-04 20:29:13 bjoo Exp $
 /*! \file
  *  \brief Chrono predictor aggregator
  */

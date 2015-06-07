@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: unprec_clover_linop_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion linear operator
  */

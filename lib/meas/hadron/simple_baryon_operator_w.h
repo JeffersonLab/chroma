@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: simple_baryon_operator_w.h,v 1.6 2007-04-11 04:55:30 juge Exp $
 /*! \file
  *  \brief Construct simple baryon operators
  */

@@ -1,4 +1,3 @@
-// $Id: eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc,v 3.3 2009-06-04 20:30:27 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */

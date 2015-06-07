@@ -1,4 +1,3 @@
-// $Id: aniso_sym_gaugeact_params.cc,v 3.2 2008-05-21 17:07:49 bjoo Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *

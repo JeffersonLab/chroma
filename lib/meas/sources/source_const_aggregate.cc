@@ -1,4 +1,3 @@
-// $Id: source_const_aggregate.cc,v 3.8 2009-06-24 19:55:40 jbulava Exp $
 /*! \file
  *  \brief All make source constructors
  */

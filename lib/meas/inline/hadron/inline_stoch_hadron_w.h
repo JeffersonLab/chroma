@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_stoch_hadron_w.h,v 1.8 2008-11-19 18:58:53 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *

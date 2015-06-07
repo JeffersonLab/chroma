@@ -1,4 +1,3 @@
-// $Id: unprec_s_cprec_t_wilson_linop_w.cc,v 1.7 2008-05-07 01:12:19 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */

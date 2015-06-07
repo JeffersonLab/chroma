@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_pab.h,v 3.5 2009-04-21 22:32:00 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */

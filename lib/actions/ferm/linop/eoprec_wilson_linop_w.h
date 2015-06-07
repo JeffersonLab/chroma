@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_wilson_linop_w.h,v 3.2 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator
  */

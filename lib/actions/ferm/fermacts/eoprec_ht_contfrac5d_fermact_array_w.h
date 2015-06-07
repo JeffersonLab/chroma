@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_ht_contfrac5d_fermact_array_w.h,v 3.1 2006-10-19 16:01:27 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Continued Fraction 5D
  */

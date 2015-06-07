@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_slic_linop_w.h,v 3.4 2009-05-19 20:07:33 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: gamma5_herm_w.h,v 1.1 2006-11-27 20:07:58 edwards Exp $
 /*! \file
  *  \brief Gamma5 hermiticity
  */

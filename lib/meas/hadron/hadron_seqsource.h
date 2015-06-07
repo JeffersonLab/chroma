@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: hadron_seqsource.h,v 3.6 2006-11-28 19:28:57 edwards Exp $ 
 /*! \file
  *  \brief Construct hadron sequential sources
  */

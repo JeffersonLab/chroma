@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: baryon_spinmat_funcmap_w.h,v 3.1 2006-12-11 17:20:34 edwards Exp $
 /*! \file
  *  \brief Factory for producing baryon spin matrix contraction objects
  */

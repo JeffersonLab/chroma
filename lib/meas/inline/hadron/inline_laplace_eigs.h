@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_laplace_eigs.h,v 1.2 2009-06-23 15:12:42 jbulava Exp $
 /*! \file
  * \brief Use the Implicitly Restarted Lanczos method with a Tchebyshev 
  * polynomial preconditioner to solve for the lowest eigenvalues and 

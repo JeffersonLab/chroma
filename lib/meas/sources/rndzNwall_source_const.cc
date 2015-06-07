@@ -1,4 +1,3 @@
-// $Id: rndzNwall_source_const.cc,v 1.3 2009-05-01 22:52:02 kostas Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */

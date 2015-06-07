@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: stag_phases_s.h,v 3.1 2006-08-25 23:46:37 edwards Exp $
 
 #ifndef STAG_PHASES_H
 #define STAG_PHASES_H

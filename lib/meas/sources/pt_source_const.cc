@@ -1,4 +1,3 @@
-// $Id: pt_source_const.cc,v 3.10 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */

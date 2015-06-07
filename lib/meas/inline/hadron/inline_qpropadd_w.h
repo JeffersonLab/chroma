@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_qpropadd_w.h,v 3.3 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropadd
  *

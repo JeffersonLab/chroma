@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: two_flavor_ratio_conv_conv_monomial_params_w.h,v 3.1 2008-05-23 21:31:34 edwards Exp $
 /*! @file
  * @brief Two-flavor RatioConvConv monomial params
  */

@@ -1,4 +1,3 @@
-// $Id: qactden.cc,v 3.2 2009-08-22 20:05:49 edwards Exp $
 /*! \file
  *  \brief Measure the lattice density of the lattice energy and the naive topological charge.
  */

@@ -1,4 +1,3 @@
-// $Id: t_spprod.cc,v 3.0 2006-04-03 04:59:16 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

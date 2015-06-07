@@ -1,4 +1,3 @@
-// $Id: dilution_scheme_aggregate.cc,v 1.5 2008-04-21 03:19:35 edwards Exp $
 /*! \file
  *  \brief All dilution scheme factories
  */

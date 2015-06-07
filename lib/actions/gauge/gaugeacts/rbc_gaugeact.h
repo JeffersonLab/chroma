@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: rbc_gaugeact.h,v 3.2 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief RG style plaquette + rectangle gauge action following RBC conventions
  */

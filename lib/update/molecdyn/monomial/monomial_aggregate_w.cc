@@ -1,4 +1,3 @@
-// $Id: monomial_aggregate_w.cc,v 3.8 2008-05-23 21:31:33 edwards Exp $
 /*! \file
  *  \brief Fermion monomial aggregator
  */

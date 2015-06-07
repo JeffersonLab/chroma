@@ -1,4 +1,3 @@
-// $Id: inline_create_colorvecs.cc,v 3.11 2009-07-17 14:52:36 edwards Exp $
 /*! \file
  * \brief Construct colorvectors via power iteration of the laplacian
  */

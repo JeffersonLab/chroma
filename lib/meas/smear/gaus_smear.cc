@@ -1,4 +1,3 @@
-// $Id: gaus_smear.cc,v 3.1 2006-11-17 02:17:32 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color std::vector
  */

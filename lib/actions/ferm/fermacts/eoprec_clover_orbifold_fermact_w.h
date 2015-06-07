@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_clover_orbifold_fermact_w.h,v 3.1 2009-02-10 04:22:42 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action with orbifold
  *

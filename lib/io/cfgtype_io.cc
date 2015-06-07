@@ -1,4 +1,3 @@
-// $Id: cfgtype_io.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
 /*! \file
  *  \brief Configuration structure IO
  */

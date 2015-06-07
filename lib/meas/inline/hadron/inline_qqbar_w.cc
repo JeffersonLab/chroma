@@ -1,4 +1,3 @@
-// $Id: inline_qqbar_w.cc,v 3.5 2007-08-27 21:04:02 edwards Exp $
 /*! \file
  * \brief Inline construction of qqbar
  *

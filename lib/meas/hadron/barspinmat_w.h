@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: barspinmat_w.h,v 3.4 2008-01-11 18:14:18 kostas Exp $
 /*! \file
  *  \brief Baryon spin and projector matrices
  */

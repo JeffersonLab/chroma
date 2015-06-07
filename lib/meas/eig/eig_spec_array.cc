@@ -1,4 +1,3 @@
-// $Id: eig_spec_array.cc,v 3.1 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */

@@ -1,4 +1,3 @@
-// $Id: reliable_cg.cc,v 3.3 2009-06-01 16:24:54 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

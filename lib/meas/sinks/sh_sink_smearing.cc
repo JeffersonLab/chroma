@@ -1,4 +1,3 @@
-// $Id: sh_sink_smearing.cc,v 3.8 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */

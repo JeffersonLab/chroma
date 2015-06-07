@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: group_baryon_operator_w.h,v 1.18 2007-04-11 04:55:30 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */

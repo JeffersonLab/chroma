@@ -1,4 +1,3 @@
-// $Id: hadron_2pt.cc,v 1.4 2007-06-12 16:09:37 edwards Exp $
 /*! \file
  *  \brief Construct hadron 2pt correlators
  */

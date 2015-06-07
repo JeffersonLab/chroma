@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.18 2009-11-02 21:29:32 kostas Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H

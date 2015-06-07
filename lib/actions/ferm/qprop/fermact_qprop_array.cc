@@ -1,4 +1,3 @@
-// $Id: fermact_qprop_array.cc,v 3.3 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *

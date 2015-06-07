@@ -1,4 +1,3 @@
-// $Id: temporal_gauge.cc,v 3.2 2009-10-09 19:03:10 bjoo Exp $
 /*! \file
  *  \brief Axial gauge fixing 
  */

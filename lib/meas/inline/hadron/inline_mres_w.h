@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_mres_w.h,v 3.4 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline mres calculations
  *

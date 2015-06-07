@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: sources_w.h,v 3.1 2006-12-10 02:04:57 edwards Exp $
 /*! \file
  * \brief Quark sources
  *

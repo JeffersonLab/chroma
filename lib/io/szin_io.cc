@@ -1,4 +1,3 @@
-// $Id: szin_io.cc,v 3.1 2006-06-13 18:18:14 bjoo Exp $
 
 /*! \file
  *  \brief Reader/writers for szin headers

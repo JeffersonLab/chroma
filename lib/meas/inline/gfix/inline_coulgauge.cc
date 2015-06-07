@@ -1,4 +1,3 @@
-// $Id: inline_coulgauge.cc,v 3.3 2007-11-09 21:18:09 edwards Exp $
 /*! \file
  *  \brief Inline coulomb (and landau) gauge fixing loops
  */

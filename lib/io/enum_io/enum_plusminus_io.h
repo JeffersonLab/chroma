@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: enum_plusminus_io.h,v 1.1 2006-05-23 18:11:34 edwards Exp $
 /*! \file
  * \brief Plus/Minus type enum from Chroma
  */

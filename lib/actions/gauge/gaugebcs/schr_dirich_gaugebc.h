@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: schr_dirich_gaugebc.h,v 3.2 2007-08-16 20:38:56 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - dirichlet BC
  */

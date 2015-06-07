@@ -1,4 +1,3 @@
-// $Id: hotst.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
 // HOTST
 
 /*! \file

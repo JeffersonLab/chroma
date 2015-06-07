@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: poly_cheb_fermact_w.h,v 3.3 2006-10-19 16:01:27 edwards Exp $
 /*! \file
  *  \brief Chebyshev polynomial fermion action
  */

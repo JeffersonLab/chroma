@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_OPTeigbicg_params.h,v 1.2 2009-10-22 20:57:26 kostas Exp $
 /*! \file
  *  \brief Solve a biCG system
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: expm12.h,v 3.1 2006-08-25 23:46:37 edwards Exp $
 /*! \file
  *  \brief 12-th order exponentiation of a lattice color matrix
  */

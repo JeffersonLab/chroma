@@ -1,4 +1,3 @@
-// $Id: inline_smear_aggregate.cc,v 3.2 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Inline smear measurement aggregator
  */

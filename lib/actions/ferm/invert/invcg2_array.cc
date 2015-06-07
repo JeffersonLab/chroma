@@ -1,4 +1,3 @@
-// $Id: invcg2_array.cc,v 3.7 2008-05-29 03:28:31 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

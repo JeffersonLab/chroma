@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: ferm_createstate_factory_s.h,v 1.1 2006-09-19 17:53:36 edwards Exp $
 /*! \file
  *  \brief Fermion create state factory
  */

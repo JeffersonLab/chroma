@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_seqsource_w.h,v 3.3 2006-12-02 18:18:07 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *

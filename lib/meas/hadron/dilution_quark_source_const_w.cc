@@ -1,4 +1,3 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.18 2009-03-09 18:23:26 edwards Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *

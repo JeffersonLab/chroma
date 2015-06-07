@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: simple_meson_seqsrc_w.h,v 3.2 2006-11-28 19:28:57 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */

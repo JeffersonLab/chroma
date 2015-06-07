@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_logdet_linop.h,v 3.2 2007-02-22 21:11:45 bjoo Exp $
 /*! @file
  * @brief Preconditioned  Linear Operators where the Even Even part depends on the gauge field.
  *

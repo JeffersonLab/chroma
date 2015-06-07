@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: delta_2pt_w.h,v 3.3 2008-05-22 18:50:00 caubin Exp $
 /*! \file
  *  \brief Construct delta 2pt correlators.
  */

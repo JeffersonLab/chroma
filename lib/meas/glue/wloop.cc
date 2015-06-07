@@ -1,4 +1,3 @@
-// $Id: wloop.cc,v 1.1 2008-06-26 14:58:35 mcneile Exp $
 /*! \file
  *  \brief Compute simple Wilson loops for use in
  *         alpha_s calculation. These are the Wilson loops used by

@@ -1,4 +1,3 @@
-// $Id: clover_term_bagel_clover.cc,v 1.6 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *

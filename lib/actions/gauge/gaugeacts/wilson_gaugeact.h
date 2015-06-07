@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 3.4 2007-03-22 19:06:26 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */

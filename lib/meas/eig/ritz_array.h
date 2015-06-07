@@ -1,4 +1,3 @@
-// $Id: ritz_array.h,v 3.0 2006-04-03 04:58:57 edwards Exp $
 #ifndef __ritz_array_h__
 #define __ritz_array_h__
 

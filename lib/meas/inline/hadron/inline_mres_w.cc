@@ -1,4 +1,3 @@
-// $Id: inline_mres_w.cc,v 3.4 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *

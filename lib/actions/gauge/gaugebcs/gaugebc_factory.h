@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: gaugebc_factory.h,v 3.1 2009-04-17 02:05:35 bjoo Exp $
 /*! \file
  *  \brief Gauge boundary condition factories
  */

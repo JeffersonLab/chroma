@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: dilute_zN_eigvec_source_const.h,v 3.2 2009-07-12 00:45:36 jbulava Exp $
 /*! \file
  *  \brief Random Z(N) source construction using dilution in eigenstd::vector 
  *  space

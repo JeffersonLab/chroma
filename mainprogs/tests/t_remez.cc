@@ -1,4 +1,3 @@
-// $Id: t_remez.cc,v 3.4 2008-06-06 17:15:27 bjoo Exp $
 /*! \file
  *  \brief Test the Remez code
  */

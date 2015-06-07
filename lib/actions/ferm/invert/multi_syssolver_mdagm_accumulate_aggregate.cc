@@ -1,4 +1,3 @@
-// $Id: multi_syssolver_mdagm_accumulate_aggregate.cc,v 3.2 2008-09-06 18:35:35 bjoo Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */

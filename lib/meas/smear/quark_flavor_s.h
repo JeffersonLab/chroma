@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: quark_flavor_s.h,v 1.2 2006-11-21 05:20:14 kostas Exp $
 /*! \file
  *  \brief Staggered Flavor operators
  *

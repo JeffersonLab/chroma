@@ -1,4 +1,3 @@
-// $Id: nersc_gauge_init.cc,v 3.1 2007-02-04 22:06:42 edwards Exp $
 /*! \file
  *  \brief Read a NERSC config
  */

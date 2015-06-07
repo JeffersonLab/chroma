@@ -1,4 +1,3 @@
-// $Id: schr_dirich_fermbc_w.cc,v 3.3 2007-08-16 20:41:16 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - dirichlet BC
  */

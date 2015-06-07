@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: two_flavor_polyprec_monomial_w.h,v 3.7 2007-03-22 17:39:23 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials

@@ -1,4 +1,3 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.14 2009-01-30 03:42:40 kostas Exp $
 /*! \file
  *  \brief Write object function std::map
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: asqtad_linop_s.h,v 3.2 2006-11-17 02:54:47 edwards Exp $
 //! Asqtad Staggered-Dirac operator
 /*!
  * \ingroup linop

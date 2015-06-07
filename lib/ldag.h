@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: ldag.h,v 1.1 2007-04-11 03:43:41 edwards Exp $
 /*! \file
  * \brief M^dag composition of a linear operator
  */

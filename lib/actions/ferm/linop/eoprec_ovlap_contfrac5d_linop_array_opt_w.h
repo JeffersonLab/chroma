@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_ovlap_contfrac5d_linop_array_opt_w.h,v 3.1 2006-10-19 16:01:30 edwards Exp $
 /*! \file
  *  \brief Optimized Even-odd prec. 5D continued fraction linop
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_cg.h,v 3.7 2009-06-11 15:20:54 bjoo Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */

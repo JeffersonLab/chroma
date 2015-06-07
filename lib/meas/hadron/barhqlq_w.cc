@@ -1,4 +1,3 @@
-// $Id: barhqlq_w.cc,v 3.5 2009-03-19 17:17:20 mcneile Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */

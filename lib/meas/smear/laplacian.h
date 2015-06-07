@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: laplacian.h,v 3.1 2006-08-11 16:13:30 edwards Exp $
 /*! \file
  *  \brief Laplacian smearing of a source
  */

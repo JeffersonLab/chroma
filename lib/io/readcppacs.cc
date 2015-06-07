@@ -1,4 +1,3 @@
-// $Id: readcppacs.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
 
 /*! \file
  *  \brief Read a CPPACS gauge configuration 

@@ -1,4 +1,3 @@
-// $Id: diluteGrid_source_const.cc,v 3.5 2008-12-01 14:25:08 kostas Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */

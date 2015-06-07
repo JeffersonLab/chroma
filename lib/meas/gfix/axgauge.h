@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: axgauge.h,v 3.3 2009-10-09 15:33:43 bjoo Exp $
 /*! \file
  *  \brief Axial gauge fixing 
  */

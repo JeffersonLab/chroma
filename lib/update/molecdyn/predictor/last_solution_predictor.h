@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: last_solution_predictor.h,v 3.5 2009-06-01 20:39:37 bjoo Exp $
 /*! \file
  * \brief Last solution predictor
  *

@@ -1,4 +1,3 @@
-// $Id: comp_approx.cc,v 3.1 2008-05-23 21:31:32 edwards Exp $
 /*! @file
  * @brief Components of rational approximation
  */

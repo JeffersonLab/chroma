@@ -1,4 +1,3 @@
-// $Id: t_prec_nef.cc,v 3.1 2006-07-03 15:26:11 edwards Exp $
 
 #include "chroma.h"
 

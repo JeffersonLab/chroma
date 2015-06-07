@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_ritz_H_w.h,v 3.2 2007-08-23 19:02:44 edwards Exp $
 /*! \file
  * \brief Inline construction of eigenvalues (Ritz)
  *

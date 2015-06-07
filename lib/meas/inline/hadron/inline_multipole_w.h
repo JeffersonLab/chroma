@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_multipole_w.h,v 3.2 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurements
  */

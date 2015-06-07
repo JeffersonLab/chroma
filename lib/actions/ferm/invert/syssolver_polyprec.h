@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_polyprec.h,v 3.1 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Disambiguator for PolyPrec system solvers
  */

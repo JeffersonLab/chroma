@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_propagator_ferm_w.h,v 3.3 2007-08-23 19:02:44 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator returning only a single lattice fermion
  *

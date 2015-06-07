@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: polar_dec.h,v 3.2 2009-10-09 15:33:43 bjoo Exp $
 /*! \file
  *  \brief Decompose a complex matrix as \f$C = exp(i\alpha) V P\f$
  */

@@ -1,4 +1,3 @@
-// $Id: dwf_fermact_qprop_array_w.cc,v 3.4 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Base class for unprec and even-odd preconditioned DWF qprop
  */

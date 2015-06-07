@@ -1,4 +1,3 @@
-// $Id: simple_gaugebc.cc,v 3.2 2009-04-17 02:05:35 bjoo Exp $
 /*! \file
  *  \brief Simple gauge boundary conditions
  */

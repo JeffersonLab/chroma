@@ -1,4 +1,3 @@
-// $Id: stoch_cond_cont_w.cc,v 3.2 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  * \brief Stoch quark condensates
  */

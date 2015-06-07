@@ -1,4 +1,3 @@
-// $Id: wilson_coarse_fine_fermact_params_w.cc,v 3.1 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson coarse-fine 2+2 anisotropic lattice fermion action parameters
  */

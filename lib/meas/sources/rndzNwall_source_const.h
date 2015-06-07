@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: rndzNwall_source_const.h,v 1.2 2009-05-01 22:41:13 kostas Exp $
 /*! \file
  *  \brief Random Z2 wall source construction
  */

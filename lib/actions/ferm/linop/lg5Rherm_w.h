@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lg5Rherm_w.h,v 3.1 2007-02-22 21:11:46 bjoo Exp $
 
 #ifndef __lg5Rherm_h__
 #define __lg5Rherm_h__

@@ -1,4 +1,3 @@
-// $Id: asqtad_mdagm_s.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */

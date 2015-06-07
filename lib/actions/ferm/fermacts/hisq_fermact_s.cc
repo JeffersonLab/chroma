@@ -1,4 +1,3 @@
-// $Id: hisq_fermact_s.cc,v 1.8 2008-03-27 10:17:34 mcneile Exp $
 /*! \file
  *  \brief Hisq staggered fermion action
  */

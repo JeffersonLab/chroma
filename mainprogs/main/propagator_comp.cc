@@ -1,4 +1,3 @@
-// $Id: propagator_comp.cc,v 3.1 2006-11-07 22:36:34 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */

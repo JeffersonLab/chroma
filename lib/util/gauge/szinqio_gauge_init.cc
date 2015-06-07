@@ -1,4 +1,3 @@
-// $Id: szinqio_gauge_init.cc,v 3.2 2007-02-04 22:52:41 edwards Exp $
 /*! \file
  *  \brief Read a SZINQIO config
  */

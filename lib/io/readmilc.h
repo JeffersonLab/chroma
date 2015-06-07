@@ -1,4 +1,3 @@
-// $Id: readmilc.h,v 3.3 2009-05-14 20:11:31 bjoo Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format

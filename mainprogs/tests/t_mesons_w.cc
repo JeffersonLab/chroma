@@ -1,4 +1,3 @@
-// $Id: t_mesons_w.cc,v 3.1 2006-11-07 21:50:10 edwards Exp $
 /*! \file
  *  \brief Test the Wilson mesons() routine
  */

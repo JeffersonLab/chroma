@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: wilslp.h,v 3.0 2006-04-03 04:58:58 edwards Exp $
 /*! \file
  *  \brief Calculate Wilson loops
  */

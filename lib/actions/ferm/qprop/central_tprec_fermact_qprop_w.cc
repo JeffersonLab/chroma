@@ -1,4 +1,3 @@
-// $Id: central_tprec_fermact_qprop_w.cc,v 1.6 2009-03-19 17:06:43 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *

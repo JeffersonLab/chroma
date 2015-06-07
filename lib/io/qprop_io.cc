@@ -1,4 +1,3 @@
-// $Id: qprop_io.cc,v 3.21 2009-01-29 16:57:28 caubin Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */

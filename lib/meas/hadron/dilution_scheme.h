@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: dilution_scheme.h,v 1.8 2008-04-21 03:19:35 edwards Exp $
 /*! \file
  *  \brief Dilution Schemes
  */

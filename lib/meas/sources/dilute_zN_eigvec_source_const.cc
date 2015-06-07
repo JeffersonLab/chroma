@@ -1,4 +1,3 @@
-// $Id: dilute_zN_eigvec_source_const.cc,v 3.2 2009-07-12 00:45:36 jbulava Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */

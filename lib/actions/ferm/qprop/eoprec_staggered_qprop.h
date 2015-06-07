@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_staggered_qprop.h,v 3.5 2008-08-11 10:45:35 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *

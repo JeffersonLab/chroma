@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: wloop.h,v 1.1 2008-06-26 14:58:35 mcneile Exp $
 
 #ifndef __wloop_h__
 #define __wloop_h__

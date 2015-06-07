@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: gauge_init_aggregate.h,v 3.1 2007-02-04 22:06:42 edwards Exp $
 /*! \file
  *  \brief All gauge field initializers
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: schroedinger_fermbc_w.h,v 3.3 2007-02-22 21:11:45 bjoo Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_rel_cg_clover.h,v 3.2 2009-05-22 19:50:38 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */

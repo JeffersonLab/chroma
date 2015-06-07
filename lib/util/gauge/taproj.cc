@@ -1,4 +1,3 @@
-// $Id: taproj.cc,v 3.2 2006-08-25 23:56:51 edwards Exp $
 // TAPROJ
 
 /*! \file

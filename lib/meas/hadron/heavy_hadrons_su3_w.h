@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: heavy_hadrons_su3_w.h,v 1.2 2008-12-21 21:22:36 edwards Exp $ 
 /*! \file
  *  \brief Potential between 2 heavy hadrons : Detmold
  *  Correlators checked independentely by Savage

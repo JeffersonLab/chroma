@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qqq_w.h,v 3.1 2008-09-09 20:30:42 kostas Exp $
 /*! \file
  *  \brief constructs 3 quark propagators contracted at the sink
  */

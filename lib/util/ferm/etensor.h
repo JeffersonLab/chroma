@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: etensor.h,v 3.1 2008-11-11 21:27:42 edwards Exp $
 /*! \file
  *  \brief Tensor used for E representations
  */

@@ -1,4 +1,3 @@
-// $Id: eig_spec.h,v 3.0 2006-04-03 04:58:57 edwards Exp $
 
 #ifndef __eig_spec_bj_w_h__
 #define __eig_spec_bj_w_h__

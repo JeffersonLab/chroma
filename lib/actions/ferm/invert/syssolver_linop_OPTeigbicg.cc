@@ -1,4 +1,3 @@
-// $Id: syssolver_linop_OPTeigbicg.cc,v 3.1 2009-11-02 21:34:08 kostas Exp $
 /*! \file
  *  \brief Solve a A*psi=chi linear system by EigBiCG
  */

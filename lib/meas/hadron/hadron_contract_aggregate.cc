@@ -1,4 +1,3 @@
-// $Id: hadron_contract_aggregate.cc,v 3.4 2007-12-04 04:08:53 kostas Exp $
 /*! \file
  *  \brief All hadron contraction constructors
  */

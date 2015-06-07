@@ -1,4 +1,3 @@
-// $Id: mesmom.cc,v 3.0 2006-04-03 04:59:10 edwards Exp $
 
 #warning "SHOULD ADD INCLUDE OF PROTOTYPE"
 

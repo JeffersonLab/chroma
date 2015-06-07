@@ -1,4 +1,3 @@
-// $Id: inline_usqcd_read_ddpairs_prop.cc,v 3.6 2009-03-19 17:10:02 mcneile Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *

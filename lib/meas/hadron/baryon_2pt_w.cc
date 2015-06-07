@@ -1,4 +1,3 @@
-// $Id: baryon_2pt_w.cc,v 1.1 2007-05-09 17:19:44 edwards Exp $
 /*! \file
  *  \brief Construct baryon 2pt correlators.
  */

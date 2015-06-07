@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: monomial.h,v 3.1 2007-04-17 03:13:04 edwards Exp $
 
 /*! \file
  * \brief HMC monomials

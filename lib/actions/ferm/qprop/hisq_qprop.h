@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: hisq_qprop.h,v 1.2 2009-03-19 13:08:05 mcneile Exp $
 /*! \file
  *  \brief Hisq propagator wrapper
  *

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: ferm_createstate_reader_s.h,v 1.2 2007-07-09 15:05:48 bjoo Exp $
 /*! \file
  *  \brief All ferm create-state method
  */

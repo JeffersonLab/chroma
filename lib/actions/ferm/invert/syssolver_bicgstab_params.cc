@@ -1,4 +1,3 @@
-// $Id: syssolver_bicgstab_params.cc,v 3.1 2007-05-01 12:47:24 bjoo Exp $
 /*! \file
  *  \brief Params of CG inverter
  */

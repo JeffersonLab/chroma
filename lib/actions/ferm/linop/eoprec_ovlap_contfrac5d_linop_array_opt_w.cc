@@ -1,4 +1,3 @@
-// $Id: eoprec_ovlap_contfrac5d_linop_array_opt_w.cc,v 3.2 2007-09-01 23:44:10 uid3790 Exp $
 /*! \file
  *  \brief Optimized version of 5D continued frac. linop
  */

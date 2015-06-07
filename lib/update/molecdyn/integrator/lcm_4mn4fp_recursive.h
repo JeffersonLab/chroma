@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lcm_4mn4fp_recursive.h,v 3.3 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Lat Col Mat 4th order 4 force calculation minimum norm integrator

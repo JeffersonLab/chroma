@@ -1,4 +1,3 @@
-// $Id: eoprec_ht_contfrac5d_linop_array_w.cc,v 3.1 2006-10-19 16:01:30 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */

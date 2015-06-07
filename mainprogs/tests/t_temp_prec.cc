@@ -1,4 +1,3 @@
-// $Id: t_temp_prec.cc,v 3.9 2009/11/14 20:01:46 eneil Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */

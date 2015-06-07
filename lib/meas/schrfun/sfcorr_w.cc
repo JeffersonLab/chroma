@@ -1,4 +1,3 @@
-// $Id: sfcorr_w.cc,v 3.1 2007-08-24 19:23:04 edwards Exp $
 
 #include "chromabase.h"
 #include "meas/schrfun/sfcorr_w.h"

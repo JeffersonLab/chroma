@@ -1,4 +1,3 @@
-// $Id: eoprec_zolo_nef_fermact_array_w.cc,v 3.1 2006-10-19 16:01:27 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */

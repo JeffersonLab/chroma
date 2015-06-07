@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 3.5 2009-04-17 02:05:30 bjoo Exp $
 
 /*! @file
  * @brief Linear Operators

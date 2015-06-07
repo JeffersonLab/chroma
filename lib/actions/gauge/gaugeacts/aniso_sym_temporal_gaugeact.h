@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: aniso_sym_temporal_gaugeact.h,v 3.2 2007-05-24 19:36:05 bjoo Exp $
 /*! \file
  *  \brief Temporal Part of Tree Level LW gauge action
  *

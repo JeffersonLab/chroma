@@ -1,4 +1,3 @@
-// $Id: frmnse_w.cc,v 3.0 2006-04-03 04:59:10 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO FIT TO USE VIRTUAL FUNCS"
 

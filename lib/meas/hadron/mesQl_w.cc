@@ -1,4 +1,3 @@
-// $Id: mesQl_w.cc,v 1.4 2009-04-09 22:57:38 caubin Exp $ 
 /*! \file
  *  \brief Heavy Meson (Qlbar)  2-pt function : Orginos and Savage
  */

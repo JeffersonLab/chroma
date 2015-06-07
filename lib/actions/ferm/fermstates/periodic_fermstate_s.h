@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: periodic_fermstate_s.h,v 1.2 2006-09-20 20:31:41 edwards Exp $
 
 /*! @file
  * @brief Periodic ferm state and a creator

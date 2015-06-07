@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: shift2.h,v 1.3 2006-08-25 23:46:37 edwards Exp $
 /*! \file
  *  \brief Shift by a power of 2
  */

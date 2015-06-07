@@ -1,4 +1,3 @@
-// $Id: t_invert4_precwilson.cc,v 3.4 2009-10-09 13:59:46 bjoo Exp $
 
 #include <iostream>
 #include <sstream>

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_heavy_light_cont_w.h,v 3.1 2009-01-20 16:16:58 caubin Exp $
 /*! \file
  * \brief Inline heavy light contractions for weak three and four point functions
  *

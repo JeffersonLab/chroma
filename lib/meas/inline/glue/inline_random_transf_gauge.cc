@@ -1,4 +1,3 @@
-// $Id: inline_random_transf_gauge.cc,v 3.2 2009-07-17 21:32:24 edwards Exp $
 /*! \file
  *  \brief Do a random gauge transformation on a gauge field
  */

@@ -1,4 +1,3 @@
-// $Id: syssolver_polyprec_aggregate.cc,v 3.3 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief All PolyPrec system solver constructors
  */

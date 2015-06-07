@@ -1,4 +1,3 @@
-// $Id: klein_gordon_fermact_s.cc,v 3.2 2008-09-06 18:36:25 bjoo Exp $
 /*! \file
  *  \brief Klein-Gordon boson action masquerading action as a staggered action
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_prop_3pt_w.h,v 1.4 2008-11-19 03:33:03 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic 3pt functions.
  *

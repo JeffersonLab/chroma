@@ -1,4 +1,3 @@
-// $Id: wilson_gaugeact.cc,v 3.5 2007-03-22 19:06:26 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */

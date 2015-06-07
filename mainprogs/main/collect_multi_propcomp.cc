@@ -1,4 +1,3 @@
-// $Id: collect_multi_propcomp.cc,v 3.1 2006-11-07 21:51:25 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */

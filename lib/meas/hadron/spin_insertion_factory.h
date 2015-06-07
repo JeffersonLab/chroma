@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: spin_insertion_factory.h,v 1.2 2006-12-04 20:38:13 edwards Exp $
 /*! \file
  *  \brief Factory for producing spin insertion objects
  */

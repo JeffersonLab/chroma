@@ -1,4 +1,3 @@
-// $Id: inline_io_aggregate.cc,v 3.8 2009-02-13 22:41:24 jbulava Exp $
 /*! \file
  *  \brief Inline IO aggregator
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: avp_ssef_solver.h,v 3.4 2007-01-17 02:39:27 edwards Exp $
 /*! \file
  *  \brief Base class for AVP's SSEF-DWF solver interface
  */

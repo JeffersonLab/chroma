@@ -1,4 +1,3 @@
-// $Id: polycor.cc,v 3.1 2006-08-24 02:33:52 edwards Exp $
 /*! \file
  *  \brief Construct Polyakov loop correlation functions from fuzzy links
  */

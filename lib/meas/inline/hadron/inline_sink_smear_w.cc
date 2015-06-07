@@ -1,4 +1,3 @@
-// $Id: inline_sink_smear_w.cc,v 3.6 2007-10-13 20:46:29 edwards Exp $
 /*! \file
  * \brief Inline construction of sink_smear
  *

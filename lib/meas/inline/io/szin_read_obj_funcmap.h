@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: szin_read_obj_funcmap.h,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Read object function std::map
  */

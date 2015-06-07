@@ -1,4 +1,3 @@
-// $Id: unprec_w12_linop_w.cc,v 3.2 2009-03-19 17:08:00 mcneile Exp $
 /*! \file
  *  \brief Unpreconditioned W12 action
  */

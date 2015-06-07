@@ -1,4 +1,3 @@
-// $Id: inline_static_light_spec_w.cc,v 1.6 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *

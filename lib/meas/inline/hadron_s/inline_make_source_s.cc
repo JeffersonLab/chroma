@@ -1,4 +1,3 @@
-// $Id: inline_make_source_s.cc,v 3.2 2007-02-25 22:39:29 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *

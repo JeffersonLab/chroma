@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: rat_approx_aggregate.h,v 3.1 2008-05-23 21:31:34 edwards Exp $
 /*! \file
  *  \brief Rational approximation aggregator
  */

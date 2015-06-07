@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: periodic_gaugestate.h,v 1.3 2009-04-17 02:05:36 bjoo Exp $
 
 /*! @file
  * @brief Periodic gauge state and a creator

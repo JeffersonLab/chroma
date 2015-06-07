@@ -1,4 +1,3 @@
-// $Id: stag_phases_s.cc,v 3.1 2006-08-25 23:46:37 edwards Exp $
 /*! \file
  *  \brief Create phases used by staggered fermions
  */

@@ -1,4 +1,3 @@
-// $Id: default_gauge_field.cc,v 3.4 2007-09-23 15:42:04 edwards Exp $
 /*! \file
  * \brief Functions to set and get default gauge field
  */

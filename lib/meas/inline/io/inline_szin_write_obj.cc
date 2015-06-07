@@ -1,4 +1,3 @@
-// $Id: inline_szin_write_obj.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *

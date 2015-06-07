@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: fermact_factory_w.h,v 3.1 2006-10-19 16:01:27 edwards Exp $
 /*! \file
  *  \brief Fermion action factories
  */

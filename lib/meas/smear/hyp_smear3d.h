@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: hyp_smear3d.h,v 3.1 2006-08-11 16:13:30 edwards Exp $
 /*! \file
  *  \brief Hyp smear a gauge field
  */

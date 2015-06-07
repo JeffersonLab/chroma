@@ -1,4 +1,3 @@
-// $Id: asqtad_linop_s.cc,v 3.2 2006-11-18 02:33:03 kostas Exp $
 /*! \file
  *  \brief Unpreconditioned Asqtad linear operator
  */

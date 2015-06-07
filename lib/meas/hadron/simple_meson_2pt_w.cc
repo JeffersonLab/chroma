@@ -1,4 +1,3 @@
-// $Id: simple_meson_2pt_w.cc,v 1.4 2007-06-12 16:09:37 edwards Exp $
 /*! \file
  *  \brief Construct meson 2pt correlators.
  */

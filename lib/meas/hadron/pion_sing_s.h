@@ -1,4 +1,3 @@
-// $Id: pion_sing_s.h,v 3.1 2007-04-11 15:29:53 egregory Exp $
 #ifndef PION_SING_S_H
 #define PION_SING_S_H
 

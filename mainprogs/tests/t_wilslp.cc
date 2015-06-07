@@ -1,4 +1,3 @@
-// $Id: t_wilslp.cc,v 3.0 2006-04-03 04:59:16 edwards Exp $
 //
 // Test driver for wilslp
 // default test uses the usual NERSC 4^4 config.

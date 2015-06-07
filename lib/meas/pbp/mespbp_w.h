@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: mespbp_w.h,v 3.1 2009-04-21 01:21:42 eneil Exp $
 
 /*! \file
  * \brief Psibar-psi measurements

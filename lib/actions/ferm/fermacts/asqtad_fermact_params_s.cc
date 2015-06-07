@@ -1,4 +1,3 @@
-// $Id: asqtad_fermact_params_s.cc,v 3.1 2006-11-16 19:49:33 kostas Exp $
 /*! \file
  *  \brief Asqtad fermion action parameters
  */

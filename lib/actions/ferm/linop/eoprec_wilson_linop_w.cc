@@ -1,4 +1,3 @@
-// $Id: eoprec_wilson_linop_w.cc,v 3.2 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */

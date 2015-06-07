@@ -1,4 +1,3 @@
-// $Id: curcor3_w.cc,v 1.1 2006-07-17 20:22:31 edwards Exp $
 /*! \file
  *  \brief Mesonic current correlators
  */

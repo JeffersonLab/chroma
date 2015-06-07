@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: stout_utils.cc,v 1.6 2009-02-04 21:16:03 bjoo Exp $
 /*! \file
  *  \brief Stout utilities
  */

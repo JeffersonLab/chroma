@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: enum_wavetype_io.h,v 3.1 2006-12-10 02:06:25 edwards Exp $
 /*! \file
  * \brief Wavetype enum
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: sun_proj.h,v 3.2 2007-02-22 21:11:50 bjoo Exp $
 /*! \file
  *  \ingroup gauge
  *  \author Subsetting added by A. Hart

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_disco_eoprec_w.h,v 3.1 2009-04-08 18:34:11 caubin Exp $
 /*! \file
  * \brief Inline measurement of stochastic 3pt functions.
  *

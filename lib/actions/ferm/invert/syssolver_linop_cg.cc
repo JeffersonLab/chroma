@@ -1,4 +1,3 @@
-// $Id: syssolver_linop_cg.cc,v 3.5 2009-04-17 02:05:31 bjoo Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */

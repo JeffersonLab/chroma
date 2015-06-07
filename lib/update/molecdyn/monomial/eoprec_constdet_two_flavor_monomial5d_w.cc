@@ -1,4 +1,3 @@
-// $Id: eoprec_constdet_two_flavor_monomial5d_w.cc,v 3.1 2006-10-19 16:01:34 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
  */

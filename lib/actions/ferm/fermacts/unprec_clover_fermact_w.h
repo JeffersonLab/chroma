@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: unprec_clover_fermact_w.h,v 3.2 2006-10-19 16:01:29 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */

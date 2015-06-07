@@ -1,4 +1,3 @@
-// $Id: schr_sf_gaugebc.cc,v 3.2 2007-08-16 20:38:56 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional base class
  */

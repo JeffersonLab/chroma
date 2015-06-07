@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_stoch_meson_w.h,v 3.2 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic meson operator
  *

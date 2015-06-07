@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lcm_toplevel_integrator.h,v 3.4 2007-03-23 20:21:39 bjoo Exp $
 
 #ifndef __LCM_TOPLEVEL_INTEGRATOR_H_
 #define __LCM_TOPLEVEL_INTEGRATOR_H_

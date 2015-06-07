@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lg5eps_w.h,v 3.2 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief Internal pole epsilon operator. Just the unitary part
  *

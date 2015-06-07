@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_clover_extfield_linop_w.h,v 3.1 2006-10-19 16:01:29 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator in an external field
  */

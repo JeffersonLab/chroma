@@ -1,4 +1,3 @@
-// $Id: baryon_w.cc,v 3.1 2009-03-19 17:17:20 mcneile Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */

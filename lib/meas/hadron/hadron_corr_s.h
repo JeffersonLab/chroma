@@ -1,4 +1,3 @@
-// $Id: hadron_corr_s.h,v 3.1 2009-05-08 09:56:16 mcneile Exp $
 
 #ifndef HADRON_CORR_S_H
 #define HADRON_CORR_S_H

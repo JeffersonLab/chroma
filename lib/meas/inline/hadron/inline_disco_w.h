@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_disco_w.h,v 1.1 2008-12-06 01:00:52 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic 3pt functions.
  *

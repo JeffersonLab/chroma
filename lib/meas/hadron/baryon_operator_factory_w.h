@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: baryon_operator_factory_w.h,v 1.2 2006-11-22 04:17:02 juge Exp $
 /*! \file
  *  \brief Factory for producing baryon operators
  */

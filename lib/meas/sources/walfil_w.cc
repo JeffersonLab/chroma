@@ -1,4 +1,3 @@
-// $Id: walfil_w.cc,v 3.1 2006-04-26 03:42:18 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */

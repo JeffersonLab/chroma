@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: heatbath.h,v 3.1 2006-04-19 02:28:18 edwards Exp $
 
 /*! \file
  * \brief Heatbath

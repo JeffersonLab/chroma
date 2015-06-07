@@ -1,4 +1,3 @@
-// $Id: inline_seqprop_test_w.cc,v 3.3 2006-12-02 18:18:07 edwards Exp $
 /*! \file
  * \brief Test sequential propagator
  *

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 3.1 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */

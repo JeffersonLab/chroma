@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_cg_params.h,v 3.4 2008-03-25 10:43:44 mcneile Exp $
 /*! \file
  *  \brief Solve a CG1 system
  */

@@ -1,4 +1,3 @@
-// $Id: mesQlPOT_w.cc,v 1.2 2008-12-21 21:22:36 edwards Exp $ 
 /*! \file
  *  \brief Potential between 2 heavy mesons : Orginos and Savage
  *

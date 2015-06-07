@@ -1,4 +1,3 @@
-// $Id: polar_dec.cc,v 3.3 2009-10-09 15:33:43 bjoo Exp $
 /*! \file
  *  \brief Decompose a complex matrix as C = exp(i\alpha) V P
  */

@@ -1,4 +1,3 @@
-// $Id: pseudoscalar_stoch_conn_s.cc,v 3.2 2007-05-14 13:40:04 egregory Exp $
 #include "chromabase.h"
 #include "pseudoscalar_stoch_conn_s.h"
 #include "util/gauge/stag_phases_s.h"

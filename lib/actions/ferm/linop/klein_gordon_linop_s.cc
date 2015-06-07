@@ -1,4 +1,3 @@
-// $Id: klein_gordon_linop_s.cc,v 1.3 2006-12-09 22:22:07 edwards Exp $
 /*! \file
  *  \brief Klein-Gordon boson action masquerading action as a staggered action
  */

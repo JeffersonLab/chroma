@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lw_1loop_gaugeact.h,v 3.2 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief 1-loop tadpole-improved Luscher-Weisz gauge action
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: reliable_cg.h,v 3.1 2009-05-22 14:21:39 bjoo Exp $
 /*! \file
  *  \brief BiCGStab Solver with reliable updates
  */

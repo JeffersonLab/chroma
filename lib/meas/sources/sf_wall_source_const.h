@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: sf_wall_source_const.h,v 3.3 2008-11-04 18:43:59 edwards Exp $
 /*! \file
  *  \brief Wall source construction fpr Schroedinger Functional
  */

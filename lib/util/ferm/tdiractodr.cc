@@ -1,4 +1,3 @@
-// $Id: tdiractodr.cc,v 3.1 2008-07-21 02:33:28 edwards Exp $
 /*! \file
  *  \brief Basis rotation matrix from Dirac to Degrand-Rossi (and reverse)
  */

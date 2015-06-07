@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: plaq_gaugeact.h,v 3.7 2008-01-20 19:47:24 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */

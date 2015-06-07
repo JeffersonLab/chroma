@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_nef.h,v 1.9 2009-10-16 13:37:39 bjoo Exp $
 /*! \file
 *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
 */

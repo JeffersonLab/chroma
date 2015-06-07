@@ -1,4 +1,3 @@
-// $Id: syssolver_OPTeigcg_params.cc,v 1.4 2008-12-15 05:02:06 kostas Exp $
 /*! \file
  *  \brief Params of EigCG inverter
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: funcstd::map.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 /*! @file
  * @brief Map of function calls
  */

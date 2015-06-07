@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: asqtad_fermact_params_s.h,v 3.1 2006-11-16 19:49:33 kostas Exp $
 /*! \file
  *  \brief AsqTad fermion action parameters
  */

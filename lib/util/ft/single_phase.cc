@@ -1,4 +1,3 @@
-// $Id: single_phase.cc,v 3.1 2006-11-27 20:07:58 edwards Exp $
 /*! \file
  *  \brief Compute a single phase factor
  */

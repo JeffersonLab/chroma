@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: ovext_tuning_strategy.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
 /*! \file
  *  \brief Ovext tuning strategy
  */

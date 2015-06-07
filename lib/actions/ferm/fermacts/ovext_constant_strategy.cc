@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: ovext_constant_strategy.cc,v 3.1 2006-09-20 20:27:58 edwards Exp $
 /*! \file
  *  \brief Ovext rescale strategy
  */

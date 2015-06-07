@@ -1,4 +1,3 @@
-// $Id: sn_jacob_array.h,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 
 #ifndef __sn_jacob_array_h__
 #define __sn_jacob_array_h__

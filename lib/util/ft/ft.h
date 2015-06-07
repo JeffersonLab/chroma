@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: ft.h,v 3.1 2006-11-27 20:07:58 edwards Exp $
 /*! \file
  * \brief Fourier transform support
  *

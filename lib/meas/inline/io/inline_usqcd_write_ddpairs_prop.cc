@@ -1,4 +1,3 @@
-// $Id: inline_usqcd_write_ddpairs_prop.cc,v 1.5 2009-03-19 17:10:02 mcneile Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *

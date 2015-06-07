@@ -1,4 +1,3 @@
-// $Id: quarkprop4_w.cc,v 3.8 2009-04-17 02:05:34 bjoo Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *

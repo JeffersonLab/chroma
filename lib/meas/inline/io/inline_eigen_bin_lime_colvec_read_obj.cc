@@ -1,4 +1,3 @@
-// $Id: inline_eigen_bin_lime_colvec_read_obj.cc,v 3.3 2009-07-17 14:53:13 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *

@@ -1,4 +1,3 @@
-// $Id: multi_syssolver_cg_params.cc,v 3.1 2006-07-03 15:26:08 edwards Exp $
 /*! \file
  *  \brief Params of CG inverter
  */

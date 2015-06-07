@@ -1,4 +1,3 @@
-// $Id: source_smearing_aggregate.cc,v 3.1 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief All source smearing
  */

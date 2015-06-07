@@ -1,4 +1,3 @@
-// $Id: hisq_qprop.cc,v 1.1 2007-05-09 12:45:31 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *

@@ -1,4 +1,3 @@
-// $Id: inline_laplace_eigs.cc,v 1.15 2009-07-08 21:44:23 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  

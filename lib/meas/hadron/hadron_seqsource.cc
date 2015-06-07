@@ -1,4 +1,3 @@
-// $Id: hadron_seqsource.cc,v 3.8 2006-11-28 19:28:57 edwards Exp $
 /*! \file
  *  \brief Construct hadron sequential sources
  */

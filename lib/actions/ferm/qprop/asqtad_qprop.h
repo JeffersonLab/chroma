@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: asqtad_qprop.h,v 3.2 2006-10-19 17:36:07 edwards Exp $
 /*! \file
  *  \brief Asqtad propagator wrapper
  *

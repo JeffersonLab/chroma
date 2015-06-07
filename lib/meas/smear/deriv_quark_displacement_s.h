@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: deriv_quark_displacement_s.h,v 3.1 2006-11-17 02:55:11 edwards Exp $
 /*! \file
  *  \brief Staggered Derivative displacements
  *

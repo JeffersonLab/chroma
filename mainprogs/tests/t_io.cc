@@ -1,4 +1,3 @@
-// $Id: t_io.cc,v 3.1 2007-06-12 13:59:14 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: polylp.h,v 3.1 2006-08-24 21:04:31 edwards Exp $
 /*! \file
  *  \brief Calculate the global normalized sum of the Polyakov loop
  */

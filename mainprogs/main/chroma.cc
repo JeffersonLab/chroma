@@ -1,4 +1,3 @@
-// $Id: chroma.cc,v 3.11 2007-09-21 04:38:45 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */

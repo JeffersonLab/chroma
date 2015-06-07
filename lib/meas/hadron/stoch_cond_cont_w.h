@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: stoch_cond_cont_w.h,v 3.1 2007-08-11 22:43:21 edwards Exp $
 /*! \file
  * \brief Stoch quark condensates
  *

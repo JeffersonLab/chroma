@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: composite_set.h,v 1.2 2009-03-10 21:55:16 kostas Exp $
 /*! \file
  * \brief Key for propagator colorstd::vector sources
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_bicgstab.h,v 3.3 2009-07-08 18:46:47 bjoo Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by BICGSTAB
  */

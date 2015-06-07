@@ -1,4 +1,3 @@
-// $Id: force_monitors.cc,v 3.4 2009-06-01 16:24:54 bjoo Exp $
 /*! @file
  * @brief Helper function for calculating forces
  */

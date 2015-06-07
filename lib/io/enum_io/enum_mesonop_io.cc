@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: enum_mesonop_io.cc,v 1.1 2008-06-04 03:16:48 edwards Exp $
 /*! \file
  * \brief Type of contractions for stochastic meson operators
  */

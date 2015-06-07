@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: spatial_wilson_gaugeact.h,v 3.2 2007-03-22 19:52:04 bjoo Exp $
 /*! \file
  *  \brief Spatial Wilson gauge action
  */

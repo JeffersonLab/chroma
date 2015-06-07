@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_qdp_mg.h, v1.0 2012-04-05 20:45 sdcohen $
 /*! \file
  *  \brief Make contact with the QDP clover multigrid solver, transfer
  *         the gauge field, generate the coarse grids, solve systems

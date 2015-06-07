@@ -1,4 +1,3 @@
-// $Id: no_quark_smearing.cc,v 3.4 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief No quark smearing
  */

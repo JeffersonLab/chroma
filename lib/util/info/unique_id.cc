@@ -1,4 +1,3 @@
-// $Id: unique_id.cc,v 1.2 2007-02-25 22:37:35 edwards Exp $
 /*! \file
  *  \brief Generate a unique id
  */

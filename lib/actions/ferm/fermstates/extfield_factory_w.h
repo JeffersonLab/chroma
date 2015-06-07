@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: extfield_factory_w.h,v 1.1 2006-09-19 17:53:36 edwards Exp $
 /*! \file
  *  \brief External field factory
  */

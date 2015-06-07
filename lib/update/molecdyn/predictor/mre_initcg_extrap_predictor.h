@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: mre_initcg_extrap_predictor.h,v 1.1 2009-04-17 02:22:46 bjoo Exp $
 /*! \file
  * \brief Minimal residual predictor - which takes also information
  *        from an EIG CG e-vec basis...

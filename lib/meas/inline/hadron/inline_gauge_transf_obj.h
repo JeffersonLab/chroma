@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_gauge_transf_obj.h,v 3.1 2007-11-09 21:26:56 edwards Exp $
 /*! \file
  * \brief Inline task gauge transform some fermion object
  *

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: klein_gordon_fermact_s.h,v 3.1 2006-12-07 18:26:18 edwards Exp $
 /*! \file
  *  \brief Klein-Gordon boson action masquerading action as a staggered action
  */

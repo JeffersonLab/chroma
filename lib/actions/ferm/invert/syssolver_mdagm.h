@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm.h,v 3.3 2009-07-17 19:14:46 bjoo Exp $
 /*! \file
  *  \brief Disambiguator for MdagM system solvers
  */

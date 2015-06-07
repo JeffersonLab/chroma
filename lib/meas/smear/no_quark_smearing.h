@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: no_quark_smearing.h,v 3.3 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief No quark smearing
  */

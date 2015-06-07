@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_dwf_fermact_array_w.h,v 3.2 2009-07-17 19:14:46 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */

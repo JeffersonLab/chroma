@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: state.h,v 3.2 2006-08-26 05:40:25 edwards Exp $
 
 /*! @file
  * @brief Support class for fermion actions and linear operators

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: abs_integrator.h,v 3.7 2009-04-17 02:05:37 bjoo Exp $
 
 /*! @file
  * @brief Integrators

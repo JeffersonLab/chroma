@@ -1,4 +1,3 @@
-// $Id: qtopcor.cc,v 3.0 2006-04-03 04:58:58 edwards Exp $
 
 #error "NOT FULLY CONVERTED"
 

@@ -1,4 +1,3 @@
-// $Id: inline_qqq_w.cc,v 3.9 2007-02-25 22:39:28 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *

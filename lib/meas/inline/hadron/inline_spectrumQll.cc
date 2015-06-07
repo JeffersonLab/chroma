@@ -1,4 +1,3 @@
-// $Id: inline_spectrumQll.cc,v 1.6 2006-12-10 02:02:42 edwards Exp $
 /*! \file
  * \brief Inline construction of heavy-light baryon spectrum  
  * (infinitely heavy)

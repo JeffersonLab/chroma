@@ -1,4 +1,3 @@
-// $Id: invibicgstab.cc,v 3.2 2009-09-01 19:51:28 jbulava Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

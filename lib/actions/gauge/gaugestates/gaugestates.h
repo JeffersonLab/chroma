@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: gaugestates.h,v 1.1 2006-09-19 18:21:38 edwards Exp $
 
 /*! \file
  * \brief Gauge states

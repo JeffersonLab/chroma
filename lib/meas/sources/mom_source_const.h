@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: mom_source_const.h,v 3.4 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Fixed momentum (wall) source construction
  */

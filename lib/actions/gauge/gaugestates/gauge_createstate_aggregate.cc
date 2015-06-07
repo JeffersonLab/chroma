@@ -1,4 +1,3 @@
-// $Id: gauge_createstate_aggregate.cc,v 1.3 2006-09-21 19:42:07 edwards Exp $
 /*! \file
  *  \brief All gauge create-state method
  */

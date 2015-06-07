@@ -1,4 +1,3 @@
-// $Id: ape_link_smearing.cc,v 3.3 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief APE link smearing
  */

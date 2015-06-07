@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: block_couplings.h,v 1.5 2009-02-23 19:50:15 edwards Exp $
 /*! \file
  *  \brief Caclulates the couplings between neighboring blocks given a displacement path
  */

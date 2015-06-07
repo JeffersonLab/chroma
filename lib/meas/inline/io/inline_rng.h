@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_rng.h,v 3.1 2008-09-14 02:26:11 edwards Exp $
 /*! \file
  * \brief Inline task to read and write RNG seed
  */

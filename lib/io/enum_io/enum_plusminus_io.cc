@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: enum_plusminus_io.cc,v 1.1 2006-05-23 18:11:34 edwards Exp $
 /*! \file
  * \brief Inverter type enum
  */

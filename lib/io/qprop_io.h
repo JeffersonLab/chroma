@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 3.11 2007-11-27 23:01:26 kostas Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */

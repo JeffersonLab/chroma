@@ -1,4 +1,3 @@
-// $Id: barQll_w.cc,v 1.13 2009-04-09 22:57:38 caubin Exp $ 
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */

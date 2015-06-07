@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_stoch_group_baryon_w.h,v 1.9 2008-08-18 18:23:56 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  */

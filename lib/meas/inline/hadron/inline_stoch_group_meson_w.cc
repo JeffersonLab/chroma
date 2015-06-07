@@ -1,4 +1,3 @@
-// $Id: inline_stoch_group_meson_w.cc,v 1.11 2008-06-20 15:17:37 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group meson operator
  *

@@ -1,4 +1,3 @@
-// $Id: su2extract.cc,v 3.2 2007-08-29 13:31:47 edwards Exp $
 /*! \file
  *  \brief  Extract an unnormalized SU(2) matrix from a GL(3,C) matrix
  */

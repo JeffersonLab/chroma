@@ -1,4 +1,3 @@
-// $Id: purgaug.cc,v 3.10 2008-01-20 17:46:43 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */

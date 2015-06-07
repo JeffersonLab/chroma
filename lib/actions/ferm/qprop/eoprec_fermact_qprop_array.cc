@@ -1,4 +1,3 @@
-// $Id: eoprec_fermact_qprop_array.cc,v 3.1 2006-10-19 16:01:33 edwards Exp $
 // $Log: eoprec_fermact_qprop_array.cc,v $
 // Revision 3.1  2006-10-19 16:01:33  edwards
 // Split apart the fermact.h file into lots of separate bits to make it

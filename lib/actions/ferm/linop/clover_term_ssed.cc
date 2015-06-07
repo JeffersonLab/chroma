@@ -1,4 +1,3 @@
-// $Id: clover_term_ssed.cc,v 1.5 2009-02-06 15:53:33 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *

@@ -1,4 +1,3 @@
-// $Id: unprec_two_flavor_monomial_w.cc,v 3.4 2007-12-18 21:06:47 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */

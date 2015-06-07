@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: mdwf_solver.h,v 1.4 2008-05-06 13:25:28 bjoo Exp $
 /*! \file
  *  \brief DWF/SSE double-prec solver
  */

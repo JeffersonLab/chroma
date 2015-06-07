@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_OPTeigcg_params.h,v 1.4 2008-12-15 05:02:06 kostas Exp $
 /*! \file
  *  \brief Solve a CG1 system
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: hadron_contract.h,v 3.3 2007-06-12 16:09:37 edwards Exp $
 /*! \file
  *  \brief Construct hadron correlators
  */

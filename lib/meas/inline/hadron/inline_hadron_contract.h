@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_hadron_contract.h,v 3.3 2007-06-11 03:27:06 edwards Exp $
 /*! \file
  * \brief Inline hadron contractions - for correlators
  *

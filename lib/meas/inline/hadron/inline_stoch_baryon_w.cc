@@ -1,4 +1,3 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.14 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *

@@ -1,5 +1,4 @@
 
-// $Id: inline_disco_eo_eigcg_w.cc,v 3.3 2009-07-31 14:09:31 bjoo Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *

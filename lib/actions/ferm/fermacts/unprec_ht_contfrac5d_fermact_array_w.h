@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 3.3 2006-10-19 16:01:29 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */

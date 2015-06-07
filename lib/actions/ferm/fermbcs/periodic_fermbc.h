@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: periodic_fermbc.h,v 3.1 2007-02-22 21:11:45 bjoo Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */

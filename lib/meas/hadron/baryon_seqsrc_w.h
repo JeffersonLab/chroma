@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: baryon_seqsrc_w.h,v 3.1 2006-11-27 04:33:35 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */

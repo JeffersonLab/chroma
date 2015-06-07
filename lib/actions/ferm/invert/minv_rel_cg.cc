@@ -1,4 +1,3 @@
-// $Id: minv_rel_cg.cc,v 3.1 2007-02-22 21:11:46 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator

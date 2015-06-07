@@ -1,4 +1,3 @@
-// $Id: overlap_fermact_base_w.cc,v 3.4 2007-02-22 21:11:45 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */

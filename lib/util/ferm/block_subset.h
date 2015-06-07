@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: block_subset.h,v 1.3 2009-02-01 05:34:54 kostas Exp $
 /*! \file
  * \brief Key for propagator colorstd::vector sources
  */

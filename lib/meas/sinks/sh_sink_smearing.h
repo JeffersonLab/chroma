@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: sh_sink_smearing.h,v 3.6 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */

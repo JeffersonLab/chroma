@@ -1,4 +1,3 @@
-// $Id: sunfill.cc,v 3.4 2008-06-24 20:57:24 edwards Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */

@@ -1,4 +1,3 @@
-// $Id: make_xml_file.cc,v 3.1 2007-04-09 18:41:57 bjoo Exp $
 /*! \file
  *  \brief Make xml file writer
  */

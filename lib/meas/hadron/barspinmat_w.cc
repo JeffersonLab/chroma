@@ -1,4 +1,3 @@
-// $Id: barspinmat_w.cc,v 3.4 2008-05-20 18:23:15 kostas Exp $
 /*! \file
  *  \brief Baryon spin and projector matrices
  */
