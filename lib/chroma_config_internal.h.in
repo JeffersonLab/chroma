@@ -39,9 +39,6 @@
 /* Use Peter Boyles BAGEL Wilson Dslash library */
 #undef BUILD_PAB_WILSON_DSLASH
 
-/* Build with the PRIMME (eigensolver) library */
-#undef BUILD_PRIMME
-
 /* Build with the QDP MG Library */
 #undef BUILD_QOP_MG
 

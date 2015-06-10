@@ -56,7 +56,6 @@ namespace Chroma
 	success &= MdagMSysSolverCGLFCloverEnv::registerAll();//
 #ifdef BUILD_QOP_MG
 	success &= MdagMSysSolverQOPMGEnv::registerAll();
-	//Kostas' MdagM MultiGrid operator plugged into chroma-PRIMME.
 #endif
 #ifdef BUILD_QUDA
 	success &= MdagMSysSolverQUDACloverEnv::registerAll();

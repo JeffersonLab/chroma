@@ -996,10 +996,6 @@ if BUILD_MDWF
 AM_CXXFLAGS += @MDWF_CXXFLAGS@
 endif
 
-if BUILD_PRIMME
-AM_CXXFLAGS += @PRIMME_CXXFLAGS@
-endif
-
 if USE_LLVM_WD
 AM_CXXFLAGS += @LLVM_WD_CXXFLAGS@
 endif
@@ -1850,14 +1846,6 @@ nobase_include_HEADERS += actions/ferm/qprop/mdwf_solver.h \
 libchroma_a_SOURCES += actions/ferm/qprop/mdwf_solver.cc \
 	actions/ferm/invert/mdwf_solver/syssolver_mdwf_params.cc \
 	actions/ferm/invert/mdwf_solver/syssolver_linop_mdwf_array.cc
-endif
-
-if BUILD_PRIMME
-nobase_include_HEADERS += \
-	meas/inline/hadron/inline_PRIMME_w.h
-
-libchroma_a_SOURCES += \
-	meas/inline/hadron/inline_PRIMME_w.cc
 endif
 
 
