@@ -1,4 +1,5 @@
 // -*- C++ -*-
+// $Id: syssolver_linop_qdp_mg.h, v1.0 2012-04-05 20:45 sdcohen $
 /*! \file
  *  \brief Make contact with the QDP clover multigrid solver, transfer
  *         the gauge field, generate the coarse grids, solve systems
@@ -11,7 +12,10 @@
 #include "syssolver.h"
 #include "linearop.h"
 #include "actions/ferm/invert/syssolver_linop.h"
+#include "actions/ferm/invert/syssolver_mdagm.h"
 #include "actions/ferm/invert/qop_mg/syssolver_qop_mg_params.h"
+
+#include "actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h"
 
 
 namespace Chroma
@@ -28,10 +32,11 @@ namespace Chroma
   //! Solve a M*psi=chi linear system using the external QDP multigrid inverter
   /*! \ingroup invert
    */
-  template<typename T> // T is the Lattice Fermion type
-  class MdagMSysSolverQOPMG : public MdagMSystemSolver<T>
+  
+  class MdagMSysSolverQOPMG : public MdagMSystemSolver<LatticeFermion>
   {
   public:
+    typedef LatticeFermion T;
     typedef LatticeColorMatrix U;
     typedef multi1d<LatticeColorMatrix> Q;
  
@@ -58,6 +63,9 @@ namespace Chroma
      * \return syssolver results
      */
     SystemSolverResults_t operator() (T& psi, const T& chi) const;
+    SystemSolverResults_t operator()(T& psi, 
+					     const T& chi,
+					     AbsChronologicalPredictor4D<T>& predictor) const;
 
 
   private:
@@ -66,9 +74,14 @@ namespace Chroma
     Handle< FermState<T,Q,Q> > state;
     Handle< LinearOperator<T> > A;
     SysSolverQOPMGParams invParam;
+    
+    //LinOpSysSolverQOPMG<T> Dinv ;
+    Handle< LinOpSysSolverQOPMG> Dinv;  // NB: Balint removed <T> template from LinOpSolver as it was causing hassle
+    //Handle< LinOpSystemSolver<T> > Dinv;
   };
 
 } // End namespace
 
 #endif 
+
 

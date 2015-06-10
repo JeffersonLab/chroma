@@ -9,7 +9,14 @@
 #include <cstdio>
 #include <ostream>
 
-using namespace std;
+
+#include "actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h"
+#include "actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.h"
+//Added support for MG predictor.
+#include "update/molecdyn/predictor/null_predictor.h"
+#include "actions/ferm/linop/lunprec_w.h"
+
+#include "meas/glue/mesplq.h"
 
 #if BASE_PRECISION == 32
 #define QDP_Precision 'F'
@@ -21,19 +28,32 @@ using namespace std;
 #define toReal toDouble
 #endif
 
-#include "actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h"
-#include "actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.h"
-
-
 extern "C" {
   // This should be placed on the include path.
 #include "wilsonmg-interface.h"
+
 }
 
-#include "meas/glue/mesplq.h"
 
 namespace Chroma
 {
+
+  namespace MGMdagMInternal { 
+    
+    /*! This will remap the MdagM params for the linop. For example,
+     * we will turn off the TerminateOnFail feature, so that this outer solver
+     * can control termination
+     */
+    SysSolverQOPMGParams remapParams(const SysSolverQOPMGParams& invParam_)
+    {
+      SysSolverQOPMGParams ret_val = invParam_;
+      ret_val.TerminateOnFail = false; // Turn off terminate on fail as we 
+				       // will retry from MdagM
+
+      ret_val.MaxIter = invParam_.MaxIter/2; // MdagM is 2 solves, so I want a maxIter that is for 1 solve, which hopefully should be about 1/2 of MdagM
+      return ret_val;
+    }
+  };
 
 
   // This will come from syssolver_linop_qop_mg_w.h
@@ -41,197 +61,256 @@ namespace Chroma
   // These functions will allow QDP to look into the Chroma gauge field and set
   // the QDP gauge field at each site equal to the one in Chroma. There doesn't
   // seem to be a good way to treat the extra std::vector index of the gauge field,
-
-  template<typename T> // T is the Lattice Fermion type
-  MdagMSysSolverQOPMG<T>::
-    MdagMSysSolverQOPMG(Handle< LinearOperator<T> > A_,
-			Handle< FermState<T,Q,Q> > state_, 
-                        const SysSolverQOPMGParams& invParam_) : 
-  A(A_), state(state_), invParam(invParam_)
-  {
-    if (invParam.Levels>0 && PC(g_param).levels>0) MGP(finalize)();
-  // Copy the parameters read from XML into the QDP global structure
-    for (int d=0; d<4; d++) PC(g_param).bc[d]  = 1;
-    PC(g_param).aniso_xi = toReal(invParam.AnisoXi);
-    PC(g_param).aniso_nu = toReal(invParam.AnisoNu);
-    PC(g_param).kappa    = toReal(invParam.Kappa);
-    PC(g_param).kappac   = toReal(invParam.KappaCrit);
-    PC(g_param).mass     = toReal(invParam.Mass);
-    PC(g_param).massc    = toReal(invParam.MassCrit);
-    PC(g_param).clov_s   = toReal(invParam.Clover);
-    PC(g_param).clov_t   = toReal(invParam.CloverT);
-    PC(g_param).res      = toReal(invParam.Residual);
-    PC(g_param).ngcr     = invParam.NumGCRVecs;
-    PC(g_param).maxiter  = invParam.MaxIter;
-    PC(g_param).verb     = invParam.Verbose;
-    PC(g_param).levels   = invParam.Levels;
-
-    for (int n=0; n<invParam.Levels; n++) {
-      for (int d=0; d<4; d++)
-        PC(g_param).block[n][d] = invParam.Blocking[n][d];
-      PC(g_param).nNullVecs[n]   = invParam.NumNullVecs[n];
-      PC(g_param).nullMaxIter[n] = invParam.NullMaxIter[n];
-      PC(g_param).nullRes[n]  = toReal(invParam.NullResidual[n]);
-      PC(g_param).nullConv[n] = toReal(invParam.NullConvergence[n]);
-      PC(g_param).nExtraVecs[n]  = invParam.NumExtraVecs[n];
-      PC(g_param).urelax[n]   = toReal(invParam.Underrelax[n]);
-      PC(g_param).npre[n]        = invParam.NumPreHits[n];
-      PC(g_param).npost[n]       = invParam.NumPostHits[n];
-      PC(g_param).cngcr[n]       = invParam.CoarseNumGCRVecs[n];
-      PC(g_param).cmaxiter[n]    = invParam.CoarseMaxIter[n];
-      PC(g_param).cres[n]     = toReal(invParam.CoarseResidual[n]);
-    }
-
-// The std::vector of functions will be used by QDP to assign the gauge links
-// at each site of the QDP lattice
-    if (invParam.Levels>0) {
-      /* We're going to pull the gauge field out of Chroma's aether */
-#if 0
-      u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(invParam.GaugeID);
-#else
-      u = state_->getLinks();
-#endif
-      // Compute the plaquette for comparison with MG code
-      {
-      	Double w_plaq, s_plaq, t_plaq, link;
-
-      	MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-      	QDPIO::cout << "Plaquette from State: " << std::endl;
-      	QDPIO::cout << "  w_plaq = " << w_plaq << std::endl;
-      	QDPIO::cout << "  s_plaq = " << s_plaq << std::endl;
-      	QDPIO::cout << "  t_plaq = " << t_plaq << std::endl;
-      	QDPIO::cout << "  link trace =  " << link << std::endl;
-      }
-
-      int machsize[4], latsize[4];
-      for (int d=0;d<4;d++) machsize[d] = Layout::logicalSize()[d];
-      for (int d=0;d<4;d++) latsize[d]  = Layout::lattSize()[d];
-      void (*peekpoke[4])(QLA(ColorMatrix) *dest, int coords[]) =
-        {peekpoke0,peekpoke1,peekpoke2,peekpoke3};
-      MGP(initialize)(machsize, latsize, peekpoke);
-      //MGP(teststuff)();
-    }
-  }
-      
-  template<typename T> // T is the Lattice Fermion type
-  MdagMSysSolverQOPMG<T>::
-    ~MdagMSysSolverQOPMG()
-  {
-    if (invParam.Levels<0) MGP(finalize)();
+  
+  MdagMSysSolverQOPMG::MdagMSysSolverQOPMG(Handle< LinearOperator<LatticeFermion> > A_,
+			Handle< FermState<LatticeFermion,multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix > > > state_, 
+					   const SysSolverQOPMGParams& invParam_) : 
+    A(A_), 
+    state(state_), 
+    invParam(invParam_),
+    Dinv(new LinOpSysSolverQOPMG(A_,state_,MGMdagMInternal::remapParams(invParam_)))
+  {            
+    QDPIO::cout<<"MdagM multigrid initialized"<<std::endl;
   }
   
-  void *fermionsrc, *fermionsol;
-  template<typename T>
-  void peekpokesrc(QLA(DiracFermion) *dest, int coords[])
+  MdagMSysSolverQOPMG::~MdagMSysSolverQOPMG()
   {
-    multi1d<int> x(4); for (int i=0; i<4; i++) x[i] = coords[i];
-    Fermion src; src.elem() = ((T*)fermionsrc)->elem(Layout::linearSiteIndex(x));
-    /*START_CODE();
-    double bsq = norm2(*(T*)fermionsrc).elem().elem().elem().elem();
-    printf("Chroma:   in norm2 = %g\n",bsq);
-    END_CODE();*/
-    //printf("Chroma: x = %i %i %i %i:\n",x[0],x[1],x[2],x[3]);
-    QLA(Complex) z;
-    QLA(Real) real, imag;
-    for (int s=0; s<4; s++)
-      for (int c=0; c<3; c++) {
-        real = src.elem().elem(s).elem(c).real();
-        imag = src.elem().elem(s).elem(c).imag();
-        //printf("Chroma:   s=%i,c=%i == %g + I %g\n",s,c,real,imag);
-        QLA(C_eq_R_plus_i_R)(&z, &real, &imag);
-        QLA(elem_D)(*dest,c,s) = z;
-      }
+    //if (invParam.Levels<0) MGP(finalize)();
   }
-  template<typename T>
-  void peekpokesol(QLA(DiracFermion) *src, int coords[])
-  {
-    multi1d<int> x(4); for (int i=0; i<4; i++) x[i] = coords[i];
-    ColorVector ctmp;
-    Fermion ftmp;
-    /*START_CODE();
-    double bsq = norm2(*(T*)fermionsrc).elem().elem().elem().elem();
-    printf("Chroma:   in norm2 = %g\n",bsq);
-    END_CODE();*/
-    //printf("Chroma: x = %i %i %i %i:\n",x[0],x[1],x[2],x[3]);
-    QLA(Complex) z;
-    QLA(Real) real, imag;
-    for (int s=0; s<4; s++) {
-      for (int c=0; c<3; c++) {
-        z = QLA_elem_D(*src,c,s);
-        QLA(R_eq_re_C)(&real, &z);
-        QLA(R_eq_im_C)(&imag, &z);
-        Complex ztmp = cmplx(Real(real), Real(imag));
-        pokeColor(ctmp, ztmp, c);
-      }
-      pokeSpin(ftmp, ctmp, s);
-    }
-    pokeSite(*((T*)fermionsol), ftmp, x);
-  }
-
+  
+  
   //! Solve the linear system
   /*!
    * \param psi      solution ( Modify )
    * \param chi      source ( Read )
    * \return syssolver results
    */
-  template<typename T> // T is the Lattice Fermion type
   SystemSolverResults_t
-    MdagMSysSolverQOPMG<T>::operator() (T& psi, const T& chi) const
+  MdagMSysSolverQOPMG::operator() (LatticeFermion& psi, const LatticeFermion& chi,  AbsChronologicalPredictor4D<LatticeFermion>& predictor) const
   {
     START_CODE();
-    
+    typedef LatticeFermion T;
+    typedef multi1d<LatticeColorMatrix> P;
+    typedef multi1d<LatticeColorMatrix> Q;
     SystemSolverResults_t res;
-    
-    StopWatch swatch;
-    swatch.reset();
-    swatch.start();
 
-    // we will solve for g5 D g5 D psi = chi
-    // so psi = D^(-1)g5 D^(-1) g5 chi
+    try {
+      AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor = 
+	dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>& >(predictor);
 
-    T g5chi = Gamma(Nd*Nd-1)*chi ; //
-    T tmpsol  ;
+      // This is the unpreconditioned operator
+      // Whenever we call its op() it will underneath call unprecLinOp()
+      Lunprec<T,P,Q> A_unprec(A);
+  
+      SystemSolverResults_t individual_res;
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+      
+      // we will solve for g5 D g5 D psi = chi
+      // so psi = D^(-1)g5 D^(-1) g5 chi
+      
+      // Set up the source: g5 chi
+      T g5chi = zero;
+      g5chi[A->subset()] = Gamma(Nd*Nd-1)*chi ; 
+      Double g5chi_norm = sqrt(norm2(g5chi, A->subset()));
+      
+      T tmpsol_tmp;  // This will hold our temporary solution
+      T tmpferm=zero;
 
-    // Set global pointers to our source and solution fermion fields
-    fermionsrc = (void*)&g5chi;
-    fermionsol = (void*)&tmpsol;
-    double bsq = norm2(chi,all).elem().elem().elem().elem();
-    QDPIO::cout << "Chroma:   chi all norm2 = " << bsq << std::endl;
-    res.n_count = MGP(solve)(peekpokesrc<T>, peekpokesol<T>);
+      // OK: predictY will predict the solution of M^\dagger Y = b
+      // which is the same as Y = g_5 (M^{-1}) g_5 b
+      // but actually we will really only want Y = (M^{-1}) g_5 b
+      // so after prediction, we have to hit the prediction result
+      // with gamma_5. TO AVOID ALLOCATING AN EXTRA FERMION
+      // I am using tmpsol_tmp as the source. I am not using chi itself
+      // in case for any reason it is dirty outside the target subset.
+      tmpsol_tmp = zero;
+      tmpsol_tmp[ A->subset() ] = chi;
 
-    tmpsol =  Gamma(Nd*Nd-1)*tmpsol ;
-    // Set global pointers to our source and solution fermion fields
-    fermionsrc = (void*)&tmpsol;
-    fermionsol = (void*)&psi;
-    res.n_count += MGP(solve)(peekpokesrc<T>, peekpokesol<T>);
+      // predict with M^\dagger into tmpferm
+      two_step_predictor.predictY(tmpferm, A_unprec, tmpsol_tmp);
 
-    bsq = norm2(psi,all).elem().elem().elem().elem();
-    QDPIO::cout << "Chroma:   psi all norm2 = " << bsq << std::endl;
+      // hit tmpferm with g_5 to get the initial guess
+      tmpsol_tmp = Gamma(Nd*Nd -1 )*tmpferm;
+      Double init_norm = norm2(tmpsol_tmp, all);
+      QDPIO::cout << "Initial guess norm_sq = " << init_norm << " norm = " << sqrt(init_norm) << std::endl;
  
-    swatch.stop();
-    double time = swatch.getTimeInSeconds();
-    { 
-      T r;
-      r[A->subset()] = chi;
-      T tmp;
-      T tmp2 ;
-      (*A)(tmp2, psi , PLUS );
-      (*A)(tmp , tmp2, MINUS);
+      // Now do the solve
+      individual_res = (*Dinv)(tmpsol_tmp,g5chi);
 
-      r[A->subset()] -= tmp;
-      res.resid = sqrt(norm2(r, A->subset()));
+
+      T tmpsol = zero;
+      tmpsol[ A->subset() ] = tmpsol_tmp; // Do this in case tmpsol_tmp is dirtied up outside its target
+      res.n_count = individual_res.n_count;
+    
+      Double rel_resid = individual_res.resid / g5chi_norm;
+    
+      // If we've reached iteration-threshold, then destroy the subspace. The next solve will
+      // refresh it.
+      if ( individual_res.n_count >= invParam.RefreshThreshold ) {
+	
+	QDPIO::cout << "QOPMG_MDAGM_SOLVER: RefreshThreshold Iterations (" << invParam.RefreshThreshold <<")" 
+		    << " reached in first LinopSolver call."
+		    << " Erasing subspace: " << invParam.SubspaceId << std::endl;
+	
+	// Erase the subspace from Dinv and if saved from the 
+	// NamedObjectMap
+	(*Dinv).eraseSubspace();
+	
+	// Re solve if needed
+	if ( toBool( rel_resid > invParam.Residual ) ) {
+	  QDPIO::cout << "QOPMG_MDAGM_SOLVER: First solve failed with RelResid = " << rel_resid 
+		      << " Re-trying with refreshed subspace " << std::endl;
+	  
+	  // tmpsol_tmp may already be a good guess... 
+	  individual_res = (*Dinv)(tmpsol_tmp,g5chi);
+	  tmpsol=zero;
+	  tmpsol[ A->subset() ] = tmpsol_tmp; // Do this in case tmpsol_tmp is dirtied up outside of its target subset
+	  res.n_count += individual_res.n_count;
+	  
+	  rel_resid = individual_res.resid / g5chi_norm;
+	  if ( toBool( rel_resid > invParam.Residual) ) {
+	    QDPIO::cout << "QOP_MG_MDAGM_SOLVER: Re-solving of first solve with refreshed space failed with RelResid = " << rel_resid 
+			<<" Giving Up! " << std::endl;
+	    QDP_abort(1);
+	  }
+	}
+      }
+      
+    
+      // At this point either 
+      // -- the first solve worked.
+      // -- OR the first solve didn't converge, got refreshed, resolved and worked
+      // -- In either case, tmpsol, should be good and tmpsol_tmp holds the 
+      // full solution on both subsets. Add it to the predictor.
+      two_step_predictor.newYVector(tmpsol_tmp);
+
+      
+      T tmpsol2 = zero ;
+      tmpsol2[A->subset()] =  Gamma(Nd*Nd-1)*tmpsol ;
+      Double tmpsol2_norm = sqrt(norm2(tmpsol2,A->subset()));
+
+      // This is less elaborate. predict X will call with A_unprec
+      // no gamma_5 tricks needed
+      tmpsol_tmp = zero;
+      two_step_predictor.predictX(tmpsol_tmp, A_unprec, tmpsol2);
+
+      init_norm = norm2(tmpsol_tmp, all);
+      QDPIO::cout << "Initial guess norm_sq = " << init_norm << " norm = " << sqrt(init_norm) << std::endl;
+
+      individual_res = (*Dinv)(tmpsol_tmp,tmpsol2);
+
+      psi = zero;
+      psi[ A->subset() ] = tmpsol_tmp; // Do this in case tmpsol tmp is dirty outside subset
+
+      res.n_count += individual_res.n_count;
+      rel_resid = individual_res.resid / tmpsol2_norm;
+      
+    // If we've reached max iter, then destroy the subspace. The next solve will
+      if ( individual_res.n_count >= invParam.RefreshThreshold ) { 
+	
+	QDPIO::cout << "QOPMG_MDAGM_SOLVER: RefreshThreshold Iterations (" << invParam.RefreshThreshold <<")" 
+		    << " reached in second LinopSolver call."
+		    << " Erasing subspace: " << invParam.SubspaceId << std::endl;
+	
+	// Erase the subspace from Dinv and if saved from the 
+	// NamedObjectMap
+	(*Dinv).eraseSubspace();
+	
+	
+	// Re solve if needed
+	if ( toBool( rel_resid > invParam.Residual ) ) {
+	  
+	  QDPIO::cout << "QOPMG_MDAGM_SOLVER: Second solve failed with RelResid = " << rel_resid 
+		      << " Re-trying with refreshed subspace " << std::endl;
+	  
+	  // tmpsol_tmp may already be a good initial guess
+	  individual_res = (*Dinv)(tmpsol_tmp,tmpsol2); // This will internally refresh the subspace
+	  psi=zero;
+	  psi[ A->subset() ] = tmpsol_tmp; // Do this in case tmpsol_tmp is dirty outside subset
+	  res.n_count += individual_res.n_count;
+	  
+	  rel_resid = individual_res.resid / tmpsol2_norm;
+	  if ( toBool( rel_resid > invParam.Residual ) ) {
+	    QDPIO::cout << "QOP_MG_MDAGM_SOLVER: Re-solving of second solve with refreshed space failed with RelResid = " << rel_resid 
+			<<" Giving Up! " << std::endl;
+	    
+	    QDP_abort(1);
+	  }
+	}
+      }
+
+
+      
+      // At this point either the second solve will have succeeded and was good
+      // OR the second solve will have failed, got subspace refreshed, and resolved if needed.
+
+      // So add tmpsol_tmp to the chrono
+      two_step_predictor.newXVector(tmpsol_tmp);
+      swatch.stop();
+      
+      double time = swatch.getTimeInSeconds();
+      { 
+	T r;
+	r[A->subset()] = chi;
+	T tmp;
+	T tmp2 ;
+	(*A)(tmp2, psi , PLUS );
+	(*A)(tmp , tmp2, MINUS);
+	
+	r[A->subset()] -= tmp;
+	res.resid = sqrt(norm2(r, A->subset()));
+	rel_resid = res.resid / sqrt(norm2(chi, A->subset()));
+      }
+      
+      QDPIO::cout << "QOPMG_MDAGM_SOLVER: "  
+		  << " Mass: " << invParam.Mass 
+		  << " iterations: " <<  res.n_count
+		  << " time: " << time << " sec."
+		  << " Rsd: " << res.resid
+		  << " Relative Rsd: " << rel_resid
+		  << std::endl;
+      
+      if ( toBool( rel_resid > invParam.RsdToleranceFactor*invParam.Residual ) ) { 
+	if( invParam.TerminateOnFail ) { 
+	  QDPIO::cout << "***** !!! ERROR !!! NONCONVERGENCE !!! Mass="<<invParam.Mass <<" Aborting !!! *******" << std::endl;
+	  QDP_abort(1);
+	}
+	else { 
+	  QDPIO::cout << "***** !!! WARNING!!! NONCONVERGENCE !!! Mass="<<invParam.Mass <<" !!! *******" << std::endl;
+	}
+      }
     }
-
-    QDPIO::cout << "QOPMG_SOLVER: " << res.n_count << " iterations."
-                << " Rsd = " << res.resid
-                << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset()))
-                << std::endl;
-    QDPIO::cout << "QOPMG_SOLVER_TIME: " << time << " secs" << std::endl;
-
+    catch(std::bad_cast& bc) { 
+      QDPIO::cout << "Couldnt cast predictor to two step predictor" << std::endl;
+      QDP_abort(1);
+    }
+    
     END_CODE();
     return res;
   }
-
+  
+  //! Solve the linear system
+  /*!
+   * \param psi      solution ( Modify )
+   * \param chi      source ( Read )
+   * \param isign    solve with dagger or not
+   * \return syssolver results
+   */
+  // T is the Lattice Fermion type
+  SystemSolverResults_t
+  MdagMSysSolverQOPMG::operator() (LatticeFermion& psi, const LatticeFermion& chi) const
+  {
+    /* Ignoring the predictor for now, since I am solving the UNPREC system anyway as a gateway to solve the PREC system. The prec
+       solutions provided by the predictory are good for the PREC system, but may not be good enoug (missing half of) the solution
+       of the the UNPREC system */
+    Null4DChronoPredictor not_predicting;
+    SystemSolverResults_t res  = (*this)(psi,chi, not_predicting);
+    return res;
+  }//! Solve the linear system
+  
+  
 
   //! QDP multigrid system solver namespace
   namespace MdagMSysSolverQOPMGEnv
@@ -241,25 +320,33 @@ namespace Chroma
     {
       //! Name to be used
       const std::string name("QOP_CLOVER_MULTIGRID_INVERTER");
-
+      
       //! Local registration flag
       bool registered = false;
     }
-
-
+    
+    
     //! Callback function for standard precision
     MdagMSystemSolver<LatticeFermion>*
-      createFerm( XMLReader& xml_in,
-                  const std::string& path,
-                  Handle< FermState< LatticeFermion, 
-                                     multi1d<LatticeColorMatrix>,
-                                     multi1d<LatticeColorMatrix> > > state, 
-                  Handle< LinearOperator<LatticeFermion> >           A)
+    createFerm( XMLReader& xml_in,
+		const std::string& path,
+		Handle< FermState< LatticeFermion, 
+		multi1d<LatticeColorMatrix>,
+		multi1d<LatticeColorMatrix> > > state, 
+		Handle< LinearOperator<LatticeFermion> >           A)
     {
-      return new MdagMSysSolverQOPMG<LatticeFermion>
-	(A, state, SysSolverQOPMGParams(xml_in, path));
+      return new MdagMSysSolverQOPMG(A, state, SysSolverQOPMGParams(xml_in, path));
     }
+    
+    /*MdagMSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
+						  const std::string& path,
+						  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
 
+						  Handle< LinearOperator<LatticeFermion> > A)
+    {
+      return new MdagMSysSolverQOPMG<LatticeFermion>(A, state, SysSolverQOPMGParams(xml_in, path));
+    }*/
+    
     /*//! Callback function for single precision
     MdagMSystemSolver<LatticeFermionF>*
       createFermF( XMLReader&                                          xml_in,
@@ -276,9 +363,9 @@ namespace Chroma
     //! Register all the factories
     bool registerAll() 
     {
-      bool success = true; 
+      bool success = true;
       if (! registered)
-      {
+      {  
         success &= Chroma::TheMdagMFermSystemSolverFactory::Instance().registerObject(name, createFerm);
         //success &= Chroma::TheMdagMFFermSystemSolverFactory::Instance().registerObject(name, createFermF);
         registered = true;

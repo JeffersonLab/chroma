@@ -26,6 +26,7 @@ using namespace std;
 extern "C" {
   // This should be placed on the include path.
 #include "wilsonmg-interface.h"
+extern struct MGP(Clover_Params) PC(g_param);
 }
 
 #include "meas/glue/mesplq.h"
@@ -66,14 +67,12 @@ namespace Chroma
 #undef pepo
 #undef index
 
-  template<typename T> // T is the Lattice Fermion type
-  LinOpSysSolverQOPMG<T>::
+  LinOpSysSolverQOPMG::
     LinOpSysSolverQOPMG(Handle< LinearOperator<T> > A_,
 			Handle< FermState<T,Q,Q> > state_, 
                         const SysSolverQOPMGParams& invParam_) : 
-  A(A_), state(state_), invParam(invParam_)
+  A(A_), state(state_), invParam(invParam_), subspace(0x0)
   {
-    if (invParam.Levels>0 && PC(g_param).levels>0) MGP(finalize)();
   // Copy the parameters read from XML into the QDP global structure
     for (int d=0; d<4; d++) PC(g_param).bc[d]  = 1;
     PC(g_param).aniso_xi = toReal(invParam.AnisoXi);
@@ -118,7 +117,7 @@ namespace Chroma
       // Compute the plaquette for comparison with MG code
       {
       	Double w_plaq, s_plaq, t_plaq, link;
-
+	
       	MesPlq(u, w_plaq, s_plaq, t_plaq, link);
       	QDPIO::cout << "Plaquette from State: " << std::endl;
       	QDPIO::cout << "  w_plaq = " << w_plaq << std::endl;
@@ -126,25 +125,67 @@ namespace Chroma
       	QDPIO::cout << "  t_plaq = " << t_plaq << std::endl;
       	QDPIO::cout << "  link trace =  " << link << std::endl;
       }
-
+      
       int machsize[4], latsize[4];
       for (int d=0;d<4;d++) machsize[d] = Layout::logicalSize()[d];
       for (int d=0;d<4;d++) latsize[d]  = Layout::lattSize()[d];
       void (*peekpoke[4])(QLA(ColorMatrix) *dest, int coords[]) =
         {peekpoke0,peekpoke1,peekpoke2,peekpoke3};
       MGP(initialize)(machsize, latsize, peekpoke);
-      //MGP(teststuff)();
+	
+	//MGP(teststuff)();
     }
-  }
-      
-  template<typename T> // T is the Lattice Fermion type
-  LinOpSysSolverQOPMG<T>::
+  }      
+
+  LinOpSysSolverQOPMG::
     ~LinOpSysSolverQOPMG()
   {
-    if (invParam.Levels<0) MGP(finalize)();
+    // If we don't use an Externa subspace we should free it here.
+    if ( !invParam.ExternalSubspace ) { 
+      if ( subspace != 0x0 ) MGP(destroy_subspace)(subspace);
+    }
+    MGP(finalize)();
   }
+
   
   void *fermionsrc, *fermionsol;
+ 
+  template<typename T>
+  void importFermion(QLA(DiracFermion) *dest, T* vec_src, int coords[])
+  {
+    multi1d<int> x(4); for (int i=0; i<4; i++) x[i] = coords[i];
+    Fermion src; src.elem() = ((T*)vec_src)->elem(Layout::linearSiteIndex(x));
+
+    /*START_CODE();
+    double bsq = norm2(*(T*)fermionsrc).elem().elem().elem().elem();
+    printf("Chroma:   in norm2 = %g\n",bsq);
+    END_CODE();*/
+    //printf("Chroma: x = %i %i %i %i:\n",x[0],x[1],x[2],x[3]);
+    QLA(Complex) z;
+    QLA(Real) real, imag;
+    for (int s=0; s<4; s++)
+      for (int c=0; c<3; c++) {
+        real = src.elem().elem(s).elem(c).real();
+        imag = src.elem().elem(s).elem(c).imag();
+        //printf("Chroma:   s=%i,c=%i == %g + I %g\n",s,c,real,imag);
+        QLA(C_eq_R_plus_i_R)(&z, &real, &imag);
+        QLA(elem_D)(*dest,c,s) = z;
+      }
+  }
+
+  template<typename T>
+  void peekpokesrc(QLA(DiracFermion) *dest, int coords[])
+  {
+    importFermion(dest, (T *)fermionsrc, coords);
+  }
+
+  template<typename T>
+  void peekpokeguess(QLA(DiracFermion) *dest, int coords[])
+  {
+    importFermion(dest, (T *)fermionsol, coords);
+  }
+
+#if 0
   template<typename T>
   void peekpokesrc(QLA(DiracFermion) *dest, int coords[])
   {
@@ -166,6 +207,8 @@ namespace Chroma
         QLA(elem_D)(*dest,c,s) = z;
       }
   }
+#endif
+
   template<typename T>
   void peekpokesol(QLA(DiracFermion) *src, int coords[])
   {
@@ -198,9 +241,8 @@ namespace Chroma
    * \param chi      source ( Read )
    * \return syssolver results
    */
-  template<typename T> // T is the Lattice Fermion type
   SystemSolverResults_t
-    LinOpSysSolverQOPMG<T>::operator() (T& psi, const T& chi) const
+    LinOpSysSolverQOPMG::operator() (T& psi, const T& chi) const
   {
     START_CODE();
     
@@ -210,16 +252,30 @@ namespace Chroma
     swatch.reset();
     swatch.start();
 
+    int machsize[4], latsize[4];
+    for (int d=0;d<4;d++) machsize[d] = Layout::logicalSize()[d];
+    for (int d=0;d<4;d++) latsize[d]  = Layout::lattSize()[d];
+
+    // This will get the subspace
+    //   If the subspace is externally managed it will be loaded/created
+    //   If the subspace is internally managed it will be used/created
+    WilsonMGSubspace* solve_subspace = getSubspace();
+
+
     // Set global pointers to our source and solution fermion fields
     fermionsrc = (void*)&chi;
     fermionsol = (void*)&psi;
-    double bsq = norm2(chi,all).elem().elem().elem().elem();
+
+    Double bsq = norm2(chi,all);
     QDPIO::cout << "Chroma:   chi all norm2 = " << bsq << std::endl;
-    res.n_count = MGP(solve)(peekpokesrc<T>, peekpokesol<T>);
-    bsq = norm2(psi,all).elem().elem().elem().elem();
+
+    // DOING SOLVE HERE
+    res.n_count = MGP(solve)(peekpokesrc<T>, peekpokeguess<T>, peekpokesol<T>,solve_subspace);
+
+    bsq = norm2(psi,all);
     QDPIO::cout << "Chroma:   psi all norm2 = " << bsq << std::endl;
- 
     swatch.stop();
+    Double rel_resid;
     double time = swatch.getTimeInSeconds();
     { 
       T r;
@@ -228,18 +284,131 @@ namespace Chroma
       (*A)(tmp, psi, PLUS);
       r[A->subset()] -= tmp;
       res.resid = sqrt(norm2(r, A->subset()));
+      rel_resid = res.resid / sqrt(norm2(chi, A->subset()));
     }
 
-    QDPIO::cout << "QOPMG_SOLVER: " << res.n_count << " iterations."
-                << " Rsd = " << res.resid
-                << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset()))
+    QDPIO::cout << "QOPMG_LINOP_SOLVER: " 
+		<< " Mass: " << invParam.Mass 
+		<< " iterations: " << res.n_count
+                << " time: " << time << " secs"
+                << " Rsd: " << res.resid
+                << " Relative Rsd: " << rel_resid
                 << std::endl;
-    QDPIO::cout << "QOPMG_SOLVER_TIME: " << time << " secs" << std::endl;
 
+    if ( invParam.TerminateOnFail ) { 
+      if ( toBool( rel_resid >= invParam.RsdToleranceFactor*invParam.Residual ) ) {
+	QDPIO::cout << "!!!!! QOPMG_LINOP_SOLVER: " 
+		    << "Mass: "  << invParam.Mass
+		    << " did NOT CONVERGE: Target RelRsd = " << invParam.Residual
+		    << " Actual RelRsd = " << rel_resid << std::endl;
+	QDPIO::cout << "Exiting !!!!! " << std::endl;
+	QDP_abort(1);
+      }
+    }
+	
+     
     END_CODE();
     return res;
   }
 
+  LinOpSysSolverQOPMG::WilsonMGSubspace* LinOpSysSolverQOPMG::getSubspace() const
+  {
+    WilsonMGSubspace *ret_val=0x0;
+    int machsize[4], latsize[4];
+    for (int d=0;d<4;d++) machsize[d] = Layout::logicalSize()[d];
+    for (int d=0;d<4;d++) latsize[d]  = Layout::lattSize()[d];
+
+    QDPIO::cout << "LinOpSysSolverQOPMG::getSubspace() " << std::endl;
+    if( !invParam.ExternalSubspace ) {
+      if( !subspace ) { 
+	QDPIO::cout << "Internal doesn't yet exist... creating" << std::endl;
+	subspace = MGP(create_subspace)(latsize);
+      }
+      ret_val=subspace;
+    }
+    else {
+      // Check if ID exists in the map.
+      if( TheNamedObjMap::Instance().check(invParam.SubspaceId)  ) {
+	QDPIO::cout << "Retreiving Subspace Pointer from NamedObject Map" << endl;	
+	ret_val = TheNamedObjMap::Instance().getData< WilsonMGSubspace * >(invParam.SubspaceId);
+	MGP(reset_subspace)(latsize,ret_val);
+      }
+      else { 
+	QDPIO::cout << "Using External Subspace but object ID: " << invParam.SubspaceId << " is not present in the NamedObject store." << std:: endl;
+	QDPIO::cout << "Creating a new one" << std::endl;
+	ret_val = MGP(create_subspace)(latsize);
+	
+	QDPIO::cout << "Saving in Map" << std::endl;
+	QDPIO::cout << "Creating Named Object Map Entry for subspace" << std::endl;
+	XMLBufferWriter file_xml;
+	push(file_xml, "FileXML");
+	pop(file_xml);
+
+	XMLBufferWriter record_xml;
+	push(record_xml, "RecordXML");
+	write(record_xml, "InvertParam", invParam);
+	pop(record_xml);
+
+	TheNamedObjMap::Instance().create< WilsonMGSubspace *>(invParam.SubspaceId);
+	TheNamedObjMap::Instance().get(invParam.SubspaceId).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(invParam.SubspaceId).setRecordXML(record_xml);
+	TheNamedObjMap::Instance().getData<WilsonMGSubspace*>(invParam.SubspaceId)=ret_val;
+      } // else of if Subspace ID is in the map
+    } // else of if !External Subspace
+
+    return ret_val; // Return whichever pointer was the good one.
+  }
+
+  void  LinOpSysSolverQOPMG::eraseSubspace()  
+  {
+    QDPIO::cout << "LinOpSysSolverQOPMG: Erasing Subspace" << endl;
+    if( !invParam.ExternalSubspace ) { 
+
+      QDPIO::cout << "My subspace does not come from the NamedObjMap" << std::endl;
+
+      // Internal subspace case, if subspace is not null then free it.
+      if ( subspace != 0x0 ) {
+	QDPIO::cout << "My subspace pointer is not null... Destroying" 
+		    << std::endl;
+
+	MGP(destroy_subspace)(subspace);
+	subspace = 0x0;
+      }
+    }
+    else { 
+      // Using external subspace. If it exists free it.
+      if ( TheNamedObjMap::Instance().check(invParam.SubspaceId) ) {
+	QDPIO::cout << "MG Subspace: " << invParam.SubspaceId << " found. " << std::endl;
+	
+	// The loaded subspace ID is in the Map. Get it.
+	WilsonMGSubspace *named_obj_subspace = TheNamedObjMap::Instance().getData<WilsonMGSubspace*>(invParam.SubspaceId);
+	MGP(destroy_subspace)(named_obj_subspace);
+	try { 
+	  QDPIO::cout << "Attempting to delete from named object store" << std:: endl;
+	  // Now erase the object
+	  TheNamedObjMap::Instance().erase(invParam.SubspaceId);
+	  
+	  QDPIO::cout << "Object erased" << std::endl;
+	}
+	catch( std::bad_cast ) {
+	  QDPIO::cerr <<" MGMdagMInternal::eraseSubspace: cast error" 
+		      << std::endl;
+	  QDP_abort(1);
+	}
+	catch (const std::string& e) {
+	  
+	  QDPIO::cerr << " MGMdagMInternal::eraseSubspace: error message: " << e 
+		      << std::endl;
+	  QDP_abort(1);
+	}
+	
+	QDPIO::cout << "Subspace: " << invParam.SubspaceId << " destroyed and removed from map" << std::endl;
+      }
+      else { 
+	QDPIO::cout << "MG Subspace: " << invParam.SubspaceId << " is not in the map. Nothing to desroy" << std::endl;
+      }
+    }
+  }
 
   //! QDP multigrid system solver namespace
   namespace LinOpSysSolverQOPMGEnv
@@ -264,8 +433,7 @@ namespace Chroma
                                      multi1d<LatticeColorMatrix> > > state, 
                   Handle< LinearOperator<LatticeFermion> >           A)
     {
-      return new LinOpSysSolverQOPMG<LatticeFermion>
-	(A, state, SysSolverQOPMGParams(xml_in, path));
+      return new LinOpSysSolverQOPMG(A, state, SysSolverQOPMGParams(xml_in, path));
     }
 
     /*//! Callback function for single precision

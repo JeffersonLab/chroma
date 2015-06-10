@@ -15,6 +15,7 @@
 
 #include "meas/inline/io/inline_rng.h"
 
+
 #include "meas/inline/io/inline_xml_write_obj.h"
 
 #include "meas/inline/io/inline_gaussian_obj.h"
@@ -27,6 +28,11 @@
 #include "meas/inline/io/inline_read_map_obj_disk.h"
 #include "meas/inline/io/inline_copy_map_obj.h"
 #include "meas/inline/io/inline_write_timeslice_map_obj_disk.h"
+
+#include "chroma_config.h"
+#ifdef BUILD_QOP_MG
+#include "meas/inline/io/inline_erase_mg_space.h"
+#endif
 
 namespace Chroma
 {
@@ -79,6 +85,10 @@ namespace Chroma
        	success &= InlineCopyMapObjEnv::registerAll();
        	success &= InlineWriteTimeSliceMapObjDiskEnv::registerAll();
 
+#ifdef BUILD_QOP_MG
+	success &= InlineEraseMGSpaceEnv::registerAll();
+#endif
+	
 	registered = true;
       }
       return success;

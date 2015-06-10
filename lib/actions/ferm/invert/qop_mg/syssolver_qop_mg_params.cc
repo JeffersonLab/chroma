@@ -39,9 +39,19 @@ namespace Chroma
     defaultread( CloverT,    param.Clover );   
     defaultread( Residual,   1e-6 );
     defaultread( MaxIter,    40 );
+    defaultread( RefreshThreshold, param.MaxIter);
     defaultread( NumGCRVecs, 8 );
     defaultread( Verbose,    0 );
     defaultread( Levels,     1 );
+
+    defaultread( ExternalSubspace, false);
+    
+    if ( param.ExternalSubspace ) {
+      read(paramtop, "SubspaceId", param.SubspaceId );
+    }
+
+    defaultread( TerminateOnFail, true);
+    defaultread( RsdToleranceFactor, Real(1.0)); // Default: No slack
 
     if (param.Levels > 0) {
       if (paramtop.count("Blocking")) {
@@ -55,6 +65,7 @@ namespace Chroma
         }
       }
     
+
 #define defaultreadvec(PARAM,DEFAULT) if (paramtop.count(#PARAM)) { \
       read(paramtop, #PARAM, param.PARAM); \
     } else { \
@@ -101,6 +112,7 @@ namespace Chroma
     
     writeparam(Residual);
     writeparam(MaxIter);
+    writeparam(RefreshThreshold);
     writeparam(NumGCRVecs);
     
     writeparam(Verbose);
@@ -122,6 +134,13 @@ namespace Chroma
       writeparam(CoarseNumGCRVecs);
       writeparam(CoarseMaxIter);
       writeparam(CoarseResidual);
+
+      writeparam(ExternalSubspace);
+      if( param.ExternalSubspace ) { 
+	writeparam(SubspaceId);
+      }
+      writeparam(TerminateOnFail);
+      writeparam(RsdToleranceFactor);
     }
 #undef writeparam
     pop(xml);
