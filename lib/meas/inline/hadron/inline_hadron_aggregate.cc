@@ -8,7 +8,7 @@
 #include "meas/inline/hadron/inline_apply_fermstate_w.h"
 //#include "meas/inline/hadron/inline_spectrumQll.h"
 #include "meas/inline/hadron/inline_create_colorvecs.h"
-#include "meas/inline/hadron/inline_create_colorvecs.h"
+#include "meas/inline/hadron/inline_create_grid_vecs.h"
 
 #ifdef BUILD_LAPACK
 #include "meas/inline/hadron/inline_laplace_eigs.h"
@@ -123,6 +123,7 @@ namespace Chroma
 	success &= InlineHadronContractEnv::registerAll();
 //	success &= InlineSpectrumEnv::registerAll();
 	success &= InlineCreateColorVecsEnv::registerAll();
+	success &= InlineCreateGridVecsEnv::registerAll();
 	success &= InlineProp3ptEnv::registerAll();
 	success &= InlineDiscoEnv::registerAll();
 	success &= InlineDiscoEOPrecEnv::registerAll();

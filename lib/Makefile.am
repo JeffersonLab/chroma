@@ -851,6 +851,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_seqprop_test_w.h \
 	meas/inline/hadron/inline_prop_3pt_w.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
+	meas/inline/hadron/inline_create_grid_vecs.h \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
 	meas/inline/hadron/inline_disco_eigcg_w.h \
@@ -1686,6 +1687,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_seqprop_test_w.cc \
 	meas/inline/hadron/inline_prop_3pt_w.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
+	meas/inline/hadron/inline_create_grid_vecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
 	meas/inline/hadron/inline_disco_eigcg_w.cc \
