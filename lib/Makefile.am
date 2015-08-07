@@ -92,6 +92,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_eigcg_params.h \
 	actions/ferm/invert/syssolver_OPTeigcg_params.h \
 	actions/ferm/invert/syssolver_OPTeigbicg_params.h \
+	actions/ferm/invert/syssolver_fgmres_dr_params.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
@@ -1069,6 +1070,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_eigcg_params.cc \
 	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
 	actions/ferm/invert/syssolver_OPTeigbicg_params.cc \
+	actions/ferm/invert/syssolver_fgmres_dr_params.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
@@ -2018,4 +2020,8 @@ nobase_include_HEADERS += actions/ferm/linop/clover_term_bagel_clover.h
 libchroma_a_SOURCES += actions/ferm/linop/clover_term_bagel_clover.cc
 endif
 
+if BUILD_GTEST
+nobase_include_HEADERS += gtest/gtest.h
+libchroma_a_SOURCES += gtest/gtest-all.cc
+endif
 

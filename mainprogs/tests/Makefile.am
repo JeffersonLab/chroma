@@ -238,6 +238,12 @@ t_quda_tprec_SOURCES = t_quda_tprec.cc
 t_minvert_quda_SOURCES = t_minvert_quda.cc
 endif
 
+if BUILD_GTEST
+check_PROGRAMS += t_inv_fgmres_dr
+t_inv_fgmres_dr_SOURCES = t_inv_fgmres_dr.cc chroma_gtest_env.h \
+	fgmres_dr_tests.cc
+endif
+
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target
