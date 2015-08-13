@@ -59,9 +59,6 @@ public:
     Layout::setLattSize(nrow);
     Layout::create();
     
-    multi1d<LatticeColorMatrix> u(Nd);
-    weakField(u);
-    unitarityCheck(u);
   }
   
   ~TestEnvironment() {

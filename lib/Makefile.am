@@ -107,6 +107,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_linop_bicrstab.h \
 	actions/ferm/invert/syssolver_linop_ibicgstab.h \
 	actions/ferm/invert/syssolver_linop_mr.h \
+	actions/ferm/invert/syssolver_linop_fgmres_dr.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.h \
 	actions/ferm/invert/syssolver_mdagm_ibicgstab.h \
@@ -1097,6 +1098,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_bicrstab.cc \
 	actions/ferm/invert/syssolver_linop_ibicgstab.cc \
 	actions/ferm/invert/syssolver_linop_mr.cc \
+	actions/ferm/invert/syssolver_linop_fgmres_dr.cc \
 	actions/ferm/invert/multi_syssolver_cg_params.cc \
 	actions/ferm/invert/multi_syssolver_mr_params.cc \
 	actions/ferm/invert/multi_syssolver_linop_aggregate.cc \
