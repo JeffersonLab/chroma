@@ -141,11 +141,11 @@ TEST_F(FGMRESDRTests, multi2d)
   int n_krylov = 5;
   int rows=n_krylov+1;
   int cols=n_krylov;
-  multi2d<DComplex> H(rows,cols);
+  multi2d<DComplex> H(cols,rows);
 
-  for(int row=0; row < n_krylov+1; ++row)  {
-    for(int col=0; col < n_krylov; ++col) {
-      H(row,col) = DComplex(0);
+  for(int col=0; col < n_krylov; ++col) {
+    for(int row=0; row < n_krylov+1; ++row)  {
+      H(col,row) = DComplex(0);
     }
   }
   
@@ -153,7 +153,7 @@ TEST_F(FGMRESDRTests, multi2d)
   for(int row=0; row < dim+1; ++row)  {
     QDPIO::cout << "[ ";
     for(int col=0; col < dim; ++col) {
-      QDPIO::cout << H(row,col) << " ";
+      QDPIO::cout << H(col, row) << " ";
     }
     QDPIO::cout << " ] " << std::endl;
   }
@@ -179,18 +179,17 @@ TEST_F(FGMRESDRTests, arnoldi5)
   rsd_target*=sqrt(norm2(rhs,s));
   int n_krylov=5;
   int n_deflate=0;
-  multi2d<DComplex> H(n_krylov+1, n_krylov); // The H matrix
-  multi2d<DComplex> R(n_krylov+1, n_krylov); // R = H diagonalized with Givens rotations
+  multi2d<DComplex> H(n_krylov,n_krylov+1); // The H matrix
+  multi2d<DComplex> R(n_krylov,n_krylov+1); // R = H diagonalized with Givens rotations
   multi1d<T> V(n_krylov+1);  // K(A)
   multi1d<T> Z(n_krylov+1);  // K(MA)
   multi1d< Handle<Givens> > givens_rots(n_krylov+1);
   multi1d<DComplex> g(n_krylov+1);
 
-
-  for(int row=0; row < n_krylov+1; ++row)  {
-    for(int col=0; col < n_krylov; ++col) {
-      H(row,col) = DComplex(0);
-      R(row,col) = DComplex(0);
+  for(int col=0; col < n_krylov; ++col) {
+    for(int row=0; row < n_krylov+1; ++row)  {
+      H(col,row) = DComplex(0);
+      R(col,row) = DComplex(0);
     }
   }
   
@@ -213,10 +212,12 @@ TEST_F(FGMRESDRTests, arnoldi5)
 
   // Instead of printing, Assert that Upper Hessenberg
   for(int row=0; row < dim+1; ++row) {
-    // These are below the row below the diagonal -- should be 0
     for(int col = 0; col < row-1; ++col) { 
-      double re = toDouble( real( H(row,col) ) );
-      double im = toDouble( imag( H(row,col) ) );
+
+      // These are below the row below the diagonal -- should be 0
+
+      double re = toDouble( real( H(col,row) ) );
+      double im = toDouble( imag( H(col,row) ) );
       EXPECT_DOUBLE_EQ( re, 0);
       EXPECT_DOUBLE_EQ( im, 0);
     }
@@ -239,10 +240,10 @@ TEST_F(FGMRESDRTests, arnoldi5)
 
 TEST_F(FGMRESDRTests, GivensF0G0)
 {
-  multi2d<DComplex> H(2,1);
+  multi2d<DComplex> H(1,2);
   // Fill both 'f' and 'g' with 0
   for(int row=0; row < 2; ++row) {
-    H(row,0) = DComplex(0);
+    H(0,row) = DComplex(0);
   }
   Givens g(0,H);
   
@@ -251,8 +252,8 @@ TEST_F(FGMRESDRTests, GivensF0G0)
 
 
   // H(1,0) should be 0
-  EXPECT_DOUBLE_EQ( 0, toDouble( real(H(1,0)) ) );
-  EXPECT_DOUBLE_EQ( 0, toDouble( imag(H(1,0)) ) );
+  EXPECT_DOUBLE_EQ( 0, toDouble( real(H(0,1)) ) );
+  EXPECT_DOUBLE_EQ( 0, toDouble( imag(H(0,1)) ) );
 
 
   EXPECT_DOUBLE_EQ( 0, toDouble( real(H(0,0)) ) );
@@ -261,17 +262,17 @@ TEST_F(FGMRESDRTests, GivensF0G0)
 
 TEST_F(FGMRESDRTests, GivensF0GNot0)
 {
-  multi2d<DComplex> H(2,1);
+  multi2d<DComplex> H(1,2);
   // Fill both 'f' and 'g' with 0
   for(int row=0; row < 2; ++row) {
-    H(row,0) = DComplex(0);
+    H(0,row) = DComplex(0);
   }
 
   DComplex g;
   random(g);
 
 
-  H(1,0) = g;  // Nonzero 'g'
+  H(0,1) = g;  // Nonzero 'g'
 
   // Compute Givens
   Givens G(0,H);
@@ -279,8 +280,8 @@ TEST_F(FGMRESDRTests, GivensF0GNot0)
   // Apply Givens to col 0. 
   G(0,H);
   // H(1,0) should be 0
-  EXPECT_DOUBLE_EQ( 0, toDouble( real(H(1,0)) ) );
-  EXPECT_DOUBLE_EQ( 0, toDouble( imag(H(1,0)) ) );
+  EXPECT_DOUBLE_EQ( 0, toDouble( real(H(0,1)) ) );
+  EXPECT_DOUBLE_EQ( 0, toDouble( imag(H(0,1)) ) );
 
   EXPECT_DOUBLE_EQ( toDouble(real(g)), toDouble( real(H(0,0)) ) );
   EXPECT_DOUBLE_EQ( toDouble(imag(g)), toDouble( imag(H(0,0)) ) );
@@ -288,10 +289,10 @@ TEST_F(FGMRESDRTests, GivensF0GNot0)
 
 TEST_F(FGMRESDRTests, GivensFNot0G0)
 {
-  multi2d<DComplex> H(2,1);
+  multi2d<DComplex> H(1,2);
   // Fill both 'f' and 'g' with 0
   for(int row=0; row < 2; ++row) {
-    H(row,0) = DComplex(0);
+    H(0,row) = DComplex(0);
   }
 
   DComplex f;
@@ -306,8 +307,8 @@ TEST_F(FGMRESDRTests, GivensFNot0G0)
   // Apply Givens to col 0. 
   G(0,H);
   // H(1,0) should be 0
-  EXPECT_DOUBLE_EQ( 0, toDouble( real(H(1,0)) ) );
-  EXPECT_DOUBLE_EQ( 0, toDouble( imag(H(1,0)) ) );
+  EXPECT_DOUBLE_EQ( 0, toDouble( real(H(0,1)) ) );
+  EXPECT_DOUBLE_EQ( 0, toDouble( imag(H(0,1)) ) );
 
   EXPECT_DOUBLE_EQ( toDouble(real(sqrt(norm2(f)))), toDouble( real(H(0,0)) ) );
   EXPECT_DOUBLE_EQ( toDouble(imag(sqrt(norm2(f)))), toDouble( imag(H(0,0)) ) );
@@ -318,7 +319,7 @@ TEST_F(FGMRESDRTests, GivensFNot0GNot0)
   multi2d<DComplex> H(2,2);
   // Fill both 'f' and 'g' with 0
   for(int row=0; row < 2; ++row) {
-    H(row,0) = DComplex(0);
+    H(0,row) = DComplex(0);
   }
 
   DComplex f,g;
@@ -327,9 +328,9 @@ TEST_F(FGMRESDRTests, GivensFNot0GNot0)
 
 
   H(0,0) = f;  // Nonzero f& g
-  H(1,0) = g;
+  H(0,1) = g;
 
-  H(0,1) = f;
+  H(1,0) = f;
   H(1,1) = g;
 
   // Compute Givens
@@ -338,17 +339,17 @@ TEST_F(FGMRESDRTests, GivensFNot0GNot0)
   G(0,H);  // Col 0 -- same as used to compute (get r automatically)
   G(1,H);  // Col 1 -- same as used to compute (get r automatically)
 
-  // H(1,0) should be 0
-  EXPECT_DOUBLE_EQ( 0, toDouble( real(H(1,0)) ) );
-  EXPECT_DOUBLE_EQ( 0, toDouble( imag(H(1,0)) ) );
+  // H(0,1) should be 0
+  EXPECT_DOUBLE_EQ( 0, toDouble( real(H(0,1)) ) );
+  EXPECT_DOUBLE_EQ( 0, toDouble( imag(H(0,1)) ) );
 
   // H(1,1) should be 0
   EXPECT_DOUBLE_EQ( 0, toDouble( real(H(1,1)) ) );
   EXPECT_DOUBLE_EQ( 0, toDouble( imag(H(1,1)) ) );
 
-  // H(0,0) and H(0,1) should be the same
-  EXPECT_DOUBLE_EQ( toDouble( real(H(0,0)) ) , toDouble( real(H(0,1)) ) );
-  //EXPECT_DOUBLE_EQ( toDouble( imag(H(0,0)) ) , toDouble( imag(H(0,1)) ) );
+  // H(0,0) and H(1,0) should be the same
+  EXPECT_DOUBLE_EQ( toDouble( real(H(0,0)) ) , toDouble( real(H(1,0)) ) );
+  //EXPECT_DOUBLE_EQ( toDouble( imag(H(0,0)) ) , toDouble( imag(H(1,0)) ) );
 
 
  
@@ -386,12 +387,13 @@ TEST_P(FGMRESDRTestsFloatParams, arnoldi5GivensRot)
   int n_deflate=0;
 
   // Work spaces
-  multi2d<DComplex> H(n_krylov+1, n_krylov); // The H matrix
-  multi2d<DComplex> R(n_krylov+1, n_krylov); // R = H diagonalized with Givens rotations
-  for(int row = 0; row < n_krylov+1; ++row) {
-    for(int col = 0; col < n_krylov; ++col) { 
-      H(row,col) = DComplex(0);
-      R(row,col) = DComplex(0);
+  multi2d<DComplex> H(n_krylov, n_krylov+1); // The H matrix
+  multi2d<DComplex> R(n_krylov, n_krylov+1); // R = H diagonalized with Givens rotations
+  for(int col = 0; col < n_krylov; ++col) { 
+    for(int row = 0; row < n_krylov+1; ++row) {
+      
+      H(col,row) = DComplex(0);
+      R(col,row) = DComplex(0);
     }
   }
   multi1d<T> V(n_krylov+1);  // K(A)
@@ -423,8 +425,8 @@ TEST_P(FGMRESDRTestsFloatParams, arnoldi5GivensRot)
   for(int row=0; row < dim+1; ++row) {
     // These are below the row below the diagonal -- should be 0
     for(int col = 0; col < row-1; ++col) { 
-      double re = toDouble( real( H(row,col) ) );
-      double im = toDouble( imag( H(row,col) ) );
+      double re = toDouble( real( H(col,row) ) );
+      double im = toDouble( imag( H(col,row) ) );
       EXPECT_DOUBLE_EQ( re, 0);
       EXPECT_DOUBLE_EQ( im, 0);
     }
@@ -470,16 +472,16 @@ TEST_P(FGMRESDRTestsFloatParams, arnoldi5GivensRot)
   // At this point H should be Upper Triangular
   for(int row=1; row < dim+1; ++row) {
     for(int col=0; col < row; ++col)   {
-      EXPECT_DOUBLE_EQ( 0, toDouble(real(H(row,col))));
-      EXPECT_DOUBLE_EQ( 0, toDouble(imag(H(row,col))));
+      EXPECT_DOUBLE_EQ( 0, toDouble(real(H(col,row))));
+      EXPECT_DOUBLE_EQ( 0, toDouble(imag(H(col,row))));
     }
   }
 
   // The transformed H should agree with R
   for(int row=0; row < dim+1; ++row) {
     for(int col=row; col < dim; ++col)   {
-      EXPECT_DOUBLE_EQ( toDouble(real(R(row,col))), toDouble(real(H(row,col))));
-      EXPECT_DOUBLE_EQ( toDouble(imag(R(row,col))), toDouble(imag(H(row,col))));
+      EXPECT_DOUBLE_EQ( toDouble(real(R(col,row))), toDouble(real(H(col,row))));
+      EXPECT_DOUBLE_EQ( toDouble(imag(R(col,row))), toDouble(imag(H(col,row))));
     }
   }
 
@@ -509,12 +511,12 @@ TEST_F(FGMRESDRTests, testLeastSquares)
   int n_rows=4;
   int n_cols=3;
 
-  multi2d<DComplex> R(n_rows,n_cols);
+  multi2d<DComplex> R(n_cols,n_rows);
   multi1d<DComplex> b(n_rows);
   multi1d<DComplex> x(n_rows);
   for(int row=0; row < n_rows; ++row) { 
     for(int col=0; col < n_cols; ++col) { 
-      R(row,col)=DComplex(0);
+      R(col,row)=DComplex(0);
     }
     random(b[row]);
     x[row] = zero;
@@ -523,7 +525,7 @@ TEST_F(FGMRESDRTests, testLeastSquares)
   // Fill upper triangular with Random junk
   for(int row=0; row < n_rows-1; ++row) { 
     for(int col=row; col < n_cols;  ++col) { 
-      random(R(row,col));
+      random(R(col,row));
     }
   }
 
@@ -533,7 +535,7 @@ TEST_F(FGMRESDRTests, testLeastSquares)
   for(int row=0; row < n_cols; ++row) {
     DComplex prod=DComplex(0);
     for(int col=row; col < n_cols; ++col) { 
-      prod += R(row,col)*x[col];
+      prod += R(col,row)*x[col];
     }
     EXPECT_DOUBLE_EQ( toDouble(real(prod)), toDouble(real(b[row])));
     EXPECT_DOUBLE_EQ( toDouble(imag(prod)), toDouble(imag(b[row])));
@@ -608,12 +610,12 @@ TEST_F(FGMRESDRTests, testQDPLapackZGETRFZGETRS)
   int n_deflate=0;
 
   // Work spaces
-  multi2d<DComplex> H(n_krylov+1, n_krylov); // The H matrix
-  multi2d<DComplex> R(n_krylov+1, n_krylov); // R = H diagonalized with Givens rotations
+  multi2d<DComplex> H(n_krylov,n_krylov+1); // The H matrix
+  multi2d<DComplex> R(n_krylov,n_krylov+1); // R = H diagonalized with Givens rotations
   for(int row = 0; row < n_krylov+1; ++row) {
     for(int col = 0; col < n_krylov; ++col) { 
-      H(row,col) = DComplex(0);
-      R(row,col) = DComplex(0);
+      H(col,row) = DComplex(0);
+      R(col,row) = DComplex(0);
     }
   }
   multi1d<T> V(n_krylov+1);  // K(A)
@@ -651,17 +653,17 @@ TEST_F(FGMRESDRTests, testQDPLapackZGETRFZGETRS)
   // So in principle we need to transpose in and out of Fortran
   // however as I want to solve with the Transpose conjugate
   // all I have to do is leave the indices untransposed, and just conjugate
-  for(int row =0; row < n_krylov; ++row) {
-    for(int col=0; col < n_krylov; ++col) {
-      h1(row,col) = conj(H(row,col));
+  for(int col=0; col < n_krylov; ++col) {
+    for(int row =0; row < n_krylov; ++row) {
+      h1(col,row) = H(col,row);
     }
   }
 
   for(int col=0; col < n_krylov; ++col) {
-    h_m[col] = conj(H(n_krylov,col)); // Keeping this for checking
+    h_m[col] = conj(H(col, n_krylov)); // Keeping this for checking
     f_m[col] = h_m[col]; // Solution will overwrite f_m
-      
   }
+
   multi1d<int> ipiv(n_krylov);
   int info;
   
@@ -672,9 +674,7 @@ TEST_F(FGMRESDRTests, testQDPLapackZGETRFZGETRS)
 
   // Now solve using ZGETRS
   QDPIO::cout << "CALLING ZGETRS to solve for f" << std::endl;
-  char trans='N'; // NO transpose cause in the C I am row major order
-                  // Columns run fastest. So already trnasposed wrt Fortran
-                  // Also pre-conjugated when I copied to H1.
+  char trans='C'; // Decompose the Hermitian Conjugate
  
   QDPLapack::zgetrs(trans, n_krylov,1,h1,n_krylov,ipiv,f_m,n_krylov,info);
   ASSERT_EQ(info,0);
@@ -687,13 +687,10 @@ TEST_F(FGMRESDRTests, testQDPLapackZGETRFZGETRS)
   }
 
   // Check by multiplying back with H^H
-  // Note that H is in our original C notation, so we have to transpose
-  // in the body of the multiply.
+  trans='C'; // Hermitian conjugate H, Leading Dimension of H is n_krylov+1
+             // since now we are storing column major order. (Rows run fastest) 
+  QDPLapack::zgemv(trans,n_krylov, n_krylov, H, n_krylov+1, f_m, diff);
   for(int row=0; row < n_krylov; ++row) { 
-    diff[row]=zero;
-    for(int col=0; col < n_krylov; ++col)  {
-      diff[row] += conj(H(col,row))*f_m[col];
-    }
     diff[row] -= h_m[row];
     EXPECT_LT( toDouble(real(diff[row])), 1.0e-14 );
     EXPECT_LT( toDouble(imag(diff[row])), 1.0e-14 );
@@ -710,8 +707,7 @@ TEST_F(FGMRESDRTests, testQDPLapackZGETRFZGETRS)
   multi2d<DComplex> H_tilde(n_krylov,n_krylov);
   for(int row=0; row < n_krylov;++row) { 
     for(int col=0; col< n_krylov; ++col) { 
-      // Pre transpose rows and columns for Fortran order
-      H_tilde(col,row) = H(row,col) + f_m[row]*conj(h_m[col]);
+      H_tilde(col,row) = H(col,row) + f_m[row]*conj(h_m[col]);
     }
   }
 
@@ -724,34 +720,31 @@ TEST_F(FGMRESDRTests, testQDPLapackZGETRFZGETRS)
   QDPIO::cout << "Checking evecs" << std::endl;
 
   // Recreate H_tilde as the evec routine overwrites it
-  // Now we will check stuff, so not Fortran order
   for(int row=0; row < n_krylov;++row) { 
     for(int col=0; col< n_krylov; ++col) { 
-      H_tilde(row,col) = H(row,col) + f_m[row]*conj(h_m[col]);
+      H_tilde(col,row) = H(col,row) + f_m[row]*conj(h_m[col]);
     }
   }
 
   // For each evec check   H_tilde v - lambda v is small
   //
   for(int evec=0; evec < n_krylov; ++evec) { 
-
-    // This vector will hold data extracted from Fortran
+  
+    // Extract evec from 'evecs'
     multi1d<DComplex> my_evec(n_krylov);
-
-    // Extract evec from Fortran
-    for(int row=0 ; row < n_krylov; ++row) {
-      my_evec[row] = evecs(evec,row); // This brings in column evec of Fortran
+    for(int row=0; row<n_krylov; ++row) {
+      my_evec[row] = evecs(evec,row);
     }
 
-    // Multiply H_tilde my_evec
-    for(int row=0 ; row < n_krylov; ++row) { 
-      diff[row]=zero;
-      for(int col=0; col < n_krylov; ++col)  {
-	diff[row] += H_tilde(row,col)*my_evec[col];
-      }
+    // Multiply: H_tilde my_evec -> diff
+    trans='N'; 
+    QDPLapack::zgemv(trans, n_krylov, n_krylov, H_tilde, n_krylov, my_evec, diff);
+    
+    // Subtract lambda my_evec
+    for(int row=0; row < n_krylov; ++row) { 
+      diff[row] -= evals[evec]*evecs(evec,row);
 
-      // Subtract lambda my_evec
-      diff[row] -= evals[evec]*my_evec[row];
+      // check result is small
       EXPECT_LT( toDouble(real(diff[row])), 1.0e-14 );
       EXPECT_LT( toDouble(imag(diff[row])), 1.0e-14 );
  

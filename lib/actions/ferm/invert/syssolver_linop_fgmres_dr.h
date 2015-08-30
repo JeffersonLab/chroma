@@ -84,7 +84,7 @@ namespace Chroma
     Givens(int col, const multi2d<DComplex>& H) : col_(col) 
     {
       DComplex f = H(col_,col_);
-      DComplex g = H(col_+1,col_);
+      DComplex g = H(col_,col_+1);
 
       if( toBool( real(f) == Double(0) && imag(f) == Double(0) ) ) {
        
@@ -120,14 +120,14 @@ namespace Chroma
       if ( col == col_ ) {
 	// We've already done this column and know the answer
 	H(col_,col_) = r_;
-	H(col_+1,col_) = 0;
+	H(col_,col_+1) = 0;
       }
       else {
 	int row = col_; // The row on which the rotation was defined
-	DComplex a = H(row,col);
-	DComplex b = H(row+1,col);
-	H(row,col) = conj(c_)*a + conj(s_)*b;
-	H(row+1,col) = -s_*a + c_*b;
+	DComplex a = H(col,row);
+	DComplex b = H(col,row+1);
+	H(col,row) = conj(c_)*a + conj(s_)*b;
+	H(col,row+1) = -s_*a + c_*b;
       }
     }
 

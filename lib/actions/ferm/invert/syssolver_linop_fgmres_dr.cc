@@ -115,12 +115,12 @@ namespace Chroma
 
       // Fill out column j
       for(int i=0; i <= j ;  ++i ) {
-	H(i,j) = innerProduct(V[i], w, s);
-	w[s] -= H(i,j)* V[i];
+	H(j,i) = innerProduct(V[i], w, s);
+	w[s] -= H(j,i)* V[i];
       }
       
       Double wnorm=sqrt(norm2(w,s));
-      H(j+1,j) = DComplex(wnorm);
+      H(j,j+1) = DComplex(wnorm);
 
       // In principle I should check w_norm to be 0, and if it is I should
       // terminate: Code Smell -- get rid of 1.0e-14.
@@ -140,7 +140,7 @@ namespace Chroma
 
       // Done construcing H. Construct relevant column of R
       for(int i=0; i <= j+1; ++i) { 
-	R(i,j) = H(i,j);
+	R(j,i) = H(j,i);
       }
 
       // Apply Existing Givens Rotations to this column of R
@@ -167,8 +167,10 @@ namespace Chroma
   void LinOpSysSolverFGMRESDR::InitMatrices()
   {
     int total_dim = invParam_.NKrylov + invParam_.NDefl;
-    H.resize(total_dim+1, total_dim);
-    R.resize(total_dim+1, total_dim);
+    H.resize(total_dim+1, total_dim); // This is odd. Shouldn't it be
+    R.resize(total_dim+1, total_dim); // resize (n_cols, n_rows)?
+                                      // Doing that give weird double free 
+                                      //errors
 
     V.resize(total_dim+1);
     Z.resize(total_dim+1);
@@ -177,8 +179,8 @@ namespace Chroma
 
     for(int row = 0; row < total_dim+1; row++) { 
       for(int col =0; col < total_dim; col++) { 
-	H(row,col) = zero;
-	R(row,col) = zero;
+	H(col,row) = zero;
+	R(col,row) = zero;
 	V[row] = zero;
 	R[row] = zero;
 	g[row] = zero;
@@ -221,7 +223,7 @@ namespace Chroma
     for(int row = n_cols-2; row >= 0; --row) {
       eta[row] = rhs[row];
       for(int col=row+1; col <  n_cols; ++col) { 
-	eta[row] -= R(row,col)*eta[col];
+	eta[row] -= R(col,row)*eta[col];
       }
       eta[row] /= R(row,row);
     }
