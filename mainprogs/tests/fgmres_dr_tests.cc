@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "chromabase.h"
-
+#include "qdp-lapack.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/invert/syssolver_fgmres_dr_params.h"
 #include "actions/ferm/invert/syssolver_linop_fgmres_dr.h"
@@ -586,3 +586,176 @@ INSTANTIATE_TEST_CASE_P(FGMRESDRTests,
 			testing::Values(1.0e-3,1.0e-9));
 
 
+TEST_F(FGMRESDRTests, testQDPLapackZGETRFZGETRS)
+{
+  std::istringstream input(xml_for_param);
+  XMLReader xml_in(input);
+  SysSolverFGMRESDRParams p( xml_in, "/Params/InvertParam" );
+  LinOpSysSolverFGMRESDR sol(linop,state,p);
+
+
+  const Subset& s = sol.subset();
+
+
+    // Create a gaussian source 
+  LatticeFermion rhs;
+  gaussian(rhs, s);
+
+  Real rsd_target(1.0e-9);
+  rsd_target *= sqrt(norm2(rhs,s));
+
+  int n_krylov=5;
+  int n_deflate=0;
+
+  // Work spaces
+  multi2d<DComplex> H(n_krylov+1, n_krylov); // The H matrix
+  multi2d<DComplex> R(n_krylov+1, n_krylov); // R = H diagonalized with Givens rotations
+  for(int row = 0; row < n_krylov+1; ++row) {
+    for(int col = 0; col < n_krylov; ++col) { 
+      H(row,col) = DComplex(0);
+      R(row,col) = DComplex(0);
+    }
+  }
+  multi1d<T> V(n_krylov+1);  // K(A)
+  multi1d<T> Z(n_krylov+1);  // K(MA)
+  multi1d< Handle<Givens> > givens_rots(n_krylov+1);
+  multi1d<DComplex> g(n_krylov+1);
+  
+  // Assume zero initial guess
+  Double beta=sqrt(norm2(rhs, s));
+  int dim;
+  sol.FlexibleArnoldi(n_krylov, 
+		      n_deflate,
+		      rsd_target,
+		      beta,
+		      rhs, 
+		      V,
+		      Z, 
+		      H, 
+		      R,
+		      givens_rots,
+		      g,
+		      dim);
+  
+  // NOw want to solve System H^\dagger f_m = h_m
+  multi1d<DComplex> f_m(n_krylov);
+  multi1d<DComplex> h_m(n_krylov);
+  multi2d<DComplex> h1(n_krylov, n_krylov);
+
+  // h1 is the copy I will pass to LAPACK 
+  // I actually want to solve with the dagger of H
+  // so I should transpose as well as conjugate
+  // however LAPACK expects Fortran order: rows run fastest, columns slower
+  // multi2d has Fortran like indexing (row first, column second)
+  // but underneath the hood, columns still run fastest.
+  // So in principle we need to transpose in and out of Fortran
+  // however as I want to solve with the Transpose conjugate
+  // all I have to do is leave the indices untransposed, and just conjugate
+  for(int row =0; row < n_krylov; ++row) {
+    for(int col=0; col < n_krylov; ++col) {
+      h1(row,col) = conj(H(row,col));
+    }
+  }
+
+  for(int col=0; col < n_krylov; ++col) {
+    h_m[col] = conj(H(n_krylov,col)); // Keeping this for checking
+    f_m[col] = h_m[col]; // Solution will overwrite f_m
+      
+  }
+  multi1d<int> ipiv(n_krylov);
+  int info;
+  
+  // Factor H
+  QDPIO::cout << "CALLING ZGETRF to factor H" << std::endl;
+  QDPLapack::zgetrf(n_krylov,n_krylov,h1,n_krylov,ipiv,info);
+  ASSERT_EQ(info,0);
+
+  // Now solve using ZGETRS
+  QDPIO::cout << "CALLING ZGETRS to solve for f" << std::endl;
+  char trans='N'; // NO transpose cause in the C I am row major order
+                  // Columns run fastest. So already trnasposed wrt Fortran
+                  // Also pre-conjugated when I copied to H1.
+ 
+  QDPLapack::zgetrs(trans, n_krylov,1,h1,n_krylov,ipiv,f_m,n_krylov,info);
+  ASSERT_EQ(info,0);
+  
+  // Check Solution
+  multi1d<DComplex> diff(n_krylov);
+  
+  for(int row=0; row < n_krylov; ++row) { 
+    diff[row] = zero;
+  }
+
+  // Check by multiplying back with H^H
+  // Note that H is in our original C notation, so we have to transpose
+  // in the body of the multiply.
+  for(int row=0; row < n_krylov; ++row) { 
+    diff[row]=zero;
+    for(int col=0; col < n_krylov; ++col)  {
+      diff[row] += conj(H(col,row))*f_m[col];
+    }
+    diff[row] -= h_m[row];
+    EXPECT_LT( toDouble(real(diff[row])), 1.0e-14 );
+    EXPECT_LT( toDouble(imag(diff[row])), 1.0e-14 );
+  }
+
+  for(int row=0; row < n_krylov;++row) { 
+    QDPIO::cout << "diff["<<row<<"] = " << diff[row] << std::endl;
+  }
+
+  // Now form Hm + f_m h_m^H
+  // We will send this to Fortran, and we don't want to transpose
+  // or conjugate. So just transpose indices on H_tilde now, to ensure
+  // correct column major order for Fortran
+  multi2d<DComplex> H_tilde(n_krylov,n_krylov);
+  for(int row=0; row < n_krylov;++row) { 
+    for(int col=0; col< n_krylov; ++col) { 
+      // Pre transpose rows and columns for Fortran order
+      H_tilde(col,row) = H(row,col) + f_m[row]*conj(h_m[col]);
+    }
+  }
+
+  // Space for eigenvectors and eivenvalues
+  multi1d<DComplex> evals(n_krylov);  // Evalues come back in this
+  multi2d<DComplex> evecs(n_krylov, n_krylov); // Evecs come back in this in Fortran order
+
+  QDPIO::cout << "CALLING ZGEEV" << std::endl;
+  QDPLapack::zgeev(n_krylov, H_tilde, evals, evecs);
+  QDPIO::cout << "Checking evecs" << std::endl;
+
+  // Recreate H_tilde as the evec routine overwrites it
+  // Now we will check stuff, so not Fortran order
+  for(int row=0; row < n_krylov;++row) { 
+    for(int col=0; col< n_krylov; ++col) { 
+      H_tilde(row,col) = H(row,col) + f_m[row]*conj(h_m[col]);
+    }
+  }
+
+  // For each evec check   H_tilde v - lambda v is small
+  //
+  for(int evec=0; evec < n_krylov; ++evec) { 
+
+    // This vector will hold data extracted from Fortran
+    multi1d<DComplex> my_evec(n_krylov);
+
+    // Extract evec from Fortran
+    for(int row=0 ; row < n_krylov; ++row) {
+      my_evec[row] = evecs(evec,row); // This brings in column evec of Fortran
+    }
+
+    // Multiply H_tilde my_evec
+    for(int row=0 ; row < n_krylov; ++row) { 
+      diff[row]=zero;
+      for(int col=0; col < n_krylov; ++col)  {
+	diff[row] += H_tilde(row,col)*my_evec[col];
+      }
+
+      // Subtract lambda my_evec
+      diff[row] -= evals[evec]*my_evec[row];
+      EXPECT_LT( toDouble(real(diff[row])), 1.0e-14 );
+      EXPECT_LT( toDouble(imag(diff[row])), 1.0e-14 );
+ 
+      QDPIO::cout << "eigenvec: " << evec << " diff[" << row <<"]=" << diff[row] << "  lambda=" << evals[evec] << std::endl;
+    }
+  }
+}

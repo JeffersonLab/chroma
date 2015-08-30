@@ -162,6 +162,32 @@ namespace Chroma
     }
   }
 
+  /*! Initialize the key matrices (resize and zero)
+   */
+  void LinOpSysSolverFGMRESDR::InitMatrices()
+  {
+    int total_dim = invParam_.NKrylov + invParam_.NDefl;
+    H.resize(total_dim+1, total_dim);
+    R.resize(total_dim+1, total_dim);
+
+    V.resize(total_dim+1);
+    Z.resize(total_dim+1);
+    givens_rots.resize(total_dim+1);
+    g.resize(total_dim+1);
+
+    for(int row = 0; row < total_dim+1; row++) { 
+      for(int col =0; col < total_dim; col++) { 
+	H(row,col) = zero;
+	R(row,col) = zero;
+	V[row] = zero;
+	R[row] = zero;
+	g[row] = zero;
+      }
+    }
+
+
+  }
+
 
   /*! Solve least squares system to get the coefficients for 
    *  Updating the solution at the end of an GGMRES-DR Cycle.
@@ -239,7 +265,7 @@ namespace Chroma
    */
 
   SystemSolverResults_t 
-  LinOpSysSolverFGMRESDR::operator() (T& psi, const T& chi) const 
+  LinOpSysSolverFGMRESDR::operator() (T& psi, const T& chi) const
   {
     START_CODE();
     SystemSolverResults_t res; // Value to return
@@ -271,22 +297,6 @@ namespace Chroma
       // If not finished, we should do another cycle with RHS='r' to find dx to add to psi.
       ++n_cycles;
       
-      // Declare workspace
-      // Work spacesn_
-      multi2d<DComplex> H(invParam_.NKrylov+1, invParam_.NKrylov); // The H matrix
-      multi2d<DComplex> R(invParam_.NKrylov+1, invParam_.NKrylov); // R = H diagonalized with Givens rotations
-      multi1d<T> V(invParam_.NKrylov+1);  // K(A)
-      multi1d<T> Z(invParam_.NKrylov+1);  // K(MA)
-      multi1d< Handle<Givens> > givens_rots(invParam_.NKrylov+1);
-      multi1d<DComplex> g(invParam_.NKrylov+1);
-
-      // Init the matrices
-      for(int row = 0; row < invParam_.NKrylov+1; ++row) {
-	for(int col = 0; col < invParam_.NKrylov; ++col) { 
-	  H(row,col) = DComplex(0);
-	  R(row,col) = DComplex(0);
-	}
-      }
   
       int dim; // dim at the end of cycle (in case we terminate in-cycle
 

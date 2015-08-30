@@ -182,7 +182,17 @@ namespace Chroma
 	  QDPIO::cout << "Unable to create Preconditioner" << std::endl;
 	  QDP_abort(1);
 	}
+
+	// Initialize stuff
+	InitMatrices();
+
+	
       }
+
+
+    //! Initialize the internal matrices
+    void InitMatrices();
+    
 
     //! Destructor is automatic
     ~LinOpSysSolverFGMRESDR() {}
@@ -224,6 +234,16 @@ namespace Chroma
     Handle< FermState<T,Q,Q> > state_;
     SysSolverFGMRESDRParams invParam_;
     Handle< LinOpSystemSolver<T> > preconditioner_;
+
+    // These can become state variables, as they will need to be
+    // handed around
+     mutable multi2d<DComplex> H; // The H matrix
+     mutable multi2d<DComplex> R; // R = H diagonalized with Givens rotations
+     mutable multi1d<T> V;  // K(A)
+     mutable multi1d<T> Z;  // K(MA)
+     mutable multi1d< Handle<Givens> > givens_rots;
+     mutable multi1d<DComplex> g;
+
   };
 
 } // End namespace
