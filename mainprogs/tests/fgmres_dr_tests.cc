@@ -193,8 +193,15 @@ TEST_F(FGMRESDRTests, arnoldi5)
     }
   }
   
-  // In this case the r_norm is just the norm of the right hand side
+
   Double beta=sqrt(norm2(rhs, s));
+  for(int j=0; j < g.size(); ++j) { 
+    g[j] = DComplex(0); 
+  }
+  g[0] = beta;
+  // Set up initial V[0] = rhs / || r^2 || -- 
+  Double beta_inv = Double(1)/beta;
+  V[0][s] = beta_inv * rhs;
   int dim;
   sol.FlexibleArnoldi(n_krylov, n_deflate,
 		      rsd_target,
@@ -403,6 +410,15 @@ TEST_P(FGMRESDRTestsFloatParams, arnoldi5GivensRot)
   
   // Assume zero initial guess
   Double beta=sqrt(norm2(rhs, s));
+
+  for(int j=0; j < g.size(); ++j) { 
+    g[j] = DComplex(0); 
+  }
+  g[0] = beta;
+  // Set up initial V[0] = rhs / || r^2 || -- 
+  Double beta_inv = Double(1)/beta;
+  V[0][s] = beta_inv * rhs;
+
   int dim;
   sol.FlexibleArnoldi(n_krylov, 
 		      n_deflate,
@@ -543,12 +559,12 @@ TEST_F(FGMRESDRTests, testLeastSquares)
 }
 
 
-TEST_P(FGMRESDRTestsFloatParams, testFullSolver)
+TEST_P(FGMRESDRTestsFloatParams, testFullSolverNoDeflate)
 {
   std::istringstream input(xml_for_param);
   XMLReader xml_in(input);
   SysSolverFGMRESDRParams p( xml_in, "/Params/InvertParam" );
-
+  p.NDefl = 0;
   // Reset target residuum as per input
   float rsd_target_in = GetParam();
   p.RsdTarget = Real(rsd_target_in);
@@ -625,6 +641,15 @@ TEST_F(FGMRESDRTests, testQDPLapackZGETRFZGETRS)
   
   // Assume zero initial guess
   Double beta=sqrt(norm2(rhs, s));
+
+  for(int j=0; j < g.size(); ++j) { 
+    g[j] = DComplex(0); 
+  }
+  g[0] = beta;
+  // Set up initial V[0] = rhs / || r^2 || -- 
+  Double beta_inv = Double(1)/beta;
+  V[0][s] = beta_inv * rhs;
+
   int dim;
   sol.FlexibleArnoldi(n_krylov, 
 		      n_deflate,
@@ -738,6 +763,143 @@ TEST_F(FGMRESDRTests, testQDPLapackZGETRFZGETRS)
 
     // Multiply: H_tilde my_evec -> diff
     trans='N'; 
+    QDPLapack::zgemv(trans, n_krylov, n_krylov, H_tilde, n_krylov, my_evec, diff);
+    
+    // Subtract lambda my_evec
+    for(int row=0; row < n_krylov; ++row) { 
+      diff[row] -= evals[evec]*evecs(evec,row);
+
+      // check result is small
+      EXPECT_LT( toDouble(real(diff[row])), 1.0e-14 );
+      EXPECT_LT( toDouble(imag(diff[row])), 1.0e-14 );
+ 
+      QDPIO::cout << "eigenvec: " << evec << " diff[" << row <<"]=" << diff[row] << "  lambda=" << evals[evec] << std::endl;
+    }
+  }
+}
+
+TEST_F(FGMRESDRTests, testGetEigenvector)
+{
+  std::istringstream input(xml_for_param);
+  XMLReader xml_in(input);
+  SysSolverFGMRESDRParams p( xml_in, "/Params/InvertParam" );
+  LinOpSysSolverFGMRESDR sol(linop,state,p);
+
+
+  const Subset& s = sol.subset();
+
+
+    // Create a gaussian source 
+  LatticeFermion rhs;
+  gaussian(rhs, s);
+
+  Real rsd_target(1.0e-9);
+  rsd_target *= sqrt(norm2(rhs,s));
+
+  int n_krylov=5;
+  int n_deflate=0;
+
+  // Work spaces
+  multi2d<DComplex> H(n_krylov,n_krylov+1); // The H matrix
+  multi2d<DComplex> R(n_krylov,n_krylov+1); // R = H diagonalized with Givens rotations
+  for(int row = 0; row < n_krylov+1; ++row) {
+    for(int col = 0; col < n_krylov; ++col) { 
+      H(col,row) = DComplex(0);
+      R(col,row) = DComplex(0);
+    }
+  }
+  multi1d<T> V(n_krylov+1);  // K(A)
+  multi1d<T> Z(n_krylov+1);  // K(MA)
+  multi1d< Handle<Givens> > givens_rots(n_krylov+1);
+  multi1d<DComplex> g(n_krylov+1);
+  
+  // Assume zero initial guess
+  Double beta=sqrt(norm2(rhs, s));
+
+  for(int j=0; j < g.size(); ++j) { 
+    g[j] = DComplex(0); 
+  }
+  g[0] = beta;
+  // Set up initial V[0] = rhs / || r^2 || -- 
+  Double beta_inv = Double(1)/beta;
+  V[0][s] = beta_inv * rhs;
+
+  int dim;
+  sol.FlexibleArnoldi(n_krylov, 
+		      n_deflate,
+		      rsd_target,
+		      beta,
+		      rhs, 
+		      V,
+		      Z, 
+		      H, 
+		      R,
+		      givens_rots,
+		      g,
+		      dim);
+  
+  // NOw want to solve System H^\dagger f_m = h_m
+  multi1d<DComplex> f_m(n_krylov);
+  multi2d<DComplex> evecs(n_krylov,n_krylov);
+  multi1d<DComplex> evals(n_krylov);
+  multi1d<int> order_array(n_krylov);
+
+  sol.GetEigenvectors(n_krylov,
+		      H,
+		      f_m,
+		      evecs,
+		      evals,
+		      order_array);
+
+  // Check that the order array is correct:
+  DComplex prev_eval=evals[order_array[0]];
+  QDPIO::cout << "evals[0] = " << prev_eval << " || evals[0] || = " << norm2(prev_eval) << std::endl;
+  for(int i=1; i < n_krylov; i++) { 
+    DComplex curr_eval=evals[order_array[i]];
+    QDPIO::cout << "evals["<<i<<"] = " << curr_eval << " ||evals["<<i<<"] || = " << norm2(curr_eval) <<std::endl;
+
+    ASSERT_LE( toDouble(norm2(prev_eval)), toDouble(norm2(curr_eval)));
+    prev_eval = curr_eval;
+  }
+
+  // Check the eigenvalue stuff
+  multi1d<DComplex> h_m(n_krylov);
+
+  // h1 is the copy I will pass to LAPACK 
+  // I actually want to solve with the dagger of H
+  // so I should transpose as well as conjugate
+  // however LAPACK expects Fortran order: rows run fastest, columns slower
+  // multi2d has Fortran like indexing (row first, column second)
+  // but underneath the hood, columns still run fastest.
+  // So in principle we need to transpose in and out of Fortran
+  // however as I want to solve with the Transpose conjugate
+  // all I have to do is leave the indices untransposed, and just conjugate
+  for(int col=0; col < n_krylov; ++col) {
+    h_m[col] = conj(H(col, n_krylov)); // Keeping this for checking
+  }
+  // Now form Hm + f_m h_m^H
+  // We will send this to Fortran, and we don't want to transpose
+  // or conjugate. So just transpose indices on H_tilde now, to ensure
+  // correct column major order for Fortran
+  multi2d<DComplex> H_tilde(n_krylov,n_krylov);
+  for(int row=0; row < n_krylov;++row) { 
+    for(int col=0; col< n_krylov; ++col) { 
+      H_tilde(col,row) = H(col,row) + f_m[row]*conj(h_m[col]);
+    }
+  }
+
+  // For each evec check   H_tilde v - lambda v is small
+  multi1d<DComplex> diff(n_krylov);
+  for(int evec=0; evec < n_krylov; ++evec) { 
+  
+    // Extract evec from 'evecs'
+    multi1d<DComplex> my_evec(n_krylov);
+    for(int row=0; row<n_krylov; ++row) {
+      my_evec[row] = evecs(evec,row);
+    }
+
+    // Multiply: H_tilde my_evec -> diff
+    char trans='N'; 
     QDPLapack::zgemv(trans, n_krylov, n_krylov, H_tilde, n_krylov, my_evec, diff);
     
     // Subtract lambda my_evec

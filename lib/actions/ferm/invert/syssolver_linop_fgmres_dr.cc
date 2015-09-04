@@ -1,7 +1,11 @@
 /*! \file
  *  \brief Solve a M*psi=chi linear system by MR
  */
-
+#include <algorithm>
+#include <functional>
+#include <vector>
+#include "chromabase.h"
+#include "qdp-lapack.h"
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 
@@ -88,26 +92,11 @@ namespace Chroma
     const Subset& s = M.subset();      // Linear Operator Subset
     ndim_cycle = 0;     
 
-
-    // Set up initial vector g = [ beta, 0 ... 0 ]^T
-    // In this case beta should be the r_norm, ie || r || (=|| b || for the first cycle)
-    for(int j=0; j < g.size(); ++j) { 
-      g[j] = DComplex(0); 
-    }
-    g[0] = r_norm;
+    const int total_dim=n_krylov+n_deflate;
     
-    // Set up initial V[0] = rhs / || r^2 || -- 
-    Double beta_inv = Double(1)/r_norm;
-    V[0][s] = beta_inv * rhs;
-    
-    // NB: Because the internal loop goes < j
-    // I need 'j' to start from 1 - a la Fortran
-    // However when used as an index I need it ala C so j-1
-    // In this game, j is a column
-    // and i is a row.
 
     // Work by columns:
-    for(int j=0; j < n_krylov; ++j) {
+    for(int j=n_deflate; j < total_dim; ++j) {
      
       M( Z[j], V[j] );  // z_j = M v_j
       T w;
@@ -167,23 +156,23 @@ namespace Chroma
   void LinOpSysSolverFGMRESDR::InitMatrices()
   {
     int total_dim = invParam_.NKrylov + invParam_.NDefl;
-    H.resize(total_dim+1, total_dim); // This is odd. Shouldn't it be
-    R.resize(total_dim+1, total_dim); // resize (n_cols, n_rows)?
+    H_.resize(total_dim, total_dim+1); // This is odd. Shouldn't it be
+    R_.resize(total_dim, total_dim+1); // resize (n_cols, n_rows)?
                                       // Doing that give weird double free 
                                       //errors
 
-    V.resize(total_dim+1);
-    Z.resize(total_dim+1);
-    givens_rots.resize(total_dim+1);
-    g.resize(total_dim+1);
+    V_.resize(total_dim+1);
+    Z_.resize(total_dim+1);
+    givens_rots_.resize(total_dim+1);
+    g_.resize(total_dim+1);
 
     for(int row = 0; row < total_dim+1; row++) { 
       for(int col =0; col < total_dim; col++) { 
-	H(col,row) = zero;
-	R(col,row) = zero;
-	V[row] = zero;
-	R[row] = zero;
-	g[row] = zero;
+	H_(col,row) = zero;
+	R_(col,row) = zero;
+	V_[row] = zero;
+	Z_[row] = zero;
+	g_[row] = zero;
       }
     }
 
@@ -228,6 +217,111 @@ namespace Chroma
       eta[row] /= R(row,row);
     }
   }
+
+
+  /*! Get the eigenvectors of the matrix 
+   *    H_tilde = H_m + f_m h^{H}_m 
+   *
+   *  of which we will keep the first NDefl corresponding
+   *  to the NDefl eigenvalues of smallest modulus as our 
+   *  matrix G. In turn the Harmonic Ritz vectors are 
+   *  V_m G_m. 
+   *
+   *  We need a two stage process here. 
+   *  One: first we need to solve H_m^H f_m = h^H_m
+   *  where h_m is the last row of the \hat{H}_m
+   *
+   *  second, once in posession of f_m we need to constuct
+   *  H_tilde and get its eigenvalues and eigenvectors.
+   *
+   *  NB: We use lapack here, specifically the routines:
+   *   zgetrf/zgetrs to solve for f_m 
+   *
+   *   zgeev to get the eigenvalues/eigenvectors
+   *  
+   */
+  void 
+  LinOpSysSolverFGMRESDR::GetEigenvectors(int total_dim,
+					  const multi2d<DComplex>& H,
+					  multi1d<DComplex>& f_m,
+					  multi2d<DComplex>& evecs,
+					  multi1d<DComplex>& evals,
+					  multi1d<int>& order_array) const
+  {
+    // Lapack routines overwrite the matrix 
+    // with factorizations so I want a copy here.
+    evals.resize(total_dim);
+    evecs.resize(total_dim,total_dim);
+    order_array.resize(total_dim);
+    f_m.resize(total_dim);
+
+    multi2d<DComplex> H_tilde(total_dim,total_dim);
+    multi1d<DComplex> h_m(total_dim);
+    for(int col=0; col < total_dim; ++col)  {
+      for(int row=0; row < total_dim; ++row) { 
+	H_tilde(col,row)=H(col,row);
+      }
+    }
+    for(int col=0; col < total_dim; ++col) { 
+      // h_m is a column vector and is the hermitian conjugate
+      // of the last row of H (ie H_{row=total_dim}, col=:})
+      // Hence I conjugate here.
+      h_m[col] = conj(H(col,total_dim)); 
+      f_m[col] = h_m[col];   // f_m will be overwritten
+    }
+
+    multi1d<int> ipiv(total_dim);
+    int info;
+    QDPIO::cout << "Calling ZGETRF to factor H" << std::endl;
+    QDPLapack::zgetrf(total_dim,total_dim,H_tilde,total_dim,ipiv,info);
+    if (info != 0) { 
+      QDPIO::cout << "ZGETRF reported failure: info=" << info << std::endl;
+      QDP_abort(1);
+    }
+    char trans='C'; // We will solve with H^H. C=solve with Herm. Conj.
+    QDPLapack::zgetrs(trans,total_dim,1,H_tilde,total_dim,ipiv,f_m,total_dim,info);
+    if (info != 0) { 
+      QDPIO::cout << "ZGETRS reported failure: info=" << info << std::endl;
+      QDP_abort(1);
+    }
+
+    // OK now we can construct the matrix whose eigenvalues we seek
+    // We can reuse H_tilde for this
+    for(int col=0; col < total_dim; ++col) { 
+      for(int row=0; row < total_dim; ++row) { 
+	H_tilde(col,row) = H(col,row) + f_m[row]*conj(h_m[col]);
+      }
+    }
+     
+    QDPIO::cout << "CALLING ZGEEV" << std::endl;
+    QDPLapack::zgeev(total_dim, H_tilde, evals, evecs);
+
+    
+    // Now I need to sort the eigenvalues in terms of smallest modulus.
+    // I will use the C++ std library here.
+    // It needs iterators tho.
+    std::vector<int> std_order_array(total_dim);
+    for(int i=0; i < total_dim; ++i) {
+      std_order_array[i]=i;
+    }
+    
+    // This calls the standard library sort function
+    // with a C++ lambda for the comparison function.
+    // 
+    sort(std_order_array.begin(), std_order_array.end(),
+	 // This is the lambda below: [&evals] brings evals into the closure
+         // (so called capture region
+	 [&evals](int i, int j)->bool {                
+	   return toBool( norm2(evals[i]) < norm2(evals[j])); 
+	 });
+
+    for(int i=0; i < total_dim; ++i) {
+      order_array[i]=std_order_array[i];
+    }
+    
+  }
+
+ 
 
   /*! Flexible Arnolid Process. 
    *  Currently not using augmentation (n_deflate ignored)
@@ -301,7 +395,38 @@ namespace Chroma
       
   
       int dim; // dim at the end of cycle (in case we terminate in-cycle
+      int n_deflate = invParam_.NDefl;
+      // Set up the input g vector (c-H eta?)
+      // 
+      if (n_cycles == 1 || invParam_.NDefl == 0 ) { 
+	// We are either first cycle, or
+	// We have no deflation subspace ie we are regular FGMRES
+	// and we are just restarting
+	//
+	// Set up initial vector g = [ beta, 0 ... 0 ]^T
+	// In this case beta should be the r_norm, ie || r || (=|| b || for the first cycle)
+	for(int j=0; j < g_.size(); ++j) { 
+	  g_[j] = DComplex(0); 
+	}
+	g_[0] = r_norm;
+	
+	// Set up initial V[0] = rhs / || r^2 ||
+	// and since we are solving for A delta x = r
+	// the rhs is 'r'
+	//
+	Double beta_inv = Double(1)/r_norm;
+	V_[0][s] = beta_inv * r;
+	
+	n_deflate = 0; // Override n_deflate for first cycle
+	               // So Arnoldi process starts from right place
 
+      }
+      else { 
+	// n_cycles is bigger than 1 && n_defl >  0
+	// 
+	// here we have to set up the subspaces 
+	// and the H's and stuff. 
+      }
 
       // Carry out Flexible Arnoldi process for the cycle
 
@@ -315,23 +440,23 @@ namespace Chroma
 		      target,
 		      r_norm,
 		      r, 
-		      V,
-		      Z, 
-		      H, 
-		      R,
-		      givens_rots,
-		      g,
+		      V_,
+		      Z_, 
+		      H_, 
+		      R_,
+		      givens_rots_,
+		      g_,
 		      dim);
       
 
       // Solve the least squares system for the lsq_coeffs coefficients
       multi1d<DComplex> lsq_coeffs(dim);  
-      LeastSquaresSolve(R,g,lsq_coeffs, dim); // Solve Least Squares System
+      LeastSquaresSolve(R_,g_,lsq_coeffs, dim); // Solve Least Squares System
 
       // Compute the correction dx = sum_j  lsq_coeffs_j Z_j
       LatticeFermion dx = zero;
       for(int j=0; j < dim; ++j) { 
-	dx[s] += lsq_coeffs[j]*Z[j];
+	dx[s] += lsq_coeffs[j]*Z_[j];
       }
 
       // Update psi

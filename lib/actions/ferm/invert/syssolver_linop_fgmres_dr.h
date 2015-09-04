@@ -227,6 +227,13 @@ namespace Chroma
 			   multi1d<DComplex>& eta,
 			   int dim) const;
 
+    void GetEigenvectors(int total_dim, 
+			 const multi2d<DComplex>& H,
+			 multi1d<DComplex>& f_m,
+			 multi2d<DComplex>& evecs,
+			 multi1d<DComplex>& evals,
+			 multi1d<int>& order_array) const;
+
   private:
     // Hide default constructor
     LinOpSysSolverFGMRESDR() {}
@@ -237,12 +244,13 @@ namespace Chroma
 
     // These can become state variables, as they will need to be
     // handed around
-     mutable multi2d<DComplex> H; // The H matrix
-     mutable multi2d<DComplex> R; // R = H diagonalized with Givens rotations
-     mutable multi1d<T> V;  // K(A)
-     mutable multi1d<T> Z;  // K(MA)
-     mutable multi1d< Handle<Givens> > givens_rots;
-     mutable multi1d<DComplex> g;
+    mutable multi2d<DComplex> H_; // The H matrix
+    mutable multi2d<DComplex> R_; // R = H diagonalized with Givens rotations
+    mutable multi1d<T> V_;  // K(A)
+    mutable multi1d<T> Z_;  // K(MA)
+    mutable multi1d< Handle<Givens> > givens_rots_;
+    mutable multi1d<DComplex> g_;
+
 
   };
 
