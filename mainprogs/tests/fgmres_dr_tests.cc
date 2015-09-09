@@ -37,7 +37,7 @@ using namespace Chroma;
      <invType>FGMRESDR_INVERTER</invType>	      \
      <RsdTarget>1.0e-7</RsdTarget>		      \
      <NKrylov>5</NKrylov>			      \
-     <NDefl>2</NDefl>				      \
+     <NDefl>3</NDefl>				      \
      <MaxIter>130</MaxIter>			      \
      <PrecondParams>				      \
        <invType>MR_INVERTER</invType>		      \
@@ -115,7 +115,7 @@ TEST_F(FGMRESDRTests, canReadXML)
   XMLReader xml_in(input);
   SysSolverFGMRESDRParams p( xml_in, "/Params/InvertParam" );
   ASSERT_EQ(p.NKrylov, 5);
-  ASSERT_EQ(p.NDefl, 2);
+  ASSERT_EQ(p.NDefl, 3);
   ASSERT_EQ(p.MaxIter, 130);
   ASSERT_EQ(p.PrecondParams.path, "/PrecondParams");
   ASSERT_EQ(p.PrecondParams.id, "MR_INVERTER");
@@ -185,6 +185,8 @@ TEST_F(FGMRESDRTests, arnoldi5)
   multi1d<T> Z(n_krylov+1);  // K(MA)
   multi1d< Handle<Givens> > givens_rots(n_krylov+1);
   multi1d<DComplex> g(n_krylov+1);
+  multi2d<DComplex> Qk_Hk;
+  multi1d<DComplex> Qk_Hk_taus;
 
   for(int col=0; col < n_krylov; ++col) {
     for(int row=0; row < n_krylov+1; ++row)  {
@@ -203,16 +205,17 @@ TEST_F(FGMRESDRTests, arnoldi5)
   Double beta_inv = Double(1)/beta;
   V[0][s] = beta_inv * rhs;
   int dim;
+
   sol.FlexibleArnoldi(n_krylov, n_deflate,
 		      rsd_target,
-		      beta,
-		      rhs, 
 		      V,
 		      Z, 
 		      H, 
 		      R,
 		      givens_rots,
 		      g,
+		      Qk_Hk,
+		      Qk_Hk_taus,
 		      dim);
 
   ASSERT_EQ(dim,n_krylov);
@@ -407,7 +410,9 @@ TEST_P(FGMRESDRTestsFloatParams, arnoldi5GivensRot)
   multi1d<T> Z(n_krylov+1);  // K(MA)
   multi1d< Handle<Givens> > givens_rots(n_krylov+1);
   multi1d<DComplex> g(n_krylov+1);
-  
+  multi2d<DComplex> Qk;
+  multi1d<DComplex> Qk_tau;
+
   // Assume zero initial guess
   Double beta=sqrt(norm2(rhs, s));
 
@@ -423,14 +428,14 @@ TEST_P(FGMRESDRTestsFloatParams, arnoldi5GivensRot)
   sol.FlexibleArnoldi(n_krylov, 
 		      n_deflate,
 		      rsd_target,
-		      beta,
-		      rhs, 
 		      V,
 		      Z, 
 		      H, 
 		      R,
 		      givens_rots,
 		      g,
+		      Qk,
+		      Qk_tau,
 		      dim);
   
   ASSERT_LE(dim,n_krylov);
@@ -493,6 +498,8 @@ TEST_P(FGMRESDRTestsFloatParams, arnoldi5GivensRot)
     }
   }
 
+#if 0 
+  // R is not computed anymore 
   // The transformed H should agree with R
   for(int row=0; row < dim+1; ++row) {
     for(int col=row; col < dim; ++col)   {
@@ -500,7 +507,7 @@ TEST_P(FGMRESDRTestsFloatParams, arnoldi5GivensRot)
       EXPECT_DOUBLE_EQ( toDouble(imag(R(col,row))), toDouble(imag(H(col,row))));
     }
   }
-
+#endif
 
   // The resvec we generated should agree with what
   for(int col=0; col < dim+1; ++col) { 
@@ -597,6 +604,45 @@ TEST_P(FGMRESDRTestsFloatParams, testFullSolverNoDeflate)
 }
   
 
+TEST_P(FGMRESDRTestsFloatParams, testFullSolverDeflate)
+{
+  std::istringstream input(xml_for_param);
+  XMLReader xml_in(input);
+  SysSolverFGMRESDRParams p( xml_in, "/Params/InvertParam" );
+  p.NDefl = 3;
+  p.NKrylov = 6;
+  // Reset target residuum as per input
+  float rsd_target_in = GetParam();
+  p.RsdTarget = Real(rsd_target_in);
+
+  // Construct the solver 
+  LinOpSysSolverFGMRESDR sol(linop,state,p);
+
+  // Grab the subset
+  const Subset& s =  linop->subset();
+
+  // Gaussian RHS
+  LatticeFermion rhs; 
+  gaussian(rhs,s);
+
+  // zero initial guess
+  LatticeFermion x = zero;
+  
+  // Solve system
+  (sol)(x,rhs);
+
+  // Compute residuum
+
+  LatticeFermion r= zero;
+  (*linop)(r,x,PLUS);   // r = Ax
+  r[s]-=rhs;        // r = Ax - b = -(b-Ax);
+
+  Double resid_rel = sqrt( norm2(r,s)/norm2(rhs,s) ); // sqrt( || r ||^2/||b||^2 )
+  ASSERT_LE( toDouble(resid_rel), toDouble(p.RsdTarget) );
+  
+}
+  
+
 
 
 INSTANTIATE_TEST_CASE_P(FGMRESDRTests,
@@ -638,7 +684,8 @@ TEST_F(FGMRESDRTests, testQDPLapackZGETRFZGETRS)
   multi1d<T> Z(n_krylov+1);  // K(MA)
   multi1d< Handle<Givens> > givens_rots(n_krylov+1);
   multi1d<DComplex> g(n_krylov+1);
-  
+  multi2d<DComplex> Qk;
+  multi1d<DComplex> Qk_tau;
   // Assume zero initial guess
   Double beta=sqrt(norm2(rhs, s));
 
@@ -654,14 +701,14 @@ TEST_F(FGMRESDRTests, testQDPLapackZGETRFZGETRS)
   sol.FlexibleArnoldi(n_krylov, 
 		      n_deflate,
 		      rsd_target,
-		      beta,
-		      rhs, 
 		      V,
 		      Z, 
 		      H, 
 		      R,
 		      givens_rots,
 		      g,
+		      Qk,
+		      Qk_tau,
 		      dim);
   
   // NOw want to solve System H^\dagger f_m = h_m
@@ -812,7 +859,8 @@ TEST_F(FGMRESDRTests, testGetEigenvector)
   multi1d<T> Z(n_krylov+1);  // K(MA)
   multi1d< Handle<Givens> > givens_rots(n_krylov+1);
   multi1d<DComplex> g(n_krylov+1);
-  
+  multi2d<DComplex> Qk;
+  multi1d<DComplex> Qk_tau;
   // Assume zero initial guess
   Double beta=sqrt(norm2(rhs, s));
 
@@ -828,14 +876,14 @@ TEST_F(FGMRESDRTests, testGetEigenvector)
   sol.FlexibleArnoldi(n_krylov, 
 		      n_deflate,
 		      rsd_target,
-		      beta,
-		      rhs, 
 		      V,
 		      Z, 
 		      H, 
 		      R,
 		      givens_rots,
 		      g,
+		      Qk,
+		      Qk_tau,
 		      dim);
   
   // NOw want to solve System H^\dagger f_m = h_m
@@ -913,4 +961,286 @@ TEST_F(FGMRESDRTests, testGetEigenvector)
       QDPIO::cout << "eigenvec: " << evec << " diff[" << row <<"]=" << diff[row] << "  lambda=" << evals[evec] << std::endl;
     }
   }
+}
+
+
+TEST_F(FGMRESDRTests, testQR)
+{
+  std::istringstream input(xml_for_param);
+  XMLReader xml_in(input);
+  SysSolverFGMRESDRParams p( xml_in, "/Params/InvertParam" );
+  LinOpSysSolverFGMRESDR sol(linop,state,p);
+
+
+  const Subset& s = sol.subset();
+
+
+    // Create a gaussian source 
+  LatticeFermion rhs;
+  gaussian(rhs, s);
+
+  Real rsd_target(1.0e-9);
+  rsd_target *= sqrt(norm2(rhs,s));
+
+  int n_krylov=p.NKrylov;
+  int n_deflate=p.NDefl;
+  int total_dim = n_krylov+n_deflate;
+
+  // Work spaces
+  multi2d<DComplex> H(total_dim, total_dim + 1); // The H matrix
+  multi2d<DComplex> R(total_dim, total_dim + 1); // R = H diagonalized with Givens rotations
+
+  for(int col = 0; col < total_dim; ++col) { 
+    for(int row = 0; row < total_dim+1; ++row) {
+      H(col,row) = DComplex(0);
+      R(col,row) = DComplex(0);
+    }
+  }
+
+  multi1d<T> V(total_dim+1);  // K(A)
+  multi1d<T> Z(total_dim+1);  // K(MA)
+  multi1d< Handle<Givens> > givens_rots(total_dim+1);
+  multi1d<DComplex> g(total_dim + 1);
+  multi1d<DComplex> c(total_dim + 1);
+  multi2d<DComplex> Qk;
+  multi1d<DComplex> Qk_tau;
+  // Assume zero initial guess
+  Double beta=sqrt(norm2(rhs, s));
+
+  for(int j=0; j < g.size(); ++j) { 
+    g[j] = DComplex(0); 
+    c[j] = DComplex(0);
+  }
+  g[0] = beta;
+  c[0] = beta;
+
+  // Set up initial V[0] = rhs / || r^2 || -- 
+  Double beta_inv = Double(1)/beta;
+  V[0][s] = beta_inv * rhs;
+
+  int dim;
+  sol.FlexibleArnoldi(n_krylov, 
+		      0, // Guaranteed no deflation
+		      rsd_target,
+		      V,
+		      Z, 
+		      H, 
+		      R,
+		      givens_rots,
+		      g,
+		      Qk,
+		      Qk_tau,
+		      dim);
+
+
+  multi1d<DComplex> eta(n_krylov);
+  sol.LeastSquaresSolve(R,g,eta,dim); // Now we can form c - H \eta
+
+  
+  // NOw want to solve System H^\dagger f_m = h_m
+  multi1d<DComplex> f_m(n_krylov);
+  multi2d<DComplex> evecs(n_krylov,n_krylov);
+  multi1d<DComplex> evals(n_krylov);
+  multi1d<int> order_array(n_krylov);
+
+  // Get the EVs
+  sol.GetEigenvectors(n_krylov,
+		      H,
+		      f_m,
+		      evecs,
+		      evals,
+		      order_array);
+
+ 
+
+  // This is where we will store G_{k} = [ g_1 | .. | g_k ]
+  //
+  // G_{k+1} = [ G_k c - H \eta ]
+  //           [  0             ]
+  QDPIO::cout << "Setting up G_k and G_{k+1}" << std::endl << std::flush; 
+  multi2d<DComplex> Qkplus1(n_deflate+1, n_krylov+1);
+
+  // First copy in the eigenvectors
+  for(int col=0; col < n_deflate; ++col) { 
+    for(int row=0; row < n_krylov; ++row) { 
+      // Copy in the ones corresponding to the lowest k
+      // eigenvectors
+      Qkplus1(col,row) = evecs( order_array[col], row); 
+    }
+    Qkplus1(col,n_krylov) = zero;
+  }
+
+  for(int row=0; row < n_krylov+1; ++row) { 
+    Qkplus1(n_deflate,row) = c[row];
+    for(int col=0; col < n_krylov; ++col) { 
+      Qkplus1(n_deflate,row) -= H(col,row)*eta(col);
+    }
+  }
+
+  // NB: Lapack will overwrite both G_{k} and G_{k+1} with the factorizations.
+
+  // QR reflection coefficients.
+  multi1d<DComplex> tau_kplus1;
+  QDPIO::cout << "QR Decomposing Gk+1" << std::endl;
+  QDPLapack::zgeqrf(n_krylov+1, n_deflate+1, Qkplus1, tau_kplus1);
+
+  // Now I want to compute H^{pr}_m Q_k
+  // I can do this using ZUNMQR but it will overwrite the 'H' I use, 
+  // which at this point is OK in the algorithm, however, here, I will make a copy.
+  // to check my tests.
+
+  multi2d<DComplex> H_copy(n_krylov, n_krylov+1);
+  multi2d<DComplex> H_copy2(n_krylov, n_krylov+1);
+  for(int col=0; col < n_krylov; ++col) {
+    for(int row=0; row < n_krylov+1; ++row) { 
+      H_copy(col,row) = H(col,row);
+      H_copy2(col,row) = H(col,row);
+    }
+  }
+
+  // Now the total dim here is actually n_krylov the other data in H is invalid
+  // So first lets Hit H_copy1 from the right with Q_k from G_k
+  char side='R';
+  char trans='N';
+  QDPIO::cout << "Post multiplying with Q_k using ZUNMQR 1" << std::endl;
+
+  // Here, M and N are the dimensions of the final storage. and 'K' is the order of the decomposition, 
+  // E.g. to right Multiply by Q I can just set it to n_deflate rather than n_deflate+1
+  
+  // !!!! NB: The dimensions here are still the original dimensions of H_copy2,
+  // !!!! even tho at the end of this result only the (rows=n_krylov+1)x(cols=n_deflate) portion is 
+  // !!!! valid
+  QDPLapack::zunmqr2(side,trans, n_krylov+1, n_krylov, n_deflate, Qkplus1, tau_kplus1, H_copy);
+
+
+  QDPIO::cout << "Pre multiply with Q^{H}_{k+1} usign ZUNMQR2" << std::endl;
+  trans='C'; // Multiply with Herm Conjugate
+  side='L';  // Multiply from Left
+  
+  // !!!! NB: The dimensions here are still the original dimensions of H_copy2 
+  // !!!! Even tho when we are done here, really only the (rows=k+1)x(cols=k) portion of it 
+  // !!!! is what is relevant
+  QDPLapack::zunmqr2(side,trans, n_krylov+1, n_krylov, n_deflate+1, Qkplus1, tau_kplus1, H_copy);
+
+  // Now we should check this. One way is by explicitly forming Q_plus_1 -- I need this
+  // anyhow for transforming the V's and the Z's.
+
+  // Recover Q_plus1 -- this reconstructs it explicitly. We will need Qkplus1
+  // and Qk to reconstruct V_{k+1} and Z_{k}
+  QDPLapack::zungqr(n_krylov+1,n_deflate+1,n_deflate+1, Qkplus1, tau_kplus1);
+
+
+  // NOw try and form  H_k Q_k using ZGEMM
+  // 
+  // H_k has n_krylov+1 rows, and n_krylov columns
+  // Q_k has n_krylov rows, and n_deflate columns
+  // 
+  // so H_k Q_k has n_krylov+1 rows and n_deflate columns
+  multi2d<DComplex> HKQK(n_deflate, n_krylov+1);
+  
+  char transa = 'N';
+  char transb = 'N'; 
+  DComplex calpha(1);
+  DComplex cbeta = zero;
+  int m = n_krylov+1;
+  int k = n_krylov;
+  int n = n_deflate;
+
+  // This will evaluate:  H_m Q_k
+  // by beating it into the form alpha * H_m * Q_k + 0 * H_copy1 => H_copy1
+  // NB: I don't form Q_k, but just use Q_{k+1}, and take care of the fact 
+  // that it is bigger than I want by using the leading dimension of Q 
+  // and by setting the m,n,k dimensions appropriately.
+  QDPLapack::zgemm(transa, transb,
+		   m,n,k,
+		   calpha,
+		   H_copy2,
+		   m,
+		   Qkplus1,
+		   m,      // The leading dimension of Qkplus1 is n_krylov+1 i.e. 'm' even if we multiply only with the kxn portion
+		   cbeta,
+		   HKQK,
+		   m);
+
+  multi2d<DComplex> QK1HKQK(n_deflate, n_deflate+1);  
+
+  transa = 'C';
+  transb = 'N'; 
+  
+  m = n_deflate+1; // rows of Q_{k+1}^H
+  k = n_krylov+1;  // cols of Q_{k+1}^H
+  n = n_deflate; // cols of Q^{H}_{k+1} H_{k} Q_{k} 
+
+  // This will evaluate:  H_m Q_k
+  // by beating it into the form alpha * H_m * Q_k + 0 * H_copy1 => H_copy1
+  // NB: I don't form Q_k, but just use Q_{k+1}, and take care of the fact 
+  // that it is bigger than I want by using the leading dimension of Q 
+  // and by setting the m,n,k dimensions appropriately.
+  QDPLapack::zgemm(transa, transb,
+		   m,n,k,
+		   calpha,
+		   Qkplus1,
+		   k,
+		   HKQK,
+		   k,      // The leading dimension of Qkplus1 is n_krylov+1 i.e. 'm' even if we multiply only with the kxn portion
+		   cbeta,
+		   QK1HKQK,
+		   m);
+
+  QDPIO::cout << "QK1HKQK - H_copy" << std::endl;
+
+  for(int row = 0; row < n_deflate+1; ++row) {
+    for(int col=0; col < n_deflate; ++col) { 
+      QK1HKQK(col,row) -= H_copy(col,row);
+      QDPIO::cout <<  QK1HKQK(col,row) << "\t" ;
+      EXPECT_LT( toDouble(sqrt(norm2(QK1HKQK(col,row)))), 1.0e-15 );     
+    }
+    QDPIO::cout << std::endl;
+  }
+
+  // OK Now I need to form: V_{k+1} = V^{pr}_{m+1} Q_{k+1}
+  multi1d<LatticeFermion> new_V(n_deflate+1);
+  for(int i=0; i < n_deflate+1; ++i) {
+    new_V[i] = zero;
+    for(int j=0; j < n_krylov+1; ++j) { 
+      new_V[i] += V[j]*Qkplus1(i,j);
+    }
+  }
+
+  // Check Columns are Orthonormal
+  for(int i=0; i < n_deflate+1; ++i) {
+    for(int j=0; j < n_deflate+1; ++j ) { 
+      DComplex iprod = innerProduct(new_V[i], new_V[j], s);
+      QDPIO::cout << "< V[" << i <<"],V["<<j<<"] > = " << iprod ;
+      
+      if ( i==j ) { 
+	// iprod should be 1
+	Double diff_r = Double(1) - sqrt(real(iprod));
+	Double diff_i = fabs(imag(iprod));
+	QDPIO::cout << " ABS DIFF=" << fabs(diff_r) << " ABS DIFF IM=" << diff_i << std::endl;
+	EXPECT_LT( toDouble(diff_r), 1.0e-11);
+	EXPECT_LT( toDouble(diff_i), 1.0e-12);
+
+      }
+      else { 
+	Double diff_r = fabs(real(iprod));
+	Double diff_i = fabs(imag(iprod));
+	QDPIO::cout << " ABS DIFF RE=" << diff_r << " ABS DIFF IM=" << diff_i << std::endl;
+	EXPECT_LT( toDouble(diff_r), 1.0e-9);
+	EXPECT_LT( toDouble(diff_i), 1.0e-9);
+      }
+    }
+  }
+
+  // 
+  multi1d<LatticeFermion> new_Z(n_deflate);
+  for(int i=0; i < n_deflate; ++i) {
+    new_Z[i] = zero;
+    for(int j=0; j < n_krylov; ++j) { 
+      new_Z[i] += Z[j]*Qkplus1(i,j);
+    }
+  }
+
+
+
 }

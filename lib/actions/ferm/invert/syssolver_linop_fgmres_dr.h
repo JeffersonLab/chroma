@@ -212,14 +212,14 @@ namespace Chroma
     void FlexibleArnoldi(int n_krylov,
 			 int n_deflate,
 			 const Real& rsd_target,
-			 const Double& r_norm,
-			 const T& rhs,					  
 			 multi1d<T>& V,
 			 multi1d<T>& Z,
 			 multi2d<DComplex>& H, 
 			 multi2d<DComplex>& R,
 			 multi1d< Handle<Givens> >& givens_rots,
 			 multi1d<DComplex>& g,
+			 multi2d<DComplex>& Qk, 
+			 multi1d<DComplex>& Qk_tau,
 			 int&  ndim_cycle) const;
 
     void LeastSquaresSolve(const multi2d<DComplex>& R, 
@@ -249,7 +249,25 @@ namespace Chroma
     mutable multi1d<T> V_;  // K(A)
     mutable multi1d<T> Z_;  // K(MA)
     mutable multi1d< Handle<Givens> > givens_rots_;
+
+    // This is the c = V^H_{k+1} r vector (c is frommers Notation)
+    // For regular FGMRES I need to keep only the basis transformed
+    // version of it, for rotating by the Q's (I call this 'g')
+    // However, for FGMRES-DR I need this because I need
+    //  || c - H eta || to extend the G_k matrix to form V_{k+1}
+    // it is made of the previous v_{k+1} by explicitly evaluating c
+    // except at the end of the first cycle when the V_{k+1} are not
+    // yet available
+
+    // Once G_k+1 is available, I can form the QR decomposition
+    // and set  my little g = Q^H and then as I do the Arnoldi 
+    // I can then work it with the Givens rotations...
+    
+    mutable multi1d<DComplex> c_;                                 
+    mutable multi1d<DComplex> eta_;
     mutable multi1d<DComplex> g_;
+    mutable multi2d<DComplex> Hk_QR_;
+    mutable multi1d<DComplex> Hk_QR_taus_;
 
 
   };
