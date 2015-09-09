@@ -183,6 +183,20 @@ namespace Chroma
 	  QDP_abort(1);
 	}
 
+#ifndef BUILD_LAPACK
+	QDPIO::cout << "WARNING: LAPACK Is not built!!!" << std::endl;
+	QDPIO::cout << "WARNING: SUBSPACE Augmentation requires it!!!!" << std::endl;
+	QDPIO::cout << "WARNING: Using the solver with NDefl > 0 will fail!!! " << std::endl;
+	QDPIO::cout << "WARNING: Run this version with NDefl = 0 only!!!!" << std::endl;
+	QDPIO::cout << "WARNING: OR reconfigure with --enable-lapack=lapack" << std::endl;
+
+	if( invParam_.NDefl > 0 ) { 
+	  QDPIO::cout << " invParam.NDefl > 0: This mode is not supported without LAPACK" <<std::endl;
+	  QDP_abort(1);
+	}
+#endif
+	  
+
 	// Initialize stuff
 	InitMatrices();
 
