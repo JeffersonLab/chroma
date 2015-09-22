@@ -450,9 +450,12 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermacts_aggregate_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/clover_fermact_params_w.h \
+	actions/ferm/fermacts/clover_back_fermact_params_w.h \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
+	actions/ferm/fermacts/eoprec_clover_back_fermact_w.h \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
+	actions/ferm/fermacts/unprec_clover_back_fermact_w.h \
 	actions/ferm/fermacts/nef_fermact_params_w.h \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.h \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.h \
@@ -1413,9 +1416,12 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/eoprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/eoprec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
+	actions/ferm/fermacts/clover_back_fermact_params_w.cc \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_clover_back_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/unprec_clover_back_fermact_w.cc \
 	actions/ferm/fermacts/nef_fermact_params_w.cc \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc \

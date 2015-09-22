@@ -3,20 +3,19 @@
  */
 
 #include "chromabase.h"
-#include "actions/ferm/fermacts/clover_fermact_params_w.h"
-
+#include "actions/ferm/fermacts/clover_back_fermact_params_w.h"
 #include "io/param_io.h"
 
 namespace Chroma
 {
 
   //! Default constructor
-  CloverFermActParams::CloverBackFermActParams():CloverFermActParams(),gamma(0)
+  CloverBackFermActParams::CloverBackFermActParams():CloverFermActParams(),gamma(0)
   {
   }
 
   //! Read parameters
-  CloverFermActParams::CloverBackFermActParams(XMLReader& xml, const std::string& path):CloverFermActParams(XMLReader& xml, const std::string& path)
+  CloverBackFermActParams::CloverBackFermActParams(XMLReader& xml, const std::string& path):CloverFermActParams(xml, path)
   {
     XMLReader paramtop(xml, path);
     
