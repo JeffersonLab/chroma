@@ -200,6 +200,13 @@ AC_ARG_ENABLE(testcase-runner,
     [chroma_testcase_runner="trivial_runner.sh"]
 )
 
+AC_ARG_ENABLE(gtest,
+  AC_HELP_STRING([--enable-gtest],
+  [ Enable GoogleTest UnitTesting Framework ]),
+  [ chroma_enable_gtest=${enable_gtest} ],
+  [ chroma_enable_gtest="no" ]
+)
+
 AC_ARG_WITH(gmp,
    AC_HELP_STRING(
     [--with-gmp=<DIR>],
@@ -1189,6 +1196,18 @@ fi
 
 AM_CONDITIONAL(BUILD_QOP_MG,
 	[test "x${BUILD_QOP_MG}x" = "xyesx" ])
+
+case "${chroma_enable_gtest}" in
+yes|YES) 
+	AC_MSG_NOTICE([ Enabling GTest Unittesting ])
+	;;
+*)
+	AC_MSG_NOTICE([ Not using GTest Unittesting ] )
+	;;
+esac
+
+AM_CONDITIONAL(BUILD_GTEST,
+	[test "x${chroma_enable_gtest}x" = "xyesx" ])
 
 #######################
 # Produce output

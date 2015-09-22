@@ -1,3 +1,15 @@
+Sep 9, 2015 - Balint Joo
+	Added gtest testing: enable with --enable-gtest
+
+	Added Basic FGMRES-DR solver. Uses any LinOpSystemSolver as a preconditioner (used MR in testing)
+	Needs LAPACK (--enable-lapack) to work correctly. Currently tested with MKL.
+        Modified qdp_lapack submodule appropriately. There are some unit tests in 
+        mainprogs/tests/t_inv_fgmresdr which need --enable-gtest to build and a double
+        precision build to run correctly. SP will still build, but will hit precision limits 
+        on assertions. Solver should(?) work in pure FGMRES mode (no deflation) if LAPACK is
+        not enabled. XML example is included inline in mainprogs/tests/fgmres_dr_tests.cc.
+	All testing so far done on unit testing. Now ready for larger volumes/lighter quarks.
+
 Jun 10, 2015 - Balint Joo
 	Updated Multi-Grid interface and Wilson MG
 
