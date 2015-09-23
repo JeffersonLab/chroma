@@ -34,7 +34,9 @@ namespace Chroma
 
     //! Full constructor
     UnprecCloverBackLinOp(Handle< FermState<T,P,Q> > fs,
-			  const CloverBackFermActParams& param_);
+			  const CloverBackFermActParams& param_){
+      create(fs,param_);
+    }
 
     //! Creation routine
     void create(Handle< FermState<T,P,Q> > fs,

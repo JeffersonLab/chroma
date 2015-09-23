@@ -28,7 +28,6 @@ namespace Chroma
   }
 
 
-
   //! Apply unpreconditioned Clover fermion linear operator
   /*!
    * The operator acts on the entire lattice
