@@ -5,7 +5,7 @@
 #include "chromabase.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 
-#include "actions/ferm/linop/unprec_clover_linop_w.h"
+#include "actions/ferm/linop/unprec_clover_back_linop_w.h"
 #include "actions/ferm/fermacts/unprec_clover_back_fermact_w.h"
 
 //#include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -24,7 +24,7 @@ namespace Chroma
 								     const std::string& path)
     {
       return new UnprecCloverBackFermAct(CreateFermStateEnv::reader(xml_in, path), 
-				     CloverFermActParams(xml_in, path));
+				     CloverBackFermActParams(xml_in, path));
     }
 
     //! Callback function

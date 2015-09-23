@@ -23,6 +23,10 @@ namespace Chroma
       read(paramtop,"gamma",gamma);
     else
       gamma=0 ;
+    if( paramtop.count("lambda") != 0) 
+      read(paramtop,"lambda",lambda);
+    else
+      lambda=0 ;
       
   }
 
@@ -65,6 +69,7 @@ namespace Chroma
     }
 
     write(xml,"gamma",param.gamma) ;
+    write(xml,"lambda",param.lambda) ;
 
     pop(xml);
   }

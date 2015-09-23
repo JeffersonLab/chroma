@@ -564,6 +564,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.h \
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.h \
 	actions/ferm/linop/unprec_clover_linop_w.h \
+	actions/ferm/linop/unprec_clover_back_linop_w.h \
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.h \
 	actions/ferm/linop/eoprec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/eoprec_dwf_linop_array_w.h \
@@ -1522,6 +1523,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.cc \
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.cc \
 	actions/ferm/linop/unprec_clover_linop_w.cc \
+	actions/ferm/linop/unprec_clover_back_linop_w.cc \
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.cc \
 	actions/ferm/linop/eoprec_slic_linop_w.cc \
 	actions/ferm/linop/eoprec_slrc_linop_w.cc \

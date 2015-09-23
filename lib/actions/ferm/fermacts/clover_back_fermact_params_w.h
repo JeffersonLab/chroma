@@ -19,6 +19,7 @@ namespace Chroma
     CloverBackFermActParams();
     CloverBackFermActParams(XMLReader& in, const std::string& path) ;
     int gamma ;
+    Complex lambda ;
 
   };
 
