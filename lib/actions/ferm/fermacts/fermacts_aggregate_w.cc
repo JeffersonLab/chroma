@@ -6,6 +6,7 @@
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 
 #include "actions/ferm/fermacts/unprec_clover_fermact_w.h"
+#include "actions/ferm/fermacts/unprec_clover_back_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_parwilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_graphene_fermact_w.h"
@@ -98,6 +99,7 @@ namespace Chroma
 
 	success &= EvenOddPrecCloverFermActEnv::registerAll();
 	success &= UnprecCloverFermActEnv::registerAll();
+	success &= UnprecCloverBackFermActEnv::registerAll();
 	success &= EvenOddPrecCloverOrbifoldFermActEnv::registerAll();
 	success &= EvenOddPrecSLICFermActEnv::registerAll();
 	success &= EvenOddPrecSLRCFermActEnv::registerAll();
