@@ -19,13 +19,20 @@ namespace Chroma
   {
     //   QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << std::endl;
 
-    CloverFermActParams* foo= new CloverFermActParams;
+    CloverFermActParams* foo = new CloverFermActParams;
     *foo = param_ ;
+    param = *foo ;
 
-    UnprecCloverLinOp::create(fs,*foo);
-   
+    A.create(fs, param);
+    D.create(fs, param.anisoParam);
+
+    gamma = param_.gamma;
+    lambda = param_.lambda ;
+
+    delete foo ;
     // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << std::endl;
   }
+
 
 
   //! Apply unpreconditioned Clover fermion linear operator
@@ -40,20 +47,46 @@ namespace Chroma
 				     const LatticeFermion& psi, 
 				     enum PlusMinus isign) const
   {
-       
-    UnprecCloverLinOp::operator()(chi,psi,isign) ;
     LatticeFermion tmp; moveToFastMemoryHint(tmp);
-    chi +=  lambda*(Gamma(gamma)*chi) ;
-    
+    Real mhalf = -0.5;
+
+    //  chi   =  A . psi - 0.5 * D' . psi  */
+    A(chi, psi, isign); 
+    D(tmp, psi, isign);
+    chi += mhalf * tmp;
+
+    chi += lambda*(Gamma(gamma)*psi) ;
+
+    getFermBC().modifyF(chi);
   }
+
+
+  void 
+  UnprecCloverBackLinOp::deriv(multi1d<LatticeColorMatrix>& ds_u,
+			   const LatticeFermion& chi, const LatticeFermion& psi, 
+			   enum PlusMinus isign) const
+  {
+    // A. deriv will resize
+    
+    A.deriv(ds_u, chi, psi, isign);
+
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
+
+    ds_tmp = zero;
+    D.deriv(ds_tmp, chi, psi, isign);
+    for(int mu=0; mu < Nd; mu++) { 
+      ds_u[mu] -= Real(0.5)*ds_tmp[mu];
+    }
+    
+    getFermBC().zero(ds_u);
+  }
+
 
   //! Return flops performed by the operator()
   unsigned long UnprecCloverBackLinOp::nFlops() const
   {
-    unsigned long site_flops= UnprecCloverBackLinOp::nFlops();
-    // add the site flops for the vector addition 
-    site_flops += Ns*Nc*5*Layout::sitesOnNode(); 
-    return site_flops ;
+    unsigned long site_flops = D.nFlops()+A.nFlops()+4*Nc*Ns+5*Nc*Ns;
+    return site_flops*Layout::sitesOnNode();
   }
 
 } // End Namespace Chroma
