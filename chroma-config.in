@@ -24,6 +24,8 @@ version="@VERSION@"
 extra_libs="-lqdp-lapack"
 sse_dslash_enabled="@SSE_DSLASH_ENABLED@"
 cpp_dslash_enabled="@CPP_DSLASH_ENABLED@"
+qopdp_mg_enabled="@QOP_MG_ENABLED@"
+
 
 case $sse_dslash_enabled in
 yes)
@@ -51,10 +53,22 @@ yes)
 	;;
 esac
 
-chroma_cxx="@CXX@"
-chroma_cxxflags="@CXXFLAGS@ -I@includedir@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ @BAGEL_CLOVER_CXXFLAGS@ @GMP_CXXFLAGS@ @QMT_CXXFLAGS@ @QUDA_CXXFLAGS@ @QPHIX_CXXFLAGS@"
+case $qopdp_mg_enabled in
+yes)
+	extra_libs="$extra_libs @QOP_MG_LIBS@"
+	mg_ld_flags="@QOP_MG_LDFLAGS@"
+	mg_cxx_flags="@QOP_MG_CXXFLAGS@"
+	;;
+*)
+	mg_ld_flags=""
+	mg_cxx_flags=""
+	;;
+esac
 
-chroma_ldflags="@LDFLAGS@ -L@libdir@ @QDPXX_LDFLAGS@ @BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @BAGEL_CLOVER_LDFLAGS@ @QMT_LDFLAGS@ @QUDA_LDFLAGS@ @QPHIX_LDFLAGS@"
+chroma_cxx="@CXX@"
+chroma_cxxflags="@CXXFLAGS@ -I@includedir@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ @BAGEL_CLOVER_CXXFLAGS@ @GMP_CXXFLAGS@ @QMT_CXXFLAGS@ @QUDA_CXXFLAGS@ @QPHIX_CXXFLAGS@ "$mg_cxx_flags
+
+chroma_ldflags="@LDFLAGS@ -L@libdir@ @QDPXX_LDFLAGS@ @BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @BAGEL_CLOVER_LDFLAGS@ @QMT_LDFLAGS@ @QUDA_LDFLAGS@ @QPHIX_LDFLAGS@ "$mg_ld_flags
 
 chroma_libs="-lchroma "$extra_libs" @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @BAGEL_CLOVER_LIBS@ @LIBS@ @GMP_LIBS@ @QUDA_LIBS@ @QMT_LIBS@ @QPHIX_LIBS@" 
 

@@ -1191,6 +1191,7 @@ then
   AC_SUBST(QOP_MG_LDFLAGS, "-L${QLA_DIR}/lib -L${QDPC_DIR}/lib -L${QOPQDP_DIR}/lib")
   AC_SUBST(QOP_MG_LIBS, " -lwilsonmg -lqopqdp -lqdp_common -lqdp_int -lqdp_f -lqdp_d -lqdp_df -lqdp_f2 -lqdp_d2 -lqdp_df2 -lqdp_f3 -lqdp_d3 -lqdp_df3 -lqdp_fn -lqdp_dn -lqdp_dfn -lqio -llime -lqla_c99 -lqla_cmath -lqla_d2 -lqla_d3 -lqla_d -lqla_df2 -lqla_df3 -lqla_df -lqla_dfn -lqla_dn -lqla_dq2 -lqla_dq3 -lqla_dq -lqla_dqn -lqla_f2 -lqla_f3 -lqla_f -lqla_fn -lqla_int -lqla_q2 -lqla_q3 -lqla_q -lqla_qn -lqla_random")
 
+ AC_SUBST(QOP_MG_ENABLED,[yes])	     
  AC_DEFINE([BUILD_QOP_MG],[], [Build with the QDP MG Library])  	
 fi
 
