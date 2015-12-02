@@ -160,19 +160,36 @@ namespace Chroma
 	  Handle< MapObject<int,EVPair<LatticeColorVector> > > obj;
 
 	public:
-	  QIOReadSubsetVectorsLCV(const Params& params_) : params(params_) {
+	  QIOReadSubsetVectorsLCV(const Params& params_) : params(params_)
+	  {
 	    try
 	    {
+	      // Generate a metadata
+	      std::string file_str;
+	      if (1)
+	      {
+		XMLBufferWriter file_xml;
+
+		push(file_xml, "MODMetaData");
+		write(file_xml, "id", std::string("eigenColorVec"));
+		write(file_xml, "lattSize", QDP::Layout::lattSize());
+		// write(file_xml, "num_vecs", params.param.num_vecs); // do not know num_vecs till data is read
+		pop(file_xml);
+
+		file_str = file_xml.str();
+	      }
+	
+	      // Create the entry
 	      std::istringstream  xml_nam(params.named_obj_xml.xml);
 	      XMLReader  namtop(xml_nam);
 	      GroupXML_t colorvec_obj = readXMLGroup(namtop, "MapObject", "MapObjType");
 
-	      // Create the entry
 	      TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id);
 	      TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id) =
 		TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(colorvec_obj.id,
 									     namtop,
-									     colorvec_obj.path);
+									     colorvec_obj.path,
+									     file_str);
 	    }
 	    catch (std::bad_cast)
 	    {

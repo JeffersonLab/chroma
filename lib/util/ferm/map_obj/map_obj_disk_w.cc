@@ -39,13 +39,13 @@ namespace Chroma
 
       //! Callback function
       QDP::MapObject<int,EVPair<LatticeColorVector> >* createMapObjIntKeyCV(XMLReader& xml_in,
-									    const std::string& path) 
+									    const std::string& path,
+									    const std::string& user_data) 
       {
 	// Needs parameters...
 	Params params(xml_in, path);
-	std::string  user_data;
 	
-	QDP::MapObjectDisk<int,EVPair<LatticeColorVector> >* obj = new QDP::MapObjectDisk<int,EVPair<LatticeColorVector> >();
+	auto obj = new QDP::MapObjectDisk<int,EVPair<LatticeColorVector> >();
 	obj->insertUserdata(user_data);
 	obj->open(params.file_name, std::ios_base::in |  std::ios_base::out |  std::ios_base::trunc);
 
@@ -54,13 +54,13 @@ namespace Chroma
 
       //! Callback function
       QDP::MapObject<KeyPropColorVec_t,LatticeFermion>* createMapObjKeyPropColorVecLF(XMLReader& xml_in,
-										      const std::string& path) 
+										      const std::string& path,
+										      const std::string& user_data) 
       {
 	// Needs parameters...
 	Params params(xml_in, path);
-	std::string  user_data;
 
-	QDP::MapObjectDisk<KeyPropColorVec_t,LatticeFermion>* obj = new QDP::MapObjectDisk<KeyPropColorVec_t,LatticeFermion>();
+	auto obj = new QDP::MapObjectDisk<KeyPropColorVec_t,LatticeFermion>();
 	obj->insertUserdata(user_data);
 	obj->open(params.file_name, std::ios_base::in |  std::ios_base::out |  std::ios_base::trunc);
 
@@ -82,6 +82,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+	QDPIO::cout << __PRETTY_FUNCTION__ << ": registering map obj key colorvec" << std::endl;
 	success &= Chroma::TheMapObjIntKeyColorEigenVecFactory::Instance().registerObject(name, createMapObjIntKeyCV);
 	success &= Chroma::TheMapObjKeyPropColorVecFactory::Instance().registerObject(name, createMapObjKeyPropColorVecLF);
 	registered = true;

@@ -148,6 +148,21 @@ namespace Chroma
       {
 	swatch.reset();
 	
+	// Generate a metadata
+	std::string file_str;
+	if (1)
+	{
+	  XMLBufferWriter file_xml;
+
+	  push(file_xml, "MODMetaData");
+	  write(file_xml, "id", std::string("eigenColorVec"));
+	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  //	  write(file_xml, "num_vecs", readpair.eigenValue.weights.size());   // do not have num_vecs before the data is read!
+	  pop(file_xml);
+
+	  file_str = file_xml.str();
+	}
+	  
 	typedef LatticeColorVector T;
 
 	std::istringstream  xml_s(params.named_obj.object_map.xml);
@@ -157,7 +172,8 @@ namespace Chroma
 	Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > eigen(
 	  TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(params.named_obj.object_map.id,
 								       MapObjReader,
-								       params.named_obj.object_map.path) );
+								       params.named_obj.object_map.path,
+								       file_str) );
 
 	TheNamedObjMap::Instance().create< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id);
 	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id) = eigen;

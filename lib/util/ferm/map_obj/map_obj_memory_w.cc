@@ -21,18 +21,24 @@ namespace Chroma
     {
       //! Callback function
       QDP::MapObject<int,EVPair<LatticeColorVector> >* createMapObjIntKeyCV(XMLReader& xml_in,
-									    const std::string& path) 
+									    const std::string& path,
+									    const std::string& user_data) 
       {
 	// Doesn't need parameters...
-	return new QDP::MapObjectMemory<int,EVPair<LatticeColorVector> >();
+	auto obj = new QDP::MapObjectMemory<int,EVPair<LatticeColorVector> >();
+	obj->insertUserdata(user_data);
+	return obj;
       }
 
       //! Callback function
       QDP::MapObject<KeyPropColorVec_t,LatticeFermion>* createMapObjKeyPropColorVecLF(XMLReader& xml_in,
-										      const std::string& path) 
+										      const std::string& path,
+										      const std::string& user_data) 
       {
 	// Doesn't need parameters...
-	return new QDP::MapObjectMemory<KeyPropColorVec_t,LatticeFermion>();
+	auto obj = new QDP::MapObjectMemory<KeyPropColorVec_t,LatticeFermion>();
+	obj->insertUserdata(user_data);
+	return obj;
       }
 
       //! Local registration flag

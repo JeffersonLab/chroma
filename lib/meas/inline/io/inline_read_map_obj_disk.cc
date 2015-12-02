@@ -24,10 +24,10 @@ namespace Chroma
 
       typedef SingletonHolder< 
 	FunctionMap<DumbDisambiguator,
-		    int,
+		    std::string,
 		    std::string,
 		    TYPELIST_2(const std::string&, const std::string&),
-		    int (*)(const std::string&, const std::string&),
+		    std::string (*)(const std::string&, const std::string&),
 		    StringFunctionMapError> >
       TheReadMapObjFuncMap;
 
@@ -36,8 +36,8 @@ namespace Chroma
 	static bool registered = false;
 
 	template<typename K, typename V>
-	int readMapObj(const std::string& object_id,
-		       const std::string& file_name)
+	std::string readMapObj(const std::string& object_id,
+			       const std::string& file_name)
 	{
 	  QDP::MapObjectDisk<K,V>* obj_obj = new QDP::MapObjectDisk<K,V>();
 	  obj_obj->open(file_name);
@@ -45,7 +45,10 @@ namespace Chroma
 	  Handle<QDP::MapObject<K,V> > obj_handle(obj_obj);
 	  TheNamedObjMap::Instance().create< Handle<QDP::MapObject<K,V> >, Handle<QDP::MapObject<K,V> > >(object_id, obj_handle);
 
-	  return obj_handle->size();
+	  std::string meta_data;
+	  obj_handle->getUserdata(meta_data);
+
+	  return meta_data;
 	}
 
 	bool registerAll(void) 
@@ -162,22 +165,22 @@ namespace Chroma
 	swatch.start();
 
         // Read the object
-        int size = ReadMapObjCallEnv::TheReadMapObjFuncMap::Instance().callFunction(params.named_obj.object_type, params.named_obj.object_id, params.file.file_name);
+	std::string meta_data = ReadMapObjCallEnv::TheReadMapObjFuncMap::Instance().callFunction(params.named_obj.object_type, params.named_obj.object_id, params.file.file_name);
 
-	XMLBufferWriter file_xml_buf;
-	push(file_xml_buf, "FileXML");
-	write(file_xml_buf,  "object_type", params.named_obj.object_type);
-	write(file_xml_buf,  "object_id", params.named_obj.object_id);
-	write(file_xml_buf,  "file_name", params.file.file_name);
-	write(file_xml_buf,  "map_size", size);
-	pop(file_xml_buf);
+	std::istringstream  xml_s(meta_data);
+	XMLReader file_xml(xml_s);
 
-	XMLReader file_xml(file_xml_buf);
+	XMLBufferWriter record_xml_buf;
+	push(record_xml_buf, "RecordXML");
+	write(record_xml_buf,  "object_type", params.named_obj.object_type);
+	write(record_xml_buf,  "object_id", params.named_obj.object_id);
+	write(record_xml_buf,  "file_name", params.file.file_name);
+	pop(record_xml_buf);
+
+	XMLReader record_xml(record_xml_buf);
 
 	TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML( file_xml );
-
-	// No particularly good record XML -- this after all is not QIO. So just use file_xml again
-	TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML( file_xml );
+	TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML( record_xml );
 
 	swatch.stop();
 
