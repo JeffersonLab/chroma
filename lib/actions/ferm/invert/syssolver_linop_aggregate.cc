@@ -23,6 +23,7 @@
 #ifdef BUILD_QUDA
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h"
 #endif
 
@@ -73,6 +74,7 @@ namespace Chroma
 #ifdef BUILD_QUDA
 	success &= LinOpSysSolverQUDACloverEnv::registerAll();
 	success &= LinOpSysSolverQUDAWilsonEnv::registerAll();
+	success &= LinOpSysSolverQUDAMULTIGRIDWilsonEnv::registerAll();
 	success &= LinOpSysSolverQUDANEFEnv::registerAll();
 #endif
 #ifdef BUILD_QOP_MG
