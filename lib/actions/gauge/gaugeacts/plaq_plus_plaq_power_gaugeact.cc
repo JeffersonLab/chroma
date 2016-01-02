@@ -66,10 +66,15 @@ namespace Chroma
       /*!< Note: should use binary powering */
       LatticeComplex cpow(const LatticeComplex& plq, int q)
       {
-	if (q < 1)
+	if (q < 0)
 	{
 	  QDPIO::cerr << __func__ << ": something messed up with q= " << q << std::endl;
 	  exit(1);
+	}
+	
+	if (q == 0)
+	{
+	  return 1.0;
 	}
 	
 	LatticeComplex out = plq;
@@ -135,7 +140,7 @@ namespace Chroma
 	  /* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
 	  /* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
 	  /* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
-	  site_act[mu][nu] += one - third*(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu])));
+	  site_act[mu][nu] += one - third*trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu]));
 	  
 	  // Keep a copy
 	  site_act[nu][mu] = site_act[mu][nu];
@@ -285,7 +290,7 @@ namespace Chroma
       // It is 1/(4Nc) to account for normalisation relevant to fermions
       // in the taproj, which is a factor of 2 different from the 
       // one used here.
-      // The extra "q" factor is the chain-rule - the deriv of   d (x^q)/dx ->  q * d(x)/dx
+      // The extra "q" factor is the chain-rule - the deriv of   d f(x)^q/dx ->  q * f(x)^{q-1} * d f(x)/dx
       for(int mu=0; mu < Nd; mu++)
       {
 	ds_u[mu] *= Real(param.q) * Real(1)/(Real(2*Nc));
