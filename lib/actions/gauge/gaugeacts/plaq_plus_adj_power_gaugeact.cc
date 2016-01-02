@@ -141,7 +141,7 @@ namespace Chroma
     {
       START_CODE();
 
-#if 1
+#if 0
       QDPIO::cerr << __PRETTY_FUNCTION__ << ": this implementation is not passing t_leapfrog" << std::endl;
       exit(1);
 #endif
@@ -167,17 +167,19 @@ namespace Chroma
 	{ 
 	  if (mu == nu) continue;
 
-	  LatticeReal plaq = pow(one - localNorm2(plq[mu][nu]), q2-1);
+	  const LatticeReal& plaq = pow(one - localNorm2(plq[mu][nu]), q2-1);
 
 	  LatticeColorMatrix tmp_1 = shift(u[nu], FORWARD, mu);
 	  LatticeColorMatrix tmp_2 = shift(u[mu], FORWARD, nu);
+	  LatticeComplex     downp = shift(plaq, BACKWARD,nu);
 
 	  LatticeColorMatrix up_plq   = u[mu]*tmp_1*adj(tmp_2)*adj(u[nu]);
 	  LatticeColorMatrix down_plq = u[mu]*shift(adj(tmp_1)*adj(u[mu])*u[nu],BACKWARD,nu);
 
 	  deriv_fun[mu] += up_plq + down_plq;
 
-	  deriv_adj[mu] += plaq * (up_plq*conj(trace(up_plq)) + down_plq*conj(trace(down_plq)));
+	  deriv_adj[mu] += plaq * up_plq*conj(trace(up_plq));
+	  deriv_adj[mu] += downp * down_plq*conj(trace(down_plq));
 	
 	}// nu
 

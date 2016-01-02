@@ -25,7 +25,7 @@
 	<tau0>0.1</tau0>
 	<Integrator>
   	  <Name>LCM_STS_LEAPFROG</Name>
-	  <n_steps>16</n_steps>
+	  <n_steps>4</n_steps>
           <monomial_ids>
             <elem>gauge</elem>
           </monomial_ids>
