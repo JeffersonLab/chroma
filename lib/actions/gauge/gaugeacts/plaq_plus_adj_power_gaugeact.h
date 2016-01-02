@@ -1,10 +1,10 @@
 // -*- C++ -*-
 /*! \file
- *  \brief Plaquette plus power of a plaquette (plaquette power) gauge action
+ *  \brief Plaquette plus a power of an adjoint gauge action
  */
 
-#ifndef __plaq_plus_plaq_power_gaugeact_h__
-#define __plaq_plus_plaq_power_gaugeact_h__
+#ifndef __plaq_plus_adj_power_gaugeact_h__
+#define __plaq_plus_adj_power_gaugeact_h__
 
 #include "gaugeact.h"
 #include "gaugebc.h"
@@ -13,7 +13,7 @@ namespace Chroma
 {
 
   /*! @ingroup gaugeacts */
-  namespace PlaqPlusPlaqPowerGaugeActEnv 
+  namespace PlaqPlusAdjPowerGaugeActEnv 
   { 
     bool registerAll();
 
@@ -27,16 +27,16 @@ namespace Chroma
       //! Read params from some root path
       Params(XMLReader& xml_in, const std::string& path);
 
-      Real  beta;    // Coupling for fundamental plaquette
-      Real  gamma;   // Coupling for plaquette powered
-      int   q;       // Plaquette power
+      Real  beta;   // Coupling for fundamental plaquette
+      Real  gamma;  // Coupling for adjoint power
+      int   q;      // Power of plaquette
     };
   
 
-    //! PlaqPlusPlaqPower gauge action
+    //! PlaqPlusAdjPower  gauge action
     /*! \ingroup gaugeacts
      *
-     * The standard PlaqPlusPlaqPower gauge action
+     * The standard  gauge action as sum of PlaqPlusAdjPowers
      */
     class GaugeAct : public LinearGaugeAction
     {
@@ -78,16 +78,9 @@ namespace Chroma
       void operator=(const GaugeAct& a) {}
       
       //! Compute the site-level action
-      void siteAction(multi2d<LatticeComplex>& site_act, const Handle< GaugeState<P,Q> >& state) const;
+      void siteAction(multi2d<LatticeComplex>& site_act, 
+		      const Handle< GaugeState<P,Q> >& state) const;
 
-      //! Compute dS/dU
-      void derivPlaqFun(multi1d<LatticeColorMatrix>& ds_u,
-			const Handle< GaugeState<P,Q> >& state) const;
-      
-      //! Compute dS/dU
-      void derivPlaqTwo(multi1d<LatticeColorMatrix>& ds_u,
-			const Handle< GaugeState<P,Q> >& state) const;
-      
     private:
       Handle< CreateGaugeState<P,Q> >  cgs;  /*!< Create Gauge State */
       Params               param;            /*!< The parameters */
