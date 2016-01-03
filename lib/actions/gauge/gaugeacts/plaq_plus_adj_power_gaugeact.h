@@ -1,6 +1,9 @@
 // -*- C++ -*-
 /*! \file
  *  \brief Plaquette plus a power of an adjoint gauge action
+ *
+ *  Implements:
+ *    S =  beta*Re(1 - (1/Nc)*Tr(U_p)) + gamma*Re((1 - (1/Nc^2)*Tr(U_p^dag)*Tr(U_p))^(q/2))
  */
 
 #ifndef __plaq_plus_adj_power_gaugeact_h__

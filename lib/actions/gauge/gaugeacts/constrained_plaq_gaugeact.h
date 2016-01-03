@@ -1,6 +1,11 @@
 // -*- C++ -*-
 /*! \file
  *  \brief Constrained plaquette gauge action
+ *
+ *  Implements:
+ *    w = Re(1 - (1/Nc)*Tr(U_p))
+ *
+ *    S =  beta*w + gamma*w^q
  */
 
 #ifndef __constrained_plaq_gaugeact_h__

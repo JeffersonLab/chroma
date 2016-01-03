@@ -1,6 +1,11 @@
 // -*- C++ -*-
 /*! \file
  *  \brief Plaquette plus power of a plaquette (plaquette power) gauge action
+ *
+ *  Implements:
+ *    w = (1 - (1/Nc)*Tr(U_p))
+ *
+ *    S =  beta*Re(w) + gamma*Re(w^q)
  */
 
 #ifndef __plaq_plus_plaq_power_gaugeact_h__
