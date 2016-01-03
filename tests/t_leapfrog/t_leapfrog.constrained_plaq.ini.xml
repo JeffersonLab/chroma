@@ -5,10 +5,10 @@
       <elem>
 	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
-	  <Name>PLAQ_PLUS_ADJ_POWER_GAUGEACT</Name>
-	  <beta>-2.4104</beta>
-	  <gamma>200.0</gamma>
-	  <q>10</q>
+	  <Name>CONSTRAINED_PLAQ_GAUGEACT</Name>
+	  <beta>0</beta>
+	  <gamma>4.0</gamma>
+	  <q>2</q>
           <GaugeBC>
 	    <Name>PERIODIC_GAUGEBC</Name>
           </GaugeBC>
@@ -25,7 +25,7 @@
 	<tau0>0.1</tau0>
 	<Integrator>
   	  <Name>LCM_STS_LEAPFROG</Name>
-	  <n_steps>32</n_steps>
+	  <n_steps>8</n_steps>
           <monomial_ids>
             <elem>gauge</elem>
           </monomial_ids>
@@ -33,7 +33,7 @@
    </MDIntegrator>
 
    <GaugeStartup>
-	<cfg_type>UNIT</cfg_type>
+	<cfg_type>WEAK_FIELD</cfg_type>
 	<cfg_file>DUMMY</cfg_file>
    </GaugeStartup>
    <nrow>4 4 4 4</nrow>

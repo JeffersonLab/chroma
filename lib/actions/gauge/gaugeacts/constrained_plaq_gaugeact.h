@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- *  \brief Single-plaquette gauge action with constraint
+ *  \brief Constrained plaquette gauge action
  */
 
 #ifndef __constrained_plaq_gaugeact_h__
@@ -27,16 +27,16 @@ namespace Chroma
       //! Read params from some root path
       Params(XMLReader& xml_in, const std::string& path);
 
-      Real  beta;   // Coupling for fundamental plaquette
-      Real  gamma;  // Coupling for powered plaquette
-      int   q;      // Power to raise plaquette
+      Real  beta;    // Coupling for fundamental plaquette
+      Real  gamma;   // Coupling for plaquette power
+      Real  q;       // The power
     };
   
 
-    //! Constrained  gauge action
+    //! Constrained laquette gauge action
     /*! \ingroup gaugeacts
      *
-     * The constrained plaquette gauge action 
+     * The standard Constrained gauge action
      */
     class GaugeAct : public LinearGaugeAction
     {
@@ -78,9 +78,16 @@ namespace Chroma
       void operator=(const GaugeAct& a) {}
       
       //! Compute the site-level action
-      void siteAction(multi2d<LatticeColorMatrix>& site_act, 
-		      const Handle< GaugeState<P,Q> >& state) const;
+      void siteAction(multi2d<LatticeReal>& site_act, const Handle< GaugeState<P,Q> >& state) const;
 
+      //! Compute dS/dU
+      void derivPlaqFun(multi1d<LatticeColorMatrix>& ds_u,
+			const Handle< GaugeState<P,Q> >& state) const;
+      
+      //! Compute dS/dU
+      void derivPlaqTwo(multi1d<LatticeColorMatrix>& ds_u,
+			const Handle< GaugeState<P,Q> >& state) const;
+      
     private:
       Handle< CreateGaugeState<P,Q> >  cgs;  /*!< Create Gauge State */
       Params               param;            /*!< The parameters */

@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<Params> 
+  <MCControl>
+
+    <Cfg>
+      <cfg_type>WEAK_FIELD</cfg_type>
+      <cfg_file>DUMMY</cfg_file>
+    </Cfg>
+
+    <RNG>
+      <Seed>	
+        <elem>11</elem>
+        <elem>0 </elem>
+        <elem>0 </elem>
+        <elem>0 </elem>
+      </Seed>
+    </RNG>
+
+    <StartUpdateNum>0</StartUpdateNum>
+    <NWarmUpUpdates>50</NWarmUpUpdates>  
+    <NProductionUpdates>100</NProductionUpdates>
+    <NUpdatesThisRun>100</NUpdatesThisRun>
+    <SaveInterval>5</SaveInterval>
+    <SavePrefix>dummy_run</SavePrefix>
+    <SaveVolfmt>SINGLEFILE</SaveVolfmt>
+    <ReproCheckP>false</ReproCheckP>
+    <ReverseCheckP>true</ReverseCheckP>
+    <ReverseCheckFrequency>1</ReverseCheckFrequency>
+    <InlineMeasurements>
+      <elem>
+        <Name>POLYAKOV_LOOP</Name>
+        <Frequency>1</Frequency>
+        <Param>
+          <version>2</version>
+        </Param>
+        <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
+        </NamedObject>
+      </elem>
+    </InlineMeasurements>
+  </MCControl>
+
+  <HMCTrj>
+    <Monomials>
+      <elem>
+	<Name>GAUGE_MONOMIAL</Name>
+	<GaugeAction>
+	   <Name>PLAQ_PLUS_ADJ_POWER_GAUGEACT</Name>
+	   <beta>-2.4104</beta>
+	   <gamma>200.0</gamma>
+	   <q>10</q>
+	   <GaugeBC>
+		<Name>PERIODIC_GAUGEBC</Name>
+           </GaugeBC>
+        </GaugeAction>
+	<NamedObject>
+	  <monomial_id>gauge</monomial_id>
+        </NamedObject>
+      </elem>
+   </Monomials>
+   
+   <Hamiltonian>
+      <monomial_ids>
+        <elem>gauge</elem>
+      </monomial_ids>
+   </Hamiltonian>
+  
+   <MDIntegrator>
+        <tau0>0.2</tau0>
+	<Integrator>	
+	  <!-- Name>LCM_4MN5FV</Name -->
+	  <Name>LCM_STS_LEAPFROG</Name>
+	  <n_steps>50</n_steps>
+	  <monomial_ids>
+	    <elem>gauge</elem>
+	  </monomial_ids>
+	</Integrator>
+   </MDIntegrator>
+   <nrow>4 4 4 4</nrow>
+ </HMCTrj>
+
+</Params>
+
+

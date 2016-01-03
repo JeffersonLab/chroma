@@ -141,11 +141,6 @@ namespace Chroma
     {
       START_CODE();
 
-#if 0
-      QDPIO::cerr << __PRETTY_FUNCTION__ << ": this implementation is not passing t_leapfrog" << std::endl;
-      exit(1);
-#endif
-
       // Action at the site level
       multi2d<LatticeComplex> plq;
       this->siteAction(plq, state);

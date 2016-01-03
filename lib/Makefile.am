@@ -155,6 +155,7 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_plus_adj_power_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_plus_plaq_power_gaugeact.h \
+	actions/gauge/gaugeacts/constrained_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.h \
 	actions/gauge/gaugeacts/sf_plaq_plus_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.h \
@@ -1129,6 +1130,7 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_adjoint_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_adj_power_gaugeact.cc \
+	actions/gauge/gaugeacts/constrained_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/character_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_plaq_power_gaugeact.cc \
