@@ -25,7 +25,7 @@
 	<tau0>0.1</tau0>
 	<Integrator>
   	  <Name>LCM_STS_LEAPFROG</Name>
-	  <n_steps>4</n_steps>
+	  <n_steps>8</n_steps>
           <monomial_ids>
             <elem>gauge</elem>
           </monomial_ids>
@@ -33,8 +33,8 @@
    </MDIntegrator>
 
    <GaugeStartup>
-	<cfg_type>WEAK_FIELD</cfg_type>
+	<cfg_type>UNIT</cfg_type>
 	<cfg_file>DUMMY</cfg_file>
    </GaugeStartup>
-   <nrow>4 4 4 8</nrow>
+   <nrow>4 4 4 4</nrow>
 </LeapfrogTest>
