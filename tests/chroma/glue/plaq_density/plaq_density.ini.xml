@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+;
+; Test input file for chroma program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+      <elem>
+        <Name>PLAQ_DENSITY</Name>
+        <Frequency>1</Frequency>
+        <Param>
+          <version>1</version>
+        </Param>
+        <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
+          <out_file>fred.xml</out_file>
+        </NamedObject>
+      </elem>
+
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+

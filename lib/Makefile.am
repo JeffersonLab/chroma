@@ -835,6 +835,7 @@ nobase_include_HEADERS += \
 	meas/inline/glue/inline_wilslp.h \
 	meas/inline/glue/inline_fuzwilp.h \
 	meas/inline/glue/inline_qactden.h \
+	meas/inline/glue/inline_plaq_density.h \
 	meas/inline/glue/inline_qnaive.h \
 	meas/inline/glue/inline_random_transf_gauge.h \
 	meas/inline/glue/inline_glue_matelem_colorvec.h \
@@ -1676,6 +1677,7 @@ libchroma_a_SOURCES += \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
 	meas/inline/glue/inline_qactden.cc \
+	meas/inline/glue/inline_plaq_density.cc \
 	meas/inline/glue/inline_qnaive.cc \
 	meas/inline/glue/inline_random_transf_gauge.cc \
 	meas/inline/glue/inline_glue_matelem_colorvec.cc \
