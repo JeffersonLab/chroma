@@ -11,7 +11,6 @@ namespace Chroma {
     read(paramtop, "Residual", tol);
     read(paramtop, "MaxIterations", maxIterations);
     read(paramtop, "Verbosity", verbosity);
-    read(paramtop, "InverterType", invType);
     read(paramtop, "Precision", prec);
     read(paramtop, "Reconstruct", reconstruct);
     read(paramtop, "NullVectors", nvec);
@@ -43,7 +42,6 @@ namespace Chroma {
     write(xml, "Residual", p.tol);
     write(xml, "MaxIterations", p.maxIterations);
     write(xml, "Verbosity", p.verbosity);
-    write(xml, "InverterType", p.invType);
     write(xml, "Precision", p.prec);
     write(xml, "Reconstruct", p.reconstruct);
     write(xml, "SchwarzType", p.schwarzType);
