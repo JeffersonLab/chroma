@@ -1,0 +1,150 @@
+<html>
+  <head>
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+     google.load('visualization', '1', {'packages': ['geochart']});
+     google.setOnLoadCallback(drawMarkersMap);
+
+      function drawMarkersMap() {
+  var data = google.visualization.arrayToDataTable([
+	['City', 'Number of Institutions', {type: 'string', role: 'tooltip'}],
+        ['Chicago, USA',  2,'  ANL and U. of Chicago'],
+        ['Batavia, USA',  1,'  FermiLab'],
+        ['Adelaide, Australia',  1,' U. of Adelaide'],
+        ['Tokai, Japan',  1,' Adv. Sci. Res. Center '],
+        ['Upton, NY',  2,' BNL and APS '],
+       ['Waco, USA',  1,'  Baylor U. '],
+       ['Bonn, Germany',  1,'  Bonn U. '],
+       ['Boston',  3,' Boston U. ,Harvard-Smithsonian and MIT '],
+       ['Ferney-Voltaire, France',  1,'   CERN  '],
+       ['Pittsburgh, USA',  2,'  CMU and Pitt. '],
+       ['New York, USA',  3,' CCNY, Columbia U.  and Fordham'],
+       ['Coimbra, Portugal',  1,'  U. of Coimbra '],
+       ['Ithaca, NY',  1,'  Cornell U.  '],
+       ['Nicosia, Cyprus',  1,'  U.of Cyprus '],
+       ['Hamburg, Germany',  2,'  DESY and U. of Hamburg '],
+       ['Zeuthen, Germany',  1,'  DESY '],
+       ['Dnepropetrovsk, Ukraine',  1,'  Dnepropetrovsk U. '],
+       ['Trento, Italy',  2,'  ECTstar and Trento U.'],
+       ['Zurich, Switzerland',  1,'  ETH '],
+       ['Edinburgh, Scotland',  1,'  U. of Edinburgh '],
+       ['Arcavacata, Italy',  1,'  Calabria U.'],
+       ['Amaro, Italy',  1,'  Eurotech HPC '],
+       ['Vladivostok, Russia',  1,'  Far Eastern Fed. U. '],
+      ['Glasow, Scotland',  1,'  U. of Glasgow '],
+      ['Groningen, Netherlands',  1,'  U. of Groningen '],
+      ['Gunma, Japan',  1,'  Gunma Nat. Col. Tech.'],
+       ['Mainz, Germany',  2,'  Helmholz Institute and PRISMA Institute '],
+       ['Helsinki, Finland',  1,'  Helsinki Inst. of Phys. '],
+       ['Berlin, Germany',  2,'  Humboldt U.  and Konrad-Zuse-Zentrum'],
+       ['Tokyo, Japan',  3,'  IBM and Tokyo Inst. Tech and U. of Tokyo '],
+       ['Protvino, Russia',  1,'  IHEP '],
+       ['Paris, France',  5,' Paris XI , INRIA in Saclay, Lab. Linear Accel. and  Lab. for Theor. Phys. in Orsay and Mines ParisTech in Fontainebleau'],
+       ['Moscow, Russia',  1,'  ITEP '],
+       ['Santa Clara, CA, USA',  1,'  INTEL '],
+       ['Newport News, VA, USA',  1,'  Jefferson Lab. '],
+       ['Norfolk, VA, USA',  1,'  Old Dominion U. '],
+       ['Juelich, Germany',  1,'  Juelich Res. Center '],
+       ['Tsukuba, Japan',  2,'  KEK and U. of Tsukuba '],
+       ['Okayama, Japan',  1,'  Kita-ku '],
+       ['Los Alamos, NM , USA',  1,'  Los Alamos National Laboratory'],
+       ['Berkeley, CA, USA',  2,'  Lawrence Berkeley National Laboratory and UC Berkeley '],
+       ['Livermore, CA, USA',  1,'  Lawrence Livermore National Laboratory'],
+       ['Leipzig, Germany',  1,'  U. of Leipzig '],
+       ['Liverpool, England',  1,'  U. of Liverpool '],
+       ['Ankara, Turkey',  1,'  Middle East Tech. U. '],
+       ['Instanbul, Turkey',  3,'  Minmar Sinan Fine Arts U. , Ozyegin U. and Yildiz Tech. Univ '],
+       ['Nagoya, Japan',  1,' Nagoya U. '],
+       ['Taiwan',  2,' Nat. Chiao Tung U. and Nat. Taiwan U. '],
+       ['Athens, Greece',  1,' Natl. Tech. U. '],
+       ['Rayleigh, NC, USA',  1,'North Carolina State U. '],
+       ['Columbus, OH, USA',  1,'Ohio State U. '],
+       ['Oxford, England',  1, 'Oxford U. '],
+       ['Parma, Italy',  1,'Parma U. '],
+        ['Princeton, NJ, USA',  1,'Princeton U. '],
+        ['Kobe, Japan',  1,'  RIKEN '],
+       ['Regensburg, Germany',  1,'  Regensburg '],
+       ['Rome, Italy',  3,'  Rome 3, La Sapienza and Rome Tor Vergata '],
+       ['Shanghai, China',  1,'  Shanghai Jiao Tong '],
+       ['Southhampton, England',  1,'  U. of Southhampton '],
+       ['Odense, Denmark',  1,'  CP3-Origins '],
+       ['Dallas, TX, USA',  1,'  SMU'],
+       ['Swansea, Wales',  1,'  U. of Swansea'],
+       ['Syracuse, NY, USA',  1,'  U. of Syracuse'],
+       ['Las Cruces, NM, USA',  1,' New Mexico State U.'],
+       ['Santa Fe, NM, USA',  1,' Santa Fe Inst.'],
+       ['Storrs, Connecticut, USA',  1,' U. of Connecticut'],
+       ['Kanazawa, Japan',  1,'Kanazawa U.'],
+       ['Torino, Italy',  1,' U. of Torino'],
+       ['Belgrade, Serbia',  1,' U. of Belgrade'],
+       ['Bangalore, India',  1,' Intel'],
+       ['Mumbai, India',  1,'  Tata Inst.'],
+       ['Munich, Germany',  1,'  Tech. Univ. Munich '],
+       ['Dublin, Ireland',  1,'  Trinity College '],
+       ['San  Diego, CA, USA',  1,'  UC San Diego '],
+       ['Davis, CA, USA',  1,'  UC Davis '],
+       ['Los Angeles, CA, USA',  1,'  UCLA '],
+       ['Tucson, AZ, USA',  1,'  U of Arizona '],
+       ['Madrid, Spain',  1,'  U.  Automata'],
+       ['Mexico City, Mexico',  1,'  U. Autonama, Fed. District'],
+        ['Barcelona, Spain',  1,'  U. of Barcelona'],
+        ['Belgrade, Serbia',  1,'  U. of Belgrade'],
+        ['Berne, Switzerland',  1,'  U. of Berne'],
+        ['Bordeaux, France',  1,'  U. of Bordeaux'],
+        ['Boulder, CO,USA',  1,'  U. of Colorado, Boulder'],
+       ['Erlangen, Germany',  1,'  U. of Erlangen '],
+       ['Frankfurt, Germany',  1,'  U. of Frankfurt '],
+       ['Graz, Austria',  1,'  U. of Graz '],
+       ['Bloomington, IN,USA',  1,'  U. of Indiana'],
+       ['Jena, Germany',  1,'  U. of Jena '],
+       ['Lexington, KY,USA',  1,'  U. of Kentucky'],
+       ['Lisbon, Portugal',  1,'  U. of Lisbon '],
+       ['Marseille, France',  1,'  U. of Marseille '],
+       ['Bethesda, MD,USA',  1,'  U. of Maryland'],
+       ['Maynooth, Ireland',  1,'  U. of Maynooth'],
+       ['Durham, NH,USA',  1,'  U. of New Hampshire'],
+       ['Eugene, OR,USA',  1,'  U. of Oregon'],
+       ['Stockton, CA, USA',  1,'  U. of the Pacific '],
+       ['Dundee, Scotland ',  1,'  U. of Dundee '],
+       ['Cambridge, England',  1,'  Cambridge U. '],
+       ['Plymouth, England',  1,'  U. of Plymouth '],
+       ['Tubingen, Germany',  1,'  U. of Tubingen '],
+       ['Turin, Italy',  1,'  U. of Turin '],
+       ['Salt Lake City, UT, USA',  1,'  U. of Utah '],
+       ['Burjassot, Spain',  1,'  U. of Valencia '],
+       ['Seattle, WA, USA',  1,'  U. of Washington '],
+       ['Wuppertal, Germany',  1,'  U. of Wuppertal '],
+       ['St Louis, MO, USA',  1,'  Washington  U.'],
+       ['Williamsburg, VA, USA',  1,'  College of William and Mary'],
+       ['Wuhan, China',  1,'  Wuhan U.'],
+      ['Hartford, CT, USA',  1,'  Yale U.'],
+      ['Toronto, Canada',  1,'  York U.'],
+      ['Zaragoza, Spain',  1,'  Zaragoza U.']
+
+]);
+ 
+
+
+      var options = {
+        displayMode: 'markers',
+        colorAxis: {colors: ['red' , 'yellow']},
+	backgroundColor: 'white',
+	datalessRegionColor:'LightBlue',
+	markerOpacity:'0.95',
+	tooltip: {textStyle: {fontSize:'11'}},
+	sizeAxis: { minValue: 1, maxValue: 6 }
+      };
+
+      var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
+  chart.draw(data, options);
+};
+
+</script>
+  </head>
+  <body>
+    <title>Chroma Usage</title>
+   <center> <font size="20">Chroma Usage</font></center>
+    <div id="chart_div" style="width: 1080px; height: 600px;"></div>
+  </body>
+</html>
+
