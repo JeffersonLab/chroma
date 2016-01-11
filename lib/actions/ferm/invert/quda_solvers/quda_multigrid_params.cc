@@ -10,6 +10,7 @@ namespace Chroma {
     XMLReader paramtop(xml, path);
     read(paramtop, "Residual", tol);
     read(paramtop, "MaxIterations", maxIterations);
+    read(paramtop, "SmootherType", smootherType);
     read(paramtop, "Verbosity", verbosity);
     read(paramtop, "Precision", prec);
     read(paramtop, "Reconstruct", reconstruct);
@@ -41,6 +42,7 @@ namespace Chroma {
     push(xml, path);
     write(xml, "Residual", p.tol);
     write(xml, "MaxIterations", p.maxIterations);
+    write(xml, "SmootherType", p.smootherType);
     write(xml, "Verbosity", p.verbosity);
     write(xml, "Precision", p.prec);
     write(xml, "Reconstruct", p.reconstruct);

@@ -12,6 +12,7 @@ namespace Chroma
     
     Real tol;
     int  maxIterations;
+    QudaSolverType smootherType;
     bool verbosity;
     QudaPrecisionType prec;
     QudaReconsType reconstruct;
@@ -27,6 +28,7 @@ namespace Chroma
     MULTIGRIDSolverParams() {
       tol = .000001;
       maxIterations = 10;
+      smootherType = MR;
       verbosity = false;
       prec = DEFAULT;
       reconstruct = RECONS_NONE;
