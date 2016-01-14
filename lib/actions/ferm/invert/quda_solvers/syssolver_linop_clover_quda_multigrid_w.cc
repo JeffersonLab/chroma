@@ -1,7 +1,7 @@
 /*! \file
- *  \QUDA MULTIGRID Wilson solver.
+ *  \QUDA MULTIGRID Clover solver.
  */
-
+// comment
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.h"

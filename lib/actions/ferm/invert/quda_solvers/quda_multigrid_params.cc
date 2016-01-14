@@ -15,11 +15,12 @@ namespace Chroma {
     read(paramtop, "Precision", prec);
     read(paramtop, "Reconstruct", reconstruct);
     read(paramtop, "NullVectors", nvec);
-    read(paramtop, "MultiGridLevels", mg_levels);
+    read(paramtop, "Blocking", blocking);
+    mg_levels = blocking.size()+1;
     read(paramtop, "GenerateNullspace", generate_nullspace);
     read(paramtop, "Pre-SmootherApplications", nu_pre);
     read(paramtop, "Post-SmootherApplications", nu_post);
-    read(paramtop, "Blocking", blocking);
+
 
     // Read optional params otherwise use defaults
     if( paramtop.count("SchwarzType") > 0 ) { 
