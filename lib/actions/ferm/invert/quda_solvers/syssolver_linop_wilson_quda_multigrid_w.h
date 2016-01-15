@@ -213,16 +213,14 @@ namespace Chroma
       // deferred 4) Gauge Anisotropy
       const AnisoParam_t& aniso = invParam.WilsonParams.anisoParam;
       if( aniso.anisoP ) {                     // Anisotropic case
+	QDPIO::cout<<"Anisotropy has been detected as true."<<std::endl;
 	Real gamma_f = aniso.xi_0 / aniso.nu; 
 	q_gauge_param.anisotropy = toDouble(gamma_f);
       }
       else {
+	QDPIO::cout<<"Anisotropy has been detected as false."<<std::endl;
 	q_gauge_param.anisotropy = 1.0;
       }
-      
-      // MAKE FSTATE BEFORE RESCALING links_single
-      // Left over from clover code.
-      Handle<FermState<T,Q,Q> > fstate( new PeriodicFermState<T,Q,Q>(links_single));
 
       if( aniso.anisoP ) {                     // Anisotropic case
 	multi1d<Real> cf=makeFermCoeffs(aniso);
@@ -234,8 +232,6 @@ namespace Chroma
       // Now onto the inv param:
       // Dslash type
 
-      /****!!! FIXME: Before the final code remember to reset this to QUDA_CLOVER_WILSON_DSLASH */
-      QDPIO::cout << "Remember for production to reset quda_inv_param.dslash_typeto QUDA_CLOVER_WILSON_DSLASH" << std::endl;
       quda_inv_param.dslash_type = QUDA_WILSON_DSLASH;
       mg_inv_param.dslash_type = QUDA_WILSON_DSLASH;
 
@@ -270,16 +266,16 @@ namespace Chroma
 
       // Mass
    
-   quda_inv_param.kappa = static_cast<double>(1)/(static_cast<double>(2)*(static_cast<double>(Nd)+toDouble(invParam.WilsonParams.Mass)));
+      Real massParam = Real(1) + Real(3)/Real(q_gauge_param.anisotropy) + invParam.WilsonParams.Mass;
  
+      quda_inv_param.kappa = 1.0/(2*toDouble(massParam));
+      QDPIO::cout<<"Kappa is calculated to be "<<quda_inv_param.kappa<<std::endl;
       
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);
 
       // Solution type
-      //quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
-      //Taken from invert test.
       quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
       quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
 
@@ -300,20 +296,6 @@ namespace Chroma
       quda_inv_param.cpu_prec = cpu_prec;
       quda_inv_param.cuda_prec = gpu_prec;
       quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
-      //Add some lines for mg_inv_param.
-      //mg_inv_param.cpu_prec = cpu_prec;
-      //mg_inv_param.cuda_prec = gpu_prec;
-      //mg_inv_param.cuda_prec_sloppy = gpu_half_prec;
-      //Clover stuff
-      //mg_inv_param.clover_cpu_prec = cpu_prec;
-      //mg_inv_param.clover_cuda_prec = gpu_prec;
-      //mg_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
-      //mg_inv_param.clover_cuda_prec_precondition = gpu_prec;
-      //mg_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
-      //mg_inv_param.clover_cuda_prec_precondition = gpu_prec;
-      //mg_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
-      //
-      //Done...
       quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
       quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
 
@@ -371,31 +353,23 @@ namespace Chroma
 	case HALF:
 	  mg_inv_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
 	  quda_inv_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
-	  //mg_inv_param.clover_cuda_prec_precondition = QUDA_HALF_PRECISION;
-	  //quda_inv_param.clover_cuda_prec_precondition = QUDA_HALF_PRECISION;
 	  q_gauge_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
 	  break;
 
 	case SINGLE:
 	  mg_inv_param.cuda_prec_precondition = QUDA_SINGLE_PRECISION;
-          //mg_inv_param.clover_cuda_prec_precondition = QUDA_SINGLE_PRECISION;
           quda_inv_param.cuda_prec_precondition = QUDA_SINGLE_PRECISION;
-          //quda_inv_param.clover_cuda_prec_precondition = QUDA_SINGLE_PRECISION;
 	  q_gauge_param.cuda_prec_precondition = QUDA_SINGLE_PRECISION;
 	  break;
 
 	case DOUBLE:
 	  mg_inv_param.cuda_prec_precondition = QUDA_DOUBLE_PRECISION;
-          //mg_inv_param.clover_cuda_prec_precondition = QUDA_DOUBLE_PRECISION;
           quda_inv_param.cuda_prec_precondition = QUDA_DOUBLE_PRECISION;
-          //quda_inv_param.clover_cuda_prec_precondition = QUDA_DOUBLE_PRECISION;
 	  q_gauge_param.cuda_prec_precondition = QUDA_DOUBLE_PRECISION;
 	  break;
 	default:
 	  mg_inv_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
-          //mg_inv_param.clover_cuda_prec_precondition = QUDA_HALF_PRECISION;
 	  quda_inv_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
-	  //quda_inv_param.clover_cuda_prec_precondition = QUDA_HALF_PRECISION;
 	  q_gauge_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
 	  break;
 	}
@@ -466,7 +440,7 @@ namespace Chroma
 	mg_inv_param.input_location = QUDA_CPU_FIELD_LOCATION;
   	mg_inv_param.output_location = QUDA_CPU_FIELD_LOCATION;
 
-	mg_inv_param.kappa = static_cast<double>(1)/(static_cast<double>(2)*(static_cast<double>(Nd)+toDouble(invParam.WilsonParams.Mass)));
+	mg_inv_param.kappa = quda_inv_param.kappa;
 
 	mg_inv_param.dagger = QUDA_DAG_NO;
   	mg_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
@@ -516,103 +490,20 @@ namespace Chroma
 
   	mg_param.compute_null_vector = ip.generate_nullspace ? QUDA_COMPUTE_NULL_VECTOR_YES
     	: QUDA_COMPUTE_NULL_VECTOR_NO;
-
+	
+	//Make sure quda does not try to read or write things with QIO.
 	mg_param.vec_infile[0] = '\0';
         mg_param.vec_outfile[0] = '\0';
-  	// set file i/o parameters
-  	//strcpy(mg_param.vec_infile, vec_infile);
-  	//strcpy(mg_param.vec_outfile, vec_outfile);
-	//Ignoring this for now.
 	QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
 	quda_inv_param.verbosity = QUDA_VERBOSE;
-	
-	//Here we finally get multigrid up and running, w00t!
-      //QDPIO::cout << "Don't forget to re-enable clover when you are ready" << std::endl;
 
-      //      Setup the clover term...                                                                                                                 
-      //QDPIO::cout << "Creating CloverTerm" << std::endl;                                                                                               
-      //clov->create(fstate, invParam_.CloverParams);                                                                                                    
-      // Don't recompute, just copy                                                                                                                    
-      //invclov->create(fstate, invParam_.CloverParams);                                                                                                 
-                                                                                                                                                       
-      //QDPIO::cout << "Inverting CloverTerm" << std::endl;                                                                                              
-      //invclov->choles(0);                                                                                                                              
-      //invclov->choles(1);  
-
-#if 0
-      // Clover precision and order
-      quda_inv_param.clover_cpu_prec = cpu_prec;
-      quda_inv_param.clover_cuda_prec = gpu_prec;
-      quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
-
-#ifndef BUILD_QUDA_DEVIFACE_CLOVER
-      #warning "NOT USING QUDA DEVICE IFACE"
-      quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
-#else      
-      #warning "USING QUDA DEVICE IFACE"
-      QDPIO::cout << "MDAGM clover CUDA location\n";
-      quda_inv_param.clover_location = QUDA_CUDA_FIELD_LOCATION;
-      quda_inv_param.clover_order = QUDA_QDPJIT_CLOVER_ORDER;
-#endif   
-
-
-#ifndef BUILD_QUDA_DEVIFACE_CLOVER
-      multi1d<QUDAPackedClovSite<REALT> > packed_clov;
-
-      // Only compute clover if we're using asymmetric preconditioner
-      if( invParam.asymmetricP ) { 
-	packed_clov.resize(all.siteTable().size());
-
-	clov->packForQUDA(packed_clov, 0);
-	clov->packForQUDA(packed_clov, 1);
-      }
-
-      // Always need inverse
-      multi1d<QUDAPackedClovSite<REALT> > packed_invclov(all.siteTable().size());
-      invclov->packForQUDA(packed_invclov, 0);
-      invclov->packForQUDA(packed_invclov, 1);
-      
-      if( invParam.asymmetricP ) { 
-	loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
-      }
-      else { 
-	loadCloverQuda(NULL, &(packed_invclov[0]), &quda_inv_param);
-      }
-#else
-      void *clover[2];
-      void *cloverInv[2];
-
-      clover[0] = QDPCache::Instance().getDevicePtr( clov->getOffId() );
-      clover[1] = QDPCache::Instance().getDevicePtr( clov->getDiaId() );
-
-      cloverInv[0] = QDPCache::Instance().getDevicePtr( invclov->getOffId() );
-      cloverInv[1] = QDPCache::Instance().getDevicePtr( invclov->getDiaId() );
-
-      QDPIO::cout << "MDAGM clover CUDA pointers: " 
-		  << clover[0] << " "
-		  << clover[1] << " "
-		  << cloverInv[0] << " "
-		  << cloverInv[1] << "\n";
-
-      if( invParam.asymmetricP ) { 
-	loadCloverQuda( (void*)(clover) , (void*)(cloverInv) ,&quda_inv_param);
-      }
-      else { 
-	loadCloverQuda( NULL , (void*)(cloverInv) ,&quda_inv_param);
-      }
-#endif
-
-#endif // if 0
-
-     // setup the multigrid solver
-     void *mg_preconditioner = newMultigridQuda(&mg_param);
-     QDPIO::cout<<"NewMultigridQuda state initialized."<<std::endl;
-     quda_inv_param.preconditioner = mg_preconditioner;
-     QDPIO::cout<<"MULTIGRID preconditioner set."<<std::endl;
-     //
+     	// setup the multigrid solver
+     	void *mg_preconditioner = newMultigridQuda(&mg_param);
+     	QDPIO::cout<<"NewMultigridQuda state initialized."<<std::endl;
+     	quda_inv_param.preconditioner = mg_preconditioner;
+     	QDPIO::cout<<"MULTIGRID preconditioner set."<<std::endl;
    
-      
-    }
+    	}
     
 
     //! Destructor is automatic

@@ -1,3 +1,4 @@
+
 // -*- C++ -*-
 /*! \file
  *  \QUDA MULTIGRID Clover solver.
@@ -274,11 +275,28 @@ namespace Chroma
       mg_inv_param.verbosity_precondition = QUDA_VERBOSE;
 
 
-      // Mass
-   
-   quda_inv_param.kappa = static_cast<double>(1)/(static_cast<double>(2)*(static_cast<double>(Nd)+toDouble(invParam.CloverParams.Mass)));
- 
+      /**** ! FIXME XXX: This is just because we are setting a kappa for Wilson
+       * Eventually for Clover we will transfer down the clover term, which whill
+       * have this built in already in its diagonal part. For the EO Clover, we want
+       * to set kappa to (1/2) so that the operator looks like A - (1/2) D prior to preconditioning
+       */
+
       
+      Real diag_mass;
+      {
+	// auto is C++11 so I don't have to remember all the silly typenames
+	auto clparams = invParam.CloverParams;
+
+	auto aniso = clparams.anisoParam;
+	
+	Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
+	diag_mass = 1 + (Nd-1)*ff + clparams.Mass;
+      }
+
+
+      quda_inv_param.kappa = static_cast<double>(1)/(static_cast<double>(2)*toDouble(diag_mass));
+      /**** END FIXME XXX ***/
+     
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);
@@ -523,7 +541,7 @@ namespace Chroma
 	mg_inv_param.input_location = QUDA_CPU_FIELD_LOCATION;
   	mg_inv_param.output_location = QUDA_CPU_FIELD_LOCATION;
 
-	mg_inv_param.kappa = static_cast<double>(1)/(static_cast<double>(2)*(static_cast<double>(Nd)+toDouble(invParam.CloverParams.Mass)));
+	mg_inv_param.kappa = quda_inv_param.kappa;
 
 	mg_inv_param.dagger = QUDA_DAG_NO;
   	mg_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
@@ -578,6 +596,10 @@ namespace Chroma
   	//strcpy(mg_param.vec_infile, vec_infile);
   	//strcpy(mg_param.vec_outfile, vec_outfile);
 	//Ignoring this for now.
+	
+	mg_param.vec_infile[0] = '\0';
+        mg_param.vec_outfile[0] = '\0';
+
 	QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
 	quda_inv_param.verbosity = QUDA_VERBOSE;
 	
