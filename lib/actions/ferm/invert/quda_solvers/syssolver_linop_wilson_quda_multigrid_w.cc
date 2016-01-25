@@ -4,7 +4,7 @@
 // comment
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_wilson_params.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h"
 #include "io/aniso_io.h"
 
@@ -40,7 +40,7 @@ namespace Chroma
 						  
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new LinOpSysSolverQUDAMULTIGRIDWilson(A, state,SysSolverQUDAMULTIGRIDCloverParams(xml_in, path));
+      return new LinOpSysSolverQUDAMULTIGRIDWilson(A, state,SysSolverQUDAMULTIGRIDWilsonParams(xml_in, path));
     }
 
     //! Register all the factories
@@ -57,54 +57,48 @@ namespace Chroma
   }
 
   SystemSolverResults_t 
-  LinOpSysSolverQUDAMULTIGRIDWilson::qudaInvert(const CloverTermT<T, U>::Type_t& clover,
-				                const CloverTermT<T, U>::Type_t& invclov,
-				       		const T& chi_s,
+  LinOpSysSolverQUDAMULTIGRIDWilson::qudaInvert(const T& chi_s,
 				       		T& psi_s) const{
 
     SystemSolverResults_t ret;
-
-    void *spinorIn;
+   
 
     T mod_chi;
-    if ( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
-      // asymmetric 
-      //
-      // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
-      // No need to transform source
-#ifndef BUILD_QUDA_DEVIFACE_SPINOR
-      spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
-#else
-      spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
-      QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
-#endif
-    }
-    else if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD) { 
-      //
-      // symmetric
-      // Solve with M_symm = 1 - A^{-1}_oo D A^{-1}ee D 
-      //
-      // Chroma M =  A_oo ( M_symm )
-      //
-      //  So  M x = b => A_oo (M_symm) x = b 
-      //              =>       M_symm x = A^{-1}_oo b = chi_mod
-      invclov.apply(mod_chi, chi_s, PLUS, 1);
-#ifndef BUILD_QUDA_DEVIFACE_SPINOR
-      spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
-#else
-      spinorIn = QDPCache::Instance().getDevicePtr( mod_chi.getId() );
-      QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
-#endif
-    }
-    else { 
-      QDPIO::cout << "MATPC Type not allowed." << std::endl;
-      QDPIO::cout << " Allowed are: QUDA_MATPC_ODD_ODD_ASYMMETRIC or QUDA_MATPC_ODD_ODD" << std::endl;
-      QDP_abort(1);
+
+    // Off parity part may contain junk.
+    // Not a problem with BiCGStab etc, where we use an operator defined only on
+    // one parity, but in MG we will use an operator defined on both parities.
+    // So I will explicitly zero the off parity, into a mod_chi to use as a source.
+
+    mod_chi[rb[0]] = zero; // Zero odd parity
+    mod_chi[rb[1]] = chi_s;
+
+    if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD  ) {
+
+      // In this case Chroma and QUDA operators disagree by A_oo = (Mass Term)
+      // (or clover term  in the case of clover). SO I need to rescale mod_chi
+      
+      Real diag_mass;
+      {
+	// auto is C++11 so I don't have to remember all the silly typenames
+	auto wlparams = invParam.WilsonParams;
+	
+	auto aniso = wlparams.anisoParam;
+	
+	Real ff = where(aniso.anisoP, Real(1) / aniso.xi_0, Real(1));
+	diag_mass = 1 + (Nd-1)*ff + wlparams.Mass;
+      }
+
+      mod_chi[rb[1]] /= diag_mass;
     }
 
+    // Set pointers for QUDA
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
+    void *spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
+    void*  spinorIn = QDPCache::Instance().getDevicePtr( mod_chi,.getId() );
+    QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
     void* spinorOut = QDPCache::Instance().getDevicePtr( psi_s.getId() );
     QDPIO::cout << "MDAGM spinor out = " << spinorOut << "\n";
 #endif
@@ -116,11 +110,10 @@ namespace Chroma
     invertQuda(spinorOut, spinorIn, (QudaInvertParam*)&quda_inv_param);
     swatch1.stop();
 
-
+   
     QDPIO::cout << "Cuda Space Required" << std::endl;
     QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << std::endl;
     QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << std::endl;
     QDPIO::cout << "QUDA_MULTIGRID_"<<solver_string<<"_WILSON_SOLVER: time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;

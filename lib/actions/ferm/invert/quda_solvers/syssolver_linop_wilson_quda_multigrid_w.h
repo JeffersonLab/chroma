@@ -18,8 +18,7 @@
 #include "linearop.h"
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.h"
-#include "actions/ferm/linop/clover_term_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_wilson_params.h"
 #include "meas/gfix/temporal_gauge.h"
 #include "io/aniso_io.h"
 #include <string>
@@ -40,9 +39,9 @@ namespace Chroma
 
 
 
-  //! Solve a Clover Fermion System using the QUDA inverter
+  //! Solve a Wilson Fermion System using the QUDA inverter
   /*! \ingroup invert
- *** WARNING THIS SOLVER WORKS FOR Clover FERMIONS ONLY ***
+ *** WARNING THIS SOLVER WORKS FOR Wilson FERMIONS ONLY ***
    */
  
   class LinOpSysSolverQUDAMULTIGRIDWilson : public LinOpSystemSolver<LatticeFermion>
@@ -68,8 +67,8 @@ namespace Chroma
      */
     LinOpSysSolverQUDAMULTIGRIDWilson(Handle< LinearOperator<T> > A_,
 					 Handle< FermState<T,Q,Q> > state_,
-					 const SysSolverQUDAMULTIGRIDCloverParams& invParam_) : 
-      A(A_), invParam(invParam_), clov(new CloverTermT<T, U>::Type_t() ), invclov(new CloverTermT<T, U>::Type_t())
+					 const SysSolverQUDAMULTIGRIDWilsonParams& invParam_) : 
+      A(A_), invParam(invParam_)
     {
       QDPIO::cout << "LinOpSysSolverQUDAMULTIGRIDWilson:" << std::endl;
 
@@ -218,7 +217,7 @@ namespace Chroma
       }
 
       // deferred 4) Gauge Anisotropy
-      const AnisoParam_t& aniso = invParam.CloverParams.anisoParam;
+      const AnisoParam_t& aniso = invParam.WilsonParams.anisoParam;
       if( aniso.anisoP ) {                     // Anisotropic case
 	Real gamma_f = aniso.xi_0 / aniso.nu; 
 	q_gauge_param.anisotropy = toDouble(gamma_f);
@@ -275,17 +274,11 @@ namespace Chroma
       mg_inv_param.verbosity_precondition = QUDA_VERBOSE;
 
 
-      /**** ! FIXME XXX: This is just because we are setting a kappa for Wilson
-       * Eventually for Clover we will transfer down the clover term, which whill
-       * have this built in already in its diagonal part. For the EO Clover, we want
-       * to set kappa to (1/2) so that the operator looks like A - (1/2) D prior to preconditioning
-       */
-
       
       Real diag_mass;
       {
 	// auto is C++11 so I don't have to remember all the silly typenames
-	auto wlparams = invParam.CloverParams;
+	auto wlparams = invParam.WilsonParams;
 
 	auto aniso = wlparams.anisoParam;
 	
@@ -328,7 +321,10 @@ namespace Chroma
       mg_inv_param.cpu_prec = cpu_prec;
       mg_inv_param.cuda_prec = gpu_prec;
       mg_inv_param.cuda_prec_sloppy = gpu_half_prec;
+
       //Clover stuff
+      // This doesn't hurt to leave in, to make sure these are in a well defined state
+      // But yucky!!!
       mg_inv_param.clover_cpu_prec = cpu_prec;
       mg_inv_param.clover_cuda_prec = gpu_prec;
       mg_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
@@ -544,19 +540,8 @@ namespace Chroma
 	QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
 	quda_inv_param.verbosity = QUDA_VERBOSE;
 	
-	//Here we finally get multigrid up and running, w00t!
-      QDPIO::cout << "Don't forget to re-enable clover when you are ready" << std::endl;
 
-      //      Setup the clover term...                                                                                                                 
-      QDPIO::cout << "Creating CloverTerm" << std::endl;                                                                                               
-      clov->create(fstate, invParam_.CloverParams);                                                                                                    
-      // Don't recompute, just copy                                                                                                                    
-      invclov->create(fstate, invParam_.CloverParams);                                                                                                 
-                                                                                                                                                       
-      QDPIO::cout << "Inverting CloverTerm" << std::endl;                                                                                              
-      invclov->choles(0);                                                                                                                              
-      invclov->choles(1);  
-
+   
      // setup the multigrid solver
      void *mg_preconditioner = newMultigridQuda(&mg_param);
      QDPIO::cout<<"NewMultigridQuda state initialized."<<std::endl;
@@ -573,7 +558,9 @@ namespace Chroma
     {
       QDPIO::cout << "Destructing" << std::endl;
       freeGaugeQuda();
-      freeCloverQuda();
+
+      /* FIXME: I Don't use it. Should I still do this? */
+      // freeCloverQuda();
       destroyMultigridQuda(quda_inv_param.preconditioner);
     }
 
@@ -607,19 +594,13 @@ namespace Chroma
         g_chi[ rb[1] ]  = GFixMat * chi;
 	g_psi[ rb[1] ]  = GFixMat * psi;
 	QDPIO::cout << "Solving" << std::endl;
-	res = qudaInvert(*clov,
-			 *invclov,
-			 g_chi,
-			 g_psi);      
+	res = qudaInvert( g_chi,g_psi);      
 	QDPIO::cout << "Untransforming solution." << std::endl;
 	psi[ rb[1]]  = adj(GFixMat)*g_psi;
 
       }
       else { 
-	res = qudaInvert(*clov,
-			 *invclov,
-			 chi,
-			 psi);      
+	res = qudaInvert(chi,psi);
       }      
 
       swatch.stop();
@@ -666,20 +647,15 @@ namespace Chroma
     QudaPrecision_s gpu_half_prec;
 
     Handle< LinearOperator<T> > A;
-    const SysSolverQUDAMULTIGRIDCloverParams invParam;
+    const SysSolverQUDAMULTIGRIDWilsonParams invParam;
     QudaGaugeParam q_gauge_param;
     QudaInvertParam quda_inv_param;
     QudaInvertParam mg_inv_param;	
     QudaMultigridParam mg_param;
 
-    Handle< CloverTermT<T, U>::Type_t > clov;
-    Handle< CloverTermT<T, U>::Type_t > invclov;
-
-    SystemSolverResults_t qudaInvert(const CloverTermT<T, U>::Type_t& clover,
-				     const CloverTermT<T, U>::Type_t& inv_clov, 
-				     const T& chi_s,
-				     T& psi_s     
-				     )const ;
+    SystemSolverResults_t qudaInvert( const T& chi_s,
+				      T& psi_s     
+				      )const ;
 
     std::string solver_string;
   };
