@@ -240,11 +240,8 @@ namespace Chroma
   
       // Now onto the inv param:
       // Dslash type
-
-      /****!!! FIXME: Before the final code remember to reset this to QUDA_CLOVER_WILSON_DSLASH */
-      QDPIO::cout << "Remember for production to reset quda_inv_param.dslash_typeto QUDA_CLOVER_WILSON_DSLASH" << std::endl;
-      quda_inv_param.dslash_type = QUDA_WILSON_DSLASH;
-      mg_inv_param.dslash_type = QUDA_WILSON_DSLASH;
+      quda_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH;
+      mg_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH;
 
       // Invert type:
    switch( invParam.solverType ) { 
@@ -275,13 +272,15 @@ namespace Chroma
       mg_inv_param.verbosity_precondition = QUDA_VERBOSE;
 
 
+#if 0      
+
+
       /**** ! FIXME XXX: This is just because we are setting a kappa for Wilson
        * Eventually for Clover we will transfer down the clover term, which whill
        * have this built in already in its diagonal part. For the EO Clover, we want
        * to set kappa to (1/2) so that the operator looks like A - (1/2) D prior to preconditioning
        */
 
-      
       Real diag_mass;
       {
 	// auto is C++11 so I don't have to remember all the silly typenames
@@ -295,6 +294,9 @@ namespace Chroma
 
 
       quda_inv_param.kappa = static_cast<double>(1)/(static_cast<double>(2)*toDouble(diag_mass));
+#else
+      quda_inv_param.kappa = 0.5;
+#endif 
       /**** END FIXME XXX ***/
      
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
@@ -329,16 +331,7 @@ namespace Chroma
 	break;
       }*/ 
 
-#if 1
-      if( invParam.asymmetricP ) { 
-	QDPIO::cout << "Using Asymmetric Linop: A_oo - D A^{-1}_ee D" << std::endl;
-	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
-      }
-      else { 
-	QDPIO::cout << "Using Symmetric Linop: 1 - A^{-1}_oo D A^{-1}_ee D" << std::endl;
-	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
-      }
-#endif
+      quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
 
       quda_inv_param.dagger = QUDA_DAG_NO;
       quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
@@ -407,10 +400,16 @@ namespace Chroma
       quda_inv_param.sp_pad = 0;
       quda_inv_param.cl_pad = 0;
 
+      // Clover precision and order
+      quda_inv_param.clover_cpu_prec = cpu_prec;
+      quda_inv_param.clover_cuda_prec = gpu_prec;
+      quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
+
      if( invParam.MULTIGRIDParamsP ) {
 	QDPIO::cout << "Setting MULTIGRID solver params" << std::endl;
 	// Dereference handle
 	MULTIGRIDSolverParams ip = *(invParam.MULTIGRIDParams);
+
 
 	// Set preconditioner precision
 	switch( ip.prec ) { 
@@ -608,7 +607,9 @@ namespace Chroma
 
       //      Setup the clover term...                                                                                                                 
       QDPIO::cout << "Creating CloverTerm" << std::endl;                                                                                               
-      clov->create(fstate, invParam_.CloverParams);                                                                                                    
+      clov->create(fstate, invParam_.CloverParams);              
+
+                                                                                      
       // Don't recompute, just copy                                                                                                                    
       invclov->create(fstate, invParam_.CloverParams);                                                                                                 
                                                                                                                                                        
@@ -616,24 +617,12 @@ namespace Chroma
       invclov->choles(0);                                                                                                                              
       invclov->choles(1);  
 
-#if 0
-      // Clover precision and order
-      quda_inv_param.clover_cpu_prec = cpu_prec;
-      quda_inv_param.clover_cuda_prec = gpu_prec;
-      quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
+
 
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
       #warning "NOT USING QUDA DEVICE IFACE"
       quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
-#else      
-      #warning "USING QUDA DEVICE IFACE"
-      QDPIO::cout << "MDAGM clover CUDA location\n";
-      quda_inv_param.clover_location = QUDA_CUDA_FIELD_LOCATION;
-      quda_inv_param.clover_order = QUDA_QDPJIT_CLOVER_ORDER;
-#endif   
 
-
-#ifndef BUILD_QUDA_DEVIFACE_CLOVER
       multi1d<QUDAPackedClovSite<REALT> > packed_clov;
 
       // Only compute clover if we're using asymmetric preconditioner
@@ -650,12 +639,18 @@ namespace Chroma
       invclov->packForQUDA(packed_invclov, 1);
       
       if( invParam.asymmetricP ) { 
-	loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
+	loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
       }
       else { 
-	loadCloverQuda(NULL, &(packed_invclov[0]), &quda_inv_param);
+	loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
       }
 #else
+
+      #warning "USING QUDA DEVICE IFACE"
+      QDPIO::cout << "MDAGM clover CUDA location\n";
+      quda_inv_param.clover_location = QUDA_CUDA_FIELD_LOCATION;
+      quda_inv_param.clover_order = QUDA_QDPJIT_CLOVER_ORDER;
+
       void *clover[2];
       void *cloverInv[2];
 
@@ -675,11 +670,11 @@ namespace Chroma
 	loadCloverQuda( (void*)(clover) , (void*)(cloverInv) ,&quda_inv_param);
       }
       else { 
-	loadCloverQuda( NULL , (void*)(cloverInv) ,&quda_inv_param);
+	loadCloverQuda( (void*)(clover) ,(void*)(cloverInv) ,&quda_inv_param);
       }
 #endif
 
-#endif // if 0
+
 
      // setup the multigrid solver
      void *mg_preconditioner = newMultigridQuda(&mg_param);

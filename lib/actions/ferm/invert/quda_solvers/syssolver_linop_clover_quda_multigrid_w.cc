@@ -64,22 +64,13 @@ namespace Chroma
 
     SystemSolverResults_t ret;
 
-    void *spinorIn;
-
     T mod_chi;
-    if ( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
-      // asymmetric 
-      //
-      // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
-      // No need to transform source
-#ifndef BUILD_QUDA_DEVIFACE_SPINOR
-      spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
-#else
-      spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
-      QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
-#endif
-    }
-    else if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD) { 
+
+    // Copy source into mod_chi, and zero the off-parity
+    mod_chi[rb[0]] = zero;
+  
+
+    if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD) { 
       //
       // symmetric
       // Solve with M_symm = 1 - A^{-1}_oo D A^{-1}ee D 
@@ -89,24 +80,18 @@ namespace Chroma
       //  So  M x = b => A_oo (M_symm) x = b 
       //              =>       M_symm x = A^{-1}_oo b = chi_mod
       invclov.apply(mod_chi, chi_s, PLUS, 1);
-#ifndef BUILD_QUDA_DEVIFACE_SPINOR
-      spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
-#else
-      spinorIn = QDPCache::Instance().getDevicePtr( mod_chi.getId() );
-      QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
-#endif
     }
-    else { 
-      QDPIO::cout << "MATPC Type not allowed." << std::endl;
-      QDPIO::cout << " Allowed are: QUDA_MATPC_ODD_ODD_ASYMMETRIC or QUDA_MATPC_ODD_ODD" << std::endl;
-      QDP_abort(1);
+    else {
+      mod_chi[rb[1]] = chi_s;
     }
 
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
+    void* spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
+    void* spinorIn = QDPCache::Instance().getDevicePtr( mod_chi.getId() );
     void* spinorOut = QDPCache::Instance().getDevicePtr( psi_s.getId() );
-    QDPIO::cout << "MDAGM spinor out = " << spinorOut << "\n";
+    QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
 #endif
 
     // Do the solve here 
