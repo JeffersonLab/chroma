@@ -602,9 +602,6 @@ namespace Chroma
 	QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
 	quda_inv_param.verbosity = QUDA_VERBOSE;
 	
-	//Here we finally get multigrid up and running, w00t!
-      QDPIO::cout << "Don't forget to re-enable clover when you are ready" << std::endl;
-
       //      Setup the clover term...                                                                                                                 
       QDPIO::cout << "Creating CloverTerm" << std::endl;                                                                                               
       clov->create(fstate, invParam_.CloverParams);              
@@ -640,9 +637,10 @@ namespace Chroma
       
       if( invParam.asymmetricP ) { 
 	loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
+
       }
-      else { 
-	loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
+      else {
+ 	loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
       }
 #else
 
@@ -667,10 +665,10 @@ namespace Chroma
 		  << cloverInv[1] << "\n";
 
       if( invParam.asymmetricP ) { 
-	loadCloverQuda( (void*)(clover) , (void*)(cloverInv) ,&quda_inv_param);
+	loadCloverQuda( (void*)(clover), (void *)(cloverInv), &quda_inv_param);
       }
       else { 
-	loadCloverQuda( (void*)(clover) ,(void*)(cloverInv) ,&quda_inv_param);
+	loadCloverQuda( (void*)(clover), (void *)(cloverInv), &quda_inv_param);
       }
 #endif
 

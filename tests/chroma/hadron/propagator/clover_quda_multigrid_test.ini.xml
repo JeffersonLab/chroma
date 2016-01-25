@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+; Test program created by Arjun.
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+  <elem>
+      <annotation>
+         Diluted complex Z(2) = Z(4) random source
+      </annotation>
+      <Name>MAKE_SOURCE_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+          <ran_seed>
+            <Seed>
+              <elem>11</elem>
+              <elem>13</elem>
+              <elem>17</elem>
+              <elem>19</elem>
+            </Seed>
+          </ran_seed>
+
+          <spatial_mask_size>2 2 2</spatial_mask_size>
+          <spatial_mask>
+             <elem>0 0 0</elem>
+             <elem>1 1 0</elem>
+             <elem>0 1 1</elem>
+             <elem>1 0 1</elem>
+          </spatial_mask>
+
+          <color_mask>0  2</color_mask>
+          <spin_mask>0 1  3</spin_mask>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+ <elem>
+      <Name>PROPAGATOR_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+
+
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+          <Mass>0.2390</Mass>
+          <clovCoeff>1.20536588031793</clovCoeff>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1</xi_0>
+            <nu>1</nu>
+          </AnisoParam>
+          <FermState>
+            <Name>STOUT_FERM_STATE</Name>
+            <rho>0.125</rho>
+            <n_smear>1</n_smear>
+            <orthog_dir>-1</orthog_dir>
+            <FermionBC>
+              <FermBC>SIMPLE_FERMBC</FermBC>
+              <boundary>1 1 1 -1</boundary>
+            </FermionBC>
+          </FermState>
+        </FermionAction>
+
+
+
+	<InvertParam>
+          <invType>QUDA_MULTIGRID_CLOVER_INVERTER</invType>
+	  
+	  <MULTIGRIDParams>
+	   <Residual>1.0e-1</Residual>
+	   <MaxIterations>10</MaxIterations> 
+	   <SmootherType>MR</SmootherType>
+	   <Verbosity>true</Verbosity>
+	   <Precision>SINGLE</Precision>
+	   <Reconstruct>RECONS_NONE</Reconstruct>
+	   <NullVectors>16</NullVectors>
+ 	   <GenerateNullspace>true</GenerateNullspace>
+	   <Pre-SmootherApplications>0</Pre-SmootherApplications>
+	   <Post-SmootherApplications>6</Post-SmootherApplications>
+	   <SchwarzType>ADDITIVE_SCHWARZ</SchwarzType>
+	   <Blocking>
+	    <elem>4 4 4 4</elem>
+	    <elem>2 2 2 2</elem>
+	   </Blocking>
+	  </MULTIGRIDParams>
+
+          <RsdTarget>1.0e-7</RsdTarget>
+          <CloverParams>
+            <Mass>0.2390</Mass>
+            <clovCoeff>1.20536588031793</clovCoeff>
+            <AnisoParam>
+              <anisoP>false</anisoP>
+              <t_dir>3</t_dir>
+              <xi_0>1</xi_0>
+              <nu>1</nu>
+            </AnisoParam>
+	  </CloverParams>
+          <Delta>1.0e-8</Delta>
+          <MaxIter>200</MaxIter>
+          <RsdToleranceFactor>100</RsdToleranceFactor>
+          <SilentFail>true</SilentFail>
+          <AntiPeriodicT>true</AntiPeriodicT>
+          <SolverType>GCR</SolverType>
+          <Verbose>false</Verbose>
+          <AsymmetricLinop>false</AsymmetricLinop>
+          <CudaReconstruct>RECONS_NONE</CudaReconstruct>
+          <CudaSloppyPrecision>SINGLE</CudaSloppyPrecision>
+          <CudaSloppyReconstruct>RECONS_NONE</CudaSloppyReconstruct>
+          <AxialGaugeFix>false</AxialGaugeFix>
+          <AutotuneDslash>true</AutotuneDslash>
+        </InvertParam>
+
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source_0</source_id>
+        <prop_id>zN_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>16 16 16 32</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>./cl21_32_64_b6p3_m0p2390_m0p2050_cfg_3200.lime</cfg_file>
+</Cfg>
+</chroma>
+
+
