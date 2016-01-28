@@ -495,6 +495,10 @@ namespace Chroma
 	mg_inv_param.solve_type = QUDA_DIRECT_SOLVE;
 
 	mg_param.invert_param = &mg_inv_param;
+
+	// FIXME: Make this an XML Param
+	mg_param.run_verify = QUDA_BOOLEAN_NO;
+
 	mg_param.n_level = ip.mg_levels;
 	for (int i=0; i<mg_param.n_level; i++) {
     		for (int j=0; j<QUDA_MAX_DIM; j++) {
