@@ -1071,9 +1071,6 @@ AM_CONDITIONAL(BUILD_MDWF,
 	[test "x${build_mdwf}x" = "xyesx" ])
 
 
-
-
-
 if [ test "x${build_llvm_wd}x" = "xyesx" ];
 then
   AC_MSG_NOTICE([Configuring to use LLVM wilson dslash])

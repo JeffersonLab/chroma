@@ -21,6 +21,8 @@
 #include "meas/inline/hadron/inline_disco_eoprec_w.h"
 #include "meas/inline/hadron/inline_disco_eo_eigcg_w.h"
 #include "meas/inline/hadron/inline_disco_eigcg_w.h"
+
+
 #include "meas/inline/hadron/inline_static_light_spec_w.h"
 #include "meas/inline/hadron/inline_heavy_light_cont_w.h"
 #include "meas/inline/hadron/inline_heavyhadspec_w.h"
@@ -128,6 +130,7 @@ namespace Chroma
 	success &= InlineDiscoEOPrecEnv::registerAll();
 	success &= InlineDiscoEoEigCGEnv::registerAll();
 	success &= InlineDiscoEigCGEnv::registerAll();
+
 	success &= InlineStagToWilsEnv::registerAll();
 	success &= InlineSinkSmearEnv::registerAll();
 	success &= InlineDiquarkEnv::registerAll();
