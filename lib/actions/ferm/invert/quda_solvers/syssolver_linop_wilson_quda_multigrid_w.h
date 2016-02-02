@@ -121,7 +121,8 @@ namespace Chroma
       q_gauge_param = newQudaGaugeParam(); 
       quda_inv_param = newQudaInvertParam();
       mg_inv_param = newQudaInvertParam();
- 
+      mg_param = newQudaMultigridParam();
+
 
       // 3) set lattice size
       const multi1d<int>& latdims = Layout::subgridLattSize();
@@ -496,6 +497,9 @@ namespace Chroma
 
 	mg_param.invert_param = &mg_inv_param;
 
+	mg_inv_param.Ls = 1;
+	quda_inv_param.Ls = 1;
+
 	// FIXME: Make this an XML Param
 	mg_param.run_verify = QUDA_BOOLEAN_NO;
 
@@ -513,6 +517,8 @@ namespace Chroma
     		mg_param.n_vec[i] = ip.nvec;
     		mg_param.nu_pre[i] = ip.nu_pre;
     		mg_param.nu_post[i] = ip.nu_post;
+    		mg_param.smoother_tol[i] = toDouble(ip.tol);
+    		mg_param.global_reduction[i] = QUDA_BOOLEAN_YES;
 
 		switch( ip.smootherType ) { 
       		case MR: 
@@ -584,6 +590,8 @@ namespace Chroma
       START_CODE();
       StopWatch swatch;
       swatch.start();
+
+      psi=zero;
 
       //    T MdagChi;
 
