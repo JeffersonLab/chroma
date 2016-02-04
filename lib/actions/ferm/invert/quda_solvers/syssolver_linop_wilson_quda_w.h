@@ -261,7 +261,8 @@ namespace Chroma
       invMassParam = 1.0;
 
       quda_inv_param.kappa = 1.0/(2*toDouble(massParam));
-     
+      quda_inv_param.clover_coeff = 0.0; // Always true for Wilson
+ 
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);

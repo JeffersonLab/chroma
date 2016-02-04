@@ -248,8 +248,8 @@ namespace Chroma
 			mg_inv_param.maxiter = 10000;
 			mg_inv_param.reliable_delta = 1e-10;
 			mg_inv_param.gcrNkrylov = 10;
-			mg_inv_param.verbosity = QUDA_VERBOSE;
-			mg_inv_param.verbosity_precondition = QUDA_VERBOSE;
+			mg_inv_param.verbosity = QUDA_SILENT;
+			mg_inv_param.verbosity_precondition = QUDA_SILENT;
 
 #if 0      
 
@@ -273,6 +273,7 @@ namespace Chroma
 			quda_inv_param.kappa = static_cast<double>(1)/(static_cast<double>(2)*toDouble(diag_mass));
 #else
 			quda_inv_param.kappa = 0.5;
+			quda_inv_param.clover_coeff = 1.0; // Dummy, not used
 #endif 
 			/**** END FIXME XXX ***/
 
@@ -475,7 +476,7 @@ namespace Chroma
 			quda_inv_param.precondition_cycle = 1;
 			//Invert test always sets this to 1.
 
-			quda_inv_param.verbosity_precondition = QUDA_VERBOSE;
+			quda_inv_param.verbosity_precondition = QUDA_SILENT;
 
 		
 			quda_inv_param.inv_type_precondition = QUDA_MG_INVERTER;
@@ -506,7 +507,7 @@ namespace Chroma
 			mg_inv_param.dagger = QUDA_DAG_NO;
 			mg_inv_param.kappa = 0.5;
 			mg_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
-
+			mg_inv_param.clover_coeff = quda_inv_param.clover_coeff;
 			mg_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
 			mg_inv_param.solution_type = QUDA_MAT_SOLUTION;
 			mg_inv_param.solve_type = QUDA_DIRECT_SOLVE;
@@ -519,7 +520,7 @@ namespace Chroma
 			mg_param.n_level = ip.mg_levels;
 
 			// FIXME: Make this an XML param
-			mg_param.run_verify = QUDA_BOOLEAN_NO;
+			mg_param.run_verify = QUDA_BOOLEAN_YES;
 
 			for (int i=0; i<mg_param.n_level; i++) {
 				for (int j=0; j<QUDA_MAX_DIM; j++) {
@@ -541,7 +542,7 @@ namespace Chroma
 				switch( ip.smootherType ) {
 					case MR:
 					mg_param.smoother[i] = QUDA_MR_INVERTER;
-					mg_param.omega[i] = 0.85;
+					mg_param.omega[i] = toDouble(ip.relaxationOmegaMG);
 					break;
 					default:
 					QDPIO::cout << "Unknown or no smother type specified, no smoothing inverter will be used." << std::endl;
@@ -551,8 +552,32 @@ namespace Chroma
 				}
 				mg_param.location[i] = QUDA_CUDA_FIELD_LOCATION;
 				mg_param.smoother_solve_type[i] = QUDA_DIRECT_PC_SOLVE;
-				mg_param.coarse_grid_solution_type[i] = QUDA_MATPC_SOLUTION;
+
+ 				if ( ip.cycle_type == "MG_VCYCLE" ) {
+					mg_param.cycle_type[i] = QUDA_MG_CYCLE_VCYCLE;
+                                } else if (ip.cycle_type == "MG_RECURSIVE" ) { 
+					mg_param.cycle_type[i] = QUDA_MG_CYCLE_RECURSIVE;
+                                } else {
+				   QDPIO::cout << "Unknown Cycle Type" << ip.cycle_type << std::endl;
+ 				   QDP_abort(1);
+                                }
+			
+				switch( mg_param.cycle_type[i] ) { 
+				case QUDA_MG_CYCLE_RECURSIVE : 
+                                  mg_param.coarse_grid_solution_type[i] = QUDA_MATPC_SOLUTION;	
+				  break;
+				case QUDA_MG_CYCLE_VCYCLE :
+ 				  mg_param.coarse_grid_solution_type[i] = QUDA_MAT_SOLUTION; 
+				  break;
+				default:
+				  QDPIO::cerr << "Should never get here" << std::endl;
+				  QDP_abort(1);
+				  break;
+                                }
 			}
+
+			// LEvel 0 must always be matpc 
+	                mg_param.coarse_grid_solution_type[0] = QUDA_MATPC_SOLUTION;
 
 			// only coarsen the spin on the first restriction
 			mg_param.spin_block_size[0] = 2;
@@ -562,6 +587,9 @@ namespace Chroma
 
 			mg_param.compute_null_vector = ip.generate_nullspace ? QUDA_COMPUTE_NULL_VECTOR_YES
 			: QUDA_COMPUTE_NULL_VECTOR_NO;
+
+			mg_param.generate_all_levels = ip.generate_all_levels ? QUDA_BOOLEAN_YES 
+                        : QUDA_BOOLEAN_NO;
 
 			// set file i/o parameters
 			//strcpy(mg_param.vec_infile, vec_infile);
@@ -641,14 +669,17 @@ namespace Chroma
 			}
 #endif
 
-			quda_inv_param.omega = 1.0;
+			quda_inv_param.omega = toDouble(ip.relaxationOmegaOuter);
 
 			// setup the multigrid solver
 			void *mg_preconditioner = newMultigridQuda(&mg_param);
 			QDPIO::cout<<"NewMultigridQuda state initialized."<<std::endl;
 			quda_inv_param.preconditioner = mg_preconditioner;
 			QDPIO::cout<<"MULTIGRID preconditioner set."<<std::endl;
-			//
+			QDPIO::cout <<"MULTIGrid Param Dump" << std::endl;
+
+			printQudaMultigridParam(&mg_param);
+	
 
 		}
 

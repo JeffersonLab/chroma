@@ -250,6 +250,12 @@ namespace Chroma
       // op. Apart from the A_oo stuff on the antisymmetric we have
       // nothing to do...
       quda_inv_param.kappa = 0.5;
+
+      // FIXME: If we ever use QUDA to compute our clover term we need to fix this
+      // and QUDA will have to deal with anisotropy. Right now this is a hack to make
+      // the check_param pass. We pass in our clover term so this outghtnt matter
+      quda_inv_param.clover_coeff = 1.0; // dummy vaue
+
       quda_inv_param.tol = toDouble(invParam.RsdTarget[0]);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);
