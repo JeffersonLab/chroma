@@ -248,34 +248,9 @@ namespace Chroma
 			mg_inv_param.maxiter = 10000;
 			mg_inv_param.reliable_delta = 1e-10;
 			mg_inv_param.gcrNkrylov = 10;
-			mg_inv_param.verbosity = QUDA_SILENT;
-			mg_inv_param.verbosity_precondition = QUDA_SILENT;
 
-#if 0      
-
-			/**** ! FIXME XXX: This is just because we are setting a kappa for Wilson
-			 * Eventually for Clover we will transfer down the clover term, which whill
-			 * have this built in already in its diagonal part. For the EO Clover, we want
-			 * to set kappa to (1/2) so that the operator looks like A - (1/2) D prior to preconditioning
-			 */
-
-			Real diag_mass;
-			{
-				// auto is C++11 so I don't have to remember all the silly typenames
-				auto clparams = invParam.CloverParams;
-
-				auto aniso = clparams.anisoParam;
-
-				Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
-				diag_mass = 1 + (Nd-1)*ff + clparams.Mass;
-			}
-
-			quda_inv_param.kappa = static_cast<double>(1)/(static_cast<double>(2)*toDouble(diag_mass));
-#else
 			quda_inv_param.kappa = 0.5;
 			quda_inv_param.clover_coeff = 1.0; // Dummy, not used
-#endif 
-			/**** END FIXME XXX ***/
 
 			quda_inv_param.tol = toDouble(invParam.RsdTarget);
 			quda_inv_param.maxiter = invParam.MaxIter;
@@ -460,6 +435,14 @@ namespace Chroma
 			quda_inv_param.gcrNkrylov = 20;
 			quda_inv_param.residual_type = static_cast<QudaResidualType>(QUDA_L2_RELATIVE_RESIDUAL);
 
+			if( ip.verbosity == true ) {
+				mg_inv_param.verbosity = QUDA_VERBOSE;
+			}
+			else {
+				mg_inv_param.verbosity = QUDA_SUMMARIZE;
+			}
+			mg_inv_param.verbosity_precondition = QUDA_SILENT;
+
 
 			//Replacing above with what's in the invert test.
 			switch( ip.schwarzType ) {
@@ -476,9 +459,16 @@ namespace Chroma
 			quda_inv_param.precondition_cycle = 1;
 			//Invert test always sets this to 1.
 
+
+			if( invParam.verboseP ) {
+				quda_inv_param.verbosity = QUDA_VERBOSE;
+			}
+			else {
+				quda_inv_param.verbosity = QUDA_SUMMARIZE;
+			}
+
 			quda_inv_param.verbosity_precondition = QUDA_SILENT;
 
-		
 			quda_inv_param.inv_type_precondition = QUDA_MG_INVERTER;
 
 			mg_inv_param.sp_pad = 0;
@@ -600,7 +590,6 @@ namespace Chroma
 			mg_param.vec_outfile[0] = '\0';
 
 			QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
-			quda_inv_param.verbosity = QUDA_VERBOSE;
 
 			//      Setup the clover term...
 			QDPIO::cout << "Creating CloverTerm" << std::endl;
