@@ -838,11 +838,11 @@ Not used in this test, instead use create colorvecs below.
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.40.0</chroma>
-      <qdp>1.38.3</qdp>
+      <chroma>3.43.0</chroma>
+      <qdp>1.44.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>03 Jun 12 15:17:45 EDT</run_date>
+    <run_date>09 Feb 16 05:37:15 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -899,11 +899,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:17:45 EDT</run_date>
+          <run_date>09 Feb 16 05:37:15 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -919,7 +919,7 @@ Not used in this test, instead use create colorvecs below.
             <num_iter>50</num_iter>
             <num_orthog>20</num_orthog>
             <width>3</width><LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
       <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
       <link_smear_fact>0.1625</link_smear_fact>
       <link_smear_num>4</link_smear_num>
@@ -1085,11 +1085,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:17:47 EDT</run_date>
+          <run_date>09 Feb 16 05:37:17 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1188,7 +1188,7 @@ Not used in this test, instead use create colorvecs below.
         <num_orthog>20</num_orthog>
         <width>3</width>
         <LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
           <link_smear_fact>0.1625</link_smear_fact>
           <link_smear_num>4</link_smear_num>
@@ -1287,11 +1287,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:17:54 EDT</run_date>
+          <run_date>09 Feb 16 05:37:25 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1390,7 +1390,7 @@ Not used in this test, instead use create colorvecs below.
         <num_orthog>20</num_orthog>
         <width>3</width>
         <LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
           <link_smear_fact>0.1625</link_smear_fact>
           <link_smear_num>4</link_smear_num>
@@ -1461,11 +1461,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:18:00 EDT</run_date>
+          <run_date>09 Feb 16 05:37:32 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1573,7 +1573,7 @@ Not used in this test, instead use create colorvecs below.
         <num_orthog>20</num_orthog>
         <width>3</width>
         <LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
           <link_smear_fact>0.1625</link_smear_fact>
           <link_smear_num>4</link_smear_num>
@@ -1641,11 +1641,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:18:10 EDT</run_date>
+          <run_date>09 Feb 16 05:37:43 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1718,7 +1718,7 @@ Not used in this test, instead use create colorvecs below.
         <num_orthog>20</num_orthog>
         <width>3</width>
         <LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
           <link_smear_fact>0.1625</link_smear_fact>
           <link_smear_num>4</link_smear_num>
@@ -1786,11 +1786,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:18:10 EDT</run_date>
+          <run_date>09 Feb 16 05:37:43 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1861,7 +1861,7 @@ Not used in this test, instead use create colorvecs below.
         <num_orthog>20</num_orthog>
         <width>3</width>
         <LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
           <link_smear_fact>0.1625</link_smear_fact>
           <link_smear_num>4</link_smear_num>
@@ -1934,11 +1934,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:18:10 EDT</run_date>
+          <run_date>09 Feb 16 05:37:43 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2009,7 +2009,7 @@ Not used in this test, instead use create colorvecs below.
         <num_orthog>20</num_orthog>
         <width>3</width>
         <LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
           <link_smear_fact>0.1625</link_smear_fact>
           <link_smear_num>4</link_smear_num>
@@ -2082,11 +2082,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:18:10 EDT</run_date>
+          <run_date>09 Feb 16 05:37:43 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2295,7 +2295,7 @@ Not used in this test, instead use create colorvecs below.
             <num_vecs>10</num_vecs>
             <decay_dir>3</decay_dir>
             <orthog_basis>true</orthog_basis><LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
       <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
       <link_smear_fact>0.1625</link_smear_fact>
       <link_smear_num>4</link_smear_num>
@@ -2386,11 +2386,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:18:32 EDT</run_date>
+          <run_date>09 Feb 16 05:38:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2413,7 +2413,7 @@ Not used in this test, instead use create colorvecs below.
             <num_vecs>10</num_vecs>
             <decay_dir>3</decay_dir>
             <orthog_basis>true</orthog_basis><LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
       <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
       <link_smear_fact>0.1625</link_smear_fact>
       <link_smear_num>4</link_smear_num>
@@ -2504,11 +2504,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:18:32 EDT</run_date>
+          <run_date>09 Feb 16 05:38:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2623,7 +2623,7 @@ Not used in this test, instead use create colorvecs below.
             <num_vecs>10</num_vecs>
             <decay_dir>3</decay_dir>
             <site_orthog_basis>false</site_orthog_basis><LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
       <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
       <link_smear_fact>0.1625</link_smear_fact>
       <link_smear_num>4</link_smear_num>
@@ -2714,11 +2714,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:18:34 EDT</run_date>
+          <run_date>09 Feb 16 05:38:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2743,7 +2743,7 @@ Not used in this test, instead use create colorvecs below.
             <num_vecs>10</num_vecs>
             <decay_dir>3</decay_dir>
             <site_orthog_basis>false</site_orthog_basis><LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
       <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
       <link_smear_fact>0.1625</link_smear_fact>
       <link_smear_num>4</link_smear_num>
@@ -2837,11 +2837,11 @@ Not used in this test, instead use create colorvecs below.
         </Output_version>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:18:35 EDT</run_date>
+          <run_date>09 Feb 16 05:38:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2881,7 +2881,7 @@ Not used in this test, instead use create colorvecs below.
             <num_vecs>10</num_vecs>
             <decay_dir>3</decay_dir>
             <mass_label>U0.05</mass_label><LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
       <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
       <link_smear_fact>0.1625</link_smear_fact>
       <link_smear_num>4</link_smear_num>
@@ -2895,36 +2895,126 @@ Not used in this test, instead use create colorvecs below.
             <genprop_op_file>genprop.sdb</genprop_op_file>
           </NamedObject>
         </Input>
-        <Source_prop_file_info><FileXML>
-      <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
-      <object_id>prop_colorvec_tmp</object_id>
-      <file_name>./prop.mod</file_name>
-      <map_size>80</map_size>
-    </FileXML>
+        <Source_prop_file_info><MODMetaData>
+      <id>propColorVec</id>
+      <lattSize>4 4 4 16</lattSize>
+      <decay_dir>3</decay_dir>
+      <num_vecs>10</num_vecs>
+      <ProgramInfo>
+        <code_version>
+          <chroma>3.43.0</chroma>
+          <qdp>1.44.0</qdp>
+          <basePrecision>32</basePrecision>
+        </code_version>
+        <run_date>09 Feb 16 05:37:17 EST</run_date>
+        <Setgeom>
+          <latt_size>4 4 4 16</latt_size>
+          <logical_size>1 1 1 1</logical_size>
+          <subgrid_size>4 4 4 16</subgrid_size>
+          <total_volume>1024</total_volume>
+          <subgrid_volume>1024</subgrid_volume>
+        </Setgeom>
+      </ProgramInfo>
+      <Propagator>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+          <Mass>0.1</Mass>
+          <clovCoeff>1.0</clovCoeff>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Propagator>
+      <Contractions>
+        <num_vecs>10</num_vecs>
+        <t_sources>0 3</t_sources>
+        <decay_dir>3</decay_dir>
+      </Contractions>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MODMetaData>
 
         </Source_prop_file_info>
-        <Source_prop_record_info><FileXML>
+        <Source_prop_record_info><RecordXML>
       <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
       <object_id>prop_colorvec_tmp</object_id>
       <file_name>./prop.mod</file_name>
-      <map_size>80</map_size>
-    </FileXML>
+    </RecordXML>
 
         </Source_prop_record_info>
-        <Sink_prop_file_info><FileXML>
-      <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
-      <object_id>prop_colorvec_tmp</object_id>
-      <file_name>./prop.mod</file_name>
-      <map_size>80</map_size>
-    </FileXML>
+        <Sink_prop_file_info><MODMetaData>
+      <id>propColorVec</id>
+      <lattSize>4 4 4 16</lattSize>
+      <decay_dir>3</decay_dir>
+      <num_vecs>10</num_vecs>
+      <ProgramInfo>
+        <code_version>
+          <chroma>3.43.0</chroma>
+          <qdp>1.44.0</qdp>
+          <basePrecision>32</basePrecision>
+        </code_version>
+        <run_date>09 Feb 16 05:37:17 EST</run_date>
+        <Setgeom>
+          <latt_size>4 4 4 16</latt_size>
+          <logical_size>1 1 1 1</logical_size>
+          <subgrid_size>4 4 4 16</subgrid_size>
+          <total_volume>1024</total_volume>
+          <subgrid_volume>1024</subgrid_volume>
+        </Setgeom>
+      </ProgramInfo>
+      <Propagator>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+          <Mass>0.1</Mass>
+          <clovCoeff>1.0</clovCoeff>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Propagator>
+      <Contractions>
+        <num_vecs>10</num_vecs>
+        <t_sources>0 3</t_sources>
+        <decay_dir>3</decay_dir>
+      </Contractions>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MODMetaData>
 
         </Sink_prop_file_info>
-        <Sink_prop_record_info><FileXML>
+        <Sink_prop_record_info><RecordXML>
       <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
       <object_id>prop_colorvec_tmp</object_id>
       <file_name>./prop.mod</file_name>
-      <map_size>80</map_size>
-    </FileXML>
+    </RecordXML>
 
         </Sink_prop_record_info>
         <Config_info><weak_field>
@@ -3005,11 +3095,11 @@ Not used in this test, instead use create colorvecs below.
         </Output_version>
         <ProgramInfo>
           <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <chroma>3.43.0</chroma>
+            <qdp>1.44.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>03 Jun 12 15:18:47 EDT</run_date>
+          <run_date>09 Feb 16 05:38:23 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3049,7 +3139,7 @@ Not used in this test, instead use create colorvecs below.
             <num_vecs>10</num_vecs>
             <decay_dir>3</decay_dir>
             <mass_label>U0.05</mass_label><LinkSmearing>
-<!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
       <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
       <link_smear_fact>0.1625</link_smear_fact>
       <link_smear_num>4</link_smear_num>
@@ -3063,36 +3153,126 @@ Not used in this test, instead use create colorvecs below.
             <genprop_op_file>genprop_avg.sdb</genprop_op_file>
           </NamedObject>
         </Input>
-        <Source_prop_file_info><FileXML>
-      <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
-      <object_id>prop_colorvec_tmp</object_id>
-      <file_name>./prop.mod</file_name>
-      <map_size>80</map_size>
-    </FileXML>
+        <Source_prop_file_info><MODMetaData>
+      <id>propColorVec</id>
+      <lattSize>4 4 4 16</lattSize>
+      <decay_dir>3</decay_dir>
+      <num_vecs>10</num_vecs>
+      <ProgramInfo>
+        <code_version>
+          <chroma>3.43.0</chroma>
+          <qdp>1.44.0</qdp>
+          <basePrecision>32</basePrecision>
+        </code_version>
+        <run_date>09 Feb 16 05:37:17 EST</run_date>
+        <Setgeom>
+          <latt_size>4 4 4 16</latt_size>
+          <logical_size>1 1 1 1</logical_size>
+          <subgrid_size>4 4 4 16</subgrid_size>
+          <total_volume>1024</total_volume>
+          <subgrid_volume>1024</subgrid_volume>
+        </Setgeom>
+      </ProgramInfo>
+      <Propagator>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+          <Mass>0.1</Mass>
+          <clovCoeff>1.0</clovCoeff>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Propagator>
+      <Contractions>
+        <num_vecs>10</num_vecs>
+        <t_sources>0 3</t_sources>
+        <decay_dir>3</decay_dir>
+      </Contractions>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MODMetaData>
 
         </Source_prop_file_info>
-        <Source_prop_record_info><FileXML>
+        <Source_prop_record_info><RecordXML>
       <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
       <object_id>prop_colorvec_tmp</object_id>
       <file_name>./prop.mod</file_name>
-      <map_size>80</map_size>
-    </FileXML>
+    </RecordXML>
 
         </Source_prop_record_info>
-        <Sink_prop_file_info><FileXML>
-      <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
-      <object_id>prop_colorvec_tmp</object_id>
-      <file_name>./prop.mod</file_name>
-      <map_size>80</map_size>
-    </FileXML>
+        <Sink_prop_file_info><MODMetaData>
+      <id>propColorVec</id>
+      <lattSize>4 4 4 16</lattSize>
+      <decay_dir>3</decay_dir>
+      <num_vecs>10</num_vecs>
+      <ProgramInfo>
+        <code_version>
+          <chroma>3.43.0</chroma>
+          <qdp>1.44.0</qdp>
+          <basePrecision>32</basePrecision>
+        </code_version>
+        <run_date>09 Feb 16 05:37:17 EST</run_date>
+        <Setgeom>
+          <latt_size>4 4 4 16</latt_size>
+          <logical_size>1 1 1 1</logical_size>
+          <subgrid_size>4 4 4 16</subgrid_size>
+          <total_volume>1024</total_volume>
+          <subgrid_volume>1024</subgrid_volume>
+        </Setgeom>
+      </ProgramInfo>
+      <Propagator>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+          <Mass>0.1</Mass>
+          <clovCoeff>1.0</clovCoeff>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Propagator>
+      <Contractions>
+        <num_vecs>10</num_vecs>
+        <t_sources>0 3</t_sources>
+        <decay_dir>3</decay_dir>
+      </Contractions>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MODMetaData>
 
         </Sink_prop_file_info>
-        <Sink_prop_record_info><FileXML>
+        <Sink_prop_record_info><RecordXML>
       <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
       <object_id>prop_colorvec_tmp</object_id>
       <file_name>./prop.mod</file_name>
-      <map_size>80</map_size>
-    </FileXML>
+    </RecordXML>
 
         </Sink_prop_record_info>
         <Config_info><weak_field>
