@@ -258,6 +258,11 @@ namespace Chroma
       Real massParam = Real(1) + Real(3)/Real(q_gauge_param.anisotropy) + invParam.WilsonParams.Mass;
 
       quda_inv_param.kappa = 1.0/(2*toDouble(massParam));
+
+      // FIXME: If QUDA ever starts to compute our clover term we will need to fix this
+      // Right now it is a dummy value, since we pass in the clover term
+      quda_inv_param.clover_coeff = 1.0;
+
       quda_inv_param.mass_normalization = QUDA_ASYMMETRIC_MASS_NORMALIZATION;
       
       quda_inv_param.tol = toDouble(invParam.RsdTarget);

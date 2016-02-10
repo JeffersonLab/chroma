@@ -2,6 +2,7 @@
 #define __QUDA_MULTIGRID_PARAMS_H__
 
 #include "chromabase.h"
+#include <string>
 #include "actions/ferm/invert/quda_solvers/enum_quda_io.h"
 
 
@@ -20,13 +21,19 @@ namespace Chroma
     int nvec;
     int mg_levels;
     bool generate_nullspace;
+    bool generate_all_levels;
     int nu_pre;
     int nu_post;
     multi1d< multi1d<int> > blocking;
-    
+    std::string cycle_type;
+    Real relaxationOmegaMG;
+    Real relaxationOmegaOuter;
+ 
     MULTIGRIDSolverParams(XMLReader& xml, const std::string& path);
     MULTIGRIDSolverParams() {
       tol = .000001;
+      relaxationOmegaMG =Real(1.0);
+      relaxationOmegaOuter = Real(1.0);
       maxIterations = 10;
       smootherType = MR;
       verbosity = false;
@@ -43,6 +50,9 @@ namespace Chroma
 	blocking[l].resize(4);
         blocking[l][0] = blocking[l][1] = blocking[l][2] = blocking[l][3] = 4;
       }
+      generate_all_levels = true;
+      cycle_type = "MG_VCYCLE";
+
     };
 
   };
