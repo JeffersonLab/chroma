@@ -514,9 +514,11 @@ namespace Chroma
 		  }
     		}
     		mg_param.spin_block_size[i] = 1;
-    		mg_param.n_vec[i] = ip.nvec;
-    		mg_param.nu_pre[i] = ip.nu_pre;
-    		mg_param.nu_post[i] = ip.nu_post;
+		if( i < mg_param.n_level-1) { 
+		  mg_param.n_vec[i] = ip.nvec[i];
+		  mg_param.nu_pre[i] = ip.nu_pre[i];
+		  mg_param.nu_post[i] = ip.nu_post[i];
+		}
     		mg_param.smoother_tol[i] = toDouble(ip.tol);
     		mg_param.global_reduction[i] = QUDA_BOOLEAN_YES;
 

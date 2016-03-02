@@ -61,10 +61,10 @@
               <Verbosity>true</Verbosity>
               <Precision>SINGLE</Precision>
               <Reconstruct>RECONS_NONE</Reconstruct>
-              <NullVectors>16</NullVectors>
+              <NullVectors>16 16</NullVectors>
               <GenerateNullspace>true</GenerateNullspace>
-              <Pre-SmootherApplications>0</Pre-SmootherApplications>
-              <Post-SmootherApplications>6</Post-SmootherApplications>
+              <Pre-SmootherApplications>0 0</Pre-SmootherApplications>
+              <Post-SmootherApplications>6 6</Post-SmootherApplications>
               <SchwarzType>ADDITIVE_SCHWARZ</SchwarzType>
               <Blocking>
                 <elem>4 4 4 4</elem>

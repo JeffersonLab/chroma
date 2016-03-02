@@ -13,15 +13,42 @@ namespace Chroma {
     read(paramtop, "MaxIterations", maxIterations);
     read(paramtop, "SmootherType", smootherType);
     read(paramtop, "Verbosity", verbosity);
-    read(paramtop, "Precision", prec);
+
     read(paramtop, "Reconstruct", reconstruct);
-    read(paramtop, "NullVectors", nvec);
+    
     read(paramtop, "Blocking", blocking);
     mg_levels = blocking.size()+1;
-    read(paramtop, "GenerateNullspace", generate_nullspace);
-    read(paramtop, "GenerateAllLevels", generate_all_levels);
+    nvec.resize(mg_levels-1);
+    nu_pre.resize(mg_levels-1);
+    nu_post.resize(mg_levels-1);
+
+    read(paramtop, "NullVectors", nvec);
     read(paramtop, "Pre-SmootherApplications", nu_pre);
     read(paramtop, "Post-SmootherApplications", nu_post);
+
+    if (nvec.size() != mg_levels-1 ) {
+ 
+      QDPIO::cout<<"Warning. There are "<< blocking.size() 
+		 << " blockings but only " << nvec.size() << " sets of NullVectors" << std::endl;
+      QDP_abort(1);
+    }
+
+    if (nu_pre.size() != mg_levels-1 ) {
+ 
+      QDPIO::cout<<"Warning. There are "<< (mg_levels-1)  
+		 << " blockings but only " << nu_pre.size() << " sets pre-smoothing iterations" << std::endl;
+      QDP_abort(1);
+    }
+
+    if (nu_post.size() != mg_levels-1 ) {
+ 
+      QDPIO::cout<<"Warning. There are "<< blocking.size() 
+		 << " blockings but only " << nu_post.size() << " sets post-smoothing iterations " << std::endl;
+      QDP_abort(1);
+    }
+
+    read(paramtop, "GenerateNullspace", generate_nullspace);
+    read(paramtop, "GenerateAllLevels", generate_all_levels);
 
     //FIXME: Should be an enum
     read(paramtop, "CycleType", cycle_type);

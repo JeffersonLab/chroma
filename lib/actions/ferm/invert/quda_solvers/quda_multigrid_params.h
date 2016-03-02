@@ -18,12 +18,12 @@ namespace Chroma
     QudaPrecisionType prec;
     QudaReconsType reconstruct;
     QudaSchwarzMethod schwarzType;
-    int nvec;
+    multi1d<int> nvec;
     int mg_levels;
     bool generate_nullspace;
     bool generate_all_levels;
-    int nu_pre;
-    int nu_post;
+    multi1d<int> nu_pre;
+    multi1d<int> nu_post;
     multi1d< multi1d<int> > blocking;
     std::string cycle_type;
     Real relaxationOmegaMG;
@@ -40,15 +40,20 @@ namespace Chroma
       prec = DEFAULT;
       reconstruct = RECONS_NONE;
       schwarzType = ADDITIVE_SCHWARZ;
-      nvec = 16;      
+
       mg_levels = 2;
+      blocking.resize(mg_levels-1);
+      nvec.resize(mg_levels-1);
+      nu_pre.resize(mg_levels-1);
+      nu_post.resize(mg_levels-1);
       generate_nullspace = true;
-      nu_pre = 2;
-      nu_post = 2;
       for(int l = 0; l < mg_levels - 1; l++) 
       {
 	blocking[l].resize(4);
         blocking[l][0] = blocking[l][1] = blocking[l][2] = blocking[l][3] = 4;
+	nu_pre[l] = 2;
+	nu_post[l] = 2;
+	nvec[l] = 16;
       }
       generate_all_levels = true;
       cycle_type = "MG_VCYCLE";

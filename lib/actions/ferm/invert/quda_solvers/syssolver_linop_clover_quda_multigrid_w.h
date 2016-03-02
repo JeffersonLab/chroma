@@ -247,7 +247,7 @@ namespace Chroma
 			mg_inv_param.tol = 1e-10;
 			mg_inv_param.maxiter = 10000;
 			mg_inv_param.reliable_delta = 1e-10;
-			mg_inv_param.gcrNkrylov = 10;
+			mg_inv_param.gcrNkrylov = 12;
 
 			quda_inv_param.kappa = 0.5;
 			quda_inv_param.clover_coeff = 1.0; // Dummy, not used
@@ -432,7 +432,7 @@ namespace Chroma
 			quda_inv_param.tol_precondition = toDouble(ip.tol);
 			quda_inv_param.maxiter_precondition = ip.maxIterations;
 			//quda_inv_param.gcrNkrylov = ip.gcrNkrylov;
-			quda_inv_param.gcrNkrylov = 20;
+			quda_inv_param.gcrNkrylov = 12;
 			quda_inv_param.residual_type = static_cast<QudaResidualType>(QUDA_L2_RELATIVE_RESIDUAL);
 
 			if( ip.verbosity == true ) {
@@ -513,57 +513,62 @@ namespace Chroma
 			mg_param.run_verify = QUDA_BOOLEAN_YES;
 
 			for (int i=0; i<mg_param.n_level; i++) {
-				for (int j=0; j<QUDA_MAX_DIM; j++) {
-					if( i < mg_param.n_level-1 ) {
-						mg_param.geo_block_size[i][j] = ip.blocking[i][j];
-					}
-					else {
-						mg_param.geo_block_size[i][j] = 4;
-					}
-				}
-				mg_param.spin_block_size[i] = 1;
-				// FIXME: Elevate ip.nvec, ip.nu_pre, ip.nu_post, ip.tol to arrays in the XML
-				mg_param.n_vec[i] = ip.nvec;
-				mg_param.nu_pre[i] = ip.nu_pre;
-				mg_param.nu_post[i] = ip.nu_post;
-				mg_param.smoother_tol[i] = toDouble(ip.tol);
-				mg_param.global_reduction[i] = QUDA_BOOLEAN_YES;
-				//mg_param.smoother[i] = precon_type;
-				switch( ip.smootherType ) {
-					case MR:
-					mg_param.smoother[i] = QUDA_MR_INVERTER;
-					mg_param.omega[i] = toDouble(ip.relaxationOmegaMG);
-					break;
-					default:
-					QDPIO::cout << "Unknown or no smother type specified, no smoothing inverter will be used." << std::endl;
-					mg_param.smoother[i] = QUDA_INVALID_INVERTER;
-					QDP_abort(1);
-					break;
-				}
-				mg_param.location[i] = QUDA_CUDA_FIELD_LOCATION;
-				mg_param.smoother_solve_type[i] = QUDA_DIRECT_PC_SOLVE;
+			  for (int j=0; j<QUDA_MAX_DIM; j++) {
+			    if( i < mg_param.n_level-1 ) {
+			      mg_param.geo_block_size[i][j] = ip.blocking[i][j];
+			    }
+			    else {
+			      mg_param.geo_block_size[i][j] = 4;
+			    }
+			  }
+			  mg_param.spin_block_size[i] = 1;
+				
 
- 				if ( ip.cycle_type == "MG_VCYCLE" ) {
-					mg_param.cycle_type[i] = QUDA_MG_CYCLE_VCYCLE;
-                                } else if (ip.cycle_type == "MG_RECURSIVE" ) { 
-					mg_param.cycle_type[i] = QUDA_MG_CYCLE_RECURSIVE;
-                                } else {
-				   QDPIO::cout << "Unknown Cycle Type" << ip.cycle_type << std::endl;
- 				   QDP_abort(1);
-                                }
+				// FIXME: Elevate ip.nvec, ip.nu_pre, ip.nu_post, ip.tol to arrays in the XML
+			  if ( i < mg_param.n_level-1) { 
+			    mg_param.n_vec[i] = ip.nvec[i];
+			    mg_param.nu_pre[i] = ip.nu_pre[i];
+			    mg_param.nu_post[i] = ip.nu_post[i];
+			  }
+			  mg_param.smoother_tol[i] = toDouble(ip.tol);
+			  mg_param.global_reduction[i] = QUDA_BOOLEAN_YES;
+			  //mg_param.smoother[i] = precon_type;
+			  switch( ip.smootherType ) {
+			  case MR:
+			    mg_param.smoother[i] = QUDA_MR_INVERTER;
+			    mg_param.omega[i] = toDouble(ip.relaxationOmegaMG);
+			    break;
+			  default:
+			    QDPIO::cout << "Unknown or no smother type specified, no smoothing inverter will be used." << std::endl;
+			    mg_param.smoother[i] = QUDA_INVALID_INVERTER;
+			    QDP_abort(1);
+			    break;
+			  }
 			
-				switch( mg_param.cycle_type[i] ) { 
-				case QUDA_MG_CYCLE_RECURSIVE : 
-                                  mg_param.coarse_grid_solution_type[i] = QUDA_MATPC_SOLUTION;	
-				  break;
-				case QUDA_MG_CYCLE_VCYCLE :
- 				  mg_param.coarse_grid_solution_type[i] = QUDA_MAT_SOLUTION; 
-				  break;
-				default:
-				  QDPIO::cerr << "Should never get here" << std::endl;
-				  QDP_abort(1);
-				  break;
-                                }
+			  mg_param.location[i] = QUDA_CUDA_FIELD_LOCATION;
+			  mg_param.smoother_solve_type[i] = QUDA_DIRECT_PC_SOLVE;
+			  
+			  if ( ip.cycle_type == "MG_VCYCLE" ) {
+			    mg_param.cycle_type[i] = QUDA_MG_CYCLE_VCYCLE;
+			  } else if (ip.cycle_type == "MG_RECURSIVE" ) { 
+			    mg_param.cycle_type[i] = QUDA_MG_CYCLE_RECURSIVE;
+			  } else {
+			    QDPIO::cout << "Unknown Cycle Type" << ip.cycle_type << std::endl;
+			    QDP_abort(1);
+			  }
+			  
+			  switch( mg_param.cycle_type[i] ) { 
+			  case QUDA_MG_CYCLE_RECURSIVE : 
+			    mg_param.coarse_grid_solution_type[i] = QUDA_MATPC_SOLUTION;	
+			    break;
+			  case QUDA_MG_CYCLE_VCYCLE :
+			    mg_param.coarse_grid_solution_type[i] = QUDA_MAT_SOLUTION; 
+			    break;
+			  default:
+			    QDPIO::cerr << "Should never get here" << std::endl;
+			    QDP_abort(1);
+			    break;
+			  }
 			}
 
 			// LEvel 0 must always be matpc 
