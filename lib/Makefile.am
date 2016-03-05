@@ -375,6 +375,7 @@ nobase_include_HEADERS = \
 	update/heatbath/hb_params.h \
 	update/heatbath/su2_hb_update.h \
 	update/heatbath/mciter.h \
+	update/heatbath/mciter32.h \
 	update/molecdyn/molecdyn.h \
 	update/molecdyn/field_state.h \
 	update/molecdyn/hamiltonian/hamiltonian.h \
@@ -1315,6 +1316,7 @@ libchroma_a_SOURCES = \
         update/heatbath/su3over.cc \
 	update/heatbath/su2_hb_update.cc \
 	update/heatbath/mciter.cc \
+	update/heatbath/mciter32.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/const_gauge_monomial.cc \

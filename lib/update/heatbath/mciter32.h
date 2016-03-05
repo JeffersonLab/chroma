@@ -28,12 +28,13 @@ namespace Chroma {
  * \param u        gauge field ( Modify )
  * \param n_over   number of overrelaxation sweeps ( Read )
  * \param nheat    number of heatbath trials ( Read )
+ * \param NmaxHB   max number of heatbath hits ( Read )
  * \param ntrials  total number of individual heatbath trials ( Modify )
  * \param nfails   total number of individual heatbath failures ( Modify ) 
  */
 
 void mciter32(multi1d<LatticeColorMatrix>& u, 
-	      int n_over, int nheat,
+	      int n_over, int nheat, int NmaxHB,
 	      int& ntrials, int& nfails,
 	      const Set& ss,
 	      const multi3d<int>& neighsubl);
