@@ -172,7 +172,8 @@ AC_ARG_ENABLE(lapack,
 AC_ARG_ENABLE(opt-eigcg,
   AC_HELP_STRING([--enable-opt-eigcg],
     [Build optimized eigcg]),
-  [opt_eigcg_enabled="yes"]
+  [opt_eigcg_enabled="${enableval}"],
+  [opt_eigcg_enabled="no" ]
 )
 
 AC_ARG_ENABLE(opt_cfz_linop,

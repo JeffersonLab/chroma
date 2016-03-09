@@ -97,10 +97,10 @@ namespace Chroma
     void *spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-    void*  spinorIn = QDPCache::Instance().getDevicePtr( mod_chi,.getId() );
-    QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
+    void*  spinorIn = QDPCache::Instance().getDevicePtr( mod_chi.getId() );
+    QDPIO::cout << "QUDA_MULTIGRID_QDPJIT spinor in = " << spinorIn << "\n";
     void* spinorOut = QDPCache::Instance().getDevicePtr( psi_s.getId() );
-    QDPIO::cout << "MDAGM spinor out = " << spinorOut << "\n";
+    QDPIO::cout << "QUDA_MULTIGRID_QDPJIT spinor out  = " << spinorOut << "\n";
 #endif
 
     // Do the solve here 

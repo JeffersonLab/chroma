@@ -1892,6 +1892,7 @@ libchroma_a_SOURCES += actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_op
 endif
 
 if BUILD_LAPACK
+if BUILD_OPT_EIGCG
 nobase_include_HEADERS += \
 	actions/ferm/invert/syssolver_OPTeigcg_params.h \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.h \
@@ -1902,6 +1903,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
 	actions/ferm/invert/syssolver_linop_OPTeigbicg.cc \
 	meas/inline/hadron/inline_laplace_eigs.cc
+endif
 endif
 
 if BUILD_SSED_CLOVER_APPLY
