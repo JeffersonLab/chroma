@@ -19,12 +19,14 @@ namespace Chroma
     QudaReconsType reconstruct;
     QudaSchwarzMethod schwarzType;
     multi1d<int> nvec;
-    int mg_levels;
+    int mg_levels; 
     bool generate_nullspace;
     bool generate_all_levels;
     multi1d<int> nu_pre;
     multi1d<int> nu_post;
     multi1d< multi1d<int> > blocking;
+    int outer_gcr_nkrylov;
+    int precond_gcr_nkrylov;
     std::string cycle_type;
     Real relaxationOmegaMG;
     Real relaxationOmegaOuter;
@@ -54,7 +56,10 @@ namespace Chroma
 	nu_pre[l] = 2;
 	nu_post[l] = 2;
 	nvec[l] = 16;
-      }
+       }
+      outer_gcr_nkrylov = 12;
+      precond_gcr_nkrylov = 12;
+
       generate_all_levels = true;
       cycle_type = "MG_VCYCLE";
 

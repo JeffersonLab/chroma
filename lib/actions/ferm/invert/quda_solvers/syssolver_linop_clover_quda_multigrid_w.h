@@ -247,7 +247,6 @@ namespace Chroma
 			mg_inv_param.tol = 1e-10;
 			mg_inv_param.maxiter = 10000;
 			mg_inv_param.reliable_delta = 1e-10;
-			mg_inv_param.gcrNkrylov = 12;
 
 			quda_inv_param.kappa = 0.5;
 			quda_inv_param.clover_coeff = 1.0; // Dummy, not used
@@ -421,7 +420,6 @@ namespace Chroma
 				gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
 #else
 				gauge[mu] = QDPCache::Instance().getDevicePtr( links_single[mu].getId() );
-				QDPIO::cout << "MDAGM CUDA gauge[" << mu << "] in = " << gauge[mu] << "\n";
 #endif
 			}
 
@@ -431,8 +429,8 @@ namespace Chroma
 			//
 			quda_inv_param.tol_precondition = toDouble(ip.tol);
 			quda_inv_param.maxiter_precondition = ip.maxIterations;
-			//quda_inv_param.gcrNkrylov = ip.gcrNkrylov;
-			quda_inv_param.gcrNkrylov = 12;
+			quda_inv_param.gcrNkrylov = ip.outer_gcr_nkrylov;
+			mg_inv_param.gcrNkrylov = ip.precond_gcr_nkrylov; 
 			quda_inv_param.residual_type = static_cast<QudaResidualType>(QUDA_L2_RELATIVE_RESIDUAL);
 
 			if( ip.verbosity == true ) {

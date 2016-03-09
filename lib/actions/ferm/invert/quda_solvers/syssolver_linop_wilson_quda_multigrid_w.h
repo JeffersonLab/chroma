@@ -270,7 +270,6 @@ namespace Chroma
       mg_inv_param.tol = 1e-10;
       mg_inv_param.maxiter = 10000;
       mg_inv_param.reliable_delta = 1e-10;
-      mg_inv_param.gcrNkrylov = 10;
       mg_inv_param.verbosity = QUDA_VERBOSE;
       mg_inv_param.verbosity_precondition = QUDA_VERBOSE;
 
@@ -453,8 +452,8 @@ namespace Chroma
             //
 	quda_inv_param.tol_precondition = toDouble(ip.tol);
 	quda_inv_param.maxiter_precondition = ip.maxIterations;
-	//quda_inv_param.gcrNkrylov = ip.gcrNkrylov;
-	quda_inv_param.gcrNkrylov = 10;
+	quda_inv_param.gcrNkrylov = ip.outer_gcr_nkrylov;
+	mg_inv_param.gcrNkrylov = ip.precond_gcr_nkrylov;
 	//Replacing above with what's in the invert test.
 	switch( ip.schwarzType ) { 
 	case ADDITIVE_SCHWARZ : 
