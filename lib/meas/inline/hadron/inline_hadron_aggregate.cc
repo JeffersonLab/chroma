@@ -10,7 +10,7 @@
 #include "meas/inline/hadron/inline_create_colorvecs.h"
 #include "meas/inline/hadron/inline_create_colorvecs.h"
 
-#ifdef BUILD_LAPACK
+#if defined(BUILD_LAPACK) && defined(BUILD_OPT_EIGCG)
 #include "meas/inline/hadron/inline_laplace_eigs.h"
 #else
 #warning "Not Building Inline Laplace Eigs"
@@ -116,7 +116,7 @@ namespace Chroma
 
 	success &= InlineMultiPropagatorEnv::registerAll();  // save space
 	success &= InlineSeqSourceEnv::registerAll();
-#ifdef BUILD_LAPACK
+#if defined(BUILD_LAPACK) && defined(BUILD_OPT_EIGCG)
 	success &= InlineLaplaceEigsEnv::registerAll();
 #endif
 	success &= InlineSeqPropTestEnv::registerAll();
