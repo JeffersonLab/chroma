@@ -81,6 +81,17 @@ namespace Chroma
 			  const Subset& sub);
 
 
+  // Apply a displacement path to a lattice field
+  LatticePropagator displace(const multi1d<LatticeColorMatrix>& u, 
+			     const LatticePropagator& p, 
+			     int length, const multi1d<int>& path) ;
+  
+  // Apply a displacement path to a lattice field
+  LatticePropagator displace(const multi1d<LatticeColorMatrix>& u, 
+			     const LatticePropagator& p, 
+			     int length, const multi1d<int>& path,
+			     const Subset& sub   ) ;
+  
   //! Apply a displacement operator to a lattice field
   /*!
    * \ingroup smear
