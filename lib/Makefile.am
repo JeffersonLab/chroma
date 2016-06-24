@@ -423,11 +423,13 @@ nobase_include_HEADERS = \
 	update/molecdyn/monomial/comp_approx.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
+	update/molecdyn/predictor/abs_MG_chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
 	update/molecdyn/predictor/predictor_aggregate.h \
 	update/molecdyn/predictor/null_predictor.h \
 	update/molecdyn/predictor/zero_guess_predictor.h \
 	update/molecdyn/predictor/last_solution_predictor.h \
+	update/molecdyn/predictor/MG_predictor.h \
 	update/molecdyn/predictor/circular_buffer.h \
 	update/molecdyn/predictor/linear_extrap_predictor.h \
 	update/molecdyn/predictor/lu_solve.h \
@@ -1346,6 +1348,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/predictor/null_predictor.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
 	update/molecdyn/predictor/last_solution_predictor.cc \
+	update/molecdyn/predictor/MG_predictor.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
@@ -1362,28 +1365,38 @@ endif
 
 if BUILD_QUDA
 nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
+	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_wilson_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
+	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/enum_quda_io.h \
-	actions/ferm/invert/quda_solvers/quda_gcr_params.h
+	actions/ferm/invert/quda_solvers/quda_gcr_params.h \
+	actions/ferm/invert/quda_solvers/quda_multigrid_params.h
 
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
+	actions/ferm/invert/quda_solvers/quda_multigrid_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
+	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
+	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_wilson_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc \
@@ -1881,6 +1894,7 @@ libchroma_a_SOURCES += actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_op
 endif
 
 if BUILD_LAPACK
+if BUILD_OPT_EIGCG
 nobase_include_HEADERS += \
 	actions/ferm/invert/syssolver_OPTeigcg_params.h \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.h \
@@ -1891,6 +1905,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
 	actions/ferm/invert/syssolver_linop_OPTeigbicg.cc \
 	meas/inline/hadron/inline_laplace_eigs.cc
+endif
 endif
 
 if BUILD_SSED_CLOVER_APPLY

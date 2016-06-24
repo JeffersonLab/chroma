@@ -12,4 +12,4 @@
 	url = git@github.com:JeffersonLab/qdp-lapack.git
 [submodule "other_libs/wilsonmg"]
 	path = other_libs/wilsonmg
-	url = git@github.com:JeffersonLab/wilsonmg.git
+	url = git@bitbucket.org:bjoo/wilsonmg.git

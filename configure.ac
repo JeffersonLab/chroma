@@ -172,7 +172,8 @@ AC_ARG_ENABLE(lapack,
 AC_ARG_ENABLE(opt-eigcg,
   AC_HELP_STRING([--enable-opt-eigcg],
     [Build optimized eigcg]),
-  [opt_eigcg_enabled="yes"]
+  [opt_eigcg_enabled="${enableval}"],
+  [opt_eigcg_enabled="no" ]
 )
 
 AC_ARG_ENABLE(opt_cfz_linop,
@@ -1069,9 +1070,6 @@ fi
 dnl set a conditional in automake for MDWF Specific files etc.
 AM_CONDITIONAL(BUILD_MDWF,
 	[test "x${build_mdwf}x" = "xyesx" ])
-
-
-
 
 
 if [ test "x${build_llvm_wd}x" = "xyesx" ];

@@ -9,7 +9,6 @@
 #include <cstdio>
 #include <ostream>
 
-
 #include "actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h"
 #include "actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.h"
 //Added support for MG predictor.
@@ -34,7 +33,6 @@ extern "C" {
 
 }
 
-
 namespace Chroma
 {
 
@@ -54,7 +52,6 @@ namespace Chroma
       return ret_val;
     }
   };
-
 
   // This will come from syssolver_linop_qop_mg_w.h
   //  static multi1d<LatticeColorMatrix> u;
@@ -311,7 +308,6 @@ namespace Chroma
   }//! Solve the linear system
   
   
-
   //! QDP multigrid system solver namespace
   namespace MdagMSysSolverQOPMGEnv
   {
