@@ -1,3 +1,12 @@
+Jun 24, 2016 - Balint Joo
+        Merged in branch feature/quda_multigrid
+ 	Fixed NEF operator parity to track fix in Quda
+  	Checked with QUDA devel (commit bc696cf85917c813497352353d22a09c5ce02966
+)
+	  + MG worked, NEF worked
+        Reran and checked regressions on CPU
+	(Not Checked: hmc -- will redo this post Titan build)
+
 Sep 9, 2015 - Balint Joo
 	Added gtest testing: enable with --enable-gtest
 
