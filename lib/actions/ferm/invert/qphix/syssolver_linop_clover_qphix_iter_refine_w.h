@@ -329,22 +329,22 @@ namespace Chroma
       
       // Pack outer clover inverse
       for(int cb=0; cb < 2; cb++) { 
-	QPhiX::qdp_pack_clover<>((*invclov).getTriBuffer(), invclov_packed[cb], *geom_outer, cb);
+	QPhiX::qdp_pack_clover<>((*invclov), invclov_packed[cb], *geom_outer, cb);
       }
     
       // Pack outer clover
       for(int cb=0; cb < 2; cb++) { 
-	QPhiX::qdp_pack_clover<>((*clov).getTriBuffer(), clov_packed[cb], *geom_outer, cb);
+	QPhiX::qdp_pack_clover<>((*clov), clov_packed[cb], *geom_outer, cb);
       }
 
       // Pack inner clover inverse
       for(int cb=0; cb < 2; cb++) { 
-	QPhiX::qdp_pack_clover<>((*invclov).getTriBuffer(), invclov_packed_i[cb], *geom_inner, cb);
+	QPhiX::qdp_pack_clover<>((*invclov), invclov_packed_i[cb], *geom_inner, cb);
       }
     
       // Pack inner clover
       for(int cb=0; cb < 2; cb++) { 
-	QPhiX::qdp_pack_clover<>((*clov).getTriBuffer(), clov_packed_i[cb], *geom_inner, cb);
+	QPhiX::qdp_pack_clover<>((*clov), clov_packed_i[cb], *geom_inner, cb);
       }
       QDPIO::cout << "Done" << std::endl;
 

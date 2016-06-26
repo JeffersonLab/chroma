@@ -364,6 +364,11 @@ namespace Chroma
     int getDiaId() const { return tri_dia.getId(); }
     int getOffId() const { return tri_off.getId(); }
 
+    using DiagType =  OLattice<PComp<PTriDia<RScalar <Word<REALT> > > > >;
+    using OffDiagType =  OLattice<PComp<PTriOff<RComplex<Word<REALT> > > > >;
+
+    const DiagType& getDiagBuffer() const { return tri_dia ; }
+    const OffDiagType& getOffDiagBuffer() const { return tri_off; }
       
   protected:
     //! Create the clover term on cb
