@@ -391,8 +391,17 @@ then
   AC_SUBST(QPHIX_LIBS,"-lqphix_solver")
 
   case "${qphix_arch}" in
+  sse|SSE)
+     AC_DEFINE(CHROMA_QPHIX_ARCH_SSE,[], [QPhiX Arch is SSE])
+     ;;   
   avx|AVX)
      AC_DEFINE(CHROMA_QPHIX_ARCH_AVX,[], [QPhiX Arch is AVX])
+     ;;
+  avx2|AVX2)
+     AC_DEFINE(CHROMA_QPHIX_ARCH_AVX2,[], [QPhiX Arch is AVX2])
+     ;;
+  avx512|AVX512)
+     AC_DEFINE(CHROMA_QPHIX_ARCH_AVX512,[], [QPhiX Arch is AVX512])
      ;;
   mic|MIC)
      AC_DEFINE(CHROMA_QPHIX_ARCH_MIC,[], [QPhiX Arch is MIC])

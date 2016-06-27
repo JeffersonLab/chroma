@@ -18,7 +18,7 @@
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "actions/ferm/invert/qphix/multi_syssolver_qphix_clover_params.h"
-#include "actions/ferm/linop/clover_term_qdp_w.h"
+#include "actions/ferm/linop/clover_term_w.h"
 #include "actions/ferm/linop/eoprec_clover_linop_w.h"
 #include "io/aniso_io.h"
 #include <string>
@@ -34,6 +34,7 @@
 #include "qphix/qdp_packer.h"
 #include "qphix/clover.h"
 #include "qphix/minvcg.h"
+#include "actions/ferm/invert/qphix/qphix_vec_traits.h"
 
 using namespace QDP;
 
@@ -45,63 +46,6 @@ namespace Chroma
   {
     //! Register the syssolver
     bool registerAll();
-
-    template<typename T>
-    struct VecTraits { 
-      static const int Vec=1;
-      static const int Soa=1;
-      static const bool compress12=false;
-    };
-
-    // Templates
-#if defined CHROMA_QPHIX_ARCH_AVX
-#warning QPHIX for AVX
-    // AVX Traits:
-    template<>
-    struct VecTraits<float> { 
-      static const int Vec=8;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-    };
-
-    template<>
-    struct VecTraits<double> { 
-      static const int Vec=4;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-
-    };
-#endif
-
-#if defined CHROMA_QPHIX_ARCH_MIC
-#warning QPhiX for MIC
-    // MIC Traits
-    template<>
-    struct VecTraits<float> { 
-      static const int Vec=16;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-    };
-
-    template<>
-    struct VecTraits<double> { 
-      static const int Vec=8;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-    };
-#endif
-
-#if defined CHROMA_QPHIX_ARCH_QPX
-#warning QPhiX for QPX
-     // QPX Traits
-     template<>
-     struct VecTraits<double> {
-        static const int Vec=4;
-	static const int Soa=CHROMA_QPHIX_SOALEN;
-	static const bool compress12=CHROMA_QPHIX_COMPRESS12;
-     };
-#endif
-
   }
 
 
@@ -109,7 +53,7 @@ namespace Chroma
   /*! \ingroup invert
  *** WARNING THIS SOLVER WORKS FOR Clover FERMIONS ONLY ***
  */
-  using namespace MdagMMultiSysSolverQPhiXCloverEnv;
+  using namespace QPhiXVecTraits;
   template<typename T, typename U>  
   class MdagMMultiSysSolverQPhiXClover : public MdagMMultiSystemSolver<T>
   {
@@ -130,8 +74,8 @@ namespace Chroma
 				   Handle< FermState<T,Q,Q> > state_,
 				   const MultiSysSolverQPhiXCloverParams& invParam_) : 
       A(A_), invParam(invParam_),
-      clov(new QDPCloverTermT<T, U>()), 
-      invclov(new QDPCloverTermT<T, U>())
+      clov(new CloverTermT<T, U>()), 
+      invclov(new CloverTermT<T, U>())
     {
       QDPIO::cout << "MdagMMultiSysSolverQPhiXClover:" << std::endl;
       QDPIO::cout << "AntiPeriodicT is: " << invParam.AntiPeriodicT << std::endl;
@@ -207,7 +151,7 @@ namespace Chroma
       
       
       QDPIO::cout << "Creating Clover Term" << std::endl;
-      QDPCloverTerm clov_qdp;
+      CloverTerm clov_qdp;
       clov->create(state_, invParam.CloverParams);
       QDPIO::cout << "Inverting Clover Term" << std::endl;
       invclov->create(state_, invParam.CloverParams, (*clov));
@@ -456,8 +400,8 @@ namespace Chroma
 
     Handle< LinearOperator<T> > A;
     const MultiSysSolverQPhiXCloverParams invParam;
-    Handle< QDPCloverTermT<T, U> > clov;
-    Handle< QDPCloverTermT<T, U> > invclov;
+    Handle< CloverTermT<T, U> > clov;
+    Handle< CloverTermT<T, U> > invclov;
 
     QPhiX::Geometry<REALT, VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>* geom;
     

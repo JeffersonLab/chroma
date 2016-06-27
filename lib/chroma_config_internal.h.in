@@ -78,11 +78,20 @@
 /* QPhiX Arch is AVX */
 #undef CHROMA_QPHIX_ARCH_AVX
 
+/* QPhiX Arch is AVX2 */
+#undef CHROMA_QPHIX_ARCH_AVX2
+
+/* QPhiX Arch is AVX512 */
+#undef CHROMA_QPHIX_ARCH_AVX512
+
 /* QPhiX Arch is MIC */
 #undef CHROMA_QPHIX_ARCH_MIC
 
 /* QPhiX Arch is QPX */
 #undef CHROMA_QPHIX_ARCH_QPX
+
+/* QPhiX Arch is SSE */
+#undef CHROMA_QPHIX_ARCH_SSE
 
 /* Disable Intel Solver Compression */
 #undef CHROMA_QPHIX_COMPRESS12

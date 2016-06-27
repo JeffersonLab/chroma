@@ -16,7 +16,7 @@
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "actions/ferm/invert/qphix/syssolver_qphix_clover_params.h"
-#include "actions/ferm/linop/clover_term_qdp_w.h"
+#include "actions/ferm/linop/clover_term_w.h"
 #include "actions/ferm/linop/eoprec_clover_linop_w.h"
 #include "meas/gfix/temporal_gauge.h"
 #include "io/aniso_io.h"
@@ -32,8 +32,8 @@
 #include "qphix/clover.h"
 #include "qphix/invbicgstab.h"
 #include "qphix/inv_richardson_multiprec.h"
+#include "actions/ferm/invert/qphix//qphix_vec_traits.h"
 
-using namespace QDP;
 
 namespace Chroma
 {
@@ -44,98 +44,6 @@ namespace Chroma
     //! Register the syssolver
     bool registerAll();
 
-    template<typename TOuter,typename TInner>
-    struct MixedVecTraits { 
-      static const int Vec=1;
-      static const int Soa=1;
-      static const bool compress12=false;
-      static const int VecInner=1;
-      static const int SoaInner=1;
-
-    };
-
-    // Templates
-#if defined CHROMA_QPHIX_ARCH_AVX
-#warning QPhix Solver AVX
-    // AVX Traits:
-    template<>
-    struct MixedVecTraits<double,double> { 
-      static const int Vec=4;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-      static const int VecInner=4;
-      static const int SoaInner=CHROMA_QPHIX_INNER_SOALEN;
-    };
-
-    template<>
-    struct MixedVecTraits<double,float> { 
-      static const int Vec=4;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-      static const int VecInner=8;
-      static const int SoaInner=CHROMA_QPHIX_INNER_SOALEN;
-    };
-
-   template<>
-    struct MixedVecTraits<float,float> { 
-      static const int Vec=8;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-      static const int VecInner=8;
-      static const int SoaInner=CHROMA_QPHIX_INNER_SOALEN;
-    };
-
-
-#endif
-
-#if defined CHROMA_QPHIX_ARCH_MIC
-#warning QPhix solver MIC
-    // MIC Traits
-    template<>
-    struct MixedVecTraits<double,double> { 
-      static const int Vec=8;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-      static const int VecInner=8;
-      static const int SoaInner=CHROMA_QPHIX_INNER_SOALEN;
-
-    };
-    template<>
-    struct MixedVecTraits<double,float> { 
-      static const int Vec=8;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-      static const int VecInner=16;
-      static const int SoaInner=CHROMA_QPHIX_INNER_SOALEN;
-    };
-    template<>
-    struct MixedVecTraits<double,QPhiX::half> { 
-      static const int Vec=8;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-      static const int VecInner=16;
-      static const int SoaInner=CHROMA_QPHIX_INNER_SOALEN;
-    };
-    template<>
-    struct MixedVecTraits<float,float> { 
-      static const int Vec=16;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-      static const int VecInner=16;
-      static const int SoaInner=CHROMA_QPHIX_INNER_SOALEN;
-
-    };
-    template<>
-    struct MixedVecTraits<float,QPhiX::half> { 
-      static const int Vec=16;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-      static const int VecInner=16;
-      static const int SoaInner=CHROMA_QPHIX_INNER_SOALEN;
-    };
-#endif
-
-
   }
 
 
@@ -144,7 +52,7 @@ namespace Chroma
   /*! \ingroup invert
  *** WARNING THIS SOLVER WORKS FOR Clover FERMIONS ONLY ***
    */
-  using namespace LinOpSysSolverQPhiXCloverIterRefineEnv;
+  using namespace QPhiXVecTraits;
   template<typename T, typename U>  
   class LinOpSysSolverQPhiXCloverIterRefine : public LinOpSystemSolver<T>
   {
@@ -178,7 +86,7 @@ namespace Chroma
     LinOpSysSolverQPhiXCloverIterRefine(Handle< LinearOperator<T> > A_,
 			      Handle< FermState<T,Q,Q> > state_,
 			      const SysSolverQPhiXCloverParams& invParam_) : 
-      A(A_), invParam(invParam_), clov(new QDPCloverTermT<T, U>()), invclov(new QDPCloverTermT<T, U>())
+      A(A_), invParam(invParam_), clov(new CloverTermT<T, U>()), invclov(new CloverTermT<T, U>())
     {
 
       
@@ -294,7 +202,7 @@ namespace Chroma
 
       
       QDPIO::cout << "Creating Clover Term" << std::endl;
-      QDPCloverTerm clov_qdp;
+      CloverTerm clov_qdp;
       clov->create(state_, invParam.CloverParams);
       QDPIO::cout << "Inverting Clover Term" << std::endl;
       invclov->create(state_, invParam.CloverParams, (*clov));
@@ -522,8 +430,8 @@ namespace Chroma
 
     Handle< LinearOperator<T> > A;
     const SysSolverQPhiXCloverParams invParam;
-    Handle< QDPCloverTermT<T, U> > clov;
-    Handle< QDPCloverTermT<T, U> > invclov;
+    Handle< CloverTermT<T, U> > clov;
+    Handle< CloverTermT<T, U> > invclov;
 
     QPhiX::Geometry<REALT, 
 		    MixedVecTraits<REALT,InnerReal>::Vec, 
