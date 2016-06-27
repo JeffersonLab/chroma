@@ -218,11 +218,11 @@ namespace Chroma
       QDPIO::cout << "Packing Clover term..." << std::endl;
       
       for(int cb=0; cb < 2; cb++) { 
-	QPhiX::qdp_pack_clover<>((*invclov).getTriBuffer(), invclov_packed[cb], *geom, cb);
+	QPhiX::qdp_pack_clover<>((*invclov), invclov_packed[cb], *geom, cb);
       }
       
       for(int cb=0; cb < 2; cb++) { 
-	QPhiX::qdp_pack_clover<>((*clov).getTriBuffer(), clov_packed[cb], *geom, cb);
+	QPhiX::qdp_pack_clover<>((*clov), clov_packed[cb], *geom, cb);
       }
       QDPIO::cout << "Done" << std::endl;
       
