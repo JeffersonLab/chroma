@@ -15,7 +15,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineQpropMatmulEnv
+  namespace InlineQpropMatMulEnv
   {
     extern const std::string name;
     bool registerAll();
