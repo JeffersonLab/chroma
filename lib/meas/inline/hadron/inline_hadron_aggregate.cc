@@ -68,6 +68,8 @@
 #include "meas/inline/hadron/inline_mres_w.h"
 #include "meas/inline/hadron/inline_qpropqio_w.h"
 #include "meas/inline/hadron/inline_qpropadd_w.h"
+#include "meas/inline/hadron/inline_qpropdiff_w.h"
+#include "meas/inline/hadron/inline_qprop_matmul_w.h"
 #include "meas/inline/hadron/inline_qqqNucNuc_w.h"
 #include "meas/inline/hadron/inline_stoch_meson_w.h"
 #include "meas/inline/hadron/inline_stoch_baryon_w.h"
@@ -166,6 +168,8 @@ namespace Chroma
 	success &= InlineRotateSpinEnv::registerAll();
 	success &= InlineQpropQIOEnv::registerAll();
 	success &= InlineQpropAddEnv::registerAll();
+	success &= InlineQpropDiffEnv::registerAll();
+	success &= InlineQpropMatMulEnv::registerAll();
 	success &= InlineQQQNucNucEnv::registerAll();
 	success &= InlineBarSpecEnv::registerAll();
 //	success &= InlineSpectrumQllEnv::registerAll();
