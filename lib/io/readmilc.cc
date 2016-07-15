@@ -160,7 +160,7 @@ void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixD>& u, const std::string
   readMILC(xml, uu, cfg_file);
 
   u.resize(uu.size());
-  for(int mu=0; uu.size(); ++mu)
+  for(int mu=0; mu<uu.size(); ++mu)
     u[mu] = uu[mu];
 
   END_CODE();
