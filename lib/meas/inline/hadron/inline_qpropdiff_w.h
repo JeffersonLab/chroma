@@ -28,7 +28,7 @@ namespace Chroma
       void writeXML(XMLWriter& xml_out, const std::string& path);
 
       unsigned long      frequency;
-
+      std::string label; // For easy parsing
       struct NamedObject_t
       {
 		std::string      propA;

@@ -37,6 +37,7 @@ namespace Chroma
     struct NamedObject_t
     {
       std::string     gauge_id;
+      std::string     header_id;
       std::string     source_id;
       std::string     result_id;
     } named_obj;

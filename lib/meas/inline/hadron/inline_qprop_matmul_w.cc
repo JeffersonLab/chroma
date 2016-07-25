@@ -57,6 +57,7 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "gauge_id", input.gauge_id);
+    read(inputtop, "header_id", input.header_id);
     read(inputtop, "source_id", input.source_id);
     read(inputtop, "result_id", input.result_id);
   }
@@ -67,6 +68,7 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "gauge_id", input.gauge_id);
+    write(xml, "header_id", input.header_id);
     write(xml, "source_id", input.source_id);
     write(xml, "result_id", input.result_id);
 
@@ -178,13 +180,15 @@ namespace Chroma
     QDPIO::cout << "Snarf the source from a named buffer" << std::endl;
     try
     {
+      QDPIO::cout << "Getting prop from named obj:"<< params.named_obj.source_id << std::endl;
       // Try the cast to see if this is a valid source
       LatticePropagator& source_tmp =
 	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.source_id);
 
+      QDPIO::cout << "Getting headers from named obj:" << params.named_obj.header_id << std::endl;
       // Snarf the source info. This is will throw if the source_id is not there
-      TheNamedObjMap::Instance().get(params.named_obj.source_id).getFileXML(source_file_xml);
-      TheNamedObjMap::Instance().get(params.named_obj.source_id).getRecordXML(source_record_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.header_id).getFileXML(source_file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.header_id).getRecordXML(source_record_xml);
 
       // Write out the source header
       write(xml_out, "Source_file_info", source_file_xml);
@@ -274,12 +278,19 @@ namespace Chroma
 
     	for(int spin=0; spin < Ns; ++spin ) {
     		for(int color=0; color < Nc; ++color ) {
+		  QDPIO::cout << "color= " <<color <<" spin="<<spin<< "... ";
     			LatticeFermion src, res;
+			QDPIO::cout <<" extracting component...";
     			PropToFerm(quark_prop_source, src, color, spin);
+			QDPIO::cout <<" applying linop ... ";
     			(*M)(res,src,PLUS);
+			QDPIO::cout << " storing";
     			FermToProp(res,quark_propagator, color,spin);
+			QDPIO::cout << std::endl;
+
 			}
     	}
+
 
         // Write the QpropMatMul xml info
     	TheNamedObjMap::Instance().get(params.named_obj.result_id).setFileXML(source_file_xml);

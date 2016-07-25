@@ -79,6 +79,11 @@ namespace Chroma
 	else
 	  frequency = 1;
 
+	if ( paramtop.count("Label") == 1) 
+	  read(paramtop, "Label", label);
+	else
+	  label = "";
+      
 	// Parameters for source construction
 	// Read in the output propagator/source configuration info
 	read(paramtop, "NamedObject", named_obj);
@@ -164,7 +169,7 @@ namespace Chroma
     		//	Double A_Linf=toDouble(globalMax(fermA));
     			Double B_L2 = sqrt(norm2(fermB));
     		//	Double B_Linf=toDouble(globalMax(fermB));
-    			QDPIO::cout << "QPROP_DIFF: spin="<<spin<<" col="<<color
+    			QDPIO::cout << "QPROP_DIFF: "<< params.label <<":  spin="<<spin<<" col="<<color
     						<< " ||diff||="<<diff_L2
 							<< " ||diff||/||A||=" << diff_L2/A_L2
 							<< " ||diff||/||B||="<<diff_L2/B_L2 << std::endl;
