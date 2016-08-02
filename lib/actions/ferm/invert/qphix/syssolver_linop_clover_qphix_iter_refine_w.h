@@ -33,7 +33,7 @@
 #include "qphix/invbicgstab.h"
 #include "qphix/inv_richardson_multiprec.h"
 #include "actions/ferm/invert/qphix//qphix_vec_traits.h"
-
+#include "qphix_singleton.h"
 
 namespace Chroma
 {
@@ -140,33 +140,36 @@ namespace Chroma
   			Real(t_boundary), Real(1));
       }
 
+      const QPhiX::QPhiXCLIArgs& QPhiXParams = TheQPhiXParams::Instance();
 
       // Grab a dslash from which we will get geometry.
       geom_outer = new QPhiX::Geometry<REALT, 
 	MixedVecTraits<REALT,InnerReal>::Vec, 
 	MixedVecTraits<REALT,InnerReal>::Soa,
 	MixedVecTraits<REALT,InnerReal>::compress12>(Layout::subgridLattSize().slice(),
-						     invParam.By, 
-						     invParam.Bz, 
-						     invParam.NCores, 
-						     invParam.Sy,
-						     invParam.Sz,
-						     invParam.PadXY,
-						     invParam.PadXYZ,
-						     invParam.MinCt);
+			QPhiXParams.getBy(),
+																	   QPhiXParams.getBz(),
+																	   QPhiXParams.getNCores(),
+																	   QPhiXParams.getSy(),
+																	   QPhiXParams.getSz(),
+																	   QPhiXParams.getPxy(),
+																	   QPhiXParams.getPxyz(),
+																	   QPhiXParams.getMinCt());
+
       
       geom_inner = new QPhiX::Geometry<InnerReal, 
 	MixedVecTraits<REALT,InnerReal>::VecInner, 
 	MixedVecTraits<REALT,InnerReal>::SoaInner,
 	MixedVecTraits<REALT,InnerReal>::compress12>(Layout::subgridLattSize().slice(),
-						     invParam.By, 
-						     invParam.Bz, 
-						     invParam.NCores, 
-						     invParam.Sy,
-						     invParam.Sz,
-						     invParam.PadXY,
-						     invParam.PadXYZ,
-						     invParam.MinCt);
+			QPhiXParams.getBy(),
+																	   QPhiXParams.getBz(),
+																	   QPhiXParams.getNCores(),
+																	   QPhiXParams.getSy(),
+																	   QPhiXParams.getSz(),
+																	   QPhiXParams.getPxy(),
+																	   QPhiXParams.getPxyz(),
+																	   QPhiXParams.getMinCt());
+
 						     
 
 

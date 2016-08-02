@@ -64,34 +64,6 @@ namespace Chroma {
     else { 
       Delta = Real(-1);
     }
-
-    read(paramtop, "NCores", NCores);
-    read(paramtop, "By", By);
-    read(paramtop, "Bz", Bz);
-    read(paramtop, "Sy", Sy);
-    read(paramtop, "Sz", Sz);
-    
-    if( paramtop.count("PadXY") > 0 ) {
-      read(paramtop, "PadXY", PadXY);
-    }
-    else { 
-      PadXY = 0;
-    }
-    
-    if( paramtop.count("PadXYZ") > 0 ) {
-      read(paramtop, "PadXYZ", PadXYZ);
-    }
-    else { 
-      PadXYZ = 0;
-    }
-#if 0    
-    read(paramtop, "SOALEN", Soalen);
-    read(paramtop, "VECLEN", Veclen);
-#endif
-
-    if( paramtop.count("MinCt") > 0 ) {
-      read(paramtop, "MinCt", MinCt);
-    }
     
     if( paramtop.count("RsdToleranceFactor") > 0 ) { 
       read(paramtop, "RsdToleranceFactor", RsdToleranceFactor);
@@ -133,14 +105,6 @@ namespace Chroma {
     write(xml, "SolverType", p.SolverType);
     write(xml, "AntiPeriodicT", p.AntiPeriodicT);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
-    write(xml, "NCores", p.NCores);
-    write(xml, "By", p.By);
-    write(xml, "Bz", p.Bz);
-    write(xml, "Sy", p.Sy);
-    write(xml, "Sz", p.Sz);
-    write(xml, "PadXY", p.PadXY);
-    write(xml, "PadXYZ", p.PadXYZ);
-    write(xml, "MinCt", p.MinCt);
     write(xml, "Tune", p.TuneP);
     
 

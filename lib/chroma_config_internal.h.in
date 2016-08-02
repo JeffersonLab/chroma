@@ -96,6 +96,9 @@
 /* Disable Intel Solver Compression */
 #undef CHROMA_QPHIX_COMPRESS12
 
+/* Enable QPhiX Dslash */
+#undef CHROMA_QPHIX_DSLASH_ENABLED
+
 /* The SOA length for inner solvers for mixed prec QPhiX */
 #undef CHROMA_QPHIX_INNER_SOALEN
 

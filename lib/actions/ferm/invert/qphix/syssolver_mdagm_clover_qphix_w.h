@@ -35,6 +35,7 @@
 #include "qphix/invcg.h"
 #include "qphix/invbicgstab.h"
 
+#include "qphix_singleton.h"
 #include "actions/ferm/invert/qphix/qphix_vec_traits.h"
 
 using namespace QDP;
@@ -114,16 +115,18 @@ namespace Chroma
 		      Real(t_boundary), Real(1));
       }
       
+      const QPhiX::QPhiXCLIArgs& QPhiXParams = TheQPhiXParams::Instance();
+
       QDPIO::cout << "About to grap a Dslash" << std::endl;
       geom = new QPhiX::Geometry<REALT, VecTraits<REALT>::Vec, VecTraits<REALT>::Soa,VecTraits<REALT>::compress12>(Layout::subgridLattSize().slice(),
-														   invParam.By, 
-														   invParam.Bz, 
-														   invParam.NCores, 
-														   invParam.Sy,
-														   invParam.Sz,
-												      invParam.PadXY,
-														   invParam.PadXYZ,
-														   invParam.MinCt);
+														   QPhiXParams.getBy(),
+														   QPhiXParams.getBz(),
+														   QPhiXParams.getNCores(),
+														   QPhiXParams.getSy(),
+														   QPhiXParams.getSz(),
+														   QPhiXParams.getPxy(),
+														   QPhiXParams.getPxyz(),
+														   QPhiXParams.getMinCt());
       
       QDPIO::cout << " Allocating p and c" << std::endl << std::flush ;
       psi_qphix=(QPhiX_Spinor *)geom->allocCBFourSpinor();

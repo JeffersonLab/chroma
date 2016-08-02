@@ -17,7 +17,6 @@ namespace Chroma
       TuneP = false ; //< v0.3 autotune feature
       VerboseP = false;
       SolutionCheckP = true;
-      MinCt = 1;
       Delta = Real(-1);
     };
 
@@ -30,16 +29,8 @@ namespace Chroma
       RsdTarget = p.RsdTarget;
       VerboseP = p.VerboseP;
       SolutionCheckP = p.SolutionCheckP;
-      NCores = p.NCores;
-      By=p.By;
-      Bz=p.Bz;
-      Sy=p.Sy;
-      Sz=p.Sz;
-      PadXY = p.PadXY;
-      PadXYZ = p.PadXYZ;
       RsdToleranceFactor = p.RsdToleranceFactor;
       TuneP = p.TuneP;
-      MinCt = p.MinCt;
     }
 
    
@@ -51,14 +42,6 @@ namespace Chroma
     Real Delta;
     bool VerboseP;
     bool SolutionCheckP;
-    int NCores;
-    int By;
-    int Bz;
-    int Sy;
-    int Sz;
-    int PadXY;
-    int PadXYZ;
-    int MinCt;
     Real RsdToleranceFactor;
     bool TuneP;
   };

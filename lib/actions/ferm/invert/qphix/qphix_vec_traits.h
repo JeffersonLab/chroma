@@ -73,7 +73,7 @@ namespace Chroma {
 #endif
 
     // Templates
-#if defined(CHROMA_QPHIX_ARCH_AVX) || defined(CHROMA_QPHIX_AVX2)
+#if defined(CHROMA_QPHIX_ARCH_AVX) || defined(CHROMA_QPHIX_ARCH_AVX2)
 #warning QPHIX for AVX and AVX2
     // AVX Traits:
     template<>
