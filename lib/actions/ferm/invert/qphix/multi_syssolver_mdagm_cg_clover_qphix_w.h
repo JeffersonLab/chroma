@@ -34,6 +34,7 @@
 #include "qphix/qdp_packer.h"
 #include "qphix/clover.h"
 #include "qphix/minvcg.h"
+#include "qphix/blas_new_c.h"
 #include "actions/ferm/invert/qphix/qphix_vec_traits.h"
 #include "qphix_singleton.h"
 using namespace QDP;
@@ -83,6 +84,7 @@ public:
 
 		QDPIO::cout << "Veclen is " << VecTraits<REALT>::Vec << std::endl;
 		QDPIO::cout << "Soalen is " << VecTraits<REALT>::Soa << std::endl;
+		cbsize_in_blocks = rb[0].numSiteTable()/VecTraits<REALT>::Soa;
 
 		if ( VecTraits<REALT>::Soa > VecTraits<REALT>::Vec ) {
 			QDPIO::cerr << "PROBLEM: Soalen > Veclen. Please set soalen appropriately (<=VECLEN) at compile time" << std::endl;
@@ -117,6 +119,20 @@ public:
 		const QPhiX::QPhiXCLIArgs& QPhiXParams = TheQPhiXParams::Instance();
 
 		QDPIO::cout << "About to grap a Dslash" << std::endl;
+		// For normal QDP++ we need to pack stuff.
+		// For QDP-JIT/LLVM we need to make sure data layout is conformant,
+		// so use 0 padding
+
+#ifdef QDP_IS_QDPJIT
+		int pad_xy = 0;
+		int pad_xyz = 0;
+#else
+		int pad_xy = QPhiXParams.getPxy();
+		int pad_xyz = QPhiXParams.getPxyz();
+#endif
+
+		n_blas_simt = QPhiXParams.getSy()*QPhiXParams.getSz();  // The number of SIMTs
+
 		geom = new QPhiX::Geometry<REALT,
 				VecTraits<REALT>::Vec,
 				VecTraits<REALT>::Soa,
@@ -126,8 +142,8 @@ public:
 						QPhiXParams.getNCores(),
 						QPhiXParams.getSy(),
 						QPhiXParams.getSz(),
-						QPhiXParams.getPxy(),
-						QPhiXParams.getPxyz(),
+						pad_xy,
+						pad_xyz,
 						QPhiXParams.getMinCt());
 
 		QDPIO::cout << " Allocating Clover" << std::endl << std::flush ;
@@ -199,18 +215,18 @@ public:
 
 		geom->free(invclov_packed[0]);
 		geom->free(invclov_packed[1]);
-		invclov_packed[0] = 0x0;
-		invclov_packed[1] = 0x0;
+		invclov_packed[0] = nullptr;
+		invclov_packed[1] = nullptr;
 
 		geom->free(clov_packed[0]);
 		geom->free(clov_packed[1]);
-		clov_packed[0] = 0x0;
-		clov_packed[1] = 0x0;
+		clov_packed[0] = nullptr;
+		clov_packed[1] = nullptr;
 
 		geom->free(u_packed[0]);
 		geom->free(u_packed[1]);
-		u_packed[0] = 0x0;
-		u_packed[1] = 0x0;
+		u_packed[0] = nullptr;
+		u_packed[1] = nullptr;
 
 		delete geom;
 
@@ -231,6 +247,16 @@ public:
 		swatch.reset(); swatch.start();
 
 		int n_shift = shifts.size();
+		if( psi.size() != n_shift ) {
+			psi.resize(n_shift);
+				}
+
+#if 0
+		for(int s=0; s < n_shift;++s) {
+			psi[s] = zero;
+		}
+#endif
+
 		QDPIO::cout << "operator(): n_shift = " << n_shift << std::endl;
 
 		// Sanity check 1:
@@ -243,40 +269,49 @@ public:
 
 		// Allocate and pack the RHS
 		QPhiX_Spinor* chi_qphix;
+
+#ifndef QDP_IS_QDPJIT
+		// Non QDP-JIT -- we need to allocate and pack a chi
 		chi_qphix =(QPhiX_Spinor *)geom->allocCBFourSpinor();
-		if (chi_qphix == 0x0) {
+		if (chi_qphix == nullptr) {
 			QDPIO::cout << "Unable to allocate chi_qphix" << std::endl;
 			QDP_abort(1);
 		}
 		QDPIO::cout << "Packing chi" << std::endl;
 		QPhiX::qdp_pack_cb_spinor<>(chi, chi_qphix, *geom, 1);
-
+#else
+		// QDP_JIT -- we need to grab the pointer to cb=1
+		chi_qphix = (QPhiX_Spinor*)(chi.getFjit())+cbsize_in_blocks;
+#endif
 
 		// Allocate the solutions
 		QPhiX_Spinor** psi_qphix;
 		psi_qphix=(QPhiX_Spinor**)ALIGNED_MALLOC(n_shift*sizeof(QPhiX_Spinor*),
 				QPHIX_LLC_CACHE_ALIGN);
-		if( psi_qphix == 0x0 ) {
+		if( psi_qphix == nullptr ) {
 			QDPIO::cout << "Unable toallocate psi_qphix" << std::endl;
 			QDP_abort(1);
 		}
+
 		for(int s =0; s < n_shift; s++)  {
+
+#ifndef QDP_IS_QDPJIT
 			psi_qphix[s] = (QPhiX_Spinor *)geom->allocCBFourSpinor();
-			if( psi_qphix[s] == 0x0 ) {
+			if( psi_qphix[s] == nullptr ) {
 				QDPIO::cout << "Unable to allocate psi_qphix["<<s<<"]" << std::endl;
 				QDP_abort(1);
 			}
+#else
+			psi_qphix[s]=(QPhiX_Spinor *)(psi[s].getFjit()) + cbsize_in_blocks;
+#endif
 		}
-
 		// Initialize the solutions to zero.
 		{
 			QDPIO::cout << "Zeroing solutions" << std::endl;
-			LatticeFermion zerotmp;
-			zerotmp[ A->subset() ]  = zero;
+
 			for(int s=0; s < n_shift; s++) {
-				QPhiX::qdp_pack_cb_spinor<>(zerotmp,psi_qphix[s], *geom, 1);
+				zeroSpinor(psi_qphix[s],(*geom),n_blas_simt);
 			}
-			// zerotmp goes away
 		}
 
 		multi1d<double> rsd_final(n_shift);
@@ -328,14 +363,28 @@ public:
 				(bool)invParam.VerboseP);
 		double end = omp_get_wtime();
 
+		// For non-QDPJIT where the layout is not conformant
+		// we malloced this chi_qphix spinor, so need to free it
+		// For QDPJIT, we used a raw pointer from an OLattice
+		// So no need to free
+#ifndef QDP_IS_QDPJIT
+		// Non QDPJIT case:
 		// delete chi_qphix -- we are done with it.
 		geom->free(chi_qphix);
+#endif
 
-		// Unpack solutions
-		psi.resize(n_shift);
 		for(int s=0; s < n_shift; s++) {
+
+		// For no-QDPJIT where the layout is non-conformant
+		// we needed to allocate psi_qphix[s]
+	    // in that case we need to unpack the data and free psi_qphix[s]
+	    //
+			// But in the QDP-JIT case, these pointers come from OLattice<>::getFjit()
+			// and we don't need to unpack or free
+#ifndef QDP_IS_QDPJIT
 			QPhiX::qdp_unpack_cb_spinor<>(psi_qphix[s],psi[s], *geom, 1);
 			geom->free(psi_qphix[s]); // done with it.
+#endif
 		}
 		ALIGNED_FREE(psi_qphix); // done with it.
 
@@ -415,7 +464,8 @@ private:
 	QPhiX_Clover* invclov_packed[2];
 	QPhiX_Clover* clov_packed[2];
 	QPhiX_Gauge* u_packed[2];
-
+	size_t cbsize_in_blocks;
+	int n_blas_simt;
 
 };
 

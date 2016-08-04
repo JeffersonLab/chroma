@@ -143,7 +143,17 @@ namespace Chroma
   			Real(t_boundary), Real(1));
       }
 
+      cbsize_in_blocks = rb[0].numSiteTable()/MixedVecTraits<REALT,InnerReal>::Soa;
+
       const QPhiX::QPhiXCLIArgs& QPhiXParams = TheQPhiXParams::getInstance();
+#ifdef QDP_IS_QDPJIT
+      int pad_xy = 0;
+      int pad_xyz = 0;
+#else
+      int pad_xy = QPhiXParams.getPxy();
+      int pad_xyz = QPhiXParams.getPxyz();
+#endif
+
       // Grab a dslash from which we will get geometry.
       geom_outer = new QPhiX::Geometry<REALT, 
 	MixedVecTraits<REALT,InnerReal>::Vec, 
@@ -154,8 +164,8 @@ namespace Chroma
 																	   QPhiXParams.getNCores(),
 																	   QPhiXParams.getSy(),
 																	   QPhiXParams.getSz(),
-																	   QPhiXParams.getPxy(),
-																	   QPhiXParams.getPxyz(),
+																	   pad_xy,
+																	   pad_xyz,
 																	   QPhiXParams.getMinCt());
 
       
@@ -168,12 +178,12 @@ namespace Chroma
 																	   QPhiXParams.getNCores(),
 																	   QPhiXParams.getSy(),
 																	   QPhiXParams.getSz(),
-																	   QPhiXParams.getPxy(),
-																	   QPhiXParams.getPxyz(),
+																	   pad_xy,
+																	   pad_xyz,
 																	   QPhiXParams.getMinCt());
 						     
 
-
+#ifndef QDP_IS_QDPJIT
       p_even=(QPhiX_Spinor *)geom_outer->allocCBFourSpinor();
       p_odd=(QPhiX_Spinor *)geom_outer->allocCBFourSpinor();
       c_even=(QPhiX_Spinor *)geom_outer->allocCBFourSpinor();
@@ -182,7 +192,12 @@ namespace Chroma
       psi_s[1]=p_odd;
       chi_s[0]=c_even;
       chi_s[1]=c_odd;
-
+#else
+       psi_s[0]=nullptr;
+       psi_s[1]=nullptr;
+       chi_s[0]=nullptr;
+       chi_s[1]=nullptr;
+#endif
 
       // Pack the gauge field
       QDPIO::cout << "Packing gauge field..." ;
@@ -305,49 +320,52 @@ namespace Chroma
       
       // Need to unalloc all the memory...
       QDPIO::cout << "Destructing" << std::endl;
+
+#ifndef QDP_IS_QDPJIT
       geom_outer->free(p_even);
       geom_outer->free(p_odd);
       geom_outer->free(c_even);
       geom_outer->free(c_odd);
-      psi_s[0] = 0x0;
-      psi_s[1] = 0x0;
-      chi_s[0] = 0x0;
-      chi_s[1] = 0x0;
+#endif
+      psi_s[0] = nullptr;
+      psi_s[1] = nullptr;
+      chi_s[0] = nullptr;
+      chi_s[1] = nullptr;
 
       geom_outer->free(invclov_packed[0]);
       geom_outer->free(invclov_packed[1]);
-      invclov_packed[0] = 0x0;
-      invclov_packed[1] = 0x0;
+      invclov_packed[0] = nullptr;
+      invclov_packed[1] = nullptr;
 
 
       geom_outer->free(clov_packed[0]);
       geom_outer->free(clov_packed[1]);
-      clov_packed[0] = 0x0;
-      clov_packed[1] = 0x0;
+      clov_packed[0] = nullptr;
+      clov_packed[1] = nullptr;
 
 
       geom_outer->free(u_packed[0]);
       geom_outer->free(u_packed[1]);
-      u_packed[0] = 0x0;
-      u_packed[1] = 0x0;
+      u_packed[0] = nullptr;
+      u_packed[1] = nullptr;
 
 
       geom_inner->free(invclov_packed_i[0]);
       geom_inner->free(invclov_packed_i[1]);
-      invclov_packed_i[0] = 0x0;
-      invclov_packed_i[1] = 0x0;
+      invclov_packed_i[0] = nullptr;
+      invclov_packed_i[1] = nullptr;
 
 
       geom_inner->free(clov_packed_i[0]);
       geom_inner->free(clov_packed_i[1]);
-      clov_packed_i[0] = 0x0;
-      clov_packed_i[1] = 0x0;
+      clov_packed_i[0] = nullptr;
+      clov_packed_i[1] = nullptr;
 
 
       geom_inner->free(u_packed_i[0]);
       geom_inner->free(u_packed_i[1]);
-      u_packed_i[0] = 0x0;
-      u_packed_i[1] = 0x0;
+      u_packed_i[0] = nullptr;
+      u_packed_i[1] = nullptr;
 
       delete geom_inner;      
       delete geom_outer;
@@ -370,12 +388,20 @@ namespace Chroma
     {
       /* Factories here later? */
       SystemSolverResults_t res;
-      QDPIO::cout << "Packing Spinors" << std::endl << std::flush ;
 
+
+#ifndef QDP_IS_QDPJIT
+      QDPIO::cout << "Packing Spinors" << std::endl << std::flush ;
       QPhiX::qdp_pack_spinor<>(psi, psi_s[0], psi_s[1], (*M_outer).getGeometry());
       QPhiX::qdp_pack_spinor<>(chi, chi_s[0], chi_s[1], (*M_outer).getGeometry());
-
       QDPIO::cout << "Done" << std::endl << std::flush;
+#else
+      psi_s[0] = (QPhiX_Spinor *)(psi.getFjit());
+      psi_s[1] = (QPhiX_Spinor *)(psi.getFjit()) + cbsize_in_blocks;
+      chi_s[0] = (QPhiX_Spinor *)(chi.getFjit());
+      chi_s[1] = (QPhiX_Spinor *)(chi.getFjit()) + cbsize_in_blocks;
+#endif
+
 
       double rsd_final;
       unsigned long site_flops=0;
@@ -387,7 +413,9 @@ namespace Chroma
       double end = omp_get_wtime();
 
       QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_ITER_REFINE_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
+#ifndef QDP_IS_QDPJIT
       QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, (*M_outer).getGeometry());
+#endif
       
 #if 1
       // Chi Should now hold the result spinor 
@@ -483,8 +511,9 @@ Handle< QPhiX::InvRichardsonMultiPrec<REALT,
     QPhiX_Spinor* p_odd;
     QPhiX_Spinor* c_even;
     QPhiX_Spinor* c_odd;
-    QPhiX_Spinor* psi_s[2];
-    QPhiX_Spinor* chi_s[2];
+    mutable QPhiX_Spinor* psi_s[2];
+    mutable QPhiX_Spinor* chi_s[2];
+    size_t cbsize_in_blocks;
     
   };
 

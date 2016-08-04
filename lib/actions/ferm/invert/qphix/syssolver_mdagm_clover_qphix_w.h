@@ -37,7 +37,7 @@
 
 #include "qphix_singleton.h"
 #include "actions/ferm/invert/qphix/qphix_vec_traits.h"
-
+#include "qphix/blas_new_c.h"
 using namespace QDP;
 
 namespace Chroma
@@ -115,7 +115,18 @@ namespace Chroma
 		      Real(t_boundary), Real(1));
       }
       
+      cbsize_in_blocks = rb[0].numSiteTable()/VecTraits<REALT>::Soa;
+
       const QPhiX::QPhiXCLIArgs& QPhiXParams = TheQPhiXParams::Instance();
+
+#ifdef QDP_IS_QDPJIT
+      int pad_xy=0;
+      int pad_xyz=0;
+#else
+      int pad_xy = QPhiXParams.getPxy();
+      int pad_xyz= QPhiXParams.getPxyz();
+#endif
+      n_blas_simt = QPhiXParams.getSy()*QPhiXParams.getSz();
 
       QDPIO::cout << "About to grap a Dslash" << std::endl;
       geom = new QPhiX::Geometry<REALT, VecTraits<REALT>::Vec, VecTraits<REALT>::Soa,VecTraits<REALT>::compress12>(Layout::subgridLattSize().slice(),
@@ -124,18 +135,27 @@ namespace Chroma
 														   QPhiXParams.getNCores(),
 														   QPhiXParams.getSy(),
 														   QPhiXParams.getSz(),
-														   QPhiXParams.getPxy(),
-														   QPhiXParams.getPxyz(),
+														   pad_xy,
+														   pad_xyz,
 														   QPhiXParams.getMinCt());
       
       QDPIO::cout << " Allocating p and c" << std::endl << std::flush ;
+
+#ifndef QPD_IS_QDPJIT
       psi_qphix=(QPhiX_Spinor *)geom->allocCBFourSpinor();
       chi_qphix=(QPhiX_Spinor *)geom->allocCBFourSpinor();
-      
+
       if( invParam.SolverType == BICGSTAB ) {
-	// Two step solve need a temporary
-	tmp_qphix=(QPhiX_Spinor *)geom->allocCBFourSpinor();
+    	  // Two step solve need a temporary
+    	  tmp_qphix=(QPhiX_Spinor *)geom->allocCBFourSpinor();
       }
+#else
+      psi_qphix = nullptr;
+      chi_qphix = nullptr;
+      tmp_qphix = nullptr;
+
+#endif
+      
       
       QDPIO::cout << " Allocating Clover" << std::endl << std::flush ;
       QPhiX_Clover* A_cb0=(QPhiX_Clover *)geom->allocCBClov();
@@ -218,30 +238,32 @@ namespace Chroma
       // Need to unalloc all the memory...
       QDPIO::cout << "Destructing" << std::endl;
 
+#ifndef QDP_IS_QDPJIT
       geom->free(psi_qphix);
       geom->free(chi_qphix);
-      psi_qphix = 0x0;
-      chi_qphix = 0x0;
-
       if( invParam.SolverType == BICGSTAB ) {
-	geom->free(tmp_qphix);
-	tmp_qphix = 0x0;
+      	geom->free(tmp_qphix);
       }
+
+#endif
+      psi_qphix = nullptr;
+      chi_qphix = nullptr;
+      tmp_qphix = nullptr;
       
       geom->free(invclov_packed[0]);
       geom->free(invclov_packed[1]);
-      invclov_packed[0] = 0x0;
-      invclov_packed[1] = 0x0;
+      invclov_packed[0] = nullptr;
+      invclov_packed[1] = nullptr;
       
       geom->free(clov_packed[0]);
       geom->free(clov_packed[1]);
-      clov_packed[0] = 0x0;
-      clov_packed[1] = 0x0;
+      clov_packed[0] = nullptr;
+      clov_packed[1] = nullptr;
       
       geom->free(u_packed[0]);
       geom->free(u_packed[1]);
-      u_packed[0] = 0x0;
-      u_packed[1] = 0x0;
+      u_packed[0] = nullptr;
+      u_packed[1] = nullptr;
 
       delete geom;
 
@@ -330,20 +352,27 @@ namespace Chroma
     QPhiX_Clover* clov_packed[2];
     QPhiX_Gauge* u_packed[2];
     
-    QPhiX_Spinor* psi_qphix;
-    QPhiX_Spinor* chi_qphix;
-    QPhiX_Spinor* tmp_qphix;
-   
+    mutable QPhiX_Spinor* psi_qphix;
+    mutable QPhiX_Spinor* chi_qphix;
+    mutable QPhiX_Spinor* tmp_qphix;
+
+    size_t cbsize_in_blocks;
+    int n_blas_simt;
+
   SystemSolverResults_t cgSolve(T& psi, const T& chi, AbsChronologicalPredictor4D<T>& predictor) const
   {
       SystemSolverResults_t res;
       Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
       predictor(psi, (*MdagM), chi);
 
+#ifndef QDP_IS_QDPJIT
       // Pack Spinors psi and chi
       QPhiX::qdp_pack_cb_spinor<>(psi, psi_qphix, *geom,1);
       QPhiX::qdp_pack_cb_spinor<>(chi, chi_qphix, *geom,1);
-      
+#else
+      psi_qphix = (QPhiX_Spinor*)(psi.getFjit()) + cbsize_in_blocks;
+      chi_qphix = (QPhiX_Spinor*)(chi.getFjit()) + cbsize_in_blocks;
+#endif
       double rsd_final;
       unsigned long site_flops=0;
       unsigned long mv_apps=0;
@@ -353,7 +382,10 @@ namespace Chroma
       (*cg_solver)(psi_qphix, chi_qphix, toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, my_isign, invParam.VerboseP);
       double end = omp_get_wtime();
 
+#ifndef QDP_IS_QDPJIT
       QPhiX::qdp_unpack_cb_spinor<>(psi_qphix, psi, *geom,1);
+#endif
+
       predictor.newVector(psi);
 
       // Chi Should now hold the result spinor 
@@ -422,11 +454,16 @@ namespace Chroma
       }
 
 
+#ifndef QDP_IS_QDPJIT
       QDPIO::cout << "Packing" << std::endl << std::flush ;
       QPhiX::qdp_pack_cb_spinor<>(Y, tmp_qphix, *geom,1); // Initial Guess for Y
       QPhiX::qdp_pack_cb_spinor<>(psi, psi_qphix, *geom,1); // Initial Guess for X
       QPhiX::qdp_pack_cb_spinor<>(chi, chi_qphix, *geom,1); // RHS
-      
+#else
+      tmp_qphix = (QPhiX_Spinor *)(Y.getFjit()) + cbsize_in_blocks;
+      psi_qphix = (QPhiX_Spinor *)(psi.getFjit()) + cbsize_in_blocks;
+      chi_qphix = (QPhiX_Spinor *)(chi.getFjit()) + cbsize_in_blocks;
+#endif
       QDPIO::cout << "Done" << std::endl << std::flush;
       double rsd_final;
       int num_cb_sites = Layout::vol()/2;
@@ -461,12 +498,20 @@ namespace Chroma
       gflops = (double)(total_flops)/(1.0e9);
       total_time = end - start;
 
-      QPhiX::qdp_unpack_cb_spinor<>(tmp_qphix, Y, *geom,1);	
-      r_final = sqrt(toDouble(rsd_final)/norm2(Y,A->subset()));
+#ifndef QDP_IS_QDPJIT
+      // Want Norm of Y
+      // QPhiX::qdp_unpack_cb_spinor<>(tmp_qphix, Y, *geom,1);
+#endif
+      double norm2Y;
+      QPhiX::norm2Spinor(norm2Y, tmp_qphix, *geom, n_blas_simt);
+      r_final = sqrt(toDouble(rsd_final)/norm2Y);
+
       QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: " << n_count2 << " iters,  rsd_sq_final=" << rsd_final << " ||r||/||b|| (acc) = " << r_final << std::endl;
       QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
 
+#ifndef QDP_IS_QDPJIT
       QPhiX::qdp_unpack_cb_spinor<>(psi_qphix, psi, *geom,1);
+#endif
 
       try  {
 	// Try to cast the predictor to a two step predictor 
