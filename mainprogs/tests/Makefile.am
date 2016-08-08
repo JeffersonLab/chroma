@@ -107,6 +107,9 @@ if BUILD_QUDA
 check_PROGRAMS += t_quda_tprec t_minvert_quda
 endif
 
+if BUILD_QPHIX
+check_PROGRAMS += t_minvert_qphix
+endif
 
 #
 ## Move programs under development to EXTRA_PROGRAMS if they currently
@@ -246,6 +249,10 @@ if BUILD_GTEST
 check_PROGRAMS += t_inv_fgmres_dr
 t_inv_fgmres_dr_SOURCES = t_inv_fgmres_dr.cc chroma_gtest_env.h \
 	fgmres_dr_tests.cc
+endif
+
+if BUILD_QPHIX
+t_minvert_qphix_SOURCES= t_minvert_qphix.cc
 endif
 
 # build lib is a target that goes to the build dir of the library and 

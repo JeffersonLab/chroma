@@ -77,10 +77,10 @@ namespace Chroma {
   typedef LLVMCloverTerm CloverTerm;
   typedef LLVMCloverTermF CloverTermF;
   typedef LLVMCloverTermD CloverTermD;
+
   template<typename T,typename U>
-  struct CloverTermT {
-    typedef LLVMCloverTermT<T,U> Type_t;
-  };
+  using CloverTermT = LLVMCloverTermT<T,U>;
+
 }
 #endif
 
@@ -96,9 +96,7 @@ namespace Chroma {
   typedef QDPCloverTermD CloverTermD;
 
   template<typename T,typename U>
-  struct CloverTermT {
-    typedef QDPCloverTermT<T,U> Type_t;
-  };
+  using CloverTermT = QDPCloverTermT<T,U>;
 }  // end namespace Chroma
 #endif
 

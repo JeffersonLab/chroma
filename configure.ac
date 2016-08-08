@@ -302,9 +302,17 @@ AC_ARG_ENABLE(qphix-solver-compress12,
     [If enabled will employ compression in the QPhiX solver]
   ),
   [ qphix_compress12="${enable_qphix_solver_compress12}" ],
-  [ qphix_sompress12="no" ]
+  [ qphix_compress12="no" ]
 )
 
+AC_ARG_ENABLE(qphix-dslash,
+  AC_HELP_STRING(
+    [--enable-qphix-dslash],
+    [ Will enable a QPhiX based Dslash for use with QDP-JIT/LLVM. Restrictions apply]
+  ),
+  [ qphix_dslash="${enable_qphix_dslash}" ],
+  [ qphix_dslash="no" ]
+)
 
 dnl level 3 libraries for asqtad inverter
 AC_ARG_WITH(asqtadlevel3,
@@ -391,8 +399,17 @@ then
   AC_SUBST(QPHIX_LIBS,"-lqphix_solver")
 
   case "${qphix_arch}" in
+  sse|SSE)
+     AC_DEFINE(CHROMA_QPHIX_ARCH_SSE,[], [QPhiX Arch is SSE])
+     ;;   
   avx|AVX)
      AC_DEFINE(CHROMA_QPHIX_ARCH_AVX,[], [QPhiX Arch is AVX])
+     ;;
+  avx2|AVX2)
+     AC_DEFINE(CHROMA_QPHIX_ARCH_AVX2,[], [QPhiX Arch is AVX2])
+     ;;
+  avx512|AVX512)
+     AC_DEFINE(CHROMA_QPHIX_ARCH_AVX512,[], [QPhiX Arch is AVX512])
      ;;
   mic|MIC)
      AC_DEFINE(CHROMA_QPHIX_ARCH_MIC,[], [QPhiX Arch is MIC])
@@ -439,6 +456,12 @@ then
      AC_DEFINE(CHROMA_QPHIX_INNER_TYPE,[float], [QPhiX Inner Type is float ] )
      ;;
   esac
+
+  if test "X${qphix_dslash}X" == "XyesX";
+  then
+	AC_MSG_NOTICE([Enabling QPhiX Dslash. This will only work under VERY SPECIAL circumstances.]) 
+	AC_DEFINE(CHROMA_QPHIX_DSLASH_ENABLED,[1],[Enable QPhiX Dslash] )
+  fi
 fi
 
 AM_CONDITIONAL(BUILD_QPHIX,

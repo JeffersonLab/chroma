@@ -16,7 +16,7 @@
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "actions/ferm/invert/qphix/syssolver_qphix_clover_params.h"
-#include "actions/ferm/linop/clover_term_qdp_w.h"
+#include "actions/ferm/linop/clover_term_w.h"
 #include "actions/ferm/linop/eoprec_clover_linop_w.h"
 #include "meas/gfix/temporal_gauge.h"
 #include "io/aniso_io.h"
@@ -34,6 +34,8 @@
 
 #include "qphix/invbicgstab.h"
 
+#include "actions/ferm/invert/qphix/qphix_vec_traits.h"
+#include "qphix_singleton.h"
 using namespace QDP;
 
 namespace Chroma
@@ -45,61 +47,6 @@ namespace Chroma
     //! Register the syssolver
     bool registerAll();
 
-    template<typename T>
-    struct VecTraits { 
-      static const int Vec=1;
-      static const int Soa=1;
-      static const bool compress12=false;
-    };
-
-    // Templates
-#if defined CHROMA_QPHIX_ARCH_AVX
-#warning QPHIX for AVX
-    // AVX Traits:
-    template<>
-    struct VecTraits<float> { 
-      static const int Vec=8;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-    };
-
-    template<>
-    struct VecTraits<double> { 
-      static const int Vec=4;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-
-    };
-#endif
-
-#if defined CHROMA_QPHIX_ARCH_MIC
-#warning QPhiX for MIC
-    // MIC Traits
-    template<>
-    struct VecTraits<float> { 
-      static const int Vec=16;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-    };
-
-    template<>
-    struct VecTraits<double> { 
-      static const int Vec=8;
-      static const int Soa=CHROMA_QPHIX_SOALEN;
-      static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
-    };
-#endif
-
-#if defined CHROMA_QPHIX_ARCH_QPX
-#warning QPhiX for QPX
-     // QPX Traits
-     template<>
-     struct VecTraits<double> {
-        static const int Vec=4;
-	static const int Soa=CHROMA_QPHIX_SOALEN;
-	static const bool compress12=CHROMA_QPHIX_COMPRESS12;
-     };
-#endif
 
   }
 
@@ -109,7 +56,8 @@ namespace Chroma
   /*! \ingroup invert
  *** WARNING THIS SOLVER WORKS FOR Clover FERMIONS ONLY ***
    */
-  using namespace LinOpSysSolverQPhiXCloverEnv;
+  using namespace QPhiXVecTraits;
+
   template<typename T, typename U>  
   class LinOpSysSolverQPhiXClover : public LinOpSystemSolver<T>
   {
@@ -129,7 +77,7 @@ namespace Chroma
     LinOpSysSolverQPhiXClover(Handle< LinearOperator<T> > A_,
 			      Handle< FermState<T,Q,Q> > state_,
 			      const SysSolverQPhiXCloverParams& invParam_) : 
-      A(A_), invParam(invParam_), clov(new QDPCloverTermT<T, U>()), invclov(new QDPCloverTermT<T, U>())
+      A(A_), invParam(invParam_), clov(new CloverTermT<T, U>()), invclov(new CloverTermT<T, U>())
     {
       QDPIO::cout << "LinOpSysSolverQPhiXClover:" << std::endl;
       QDPIO::cout << "AntiPeriodicT is: " << invParam.AntiPeriodicT << std::endl;
@@ -168,20 +116,36 @@ namespace Chroma
       }
 
       QDPIO::cout << "About to grap a Dslash" << std::endl;
+      const QPhiX::QPhiXCLIArgs& QPhiXParams = TheQPhiXParams::Instance();
+      cbsize_in_blocks = rb[0].numSiteTable() / VecTraits<REALT>::Soa;
+
+#ifdef QDP_IS_QDPJIT
+      int pad_xy = 0;
+      int pad_xyz = 0;
+#else
+      int pad_xy = QPhiXParams.getPxy();
+      int pad_xyz = QPhiXParams.getPxyz();
+#endif
+
       geom = new QPhiX::Geometry<REALT, VecTraits<REALT>::Vec, VecTraits<REALT>::Soa,VecTraits<REALT>::compress12>(Layout::subgridLattSize().slice(),
-												      invParam.By, 
-												      invParam.Bz, 
-												      invParam.NCores, 
-												      invParam.Sy,
-												      invParam.Sz,
-												      invParam.PadXY,
-												      invParam.PadXYZ,
-														   invParam.MinCt);
+    		  QPhiXParams.getBy(),
+    		  														   QPhiXParams.getBz(),
+    		  														   QPhiXParams.getNCores(),
+    		  														   QPhiXParams.getSy(),
+    		  														   QPhiXParams.getSz(),
+    		  														   pad_xy,
+    		  														   pad_xyz,
+    		  														   QPhiXParams.getMinCt());
+
       
+#ifndef QDP_IS_QDPJIT
       QDPIO::cout << " Allocating p and c" << std::endl << std::flush ;
       psi_qphix=(QPhiX_Spinor *)geom->allocCBFourSpinor();
       chi_qphix=(QPhiX_Spinor *)geom->allocCBFourSpinor();
-
+#else
+      psi_qphix = nullptr;
+      chi_qphix = nullptr;
+#endif
       QDPIO::cout << " Allocating Clover" << std::endl << std::flush ;
       QPhiX_Clover* A_cb0=(QPhiX_Clover *)geom->allocCBClov();
       QPhiX_Clover* A_cb1=(QPhiX_Clover *)geom->allocCBClov();
@@ -205,7 +169,7 @@ namespace Chroma
 
       
       QDPIO::cout << "Creating Clover Term" << std::endl;
-      QDPCloverTerm clov_qdp;
+      CloverTerm clov_qdp;
       clov->create(state_, invParam.CloverParams);
       QDPIO::cout << "Inverting Clover Term" << std::endl;
       invclov->create(state_, invParam.CloverParams, (*clov));
@@ -216,11 +180,11 @@ namespace Chroma
       QDPIO::cout << "Packing Clover term..." << std::endl;
       
       for(int cb=0; cb < 2; cb++) { 
-	QPhiX::qdp_pack_clover<>((*invclov).getTriBuffer(), invclov_packed[cb], *geom, cb);
+	QPhiX::qdp_pack_clover<>((*invclov), invclov_packed[cb], *geom, cb);
       }
     
       for(int cb=0; cb < 2; cb++) { 
-	QPhiX::qdp_pack_clover<>((*clov).getTriBuffer(), clov_packed[cb], *geom, cb);
+	QPhiX::qdp_pack_clover<>((*clov), clov_packed[cb], *geom, cb);
       }
       QDPIO::cout << "Done" << std::endl;
 
@@ -267,25 +231,27 @@ namespace Chroma
       // Need to unalloc all the memory...
       QDPIO::cout << "Destructing" << std::endl;
 
+#ifndef QDP_IS_QDPJIX
       geom->free(psi_qphix);
       geom->free(chi_qphix);
-      psi_qphix = 0x0;
-      chi_qphix = 0x0;
+#endif
+      psi_qphix = nullptr;
+      chi_qphix = nullptr;
       
       geom->free(invclov_packed[0]);
       geom->free(invclov_packed[1]);
-      invclov_packed[0] = 0x0;
-      invclov_packed[1] = 0x0;
+      invclov_packed[0] = nullptr;
+      invclov_packed[1] = nullptr;
       
       geom->free(clov_packed[0]);
       geom->free(clov_packed[1]);
-      clov_packed[0] = 0x0;
-      clov_packed[1] = 0x0;
+      clov_packed[0] = nullptr;
+      clov_packed[1] = nullptr;
       
       geom->free(u_packed[0]);
       geom->free(u_packed[1]);
-      u_packed[0] = 0x0;
-      u_packed[1] = 0x0;
+      u_packed[0] = nullptr;
+      u_packed[1] = nullptr;
 
       delete geom;
 
@@ -338,8 +304,8 @@ namespace Chroma
 
     Handle< LinearOperator<T> > A;
     const SysSolverQPhiXCloverParams invParam;
-    Handle< QDPCloverTermT<T, U> > clov;
-    Handle< QDPCloverTermT<T, U> > invclov;
+    Handle< CloverTermT<T, U> > clov;
+    Handle< CloverTermT<T, U> > invclov;
 
     QPhiX::Geometry<REALT, VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>* geom;
     
@@ -354,8 +320,9 @@ namespace Chroma
     QPhiX_Clover* clov_packed[2];
     QPhiX_Gauge* u_packed[2];
     
-    QPhiX_Spinor* psi_qphix;
-    QPhiX_Spinor* chi_qphix;
+    mutable QPhiX_Spinor* psi_qphix;
+    mutable QPhiX_Spinor* chi_qphix;
+    size_t cbsize_in_blocks;
 
     SystemSolverResults_t cgnrSolve(T& psi, const T& chi) const
     {
@@ -372,8 +339,13 @@ namespace Chroma
       
       //      QDPIO::cout << "Allocating Spinor fields" << std::endl;
       // Pack Spinors psi and chi
+#ifndef QDP_IS_QDPJIT
       QPhiX::qdp_pack_cb_spinor<>(psi, psi_qphix, *geom,1);
       QPhiX::qdp_pack_cb_spinor<>(mdag_chi, chi_qphix, *geom,1);
+#else
+      psi_qphix = (QPhiX_Spinor*)(psi.getFjit()) + cbsize_in_blocks;
+      chi_qphix = (QPhiX_Spinor*)(chi.getFjit()) + cbsize_in_blocks;
+#endif
       
       double rsd_final;
       unsigned long site_flops=0;
@@ -385,7 +357,9 @@ namespace Chroma
       double end = omp_get_wtime();
 
       QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
+#ifndef QDP_IS_QDPJIT
       QPhiX::qdp_unpack_cb_spinor<>(psi_qphix, psi,*geom,1);
+#endif
 
       // Chi Should now hold the result spinor 
       // Check it against chroma.
@@ -425,10 +399,16 @@ namespace Chroma
       psi=zero;
 
       // Pack Spinors psi and chi
+#ifndef QDP_IS_QDPJIT
       QDPIO::cout << "Packing" << std::endl << std::flush ;
       QPhiX::qdp_pack_cb_spinor<>(psi, psi_qphix, *geom,1);
       QPhiX::qdp_pack_cb_spinor<>(chi, chi_qphix, *geom,1);
       QDPIO::cout << "Done" << std::endl << std::flush;
+#else
+      psi_qphix = (QPhiX_Spinor *)(psi.getFjit())+cbsize_in_blocks;
+      chi_qphix = (QPhiX_Spinor *)(chi.getFjit())+cbsize_in_blocks;
+#endif
+
       double rsd_final;
       unsigned long site_flops=0;
       unsigned long mv_apps=0;
@@ -440,7 +420,9 @@ namespace Chroma
 
       QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
       //      QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_qphix, psi, *geom);
+#ifndef QDP_IS_QDPJIT
       QPhiX::qdp_unpack_cb_spinor<>( psi_qphix, psi, *geom,1);
+#endif
 
       // Chi Should now hold the result spinor 
       // Check it against chroma.

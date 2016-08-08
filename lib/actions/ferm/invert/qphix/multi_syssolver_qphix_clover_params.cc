@@ -1,4 +1,4 @@
-#include "actions/ferm/invert/qphix/syssolver_qphix_clover_params.h"
+#include "actions/ferm/invert/qphix/multi_syssolver_qphix_clover_params.h"
 #include "chromabase.h"
 #include "io/xml_group_reader.h"
 #include "chroma_config.h"
@@ -9,46 +9,16 @@ using namespace QDP;
 
 namespace Chroma {
 
-  namespace QPhiXSolverTypeEnv { 
 
-    bool registerAll(void) 
-    {
-      bool success; 
-      success = theQPhiXSolverTypeMap::Instance().registerPair(std::string("CG"),
-							   CG);
-
-      success &=theQPhiXSolverTypeMap::Instance().registerPair(std::string("BICGSTAB" ), 
-							       BICGSTAB);
-
-      return success;
-    }
-
-    const std::string typeIDString = "QPhiXSolverType";
-    bool registered = registerAll();
-  };
-  
-  using namespace QPhiXSolverTypeEnv;
-  //! Read an WaveType enum
-  void read(XMLReader& xml_in,  const std::string& path, QPhiXSolverType& t) {
-    theQPhiXSolverTypeMap::Instance().read(typeIDString, xml_in, path,t);
-  }
-  
-  //! Write an WaveType enum
-  void write(XMLWriter& xml_out, const std::string& path, const QPhiXSolverType& t) {
-    theQPhiXSolverTypeMap::Instance().write(typeIDString, xml_out, path, t);
-  }
-
-
-
-  SysSolverQPhiXCloverParams::SysSolverQPhiXCloverParams(XMLReader& xml, 
+  MultiSysSolverQPhiXCloverParams::MultiSysSolverQPhiXCloverParams(XMLReader& xml, 
 							 const std::string& path)
   {
     XMLReader paramtop(xml, path);
 
     read(paramtop, "MaxIter", MaxIter);
+    read(paramtop, "MaxShifts", MaxShifts);
     read(paramtop, "RsdTarget", RsdTarget);
     read(paramtop, "CloverParams", CloverParams);
-    read(paramtop, "SolverType", SolverType);
     read(paramtop, "AntiPeriodicT", AntiPeriodicT);
     
     if ( paramtop.count("Verbose") > 0 ) { 
@@ -58,13 +28,21 @@ namespace Chroma {
       VerboseP = false;
     }
 
+    if ( paramtop.count("SolutionCheck") > 0 ) { 
+      read(paramtop, "SolutionCheck", SolutionCheckP);
+    }
+    else { 
+      SolutionCheckP = true;
+    }
+
     if (paramtop.count("Delta") > 0 ) { 
       read(paramtop,"Delta", Delta);
     }
     else { 
       Delta = Real(-1);
     }
-    
+
+
     if( paramtop.count("RsdToleranceFactor") > 0 ) { 
       read(paramtop, "RsdToleranceFactor", RsdToleranceFactor);
     }
@@ -82,14 +60,14 @@ namespace Chroma {
   }
   
   void read(XMLReader& xml, const std::string& path, 
-	    SysSolverQPhiXCloverParams& p)
+	    MultiSysSolverQPhiXCloverParams& p)
   {
-    SysSolverQPhiXCloverParams tmp(xml, path);
+    MultiSysSolverQPhiXCloverParams tmp(xml, path);
     p = tmp;
   }
   
   void write(XMLWriter& xml, const std::string& path, 
-	     const SysSolverQPhiXCloverParams& p) {
+	     const MultiSysSolverQPhiXCloverParams& p) {
     push(xml, path);
     write(xml, "MaxIter", p.MaxIter);
 
@@ -98,11 +76,11 @@ namespace Chroma {
     if( toBool(p.Delta > 0 ) ) {
       write(xml, "Delta", p.Delta);
     }
-
+    write(xml, "MaxShifts", p.MaxShifts);
     write(xml, "RsdTarget", p.RsdTarget);
     write(xml, "Verbose", p.VerboseP);
+    write(xml, "SolutionCheck", p.SolutionCheckP);
     write(xml, "CloverParams", p.CloverParams);
-    write(xml, "SolverType", p.SolverType);
     write(xml, "AntiPeriodicT", p.AntiPeriodicT);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
     write(xml, "Tune", p.TuneP);

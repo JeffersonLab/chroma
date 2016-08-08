@@ -29,7 +29,6 @@ namespace Chroma
     R offDiag2[15][2];
   };
 
-
   // Reader/writers
   /*! \ingroup linop */
 #if 0
