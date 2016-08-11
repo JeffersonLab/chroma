@@ -123,10 +123,7 @@ namespace Chroma
     // Tidy Up
     delete [] spinorOut;
 
-    QDPIO::cout << "Cuda Space Required" << std::endl;
-    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << std::endl;
+
     QDPIO::cout << "QUDA_"<<solver_string<<"_CLOVER_SOLVER: time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;

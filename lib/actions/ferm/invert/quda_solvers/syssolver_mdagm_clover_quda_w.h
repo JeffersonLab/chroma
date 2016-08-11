@@ -76,7 +76,7 @@ namespace Chroma
     MdagMSysSolverQUDAClover(Handle< LinearOperator<T> > A_,
 					 Handle< FermState<T,Q,Q> > state_,
 					 const SysSolverQUDACloverParams& invParam_) : 
-      A(A_), state(state_), invParam(invParam_), clov(new CloverTermT<T, U>::Type_t()), invclov(new CloverTermT<T, U>::Type_t())
+      A(A_), state(state_), invParam(invParam_), clov(new CloverTermT<T, U>()), invclov(new CloverTermT<T, U>())
     {
       QDPIO::cout << "MdagMSysSolverQUDAClover:" << std::endl;
 
@@ -858,11 +858,11 @@ namespace Chroma
     QudaGaugeParam q_gauge_param;
     mutable QudaInvertParam quda_inv_param;
 
-    Handle< CloverTermT<T, U>::Type_t > clov;
-    Handle< CloverTermT<T, U>::Type_t > invclov;
+    Handle< CloverTermT<T, U> > clov;
+    Handle< CloverTermT<T, U> > invclov;
 
-    SystemSolverResults_t qudaInvert(const CloverTermT<T, U>::Type_t& clover,
-				     const CloverTermT<T, U>::Type_t& inv_clov,
+    SystemSolverResults_t qudaInvert(const CloverTermT<T, U>& clover,
+				     const CloverTermT<T, U>& inv_clov,
 				     const T& chi_s,
 				     T& psi_s     
 				     )const ;
