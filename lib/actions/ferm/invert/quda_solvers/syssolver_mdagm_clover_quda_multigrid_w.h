@@ -237,7 +237,6 @@ namespace Chroma
 			mg_inv_param.tol = 1e-10;
 			mg_inv_param.maxiter = 10000;
 			mg_inv_param.reliable_delta = 1e-10;
-			mg_inv_param.gcrNkrylov = 10;
 
 			quda_inv_param.kappa = 0.5;
 			quda_inv_param.clover_coeff = 1.0; // Dummy, not used
@@ -394,8 +393,8 @@ namespace Chroma
 			//
 			quda_inv_param.tol_precondition = toDouble(ip.tol);
 			quda_inv_param.maxiter_precondition = ip.maxIterations;
-			//quda_inv_param.gcrNkrylov = ip.gcrNkrylov;
-			quda_inv_param.gcrNkrylov = 20;
+			quda_inv_param.gcrNkrylov = ip.outer_gcr_nkrylov;
+			mg_inv_param.gcrNkrylov = ip.precond_gcr_nkrylov; 
 			quda_inv_param.residual_type = static_cast<QudaResidualType>(QUDA_L2_RELATIVE_RESIDUAL);
 
 			if( ip.verbosity == true ) {
@@ -473,10 +472,12 @@ namespace Chroma
 					}
 				}
 				mg_param.spin_block_size[i] = 1;
-				// FIXME: Elevate ip.nvec, ip.nu_pre, ip.nu_post, ip.tol to arrays in the XML
-				mg_param.n_vec[i] = ip.nvec;
-				mg_param.nu_pre[i] = ip.nu_pre;
-				mg_param.nu_post[i] = ip.nu_post;
+				if (i < mg_param.n_level-1)
+				{
+				  mg_param.n_vec[i] = ip.nvec[i];
+				  mg_param.nu_pre[i] = ip.nu_pre[i];
+				  mg_param.nu_post[i] = ip.nu_post[i];
+				}
 				mg_param.smoother_tol[i] = toDouble(ip.tol);
 				mg_param.global_reduction[i] = QUDA_BOOLEAN_YES;
 				switch( ip.smootherType ) {
