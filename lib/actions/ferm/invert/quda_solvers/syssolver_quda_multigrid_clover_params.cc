@@ -94,6 +94,26 @@ namespace Chroma {
     }
     QDPIO::cout << "tuneDslasP = " << tuneDslashP << std::endl;
 
+    //Read the MG persistence params.
+    if( paramtop.count("SaveSubspace") > 0 ) { 
+      read(paramtop, "SaveSubspace", SaveSubspace);
+      QDPIO::cout<<"SaveSubspace is read to be "<<SaveSubspace<<std::endl;
+    }
+    else { 
+      SaveSubspace = false;
+    }
+    if(SaveSubspace)
+      read(paramtop, "SaveSubspaceID", SaveSubspaceID);
+
+    if( paramtop.count("LoadSubspace") > 0 ) { 
+      read(paramtop, "LoadSubspace", LoadSubspace);
+    }
+    else { 
+      LoadSubspace = false;
+    }
+    if(LoadSubspace)
+      read(paramtop, "LoadSubspaceID", LoadSubspaceID);
+
 
     if( paramtop.count("MULTIGRIDParams") > 0 ) {
       MULTIGRIDParams = new MULTIGRIDSolverParams(paramtop, "./MULTIGRIDParams");
@@ -151,6 +171,17 @@ namespace Chroma {
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
 
     write(xml, "AutotuneDslash", p.tuneDslashP);
+
+    //Write the MG persistence params.
+    write(xml, "SaveSubspace", p.SaveSubspace);
+    if(p.SaveSubspace)
+      write(xml, "SaveSubspaceID", p.SaveSubspaceID);
+ 
+    write(xml, "LoadSubspace", p.LoadSubspace);
+    if(p.LoadSubspace)
+      write(xml, "LoadSubspaceID", p.LoadSubspaceID);
+
+
     if( p.MULTIGRIDParamsP ) { 
       write(xml, "MULTIGRIDParams", *(p.MULTIGRIDParams));
     }

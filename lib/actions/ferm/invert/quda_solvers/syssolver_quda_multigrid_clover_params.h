@@ -73,6 +73,12 @@ namespace Chroma
     Real RsdToleranceFactor;
     bool tuneDslashP;
     bool MULTIGRIDParamsP;
+    
+    //New params for MG subspace persistence within NamedObject Storage.
+    bool SaveSubspace; 
+    std::string SaveSubspaceID;
+    bool LoadSubspace;
+    std::string LoadSubspaceID;
 
     Handle<MULTIGRIDSolverParams> MULTIGRIDParams;
 
