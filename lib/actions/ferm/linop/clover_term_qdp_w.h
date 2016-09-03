@@ -7,9 +7,11 @@
 #define __clover_term_qdp_w_h__
 
 #include "state.h"
+#include "qdp_pool_allocator.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/clover_term_base_w.h"
 #include "meas/glue/mesfield.h"
+#include <complex>
 namespace Chroma 
 { 
 
@@ -57,7 +59,11 @@ namespace Chroma
     QDPCloverTermT();
 
     //! No real need for cleanup here
-    ~QDPCloverTermT() {}
+    ~QDPCloverTermT() {
+    	if ( tri != nullptr ) {
+    		QDP::Allocator::theQDPPoolAllocator::Instance().free(tri);
+    	}
+    }
 
     //! Creation routine
     void create(Handle< FermState<T, multi1d<U>, multi1d<U> > > fs,
@@ -104,7 +110,7 @@ namespace Chroma
 
 #ifdef BUILD_QPHIX
     // Access the clover tri-buffer for packing
-    const multi1d<PrimitiveClovTriang<REALT> >& getTriBuffer() const {
+    const PrimitiveClovTriang<REALT>* getTriBuffer() const {
       return tri;
     }
 #endif
@@ -147,14 +153,19 @@ namespace Chroma
     multi1d<bool> choles_done;   // Keep note of whether the decomposition has been done
                                  // on a particular checkerboard. 
 
-    multi1d<PrimitiveClovTriang<REALT> >  tri;
+    PrimitiveClovTriang<REALT>*  tri;
     
   };
 
 
    // Empty constructor. Must use create later
   template<typename T, typename U>
-  QDPCloverTermT<T,U>::QDPCloverTermT() {}
+  QDPCloverTermT<T,U>::QDPCloverTermT() {
+	  // Always allocate on construction
+	  int nodeSites = Layout::sitesOnNode();
+	  tri = (PrimitiveClovTriang<REALT>*)QDP::Allocator::theQDPPoolAllocator::Instance().alloc(nodeSites*sizeof(PrimitiveClovTriang<REALT>));
+
+  }
 
   // Now copy
   template<typename T, typename U>
@@ -206,7 +217,22 @@ namespace Chroma
     
     tr_log_diag_ = from.tr_log_diag_;
     
-    tri = from.tri;
+
+    int nodeSites = Layout::sitesOnNode();
+    // Deep copy.
+#pragma omp parallel for
+    for(int site=0; site < nodeSites;++site) {
+    	for(int block=0; block < 2; ++block) {
+    		for(int d=0; d < 6; ++d) {
+    			tri[site].diag[block][d] = from.tri[site].diag[block][d];
+    		}
+    		for(int od=0; od < 15; ++od) {
+    			tri[site].offd[block][od] = from.tri[site].offd[block][od];
+    		}
+    	}
+    }
+
+
     END_CODE();  
 #endif
   }
@@ -361,7 +387,7 @@ namespace Chroma
       const U& f3;
       const U& f4;
       const U& f5;
-      multi1d< PrimitiveClovTriang < REALT > >& tri;
+      PrimitiveClovTriang < REALT >* tri;
     };
     
     
@@ -381,7 +407,7 @@ namespace Chroma
       const U& f3=a->f3;
       const U& f4=a->f4;
       const U& f5=a->f5;
-      multi1d<PrimitiveClovTriang < REALT > >& tri=a->tri;
+      PrimitiveClovTriang < REALT >* tri=a->tri;
 
       // SITE LOOP STARTS HERE
       for(int site = lo; site < hi; ++site)  {
@@ -516,9 +542,6 @@ namespace Chroma
     U f5 = f[5] * getCloverCoeff(2,3);    
 
     const int nodeSites = QDP::Layout::sitesOnNode();
-
-    tri.resize(nodeSites);  // hold local lattice
-
     QDPCloverEnv::QDPCloverMakeClovArg<U> arg = {diag_mass, f0,f1,f2,f3,f4,f5,tri };
     dispatch_to_threads(nodeSites, arg, QDPCloverEnv::makeClovSiteLoop<U>);
               
@@ -587,7 +610,7 @@ namespace Chroma
       typedef OScalar< PScalar< PScalar< RScalar<REALT> > > > RealT;
       typedef OLattice< PScalar< PScalar< RScalar<REALT> > > > LatticeRealT;
       LatticeRealT& tr_log_diag;
-      multi1d<PrimitiveClovTriang<REALT> >& tri;
+      PrimitiveClovTriang<REALT>* tri;
       int cb;
     };
 
@@ -600,7 +623,7 @@ namespace Chroma
       typedef typename LDagDLInvArgs<U>::LatticeRealT LatticeRealT;
 
       LatticeRealT& tr_log_diag = a->tr_log_diag;
-      multi1d<PrimitiveClovTriang < REALT> >& tri = a->tri;
+      PrimitiveClovTriang < REALT>* tri = a->tri;
       int cb = a->cb;
       
       
@@ -840,7 +863,7 @@ namespace Chroma
       typedef typename LDagDLInvArgs<U>::LatticeRealT LatticeRealT;
 
       LatticeRealT& tr_log_diag = a->tr_log_diag;
-      multi1d<PrimitiveClovTriang <REALT> >& tri = a->tri;
+      PrimitiveClovTriang <REALT>* tri = a->tri;
       int cb = a->cb;
       
       int n = 2*Nc;
@@ -1176,7 +1199,7 @@ namespace Chroma
       typedef typename WordType<U>::Type_t REALT;
       
       U& B;
-      const multi1d<PrimitiveClovTriang< REALT > >& tri;
+      const PrimitiveClovTriang< REALT >* tri;
       int mat;
       int cb;
     };
@@ -1187,7 +1210,7 @@ namespace Chroma
     {
       typedef typename WordType<U>::Type_t REALT;
       U& B = a->B;
-      const multi1d<PrimitiveClovTriang< REALT > >& tri = a->tri;
+      const PrimitiveClovTriang< REALT >* tri = a->tri;
       int mat = a->mat;
       int cb  = a->cb;
       
@@ -1527,7 +1550,7 @@ namespace Chroma
        typedef typename WordType<T>::Type_t REALT;
       T& chi;
       const T& psi;
-      const multi1d<PrimitiveClovTriang<REALT> >& tri;
+      const PrimitiveClovTriang<REALT>* tri;
       int cb;
     };
 
@@ -1547,41 +1570,65 @@ namespace Chroma
       // Unwrap the args...
       T& chi=arg->chi;
       const T& psi=arg->psi;
-      const multi1d<PrimitiveClovTriang<REALT> >& tri = arg->tri;
+      const PrimitiveClovTriang<REALT>* tri = arg->tri;
       int cb = arg->cb;
       
 
-      int n = 2*Nc;
+      const int n = 2*Nc;
       
-      const multi1d<int>& tab = rb[cb].siteTable();
+      const int* tab = rb[cb].siteTable().slice();
       
       // Now just loop from low to high sites...
       for(int ssite=lo; ssite < hi; ++ssite)  {
 	
-	int site = tab[ssite];
-	
-	RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
-	const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));
-#if 0
+    	  int site = tab[ssite];
+#define NEW
+#ifndef NEW
+    	  RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
+    	  const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));
+#else
+    	  std::complex<REALT>* cchi = (std::complex<REALT>*)&(chi.elem(site).elem(0).elem(0));
+    	  std::complex<REALT>* ppsi = (std::complex<REALT>*)&(psi.elem(site).elem(0).elem(0));
+    	  const REALT* const diag0 = (const REALT* const)(&(tri[site].diag[0][0].elem()));
+    	  const REALT* const diag1 = (const REALT* const)(&(tri[site].diag[1][0].elem()));
+    	  const std::complex<REALT>* const offdiag0  =
+    			  (const std::complex<REALT>* const)(&(tri[site].offd[0][0].real()));
+    	  const std::complex<REALT>* const offdiag1  =
+    			  (const std::complex<REALT>* const)(&(tri[site].offd[1][0].real()));
+
+#endif
+#if 1
 #warning "Using unrolled clover term"
       // Rolled version
-      for(int i = 0; i < n; ++i)
-      {
-	cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
-	cchi[1*n+i] = tri[site].diag[1][i] * ppsi[1*n+i];
+      for(int i = 0; i < n; ++i) {
+#ifndef NEW
+    	  cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
+    	  cchi[1*n+i] = tri[site].diag[1][i] * ppsi[1*n+i];
+#else
+    	  cchi[0*n+i] = diag0[i] * ppsi[0*n+i];
+    	  cchi[1*n+i] = diag1[i] * ppsi[1*n+i];
+
+#endif
       }
 
       int kij = 0;  
-      for(int i = 0; i < n; ++i)
-      {
-	for(int j = 0; j < i; j++)
-	{
-	  cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
-	  cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
-	  cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
-	  cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
-	  kij++;
-	}
+      for(int i = 0; i < n; ++i) {
+
+    	  for(int j = 0; j < i; j++) {
+#ifndef NEW
+    		  cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
+    		  cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
+    		  cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
+    		  cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
+#else
+    		  cchi[0*n+i] += offdiag0[kij] * ppsi[0*n+j];
+    		      		  cchi[0*n+j] += conj(offdiag0[kij]) * ppsi[0*n+i];
+    		      		  cchi[1*n+i] += offdiag1[kij] * ppsi[1*n+j];
+    		      		  cchi[1*n+j] += conj(offdiag1[kij]) * ppsi[1*n+i];
+#endif
+    		  kij++;
+    	  }
+
       }
 #elif 0
 #warning "Using unrolled clover term - version 1"
@@ -1752,7 +1799,7 @@ namespace Chroma
       cchi[11] += tri[site].offd[1][12]  * ppsi[ 8];
       cchi[11] += tri[site].offd[1][13]  * ppsi[ 9];
       cchi[11] += tri[site].offd[1][14]  * ppsi[10];
-#elif 1
+#elif 0
 	// Unrolled version 3. 
 	// Took unrolled version 2 and wrote out in real() and imag() 
 	// parts. Rearranged so that all the reals follow each other
@@ -2115,8 +2162,8 @@ namespace Chroma
     template<typename R> 
     struct QUDAPackArgs { 
       int cb;
-      multi1d<QUDAPackedClovSite<R> >& quda_array;
-      const multi1d<PrimitiveClovTriang< R > >& tri;
+      multi1d< QUDAPackedClovSite<R> >& quda_array;
+      const PrimitiveClovTriang< R >* tri;
     };
     
     template<typename R>
@@ -2124,8 +2171,8 @@ namespace Chroma
       int cb = a->cb;
       int Ns2 = Ns/2;
 
-      multi1d<QUDAPackedClovSite<R> >& quda_array = a->quda_array;
-      const multi1d<PrimitiveClovTriang< R > >& tri=a->tri;
+      multi1d< QUDAPackedClovSite<R> >& quda_array = a->quda_array;
+      const PrimitiveClovTriang< R >* tri=a->tri;
 
       const int idtab[15]={0,1,3,6,10,2,4,7,11,5,8,12,9,13,14};
 
