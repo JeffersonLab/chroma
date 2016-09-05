@@ -643,13 +643,14 @@ namespace Chroma
 			// Hardwire output string to GCR.
        			solver_string = "GCR";
 
-			QDPIO::cout<<"SaveSubspace is set to "<<invParam.SaveSubspace<<std::endl;
 			if(invParam.SaveSubspace)
 			{
 			
 			  if(TheNamedObjMap::Instance().check(invParam.SaveSubspaceID))
 			  {
-			
+			    QDPIO::cout<<"Recovering subspace..."<<std::endl;
+			    QUDAMGSubspace *mg_preconditioner = TheNamedObjMap::Instance().getData< QUDAMGSubspace* >(invParam.SaveSubspaceID);
+			    quda_inv_param.preconditioner = mg_preconditioner;
 			  }
 			  else
 			  {
@@ -669,6 +670,7 @@ namespace Chroma
 			    TheNamedObjMap::Instance().create< QUDAMGSubspace* >(invParam.SaveSubspaceID);
 			    TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setFileXML(file_xml);
 			    TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
+			    QDPIO::cout<<"Storing subspace..."<<std::endl;
 			    TheNamedObjMap::Instance().getData< QUDAMGSubspace* >(invParam.SaveSubspaceID) = mg_state;
 
 			  }
@@ -682,6 +684,8 @@ namespace Chroma
 		~MdagMSysSolverQUDAMULTIGRIDClover()
 		{
 			QDPIO::cout << "Destructing" << std::endl;
+			//freeGaugeQuda();
+			//freeCloverQuda();
 		}
 
 		//! Return the subset on which the operator acts

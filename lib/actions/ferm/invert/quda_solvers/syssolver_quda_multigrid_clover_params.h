@@ -53,6 +53,10 @@ namespace Chroma
       backup_invP = p.backup_invP;
       backup_inv_param = p.backup_inv_param;
       dump_on_failP = p.dump_on_failP;
+      SaveSubspace = p.SaveSubspace;
+      SaveSubspaceID = p.SaveSubspaceID;
+      LoadSubspace = p.LoadSubspace;
+      LoadSubspaceID = p.LoadSubspaceID;
     }
 
    

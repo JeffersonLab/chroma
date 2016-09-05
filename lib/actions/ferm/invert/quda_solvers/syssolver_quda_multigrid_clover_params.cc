@@ -97,7 +97,6 @@ namespace Chroma {
     //Read the MG persistence params.
     if( paramtop.count("SaveSubspace") > 0 ) { 
       read(paramtop, "SaveSubspace", SaveSubspace);
-      QDPIO::cout<<"SaveSubspace is read to be "<<SaveSubspace<<std::endl;
     }
     else { 
       SaveSubspace = false;
