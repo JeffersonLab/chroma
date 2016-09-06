@@ -221,7 +221,9 @@ namespace Chroma
 
 		void delete_subspace()
 		{
-		  QDPIO::cout<<"Deleting MG subspace."<<std::endl;
+		  QDPIO::cout<<"Deleting MG subspace."<<std::endl; 
+		  //freeGaugeQuda();
+		  //freeCloverQuda();
 		  destroyMultigridQuda(quda_inv_param.preconditioner);
 		}
 
@@ -686,6 +688,7 @@ namespace Chroma
 			QDPIO::cout << "Destructing" << std::endl;
 			//freeGaugeQuda();
 			//freeCloverQuda();
+			//delete_subspace();
 		}
 
 		//! Return the subset on which the operator acts
