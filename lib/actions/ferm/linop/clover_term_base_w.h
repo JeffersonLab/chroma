@@ -179,6 +179,7 @@ namespace Chroma
     END_CODE();
   }
 
+#ifndef BUILD_JIT_CLOVER_TERM
   template<typename LCM>
   inline
   void mic_deriv_loops(const multi1d<LCM>& u,
@@ -308,6 +309,7 @@ namespace Chroma
 	  END_CODE();
 
   }
+#endif
 
   template<typename T, typename U>
   void CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
@@ -319,7 +321,7 @@ namespace Chroma
 
     const multi1d<U>& u = getU();
 
-#if 1
+#ifndef BUILD_JIT_CLOVER_TERM
     // Code from Jacques
     mic_deriv_loops<U>(u,mu,nu,cb,ds_u_mu,ds_u_nu,Lambda);
 

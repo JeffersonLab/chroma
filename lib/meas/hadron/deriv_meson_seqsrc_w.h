@@ -242,7 +242,7 @@ namespace Chroma
       virtual const multi1d<int>& getSinkMom() const {return params.sink_mom;}
       
       //! Get decay_dir
-      virtual const int getDecayDir() const {return params.j_decay;}
+      virtual int getDecayDir() const {return params.j_decay;}
 
       //! Get deriv_length
       virtual int getDerivLength() const {return params.deriv_length;}
@@ -295,7 +295,7 @@ namespace Chroma
       const multi1d<int>& getSinkMom() const {return params.sink_mom;}
 
       //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
+      int getDecayDir() const {return params.j_decay;}
 
       //! Get deriv_length
       int getDerivLength() const {return params.deriv_length;}

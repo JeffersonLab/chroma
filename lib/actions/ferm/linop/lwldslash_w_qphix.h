@@ -63,7 +63,7 @@ namespace Chroma
   template<typename T,typename P, typename Q>
   class QPhiXWilsonDslash : public WilsonDslashBase<T,P,Q>
   {
-  private:
+  public:
 	  // Floating Type <float or double>
 	    using FT = typename WordType<T>::Type_t;
 
@@ -87,25 +87,36 @@ namespace Chroma
 
   public:
     //! Empty constructor. Must use create later
-    QPhiXWilsonDslash() : theGeom(nullptr), theDslash(nullptr), packed_gauge{nullptr,nullptr} {}
+
+	    // Originally had constructor args:     : theGeom(nullptr), theDslash(nullptr), packed_gauge{nullptr,nullptr}
+	    	// But now these are static
+	QPhiXWilsonDslash() {}
+
+
 
 
     //! Full constructor
-    QPhiXWilsonDslash(Handle< FermState<T,P,Q> > state) : theGeom(nullptr), theDslash(nullptr), packed_gauge{nullptr,nullptr}
+	// Originally had constructor args:     : theGeom(nullptr), theDslash(nullptr), packed_gauge{nullptr,nullptr}
+		// But now these are static
+    QPhiXWilsonDslash(Handle< FermState<T,P,Q> > state)
     {
     	create(state);
     }
 
     //! Full constructor with anisotropy
+    // Originally had constructor args:     : theGeom(nullptr), theDslash(nullptr), packed_gauge{nullptr,nullptr}
+    	// But now these are static
     QPhiXWilsonDslash(Handle< FermState<T,P,Q> > state,
-		    const AnisoParam_t& aniso_) : theGeom(nullptr), theDslash(nullptr), packed_gauge{nullptr,nullptr}
+		    const AnisoParam_t& aniso_)
     {
     	create(state,aniso_);
     }
 
     //! Full constructor with general coefficients
+    // Originally had constructor args:     : theGeom(nullptr), theDslash(nullptr), packed_gauge{nullptr,nullptr}
+    	// But now these are static
     QPhiXWilsonDslash(Handle< FermState<T,P,Q> > state,
-		    const multi1d<Real>& coeffs_) : theGeom(nullptr), theDslash(nullptr), packed_gauge{nullptr,nullptr}
+		    const multi1d<Real>& coeffs_)
     {
     	create(state,coeffs_);
     }
@@ -185,23 +196,27 @@ namespace Chroma
     		}
     	}
 
+    	if( packed_gauge[0] == nullptr) {
 #ifdef DEBUG_QPHIX_DSLASH
-    	QDPIO::cout << "Allocating packed gauge field (cb=0)" << std::endl;
+    		QDPIO::cout << "Allocating packed gauge field (cb=0)" << std::endl;
 #endif
 
-    	packed_gauge[0] = (Gauge*)theGeom->allocCBGauge();
-    	if( packed_gauge[0] == nullptr ) {
-    		QDPIO::cerr << "Failed to allocate packed gauge_field(cb=0)" << std::endl;
-    		QDP_abort(1);
+    		packed_gauge[0] = (Gauge*)theGeom->allocCBGauge();
+    		if( packed_gauge[0] == nullptr ) {
+    			QDPIO::cerr << "Failed to allocate packed gauge_field(cb=0)" << std::endl;
+    			QDP_abort(1);
+    		}
     	}
 
+    	if( packed_gauge[1] == nullptr) {
 #ifdef DEBUG_QPHIX_DSLASH
     	QDPIO::cout << "Allocating packed gauge field (cb=1)" << std::endl;
 #endif
-    	packed_gauge[1] = (Gauge*)theGeom->allocCBGauge();
-    	if( packed_gauge[0] == nullptr ) {
-    		QDPIO::cerr << "Failed to allocate packed gauge_field(cb=1)" << std::endl;
-    		QDP_abort(1);
+    		packed_gauge[1] = (Gauge*)theGeom->allocCBGauge();
+    		if( packed_gauge[0] == nullptr ) {
+    			QDPIO::cerr << "Failed to allocate packed gauge_field(cb=1)" << std::endl;
+    			QDP_abort(1);
+    		}
     	}
 
     	const Q& u = state->getLinks();
@@ -214,10 +229,12 @@ namespace Chroma
 
     //! No real need for cleanup here
     ~QPhiXWilsonDslash() {
-    	theGeom->free(packed_gauge[0]);  packed_gauge[0] = nullptr;
-    	theGeom->free(packed_gauge[1]);  packed_gauge[1] = nullptr;
-    	delete theDslash; theDslash = nullptr;
-    	delete theGeom; theGeom = nullptr;
+    	// Never free: we can reuse all the allocated space
+
+   // 	theGeom->free(packed_gauge[0]);  packed_gauge[0] = nullptr;
+   // 	theGeom->free(packed_gauge[1]);  packed_gauge[1] = nullptr;
+  //  	delete theDslash; theDslash = nullptr;
+  //	delete theGeom; theGeom = nullptr;
     }
 
     /**
@@ -264,18 +281,27 @@ namespace Chroma
 
 
     // Pointers to held geom and dslash
-    Geom *theGeom;
-    Dsl *theDslash;
+    static Geom *theGeom;
+    static Dsl *theDslash;
 
     // Pointers to packed gauge field
-    Gauge* packed_gauge[2];
+    static Gauge* packed_gauge[2];
   };
+
 
   // The Concrete Instances
   using QPhiXWilsonDslashFloating = QPhiXWilsonDslash<LatticeFermion,multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix>>;
   using QPhiXWilsonDslashF = QPhiXWilsonDslash<LatticeFermionF,multi1d<LatticeColorMatrixF>,multi1d<LatticeColorMatrixF>>;
   using QPhiXWilsonDslashD = QPhiXWilsonDslash<LatticeFermionD,multi1d<LatticeColorMatrixD>,multi1d<LatticeColorMatrixD>>;
 
+
+  QPhiXWilsonDslashF::Geom* QPhiXWilsonDslashF::theGeom = nullptr;
+  QPhiXWilsonDslashF::Dsl* QPhiXWilsonDslashF::theDslash = nullptr;
+  QPhiXWilsonDslashF::Gauge* QPhiXWilsonDslashF::packed_gauge[2] = { nullptr,nullptr };
+
+  QPhiXWilsonDslashD::Geom* QPhiXWilsonDslashD::theGeom = nullptr;
+  QPhiXWilsonDslashD::Dsl* QPhiXWilsonDslashD::theDslash = nullptr;
+  QPhiXWilsonDslashD::Gauge* QPhiXWilsonDslashD::packed_gauge[2] = {nullptr,nullptr};
 } // End Namespace Chroma
 
 #endif // Ifdef BUILDING_CHROMA_QPHIX_DSLASH
