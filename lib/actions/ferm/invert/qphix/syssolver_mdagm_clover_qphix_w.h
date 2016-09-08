@@ -500,7 +500,7 @@ namespace Chroma
 
 #ifndef QDP_IS_QDPJIT
       // Want Norm of Y
-      // QPhiX::qdp_unpack_cb_spinor<>(tmp_qphix, Y, *geom,1);
+      QPhiX::qdp_unpack_cb_spinor<>(tmp_qphix, Y, *geom,1);
 #endif
       double norm2Y;
       QPhiX::norm2Spinor(norm2Y, tmp_qphix, *geom, n_blas_simt);
