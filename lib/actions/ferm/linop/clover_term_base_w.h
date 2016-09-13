@@ -6,6 +6,7 @@
 #ifndef __clover_term_base_w_h__
 #define __clover_term_base_w_h__
 
+#include "chroma_config.h"
 #include "linearop.h"
 
 
@@ -179,10 +180,14 @@ namespace Chroma
     END_CODE();
   }
 
-#ifndef BUILD_JIT_CLOVER_TERM
+
+
+#if defined(CHROMA_FUSED_CLOVER_DERIV_LOOPS) && !defined(BUILD_JIT_CLOVER_TERM)
+  /* Fused Deriv Loops code contributed by Jacques Block of Regensburg University */
+#warning "Using Fused deriv_loops contributed by Jacques Bloch of Regensburg University"
   template<typename LCM>
   inline
-  void mic_deriv_loops(const multi1d<LCM>& u,
+  void fused_deriv_loops(const multi1d<LCM>& u,
 		  const int mu, const int nu, const int cb,
 		  LCM& ds_u_mu, LCM& ds_u_nu, const LCM& Lambda)
   {
@@ -321,9 +326,9 @@ namespace Chroma
 
     const multi1d<U>& u = getU();
 
-#ifndef BUILD_JIT_CLOVER_TERM
+#if defined(CHROMA_FUSED_CLOVER_DERIV_LOOPS)  && !defined(BUILD_JIT_CLOVER_TERM)
     // Code from Jacques
-    mic_deriv_loops<U>(u,mu,nu,cb,ds_u_mu,ds_u_nu,Lambda);
+    fused_deriv_loops<U>(u,mu,nu,cb,ds_u_mu,ds_u_nu,Lambda);
 
 #else
     // New thingie - now assume Lambda lives only on sites with checkerboard 

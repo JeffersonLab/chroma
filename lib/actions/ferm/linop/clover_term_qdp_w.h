@@ -7,7 +7,7 @@
 #define __clover_term_qdp_w_h__
 
 #include "state.h"
-#include "qdp_pool_allocator.h"
+#include "qdp_allocator.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/clover_term_base_w.h"
 #include "meas/glue/mesfield.h"
@@ -61,7 +61,7 @@ namespace Chroma
     //! No real need for cleanup here
     ~QDPCloverTermT() {
     	if ( tri != nullptr ) {
-    		QDP::Allocator::theQDPPoolAllocator::Instance().free(tri);
+    		QDP::Allocator::theQDPAllocator::Instance().free(tri);
     	}
     }
 
@@ -163,7 +163,8 @@ namespace Chroma
   QDPCloverTermT<T,U>::QDPCloverTermT() {
 	  // Always allocate on construction
 	  int nodeSites = Layout::sitesOnNode();
-	  tri = (PrimitiveClovTriang<REALT>*)QDP::Allocator::theQDPPoolAllocator::Instance().alloc(nodeSites*sizeof(PrimitiveClovTriang<REALT>));
+	  tri = (PrimitiveClovTriang<REALT>*)QDP::Allocator::theQDPAllocator::Instance().allocate(nodeSites*sizeof(PrimitiveClovTriang<REALT>),
+			  	  QDP::Allocator::DEFAULT);
 
   }
 

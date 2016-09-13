@@ -75,6 +75,10 @@
 /* Enable Restart in linop syssolvers */
 #undef CHROMA_DO_ONE_CG_RESTART
 
+/* Enable use of clover deriv_loops routine contrinuted by J. Bloch of
+   Regensburg University */
+#undef CHROMA_FUSED_CLOVER_DERIV_LOOPS
+
 /* QPhiX Arch is AVX */
 #undef CHROMA_QPHIX_ARCH_AVX
 
@@ -108,8 +112,15 @@
 /* The SOA length for QPhiX */
 #undef CHROMA_QPHIX_SOALEN
 
+/* Define static packed gauges */
+#undef CHROMA_STATIC_PACKED_GAUGE
+
 /* Switch in Lower Memory File */
 #undef CHROMA_USE_CG_DWF_LOWMEM
+
+/* Enable use of itnotify interface. User guarantees to set up include, link
+   etc */
+#undef CHROMA_USE_ITTNOTIFY
 
 /* Use QMT Threads library */
 #undef CHROMA_USE_QMT_THREADS

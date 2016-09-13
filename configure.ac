@@ -101,7 +101,11 @@ AC_ARG_WITH(llvm-wilson-dslash,
 	 build_llvm_wd="no"]
 )
 
-
+AC_ARG_ENABLE(static-packed-gauge,
+	AC_HELP_STRING([--enable-static-packed-gauge. Enable Static packed gauges for cpp_wilson_dslash and QPhiX. This may be dangerous, but improve balance ]),
+	[enable_static_packed_gauge=${enableval} ],
+	[enable_static_packed_gauge="no"]
+)
 
 
 AC_ARG_ENABLE(asqtad_level3_inverter,
@@ -110,7 +114,7 @@ AC_ARG_ENABLE(asqtad_level3_inverter,
     [Wrap the level3 asqtad inverter])
 )
 
-
+	
 AC_ARG_WITH(bagel_wilson_dslash,
   AC_HELP_STRING(
     [--with-bagel-wilson-dslash=DIR],
@@ -652,6 +656,49 @@ else
 	AC_MSG_NOTICE([Not building CG DWF])
 fi
 
+case "${enable_static_packed_gauge}" in
+yes|YES|Yes)
+	AC_MSG_NOTICE([Enabling Static Packed Gauge Fields ])
+	AC_DEFINE([CHROMA_STATIC_PACKED_GAUGE], [1], [Define static packed gauges])
+	;;
+*)
+	AC_MSG_NOTICE([Not enabling Static Packed Gauge Fields])
+	;;
+esac
+
+AC_ARG_ENABLE(ittnotify,
+	AC_HELP_STRING([--enable-ittnotify ],[ Use VTune ITTNOTIFY Inteface in some test. Please ensure CXXFLAGS, LDFLAGS, LIBS are correctly set for Vtue]),
+	[ use_ittnotify="${enableval}" ],
+	[ use_ittnotify="no" ]
+)
+
+case ${use_ittnotify} in 
+yes)
+	AC_MSG_NOTICE([Enabling use of code sections using ITTNOTIFY])
+    AC_DEFINE([CHROMA_USE_ITTNOTIFY], [1], [ Enable use of itnotify interface. User guarantees to set up include, link etc ])
+    ;;
+*)
+	AC_MSG_NOTICE([Not using ITTNOTIFY instrumentaiton])
+	;;
+esac
+	
+
+AC_ARG_ENABLE(fused-clover-deriv-loops,
+	AC_HELP_STRING(	[--enable-fused-clover-deriv-loops],[ Enable fused clover deriv_loops function contributed by J Bloch of Regensburg University ] ),
+	[fused_clover_deriv_loops=${enableval}],
+	[fused_clover_deriv_loops="no"]
+)
+	
+case ${fused_clover_deriv_loops} in
+yes)
+	AC_MSG_NOTICE([Enabling use of fused clover deriv_loops routine contributed by J. Bloch of Regensburg University ])
+	AC_DEFINE([CHROMA_FUSED_CLOVER_DERIV_LOOPS],[1],[ Enable use of clover deriv_loops routine contrinuted by J. Bloch of Regensburg University ])
+	;;
+*) 
+	AC_MSG_NOTICE([Not using fused clover deriv loops routine])
+	;;
+esac
+	
 
  
 AM_CONDITIONAL(BUILD_CG_DWF,

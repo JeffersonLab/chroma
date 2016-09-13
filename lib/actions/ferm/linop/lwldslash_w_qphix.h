@@ -13,7 +13,7 @@
 #undef DEBUG_QPHIX_DSLASH
 
 
-
+#include "chroma_config.h"
 #include "actions/ferm/linop/lwldslash_base_w.h"
 #include "io/aniso_io.h"
 #include "state.h"
@@ -90,7 +90,11 @@ namespace Chroma
 
 	    // Originally had constructor args:     : theGeom(nullptr), theDslash(nullptr), packed_gauge{nullptr,nullptr}
 	    	// But now these are static
-	QPhiXWilsonDslash() {}
+	QPhiXWilsonDslash()
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+  	  : packed_gauge{nullptr,nullptr}
+#endif
+   {}
 
 
 
@@ -99,6 +103,9 @@ namespace Chroma
 	// Originally had constructor args:     : theGeom(nullptr), theDslash(nullptr), packed_gauge{nullptr,nullptr}
 		// But now these are static
     QPhiXWilsonDslash(Handle< FermState<T,P,Q> > state)
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+  	  : packed_gauge{nullptr,nullptr}
+#endif
     {
     	create(state);
     }
@@ -108,6 +115,9 @@ namespace Chroma
     	// But now these are static
     QPhiXWilsonDslash(Handle< FermState<T,P,Q> > state,
 		    const AnisoParam_t& aniso_)
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+  	  : packed_gauge{nullptr,nullptr}
+#endif
     {
     	create(state,aniso_);
     }
@@ -117,6 +127,9 @@ namespace Chroma
     	// But now these are static
     QPhiXWilsonDslash(Handle< FermState<T,P,Q> > state,
 		    const multi1d<Real>& coeffs_)
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+  	  : packed_gauge{nullptr,nullptr}
+#endif
     {
     	create(state,coeffs_);
     }
@@ -229,10 +242,15 @@ namespace Chroma
 
     //! No real need for cleanup here
     ~QPhiXWilsonDslash() {
-    	// Never free: we can reuse all the allocated space
 
-   // 	theGeom->free(packed_gauge[0]);  packed_gauge[0] = nullptr;
-   // 	theGeom->free(packed_gauge[1]);  packed_gauge[1] = nullptr;
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+    	// Keeping the packed gauges static shares them betwen objects which may be
+    	// dangerous. SO this needs to be explicitly enabled, otherwise we free and reallocate
+    theGeom->free(packed_gauge[0]);  packed_gauge[0] = nullptr;
+   	theGeom->free(packed_gauge[1]);  packed_gauge[1] = nullptr;
+#endif
+
+   	// Never free these.
   //  	delete theDslash; theDslash = nullptr;
   //	delete theGeom; theGeom = nullptr;
     }
@@ -285,7 +303,11 @@ namespace Chroma
     static Dsl *theDslash;
 
     // Pointers to packed gauge field
+#ifdef CHROMA_STATIC_PACKED_GAUGE
     static Gauge* packed_gauge[2];
+#else
+    Gauge* packed_gauge[2];
+#endif
   };
 
 
@@ -297,11 +319,18 @@ namespace Chroma
 
   QPhiXWilsonDslashF::Geom* QPhiXWilsonDslashF::theGeom = nullptr;
   QPhiXWilsonDslashF::Dsl* QPhiXWilsonDslashF::theDslash = nullptr;
+
+#ifdef CHROMA_STATIC_PACKED_GAUGE
   QPhiXWilsonDslashF::Gauge* QPhiXWilsonDslashF::packed_gauge[2] = { nullptr,nullptr };
+#endif
 
   QPhiXWilsonDslashD::Geom* QPhiXWilsonDslashD::theGeom = nullptr;
   QPhiXWilsonDslashD::Dsl* QPhiXWilsonDslashD::theDslash = nullptr;
+
+#ifdef CHROMA_STATIC_PACKED_GAUGE
   QPhiXWilsonDslashD::Gauge* QPhiXWilsonDslashD::packed_gauge[2] = {nullptr,nullptr};
+#endif
+
 } // End Namespace Chroma
 
 #endif // Ifdef BUILDING_CHROMA_QPHIX_DSLASH

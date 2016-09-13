@@ -1,5 +1,6 @@
 
 #include "chroma.h"
+#include "chroma_config.h"
 #include <string>
 #include "actions/gauge/gaugeacts/rect_gaugeact.h"
 #include "actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h"
@@ -9,9 +10,8 @@
 #include "update/molecdyn/hamiltonian/exact_hamiltonian.h"
 
 using namespace Chroma;
-#define USE_ITTNOTIFY
 
-#ifdef USE_ITTNOTIFY
+#ifdef CHROMA_USE_ITTNOTIFY
 #include "ittnotify.h"
 #endif
 
@@ -204,13 +204,13 @@ int main(int argc, char *argv[])
 			QDPIO::cout << "Timing monomial force: " << mon_name << " with " << hits << " hits " << std::endl;
 			swatch.reset();
 			swatch.start();
-#ifdef USE_ITTNOTIFY
+#ifdef CHROMA_USE_ITTNOTIFY
 			__itt_resume();
 #endif
 			for(int i=0; i < hits; i++) {
 				the_mon.dsdq(F,gauge_state);
 			}
-#ifdef USE_ITTNOTIFY
+#ifdef CHROMA_USE_ITTNOTIFY
 			__itt_pause();
 #endif
 			swatch.stop();
