@@ -3,8 +3,8 @@
  *  \brief Solve a M*psi=chi linear system by BiCGStab
  */
 
-#ifndef __syssolver_linop_clover_qphix_iter_refine_h__
-#define __syssolver_linop_clover_qphix_iter_refine_h__
+#ifndef __syssolver_mdagm_clover_qphix_iter_refine_h__
+#define __syssolver_mdagm_clover_qphix_iter_refine_h__
 
 #include "chroma_config.h"
 
@@ -57,7 +57,7 @@ namespace Chroma
   using namespace QPhiXVecTraits;
 
   template<typename T, typename U>  
-  class LinOpSysSolverQPhiXCloverIterRefine : public LinOpSystemSolver<T>
+  class MdagMSysSolverQPhiXCloverIterRefine : public MdagMSystemSolver<T>
   {
   public:
     typedef multi1d<U> Q;
@@ -86,14 +86,14 @@ namespace Chroma
      * \param M_        Linear operator ( Read )
      * \param invParam  inverter parameters ( Read )
      */
-    LinOpSysSolverQPhiXCloverIterRefine(Handle< LinearOperator<T> > A_,
+    MdagMSysSolverQPhiXCloverIterRefine(Handle< LinearOperator<T> > A_,
 			      Handle< FermState<T,Q,Q> > state_,
 			      const SysSolverQPhiXCloverParams& invParam_) : 
       A(A_), invParam(invParam_), clov(new CloverTermT<T, U>()), invclov(new CloverTermT<T, U>())
     {
 
       
-      QDPIO::cout << "LinOpSysSolverQPhiXCloverIterRefine:" << std::endl;
+      QDPIO::cout << "MdagMSysSolverQPhiXCloverIterRefine:" << std::endl;
 
       if ( toBool( invParam.Delta < 0 ) ) { 
 	QDPIO::cout << "Error: Delta parameter for solve should be set" << std::endl;
@@ -315,7 +315,7 @@ namespace Chroma
     
 
     //! Destructor 
-    ~LinOpSysSolverQPhiXCloverIterRefine() 
+    ~MdagMSysSolverQPhiXCloverIterRefine() 
     {
       
       // Need to unalloc all the memory...
@@ -455,7 +455,7 @@ namespace Chroma
 
   private:
     // Hide default constructor
-    LinOpSysSolverQPhiXCloverIterRefine() {}
+    MdagMSysSolverQPhiXCloverIterRefine() {}
     
 
 

@@ -15,7 +15,7 @@
 
 namespace Chroma
 {
-  namespace LinOpSysSolverQPhiXCloverIterRefineEnv
+  namespace MdagMSysSolverQPhiXCloverIterRefineEnv
   {
 
     //! Anonymous namespace
@@ -30,13 +30,13 @@ namespace Chroma
 
 
     // Double precision
-    LinOpSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,	
+    MdagMSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,	
 						  const std::string& path,
 						  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
 						  
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new LinOpSysSolverQPhiXCloverIterRefine<LatticeFermion, LatticeColorMatrix>(A, state,SysSolverQPhiXCloverParams(xml_in, path));
+      return new MdagMSysSolverQPhiXCloverIterRefine<LatticeFermion, LatticeColorMatrix>(A, state,SysSolverQPhiXCloverParams(xml_in, path));
     }
 
     //! Register all the factories
@@ -45,7 +45,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= Chroma::TheLinOpFermSystemSolverFactory::Instance().registerObject(name, createFerm);
+	success &= Chroma:TheMdagMFermSystemSolverFactory::Instance().registerObject(name, createFerm);
 	registered = true;
       }
       return success;

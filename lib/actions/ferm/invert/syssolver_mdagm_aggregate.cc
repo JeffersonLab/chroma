@@ -29,6 +29,7 @@
 
 #ifdef BUILD_QPHIX
 #include "actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_w.h"
+// #include "actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_iter_refine_w.h"
 #endif
 
 namespace Chroma
@@ -67,6 +68,7 @@ namespace Chroma
 
 #ifdef BUILD_QPHIX
 	success &= MdagMSysSolverQPhiXCloverEnv::registerAll();
+
 #endif
 	registered = true;
       }
