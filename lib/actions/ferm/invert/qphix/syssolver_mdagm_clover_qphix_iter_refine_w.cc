@@ -2,10 +2,10 @@
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
 
-#include "actions/ferm/invert/syssolver_linop_factory.h"
-#include "actions/ferm/invert/syssolver_linop_aggregate.h"
+#include "actions/ferm/invert/syssolver_mdagm_factory.h"
+#include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
 #include "actions/ferm/invert/qphix/syssolver_qphix_clover_params.h"
-#include "actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h"
+#include "actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_iter_refine_w.h"
 #include "io/aniso_io.h"
 
 #include "handle.h"
@@ -45,7 +45,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= Chroma:TheMdagMFermSystemSolverFactory::Instance().registerObject(name, createFerm);
+	success &= Chroma::TheMdagMFermSystemSolverFactory::Instance().registerObject(name, createFerm);
 	registered = true;
       }
       return success;
