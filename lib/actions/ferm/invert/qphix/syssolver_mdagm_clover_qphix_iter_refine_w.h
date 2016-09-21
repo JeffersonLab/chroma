@@ -155,6 +155,7 @@ namespace Chroma
       int pad_xy = QPhiXParams.getPxy();
       int pad_xyz = QPhiXParams.getPxyz();
 #endif
+      n_blas_simt = QPhiXParams.getSy()*QPhiXParams.getSz();
 
       // Grab a dslash from which we will get geometry.
       geom_outer = new OuterGeom(	Layout::subgridLattSize().slice(),
