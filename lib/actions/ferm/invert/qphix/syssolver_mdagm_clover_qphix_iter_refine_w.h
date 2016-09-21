@@ -373,6 +373,9 @@ namespace Chroma
      */
     SystemSolverResults_t operator()(T& psi, const T& chi, AbsChronologicalPredictor4D<T>& predictor) const
     {
+    	START_CODE();
+    	StopWatch swatch;
+    	swatch.reset(); swatch.start();
     	/* Factories here later? */
     	SystemSolverResults_t res;
     	Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
@@ -433,8 +436,8 @@ namespace Chroma
     	double total_time = end - start;
 
     	Double r_final = sqrt(toDouble(rsd_final)/norm2(chi,A->subset()));
-    	QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: " << n_count1 << " iters,  rsd_sq_final=" << rsd_final << " ||r||/||b|| (acc) = " << r_final <<std::endl;
-    	QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
+    	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: " << n_count1 << " iters,  rsd_sq_final=" << rsd_final << " ||r||/||b|| (acc) = " << r_final <<std::endl;
+    	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
 
     	QDPIO::cout << "Starting X solve" << std::endl << std::flush ;
     	start = omp_get_wtime();
@@ -452,8 +455,8 @@ namespace Chroma
     	QPhiX::norm2Spinor(norm2Y, tmp_qphix, *geom_outer, n_blas_simt);
     	r_final = sqrt(toDouble(rsd_final)/norm2Y);
 
-    	QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: " << n_count2 << " iters,  rsd_sq_final=" << rsd_final << " ||r||/||b|| (acc) = " << r_final << std::endl;
-    	QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
+    	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: " << n_count2 << " iters,  rsd_sq_final=" << rsd_final << " ||r||/||b|| (acc) = " << r_final << std::endl;
+    	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
 
 #ifndef QDP_IS_QDPJIT
     	QPhiX::qdp_unpack_cb_spinor<>(psi_qphix, psi, *geom_outer,1);
@@ -490,7 +493,7 @@ namespace Chroma
     	Double rel_resid = sqrt(r2/b2);
     	res.resid=rel_resid;
     	res.n_count = n_count1 + n_count2;
-    	QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: total_iters="<<res.n_count<<" || r || / || b || = " << res.resid << std::endl;
+    	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: total_iters="<<res.n_count<<" || r || / || b || = " << res.resid << std::endl;
 
 
 #if 0
@@ -499,7 +502,9 @@ namespace Chroma
     		QDP_abort(1);
     	}
 #endif
-
+    	 swatch.stop();
+    	 QDPIO::cout << "QPHIX_MDAGM_ITER_REFINE_BICGSTAB_SOLVER: total time: " << swatch.getTimeInSeconds() << " (sec)" << endl;
+    	 END_CODE();
     	END_CODE();
     	return res;
     }
