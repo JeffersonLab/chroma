@@ -435,7 +435,7 @@ namespace Chroma
     	double gflops = (double)(total_flops)/(1.0e9);
     	double total_time = end - start;
 
-    	Double r_final = sqrt(toDouble(rsd_final)/norm2(chi,A->subset()));
+    	Double r_final = sqrt(toDouble(rsd_final));
     	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: " << n_count1 << " iters,  rsd_sq_final=" << rsd_final << " ||r||/||b|| (acc) = " << r_final <<std::endl;
     	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
 
@@ -453,7 +453,7 @@ namespace Chroma
 #endif
     	double norm2Y;
     	QPhiX::norm2Spinor(norm2Y, tmp_qphix, *geom_outer, n_blas_simt);
-    	r_final = sqrt(toDouble(rsd_final)/norm2Y);
+    	r_final = sqrt(toDouble(rsd_final));
 
     	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: " << n_count2 << " iters,  rsd_sq_final=" << rsd_final << " ||r||/||b|| (acc) = " << r_final << std::endl;
     	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
@@ -479,7 +479,7 @@ namespace Chroma
 
     	// Chi Should now hold the result spinor
     	// Check it against chroma. -- reuse Y as the residuum
-    	Y = chi;
+    	Y[ A->subset() ] = chi;
     	{
     		T tmp,tmp2;
     		(*A)(tmp, psi, PLUS);
@@ -503,9 +503,9 @@ namespace Chroma
     	}
 #endif
     	 swatch.stop();
-    	 QDPIO::cout << "QPHIX_MDAGM_ITER_REFINE_BICGSTAB_SOLVER: total time: " << swatch.getTimeInSeconds() << " (sec)" << endl;
+    	 QDPIO::cout << "QPHIX_MDAGM_SOLVER: total time: " << swatch.getTimeInSeconds() << " (sec)" << endl;
     	 END_CODE();
-    	END_CODE();
+
     	return res;
     }
 

@@ -428,6 +428,10 @@ namespace Chroma
 
   SystemSolverResults_t biCGStabSolve(T& psi, const T& chi,AbsChronologicalPredictor4D<T>& predictor) const
     {
+	  START_CODE();
+	  StopWatch swatch;
+	  swatch.reset(); swatch.start();
+
       SystemSolverResults_t res;
       Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
     
@@ -530,7 +534,7 @@ namespace Chroma
 
       // Chi Should now hold the result spinor 
       // Check it against chroma. -- reuse Y as the residuum
-      Y = chi;
+      Y[ A->subset() ] = chi;
       {
 	T tmp,tmp2;
 	(*A)(tmp, psi, PLUS);
@@ -554,7 +558,8 @@ namespace Chroma
       }
 #endif
       
-
+      swatch.stop();
+      QDPIO::cout << "QPHIX_MDAGM_SOLVER: total time: " << swatch.getTimeInSeconds() << " (sec)" << endl;
       END_CODE();
       return res;
     }
