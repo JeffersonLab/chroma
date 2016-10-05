@@ -57,8 +57,8 @@ namespace Chroma
   }
 
   SystemSolverResults_t 
-  MdagMSysSolverQUDAMULTIGRIDClover::qudaInvert(const CloverTermT<T, U>::Type_t& clover,
-				                const CloverTermT<T, U>::Type_t& invclov,
+  MdagMSysSolverQUDAMULTIGRIDClover::qudaInvert(const CloverTermT<T, U>& clover,
+				                const CloverTermT<T, U>& invclov,
 				       		const T& chi_s,
 				       		T& psi_s) const{
 
