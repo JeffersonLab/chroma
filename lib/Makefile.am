@@ -1378,12 +1378,14 @@ nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_wilso
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_multigrid_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/enum_quda_io.h \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.h \
-	actions/ferm/invert/quda_solvers/quda_multigrid_params.h
+	actions/ferm/invert/quda_solvers/quda_multigrid_params.h \
+	meas/inline/io/inline_erase_quda_multigrid_space.h
 
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
@@ -1400,9 +1402,11 @@ libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.cc \
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_multigrid_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc \
-	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc
+	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc \
+	meas/inline/io/inline_erase_quda_multigrid_space.cc
 endif
 
 if BUILD_QPHIX
