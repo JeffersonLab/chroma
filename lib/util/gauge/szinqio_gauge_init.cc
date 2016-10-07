@@ -67,7 +67,7 @@ namespace Chroma
 
     	// If the IO Node grid has more than 1 node then do parallel io
     	// as a default
-    	bool pario = ( Layout::numIONodeGrid() > 1 );
+    	bool pario = Layout::isIOGridDefined() && ( Layout::numIONodeGrid() > 1 );
 
     	// Attempt to read option with either tag
     	if ( paramtop.count("parallel_io") > 0 ) {

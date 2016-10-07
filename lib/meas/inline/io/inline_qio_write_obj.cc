@@ -89,7 +89,7 @@ namespace Chroma
       if (inputtop.count("parallel_io") > 0) {
     	  read(inputtop, "parallel_io", input.parallel_io);
       } else {
-    	  input.parallel_io = (Layout::numIONodeGrid() > 1);
+    	  input.parallel_io = Layout::isIOGridDefined() && (Layout::numIONodeGrid() > 1);
       }
 
     }

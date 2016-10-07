@@ -111,7 +111,7 @@ namespace Chroma
 
       read(paramtop, "Param/OutputFile", output_file_name);
       read(paramtop, "Param/OutputVolfmt", qio_volfmt);
-      bool parallel_io_choice = ( Layout::numIONodeGrid() > 1);
+      bool parallel_io_choice = Layout::isIOGridDefined() && ( Layout::numIONodeGrid() > 1);
 
       if( paramtop.count("Param/parallel_io") == 1) {
     	  read(paramtop, "Param/parallel_io", parallel_io_choice);

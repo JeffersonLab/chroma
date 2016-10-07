@@ -99,7 +99,7 @@ namespace Chroma
       // If user doesn't specify, the choice will depend on how many I/O nodes
       // there are in the layout I/O grid. If more than 1, we will attempt parallel io.
 
-      bool parallel_io_choice = ( Layout::numIONodeGrid() > 1);
+      bool parallel_io_choice = Layout::isIOGridDefined() && ( Layout::numIONodeGrid() > 1);
 
       if( paramtop.count("Param/parallel_io") == 1) {
     	  read(paramtop, "Param/parallel_io", parallel_io_choice);

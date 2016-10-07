@@ -49,7 +49,7 @@ namespace Chroma
 
 
 
-      bool parioP = ( Layout::numIONodeGrid() > 1); // Default
+      bool parioP = Layout::isIOGridDefined() && ( Layout::numIONodeGrid() > 1); // Default
 
       if ( paramtop.count("./parallel_io") > 0 ) {
     	  read(paramtop, "./parallel_io", parioP);
