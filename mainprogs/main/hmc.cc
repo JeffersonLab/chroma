@@ -47,20 +47,29 @@ namespace Chroma
       read(paramtop, "./SavePrefix", p.save_prefix);
       read(paramtop, "./SaveVolfmt", p.save_volfmt);
 
-      // -- Deal with parallel IO
-      p.save_pario = QDPIO_SERIAL; // Default
 
-      // If there is a ParalelIO tag 
-      if ( paramtop.count("./ParallelIO") > 0 ) {
 
-	bool parioP=false;
-	read(paramtop, "./ParallelIO", parioP);
-	if ( parioP ) {
-	  QDPIO::cout << "Setting parallel write mode" << std::endl;
-	  p.save_pario = QDPIO_PARALLEL;
-	}
+      bool parioP = ( Layout::numIONodeGrid() > 1); // Default
+
+      if ( paramtop.count("./parallel_io") > 0 ) {
+    	  read(paramtop, "./parallel_io", parioP);
+      }
+      else {
+    	  // If there is a ParalelIO tag
+    	  if ( paramtop.count("./ParallelIO") > 0 ) {
+    		  read(paramtop, "./ParallelIO", parioP);
+    	  }
       }
 
+	  if ( parioP ) {
+    		  QDPIO::cout << "Setting parallel write mode for saving configurations" << std::endl;
+    		  p.save_pario = QDPIO_PARALLEL;
+	  }
+	  else {
+		  	 QDPIO::cout << "Setting serial write mode for saving configurations" << std::endl;
+		  	 p.save_pario = QDPIO_SERIAL;
+
+	  }
       // Default values: repro check is on, frequency is 10%
       p.repro_checkP = true;
       p.repro_check_frequency = 10;

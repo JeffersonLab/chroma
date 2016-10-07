@@ -86,11 +86,10 @@ namespace Chroma
 
       read(inputtop, "file_name", input.file_name);
       Chroma::read(inputtop, "file_volfmt", input.file_volfmt);
-      if( inputtop.count("parallel_io") > 0 ) {
-	read(inputtop, "parallel_io", input.parallel_io);
-      }
-      else { 
-	input.parallel_io = false;
+      if (inputtop.count("parallel_io") > 0) {
+    	  read(inputtop, "parallel_io", input.parallel_io);
+      } else {
+    	  input.parallel_io = (Layout::numIONodeGrid() > 1);
       }
 
     }
@@ -158,12 +157,12 @@ namespace Chroma
       write(xml_out, "object_id", params.named_obj.object_id);
       QDP_serialparallel_t parallel_io_type = QDPIO_SERIAL;
       if ( params.file.parallel_io ) { 
-	QDPIO::cout << "Attempting to write with Parallel IO" << std::endl;
-	parallel_io_type = QDPIO_PARALLEL;
+    	  QDPIO::cout << "Attempting to write with Parallel IO" << std::endl;
+    	  parallel_io_type = QDPIO_PARALLEL;
       }
       else { 
-	QDPIO::cout << "Attempting to write without parallel IO" << std::endl;
-	parallel_io_type = QDPIO_SERIAL;
+    	  QDPIO::cout << "Attempting to write without parallel IO" << std::endl;
+    	  parallel_io_type = QDPIO_SERIAL;
       }
 
       try

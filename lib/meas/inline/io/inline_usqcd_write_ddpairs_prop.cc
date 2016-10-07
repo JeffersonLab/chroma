@@ -74,6 +74,11 @@ namespace Chroma
     push(xml, "Param");
     write(xml, "OutputFile", p.output_file_name);
     write(xml, "OutputVolfmt", p.qio_volfmt);
+    bool parallel_io_choice = false;
+      if( p.parallel_io == QDPIO_PARALLEL) {
+      	parallel_io_choice = true;
+      }
+      write(xml, "parallel_io", parallel_io_choice);
     write(xml, "Precision", p.precision);
 
     pop(xml); // Param
@@ -106,6 +111,18 @@ namespace Chroma
 
       read(paramtop, "Param/OutputFile", output_file_name);
       read(paramtop, "Param/OutputVolfmt", qio_volfmt);
+      bool parallel_io_choice = ( Layout::numIONodeGrid() > 1);
+
+      if( paramtop.count("Param/parallel_io") == 1) {
+    	  read(paramtop, "Param/parallel_io", parallel_io_choice);
+      }
+
+      if( parallel_io_choice ) {
+    	parallel_io = QDPIO_PARALLEL;
+      }
+      else {
+    	parallel_io = QDPIO_SERIAL;
+      }
       read(paramtop, "Param/Precision", precision);
 
 
@@ -299,11 +316,17 @@ namespace Chroma
     QDPIO::cout << "Source XML is:" << std::endl;
     QDPIO::cout << source_xml.str();
 
+    if ( params.parallel_io == QDPIO_PARALLEL ) {
+     	QDPIO::cout << "Attempting Parallel IO for writing" << std::endl;
+     }
+     else {
+     	QDPIO::cout << "Attempting Serial IO for reading " << std::endl;
+     }
 
     // Open the QIO output file
     QDPFileWriter qio_out(file_xml, params.output_file_name,
 			  params.qio_volfmt,
-			  QDPIO_SERIAL,
+			  params.parallel_io,
 			  QDPIO_CREATE);
 
     

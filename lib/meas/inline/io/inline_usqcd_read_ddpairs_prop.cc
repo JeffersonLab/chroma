@@ -58,6 +58,12 @@ namespace Chroma
     write(xml, "Frequency", p.frequency);
     push(xml, "Param");
     write(xml, "InputFile", p.input_file_name);
+
+    bool parallel_io_choice = false;
+    if( p.parallel_io == QDPIO_PARALLEL) {
+    	parallel_io_choice = true;
+    }
+    write(xml, "parallel_io", parallel_io_choice);
     write(xml, "PropXML", p.prop_xml);
     pop(xml); // Param
     
@@ -86,9 +92,25 @@ namespace Chroma
       else
 	frequency = 1;
 
-
+      // Read input Filename
       read(paramtop, "Param/InputFile", input_file_name);
 
+      // Read Parallel IO flag
+      // If user doesn't specify, the choice will depend on how many I/O nodes
+      // there are in the layout I/O grid. If more than 1, we will attempt parallel io.
+
+      bool parallel_io_choice = ( Layout::numIONodeGrid() > 1);
+
+      if( paramtop.count("Param/parallel_io") == 1) {
+    	  read(paramtop, "Param/parallel_io", parallel_io_choice);
+      }
+
+      if( parallel_io_choice ) {
+    	parallel_io = QDPIO_PARALLEL;
+      }
+      else {
+    	parallel_io = QDPIO_SERIAL;
+      }
 
       if ( paramtop.count("Param/PropXML") == 1 ) { 
 
@@ -171,11 +193,21 @@ namespace Chroma
     LatticePropagator& source_ref=TheNamedObjMap::Instance().getData<LatticePropagator>(params.source_id);
     LatticePropagator& prop_ref=TheNamedObjMap::Instance().getData<LatticePropagator>(params.prop_id);
 
-    /* Open the file - read thef ile XML*/
+
+
+    if ( params.parallel_io == QDPIO_PARALLEL ) {
+
+    	QDPIO::cout << "Attempting Parallel IO for reading" << std::endl;
+    }
+    else {
+    	QDPIO::cout << "Attempting Serial IO for reading " << std::endl;
+    }
+
+
     XMLReader file_xml;
     QDPFileReader input_file(file_xml, 
 			     params.input_file_name,
-			     QDPIO_SERIAL);
+			     params.parallel_io);
 
 
     push(xml_out, "FileXML"); 

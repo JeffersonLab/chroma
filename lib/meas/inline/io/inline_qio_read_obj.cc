@@ -923,7 +923,7 @@ namespace Chroma
 	read(inputtop, "parallel_io", input.parallel_io);
       }
       else { 
-	input.parallel_io = false; 
+	input.parallel_io = ( Layout::numIONodeGrid() > 1 );
       }
     }
 
