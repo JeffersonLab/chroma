@@ -774,21 +774,65 @@ namespace Chroma
     
 		SystemSolverResults_t operator() (T& psi, const T& chi, Chroma::AbsChronologicalPredictor4D<T>& predictor ) const
 		{
-		  SystemSolverResults_t res;
-      
-		  /*START_CODE();
+
+			START_CODE();
 		    StopWatch swatch;
 		    swatch.start();
-		    {
+		    SystemSolverResults_t res;
+		    SystemSolverResults_t res1;
+		    SystemSolverResults_t res2;
+
+		    // Create MdagM op
 		    Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
-		    predictor(psi, (*MdagM), chi);
-		    }
-		    res = (*this)(psi, chi);
-		    predictor.newVector(psi);
+
+		    QDPIO::cout << "QUDA_MDAGM_MG_SOLVER: Ignoriging Predictor" << std::endl;
+		    psi = zero;
+
+		    // Y solve: M^\dagger Y = chi
+		    //        g_5 M g_5 Y = chi
+		    //     =>    M Y' = chi
+
+			T g5chi = Gamma(Nd*Nd - 1)*chi;
+			T Y_prime = zero;
+			res1 = qudaInvert(*clov,
+							*invclov,
+							g5chi,
+							Y_prime);
+
+			// Recover Y from Y' = g_5 Y  => Y = g_5 Y'
+
+			T Y = Gamma(Nd*Nd -1)*Y_prime;
+
+			// Can predict psi in the usual way without reference to Y
+
+			res2 = qudaInvert(*clov,
+					*invclov,
+					Y,
+					psi);
+
 		    swatch.stop();
+
+		    // Check solution
+		    {
+		    	T r;
+		    	r[A->subset()]=chi;
+		    	T tmp;
+		    	(*MdagM)(tmp, psi, PLUS);
+		    	r[A->subset()] -= tmp;
+		    	res.resid = sqrt(norm2(r, A->subset()));
+		    }
+
+
 		    double time = swatch.getTimeInSeconds();
+		    res.n_count = res1.n_count + res2.n_count;  // Two step solve so combine iteration count
+		    Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
+
+		    QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
 		    QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Total time (with prediction)=" << time << std::endl;
-		    END_CODE();*/
+		    if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
+		    	QDPIO::cout << "QUDA_" << solver_string << "_CLOVER_SOLVER: FAILED" << std::endl;
+		    	QDP_abort(1);
+		    }
 		  return res;
 		}
 		
