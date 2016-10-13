@@ -15,6 +15,7 @@
 #include "state.h"
 #include "syssolver.h"
 #include "linearop.h"
+#include "lmdagm.h"
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.h"
