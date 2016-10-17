@@ -94,9 +94,14 @@ namespace Chroma {
     }
     QDPIO::cout << "tuneDslasP = " << tuneDslashP << std::endl;
 
-    //Read the MG persistence params.
     read(paramtop, "SubspaceID", SaveSubspaceID);
-    read(paramtop, "ThresholdCount", ThresholdCount);
+
+    if( paramtop.count("ThresholdCound") == 1 ) {
+    	read(paramtop, "ThresholdCount", ThresholdCount);
+    }
+    else {
+    	ThresholdCount = 2*MaxIter + 1;
+    }
 
     if( paramtop.count("MULTIGRIDParams") > 0 ) {
       MULTIGRIDParams = new MULTIGRIDSolverParams(paramtop, "./MULTIGRIDParams");
