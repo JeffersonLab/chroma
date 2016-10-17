@@ -264,7 +264,7 @@ namespace Chroma
 		return ret_val;
 	}
 
-	/*
+  	/*template<typename T>
 	void delete_subspace()
 	{
 	  QDPIO::cout<<"Deleting MG subspace."<<std::endl;
@@ -273,13 +273,14 @@ namespace Chroma
 	  destroyMultigridQuda(quda_inv_param.preconditioner);
 	}
 
-	void* reset_subspace()
+	template<typename T>
+	MGSubspacePointers reset_subspace(const SysSolverQUDAMULTIGRIDCloverParams& invParam)
 	{
 	  QDPIO::cout<<"Resetting MG subspace."<<std::endl;
 	  delete_subspace();
-	  return create_subspace();
-	}
-	*/
+	  return create_subspace(invParam);
+	}*/
+	
 	} // Namespace
 
 	class MdagMSysSolverQUDAMULTIGRIDClover : public MdagMSystemSolver<LatticeFermion>
@@ -711,9 +712,11 @@ namespace Chroma
 
 			// Hardwire output string to GCR.
 			solver_string = "GCR_MULTIGTRID";
+			// Copy ThresholdCount from invParams into threshold_counts.
+			threshold_counts = invParam.ThresholdCount; 
 
 			MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers subspace_pointers;
-
+			subspace_pointers = MdagMSysSolverQUDAMULTIGRIDCloverEnv::create_subspace<T>(invParam);
 			if(TheNamedObjMap::Instance().check(invParam.SaveSubspaceID))
 			{
 				// Subspace ID exists add it to mg_state
@@ -725,7 +728,7 @@ namespace Chroma
 			{
 			    subspace_pointers = MdagMSysSolverQUDAMULTIGRIDCloverEnv::create_subspace<T>(invParam);
 
-			    QDPIO::cout<<"Creating Named Object Map for MG state."<<std::endl;
+			    /*QDPIO::cout<<"Creating Named Object Map for MG state."<<std::endl;
 			    XMLBufferWriter file_xml;
 			    push(file_xml, "FileXML");
 			    pop(file_xml);
@@ -741,7 +744,7 @@ namespace Chroma
 			    TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
 			    QDPIO::cout<<"Storing subspace..."<<std::endl;
 			    TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID) = subspace_pointers;
-			    QDPIO::cout << "Done" << std::endl;
+			    QDPIO::cout << "Done" << std::endl;*/
 			}
 			quda_inv_param.preconditioner = subspace_pointers.preconditioner;
 
@@ -752,9 +755,11 @@ namespace Chroma
 		~MdagMSysSolverQUDAMULTIGRIDClover()
 		{
 			QDPIO::cout << "Destructing" << std::endl;
+			destroyMultigridQuda(quda_inv_param.preconditioner);
+			//destroyMultigridQuda(TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID).preconditioner);
 //			freeGaugeQuda();
 //			freeCloverQuda();
-			// quda_inv_param.preconditioner = nullptr;
+			quda_inv_param.preconditioner = nullptr;
 			//delete_subspace();
 		}
 
@@ -900,6 +905,41 @@ namespace Chroma
 		    	QDPIO::cout << "QUDA_" << solver_string << "_CLOVER_SOLVER: FAILED" << std::endl;
 		    	QDP_abort(1);
 		    }
+		    /*if(threshold_counts < res1.n_count || threshold_counts < res2.n_count)
+		    {
+		      QDPIO::cout<<"Uh oh...iteration count is above threshold; regenerating multigrid subspace."<<std::endl;
+		      destroyMultigridQuda(quda_inv_param.preconditioner);
+		      //MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers subspace_pointers_old;
+		      //subspace_pointers_old = TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID);
+		      //destroyMultigridQuda(subspace_pointers_old.preconditioner);
+		      //destroyMultigridQuda(TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID).preconditioner);
+
+		      QDPIO::cout << "Attempting to delete from named object store" << std:: endl;
+		      // Now erase the object
+		      TheNamedObjMap::Instance().erase(invParam.SaveSubspaceID);
+		      QDPIO::cout << "Object erased" << std::endl;
+
+		      MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers subspace_pointers;
+		      subspace_pointers = MdagMSysSolverQUDAMULTIGRIDCloverEnv::create_subspace<T>(invParam);
+
+		      QDPIO::cout<<"Creating Named Object Map for MG state."<<std::endl;
+		      XMLBufferWriter file_xml;
+		      push(file_xml, "FileXML");
+		      pop(file_xml);
+
+		      XMLBufferWriter record_xml;
+		      push(record_xml, "RecordXML");
+		      write(record_xml, "InvertParam", invParam);
+		      pop(record_xml);
+
+
+		      TheNamedObjMap::Instance().create< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID);
+		      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setFileXML(file_xml);
+		      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
+		      QDPIO::cout<<"Storing subspace..."<<std::endl;
+		      TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID) = subspace_pointers;
+		      QDPIO::cout << "Done" << std::endl;
+		    }*/
 		  return res;
 		}
 		
@@ -933,6 +973,7 @@ namespace Chroma
 		)const;
 
 		std::string solver_string;
+		int threshold_counts;
 	};
 
 } // End namespace

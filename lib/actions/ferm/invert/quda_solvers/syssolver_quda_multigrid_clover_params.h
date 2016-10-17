@@ -53,10 +53,8 @@ namespace Chroma
       backup_invP = p.backup_invP;
       backup_inv_param = p.backup_inv_param;
       dump_on_failP = p.dump_on_failP;
-      SaveSubspace = p.SaveSubspace;
       SaveSubspaceID = p.SaveSubspaceID;
-      LoadSubspace = p.LoadSubspace;
-      LoadSubspaceID = p.LoadSubspaceID;
+      ThresholdCount = p.ThresholdCount;
     }
 
    
@@ -79,10 +77,8 @@ namespace Chroma
     bool MULTIGRIDParamsP;
     
     //New params for MG subspace persistence within NamedObject Storage.
-    bool SaveSubspace; 
     std::string SaveSubspaceID;
-    bool LoadSubspace;
-    std::string LoadSubspaceID;
+    int ThresholdCount;
 
     Handle<MULTIGRIDSolverParams> MULTIGRIDParams;
 

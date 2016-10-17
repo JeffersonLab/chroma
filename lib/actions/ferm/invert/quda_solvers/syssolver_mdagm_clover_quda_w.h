@@ -331,6 +331,8 @@ namespace Chroma
 
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
+      quda_inv_param.input_location = QUDA_CPU_FIELD_LOCATION;
+      quda_inv_param.output_location = QUDA_CPU_FIELD_LOCATION;
 #else
       //QDPIO::cout << "MDAGM Using QDP-JIT spinor order" << std::endl;
       quda_inv_param.dirac_order    = QUDA_QDPJIT_DIRAC_ORDER;
