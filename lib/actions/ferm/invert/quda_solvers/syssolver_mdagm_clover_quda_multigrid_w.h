@@ -667,41 +667,36 @@ public:
 			QDPIO::cout << "QUDA_" << solver_string << "_CLOVER_SOLVER: FAILED" << std::endl;
 			QDP_abort(1);
 		}
-		/*if(threshold_counts < res1.n_count || threshold_counts < res2.n_count)
+		QDPIO::cout<<"Threshold Counts is set to : "<<threshold_counts<<std::endl;
+		if(threshold_counts < res1.n_count || threshold_counts < res2.n_count)
 		    {
 		      QDPIO::cout<<"Uh oh...iteration count is above threshold; regenerating multigrid subspace."<<std::endl;
-		      destroyMultigridQuda(quda_inv_param.preconditioner);
-		      //MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers subspace_pointers_old;
-		      //subspace_pointers_old = TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID);
-		      //destroyMultigridQuda(subspace_pointers_old.preconditioner);
-		      //destroyMultigridQuda(TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID).preconditioner);
-
-		      QDPIO::cout << "Attempting to delete from named object store" << std:: endl;
-		      // Now erase the object
-		      TheNamedObjMap::Instance().erase(invParam.SaveSubspaceID);
-		      QDPIO::cout << "Object erased" << std::endl;
-
-		      MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers subspace_pointers;
-		      subspace_pointers = MdagMSysSolverQUDAMULTIGRIDCloverEnv::create_subspace<T>(invParam);
+		      	
+		      QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
+		     
+		      subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
 
 		      QDPIO::cout<<"Creating Named Object Map for MG state."<<std::endl;
 		      XMLBufferWriter file_xml;
 		      push(file_xml, "FileXML");
 		      pop(file_xml);
 
+		      int foo = 5;
+
 		      XMLBufferWriter record_xml;
 		      push(record_xml, "RecordXML");
-		      write(record_xml, "InvertParam", invParam);
+		      write(record_xml, "foo", foo);
 		      pop(record_xml);
 
 
-		      TheNamedObjMap::Instance().create< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID);
+		      TheNamedObjMap::Instance().create< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID);
 		      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setFileXML(file_xml);
 		      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
 		      QDPIO::cout<<"Storing subspace..."<<std::endl;
-		      TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID) = subspace_pointers;
+		      TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
 		      QDPIO::cout << "Done" << std::endl;
-		    }*/
+
+		    }
 		return res;
 	}
 
@@ -723,7 +718,7 @@ private:
 	const SysSolverQUDAMULTIGRIDCloverParams invParam;
 	QudaGaugeParam q_gauge_param;
 	QudaInvertParam quda_inv_param;
-	QUDAMGUtils::MGSubspacePointers* subspace_pointers;
+	mutable QUDAMGUtils::MGSubspacePointers* subspace_pointers;
 
 
 	Handle< CloverTermT<T, U> > clov;

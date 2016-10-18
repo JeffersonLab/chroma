@@ -96,7 +96,7 @@ namespace Chroma {
 
     read(paramtop, "SubspaceID", SaveSubspaceID);
 
-    if( paramtop.count("ThresholdCound") == 1 ) {
+    if( paramtop.count("ThresholdCount") == 1 ) {
     	read(paramtop, "ThresholdCount", ThresholdCount);
     }
     else {
