@@ -481,9 +481,12 @@ public:
 			QDPIO::cout<<"Recovering subspace..."<<std::endl;
 			subspace_pointers = TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID);
 
+			updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+
 		}
 		else
 		{
+			// Create the subspace.
 			subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
 
 			QDPIO::cout<<"Creating Named Object Map for MG state."<<std::endl;
@@ -515,12 +518,8 @@ public:
 	~MdagMSysSolverQUDAMULTIGRIDClover()
 	{
 		QDPIO::cout << "Destructing" << std::endl;
-		QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
+		//QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 		quda_inv_param.preconditioner = nullptr;
-
-		// Our subspace_pointers was only a pointer to the dynamically held
-		// stuff in the named object store, which has been deleted already
-		// So I am just going to set it to NULL
 		subspace_pointers = nullptr;
 		freeGaugeQuda();
 		freeCloverQuda();
