@@ -54,13 +54,13 @@ namespace Chroma
 		};
 		//Consolidate the MG params into a single function.
 	template<typename T>
-	MGSubspacePointers create_subspace(const SysSolverQUDAMULTIGRIDCloverParams& invParam)
+	MGSubspacePointers* create_subspace(const SysSolverQUDAMULTIGRIDCloverParams& invParam)
 	{
-		MGSubspacePointers ret_val;
+		MGSubspacePointers* ret_val = new MGSubspacePointers();
 
 		// References so I can keep code below
-		QudaInvertParam& mg_inv_param = ret_val.mg_inv_param;
-		QudaMultigridParam& mg_param = ret_val.mg_param;
+		QudaInvertParam& mg_inv_param = ret_val->mg_inv_param;
+		QudaMultigridParam& mg_param = ret_val->mg_param;
 
 		QudaPrecision_s cpu_prec;
 		QudaPrecision_s gpu_prec;
@@ -254,12 +254,12 @@ namespace Chroma
 			QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
 		}
 		// setup the multigrid solver
-		void* mg_preconditioner = newMultigridQuda(&mg_param);
+		// This does allocate memory 
+		ret_val->preconditioner = newMultigridQuda(&mg_param);
 		QDPIO::cout<<"NewMultigridQuda state initialized."<<std::endl;
 		QDPIO::cout<<"MULTIGRID preconditioner set."<<std::endl;
 		QDPIO::cout <<"MULTIGrid Param Dump" << std::endl;
 		printQudaMultigridParam(&mg_param);
-		ret_val.preconditioner = mg_preconditioner;
 
 		return ret_val;
 	}
@@ -715,38 +715,38 @@ namespace Chroma
 			// Copy ThresholdCount from invParams into threshold_counts.
 			threshold_counts = invParam.ThresholdCount; 
 
-			MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers subspace_pointers;
-			subspace_pointers = MdagMSysSolverQUDAMULTIGRIDCloverEnv::create_subspace<T>(invParam);
 			if(TheNamedObjMap::Instance().check(invParam.SaveSubspaceID))
 			{
-				// Subspace ID exists add it to mg_state
-				QDPIO::cout<<"Recovering subspace..."<<std::endl;
-			    subspace_pointers = TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID);
+			    // Subspace ID exists add it to mg_state
+			    QDPIO::cout<<"Recovering subspace..."<<std::endl;
+			    subspace_pointers = TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers* >(invParam.SaveSubspaceID);
 
 			}
 			else
 			{
 			    subspace_pointers = MdagMSysSolverQUDAMULTIGRIDCloverEnv::create_subspace<T>(invParam);
 
-			    /*QDPIO::cout<<"Creating Named Object Map for MG state."<<std::endl;
+			    QDPIO::cout<<"Creating Named Object Map for MG state."<<std::endl;
 			    XMLBufferWriter file_xml;
 			    push(file_xml, "FileXML");
 			    pop(file_xml);
 
+			    int foo = 5;
+
 			    XMLBufferWriter record_xml;
 			    push(record_xml, "RecordXML");
-			    write(record_xml, "InvertParam", invParam);
+			    write(record_xml, "foo", foo);
 			    pop(record_xml);
 
 
-			    TheNamedObjMap::Instance().create< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID);
+			    TheNamedObjMap::Instance().create< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers* >(invParam.SaveSubspaceID);
 			    TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setFileXML(file_xml);
 			    TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
 			    QDPIO::cout<<"Storing subspace..."<<std::endl;
-			    TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID) = subspace_pointers;
-			    QDPIO::cout << "Done" << std::endl;*/
+			    TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
+			    QDPIO::cout << "Done" << std::endl;
 			}
-			quda_inv_param.preconditioner = subspace_pointers.preconditioner;
+			quda_inv_param.preconditioner = subspace_pointers->preconditioner;
 
 			QDPIO::cout << "Leaving Constructor" << std::endl;
 		}
@@ -755,11 +755,15 @@ namespace Chroma
 		~MdagMSysSolverQUDAMULTIGRIDClover()
 		{
 			QDPIO::cout << "Destructing" << std::endl;
-			destroyMultigridQuda(quda_inv_param.preconditioner);
-			//destroyMultigridQuda(TheNamedObjMap::Instance().getData< MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers >(invParam.SaveSubspaceID).preconditioner);
-//			freeGaugeQuda();
-//			freeCloverQuda();
+			destroyMultigridQuda(subspace_pointers->preconditioner);
 			quda_inv_param.preconditioner = nullptr;
+			subspace_pointers->preconditioner = nullptr;
+			delete subspace_pointers;
+	
+			TheNamedObjMap::Instance().erase(invParam.SaveSubspaceID);
+
+			freeGaugeQuda();
+			freeCloverQuda();
 			//delete_subspace();
 		}
 
@@ -961,6 +965,7 @@ namespace Chroma
 		const SysSolverQUDAMULTIGRIDCloverParams invParam;
 		QudaGaugeParam q_gauge_param;
 		QudaInvertParam quda_inv_param;
+		MdagMSysSolverQUDAMULTIGRIDCloverEnv::MGSubspacePointers* subspace_pointers;
 
 
 		Handle< CloverTermT<T, U> > clov;
