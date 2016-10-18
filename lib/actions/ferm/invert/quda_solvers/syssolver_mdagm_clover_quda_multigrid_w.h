@@ -264,16 +264,17 @@ namespace Chroma
 		return ret_val;
 	}
 
-  	/*template<typename T>
-	void delete_subspace()
+	void delete_subspace(const std::string SubspaceID)
 	{
-	  QDPIO::cout<<"Deleting MG subspace."<<std::endl;
-	  //freeGaugeQuda();
-	  //freeCloverQuda();
-	  destroyMultigridQuda(quda_inv_param.preconditioner);
+	  MGSubspacePointers* subspace_pointers = TheNamedObjMap::Instance().getData< MGSubspacePointers* >(SubspaceID);
+	  destroyMultigridQuda(subspace_pointers->preconditioner);
+	  delete subspace_pointers;
+
+	  TheNamedObjMap::Instance().erase(SubspaceID);
+	
 	}
 
-	template<typename T>
+	/*template<typename T>
 	MGSubspacePointers reset_subspace(const SysSolverQUDAMULTIGRIDCloverParams& invParam)
 	{
 	  QDPIO::cout<<"Resetting MG subspace."<<std::endl;
@@ -755,16 +756,15 @@ namespace Chroma
 		~MdagMSysSolverQUDAMULTIGRIDClover()
 		{
 			QDPIO::cout << "Destructing" << std::endl;
-			destroyMultigridQuda(subspace_pointers->preconditioner);
+			MdagMSysSolverQUDAMULTIGRIDCloverEnv::delete_subspace(invParam.SaveSubspaceID);
 			quda_inv_param.preconditioner = nullptr;
 			subspace_pointers->preconditioner = nullptr;
-			delete subspace_pointers;
+			subspace_pointers = nullptr;
 	
-			TheNamedObjMap::Instance().erase(invParam.SaveSubspaceID);
+			//TheNamedObjMap::Instance().erase(invParam.SaveSubspaceID);
 
 			freeGaugeQuda();
 			freeCloverQuda();
-			//delete_subspace();
 		}
 
 		//! Return the subset on which the operator acts
