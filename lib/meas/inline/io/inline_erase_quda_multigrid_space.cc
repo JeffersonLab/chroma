@@ -10,6 +10,7 @@
 
 
 #ifdef BUILD_QUDA
+#include "actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_multigrid_w.h"
 #include <quda.h>
 #endif // BUILD_QUDA
 
@@ -116,37 +117,10 @@ namespace Chroma
       QDPIO::cout << "Attempt to erase object name = " << params.named_obj.object_id << std::endl;
       write(xml_out, "object_id", params.named_obj.object_id);
       if ( TheNamedObjMap::Instance().check(params.named_obj.object_id) ) {
-	QDPIO::cout << "QUDA MG Subspace: " << params.named_obj.object_id << " found. " << std::endl;
-
-	void *mg_subspace = TheNamedObjMap::Instance().getData<void *>(params.named_obj.object_id);
-	QDPIO::cout << "Calling quda free functions." << std::endl;		
-#ifdef BUILD_QUDA
-	freeGaugeQuda();
-	freeCloverQuda();
-	destroyMultigridQuda(mg_subspace);
-#endif // BUILD_QUDA
- 
-	try { 
-	  QDPIO::cout << "Attempting to delete from named object store" << std:: endl;
-	  // Now erase the object
-	  TheNamedObjMap::Instance().erase(params.named_obj.object_id);
-	  
-	  QDPIO::cout << "Object erased" << std::endl;
-	}
-	catch( std::bad_cast ) {
-	  QDPIO::cerr << name << ": cast error" 
-		      << std::endl;
-	  QDP_abort(1);
-	}
-	catch (const std::string& e) {
-	  
-	  QDPIO::cerr << name << ": error message: " << e 
-		      << std::endl;
-	  QDP_abort(1);
-	}
+    	  MdagMSysSolverQUDAMULTIGRIDCloverEnv::delete_subspace(params.named_obj.object_id);
       }
       else { 
-	QDPIO::cout << "QUDA MG Subspace: " << params.named_obj.object_id << " is not in the map. Cannot delete" << std::endl;
+    	  QDPIO::cout << "QUDA MG Subspace: " << params.named_obj.object_id << " is not in the map. Cannot delete" << std::endl;
       }
       QDPIO::cout << name << ": ran successfully" << std::endl;
 

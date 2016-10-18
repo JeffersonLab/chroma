@@ -266,10 +266,17 @@ namespace Chroma
 
 	void delete_subspace(const std::string SubspaceID)
 	{
+	  // REcover pointer to subspace pointers array
 	  MGSubspacePointers* subspace_pointers = TheNamedObjMap::Instance().getData< MGSubspacePointers* >(SubspaceID);
+
+	  // Nuke the preconditioner
 	  destroyMultigridQuda(subspace_pointers->preconditioner);
+
+	  // Delete the storage (this automatically takes care the mg_params and mg_inv_param
+	  // Which are just member structs.
 	  delete subspace_pointers;
 
+	  // Erase the entry
 	  TheNamedObjMap::Instance().erase(SubspaceID);
 	
 	}
@@ -752,17 +759,17 @@ namespace Chroma
 			QDPIO::cout << "Leaving Constructor" << std::endl;
 		}
 
-		//! Destructor is automatic
+		//! Destructor is not automatic
 		~MdagMSysSolverQUDAMULTIGRIDClover()
 		{
 			QDPIO::cout << "Destructing" << std::endl;
 			MdagMSysSolverQUDAMULTIGRIDCloverEnv::delete_subspace(invParam.SaveSubspaceID);
 			quda_inv_param.preconditioner = nullptr;
-			subspace_pointers->preconditioner = nullptr;
-			subspace_pointers = nullptr;
-	
-			//TheNamedObjMap::Instance().erase(invParam.SaveSubspaceID);
 
+			// Our subspace_pointers was only a pointer to the dynamically held
+			// stuff in the named object store, which has been deleted already
+			// So I am just going to set it to NULL
+			subspace_pointers = nullptr;
 			freeGaugeQuda();
 			freeCloverQuda();
 		}
