@@ -939,6 +939,7 @@ nobase_include_HEADERS += \
         meas/inline/io/xml_write_obj_funcmap.h \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.h \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.h \
+	meas/inline/io/inline_milc_write_stag_source.h \
 	meas/inline/pbp/pbp.h \
 	meas/inline/pbp/inline_pbp_aggregate.h \
 	meas/inline/pbp/inline_psibarpsi_w.h \
@@ -1809,6 +1810,7 @@ libchroma_a_SOURCES += \
         meas/inline/io/xml_write_obj_funcmap.cc \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.cc \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
+	meas/inline/io/inline_milc_write_stag_source.cc \
 	meas/inline/io/inline_read_map_obj_disk.cc \
 	meas/inline/io/inline_copy_map_obj.cc \
 	meas/inline/io/inline_write_timeslice_map_obj_disk.cc \

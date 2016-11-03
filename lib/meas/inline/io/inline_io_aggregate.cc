@@ -21,6 +21,7 @@
 #include "meas/inline/io/inline_gaussian_obj.h"
 #include "meas/inline/io/inline_usqcd_read_ddpairs_prop.h"
 #include "meas/inline/io/inline_usqcd_write_ddpairs_prop.h"
+#include "meas/inline/io/inline_milc_write_stag_source.h"
 
 #include "meas/inline/io/inline_eigen_bin_colvec_read_obj.h"
 #include "meas/inline/io/inline_eigen_lime_colvec_read_obj.h"
@@ -79,6 +80,9 @@ namespace Chroma
 	// QIO USQCD DD PAIRS Reader
 	success &= InlineUSQCDReadDDPairsPropEnv::registerAll();
 	success &= InlineUSQCDWriteDDPairsPropEnv::registerAll();
+
+	// MILC Source Writer
+	success &= InlineMILCWriteStagSourceEnv::registerAll();
 
 	// MapObjDisk reader
        	success &= InlineReadMapObjDiskEnv::registerAll();
