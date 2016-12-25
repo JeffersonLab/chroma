@@ -125,10 +125,10 @@ namespace Chroma
 		    << "   --chroma-i   [" << getXMLInputFileName() << "]  xml input file name\n"
 		    << "   -o           [" << getXMLOutputFileName() << "]  xml output file name\n"
 		    << "   --chroma-p   [" << getXMLOutputFileName() << "]  xml output file name\n"
-		    << "   -l           [" << getXMLLogFileName() << "]  xml output file name\n"
+		    << "   -l           [" << getXMLLogFileName() << "]  xml log file name\n"
 		    << "   --chroma-l   [" << getXMLLogFileName() << "]  xml log file name\n"
-		    << "   -cwd         [" << getCWD() << "]  xml log file name\n"
-		    << "   --chroma-cwd [" << getCWD() << "]  xml log file name\n"
+		    << "   -cwd         [" << getCWD() << "]  xml working directory\n"
+		    << "   --chroma-cwd [" << getCWD() << "]  xml working directory\n"
 
 		    
 		    << std::endl;
