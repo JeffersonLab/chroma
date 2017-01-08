@@ -40,7 +40,7 @@ sub get_flow{
     close(F);
     my $i ;
     for $i (0..$#t){
-	push @G, ($gact_ij[$i]+$gact_4i[$i])/2 ;
+	push @G, ($gact_ij[$i]+$gact_4i[$i]) ;
 #	print "$t[$i] $G[$i]\n";
     }
 
@@ -59,7 +59,7 @@ sub compute_W{
     my $i ;
     for $i (1..($#t-1)){
 #	print "$i $t[$i] $G[$i]\n";
-	$ww=2*$t[$i]**2*$G[$i] + $t[$i]**2*($G[$i+1]-$G[$i-1])/($t[$i+1]-$t[$i-1]);
+	$ww=2*$t[$i]**2*$G[$i] + $t[$i]**3*($G[$i+1]-$G[$i-1])/($t[$i+1]-$t[$i-1]);
 	push @W,$ww ;
     }
 
