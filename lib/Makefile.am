@@ -866,6 +866,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
 	meas/inline/hadron/inline_distillution_noise.h \
 	meas/inline/hadron/inline_prop_distillation_w.h \
+	meas/inline/hadron/inline_prop_distillation_stoch_w.h \
 	meas/inline/hadron/inline_prop_distillution_w.h \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
@@ -1719,6 +1720,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
 	meas/inline/hadron/inline_distillution_noise.cc \
 	meas/inline/hadron/inline_prop_distillation_w.cc \
+	meas/inline/hadron/inline_prop_distillation_stoch_w.cc \
 	meas/inline/hadron/inline_prop_distillution_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \
