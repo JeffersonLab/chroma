@@ -53,7 +53,7 @@ namespace Chroma
   //               where N0,N1,N2,N3 are the global lattice sizes
 
 
-  void readCERN(multi1d<LatticeColorMatrixF3>& u, const std::string& cfg_file)
+  void readCERN(multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
   {
     if ((sizeof(int)!=4)||(sizeof(double)!=8)){
       QDPIO::cout << "CERN files contain 4-byte ints, 8-byte doubles"<<std::endl;
