@@ -85,6 +85,7 @@ namespace Chroma
       read(inputtop, "Nt_forward", input.Nt_forward);
       read(inputtop, "Nt_backward", input.Nt_backward);
       read(inputtop, "mass_label", input.mass_label);
+      read(inputtop, "spatial_mask_size", input.spatial_mask_size);
     }
 
     //! Propagator output
@@ -98,6 +99,7 @@ namespace Chroma
       write(xml, "Nt_forward", input.Nt_forward);
       write(xml, "Nt_backward", input.Nt_backward);
       write(xml, "mass_label", input.mass_label);
+      write(xml, "spatial_mask_size", input.spatial_mask_size);
 
       pop(xml);
     }
@@ -535,6 +537,58 @@ namespace Chroma
       TimeSliceSet time_slice_set(decay_dir);
 
       //
+      // Sanity checks
+      //
+      if (params.param.contract.spatial_mask_size.size() != Nd-1)
+      {
+	QDPIO::cerr << name << ": param.contract.spatial mask size incorrect 1" << std::endl;
+	QDP_abort(1);
+      }
+      
+      for(int mu=0; mu < Nd-1; ++mu)
+      {
+	if (params.param.contract.spatial_mask_size[mu] == 0)
+	{
+	  QDPIO::cerr << name << ": not valid param.contract.spatial mask" << std::endl;
+	  QDP_abort(1);
+	}
+
+	if ((QDP::Layout::lattSize()[mu] % params.param.contract.spatial_mask_size[mu]) != 0)
+	{
+	  QDPIO::cerr << name << ": lattice size not divisible by param.contract.spatial mask size" << std::endl;
+	  QDP_abort(1);
+	}
+      }
+      
+
+      //
+      // Build a list of all the colorvec sources
+      //
+      std::list<int> source_list;
+
+      if (1)
+      {
+#if 0
+	// The distillation sources
+	for(int colorvec_src = 0; colorvec_src < num_vecs; ++colorvec_src)
+	  source_list.push_back(colorvec_src);
+#endif
+
+	// The number of spatial noises
+	int num_sites = 1;
+	for(int mu = 0; mu < params.param.contract.spatial_mask_size.size(); ++mu)
+	{
+	  num_sites *= params.param.contract.spatial_mask_size[mu];
+	}
+
+	// Loop over all sites with a spatial mask
+	// These will form the sources
+	for(int ipos=1; ipos <= num_sites; ++ipos)
+	  source_list.push_back(-ipos);
+      }
+
+
+      //
       // Map-object-disk storage of the source file
       //
       QDP::MapObjectDisk<KeyPropDistillation_t, TimeSliceIO<LatticeColorVectorF> > source_obj;
@@ -700,11 +754,13 @@ namespace Chroma
 	  }
 #endif
 
+	  //
 	  // The space distillation loop
-	  // NOTE: have the loop start at -1 . This is expected to be a stochastic source.
-	  //for(int colorvec_src=-1; colorvec_src < num_vecs; ++colorvec_src)
+	  //
+	  for(auto col_src = source_list.begin(); col_src != source_list.end(); ++col_src)
 	  {
-	    int colorvec_src = -1;
+	    const int colorvec_src = *col_src;
+	    
 	    StopWatch sniss1;
 	    sniss1.reset();
 	    sniss1.start();
@@ -791,13 +847,18 @@ namespace Chroma
 	      prop_obj.insert(*key, TimeSliceIO<LatticeColorVectorF>(tmptmp, key->t_slice));
 	    } // for key
 
+
 #if 1
+	    //
+	    // Compute some time-sliced 1pt traces
+	    //
 	    if (1)
 	    {
 	      // Get the source std::vector
-	      if (colorvec_src == -1)
+	      if (colorvec_src < 0)
 	      {
-		vec_srce = getSrc(source_obj, t_source, -2);
+		int orig_vec = (-colorvec_src) | (1 << 15);
+		vec_srce = getSrc(source_obj, t_source, -orig_vec);
 	      }
 
 	      doTrace(trace_mom,
@@ -810,7 +871,6 @@ namespace Chroma
 		      num_vecs);
 	    }
 #endif
-
 
 	    sniss2.stop();
 	    QDPIO::cout << "Time to write propagators for colorvec_src= " << colorvec_src << "  time = " 

@@ -33,12 +33,13 @@ namespace Chroma
       {
 	struct Contract_t
 	{
-	  int           num_vecs;       /*!< Number of color vectors to use */
-	  int           decay_dir;      /*!< Decay direction */
-	  multi1d<int>  t_sources;      /*!< Array of time slice sources for props */
-	  int           Nt_forward;     /*!< Time-slices in the forward direction */
-	  int           Nt_backward;    /*!< Time-slices in the backward direction */
-	  std::string   mass_label;     /*!< Some kind of mass label */
+	  int           num_vecs;           /*!< Number of color vectors to use */
+	  int           decay_dir;          /*!< Decay direction */
+	  multi1d<int>  t_sources;          /*!< Array of time slice sources for props */
+	  int           Nt_forward;         /*!< Time-slices in the forward direction */
+	  int           Nt_backward;        /*!< Time-slices in the backward direction */
+	  std::string   mass_label;         /*!< Some kind of mass label */
+	  multi1d<int>  spatial_mask_size;  /*!< Array of time slice sources for props */
 	};
 
 	ChromaProp_t    prop;
