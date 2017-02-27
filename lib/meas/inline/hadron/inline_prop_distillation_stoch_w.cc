@@ -17,6 +17,7 @@
 #include "util/ferm/diractodr.h"
 #include "util/ferm/twoquark_contract_ops.h"
 #include "util/ft/time_slice_set.h"
+#include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
@@ -26,6 +27,25 @@
 
 namespace Chroma 
 { 
+  //----------------------------------------------------------------------------------
+  // Utility functions
+  namespace
+  {
+    //! Error output
+    StandardOutputStream& operator<<(StandardOutputStream& os, const multi1d<int>& d)
+    {
+      if (d.size() > 0)
+      {
+	os << d[0];
+
+	for(int i=1; i < d.size(); ++i)
+	  os << " " << d[i];
+      }
+
+      return os;
+    }
+  }
+
   //----------------------------------------------------------------------------
   namespace InlinePropDistillationStochEnv 
   {
@@ -37,6 +57,7 @@ namespace Chroma
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "src_file", input.src_file);
       read(inputtop, "soln_file", input.soln_file);
+      read(inputtop, "prop_file", input.prop_file);
     }
 
     //! Propagator output
@@ -47,6 +68,7 @@ namespace Chroma
       write(xml, "gauge_id", input.gauge_id);
       write(xml, "src_file", input.src_file);
       write(xml, "soln_file", input.soln_file);
+      write(xml, "prop_file", input.prop_file);
 
       pop(xml);
     }
@@ -250,6 +272,107 @@ namespace Chroma
 	return keys;
       }
 	
+      //----------------------------------------------------------------------------
+      //! Get soln
+      multi2d<LatticeColorVector> getSoln(MOD_t& source_obj, int t_source, int colorvec_src, const std::string mass)
+      {
+	multi2d<LatticeColorVector> ferm_out(Ns,Ns);
+
+	const int decay_dir = Nd-1;
+	const int Lt = Layout::lattSize()[decay_dir];
+
+	for(int spin_source=0; spin_source < Ns; ++spin_source)
+	{
+	  for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+	  {
+	    KeyPropDistillation_t key;
+
+	    key.t_source     = t_source;
+	    key.t_slice      = t_source;
+	    key.colorvec_src = colorvec_src;
+	    key.spin_src     = spin_source;
+	    key.spin_snk     = spin_sink;
+	    key.mass         = mass;
+
+	    // Get the source std::vector
+	    LatticeColorVectorF vec_srce = zero;
+
+	    TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source);
+	    source_obj.get(key, time_slice_io);
+
+	    ferm_out(spin_sink, spin_source) = vec_srce;
+	  } // for spin_sink
+	} // for spin_source
+
+	return ferm_out;
+      }
+
+
+      //----------------------------------------------------------------------------
+      //! Get soln
+      void doTrace(multi2d<ComplexD>& trace_mom,
+		   const LatticeColorVector& vec_srce,
+		   const multi2d<LatticeColorVector>& fred_out, int t_source, int colorvec_src,
+		   const std::vector<MatrixSpinRep_t>& diracToDrMatPlus,
+		   const std::vector<MatrixSpinRep_t>& diracToDrMatMinus,
+		   const SftMom& phases,
+		   int num_vecs)
+      {
+	// Check
+	if (1)
+	{
+	  Double ddd = norm2(vec_srce);   // check for debugging
+	  QDPIO::cout << __func__ << ": colorvec_src= " << colorvec_src << "  norm(left_vec)= " << ddd << "\n";
+	}
+
+	// Rotate from DeGrand-Rossi (DR) to Dirac-Pauli (DP)
+	multi2d<LatticeColorVector> ferm_out;
+	{
+	  multi2d<LatticeColorVector> ferm_tmp;
+	    
+	  multiplyRep(ferm_tmp, diracToDrMatMinus, fred_out);
+	  multiplyRep(ferm_out, ferm_tmp, diracToDrMatPlus);
+	}
+	
+	for(int spin_source = 0; spin_source < Ns; ++spin_source)
+	{
+	  LatticeComplex lop = localInnerProduct(vec_srce, ferm_out(spin_source,spin_source));
+	  
+	  // Slow fourier-transform
+	  for(int mom_num = 0; mom_num < phases.numMom(); ++mom_num)
+	  {
+	    multi1d<ComplexD> op_sum = sumMulti(phases[mom_num] * lop, phases.getSet());
+
+#if 0
+	    for(int ttt = 0; ttt < op_sum.size(); ++ttt)
+	    {
+	      QDPIO::cout << "OP_SUM: "
+			  << "  t_source= " << ttt
+			  << "  colorvec_src= " << colorvec_src
+			  << "  spin_source= " << spin_source
+			  << "  mom_num= " << mom_num
+			  << "  mom= " << phases.numToMom(mom_num)
+			  << "  op_sum[ " << ttt << " ]= " << op_sum[ttt]
+			  << std::endl;
+	    }
+#endif
+
+	    trace_mom(t_source, mom_num) += op_sum[t_source];
+	  }
+	}
+	  
+	for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num)
+	{
+	  QDPIO::cout << "TRACE: "
+		      << "  t_source= " << t_source
+		      << "  colorvec_src= " << colorvec_src
+		      << "  num_vecs= " << num_vecs
+		      << "  mom= " << phases.numToMom(mom_num)
+		      << "  trace( " << mom_num << " )= " << trace_mom(t_source,mom_num)
+		      << std::endl;
+	}
+      }
+
     } // end anonymous
   } // end namespace
 
@@ -269,7 +392,7 @@ namespace Chroma
       bool registered = false;
     }
       
-    const std::string name = "PROP_DISTILLATION";
+    const std::string name = "PROP_DISTILLATION_STOCH";
 
     //! Register all the factories
     bool registerAll() 
@@ -411,7 +534,6 @@ namespace Chroma
       // The time-slice set
       TimeSliceSet time_slice_set(decay_dir);
 
-
       //
       // Map-object-disk storage of the source file
       //
@@ -436,12 +558,33 @@ namespace Chroma
       //
       // Map-object-disk storage
       //
+      QDP::MapObjectDisk<KeyPropDistillation_t, TimeSliceIO<LatticeColorVectorF> > soln_obj;
+      soln_obj.setDebug(0);
+
+      QDPIO::cout << "Open solution file" << std::endl;
+
+      if (! soln_obj.fileExists(params.named_obj.soln_file))
+      {
+	QDPIO::cerr << name << ": soln file does not exist: soln_file= " << params.named_obj.soln_file << std::endl;
+	QDP_abort(1);
+      }
+      else
+      {
+	soln_obj.open(params.named_obj.soln_file, std::ios_base::in);
+      }
+      
+      QDPIO::cout << "Finished opening solution file" << std::endl;
+
+
+      //
+      // Map-object-disk storage
+      //
       QDP::MapObjectDisk<KeyPropDistillation_t, TimeSliceIO<LatticeColorVectorF> > prop_obj;
       prop_obj.setDebug(0);
 
       QDPIO::cout << "Open solution file" << std::endl;
 
-      if (! prop_obj.fileExists(params.named_obj.soln_file))
+      if (! prop_obj.fileExists(params.named_obj.prop_file))
       {
 	XMLBufferWriter file_xml;
 
@@ -461,21 +604,21 @@ namespace Chroma
 	std::string file_str(file_xml.str());
 	  
 	prop_obj.insertUserdata(file_xml.str());
-	prop_obj.open(params.named_obj.soln_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+	prop_obj.open(params.named_obj.prop_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
       }
       else
       {
-	prop_obj.open(params.named_obj.soln_file);
+	prop_obj.open(params.named_obj.prop_file);
       }
       
-      QDPIO::cout << "Finished opening solution file" << std::endl;
+      QDPIO::cout << "Finished opening prop file" << std::endl;
 
 
       // Total number of iterations
       int ncg_had = 0;
 
 
-#if 0
+#if 1
       // NOTE: not doing this spin rotation, but leaving the code here for reference
       // Rotation from DR to DP
       SpinMatrix diracToDRMat(DiracToDRMat());
@@ -483,6 +626,12 @@ namespace Chroma
       std::vector<MatrixSpinRep_t> diracToDrMatMinus = convertTwoQuarkSpin(adj(diracToDRMat));
 #endif
 
+
+#if 1
+      SftMom phases(2, false, decay_dir);
+      multi2d<ComplexD> trace_mom(phases.numSubsets(), phases.numMom());
+      trace_mom = zero;
+#endif
 
       //
       // Try the factories
@@ -533,10 +682,29 @@ namespace Chroma
 	  int t_source = t_sources[tt];  // This is the actual time-slice.
 	  QDPIO::cout << "t_source = " << t_source << std::endl; 
 
+#if 1
+	  if (1)
+	  {
+	    for(int colorvec_src = 0; colorvec_src < num_vecs; ++colorvec_src)
+	    {
+	      doTrace(trace_mom,
+		      getSrc(source_obj, t_source, colorvec_src),
+		      getSoln(soln_obj, t_source, colorvec_src, params.param.contract.mass_label),
+		      t_source, colorvec_src,
+		      diracToDrMatPlus,
+		      diracToDrMatMinus,
+		      phases,
+		      num_vecs);
+
+	    }
+	  }
+#endif
+
 	  // The space distillation loop
 	  // NOTE: have the loop start at -1 . This is expected to be a stochastic source.
-	  for(int colorvec_src=-1; colorvec_src < num_vecs; ++colorvec_src)
+	  //for(int colorvec_src=-1; colorvec_src < num_vecs; ++colorvec_src)
 	  {
+	    int colorvec_src = -1;
 	    StopWatch sniss1;
 	    sniss1.reset();
 	    sniss1.start();
@@ -544,6 +712,13 @@ namespace Chroma
 
 	    // Get the source std::vector
 	    LatticeColorVector vec_srce = getSrc(source_obj, t_source, colorvec_src);
+
+	    // Check
+	    if (1)
+	    {
+	      Double ddd = norm2(vec_srce);   // check for debugging
+	      QDPIO::cout << __func__ << ": colorvec_src= " << colorvec_src << "  norm(source_vec)= " << ddd << "\n";
+	    }
 
 	    //
 	    // Loop over each spin source and invert. 
@@ -615,6 +790,27 @@ namespace Chroma
 
 	      prop_obj.insert(*key, TimeSliceIO<LatticeColorVectorF>(tmptmp, key->t_slice));
 	    } // for key
+
+#if 1
+	    if (1)
+	    {
+	      // Get the source std::vector
+	      if (colorvec_src == -1)
+	      {
+		vec_srce = getSrc(source_obj, t_source, -2);
+	      }
+
+	      doTrace(trace_mom,
+		      vec_srce,
+		      ferm_out,
+		      t_source, colorvec_src,
+		      diracToDrMatPlus,
+		      diracToDrMatMinus,
+		      phases,
+		      num_vecs);
+	    }
+#endif
+
 
 	    sniss2.stop();
 	    QDPIO::cout << "Time to write propagators for colorvec_src= " << colorvec_src << "  time = " 

@@ -50,6 +50,7 @@ namespace Chroma
 	std::string     gauge_id;           /*!< Gauge field */
 	std::string     src_file;           /*!< File output propagator sources */
 	std::string     soln_file;          /*!< File output propagator solutions */
+	std::string     prop_file;          /*!< File output propagator solutions */
       };
 
       Param_t           param;
