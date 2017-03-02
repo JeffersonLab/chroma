@@ -58,6 +58,9 @@ namespace Chroma
     if ((sizeof(int)!=4)||(sizeof(double)!=8)){
       QDPIO::cout << "CERN files contain 4-byte ints, 8-byte doubles"<<std::endl;
       QDP_abort(1);}
+    if (QDP::Nc!=3){
+      QDPIO::cout << "readCERN only supports Nc=3"<<std::endl;
+      QDP_abort(1);}
     if (QDP::Nd!=4){
       QDPIO::cout << "readCERN only supported for 4 space-time dimensions"<<std::endl;
       QDP_abort(1);}
