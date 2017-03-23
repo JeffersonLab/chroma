@@ -10,13 +10,13 @@ INCFLAGS=-I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 #
 # Any other compiler flags
 #
-AM_CXXFLAGS = $(INCFLAGS) @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ @GMP_CXXFLAGS@ @QOP_MG_CXXFLAGS@ @CXXFLAGS@
+AM_CXXFLAGS = $(INCFLAGS) @MGPROTO_CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ @GMP_CXXFLAGS@ @QOP_MG_CXXFLAGS@ @CXXFLAGS@
 
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
                -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
 
-AM_LDFLAGS = -L$(BUILDDIR)/lib @QDPXX_LDFLAGS@ @BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @LDFLAGS@
-LDADD = -lchroma @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @GMP_LIBS@  @LIBS@
+AM_LDFLAGS = -L$(BUILDDIR)/lib @MGPROTO_LDFLAGS@ @QDPXX_LDFLAGS@ @BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @LDFLAGS@
+LDADD = -lchroma @MGPROTO_LIBS@ @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @GMP_LIBS@  @LIBS@
 
 AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/lib
 LDADD += -lqdp-lapack
@@ -109,6 +109,10 @@ endif
 
 if BUILD_QPHIX
 check_PROGRAMS += t_minvert_qphix
+endif
+
+if BUILD_MGPROTO
+check_PROGRAMS += t_mgproto
 endif
 
 #
@@ -253,6 +257,10 @@ endif
 
 if BUILD_QPHIX
 t_minvert_qphix_SOURCES= t_minvert_qphix.cc
+endif
+
+if BUILD_MGPROTO
+t_mgproto_SOURCES = t_mgproto.cc
 endif
 
 # build lib is a target that goes to the build dir of the library and 

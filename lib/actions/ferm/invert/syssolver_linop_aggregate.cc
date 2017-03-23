@@ -45,6 +45,10 @@
 #include "actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h"
 #endif
 
+#ifdef BUILD_MGPROTO
+#include  "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.h"
+#endif
+
 namespace Chroma
 {
 
@@ -91,6 +95,9 @@ namespace Chroma
 	success &= LinOpSysSolverQPhiXCloverIterRefineEnv::registerAll();
 #endif
 
+#ifdef BUILD_MGPROTO
+	success &= LinOpSysSolverMGProtoCloverEnv::registerAll();
+#endif
 	registered = true;
       }
       return success;
