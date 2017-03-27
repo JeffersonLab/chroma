@@ -35,6 +35,10 @@
 #include "meas/inline/io/inline_erase_mg_space.h"
 #endif
 
+#ifdef BUILD_MGPROTO
+#include "meas/inline/io/inline_erase_mg_proto_space.h"
+#endif
+
 namespace Chroma
 {
 
@@ -93,6 +97,11 @@ namespace Chroma
 	success &= InlineEraseMGSpaceEnv::registerAll();
 #endif
 	
+#ifdef BUILD_MGPROTO
+	success &= InlineEraseMGProtoSpaceEnv::registerAll();
+#endif
+
+
 	registered = true;
       }
       return success;

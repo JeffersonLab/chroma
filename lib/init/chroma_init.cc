@@ -27,6 +27,9 @@
 #endif
 #endif
 
+#ifdef BUILD_MGPROTO
+#include "utils/memory.h"
+#endif
 namespace Chroma 
 {
 
@@ -271,6 +274,12 @@ namespace Chroma
 #endif
 #endif
 
+#ifdef BUILD_MGPROTO
+  	// Initialzie MG Proto memory
+  	QDPIO::cout << "Initializing MG_proto memory system" << std::endl;
+  	MG::InitMemory(argc,argv);
+#endif
+
   }
 
 
@@ -280,6 +289,10 @@ namespace Chroma
 
 #ifdef BUILD_QUDA
     endQuda();
+#endif
+
+#ifdef BUILD_MGPROTO
+    MG::FinalizeMemory();
 #endif
 
 #if defined(BUILD_JIT_CLOVER_TERM)
@@ -305,6 +318,8 @@ namespace Chroma
     }
 
     QDP_finalize();
+
+
   }
 
 

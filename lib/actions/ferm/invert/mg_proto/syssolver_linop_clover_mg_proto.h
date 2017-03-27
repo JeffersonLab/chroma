@@ -49,6 +49,7 @@ namespace Chroma {
 
   private:
 	  Handle< LinearOperator< T > > A;
+	  Handle< FermState<T,Q,Q> > state;
 	  MGProtoSolverParams invParam;
   };
 

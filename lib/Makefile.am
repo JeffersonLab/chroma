@@ -2048,13 +2048,17 @@ endif
 
 if BUILD_MGPROTO 
 nobase_include_HEADERS += \
-	actions/ferm/invert/mg_proto/mgproto_solver_params.h
-	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.h
+	actions/ferm/invert/mg_proto/mgproto_solver_params.h \
+	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.h \
+	actions/ferm/invert/mg_proto/mg_proto_helpers.h \
+	meas/inline/io/inline_erase_mg_proto_space.h
 
 
 libchroma_a_SOURCES += \
 	actions/ferm/invert/mg_proto/mgproto_solver_params.cc \
-	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.cc
+	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.cc \
+	actions/ferm/invert/mg_proto/mg_proto_helpers.cc \
+	meas/inline/io/inline_erase_mg_proto_space.cc
 
 endif
 

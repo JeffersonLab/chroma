@@ -17,35 +17,87 @@ using namespace QDP;
 namespace Chroma
 {
 
+// Anonymous namespace
+namespace  {
+ template<typename T>
+ void read(XMLReader& xml, const std::string& path, multi1d<T>& result, int N)
+ {
+	 multi1d<T> read_result;
+	 read(xml, path, read_result);
+	 result.resize(N);
+
+	 if( read_result.size() == 1 ) {
+		 // Broadcast
+		 for(int i=0; i < N; ++i) {
+			 result[i] = read_result[0];
+		 }
+	 }
+	 else {
+		 if( read_result.size() == N ) {
+			 // Copy
+			 for(int i=0; i < N; ++i) {
+				 result[i] = read_result[i];
+			 }
+		 }
+		 else {
+			 QDPIO::cerr << "Wrong number of elements reading" << path << " should be either 1 or " << N << std::endl;
+			 QDP_abort(1);
+		 }
+	 }
+ }
+
+} // end anonymous namespace
 MGProtoSolverParams::MGProtoSolverParams(XMLReader& xml, const std::string& path)
 {
+	try {
 	XMLReader paramtop(xml, path);
 	read( paramtop, "CloverParams", CloverParams);
+
+	read( paramtop, "AntiPeriodicT", AntiPeriodicT );
 	read( paramtop, "MGLevels", MGLevels);
-	read( paramtop, "Blocking", Blocking);
-	read( paramtop, "NullVecs", NullVecs);
-	read( paramtop, "NullSolverMaxIters", NullSolverMaxIters);
-	read( paramtop, "NullSolverRsdTarget", NullSolverRsdTarget);
+
+	read( paramtop, "Blocking", Blocking, MGLevels-1);
+
+	read( paramtop, "NullVecs", NullVecs, MGLevels-1);
+	read( paramtop, "NullSolverMaxIters", NullSolverMaxIters, MGLevels-1);
+	read( paramtop, "NullSolverRsdTarget", NullSolverRsdTarget, MGLevels-1);
+	read( paramtop, "NullSolverVerboseP", NullSolverVerboseP, MGLevels-1);
 
 	read( paramtop, "OuterSolverNKrylov", OuterSolverNKrylov);
 	read( paramtop, "OuterSolverRsdTarget", OuterSolverRsdTarget);
 	read( paramtop, "OuterSolverMaxIters", OuterSolverMaxIters);
+	read( paramtop, "OuterSolverVerboseP", OuterSolverVerboseP);
 
-	read( paramtop, "VCyclePreSmootherMaxIters", VCyclePreSmootherMaxIters);
-	read( paramtop, "VCyclePreSmootehrRsdTarget", VCyclePreSmootherRsdTarget);
-	read( paramtop, "VCyclePreSmootehrRelaxOmega", VCyclePreSmootherRelaxOmega);
+	read( paramtop, "VCyclePreSmootherMaxIters", VCyclePreSmootherMaxIters, MGLevels-1);
+	read( paramtop, "VCyclePreSmootherRsdTarget", VCyclePreSmootherRsdTarget, MGLevels-1);
+	read( paramtop, "VCyclePreSmootherRelaxOmega", VCyclePreSmootherRelaxOmega, MGLevels-1);
+	read( paramtop, "VCyclePreSmootherVerboseP", VCyclePreSmootherVerboseP, MGLevels-1);
 
-	read( paramtop, "VCyclePostSmootherMaxIters", VCyclePostSmootherMaxIters);
-	read( paramtop, "VCyclePostSmootehrRsdTarget", VCyclePostSmootherRsdTarget);
-	read( paramtop, "VCyclePostSmootehrRelaxOmega", VCyclePostSmootherRelaxOmega);
+	read( paramtop, "VCyclePostSmootherMaxIters", VCyclePostSmootherMaxIters, MGLevels-1);
+	read( paramtop, "VCyclePostSmootherRsdTarget", VCyclePostSmootherRsdTarget, MGLevels-1);
+	read( paramtop, "VCyclePostSmootherRelaxOmega", VCyclePostSmootherRelaxOmega, MGLevels-1);
+	read( paramtop, "VCyclePostSmootherVerboseP", VCyclePostSmootherVerboseP, MGLevels-1);
 
-	read( paramtop, "VCycleBottomSolverNKrylov", VCycleBottomSolverNKrylov);
-	read( paramtop, "VCycleBottomSolverMaxIters", VCycleBottomSolverMaxIters);
-	read( paramtop, "VCycleBottomSolverRsdTarget", VCycleBottomSolverRsdTarget);
+	read( paramtop, "VCycleBottomSolverNKrylov", VCycleBottomSolverNKrylov, MGLevels-1);
+	read( paramtop, "VCycleBottomSolverMaxIters", VCycleBottomSolverMaxIters, MGLevels-1);
+	read( paramtop, "VCycleBottomSolverRsdTarget", VCycleBottomSolverRsdTarget,MGLevels-1);
+	read( paramtop, "VCycleBottomSolverVerboseP", VCycleBottomSolverVerboseP, MGLevels-1);
 
-	read( paramtop, "VCycleMaxIters", VCycleMaxIters);
-	read( paramtop, "VCycleRsdTarget", VCycleRsdTarget);
-	read( paramtop, "SubspaceID", SubspaceId);
+	read( paramtop, "VCycleMaxIters", VCycleMaxIters, MGLevels-1);
+	read( paramtop, "VCycleRsdTarget", VCycleRsdTarget, MGLevels-1);
+	read( paramtop, "VCycleVerboseP", VCycleVerboseP, MGLevels-1);
+
+	read( paramtop, "SubspaceId", SubspaceId);
+
+	}
+	catch( const std::string& e) {
+		QDPIO::cout << "Caught exception " << e << std::endl;
+		QDP_abort(1);
+	}
+	catch(...) {
+		QDPIO::cout << "Caught unknown exception " << std::endl;
+		QDP_abort(1);
+	}
 }
 
 
@@ -59,31 +111,39 @@ void write(XMLWriter& xml, const std::string& path, const MGProtoSolverParams& p
 {
 	push(xml, path);
 	write(xml, "CloverParams", p.CloverParams);
+	write(xml, "AntiPeriodicT", p.AntiPeriodicT);
+
 	write(xml, "MGLevels", p.MGLevels);
 	write(xml, "Blocking", p.Blocking);
 	write(xml, "NullVecs", p.NullVecs);
 	write(xml, "NullSolverMaxIters", p.NullSolverMaxIters);
 	write(xml, "NullSolverRsdTarget", p.NullSolverRsdTarget);
+	write(xml, "NullSolverVerboseP", p.NullSolverVerboseP);
+
 	write(xml, "OuterSolverNKrylov", p.OuterSolverNKrylov);
 	write(xml, "OuterSolverRsdTarget", p.OuterSolverRsdTarget);
 	write(xml, "OuterSolverMaxIters", p.OuterSolverMaxIters);
+	write(xml, "OuterSolverVerboseP", p.OuterSolverVerboseP);
 
 	write(xml, "VCyclePreSmootherMaxIters", p.VCyclePreSmootherMaxIters);
 	write(xml, "VCyclePreSmootherRsdTarget", p.VCyclePreSmootherRsdTarget);
 	write(xml, "VCyclePreSmootherRelaxOmega", p.VCyclePreSmootherRelaxOmega);
+	write(xml, "VCyclePreSmootherVerboseP", p.VCyclePreSmootherVerboseP);
 
 	write(xml, "VCyclePostSmootherMaxIters", p.VCyclePostSmootherMaxIters);
 	write(xml, "VCyclePostSmootherRsdTarget", p.VCyclePostSmootherRsdTarget);
 	write(xml, "VCyclePostSmootherRelaxOmega", p.VCyclePostSmootherRelaxOmega);
+	write(xml, "VCyclePostSmootherVerboseP", p.VCyclePostSmootherVerboseP);
 
 	write(xml, "VCycleBottomSolverNKrylov", p.VCycleBottomSolverNKrylov);
 	write(xml, "VCycleBottomSolverMaxIters", p.VCycleBottomSolverMaxIters);
 	write(xml, "VCycleBottomSolverRsdTarget", p.VCycleBottomSolverRsdTarget);
+	write(xml, "VCycleBottomSolverVerboseP", p.VCycleBottomSolverVerboseP);
 
 	write(xml, "VCycleMaxIters", p.VCycleMaxIters);
 	write(xml, "VCycleRsdTarget", p.VCycleMaxIters);
-
-	write(xml, "SubspaceID", p.SubspaceId);
+	write(xml, "VCycleVerboseP", p.VCycleVerboseP);
+	write(xml, "SubspaceId", p.SubspaceId);
 
 }
 
