@@ -199,12 +199,28 @@ namespace Chroma
 									  writeMapObjArrayLatColMat);
 	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticePropagator",
 									  writeMapObjKeyIntValLat<LatticePropagator>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticePropagatorF",
+									  writeMapObjKeyIntValLat<LatticePropagatorF>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticePropagatorD",
+									  writeMapObjKeyIntValLat<LatticePropagatorD>);
 	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeFermion",
 									  writeMapObjKeyIntValLat<LatticeFermion>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeFermionF",
+									  writeMapObjKeyIntValLat<LatticeFermionF>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeFermionD",
+									  writeMapObjKeyIntValLat<LatticeFermionD>);
 	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorMatrix",
 									  writeMapObjKeyIntValLat<LatticeColorMatrix>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorMatrixF",
+									  writeMapObjKeyIntValLat<LatticeColorMatrixF>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorMatrixD",
+									  writeMapObjKeyIntValLat<LatticeColorMatrixD>);
 	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorVector",
 									  writeMapObjKeyIntValLat<LatticeColorVector>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorVectorF",
+									  writeMapObjKeyIntValLat<LatticeColorVectorF>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorVectorD",
+									  writeMapObjKeyIntValLat<LatticeColorVectorD>);
 
 	    registered = true;
 	  }
