@@ -12,7 +12,7 @@
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/mg_proto/mg_proto_helpers.h"
 
-
+#include "lattice/solver.h"
 #include "lattice/fgmres_common.h"
 #include "lattice/fine_qdpxx/invfgmres.h"
 
@@ -82,6 +82,11 @@ namespace Chroma
   LinOpSysSolverMGProtoClover::operator()(T& psi, const T& chi) const
   {
 	  QDPIO::cout << "Jolly Greetings from Multigridland" << std::endl;
+	  StopWatch swatch;
+	  StopWatch swatch2;
+
+	  swatch.reset();
+	  swatch.start();
 
 	  // Let us see if we have a Multigrid setup lying around.
 	  const std::string& subspaceId = invParam.SubspaceId;
@@ -109,10 +114,22 @@ namespace Chroma
 	  MG::FGMRESSolver FGMRESOuter(*M_ptr, fine_solve_params, (mg_pointer->v_cycle).get());
 
 	  // Solve the system
-	  FGMRESOuter(psi, chi, RELATIVE);
+	  swatch2.reset();
+	  swatch2.start();
+	  MG::LinearSolverResults res=FGMRESOuter(psi, chi, RELATIVE);
+	  swatch2.stop();
 
-
-
+	  {
+		  T tmp;
+		  tmp = zero;
+		  (*A)(tmp, psi, PLUS);
+		  tmp -= chi;
+		  Double n2 = norm2(tmp);
+		  Double n2rel = n2 / norm2(chi);
+		  QDPIO::cout << "MG_PROTO_CLOVER_INVERTER: iters = "<< res.n_count << " rel resid = " << sqrt(n2rel) << std::endl;
+	  }
+	  swatch.stop();
+	  QDPIO::cout << "MG_PROTO_CLOVER_INVERTER_TIME: call_time = "<< swatch2.getTimeInSeconds() << " sec.  total_time=" << swatch.getTimeInSeconds() << " sec." << std::endl;
   }
 };
 

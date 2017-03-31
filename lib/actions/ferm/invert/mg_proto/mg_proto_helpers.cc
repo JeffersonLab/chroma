@@ -62,6 +62,11 @@ createFineLinOp( const MGProtoSolverParams& params, const multi1d<LatticeColorMa
 void
 createMGPreconditioner( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u)
 {
+	START_CODE();
+	StopWatch swatch;
+	swatch.reset();
+	swatch.start();
+
 	const std::string& subspaceId = params.SubspaceId;
 	QDPIO::cout << "Creating MG_Proto preconditioner with subspaceID=" << subspaceId << std::endl;
 	// Look up in named object map
@@ -155,6 +160,10 @@ createMGPreconditioner( const MGProtoSolverParams& params, const multi1d<Lattice
 	TheNamedObjMap::Instance().getData<shared_ptr<MGPreconditioner>>(subspaceId)->mg_levels = mg_levels;
 	TheNamedObjMap::Instance().getData<shared_ptr<MGPreconditioner>>(subspaceId)->v_cycle = v_cycle;
 
+	swatch.stop();
+	QDPIO::cout << "MG_PROTO_SETUP: Subspace Creation Took : " << swatch.getTimeInSeconds() << " sec" << std::endl;
+
+	END_CODE();
 }
 
 void deleteMGPreconditioner(const std::string& subspaceId)
