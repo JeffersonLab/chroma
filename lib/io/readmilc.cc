@@ -99,7 +99,7 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const std::s
     for(int mu(0);mu<Nd;mu++)
       //slow but hopefully it works
       for(int s(0); s < Layout::sitesOnNode(); s++)
-	QDPUtil::byte_swap((void *)&u[mu].elem(s).elem(),sizeof(Real),2*Nc*Nc);
+	QDPUtil::byte_swap((void *)&u[mu].elem(s).elem(),sizeof(RealF),2*Nc*Nc);
   }
 
   END_CODE();
@@ -160,7 +160,7 @@ void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixD>& u, const std::string
   readMILC(xml, uu, cfg_file);
 
   u.resize(uu.size());
-  for(int mu=0; uu.size(); ++mu)
+  for(int mu=0; mu<uu.size(); ++mu)
     u[mu] = uu[mu];
 
   END_CODE();
