@@ -171,7 +171,11 @@ namespace Chroma
   LatticeColorMatrix rightNabla(const multi1d<LatticeColorMatrix>& u, 
 				const LatticeColorMatrix& chi, 
 				int length, const multi1d<int>& path);
-
+  //! Apply first deriv to the right onto source
+  LatticeFermion rightNabla(const multi1d<LatticeColorMatrix>& u, 
+			       const LatticeFermion& chi, 
+			       int length, const multi1d<int>& path);
+  
   //! Apply first deriv to the right onto source
   LatticePropagator rightNabla(const multi1d<LatticeColorMatrix>& u, 
 			       const LatticePropagator& chi, 
