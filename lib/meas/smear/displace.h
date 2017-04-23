@@ -172,8 +172,11 @@ namespace Chroma
 				const LatticeColorMatrix& chi, 
 				int length, const multi1d<int>& path);
 
-
-
+  //! Apply first deriv to the right onto source
+  LatticePropagator rightNabla(const multi1d<LatticeColorMatrix>& u, 
+			       const LatticePropagator& chi, 
+			       int length, const multi1d<int>& path);
+  
   //! Apply first deriv to the right onto source
   /*!
    * \ingroup smear

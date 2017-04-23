@@ -359,6 +359,14 @@ namespace Chroma
     return rightNablaT<LatticeColorMatrix>(u, chi, length, path);
   }
 
+  //! Apply first deriv to the right onto source
+  LatticePropagator rightNabla(const multi1d<LatticeColorMatrix>& u, 
+				const LatticePropagator& chi, 
+				int length, const multi1d<int>& path)
+  {
+    return rightNablaT<LatticePropagator>(u, chi, length, path);
+  }
+
 
   //----------------------------------------------------------------------------------
   //! Apply a left-right derivative to a lattice field
