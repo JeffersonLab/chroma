@@ -214,13 +214,11 @@ namespace Chroma
 	{
 	  QDPIO::cout << "Creating the CG Solver" << std::endl;
 	  cg_solver = new QPhiX::InvCG<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>((*M), invParam.MaxIter);
-	  if( invParam.TuneP ) cg_solver->tune();
 	}
       case BICGSTAB:
 	{
 	  QDPIO::cout << "Creating the BiCGStab Solver" << std::endl;
 	  bicgstab_solver = new QPhiX::InvBiCGStab<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>((*M), invParam.MaxIter);
-	  if( invParam.TuneP ) bicgstab_solver->tune();
 	}
 	break;
       default:

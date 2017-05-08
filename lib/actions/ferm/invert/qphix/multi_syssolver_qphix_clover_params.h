@@ -14,7 +14,6 @@ namespace Chroma
     MultiSysSolverQPhiXCloverParams(XMLReader& xml, const std::string& path);
     MultiSysSolverQPhiXCloverParams() {
        RsdToleranceFactor = Real(10); //< Tolerate if the solution achived is better (less) than rsdToleranceFactor*RsdTarget
-      TuneP = false ; //< v0.3 autotune feature
       VerboseP = false;
       SolutionCheckP = true;
       Delta = Real(-1);
@@ -30,7 +29,6 @@ namespace Chroma
       VerboseP = p.VerboseP;
       SolutionCheckP = p.SolutionCheckP;
       RsdToleranceFactor = p.RsdToleranceFactor;
-      TuneP = p.TuneP;
     }
 
    
@@ -43,7 +41,6 @@ namespace Chroma
     bool VerboseP;
     bool SolutionCheckP;
     Real RsdToleranceFactor;
-    bool TuneP;
   };
 
   void read(XMLReader& xml, const std::string& path, MultiSysSolverQPhiXCloverParams& p);

@@ -72,13 +72,6 @@ namespace Chroma {
       RsdToleranceFactor = Real(10); // Tolerate an order of magnitude difference by default.
     }
 
-    if( paramtop.count("Tune") > 0 ) { 
-      read(paramtop, "Tune", TuneP);
-    }
-    else { 
-      TuneP = false;
-    }
-    
   }
   
   void read(XMLReader& xml, const std::string& path, 
@@ -105,7 +98,6 @@ namespace Chroma {
     write(xml, "SolverType", p.SolverType);
     write(xml, "AntiPeriodicT", p.AntiPeriodicT);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
-    write(xml, "Tune", p.TuneP);
     
 
   }

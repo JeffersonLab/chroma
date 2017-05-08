@@ -202,7 +202,6 @@ public:
 
 
 		mcg_solver = new QPhiX::MInvCG<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>((*M), invParam.MaxIter, invParam.MaxShifts);
-		if( invParam.TuneP ) mcg_solver->tune();
 	}
 
 
