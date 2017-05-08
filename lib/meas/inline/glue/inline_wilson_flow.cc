@@ -242,7 +242,7 @@ namespace Chroma
 
 
       // Calculate some gauge invariant observables just for info.
-      MesPlq(xml_out, "WislonFlowGaugeObservables", wf_u);
+      MesPlq(xml_out, "WilsonFlowGaugeObservables", wf_u);
 
 
        // Now store the configuration to a memory object

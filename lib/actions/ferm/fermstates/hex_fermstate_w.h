@@ -16,6 +16,8 @@
 #include "util/gauge/stout_utils.h"
 #include "meas/smear/hex_smear.h"
 
+#include <stdexcept>
+
 namespace Chroma 
 {
   /*! @ingroup fermstates */
@@ -74,17 +76,19 @@ namespace Chroma
     {
       START_CODE();
       
+      throw std::domain_error("HEX smearing is currently not supported in the Hybrid Monte Carlo algorithm.")
       
       END_CODE();
     }
     
 
     /* Not implemneted   **/
-
     virtual void deriv(P& F) const 
     {
       START_CODE();
       
+      throw std::domain_error("HEX smearing is currently not supported in the Hybrid Monte Carlo algorithm.")
+
       END_CODE();
     }
 
