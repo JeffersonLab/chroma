@@ -8,6 +8,7 @@
 #include "meas/smear/hyp_link_smearing.h"
 #include "meas/smear/no_link_smearing.h"
 #include "meas/smear/stout_link_smearing.h"
+#include "meas/smear/phase_stout_link_smearing.h"
 
 namespace Chroma
 {
@@ -32,6 +33,7 @@ namespace Chroma
 	success &= HypLinkSmearingEnv::registerAll();
 	success &= NoLinkSmearingEnv::registerAll();
 	success &= StoutLinkSmearingEnv::registerAll();
+	success &= PhaseStoutLinkSmearingEnv::registerAll();
 
 	registered = true;
       }
