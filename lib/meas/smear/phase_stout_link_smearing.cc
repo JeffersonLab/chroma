@@ -94,7 +94,8 @@ namespace Chroma
       for(int d(0);d<Nd;d++)
 	if(params.smear_dirs[d]){
 	  if(params.k[d]!=0){
-	    LatticeReal f = params.zeta*Layout::latticeCoordinate(d)*params.k[d] ;
+	    Real foo = params.zeta*params.k[d] ;
+	    LatticeReal f = foo ;
 	    u[d]*=cmplx(cos(f),sin(f)) ;
 	  }
 	}
