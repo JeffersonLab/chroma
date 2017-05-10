@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
   // Setup fields 
   the_integrator.copyFields();
 
-  QDPIO::cout << "Performing tajectory" << std::endl;
+  QDPIO::cout << "Performing trajectory" << std::endl;
   QDP::StopWatch swatch;
   swatch.reset();
   swatch.start();

@@ -95,13 +95,14 @@ namespace Chroma
 	}
 
 
+	template<typename V>
 	void writeMapObjArrayLatColMat(const Params& params)
 	{
 	  // Input object
 	  XMLBufferWriter gauge_xml;
 
 	  // Make a copy because the TimeSliceIO critter wants a modifiable reference
-	  multi1d<LatticeColorMatrix> u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.input_id);
+	  multi1d<V> u = TheNamedObjMap::Instance().getData< multi1d<V> >(params.named_obj.input_id);
 	  TheNamedObjMap::Instance().get(params.named_obj.input_id).getRecordXML(gauge_xml);
 
 	  const int decay_dir = Nd-1;
@@ -117,7 +118,7 @@ namespace Chroma
 	  pop(file_xml);
 
 	  // Create the entry
-	  QDP::MapObjectDisk<KeyTimeSliceGauge_t,TimeSliceIO<LatticeColorMatrix> > output_obj;
+	  QDP::MapObjectDisk<KeyTimeSliceGauge_t,TimeSliceIO<V> > output_obj;
 
 	  output_obj.insertUserdata(file_xml.str());
 	  output_obj.open(params.named_obj.output_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
@@ -134,7 +135,7 @@ namespace Chroma
 	      time_key.t_slice = t;
 	      time_key.dir     = mu;
 
-	      output_obj.insert(time_key, TimeSliceIO<LatticeColorMatrix>(u[mu],t));
+	      output_obj.insert(time_key, TimeSliceIO<V>(u[mu],t));
 	    }
 	  }
 
@@ -196,15 +197,35 @@ namespace Chroma
 	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyTintValTLatticeColorVector",
 									  writeMapObjEVPairLCV);
 	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("ArrayLatticeColorMatrix",
-									  writeMapObjArrayLatColMat);
+									  writeMapObjArrayLatColMat<LatticeColorMatrix>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("ArrayLatticeColorMatrixF",
+									  writeMapObjArrayLatColMat<LatticeColorMatrixF>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("ArrayLatticeColorMatrixD",
+									  writeMapObjArrayLatColMat<LatticeColorMatrixD>);
 	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticePropagator",
 									  writeMapObjKeyIntValLat<LatticePropagator>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticePropagatorF",
+									  writeMapObjKeyIntValLat<LatticePropagatorF>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticePropagatorD",
+									  writeMapObjKeyIntValLat<LatticePropagatorD>);
 	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeFermion",
 									  writeMapObjKeyIntValLat<LatticeFermion>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeFermionF",
+									  writeMapObjKeyIntValLat<LatticeFermionF>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeFermionD",
+									  writeMapObjKeyIntValLat<LatticeFermionD>);
 	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorMatrix",
 									  writeMapObjKeyIntValLat<LatticeColorMatrix>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorMatrixF",
+									  writeMapObjKeyIntValLat<LatticeColorMatrixF>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorMatrixD",
+									  writeMapObjKeyIntValLat<LatticeColorMatrixD>);
 	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorVector",
 									  writeMapObjKeyIntValLat<LatticeColorVector>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorVectorF",
+									  writeMapObjKeyIntValLat<LatticeColorVectorF>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorVectorD",
+									  writeMapObjKeyIntValLat<LatticeColorVectorD>);
 
 	    registered = true;
 	  }

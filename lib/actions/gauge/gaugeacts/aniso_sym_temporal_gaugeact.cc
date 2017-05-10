@@ -108,6 +108,8 @@ namespace Chroma
   void AnisoSymTemporalGaugeAct::deriv(multi1d<LatticeColorMatrix>& result,
 				       const Handle< GaugeState<P,Q> >& state) const
   {
+    START_CODE();
+
     result.resize(Nd);
     int mu;
     int nu;
