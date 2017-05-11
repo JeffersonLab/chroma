@@ -1,3 +1,10 @@
+May 11, 2017 - Balint Joo
+        Merged in branch feature/hmc_mg for QUDA HMC & Multigrid
+        Merged in branch feature/mg_proto for new KNL MG code
+        Fixed issue of isnan, isinf, etc with old ICCv16 update 3
+        Checked basic regressions: failed with ICCv17 update 2, worked with ICCv16 update 3, gcc-5.3, gcc-6.2
+       
+
 Jun 24, 2016 - Balint Joo
         Merged in branch feature/quda_multigrid
  	Fixed NEF operator parity to track fix in Quda
