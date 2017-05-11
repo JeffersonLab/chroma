@@ -4,6 +4,7 @@
  * Propagator calculation in distillation
  */
 
+#include "qdp.h"
 #include "fermact.h"
 #include "meas/inline/hadron/inline_prop_and_matelem_distillation_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
