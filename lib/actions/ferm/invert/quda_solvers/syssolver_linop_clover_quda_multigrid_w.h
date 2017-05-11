@@ -298,10 +298,8 @@ namespace Chroma
 			//Clover stuff
 			mg_inv_param.clover_cpu_prec = cpu_prec;
 			mg_inv_param.clover_cuda_prec = gpu_prec;
-			//mg_inv_param.clover_cuda_prec_sloppy = gpu_prec_sloppy;
-			//mg_inv_param.clover_cuda_prec_precondition = gpu_prec_precondition;
-			mg_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
 			mg_inv_param.clover_cuda_prec_precondition = gpu_prec;
+			mg_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
 			mg_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
 			//
 			//Done...
@@ -335,6 +333,7 @@ namespace Chroma
 			}
 
 			// Setup padding
+
 			multi1d<int> face_size(4);
 			face_size[0] = latdims[1]*latdims[2]*latdims[3]/2;
 			face_size[1] = latdims[0]*latdims[2]*latdims[3]/2;
@@ -480,12 +479,6 @@ namespace Chroma
 			mg_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
 			mg_inv_param.dirac_order = QUDA_DIRAC_ORDER;
 
-			//Clover stuff
-			//mg_inv_param.clover_cpu_prec = cpu_prec;
-			//mg_inv_param.clover_cuda_prec = cuda_prec;
-			//mg_inv_param.clover_cuda_prec_sloppy = cuda_prec_sloppy;
-			//mg_inv_param.clover_cuda_prec_precondition = cuda_prec_precondition;
-			//mg_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
 
 			mg_inv_param.input_location = QUDA_CPU_FIELD_LOCATION;
 			mg_inv_param.output_location = QUDA_CPU_FIELD_LOCATION;
@@ -493,9 +486,10 @@ namespace Chroma
 			mg_inv_param.kappa = quda_inv_param.kappa;
 
 			mg_inv_param.dagger = QUDA_DAG_NO;
+		//	mg_inv_param.mass = -3.0; // Not for aniso
 			mg_inv_param.kappa = 0.5;
 			mg_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
-			mg_inv_param.clover_coeff = quda_inv_param.clover_coeff;
+			mg_inv_param.clover_coeff = 1.0;
 			mg_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
 			mg_inv_param.solution_type = QUDA_MAT_SOLUTION;
 			mg_inv_param.solve_type = QUDA_DIRECT_SOLVE;
