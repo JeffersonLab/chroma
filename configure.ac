@@ -387,7 +387,7 @@ AC_ARG_WITH(mg-proto,
     [ Use MG Proto MG library ]
    ),
    [ MGPROTO_DIR="${with_mg_proto}" ],
-   [ MGPROTO_DIR-"not_given" ]
+   [ MGPROTO_DIR="not_given" ]
 )
 
 if test "X${QDPCVER_HOME}X" = "XX" ; then
