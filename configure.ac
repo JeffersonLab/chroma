@@ -381,6 +381,14 @@ AC_ARG_ENABLE(qop-mg,
    [BUILD_QOP_MG=${enableval}]
 )
 
+AC_ARG_WITH(mg-proto,
+   AC_HELP_STRING(
+    [ --with-mg-proto=DIR],
+    [ Use MG Proto MG library ]
+   ),
+   [ MGPROTO_DIR="${with_mg_proto}" ],
+   [ MGPROTO_DIR-"not_given" ]
+)
 
 if test "X${QDPCVER_HOME}X" = "XX" ; then
   AC_MSG_NOTICE([QDPCVER_HOME variable not set.])
@@ -1210,6 +1218,15 @@ AM_CONDITIONAL(BUILD_QUDA,
 	[test "x${quda_enabled}x" = "xyesx" ])
 
 
+if test "X${MGPROTO_DIR}X" != "Xnot_givenX";
+then 
+  AC_MSG_NOTICE([  Configuring MG PROTO in ${MGPROTO_DIR} ])
+  AC_SUBST(MGPROTO_ENABLED, [yes])
+  AC_DEFINE(BUILD_MGPROTO, [], [ Build interface to MGPROTO Library] )
+  AC_SUBST(MGPROTO_CXXFLAGS, "-I${MGPROTO_DIR}/include" )
+  AC_SUBST(MGPROTO_LDFLAGS,  "-L${MGPROTO_DIR}/lib" )
+  AC_SUBST(MGPROTO_LIBS, "-lmg")
+fi
 
 if test "X${BUILD_QOP_MG}X" = "XyesX";
 then
@@ -1277,6 +1294,9 @@ esac
 
 AM_CONDITIONAL(BUILD_GTEST,
 	[test "x${chroma_enable_gtest}x" = "xyesx" ])
+	
+AM_CONDITIONAL(BUILD_MGPROTO, 
+	[test "X${MGPROTO_DIR}X" != "Xnot_givenX"])
 
 #######################
 # Produce output

@@ -1020,6 +1020,11 @@ if BUILD_QOP_MG
 AM_CXXFLAGS += -I@top_srcdir@/other_libs/wilsonmg/include @QOP_MG_CXXFLAGS@
 endif
 
+if BUILD_MGPROTO
+AM_CXXFLAGS += @MGPROTO_CXXFLAGS@
+endif
+
+
 lib_LIBRARIES = libchroma.a
 
 #
@@ -2046,6 +2051,22 @@ libchroma_a_SOURCES += \
 	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.cc \
 	actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.cc \
 	meas/inline/io/inline_erase_mg_space.cc
+endif
+
+if BUILD_MGPROTO 
+nobase_include_HEADERS += \
+	actions/ferm/invert/mg_proto/mgproto_solver_params.h \
+	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.h \
+	actions/ferm/invert/mg_proto/mg_proto_helpers.h \
+	meas/inline/io/inline_erase_mg_proto_space.h
+
+
+libchroma_a_SOURCES += \
+	actions/ferm/invert/mg_proto/mgproto_solver_params.cc \
+	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.cc \
+	actions/ferm/invert/mg_proto/mg_proto_helpers.cc \
+	meas/inline/io/inline_erase_mg_proto_space.cc
+
 endif
 
 

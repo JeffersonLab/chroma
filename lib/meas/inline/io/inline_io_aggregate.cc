@@ -39,6 +39,10 @@
 #include "meas/inline/io/inline_erase_quda_multigrid_space.h"
 #endif
 
+#ifdef BUILD_MGPROTO
+#include "meas/inline/io/inline_erase_mg_proto_space.h"
+#endif
+
 namespace Chroma
 {
 
@@ -99,6 +103,10 @@ namespace Chroma
 	
 #ifdef BUILD_QUDA
 	success &= InlineEraseQUDAMULTIGRIDSpaceEnv::registerAll();
+#endif
+
+#ifdef BUILD_MGPROTO
+	success &= InlineEraseMGProtoSpaceEnv::registerAll();
 #endif
 
 	registered = true;
