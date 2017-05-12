@@ -94,7 +94,9 @@ namespace Chroma
       for(int d(0);d<Nd;d++)
 	if(params.smear_dirs[d]){
 	  if(params.k[d]!=0){
-	    Real foo = params.zeta*params.k[d] ;
+	    QDPIO::cout<<" Adding phase to direction: "<<d<<std::endl ;
+	    Real foo = twopi / Real(Layout::lattSize()[d])*
+	      params.zeta*params.k[d] ;
 	    LatticeReal f = foo ;
 	    u[d]*=cmplx(cos(f),sin(f)) ;
 	  }
