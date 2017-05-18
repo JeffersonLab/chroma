@@ -286,6 +286,7 @@ nobase_include_HEADERS = \
 	meas/smear/hyp_link_smearing.h \
 	meas/smear/no_link_smearing.h \
 	meas/smear/stout_link_smearing.h \
+	meas/smear/phase_stout_link_smearing.h \
 	meas/smear/quark_displacement.h \
 	meas/smear/quark_displacement_factory.h \
         meas/smear/quark_displacement_aggregate.h \
@@ -1248,6 +1249,7 @@ libchroma_a_SOURCES = \
         meas/smear/hex_smear.cc \
 	meas/smear/no_link_smearing.cc \
 	meas/smear/stout_link_smearing.cc \
+	meas/smear/phase_stout_link_smearing.cc \
 	meas/smear/quark_smearing_aggregate.cc \
 	meas/smear/no_quark_smearing.cc \
 	meas/smear/gaus_quark_smearing.cc \
