@@ -408,7 +408,7 @@ then
   AC_DEFINE([BUILD_QPHIX], [], [Build with the QPHIX_LIBRARY])
   AC_SUBST(QPHIX_CXXFLAGS, "-I${QPHIX_HOME}/include" ) 
   AC_SUBST(QPHIX_LDFLAGS, "-L${QPHIX_HOME}/lib" )
-  AC_SUBST(QPHIX_LIBS,"-lqphix_solver")
+  AC_SUBST(QPHIX_LIBS,"-lqphix_solver -lqphix_codegen")
 
   case "${qphix_arch}" in
   sse|SSE)
