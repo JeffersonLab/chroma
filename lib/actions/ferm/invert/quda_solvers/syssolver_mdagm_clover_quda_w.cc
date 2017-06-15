@@ -85,7 +85,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-      spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
+      spinorIn = GetMemoryPtr( chi_s.getId() );
 #endif
     }
     else { 
@@ -96,7 +96,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-    void* spinorOut = QDPCache::Instance().getDevicePtr( psi_s.getId() );
+    void* spinorOut = GetMemoryPtr( psi_s.getId() );
 #endif
 
     // Do the solve here 

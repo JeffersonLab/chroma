@@ -89,8 +89,8 @@ namespace Chroma
     void* spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-    void* spinorIn = QDPCache::Instance().getDevicePtr( mod_chi.getId() );
-    void* spinorOut = QDPCache::Instance().getDevicePtr( psi_s.getId() );
+    void* spinorIn = GetMemoryPtr( mod_chi.getId() );
+    void* spinorOut = GetMemoryPtr( psi_s.getId() );
     QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
 #endif
 

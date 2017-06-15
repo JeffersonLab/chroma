@@ -65,7 +65,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-      spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
+      spinorIn = GetMemoryPtr( chi_s.getId() );
 #endif
 
     }
@@ -98,7 +98,7 @@ namespace Chroma
 #else
     for(int s=0; s < shifts.size(); s++) {
       psi_s[s][ rb[1] ] = zero;
-      spinorOut[s] = QDPCache::Instance().getDevicePtr( psi_s[s].getId() );
+      spinorOut[s] = GetMemoryPtr( psi_s[s].getId() );
       quda_inv_param.offset[s] = toDouble(shifts[s]);
    } 
 #endif

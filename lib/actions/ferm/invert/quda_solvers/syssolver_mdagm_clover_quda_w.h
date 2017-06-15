@@ -28,6 +28,9 @@
 #include "util/gauge/reunit.h"
 
 #include <quda.h>
+#ifdef QDP_IS_QDPJIT
+#include "actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h"
+#endif
 
 //#undef BUILD_QUDA_DEVIFACE_GAUGE
 //#undef BUILD_QUDA_DEVIFACE_SPINOR
@@ -494,7 +497,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
 	gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
 #else
-	gauge[mu] = QDPCache::Instance().getDevicePtr( links_single[mu].getId() );
+	gauge[mu] = GetMemoryPtr( links_single[mu].getId() );
 	//std::cout << "MDAGM CUDA gauge[" << mu << "] in = " << gauge[mu] << "\n";
 #endif
       }
@@ -531,11 +534,11 @@ namespace Chroma
       void *clover[2];
       void *cloverInv[2];
 
-      clover[0] = QDPCache::Instance().getDevicePtr( clov->getOffId() );
-      clover[1] = QDPCache::Instance().getDevicePtr( clov->getDiaId() );
+      clover[0] = GetMemoryPtr( clov->getOffId() );
+      clover[1] = GetMemoryPtr( clov->getDiaId() );
 
-      cloverInv[0] = QDPCache::Instance().getDevicePtr( invclov->getOffId() );
-      cloverInv[1] = QDPCache::Instance().getDevicePtr( invclov->getDiaId() );
+      cloverInv[0] = GetMemoryPtr( invclov->getOffId() );
+      cloverInv[1] = GetMemoryPtr( invclov->getDiaId() );
 
       // std::cout << "MDAGM clover CUDA pointers: " 
       // 		<< clover[0] << " "

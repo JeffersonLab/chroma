@@ -24,6 +24,9 @@
 #include <string>
 
 #include "util/gauge/reunit.h"
+#ifdef QDP_IS_QDPJIT
+#include "actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h"
+#endif
 
 //#include <util_quda.h>
 
@@ -440,7 +443,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
         gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
 #else
-       gauge[mu] = QDPCache::Instance().getDevicePtr( links_single[mu].getId() );
+       gauge[mu] = GetMemoryPtr( links_single[mu].getId() );
        QDPIO::cout << "MDAGM CUDA gauge[" << mu << "] in = " << gauge[mu] << "\n";
 #endif
      }
