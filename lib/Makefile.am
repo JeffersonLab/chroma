@@ -1395,6 +1395,7 @@ nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_wilso
 	actions/ferm/invert/quda_solvers/quda_mg_utils.h \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.h \
 	actions/ferm/invert/quda_solvers/quda_multigrid_params.h \
+	actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h \
 	meas/inline/io/inline_erase_quda_multigrid_space.h
 
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
