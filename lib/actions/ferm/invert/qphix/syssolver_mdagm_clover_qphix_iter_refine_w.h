@@ -37,6 +37,7 @@
 #include "qphix_singleton.h"
 
 using namespace QDP;
+using namespace std;
 
 namespace Chroma
 {
