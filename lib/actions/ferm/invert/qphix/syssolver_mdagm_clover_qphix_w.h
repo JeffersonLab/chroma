@@ -298,7 +298,7 @@ namespace Chroma
       }
 
       swatch.stop();
-      QDPIO::cout << "QPHIX_MDAGM_SOLVER: total time: " << swatch.getTimeInSeconds() << " (sec)" << endl;
+      QDPIO::cout << "QPHIX_MDAGM_SOLVER: total time: " << swatch.getTimeInSeconds() << " (sec)" << std::endl;
       END_CODE();
       return res;
     }
