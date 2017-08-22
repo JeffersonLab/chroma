@@ -516,7 +516,7 @@ namespace Chroma
      * \return syssolver results
      */
     SystemSolverResults_t
-    biCgStabSolve(T &psi, const T &chi, AbsChronologicalPredictor4D<T> &predictor) const
+    biCGStabSolve(T &psi, const T &chi, AbsChronologicalPredictor4D<T> &predictor) const
     {
     	SystemSolverResults_t res;
     	Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
