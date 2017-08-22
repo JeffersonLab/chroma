@@ -420,39 +420,16 @@ namespace Chroma
     SystemSolverResults_t
     cgSolve(T &psi, const T &chi, AbsChronologicalPredictor4D<T> &predictor) const
     {
-    	SystemSolverResults_t res;
-    	Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
+      SystemSolverResults_t res;
+      Handle<LinearOperator<T>> MdagM(new MdagMLinOp<T>(A));
 
-    	T Y;
-    	Y[ A->subset() ] = psi; // Y is initial guess
-
-    	try  {
-    		// Try to cast the predictor to a two step predictor
-    		AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor =
-    				dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>& >(predictor);
-
-
-    		// Predict Y and X separately
-    		two_step_predictor.predictY(Y,*A,chi);
-    		two_step_predictor.predictX(psi,*MdagM, chi);
-    	}
-    	catch( std::bad_cast) {
-
-    		// Not a 2 step predictor. Predict X
-    		// Then MX = Y is a good guess.
-    		predictor(psi,*MdagM, chi);
-    		(*A)(Y,psi,PLUS);
-
-    	}
-
+      predictor(psi, *MdagM, chi);
 
 #ifndef QDP_IS_QDPJIT
     	QDPIO::cout << "Packing" << std::endl << std::flush ;
-    	QPhiX::qdp_pack_cb_spinor<>(Y, tmp_qphix, *geom_outer,1); // Initial Guess for Y
     	QPhiX::qdp_pack_cb_spinor<>(psi, psi_qphix, *geom_outer,1); // Initial Guess for X
     	QPhiX::qdp_pack_cb_spinor<>(chi, chi_qphix, *geom_outer,1); // RHS
 #else
-    	tmp_qphix = (QPhiX_Spinor *)(Y.getFjit()) + cbsize_in_blocks;
     	psi_qphix = (QPhiX_Spinor *)(psi.getFjit()) + cbsize_in_blocks;
     	chi_qphix = (QPhiX_Spinor *)(chi.getFjit()) + cbsize_in_blocks;
 #endif
@@ -464,10 +441,6 @@ namespace Chroma
     	unsigned long mv_apps1=0;
     	int n_count1=0;
 
-    	unsigned long site_flops2=0;
-    	unsigned long mv_apps2=0;
-    	int n_count2=0;
-
     	QDPIO::cout << "Starting Y solve" << std::endl << std::flush ;
     	double start = omp_get_wtime();
     	(*mixed_solver)(tmp_qphix,chi_qphix, toDouble(invParam.RsdTarget), n_count1, rsd_final, site_flops1, mv_apps1, -1, invParam.VerboseP);
@@ -477,18 +450,6 @@ namespace Chroma
     	unsigned long total_flops = (site_flops1 + (1320+504+1320+504+48)*mv_apps1)*num_cb_sites;
     	double gflops = (double)(total_flops)/(1.0e9);
     	double total_time = end - start;
-
-    	Double r_final = sqrt(toDouble(rsd_final));
-    	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: " << n_count1 << " iters,  rsd_sq_final=" << rsd_final << " ||r||/||b|| (acc) = " << r_final <<std::endl;
-    	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
-
-    	QDPIO::cout << "Starting X solve" << std::endl << std::flush ;
-    	start = omp_get_wtime();
-    	(*mixed_solver)(psi_qphix,tmp_qphix, toDouble(invParam.RsdTarget), n_count2, rsd_final, site_flops2, mv_apps2, +1, invParam.VerboseP);
-    	end = omp_get_wtime();
-    	total_flops = (site_flops2 + (1320+504+1320+504+48)*mv_apps2)*num_cb_sites;
-    	gflops = (double)(total_flops)/(1.0e9);
-    	total_time = end - start;
 
 #ifndef QDP_IS_QDPJIT
     	// Want Norm of Y
