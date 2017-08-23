@@ -290,11 +290,8 @@ namespace Chroma
       switch (invParam.SolverType) {
       case CG: {
         QDPIO::cout << "Creating the CG Solver" << std::endl;
-        inner_solver =
-            new QPhiX::InvCG<REALT,
-                             VecTraits<REALT>::Vec,
-                             VecTraits<REALT>::Soa,
-                             VecTraits<REALT>::compress12>(*M_inner, invParam.MaxIter);
+        inner_solver = new QPhiX::InvCG<InnerReal, InnerVec, InnerSoa, comp12>(
+            *M_inner, invParam.MaxIter);
 
         bool constexpr MdagM = true;
         mixed_solver = new QPhiX::InvRichardsonMultiPrec<REALT,
