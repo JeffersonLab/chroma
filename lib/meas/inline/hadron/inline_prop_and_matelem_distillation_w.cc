@@ -685,8 +685,14 @@ namespace Chroma
 		SystemSolverResults_t res = (*PP)(quark_soln, chi);
 		ncg_had += res.n_count;
 
-		// Check for finite values - neither NaN nor Inf
+		// Some sanity checks
+		if (toDouble(res.resid) > 1.0e-3)
+		{
+		  QDPIO::cerr << name << ": have a resid > 1.0e-3. That is unacceptable" << std::endl;
+		  QDP_abort(1);
+		}
 
+		// Check for finite values - neither NaN nor Inf
 		if (isfinite(quark_soln))
 		{
 		  // Okay
