@@ -703,7 +703,7 @@ namespace Chroma
     ds_u = zero;
 
     // Get the links
-    const multi1d<U>& u = getU();
+    //const multi1d<U>& u = getU();
 
 
     // Now compute the insertions
@@ -762,7 +762,7 @@ namespace Chroma
     ds_u = zero;
 
     // Get the links
-    const multi1d<U>& u = getU();
+    //const multi1d<U>& u = getU();
 
 
     // Now compute the insertions
