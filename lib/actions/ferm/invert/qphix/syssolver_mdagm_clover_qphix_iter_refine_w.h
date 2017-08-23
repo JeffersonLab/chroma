@@ -287,14 +287,26 @@ namespace Chroma
           toDouble(aniso_coeffs[3]));
 
       switch (invParam.SolverType) {
-      case CG: {
+      case CG:
         QDPIO::cout << "Creating the CG Solver" << std::endl;
         cg_solver = new QPhiX::InvCG<REALT,
                                      VecTraits<REALT>::Vec,
                                      VecTraits<REALT>::Soa,
                                      VecTraits<REALT>::compress12>(*M, invParam.MaxIter);
-      }
-      case BICGSTAB: {
+
+        bool constexpr MdagM = true;
+        mixed_solver = new QPhiX::InvRichardsonMultiPrec<REALT,
+                                                         OuterVec,
+                                                         OuterSoa,
+                                                         comp12,
+                                                         InnerReal,
+                                                         InnerVec,
+                                                         InnerSoa,
+                                                         comp12,
+                                                         MdagM>(
+            *M_outer, *bicgstab_inner_solver, toDouble(invParam.Delta), invParam.MaxIter);
+      
+      case BICGSTAB: 
         QDPIO::cout << "Creating the BiCGStab Solver" << std::endl;
         bicgstab_inner_solver =
             new QPhiX::InvBiCGStab<InnerReal, InnerVec, InnerSoa, comp12>(
@@ -309,7 +321,7 @@ namespace Chroma
                                                          InnerSoa,
                                                          comp12>(
             *M_outer, *bicgstab_inner_solver, toDouble(invParam.Delta), invParam.MaxIter);
-      } break;
+       break;
       default:
         QDPIO::cerr << "UNKNOWN Solver Type" << std::endl;
         QDP_abort(1);
@@ -422,91 +434,78 @@ namespace Chroma
     {
       SystemSolverResults_t res;
       Handle<LinearOperator<T>> MdagM(new MdagMLinOp<T>(A));
-
-      predictor(psi, *MdagM, chi);
+      predictor(psi, (*MdagM), chi);
 
 #ifndef QDP_IS_QDPJIT
-    	QDPIO::cout << "Packing" << std::endl << std::flush ;
-    	QPhiX::qdp_pack_cb_spinor<>(psi, psi_qphix, *geom_outer,1); // Initial Guess for X
-    	QPhiX::qdp_pack_cb_spinor<>(chi, chi_qphix, *geom_outer,1); // RHS
+      // Pack Spinors psi and chi
+      QPhiX::qdp_pack_cb_spinor<>(psi, psi_qphix, *geom, 1);
+      QPhiX::qdp_pack_cb_spinor<>(chi, chi_qphix, *geom, 1);
 #else
-    	psi_qphix = (QPhiX_Spinor *)(psi.getFjit()) + cbsize_in_blocks;
-    	chi_qphix = (QPhiX_Spinor *)(chi.getFjit()) + cbsize_in_blocks;
+      psi_qphix = (QPhiX_Spinor *)(psi.getFjit()) + cbsize_in_blocks;
+      chi_qphix = (QPhiX_Spinor *)(chi.getFjit()) + cbsize_in_blocks;
 #endif
-    	QDPIO::cout << "Done" << std::endl << std::flush;
-    	double rsd_final;
-    	int num_cb_sites = Layout::vol()/2;
+      double rsd_final;
+      unsigned long site_flops = 0;
+      unsigned long mv_apps = 0;
 
-    	unsigned long site_flops1=0;
-    	unsigned long mv_apps1=0;
-    	int n_count1=0;
-
-    	QDPIO::cout << "Starting Y solve" << std::endl << std::flush ;
-    	double start = omp_get_wtime();
-    	(*mixed_solver)(tmp_qphix,chi_qphix, toDouble(invParam.RsdTarget), n_count1, rsd_final, site_flops1, mv_apps1, -1, invParam.VerboseP);
-    	double end = omp_get_wtime();
-
-
-    	unsigned long total_flops = (site_flops1 + (1320+504+1320+504+48)*mv_apps1)*num_cb_sites;
-    	double gflops = (double)(total_flops)/(1.0e9);
-    	double total_time = end - start;
+      double start = omp_get_wtime();
+      int my_isign = 1;
+      (*mixed_solver)(psi_qphix,
+                      chi_qphix,
+                      toDouble(invParam.RsdTarget),
+                      res.n_count,
+                      rsd_final,
+                      site_flops,
+                      mv_apps,
+                      my_isign,
+                      invParam.VerboseP);
+      double end = omp_get_wtime();
 
 #ifndef QDP_IS_QDPJIT
-    	// Want Norm of Y
-    	QPhiX::qdp_unpack_cb_spinor<>(tmp_qphix, Y, *geom_outer,1);
-#endif
-    	double norm2Y;
-    	QPhiX::norm2Spinor(norm2Y, tmp_qphix, *geom_outer, n_blas_simt);
-    	r_final = sqrt(toDouble(rsd_final));
-
-    	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: " << n_count2 << " iters,  rsd_sq_final=" << rsd_final << " ||r||/||b|| (acc) = " << r_final << std::endl;
-    	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
-
-#ifndef QDP_IS_QDPJIT
-    	QPhiX::qdp_unpack_cb_spinor<>(psi_qphix, psi, *geom_outer,1);
+      QPhiX::qdp_unpack_cb_spinor<>(psi_qphix, psi, *geom, 1);
 #endif
 
-    	try  {
-    		// Try to cast the predictor to a two step predictor
-    		AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor =
-    				dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>& >(predictor);
-    		two_step_predictor.newYVector(Y);
-    		two_step_predictor.newXVector(psi);
+      predictor.newVector(psi);
 
-    	}
-    	catch( std::bad_cast) {
+      // Chi Should now hold the result spinor
+      // Check it against chroma.
+      {
+        T r = chi;
+        T tmp, tmp2;
+        (*A)(tmp, psi, PLUS);
+        (*A)(tmp2, tmp, MINUS);
+        r[A->subset()] -= tmp2;
 
-    		// Not a 2 step predictor. Predict X
-    		// Then MX = Y is a good guess.
-    		predictor.newVector(psi);
-    	}
+        Double r2 = norm2(r, A->subset());
+        Double b2 = norm2(chi, A->subset());
+        Double rel_resid = sqrt(r2 / b2);
+        res.resid = rel_resid;
+        QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: " << res.n_count
+                    << " iters,  rsd_sq_final=" << rel_resid << std::endl;
 
-    	// Chi Should now hold the result spinor
-    	// Check it against chroma. -- reuse Y as the residuum
-    	Y[ A->subset() ] = chi;
-    	{
-    		T tmp,tmp2;
-    		(*A)(tmp, psi, PLUS);
-    		(*A)(tmp2, tmp, MINUS);
-
-    		Y[ A->subset() ] -= tmp2;
-    	}
-
-    	Double r2 = norm2(Y,A->subset());
-    	Double b2 = norm2(chi, A->subset());
-    	Double rel_resid = sqrt(r2/b2);
-    	res.resid=rel_resid;
-    	res.n_count = n_count1 + n_count2;
-    	QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_BICGSTAB_SOLVER: total_iters="<<res.n_count<<" || r || / || b || = " << res.resid << std::endl;
-
+        QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: || r || / || b || = " << rel_resid
+                    << std::endl;
 
 #if 0
-    	if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
-    		QDPIO::cout << "SOLVE FAILED" << std::endl;
-    		QDP_abort(1);
-    	}
+	if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
+	  QDPIO::cout << "SOLVE FAILED" << std::endl;
+	  QDP_abort(1);
+	}
 #endif
-    	return res;
+      }
+
+      int num_cb_sites = Layout::vol() / 2;
+      unsigned long total_flops =
+          (site_flops + (1320 + 504 + 1320 + 504 + 48) * mv_apps) * num_cb_sites;
+      double gflops = (double)(total_flops) / (1.0e9);
+
+      double total_time = end - start;
+      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: Solver Time=" << total_time
+                  << " (sec)  Performance=" << gflops / total_time << " GFLOPS"
+                  << std::endl;
+
+      END_CODE();
+      return res;
     }
 
     //! Solver the linear system
@@ -691,23 +690,20 @@ namespace Chroma
 				     MixedVecTraits<REALT,InnerReal>::SoaInner, 
 				     MixedVecTraits<REALT,InnerReal>::compress12> > M_inner;
     
-    // Inner BiCGStab
-    Handle< QPhiX::InvBiCGStab<InnerReal,
-			       MixedVecTraits<REALT,InnerReal>::VecInner, 
-			       MixedVecTraits<REALT,InnerReal>::SoaInner, 
-			       MixedVecTraits<REALT,InnerReal>::compress12>  > bicgstab_inner_solver;
+    // Inner solver, can be CG or BiCGStab
+    Handle<QPhiX::AbstractSolver<InnerReal,
+                                 MixedVecTraits<REALT, InnerReal>::VecInner,
+                                 MixedVecTraits<REALT, InnerReal>::SoaInner,
+                                 MixedVecTraits<REALT, InnerReal>::compress12>>
+        inner_solver;
 
+    // Outer solver, will be Richardson solver.
+    Handle<QPhiX::AbstractSolver<REALT,
+                                 MixedVecTraits<REALT, InnerReal>::Vec,
+                                 MixedVecTraits<REALT, InnerReal>::Soa,
+                                 MixedVecTraits<REALT, InnerReal>::compress12>>
+        mixed_solver;
 
-    // Outer solver
-    Handle< QPhiX::InvRichardsonMultiPrec<REALT,
-				      MixedVecTraits<REALT,InnerReal>::Vec,
-				      MixedVecTraits<REALT,InnerReal>::Soa,
-				      MixedVecTraits<REALT,InnerReal>::compress12,
-				      InnerReal,
-				      MixedVecTraits<REALT,InnerReal>::VecInner,
-				      MixedVecTraits<REALT,InnerReal>::SoaInner,
-				      MixedVecTraits<REALT,InnerReal>::compress12> > mixed_solver;
-    
     QPhiX_Clover* invclov_packed[2];
     QPhiX_Clover* clov_packed[2];
     QPhiX_Gauge* u_packed[2];
