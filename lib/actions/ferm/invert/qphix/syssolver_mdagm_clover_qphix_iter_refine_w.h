@@ -31,6 +31,7 @@
 #include "qphix/qdp_packer.h"
 #include "qphix/clover.h"
 #include "qphix/invbicgstab.h"
+#include "qphix/invcg.h"
 #include "qphix/inv_richardson_multiprec.h"
 
 #include "actions/ferm/invert/qphix/qphix_vec_traits.h"
@@ -289,10 +290,11 @@ namespace Chroma
       switch (invParam.SolverType) {
       case CG:
         QDPIO::cout << "Creating the CG Solver" << std::endl;
-        cg_solver = new QPhiX::InvCG<REALT,
-                                     VecTraits<REALT>::Vec,
-                                     VecTraits<REALT>::Soa,
-                                     VecTraits<REALT>::compress12>(*M, invParam.MaxIter);
+        inner_solver =
+            new QPhiX::InvCG<REALT,
+                             VecTraits<REALT>::Vec,
+                             VecTraits<REALT>::Soa,
+                             VecTraits<REALT>::compress12>(*M_inner, invParam.MaxIter);
 
         bool constexpr MdagM = true;
         mixed_solver = new QPhiX::InvRichardsonMultiPrec<REALT,
@@ -304,13 +306,12 @@ namespace Chroma
                                                          InnerSoa,
                                                          comp12,
                                                          MdagM>(
-            *M_outer, *bicgstab_inner_solver, toDouble(invParam.Delta), invParam.MaxIter);
-      
+            *M_outer, *inner_solver, toDouble(invParam.Delta), invParam.MaxIter);
+
       case BICGSTAB: 
         QDPIO::cout << "Creating the BiCGStab Solver" << std::endl;
-        bicgstab_inner_solver =
-            new QPhiX::InvBiCGStab<InnerReal, InnerVec, InnerSoa, comp12>(
-                *M_inner, invParam.MaxIter);
+        inner_solver = new QPhiX::InvBiCGStab<InnerReal, InnerVec, InnerSoa, comp12>(
+            *M_inner, invParam.MaxIter);
 
         mixed_solver = new QPhiX::InvRichardsonMultiPrec<REALT,
                                                          OuterVec,
@@ -320,15 +321,13 @@ namespace Chroma
                                                          InnerVec,
                                                          InnerSoa,
                                                          comp12>(
-            *M_outer, *bicgstab_inner_solver, toDouble(invParam.Delta), invParam.MaxIter);
-       break;
+            *M_outer, *inner_solver, toDouble(invParam.Delta), invParam.MaxIter);
+        break;
       default:
         QDPIO::cerr << "UNKNOWN Solver Type" << std::endl;
         QDP_abort(1);
       }
     }
-
-  }
 
   //! Destructor
   ~MdagMSysSolverQPhiXCloverIterRefine()
@@ -438,8 +437,8 @@ namespace Chroma
 
 #ifndef QDP_IS_QDPJIT
       // Pack Spinors psi and chi
-      QPhiX::qdp_pack_cb_spinor<>(psi, psi_qphix, *geom, 1);
-      QPhiX::qdp_pack_cb_spinor<>(chi, chi_qphix, *geom, 1);
+      QPhiX::qdp_pack_cb_spinor<>(psi, psi_qphix, *geom_outer, 1);
+      QPhiX::qdp_pack_cb_spinor<>(chi, chi_qphix, *geom_outer, 1);
 #else
       psi_qphix = (QPhiX_Spinor *)(psi.getFjit()) + cbsize_in_blocks;
       chi_qphix = (QPhiX_Spinor *)(chi.getFjit()) + cbsize_in_blocks;
@@ -462,7 +461,7 @@ namespace Chroma
       double end = omp_get_wtime();
 
 #ifndef QDP_IS_QDPJIT
-      QPhiX::qdp_unpack_cb_spinor<>(psi_qphix, psi, *geom, 1);
+      QPhiX::qdp_unpack_cb_spinor<>(psi_qphix, psi, *geom_outer, 1);
 #endif
 
       predictor.newVector(psi);
