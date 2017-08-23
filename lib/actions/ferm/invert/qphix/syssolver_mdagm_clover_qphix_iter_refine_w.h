@@ -288,7 +288,7 @@ namespace Chroma
           toDouble(aniso_coeffs[3]));
 
       switch (invParam.SolverType) {
-      case CG:
+      case CG: {
         QDPIO::cout << "Creating the CG Solver" << std::endl;
         inner_solver =
             new QPhiX::InvCG<REALT,
@@ -308,7 +308,9 @@ namespace Chroma
                                                          MdagM>(
             *M_outer, *inner_solver, toDouble(invParam.Delta), invParam.MaxIter);
 
-      case BICGSTAB: 
+        break;
+      }
+      case BICGSTAB: {
         QDPIO::cout << "Creating the BiCGStab Solver" << std::endl;
         inner_solver = new QPhiX::InvBiCGStab<InnerReal, InnerVec, InnerSoa, comp12>(
             *M_inner, invParam.MaxIter);
@@ -323,9 +325,12 @@ namespace Chroma
                                                          comp12>(
             *M_outer, *inner_solver, toDouble(invParam.Delta), invParam.MaxIter);
         break;
-      default:
+      }
+      default: {
         QDPIO::cerr << "UNKNOWN Solver Type" << std::endl;
         QDP_abort(1);
+        break;
+      }
       }
     }
 
