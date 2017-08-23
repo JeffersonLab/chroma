@@ -578,6 +578,10 @@ namespace Chroma
     // Need to thread generic sums in QDP++?
     // Need to thread generic norm2() in QDP++?
     return sum(ff, rb[cb]);
+#else
+    assert(!"ni");
+    Double ret=0.;
+    return ret;
 #endif
   }
 
