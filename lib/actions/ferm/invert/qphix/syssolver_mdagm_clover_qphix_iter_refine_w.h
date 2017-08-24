@@ -37,6 +37,8 @@
 #include "actions/ferm/invert/qphix/qphix_vec_traits.h"
 #include "qphix_singleton.h"
 
+#include <memory>
+
 using namespace QDP;
 using namespace std;
 
@@ -293,17 +295,16 @@ namespace Chroma
         inner_solver = new QPhiX::InvCG<InnerReal, InnerVec, InnerSoa, comp12>(
             *M_inner, invParam.MaxIter);
 
-        bool constexpr MdagM = true;
-        mixed_solver = new QPhiX::InvRichardsonMultiPrec<REALT,
-                                                         OuterVec,
-                                                         OuterSoa,
-                                                         comp12,
-                                                         InnerReal,
-                                                         InnerVec,
-                                                         InnerSoa,
-                                                         comp12,
-                                                         MdagM>(
-            *M_outer, *inner_solver, toDouble(invParam.Delta), invParam.MaxIter);
+        mixed_solver.reset(new QPhiX::InvRichardsonMultiPrec<REALT,
+                                                             OuterVec,
+                                                             OuterSoa,
+                                                             comp12,
+                                                             InnerReal,
+                                                             InnerVec,
+                                                             InnerSoa,
+                                                             comp12,
+                                                             true>(
+            *M_outer, *inner_solver, toDouble(invParam.Delta), invParam.MaxIter));
 
         break;
       }
@@ -312,15 +313,15 @@ namespace Chroma
         inner_solver = new QPhiX::InvBiCGStab<InnerReal, InnerVec, InnerSoa, comp12>(
             *M_inner, invParam.MaxIter);
 
-        mixed_solver = new QPhiX::InvRichardsonMultiPrec<REALT,
-                                                         OuterVec,
-                                                         OuterSoa,
-                                                         comp12,
-                                                         InnerReal,
-                                                         InnerVec,
-                                                         InnerSoa,
-                                                         comp12>(
-            *M_outer, *inner_solver, toDouble(invParam.Delta), invParam.MaxIter);
+        mixed_solver.reset(new QPhiX::InvRichardsonMultiPrec<REALT,
+                                                             OuterVec,
+                                                             OuterSoa,
+                                                             comp12,
+                                                             InnerReal,
+                                                             InnerVec,
+                                                             InnerSoa,
+                                                             comp12>(
+            *M_outer, *inner_solver, toDouble(invParam.Delta), invParam.MaxIter));
         break;
       }
       default: {
@@ -699,7 +700,8 @@ namespace Chroma
         inner_solver;
 
     // Outer solver, will be Richardson solver.
-    Handle<QPhiX::AbstractSolver<REALT, OuterVec, OuterSoa, comp12>> mixed_solver;
+    std::unique_ptr<QPhiX::AbstractSolver<REALT, OuterVec, OuterSoa, comp12>>
+        mixed_solver;
 
     QPhiX_Clover* invclov_packed[2];
     QPhiX_Clover* clov_packed[2];
