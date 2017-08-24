@@ -40,7 +40,6 @@
 #include <memory>
 
 using namespace QDP;
-using namespace std;
 
 namespace Chroma
 {
