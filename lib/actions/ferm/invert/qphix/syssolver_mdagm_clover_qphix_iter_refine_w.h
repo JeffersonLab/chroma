@@ -699,11 +699,7 @@ namespace Chroma
         inner_solver;
 
     // Outer solver, will be Richardson solver.
-    Handle<QPhiX::AbstractSolver<REALT,
-                                 MixedVecTraits<REALT, InnerReal>::Vec,
-                                 MixedVecTraits<REALT, InnerReal>::Soa,
-                                 MixedVecTraits<REALT, InnerReal>::compress12>>
-        mixed_solver;
+    Handle<QPhiX::AbstractSolver<REALT, OuterVec, OuterSoa, comp12>> mixed_solver;
 
     QPhiX_Clover* invclov_packed[2];
     QPhiX_Clover* clov_packed[2];
