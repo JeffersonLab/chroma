@@ -33,7 +33,7 @@ yes)
 	;;
 *)
 ;;
-esace
+esac
 
 case $sse_dslash_enabled in
 yes)

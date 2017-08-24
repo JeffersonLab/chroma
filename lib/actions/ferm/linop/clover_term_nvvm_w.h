@@ -597,7 +597,7 @@ namespace Chroma
    */
 
   template<typename RealT,typename U,typename X,typename Y>
-  CUfunction function_make_clov_exec(CUfunction function, 
+  void function_make_clov_exec(CUfunction function, 
 				     const RealT& diag_mass, 
 				     const U& f0,
 				     const U& f1,
@@ -610,15 +610,15 @@ namespace Chroma
   {
     AddressLeaf addr_leaf(all);
 
-    int junk_0 = forEach(diag_mass, addr_leaf, NullCombine());
-    int junk_1 = forEach(f0, addr_leaf, NullCombine());
-    int junk_2 = forEach(f1, addr_leaf, NullCombine());
-    int junk_3 = forEach(f2, addr_leaf, NullCombine());
-    int junk_4 = forEach(f3, addr_leaf, NullCombine());
-    int junk_5 = forEach(f4, addr_leaf, NullCombine());
-    int junk_6 = forEach(f5, addr_leaf, NullCombine());
-    int junk_7 = forEach(tri_dia, addr_leaf, NullCombine());
-    int junk_8 = forEach(tri_off, addr_leaf, NullCombine());
+    forEach(diag_mass, addr_leaf, NullCombine());
+    forEach(f0, addr_leaf, NullCombine());
+    forEach(f1, addr_leaf, NullCombine());
+    forEach(f2, addr_leaf, NullCombine());
+    forEach(f3, addr_leaf, NullCombine());
+    forEach(f4, addr_leaf, NullCombine());
+    forEach(f5, addr_leaf, NullCombine());
+    forEach(tri_dia, addr_leaf, NullCombine());
+    forEach(tri_off, addr_leaf, NullCombine());
 
     // lo <= idx < hi
     int lo = 0;
@@ -632,8 +632,8 @@ namespace Chroma
     addr.push_back( &hi );
     //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
 
-    int addr_dest=addr.size();
-    for(int i=0; i < addr_leaf.addr.size(); ++i) {
+    //int addr_dest=addr.size();
+    for(unsigned i=0; i < addr_leaf.addr.size(); ++i) {
       addr.push_back( &addr_leaf.addr[i] );
       //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
     }
@@ -655,6 +655,11 @@ namespace Chroma
 				      const Y& tri_off)
   {
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
+    if (ptx_db::db_enabled) {
+      CUfunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
+      if (func)
+	return func;
+    }
 
     typedef typename WordType<RealT>::Type_t REALT;
 
@@ -683,7 +688,7 @@ namespace Chroma
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
 
 
-    llvm::Value *  r_lo     = llvm_derefParam( p_lo );
+    llvm_derefParam( p_lo );
     llvm::Value *  r_hi     = llvm_derefParam( p_hi );
     llvm::Value *  r_idx = llvm_thread_idx();
     
@@ -784,7 +789,7 @@ namespace Chroma
 
     //    std::cout << __PRETTY_FUNCTION__ << ": leaving\n";
 
-    return jit_function_epilogue_get_cuf("jit_make_clov.ptx");
+    return jit_function_epilogue_get_cuf("jit_make_clov.ptx" , __PRETTY_FUNCTION__ );
   }
 
 
@@ -881,7 +886,7 @@ namespace Chroma
 
 
   template<typename T,typename X,typename Y>
-  CUfunction function_ldagdlinv_exec( CUfunction function,
+  void function_ldagdlinv_exec( CUfunction function,
 				      T& tr_log_diag,
 				      X& tri_dia,
 				      Y& tri_off,
@@ -892,9 +897,9 @@ namespace Chroma
 
     AddressLeaf addr_leaf(s);
 
-    int junk_0 = forEach(tr_log_diag, addr_leaf, NullCombine());
-    int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
-    int junk_3 = forEach(tri_off, addr_leaf, NullCombine());
+    forEach(tr_log_diag, addr_leaf, NullCombine());
+    forEach(tri_dia, addr_leaf, NullCombine());
+    forEach(tri_off, addr_leaf, NullCombine());
 
     // lo <= idx < hi
     int lo = s.start();
@@ -908,8 +913,8 @@ namespace Chroma
     addr.push_back( &hi );
     //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
 
-    int addr_dest=addr.size();
-    for(int i=0; i < addr_leaf.addr.size(); ++i) {
+    //int addr_dest=addr.size();
+    for(unsigned i=0; i < addr_leaf.addr.size(); ++i) {
       addr.push_back( &addr_leaf.addr[i] );
       //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
     }
@@ -928,6 +933,13 @@ namespace Chroma
 				       const Subset& s)
   {
     typedef typename WordType<U>::Type_t REALT;
+
+    if (ptx_db::db_enabled) {
+      CUfunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
+      if (func)
+	return func;
+    }
+
 
     //std::cout << __PRETTY_FUNCTION__ << " entering\n";
 
@@ -970,7 +982,7 @@ namespace Chroma
     zero_rep(zip);
     int N = 2*Nc;
       
-    int site_neg_logdet=0;
+    //int site_neg_logdet=0;
   
     for(int block=0; block < 2; block++) {
 	  
@@ -1112,7 +1124,7 @@ namespace Chroma
 
     //    std::cout << __PRETTY_FUNCTION__ << " leaving\n";
 
-    return jit_function_epilogue_get_cuf("jit_ldagdlinv.ptx");
+    return jit_function_epilogue_get_cuf("jit_ldagdlinv.ptx" , __PRETTY_FUNCTION__ );
   }
 
 
@@ -1200,7 +1212,7 @@ namespace Chroma
 
 
   template<typename U,typename X,typename Y>
-  CUfunction function_triacntr_exec( CUfunction function,
+  void function_triacntr_exec( CUfunction function,
 				     U& B,
 				     const X& tri_dia,
 				     const Y& tri_off,
@@ -1212,9 +1224,9 @@ namespace Chroma
 
     AddressLeaf addr_leaf(s);
 
-    int junk_0 = forEach(B, addr_leaf, NullCombine());
-    int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
-    int junk_3 = forEach(tri_off, addr_leaf, NullCombine());
+    forEach(B, addr_leaf, NullCombine());
+    forEach(tri_dia, addr_leaf, NullCombine());
+    forEach(tri_off, addr_leaf, NullCombine());
 
     // lo <= idx < hi
     int lo = s.start();
@@ -1231,8 +1243,8 @@ namespace Chroma
     addr.push_back( &mat );
     //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
 
-    int addr_dest=addr.size();
-    for(int i=0; i < addr_leaf.addr.size(); ++i) {
+    //int addr_dest=addr.size();
+    for(unsigned i=0; i < addr_leaf.addr.size(); ++i) {
       addr.push_back( &addr_leaf.addr[i] );
       //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
     }
@@ -1250,6 +1262,13 @@ namespace Chroma
 				      int mat,
 				      const Subset& s)
   {
+    if (ptx_db::db_enabled) {
+      CUfunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
+      if (func)
+	return func;
+    }
+
+
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
     typedef typename WordType<U>::Type_t REALT;
@@ -1582,7 +1601,8 @@ namespace Chroma
 
     llvm_set_insert_point( case_default );
 
-    return jit_function_epilogue_get_cuf("jit_triacntr.ptx");
+    return jit_function_epilogue_get_cuf("jit_triacntr.ptx" , __PRETTY_FUNCTION__ );
+
   }
 
 
@@ -1656,10 +1676,10 @@ namespace Chroma
 
     AddressLeaf addr_leaf(s);
 
-    int junk_0 = forEach(chi, addr_leaf, NullCombine());
-    int junk_1 = forEach(psi, addr_leaf, NullCombine());
-    int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
-    int junk_3 = forEach(tri_off, addr_leaf, NullCombine());
+    forEach(chi, addr_leaf, NullCombine());
+    forEach(psi, addr_leaf, NullCombine());
+    forEach(tri_dia, addr_leaf, NullCombine());
+    forEach(tri_off, addr_leaf, NullCombine());
 
     // lo <= idx < hi
     int lo = s.start();
@@ -1673,8 +1693,8 @@ namespace Chroma
     addr.push_back( &hi );
     //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
 
-    int addr_dest=addr.size();
-    for(int i=0; i < addr_leaf.addr.size(); ++i) {
+    //int addr_dest=addr.size();
+    for(unsigned i=0; i < addr_leaf.addr.size(); ++i) {
       addr.push_back( &addr_leaf.addr[i] );
       //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
     }
@@ -1692,6 +1712,12 @@ namespace Chroma
 				       const Y& tri_off,
 				       const Subset& s)
   {
+    if (ptx_db::db_enabled) {
+      CUfunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
+      if (func)
+	return func;
+    }
+
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
     //typedef typename WordType<RealT>::Type_t REALT;
 
@@ -1775,7 +1801,7 @@ namespace Chroma
 
     chi_j = chi_r;
 
-    return jit_function_epilogue_get_cuf("jit_apply_clov.ptx");
+    return jit_function_epilogue_get_cuf("jit_apply_clov.ptx" , __PRETTY_FUNCTION__ );
   }
 
 
