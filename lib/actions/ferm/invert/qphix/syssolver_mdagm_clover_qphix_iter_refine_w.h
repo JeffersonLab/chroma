@@ -414,7 +414,7 @@ namespace Chroma
 
       swatch.stop();
       QDPIO::cout << "QPHIX_MDAGM_ITER_REFINE_SOLVER: total time: "
-                  << swatch.getTimeInSeconds() << " (sec)" << endl;
+                  << swatch.getTimeInSeconds() << " (sec)" << std::endl;
       END_CODE();
       return res;
     }
