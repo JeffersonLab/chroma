@@ -481,10 +481,10 @@ namespace Chroma
         Double b2 = norm2(chi, A->subset());
         Double rel_resid = sqrt(r2 / b2);
         res.resid = rel_resid;
-        QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: " << res.n_count
+        QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_CG_SOLVER: " << res.n_count
                     << " iters,  rsd_sq_final=" << rel_resid << std::endl;
 
-        QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: || r || / || b || = " << rel_resid
+        QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_CG_SOLVER: || r || / || b || = " << rel_resid
                     << std::endl;
 
 #if 0
@@ -501,7 +501,7 @@ namespace Chroma
       double gflops = (double)(total_flops) / (1.0e9);
 
       double total_time = end - start;
-      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: Solver Time=" << total_time
+      QDPIO::cout << "QPHIX_CLOVER_ITER_REFINE_CG_SOLVER: Solver Time=" << total_time
                   << " (sec)  Performance=" << gflops / total_time << " GFLOPS"
                   << std::endl;
 
