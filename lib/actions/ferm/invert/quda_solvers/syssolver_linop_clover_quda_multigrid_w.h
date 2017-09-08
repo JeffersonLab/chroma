@@ -441,7 +441,7 @@ namespace Chroma
 			else {
 				mg_inv_param.verbosity = QUDA_SUMMARIZE;
 			}
-			mg_inv_param.verbosity_precondition = QUDA_SILENT;
+			mg_inv_param.verbosity_precondition = QUDA_SUMMARIZE;
 
 
 			//Replacing above with what's in the invert test.
@@ -519,19 +519,35 @@ namespace Chroma
 			  mg_param.spin_block_size[i] = 1;
 				
 
-				// FIXME: Elevate ip.nvec, ip.nu_pre, ip.nu_post, ip.tol to arrays in the XML
 			  if ( i < mg_param.n_level-1) { 
 			    mg_param.n_vec[i] = ip.nvec[i];
 			    mg_param.nu_pre[i] = ip.nu_pre[i];
 			    mg_param.nu_post[i] = ip.nu_post[i];
 			  }
 			  mg_param.smoother_tol[i] = toDouble(ip.tol);
-			  mg_param.global_reduction[i] = QUDA_BOOLEAN_YES;
-			  //mg_param.smoother[i] = precon_type;
+
+			  
+			  mg_param.mu_factor[i] = 1.0; // default in quda test program
+
+			  // Hardwire setup solver now.
+			  mg_param.setup_inv_type[i] = QUDA_BICGSTAB_INVERTER;
+			  mg_param.setup_tol[i] = 5.0e-6;
+			  mg_param.num_setup_iter[i] = 1; // 1 refine for now.. like before
+			  mg_param.precision_null[i] = mg_inv_param.cuda_prec_precondition; 
+
+			  // Hardwire Coarse solver now
+			  mg_param.coarse_solver[i] = QUDA_GCR_INVERTER;
+			  mg_param.coarse_solver_tol[i] = 0.25;
+			  mg_param.coarse_solver_maxiter[i] = 10;
+
 			  switch( ip.smootherType ) {
 			  case MR:
 			    mg_param.smoother[i] = QUDA_MR_INVERTER;
+			    mg_param.smoother_tol[i] = 0.25;
+			    mg_param.smoother_solve_type[i] = QUDA_DIRECT_PC_SOLVE;
 			    mg_param.omega[i] = toDouble(ip.relaxationOmegaMG);
+			    mg_param.smoother_schwarz_type[i] = QUDA_INVALID_SCHWARZ;
+			    mg_param.smoother_schwarz_cycle[i] = 1;
 			    break;
 			  default:
 			    QDPIO::cout << "Unknown or no smother type specified, no smoothing inverter will be used." << std::endl;
@@ -539,9 +555,9 @@ namespace Chroma
 			    QDP_abort(1);
 			    break;
 			  }
-			
+	
+			  mg_param.global_reduction[i] =  (mg_param.smoother_schwarz_type[i] == QUDA_INVALID_SCHWARZ) ? QUDA_BOOLEAN_YES : QUDA_BOOLEAN_NO;		
 			  mg_param.location[i] = QUDA_CUDA_FIELD_LOCATION;
-			  mg_param.smoother_solve_type[i] = QUDA_DIRECT_PC_SOLVE;
 			  
 			  if ( ip.cycle_type == "MG_VCYCLE" ) {
 			    mg_param.cycle_type[i] = QUDA_MG_CYCLE_VCYCLE;
@@ -566,7 +582,11 @@ namespace Chroma
 			  }
 			}
 
-			// LEvel 0 must always be matpc 
+			mg_param.setup_type = QUDA_NULL_VECTOR_SETUP;
+			mg_param.pre_orthonormalize = QUDA_BOOLEAN_NO;
+			mg_param.post_orthonormalize = QUDA_BOOLEAN_YES;
+
+     			// LEvel 0 must always be matpc 
 	                mg_param.coarse_grid_solution_type[0] = QUDA_MATPC_SOLUTION;
 
 			// only coarsen the spin on the first restriction
