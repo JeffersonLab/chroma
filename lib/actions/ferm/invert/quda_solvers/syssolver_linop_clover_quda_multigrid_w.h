@@ -441,7 +441,7 @@ namespace Chroma
 			else {
 				mg_inv_param.verbosity = QUDA_SUMMARIZE;
 			}
-			mg_inv_param.verbosity_precondition = QUDA_SUMMARIZE;
+			mg_inv_param.verbosity_precondition = QUDA_SILENT;
 
 
 			//Replacing above with what's in the invert test.
@@ -537,8 +537,8 @@ namespace Chroma
 
 			  // Hardwire Coarse solver now
 			  mg_param.coarse_solver[i] = QUDA_GCR_INVERTER;
-			  mg_param.coarse_solver_tol[i] = 0.25;
-			  mg_param.coarse_solver_maxiter[i] = 10;
+			  mg_param.coarse_solver_tol[i] = toDouble(ip.tol);
+			  mg_param.coarse_solver_maxiter[i] = ip.maxIterations;
 
 			  switch( ip.smootherType ) {
 			  case MR:
