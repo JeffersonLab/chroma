@@ -820,6 +820,8 @@ namespace Chroma
     Complex 
     DerivMesonSeqSourceBase::momentumProject(const LatticeComplex& corr_fn) const
     {
+      START_CODE();
+
       // Extract the sink at the appropriate momenta
       SftMom sft(0, getTSrce(), getSinkMom(), false, getDecayDir());
       multi2d<DComplex> hsum;
