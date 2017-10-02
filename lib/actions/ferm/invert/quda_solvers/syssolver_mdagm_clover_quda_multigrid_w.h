@@ -315,6 +315,20 @@ public:
 			// Dereference handle
 			MULTIGRIDSolverParams ip = *(invParam.MULTIGRIDParams);
 
+			//Replacing above with what's in the invert test.
+        switch( ip.schwarzType ) {
+          case ADDITIVE_SCHWARZ :
+          quda_inv_param.schwarz_type = QUDA_ADDITIVE_SCHWARZ;
+          break;
+          case MULTIPLICATIVE_SCHWARZ :
+          quda_inv_param.schwarz_type = QUDA_MULTIPLICATIVE_SCHWARZ;
+          break;
+          default:
+          quda_inv_param.schwarz_type = QUDA_ADDITIVE_SCHWARZ;
+          break;
+        }
+        quda_inv_param.precondition_cycle = 1;
+
 			// Set preconditioner precision
 			switch( ip.prec ) {
 			case HALF:
