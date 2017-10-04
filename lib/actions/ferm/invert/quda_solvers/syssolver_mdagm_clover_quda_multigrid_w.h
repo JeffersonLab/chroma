@@ -70,13 +70,18 @@ public:
       const SysSolverQUDAMULTIGRIDCloverParams& invParam_) :
         A(A_), invParam(invParam_), clov(new CloverTermT<T, U>() ), invclov(new CloverTermT<T, U>())
   {
+    StopWatch init_swatch;
+    init_swatch.reset(); init_swatch.start();
 
     // Set the solver string
     {
-      ostringstream solver_string_stream(solver_string);
-      solver_string_stream << "QUDA_MULTIGRID_CLOVER_MDAGM_SOLVER( SubspaceID="
+      ostringstream solver_string_stream;
+      solver_string_stream << "QUDA_MULTIGRID_CLOVER_MDAGM_SOLVER( "
           << invParam.SaveSubspaceID << " ): ";
+      solver_string = solver_string_stream.str();
+
     }
+    QDPIO::cout << solver_string << "Initializing" << std::endl;
 
     // FOLLOWING INITIALIZATION in test QUDA program
 
@@ -474,16 +479,22 @@ public:
 
     if(TheNamedObjMap::Instance().check(invParam.SaveSubspaceID))
     {
+      StopWatch update_swatch;
+      update_swatch.reset(); update_swatch.start();
       // Subspace ID exists add it to mg_state
       QDPIO::cout<< solver_string <<"Recovering subspace..."<<std::endl;
       subspace_pointers = TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID);
 
       updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
-
+      update_swatch.stop();
+      QDPIO::cout << solver_string << " subspace_update_time = "
+          << update_swatch.getTimeInSeconds() << " sec. " << std::endl;
     }
     else
     {
       // Create the subspace.
+      StopWatch create_swatch;
+      create_swatch.reset(); create_swatch.start();
       QDPIO::cout << solver_string << "Creating Subspace" << std::endl;
       subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
       XMLBufferWriter file_xml;
@@ -503,8 +514,18 @@ public:
       TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
 
       TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
+      create_swatch.stop();
+      QDPIO::cout << solver_string << " subspace_create_time = "
+          << create_swatch.getTimeInSeconds() << " sec. " << std::endl;
+
     }
     quda_inv_param.preconditioner = subspace_pointers->preconditioner;
+
+    init_swatch.stop();
+    QDPIO::cout << solver_string << " init_time = "
+        << init_swatch.getTimeInSeconds() << " sec. "
+        << std::endl;
+
   }
 
   //! Destructor is not automatic
@@ -528,6 +549,8 @@ public:
    */
   SystemSolverResults_t operator() (T& psi, const T& chi) const
   {
+    SystemSolverResults_t res1;
+    SystemSolverResults_t res2;
     SystemSolverResults_t res;
 
     START_CODE();
@@ -537,12 +560,12 @@ public:
     psi = zero; // Zero initial guess
     T g5chi = Gamma(Nd*Nd - 1)*chi;
     T tmp_solve = zero;
-    res = qudaInvert(*clov,
+    res1 = qudaInvert(*clov,
         *invclov,
         g5chi,
         tmp_solve);
     T g5chi_inverseg5 = Gamma(Nd*Nd -1)*tmp_solve;
-    res = qudaInvert(*clov,
+    res2 = qudaInvert(*clov,
         *invclov,
         g5chi_inverseg5,
         psi);
@@ -559,12 +582,17 @@ public:
       T tmp_dag;
       (*A)(tmp_dag, tmp, MINUS);
       r[A->subset()] -= tmp_dag;
+      res.n_count = res1.n_count + res2.n_count;
       res.resid = sqrt(norm2(r, A->subset()));
     }
 
     Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
 
-    QDPIO::cout <<  solver_string  << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
+    QDPIO::cout <<  solver_string  << "iterations: " << res1.n_count << " + "
+        <<  res2.n_count << " = " << res.n_count
+        <<  " Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
+
+    QDPIO::cout <<solver_string  << "Total time (with prediction)=" << time << std::endl;
 
     // Convergence Check/Blow Up
     if ( ! invParam.SilentFailP ) {
@@ -626,16 +654,20 @@ public:
       T tmp;
       (*MdagM)(tmp, psi, PLUS);
       r[A->subset()] -= tmp;
+      res.n_count = res1.n_count + res2.n_count;
       res.resid = sqrt(norm2(r, A->subset()));
     }
 
 
     double time = swatch.getTimeInSeconds();
-    res.n_count = res1.n_count + res2.n_count;  // Two step solve so combine iteration count
     Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
 
-    QDPIO::cout <<solver_string  << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
+    QDPIO::cout <<  solver_string  << "iterations: " << res1.n_count << " + "
+         <<  res2.n_count << " = " << res.n_count
+         <<  " Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
+
     QDPIO::cout <<solver_string  << "Total time (with prediction)=" << time << std::endl;
+
     if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
       QDPIO::cout <<  solver_string <<" FAILED" << std::endl;
       QDP_abort(1);

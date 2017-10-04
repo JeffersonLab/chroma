@@ -91,7 +91,7 @@ namespace Chroma
 #else
     void* spinorIn = GetMemoryPtr( mod_chi.getId() );
     void* spinorOut = GetMemoryPtr( psi_s.getId() );
-    QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
+
 #endif
 
     // Do the solve here 

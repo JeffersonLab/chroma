@@ -71,13 +71,17 @@ namespace Chroma
 				const SysSolverQUDAMULTIGRIDCloverParams& invParam_) :
 		A(A_), invParam(invParam_), clov(new CloverTermT<T, U>() ), invclov(new CloverTermT<T, U>())
 		{
-
-		  // Set the solver string
-		  {
-		    ostringstream solver_string_stream(solver_string);
-		    solver_string_stream << "QUDA_MULTIGRID_CLOVER_LINOP_SOLVER( SubspaceID="
+		  StopWatch init_swatch;
+		  init_swatch.reset(); init_swatch.start();
+		   // Set the solver string
+		    {
+		      ostringstream solver_string_stream;
+		      solver_string_stream << "QUDA_MULTIGRID_CLOVER_LINOP_SOLVER( "
 		          << invParam.SaveSubspaceID << " ): ";
-		  }
+		      solver_string = solver_string_stream.str();
+
+		    }
+		    QDPIO::cout << solver_string << "Initializing" << std::endl;
 
 			// FOLLOWING INITIALIZATION in test QUDA program
 
@@ -684,6 +688,10 @@ namespace Chroma
 			QDPIO::cout << solver_string <<"MULTIGrid Param Dump" << std::endl;
 			printQudaMultigridParam(&mg_param);
 #endif
+
+			init_swatch.stop();
+			QDPIO::cout << solver_string << "init_time = "
+			            << init_swatch.getTimeInSeconds() << " sec. " << std::endl;
 
 		}
 

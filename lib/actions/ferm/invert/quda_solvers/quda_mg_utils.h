@@ -269,8 +269,11 @@ namespace Chroma {
 			ret_val->preconditioner = newMultigridQuda(&mg_param);
 			QDPIO::cout<<"NewMultigridQuda state initialized."<<std::endl;
 			QDPIO::cout<<"MULTIGRID preconditioner set."<<std::endl;
+
+#if 0
 			QDPIO::cout <<"MULTIGrid Param Dump" << std::endl;
 			printQudaMultigridParam(&mg_param);
+#endif
 
 			return ret_val;
 		}
