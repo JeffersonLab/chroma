@@ -22,6 +22,7 @@ namespace Chroma
     int mg_levels; 
     bool generate_nullspace;
     bool generate_all_levels;
+    bool check_multigrid_setup;
     multi1d<int> nu_pre;
     multi1d<int> nu_post;
     multi1d< multi1d<int> > blocking;
@@ -61,6 +62,7 @@ namespace Chroma
       precond_gcr_nkrylov = 12;
 
       generate_all_levels = true;
+      check_multigrid_setup= true;
       cycle_type = "MG_VCYCLE";
 
     };

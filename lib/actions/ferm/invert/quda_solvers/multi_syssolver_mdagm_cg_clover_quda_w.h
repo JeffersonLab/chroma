@@ -499,20 +499,20 @@ namespace Chroma
       swatch.stop();
       double time = swatch.getTimeInSeconds();
 
-      if (invParam.verboseP )  { 
+      if (invParam.checkShiftsP )  {
         Double chinorm=norm2(chi, A->subset());
         multi1d<Double> r_rel(shifts.size());
-      
+
         for(int i=0; i < shifts.size(); i++) { 
-	  T tmp1,tmp2;
-	  (*A)(tmp1, psi[i], PLUS);
-	  (*A)(tmp2, tmp1, MINUS);  // tmp2 = A^\dagger A psi
-	  tmp2[ A->subset() ] +=  shifts[i]* psi[i]; // tmp2 = ( A^\dagger A + shift_i ) psi
-	  T r;
-	  r[ A->subset() ] = chi - tmp2;
-	  r_rel[i] = sqrt(norm2(r, A->subset())/chinorm );
+          T tmp1,tmp2;
+          (*A)(tmp1, psi[i], PLUS);
+          (*A)(tmp2, tmp1, MINUS);  // tmp2 = A^\dagger A psi
+          tmp2[ A->subset() ] +=  shifts[i]* psi[i]; // tmp2 = ( A^\dagger A + shift_i ) psi
+          T r;
+          r[ A->subset() ] = chi - tmp2;
+          r_rel[i] = sqrt(norm2(r, A->subset())/chinorm );
 #if 1
-  	  QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << std::endl;
+          QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << std::endl;
 #endif
         }
       }

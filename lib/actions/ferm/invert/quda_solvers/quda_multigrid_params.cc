@@ -61,6 +61,14 @@ namespace Chroma {
     }
 
     read(paramtop, "GenerateNullspace", generate_nullspace);
+
+    if( paramtop.count("./CheckMultigridSetup") == 1 ) {
+      read(paramtop, "CheckMultigridSetup", check_multigrid_setup);
+    }
+    else {
+      check_multigrid_setup = true; // Default: Checks for suspace and coarss op ar one!
+    }
+
     read(paramtop, "GenerateAllLevels", generate_all_levels);
 
     //FIXME: Should be an enum
@@ -116,6 +124,7 @@ namespace Chroma {
     write(xml, "MultiGridLevels", p.mg_levels);
     write(xml, "GenerateNullSpace", p.generate_nullspace);
     write(xml, "GenerateAllLevels", p.generate_all_levels);
+    write(xml, "CheckMultigridSetup", p.check_multigrid_setup);
     write(xml, "CycleType", p.cycle_type);
     write(xml, "Pre-SmootherApplications", p.nu_pre);
     write(xml, "Post-SmootherApplications", p.nu_post);

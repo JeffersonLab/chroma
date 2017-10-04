@@ -167,8 +167,14 @@ namespace Chroma {
 				mg_param.invert_param = &mg_inv_param;
 				mg_inv_param.Ls = 1;
 				mg_param.n_level = ip.mg_levels;
-				// FIXME: Make this an XML param
-				mg_param.run_verify = QUDA_BOOLEAN_YES;
+
+				if (ip.check_multigrid_setup == true ) {
+				  mg_param.run_verify = QUDA_BOOLEAN_YES;
+				}
+				else {
+				  mg_param.run_verify = QUDA_BOOLEAN_NO;
+				}
+
 				for (int i=0; i<mg_param.n_level; i++) {
 					for (int j=0; j<QUDA_MAX_DIM; j++) {
 						if( i < mg_param.n_level-1 ) {
