@@ -86,6 +86,19 @@ namespace Chroma
     {
       u.resize(Nd);
       readCERN(u, params.cfg_file);
+
+      XMLBufferWriter file_xml, record_xml;
+      push(file_xml, "gauge");
+      write(file_xml, "info", "A CERN Gauge Field");
+      pop(file_xml);
+
+      push(record_xml, "record");
+      write(record_xml, "info", "Spooled from CERN Format File");
+      pop(file_xml);
+
+      gauge_file_xml.open(file_xml);
+      gauge_xml.open(record_xml);
+
     }
   }
 }
