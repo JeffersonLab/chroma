@@ -95,10 +95,12 @@ namespace Chroma {
 			mg_inv_param.cpu_prec = cpu_prec;
 			mg_inv_param.cuda_prec = gpu_prec;
 			mg_inv_param.cuda_prec_sloppy = gpu_half_prec;
+ 		        mg_inv_param.cuda_prec_precondition = gpu_half_prec;
 			//Clover stuff
 			mg_inv_param.clover_cpu_prec = cpu_prec;
 			mg_inv_param.clover_cuda_prec = gpu_prec;
 			mg_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
+			mg_inv_param.clover_cuda_prec_precondition = gpu_half_prec;
 			mg_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
 			//
 			//Done...
@@ -273,16 +275,7 @@ namespace Chroma {
 				QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
 			}
 			// setup the multigrid solver
-			// This does allocate memor
-			QDPIO::cout << "Before call to newMultigridQuda" << std::endl;
-			for(int i=0; i < mg_param.n_level; ++i) { 
-			  QDPIO::cout << "Set Level " << i << " blocking as: "; 
-			  
-			  for(int j=0; j < 4; ++j) { 
-			    QDPIO::cout << " " << mg_param.geo_block_size[i][j];
-			  }
-			  QDPIO::cout << std::endl;
-			}
+			// this allocates memory
 
 			ret_val->preconditioner = newMultigridQuda(&mg_param);
 			QDPIO::cout<<"NewMultigridQuda state initialized."<<std::endl;
