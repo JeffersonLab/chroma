@@ -184,6 +184,9 @@ namespace Chroma
 
 			q_gauge_param.cuda_prec_sloppy = gpu_half_prec;
 
+			// Default. This may be overwritten by inner params
+			q_gauge_param.cuda_prec_precondition = gpu_half_prec;
+
 			switch( invParam.cudaSloppyReconstruct ) {
 				case RECONS_NONE:
 				q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_NO;
@@ -198,7 +201,7 @@ namespace Chroma
 				q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12;
 				break;
 			};
-
+		    	q_gauge_param.reconstruct_precondition = q_gauge_param.reconstruct_sloppy;
 			// Gauge fixing:
 
 			// These are the links
@@ -303,15 +306,21 @@ namespace Chroma
 			quda_inv_param.cpu_prec = cpu_prec;
 			quda_inv_param.cuda_prec = gpu_prec;
 			quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
+			quda_inv_param.cuda_prec_precondition = gpu_half_prec;
+
 			//Add some lines for mg_inv_param.
 			mg_inv_param.cpu_prec = cpu_prec;
 			mg_inv_param.cuda_prec = gpu_prec;
 			mg_inv_param.cuda_prec_sloppy = gpu_half_prec;
+			mg_inv_param.cuda_prec_precondition = gpu_half_prec;
+
 			//Clover stuff
 			mg_inv_param.clover_cpu_prec = cpu_prec;
 			mg_inv_param.clover_cuda_prec = gpu_prec;
 			mg_inv_param.clover_cuda_prec_precondition = gpu_prec;
 			mg_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
+		        mg_inv_param.clover_cuda_prec_precondition = gpu_half_prec;
+
 			mg_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
 			//
 			//Done...
@@ -363,7 +372,7 @@ namespace Chroma
 			quda_inv_param.clover_cpu_prec = cpu_prec;
 			quda_inv_param.clover_cuda_prec = gpu_prec;
 			quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
-
+		        quda_inv_param.clover_cuda_prec_precondition  = gpu_half_prec;
 			if( invParam.MULTIGRIDParamsP ) {
 				MULTIGRIDSolverParams ip = *(invParam.MULTIGRIDParams);
 
