@@ -181,6 +181,7 @@ public:
     };
 
     q_gauge_param.cuda_prec_sloppy = gpu_half_prec;
+    q_gauge_param.cuda_prec_precondition = gpu_half_prec;
 
     switch( invParam.cudaSloppyReconstruct ) {
       case RECONS_NONE:
@@ -196,6 +197,9 @@ public:
         q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12;
         break;
     };
+
+    // This may be overridden later
+    q_gauge_param.reconstruct_precondition=q_gauge_param.reconstruct_sloppy;
 
     // Gauge fixing:
 
@@ -268,6 +272,7 @@ public:
     quda_inv_param.cpu_prec = cpu_prec;
     quda_inv_param.cuda_prec = gpu_prec;
     quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
+    quda_inv_param.cuda_prec_precondition = gpu_half_prec;
     quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
     quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
 
@@ -313,6 +318,7 @@ public:
     quda_inv_param.clover_cpu_prec = cpu_prec;
     quda_inv_param.clover_cuda_prec = gpu_prec;
     quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
+    quda_inv_param.clover_cuda_prec_precondition = gpu_half_prec;
 
     if( !invParam.MULTIGRIDParamsP )  {
       QDPIO::cout << solver_string << "ERROR: MG Solver had MULTIGRIDParamsP set to false" << std::endl;
