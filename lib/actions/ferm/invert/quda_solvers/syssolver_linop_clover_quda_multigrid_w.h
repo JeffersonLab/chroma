@@ -22,7 +22,7 @@
 #include "meas/gfix/temporal_gauge.h"
 #include "io/aniso_io.h"
 #include <string>
-
+#include <sstream>
 #include "util/gauge/reunit.h"
 #ifdef QDP_IS_QDPJIT
 #include "actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h"
@@ -75,7 +75,7 @@ namespace Chroma
 		  init_swatch.reset(); init_swatch.start();
 		   // Set the solver string
 		    {
-		      ostringstream solver_string_stream;
+		      std::ostringstream solver_string_stream;
 		      solver_string_stream << "QUDA_MULTIGRID_CLOVER_LINOP_SOLVER( "
 		          << invParam.SaveSubspaceID << " ): ";
 		      solver_string = solver_string_stream.str();

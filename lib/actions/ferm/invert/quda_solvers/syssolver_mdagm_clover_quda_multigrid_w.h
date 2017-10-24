@@ -23,6 +23,8 @@ using namespace QDP;
 #include "meas/gfix/temporal_gauge.h"
 #include "io/aniso_io.h"
 #include <string>
+#include <sstream>
+
 #include "lmdagm.h"
 #include "util/gauge/reunit.h"
 #include "actions/ferm/invert/quda_solvers/quda_mg_utils.h"
@@ -75,7 +77,7 @@ public:
 
     // Set the solver string
     {
-      ostringstream solver_string_stream;
+      std::ostringstream solver_string_stream;
       solver_string_stream << "QUDA_MULTIGRID_CLOVER_MDAGM_SOLVER( "
           << invParam.SaveSubspaceID << " ): ";
       solver_string = solver_string_stream.str();
