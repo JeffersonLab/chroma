@@ -47,6 +47,9 @@
 
 #ifdef BUILD_MGPROTO
 #include  "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.h"
+#ifdef BUILD_QPHIX
+#include  "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.h"
+#endif
 #endif
 
 namespace Chroma
@@ -97,6 +100,9 @@ namespace Chroma
 
 #ifdef BUILD_MGPROTO
 	success &= LinOpSysSolverMGProtoCloverEnv::registerAll();
+#ifdef BUILD_QPHIX
+  success &= LinOpSysSolverMGProtoQPhiXCloverEnv::registerAll();
+#endif
 #endif
 	registered = true;
       }

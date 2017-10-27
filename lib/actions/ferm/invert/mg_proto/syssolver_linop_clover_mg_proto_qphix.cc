@@ -6,28 +6,30 @@
  */
 
 #include "chromabase.h"
-#include "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.h"
+#include "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.h"
 #include "handle.h"
 #include "state.h"
 #include "actions/ferm/invert/syssolver_linop_factory.h"
-#include "actions/ferm/invert/mg_proto/mg_proto_helpers.h"
+#include "actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.h"
 
 #include "lattice/solver.h"
 #include "lattice/fgmres_common.h"
-#include "lattice/fine_qdpxx/invfgmres_qdpxx.h"
-
+#include "lattice/qphix/invfgmres_qphix.h"
+#include "lattice/qphix/qphix_qdp_utils.h"
+#include "lattice/qphix/qphix_clover_linear_operator.h"
+#include <memory>
 using namespace QDP;
 
 namespace Chroma
 {
-  namespace LinOpSysSolverMGProtoCloverEnv
+  namespace LinOpSysSolverMGProtoQPhiXCloverEnv
   {
 
     //! Anonymous namespace
     namespace
     {
       //! Name to be used
-      const std::string name("MG_PROTO_CLOVER_INVERTER");
+      const std::string name("MG_PROTO_QPHIX_CLOVER_INVERTER");
 
       //! Local registration flag
       bool registered = false;
@@ -42,7 +44,7 @@ namespace Chroma
 
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new LinOpSysSolverMGProtoClover(A,state,MGProtoSolverParams(xml_in, path));
+      return new LinOpSysSolverMGProtoQPhiXClover(A,state,MGProtoSolverParams(xml_in, path));
     }
 
     //! Register all the factories
@@ -60,26 +62,26 @@ namespace Chroma
   };
 
   // Save me typing, by exposing this file level from here
-  using T = LinOpSysSolverMGProtoClover::T;
-  using Q = LinOpSysSolverMGProtoClover::Q;
+  using T = LinOpSysSolverMGProtoQPhiXClover::T;
+  using Q = LinOpSysSolverMGProtoQPhiXClover::Q;
 
   // Constructor
-  LinOpSysSolverMGProtoClover::LinOpSysSolverMGProtoClover(Handle< LinearOperator<T> > A_,
+  LinOpSysSolverMGProtoQPhiXClover::LinOpSysSolverMGProtoQPhiXClover(Handle< LinearOperator<T> > A_,
 		  Handle< FermState<T,Q,Q> > state_,
 		  const MGProtoSolverParams& invParam_) :  A(A_), state(state_), invParam(invParam_) {}
 
   // Destructor
-  LinOpSysSolverMGProtoClover::~LinOpSysSolverMGProtoClover(){}
+  LinOpSysSolverMGProtoQPhiXClover::~LinOpSysSolverMGProtoQPhiXClover(){}
 
   //! Return the subset on which the operator acts
   const Subset&
-  LinOpSysSolverMGProtoClover::subset(void) const
+  LinOpSysSolverMGProtoQPhiXClover::subset(void) const
   {
 	  return A->subset();
   }
 
   SystemSolverResults_t
-  LinOpSysSolverMGProtoClover::operator()(T& psi, const T& chi) const
+  LinOpSysSolverMGProtoQPhiXClover::operator()(T& psi, const T& chi) const
   {
 	  QDPIO::cout << "Jolly Greetings from Multigridland" << std::endl;
 	  StopWatch swatch;
@@ -91,15 +93,15 @@ namespace Chroma
 	  // Let us see if we have a Multigrid setup lying around.
 	  const std::string& subspaceId = invParam.SubspaceId;
 
-	  std::shared_ptr<MGProtoHelpers::MGPreconditioner> mg_pointer = MGProtoHelpers::getMGPreconditioner(subspaceId);
+	  std::shared_ptr<MGProtoHelpersQPhiX::MGPreconditioner> mg_pointer = MGProtoHelpersQPhiX::getMGPreconditioner(subspaceId);
 	  if ( ! mg_pointer ) {
 		  QDPIO::cout << "MG Preconditioner not found in Named Obj. Creating" << std::endl;
 
 		  // Check on the links -- they are ferm state and may already have BC's applied? need to figure that out.
-		  MGProtoHelpers::createMGPreconditioner(invParam, state->getLinks());
+		  MGProtoHelpersQPhiX::createMGPreconditioner(invParam, state->getLinks());
 
 		  // Now get the setup
-		  mg_pointer = MGProtoHelpers::getMGPreconditioner(subspaceId);
+		  mg_pointer = MGProtoHelpersQPhiX::getMGPreconditioner(subspaceId);
 	  }
 
 	  // Next step is to  create a solver instance:
@@ -109,15 +111,24 @@ namespace Chroma
 	  fine_solve_params.VerboseP =invParam.OuterSolverVerboseP;
 	  fine_solve_params.NKrylov = invParam.OuterSolverNKrylov;
 
-	  shared_ptr<const MG::QDPWilsonCloverLinearOperator > M_ptr = (mg_pointer->mg_levels->fine_level).M;
+	  std::shared_ptr<MG::QPhiXWilsonCloverLinearOperator > M_ptr = (mg_pointer->M);
 
-	  MG::FGMRESSolverQDPXX FGMRESOuter(*M_ptr, fine_solve_params, (mg_pointer->v_cycle).get());
+	  const LatticeInfo& info = M_ptr->GetInfo();
+	  QPhiXSpinor qphix_in(info);
+	  QPhiXSpinor qphix_out(info);
+
+	  MG::FGMRESSolverQPhiX FGMRESOuter(*M_ptr, fine_solve_params, (mg_pointer->v_cycle).get());
 
 	  // Solve the system
+	  QDPSpinorToQPhiXSpinor(chi,qphix_in);
+	  ZeroVec(qphix_out);
+
 	  swatch2.reset();
 	  swatch2.start();
-	  MG::LinearSolverResults res=FGMRESOuter(psi, chi, RELATIVE);
+	  MG::LinearSolverResults res=FGMRESOuter(qphix_out,qphix_in, RELATIVE);
 	  swatch2.stop();
+
+	  QPhiXSpinorToQDPSpinor(qphix_out,psi);
 
 	  {
 		  T tmp;
