@@ -29,6 +29,7 @@
 
 #ifdef BUILD_MGPROTO
 #include "utils/memory.h"
+#include "utils/initialize.h"
 #endif
 namespace Chroma 
 {
@@ -278,6 +279,10 @@ namespace Chroma
   	// Initialzie MG Proto memory
   	QDPIO::cout << "Initializing MG_proto memory system" << std::endl;
   	MG::InitMemory(argc,argv);
+#ifdef BUILD_QPHIX
+  	QDPIO::cout << "Initializing QPhiX CLI Args for MG_proto" << std::endl;
+  	MG::InitCLIArgs(argc,argv);
+#endif
 #endif
 
   }

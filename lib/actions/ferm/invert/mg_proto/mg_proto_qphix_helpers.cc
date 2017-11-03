@@ -139,6 +139,11 @@ createMGPreconditioner( const MGProtoSolverParams& params, const multi1d<Lattice
 	MG::SetupQPhiXMGLevels(level_params, *mg_levels, M_f );
 	QDPIO::cout << "... Done " << std::endl;
 
+	if( (mg_levels->fine_level).M == nullptr ) {
+	  QDPIO::cout << "Error... Barfaroni. Fine Level M is null after subspace setup" << std::endl;
+	  QDP_abort(1);
+	}
+
 	QDPIO::cout << "Creating VCycle Parameters..." << std::endl;
 	vector<MG::VCycleParams> v_params(n_levels-1);
 	for(int l=0; l < n_levels-1;++l) {
@@ -186,6 +191,7 @@ createMGPreconditioner( const MGProtoSolverParams& params, const multi1d<Lattice
 	TheNamedObjMap::Instance().getData<shared_ptr<MGPreconditioner>>(subspaceId)=make_shared<MGPreconditioner>();
 	TheNamedObjMap::Instance().getData<shared_ptr<MGPreconditioner>>(subspaceId)->mg_levels = mg_levels;
 	TheNamedObjMap::Instance().getData<shared_ptr<MGPreconditioner>>(subspaceId)->v_cycle = v_cycle;
+	TheNamedObjMap::Instance().getData<shared_ptr<MGPreconditioner>>(subspaceId)->M = M;
 
 	swatch.stop();
 	QDPIO::cout << "MG_PROTO_QPHIX_SETUP: Subspace Creation Took : " << swatch.getTimeInSeconds() << " sec" << std::endl;
