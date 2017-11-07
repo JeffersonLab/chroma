@@ -98,48 +98,75 @@ namespace Chroma
     size_t nelem=ndir*linkdbles;
     size_t dbsize=sizeof(double);
     size_t linkbytes=dbsize*linkdbles;
-    double sitebuffer[nelem];
-    for (int it=0;it<NT;it++)
-      for (int ix=0;ix<NX;ix++)
-	for (int iy=0;iy<NY;iy++)
-	  for (int iz=0;iz<NZ;iz++)
-	    if ((ix+iy+iz+it)%2){
+    size_t n_sites = (NX*NY*NZ*NT)/2; // Sites on one checkerboard
+    size_t NZh = NZ/2;
 
-	      multi1d<int> coord(QDP::Nd);
-	      coord[0]=ix; coord[1]=iy; coord[2]=iz; coord[3]=it;
-	      iotimer.start();
-	      // reads on primary
-	      fin.readArrayPrimaryNodeLittleEndian((char*)&sitebuffer[0],dbsize,nelem);
-	      iotimer.stop();
+    size_t localNZh = Layout::subgridLattSize()[2];
 
-	      pokeCernLink(&sitebuffer[0],linkbytes,coord,u[3]);
-	      pokeCernLink(&sitebuffer[2*linkdbles],linkbytes,coord,u[0]);
-	      pokeCernLink(&sitebuffer[4*linkdbles],linkbytes,coord,u[1]);
-	      pokeCernLink(&sitebuffer[6*linkdbles],linkbytes,coord,u[2]);
+    double *sitebuffer = new double[localNZh*nelem];
+    iotimer.start();
 
-	      int keep=coord[3]; 
-	      if (coord[3]==0) coord[3]=NT-1; else coord[3]--;
-	      pokeCernLink(&sitebuffer[linkdbles],linkbytes,coord,u[3]);
-	      coord[3]=keep;
-	      keep=coord[0];
-	      if (coord[0]==0) coord[0]=NX-1; else coord[0]--;
-	      pokeCernLink(&sitebuffer[3*linkdbles],linkbytes,coord,u[0]);
-	      coord[0]=keep;
-	      keep=coord[1];
-	      if (coord[1]==0) coord[1]=NY-1; else coord[1]--;
-	      pokeCernLink(&sitebuffer[5*linkdbles],linkbytes,coord,u[1]);
-	      coord[1]=keep;
-	      if (coord[2]==0) coord[2]=NZ-1; else coord[2]--;
-	      pokeCernLink(&sitebuffer[7*linkdbles],linkbytes,coord,u[2]);
-	    }
+    // Block into lines of Z
+    for (int zblock=0; zblock < n_sites/localNZh; ++zblock) {
 
+      fin.readArrayPrimaryNodeLittleEndian((char*)&sitebuffer[0],dbsize,localNZh*nelem);
+
+      for(int zsite = 0; zsite < localNZh; ++zsite) {
+
+        int cbsite = zblock*localNZh + zsite;
+        int bufoffset = zsite*nelem;
+        // Checkerboarding is in the Z index.
+        // Indices run as Z (fastest), Y, Z, T (slowest)
+        // CBSites run as
+        //   zcb + (NZ/2)*(y + NY*(x + NX*t))
+        //   and convention has it that we are working on cb = 1
+        //   (previous loop only did anything if (ix + iy + iz + it)%2 == 1 i.e. odd cb
+
+        int tmp_yxt = cbsite/NZh;
+        int zcb = cbsite - NZh*tmp_yxt;
+        int tmp_xt = tmp_yxt/NY;
+        int iy = tmp_yxt - NY*tmp_xt;
+        int it = tmp_xt/NX;
+        int ix = tmp_xt - NX*it;
+        int iz = 2*zcb + ((1+ix+iy+it)&0x1); // Target cb is 1, hence 1 + ix + iy + it)
+
+
+
+        multi1d<int> coord(QDP::Nd);
+        coord[0]=ix; coord[1]=iy; coord[2]=iz; coord[3]=it;
+
+        pokeCernLink(&sitebuffer[bufoffset],linkbytes,coord,u[3]);
+        pokeCernLink(&sitebuffer[bufoffset + 2*linkdbles],linkbytes,coord,u[0]);
+        pokeCernLink(&sitebuffer[bufoffset + 4*linkdbles],linkbytes,coord,u[1]);
+        pokeCernLink(&sitebuffer[bufoffset + 6*linkdbles],linkbytes,coord,u[2]);
+
+        int keep=coord[3];
+        if (coord[3]==0) coord[3]=NT-1; else coord[3]--;
+        pokeCernLink(&sitebuffer[bufoffset+ linkdbles],linkbytes,coord,u[3]);
+        coord[3]=keep;
+        keep=coord[0];
+        if (coord[0]==0) coord[0]=NX-1; else coord[0]--;
+        pokeCernLink(&sitebuffer[bufoffset + 3*linkdbles],linkbytes,coord,u[0]);
+        coord[0]=keep;
+        keep=coord[1];
+        if (coord[1]==0) coord[1]=NY-1; else coord[1]--;
+        pokeCernLink(&sitebuffer[bufoffset + 5*linkdbles],linkbytes,coord,u[1]);
+        coord[1]=keep;
+        if (coord[2]==0) coord[2]=NZ-1; else coord[2]--;
+        pokeCernLink(&sitebuffer[bufoffset +7*linkdbles],linkbytes,coord,u[2]);
+      }
+    }
+    iotimer.stop();
+    delete [] sitebuffer;
+
+    QDPIO::cout << "IO took " << iotimer.getTimeInSeconds() << " secs" << std::endl;
     QDPIO::cout << "readCERN: plaq read: " << plaq << std::endl;
     Double w_plaq,s_plaq,t_plaq,link;
     MesPlq(u, w_plaq, s_plaq, t_plaq,link);  
     QDPIO::cout << "readCERN: plaq recomputed " << w_plaq << std::endl;
     rtimer.stop();
     QDPIO::cout << "Read of CERN gauge field done in "<<rtimer.getTimeInSeconds()<<" seconds"<<std::endl;
-    QDPIO::cout << "Time of IO operations = "<<iotimer.getTimeInSeconds()<<" seconds"<<std::endl<<std::endl;
+
   }
 
 
