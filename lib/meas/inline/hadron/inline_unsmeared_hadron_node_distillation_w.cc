@@ -292,6 +292,7 @@ namespace Chroma
     struct KeyUnsmearedMesonElementalOperator_t
     {
       int                t_slice;      /*!< Meson operator time slice */
+      int                gamma;        /*!< The "gamma" in Gamma(gamma) */
       std::vector<int>   displacement; /*!< Displacement dirs of right colorstd::vector */
       multi1d<int>       mom;          /*!< D-1 momentum of this operator */
     };
@@ -317,6 +318,7 @@ namespace Chroma
     void read(BinaryReader& bin, KeyUnsmearedMesonElementalOperator_t& param)
     {
       read(bin, param.t_slice);
+      read(bin, param.gamma);
       read(bin, param.displacement);
       read(bin, param.mom);
     }
@@ -325,6 +327,7 @@ namespace Chroma
     void write(BinaryWriter& bin, const KeyUnsmearedMesonElementalOperator_t& param)
     {
       write(bin, param.t_slice);
+      write(bin, param.gamma);
       write(bin, param.displacement);
       write(bin, param.mom);
     }
@@ -335,6 +338,7 @@ namespace Chroma
       XMLReader paramtop(xml, path);
     
       read(paramtop, "t_slice", param.t_slice);
+      read(paramtop, "gamma", param.gamma);
       read(paramtop, "displacement", param.displacement);
       read(paramtop, "mom", param.mom);
     }
@@ -345,6 +349,7 @@ namespace Chroma
       push(xml, path);
 
       write(xml, "t_slice", param.t_slice);
+      write(xml, "gamma", param.gamma);
       write(xml, "displacement", param.displacement);
       write(xml, "mom", param.mom);
 
@@ -895,6 +900,7 @@ namespace Chroma
 		
 		buf[t].key.key().t_slice       = t;
 		buf[t].key.key().mom           = mom;
+		buf[t].key.key().gamma         = ins->gamma;
 		buf[t].key.key().displacement  = ins->displacement;
 		buf[t].val.data().op.resize(sink_num_vecs,Ns);
 	      }
