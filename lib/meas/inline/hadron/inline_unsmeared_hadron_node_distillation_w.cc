@@ -291,8 +291,13 @@ namespace Chroma
     //! Unsmeared meson operator
     struct KeyUnsmearedMesonElementalOperator_t
     {
+      int                t_sink;       /*!< Time sink */
       int                t_slice;      /*!< Meson operator time slice */
+      int                t_source;     /*!< Time source */
+      int                spin_src;     /*!< Spin source component */
+      int                colorvec_src; /*!< Colorvec source component */
       int                gamma;        /*!< The "gamma" in Gamma(gamma) */
+      bool               derivP;       /*!< Uses derivatives */
       std::vector<int>   displacement; /*!< Displacement dirs of right colorstd::vector */
       multi1d<int>       mom;          /*!< D-1 momentum of this operator */
     };
@@ -317,8 +322,13 @@ namespace Chroma
     //! KeyUnsmearedMesonElementalOperator reader
     void read(BinaryReader& bin, KeyUnsmearedMesonElementalOperator_t& param)
     {
+      read(bin, param.t_sink);
       read(bin, param.t_slice);
+      read(bin, param.t_source);
+      read(bin, param.spin_src);
+      read(bin, param.colorvec_src);
       read(bin, param.gamma);
+      read(bin, param.derivP);
       read(bin, param.displacement);
       read(bin, param.mom);
     }
@@ -326,8 +336,13 @@ namespace Chroma
     //! UnsmearedMesonElementalOperator write
     void write(BinaryWriter& bin, const KeyUnsmearedMesonElementalOperator_t& param)
     {
+      write(bin, param.t_sink);
       write(bin, param.t_slice);
+      write(bin, param.t_source);
+      write(bin, param.spin_src);
+      write(bin, param.colorvec_src);
       write(bin, param.gamma);
+      write(bin, param.derivP);
       write(bin, param.displacement);
       write(bin, param.mom);
     }
@@ -337,8 +352,13 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
     
+      read(paramtop, "t_sink", param.t_sink);
       read(paramtop, "t_slice", param.t_slice);
+      read(paramtop, "t_source", param.t_source);
+      read(paramtop, "spin_src", param.spin_src);
+      read(paramtop, "colorvec_src", param.colorvec_src);
       read(paramtop, "gamma", param.gamma);
+      read(paramtop, "derivP", param.derivP);
       read(paramtop, "displacement", param.displacement);
       read(paramtop, "mom", param.mom);
     }
@@ -348,8 +368,13 @@ namespace Chroma
     {
       push(xml, path);
 
+      write(xml, "t_sink", param.t_sink);
       write(xml, "t_slice", param.t_slice);
+      write(xml, "t_source", param.t_source);
+      write(xml, "spin_src", param.spin_src);
+      write(xml, "colorvec_src", param.colorvec_src);
       write(xml, "gamma", param.gamma);
+      write(xml, "derivP", param.derivP);
       write(xml, "displacement", param.displacement);
       write(xml, "mom", param.mom);
 
@@ -430,6 +455,37 @@ namespace Chroma
     
 
   
+    //----------------------------------------------------------------------------
+    //! Normalize just one displacement array
+    std::vector<int> normDisp(const std::vector<int>& orig)
+    {
+      START_CODE();
+
+      std::vector<int> disp;
+      std::vector<int> empty; 
+      std::vector<int> no_disp(1); no_disp[0] = 0;
+
+      // NOTE: a no-displacement is recorded as a zero-length array
+      // Convert a length one array with no displacement into a no-displacement array
+      if (orig.size() == 1)
+      {
+	if (orig == no_disp)
+	  disp = empty;
+	else
+	  disp = orig;
+      }
+      else
+      {
+	disp = orig;
+      }
+
+      END_CODE();
+
+      return disp;
+    } // void normDisp
+
+
+
     //-------------------------------------------------------------------------------
     // Function call
     void 
@@ -612,7 +668,7 @@ namespace Chroma
       SftMom phases(0, false, params.param.contract.decay_dir);
 
       //
-      // If a list of momenta has been specified only need phases corresponding to these
+      // Check displacements
       //
       if (params.param.disp_gamma_mom_list.size() > 0)
       {
@@ -636,6 +692,11 @@ namespace Chroma
 
 	SftMom temp_phases(moms, params.param.contract.decay_dir);
 	phases = temp_phases;
+      }
+      else
+      {
+	QDPIO::cerr << name << ": warning - you have an empty disp_gamma_mom_list. Will allow under your insistence." << std::endl;
+	QDP_abort(1);
       }
 
 
@@ -883,8 +944,14 @@ namespace Chroma
 	      auto mom = ins->mom;
 	      int  mom_num = phases.momToNum(mom);
 
+	      // Make sure displacement is something sensible
+	      std::vector<int> disp = normDisp(ins->displacement);
+
 	      // Finally, the actual insertion
-	      LatticeFermion tmp = phases[mom_num] * (Gamma(ins->gamma) * disp_soln_cache.getDispVector(params.param.contract.use_derivP, mom, ins->displacement));
+	      LatticeFermion tmp = phases[mom_num] * (Gamma(ins->gamma) * disp_soln_cache.getDispVector(params.param.contract.use_derivP,
+													mom,
+													disp));
+	      
 										   
 	      // Keys and stuff
 	      SerialDBKey<KeyUnsmearedMesonElementalOperator_t>  key;
@@ -898,10 +965,15 @@ namespace Chroma
 	      {
 		if (! active_t_slices[t]) {continue;}
 		
+		buf[t].key.key().derivP        = params.param.contract.use_derivP;
+		buf[t].key.key().t_sink        = t_sink;
 		buf[t].key.key().t_slice       = t;
-		buf[t].key.key().mom           = mom;
+		buf[t].key.key().t_source      = t_source;
+		buf[t].key.key().spin_src      = spin_source;
+		buf[t].key.key().colorvec_src  = colorvec_src;
 		buf[t].key.key().gamma         = ins->gamma;
-		buf[t].key.key().displacement  = ins->displacement;
+		buf[t].key.key().displacement  = disp;
+		buf[t].key.key().mom           = mom;
 		buf[t].val.data().op.resize(sink_num_vecs,Ns);
 	      }
 
