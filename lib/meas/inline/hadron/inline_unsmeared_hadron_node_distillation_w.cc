@@ -395,6 +395,70 @@ namespace Chroma
       write(bin, param.op);
     }
 
+ 
+    //----------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
+    //! Map holding expressions. Key is the mom, val is some unique counter
+    typedef MapObjectMemory< multi1d<int>, int >  MapTwoQuarkMom_t;
+
+    //----------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------
+    //! Twoquark field
+    struct KeyTwoQuarkGamma_t
+    {
+      KeyTwoQuarkGamma_t() {}
+      KeyTwoQuarkGamma_t(int g) : gamma(g) {}
+
+      int    gamma;   /*!< The gamma in Gamma(gamma) - a number from [0 ... Ns*Ns) */
+    };
+
+    //----------------------------------------------------------------------------
+    //! Reader
+    void read(BinaryReader& bin, KeyTwoQuarkGamma_t& op)
+    {
+      read(bin, op.gamma);
+    }
+
+    //! Writer
+    void write(BinaryWriter& bin, const KeyTwoQuarkGamma_t& op)
+    {
+      write(bin, op.gamma);
+    }
+
+
+    //----------------------------------------------------------------------------
+    //! Map holding expressions. Key is the two-quark, val is the mom
+    typedef MapObjectMemory< KeyTwoQuarkGamma_t, MapTwoQuarkMom_t >  MapTwoQuarkGammaMom_t;
+
+
+    //----------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------
+    //! Twoquark field
+    struct KeyTwoQuarkDisp_t
+    {
+      KeyTwoQuarkDisp_t() {}
+      KeyTwoQuarkDisp_t(const std::vector<int>& d) : deriv(d) {}
+
+      std::vector<int>   deriv;   /*!< Left-right derivative path. This is 1-based. */
+    };
+
+    //----------------------------------------------------------------------------
+    //! Reader
+    void read(BinaryReader& bin, KeyTwoQuarkDisp_t& op)
+    {
+      read(bin, op.deriv);
+    }
+  
+    //! Writer
+    void write(BinaryWriter& bin, const KeyTwoQuarkDisp_t& op)
+    {
+      write(bin, op.deriv);
+    }
+
+    //----------------------------------------------------------------------------
+    //! Map holding expressions. Key is the two-quark, val is the weight.
+    typedef MapObjectMemory<KeyTwoQuarkDisp_t, MapTwoQuarkGammaMom_t>  MapTwoQuarkDispGammaMom_t;
+
 
     //-------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------
@@ -670,17 +734,49 @@ namespace Chroma
       //
       // Check displacements
       //
+      MapTwoQuarkDispGammaMom_t disp_gamma_moms;
+
       if (params.param.disp_gamma_mom_list.size() > 0)
       {
 	int mom_size = 0;
 	MapObjectMemory<multi1d<int>, int> uniq_mom;
 	for(auto ins = params.param.disp_gamma_mom_list.begin(); ins != params.param.disp_gamma_mom_list.end(); ++ins)
 	{	
+	  // Sort out momentum
 	  QDPIO::cout << name << ": mom= " << ins->mom << std::endl;
 	  uniq_mom.insert(ins->mom, 1);
 	  QDPIO::cout << " found mom" << std::endl;
 	  mom_size = ins->mom.size();
 	  QDPIO::cout << " mom_size= " << mom_size << std::endl;
+
+	  //
+	  // Build maps of displacements, gammas and their moms
+	  //
+	  // Make sure displacement is something sensible
+	  std::vector<int> disp = normDisp(ins->displacement);
+
+	  // Insert unique combos
+	  // Drat - don't have automatic uniqueness generator
+	  MapTwoQuarkMom_t george;
+	  MapTwoQuarkGammaMom_t fred;
+	  george.insert(ins->mom, 1);
+	  fred.insert(ins->gamma, george);
+
+	  if (disp_gamma_moms.exist(disp))
+	  {
+	    if (disp_gamma_moms[disp].exist(ins->gamma))
+	    {
+	      disp_gamma_moms[disp][ins->gamma].insert(ins->mom, 1);
+	    }
+	    else
+	    {
+	      disp_gamma_moms[disp].insert(ins->gamma, george);
+	    }
+	  }
+	  else
+	  {
+	    disp_gamma_moms.insert(disp, fred);
+	  }
 	}
 
 	int num_mom = uniq_mom.size();
@@ -935,84 +1031,95 @@ namespace Chroma
 	    snarss1.reset();
 	    snarss1.start();
 
-	    for(auto ins = params.param.disp_gamma_mom_list.begin(); ins != params.param.disp_gamma_mom_list.end(); ++ins)
+	    for(auto dd = disp_gamma_moms.begin(); dd != disp_gamma_moms.end(); ++dd)
 	    {
-	      StopWatch snarss2;
-	      snarss2.reset();
-	      snarss2.start();
-
-	      auto mom = ins->mom;
-	      int  mom_num = phases.momToNum(mom);
-
-	      // Make sure displacement is something sensible
-	      std::vector<int> disp = normDisp(ins->displacement);
-
-	      // Finally, the actual insertion
-	      LatticeFermion tmp = phases[mom_num] * (Gamma(ins->gamma) * disp_soln_cache.getDispVector(params.param.contract.use_derivP,
-													mom,
-													disp));
-	      
-										   
-	      // Keys and stuff
-	      SerialDBKey<KeyUnsmearedMesonElementalOperator_t>  key;
-	      SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
-
-	      // The keys for the spin and displacements for this particular elemental operator
-	      // No displacement for left colorvector, only displace right colorvector
-	      // Invert the time - make it an independent key
-	      multi1d<KeyValUnsmearedMesonElementalOperator_t> buf(phases.numSubsets());
-	      for(int t=0; t < phases.numSubsets(); ++t)
+	      for(auto gg = dd->second.begin(); gg != dd->second.end(); ++gg)
 	      {
-		if (! active_t_slices[t]) {continue;}
-		
-		buf[t].key.key().derivP        = params.param.contract.use_derivP;
-		buf[t].key.key().t_sink        = t_sink;
-		buf[t].key.key().t_slice       = t;
-		buf[t].key.key().t_source      = t_source;
-		buf[t].key.key().spin_src      = spin_source;
-		buf[t].key.key().colorvec_src  = colorvec_src;
-		buf[t].key.key().gamma         = ins->gamma;
-		buf[t].key.key().displacement  = disp;
-		buf[t].key.key().mom           = mom;
-		buf[t].val.data().op.resize(sink_num_vecs,Ns);
-	      }
-
-	      for(int spin_snk=0; spin_snk < Ns; ++spin_snk)
-	      {
-		for(int colorvec_snk=0; colorvec_snk < sink_num_vecs; ++colorvec_snk)
+		for(auto mm = gg->second.begin(); mm != gg->second.end(); ++mm)
 		{
-		  // Slow fourier-transform
-		  multi1d<DComplex> fred = sumMulti(localInnerProduct(ferm_snk(colorvec_snk, spin_snk), tmp), phases.getSet());
+		  StopWatch snarss2;
+		  snarss2.reset();
+		  snarss2.start();
+
+		  auto disp    = dd->first.deriv;
+		  auto gamma   = gg->first.gamma;
+		  auto mom     = mm->first;
+		  int  mom_num = phases.momToNum(mom);
+
+		  //
+		  // Finally, the actual insertion
+		  // NOTE: if we did not have the possibility for derivatives, then the displacement,
+		  // and multiply by gamma could be moved outside the mom loop.
+		  // The deriv/disp are cached, so the only cost is a lookup.
+		  // The gamma is really just a rearrangement of spin components, but it does cost
+		  // a traversal of the lattice
+		  // The phases mult is a straight up cost.
+		  //
+		  LatticeFermion tmp = phases[mom_num] * (Gamma(gamma) * disp_soln_cache.getDispVector(params.param.contract.use_derivP,
+												       mom,
+												       disp));
+	      
+		  // Keys and stuff
+		  SerialDBKey<KeyUnsmearedMesonElementalOperator_t>  key;
+		  SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
+
+		  // The keys for the spin and displacements for this particular elemental operator
+		  // No displacement for left colorvector, only displace right colorvector
+		  // Invert the time - make it an independent key
+		  multi1d<KeyValUnsmearedMesonElementalOperator_t> buf(phases.numSubsets());
+		  for(int t=0; t < phases.numSubsets(); ++t)
+		  {
+		    if (! active_t_slices[t]) {continue;}
+		
+		    buf[t].key.key().derivP        = params.param.contract.use_derivP;
+		    buf[t].key.key().t_sink        = t_sink;
+		    buf[t].key.key().t_slice       = t;
+		    buf[t].key.key().t_source      = t_source;
+		    buf[t].key.key().spin_src      = spin_source;
+		    buf[t].key.key().colorvec_src  = colorvec_src;
+		    buf[t].key.key().gamma         = gamma;
+		    buf[t].key.key().displacement  = disp;
+		    buf[t].key.key().mom           = mom;
+		    buf[t].val.data().op.resize(sink_num_vecs,Ns);
+		  }
+
+		  for(int spin_snk=0; spin_snk < Ns; ++spin_snk)
+		  {
+		    for(int colorvec_snk=0; colorvec_snk < sink_num_vecs; ++colorvec_snk)
+		    {
+		      // Slow fourier-transform
+		      multi1d<DComplex> fred = sumMulti(localInnerProduct(ferm_snk(colorvec_snk, spin_snk), tmp), phases.getSet());
 	
+		      for(int t=0; t < phases.numSubsets(); ++t)
+		      {
+			if (! active_t_slices[t]) {continue;}
+			
+			buf[t].val.data().op(colorvec_snk,spin_snk) = fred[t];
+		      }
+		    }
+		  }
+
+		  // Insert these elementals into the db
 		  for(int t=0; t < phases.numSubsets(); ++t)
 		  {
 		    if (! active_t_slices[t]) {continue;}
 
-		    buf[t].val.data().op(colorvec_snk,spin_snk) = fred[t];
+		    //QDPIO::cout << "insert key= " << buf[t].key.key() << std::endl;
+		    write(xml_out, "Insertion", buf[t].key.key());
+
+		    qdp_db.insert(buf[t].key, buf[t].val);
 		  }
-		}
-	      }
 
-	      // Insert these elementals into the db
-	      for(int t=0; t < phases.numSubsets(); ++t)
-	      {
-		if (! active_t_slices[t]) {continue;}
-
-		//QDPIO::cout << "insert key= " << buf[t].key.key() << std::endl;
-		write(xml_out, "Insertion", buf[t].key.key());
-
-		qdp_db.insert(buf[t].key, buf[t].val);
-	      }
-
-	      snarss2.stop(); 
-	      QDPIO::cout << " Time to build elemental: spin_source= " << spin_source
-			  << "  colorvec_src= " << colorvec_src
-			  << "  gamma= " << ins->gamma
-			  << "  disp= " << ins->displacement
-			  << "  mom= " << ins->mom
-			  << "  time = " << snarss2.getTimeInSeconds() << " secs " <<std::endl;
-
-	    } // for insertion
+		  snarss2.stop(); 
+		  QDPIO::cout << " Time to build elemental: spin_source= " << spin_source
+			      << "  colorvec_src= " << colorvec_src
+			      << "  gamma= " << gamma
+			      << "  disp= " << disp
+			      << "  mom= " << mom
+			      << "  time = " << snarss2.getTimeInSeconds() << " secs " <<std::endl;
+		} // mm
+	      } // gg
+	    } // dd
 
 	    snarss1.stop(); 
 	    QDPIO::cout << " Time to do all insertions: time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
