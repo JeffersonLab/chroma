@@ -317,6 +317,7 @@ nobase_include_HEADERS = \
 	meas/sources/sf_pt_source_const.h \
 	meas/sources/sf_sh_source_const.h \
 	meas/sources/sf_wall_source_const.h \
+	meas/sources/sf_wave_source_const.h \
 	meas/sources/dilutezN_source_const.h \
 	meas/sources/dilute_zN_eigvec_source_const.h \
 	meas/sources/diluteGrid_source_const.h \
@@ -1278,6 +1279,7 @@ libchroma_a_SOURCES = \
 	meas/sources/sf_pt_source_const.cc \
 	meas/sources/sf_sh_source_const.cc \
 	meas/sources/sf_wall_source_const.cc \
+	meas/sources/sf_wave_source_const.cc \
         meas/sources/dilutezN_source_const.cc \
         meas/sources/dilute_zN_eigvec_source_const.cc \
         meas/sources/diluteGrid_source_const.cc \
