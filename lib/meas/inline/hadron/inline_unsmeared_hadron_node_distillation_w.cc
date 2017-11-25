@@ -929,6 +929,7 @@ namespace Chroma
 	const int srce_num_vecs       = params.param.contract.srce_num_vecs;
 	const int t_source            = params.param.contract.t_source;
 	const int t_sink              = params.param.contract.t_sink;
+	const int g5                  = Ns*Ns-1;
 
 	// Sink solution vectors
 	multi2d<LatticeFermion> ferm_snk(sink_num_vecs,Ns);
@@ -963,7 +964,14 @@ namespace Chroma
 	    // Loop over each spin source and invert. 
 	    // Use the same color vector source. No spin dilution will be used.
 	    //
-	    ferm_snk(colorvec_src, spin_source) = doInversion(*PP, vec_srce, spin_source, params.param.contract.num_tries);
+	    // NOTE: ultimately, we are using gamma5 hermiticity to change the propagator from source at time
+	    // t_sink to, instead, the t_slice
+	    // Will need a corresponding gamma5 multipling the other side when the elemental is read back in.
+	    //
+	    // Also NOTE: the gamma5 is hermitian. It could be put into the insertion, but since the need for the G5
+	    // is a part of the sink solution vector, we will multiply here.
+	    //
+	    ferm_snk(colorvec_src, spin_source) = Gamma(g5) * doInversion(*PP, vec_srce, spin_source, params.param.contract.num_tries);
 
 	    snarss1.stop();
 	    QDPIO::cout << "SINK: time to compute prop for spin_source= " << spin_source
