@@ -1,0 +1,383 @@
+<?xml version="1.0"?>
+<chroma>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>UNSMEARED_HADRON_NODE_DISTILLATION</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <!-- List of displacement arrays -->
+        <DispGammaMomList>
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>0 0 0</mom>
+	  </elem>
+
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>1 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>-1 0 0</mom>
+	  </elem>
+	  
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>1 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>-1 0 0</mom>
+	  </elem>
+	  
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>1 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>-1 0 0</mom>
+	  </elem>
+	  
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>0 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>0 -1 0</mom>
+	  </elem>
+	  
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>0 0 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>0 0 -1</mom>
+	  </elem>
+	  
+        </DispGammaMomList>
+
+        <LinkSmearing>
+          <LinkSmearingType>NONE</LinkSmearingType>
+          <!-- LinkSmearingType>STOUT_SMEAR</LinkSmearingType -->
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+
+        <Contractions>
+          <use_derivP>false</use_derivP>
+          <mass_label>U0.05</mass_label>
+          <srce_num_vecs>10</srce_num_vecs>
+          <sink_num_vecs>10</sink_num_vecs>
+          <t_source>0</t_source>
+          <t_sink>6</t_sink>
+          <decay_dir>3</decay_dir>
+          <displacement_length>1</displacement_length>
+          <num_tries>0</num_tries>
+        </Contractions>
+
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.05</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_files><elem>./colorvec.mod</elem></colorvec_files>
+        <dist_op_file>unsmeared_meson.sdb</dist_op_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>4 4 4 16</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
