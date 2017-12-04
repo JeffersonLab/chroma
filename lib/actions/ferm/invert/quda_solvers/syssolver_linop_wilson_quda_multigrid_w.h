@@ -506,6 +506,17 @@ namespace Chroma
 	mg_param.run_verify = QUDA_BOOLEAN_NO;
 
 	mg_param.n_level = ip.mg_levels;
+
+        for (int i=0; i<mg_param.n_level-1; ++i) {
+          if( ip.setup_on_gpu[i] ) {
+            mg_param.setup_location[i] = QUDA_CUDA_FIELD_LOCATION;
+          }
+          else {
+            mg_param.setup_location[i] = QUDA_CPU_FIELD_LOCATION;
+          }
+
+        }        
+
 	for (int i=0; i<mg_param.n_level; i++) {
     		for (int j=0; j<QUDA_MAX_DIM; j++) {
 		  if( i < mg_param.n_level-1 ) {

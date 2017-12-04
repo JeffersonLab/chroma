@@ -96,6 +96,40 @@ namespace Chroma {
         relaxationOmegaOuter = Real(1.0);
     }
 
+    if(paramtop.count("SetupOnGPU") == 1) {
+      read(paramtop, "SetupOnGPU", setup_on_gpu);
+      if ( setup_on_gpu.size() != mg_levels - 1 ) { 
+
+        // if size != n_levels - 1 then it is an error 
+        // unless size is 1 in which case we broadcast it.
+        //
+	if ( setup_on_gpu.size() == 1 ) { 
+
+          // Only one value was entered broadcast it
+          bool value = setup_on_gpu[0];
+          setup_on_gpu.resize(mg_levels-1);
+          for(int l=0; l < mg_levels-1; ++l) { 
+            setup_on_gpu[l] = value;
+          } 
+        }
+        else { 
+	   // Size mismatch and size is not 1 error. 
+	   QDPIO::cerr << "setup_on_gpu has size = " << setup_on_gpu.size() << 
+              " but it should be either 1 (broadcast to all levels) or " << mg_levels -1 
+	      << " (mg_levels -1) \n";
+           QDP_abort(1);
+        } // setup_on_gpu_size == 1
+      } // setup_on_gpu_size != mg_levels - 1
+    } // paramtop.count("SetupOnGPU") == 1
+    else {
+
+      // No specification in XML. Default
+      // behaviour is that all levels set up on GPU
+      setup_on_gpu.resize(mg_levels-1);
+      for(int l=0; l < mg_levels-1; ++l) {
+        setup_on_gpu[l] = true;
+      }
+    }
     
   };
 
@@ -132,6 +166,7 @@ namespace Chroma {
     write(xml, "OuterGCRNKrylov", p.outer_gcr_nkrylov);
     write(xml, "PrecondGCRNKrylov", p.precond_gcr_nkrylov);
     write(xml, "Blocking", p.blocking);
+    write(xml, "SetupOnGPU", p.setup_on_gpu);
     pop(xml);
 
   }

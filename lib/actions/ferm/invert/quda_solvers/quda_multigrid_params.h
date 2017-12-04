@@ -23,6 +23,7 @@ namespace Chroma
     bool generate_nullspace;
     bool generate_all_levels;
     bool check_multigrid_setup;
+    multi1d<bool> setup_on_gpu;
     multi1d<int> nu_pre;
     multi1d<int> nu_post;
     multi1d< multi1d<int> > blocking;
@@ -45,6 +46,11 @@ namespace Chroma
       schwarzType = ADDITIVE_SCHWARZ;
 
       mg_levels = 2;
+      setup_on_gpu.resize(mg_levels-1);
+      // Default is to set up on gpu
+      for(int i=0; i < mg_levels - 1; ++i) { 
+        setup_on_gpu[i] = true;
+      }
       blocking.resize(mg_levels-1);
       nvec.resize(mg_levels-1);
       nu_pre.resize(mg_levels-1);
