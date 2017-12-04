@@ -335,6 +335,7 @@ nobase_include_HEADERS = \
 	util/ferm/subset_vectors.h \
 	util/ferm/block_subset.h \
 	util/ferm/block_couplings.h \
+	util/ferm/disp_soln_cache.h \
 	util/ft/sftmom.h \
         util/ft/single_phase.h \
 	util/ft/time_slice_set.h \
@@ -895,6 +896,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.h \
+	meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.h \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.h \
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h \
@@ -1297,6 +1299,7 @@ libchroma_a_SOURCES = \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc \
 	util/ferm/subset_vectors.cc \
 	util/ferm/block_couplings.cc \
+	util/ferm/disp_soln_cache.cc \
         util/ft/sftmom.cc \
         util/ft/single_phase.cc \
 	util/ft/time_slice_set.cc \
@@ -1775,6 +1778,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.cc \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.cc \
