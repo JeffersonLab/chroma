@@ -25,6 +25,7 @@ nobase_include_HEADERS = \
         teoprec_linop.h teoprec_logdet_linop.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
+	actions/boson/operator/adjoint_derivative.h \
 	actions/ferm/ferm.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
@@ -405,6 +406,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/hmc/hmc.h \
 	update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
+	update/molecdyn/hmc/mg_lcm_hmc.h \
 	update/molecdyn/hmc/const_lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
 	update/molecdyn/monomial/monomial.h \

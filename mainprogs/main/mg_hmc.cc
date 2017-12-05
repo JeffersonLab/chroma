@@ -414,6 +414,13 @@ namespace Chroma
 
       for(int i=0; i < to_do; i++) 
       {
+	int dir_to_do = i%(Nd+1) ;
+	if(dir_to_do<Nd){
+	  QDPIO::cout<<" MG_HMC: doing direction: "<<dir_to_do<<std::endl ;
+	}
+	else{
+	  QDPIO::cout<<" MG_HMC: doing normal HMC "<<std::endl ;
+	}
 	push(xml_out, "elem"); // Caller writes elem rule
 	push(xml_log, "elem"); // Caller writes elem rule
 
@@ -839,7 +846,7 @@ int main(int argc, char *argv[])
     multi1d<LatticeColorMatrix> > > Integrator(new LCMToplevelIntegrator(int_par));
 
 
-  LatColMatHMCTrj theHMCTrj( H_MC, Integrator );
+  MGLatColMatHMCTrj theHMCTrj( H_MC, Integrator );
 
  
   multi1d < Handle< AbsInlineMeasurement > > the_measurements;

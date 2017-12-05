@@ -62,29 +62,33 @@ namespace Chroma
     }
 
     void setDir(int d){dir=d;}
-    const int& theDir(){return dir;} const
+    const int& theDir() const {return dir;} 
     
     void refreshP(AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
     {
       START_CODE();
-      
-      // Loop over direcsions
-      for(int mu = 0; mu < Nd; mu++) 
-      {
-	// Pull the gaussian noise
-	gaussian(s.getP()[mu]);
 
-	// Old conventions
-	//s.getP()[mu] *= sqrt(0.5);  // Gaussian Normalisation
-
-	// Normalisation factor in variance of momenta 
-	// one factor of sqrt(2) to move the variance of the noise
-	// one factor of sqrt(2) to account for Taproj normalisation
-	// => sqrt(1/2)*sqrt(1/2) = sqrt(1/4) = 1/2 
-	s.getP()[mu] *= sqrt(Real(0.5)); 
+      if(dir<Nd){//doing new algorithm
+      }
+      else{// do normal HMC
+	// Loop over direcsions
+	for(int mu = 0; mu < Nd; mu++) 
+	  {
+	    // Pull the gaussian noise
+	    gaussian(s.getP()[mu]);
+	    
+	    // Old conventions
+	    //s.getP()[mu] *= sqrt(0.5);  // Gaussian Normalisation
+	    
+	    // Normalisation factor in variance of momenta 
+	    // one factor of sqrt(2) to move the variance of the noise
+	    // one factor of sqrt(2) to account for Taproj normalisation
+	    // => sqrt(1/2)*sqrt(1/2) = sqrt(1/4) = 1/2 
+	    s.getP()[mu] *= sqrt(Real(0.5)); 
                          
-	// Make traceless and antihermitian
-	taproj(s.getP()[mu]);
+	    // Make traceless and antihermitian
+	    taproj(s.getP()[mu]);
+	  }
       }
     
       END_CODE();
