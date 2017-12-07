@@ -161,11 +161,11 @@ namespace Chroma
 #ifndef QDP_IS_QDPJIT
 	success &= InlinePropAndMatElemDistillationEnv::registerAll();
 	success &= InlinePropAndMatElemDistillation2Env::registerAll();
+	success &= InlineUnsmsearedHadronNodeDistillationEnv::registerAll();
 #endif
 	success &= InlinePropMatElemLowMemoryColorVecEnv::registerAll();
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();
 	success &= InlineMesonMatElemColorVecEnv::registerAll();
- 	success &= InlineUnsmsearedHadronNodeDistillationEnv::registerAll();
 	success &= InlineGenPropMatElemColorVecEnv::registerAll();
 	success &= InlineGenPropMatElemDAColorVecEnv::registerAll();
 	success &= InlineGenPropMatElemPtColorVecEnv::registerAll();

@@ -3,6 +3,7 @@
  */
 
 #include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.h"
+#ifndef QDP_IS_QDPJIT
 
 #include "qdp_map_obj_memory.h"
 #include "qdp_map_obj_disk.h"
@@ -1156,4 +1157,4 @@ namespace Chroma
 
 } // namespace Chroma
 
-
+#endif
