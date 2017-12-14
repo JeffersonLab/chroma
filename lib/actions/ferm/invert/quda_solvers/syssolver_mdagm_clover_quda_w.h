@@ -639,17 +639,31 @@ namespace Chroma
 
       bool failP = false;
 
+      StopWatch X_prediction_timer; X_prediction_timer.reset();
+      StopWatch Y_prediction_timer; Y_prediction_timer.reset();
+      StopWatch Y_solve_timer;      Y_solve_timer.reset();
+      StopWatch X_solve_timer;      X_solve_timer.reset();
+      StopWatch Y_predictor_add_timer; Y_predictor_add_timer.reset();
+      StopWatch X_predictor_add_timer; X_predictor_add_timer.reset();
+      
       if ( ! two_step ) { 
 
 	// Single Step Solve
 	QDPIO::cout << "Single Step Solve" << std::endl;
+	X_prediction_timer.start();
 	predictor(psi, (*MdagM), chi);
+	X_prediction_timer.stop();
+
+	X_solve_timer.start();
 	res = qudaInvert(*clov,
 			 *invclov,
 			 chi,
-			 psi);      
-	predictor.newVector(psi);
+			 psi);
+	X_solve_timer.stop();
 
+	X_predictor_add_timer.start();
+	predictor.newVector(psi);
+	X_predictor_add_timer.stop();
 	
       }
       else { 
@@ -665,27 +679,42 @@ namespace Chroma
 	  AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor = 
 	     dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>& >(predictor);
 
+    
 	  // Predict Y
+	  Y_prediction_timer.start();
 	  two_step_predictor.predictY(Y,*A,chi);
+	  Y_prediction_timer.stop();
 
+	  Y_solve_timer.start();
 	  // Now want to solve with M^\dagger on this.
 	  quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
 	  quda_inv_param.dagger = QUDA_DAG_YES;
 	  res1 = qudaInvert(*clov,
 			    *invclov,
 			    chi,
-			    Y);  
+			    Y); 
+	  Y_solve_timer.stop();
+
+	  Y_predictor_add_timer.start();
 	  two_step_predictor.newYVector(Y);
+	  Y_predictor_add_timer.stop();
+
 
 	  // Step 2: Solve M X = Y
 	  // Predict X 
+	  X_prediction_timer.start();
 	  two_step_predictor.predictX(psi,*MdagM, chi);
+	  X_prediction_timer.stop();
+	  X_solve_timer.start();
 	  quda_inv_param.dagger = QUDA_DAG_NO; // Solve without dagger
 	  res2 = qudaInvert(*clov,
 			    *invclov,
 			    Y,
-			    psi);  
+			    psi);
+	  X_solve_timer.stop();
+	  X_predictor_add_timer.start();
 	  two_step_predictor.newXVector(psi);
+	  X_predictor_add_timer.stop();
 	  
 	}
 	catch( std::bad_cast ) { 
@@ -739,9 +768,25 @@ namespace Chroma
 
       Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
 
-      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
-      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Total time (with prediction)=" << time << std::endl;
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl
+;
+      if(!two_step) { 
+	QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Time: X_predict: " << X_prediction_timer.getTimeInSeconds() << " (s) "
+ 				 << "X_solve: " << X_solve_timer.getTimeInSeconds() << " (s) " 
+				 << "X_register: " << X_predictor_add_timer.getTimeInSeconds() << " (s) "
+   	                         << "Total time: " << time <<  "(s)" << std::endl;
 
+      }
+      else {
+	QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Time: Y_predict: " << Y_prediction_timer.getTimeInSeconds() << " (s) "
+				 << "Y_solve: " << Y_solve_timer.getTimeInSeconds() << " (s) " 
+				 << "Y_register: " << Y_predictor_add_timer.getTimeInSeconds() << " (s) "
+				 << "X_predict: " << X_prediction_timer.getTimeInSeconds() << " (s) "
+ 				 << "X_solve: " << X_solve_timer.getTimeInSeconds() << " (s) " 
+				 << "X_register: " << X_predictor_add_timer.getTimeInSeconds() << " (s) "
+   	                         << "Total time: " << time <<  "(s)" << std::endl;
+
+      }
 
       // Check for failure
       if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
