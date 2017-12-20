@@ -398,7 +398,7 @@ namespace Chroma
      if( invParam.innerParamsP ) {
 	QDPIO::cout << "Setting inner solver params" << std::endl;
 	// Dereference handle
-	GCRInnerSolverParams ip = *(invParam.innerParams);
+	const GCRInnerSolverParams& ip = *(invParam.innerParams);
 
 	// Set preconditioner precision
 	switch( ip.precPrecondition ) { 

@@ -374,7 +374,7 @@ namespace Chroma
 			quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
 		        quda_inv_param.clover_cuda_prec_precondition  = gpu_half_prec;
 			if( invParam.MULTIGRIDParamsP ) {
-				MULTIGRIDSolverParams ip = *(invParam.MULTIGRIDParams);
+				const MULTIGRIDSolverParams& ip = *(invParam.MULTIGRIDParams);
 
 				// Set preconditioner precision
 				switch( ip.prec ) {
@@ -533,7 +533,7 @@ namespace Chroma
                         } 
 
 			for (int i=0; i<mg_param.n_level; i++) {
-			  for (int j=0; j<QUDA_MAX_DIM; j++) {
+			  for (int j=0; j< Nd; j++) {
 			    if( i < mg_param.n_level-1 ) {
 			      mg_param.geo_block_size[i][j] = ip.blocking[i][j];
 			    }

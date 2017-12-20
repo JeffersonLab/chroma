@@ -328,7 +328,7 @@ public:
     }
 
     // Dereference handle
-    MULTIGRIDSolverParams ip = *(invParam.MULTIGRIDParams);
+    const MULTIGRIDSolverParams& ip = *(invParam.MULTIGRIDParams);
 
 
     // Set preconditioner precision

@@ -13,7 +13,7 @@ namespace Chroma {
     read(paramtop, "MaxIterations", maxIterations);
     read(paramtop, "SmootherType", smootherType);
     read(paramtop, "Verbosity", verbosity);
-
+    read(paramtop, "Precision", prec);
     read(paramtop, "Reconstruct", reconstruct);
     
     read(paramtop, "Blocking", blocking);
