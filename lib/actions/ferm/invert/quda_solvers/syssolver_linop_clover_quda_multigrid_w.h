@@ -555,10 +555,14 @@ namespace Chroma
 			  mg_param.mu_factor[i] = 1.0; // default in quda test program
 
 			  // Hardwire setup solver now.
-			  mg_param.setup_inv_type[i] = QUDA_BICGSTAB_INVERTER;
-			  mg_param.setup_tol[i] = 5.0e-6;
-			  mg_param.num_setup_iter[i] = 1; // 1 refine for now.. like before
-			  mg_param.precision_null[i] = mg_inv_param.cuda_prec_precondition; 
+			  if( i < mg_param.n_level-1) { 
+			    mg_param.setup_inv_type[i] = QUDA_BICGSTAB_INVERTER;
+			    mg_param.setup_tol[i] = toDouble(ip.rsdTargetSubspaceCreate[i]);
+			    mg_param.setup_maxiter[i] = ip.maxIterSubspaceCreate[i];
+			    mg_param.setup_maxiter_refresh[i] = ip.maxIterSubspaceRefresh[i];
+			    mg_param.num_setup_iter[i] = 1; // 1 refine for now.. like before
+			    mg_param.precision_null[i] = mg_inv_param.cuda_prec_precondition; 
+			  }
 
 			  // Hardwire Coarse solver now
 			  mg_param.coarse_solver[i] = QUDA_GCR_INVERTER;

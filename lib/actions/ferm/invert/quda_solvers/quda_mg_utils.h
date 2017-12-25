@@ -34,7 +34,7 @@ namespace Chroma {
 		MGSubspacePointers* create_subspace(const SysSolverQUDAMULTIGRIDCloverParams& invParam)
 		{
 			MGSubspacePointers* ret_val = new MGSubspacePointers();
-
+			
 			// References so I can keep code below
 			QudaInvertParam& mg_inv_param = ret_val->mg_inv_param;
 			QudaMultigridParam& mg_param = ret_val->mg_param;
@@ -214,14 +214,18 @@ namespace Chroma {
 					mg_param.mu_factor[i] = 1.0; // default is one in QUDA test program
 
 					// Hardwire setup solver now
-					mg_param.setup_inv_type[i] = QUDA_BICGSTAB_INVERTER;
-					mg_param.setup_tol[i] = 5.0e-6;
-					mg_param.num_setup_iter[i] =1; // 1 refine for now
-					mg_param.precision_null[i] = mg_inv_param.cuda_prec_precondition;
+					if ( i < mg_param.n_level-1) {
+					  mg_param.setup_inv_type[i] = QUDA_BICGSTAB_INVERTER;
+					  mg_param.setup_tol[i] = toDouble(ip.rsdTargetSubspaceCreate[i]);
+					  mg_param.setup_maxiter[i] = ip.maxIterSubspaceCreate[i];
+					  mg_param.setup_maxiter_refresh[i] = ip.maxIterSubspaceRefresh[i]; // Will set this from outside...
+					  mg_param.num_setup_iter[i] =1; // 1 refine for now
+					  mg_param.precision_null[i] = mg_inv_param.cuda_prec_precondition;
+					}
 
 					mg_param.coarse_solver[i] = QUDA_GCR_INVERTER;
-		      mg_param.coarse_solver_tol[i] = toDouble(ip.tol);
-		        mg_param.coarse_solver_maxiter[i] = ip.maxIterations;
+					mg_param.coarse_solver_tol[i] = toDouble(ip.tol);
+					mg_param.coarse_solver_maxiter[i] = ip.maxIterations;
 
 		        switch( ip.smootherType ) {
 		        case MR:
@@ -304,7 +308,7 @@ namespace Chroma {
 			QDPIO::cout <<"MULTIGrid Param Dump" << std::endl;
 			printQudaMultigridParam(&mg_param);
 #endif
-
+			// We have just refreshed so not due for refresh.
 			return ret_val;
 		}
 

@@ -492,9 +492,12 @@ public:
       // Subspace ID exists add it to mg_state
       QDPIO::cout<< solver_string <<"Recovering subspace..."<<std::endl;
       subspace_pointers = TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID);
-
+      for(int j=0; j < ip.mg_levels-1;++j) {
+	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
+      }
       updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
       update_swatch.stop();
+
       QDPIO::cout << solver_string << " subspace_update_time = "
           << update_swatch.getTimeInSeconds() << " sec. " << std::endl;
     }
@@ -626,6 +629,7 @@ public:
     StopWatch swatch;
     swatch.start();
 
+    const MULTIGRIDSolverParams& ip = *(invParam.MULTIGRIDParams);
     // Use this in residuum checks.
     Double norm2chi=sqrt(norm2(chi, A->subset()));
 
@@ -654,7 +658,9 @@ public:
     StopWatch X_solve_timer;      X_solve_timer.reset();
     StopWatch Y_predictor_add_timer; Y_predictor_add_timer.reset();
     StopWatch X_predictor_add_timer; X_predictor_add_timer.reset();
- 
+    StopWatch X_refresh_timer; X_refresh_timer.reset();
+    StopWatch Y_refresh_timer; Y_refresh_timer.reset();
+
     QDPIO::cout << solver_string << "Predicting Y" << std::endl;
     Y_prediction_timer.start();
     T Y_prime = zero;
@@ -711,12 +717,12 @@ public:
 	QDPIO::cout << solver_string << "Iteration Threshold Exceeded Solver iters = " << res1.n_count << " Threshold=" << threshold_counts << std::endl;
       }
 
-      QDPIO::cout << solver_string << "REGENERATING SUBSPACE" << std::endl;
+      QDPIO::cout << solver_string << "Refreshing Y Subspace" << std::endl;
 
-      // Regenerate space. Destroy and recreate
+#if 0
+      // destroy and regenerate the subspace
       QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
       subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
-
       XMLBufferWriter file_xml;
       push(file_xml, "FileXML");
       pop(file_xml);
@@ -736,6 +742,22 @@ public:
 
       // Repoint QUDA Structure
       quda_inv_param.preconditioner = subspace_pointers->preconditioner;
+
+#else
+      Y_refresh_timer.start();
+      // refresh the subspace
+      // Regenerate space. Destroy and recreate
+      // Setup the number of subspace Iterations                                                                                             
+      for(int j=0; j < ip.mg_levels-1; j++) {
+	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = ip.maxIterSubspaceRefresh[j];
+      }
+      updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+      for(int j=0; j < ip.mg_levels-1; j++) {
+	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
+      }
+      Y_refresh_timer.stop();
+      QDPIO::cout << solver_string << "Y Subspace Refresh Time = " << Y_refresh_timer.getTimeInSeconds() << " secs\n";
+#endif
 
       // Re-Solving -- if solution was not good
       if ( ! solution_good ) {
@@ -758,14 +780,14 @@ public:
 	  
 	  res_tmp.resid = sqrt(norm2(r, A->subset()));
 	  if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
-	    QDPIO::cout << solver_string << ": Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
+	    QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 	    QDP_abort(1);
 	  }
 	} // Check solution
 	
 	// solution is good
 	if ( res_tmp.n_count >= threshold_counts ) { 
-	  QDPIO::cout << solver_string << " : Re Solve for Y reached threshold Count: iters = " << res_tmp.n_count << " threshold=" << threshold_counts << "! Aborting!" << std::endl;
+	  QDPIO::cout << solver_string << "Re Solve for Y reached threshold Count: iters = " << res_tmp.n_count << " threshold=" << threshold_counts << "! Aborting!" << std::endl;
 	  QDP_abort(1);
 	}
 	
@@ -825,8 +847,9 @@ public:
       if( res2.n_count >= threshold_counts ) {
 	QDPIO::cout << solver_string <<"Threshold Reached:  Solver iters = " << res2.n_count << " Threshold=" << threshold_counts << std::endl;
       }
-      QDPIO::cout << solver_string << "REGENERATING SUBSPACE" << std::endl;
+      QDPIO::cout << solver_string << "Refreshing X Subspace" << std::endl;
 
+#if 0 
       //Regenerate subspace
       QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
       subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
@@ -851,7 +874,21 @@ public:
 
       // Repoint QUDA structure 
       quda_inv_param.preconditioner = subspace_pointers->preconditioner;
-      QDPIO::cout <<solver_string << "Done" << std::endl;
+#else
+      X_refresh_timer.start();
+      // refresh the subspace
+      // Regenerate space. Destroy and recreate
+      // Setup the number of subspace Iterations                                                                                             
+      for(int j=0; j < ip.mg_levels-1; j++) {
+	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = ip.maxIterSubspaceRefresh[j];
+      }
+      updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+      for(int j=0; j < ip.mg_levels-1; j++) {
+	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
+      }
+      X_refresh_timer.stop();
+      QDPIO::cout << solver_string << "X Subspace Refresh Time = " << X_refresh_timer.getTimeInSeconds() << " secs\n";
+#endif
 
       // Re-Solve for X if needed
       if (!solution_good ) { 

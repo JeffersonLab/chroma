@@ -21,6 +21,9 @@ namespace Chroma {
     nvec.resize(mg_levels-1);
     nu_pre.resize(mg_levels-1);
     nu_post.resize(mg_levels-1);
+    maxIterSubspaceCreate.resize(mg_levels-1);
+    maxIterSubspaceRefresh.resize(mg_levels-1);
+    rsdTargetSubspaceCreate.resize(mg_levels-1);
 
     read(paramtop, "NullVectors", nvec);
     read(paramtop, "Pre-SmootherApplications", nu_pre);
@@ -38,6 +41,36 @@ namespace Chroma {
 		 << " blockings but only " << nu_pre.size() << " sets pre-smoothing iterations" << std::endl;
       QDP_abort(1);
     }
+
+
+    if( paramtop.count("./RsdTargetSubspaceCreate") == 1 ) { 
+      read(paramtop, "RsdTargetSubspaceCreate", rsdTargetSubspaceCreate);
+    }
+    else {
+      // Default values.
+      for(int l=0; l < mg_levels-1; ++l) { 
+	rsdTargetSubspaceCreate[l] = 5.0e-6;
+      }
+    }
+
+    if( paramtop.count("./MaxIterSubspaceCreate") == 1) {
+      read(paramtop, "./MaxIterSubspaceCreate", maxIterSubspaceCreate);
+    }
+    else {
+      for(int l=0; l < mg_levels-1; ++l) {
+	maxIterSubspaceCreate[l] = 500;
+      }
+    }
+
+    if( paramtop.count("./MaxIterSubspaceRefresh") == 1) { 
+      read(paramtop, "./MaxIterSubspaceRefresh", maxIterSubspaceRefresh);
+    }
+    else {
+      for(int l=0; l < mg_levels-1; ++l) { 
+	maxIterSubspaceRefresh[l] = maxIterSubspaceCreate[l];
+      }
+    }
+
 
     if( paramtop.count("./OuterGCRNKrylov") == 1 ) {
 	read(paramtop, "OuterGCRNKrylov", outer_gcr_nkrylov);
@@ -166,6 +199,9 @@ namespace Chroma {
     write(xml, "OuterGCRNKrylov", p.outer_gcr_nkrylov);
     write(xml, "PrecondGCRNKrylov", p.precond_gcr_nkrylov);
     write(xml, "Blocking", p.blocking);
+    write(xml, "MaxIterSubspaceCreate", p.maxIterSubspaceCreate);
+    write(xml, "MaxIterSubspaceRefresh", p.maxIterSubspaceRefresh);
+    write(xml, "RsdTargetSubspaceCreate", p.rsdTargetSubspaceCreate);
     write(xml, "SetupOnGPU", p.setup_on_gpu);
     pop(xml);
 
