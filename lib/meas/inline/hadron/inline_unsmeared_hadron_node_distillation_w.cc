@@ -2,6 +2,11 @@
  * \brief Inline measurement that construct unsmeared hadron nodes using distillation
  */
 
+// Reverted version from master
+// NB: The master version is what was in Boram's branch. In master it was dated Nov 25,
+// whereas the previous version I integrated from feture/unsmeared-node was dated Nov 23
+// Hence this is the latest version
+//
 #include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.h"
 #ifndef QDP_IS_QDPJIT
 
