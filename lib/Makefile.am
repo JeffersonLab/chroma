@@ -391,6 +391,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/integrator/lcm_integrator_leaps.h \
 	update/molecdyn/integrator/lcm_exp_sdt.h \
 	update/molecdyn/integrator/lcm_exp_tdt.h \
+	update/molecdyn/integrator/lcm_sts_force_grad_recursive.h \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.h \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.h \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.h \
@@ -1350,6 +1351,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/integrator/lcm_exp_sdt.cc \
 	update/molecdyn/integrator/lcm_exp_tdt.cc \
 	update/molecdyn/integrator/lcm_integrator_leaps.cc \
+	update/molecdyn/integrator/lcm_sts_force_grad_recursive.cc \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.cc \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.cc \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.cc \
