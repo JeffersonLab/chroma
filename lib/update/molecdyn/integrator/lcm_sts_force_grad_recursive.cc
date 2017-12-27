@@ -1,6 +1,7 @@
 #include "chromabase.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
 #include "update/molecdyn/integrator/lcm_sts_force_grad_recursive.h"
+#include "update/molecdyn/integrator/lcm_integrator_leaps.h"
 #include "update/molecdyn/integrator/lcm_exp_sdt.h"
 #include "io/xmllog_io.h"
 
@@ -127,11 +128,16 @@ namespace Chroma
     // for force-gradient update of eqs. (2.4--5) in arXiv:111.5059
 
     // Calculate force term and initialize momentum P in s with the force
+    // This will evaluate p' <- p + dt1 F 
+    // with p=0 it becomes p = + dt1 F 
     s.getP() = zero;
     expSdt(s, traj_length1);
 
-    // Update gauge field with the P calculated above; U'
-    subIntegrator(s, 1.0);
+    // Update gauge field with the P calculated above;
+    // Not doing this with the sub integrator, as that would 
+    // likely mess up the momenta.
+    // Instead I go straight for the leapQ.
+    LCMMDIntegratorSteps::leapQ(1.0,s);
 
     // restore momentum P
     s.getP() = P_tmp;
