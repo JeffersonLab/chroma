@@ -519,6 +519,10 @@ namespace Chroma
 #if 1
           QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << std::endl;
 #endif
+   	  if ( toBool( r_rel[i]  >  invParam.RsdTarget[i]*invParam.RsdToleranceFactor  ) ) { 
+	    QDPIO::cout << "Shift " << i << " has rel. residuum " << r_rel[i] <<  " exceeding target " 
+			<< invParam.RsdTarget[i] << " . Aborting! " << std::endl;
+          } 
         }
       }
       QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << std::endl;

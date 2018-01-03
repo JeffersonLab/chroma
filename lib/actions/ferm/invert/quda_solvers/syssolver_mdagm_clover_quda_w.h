@@ -278,6 +278,10 @@ namespace Chroma
      break;
    }
 
+   // Turn off true residuum calculation for MdagM solves
+   // Since Chroma will check on this.
+   quda_inv_param.compute_true_res = 0;
+
       // Mass
 
       // Fiendish idea from Ron. Set the kappa=1/2 and use 

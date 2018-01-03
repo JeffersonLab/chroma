@@ -254,7 +254,7 @@ public:
 
     // Hardwire to GCR
     quda_inv_param.inv_type = QUDA_GCR_INVERTER;
-
+    quda_inv_param.compute_true_res = 0;
 
     quda_inv_param.kappa = 0.5;
     quda_inv_param.clover_coeff = 1.0; // Dummy, not used
