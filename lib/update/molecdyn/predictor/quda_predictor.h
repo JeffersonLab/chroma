@@ -85,13 +85,18 @@ namespace Chroma
 
 
     inline
-    const int& getXIndex() const {
+    int getXIndex() const {
       return _X_index;
     }
 
     inline
-    const int&  getYIndex() const {
+    int  getYIndex() const {
       return _Y_index;
+    }
+
+    inline
+    int getMaxChrono() const { 
+      return _max_chrono;
     }
     
   private:

@@ -215,7 +215,7 @@ namespace Chroma {
 
 					// Hardwire setup solver now
 					if ( i < mg_param.n_level-1) {
-					  mg_param.setup_inv_type[i] = QUDA_BICGSTAB_INVERTER;
+					  mg_param.setup_inv_type[i] = QUDA_CG_INVERTER;
 					  mg_param.setup_tol[i] = toDouble(ip.rsdTargetSubspaceCreate[i]);
 					  mg_param.setup_maxiter[i] = ip.maxIterSubspaceCreate[i];
 					  mg_param.setup_maxiter_refresh[i] = ip.maxIterSubspaceRefresh[i]; // Will set this from outside...

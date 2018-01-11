@@ -43,6 +43,7 @@ namespace Chroma
     {
       int ret_val = chrono_index;
       ++chrono_index;
+      return ret_val;
     }
     
     //! Register all the factories
