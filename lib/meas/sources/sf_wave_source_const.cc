@@ -1,5 +1,5 @@
 /*! \file
- *  \brief Wall source construction for Schroedinger Functional
+ *  \brief plane wave source construction for Schroedinger Functional
  */
 
 #include "chromabase.h"
