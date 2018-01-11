@@ -1404,7 +1404,8 @@ nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_wilso
 	actions/ferm/invert/quda_solvers/quda_gcr_params.h \
 	actions/ferm/invert/quda_solvers/quda_multigrid_params.h \
 	actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h \
-	meas/inline/io/inline_erase_quda_multigrid_space.h
+	meas/inline/io/inline_erase_quda_multigrid_space.h \
+	update/molecdyn/predictor/quda_predictor.h
 
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
@@ -1425,7 +1426,8 @@ libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc \
-	meas/inline/io/inline_erase_quda_multigrid_space.cc
+	meas/inline/io/inline_erase_quda_multigrid_space.cc \
+	update/molecdyn/predictor/quda_predictor.cc
 endif
 
 if BUILD_QPHIX
@@ -2082,7 +2084,7 @@ if BUILD_QPHIX
 nobase_include_HEADERS += \
 	actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.h \
 	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.h
-	
+
 libchroma_a_SOURCES += \
 	actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.cc \
 	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.cc

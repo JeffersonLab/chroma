@@ -24,7 +24,7 @@
 #include "io/aniso_io.h"
 #include <string>
 #include "update/molecdyn/predictor/null_predictor.h"
-
+#include "update/molecdyn/predictor/quda_predictor.h"
 #include "util/gauge/reunit.h"
 
 #include <quda.h>
@@ -601,7 +601,7 @@ namespace Chroma
     }
 
 
-   SystemSolverResults_t operator() (T& psi, const T& chi, Chroma::AbsChronologicalPredictor4D<T>& predictor ) const
+   SystemSolverResults_t operator() (T& psi, const T& chi, Chroma::QUDA4DChronoPredictor& predictor ) const
     {
       SystemSolverResults_t res;
       SystemSolverResults_t res1;
@@ -615,6 +615,219 @@ namespace Chroma
 
       StopWatch swatch;
       swatch.start();
+
+      // Create MdagM op
+      Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
+
+      StopWatch Y_solve_timer;      Y_solve_timer.reset();
+      StopWatch X_solve_timer;      X_solve_timer.reset();
+      
+
+      // TWO STEP SOLVE
+      QDPIO::cout << "Two Step Solve using QUDA predictor: (X_index,Y_index) = ( " << predictor.getXIndex() << " , " << predictor.getYIndex() << " ) \n";
+      quda_inv_param.chrono_max_dim = predictor.getMaxChrono();
+      quda_inv_param.chrono_index = predictor.getYIndex();
+      quda_inv_param.chrono_make_resident = true;
+      quda_inv_param.chrono_use_resident = true;
+      quda_inv_param.chrono_replace_last = false;
+      
+      T Y;
+      Y[ A->subset() ] = psi; // Y is initial guess
+
+      // Set up prediction for Y in QUDA here.
+      
+      Y_solve_timer.start();
+      // Now want to solve with M^\dagger on this.
+      quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
+      quda_inv_param.dagger = QUDA_DAG_YES;
+      res1 = qudaInvert(*clov,
+			*invclov,
+			chi,
+			Y); 
+      Y_solve_timer.stop();
+
+
+      // Set up prediction for X in QUDA here
+      quda_inv_param.chrono_index = predictor.getXIndex();
+      quda_inv_param.chrono_make_resident = true;
+      quda_inv_param.chrono_use_resident = true;
+      quda_inv_param.chrono_replace_last = false;
+
+
+      // Step 2: Solve M X = Y
+      // Predict X 
+      
+      X_solve_timer.start();
+      quda_inv_param.dagger = QUDA_DAG_NO; // Solve without dagger
+      res2 = qudaInvert(*clov,
+			*invclov,
+			Y,
+			psi);
+      X_solve_timer.stop();
+      swatch.stop();
+      double time = swatch.getTimeInSeconds();
+
+      // reset init guess policy
+
+      // Check solution 
+      { 
+	T r;
+	r[A->subset()]=chi;
+	T tmp;
+	(*MdagM)(tmp, psi, PLUS);
+	r[A->subset()] -= tmp;
+	res.resid = sqrt(norm2(r, A->subset()));
+      }
+
+      Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
+      res.n_count = res1.n_count + res2.n_count;
+      
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl
+;
+
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Time: "
+				 << "Y_solve: " << Y_solve_timer.getTimeInSeconds() << " (s) " 
+ 				 << "X_solve: " << X_solve_timer.getTimeInSeconds() << " (s) " 
+   	                         << "Total time: " << time <<  "(s)" << std::endl;
+
+      quda_inv_param.use_init_guess = old_guess_policy;
+      quda_inv_param.chrono_make_resident = false;
+      quda_inv_param.chrono_use_resident = false;
+      quda_inv_param.chrono_replace_last = false;
+      
+      // Check for failure
+      if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
+	QDPIO::cout << "QUDA_" << solver_string << "_CLOVER_SOLVER: SOLVE Failed to converge" << std::endl;
+	QDP_abort(1);
+      }
+
+
+
+      END_CODE();
+      return res;
+
+    }
+ 
+    
+    SystemSolverResults_t operator() (T& psi, const T& chi, Chroma::AbsTwoStepChronologicalPredictor4D<T>& predictor ) const
+    {
+      SystemSolverResults_t res;
+      SystemSolverResults_t res1;
+      SystemSolverResults_t res2;
+
+      START_CODE();
+      // This is a solve with initial guess. So reset the policy  (quda_inv_param is mutable)
+      QudaUseInitGuess old_guess_policy = quda_inv_param.use_init_guess;
+      quda_inv_param.use_init_guess = QUDA_USE_INIT_GUESS_YES;
+
+
+      StopWatch swatch;
+      swatch.start();
+
+      // This is a solver whic will use an initial guess:
+
+      // Create MdagM op
+      Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
+
+      StopWatch X_prediction_timer; X_prediction_timer.reset();
+      StopWatch Y_prediction_timer; Y_prediction_timer.reset();
+      StopWatch Y_solve_timer;      Y_solve_timer.reset();
+      StopWatch X_solve_timer;      X_solve_timer.reset();
+      StopWatch Y_predictor_add_timer; Y_predictor_add_timer.reset();
+      StopWatch X_predictor_add_timer; X_predictor_add_timer.reset();
+      
+      QDPIO::cout << "Two Step Solve" << std::endl;
+
+      T Y;
+      Y[ A->subset() ] = psi; // Y is initial guess
+
+      // Predict Y
+      Y_prediction_timer.start();
+      predictor.predictY(Y,*A,chi);
+      Y_prediction_timer.stop();
+
+      Y_solve_timer.start();
+      // Now want to solve with M^\dagger on this.
+      quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
+      quda_inv_param.dagger = QUDA_DAG_YES;
+      res1 = qudaInvert(*clov,
+			*invclov,
+			chi,
+			Y); 
+      Y_solve_timer.stop();
+
+      Y_predictor_add_timer.start();
+      predictor.newYVector(Y);
+      Y_predictor_add_timer.stop();
+
+
+      // Step 2: Solve M X = Y
+      // Predict X 
+      X_prediction_timer.start();
+      predictor.predictX(psi,*MdagM, chi);
+      X_prediction_timer.stop();
+      X_solve_timer.start();
+      quda_inv_param.dagger = QUDA_DAG_NO; // Solve without dagger
+      res2 = qudaInvert(*clov,
+			*invclov,
+			Y,
+			psi);
+      X_solve_timer.stop();
+      X_predictor_add_timer.start();
+      predictor.newXVector(psi);
+      X_predictor_add_timer.stop();
+
+      res.n_count = res1.n_count + res2.n_count;  // Two step solve so combine iteration count
+      
+      swatch.stop();
+      double time = swatch.getTimeInSeconds();
+
+      // reset init guess policy
+      quda_inv_param.use_init_guess = old_guess_policy;
+
+      // Check solution 
+      { 
+	T r;
+	r[A->subset()]=chi;
+	T tmp;
+	(*MdagM)(tmp, psi, PLUS);
+	r[A->subset()] -= tmp;
+	res.resid = sqrt(norm2(r, A->subset()));
+      }
+
+      Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
+
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl
+;
+
+
+
+     
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Time: Y_predict: " << Y_prediction_timer.getTimeInSeconds() << " (s) "
+		  << "Y_solve: " << Y_solve_timer.getTimeInSeconds() << " (s) " 
+		  << "Y_register: " << Y_predictor_add_timer.getTimeInSeconds() << " (s) "
+		  << "X_predict: " << X_prediction_timer.getTimeInSeconds() << " (s) "
+		  << "X_solve: " << X_solve_timer.getTimeInSeconds() << " (s) " 
+		  << "X_register: " << X_predictor_add_timer.getTimeInSeconds() << " (s) "
+		  << "Total time: " << time <<  "(s)" << std::endl;
+      
+      if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
+	QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Solver Failed to Converge! Aborting" << std::endl;
+	QDP_abort(1);
+      }
+      
+
+      END_CODE();
+      return res;
+    }
+    
+   SystemSolverResults_t operator() (T& psi, const T& chi, Chroma::AbsChronologicalPredictor4D<T>& predictor ) const
+    {
+      SystemSolverResults_t res;
+      START_CODE();
+
+
+      StopWatch swatch;
 
       // Determine if 2 step solve is needed
       bool two_step=false;
@@ -638,128 +851,73 @@ namespace Chroma
 
       // This is a solver whic will use an initial guess:
 
+      
+      if ( two_step ) { 
+	// User must supply a two step predictor. This can be
+	// a general one or a specific one. Try to cast to the specific one first.
+	try {
+	  QUDA4DChronoPredictor& quda_predictor =
+	    dynamic_cast<QUDA4DChronoPredictor&>(predictor);
+
+	  res = (*this)(psi,chi,quda_predictor);
+	  END_CODE();
+	  return res;
+	  
+	}
+	catch(std::bad_cast) {} // We have another to try
+
+	// Try a general two step predictor cast
+	try {
+	  AbsTwoStepChronologicalPredictor4D<T>& abs_two_step_predictor =
+	    dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>&>(predictor);
+	  res = (*this)(psi,chi,abs_two_step_predictor);
+	  END_CODE();
+	  return res;
+	}
+	catch(std::bad_cast) {
+	  // Now we are stuck.
+	  QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Two Step Solver with two step incapable predictor" << std::endl;
+	  QDP_abort(1);
+	}
+
+      }
+
+
+      StopWatch X_prediction_timer; X_prediction_timer.reset();
+      StopWatch X_solve_timer;      X_solve_timer.reset();
+      StopWatch X_predictor_add_timer; X_predictor_add_timer.reset();
+
+      // This is a solve with initial guess. So reset the policy  (quda_inv_param is mutable)
+      QudaUseInitGuess old_guess_policy = quda_inv_param.use_init_guess;
+      quda_inv_param.use_init_guess = QUDA_USE_INIT_GUESS_YES;
+
+      
       // Create MdagM op
       Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
 
-      bool failP = false;
-
-      StopWatch X_prediction_timer; X_prediction_timer.reset();
-      StopWatch Y_prediction_timer; Y_prediction_timer.reset();
-      StopWatch Y_solve_timer;      Y_solve_timer.reset();
-      StopWatch X_solve_timer;      X_solve_timer.reset();
-      StopWatch Y_predictor_add_timer; Y_predictor_add_timer.reset();
-      StopWatch X_predictor_add_timer; X_predictor_add_timer.reset();
+      // If we are here it is not a two step. 
+      swatch.start();
+	
+      // Single Step Solve
+      QDPIO::cout << "Single Step Solve" << std::endl;
+      X_prediction_timer.start();
+      predictor(psi, (*MdagM), chi);
+      X_prediction_timer.stop();
       
-      if ( ! two_step ) { 
-
-	// Single Step Solve
-	QDPIO::cout << "Single Step Solve" << std::endl;
-	X_prediction_timer.start();
-	predictor(psi, (*MdagM), chi);
-	X_prediction_timer.stop();
-
-	X_solve_timer.start();
-	res = qudaInvert(*clov,
-			 *invclov,
-			 chi,
-			 psi);
-	X_solve_timer.stop();
-
-	X_predictor_add_timer.start();
-	predictor.newVector(psi);
-	X_predictor_add_timer.stop();
-	
-      }
-      else { 
-
-	// TWO STEP SOLVE
-	try {
-	  QDPIO::cout << "Two Step Solve" << std::endl;
-
-	  T Y;
-	  Y[ A->subset() ] = psi; // Y is initial guess
-
-	  // Try to cast the predictor to a two step predictor 
-	  AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor = 
-	     dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>& >(predictor);
-
-    
-	  // Predict Y
-	  Y_prediction_timer.start();
-	  two_step_predictor.predictY(Y,*A,chi);
-	  Y_prediction_timer.stop();
-
-	  Y_solve_timer.start();
-	  // Now want to solve with M^\dagger on this.
-	  quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
-	  quda_inv_param.dagger = QUDA_DAG_YES;
-	  res1 = qudaInvert(*clov,
-			    *invclov,
-			    chi,
-			    Y); 
-	  Y_solve_timer.stop();
-
-	  Y_predictor_add_timer.start();
-	  two_step_predictor.newYVector(Y);
-	  Y_predictor_add_timer.stop();
-
-
-	  // Step 2: Solve M X = Y
-	  // Predict X 
-	  X_prediction_timer.start();
-	  two_step_predictor.predictX(psi,*MdagM, chi);
-	  X_prediction_timer.stop();
-	  X_solve_timer.start();
-	  quda_inv_param.dagger = QUDA_DAG_NO; // Solve without dagger
-	  res2 = qudaInvert(*clov,
-			    *invclov,
-			    Y,
-			    psi);
-	  X_solve_timer.stop();
-	  X_predictor_add_timer.start();
-	  two_step_predictor.newXVector(psi);
-	  X_predictor_add_timer.stop();
-	  
-	}
-	catch( std::bad_cast ) { 
-	  // Failed to cast the predictor to a two step predictor
-	  // In this case we do not predict Y directly, but 
-	  // try to predict  X ~ (MdagM)^{-1} chi => X ~ M^{-1} M^\dag{-1} chi
-	  // we get Y from M X ~ M^\dag{-1} chi 
-	  // 
-	  T Y;
-	  Y[ A->subset() ] = psi;  // Set Y to what the user first gave (in case of NULL predictor)
-	  predictor(psi, (*MdagM), chi); // We can only predict X
-	  (*A)(Y, psi, PLUS); // and then Y = M X is a good guess for Y
-	
-	  quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
-	  quda_inv_param.dagger = QUDA_DAG_YES;
-	  res1 = qudaInvert(*clov,
-			    *invclov,
-			    chi,
-			    Y);  
-
-	  // Step 2: Solve M X = Y
-	  // Predict X 
-	  quda_inv_param.dagger = QUDA_DAG_NO; // Solve without dagger
-	  res2 = qudaInvert(*clov,
-			    *invclov,
-			    Y,
-			    psi);  
-	  predictor.newVector(psi);
-	}
-
-	// reset params to their default value
-	quda_inv_param.solution_type = QUDA_MATPCDAG_MATPC_SOLUTION;
-	quda_inv_param.dagger = QUDA_DAG_NO; // Solve without dagger
-	res.n_count = res1.n_count + res2.n_count;  // Two step solve so combine iteration count
-      }
-      swatch.stop();
-      double time = swatch.getTimeInSeconds();
-
+      X_solve_timer.start();
+      res = qudaInvert(*clov,
+		       *invclov,
+		       chi,
+		       psi);
+      X_solve_timer.stop();
+      
+      X_predictor_add_timer.start();
+      predictor.newVector(psi);
+      X_predictor_add_timer.stop();
+      
       // reset init guess policy
       quda_inv_param.use_init_guess = old_guess_policy;
-
+      
       // Check solution 
       { 
 	T r;
@@ -769,148 +927,27 @@ namespace Chroma
 	r[A->subset()] -= tmp;
 	res.resid = sqrt(norm2(r, A->subset()));
       }
-
+      swatch.stop();
+      double time=swatch.getTimeInSeconds();
       Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
-
+      
       QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl
-;
-      if(!two_step) { 
-	QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Time: X_predict: " << X_prediction_timer.getTimeInSeconds() << " (s) "
- 				 << "X_solve: " << X_solve_timer.getTimeInSeconds() << " (s) " 
-				 << "X_register: " << X_predictor_add_timer.getTimeInSeconds() << " (s) "
-   	                         << "Total time: " << time <<  "(s)" << std::endl;
-
-      }
-      else {
-	QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Time: Y_predict: " << Y_prediction_timer.getTimeInSeconds() << " (s) "
-				 << "Y_solve: " << Y_solve_timer.getTimeInSeconds() << " (s) " 
-				 << "Y_register: " << Y_predictor_add_timer.getTimeInSeconds() << " (s) "
-				 << "X_predict: " << X_prediction_timer.getTimeInSeconds() << " (s) "
- 				 << "X_solve: " << X_solve_timer.getTimeInSeconds() << " (s) " 
-				 << "X_register: " << X_predictor_add_timer.getTimeInSeconds() << " (s) "
-   	                         << "Total time: " << time <<  "(s)" << std::endl;
-
-      }
-
-      // Check for failure
+	;
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Time: X_predict: " << X_prediction_timer.getTimeInSeconds() << " (s) "
+		  << "X_solve: " << X_solve_timer.getTimeInSeconds() << " (s) " 
+		  << "X_register: " << X_predictor_add_timer.getTimeInSeconds() << " (s) "
+		  << "Total time: " << time <<  "(s)" << std::endl;
+      
       if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
-	if ( ! invParam.SilentFailP ) { 
-
-	  // If we are here we are meant to be verbose about it. 
-	  QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl; 
-
-	  // Check if we need to dump...
-	  if ( invParam.dump_on_failP ) { 
-
-	    // Dump config
-	    int my_random_int = rand();
-	    XMLBufferWriter rhs_filebuf;
-	    XMLBufferWriter rhs_recbuf;
-	    XMLBufferWriter gauge_filebuf;
-	    XMLBufferWriter gauge_recbuf;
-
-	    // Complete nonsense for the metadata
-	    int foo=5;
-	    push(rhs_filebuf, "RHSFile");
-	    write(rhs_filebuf, "dummyInt", foo++);
-	    pop(rhs_filebuf);
-
-	    push(rhs_recbuf, "RHSRecord");
-	    write(rhs_recbuf, "dummyInt", foo++);
-	    pop(rhs_recbuf);
-
-	    push(gauge_filebuf, "GAUGEFile");
-	    write(gauge_filebuf, "dummyInt", foo++);
-	    pop(gauge_filebuf);
-
-	    push(gauge_recbuf, "GAUGERecord");
-	    write(gauge_recbuf, "dummyInt", foo++);
-	    pop(gauge_recbuf);
-
-	    // Filenames
-	    std::ostringstream rhs_filename;
-	    rhs_filename << "./rhs_diagnostic_" << my_random_int <<".lime";
-
-	    std::ostringstream gauge_filename;
-	    gauge_filename << "./gauge_diagnostic_" << my_random_int <<".lime";
-
-	    // Hardwired QDPIO_PARALLEL now, as it seems to work even in a single file write :)
-	    QDPFileWriter rhs_writer(rhs_filebuf, rhs_filename.str(), QDPIO_SINGLEFILE, QDPIO_PARALLEL);
-	    QDPFileWriter gauge_writer(gauge_filebuf,gauge_filename.str(), QDPIO_SINGLEFILE, QDPIO_PARALLEL);
-
-	    // DUMP RHS (will anyone ever read it?)
-	    QDPIO::cout << "DUMPING RHS to " << rhs_filename.str() << std::endl;
-	    write(rhs_writer, rhs_recbuf, chi);
-
-	    // DUMP Gauge (fill anyone ever read it?)
-	    QDPIO::cout << "DUMPING GAUGE FIELD to " << gauge_filename.str() << std::endl;
-	    write(gauge_writer, gauge_recbuf, state->getLinks());
-	    
-	    rhs_writer.close();
-	    gauge_writer.close();
-	  }
-
-	  if( invParam.backup_invP) { 
-	    // Create the Backup Solver...
-	    QDPIO::cout << "CREATING BACKUP SOLVER" << std::endl;
-	    std::istringstream is( invParam.backup_inv_param.xml );
-	    XMLReader backup_solver_reader( is );
-	    
-	    Handle< MdagMSystemSolver< T > > backup_solver;
-
-	    try { 
-	      backup_solver = TheMdagMFermSystemSolverFactory::Instance().createObject(
-										       invParam.backup_inv_param.id,  
-										       backup_solver_reader,
-										       "/BackupSolverParam", 
-										       state,
-										       A );
-
-	    }
-	    catch(const std::string e) {
-	      backup_solver_reader.print(std::cout);
-	      QDPIO::cout << "Caught exception: " << e << std::endl;
-	      QDP_abort(1);
-	    }
-
-	    QDPIO::cout << "PERFORMING BACKUP SOLVE" << std::endl;
-
-	    // Backup solver will re-predict
-	    res =  (*backup_solver)(psi, chi, predictor);
-
-	    // Check solution 
-	    { 
-	      T r;
-	      r[A->subset()]=chi;
-	      T tmp;
-	      (*MdagM)(tmp, psi, PLUS);
-	      r[A->subset()] -= tmp;
-	      res.resid = sqrt(norm2(r, A->subset()));
-	    }
-
-	    rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
-	    if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
-	      QDPIO::cout << "ERROR: BACKUP SOLVE FAILED" << std::endl;
-	      QDP_abort(1);
-	    }
-	  }
-	  else { 
-	    // No backup solve 
-	    QDPIO::cout << "SOLVER FAILED: Aborting" << std::endl;
-	    QDP_abort(1);
-	  }
-	}
-	else { 
-	  // (not so)SILENT FAILURE:
-	  QDPIO::cout << "WARNING: Solver failed but SILENT FAILURE is ENABLED. Continuing" << std::endl;
-	}
-
+	QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Solver Failed to Converge! Aborting" << std::endl;
+	QDP_abort(1);
       }
 
       END_CODE();
       return res;
+      
     }
-
+    
 
   private:
     // Hide default constructor

@@ -36,6 +36,7 @@ using namespace QDP;
 #include "actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h"
 #endif
 
+#include "update/molecdyn/predictor/quda_predictor.h"
 #include "meas/inline/io/named_objmap.h"
 
 namespace Chroma
@@ -620,8 +621,9 @@ public:
     return res;
   }
 
+  
 
-  SystemSolverResults_t operator() (T& psi, const T& chi, Chroma::AbsChronologicalPredictor4D<T>& predictor ) const
+  SystemSolverResults_t operator() (T& psi, const T& chi, Chroma::AbsTwoStepChronologicalPredictor4D<T>& predictor ) const
   {
 
     START_CODE();
@@ -648,10 +650,8 @@ public:
 
     QDPIO::cout << solver_string <<"Two Step Solve" << std::endl;
 
+
     // Try to cast the predictor to a two step predictor 
-    AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor = 
-      dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>& >(predictor);
-   
     StopWatch X_prediction_timer; X_prediction_timer.reset();
     StopWatch Y_prediction_timer; Y_prediction_timer.reset();
     StopWatch Y_solve_timer;      Y_solve_timer.reset();
@@ -666,12 +666,8 @@ public:
     T Y_prime = zero;
     {
       T tmp_vec = psi;
-#if 1
-      two_step_predictor.predictY(tmp_vec, *A, chi); // Predicts for M^\dagger Y = chi
-#else
-      // Try the newer faster predictor
-      two_step_predictor.predictY(tmp_vec,chi, (*A).subset());
-#endif
+      predictor.predictY(tmp_vec, *A, chi); // Predicts for M^\dagger Y = chi
+
       // We are going to solve M \gamma
       Y_prime = Gamma(Nd*Nd-1)*tmp_vec;
     }
@@ -689,10 +685,10 @@ public:
         Y_prime);
 
     // Recover Y from Y' = g_5 Y  => Y = g_5 Y'
-
     T Y = Gamma(Nd*Nd -1)*Y_prime;
    
     bool solution_good = true;
+    
     // Check solution
     {
       T r;
@@ -719,31 +715,6 @@ public:
 
       QDPIO::cout << solver_string << "Refreshing Y Subspace" << std::endl;
 
-#if 0
-      // destroy and regenerate the subspace
-      QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
-      subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
-      XMLBufferWriter file_xml;
-      push(file_xml, "FileXML");
-      pop(file_xml);
-
-      int foo = 5;
-
-      XMLBufferWriter record_xml;
-      push(record_xml, "RecordXML");
-      write(record_xml, "foo", foo);
-      pop(record_xml);
-
-      // add to named object store
-      TheNamedObjMap::Instance().create< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID);
-      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setFileXML(file_xml);
-      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
-      TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
-
-      // Repoint QUDA Structure
-      quda_inv_param.preconditioner = subspace_pointers->preconditioner;
-
-#else
       Y_refresh_timer.start();
       // refresh the subspace
       // Regenerate space. Destroy and recreate
@@ -757,7 +728,6 @@ public:
       }
       Y_refresh_timer.stop();
       QDPIO::cout << solver_string << "Y Subspace Refresh Time = " << Y_refresh_timer.getTimeInSeconds() << " secs\n";
-#endif
 
       // Re-Solving -- if solution was not good
       if ( ! solution_good ) {
@@ -797,24 +767,15 @@ public:
       }
     }
     Y_solve_timer.stop();
+
     // At this point we should have a good solution.
     Y_predictor_add_timer.start();
-#if 1
-    two_step_predictor.newYVector(Y);
-#else
-    // New Interface. Orthonormalize against previous Ys and also store A^\dagger Y
-    two_step_predictor.newYVector(Y,*A);
-#endif
+    predictor.newYVector(Y);
     Y_predictor_add_timer.stop();
  
     X_prediction_timer.start();    
     // Can predict psi in the usual way without reference to Y
-#if 1
-    two_step_predictor.predictX(psi, (*MdagM), chi);
-#else
-    // New interface: 
-    two_step_predictor.predictX(psi, chi, (*MdagM).subset());
-#endif
+    predictor.predictX(psi, (*MdagM), chi);
     X_prediction_timer.stop();
     X_solve_timer.start();
     // Solve for psi
@@ -849,32 +810,6 @@ public:
       }
       QDPIO::cout << solver_string << "Refreshing X Subspace" << std::endl;
 
-#if 0 
-      //Regenerate subspace
-      QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
-      subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
-
-      // Save in the map
-      XMLBufferWriter file_xml;
-      push(file_xml, "FileXML");
-      pop(file_xml);
-
-      int foo = 5;
-
-      XMLBufferWriter record_xml;
-      push(record_xml, "RecordXML");
-      write(record_xml, "foo", foo);
-      pop(record_xml);
-
-
-      TheNamedObjMap::Instance().create< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID);
-      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setFileXML(file_xml);
-      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
-      TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
-
-      // Repoint QUDA structure 
-      quda_inv_param.preconditioner = subspace_pointers->preconditioner;
-#else
       X_refresh_timer.start();
       // refresh the subspace
       // Regenerate space. Destroy and recreate
@@ -887,8 +822,8 @@ public:
 	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
       }
       X_refresh_timer.stop();
+      
       QDPIO::cout << solver_string << "X Subspace Refresh Time = " << X_refresh_timer.getTimeInSeconds() << " secs\n";
-#endif
 
       // Re-Solve for X if needed
       if (!solution_good ) { 
@@ -929,13 +864,7 @@ public:
 
     X_predictor_add_timer.start();
     // Solution is good.
-#if 1
-    two_step_predictor.newXVector(psi);
-#else
-    // New interface. Orthonormalize against previous vectors
-    // and store MY
-    two_step_predictor.newXVector(psi, *MdagM);
-#endif
+    predictor.newXVector(psi);
     X_predictor_add_timer.stop();
     swatch.stop();
     double time = swatch.getTimeInSeconds();
@@ -960,6 +889,333 @@ public:
     quda_inv_param.use_init_guess = old_guess_policy;
 
     return res;
+  }
+
+    SystemSolverResults_t operator() (T& psi, const T& chi, Chroma::QUDA4DChronoPredictor& predictor ) const
+  {
+  
+
+    START_CODE();
+
+    StopWatch swatch;
+    swatch.start();
+
+    const MULTIGRIDSolverParams& ip = *(invParam.MULTIGRIDParams);
+    // Use this in residuum checks.
+    Double norm2chi=sqrt(norm2(chi, A->subset()));
+
+    // Allow QUDA to use initial guess
+    QudaUseInitGuess old_guess_policy = quda_inv_param.use_init_guess;
+    quda_inv_param.use_init_guess = QUDA_USE_INIT_GUESS_YES;
+
+
+    SystemSolverResults_t res;
+    SystemSolverResults_t res1;
+    SystemSolverResults_t res2;
+
+    // Create MdagM op
+    Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
+
+
+    QDPIO::cout << solver_string <<"Two Step Solve" << std::endl;
+
+
+    // Try to cast the predictor to a two step predictor 
+    StopWatch Y_solve_timer;      Y_solve_timer.reset();
+    StopWatch X_solve_timer;      X_solve_timer.reset();
+    StopWatch Y_refresh_timer;    Y_refresh_timer.reset();
+    StopWatch X_refresh_timer;    X_refresh_timer.reset();
+    int X_index=predictor.getXIndex();
+    int Y_index=predictor.getYIndex();
+    
+    QDPIO::cout << "Two Step Solve using QUDA predictor: (X_index,Y_index) = ( " << X_index << " , " << Y_index << " ) \n";
+
+
+    // Select the channel for QUDA's predictor here.
+    //
+    //
+    
+    quda_inv_param.chrono_max_dim = predictor.getMaxChrono();
+    quda_inv_param.chrono_index = Y_index;
+    quda_inv_param.chrono_make_resident = true;
+    quda_inv_param.chrono_use_resident = true;
+    quda_inv_param.chrono_replace_last = false;
+    
+    /// channel set done
+    T Y_prime = zero;
+
+    // Y solve: M^\dagger Y = chi
+    //        g_5 M g_5 Y = chi
+    //     =>    M Y' = chi'  with chi' = gamma_5*chi
+    Y_solve_timer.start();
+    T g5chi = Gamma(Nd*Nd - 1)*chi;
+    res1 = qudaInvert(*clov,
+        *invclov,
+        g5chi,
+        Y_prime);
+
+    // Recover Y from Y' = g_5 Y  => Y = g_5 Y'
+    T Y = Gamma(Nd*Nd -1)*Y_prime;
+   
+    bool solution_good = true;
+    
+    // Check solution
+    {
+      T r;
+      r[A->subset()]=chi;
+      T tmp;
+      (*A)(tmp, Y, MINUS);
+      r[A->subset()] -= tmp;
+
+      res1.resid = sqrt(norm2(r, A->subset()));
+      if ( toBool( res1.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
+	solution_good = false;
+      }
+    }
+
+    if ( !solution_good || res1.n_count >= threshold_counts ) { 
+      if( !solution_good) { 
+	// Solution was bad because of nonconvergence or if threshold count was exceeded.
+	QDPIO::cout << solver_string << "Y-solution didnt converge. RsdTarget = " << invParam.RsdTarget << " actual = " << res1.resid/norm2chi << std::endl;
+      }
+
+      if( res1.n_count >= threshold_counts ) { 
+	QDPIO::cout << solver_string << "Iteration Threshold Exceeded Solver iters = " << res1.n_count << " Threshold=" << threshold_counts << std::endl;
+      }
+
+      QDPIO::cout << solver_string << "Refreshing Y Subspace" << std::endl;
+
+      Y_refresh_timer.start();
+      // refresh the subspace
+      // Regenerate space. Destroy and recreate
+      // Setup the number of subspace Iterations                                                                                             
+      for(int j=0; j < ip.mg_levels-1; j++) {
+	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = ip.maxIterSubspaceRefresh[j];
+      }
+      updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+      for(int j=0; j < ip.mg_levels-1; j++) {
+	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
+      }
+      Y_refresh_timer.stop();
+      QDPIO::cout << solver_string << "Y Subspace Refresh Time = " << Y_refresh_timer.getTimeInSeconds() << " secs\n";
+
+      // Re-Solving -- if solution was not good
+      if ( ! solution_good ) {
+
+	// This is a re-solve. So use_resident=false means used my initial guess
+	// (do not repredict)
+	quda_inv_param.chrono_use_resident = false;
+
+	// The last solve, stored a chrono vector. We will overwrite this
+	// thanks to the setting below
+	quda_inv_param.chrono_replace_last = true;
+    
+	QDPIO::cout << solver_string << "Re-Solving for Y" << std::endl;
+	SystemSolverResults_t res_tmp;
+	res_tmp = qudaInvert(*clov,
+			     *invclov,
+			     g5chi,
+			     Y_prime);
+	
+	Y = Gamma(Nd*Nd -1)*Y_prime;
+	
+	// Check solution
+	{
+	  T r;
+	  r[A->subset()]=chi;
+	  T tmp;
+	  (*A)(tmp, Y, MINUS);
+	  r[A->subset()] -= tmp;
+	  
+	  res_tmp.resid = sqrt(norm2(r, A->subset()));
+	  if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
+	    QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
+	    QDP_abort(1);
+	  }
+	} // Check solution
+	
+	// solution is good
+	if ( res_tmp.n_count >= threshold_counts ) { 
+	  QDPIO::cout << solver_string << "Re Solve for Y reached threshold Count: iters = " << res_tmp.n_count << " threshold=" << threshold_counts << "! Aborting!" << std::endl;
+	  QDP_abort(1);
+	}
+	
+	// threhold count is good, and solution is good
+	res1.n_count += res_tmp.n_count; // Add resolve iterations
+	res1.resid  = res_tmp.resid; // Copy new residuum.
+      }
+    }
+    Y_solve_timer.stop();
+
+    // At this point we should have a good solution.
+    // After the good solve, solution will be added to the right channel
+    // by QUDA
+    // Some diagnostics would be nice
+ 
+
+    // Now select QUDA Chrono Index here
+    quda_inv_param.chrono_max_dim = predictor.getMaxChrono();
+    quda_inv_param.chrono_index = X_index;
+    quda_inv_param.chrono_make_resident = true;
+    quda_inv_param.chrono_use_resident = true;
+    quda_inv_param.chrono_replace_last = false;
+
+    
+    X_solve_timer.start();
+    psi=zero;
+    
+    // Solve for psi
+    res2 = qudaInvert(*clov,
+        *invclov,
+        Y,
+        psi);
+
+    solution_good = true;
+    // Check solution
+    {
+      T r;
+      r[A->subset()]=chi;
+      T tmp;
+      (*MdagM)(tmp, psi, PLUS);
+      r[A->subset()] -= tmp;
+
+      res2.resid = sqrt(norm2(r, A->subset()));
+      if ( toBool( res2.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
+	solution_good = false;
+      }
+    }
+
+    if ( !solution_good || res2.n_count >= threshold_counts ) { 
+      // Solution was bad because of nonconvergence or if threshold count was exceeded.
+      if( !solution_good ) { 
+	QDPIO::cout << solver_string << "Solution for X didnt converge or threshold count reached. RsdTarget = " << invParam.RsdTarget << " actual = " << res2.resid/norm2chi  << std::endl;
+      }
+
+      if( res2.n_count >= threshold_counts ) {
+	QDPIO::cout << solver_string <<"Threshold Reached:  Solver iters = " << res2.n_count << " Threshold=" << threshold_counts << std::endl;
+      }
+      QDPIO::cout << solver_string << "Refreshing X Subspace" << std::endl;
+
+      X_refresh_timer.start();
+      // refresh the subspace
+      // Regenerate space. Destroy and recreate
+      // Setup the number of subspace Iterations                                                                                             
+      for(int j=0; j < ip.mg_levels-1; j++) {
+	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = ip.maxIterSubspaceRefresh[j];
+      }
+      updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+      for(int j=0; j < ip.mg_levels-1; j++) {
+	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
+      }
+      X_refresh_timer.stop();
+      
+      QDPIO::cout << solver_string << "X Subspace Refresh Time = " << X_refresh_timer.getTimeInSeconds() << " secs\n";
+
+      // Re-Solve for X if needed
+      if (!solution_good ) {
+	// This is a re-solve. So use_resident=false means used my initial guess
+	// (do not repredict)
+	quda_inv_param.chrono_use_resident = false;
+
+	// The last solve, stored a chrono vector. We will overwrite this
+	// thanks to the setting below
+	quda_inv_param.chrono_replace_last = true;
+
+	QDPIO::cout << solver_string << "Re-Solving for X " << std::endl;
+	SystemSolverResults_t res_tmp;
+	res_tmp = qudaInvert(*clov,
+			     *invclov,
+			     Y,
+			     psi);
+	
+
+	// Check solution
+	{
+	  T r;
+	  r[A->subset()]=chi;
+	  T tmp;
+	  (*MdagM)(tmp, psi, PLUS);
+	  r[A->subset()] -= tmp;
+	  
+	  res_tmp.resid = sqrt(norm2(r, A->subset()));
+	  if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
+	    QDPIO::cout << solver_string << "Re Solve for X Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
+	    QDP_abort(1);
+	  }
+	} // Check solution
+
+	// solution is good
+	if ( res_tmp.n_count >= threshold_counts ) { 
+	  QDPIO::cout << solver_string << "Re Solve for X Exceeded Threshold Count: iters = " << res_tmp.n_count << " threshold=" << threshold_counts << "! Aborting!" << std::endl;
+	  QDP_abort(1);
+	}
+	
+	res2.n_count += res_tmp.n_count; // Add resolve iterations
+	res2.resid  = res_tmp.resid; // Copy new residuum.
+      }
+    }
+    X_solve_timer.stop();
+    swatch.stop();
+    double time = swatch.getTimeInSeconds();
+
+
+
+    // Stats and done
+    res.n_count = res1.n_count + res2.n_count;
+    res.resid = res2.resid;
+
+    Double rel_resid = res.resid/norm2chi;
+
+    QDPIO::cout <<  solver_string  << "iterations: " << res1.n_count << " + "
+         <<  res2.n_count << " = " << res.n_count
+         <<  " Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
+
+    QDPIO::cout << "Y_solve: " << Y_solve_timer.getTimeInSeconds() << " (s) " 
+		<< "X_solve: " << X_solve_timer.getTimeInSeconds() << " (s) " 
+		<< "Total time: " << time <<  "(s)" << std::endl;
+
+    quda_inv_param.use_init_guess = old_guess_policy;
+
+    // Turn off chrono. Next solve can turn it on again
+    quda_inv_param.chrono_make_resident = false;
+    quda_inv_param.chrono_use_resident = false;
+    quda_inv_param.chrono_replace_last = false;
+
+    
+    return res;
+  }
+
+
+  SystemSolverResults_t operator() (T& psi, const T& chi, Chroma::AbsChronologicalPredictor4D<T>& predictor ) const
+  {
+    SystemSolverResults_t res;
+
+    // Try using QUDA predictor
+    try {
+      Chroma::QUDA4DChronoPredictor& quda_pred =
+	dynamic_cast<Chroma::QUDA4DChronoPredictor&>(predictor);
+      
+      res = (*this)(psi,chi,quda_pred);
+      return res;
+    }
+    catch(...) {
+      QDPIO::cout << "Failed to cast predictor to QUDA predictor"
+		  << std::endl;
+    }
+
+    // QUDA Predictor failed -- Try abs 2 step
+    try {
+      Chroma::AbsTwoStepChronologicalPredictor4D<T>& two_step_pred =
+	dynamic_cast< Chroma::AbsTwoStepChronologicalPredictor4D<T>&>(predictor);
+
+      res = (*this)(psi,chi,two_step_pred);
+      return res;
+    }
+    catch(...) {
+      QDPIO::cout << "Failed to cast predictor to QUDA or Two Step  predictor"
+		  << std::endl;
+      QDP_abort(1);
+    }
   }
 
 
