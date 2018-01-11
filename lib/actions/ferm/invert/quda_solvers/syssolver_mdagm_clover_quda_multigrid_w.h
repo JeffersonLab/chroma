@@ -934,9 +934,13 @@ public:
     // Select the channel for QUDA's predictor here.
     //
     //
-
-
-
+    
+    quda_inv_param.chrono_max_dim = predictor.getMaxChrono();
+    quda_inv_param.chrono_index = Y_index;
+    quda_inv_param.chrono_make_resident = true;
+    quda_inv_param.chrono_use_resident = true;
+    quda_inv_param.chrono_replace_last = false;
+    
     /// channel set done
     T Y_prime = zero;
 
@@ -997,6 +1001,15 @@ public:
 
       // Re-Solving -- if solution was not good
       if ( ! solution_good ) {
+
+	// This is a re-solve. So use_resident=false means used my initial guess
+	// (do not repredict)
+	quda_inv_param.chrono_use_resident = false;
+
+	// The last solve, stored a chrono vector. We will overwrite this
+	// thanks to the setting below
+	quda_inv_param.chrono_replace_last = true;
+    
 	QDPIO::cout << solver_string << "Re-Solving for Y" << std::endl;
 	SystemSolverResults_t res_tmp;
 	res_tmp = qudaInvert(*clov,
@@ -1041,6 +1054,11 @@ public:
  
 
     // Now select QUDA Chrono Index here
+    quda_inv_param.chrono_max_dim = predictor.getMaxChrono();
+    quda_inv_param.chrono_index = X_index;
+    quda_inv_param.chrono_make_resident = true;
+    quda_inv_param.chrono_use_resident = true;
+    quda_inv_param.chrono_replace_last = false;
 
     
     X_solve_timer.start();
@@ -1094,7 +1112,15 @@ public:
       QDPIO::cout << solver_string << "X Subspace Refresh Time = " << X_refresh_timer.getTimeInSeconds() << " secs\n";
 
       // Re-Solve for X if needed
-      if (!solution_good ) { 
+      if (!solution_good ) {
+	// This is a re-solve. So use_resident=false means used my initial guess
+	// (do not repredict)
+	quda_inv_param.chrono_use_resident = false;
+
+	// The last solve, stored a chrono vector. We will overwrite this
+	// thanks to the setting below
+	quda_inv_param.chrono_replace_last = true;
+
 	QDPIO::cout << solver_string << "Re-Solving for X " << std::endl;
 	SystemSolverResults_t res_tmp;
 	res_tmp = qudaInvert(*clov,
@@ -1129,8 +1155,9 @@ public:
       }
     }
     X_solve_timer.stop();
+    swatch.stop();
+    double time = swatch.getTimeInSeconds();
 
-    // QUDA Should add good solution to chrono
 
 
     // Stats and done
@@ -1149,6 +1176,12 @@ public:
 
     quda_inv_param.use_init_guess = old_guess_policy;
 
+    // Turn off chrono. Next solve can turn it on again
+    quda_inv_param.chrono_make_resident = false;
+    quda_inv_param.chrono_use_resident = false;
+    quda_inv_param.chrono_replace_last = false;
+
+    
     return res;
   }
 
