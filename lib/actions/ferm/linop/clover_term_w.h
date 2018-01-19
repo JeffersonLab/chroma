@@ -34,53 +34,51 @@ namespace Chroma {
  
 
 #if BASE_PRECISION==32
-  typedef QDPCloverTerm CloverTerm;
+   using CloverTerm = QDPCloverTerm;
 #else
-  typedef SSEDCloverTerm CloverTerm;
-  template<typename T,typename U>
-  struct CloverTermT {
-    typedef QDPCloverTermT<T,U> Type_t;
-  };
+   using CloverTerm = SSEDCloverTerm;
 #endif
 
-  typedef QDPCloverTermF CloverTermF;
-  typedef SSEDCloverTerm CloverTermD;
+  using CloverTermF = QDPCloverTermF;
+  using CloverTermD = SSEDCloverTerm;
 
+  template<typename T, typename U>
+  using CloverTermT = QDPCloverTermT<T,U>;
 }
 #elif defined(BUILD_JIT_CLOVER_TERM)
 
 #if defined(QDPJIT_IS_QDPJITPTX)
 #include "clover_term_ptx_w.h"
 namespace Chroma {
-  typedef PTXCloverTerm CloverTerm;
-  typedef PTXCloverTermF CloverTermF;
-  typedef PTXCloverTermD CloverTermD;
-  template<typename T,typename U>
-  struct CloverTermT {
-    typedef PTXCloverTermT<T,U> Type_t;
-  };
+  using CloverTerm = PTXCloverTerm;
+  using CloverTermF = PTXCloverTermF;
+  using CloverTermD = PTXCloverTermD;
+
+  template<typename T, typename U>
+  using CloverTermT = PTXCloverTermT<T,U>;
+
 }
 #elif defined(QDPJIT_IS_QDPJITNVVM)
 #include "clover_term_nvvm_w.h"
 namespace Chroma {
-  typedef NVVMCloverTerm CloverTerm;
-  typedef NVVMCloverTermF CloverTermF;
-  typedef NVVMCloverTermD CloverTermD;
-  template<typename T,typename U>
-  struct CloverTermT {
-    typedef NVVMCloverTermT<T,U> Type_t;
-  };
+  using CloverTerm  = NVVMCloverTerm;
+  using CloverTermF = NVVMCloverTermF;
+  using CloverTermD = NVVMCloverTermD;
+
+  template<typename T, typename U>
+  using CloverTermT = NVVMCloverTermT<T,U>;
+
 }
 #else
 #include "clover_term_llvm_w.h"
 namespace Chroma {
-  typedef LLVMCloverTerm CloverTerm;
-  typedef LLVMCloverTermF CloverTermF;
-  typedef LLVMCloverTermD CloverTermD;
+  using CloverTerm  = LLVMCloverTerm;
+  using CloverTermF = LLVMCloverTermF;
+  using CloverTermD = LLVMCloverTermD;
+
   template<typename T,typename U>
-  struct CloverTermT {
-    typedef LLVMCloverTermT<T,U> Type_t;
-  };
+  using CloverTermT = LLVMCloverTermT<T,U>;
+
 }
 #endif
 
@@ -91,14 +89,12 @@ namespace Chroma {
 
 #include "clover_term_qdp_w.h"
 namespace Chroma {
-  typedef QDPCloverTerm CloverTerm;
-  typedef QDPCloverTermF CloverTermF;
-  typedef QDPCloverTermD CloverTermD;
+  using CloverTerm  = QDPCloverTerm;
+  using CloverTermF = QDPCloverTermF;
+  using CloverTermD = QDPCloverTermD;
 
   template<typename T,typename U>
-  struct CloverTermT {
-    typedef QDPCloverTermT<T,U> Type_t;
-  };
+  using CloverTermT = QDPCloverTermT<T,U>;
 }  // end namespace Chroma
 #endif
 

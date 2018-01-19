@@ -2,6 +2,7 @@
  *  \brief Solve a M^dag*M*psi=chi linear system by EigCG
  */
 
+#include <qdp.h>
 
 #include "qdp-lapack_Complex.h"
 #include "qdp-lapack_eigpcg.h"  

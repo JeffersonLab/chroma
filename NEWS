@@ -1,3 +1,27 @@
+Nov 7,  2017 - Balint Joo
+        Fixed issue of CERN IO
+Nov 4,  2017 - Balint Joo
+        Added extra interfacing options for current quda feature/multigrid 
+        Added Interface for MG-Proto code with QPhiX outer layers.
+	JIT-dslash/clover etc interfaces now require QDP-JIT/NVPTX with LLVM-4.0 (F. Winter)
+	Various fixes (e.g. gcc-6.3.0 readyness)
+
+  	Known issues:
+ 	 - some regressions fail with Intel 17 compilers
+	 - This version tested with gcc-6.3.0 and passed regressions (apart from eigcg, which was not built
+           and some 1 flavor tests which would need the GMP interface code, also not built). 
+         - QDP-JIT does not yet support OSubLattice so some measurements relying on this are commented out
+         - Some of the programs in tests/ do not link with QUDA -- these are not involved in regression tests
+             probably could be fixed with rejigging/reordering/duplicating -l flags
+         
+
+May 11, 2017 - Balint Joo
+        Merged in branch feature/hmc_mg for QUDA HMC & Multigrid
+        Merged in branch feature/mg_proto for new KNL MG code
+        Fixed issue of isnan, isinf, etc with old ICCv16 update 3
+        Checked basic regressions: failed with ICCv17 update 2, worked with ICCv16 update 3, gcc-5.3, gcc-6.2
+       
+
 Jun 24, 2016 - Balint Joo
         Merged in branch feature/quda_multigrid
  	Fixed NEF operator parity to track fix in Quda

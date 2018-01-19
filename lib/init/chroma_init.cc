@@ -7,6 +7,8 @@
 #include "init/chroma_init.h"
 #include "io/xmllog_io.h"
 
+#include "qdp_init.h"
+
 #if defined(BUILD_JIT_CLOVER_TERM)
 #if defined(QDPJIT_IS_QDPJITPTX)
 #include "../actions/ferm/linop/clover_term_ptx_w.h"
@@ -15,6 +17,21 @@
 
 #ifdef BUILD_QUDA
 #include <quda.h>
+#endif
+
+// Indlude it no-matter what
+#ifdef BUILD_QPHIX
+#include "../qphix_singleton.h"
+#ifdef CHROMA_BUILDING_QPHIX_DSLASH
+#include "qdp_datalayout.h"
+#include "qphix/geometry.h"
+#include "actions/ferm/invert/qphix/qphix_vec_traits.h"
+#endif
+#endif
+
+#ifdef BUILD_MGPROTO
+#include "utils/memory.h"
+#include "utils/initialize.h"
 #endif
 
 namespace Chroma 
@@ -115,10 +132,10 @@ namespace Chroma
 		    << "   --chroma-i   [" << getXMLInputFileName() << "]  xml input file name\n"
 		    << "   -o           [" << getXMLOutputFileName() << "]  xml output file name\n"
 		    << "   --chroma-p   [" << getXMLOutputFileName() << "]  xml output file name\n"
-		    << "   -l           [" << getXMLLogFileName() << "]  xml output file name\n"
+		    << "   -l           [" << getXMLLogFileName() << "]  xml log file name\n"
 		    << "   --chroma-l   [" << getXMLLogFileName() << "]  xml log file name\n"
-		    << "   -cwd         [" << getCWD() << "]  xml log file name\n"
-		    << "   --chroma-cwd [" << getCWD() << "]  xml log file name\n"
+		    << "   -cwd         [" << getCWD() << "]  xml working directory\n"
+		    << "   --chroma-cwd [" << getCWD() << "]  xml working directory\n"
 
 		    
 		    << std::endl;
@@ -193,14 +210,18 @@ namespace Chroma
 #if defined QDPJIT_IS_QDPJITPTX || defined QDPJIT_IS_QDPJITNVVM
 #ifdef BUILD_QUDA
   std::cout << "Setting CUDA device" << std::endl;
+#ifndef QDP_USE_COMM_SPLIT_INIT
   int cuda_device = QDP_setGPU();
-  //std::cout << "Setting QUDA verbosity to silent" << std::endl;
-  //setVerbosityQuda(QUDA_SILENT, "", stdout);
-  //std::cout << "Setting QUDA verbosity to summarize" << std::endl;
-  //setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
+#endif
   std::cout << "Initializing QMP part" << std::endl;
   QDP_initialize_QMP(argc, argv);
-  QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")" << std::endl;
+#ifdef QDP_USE_COMM_SPLIT_INIT
+  int cuda_device = QDP_setGPUCommSplit();
+#endif
+ setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
+
+ QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")" << std::endl;
+
   initQudaDevice(cuda_device);
   QDPIO::cout << "Initializing QDP-JIT GPUs" << std::endl;
   QDP_startGPU();
@@ -208,9 +229,14 @@ namespace Chroma
   initQudaMemory();
 #else
   std::cout << "Setting device" << std::endl;
+#ifndef QDP_USE_COMM_SPLIT_INIT
   QDP_setGPU();
+#endif
   std::cout << "Initializing QMP part" << std::endl;
   QDP_initialize_QMP(argc, argv);
+#ifdef QDP_USE_COMM_SPLIT_INIT
+  QDP_setGPUCommSplit();
+#endif
   QDPIO::cout << "Initializing start GPUs" << std::endl;
   QDP_startGPU();
 #endif
@@ -222,7 +248,54 @@ namespace Chroma
 #endif
 
 
+#ifdef BUILD_QPHIX
+  QDPIO::cout << "Initializing QPhiX CLI Args" << std::endl;
+  QPhiX::QPhiXCLIArgs& QPhiXArgs = TheQPhiXParams::Instance();
+  QPhiXArgs.init((*argc),(*argv));
+  QDPIO::cout << "QPhiX CLI Args Initialized" << std::endl;
+  QDPIO::cout << " QPhiX: By="<< QPhiXArgs.getBy() << std::endl;
+  QDPIO::cout << " QPhiX: Bz="<< QPhiXArgs.getBz() << std::endl;
+  QDPIO::cout << " QPhiX: Pxy="<< QPhiXArgs.getPxy() << std::endl;
+  QDPIO::cout << " QPhiX: Pxyz="<< QPhiXArgs.getPxyz() << std::endl;
+  QDPIO::cout << " QPhiX: NCores="<< QPhiXArgs.getNCores() << std::endl;
+  QDPIO::cout << " QPhiX: Sy="<< QPhiXArgs.getSy() << std::endl;
+  QDPIO::cout << " QPhiX: Sz="<< QPhiXArgs.getSz() << std::endl;
+  QDPIO::cout << " QPhiX: MinCt="<< QPhiXArgs.getMinCt() << std::endl;
 
+  int num_threads = QPhiXArgs.getNCores()*QPhiXArgs.getSy()*QPhiXArgs.getSz();
+  if( qdpNumThreads() != num_threads ) {
+	  QDPIO::cerr << "ChromaInit: qdpNumThreads is different from NCores*Sy*Sz" << std::endl;
+	  QDP_abort(1);
+  }
+
+ #if defined(QDP_IS_QDPJIT)
+	// For QDP-JIT We insist on matchig QDP-JIT layout and QPhiX Layout for now
+
+  	// Want ocsri layout. So pos_o = 0, pos_s=2, pos_c=1, pos_r=3, pos_i=4
+  	if (! QDP_assert_jit_datalayout(0,2,1,3,4) ) {
+  		QDPIO::cerr << "ChromaInit: DataLayout Ordering Mismatch. Wanted ocsri layout, but have ";
+  		QDP_print_jit_datalayout();
+  		QDP_abort(1);
+  	}
+
+  	// Check QDP Inner length is the SOALEN
+  	int64_t layout_inner_size=QDP::getDataLayoutInnerSize();
+  	if( layout_inner_size != CHROMA_QPHIX_SOALEN ) {
+  		QDPIO::cout << "ChromaInit: Our SOA Length is " << CHROMA_QPHIX_SOALEN << " but QDP-JIT has inner="<< layout_inner_size << std::endl;
+  		QDP_abort(1);
+  	}
+#endif
+#endif
+
+#ifdef BUILD_MGPROTO
+  	// Initialzie MG Proto memory
+  	QDPIO::cout << "Initializing MG_proto memory system" << std::endl;
+  	MG::InitMemory(argc,argv);
+#ifdef BUILD_QPHIX
+  	QDPIO::cout << "Initializing QPhiX CLI Args for MG_proto" << std::endl;
+  	MG::InitCLIArgs(argc,argv);
+#endif
+#endif
 
   }
 
@@ -233,6 +306,10 @@ namespace Chroma
 
 #ifdef BUILD_QUDA
     endQuda();
+#endif
+
+#ifdef BUILD_MGPROTO
+    MG::FinalizeMemory();
 #endif
 
 #if defined(BUILD_JIT_CLOVER_TERM)
@@ -258,6 +335,8 @@ namespace Chroma
     }
 
     QDP_finalize();
+
+
   }
 
 

@@ -17,6 +17,7 @@
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h"
+
 #include "actions/ferm/linop/clover_term_w.h"
 #include "meas/gfix/temporal_gauge.h"
 #include "io/aniso_io.h"
@@ -26,10 +27,16 @@
 
 #include <quda.h>
 
+
+
+#ifdef QDP_IS_QDPJIT
+#include "actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h"
+#endif
+
 namespace Chroma
 {
 
-  //! CG2 system solver namespace
+  //! CG system solver namespace
   namespace MdagMMultiSysSolverCGQudaCloverEnv
   {
     //! Register the syssolver
@@ -66,7 +73,7 @@ namespace Chroma
     MdagMMultiSysSolverCGQudaClover(Handle< LinearOperator<T> > M_,
 				      Handle< FermState<T,P,Q> > state_,
 				      const MultiSysSolverQUDACloverParams& invParam_) : 
-      A(M_), invParam(invParam_), clov(new CloverTermT<T,U>::Type_t()), invclov(new CloverTermT<T,U>::Type_t())
+      A(M_), invParam(invParam_), clov(new CloverTermT<T,U>()), invclov(new CloverTermT<T,U>())
 
     {
       QDPIO::cout << "MdagMMultiSysSolverCGQUDAClover: " << std::endl;
@@ -174,6 +181,7 @@ namespace Chroma
       };
 
       q_gauge_param.cuda_prec_sloppy = gpu_half_prec;
+      q_gauge_param.cuda_prec_precondition = gpu_half_prec;
 
       switch( invParam.cudaSloppyReconstruct ) { 
       case RECONS_NONE: 
@@ -190,6 +198,8 @@ namespace Chroma
 	break;
       };
 
+      // Default
+      q_gauge_param.reconstruct_precondition = q_gauge_param.reconstruct_sloppy;
       // Gauge fixing:
 
       // These are the links
@@ -289,6 +299,7 @@ namespace Chroma
       quda_inv_param.cpu_prec = cpu_prec;
       quda_inv_param.cuda_prec = gpu_prec;
       quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
+      quda_inv_param.cuda_prec_precondition = gpu_half_prec;
       quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
       quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
 
@@ -351,6 +362,7 @@ namespace Chroma
       quda_inv_param.clover_cpu_prec = cpu_prec;
       quda_inv_param.clover_cuda_prec = gpu_prec;
       quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
+      quda_inv_param.clover_cuda_prec_precondition = gpu_half_prec;
 
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
       quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
@@ -375,7 +387,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
 	gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
 #else
-	gauge[mu] = QDPCache::Instance().getDevicePtr( links_single[mu].getId() );
+	gauge[mu] = GetMemoryPtr( links_single[mu].getId() );
 #endif
 
       }
@@ -412,11 +424,11 @@ namespace Chroma
       void *clover[2];
       void *cloverInv[2];
 
-      clover[0] = QDPCache::Instance().getDevicePtr( clov->getOffId() );
-      clover[1] = QDPCache::Instance().getDevicePtr( clov->getDiaId() );
+      clover[0] = GetMemoryPtr( clov->getOffId() );
+      clover[1] = GetMemoryPtr( clov->getDiaId() );
 
-      cloverInv[0] = QDPCache::Instance().getDevicePtr( invclov->getOffId() );
-      cloverInv[1] = QDPCache::Instance().getDevicePtr( invclov->getDiaId() );
+      cloverInv[0] = GetMemoryPtr( invclov->getOffId() );
+      cloverInv[1] = GetMemoryPtr( invclov->getDiaId() );
 
       // std::cout << "MDAGM clover CUDA pointers: " 
       // 		<< clover[0] << " "
@@ -492,21 +504,25 @@ namespace Chroma
       swatch.stop();
       double time = swatch.getTimeInSeconds();
 
-      if (invParam.verboseP )  { 
+      if (invParam.checkShiftsP )  {
         Double chinorm=norm2(chi, A->subset());
         multi1d<Double> r_rel(shifts.size());
-      
+
         for(int i=0; i < shifts.size(); i++) { 
-	  T tmp1,tmp2;
-	  (*A)(tmp1, psi[i], PLUS);
-	  (*A)(tmp2, tmp1, MINUS);  // tmp2 = A^\dagger A psi
-	  tmp2[ A->subset() ] +=  shifts[i]* psi[i]; // tmp2 = ( A^\dagger A + shift_i ) psi
-	  T r;
-	  r[ A->subset() ] = chi - tmp2;
-	  r_rel[i] = sqrt(norm2(r, A->subset())/chinorm );
+          T tmp1,tmp2;
+          (*A)(tmp1, psi[i], PLUS);
+          (*A)(tmp2, tmp1, MINUS);  // tmp2 = A^\dagger A psi
+          tmp2[ A->subset() ] +=  shifts[i]* psi[i]; // tmp2 = ( A^\dagger A + shift_i ) psi
+          T r;
+          r[ A->subset() ] = chi - tmp2;
+          r_rel[i] = sqrt(norm2(r, A->subset())/chinorm );
 #if 1
-  	  QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << std::endl;
+          QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << std::endl;
 #endif
+   	  if ( toBool( r_rel[i]  >  invParam.RsdTarget[i]*invParam.RsdToleranceFactor  ) ) { 
+	    QDPIO::cout << "Shift " << i << " has rel. residuum " << r_rel[i] <<  " exceeding target " 
+			<< invParam.RsdTarget[i] << " . Aborting! " << std::endl;
+          } 
         }
       }
       QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << std::endl;
@@ -530,8 +546,8 @@ namespace Chroma
     QudaGaugeParam q_gauge_param;
     mutable QudaInvertParam quda_inv_param;
 
-    Handle< CloverTermT<T, U>::Type_t > clov;
-    Handle< CloverTermT<T, U>::Type_t > invclov;
+    Handle< CloverTermT<T, U> > clov;
+    Handle< CloverTermT<T, U> > invclov;
 
     SystemSolverResults_t qudaInvertMulti(const T& chi_s,
 				     multi1d<T>& psi_s,

@@ -71,6 +71,8 @@
 #include "meas/inline/hadron/inline_mres_w.h"
 #include "meas/inline/hadron/inline_qpropqio_w.h"
 #include "meas/inline/hadron/inline_qpropadd_w.h"
+#include "meas/inline/hadron/inline_qpropdiff_w.h"
+#include "meas/inline/hadron/inline_qprop_matmul_w.h"
 #include "meas/inline/hadron/inline_qqqNucNuc_w.h"
 #include "meas/inline/hadron/inline_stoch_meson_w.h"
 #include "meas/inline/hadron/inline_stoch_baryon_w.h"
@@ -159,11 +161,11 @@ namespace Chroma
 #ifndef QDP_IS_QDPJIT
 	success &= InlinePropAndMatElemDistillationEnv::registerAll();
 	success &= InlinePropAndMatElemDistillation2Env::registerAll();
+	success &= InlineUnsmsearedHadronNodeDistillationEnv::registerAll();
 #endif
 	success &= InlinePropMatElemLowMemoryColorVecEnv::registerAll();
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();
 	success &= InlineMesonMatElemColorVecEnv::registerAll();
- 	success &= InlineUnsmsearedHadronNodeDistillationEnv::registerAll();
 	success &= InlineGenPropMatElemColorVecEnv::registerAll();
 	success &= InlineGenPropMatElemDAColorVecEnv::registerAll();
 	success &= InlineGenPropMatElemPtColorVecEnv::registerAll();
@@ -172,6 +174,8 @@ namespace Chroma
 	success &= InlineRotateSpinEnv::registerAll();
 	success &= InlineQpropQIOEnv::registerAll();
 	success &= InlineQpropAddEnv::registerAll();
+	success &= InlineQpropDiffEnv::registerAll();
+	success &= InlineQpropMatMulEnv::registerAll();
 	success &= InlineQQQNucNucEnv::registerAll();
 	success &= InlineBarSpecEnv::registerAll();
 //	success &= InlineSpectrumQllEnv::registerAll();

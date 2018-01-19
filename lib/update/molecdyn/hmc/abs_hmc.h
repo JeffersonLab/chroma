@@ -35,6 +35,7 @@ namespace Chroma
 			    const bool CheckRevP)
     {
       START_CODE();
+      StopWatch swatch;
 
       AbsMDIntegrator<P,Q>& MD = getMDIntegrator();
       AbsHamiltonian<P,Q>& H_MC = getMCHamiltonian();
@@ -52,11 +53,18 @@ namespace Chroma
       // HMC Algorithm.
       // 1) Refresh momenta
       //
+      swatch.reset(); swatch.start();
       refreshP(s);
-      
+      swatch.stop();
+      QDPIO::cout << "HMC_TIME: Momentum Refresh Time: " << swatch.getTimeInSeconds() << " \n";
+
       // Refresh Pseudofermions
+      swatch.reset(); swatch.start();
       H_MC.refreshInternalFields(s);
-      
+      swatch.stop();
+      QDPIO::cout << "HMC_TIME: Pseudofermion Refres Time: " << swatch.getTimeInSeconds() << " \n";
+
+
       // SaveState -- Perhaps this could be done better?
       Handle< AbsFieldState<P,Q> >  s_old(s.clone());
       
@@ -65,8 +73,10 @@ namespace Chroma
 
       push(xml_out, "H_old");
       push(xml_log, "H_old");
-
+      swatch.reset(); swatch.start();
       H_MC.mesE(*s_old, KE_old, PE_old);
+      swatch.stop();
+      QDPIO::cout << "HMC_TIME: Start Energy Time: " << swatch.getTimeInSeconds() << " \n";
 
       write(xml_out, "KE_old", KE_old);
       write(xml_log, "KE_old", KE_old);
@@ -77,6 +87,7 @@ namespace Chroma
       pop(xml_log); // pop H_old
       pop(xml_out); // pop H_old
       
+      swatch.start();
       
       // Copy in fields from the Hamiltonian as needed using the
       // CopyList
@@ -84,10 +95,13 @@ namespace Chroma
 
       // Integrate MD trajectory
       MD(s, MD.getTrajLength());
+      swatch.stop();
+      QDPIO::cout << "HMC_TIME: Traj MD Time: " << swatch.getTimeInSeconds() << " \n";
            
 
       // If this is a reverse trajectory
       if( CheckRevP ) { 
+	swatch.reset(); swatch.start();
 
 	QDPIO::cout << "Reversing trajectory for reversability test" <<std::endl;
 
@@ -129,12 +143,15 @@ namespace Chroma
 	QDPIO::cout << "Reversibility: DeltaDeltaH = " << fabs(DeltaDeltaH) <<std::endl;
 	QDPIO::cout << "Reversibility: DeltaQ      = " << dq << std::endl;
 	QDPIO::cout << "Reversibility: DeltaP      = " << dp << std::endl;
+	swatch.stop();
+	QDPIO::cout << "HMC_TIME: Reverse Check Time: " << swatch.getTimeInSeconds() << " \n";
 
-
+	
 	// s_rev goes away... We continue as if nothing happened
 	
       }
-
+      swatch.reset(); 
+      swatch.start();
       //  Measure the energy of the new state
       Double KE, PE;
 
@@ -148,6 +165,8 @@ namespace Chroma
       write(xml_log, "PE_new", PE);
       pop(xml_log);
       pop(xml_out);
+      swatch.stop();
+      QDPIO::cout << "HMC_TIME: Finish Energy Time: " << swatch.getTimeInSeconds() << " \n";
 
       // Work out energy differences
       Double DeltaKE = KE - KE_old;

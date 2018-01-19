@@ -33,6 +33,9 @@
 /* Build with the MDWF (Moebious DFW) library */
 #undef BUILD_MDWF
 
+/* Build interface to MGPROTO Library */
+#undef BUILD_MGPROTO
+
 /* Configuring to use optimized eigcg */
 #undef BUILD_OPT_EIGCG
 
@@ -75,8 +78,18 @@
 /* Enable Restart in linop syssolvers */
 #undef CHROMA_DO_ONE_CG_RESTART
 
+/* Enable use of clover deriv_loops routine contrinuted by J. Bloch of
+   Regensburg University */
+#undef CHROMA_FUSED_CLOVER_DERIV_LOOPS
+
 /* QPhiX Arch is AVX */
 #undef CHROMA_QPHIX_ARCH_AVX
+
+/* QPhiX Arch is AVX2 */
+#undef CHROMA_QPHIX_ARCH_AVX2
+
+/* QPhiX Arch is AVX512 */
+#undef CHROMA_QPHIX_ARCH_AVX512
 
 /* QPhiX Arch is MIC */
 #undef CHROMA_QPHIX_ARCH_MIC
@@ -84,8 +97,14 @@
 /* QPhiX Arch is QPX */
 #undef CHROMA_QPHIX_ARCH_QPX
 
+/* QPhiX Arch is SSE */
+#undef CHROMA_QPHIX_ARCH_SSE
+
 /* Disable Intel Solver Compression */
 #undef CHROMA_QPHIX_COMPRESS12
+
+/* Enable QPhiX Dslash */
+#undef CHROMA_QPHIX_DSLASH_ENABLED
 
 /* The SOA length for inner solvers for mixed prec QPhiX */
 #undef CHROMA_QPHIX_INNER_SOALEN
@@ -96,8 +115,15 @@
 /* The SOA length for QPhiX */
 #undef CHROMA_QPHIX_SOALEN
 
+/* Define static packed gauges */
+#undef CHROMA_STATIC_PACKED_GAUGE
+
 /* Switch in Lower Memory File */
 #undef CHROMA_USE_CG_DWF_LOWMEM
+
+/* Enable use of itnotify interface. User guarantees to set up include, link
+   etc */
+#undef CHROMA_USE_ITTNOTIFY
 
 /* Use QMT Threads library */
 #undef CHROMA_USE_QMT_THREADS

@@ -24,11 +24,13 @@
 #include "chroma_config.h"
 #ifdef BUILD_QUDA
 #include "actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_multigrid_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h"
 #endif
 
 #ifdef BUILD_QPHIX
 #include "actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_w.h"
+#include "actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_iter_refine_w.h"
 #endif
 
 namespace Chroma
@@ -62,11 +64,13 @@ namespace Chroma
 #endif
 #ifdef BUILD_QUDA
 	success &= MdagMSysSolverQUDACloverEnv::registerAll();
+	success &= MdagMSysSolverQUDAMULTIGRIDCloverEnv::registerAll();
 	success &= MdagMSysSolverQUDAWilsonEnv::registerAll();
 #endif
 
 #ifdef BUILD_QPHIX
 	success &= MdagMSysSolverQPhiXCloverEnv::registerAll();
+	success &= MdagMSysSolverQPhiXCloverIterRefineEnv::registerAll();
 #endif
 	registered = true;
       }

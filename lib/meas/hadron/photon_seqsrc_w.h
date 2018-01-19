@@ -82,7 +82,7 @@ namespace Chroma
       const multi1d<int>& getSinkMom() const {return params.sink_mom;}
 
       //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
+      int getDecayDir() const {return params.j_decay;}
 
     private:
       multi1d<int>  t_srce;   /*<! Must come from propagator headers */
@@ -133,7 +133,7 @@ namespace Chroma
       const multi1d<int>& getSinkMom() const {return params.sink_mom;}
 
       //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
+      int getDecayDir() const {return params.j_decay;}
 
     private:
       multi1d<int>  t_srce;   /*<! Must come from propagator headers */

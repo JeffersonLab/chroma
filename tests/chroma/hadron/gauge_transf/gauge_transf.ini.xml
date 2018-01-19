@@ -48,7 +48,105 @@
         <gauge_rot_id>gauge_rot</gauge_rot_id>
       </NamedObject>
     </elem>
-
+    
+  	<elem>
+      <!-- Gauge transform the object -->
+      <Name>GAUGE_TRANSFORM_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <input_id>default_gauge_field</input_id>
+        <output_id>rot_gauge_field</output_id>
+        <gauge_rot_id>gauge_rot</gauge_rot_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+    </elem>
+ 
+     <elem>
+      <!-- Plaquette loops -->
+      <Name>PLAQUETTE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+		<annotation>
+		<!-- One can optionally use a GAUGE_STATE -->
+        	<GaugeState>
+          	<Name>SIMPLE_GAUGE_STATE</Name>
+         	 <GaugeBC>
+            	<Name>PERIODIC_GAUGEBC</Name>
+          	</GaugeBC>
+        	</GaugeState>
+		</annotation>
+      	</Param>
+      	<NamedObject>
+        	<gauge_id>default_gauge_field</gauge_id>
+      	</NamedObject>
+    </elem>
+    
+     <elem>
+      <!-- Plaquette loops -->
+      <Name>PLAQUETTE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+		<annotation>
+		<!-- One can optionally use a GAUGE_STATE -->
+        	<GaugeState>
+          	<Name>SIMPLE_GAUGE_STATE</Name>
+         	 <GaugeBC>
+            	<Name>PERIODIC_GAUGEBC</Name>
+          	</GaugeBC>
+        	</GaugeState>
+		</annotation>
+      	</Param>
+      	<NamedObject>
+        	<gauge_id>coul_cfg</gauge_id>
+      	</NamedObject>
+    </elem>
+ 
+    
+     <elem>
+      <!-- Plaquette loops -->
+      <Name>PLAQUETTE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+		<annotation>
+		<!-- One can optionally use a GAUGE_STATE -->
+        	<GaugeState>
+          	<Name>SIMPLE_GAUGE_STATE</Name>
+         	 <GaugeBC>
+            	<Name>PERIODIC_GAUGEBC</Name>
+          	</GaugeBC>
+        	</GaugeState>
+		</annotation>
+      	</Param>
+      	<NamedObject>
+        	<gauge_id>rot_gauge_field</gauge_id>
+      	</NamedObject>
+    </elem>
+    
+      <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>rot_gauge_field</object_id>
+      </NamedObject>
+    </elem>
+    
+      <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>coul_cfg</object_id>
+      </NamedObject>
+    </elem>
+    
     <elem>
       <annotation>
         Make a gaussian prop 
@@ -144,6 +242,7 @@
         <object_type>LatticeStaggeredFermion</object_type>
       </NamedObject>
     </elem>
+    
 
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>

@@ -24,6 +24,9 @@
 #include <string>
 
 #include "util/gauge/reunit.h"
+#ifdef QDP_IS_QDPJIT
+#include "actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h"
+#endif
 
 //#include <util_quda.h>
 
@@ -382,7 +385,7 @@ namespace Chroma
      if( invParam.MULTIGRIDParamsP ) {
 	QDPIO::cout << "Setting MULTIGRID solver params" << std::endl;
 	// Dereference handle
-	MULTIGRIDSolverParams ip = *(invParam.MULTIGRIDParams);
+	const MULTIGRIDSolverParams& ip = *(invParam.MULTIGRIDParams);
 
 	// Set preconditioner precision
 	switch( ip.prec ) { 
@@ -440,7 +443,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
         gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
 #else
-       gauge[mu] = QDPCache::Instance().getDevicePtr( links_single[mu].getId() );
+       gauge[mu] = GetMemoryPtr( links_single[mu].getId() );
        QDPIO::cout << "MDAGM CUDA gauge[" << mu << "] in = " << gauge[mu] << "\n";
 #endif
      }
@@ -503,8 +506,19 @@ namespace Chroma
 	mg_param.run_verify = QUDA_BOOLEAN_NO;
 
 	mg_param.n_level = ip.mg_levels;
+
+        for (int i=0; i<mg_param.n_level-1; ++i) {
+          if( ip.setup_on_gpu[i] ) {
+            mg_param.setup_location[i] = QUDA_CUDA_FIELD_LOCATION;
+          }
+          else {
+            mg_param.setup_location[i] = QUDA_CPU_FIELD_LOCATION;
+          }
+
+        }        
+
 	for (int i=0; i<mg_param.n_level; i++) {
-    		for (int j=0; j<QUDA_MAX_DIM; j++) {
+    		for (int j=0; j< Nd; j++) {
 		  if( i < mg_param.n_level-1 ) {
       			mg_param.geo_block_size[i][j] = ip.blocking[i][j];
                   }

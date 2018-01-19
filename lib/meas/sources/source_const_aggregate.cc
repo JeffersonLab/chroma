@@ -20,6 +20,7 @@
 #include "meas/sources/sf_pt_source_const.h"
 #include "meas/sources/sf_sh_source_const.h"
 #include "meas/sources/sf_wall_source_const.h"
+#include "meas/sources/sf_wave_source_const.h"
 
 namespace Chroma
 {
@@ -53,6 +54,7 @@ namespace Chroma
 	success &= SFPointQuarkSourceConstEnv::registerAll();
 	success &= SFShellQuarkSourceConstEnv::registerAll();
 	success &= SFWallQuarkSourceConstEnv::registerAll();
+	success &= SFWaveQuarkSourceConstEnv::registerAll();
 
 	registered = true;
       }

@@ -37,6 +37,7 @@ namespace Chroma
 
     std::string   output_file_name;
     QDP_volfmt_t  qio_volfmt;
+    QDP_serialparallel_t parallel_io;
     std::string   precision;
 
     std::string   xml_file;

@@ -60,6 +60,31 @@ namespace Chroma
     pokeSpin(b, a, 0);
   }
 
+  //! Convert a LatticeStaggeredFermion into a LatticeColorVector (extract)
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source Fermion
+   * \param b      Destination ColorVector
+   */
+  void FermToCv(const LatticeStaggeredFermionD& a, LatticeColorVectorD& b)
+    {
+      b = peekSpin(a, 0);
+    }
+
+  //! Convert  a LatticeStaggeredFermion into a LatticeColorVector (extract)
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source Fermion
+   * \param b      Destination ColorVector
+   */
+  void FermToCv(const LatticeStaggeredFermionF& a, LatticeColorVectorF& b)
+    {
+	  b = peekSpin(a,0);
+    }
+
+
 
   //! Insert a LatticeFermion into a LatticePropagator
   /*!

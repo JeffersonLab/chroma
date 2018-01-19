@@ -17,6 +17,7 @@ namespace Chroma
    * \param nstep  number of steps  (Read)
    * \param wflow_eps  size of step (Read)
    * \param time direction (Read)
+   * FIXME This comment does not match the code any more.
 
    */
 

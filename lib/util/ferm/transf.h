@@ -49,6 +49,23 @@ namespace Chroma
    */
   void CvToFerm(const LatticeColorVectorD& a, LatticeStaggeredFermionD& b);
 
+  //! Convert a LatticeStaggeredFermion into a LatticeColorVector (extract)
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source Fermion
+   * \param b      Destination ColorVector
+   */
+  void FermToCv(const LatticeStaggeredFermionF& a, LatticeColorVectorF& b);
+
+  //! Convert a LatticeStaggeredFermion into a LatticeColorVector (extract)
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source Fermion
+   * \param b      Destination ColorVector
+   */
+  void FermToCv(const LatticeStaggeredFermionD& a, LatticeColorVectorD& b);
 
 
   //! Insert a LatticeFermion into a LatticePropagator

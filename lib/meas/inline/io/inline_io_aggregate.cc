@@ -21,6 +21,7 @@
 #include "meas/inline/io/inline_gaussian_obj.h"
 #include "meas/inline/io/inline_usqcd_read_ddpairs_prop.h"
 #include "meas/inline/io/inline_usqcd_write_ddpairs_prop.h"
+#include "meas/inline/io/inline_milc_write_stag_source.h"
 
 #include "meas/inline/io/inline_eigen_bin_colvec_read_obj.h"
 #include "meas/inline/io/inline_eigen_lime_colvec_read_obj.h"
@@ -32,6 +33,14 @@
 #include "chroma_config.h"
 #ifdef BUILD_QOP_MG
 #include "meas/inline/io/inline_erase_mg_space.h"
+#endif
+
+#ifdef BUILD_QUDA
+#include "meas/inline/io/inline_erase_quda_multigrid_space.h"
+#endif
+
+#ifdef BUILD_MGPROTO
+#include "meas/inline/io/inline_erase_mg_proto_space.h"
 #endif
 
 namespace Chroma
@@ -80,6 +89,9 @@ namespace Chroma
 	success &= InlineUSQCDReadDDPairsPropEnv::registerAll();
 	success &= InlineUSQCDWriteDDPairsPropEnv::registerAll();
 
+	// MILC Source Writer
+	success &= InlineMILCWriteStagSourceEnv::registerAll();
+
 	// MapObjDisk reader
        	success &= InlineReadMapObjDiskEnv::registerAll();
        	success &= InlineCopyMapObjEnv::registerAll();
@@ -89,6 +101,14 @@ namespace Chroma
 	success &= InlineEraseMGSpaceEnv::registerAll();
 #endif
 	
+#ifdef BUILD_QUDA
+	success &= InlineEraseQUDAMULTIGRIDSpaceEnv::registerAll();
+#endif
+
+#ifdef BUILD_MGPROTO
+	success &= InlineEraseMGProtoSpaceEnv::registerAll();
+#endif
+
 	registered = true;
       }
       return success;

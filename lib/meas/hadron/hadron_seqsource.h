@@ -77,7 +77,7 @@ namespace Chroma
     virtual const multi1d<int>& getSinkMom() const = 0;
 
     //! Get decay_dir
-    virtual const int getDecayDir() const = 0;
+    virtual int getDecayDir() const = 0;
   };
 
 }

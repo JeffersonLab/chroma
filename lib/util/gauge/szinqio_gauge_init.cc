@@ -59,20 +59,37 @@ namespace Chroma
     // Parameters for running code
     Params::Params(XMLReader& xml, const std::string& path)
     {
-      XMLReader paramtop(xml, path);
+    	XMLReader paramtop(xml, path);
 
-      read(paramtop, "cfg_file", cfg_file);
-      // Default
-      cfg_pario = QDPIO_SERIAL;
+    	read(paramtop, "cfg_file", cfg_file);
+    	// Default
+    	cfg_pario = QDPIO_SERIAL;
 
-      bool pario;
-      if ( paramtop.count("parallel_io") > 0 ) { 
-        read(paramtop, "parallel_io", pario);
-        if( pario ) { 
-	  cfg_pario = QDPIO_PARALLEL;;
-        }
-      }
+    	// If the IO Node grid has more than 1 node then do parallel io
+    	// as a default
+    	bool pario = Layout::isIOGridDefined() && ( Layout::numIONodeGrid() > 1 );
+
+    	// Attempt to read option with either tag
+    	if ( paramtop.count("parallel_io") > 0 ) {
+    		read(paramtop, "parallel_io", pario);
+    	}
+    	else {
+    		if ( paramtop.count("ParallelIO") > 0 ) {
+    			read(paramtop, "ParallelIO", pario);
+    		}
+    	}
+
+
+    	if ( pario )  {
+    		cfg_pario = QDPIO_PARALLEL;
+    	}
+    	else {
+    		cfg_pario = QDPIO_SERIAL;
+    	}
+
+
     }
+
 
     //! Parameters for running code
     void Params::writeXML(XMLWriter& xml, const std::string& path) const
@@ -82,10 +99,14 @@ namespace Chroma
       int version = 1;
       write(xml, "cfg_type", SZINQIOGaugeInitEnv::name);
       write(xml, "cfg_file", cfg_file);
+
+      bool pario = false;
+
       if ( cfg_pario == QDPIO_PARALLEL ) { 
-	bool pario = true;
-	write(xml, "parallel_io", pario);
+    	  pario = true;
       }
+      write(xml, "parallel_io", pario);
+
       pop(xml);
     }
 

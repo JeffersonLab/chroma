@@ -1,7 +1,6 @@
 /*! \file
  *  \brief Overlap-pole operator
  */
-#include <math.h>
 #include "chromabase.h"
 #include "actions/ferm/linop/lovlap_double_pass_w.h"
 #include "meas/eig/gramschm.h"

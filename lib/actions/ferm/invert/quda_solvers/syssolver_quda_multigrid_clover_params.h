@@ -53,6 +53,8 @@ namespace Chroma
       backup_invP = p.backup_invP;
       backup_inv_param = p.backup_inv_param;
       dump_on_failP = p.dump_on_failP;
+      SaveSubspaceID = p.SaveSubspaceID;
+      ThresholdCount = p.ThresholdCount;
     }
 
    
@@ -73,6 +75,11 @@ namespace Chroma
     Real RsdToleranceFactor;
     bool tuneDslashP;
     bool MULTIGRIDParamsP;
+    
+    //New params for MG subspace persistence within NamedObject Storage.
+    std::string SaveSubspaceID;
+    int ThresholdCount;
+
 
     Handle<MULTIGRIDSolverParams> MULTIGRIDParams;
 

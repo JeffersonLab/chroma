@@ -6,11 +6,15 @@
 #ifndef __lwldslash_cpp_float_h__
 #define __lwldslash_cpp_float_h__
 
+#include "chromabase.h"
+#include "qdp_allocator.h"
+#include "chroma_config.h"
 #include "actions/ferm/linop/lwldslash_base_w.h"
 #include "io/aniso_io.h"
 #include "state.h"
 #include "cpp_dslash.h"
 #include "cpp_dslash_qdp_packer.h" 
+
 
 using namespace CPlusPlusWilsonDslash;
 
@@ -109,12 +113,22 @@ namespace Chroma
 
   private:
     multi1d<Real> coeffs;  /*!< Nd array of coefficients of terms in the action */
-    multi1d<PrimitiveSU3MatrixF> packed_gauge;  // fold in anisotropy
+ //   multi1d<PrimitiveSU3MatrixF> packed_gauge;  // fold in anisotropy
     Handle< FermBC<T,P,Q> > fbc;
     Handle< Dslash<float> > D;
 
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+    PrimitiveSU3MatrixF* packed_gauge;
+#else
+    static PrimitiveSU3MatrixF* packed_gauge;
+#endif
+
   };
 
+
+#ifdef CHROMA_STATIC_PACKED_GAUGE
+  PrimitiveSU3MatrixF* CPPWilsonDslashF::packed_gauge = nullptr;
+#endif
 
 } // End Namespace Chroma
 
