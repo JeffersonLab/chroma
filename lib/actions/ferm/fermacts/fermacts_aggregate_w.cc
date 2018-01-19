@@ -21,6 +21,9 @@
 #include "actions/ferm/fermacts/eoprec_parwilson_fermact_w.h"
 #include "actions/ferm/fermacts/eoprec_slic_fermact_w.h"
 #include "actions/ferm/fermacts/eoprec_slrc_fermact_w.h"
+
+#include "actions/ferm/fermacts/seoprec_clover_fermact_w.h"
+
 #include "actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.h"
@@ -97,6 +100,7 @@ namespace Chroma
 	success &= UnprecParWilsonFermActEnv::registerAll();
 
 	success &= EvenOddPrecCloverFermActEnv::registerAll();
+	success &= SymEvenOddPrecCloverFermActEnv::registerAll();
 	success &= UnprecCloverFermActEnv::registerAll();
 	success &= EvenOddPrecCloverOrbifoldFermActEnv::registerAll();
 	success &= EvenOddPrecSLICFermActEnv::registerAll();
