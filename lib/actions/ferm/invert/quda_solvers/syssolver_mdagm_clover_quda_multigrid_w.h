@@ -703,68 +703,89 @@ public:
       }
     }
 
-    if ( !solution_good || res1.n_count >= threshold_counts ) { 
-      if( !solution_good) { 
-	// Solution was bad because of nonconvergence or if threshold count was exceeded.
-	QDPIO::cout << solver_string << "Y-solution didnt converge. RsdTarget = " << invParam.RsdTarget << " actual = " << res1.resid/norm2chi << std::endl;
-      }
-
+    if ( solution_good ) {
       if( res1.n_count >= threshold_counts ) { 
-	QDPIO::cout << solver_string << "Iteration Threshold Exceeded Solver iters = " << res1.n_count << " Threshold=" << threshold_counts << std::endl;
-      }
+	QDPIO::cout << solver_string << "Iteration Threshold Exceeded! Y Solver iters = " << res1.n_count << " Threshold=" << threshold_counts << std::endl;
+	QDPIO::cout << solver_string << "Refreshing Subspace" << std::endl;
 
-      QDPIO::cout << solver_string << "Refreshing Y Subspace" << std::endl;
-
-      Y_refresh_timer.start();
-      // refresh the subspace
-      // Regenerate space. Destroy and recreate
-      // Setup the number of subspace Iterations                                                                                             
-      for(int j=0; j < ip.mg_levels-1; j++) {
-	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = ip.maxIterSubspaceRefresh[j];
+	Y_refresh_timer.start();
+	// refresh the subspace
+	// Setup the number of subspace Iterations                                                                                             
+	for(int j=0; j < ip.mg_levels-1; j++) {
+	  (subspace_pointers->mg_param).setup_maxiter_refresh[j] = ip.maxIterSubspaceRefresh[j];
+	}
+	updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+	for(int j=0; j < ip.mg_levels-1; j++) {
+	  (subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
+	}
+	Y_refresh_timer.stop();
+	QDPIO::cout << solver_string << "Subspace Refresh Time = " << Y_refresh_timer.getTimeInSeconds() << " secs\n";
       }
-      updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
-      for(int j=0; j < ip.mg_levels-1; j++) {
-	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
-      }
-      Y_refresh_timer.stop();
-      QDPIO::cout << solver_string << "Y Subspace Refresh Time = " << Y_refresh_timer.getTimeInSeconds() << " secs\n";
+    }
+    else { 
+      QDPIO::cout << solver_string << "Y-Solve failed. Blowing away and reiniting subspace" << std::endl;
+      StopWatch reinit_timer; reinit_timer.reset();
+      reinit_timer.start();
 
-      // Re-Solving -- if solution was not good
-      if ( ! solution_good ) {
-	QDPIO::cout << solver_string << "Re-Solving for Y" << std::endl;
-	SystemSolverResults_t res_tmp;
-	res_tmp = qudaInvert(*clov,
-			     *invclov,
-			     g5chi,
-			     Y_prime);
+      // Delete the saved subspace completely
+      QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
+
+      // Recreate the subspace
+      subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+
+      // Make subspace XML snippets
+      XMLBufferWriter file_xml;
+      push(file_xml, "FileXML");
+      pop(file_xml);
+
+      int foo = 5;
+      XMLBufferWriter record_xml;
+      push(record_xml, "RecordXML");
+      write(record_xml, "foo", foo);
+      pop(record_xml);
+
+
+      // Create named object entry.
+      TheNamedObjMap::Instance().create< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID);
+      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
+
+      // Assign the pointer into the named object
+      TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
+      quda_inv_param.preconditioner = subspace_pointers->preconditioner;
+
+      reinit_timer.stop();
+      QDPIO::cout << solver_string << "Subspace Reinit Time: " << reinit_timer.getTimeInSeconds() << " sec."  << std::endl;
+
+      // Re-solve
+      QDPIO::cout << solver_string << "Re-Solving for Y" << std::endl;
+      SystemSolverResults_t res_tmp;
+      res_tmp = qudaInvert(*clov,
+			   *invclov,
+			   g5chi,
+			   Y_prime);
+      
+      Y = Gamma(Nd*Nd -1)*Y_prime;
+      
+      // Check solution
+      {
+	T r;
+	r[A->subset()]=chi;
+	T tmp;
+	(*A)(tmp, Y, MINUS);
+	r[A->subset()] -= tmp;
 	
-	Y = Gamma(Nd*Nd -1)*Y_prime;
-	
-	// Check solution
-	{
-	  T r;
-	  r[A->subset()]=chi;
-	  T tmp;
-	  (*A)(tmp, Y, MINUS);
-	  r[A->subset()] -= tmp;
-	  
-	  res_tmp.resid = sqrt(norm2(r, A->subset()));
-	  if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
-	    QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
-	    QDP_abort(1);
-	  }
-	} // Check solution
-	
-	// solution is good
-	if ( res_tmp.n_count >= threshold_counts ) { 
-	  QDPIO::cout << solver_string << "Re Solve for Y reached threshold Count: iters = " << res_tmp.n_count << " threshold=" << threshold_counts << "! Aborting!" << std::endl;
+	res_tmp.resid = sqrt(norm2(r, A->subset()));
+	if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
+	  QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 	  QDP_abort(1);
 	}
-	
-	// threhold count is good, and solution is good
-	res1.n_count += res_tmp.n_count; // Add resolve iterations
-	res1.resid  = res_tmp.resid; // Copy new residuum.
-      }
+      } // Check solution
+
+      // threhold count is good, and solution is good
+      res1.n_count += res_tmp.n_count; // Add resolve iterations
+      res1.resid  = res_tmp.resid; // Copy new residuum.
+
     }
     Y_solve_timer.stop();
 
@@ -785,6 +806,7 @@ public:
         psi);
 
     solution_good = true;
+
     // Check solution
     {
       T r;
@@ -799,71 +821,92 @@ public:
       }
     }
 
-    if ( !solution_good || res2.n_count >= threshold_counts ) { 
-      // Solution was bad because of nonconvergence or if threshold count was exceeded.
-      if( !solution_good ) { 
-	QDPIO::cout << solver_string << "Solution for X didnt converge or threshold count reached. RsdTarget = " << invParam.RsdTarget << " actual = " << res2.resid/norm2chi  << std::endl;
-      }
-
+    if( solution_good )  {
       if( res2.n_count >= threshold_counts ) {
-	QDPIO::cout << solver_string <<"Threshold Reached:  Solver iters = " << res2.n_count << " Threshold=" << threshold_counts << std::endl;
-      }
-      QDPIO::cout << solver_string << "Refreshing X Subspace" << std::endl;
-
-      X_refresh_timer.start();
-      // refresh the subspace
-      // Regenerate space. Destroy and recreate
-      // Setup the number of subspace Iterations                                                                                             
-      for(int j=0; j < ip.mg_levels-1; j++) {
-	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = ip.maxIterSubspaceRefresh[j];
-      }
-      updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
-      for(int j=0; j < ip.mg_levels-1; j++) {
-	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
-      }
-      X_refresh_timer.stop();
+	QDPIO::cout << solver_string <<"Threshold Reached! X Solver iters = " << res2.n_count << " Threshold=" << threshold_counts << std::endl;
+	QDPIO::cout << solver_string << "Refreshing Subspace" << std::endl;
       
-      QDPIO::cout << solver_string << "X Subspace Refresh Time = " << X_refresh_timer.getTimeInSeconds() << " secs\n";
-
-      // Re-Solve for X if needed
-      if (!solution_good ) { 
-	QDPIO::cout << solver_string << "Re-Solving for X " << std::endl;
-	SystemSolverResults_t res_tmp;
-	res_tmp = qudaInvert(*clov,
-			     *invclov,
-			     Y,
-			     psi);
+	X_refresh_timer.start();
+	// refresh the subspace
+	// Regenerate space. Destroy and recreate
+	// Setup the number of subspace Iterations                                                                                             
+	for(int j=0; j < ip.mg_levels-1; j++) {
+	  (subspace_pointers->mg_param).setup_maxiter_refresh[j] = ip.maxIterSubspaceRefresh[j];
+	}
+	updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+	for(int j=0; j < ip.mg_levels-1; j++) {
+	  (subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
+	}
+	X_refresh_timer.stop();
 	
+	QDPIO::cout << solver_string << "X Subspace Refresh Time = " << X_refresh_timer.getTimeInSeconds() << " secs\n";
+      }
+    }
+    else { 
+	
+      QDPIO::cout << solver_string << "X-Solve failed. Blowing away and reiniting subspace" << std::endl;
+      StopWatch reinit_timer; reinit_timer.reset();
+      reinit_timer.start();
 
-	// Check solution
-	{
-	  T r;
-	  r[A->subset()]=chi;
-	  T tmp;
-	  (*MdagM)(tmp, psi, PLUS);
-	  r[A->subset()] -= tmp;
-	  
-	  res_tmp.resid = sqrt(norm2(r, A->subset()));
-	  if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
-	    QDPIO::cout << solver_string << "Re Solve for X Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
-	    QDP_abort(1);
-	  }
-	} // Check solution
+      // Delete the saved subspace completely
+      QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
-	// solution is good
-	if ( res_tmp.n_count >= threshold_counts ) { 
-	  QDPIO::cout << solver_string << "Re Solve for X Exceeded Threshold Count: iters = " << res_tmp.n_count << " threshold=" << threshold_counts << "! Aborting!" << std::endl;
+      // Recreate the subspace
+      subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+
+      // Make subspace XML snippets
+      XMLBufferWriter file_xml;
+      push(file_xml, "FileXML");
+      pop(file_xml);
+
+      int foo = 5;
+      XMLBufferWriter record_xml;
+      push(record_xml, "RecordXML");
+      write(record_xml, "foo", foo);
+      pop(record_xml);
+
+
+      // Create named object entry.
+      TheNamedObjMap::Instance().create< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID);
+      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
+
+      // Assign the pointer into the named object
+      TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
+      reinit_timer.stop();
+      QDPIO::cout << solver_string << "Subspace Reinit Time: " << reinit_timer.getTimeInSeconds() << " sec."  << std::endl;
+
+      // Re-solve
+      QDPIO::cout << solver_string << "Re-Solving for X" << std::endl;
+      SystemSolverResults_t res_tmp;
+      res_tmp = qudaInvert(*clov,
+			   *invclov,
+			   Y,
+			   psi);
+
+
+      // Check solution
+      {
+	T r;
+	r[A->subset()]=chi;
+	T tmp;
+	(*MdagM)(tmp, psi, PLUS);
+	r[A->subset()] -= tmp;
+	
+	res_tmp.resid = sqrt(norm2(r, A->subset()));
+	if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
+	  QDPIO::cout << solver_string << "Re Solve for X Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 	  QDP_abort(1);
 	}
-	
-	res2.n_count += res_tmp.n_count; // Add resolve iterations
-	res2.resid  = res_tmp.resid; // Copy new residuum.
       }
+      // At this point the solution is good
+      res2.n_count += res_tmp.n_count;
+      res2.resid = res_tmp.resid;
+      
     }
     X_solve_timer.stop();
 
     X_predictor_add_timer.start();
-    // Solution is good.
     predictor.newXVector(psi);
     X_predictor_add_timer.stop();
     swatch.stop();
@@ -928,7 +971,7 @@ public:
     int X_index=predictor.getXIndex();
     int Y_index=predictor.getYIndex();
     
-    QDPIO::cout << "Two Step Solve using QUDA predictor: (X_index,Y_index) = ( " << X_index << " , " << Y_index << " ) \n";
+    QDPIO::cout << "Two Step Solve using QUDA predictor: (Y_index,X_index) = ( " << Y_index << " , " << X_index << " ) \n";
 
 
     // Select the channel for QUDA's predictor here.
@@ -973,77 +1016,95 @@ public:
       }
     }
 
-    if ( !solution_good || res1.n_count >= threshold_counts ) { 
-      if( !solution_good) { 
-	// Solution was bad because of nonconvergence or if threshold count was exceeded.
-	QDPIO::cout << solver_string << "Y-solution didnt converge. RsdTarget = " << invParam.RsdTarget << " actual = " << res1.resid/norm2chi << std::endl;
-      }
-
+    if ( solution_good ) {
       if( res1.n_count >= threshold_counts ) { 
-	QDPIO::cout << solver_string << "Iteration Threshold Exceeded Solver iters = " << res1.n_count << " Threshold=" << threshold_counts << std::endl;
+	QDPIO::cout << solver_string << "Iteration Threshold Exceeded:Y Solver iters = " << res1.n_count << " Threshold=" << threshold_counts << std::endl;
+	QDPIO::cout << solver_string << "Refreshing Subspace" << std::endl;
+
+	Y_refresh_timer.start();
+	// refresh the subspace
+	// Setup the number of subspace Iterations                                                                                             
+	for(int j=0; j < ip.mg_levels-1; j++) {
+	  (subspace_pointers->mg_param).setup_maxiter_refresh[j] = ip.maxIterSubspaceRefresh[j];
+	}
+	updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+	for(int j=0; j < ip.mg_levels-1; j++) {
+	  (subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
+	}
+	Y_refresh_timer.stop();
+	QDPIO::cout << solver_string << "Y Subspace Refresh Time = " << Y_refresh_timer.getTimeInSeconds() << " secs\n";
       }
+    }
+    else { 
+      QDPIO::cout << solver_string << "Y-Solve failed. Blowing away and reiniting subspace" << std::endl;
+      StopWatch reinit_timer; reinit_timer.reset();
+      reinit_timer.start();
+      // BLow away subspace, re-set it up and then re-solve
+      QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
-      QDPIO::cout << solver_string << "Refreshing Y Subspace" << std::endl;
+      // Recreate the subspace
+      subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
 
-      Y_refresh_timer.start();
-      // refresh the subspace
-      // Regenerate space. Destroy and recreate
-      // Setup the number of subspace Iterations                                                                                             
-      for(int j=0; j < ip.mg_levels-1; j++) {
-	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = ip.maxIterSubspaceRefresh[j];
-      }
-      updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
-      for(int j=0; j < ip.mg_levels-1; j++) {
-	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
-      }
-      Y_refresh_timer.stop();
-      QDPIO::cout << solver_string << "Y Subspace Refresh Time = " << Y_refresh_timer.getTimeInSeconds() << " secs\n";
+      // Make subspace XML snippets
+      XMLBufferWriter file_xml;
+      push(file_xml, "FileXML");
+      pop(file_xml);
 
-      // Re-Solving -- if solution was not good
-      if ( ! solution_good ) {
+      int foo = 5;
+      XMLBufferWriter record_xml;
+      push(record_xml, "RecordXML");
+      write(record_xml, "foo", foo);
+      pop(record_xml);
 
-	// This is a re-solve. So use_resident=false means used my initial guess
-	// (do not repredict)
-	quda_inv_param.chrono_use_resident = false;
 
-	// The last solve, stored a chrono vector. We will overwrite this
-	// thanks to the setting below
-	quda_inv_param.chrono_replace_last = true;
-    
-	QDPIO::cout << solver_string << "Re-Solving for Y" << std::endl;
-	SystemSolverResults_t res_tmp;
-	res_tmp = qudaInvert(*clov,
-			     *invclov,
-			     g5chi,
-			     Y_prime);
+      // Create named object entry.
+      TheNamedObjMap::Instance().create< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID);
+      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
+
+      // Assign the pointer into the named object
+      TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
+      reinit_timer.stop();
+      QDPIO::cout << solver_string << "Subspace Reinit Time: " << reinit_timer.getTimeInSeconds() << " sec."  << std::endl;
+
+      // Re-solve
+      // This is a re-solve. So use_resident=false means used my initial guess
+      // (do not repredict)
+      quda_inv_param.chrono_use_resident = false;
+
+      // The last solve, stored a chrono vector. We will overwrite this
+      // thanks to the setting below
+      quda_inv_param.chrono_replace_last = true;
+
+      QDPIO::cout << solver_string << "Re-Solving for Y" << std::endl;
+      SystemSolverResults_t res_tmp;
+      res_tmp = qudaInvert(*clov,
+			   *invclov,
+			   g5chi,
+			   Y_prime);
+      
+      Y = Gamma(Nd*Nd -1)*Y_prime;
+      
+      // Check solution
+      {
+	T r;
+	r[A->subset()]=chi;
+	T tmp;
+	(*A)(tmp, Y, MINUS);
+	r[A->subset()] -= tmp;
 	
-	Y = Gamma(Nd*Nd -1)*Y_prime;
-	
-	// Check solution
-	{
-	  T r;
-	  r[A->subset()]=chi;
-	  T tmp;
-	  (*A)(tmp, Y, MINUS);
-	  r[A->subset()] -= tmp;
-	  
-	  res_tmp.resid = sqrt(norm2(r, A->subset()));
-	  if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
-	    QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
-	    QDP_abort(1);
-	  }
-	} // Check solution
-	
-	// solution is good
-	if ( res_tmp.n_count >= threshold_counts ) { 
-	  QDPIO::cout << solver_string << "Re Solve for Y reached threshold Count: iters = " << res_tmp.n_count << " threshold=" << threshold_counts << "! Aborting!" << std::endl;
+	res_tmp.resid = sqrt(norm2(r, A->subset()));
+	if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
+	  // If we fail on the resolve then barf
+	  QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 	  QDP_abort(1);
 	}
-	
-	// threhold count is good, and solution is good
-	res1.n_count += res_tmp.n_count; // Add resolve iterations
-	res1.resid  = res_tmp.resid; // Copy new residuum.
-      }
+      } 
+
+      // At this point solution should be good again and subspace should be reinited
+      res1.n_count += res_tmp.n_count; // Add resolve iterations
+      res1.resid  = res_tmp.resid; // Copy new residuum.
+
     }
     Y_solve_timer.stop();
 
@@ -1085,74 +1146,98 @@ public:
       }
     }
 
-    if ( !solution_good || res2.n_count >= threshold_counts ) { 
-      // Solution was bad because of nonconvergence or if threshold count was exceeded.
-      if( !solution_good ) { 
-	QDPIO::cout << solver_string << "Solution for X didnt converge or threshold count reached. RsdTarget = " << invParam.RsdTarget << " actual = " << res2.resid/norm2chi  << std::endl;
-      }
 
+    if( solution_good )  {
       if( res2.n_count >= threshold_counts ) {
-	QDPIO::cout << solver_string <<"Threshold Reached:  Solver iters = " << res2.n_count << " Threshold=" << threshold_counts << std::endl;
-      }
-      QDPIO::cout << solver_string << "Refreshing X Subspace" << std::endl;
-
-      X_refresh_timer.start();
-      // refresh the subspace
-      // Regenerate space. Destroy and recreate
-      // Setup the number of subspace Iterations                                                                                             
-      for(int j=0; j < ip.mg_levels-1; j++) {
-	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = ip.maxIterSubspaceRefresh[j];
-      }
-      updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
-      for(int j=0; j < ip.mg_levels-1; j++) {
-	(subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
-      }
-      X_refresh_timer.stop();
+	QDPIO::cout << solver_string <<"Threshold Reached: X Solver iters = " << res2.n_count << " Threshold=" << threshold_counts << std::endl;
+	QDPIO::cout << solver_string << "Refreshing Subspace" << std::endl;
       
-      QDPIO::cout << solver_string << "X Subspace Refresh Time = " << X_refresh_timer.getTimeInSeconds() << " secs\n";
-
-      // Re-Solve for X if needed
-      if (!solution_good ) {
-	// This is a re-solve. So use_resident=false means used my initial guess
-	// (do not repredict)
-	quda_inv_param.chrono_use_resident = false;
-
-	// The last solve, stored a chrono vector. We will overwrite this
-	// thanks to the setting below
-	quda_inv_param.chrono_replace_last = true;
-
-	QDPIO::cout << solver_string << "Re-Solving for X " << std::endl;
-	SystemSolverResults_t res_tmp;
-	res_tmp = qudaInvert(*clov,
-			     *invclov,
-			     Y,
-			     psi);
+	X_refresh_timer.start();
+	// refresh the subspace
+	// Regenerate space. Destroy and recreate
+	// Setup the number of subspace Iterations                                                                                             
+	for(int j=0; j < ip.mg_levels-1; j++) {
+	  (subspace_pointers->mg_param).setup_maxiter_refresh[j] = ip.maxIterSubspaceRefresh[j];
+	}
+	updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+	for(int j=0; j < ip.mg_levels-1; j++) {
+	  (subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
+	}
+	X_refresh_timer.stop();
 	
+	QDPIO::cout << solver_string << "Subspace Refresh Time = " << X_refresh_timer.getTimeInSeconds() << " secs\n";
+      }
+    }
+    else { 
+	
+      QDPIO::cout << solver_string << "X-Solve failed. Blowing away and reiniting subspace" << std::endl;
+      StopWatch reinit_timer; reinit_timer.reset();
+      reinit_timer.start();
 
-	// Check solution
-	{
-	  T r;
-	  r[A->subset()]=chi;
-	  T tmp;
-	  (*MdagM)(tmp, psi, PLUS);
-	  r[A->subset()] -= tmp;
-	  
-	  res_tmp.resid = sqrt(norm2(r, A->subset()));
-	  if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
-	    QDPIO::cout << solver_string << "Re Solve for X Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
-	    QDP_abort(1);
-	  }
-	} // Check solution
+      // Delete the saved subspace completely
+      QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
-	// solution is good
-	if ( res_tmp.n_count >= threshold_counts ) { 
-	  QDPIO::cout << solver_string << "Re Solve for X Exceeded Threshold Count: iters = " << res_tmp.n_count << " threshold=" << threshold_counts << "! Aborting!" << std::endl;
+      // Recreate the subspace
+      subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+
+      // Make subspace XML snippets
+      XMLBufferWriter file_xml;
+      push(file_xml, "FileXML");
+      pop(file_xml);
+
+      int foo = 5;
+      XMLBufferWriter record_xml;
+      push(record_xml, "RecordXML");
+      write(record_xml, "foo", foo);
+      pop(record_xml);
+
+
+      // Create named object entry.
+      TheNamedObjMap::Instance().create< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID);
+      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
+
+      // Assign the pointer into the named object
+      TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
+      reinit_timer.stop();
+      QDPIO::cout << solver_string << "Subspace Reinit Time: " << reinit_timer.getTimeInSeconds() << " sec."  << std::endl;
+
+      // Re-solve
+      // This is a re-solve. So use_resident=false means used my initial guess
+      // (do not repredict)
+      quda_inv_param.chrono_use_resident = false;
+
+      // The last solve, stored a chrono vector. We will overwrite this
+      // thanks to the setting below
+      quda_inv_param.chrono_replace_last = true;
+
+      QDPIO::cout << solver_string << "Re-Solving for X" << std::endl;
+
+      SystemSolverResults_t res_tmp;
+      res_tmp = qudaInvert(*clov,
+			   *invclov,
+			   Y,
+			   psi);
+
+
+      // Check solution
+      {
+	T r;
+	r[A->subset()]=chi;
+	T tmp;
+	(*MdagM)(tmp, psi, PLUS);
+	r[A->subset()] -= tmp;
+	
+	res_tmp.resid = sqrt(norm2(r, A->subset()));
+	if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
+	  QDPIO::cout << solver_string << "Re Solve for X Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 	  QDP_abort(1);
 	}
-	
-	res2.n_count += res_tmp.n_count; // Add resolve iterations
-	res2.resid  = res_tmp.resid; // Copy new residuum.
       }
+      // At this point the solution is good
+      res2.n_count += res_tmp.n_count;
+      res2.resid = res_tmp.resid;
+      
     }
     X_solve_timer.stop();
     swatch.stop();
@@ -1180,7 +1265,7 @@ public:
     quda_inv_param.chrono_make_resident = false;
     quda_inv_param.chrono_use_resident = false;
     quda_inv_param.chrono_replace_last = false;
-
+    
     
     return res;
   }
