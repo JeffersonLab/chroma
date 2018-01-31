@@ -758,8 +758,9 @@ public:
       QDPIO::cout << solver_string << "Subspace Reinit Time: " << reinit_timer.getTimeInSeconds() << " sec."  << std::endl;
 
       // Re-solve
-      QDPIO::cout << solver_string << "Re-Solving for Y" << std::endl;
+      QDPIO::cout << solver_string << "Re-Solving for Y with zero guess" << std::endl;
       SystemSolverResults_t res_tmp;
+      Y_prime = zero;
       res_tmp = qudaInvert(*clov,
 			   *invclov,
 			   g5chi,
@@ -877,8 +878,9 @@ public:
       QDPIO::cout << solver_string << "Subspace Reinit Time: " << reinit_timer.getTimeInSeconds() << " sec."  << std::endl;
 
       // Re-solve
-      QDPIO::cout << solver_string << "Re-Solving for X" << std::endl;
+      QDPIO::cout << solver_string << "Re-Solving for X with zero guess" << std::endl;
       SystemSolverResults_t res_tmp;
+      psi = zero;
       res_tmp = qudaInvert(*clov,
 			   *invclov,
 			   Y,
