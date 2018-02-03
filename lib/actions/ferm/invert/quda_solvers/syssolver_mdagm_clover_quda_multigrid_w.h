@@ -86,6 +86,10 @@ public:
     }
     QDPIO::cout << solver_string << "Initializing" << std::endl;
 
+    // Check free mem
+    size_t free_mem = QUDAMGUtils::getCUDAFreeMem();
+    QDPIO::cout << solver_string << "MEMCHECK: free mem = " << free_mem << std::endl;
+
     // FOLLOWING INITIALIZATION in test QUDA program
 
     // 1) work out cpu_prec, cuda_prec, cuda_prec_sloppy
