@@ -1,0 +1,60 @@
+---
+code_id: 8006
+open_source: true
+repository_link: "https://github.com/JeffersonLab/chroma"
+accessibility: "OS"
+software_type: "S"
+developers:
+- email: "edwards@jlab.org"
+  orcid: "0000-0002-5667-291X"
+  first_name: "Robert"
+  last_name: "Edwards"
+  middle_name: ""
+  affiliations:
+  - "Thomas Jefferson National Accelerator Facility (TJNAF), Newport News, VA (United\
+    \ States)"
+- email: "bjoo@jlab.org"
+  orcid: "0000-0002-4229-7960"
+  first_name: "Balint"
+  last_name: "Joo"
+  middle_name: ""
+  affiliations:
+  - "Thomas Jefferson National Accelerator Facility (TJNAF), Newport News, VA (United\
+    \ States)"
+- email: "fwinter@jlab.org"
+  orcid: "0000-0002-3573-6726"
+  first_name: "Frank"
+  last_name: "Winter"
+  middle_name: ""
+  affiliations:
+  - "Thomas Jefferson National Accelerator Facility (TJNAF), Newport News, VA (United\
+    \ States)"
+contributors: []
+sponsoring_organizations:
+- organization_name: "USDOE Office of Science (SC), Nuclear Physics (NP) (SC-26)"
+  funding_identifiers:
+  - identifier_type: "AwardNumber"
+    identifier_value: "AC05-06OR23177"
+  primary_award: "AC05-84ER40150"
+  DOE: true
+contributing_organizations: []
+research_organizations:
+- organization_name: "Thomas Jefferson National Accelerator Facility (TJNAF), Newport\
+    \ News, VA (United States)"
+  DOE: true
+related_identifiers: []
+release_date: "2004-01-09"
+software_title: "Chroma"
+doi: "10.11578/dc.20180208.2"
+description: "The Chroma package supports data-parallel programming constructs for\
+  \ lattice field theory and in particular lattice QCD. It uses the SciDAC QDP++ data-parallel\
+  \ programming (in C++) that presents a single high-level code image to the user,\
+  \ but can generate highly optimized code for many architectural systems including\
+  \ single node workstations, multi and many-core nodes, clusters of nodes via QMP,\
+  \ and classic vector computers."
+country_of_origin: "United States"
+licenses:
+- "BSD 3-clause \"New\" or \"Revised\" License"
+recipient_org: "Thomas Jefferson National Accelerator Facility"
+date_record_added: "2018-02-08"
+date_record_updated: "2018-02-08"
