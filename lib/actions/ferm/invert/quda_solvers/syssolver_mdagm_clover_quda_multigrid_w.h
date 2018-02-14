@@ -267,6 +267,7 @@ public:
     quda_inv_param.tol = toDouble(invParam.RsdTarget);
     quda_inv_param.maxiter = invParam.MaxIter;
     quda_inv_param.reliable_delta = toDouble(invParam.Delta);
+    quda_inv_param.pipeline = invParam.Pipeline;
 
     quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
     quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;

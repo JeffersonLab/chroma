@@ -121,7 +121,13 @@ namespace Chroma {
       dump_on_failP  = false;
     }
     
-
+    if ( paramtop.count("Pipeline") > 0 ) { 
+      read(paramtop, "Pipeline", Pipeline);
+    }
+    else { 
+      // Default Pipeline = 1
+      Pipeline=1;
+    }
   }
 
   void read(XMLReader& xml, const std::string& path, 
@@ -156,6 +162,7 @@ namespace Chroma {
     }
 
     write(xml, "DumpOnFail", p.dump_on_failP);
+    write(xml, "Pipeline", p.Pipeline);
 
     if( p.backup_invP ) { 
       // Need to dump out the XML for the back up solver here...
