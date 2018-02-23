@@ -8,24 +8,28 @@ namespace Chroma  {
   {
   public: 
     MGSolverException(const Real& Mass, const std::string& SubspaceId, int Iters, const Real& Rsd, const Real& RsdTarget) : 
-      _Mass(Mass), _SubspaceId(SubspaceId), _Iters(Iters), _Rsd(Rsd), _RsdTarget(RsdTarget) {}
-
-    
-    virtual const char* what() const throw()
-    {
+    _Mass(Mass), _SubspaceId(SubspaceId), _Iters(Iters), _Rsd(Rsd), _RsdTarget(RsdTarget) {
       std::ostringstream message;
       message << "MultiGrid Exception. SubspaceId=" << _SubspaceId
 	      << " Mass=" << _Mass
 	      << " Iters=" << _Iters
 	      << " RsdTarget=" << _RsdTarget 
-	      << " Rsd=" << _Rsd << std::endl;
+	      << " Rsd=" << _Rsd ;
 
-      std::string message_string = message.str();
+      _MsgString = message.str();
 
-      return message_string.c_str();
 
     }
 
+    
+    virtual const char* what() const throw()
+    {
+
+      return _MsgString.c_str();
+
+    }
+
+    const std::string& whatStr() const { return _MsgString; }
     const Real&  getMass() const { return _Mass; }
     const std::string&  getSubspaceID() const { return _SubspaceId; }
     const int& getIters() const { return _Iters; }
@@ -38,7 +42,7 @@ namespace Chroma  {
     int _Iters; // Number of iterations taken
     Real _Rsd;  // Actual Residuum 
     Real _RsdTarget; // Target Residuum
-
+    std::string _MsgString; // The error string
   };
 
 
