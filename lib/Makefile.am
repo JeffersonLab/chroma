@@ -40,6 +40,7 @@ nobase_include_HEADERS = \
 	actions/ferm/fermstates/extfield.h \
 	actions/ferm/fermstates/stout_fermstate_params.h \
 	actions/ferm/fermstates/hex_fermstate_params.h \
+	actions/ferm/invert/mg_solver_exception.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_eigcg2.h \
 	actions/ferm/invert/inv_eigcg2_array.h \
