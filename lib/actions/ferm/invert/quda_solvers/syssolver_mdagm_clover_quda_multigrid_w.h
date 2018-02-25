@@ -28,6 +28,7 @@ using namespace QDP;
 #include "lmdagm.h"
 #include "util/gauge/reunit.h"
 #include "actions/ferm/invert/quda_solvers/quda_mg_utils.h"
+#include "actions/ferm/invert/mg_solver_exception.h"
 
 //#include <util_quda.h>
 #ifdef BUILD_QUDA
@@ -784,7 +785,13 @@ public:
 	res_tmp.resid = sqrt(norm2(r, A->subset()));
 	if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 	  QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
-	  QDP_abort(1);
+	  QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
+	  MGSolverException convergence_fail(invParam.CloverParams.Mass,
+                                             invParam.SaveSubspaceID,
+        	                             res_tmp.n_count,
+                                             Real(res_tmp.resid/norm2chi),
+                                             invParam.RsdTarget*invParam.RsdToleranceFactor);
+          throw convergence_fail;
 	}
       } // Check solution
 
@@ -903,6 +910,14 @@ public:
 	res_tmp.resid = sqrt(norm2(r, A->subset()));
 	if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 	  QDPIO::cout << solver_string << "Re Solve for X Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
+	  QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
+          MGSolverException convergence_fail(invParam.CloverParams.Mass,
+                                             invParam.SaveSubspaceID,
+                                             res_tmp.n_count,
+                                             Real(res_tmp.resid/norm2chi),
+                                             invParam.RsdTarget*invParam.RsdToleranceFactor);
+          throw convergence_fail;
+
 	  QDP_abort(1);
 	}
       }
@@ -1104,7 +1119,13 @@ public:
 	if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 	  // If we fail on the resolve then barf
 	  QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
-	  QDP_abort(1);
+	  QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
+          MGSolverException convergence_fail(invParam.CloverParams.Mass,
+                                             invParam.SaveSubspaceID,
+                                             res_tmp.n_count,
+                                             Real(res_tmp.resid/norm2chi),
+                                             invParam.RsdTarget*invParam.RsdToleranceFactor);
+          throw convergence_fail;
 	}
       } 
 
@@ -1238,7 +1259,13 @@ public:
 	res_tmp.resid = sqrt(norm2(r, A->subset()));
 	if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 	  QDPIO::cout << solver_string << "Re Solve for X Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
-	  QDP_abort(1);
+	  QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
+          MGSolverException convergence_fail(invParam.CloverParams.Mass,
+                                             invParam.SaveSubspaceID,
+                                             res_tmp.n_count,
+                                             Real(res_tmp.resid/norm2chi),
+                                             invParam.RsdTarget*invParam.RsdToleranceFactor);
+          throw convergence_fail;
 	}
       }
       // At this point the solution is good
