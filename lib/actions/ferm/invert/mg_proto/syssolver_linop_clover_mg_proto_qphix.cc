@@ -17,6 +17,8 @@
 #include "lattice/qphix/invfgmres_qphix.h"
 #include "lattice/qphix/qphix_qdp_utils.h"
 #include "lattice/qphix/qphix_clover_linear_operator.h"
+#include "actions/ferm/invert/mg_solver_exception.h"
+
 #include <memory>
 using namespace QDP;
 
@@ -138,6 +140,15 @@ namespace Chroma
 		  Double n2 = norm2(tmp);
 		  Double n2rel = n2 / norm2(chi);
 		  QDPIO::cout << "MG_PROTO_CLOVER_INVERTER: iters = "<< res.n_count << " rel resid = " << sqrt(n2rel) << std::endl;
+		  if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget ) ) {
+		    MGSolverException convergence_fail(invParam.CloverParams.Mass, 
+						       subspaceId,
+						       res.n_count,
+						       Real(sqrt(n2rel)),
+						       invParam.OuterSolverRsdTarget);
+		    throw convergence_fail;
+
+		  }
 	  }
 	  swatch.stop();
 	  QDPIO::cout << "MG_PROTO_CLOVER_INVERTER_TIME: call_time = "<< swatch2.getTimeInSeconds() << " sec.  total_time=" << swatch.getTimeInSeconds() << " sec." << std::endl;
