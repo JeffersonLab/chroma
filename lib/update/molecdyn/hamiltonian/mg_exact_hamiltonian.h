@@ -15,6 +15,9 @@
 #include "io/xmllog_io.h"
 #include "io/monomial_io.h"
 #include "meas/inline/io/named_objmap.h"
+#include "actions/boson/operator/adjoint_derivative.h"
+#include "actions/boson/invert/invcg_adj.h"
+
 
 namespace Chroma 
 {
@@ -28,13 +31,13 @@ namespace Chroma
   public:
 
     //! Construct from a list of std::string monomial_ids
-    MGExactHamiltonian(const multi1d<std::string>& monomial_ids_):ExactHamiltonian( monomial_ids_) {mu=0;}
+    MGExactHamiltonian(const multi1d<std::string>& monomial_ids_):ExactHamiltonian( monomial_ids_) {mu=0;rho=0.01;}
    
     //! Construct from a parameter structure
-    MGExactHamiltonian(const ExactHamiltonianParams& p):ExactHamiltonian(p){mu=0}
+    MGExactHamiltonian(const ExactHamiltonianParams& p):ExactHamiltonian(p){mu=0;rho=0.01;}
 
     //! Copy constructor
-    MGExactHamiltonian(const MGExactHamiltonian& H) : ExactHamiltonian(H),mu(H.mu) {}
+    MGExactHamiltonian(const MGExactHamiltonian& H) : ExactHamiltonian(H),mu(H.mu),rho(H.rho) {}
 
     void set_dir(int d){mu=d;}
     int get_dir() const {return mu;}
@@ -49,20 +52,29 @@ namespace Chroma
       START_CODE();
 
       /* Accumulate KE per site */
-      LatticeDouble ke_per_site ;
+      //
 
       
+      Real RsdCG = 1.0e-12 ; // hard coded for now
+      int MaxCG = 10000 ; // hard coded for now
+
+      // I need to define the adjoint derivative
+      LatticeDouble ke_per_site ;
+      // we need to pass down mu and rho
+      // rho has to come in from the xml ... where is where the fun starts
+      AdjointDerivative D(mu,rho,s.getQ());
+      Handle< squaredAdjointDerivative> D2 = new squaredAdjointDerivative(D) ;
+      //squaredAdjointDerivative D2(D) ;
+      LatticeColorMatrix P = s.getP()[mu] ;
+      LatticeColorMatrix X = zero ;
+      SystemSolverResults_t res = InvCG_adj(*D2,P,X,RsdCG,MaxCG) ;
       //ke_per_site = -Double(4);
 
       // Need to call the solver to compute \Xi = inv(D^2) P
       // then need to compute 1/2 Tr P \Xi  which should be real and positive
 
-      //OLD STUFF FOLLOWS
-      /* Sum up the differences */
-      Double KE=zero;
-      for(int mu=0; mu < Nd; mu++) { 
-	KE += sum(ke_per_site[mu]);
-      }
+      //I hope this works
+      Double KE = Double(0.5)*real(sum(trace(P*X))) ;
 
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "mesKE");
@@ -78,7 +90,7 @@ namespace Chroma
 
   private:
     int mu ; // the direction we are evolving
-    
+    Real rho ; // the infrared cut off
   };
 
 }

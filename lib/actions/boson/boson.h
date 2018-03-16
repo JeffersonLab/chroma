@@ -16,6 +16,7 @@
 #define __actbosons_h__
 
 #include "operator/klein_gord.h"
+#include "operator/adjoint_derivative.h"
 
 #endif
 

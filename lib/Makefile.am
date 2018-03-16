@@ -26,6 +26,7 @@ nobase_include_HEADERS = \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
 	actions/boson/operator/adjoint_derivative.h \
+	actions/boson/invert/invcg_adj.h \
 	actions/ferm/ferm.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
@@ -384,6 +385,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/hamiltonian/hamiltonian.h \
 	update/molecdyn/hamiltonian/abs_hamiltonian.h \
 	update/molecdyn/hamiltonian/exact_hamiltonian.h \
+	update/molecdyn/hamiltonian/mg_exact_hamiltonian.h \
 	update/molecdyn/integrator/abs_integrator.h \
 	update/molecdyn/integrator/integrator_aggregate.h \
 	update/molecdyn/integrator/integrator.h \
@@ -1032,6 +1034,7 @@ lib_LIBRARIES = libchroma.a
 #
 libchroma_a_SOURCES = \
 	actions/boson/operator/klein_gord.cc \
+	actions/boson/invert/invcg_adj.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
         actions/ferm/fermstates/hex_fermstate_params.cc \
 	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc \

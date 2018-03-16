@@ -21,15 +21,16 @@ namespace Chroma
   class AdjointDerivative : 
     public LinearOperator<LatticeColorMatrix>
   {
+    // I need to check if the staggered phases work if restricted to 3D
   public:
-    AdjointDerivative(int mu_, Real rho_, multi1d<LatticeColorMatrix>& u_):mu(mu_),rho(rho_), u(u_) {
+    AdjointDerivative(int mu_, Real rho_, const multi1d<LatticeColorMatrix>& u_):mu(mu_),rho(rho_), u(u_) {
       // Assume periodic gauge BC
       // add the staggered phases...
       for(int i = 0; i < Nd; i++) 
 	{
 	  u[i]     *= StagPhases::alpha(i);
 	}
-      halfI=Complex(0.0,0.5); // define i/2 for optimization purposes
+      halfI=cmplx(Real(0.0),Real(0.5)); // define i/2 for optimization purposes
     }
     //! No real need for cleanup here
     ~AdjointDerivative() {}
@@ -39,9 +40,11 @@ namespace Chroma
 
     //! Return flops performed by the operator()
     // approximatelly correct
-    unsigned long nFlops(){return 4*Nc*Nc + (Nd-1)*(4*Nc*Nc*Nc + 2Nc*Nc) ;  } const;
+    unsigned long nFlops() const {
+      return 4*Nc*Nc + (Nd-1)*(4*Nc*Nc*Nc + 2*Nc*Nc) ;
+    }
 
-    virtual void operator()(LatticeColorMatrix& chi, const LatticeColorMatrix psi, enum PlusMinus ising) const{
+    virtual void operator()(LatticeColorMatrix& chi, const LatticeColorMatrix& psi, enum PlusMinus ising) const {
       // Implement the derivative
       //this is a hermitian operator therefore PlusMinus makes no difference
       LatticeColorMatrix foo = zero ;
@@ -52,7 +55,9 @@ namespace Chroma
 	    shift(adj(u[nu])*psi*u[nu],BACKWARD,nu) ;
 	}
       }
+
       chi = rho*psi + halfI*foo ;
+	  
     }
   protected:
 
@@ -74,14 +79,14 @@ namespace Chroma
     const Subset& subset() const {return all;}
 
     //! Return flops performed by the operator()
-    unsigned long nFlops(){return 2*D.hFlops } const;
+    unsigned long nFlops() const {return 2*D.nFlops(); } 
 
-    virtual void operator()(LatticeColorMatrix& chi, const LatticeColorMatrix psi, enum PlusMinus ising) const{
+    virtual void operator()(LatticeColorMatrix& chi, const LatticeColorMatrix& psi, enum PlusMinus ising) const {
       // Implement the derivative
       //this is a hermitian operator therefore PlusMinus makes no difference
       LatticeColorMatrix foo  ;
-      D(foo,psi);
-      D(chi,foo);
+      D(foo,psi,PLUS);
+      D(chi,foo,MINUS);
     }
   protected:
 
