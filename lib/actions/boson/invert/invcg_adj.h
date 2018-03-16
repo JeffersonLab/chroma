@@ -68,22 +68,22 @@ namespace Chroma
    */
 
   Double norm2_adj(const LatticeColorMatrix& C,const Subset& s){
-    return Double(0.5)*real(sum(trace(C*C),s)) ;
+    return Double(0.5)*real(sum(trace(adj(C)*C),s)) ;
   }
 
   DComplex inner_prod_adj(const LatticeColorMatrix& C,
 			const LatticeColorMatrix& X,
 			const Subset& s){
-    return Double(0.5)*sum(trace(C*X),s) ;
+    return Double(0.5)*sum(trace(adj(C)*X),s) ;
   }
 
   Double norm2_adj(const LatticeColorMatrix& C){
-    return Double(0.5)*real(sum(trace(C*C))) ;
+    return Double(0.5)*real(sum(trace(adj(C)*C))) ;
   }
   
   DComplex inner_prod_adj(const LatticeColorMatrix& C,
 			  const LatticeColorMatrix& X){
-    return Double(0.5)*sum(trace(C*X)) ;
+    return Double(0.5)*sum(trace(adj(C)*X)) ;
   }
   
   // Single precision

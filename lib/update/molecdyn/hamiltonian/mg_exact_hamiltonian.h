@@ -71,10 +71,16 @@ namespace Chroma
       //ke_per_site = -Double(4);
 
       // Need to call the solver to compute \Xi = inv(D^2) P
-      // then need to compute 1/2 Tr P \Xi  which should be real and positive
-
+      // then need to compute  Tr P^\dagger \Xi  which should be real and positive
+      // I use the normalization of kinnetic energy Balint has..
+      // But I do not understand the -4 (see code snipet below
+      /* Now add on the local Norm2 of the momenta for each link */
+      //for(int mu=0; mu < Nd; mu++) { 
+      //	ke_per_site[mu] = -Double(4);
+      //	ke_per_site[mu] += localNorm2(s.getP()[mu]);
+      //}
       //I hope this works
-      Double KE = Double(0.5)*real(sum(trace(P*X))) ;
+      Double KE = real(sum(trace(adj(P)*X))) ;
 
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "mesKE");

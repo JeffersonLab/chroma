@@ -21,6 +21,7 @@
 
 #include "util/gauge/taproj.h" 
 
+#include "actions/boson/operator/adjoint_derivative.h"
 
 namespace Chroma 
 {
@@ -38,7 +39,7 @@ namespace Chroma
     // Constructor
     MGLatColMatHMCTrj( Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& _H_MC,
 			Handle< AbsMDIntegrator< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& _MD_int)
-      : the_MD(_MD_int), the_H_MC(_H_MC),dir(0) {}
+      : the_MD(_MD_int), the_H_MC(_H_MC),dir(0),rho(0.01) {}
 
   private:
     Handle< AbsMDIntegrator<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > the_MD; 
@@ -46,6 +47,7 @@ namespace Chroma
     Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > the_H_MC;
 
     int dir ;
+    Real rho ;
     
   protected:
 
@@ -62,13 +64,36 @@ namespace Chroma
     }
 
     void setDir(int d){dir=d;}
-    const int& theDir() const {return dir;} 
+    const int& theDir() const {return dir;}
+
+    void setRho(Real d){rho=d;}
+    const Real& theRho() const {return rho;} 
     
     void refreshP(AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
     {
       START_CODE();
 
+      
       if(dir<Nd){//doing new algorithm
+	// Loop over direcsions
+	
+	for(int mu = 0; mu < Nd; mu++) 
+	  {
+	    s.getP()[mu] = zero ;
+	    if(mu==dir){
+	      LatticeColorMatrix P ;
+	      gaussian(P);
+	      P *= sqrt(Real(0.5));
+	      // Make traceless and antihermitian
+	      taproj(P);
+	      
+	      AdjointDerivative D(mu,rho,s.getQ());
+	      D(s.getP()[mu],P,MINUS) ;
+	      // I need to check here that inded the momenta are traceless
+	      // anti hermitian
+	    }
+	
+	  }
       }
       else{// do normal HMC
 	// Loop over direcsions
