@@ -16,6 +16,7 @@
 #define HMC_H
 
 #include "update/molecdyn/hmc/abs_hmc.h"
+#include "update/molecdyn/hmc/abs_mg_hmc.h"
 #include "update/molecdyn/hmc/lcm_hmc.h"
 #include "update/molecdyn/hmc/const_lcm_hmc.h"
 #include "update/molecdyn/hmc/mg_lcm_hmc.h"

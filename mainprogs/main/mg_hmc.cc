@@ -29,6 +29,8 @@ namespace Chroma
     bool          rev_checkP;
     int           rev_check_frequency;
     bool          monitorForcesP;
+    Real rho ;
+    int Nhpfa ;  // how often the Hyperplane acceleration should happen
 
   };
   
@@ -47,7 +49,9 @@ namespace Chroma
       read(paramtop, "./SaveInterval", p.save_interval);
       read(paramtop, "./SavePrefix", p.save_prefix);
       read(paramtop, "./SaveVolfmt", p.save_volfmt);
-
+      read(paramtop, "./rho", p.rho);
+      read(paramtop, "./Nhpfa",p.Nhpfa);
+      
       // -- Deal with parallel IO
       p.save_pario = QDPIO_SERIAL; // Default
 
@@ -144,6 +148,8 @@ namespace Chroma
       write(xml, "NWarmUpUpdates", p.n_warm_up_updates);
       write(xml, "NProductionUpdates", p.n_production_updates);
       write(xml, "NUpdatesThisRun", p.n_updates_this_run);
+      write(xml, "rho",p.rho);
+      write(xml, "Nhpfa",p.Nhpfa);
       write(xml, "SaveInterval", p.save_interval);
       write(xml, "SavePrefix", p.save_prefix);
       write(xml, "SaveVolfmt", p.save_volfmt);
@@ -355,7 +361,7 @@ namespace Chroma
 
   template<typename UpdateParams>
   void doHMC(multi1d<LatticeColorMatrix>& u,
-	     AbsHMCTrj<multi1d<LatticeColorMatrix>,
+	     AbsMGHMCTrj<multi1d<LatticeColorMatrix>,
 	               multi1d<LatticeColorMatrix> >& theHMCTrj,
 	     MCControl& mc_control, 
 	     const UpdateParams& update_params,
@@ -411,14 +417,18 @@ namespace Chroma
       // XML Output
       push(xml_out, "MCUpdates");
       push(xml_log, "MCUpdates");
-
+      theHMCTrj.setRho(mc_control.rho) ;
+      int dir_to_do=0 ;
       for(int i=0; i < to_do; i++) 
-      {
-	int dir_to_do = i%(Nd+1) ;
-	if(dir_to_do<Nd){
+	{// NEEDS WORK HERE but might be OK as is
+	  dir_to_do = cur_update%Nd ;
+	  int j = (cur_update/Nd)%mc_control.Nhpfa ;
+	if(j==0){
+	  theHMCTrj.setDir(dir_to_do) ;
 	  QDPIO::cout<<" MG_HMC: doing direction: "<<dir_to_do<<std::endl ;
 	}
 	else{
+	  theHMCTrj.setDir(-1) ;
 	  QDPIO::cout<<" MG_HMC: doing normal HMC "<<std::endl ;
 	}
 	push(xml_out, "elem"); // Caller writes elem rule
@@ -716,8 +726,8 @@ int main(int argc, char *argv[])
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   XMLFileWriter& xml_log = Chroma::getXMLLogInstance();
 
-  push(xml_out, "hmc");
-  push(xml_log, "hmc");
+  push(xml_out, "mg_hmc");
+  push(xml_log, "mg_hmc");
 
   HMCTrjParams trj_params;
   MCControl    mc_control;

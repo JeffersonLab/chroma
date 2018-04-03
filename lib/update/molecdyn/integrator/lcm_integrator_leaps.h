@@ -17,6 +17,22 @@ namespace Chroma
   /*! @ingroup integrator */
   namespace LCMMDIntegratorSteps 
   {
+    
+    class HyperPlane{
+    public:
+      HyperPlane(int d):dir(d){}
+      HyperPlane():dir(0),flag(false){} 
+      void setDir(int d){dir=d;}
+      int getDir() const {return dir;}
+      void setFlag(bool f){flag=f;}
+      bool active(){return flag;}
+    private:
+      int dir ;
+      bool flag;
+    };
+
+    typedef SingletonHolder< HyperPlane > theHyperPlane;
+
     class AnisoStepSizeArray {
     public:
       AnisoStepSizeArray() {

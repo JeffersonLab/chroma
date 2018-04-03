@@ -28,7 +28,7 @@ namespace Chroma
 
   //! HMC trajectory
   /*! @ingroup hmc */
-  class MGLatColMatHMCTrj : public AbsHMCTrj<multi1d<LatticeColorMatrix>, 
+  class MGLatColMatHMCTrj : public AbsMGHMCTrj<multi1d<LatticeColorMatrix>, 
 			  multi1d<LatticeColorMatrix> > 
   {
   public:
@@ -39,7 +39,7 @@ namespace Chroma
     // Constructor
     MGLatColMatHMCTrj( Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& _H_MC,
 			Handle< AbsMDIntegrator< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& _MD_int)
-      : the_MD(_MD_int), the_H_MC(_H_MC),dir(0),rho(0.01) {}
+      : the_MD(_MD_int), the_H_MC(_H_MC),dir(-1),rho(0.01) {}
 
   private:
     Handle< AbsMDIntegrator<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > the_MD; 
@@ -74,7 +74,7 @@ namespace Chroma
       START_CODE();
 
       
-      if(dir<Nd){//doing new algorithm
+      if((dir>-1)&&(dir<Nd)){//doing new algorithm
 	// Loop over direcsions
 	
 	for(int mu = 0; mu < Nd; mu++) 

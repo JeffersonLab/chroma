@@ -15,7 +15,8 @@
 #include "update/molecdyn/integrator/abs_integrator.h"
 #include "update/molecdyn/hmc/global_metropolis_accrej.h"
 #include "actions/boson/operator/adjoint_derivative.h"
-
+#include "update/molecdyn/hmc/global_metropolis_accrej.h"
+#include "update/molecdyn/integrator/lcm_integrator_leaps.h"
 
 namespace Chroma 
 { 
@@ -25,6 +26,12 @@ namespace Chroma
   template<typename P, typename Q>
   class AbsMGHMCTrj {
   public: 
+
+    virtual void setDir(int d)=0 ;
+    virtual const int& theDir() const =0 ;
+
+    virtual void setRho(Real d)=0 ;
+    virtual const Real& theRho() const =0 ; 
     
     // Virtual destructor
     virtual ~AbsMGHMCTrj() {};
@@ -43,6 +50,14 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       XMLWriter& xml_log = TheXMLLogWriter::Instance();
 
+      //set the hyperplane
+      if((theDir()>-1)&&(theDir()<Nd)){
+	  LCMMDIntegratorSteps::theHyperPlane::Instance().setFlag(true);
+	  LCMMDIntegratorSteps::theHyperPlane::Instance().setDir(theDir());
+	}
+	else{
+	  LCMMDIntegratorSteps::theHyperPlane::Instance().setFlag(false);
+	}
       // Self encapsulation rule 
       push(xml_out, "MGHMCTrajectory");
       push(xml_log, "MGHMCTrajectory");

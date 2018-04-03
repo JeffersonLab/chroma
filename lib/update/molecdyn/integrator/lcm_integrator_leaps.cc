@@ -20,7 +20,9 @@ namespace Chroma
     {
       START_CODE();
       StopWatch swatch;
-
+      
+      int dir =  LCMMDIntegratorSteps::theHyperPlane::Instance().getDir();
+      bool active = LCMMDIntegratorSteps::theHyperPlane::Instance().active();
 
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       // Self Description rule
@@ -66,13 +68,14 @@ namespace Chroma
       pop(xml_out); // AbsHamiltonianForce 
 
 
-      for(int mu =0; mu < Nd; mu++) {
+      for(int mu =0; mu < Nd; mu++)
+	if((active && (mu==dir))||(!active)){
 
-	(s.getP())[mu] += real_step_size[mu] * dsdQ[mu];
-	
-	// taproj it...
-	taproj( (s.getP())[mu] );
-      }
+	  (s.getP())[mu] += real_step_size[mu] * dsdQ[mu];
+	  
+	  // taproj it...
+	  taproj( (s.getP())[mu] );
+	}
       
       pop(xml_out); // pop("leapP");
     
@@ -93,7 +96,8 @@ namespace Chroma
       push(xml_out, "leapQ");
       write(xml_out, "dt", dt);
       multi1d<Real> real_step_size(Nd);
-
+      int dir =  LCMMDIntegratorSteps::theHyperPlane::Instance().getDir();
+      bool active = LCMMDIntegratorSteps::theHyperPlane::Instance().active();
       // Work out the array of step sizes (including all scaling factors
       for(int mu =0; mu < Nd; mu++) 
       {
@@ -108,27 +112,28 @@ namespace Chroma
       multi1d<LatticeColorMatrix>& u = s.getQ();
       
       for(int mu = 0; mu < Nd; mu++) 
-      {
-	//  dt*p[mu]
-	tmp_1 = real_step_size[mu]*(s.getP())[mu];
-	
-	// tmp_1 = exp(dt*p[mu])  
-	// expmat(tmp_1, EXP_TWELFTH_ORDER);
-	expmat(tmp_1, EXP_EXACT);
-	
-	// tmp_2 = exp(dt*p[mu]) u[mu] = tmp_1 * u[mu]
-	tmp_2 = tmp_1*(s.getQ())[mu];
-	
-	// u[mu] =  tmp_1 * u[mu] =  tmp_2 
-	(s.getQ())[mu] = tmp_2;
-	
-	// Reunitarize u[mu]
-	int numbad;
-	reunit((s.getQ())[mu], numbad, REUNITARIZE_ERROR);
-      }
-
+	if((active && (mu==dir))||(!active)){
+	  
+	  //  dt*p[mu]
+	  tmp_1 = real_step_size[mu]*(s.getP())[mu];
+	  
+	  // tmp_1 = exp(dt*p[mu])  
+	  // expmat(tmp_1, EXP_TWELFTH_ORDER);
+	  expmat(tmp_1, EXP_EXACT);
+	  
+	  // tmp_2 = exp(dt*p[mu]) u[mu] = tmp_1 * u[mu]
+	  tmp_2 = tmp_1*(s.getQ())[mu];
+	  
+	  // u[mu] =  tmp_1 * u[mu] =  tmp_2 
+	  (s.getQ())[mu] = tmp_2;
+	  
+	  // Reunitarize u[mu]
+	  int numbad;
+	  reunit((s.getQ())[mu], numbad, REUNITARIZE_ERROR);
+	}
+      
       pop(xml_out);
-    
+      
       END_CODE();
     }
 
