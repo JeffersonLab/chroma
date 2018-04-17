@@ -101,7 +101,10 @@ namespace Chroma
 	}
       }
 
-      chi = rho*psi + halfI*foo ;
+      // the derivative is anti-hermitian
+      // isign negative means the dagger 
+      Real half = 0.5*ising ;
+      chi = rho*psi + half*foo ;
 	  
     }
   protected:
