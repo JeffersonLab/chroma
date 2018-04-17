@@ -4,6 +4,9 @@
 #include "util/gauge/expmat.h"
 #include "update/molecdyn/monomial/force_monitors.h"
 
+#include "actions/boson/operator/adjoint_derivative.h"
+#include "actions/boson/invert/invcg_adj.h"
+
 namespace Chroma 
 { 
 
@@ -98,6 +101,8 @@ namespace Chroma
       multi1d<Real> real_step_size(Nd);
       int dir =  LCMMDIntegratorSteps::theHyperPlane::Instance().getDir();
       bool active = LCMMDIntegratorSteps::theHyperPlane::Instance().active();
+      Real rho(LCMMDIntegratorSteps::theHyperPlane::Instance().getRho());
+
       // Work out the array of step sizes (including all scaling factors
       for(int mu =0; mu < Nd; mu++) 
       {
@@ -110,9 +115,9 @@ namespace Chroma
       
       // Mutable
       multi1d<LatticeColorMatrix>& u = s.getQ();
-      
-      for(int mu = 0; mu < Nd; mu++) 
-	if((active && (mu==dir))||(!active)){
+
+      if(!active){
+	for(int mu = 0; mu < Nd; mu++){
 	  
 	  //  dt*p[mu]
 	  tmp_1 = real_step_size[mu]*(s.getP())[mu];
@@ -131,7 +136,38 @@ namespace Chroma
 	  int numbad;
 	  reunit((s.getQ())[mu], numbad, REUNITARIZE_ERROR);
 	}
-      
+      }
+      else{ // Now do the special thing for the MG
+	AdjointDerivative D(dir,rho,s.getQ());
+	Handle< squaredAdjointDerivative> D2 = new squaredAdjointDerivative(D) ;
+	
+	
+	Real RsdCG = 1.0e-7 ; // hard coded for now
+	int MaxCG = 5000 ; // hard coded for now
+	
+	LatticeColorMatrix P = s.getP()[dir] ;
+	LatticeColorMatrix X = zero ;
+	SystemSolverResults_t res = InvCG_adj(*D2,P,X,RsdCG,MaxCG) ;
+
+	//  dt*p[mu]
+	tmp_1 = real_step_size[dir]*X;
+	
+	// tmp_1 = exp(dt*p[mu])  
+	// expmat(tmp_1, EXP_TWELFTH_ORDER);
+	expmat(tmp_1, EXP_EXACT);
+	
+	// tmp_2 = exp(dt*p[mu]) u[mu] = tmp_1 * u[mu]
+	tmp_2 = tmp_1*(s.getQ())[dir];
+	
+	// u[mu] =  tmp_1 * u[mu] =  tmp_2 
+	(s.getQ())[dir] = tmp_2;
+	
+	// Reunitarize u[mu]
+	int numbad;
+	reunit((s.getQ())[dir], numbad, REUNITARIZE_ERROR);
+	QDPIO::cout<<" reunit: NUMBAD="<<numbad<<std::endl ;
+      }
+	
       pop(xml_out);
       
       END_CODE();

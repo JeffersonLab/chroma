@@ -58,12 +58,16 @@ namespace Chroma
       if( LCMMDIntegratorSteps::theHyperPlane::Instance().active()){
 	int mu = LCMMDIntegratorSteps::theHyperPlane::Instance().getDir();
 	Real rho(LCMMDIntegratorSteps::theHyperPlane::Instance().getRho());
+	
+	QDPIO::cout<<"mesKE: computing Kinetic Energy with mu= "<<mu
+		   <<" and rho= "<<rho<<std::endl ;
+	
 	/* Accumulate KE per site */
 	//
 
       
-	Real RsdCG = 1.0e-12 ; // hard coded for now
-	int MaxCG = 10000 ; // hard coded for now
+	Real RsdCG = 1.0e-7 ; // hard coded for now
+	int MaxCG = 5000 ; // hard coded for now
 	
 	// I need to define the adjoint derivative
 	LatticeDouble ke_per_site ;

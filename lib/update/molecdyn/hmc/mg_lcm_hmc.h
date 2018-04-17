@@ -13,6 +13,7 @@
 #include "chromabase.h"
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
+#include "update/molecdyn/integrator/lcm_integrator_leaps.h"
 #include "update/molecdyn/integrator/abs_integrator.h"
 #include "update/molecdyn/hmc/abs_hmc.h"
 #include "handle.h"
@@ -66,7 +67,10 @@ namespace Chroma
     void setDir(int d){dir=d;}
     const int& theDir() const {return dir;}
 
-    void setRho(Real d){rho=d;}
+    void setRho(Real d){rho=d;
+      // this is a bit of a problem... but for now it may be OK
+      LCMMDIntegratorSteps::theHyperPlane::Instance().setRho(rho);
+    }
     const Real& theRho() const {return rho;} 
     
     void refreshP(AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
@@ -92,6 +96,7 @@ namespace Chroma
 	      // I need to check here that inded the momenta are traceless
 	      // anti hermitian
 	      QDPIO::cout<<"refreshP: doing the MG momenta refresh for mu="<<mu
+			 <<" and rho= "<<rho
 			 <<std::endl;
 	    }
 	

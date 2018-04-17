@@ -111,7 +111,7 @@ namespace Chroma
     Double chi_sq = norm2_adj(chi_internal,s);
     flopcount.addSiteFlops(4*Nc*Nc,s);
 
-#if 0
+#if 1
     QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << std::endl;
 #endif
 
@@ -130,7 +130,7 @@ namespace Chroma
     flopcount.addSiteFlops(4*Nc*Ns, s);
 
 
-#if 0
+#if 1
     QDPIO::cout << "InvCG: k = 0  || r ||= " <<sqrt(cp) << std::endl;
 #endif
 
@@ -160,6 +160,10 @@ namespace Chroma
   
     for(int k = 1; k <= MaxCG; ++k)
     {
+#if 1
+      QDPIO::cout << "InvCG: k = "<<k<<"  || r ||= " <<sqrt(cp) << std::endl;
+#endif
+
       //  c  =  | r[k-1] |**2
       c = cp;
 
