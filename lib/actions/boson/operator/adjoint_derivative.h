@@ -7,7 +7,6 @@
 #define __adjoint_derivative_h__
 
 #include "linearop.h"
-#include "util/gauge/stag_phases_s.h"
 
 namespace Chroma 
 { 
@@ -24,11 +23,57 @@ namespace Chroma
     // I need to check if the staggered phases work if restricted to 3D
   public:
     AdjointDerivative(int mu_, Real rho_, const multi1d<LatticeColorMatrix>& u_):mu(mu_),rho(rho_), u(u_) {
+      if(Nd!=4){
+	QDPIO::cout<<"AdjointDerivative: works only for Nd=4. We have Nd ="
+		   <<Nd<<std::endl ;
+	QDP_abort(2923);
+      }
       // Assume periodic gauge BC
       // add the staggered phases...
+      multi1d<LatticeInteger> phases(Nd);
+
+      multi1d<LatticeInteger> x(Nd);
+      // Fill x with lattice coordinates
+      for( int nu = 0; nu < Nd; nu++) {
+        x[ nu ] = Layout::latticeCoordinate(nu);
+      }
+      
+      phases[0] = LatticeInteger(1);
+      
+    
+      switch (mu){
+      case 0:
+	phases[1] = LatticeInteger(1);
+	phases[2]=where( x[1] % 2 == 0, LatticeInteger(1), LatticeInteger(-1));
+	phases[3]=where( ((x[1]+x[2])%2) == 0, LatticeInteger(1), LatticeInteger(-1));
+	break ;
+      case 1:
+	phases[1] = LatticeInteger(1);
+	phases[2]=where( x[0] % 2 == 0, LatticeInteger(1), LatticeInteger(-1));
+	phases[3]=where( ((x[0]+x[2])%2) == 0, LatticeInteger(1), LatticeInteger(-1));
+	break ;
+      case 2:
+	phases[1]=where( x[0] % 2 == 0, LatticeInteger(1), LatticeInteger(-1));
+	phases[2] = LatticeInteger(1);
+	phases[3]=where( ((x[0]+x[1])%2) == 0, LatticeInteger(1), LatticeInteger(-1));
+	break ;
+      case 3:
+	phases[1]=where( x[0] % 2 == 0, LatticeInteger(1), LatticeInteger(-1));
+	phases[2]=where( ((x[0]+x[1])%2) == 0, LatticeInteger(1), LatticeInteger(-1));
+	phases[3]=LatticeInteger(1);
+	break ;
+      default:
+	// do the 4-d case
+	//phases[0] = LatticeInteger(1);
+        phases[1] = where( x[0] % 2 == 0, LatticeInteger(1), LatticeInteger(-1));
+        phases[2] = where( (x[0]+x[1] ) % 2  == 0, LatticeInteger(1), LatticeInteger(-1));
+        phases[3] = where( (x[0]+x[1]+x[2] ) % 2  == 0, LatticeInteger(1), LatticeInteger(-1));
+	break ;
+      }
+
       for(int i = 0; i < Nd; i++) 
 	{
-	  u[i]     *= StagPhases::alpha(i);
+	  u[i]     *= phases[i];
 	}
       halfI=cmplx(Real(0.0),Real(0.5)); // define i/2 for optimization purposes
     }
