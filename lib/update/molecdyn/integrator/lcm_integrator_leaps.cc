@@ -138,6 +138,10 @@ namespace Chroma
 	}
       }
       else{ // Now do the special thing for the MG
+	
+	QDPIO::cout<<" leapQ: leaping Q for dir= "<<dir
+		   <<" and rho= "<<rho<<std::endl ;
+	
 	AdjointDerivative D(dir,rho,s.getQ());
 	Handle< squaredAdjointDerivative> D2 = new squaredAdjointDerivative(D) ;
 	
