@@ -14,6 +14,17 @@ using namespace QDP::Hints;
 namespace Chroma 
 {
 
+  Double norm2_adj(const LatticeColorMatrix& C,const Subset& s){
+    return Double(0.5)*real(sum(trace(adj(C)*C),s)) ;
+  }
+
+  DComplex inner_prod_adj(const LatticeColorMatrix& C,
+			const LatticeColorMatrix& X,
+			const Subset& s){
+    return Double(0.5)*sum(trace(adj(C)*X),s) ;
+  }
+  
+
   
   //! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
   /*! \ingroup invert

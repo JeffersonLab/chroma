@@ -91,6 +91,8 @@ namespace Chroma
 	      D(s.getP()[mu],P,MINUS) ;
 	      // I need to check here that inded the momenta are traceless
 	      // anti hermitian
+	      QDPIO::cout<<"refreshP: doing the MG momenta refresh for mu="<<mu
+			 <<std::endl;
 	    }
 	
 	  }
@@ -99,6 +101,9 @@ namespace Chroma
 	// Loop over direcsions
 	for(int mu = 0; mu < Nd; mu++) 
 	  {
+	    QDPIO::cout<<"refreshP: doing the normal momenta refresh for mu="
+		       <<mu
+		       <<std::endl;
 	    // Pull the gaussian noise
 	    gaussian(s.getP()[mu]);
 	    

@@ -846,7 +846,7 @@ int main(int argc, char *argv[])
   ExactHamiltonianParams ham_params(H_MC_xml, "/Hamiltonian");
     
   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>,     
-    multi1d<LatticeColorMatrix> > > H_MC(new ExactHamiltonian(ham_params));
+    multi1d<LatticeColorMatrix> > > H_MC(new MGExactHamiltonian(ham_params));
  
 
   std::istringstream MDInt_is(trj_params.Integrator_xml);

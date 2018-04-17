@@ -20,14 +20,17 @@ namespace Chroma
     
     class HyperPlane{
     public:
-      HyperPlane(int d):dir(d){}
-      HyperPlane():dir(0),flag(false){} 
+      HyperPlane(int d):dir(d),rho(0.01){}
+      HyperPlane():dir(0),rho(0.01),flag(false){} 
       void setDir(int d){dir=d;}
+      void setRho(Real r){rho=r;}
+      Real getRho() const {return rho;}
       int getDir() const {return dir;}
       void setFlag(bool f){flag=f;}
       bool active(){return flag;}
     private:
       int dir ;
+      Real rho ;
       bool flag;
     };
 

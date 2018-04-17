@@ -11,7 +11,7 @@
 #include "chromabase.h"
 #include "io/xmllog_io.h"
 #include "update/molecdyn/field_state.h"
-#include "update/molecdyn/hamiltonian//abs_hamiltonian.h"
+#include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
 #include "update/molecdyn/integrator/abs_integrator.h"
 #include "update/molecdyn/hmc/global_metropolis_accrej.h"
 #include "actions/boson/operator/adjoint_derivative.h"
@@ -46,7 +46,8 @@ namespace Chroma
 
       AbsMDIntegrator<P,Q>& MD = getMDIntegrator();
       AbsHamiltonian<P,Q>& H_MC = getMCHamiltonian();
-
+           
+     
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       XMLWriter& xml_log = TheXMLLogWriter::Instance();
 
