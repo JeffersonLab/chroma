@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/mg_hmc/doHMC/MCUpdates/elem[1]/Update/MGHMCTrajectory/deltaKE" type="double" comparison="relative" tolerance="1.0e-4"/>
+<assertion xpath="/mg_hmc/doHMC/MCUpdates/elem[1]/Update/MGHMCTrajectory/deltaPE" type="double" comparison="relative" tolerance="1.0e-4"/>
+
+</assertions>
