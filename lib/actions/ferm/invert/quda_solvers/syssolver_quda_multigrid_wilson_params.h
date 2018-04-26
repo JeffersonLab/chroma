@@ -29,7 +29,7 @@ namespace Chroma
       tuneDslashP = false ; //< v0.3 autotune feature
       verboseP = false;
       MULTIGRIDParamsP = false;
-
+      Pipeline = 1;
       
     };
     SysSolverQUDAMULTIGRIDWilsonParams( const SysSolverQUDAMULTIGRIDWilsonParams& p) {
@@ -49,6 +49,7 @@ namespace Chroma
       SilentFailP = p.SilentFailP;
       RsdToleranceFactor = p.RsdToleranceFactor;
       tuneDslashP = p.tuneDslashP;
+      Pipeline=1;
       MULTIGRIDParamsP = p.MULTIGRIDParamsP;
       MULTIGRIDParams = p.MULTIGRIDParams;
 
@@ -71,6 +72,7 @@ namespace Chroma
     bool SilentFailP;
     Real RsdToleranceFactor;
     bool tuneDslashP;
+    int Pipeline;
     bool MULTIGRIDParamsP;
 
     Handle<MULTIGRIDSolverParams> MULTIGRIDParams;

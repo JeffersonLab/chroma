@@ -28,6 +28,7 @@ namespace Chroma
       verboseP = false;
       innerParamsP = false;
       checkShiftsP = true;
+      Pipeline=1;
     };
     MultiSysSolverQUDACloverParams( const MultiSysSolverQUDACloverParams& p) {
       CloverParams = p.CloverParams;
@@ -49,6 +50,7 @@ namespace Chroma
       innerParamsP = p.innerParamsP;
       innerParams = p.innerParams;
       checkShiftsP = p.checkShiftsP;
+      Pipeline = p.Pipeline;
     }
 
    
@@ -70,6 +72,7 @@ namespace Chroma
     bool tuneDslashP;
     bool innerParamsP;
     bool checkShiftsP;
+    int Pipeline;
 
     // GCR Specific params
     // Params for the preconditioner

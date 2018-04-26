@@ -103,6 +103,13 @@ namespace Chroma {
     	ThresholdCount = 2*MaxIter + 1;
     }
 
+    if( paramtop.count("Pipeline") > 0 ) {
+      read(paramtop, "Pipeline", Pipeline);
+    }
+    else {
+      Pipeline=1;
+    }
+
     if( paramtop.count("MULTIGRIDParams") > 0 ) {
       MULTIGRIDParams = new MULTIGRIDSolverParams(paramtop, "./MULTIGRIDParams");
       MULTIGRIDParamsP = true;
@@ -163,6 +170,7 @@ namespace Chroma {
     //Write the MG persistence params.
     write(xml, "SubspaceID", p.SaveSubspaceID);
     write(xml, "ThresholdCount", p.ThresholdCount);
+    write(xml, "Pipeline", p.Pipeline);
  
     if( p.MULTIGRIDParamsP ) { 
       write(xml, "MULTIGRIDParams", *(p.MULTIGRIDParams));

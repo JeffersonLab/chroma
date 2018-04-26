@@ -14,6 +14,8 @@
 #include "meas/inline/io/named_objmap.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.h"
 
+#include <cuda_runtime_api.h>
+
 namespace Chroma {
 
 	namespace QUDAMGUtils {
@@ -329,6 +331,22 @@ namespace Chroma {
 			TheNamedObjMap::Instance().erase(SubspaceID);
 
 		}
+
+		inline	
+		size_t getCUDAFreeMem(void) 
+	        {
+		   cudaError_t ret;
+   	           size_t free, total;
+	           ret = cudaMemGetInfo( &free, &total );
+		   if ( ret != cudaSuccess ) { 
+			QDPIO::cout << "cudaMemGetInfo() returned unsuccesful status: " <<  ret << std::endl;
+			QDP_abort(1);
+                   }
+	           return free;
+                }
+
+
+	   
 	} // MG Utils
 } // Chroma
 
