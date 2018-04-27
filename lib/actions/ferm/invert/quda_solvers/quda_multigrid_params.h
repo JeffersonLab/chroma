@@ -14,6 +14,7 @@ namespace Chroma
     Real tol;
     int  maxIterations;
     QudaSolverType smootherType;
+    QudaPrecisionType smootherHaloPrecision;
     bool verbosity;
     QudaPrecisionType prec;
     QudaReconsType reconstruct;
@@ -43,6 +44,7 @@ namespace Chroma
       relaxationOmegaOuter = Real(1.0);
       maxIterations = 10;
       smootherType = MR;
+      smootherHaloPrecision = DEFAULT;
       verbosity = false;
       prec = DEFAULT;
       reconstruct = RECONS_NONE;
