@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.17 2008-04-10 03:16:44 kostas Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm with eigenstd::vector acceleration
  */

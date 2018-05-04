@@ -1,4 +1,3 @@
-// $Id: dwffld_w.cc,v 3.1 2007-09-01 23:44:10 uid3790 Exp $
 /*! \file
  *  \brief DWF parity/rotation operator
  *

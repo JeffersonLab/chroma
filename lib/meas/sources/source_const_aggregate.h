@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: source_const_aggregate.h,v 3.1 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief All make source constructors
  */

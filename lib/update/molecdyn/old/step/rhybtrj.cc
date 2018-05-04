@@ -1,4 +1,3 @@
-// $Id: rhybtrj.cc,v 3.0 2006-04-03 04:59:11 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE GLOBAL params of Integ. functor"
 

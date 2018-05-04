@@ -1,4 +1,3 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.26 2009-09-14 20:50:14 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorstd::vector matrix elements
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_mdagm_accumulate_factory.h,v 3.2 2008-09-06 18:35:35 bjoo Exp $
 /*! \file
  *  \brief Factory for producing system solvers for MdagM*psi = chi
  */

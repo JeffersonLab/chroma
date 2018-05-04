@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_w.h,v 3.1 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */

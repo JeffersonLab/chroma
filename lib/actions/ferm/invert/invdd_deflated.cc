@@ -1,4 +1,3 @@
-// $Id: invdd_deflated.cc,v 1.1 2009/11/11 16:39:50 jbulava Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

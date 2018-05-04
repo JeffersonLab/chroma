@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: spin_insertion.h,v 1.1 2006-05-24 21:09:41 edwards Exp $
 /*! @file
  * @brief Spin insertions
  */

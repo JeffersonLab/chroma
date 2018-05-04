@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: schr_sf_fermbc_w.h,v 3.1 2006-04-10 21:21:21 edwards Exp $
 /*! @file
  * @brief Schroedinger ferm boundary conditions
  */

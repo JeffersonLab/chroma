@@ -1,4 +1,3 @@
-// $Id: eeu1.cc,v 3.1 2007-08-29 13:15:37 edwards Exp $
 /*! \file
  *  \brief Exactly exponentiate a U(1) lie algebra element
  */

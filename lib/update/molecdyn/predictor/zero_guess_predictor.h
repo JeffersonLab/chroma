@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: zero_guess_predictor.h,v 3.5 2009-06-01 19:46:37 bjoo Exp $
 /*! \file
  * \brief Zero initial guess predictor
  *

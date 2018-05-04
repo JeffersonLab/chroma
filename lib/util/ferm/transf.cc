@@ -1,4 +1,3 @@
-// $Id: transf.cc,v 3.1 2006-11-20 16:22:03 edwards Exp $
 /*! \file
  *  \brief Insertion/Extraction utilities for vectors/fermions/propagators
  */

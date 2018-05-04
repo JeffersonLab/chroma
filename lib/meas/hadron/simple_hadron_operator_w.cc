@@ -1,4 +1,3 @@
-// $Id: simple_hadron_operator_w.cc,v 1.2 2009-03-19 17:17:20 mcneile Exp $
 /*! \file
  *  \brief Construct simple baryon operators
  */

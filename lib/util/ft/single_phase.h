@@ -16,6 +16,9 @@ namespace Chroma
   LatticeComplex singlePhase(const multi1d<int>& t_srce, 
 			     const multi1d<int>& sink_mom, 
 			     int j_decay);
+  
+  LatticeComplex singlePhase(const multi1d<int>& t_srce, 
+			     const multi1d<int>& sink_mom) ;
 
 }  // end namespace Chroma
 

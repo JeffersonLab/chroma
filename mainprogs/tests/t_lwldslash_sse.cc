@@ -1,4 +1,3 @@
-// $Id: t_lwldslash_sse.cc,v 3.1 2006-06-13 20:15:25 bjoo Exp $
 
 #include "chroma.h"
 #include <iostream>

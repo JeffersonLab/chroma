@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 3.12 2009-06-02 15:56:40 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC

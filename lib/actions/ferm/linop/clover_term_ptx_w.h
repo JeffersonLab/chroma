@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 3.12 2009-10-06 20:35:48 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */

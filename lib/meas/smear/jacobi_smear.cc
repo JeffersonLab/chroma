@@ -1,4 +1,3 @@
-// $Id: jacobi_smear.cc,v 3.1 2009-02-20 15:10:24 edwards Exp $
 /*! \file
  *  \brief Jacobi smearing of color std::vector
  */

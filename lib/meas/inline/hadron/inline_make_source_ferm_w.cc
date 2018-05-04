@@ -1,4 +1,3 @@
-// $Id: inline_make_source_ferm_w.cc,v 3.4 2007-02-25 22:39:28 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source for lattice fermions
  *

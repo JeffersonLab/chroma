@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: read_rat_approx.h,v 3.1 2008-06-02 15:42:49 bjoo Exp $
 /*! @file
  * @brief Remez-type rational approximation
  */

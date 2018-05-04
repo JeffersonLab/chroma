@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: sfcorr_w.h,v 3.1 2007-08-24 19:23:04 edwards Exp $
 /*! \file
  * \brief Schroedinger functional correlation functions
  */

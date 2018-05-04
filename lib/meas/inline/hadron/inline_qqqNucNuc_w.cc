@@ -1,4 +1,3 @@
-// $Id: inline_qqqNucNuc_w.cc,v 3.17 2008-09-10 21:27:50 kostas Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *

@@ -1,4 +1,3 @@
-// $Id: eoprec_clover_extfield_linop_w.cc,v 3.3 2007-06-17 02:25:16 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator in an external field
  */

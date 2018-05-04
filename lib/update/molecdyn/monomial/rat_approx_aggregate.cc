@@ -1,4 +1,3 @@
-// $Id: rat_approx_aggregate.cc,v 3.2 2008-06-02 15:42:49 bjoo Exp $
 /*! \file
  *  \brief Rational approximation aggregator
  */

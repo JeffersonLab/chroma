@@ -1,4 +1,3 @@
-// $Id: simple_baryon_2pt_w.cc,v 1.3 2007-12-04 02:59:05 kostas Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */

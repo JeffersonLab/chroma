@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_polyprec_cg.h,v 3.4 2008-04-05 19:04:38 edwards Exp $
 /*! \file
  *  \brief Solve a PolyPrec*psi=chi linear system by CG1
  */

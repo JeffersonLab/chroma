@@ -1,4 +1,3 @@
-// $Id: multi_syssolver_linop_aggregate.cc,v 1.1 2007-04-11 03:41:36 edwards Exp $
 /*! \file
  *  \brief All LinOp system solver constructors
  */

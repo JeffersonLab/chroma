@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: enum_io.h,v 3.3 2007-02-08 15:48:38 bjoo Exp $
 
 /*! \file
  * \brief Enums

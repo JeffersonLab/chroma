@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: sfcurrents_w.h,v 3.1 2007-08-24 19:23:04 edwards Exp $
 /*! \file
  *  \brief Current renormalizations within Schroedinger functional
  */

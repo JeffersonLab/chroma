@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<chroma>
+  <annotation>
+; Test program created by Arjun.
+;
+; Test input file for chroma main program
+;
+</annotation>
+  <Param>
+    <InlineMeasurements>
+      <elem>
+        <Name>MAKE_SOURCE</Name>
+        <Frequency>1</Frequency>
+        <Param>
+          <version>6</version>
+          <Source>
+            <version>2</version>
+            <SourceType>POINT_SOURCE</SourceType>
+            <j_decay>3</j_decay>
+            <t_srce>0 0 0 0</t_srce>
+          </Source>
+        </Param>
+        <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
+          <source_id>sh_source_0</source_id>
+        </NamedObject>
+      </elem>
+
+      <elem>
+        <Name>PROPAGATOR</Name>
+        <Frequency>1</Frequency>
+        <Param>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>true</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+            <FermAct>WILSON</FermAct>
+	    <!-- deliberately +ve to make things heavy. Set to -ve if you use the real config -->
+            <Mass>0.4086</Mass>
+            <AnisoParam>
+              <anisoP>true</anisoP>
+              <t_dir>3</t_dir>
+              <xi_0>2.38</xi_0>
+              <nu>1</nu>
+            </AnisoParam>
+            <FermState>
+              <Name>SIMPLE_FERM_STATE</Name>
+              <FermionBC>
+                <FermBC>SIMPLE_FERMBC</FermBC>
+                <boundary>1 1 1 -1</boundary>
+              </FermionBC>
+            </FermState>
+          </FermionAction>
+          <InvertParam>
+            <invType>QUDA_MULTIGRID_WILSON_INVERTER</invType>
+            <MULTIGRIDParams>
+              <Residual>1.0e-10</Residual>
+              <MaxIterations>10</MaxIterations>
+              <SmootherType>MR</SmootherType>
+              <Verbosity>true</Verbosity>
+              <Precision>SINGLE</Precision>
+              <Reconstruct>RECONS_NONE</Reconstruct>
+              <NullVectors>16 16</NullVectors>
+              <GenerateNullspace>true</GenerateNullspace>
+              <Pre-SmootherApplications>0 0</Pre-SmootherApplications>
+              <Post-SmootherApplications>6 6</Post-SmootherApplications>
+              <SchwarzType>ADDITIVE_SCHWARZ</SchwarzType>
+              <Blocking>
+                <elem>4 4 4 4</elem>
+		<elem>2 2 2 2</elem>
+              </Blocking>
+            </MULTIGRIDParams>
+            <RsdTarget>1.0e-7</RsdTarget>
+            <WilsonParams>
+		<!-- deliberately heavy +ve. Set to -ve if you use real config -->
+              <Mass>0.4086</Mass>
+              <AnisoParam>
+                <anisoP>true</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>2.38</xi_0>
+                <nu>1</nu>
+              </AnisoParam>
+            </WilsonParams>
+            <Delta>1.0e-8</Delta>
+            <MaxIter>100</MaxIter>
+            <RsdToleranceFactor>100</RsdToleranceFactor>
+            <SilentFail>true</SilentFail>
+            <AntiPeriodicT>true</AntiPeriodicT>
+            <SolverType>GCR</SolverType>
+            <Verbose>false</Verbose>
+            <AsymmetricLinop>false</AsymmetricLinop>
+            <CudaReconstruct>RECONS_NONE</CudaReconstruct>
+            <CudaSloppyPrecision>SINGLE</CudaSloppyPrecision>
+            <CudaSloppyReconstruct>RECONS_NONE</CudaSloppyReconstruct>
+            <AxialGaugeFix>false</AxialGaugeFix>
+            <AutotuneDslash>true</AutotuneDslash>
+          </InvertParam>
+        </Param>
+        <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
+          <source_id>sh_source_0</source_id>
+          <prop_id>sh_prop_0</prop_id>
+        </NamedObject>
+        <xml_file>clover.xml</xml_file>
+      </elem>
+    
+    </InlineMeasurements>
+    <nrow>16 16 16 64</nrow>
+  </Param>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Cfg>
+    <cfg_type>WEAK_FIELD</cfg_type>
+    <cfg_file>/scratch/QUDA_MG/runs/chroma_quda_prop/wl_16_64_5p5_x2p38_um0p4086_cfg_1000.lime</cfg_file>
+  </Cfg>
+</chroma>

@@ -1,4 +1,3 @@
-// $Id: iluprec_s_cprec_t_clover_linop_w.cc,v 3.7 2008-05-07 01:12:19 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Clover linear operator
  */

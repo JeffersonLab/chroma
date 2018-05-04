@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: stag_fermact_s.h,v 3.1 2006-10-19 16:01:29 edwards Exp $
 /*! \file
  *  \brief Staggered fermion action
  */

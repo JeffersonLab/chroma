@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: central_tprec_nospin_utils.h,v 1.6 2008-05-07 01:12:18 bjoo Exp $
 /*! \file
  *  \brief Support for time preconditioning
  */

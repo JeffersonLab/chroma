@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_bicgstab_params.h,v 3.1 2007-05-01 12:47:24 bjoo Exp $
 /*! \file
  *  \brief Solve a BICGSTAB system
  */

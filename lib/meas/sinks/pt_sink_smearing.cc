@@ -1,4 +1,3 @@
-// $Id: pt_sink_smearing.cc,v 3.5 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief Point sink construction
  */

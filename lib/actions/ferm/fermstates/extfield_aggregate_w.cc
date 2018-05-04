@@ -1,4 +1,3 @@
-// $Id: extfield_aggregate_w.cc,v 1.11 2009-05-04 17:11:50 caubin Exp $
 /*! \file
  *  \brief External field aggregate
  */

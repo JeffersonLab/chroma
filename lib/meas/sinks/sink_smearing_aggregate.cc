@@ -1,4 +1,3 @@
-// $Id: sink_smearing_aggregate.cc,v 3.3 2009-04-12 03:45:00 kostas Exp $
 /*! \file
  *  \brief All make sink constructors
  */

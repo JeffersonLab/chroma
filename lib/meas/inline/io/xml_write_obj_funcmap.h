@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: xml_write_obj_funcmap.h,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Write object function std::map
  */

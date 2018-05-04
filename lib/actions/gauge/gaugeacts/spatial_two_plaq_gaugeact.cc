@@ -1,4 +1,3 @@
-// $Id: spatial_two_plaq_gaugeact.cc,v 1.6 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */

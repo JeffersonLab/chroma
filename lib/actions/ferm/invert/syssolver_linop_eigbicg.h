@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_eigbicg.h,v 1.1 2009-11-02 21:49:33 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by EigBiCG
  */

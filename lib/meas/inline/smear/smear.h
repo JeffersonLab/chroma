@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: smear.h,v 3.1 2006-08-11 18:12:00 edwards Exp $
 /*! \file
  * \brief Inline smearing measurements
  *

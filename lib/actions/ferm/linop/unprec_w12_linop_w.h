@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: unprec_w12_linop_w.h,v 3.1 2006-05-30 19:57:22 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned W12 action
  */

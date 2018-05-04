@@ -1,4 +1,3 @@
-// $Id: pade_trln_w.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
 
 #error "NOT FULLY CONVERTED"
 

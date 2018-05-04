@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: wilson_coarse_fine_gaugeact.h,v 3.2 2008-01-23 15:36:11 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action supporting 2+2 anisotropy.
  *

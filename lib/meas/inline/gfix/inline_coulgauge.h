@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_coulgauge.h,v 3.2 2007-11-09 21:18:09 edwards Exp $
 /*! \file
  *  \brief Inline coulomb (and landau) gauge fixing loops
  */

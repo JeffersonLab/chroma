@@ -1,4 +1,3 @@
-// $Id: t_solver_accum.cc,v 1.2 2008-09-08 18:41:16 bjoo Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */

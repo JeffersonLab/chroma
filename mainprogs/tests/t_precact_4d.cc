@@ -1,4 +1,3 @@
-// $Id: t_precact_4d.cc,v 3.3 2006-09-20 20:28:06 edwards Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */

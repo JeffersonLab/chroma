@@ -1,4 +1,3 @@
-// $Id: eoprec_slic_fermact_w.cc,v 3.2 2007-03-05 20:03:16 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_gfix_aggregate.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Inline gauge fixing measurement aggregator
  */

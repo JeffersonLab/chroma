@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: mesplq.h,v 3.1 2006-08-25 19:28:58 edwards Exp $
 
 #ifndef __mesplq_h__
 #define __mesplq_h__

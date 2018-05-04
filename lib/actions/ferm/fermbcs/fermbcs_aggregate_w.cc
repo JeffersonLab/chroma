@@ -1,4 +1,3 @@
-// $Id: fermbcs_aggregate_w.cc,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion boundary conditions
  */
@@ -12,6 +11,7 @@
 #include "actions/ferm/fermbcs/schr_coupling_fermbc_w.h"
 #include "actions/ferm/fermbcs/schr_chromomag_fermbc_w.h"
 #include "actions/ferm/fermbcs/schr_dirich_fermbc_w.h"
+#include "actions/ferm/fermbcs/background_fermbc_w.h"
 
 namespace Chroma
 {
@@ -34,6 +34,7 @@ namespace Chroma
 	success &= SchrCouplingFermBCEnv::registerAll();
 	success &= SchrChromoMagFermBCEnv::registerAll();
 	success &= SchrDirichletFermBCEnv::registerAll();
+	success &= WilsonTypeBackgroundFermBCEnv::registerAll();
 	registered = true;
       }
       return success;

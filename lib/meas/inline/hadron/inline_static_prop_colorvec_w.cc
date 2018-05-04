@@ -297,15 +297,34 @@ namespace Chroma
       //
       try
       {
+	// Generate a metadata
+	std::string file_str;
+	if (1)
+	{
+	  XMLBufferWriter file_xml;
+
+	  push(file_xml, "MODMetaData");
+	  write(file_xml, "id", std::string("propColorVec"));
+	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  write(file_xml, "decay_dir", params.param.contract.decay_dir);
+	  write(file_xml, "num_vecs", params.param.contract.num_vecs);
+	  write(file_xml, "Contractions", params.param.contract);
+	  write(file_xml, "Config_info", gauge_xml);
+	  pop(file_xml);
+
+	  file_str = file_xml.str();
+	}
+	  
+	// Create the entry
 	std::istringstream  xml_s(params.named_obj.prop_obj.xml);
 	XMLReader MapObjReader(xml_s);
 	
-	// Create the entry
 	TheNamedObjMap::Instance().create< Handle< QDP::MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id);
 	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id) =
 	  TheMapObjKeyPropColorVecFactory::Instance().createObject(params.named_obj.prop_obj.id,
 								   MapObjReader,
-								   params.named_obj.prop_obj.path);
+								   params.named_obj.prop_obj.path,
+								   file_str);
       }
       catch (std::bad_cast)
       {

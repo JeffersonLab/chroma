@@ -1,4 +1,3 @@
-// $Id: unprec_wilson_fermact_w.cc,v 3.2 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */

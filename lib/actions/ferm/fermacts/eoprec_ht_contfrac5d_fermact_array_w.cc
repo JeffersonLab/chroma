@@ -1,4 +1,3 @@
-// $Id: eoprec_ht_contfrac5d_fermact_array_w.cc,v 3.2 2007-02-22 21:11:45 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */

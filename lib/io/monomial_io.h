@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: monomial_io.h,v 3.1 2006-11-16 20:39:48 bjoo Exp $
 /*! \file
  *  \brief Monomial IO
  */

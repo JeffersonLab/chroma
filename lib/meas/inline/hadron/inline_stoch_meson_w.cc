@@ -1,4 +1,3 @@
-// $Id: inline_stoch_meson_w.cc,v 3.5 2009-08-05 15:26:49 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic meson operator
  *

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: enum_quda_io.cc,v 1.1 2009-10-06 20:34:58 bjoo Exp $
 /*! \file
  *  \brief QUDA enum readers 
  */

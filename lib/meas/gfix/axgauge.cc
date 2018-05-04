@@ -1,4 +1,3 @@
-// $Id: axgauge.cc,v 3.5 2009-10-09 19:03:10 bjoo Exp $
 /*! \file
  *  \brief Axial gauge fixing 
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_params_w.h,v 3.2 2006-07-04 02:55:52 edwards Exp $
 /*! @file
  * @brief Two-flavor monomial params
  */

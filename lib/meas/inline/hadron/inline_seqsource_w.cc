@@ -1,4 +1,3 @@
-// $Id: inline_seqsource_w.cc,v 3.6 2007-02-25 22:39:28 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *

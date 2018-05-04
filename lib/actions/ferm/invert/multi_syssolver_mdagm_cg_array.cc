@@ -1,4 +1,3 @@
-// $Id: multi_syssolver_mdagm_cg_array.cc,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by multi-shift CG
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_apply_gaugestate.h,v 3.2 2007-08-27 20:00:22 uid3790 Exp $
 /*! \file
  *  \brief Inline gauge state application
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: asqtad_fermact_s.h,v 3.4 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */

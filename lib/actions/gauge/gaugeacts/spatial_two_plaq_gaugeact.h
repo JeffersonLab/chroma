@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: spatial_two_plaq_gaugeact.h,v 1.3 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */

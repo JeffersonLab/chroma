@@ -1,4 +1,3 @@
-// $Id: inline_eigen_bin_colvec_read_obj.cc,v 3.4 2008-09-13 19:56:40 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -151,16 +150,32 @@ namespace Chroma
       {
 	swatch.reset();
 	
+	// Generate a metadata
+	std::string file_str;
+	if (1)
+	{
+	  XMLBufferWriter file_xml;
+
+	  push(file_xml, "MODMetaData");
+	  write(file_xml, "id", std::string("eigenColorVec"));
+	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  // write(file_xml, "num_vecs", params.param.num_vecs); // do not know num_vecs till data is read
+	  pop(file_xml);
+
+	  file_str = file_xml.str();
+	}
+	
+	// Create the entry
 	typedef LatticeColorVector T;
 
 	std::istringstream  xml_s(params.named_obj.object_map.xml);
 	XMLReader MapObjReader(xml_s);
 	
-	// Create the entry
 	Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > eigen(
 	  TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(params.named_obj.object_map.id,
 								       MapObjReader,
-								       params.named_obj.object_map.path) );
+								       params.named_obj.object_map.path,
+								       file_str) );
 
 	TheNamedObjMap::Instance().create< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id);
 	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id) = eigen;

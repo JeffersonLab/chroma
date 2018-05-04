@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2_array.h,v 1.1 2008-01-13 21:08:13 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm with eigenstd::vector acceleration
  */

@@ -1,4 +1,3 @@
-// $Id: schr_nonpert_fermbc_w.cc,v 3.1 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - use for non-pertubative tuning of clover action
  */

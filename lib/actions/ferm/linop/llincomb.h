@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: llincomb.h,v 3.2 2007-02-22 21:11:46 bjoo Exp $
 
 #ifndef __llincomb_h__
 #define __llincomb_h__

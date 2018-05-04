@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: weak_field.h,v 3.1 2006-08-25 23:46:37 edwards Exp $
 /*! \file
  *  \brief Construct a weak field
  */

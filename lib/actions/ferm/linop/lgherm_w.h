@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lgherm_w.h,v 3.1 2007-02-22 21:11:46 bjoo Exp $
 
 #ifndef __lgherm_h__
 #define __lgherm_h__

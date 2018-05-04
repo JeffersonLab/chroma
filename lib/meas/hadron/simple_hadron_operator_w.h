@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: simple_hadron_operator_w.h,v 1.1 2008-05-09 03:59:01 kostas Exp $
 /*! \file
  *  \brief Construct simple hadron operators
  */

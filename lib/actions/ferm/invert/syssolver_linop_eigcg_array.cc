@@ -1,4 +1,3 @@
-// $Id: syssolver_linop_eigcg_array.cc,v 1.4 2008-04-09 04:49:23 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system array by EigCG2
  */

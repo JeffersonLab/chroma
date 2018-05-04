@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_npr_w.h,v 1.8 2007-11-16 22:27:33 kostas Exp $
 /*! \file
  * \brief Inline construction of Landau gauge propagator
  *

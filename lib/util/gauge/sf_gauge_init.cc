@@ -1,4 +1,3 @@
-// $Id: sf_gauge_init.cc,v 3.2 2007-08-27 20:06:39 uid3790 Exp $
 /*! \file
  *  \brief Initialize a Schroedinger BC config
  */

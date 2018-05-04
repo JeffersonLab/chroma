@@ -1,4 +1,3 @@
-// $Id: inline_hadron_aggregate.cc,v 3.58 2009-09-16 21:23:09 colin Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -11,7 +10,7 @@
 #include "meas/inline/hadron/inline_create_colorvecs.h"
 #include "meas/inline/hadron/inline_create_colorvecs.h"
 
-#ifdef BUILD_LAPACK
+#if defined(BUILD_LAPACK) && defined(BUILD_OPT_EIGCG)
 #include "meas/inline/hadron/inline_laplace_eigs.h"
 #else
 #warning "Not Building Inline Laplace Eigs"
@@ -22,6 +21,8 @@
 #include "meas/inline/hadron/inline_disco_eoprec_w.h"
 #include "meas/inline/hadron/inline_disco_eo_eigcg_w.h"
 #include "meas/inline/hadron/inline_disco_eigcg_w.h"
+
+
 #include "meas/inline/hadron/inline_static_light_spec_w.h"
 #include "meas/inline/hadron/inline_heavy_light_cont_w.h"
 #include "meas/inline/hadron/inline_heavyhadspec_w.h"
@@ -67,6 +68,8 @@
 #include "meas/inline/hadron/inline_mres_w.h"
 #include "meas/inline/hadron/inline_qpropqio_w.h"
 #include "meas/inline/hadron/inline_qpropadd_w.h"
+#include "meas/inline/hadron/inline_qpropdiff_w.h"
+#include "meas/inline/hadron/inline_qprop_matmul_w.h"
 #include "meas/inline/hadron/inline_qqqNucNuc_w.h"
 #include "meas/inline/hadron/inline_stoch_meson_w.h"
 #include "meas/inline/hadron/inline_stoch_baryon_w.h"
@@ -115,7 +118,7 @@ namespace Chroma
 
 	success &= InlineMultiPropagatorEnv::registerAll();  // save space
 	success &= InlineSeqSourceEnv::registerAll();
-#ifdef BUILD_LAPACK
+#if defined(BUILD_LAPACK) && defined(BUILD_OPT_EIGCG)
 	success &= InlineLaplaceEigsEnv::registerAll();
 #endif
 	success &= InlineSeqPropTestEnv::registerAll();
@@ -129,6 +132,7 @@ namespace Chroma
 	success &= InlineDiscoEOPrecEnv::registerAll();
 	success &= InlineDiscoEoEigCGEnv::registerAll();
 	success &= InlineDiscoEigCGEnv::registerAll();
+
 	success &= InlineStagToWilsEnv::registerAll();
 	success &= InlineSinkSmearEnv::registerAll();
 	success &= InlineDiquarkEnv::registerAll();
@@ -164,6 +168,8 @@ namespace Chroma
 	success &= InlineRotateSpinEnv::registerAll();
 	success &= InlineQpropQIOEnv::registerAll();
 	success &= InlineQpropAddEnv::registerAll();
+	success &= InlineQpropDiffEnv::registerAll();
+	success &= InlineQpropMatMulEnv::registerAll();
 	success &= InlineQQQNucNucEnv::registerAll();
 	success &= InlineBarSpecEnv::registerAll();
 //	success &= InlineSpectrumQllEnv::registerAll();

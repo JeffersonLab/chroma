@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_propagator_w.h,v 3.5 2007-08-23 19:02:45 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *

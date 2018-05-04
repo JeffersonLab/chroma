@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_random_transf_gauge.h,v 3.1 2007-11-09 21:26:43 edwards Exp $
 /*! \file
  *  \brief Do a random gauge transformation on a gauge field
  */

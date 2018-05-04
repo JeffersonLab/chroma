@@ -1,4 +1,3 @@
-// $Id: stout_fermstate_params.cc,v 1.4 2008-04-19 03:12:49 edwards Exp $
 /*! \file
  *  \brief Hex fermstate params
  */

@@ -1,4 +1,3 @@
-// $Id: gauge_init_aggregate.cc,v 3.2 2007-02-11 22:57:40 edwards Exp $
 /*! \file
  * @brief Gauge initialization
  */
@@ -13,6 +12,7 @@
 #include "util/gauge/disordered_gauge_init.h"
 #include "util/gauge/unit_gauge_init.h"
 #include "util/gauge/cppacs_gauge_init.h"
+#include "util/gauge/cern_gauge_init.h"
 #include "util/gauge/weak_gauge_init.h"
 #include "util/gauge/sf_gauge_init.h"
 #include "util/gauge/wupp_gauge_init.h"
@@ -41,6 +41,7 @@ namespace Chroma
 	success &= DisorderedGaugeInitEnv::registerAll();
 	success &= UnitGaugeInitEnv::registerAll();
 	success &= CPPACSGaugeInitEnv::registerAll();
+	success &= CERNGaugeInitEnv::registerAll();
 	success &= WeakGaugeInitEnv::registerAll();
 	success &= SFGaugeInitEnv::registerAll();
 	success &= WUPPGaugeInitEnv::registerAll();

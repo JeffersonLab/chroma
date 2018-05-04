@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: simple_baryon_2pt_w.h,v 1.3 2007-11-30 06:04:23 kostas Exp $
 /*! \file
  *  \brief Construct simple baryon 2pt correlators
  */

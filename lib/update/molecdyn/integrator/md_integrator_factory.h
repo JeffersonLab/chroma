@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: md_integrator_factory.h,v 3.4 2006-12-25 21:40:18 bjoo Exp $
 /*! \file
  *  \brief Integrator factories
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_clover.h,v 1.9 2009-10-16 13:37:39 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -278,7 +277,11 @@ namespace Chroma
       // op. Apart from the A_oo stuff on the antisymmetric we have
       // nothing to do...
       quda_inv_param.kappa = 0.5;
-      
+     
+       // Dummy parameter to pass check_params
+       // FIXME: If we ever use QUDA to compute our clover term we have to sort out anisotropy
+       // RIght now this won't do anything since we pass in the clover term
+       quda_inv_param.clover_coeff = 1.0; 
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);

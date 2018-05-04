@@ -1,4 +1,3 @@
-// $Id: block.cc,v 3.3 2006-08-24 03:18:41 edwards Exp $
 /*! \file
  *  \brief Construct "block" links
  */

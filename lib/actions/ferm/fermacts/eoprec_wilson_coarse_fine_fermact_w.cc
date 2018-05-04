@@ -1,4 +1,3 @@
-// $Id: eoprec_wilson_coarse_fine_fermact_w.cc,v 3.2 2009-04-17 02:05:30 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action supporting 2+2 anisotropy
  */

@@ -1,4 +1,3 @@
-// $Id: t_precact_5d.cc,v 3.3 2006-09-20 20:28:06 edwards Exp $
 /*! \file
  *  \brief Test 5d fermion actions
  */

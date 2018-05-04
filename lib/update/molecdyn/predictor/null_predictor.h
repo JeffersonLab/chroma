@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: null_predictor.h,v 3.1 2009-06-04 20:29:13 bjoo Exp $
 /*! \file
  * \brief Null predictor: Leaves input x0 unchanged
  *

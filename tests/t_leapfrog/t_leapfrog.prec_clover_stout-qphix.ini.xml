@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<LeapfrogTest>
+
+    <Monomials>
+      <elem>
+	<Name>TWO_FLAVOR_EOPREC_LOGDET_FERM_MONOMIAL</Name>
+<!--
+	<InvertParam>
+          <invType>IBICGSTAB_INVERTER</invType>
+          <RsdBiCGStab>1.0e-14</RsdBiCGStab>
+          <MaxBiCGStab>1000</MaxBiCGStab>
+        </InvertParam>
+-->
+        <InvertParam>
+          <invType>QPHIX_CLOVER_INVERTER</invType>
+          <SolverType>BICGSTAB</SolverType>
+          <MaxIter>1000</MaxIter>
+          <RsdTarget>1.0e-14</RsdTarget>
+	  <CloverParams>
+            <Kappa>0.115</Kappa>
+            <clovCoeff>1.17</clovCoeff>
+            <clovCoeffR>0.91</clovCoeffR>
+            <clovCoeffT>1.07</clovCoeffT>
+            <AnisoParam>
+              <anisoP>true</anisoP>
+              <t_dir>3</t_dir>
+              <xi_0>2.464</xi_0>
+              <nu>0.95</nu>
+            </AnisoParam>
+          </CloverParams>
+	  <AntiPeriodicT>true</AntiPeriodicT>
+	  <Verbose>false</Verbose>
+	  <NCores>16</NCores>
+	  <ThreadsPerCore>2</ThreadsPerCore>
+	  <By>8</By>
+	  <Bz>8</Bz>
+	  <Sy>1</Sy>
+	  <Sz>2</Sz>
+	  <PadXY>0</PadXY>
+	  <PadXYZ>0</PadXYZ>
+	  <MinCt>2</MinCt>
+	  <RsdToleranceFactor>5.0</RsdToleranceFactor>
+	  <Tune>false</Tune>
+	</InvertParam>
+
+        <FermionAction>
+        <FermAct>CLOVER</FermAct>
+            <Kappa>0.115</Kappa>
+            <clovCoeff>1.17</clovCoeff>
+            <clovCoeffR>0.91</clovCoeffR>
+            <clovCoeffT>1.07</clovCoeffT>
+            <AnisoParam>
+              <anisoP>true</anisoP>
+              <t_dir>3</t_dir>
+              <xi_0>2.464</xi_0>
+              <nu>0.95</nu>
+            </AnisoParam>
+         <FermState>
+           <Name>STOUT_FERM_STATE</Name>
+           <rho>0.22</rho>
+           <n_smear>3</n_smear>
+           <orthog_dir>3</orthog_dir>
+           <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+	    <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+          </FermState>
+	  <ChronologicalPredictor>
+	    <Name>ZERO_SOLUTION_4D_PREDICTOR</Name>
+	  </ChronologicalPredictor>
+        </FermionAction>
+	<NamedObject>
+	  <monomial_id>clover</monomial_id>
+        </NamedObject>
+      </elem>
+
+    </Monomials>
+   <Hamiltonian>
+     <monomial_ids><elem>clover</elem></monomial_ids>
+   </Hamiltonian>
+   <MDIntegrator>
+	<tau0>0.2</tau0>
+	<Integrator>
+  	  <Name>LCM_STS_MIN_NORM_2</Name>
+	  <n_steps>4</n_steps>
+	  <lambda>0.167</lambda>
+          <monomial_ids><elem>clover</elem></monomial_ids>
+	</Integrator>
+   </MDIntegrator>
+   <GaugeStartup>
+	<cfg_type>UNIT</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>16 16 16 16</nrow>
+</LeapfrogTest>

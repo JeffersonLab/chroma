@@ -1,4 +1,3 @@
-// $Id: t_follana_io_s.cc,v 3.1 2007-02-22 21:11:50 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>

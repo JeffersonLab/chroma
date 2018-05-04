@@ -1,4 +1,3 @@
-// $Id: t_dwflocality.cc,v 3.3 2006-07-03 15:26:11 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

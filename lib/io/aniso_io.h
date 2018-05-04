@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: aniso_io.h,v 3.1 2008-01-21 20:41:23 edwards Exp $
 /*! \file
  *  \brief Anisotropy parameters
  */

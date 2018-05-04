@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: source_smearing_factory.h,v 3.1 2006-12-02 04:09:41 edwards Exp $
 /*! \file
  *  \brief Factory for producing quark smearing objects
  */

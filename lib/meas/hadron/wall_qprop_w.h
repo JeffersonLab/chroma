@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: wall_qprop_w.h,v 3.0 2006-04-03 04:59:01 edwards Exp $
 /*! \file
  *  \brief Construct a wall-sink propagator
  */

@@ -1,4 +1,3 @@
-// $Id: inline_npr_w.cc,v 1.6 2007-11-16 22:27:33 kostas Exp $
 /*! \file
  * \brief Inline construction of NPR propagator
  *

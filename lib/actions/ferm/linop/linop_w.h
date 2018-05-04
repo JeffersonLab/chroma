@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: linop_w.h,v 3.4 2008-10-08 19:40:17 bjoo Exp $
 
 /*! \file
  * \brief Linear operators

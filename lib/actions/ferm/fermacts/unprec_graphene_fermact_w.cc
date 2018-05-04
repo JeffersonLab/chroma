@@ -1,4 +1,3 @@
-// $Id: unprec_graphene_fermact_w.cc,v 3.1 2007-12-31 23:24:26 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Graphene fermion action.
  *

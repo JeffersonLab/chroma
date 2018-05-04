@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: mesfield.h,v 3.1 2009-04-17 02:05:37 bjoo Exp $
 /*! \file
  *  \brief Calculates the antihermitian field strength tensor  iF(mu,nu)
  */

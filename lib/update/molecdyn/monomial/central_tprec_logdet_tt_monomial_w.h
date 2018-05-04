@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: central_tprec_logdet_tt_monomial_w.h,v 3.2 2008-05-23 18:39:45 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned log(det(A_ee))
  */

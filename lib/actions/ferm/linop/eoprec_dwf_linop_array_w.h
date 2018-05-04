@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_dwf_linop_array_w.h,v 3.1 2006-10-19 16:01:30 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: vector_smear.h,v 3.2 2008-11-04 17:26:16 edwards Exp $
 /*! \file
  *  \brief std::vector smearing of color std::vector
  */

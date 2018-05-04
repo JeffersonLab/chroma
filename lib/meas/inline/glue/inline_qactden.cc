@@ -1,4 +1,3 @@
-// $Id: inline_qactden.cc,v 3.2 2009-08-23 02:46:11 edwards Exp $
 /*! \file
  *  \brief Inline action density and really naive topological charge
  */

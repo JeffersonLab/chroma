@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_rotate_spin_w.h,v 3.1 2008-05-16 21:50:50 edwards Exp $
 /*! \file
  * \brief Inline task to spin rotate to a Dirac basis
  *

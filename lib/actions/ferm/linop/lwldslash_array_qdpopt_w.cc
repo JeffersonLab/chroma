@@ -1,4 +1,3 @@
-// $Id: lwldslash_array_qdpopt_w.cc,v 3.6 2009/11/14 20:01:46 eneil Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */

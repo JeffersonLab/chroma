@@ -1,4 +1,3 @@
-// $Id: simple_meson_seqsrc_w.cc,v 3.8 2006-12-04 20:38:29 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */

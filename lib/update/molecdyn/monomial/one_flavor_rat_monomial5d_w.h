@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 3.8 2008-05-23 21:31:33 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC

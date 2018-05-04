@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lcm_exp_tdt.h,v 3.3 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Intgrator for exp(T dt)

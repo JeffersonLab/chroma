@@ -1,4 +1,3 @@
-// $Id: one_flavor_rat_monomial_params_w.cc,v 3.4 2008-05-24 04:29:31 edwards Exp $
 /*! @file
  * @brief One-flavor monomial params
  */

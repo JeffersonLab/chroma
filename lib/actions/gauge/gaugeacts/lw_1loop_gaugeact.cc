@@ -1,4 +1,3 @@
-// $Id: lw_1loop_gaugeact.cc,v 3.3 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief 1-loop tadpole-improved Luscher-Weisz gauge action
  */

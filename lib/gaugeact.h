@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: gaugeact.h,v 3.1 2007-02-22 21:11:45 bjoo Exp $
 
 /*! @file
  * @brief Class structure for gauge actions

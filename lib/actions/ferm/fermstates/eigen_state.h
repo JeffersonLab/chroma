@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eigen_state.h,v 1.2 2008-06-17 20:50:55 edwards Exp $
 /*! \file
  *  \brief Eigenstate reader
  */

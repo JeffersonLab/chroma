@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_params.h,v 1.2 2007-08-09 02:30:10 edwards Exp $
 /* \file
  * \brief Stout params
  */

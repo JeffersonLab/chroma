@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: wilstype_polyfermact_w.h,v 3.1 2006-10-19 16:01:26 edwards Exp $
 
 /*! @file
  * @brief Class structure for polynomial fermion actions

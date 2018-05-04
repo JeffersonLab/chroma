@@ -17,12 +17,15 @@
 #include "actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_cg_clover.h"
+#include "actions/ferm/invert/syssolver_linop_fgmres_dr.h"
 
 
 #include "chroma_config.h"
 #ifdef BUILD_QUDA
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h"
 #endif
 
@@ -70,9 +73,13 @@ namespace Chroma
 	success &= LinOpSysSolverReliableBiCGStabCloverEnv::registerAll();
 	success &= LinOpSysSolverReliableIBiCGStabCloverEnv::registerAll();
 	success &= LinOpSysSolverReliableCGCloverEnv::registerAll();
+	success &= LinOpSysSolverFGMRESDREnv::registerAll();
+
 #ifdef BUILD_QUDA
 	success &= LinOpSysSolverQUDACloverEnv::registerAll();
+	success &= LinOpSysSolverQUDAMULTIGRIDCloverEnv::registerAll();
 	success &= LinOpSysSolverQUDAWilsonEnv::registerAll();
+	success &= LinOpSysSolverQUDAMULTIGRIDWilsonEnv::registerAll();
 	success &= LinOpSysSolverQUDANEFEnv::registerAll();
 #endif
 #ifdef BUILD_QOP_MG

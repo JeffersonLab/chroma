@@ -1,4 +1,3 @@
-// $Id: syssolver_linop_cg_array.cc,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Solve a CG1 system
  */

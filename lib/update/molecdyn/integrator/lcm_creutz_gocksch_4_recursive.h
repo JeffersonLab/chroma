@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lcm_creutz_gocksch_4_recursive.h,v 1.2 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Lat Col Mat 4th order Creutz-Gocksch (Campostrini?) Integrator

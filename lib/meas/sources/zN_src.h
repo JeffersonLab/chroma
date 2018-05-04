@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: zN_src.h,v 3.1 2009-04-11 04:33:04 edwards Exp $
 /*! \file
  *  \brief Volume source of Z(N) noise
  */

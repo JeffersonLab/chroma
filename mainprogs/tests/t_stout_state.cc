@@ -1,4 +1,3 @@
-// $Id: t_stout_state.cc,v 3.11 2008-01-25 22:23:24 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

@@ -1,4 +1,3 @@
-// $Id: seqsource_aggregate_w.cc,v 3.2 2006-11-27 04:33:36 edwards Exp $
 /*! \file
  *  \brief All sequential source constructors
  */

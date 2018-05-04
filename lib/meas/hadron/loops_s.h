@@ -1,4 +1,3 @@
-// $Id: loops_s.h,v 3.2 2008-02-24 11:29:35 mcneile Exp $
 
 #ifndef LOOP_S_H
 #define LOOP_S_H

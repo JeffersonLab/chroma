@@ -1,4 +1,3 @@
-// $Id: antisymtensor.cc,v 3.0 2006-04-03 04:59:11 edwards Exp $
 /*! \file
  *  \brief Compute anti-symmetric tensors
  */

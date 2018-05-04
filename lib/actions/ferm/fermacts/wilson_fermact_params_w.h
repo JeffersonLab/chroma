@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: wilson_fermact_params_w.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Wilson fermion action parameters
  */

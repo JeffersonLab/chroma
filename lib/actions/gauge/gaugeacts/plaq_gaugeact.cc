@@ -1,4 +1,3 @@
-// $Id: plaq_gaugeact.cc,v 3.10 2008-01-20 19:47:24 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */

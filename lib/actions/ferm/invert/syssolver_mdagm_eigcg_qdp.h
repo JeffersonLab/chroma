@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_eigcg_qdp.h,v 3.2 2009-06-02 15:56:40 bjoo Exp $
 /*! \file
  *  \brief Solve a M^dag*M*psi=chi linear system by EigCG
  */

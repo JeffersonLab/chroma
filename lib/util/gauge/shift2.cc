@@ -1,4 +1,3 @@
-// $Id: shift2.cc,v 1.2 2006-08-25 23:46:37 edwards Exp $
 /*! \file
  *  \brief Shift by a power of 2
  */

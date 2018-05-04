@@ -1,4 +1,3 @@
-// $Id: eoprec_twm_fermact_array_w.cc,v 1.1 2008-11-04 18:42:58 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Twisted-mass where each flavor is one of two array elements
  */

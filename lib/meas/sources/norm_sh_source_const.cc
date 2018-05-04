@@ -1,4 +1,3 @@
-// $Id: norm_sh_source_const.cc,v 3.1 2009-04-11 01:50:45 kostas Exp $
 /*! \file
  *  \brief Normalized Shell source construction
  */

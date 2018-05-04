@@ -1,4 +1,3 @@
-// $Id: expmat.cc,v 3.3 2009/11/14 20:01:46 eneil Exp $
 /*! \file
  *  \brief Exponentiate a SU(n) lie algebra element by some method,
  */

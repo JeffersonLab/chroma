@@ -1,4 +1,3 @@
-// $Id: unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc,v 3.1 2008-05-23 21:31:35 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */

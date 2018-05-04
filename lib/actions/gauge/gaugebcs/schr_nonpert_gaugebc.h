@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: schr_nonpert_gaugebc.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - use for non-pertubative tuning of clover action
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: no_quark_displacement.h,v 3.2 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief No quark displacement
  */

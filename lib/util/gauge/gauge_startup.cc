@@ -1,4 +1,3 @@
-// $Id: gauge_startup.cc,v 3.5 2009-05-13 13:12:19 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -15,6 +14,7 @@
 #include "io/readmilc.h"
 #include "io/kyugauge_io.h"
 #include "io/readcppacs.h"
+#include "io/cern_io.h"
 
 #include "util/gauge/hotst.h"
 #include "util/gauge/weak_field.h"
@@ -67,6 +67,10 @@ namespace Chroma
 
     case CFG_TYPE_WUPP :
       readWupp(gauge_xml, u, cfg.cfg_file);
+      break;
+
+    case CFG_TYPE_CERN :
+      readCERN(u, cfg.cfg_file);
       break;
 
 

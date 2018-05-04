@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: sinks.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
 
 /*! \file
  * \brief Quark sinks

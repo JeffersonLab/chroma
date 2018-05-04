@@ -1,4 +1,3 @@
-// $Id: fermacts_aggregate_s.cc,v 3.4 2008-09-08 20:05:24 bjoo Exp $
 /*! \file
  *  \brief All Staggered-type fermion actions
  */

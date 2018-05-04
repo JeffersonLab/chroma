@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: tprec_linop.h,v 3.2 2007-02-22 21:11:45 bjoo Exp $
 /*! @file
  * @brief Time-preconditioned Linear Operators
  */

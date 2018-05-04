@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: stout_link_smearing.h,v 3.4 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Stout link smearing
  */

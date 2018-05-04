@@ -97,6 +97,50 @@ Write some QIO objects
       </File>
     </elem>
 
+
+    <elem>
+      <annotation>
+        Make a gaussian prop 
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sprop_0</object_id>
+        <object_type>LatticeStaggeredPropagator</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Write the prop
+      </annotation>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sprop_0</object_id>
+        <object_type>LatticeStaggeredPropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sprop_0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Read the prop
+      </annotation>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>redo_sprop_0</object_id>
+        <object_type>LatticeStaggeredPropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sprop_0</file_name>
+      </File>
+    </elem>
+
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>

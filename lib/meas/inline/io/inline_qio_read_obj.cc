@@ -152,6 +152,105 @@ namespace Chroma
 
 
 	//------------------------------------------------------------------------
+	//! Read a staggered prop -- floating precision
+	class QIOReadStagLatProp : public QIOReadObject
+	{
+	private:
+	  Params params;
+
+	public:
+	  QIOReadStagLatProp(const Params& p) : params(p) {}
+
+	  //! Read a propagator
+	  void operator()(QDP_serialparallel_t serpar) {
+	    LatticeStaggeredPropagator obj;
+	    XMLReader file_xml, record_xml;
+
+	    QDPFileReader to(file_xml,params.file.file_name,serpar);
+	    read(to,record_xml,obj);
+	    close(to);
+
+	    TheNamedObjMap::Instance().create<LatticeStaggeredPropagator>(params.named_obj.object_id);
+	    TheNamedObjMap::Instance().getData<LatticeStaggeredPropagator>(params.named_obj.object_id) = obj;
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+	  }
+	};
+
+	// Call back
+	QIOReadObject* qioReadStagLatProp(const Params& p)
+	{
+	  return new QIOReadStagLatProp(p);
+	}
+
+
+	//------------------------------------------------------------------------
+	//! Read a staggered prop -- object on disk is single  precision
+	class QIOReadStagLatPropF : public QIOReadObject
+	{
+	private:
+	  Params params;
+
+	public:
+	  QIOReadStagLatPropF(const Params& p) : params(p) {}
+
+	  //! Read a propagator
+	  void operator()(QDP_serialparallel_t serpar) {
+	    LatticeStaggeredPropagatorF obj;
+	    XMLReader file_xml, record_xml;
+
+	    QDPFileReader to(file_xml,params.file.file_name,serpar);
+	    read(to,record_xml,obj);
+	    close(to);
+
+	    TheNamedObjMap::Instance().create<LatticeStaggeredPropagator>(params.named_obj.object_id);
+	    TheNamedObjMap::Instance().getData<LatticeStaggeredPropagator>(params.named_obj.object_id) = obj;
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+	  }
+	};
+
+	// Call back
+	QIOReadObject* qioReadStagLatPropF(const Params& p)
+	{
+	  return new QIOReadStagLatPropF(p);
+	}
+
+	//------------------------------------------------------------------------
+	//! Read a staggered prop -- file on disk is double prec
+	class QIOReadStagLatPropD : public QIOReadObject
+	{
+	private:
+	  Params params;
+
+	public:
+	  QIOReadStagLatPropD(const Params& p) : params(p) {}
+
+	  //! Read a propagator
+	  void operator()(QDP_serialparallel_t serpar) {
+	    LatticeStaggeredPropagatorD obj;
+	    XMLReader file_xml, record_xml;
+
+	    QDPFileReader to(file_xml,params.file.file_name,serpar);
+	    read(to,record_xml,obj);
+	    close(to);
+
+	    TheNamedObjMap::Instance().create<LatticeStaggeredPropagator>(params.named_obj.object_id);
+	    TheNamedObjMap::Instance().getData<LatticeStaggeredPropagator>(params.named_obj.object_id) = obj;
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+	  }
+	};
+
+	// Call back
+	QIOReadObject* qioReadStagLatPropD(const Params& p)
+	{
+	  return new QIOReadStagLatPropD(p);
+	}
+
+
+
+	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	class QIOReadSubsetVectorsLCV : public QIOReadObject
 	{
@@ -160,19 +259,36 @@ namespace Chroma
 	  Handle< MapObject<int,EVPair<LatticeColorVector> > > obj;
 
 	public:
-	  QIOReadSubsetVectorsLCV(const Params& params_) : params(params_) {
+	  QIOReadSubsetVectorsLCV(const Params& params_) : params(params_)
+	  {
 	    try
 	    {
+	      // Generate a metadata
+	      std::string file_str;
+	      if (1)
+	      {
+		XMLBufferWriter file_xml;
+
+		push(file_xml, "MODMetaData");
+		write(file_xml, "id", std::string("eigenColorVec"));
+		write(file_xml, "lattSize", QDP::Layout::lattSize());
+		// write(file_xml, "num_vecs", params.param.num_vecs); // do not know num_vecs till data is read
+		pop(file_xml);
+
+		file_str = file_xml.str();
+	      }
+	
+	      // Create the entry
 	      std::istringstream  xml_nam(params.named_obj_xml.xml);
 	      XMLReader  namtop(xml_nam);
 	      GroupXML_t colorvec_obj = readXMLGroup(namtop, "MapObject", "MapObjType");
 
-	      // Create the entry
 	      TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id);
 	      TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id) =
 		TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(colorvec_obj.id,
 									     namtop,
-									     colorvec_obj.path);
+									     colorvec_obj.path,
+									     file_str);
 	    }
 	    catch (std::bad_cast)
 	    {
@@ -706,6 +822,13 @@ namespace Chroma
 									qioReadLatPropF);
 	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("LatticePropagatorD"), 
 									qioReadLatPropD);
+
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("LatticeStaggeredPropagator"),   
+									qioReadStagLatProp);
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("LatticeStaggeredPropagatorF"), 
+									qioReadStagLatPropF);
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("LatticeStaggeredPropagatorD"), 
+									qioReadStagLatPropD);
 
 	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("SubsetVectorsLatticeColorVector"),
 									qioReadSubsetVectorsLCV);

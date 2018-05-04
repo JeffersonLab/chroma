@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: norm_gram_schm.h,v 1.2 2008-01-13 21:08:14 edwards Exp $
 /*! \file
  *  \brief Gram-Schmidt with normalization
  */

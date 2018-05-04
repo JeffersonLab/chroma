@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: avp_inverter_interface.h,v 3.8 2007-01-17 02:39:27 edwards Exp $
 /*! \file
  *  \brief Base class for AVP's DWF solver interface
  */

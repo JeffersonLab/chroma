@@ -1,4 +1,3 @@
-// $Id: extfield_fermstate_w.cc,v 1.6 2008-02-19 21:11:29 edwards Exp $
 /*! \file
  *  \brief External field ferm state and a creator
  */

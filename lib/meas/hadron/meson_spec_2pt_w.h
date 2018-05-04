@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: meson_spec_2pt_w.h,v 1.1 2008-03-17 15:23:58 edwards Exp $
 /*! \file
  *  \brief Construct meson 2pt correlators leaving all spin indices open
  */

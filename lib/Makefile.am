@@ -92,6 +92,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_eigcg_params.h \
 	actions/ferm/invert/syssolver_OPTeigcg_params.h \
 	actions/ferm/invert/syssolver_OPTeigbicg_params.h \
+	actions/ferm/invert/syssolver_fgmres_dr_params.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
@@ -106,6 +107,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_linop_bicrstab.h \
 	actions/ferm/invert/syssolver_linop_ibicgstab.h \
 	actions/ferm/invert/syssolver_linop_mr.h \
+	actions/ferm/invert/syssolver_linop_fgmres_dr.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.h \
 	actions/ferm/invert/syssolver_mdagm_ibicgstab.h \
@@ -151,6 +153,9 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/character_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.h \
+	actions/gauge/gaugeacts/plaq_plus_adj_power_gaugeact.h \
+	actions/gauge/gaugeacts/plaq_plus_plaq_power_gaugeact.h \
+	actions/gauge/gaugeacts/constrained_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.h \
 	actions/gauge/gaugeacts/sf_plaq_plus_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.h \
@@ -272,7 +277,7 @@ nobase_include_HEADERS = \
 	meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h \
 	meas/smear/hyp_smear.h meas/smear/hyp_smear3d.h \
-      meas/smear/hex_smear.h \
+        meas/smear/hex_smear.h \
 	meas/smear/laplacian.h meas/smear/smear.h \
 	meas/smear/link_smearing.h \
 	meas/smear/link_smearing_aggregate.h \
@@ -370,6 +375,7 @@ nobase_include_HEADERS = \
 	update/heatbath/hb_params.h \
 	update/heatbath/su2_hb_update.h \
 	update/heatbath/mciter.h \
+	update/heatbath/mciter32.h \
 	update/molecdyn/molecdyn.h \
 	update/molecdyn/field_state.h \
 	update/molecdyn/hamiltonian/hamiltonian.h \
@@ -417,17 +423,22 @@ nobase_include_HEADERS = \
 	update/molecdyn/monomial/comp_approx.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
+	update/molecdyn/predictor/abs_MG_chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
 	update/molecdyn/predictor/predictor_aggregate.h \
 	update/molecdyn/predictor/null_predictor.h \
 	update/molecdyn/predictor/zero_guess_predictor.h \
 	update/molecdyn/predictor/last_solution_predictor.h \
+	update/molecdyn/predictor/MG_predictor.h \
 	update/molecdyn/predictor/circular_buffer.h \
 	update/molecdyn/predictor/linear_extrap_predictor.h \
 	update/molecdyn/predictor/lu_solve.h \
 	update/molecdyn/predictor/mre_extrap_predictor.h \
 	update/molecdyn/predictor/mre_shifted_predictor.h \
-	update/molecdyn/predictor/mre_initcg_extrap_predictor.h
+	update/molecdyn/predictor/mre_initcg_extrap_predictor.h \
+        util/gauge/cern_gauge_init.h \
+        io/cern_io.h \
+        io/readcern.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -503,6 +514,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermbcs/periodic_fermbc_w.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/fermbcs/twisted_fermbc_w.h \
+	actions/ferm/fermbcs/background_fermbc_w.h \
 	actions/ferm/fermbcs/schroedinger_fermbc_w.h \
 	actions/ferm/fermbcs/schr_fermbc_params_w.h \
 	actions/ferm/fermbcs/schr_sf_fermbc_w.h \
@@ -524,6 +536,7 @@ nobase_include_HEADERS += \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/lg5Rherm_w.h \
+	actions/ferm/linop/lunprec_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_nonhermop_array_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_pv_linop_array_w.h \
@@ -825,6 +838,7 @@ nobase_include_HEADERS += \
 	meas/inline/glue/inline_wilslp.h \
 	meas/inline/glue/inline_fuzwilp.h \
 	meas/inline/glue/inline_qactden.h \
+	meas/inline/glue/inline_plaq_density.h \
 	meas/inline/glue/inline_qnaive.h \
 	meas/inline/glue/inline_random_transf_gauge.h \
 	meas/inline/glue/inline_glue_matelem_colorvec.h \
@@ -883,6 +897,8 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
+	meas/inline/hadron/inline_qpropdiff_w.h \
+	meas/inline/hadron/inline_qprop_matmul_w.h \
 	meas/inline/hadron/inline_qqqNucNuc_w.h \
 	meas/inline/hadron/inline_stoch_baryon_w.h \
 	meas/inline/hadron/inline_stoch_hadron_w.h \
@@ -1064,6 +1080,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_eigcg_params.cc \
 	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
 	actions/ferm/invert/syssolver_OPTeigbicg_params.cc \
+	actions/ferm/invert/syssolver_fgmres_dr_params.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
@@ -1090,6 +1107,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_bicrstab.cc \
 	actions/ferm/invert/syssolver_linop_ibicgstab.cc \
 	actions/ferm/invert/syssolver_linop_mr.cc \
+	actions/ferm/invert/syssolver_linop_fgmres_dr.cc \
 	actions/ferm/invert/multi_syssolver_cg_params.cc \
 	actions/ferm/invert/multi_syssolver_mr_params.cc \
 	actions/ferm/invert/multi_syssolver_linop_aggregate.cc \
@@ -1117,8 +1135,11 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_adjoint_gaugeact.cc \
+	actions/gauge/gaugeacts/plaq_plus_adj_power_gaugeact.cc \
+	actions/gauge/gaugeacts/constrained_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/character_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.cc \
+	actions/gauge/gaugeacts/plaq_plus_plaq_power_gaugeact.cc \
 	actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc \
 	actions/gauge/gaugeacts/sf_plaq_plus_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc \
@@ -1299,6 +1320,7 @@ libchroma_a_SOURCES = \
         update/heatbath/su3over.cc \
 	update/heatbath/su2_hb_update.cc \
 	update/heatbath/mciter.cc \
+	update/heatbath/mciter32.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/const_gauge_monomial.cc \
@@ -1328,13 +1350,14 @@ libchroma_a_SOURCES = \
 	update/molecdyn/predictor/null_predictor.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
 	update/molecdyn/predictor/last_solution_predictor.cc \
+	update/molecdyn/predictor/MG_predictor.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
 	update/molecdyn/predictor/mre_initcg_extrap_predictor.cc \
-	meas/hadron/dilution_quark_source_const_w.cc
-#	actions/ferm/invert/invbicg.cc
-#       util/gauge/eesu2.cc 
+	meas/hadron/dilution_quark_source_const_w.cc \
+        util/gauge/cern_gauge_init.cc \
+        io/readcern.cc
 
 
 if BUILD_GMP_REMEZ
@@ -1344,28 +1367,38 @@ endif
 
 if BUILD_QUDA
 nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
+	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_wilson_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
+	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/enum_quda_io.h \
-	actions/ferm/invert/quda_solvers/quda_gcr_params.h
+	actions/ferm/invert/quda_solvers/quda_gcr_params.h \
+	actions/ferm/invert/quda_solvers/quda_multigrid_params.h
 
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
+	actions/ferm/invert/quda_solvers/quda_multigrid_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
+	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
+	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_wilson_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc \
@@ -1375,12 +1408,13 @@ endif
 if BUILD_QPHIX
 nobase_include_HEADERS += actions/ferm/invert/qphix/syssolver_qphix_clover_params.h \
 	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.h \
-	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h	
-
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h\
+	actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_w.h
 
 libchroma_a_SOURCES += actions/ferm/invert/qphix/syssolver_qphix_clover_params.cc \
 	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.cc \
-	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.cc
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.cc \
+	actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_w.cc
 
 endif
 
@@ -1440,6 +1474,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermbcs/fermbcs_reader_w.cc \
 	actions/ferm/fermbcs/simple_fermbc_w.cc \
 	actions/ferm/fermbcs/twisted_fermbc_w.cc \
+	actions/ferm/fermbcs/background_fermbc_w.cc \
 	actions/ferm/fermbcs/periodic_fermbc_w.cc \
 	actions/ferm/fermbcs/schr_fermbc_params_w.cc \
 	actions/ferm/fermbcs/schr_sf_fermbc_w.cc \
@@ -1659,6 +1694,7 @@ libchroma_a_SOURCES += \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
 	meas/inline/glue/inline_qactden.cc \
+	meas/inline/glue/inline_plaq_density.cc \
 	meas/inline/glue/inline_qnaive.cc \
 	meas/inline/glue/inline_random_transf_gauge.cc \
 	meas/inline/glue/inline_glue_matelem_colorvec.cc \
@@ -1715,6 +1751,8 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
+	meas/inline/hadron/inline_qpropdiff_w.cc \
+	meas/inline/hadron/inline_qprop_matmul_w.cc \
 	meas/inline/hadron/inline_qqqNucNuc_w.cc \
 	meas/inline/hadron/inline_stoch_baryon_w.cc \
 	meas/inline/hadron/inline_stoch_hadron_w.cc \
@@ -1860,6 +1898,7 @@ libchroma_a_SOURCES += actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_op
 endif
 
 if BUILD_LAPACK
+if BUILD_OPT_EIGCG
 nobase_include_HEADERS += \
 	actions/ferm/invert/syssolver_OPTeigcg_params.h \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.h \
@@ -1870,6 +1909,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
 	actions/ferm/invert/syssolver_linop_OPTeigbicg.cc \
 	meas/inline/hadron/inline_laplace_eigs.cc
+endif
 endif
 
 if BUILD_SSED_CLOVER_APPLY
@@ -1976,11 +2016,15 @@ libchroma_a_SOURCES += \
 if BUILD_QOP_MG
 nobase_include_HEADERS += \
 	actions/ferm/invert/qop_mg/syssolver_qop_mg_params.h \
-	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h
+	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h \
+	actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.h \
+	meas/inline/io/inline_erase_mg_space.h
 
 libchroma_a_SOURCES += \
 	actions/ferm/invert/qop_mg/syssolver_qop_mg_params.cc \
-	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.cc
+	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.cc \
+	actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.cc \
+	meas/inline/io/inline_erase_mg_space.cc
 endif
 
 
@@ -2007,4 +2051,8 @@ nobase_include_HEADERS += actions/ferm/linop/clover_term_bagel_clover.h
 libchroma_a_SOURCES += actions/ferm/linop/clover_term_bagel_clover.cc
 endif
 
+if BUILD_GTEST
+nobase_include_HEADERS += gtest/gtest.h
+libchroma_a_SOURCES += gtest/gtest-all.cc
+endif
 

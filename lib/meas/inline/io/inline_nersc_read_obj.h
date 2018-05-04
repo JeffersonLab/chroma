@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_nersc_read_obj.h,v 3.3 2008-06-18 21:38:28 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *

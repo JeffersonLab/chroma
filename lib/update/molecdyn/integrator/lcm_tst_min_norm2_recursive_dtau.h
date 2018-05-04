@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lcm_tst_min_norm2_recursive_dtau.h,v 3.1 2008-11-16 17:04:04 bjoo Exp $
 
 /*! @file
  * @brief Intgrator for exp(S dt)

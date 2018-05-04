@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: fixed_random_ferm_monomial.h,v 3.6 2008-05-23 18:40:41 edwards Exp $
 
 /*! @file
  * @brief Fixed random monomial

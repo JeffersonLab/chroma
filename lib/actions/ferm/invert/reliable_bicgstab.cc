@@ -1,4 +1,3 @@
-// $Id: reliable_bicgstab.cc,v 3.9 2009-07-06 19:02:34 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

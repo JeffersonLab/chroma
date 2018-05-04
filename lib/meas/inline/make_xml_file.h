@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: make_xml_file.h,v 3.0 2006-04-03 04:59:01 edwards Exp $
 /*! \file
  * \brief Make xml file writer
  */

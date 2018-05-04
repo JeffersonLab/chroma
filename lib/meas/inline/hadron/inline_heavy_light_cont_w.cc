@@ -1,4 +1,3 @@
-// $Id: inline_heavy_light_cont_w.cc,v 3.7 2009-04-08 18:34:11 caubin Exp $
 /*! \file
  * \brief Inline construction of hadron contractions
  *  Still just does static!!

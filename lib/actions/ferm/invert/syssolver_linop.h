@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop.h,v 3.2 2009-07-17 19:14:46 bjoo Exp $
 /*! \file
  *  \brief Disambiguator for LinOp system solvers
  */

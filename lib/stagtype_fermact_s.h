@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: stagtype_fermact_s.h,v 3.3 2008-09-08 16:00:19 bjoo Exp $
 
 /*! @file
  * @brief Staggered-like fermion actions

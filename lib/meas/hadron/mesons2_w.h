@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: mesons2_w.h,v 1.1 2006-07-10 19:53:36 edwards Exp $
 /*! \file
  *  \brief Meson 2-pt functions
  */

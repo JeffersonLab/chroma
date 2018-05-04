@@ -1,4 +1,3 @@
-// $Id: eesu2.cc,v 3.2 2009/11/14 20:01:46 eneil Exp $
 /*! \file
  *  \brief Exactly exponentiate a SU(2) lie algebra element
  */

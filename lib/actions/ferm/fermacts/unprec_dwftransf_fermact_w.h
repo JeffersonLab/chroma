@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_fermact_w.h,v 3.3 2006-10-19 16:01:29 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */

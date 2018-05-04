@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: default_gauge_field.h,v 3.1 2006-04-11 04:18:24 edwards Exp $
 /*! \file
  * \brief Functions to set and get default gauge field
  */

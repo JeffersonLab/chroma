@@ -1,4 +1,3 @@
-// $Id: syssolver_mdagm_ibicgstab.cc,v 3.1 2009-07-02 18:24:52 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */

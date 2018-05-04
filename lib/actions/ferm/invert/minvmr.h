@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: minvmr.h,v 1.1 2007-04-11 03:40:15 edwards Exp $
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
  */

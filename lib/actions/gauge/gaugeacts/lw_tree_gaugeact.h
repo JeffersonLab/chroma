@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lw_tree_gaugeact.h,v 3.3 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Tree-level tadpole-improved Luscher-Weisz gauge action
  */

@@ -1,4 +1,3 @@
-// $Id: unprec_clover_fermact_w.cc,v 3.3 2007-03-05 20:03:16 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */

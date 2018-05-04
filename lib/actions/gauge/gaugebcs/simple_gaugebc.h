@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: simple_gaugebc.h,v 3.3 2009-04-17 02:05:35 bjoo Exp $
 /*! \file
  *  \brief Simple gauge boundary conditions
  */

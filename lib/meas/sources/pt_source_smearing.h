@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: pt_source_smearing.h,v 3.5 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */

@@ -1,4 +1,3 @@
-// $Id: iluprec_s_cprec_t_wilson_fermact_w.cc,v 3.2 2007-12-04 16:25:02 bjoo Exp $
 /*! \file
  *  \brief ILUPreconditioned Wilson fermion action
  */

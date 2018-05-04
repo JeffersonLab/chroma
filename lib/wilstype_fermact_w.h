@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: wilstype_fermact_w.h,v 3.4 2008-09-08 16:00:19 bjoo Exp $
 
 /*! @file
  * @brief Wilson-like fermion actions

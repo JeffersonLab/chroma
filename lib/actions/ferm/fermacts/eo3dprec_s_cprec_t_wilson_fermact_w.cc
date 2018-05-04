@@ -1,4 +1,3 @@
-// $Id: eo3dprec_s_cprec_t_wilson_fermact_w.cc,v 3.2 2007-12-04 16:25:02 bjoo Exp $
 /*! \file
  *  \brief EO3DPreconditioned Wilson fermion action
  */

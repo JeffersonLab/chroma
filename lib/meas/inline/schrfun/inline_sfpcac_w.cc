@@ -1,4 +1,3 @@
-// $Id: inline_sfpcac_w.cc,v 1.6 2008-02-06 18:55:18 edwards Exp $
 /*! \file
  * \brief Inline Schroedinger functional measurements
  */

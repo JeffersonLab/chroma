@@ -1,19 +1,26 @@
-// $Id: mciter32.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 /*! \file
  *  \brief One heatbath interation of updating the gauge field configuration
  */
 
-#error "Not tested (or even compiled). However, reasonably well converted."
+//#error "Not tested (or even compiled). However, reasonably well converted."
 
-#error "THIS VERSION SHOULD BE USED IN PLACE OF MCITER.CC - IT IS MORE GENERAL. REMOVE THIS FILE"
+//#error "THIS VERSION SHOULD BE USED IN PLACE OF MCITER.CC - IT IS MORE GENERAL. REMOVE THIS FILE"
 
-#warning "THERE ARE INSTANCES OF shift(...,mu)*shift(...,mu)  THAT SHOULD BE OPTIMIZED"
-
+//#warning "THERE ARE INSTANCES OF shift(...,mu)*shift(...,mu)  THAT SHOULD BE OPTIMIZED"
 
 #include "chromabase.h"
 #include "util/gauge/reunit.h"
 #include "update/heatbath/su3over.h"
 #include "update/heatbath/su3hb.h"
+#include "update/heatbath/su2_hb_update.h"
+
+#if 1
+#warning "FIXME"
+const int igluetmp = 1;
+const Real GlueCoeffRT(0.0);
+const Real GlueCoeffPG(0.0);
+#endif
+
 
 namespace Chroma {
 
@@ -38,12 +45,13 @@ namespace Chroma {
  * \param u        gauge field ( Modify )
  * \param n_over   number of overrelaxation sweeps ( Read )
  * \param nheat    number of heatbath trials ( Read )
+ * \param NmaxHB   max number of heatbath hits ( Read )
  * \param ntrials  total number of individual heatbath trials ( Modify )
  * \param nfails   total number of individual heatbath failures ( Modify ) 
  */
 
 void mciter32(multi1d<LatticeColorMatrix>& u, 
-	      int n_over, int nheat,
+	      int n_over, int nheat, int NmaxHB,
 	      int& ntrials, int& nfails,
 	      const Set& ss,
 	      const multi3d<int>& neighsubl)
@@ -146,15 +154,15 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	    /* tmp_1(x) = u_dag(x+mu,nu)*tmp_2(x)
 	       = u_dag(x+mu,nu)*u_dag(x+mu-nu,nu)*
 	       u_dag(x-nu,mu)*u(x-nu,nu) */
-	    int bfsubl = neighsubl[mu][1][bsubln];
+	    bfsubl = neighsubl[mu][1][bsubln];
 	    tmp_1[ss[bsubln]] = shift(adj(u[nu]), FORWARD, mu) * tmp_2;
 
 	    /* u_staple2(x) += tmp_1(x-nu) * u(x-nu,nu) */
 	    u_staple2[ss[subl]] += shift(tmp_1, BACKWARD, nu) * shift(u[nu], BACKWARD, nu);
 
 	    /* forward 2x1 rectangle in mu,nu directions open at bottom left */
-	    int fsubl2 = neighsubl[mu][1][fsublm];
-	    int fsublmn = neighsubl[nu][1][fsublm];
+	    fsubl2 = neighsubl[mu][1][fsublm];
+	    fsublmn = neighsubl[nu][1][fsublm];
 
 	    /* tmp_1(x) = u(x,mu)*u(x+mu,nu) */
 	    tmp_1[ss[fsublm]] = u[mu] * shift(u[nu], FORWARD, mu);
@@ -172,8 +180,8 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	    u_staple2[ss[subl]] += tmp_1 * adj(u[nu]);
 
 	    /* backward 2x1 rectangle in mu,nu directions open at top left */
-	    int bfsubl = neighsubl[mu][1][bsubln];
-	    int fsubl2 = neighsubl[mu][1][bfsubl];
+	    bfsubl = neighsubl[mu][1][bsubln];
+	    fsubl2 = neighsubl[mu][1][bfsubl];
 
 	    /* tmp_1(x) = u(x,mu)*u(x+mu,nu) */
 	    tmp_1[ss[bfsubl]] = u[mu] * shift(u[nu], FORWARD, mu);
@@ -192,7 +200,7 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 
 	    /* forward 2x1 rectangle in mu,nu directions open at bottom right */
 	    /* tmp_1(x) = u(x,nu)*u(x+nu,mu) */
-	    int bfsubl = neighsubl[nu][1][bsublm];
+	    bfsubl = neighsubl[nu][1][bsublm];
 	    tmp_1[ss[bsublm]] = u[nu] * shift(u[mu], FORWARD, nu);
 
 	    /* tmp_2(x) = tmp_1_dag(x-mu)*u(x-mu,mu)
@@ -208,7 +216,7 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	    u_staple2[ss[subl]] += shift(u[nu], FORWARD, mu) * tmp_1;
 
 	    /* backward 2x1 rectangle in mu,nu directions open at top right */
-	    int bfsubl = neighsubl[mu][1][bsubln];
+	    bfsubl = neighsubl[mu][1][bsubln];
 	    int bsublmn = neighsubl[mu][0][bsubln];
 
 	    /* tmp_1(x) = u_dag(x,mu)*u(x,nu) */
@@ -270,7 +278,7 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	          tmp_2[ss[subl]] = u[rho] * shift(tmp_1, FORWARD, rho);
 
 	          /* tmp_1(x) = u(x,nu)*u(x+nu,rho) */
-	          int fsublmn = neighsubl[nu][1][fsublm];
+	          fsublmn = neighsubl[nu][1][fsublm];
 	          tmp_1[ss[fsublm]] = u[nu] * shift(u[rho], FORWARD, nu);
 
 	          /* u_staple2(x) += tmp_1(x+mu) * tmp_2_dag(x) */
@@ -319,8 +327,8 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	          u_staple2[ss[subl]] += shift(u[rho], FORWARD, mu) * shift(tmp_1, BACKWARD, eta);
 
 	          /* "update" link is fifth link */
-	          int bfsubl = neighsubl[eta][1][bsublr];
-	          int fsubl2 = neighsubl[mu][1][bfsubl];
+	          bfsubl = neighsubl[eta][1][bsublr];
+	          fsubl2 = neighsubl[mu][1][bfsubl];
 
 	          /* tmp_1(x) = u(x,mu)*u(x+mu,rho) */
 	          tmp_1[ss[bfsubl]] = u[mu] * shift(u[rho], FORWARD, mu);
@@ -370,7 +378,7 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	          tmp_2[ss[subl]] = u[eta] * shift(tmp_1, FORWARD, eta);
 
 	          /* tmp_1(x) = u(x,nu)*u(x+nu,eta) */
-	          int fsublmn = neighsubl[nu][1][fsublm];
+	          fsublmn = neighsubl[nu][1][fsublm];
 	          tmp_1[ss[fsublm]] = u[nu] * shift(u[eta], FORWARD, nu);
 		  
 	          /* u_staple2(x) += tmp_1(x+mu) * tmp_2_dag(x) */
@@ -405,7 +413,7 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	          tmp_2[ss[subl]] = shift(tmp_1, FORWARD, rho) * adj(u[rho]);
 
 	          /* tmp_1(x) = u_dag(x-nu,nu)*u(x-nu,rho) */
-	          int bfsubl = neighsubl[nu][0][fsublm];
+	          bfsubl = neighsubl[nu][0][fsublm];
 	          tmp_1[ss[fsublm]] = shift(adj(u[nu]), BACKWARD, nu) * shift(u[rho], BACKWARD, nu);
 
 	          /* u_staple2(x) += tmp_1(x+mu) * tmp_2(x) */
@@ -413,7 +421,7 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 
 	          /* "update" link is forth link */
 	          /* tmp_1(x) = u_dag(x-rho,mu)*u(x-rho,rho) */
-	          int bfsubl = neighsubl[rho][0][fsubln];
+	          bfsubl = neighsubl[rho][0][fsubln];
 	          tmp_1[ss[fsubln]] = shift(adj(u[mu]), BACKWARD, rho) * shift(u[rho], BACKWARD, rho);
 
 	          /* tmp_2(x) = tmp_1(x+nu)*u_dag(x,nu)
@@ -421,7 +429,7 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	          tmp_2[ss[subl]] = shift(tmp_1, FORWARD, nu) * adj(u[nu]);
 
 	          /* tmp_1(x) = u_dag(x-rho,rho)*u(x-rho,nu) */
-	          int bfsubl = neighsubl[rho][0][fsublm];
+	          bfsubl = neighsubl[rho][0][fsublm];
 	          tmp_1[ss[fsublm]] = shift(adj(u[rho]), BACKWARD, rho) * shift(u[nu], BACKWARD, rho);
 
 	          /* u_staple2(x) += tmp_1(x+mu) * tmp_2(x) */
@@ -441,7 +449,7 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	          tmp_2[ss[subl]] = shift(tmp_1, FORWARD, rho) * adj(u[rho]);
 
 	          /* tmp_1(x) = u_dag(x-eta,eta)*u(x-eta,rho) */
-	          int bfsubl = neighsubl[eta][0][fsublm];
+	          bfsubl = neighsubl[eta][0][fsublm];
 	          tmp_1[ss[fsublm]] = shift(adj(u[eta]), BACKWARD, eta) * shift(u[rho], BACKWARD, eta);
 
 	          /* u_staple2(x) += tmp_1(x+mu) * tmp_2(x) */
@@ -449,7 +457,7 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 
 	          /* "update" link is fifth link */
 	          /* tmp_1(x) = u_dag(x-rho,mu)*u(x-rho,rho) */
-	          int bfsubl = neighsubl[rho][0][fsuble];
+	          bfsubl = neighsubl[rho][0][fsuble];
 	          tmp_1[ss[fsuble]] = shift(adj(u[mu]), BACKWARD, rho) * shift(u[rho], BACKWARD, rho);
 
 	          /* tmp_2(x) = tmp_1(x+eta)*u_dag(x,eta)
@@ -458,7 +466,7 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	          tmp_2[ss[subl]] = shift(tmp_1, FORWARD, eta) * adj(u[eta]);
 
 	          /* tmp_1(x) = u_dag(x-rho,rho)*u(x-rho,eta) */
-	          int bfsubl = neighsubl[rho][0][fsublm];
+	          bfsubl = neighsubl[rho][0][fsublm];
 	          tmp_1[ss[fsublm]] = shift(adj(u[rho]), BACKWARD, rho) * shift(u[eta], BACKWARD, rho);
 
 	          /* u_staple2(x) += tmp_1(x+mu) * tmp_2(x) */
@@ -524,15 +532,22 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	    int ntry;
 	    int nfail;
 
-	    su3hb(u[mu], u_staple, su2_index, nheat, ntry, nfail, ss[subl]);
+	    su2_hb_update(u[mu], u_staple,
+			  Real(2.0/Nc),
+			  su2_index, ss[subl],
+			  NmaxHB);
+
+//	    su3hb(u[mu], u_staple, su2_index, nheat, ntry, nfail, ss[subl]);
 	    ntrials = ntrials + ntry;
 	    nfails = nfails + nfail;
 	  }
 
           
 	  /* Reunitarize */
+	  // We seem to have different reunitarizes here. Would be better to have a subset version.
 /*	  reunit (u[mu][subl], lbad, OPTION[REUNITARIZE_ERROR], numbad);  */
-	  reunit (u[mu][subl]);
+//	  reunit (u[mu][subl]);
+	  reunit (u[mu]);
 
 	}
 

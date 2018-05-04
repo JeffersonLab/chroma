@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_bar3ptfn_w.h,v 3.3 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *

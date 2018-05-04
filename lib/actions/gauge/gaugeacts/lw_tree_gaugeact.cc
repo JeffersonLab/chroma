@@ -1,4 +1,3 @@
-// $Id: lw_tree_gaugeact.cc,v 3.4 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Tree-level tadpole-improved Luscher-Weisz gauge action
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_mr.h,v 1.4 2008-04-05 19:04:38 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by MR
  */

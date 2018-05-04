@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: fuzwilp.h,v 3.0 2006-04-03 04:58:58 edwards Exp $
 // version with added tmax
 /*! \file
  *  \brief Calculate ape-fuzzed Wilson loops

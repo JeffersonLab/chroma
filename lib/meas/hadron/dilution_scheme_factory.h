@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: dilution_scheme_factory.h,v 1.1 2007/12/14 06:53:42 edwards Exp 
 /*! \file
  *  \brief Factory for dilution schemes
  */

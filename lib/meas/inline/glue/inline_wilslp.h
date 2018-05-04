@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_wilslp.h,v 3.7 2007-03-18 21:59:15 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lopscl.h,v 3.1 2007-02-22 21:11:46 bjoo Exp $
 
 #ifndef __lopscl_h__
 #define __lopscl_h__

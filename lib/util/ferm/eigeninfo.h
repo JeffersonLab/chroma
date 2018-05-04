@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eigeninfo.h,v 3.2 2008-06-17 15:36:58 edwards Exp $
 /*! \file
  *  \brief Hold eigenvalues and eigenvectors
  */

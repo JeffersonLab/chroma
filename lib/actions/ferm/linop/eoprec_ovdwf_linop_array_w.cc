@@ -1,4 +1,3 @@
-// $Id: eoprec_ovdwf_linop_array_w.cc,v 3.2 2007-09-01 23:44:10 uid3790 Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */

@@ -1,4 +1,3 @@
-// $Id: lovddag_double_pass_w.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */

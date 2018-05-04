@@ -1,4 +1,3 @@
-// $Id: ferm_createstate_reader_w.cc,v 1.1 2006-09-19 17:53:37 edwards Exp $
 /*! \file
  *  \brief All ferm create-state method
  */

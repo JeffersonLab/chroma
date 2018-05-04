@@ -1,4 +1,3 @@
-// $Id: qproptrev.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
 /*! \file
  *  \brief Time-reverse a propagator
  */
@@ -273,7 +272,7 @@ int main(int argc, char *argv[])
       XMLReader gauge_xml(prop_in_xml, "/Propagator/Config_info");
       std::ostringstream gauge_str;
       gauge_xml.print(gauge_str);
-      write(prop_out_record_xml, "Config_info", gauge_str);
+      write(prop_out_record_xml, "Config_info", gauge_str.str());
       QDPIO::cout << "Done config info" << std::endl;
     }
     pop(prop_out_record_xml);

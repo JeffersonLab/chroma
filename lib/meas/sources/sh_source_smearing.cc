@@ -1,4 +1,3 @@
-// $Id: sh_source_smearing.cc,v 3.9 2008-11-04 18:43:59 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */

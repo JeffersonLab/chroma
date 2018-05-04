@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_qnaive.h,v 3.3 2009-08-22 20:03:28 edwards Exp $
 /*! \file
  *  \brief Inline naive topological charge
  *

@@ -1,4 +1,3 @@
-// $Id: collect_propcomp.cc,v 3.0 2006-04-03 04:59:13 edwards Exp $
 // $Log: collect_propcomp.cc,v $
 // Revision 3.0  2006-04-03 04:59:13  edwards
 // Major overhaul of fermion and gauge action interface. Basically,

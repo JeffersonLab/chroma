@@ -1,4 +1,3 @@
-// $Id: sn_jacob.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 /*! \file
  *  \brief Single-node Jacobi routine
  */

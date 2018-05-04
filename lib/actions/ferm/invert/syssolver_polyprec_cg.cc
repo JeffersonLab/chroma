@@ -1,4 +1,3 @@
-// $Id: syssolver_polyprec_cg.cc,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Solve a PolyPrec*psi=chi linear system by CG1
  */

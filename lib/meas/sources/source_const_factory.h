@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: source_const_factory.h,v 3.2 2006-12-02 04:09:15 edwards Exp $
 /*! \file
  *  \brief Factory for producing quark prop sources
  */

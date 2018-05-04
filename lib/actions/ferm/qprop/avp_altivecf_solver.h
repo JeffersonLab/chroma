@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: avp_altivecf_solver.h,v 3.3 2007-01-17 02:39:27 edwards Exp $
 /*! \file
  *  \brief DWF/Bluegene altivec solver
  */

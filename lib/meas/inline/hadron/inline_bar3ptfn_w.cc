@@ -1,4 +1,3 @@
-// $Id: inline_bar3ptfn_w.cc,v 3.6 2007-06-10 14:40:23 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *

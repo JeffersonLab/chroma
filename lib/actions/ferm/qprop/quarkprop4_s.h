@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: quarkprop4_s.h,v 3.5 2006-10-19 16:01:34 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *

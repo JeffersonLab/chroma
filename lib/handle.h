@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: handle.h,v 3.4 2007-08-12 20:35:11 edwards Exp $
 /*! @file
  * @brief  Class for counted reference semantics
  *

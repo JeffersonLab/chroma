@@ -1,4 +1,3 @@
-// $Id: formfac_w.cc,v 3.1 2006-05-05 03:07:20 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *

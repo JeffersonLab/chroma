@@ -1,4 +1,3 @@
-// $Id: syssolver_linop_richardson_multiprec_clover.cc,v 3.1 2009-04-17 02:05:31 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */

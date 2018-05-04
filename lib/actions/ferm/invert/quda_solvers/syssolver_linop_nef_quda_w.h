@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_nef.h,v 1.9 2009-10-16 13:37:39 bjoo Exp $
 /*! \file
 *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
 */
@@ -272,11 +271,11 @@ namespace Chroma
       switch( invParam.solverType ) { 
       case CG:
         if( invParam.cgnrP ) {
-          QDPIO::cout << "Doing CGNR solve" << endl;
+          QDPIO::cout << "Doing CGNR solve" << std::endl;
           quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
         }
 	else {
-          QDPIO::cout << "Doing CGNE solve" << endl; 
+          QDPIO::cout << "Doing CGNE solve" << std::endl; 
   	  quda_inv_param.solve_type = QUDA_NORMERR_PC_SOLVE;
         }
 
@@ -284,11 +283,11 @@ namespace Chroma
 	
       default:
         if( invParam.cgnrP ) {
-          QDPIO::cout << "Doing CGNR solve" << endl;
+          QDPIO::cout << "Doing CGNR solve" << std::endl;
           quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
         }
         else {
-          QDPIO::cout << "Doing CGNE solve" << endl;
+          QDPIO::cout << "Doing CGNE solve" << std::endl;
           quda_inv_param.solve_type = QUDA_NORMERR_PC_SOLVE;
         }
 
@@ -298,7 +297,7 @@ namespace Chroma
 
       //only symmetric DWF supported at the moment:
       QDPIO::cout << "Using Symmetric Linop: A_oo - D_oe A^{-1}_ee D_eo" << std::endl;
-      quda_inv_param.matpc_type = QUDA_MATPC_EVEN_EVEN_ASYMMETRIC;
+      quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
       quda_inv_param.dagger = QUDA_DAG_NO;
       quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
       quda_inv_param.cpu_prec = cpu_prec;

@@ -1,4 +1,3 @@
-// $Id: unprec_twm_fermact_array_w.cc,v 1.1 2008-11-04 18:42:58 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */

@@ -1,4 +1,3 @@
-// $Id: chroma_init.cc,v 1.5 2005/01/24 21:31:32 edwards Exp 
 /*! \file
  *  \brief Initialization of Chroma
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: aniso_sym_gaugeact_params.h,v 3.2 2008-05-21 17:07:50 bjoo Exp $
 /*! \file
  *  \brief Params for Anisotropic Symanzik Gauge Action
  *

@@ -1,4 +1,3 @@
-// $Id: inline_aggregate.cc,v 3.3 2009-04-21 01:21:41 eneil Exp $
 /*! \file
  *  \brief Inline measurement aggregator
  */

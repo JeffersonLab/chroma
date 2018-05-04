@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: dilution_quark_source_const_w.h,v 1.15 2008-11-25 22:31:13 kostas Exp $
 /*! \file
  * \brief Dilution scheme inferred from pre-generated solutions.
  * 

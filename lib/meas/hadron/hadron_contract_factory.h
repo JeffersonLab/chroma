@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: hadron_contract_factory.h,v 3.2 2007-06-10 14:49:06 edwards Exp $
 /*! \file
  *  \brief Factory for producing hadron correlator objects
  */

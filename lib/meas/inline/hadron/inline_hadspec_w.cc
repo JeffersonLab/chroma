@@ -1,4 +1,3 @@
-// $Id: inline_hadspec_w.cc,v 3.16 2009-05-12 04:09:56 kostas Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *

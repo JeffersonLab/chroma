@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: barcomp_diquark_w.h,v 1.1 2007-02-25 22:39:03 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator using a diquark
  */

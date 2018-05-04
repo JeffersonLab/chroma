@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_baryon_matelem_colorvec_w.h,v 3.3 2009-09-14 21:06:21 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon
  operators via colorstd::vector matrix elements

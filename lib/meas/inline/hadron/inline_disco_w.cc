@@ -1,4 +1,3 @@
-// $Id: inline_disco_w.cc,v 1.11 2009-03-09 15:25:11 caubin Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *

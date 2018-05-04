@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: unit_check.h,v 3.1 2006-08-25 23:46:37 edwards Exp $
 
 #ifndef UNIT_CHECK_INCLUDE
 #define UNIT_CHECK_INCLUDE

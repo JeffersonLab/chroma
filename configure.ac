@@ -2,7 +2,6 @@ AC_INIT(chroma,3.43.0,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
-AM_INIT_AUTOMAKE
 AM_INIT_AUTOMAKE([subdir-objects])
 
 dnl stupid templates to shut up stupid autoheader
@@ -173,7 +172,8 @@ AC_ARG_ENABLE(lapack,
 AC_ARG_ENABLE(opt-eigcg,
   AC_HELP_STRING([--enable-opt-eigcg],
     [Build optimized eigcg]),
-  [opt_eigcg_enabled="yes"]
+  [opt_eigcg_enabled="${enableval}"],
+  [opt_eigcg_enabled="no" ]
 )
 
 AC_ARG_ENABLE(opt_cfz_linop,
@@ -199,6 +199,13 @@ AC_ARG_ENABLE(testcase-runner,
     [Use <script> to run testcases: trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh|9q_mpirun_rsh]),
     [chroma_testcase_runner=${enable_testcase_runner}],
     [chroma_testcase_runner="trivial_runner.sh"]
+)
+
+AC_ARG_ENABLE(gtest,
+  AC_HELP_STRING([--enable-gtest],
+  [ Enable GoogleTest UnitTesting Framework ]),
+  [ chroma_enable_gtest=${enable_gtest} ],
+  [ chroma_enable_gtest="no" ]
 )
 
 AC_ARG_WITH(gmp,
@@ -1065,9 +1072,6 @@ AM_CONDITIONAL(BUILD_MDWF,
 	[test "x${build_mdwf}x" = "xyesx" ])
 
 
-
-
-
 if [ test "x${build_llvm_wd}x" = "xyesx" ];
 then
   AC_MSG_NOTICE([Configuring to use LLVM wilson dslash])
@@ -1185,11 +1189,24 @@ then
   AC_SUBST(QOP_MG_LDFLAGS, "-L${QLA_DIR}/lib -L${QDPC_DIR}/lib -L${QOPQDP_DIR}/lib")
   AC_SUBST(QOP_MG_LIBS, " -lwilsonmg -lqopqdp -lqdp_common -lqdp_int -lqdp_f -lqdp_d -lqdp_df -lqdp_f2 -lqdp_d2 -lqdp_df2 -lqdp_f3 -lqdp_d3 -lqdp_df3 -lqdp_fn -lqdp_dn -lqdp_dfn -lqio -llime -lqla_c99 -lqla_cmath -lqla_d2 -lqla_d3 -lqla_d -lqla_df2 -lqla_df3 -lqla_df -lqla_dfn -lqla_dn -lqla_dq2 -lqla_dq3 -lqla_dq -lqla_dqn -lqla_f2 -lqla_f3 -lqla_f -lqla_fn -lqla_int -lqla_q2 -lqla_q3 -lqla_q -lqla_qn -lqla_random")
 
+ AC_SUBST(QOP_MG_ENABLED,[yes])	     
  AC_DEFINE([BUILD_QOP_MG],[], [Build with the QDP MG Library])  	
 fi
 
 AM_CONDITIONAL(BUILD_QOP_MG,
 	[test "x${BUILD_QOP_MG}x" = "xyesx" ])
+
+case "${chroma_enable_gtest}" in
+yes|YES) 
+	AC_MSG_NOTICE([ Enabling GTest Unittesting ])
+	;;
+*)
+	AC_MSG_NOTICE([ Not using GTest Unittesting ] )
+	;;
+esac
+
+AM_CONDITIONAL(BUILD_GTEST,
+	[test "x${chroma_enable_gtest}x" = "xyesx" ])
 
 #######################
 # Produce output

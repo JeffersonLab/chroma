@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver.h,v 3.5 2008-09-08 16:00:19 bjoo Exp $
 /*! @file
  * @brief Linear system solvers
  */

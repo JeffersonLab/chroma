@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lcm_hmc.h,v 3.5 2009-01-30 20:57:51 bjoo Exp $
 /*! \file
  * \brief HMC trajectory
  *

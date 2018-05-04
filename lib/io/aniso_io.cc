@@ -1,4 +1,3 @@
-// $Id: aniso_io.cc,v 3.2 2008-01-21 20:41:23 edwards Exp $
 /*! \file
  *  \brief Anisotropy parameters
  */

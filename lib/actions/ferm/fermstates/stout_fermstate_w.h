@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.5 2007-11-28 21:11:08 bjoo Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator

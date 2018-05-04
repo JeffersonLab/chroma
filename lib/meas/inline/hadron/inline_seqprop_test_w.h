@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_seqprop_test_w.h,v 3.2 2006-12-02 18:18:07 edwards Exp $
 /*! \file
  * \brief Test sequential propagator
  *

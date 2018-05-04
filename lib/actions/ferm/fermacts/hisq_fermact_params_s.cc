@@ -1,4 +1,3 @@
-// $Id: hisq_fermact_params_s.cc,v 1.2 2008-03-25 10:53:36 mcneile Exp $
 /*! \file
  *  \brief Hisq fermion action parameters
  */

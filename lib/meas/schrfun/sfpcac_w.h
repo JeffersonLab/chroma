@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.h,v 3.3 2007-08-24 19:23:04 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  *

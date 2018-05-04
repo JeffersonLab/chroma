@@ -1,4 +1,3 @@
-// $Id: heavy_hadron_potentials_w.cc,v 1.3 2008-12-21 21:45:47 edwards Exp $ 
 /*! \file
  *  \brief Potential between 2 heavy hadrons : Detmold
  *  Correlators checked independentely by Savage

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: fermacts_aggregate_w.h,v 3.1 2006-09-20 20:27:58 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */

@@ -1,4 +1,3 @@
-// $Id: spin_insertion_aggregate.cc,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief All spin insertion constructors
  */

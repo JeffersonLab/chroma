@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: aniso_sym_spatial_gaugeact.h,v 3.2 2007-05-24 19:36:05 bjoo Exp $
 /*! \file
  *  \brief Spatial part of Tree level LW action
  */

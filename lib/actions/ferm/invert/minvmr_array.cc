@@ -1,4 +1,3 @@
-// $Id: minvmr_array.cc,v 1.1 2007-04-11 03:40:15 edwards Exp $
 /*! \file
  *  \brief Multishift Minimal-residual algorithm for a Linear Operator
  */

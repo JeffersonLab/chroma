@@ -1,4 +1,3 @@
-// $Id: inline_npr_vertex_w.cc,v 1.7 2007-11-29 04:13:07 kostas Exp $
 /*! \file
  * \brief Inline construction of NPR vertices
  *

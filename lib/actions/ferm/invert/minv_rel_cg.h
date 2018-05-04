@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: minv_rel_cg.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
 
 #ifndef MINV_REL_CG_INCLUDE
 #define MINV_REL_CG_INCLUDE

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: diluteGrid_source_const.h,v 3.2 2008-11-27 03:22:17 kostas Exp $
 /*! \file
  *  \brief Random Z(M) source construction using dilution
  *

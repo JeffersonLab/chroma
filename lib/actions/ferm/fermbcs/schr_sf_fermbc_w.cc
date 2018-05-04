@@ -1,4 +1,3 @@
-// $Id: schr_sf_fermbc_w.cc,v 3.1 2006-04-10 21:21:21 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional base class
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_spectrumQll.h,v 1.4 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline spectrum calculations
  *

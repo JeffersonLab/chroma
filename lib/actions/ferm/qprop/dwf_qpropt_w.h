@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: dwf_qpropt_w.h,v 3.12 2008-05-05 19:11:58 bjoo Exp $
 /*! \file
  * \brief Pick up possibly optimized DWF inverters.
  *

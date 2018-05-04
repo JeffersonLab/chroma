@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: extfield_fermstate_w.h,v 1.4 2007-11-02 16:34:31 kostas Exp $
 /*! @file
  * @brief Fermion external field state and a creator
  */

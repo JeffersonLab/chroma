@@ -1,4 +1,3 @@
-// $Id: rect_gaugeact.cc,v 3.11 2007-05-24 20:45:22 bjoo Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */

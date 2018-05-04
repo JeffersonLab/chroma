@@ -1,4 +1,3 @@
-// $Id: Ql_3pt_w.cc,v 1.5 2009-04-09 22:57:38 caubin Exp $ 
 /*! \file
  *  \brief Heavy-Light 3pt function
  */

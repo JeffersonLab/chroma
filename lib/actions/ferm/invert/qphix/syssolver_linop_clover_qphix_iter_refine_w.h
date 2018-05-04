@@ -372,7 +372,7 @@ namespace Chroma
 						     toDouble(aniso_coeffs[3]));
     
     
-    bicgstab_inner_solver = new QPhiX::InvBiCGStab<InnerReal,MixedVecTraits<REALT,InnerReal>::VecInner, MixedVecTraits<REALT,InnerReal>::SoaInner, MixedVecTraits<REALT,InnerReal>::compress12>((*M_inner), invParam.MaxIter,1);
+    bicgstab_inner_solver = new QPhiX::InvBiCGStab<InnerReal,MixedVecTraits<REALT,InnerReal>::VecInner, MixedVecTraits<REALT,InnerReal>::SoaInner, MixedVecTraits<REALT,InnerReal>::compress12>((*M_inner), invParam.MaxIter);
     
     mixed_solver =   new QPhiX::InvRichardsonMultiPrec<REALT,
 	MixedVecTraits<REALT,InnerReal>::Vec,
@@ -382,7 +382,7 @@ namespace Chroma
 	MixedVecTraits<REALT,InnerReal>::VecInner,
 	MixedVecTraits<REALT,InnerReal>::SoaInner,
 	// NB: &(*) is yukcy. 
-	MixedVecTraits<REALT,InnerReal>::compress12>((*M_outer), (*bicgstab_inner_solver), toDouble(invParam.Delta), 1, invParam.MaxIter);
+	MixedVecTraits<REALT,InnerReal>::compress12>((*M_outer), (*bicgstab_inner_solver), toDouble(invParam.Delta),invParam.MaxIter);
     }
     
     
@@ -460,8 +460,8 @@ namespace Chroma
       SystemSolverResults_t res;
       QDPIO::cout << "Packing Spinors" << std::endl << std::flush ;
 
-      QPhiX::qdp_pack_spinor<>(psi, psi_s[0], psi_s[1], (*M_outer).getGeometry());
-      QPhiX::qdp_pack_spinor<>(chi, chi_s[0], chi_s[1], (*M_outer).getGeometry());
+      QPhiX::qdp_pack_cb_spinor<>(psi,psi_s[1], (*M_outer).getGeometry(),1);
+      QPhiX::qdp_pack_cb_spinor<>(chi,chi_s[1], (*M_outer).getGeometry(),1);
 
       QDPIO::cout << "Done" << std::endl << std::flush;
 
@@ -471,11 +471,12 @@ namespace Chroma
       
       QDPIO::cout << "Starting solve" << std::endl << std::flush ;
       double start = omp_get_wtime();
-      (*mixed_solver)(psi_s[1],chi_s[1], toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, invParam.VerboseP);
+      int my_isign=1;
+      (*mixed_solver)(psi_s[1],chi_s[1], toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, my_isign,invParam.VerboseP);
       double end = omp_get_wtime();
 
       QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_ITER_REFINE_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
-      QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, (*M_outer).getGeometry());
+      QPhiX::qdp_unpack_cb_spinor<>(psi_s[1], psi, (*M_outer).getGeometry(),1);
       
 #if 1
       // Chi Should now hold the result spinor 

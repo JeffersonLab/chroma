@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_logdet_ee_monomial_w.h,v 3.4 2008-05-23 18:39:45 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned log(det(A_ee))
  */

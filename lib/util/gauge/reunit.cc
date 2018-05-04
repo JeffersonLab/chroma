@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: reunit.cc,v 3.3 2007-02-22 21:11:49 bjoo Exp $
 
 /*! \file
  *  \ingroup gauge

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: boundcond.h,v 3.0 2006-04-03 04:58:43 edwards Exp $
 /*! @file
  * @brief Base class for all boundary conditions
  */

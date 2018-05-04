@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: ovlap_contfrac5d_w.h,v 3.1 2006-10-19 16:01:31 edwards Exp $
 /*! \file
  *  \brief Include possibly optimized partfrac5d
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: hyp_link_smearing.h,v 3.3 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief HYP link smearing
  */

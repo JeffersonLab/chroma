@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_apply_fermstate_s.h,v 3.1 2006-11-27 04:31:38 edwards Exp $
 /*! \file
  *  \brief Inline ferm state application
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_mdagm.h,v 3.2 2008-09-02 20:10:18 bjoo Exp $
 /*! \file
  *  \brief Disambiguator for multi-shift MdagM system solvers
  */

@@ -1,4 +1,3 @@
-// $Id: weak_field.cc,v 3.0 2006-04-03 04:59:13 edwards Exp $
 /*! \file
  *  \brief Construct a weak field
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: disp_colvec_map.cc,v 1.2 2009-09-14 21:05:14 edwards Exp $
 /*! \file
  * \brief Holds displaced color vectors
  */

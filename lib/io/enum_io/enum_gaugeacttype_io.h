@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: enum_gaugeacttype_io.h,v 3.0 2006-04-03 04:58:56 edwards Exp $
 /*! \file
  * \brief Gauge action enum
  */

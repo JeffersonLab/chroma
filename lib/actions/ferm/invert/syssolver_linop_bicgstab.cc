@@ -1,4 +1,3 @@
-// $Id: syssolver_linop_bicgstab.cc,v 3.2 2009-04-17 02:05:31 bjoo Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by MR
  */

@@ -1,4 +1,3 @@
-// $Id: inline_qpropadd_w.cc,v 3.2 2006-11-28 19:30:03 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropadd
  *

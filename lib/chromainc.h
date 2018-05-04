@@ -1,4 +1,3 @@
-// $Id: chromainc.h,v 3.0 2006-04-03 04:58:43 edwards Exp $
 //
 // Include file that includes all the include files.
 

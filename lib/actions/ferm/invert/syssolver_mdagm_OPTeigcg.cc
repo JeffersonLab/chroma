@@ -1,4 +1,3 @@
-// $Id: syssolver_mdagm_OPTeigcg.cc,v 3.4 2009-07-31 14:09:31 bjoo Exp $
 /*! \file
  *  \brief Solve a M^dag*M*psi=chi linear system by EigCG
  */

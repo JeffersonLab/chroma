@@ -1,4 +1,3 @@
-// $Id: inline_hadron_contract.cc,v 3.5 2007-06-12 17:55:44 edwards Exp $
 /*! \file
  * \brief Inline hadron contraction calculations - for correlators
  *

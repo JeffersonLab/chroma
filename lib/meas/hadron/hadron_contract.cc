@@ -1,4 +1,3 @@
-// $Id: hadron_contract.cc,v 3.4 2008-05-14 19:24:23 bjoo Exp $
 /*! \file
  *  \brief Construct hadron contractions
  */

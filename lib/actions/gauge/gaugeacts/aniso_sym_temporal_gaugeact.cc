@@ -1,4 +1,3 @@
-// $Id: aniso_sym_temporal_gaugeact.cc,v 3.3 2008-05-21 17:07:50 bjoo Exp $
 /*! \file
  *  \brief  Temporal part of Anisotropic Tree leve LW gauge action
  */

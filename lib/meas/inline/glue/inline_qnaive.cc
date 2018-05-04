@@ -1,4 +1,3 @@
-// $Id: inline_qnaive.cc,v 3.4 2009-08-22 20:03:28 edwards Exp $
 /*! \file
  *  \brief Inline naive topological charge
  *

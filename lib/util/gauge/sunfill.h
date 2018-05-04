@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: sunfill.h,v 3.3 2007-02-22 21:11:50 bjoo Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */

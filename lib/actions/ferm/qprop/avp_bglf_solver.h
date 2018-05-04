@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: avp_bglf_solver.h,v 3.3 2007-01-17 02:39:27 edwards Exp $
 /*! \file
  *  \brief DWF/Bluegene single-prec solver
  */

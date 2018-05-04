@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: quark_displacement.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! @file
  * @brief Quark displacement
  */

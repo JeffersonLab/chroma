@@ -1,4 +1,3 @@
-// $Id: clover_fermact_params_w.cc,v 3.4 2008-11-10 17:59:07 bjoo Exp $
 /*! \file
  *  \brief Clover fermion action parameters
  */

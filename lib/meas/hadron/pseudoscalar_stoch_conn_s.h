@@ -1,4 +1,3 @@
-// $Id: pseudoscalar_stoch_conn_s.h,v 3.1 2007-05-14 13:40:39 egregory Exp $
 #ifndef PSEUDOSCALAR_STOCH_CONN_H
 #define PSEUDOSCALAR_STOCH_CONN_H
 

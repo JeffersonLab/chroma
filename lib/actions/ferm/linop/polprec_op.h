@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: polprec_op.h,v 3.2 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Maybe usefull for polynomial preconditioning. It contructs an
  *     operator that is \f$QP(Q^2)Q\f$, where \f$Q = \gamma_5 M\f$, with M any 4D dirac

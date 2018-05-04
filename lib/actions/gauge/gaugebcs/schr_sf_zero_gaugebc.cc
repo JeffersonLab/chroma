@@ -1,4 +1,3 @@
-// $Id: schr_sf_zero_gaugebc.cc,v 3.1 2006-09-21 18:43:26 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - happens to zero out gauge fields in bc_dir
  */

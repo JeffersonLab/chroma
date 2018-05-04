@@ -1,4 +1,3 @@
-// $Id: unprec_graphene_linop_w.cc,v 1.4 2008-01-01 22:45:31 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Graphene fermion linear operator.
  *

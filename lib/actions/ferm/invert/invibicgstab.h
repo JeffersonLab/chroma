@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: invibicgstab.h,v 3.1 2009-07-02 18:24:52 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

@@ -22,8 +22,9 @@ namespace Chroma
   typedef SingletonHolder< 
     ObjectFactory<QDP::MapObject<int,EVPair<LatticeColorVector> >, 
 		  std::string,
-		  TYPELIST_2(XMLReader&, const std::string&),
+		  TYPELIST_3(XMLReader&, const std::string&, const std::string&),
 		  QDP::MapObject<int,EVPair<LatticeColorVector> >* (*)(XMLReader&,
+								       const std::string&,
 								       const std::string&), 
 		  StringFactoryError> >
   TheMapObjIntKeyColorEigenVecFactory;
@@ -33,8 +34,9 @@ namespace Chroma
   typedef SingletonHolder< 
     ObjectFactory<QDP::MapObject<KeyPropColorVec_t,LatticeFermion>, 
 		  std::string,
-		  TYPELIST_2(XMLReader&, const std::string&),
+		  TYPELIST_3(XMLReader&, const std::string&, const std::string&),
 		  QDP::MapObject<KeyPropColorVec_t,LatticeFermion>* (*)(XMLReader&,
+									const std::string&,
 									const std::string&), 
 		  StringFactoryError> >
   TheMapObjKeyPropColorVecFactory;

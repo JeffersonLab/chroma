@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: remez_gmp.h,v 3.2 2008-05-14 04:13:44 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */

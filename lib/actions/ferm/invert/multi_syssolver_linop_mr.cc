@@ -1,4 +1,3 @@
-// $Id: multi_syssolver_linop_mr.cc,v 1.1 2007-04-11 03:41:36 edwards Exp $
 /*! \file
  *  \brief Solve a (M+shift)*psi=chi linear system by MR
  */

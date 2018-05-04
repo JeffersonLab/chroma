@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_linop_factory.h,v 1.1 2007-04-11 03:41:36 edwards Exp $
 /*! \file
  *  \brief Factory for producing system solvers for M*psi = chi
  */

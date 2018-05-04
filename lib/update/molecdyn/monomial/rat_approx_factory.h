@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: rat_approx_factory.h,v 3.1 2008-05-23 21:31:34 edwards Exp $
 /*! \file
  *  \brief Rational approximation factories
  */

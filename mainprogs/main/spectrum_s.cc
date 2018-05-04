@@ -1,4 +1,3 @@
-// $Id: spectrum_s.cc,v 3.2 2008-03-25 11:02:29 mcneile Exp $
 /*! \file
  * \brief Main code for spectrum measurements
  */

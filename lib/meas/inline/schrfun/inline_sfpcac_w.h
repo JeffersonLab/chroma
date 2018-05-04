@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_sfpcac_w.h,v 1.3 2007-08-23 19:02:45 edwards Exp $
 /*! \file
  * \brief Inline Schroedinger functional measurements
  */

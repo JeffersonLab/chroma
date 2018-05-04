@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: aniso_spectrum_gaugeact.h,v 1.6 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *

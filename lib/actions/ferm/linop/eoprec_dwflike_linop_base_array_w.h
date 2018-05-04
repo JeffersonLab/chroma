@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_dwflike_linop_base_array_w.h,v 3.1 2006-10-19 16:01:30 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like linops
  */

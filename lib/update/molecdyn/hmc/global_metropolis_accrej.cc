@@ -1,4 +1,3 @@
-// $Id: global_metropolis_accrej.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  * \brief Simple metropolis accept/reject
  *

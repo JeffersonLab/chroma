@@ -1,4 +1,3 @@
-// $Id: inline_create_colorvecs.cc,v 3.11 2009-07-17 14:52:36 edwards Exp $
 /*! \file
  * \brief Construct colorvectors via power iteration of the laplacian
  */
@@ -269,6 +268,22 @@ namespace Chroma
       //
       try
       {
+	// Generate a metadata
+	std::string file_str;
+	if (1)
+	{
+	  XMLBufferWriter file_xml;
+
+	  push(file_xml, "MODMetaData");
+	  write(file_xml, "id", std::string("eigenColorVec"));
+	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  write(file_xml, "num_vecs", params.param.num_vecs);
+	  write(file_xml, "Config_info", gauge_xml);
+	  pop(file_xml);
+
+	  file_str = file_xml.str();
+	}
+	  
 	std::istringstream  xml_s(params.named_obj.colorvec_obj.xml);
 	XMLReader MapObjReader(xml_s);
 	
@@ -277,7 +292,8 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id) =
 	  TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(params.named_obj.colorvec_obj.id,
 								       MapObjReader,
-								       params.named_obj.colorvec_obj.path);
+								       params.named_obj.colorvec_obj.path,
+								       file_str);
       }
       catch (std::bad_cast)
       {

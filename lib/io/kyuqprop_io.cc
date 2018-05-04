@@ -1,4 +1,3 @@
-// $Id: kyuqprop_io.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
 /*!
  * @file
  * @brief  Read/write a Kentucky quark propagator

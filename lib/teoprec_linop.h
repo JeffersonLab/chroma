@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: teoprec_linop.h,v 3.2 2007-02-22 21:11:45 bjoo Exp $
 /*! @file
  * @brief Even-odd Time-preconditioned Linear Operators
  */

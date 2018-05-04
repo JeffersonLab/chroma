@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: gauge_createstate_aggregate.h,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief All gauge create-state method
  */

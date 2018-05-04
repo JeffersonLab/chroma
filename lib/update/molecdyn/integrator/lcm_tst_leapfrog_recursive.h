@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lcm_tst_leapfrog_recursive.h,v 3.2 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Intgrator for exp(S dt)

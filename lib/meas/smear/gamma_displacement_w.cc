@@ -1,4 +1,3 @@
-// $Id: gamma_displacement_w.cc,v 3.3 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief Gamma insertion/displacement
  */

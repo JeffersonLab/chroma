@@ -1,4 +1,3 @@
-// $Id: inline_diquark_w.cc,v 1.3 2007-02-25 22:39:28 edwards Exp $
 /*! \file
  * \brief Inline construction of the diquark within a QQQ
  *

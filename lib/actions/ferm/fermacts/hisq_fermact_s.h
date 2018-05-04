@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: hisq_fermact_s.h,v 1.1 2007-05-09 12:43:20 mcneile Exp $
 /*! \file
  *  \brief Hisq staggered fermion action
  */

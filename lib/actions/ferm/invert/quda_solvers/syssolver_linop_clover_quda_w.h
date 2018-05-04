@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_clover.h,v 1.9 2009-10-16 13:37:39 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -270,6 +269,10 @@ namespace Chroma
       // nothing to do...
       quda_inv_param.kappa = 0.5;
       
+      // FIXME: If we want QUDA to compute the clover coeff, we need to be able to deal
+      // with awfuless of anisotropy
+      // The value below is a dummy one.
+	quda_inv_param.clover_coeff = 1.0; // Dummy tree level value. Not used  
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);

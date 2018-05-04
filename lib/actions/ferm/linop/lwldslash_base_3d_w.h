@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_3d_w.h,v 3.2 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief 3D Wilson Dslash linear operator
  */

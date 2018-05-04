@@ -1,4 +1,3 @@
-// $Id: wallformfac.cc,v 3.3 2009/11/14 20:01:46 eneil Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *

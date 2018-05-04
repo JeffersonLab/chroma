@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: schr_chromomag_fermbc_w.h,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - chromo-magnetic ferm BC
  */

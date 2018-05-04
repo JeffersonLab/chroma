@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: baryon_operator.h,v 1.3 2007-04-11 04:55:29 juge Exp $
 /*! \file
  *  \brief Construct baryon operator
  */

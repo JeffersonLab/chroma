@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_qqq_w.h,v 3.6 2007-02-22 04:52:42 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *

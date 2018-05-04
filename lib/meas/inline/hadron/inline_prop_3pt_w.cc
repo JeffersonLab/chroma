@@ -1,4 +1,3 @@
-// $Id: inline_prop_3pt_w.cc,v 1.10 2008-11-20 03:53:44 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *

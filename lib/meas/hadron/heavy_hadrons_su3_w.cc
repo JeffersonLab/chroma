@@ -1,4 +1,3 @@
-// $Id: heavy_hadrons_su3_w.cc,v 1.3 2008-12-21 21:22:36 edwards Exp $ 
 /*! \file
  *  \brief Heavy hadrons in su3 : Detmold
  */

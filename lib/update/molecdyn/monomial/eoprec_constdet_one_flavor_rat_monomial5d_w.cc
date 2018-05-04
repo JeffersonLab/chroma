@@ -1,4 +1,3 @@
-// $Id: eoprec_constdet_one_flavor_rat_monomial5d_w.cc,v 3.2 2008-05-23 21:31:32 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */

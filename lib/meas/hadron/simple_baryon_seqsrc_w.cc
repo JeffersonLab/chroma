@@ -1,4 +1,3 @@
-// $Id: simple_baryon_seqsrc_w.cc,v 3.7 2009-03-19 17:17:20 mcneile Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */

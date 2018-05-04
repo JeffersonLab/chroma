@@ -1,4 +1,3 @@
-// $Id: syssolver_linop_rel_ibicgstab_clover.cc,v 3.1 2009-07-06 19:02:34 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */

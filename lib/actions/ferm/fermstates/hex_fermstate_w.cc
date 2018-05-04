@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: hex_fermstate_w.cc,v 1.2 2006-09-20 20:31:41 edwards Exp $
 /*! @file 
  *  @brief Connection State for Hex state (.cpp file)
  */

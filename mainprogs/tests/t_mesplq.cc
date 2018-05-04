@@ -1,4 +1,3 @@
-// $Id: t_mesplq.cc,v 3.0 2006-04-03 04:59:15 edwards Exp $
 
 #include "chroma.h"
 #include <iostream>

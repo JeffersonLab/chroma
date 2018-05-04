@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: extfield_aggregate_w.h,v 1.9 2009-05-04 17:11:50 caubin Exp $
 /*! \file
  *  \brief External field functions
  */

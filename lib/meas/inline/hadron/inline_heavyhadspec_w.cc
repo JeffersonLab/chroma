@@ -1,4 +1,3 @@
-// $Id: inline_heavyhadspec_w.cc,v 1.2 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  * \brief Inline construction of heavy hadron spectrum in SU(3)
  *

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: rect_gaugeact.h,v 3.6 2007-05-21 22:21:54 bjoo Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */

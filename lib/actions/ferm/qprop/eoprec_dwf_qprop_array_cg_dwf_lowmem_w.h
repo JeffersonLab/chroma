@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_dwf_qprop_array_cg_dwf_lowmem_w.h,v 3.2 2007-03-05 19:36:32 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */

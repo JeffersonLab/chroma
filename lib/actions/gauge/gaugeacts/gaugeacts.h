@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: gaugeacts.h,v 3.3 2006-09-19 16:04:23 edwards Exp $
 
 /*! \file
  * \brief Gauge actions

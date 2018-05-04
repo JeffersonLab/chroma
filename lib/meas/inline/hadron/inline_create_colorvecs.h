@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_create_colorvecs.h,v 3.3 2009-04-11 03:32:46 edwards Exp $
 /*! \file
  * \brief Construct colorvectors via power iteration of the laplacian
  */

@@ -1,4 +1,3 @@
-// $Id: nef_quarkprop4_w.cc,v 3.3 2006-10-11 15:42:26 edwards Exp $
 // $Log: nef_quarkprop4_w.cc,v $
 // Revision 3.3  2006-10-11 15:42:26  edwards
 // Removed use of numRetries !! This was a misguided attempt to get restarts

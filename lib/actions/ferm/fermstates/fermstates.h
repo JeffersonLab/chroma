@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: fermstates.h,v 1.2 2007-10-28 04:05:12 kostas Exp $
 
 /*! \file
  * \brief Fermion states

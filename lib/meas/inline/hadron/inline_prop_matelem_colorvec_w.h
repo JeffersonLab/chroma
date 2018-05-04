@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_prop_matelem_colorvec_w.h,v 1.5 2008-08-06 15:20:52 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *

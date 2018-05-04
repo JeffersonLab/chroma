@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: invdd_deflated.h,v 1.1 2009/11/11 16:39:50 jbulava Exp $
 /*! \file
  *  Domain-Decomposed Deflated inverter  
  */

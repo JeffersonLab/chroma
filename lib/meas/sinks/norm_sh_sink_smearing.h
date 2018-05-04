@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: norm_sh_sink_smearing.h,v 3.1 2009-04-12 03:45:00 kostas Exp $
 /*! \file
  *  \brief NormShell sink smearing
  */

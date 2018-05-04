@@ -1,4 +1,3 @@
-// $Id: schr_triv_gaugebc.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional trivial gauge BC
  */

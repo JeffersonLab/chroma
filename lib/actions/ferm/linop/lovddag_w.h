@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: lovddag_w.h,v 3.2 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_monomial5d_w.h,v 3.3 2008-05-23 21:31:36 edwards Exp $
 
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials

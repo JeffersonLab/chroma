@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_constdet_two_flavor_monomial_w.h,v 3.4 2008-05-29 03:58:37 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */

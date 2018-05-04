@@ -1,4 +1,3 @@
-// $Id: wupp_smear.cc,v 3.2 2009-07-22 02:44:04 edwards Exp $
 /*! \file
  *  \brief 3d Laplacian solution on color std::vector
  */

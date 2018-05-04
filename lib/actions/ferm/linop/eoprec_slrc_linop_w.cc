@@ -1,4 +1,3 @@
-// $Id: eoprec_slrc_linop_w.cc,v 3.8 2007-11-29 14:19:41 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover linear operator (fat-relevant, thin-irrelevant terms)
  *

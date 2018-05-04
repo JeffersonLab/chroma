@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: mre_extrap_predictor.h,v 3.5 2009-06-01 20:39:37 bjoo Exp $
 /*! \file
  * \brief Minimal residual predictor
  *

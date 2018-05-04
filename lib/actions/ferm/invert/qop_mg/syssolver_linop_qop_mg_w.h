@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_qdp_mg.h, v1.0 2012-04-05 20:45 sdcohen $
 /*! \file
  *  \brief Make contact with the QDP clover multigrid solver, transfer
  *         the gauge field, generate the coarse grids, solve systems
@@ -29,13 +28,16 @@ namespace Chroma
   //! Solve a M*psi=chi linear system using the external QDP multigrid inverter
   /*! \ingroup invert
    */
-  template<typename T> // T is the Lattice Fermion type
-  class LinOpSysSolverQOPMG : public LinOpSystemSolver<T>
+  class LinOpSysSolverQOPMG : public LinOpSystemSolver<LatticeFermion>
   {
   public:
+    typedef LatticeFermion T;
     typedef LatticeColorMatrix U;
     typedef multi1d<LatticeColorMatrix> Q;
- 
+
+
+    typedef void WilsonMGSubspace;
+
     //! Constructor
     /*!
      * \param A_        Linear operator ( Read )
@@ -61,12 +63,25 @@ namespace Chroma
     SystemSolverResults_t operator() (T& psi, const T& chi) const;
 
 
+    //! Erasee the subspace 
+    void  eraseSubspace();
+
+    //! Get the subspace to use
+    /*! If the subspace is internal this creates it if needed and returns the pointer
+     *  if it is external, this will look it up in the map and return the pointer. If
+     *  the entry in the map does not exist, it will create and add the space to the map.
+     *  so there is no need to separately save..  NB: External subspace creation allocates
+     *  memory. Which may persist beyond the life of an object (that's the point actually).
+     *  There is an ERASE_MG_SUBSPACE measurement that can erase this space later */
+    WilsonMGSubspace* getSubspace() const;
+
   private:
     // Hide default constructor
     LinOpSysSolverQOPMG() {}
     Handle< FermState<T,Q,Q> > state;
     Handle< LinearOperator<T> > A;
     SysSolverQOPMGParams invParam;
+    mutable WilsonMGSubspace* subspace;
   };
 
 } // End namespace

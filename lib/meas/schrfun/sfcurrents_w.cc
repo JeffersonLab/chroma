@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: sfcurrents_w.cc,v 3.2 2007-10-16 20:11:17 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */

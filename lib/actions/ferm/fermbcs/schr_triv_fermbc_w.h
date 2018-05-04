@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: schr_triv_fermbc_w.h,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional trivial ferm boundary conditions
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: pbp.h,v 3.2 2009-09-25 19:22:50 colin Exp $
 
 /*! \file
  * \brief Psibar-psi measurements

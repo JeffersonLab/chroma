@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: chrono_predictor.h,v 3.2 2009-06-01 20:39:36 bjoo Exp $
 /*! \file
  * \brief Chronological predictor for HMC
  *

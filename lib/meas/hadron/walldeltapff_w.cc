@@ -1,4 +1,3 @@
-// $Id: walldeltapff_w.cc,v 3.1 2009-03-19 21:38:49 mcneile Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *

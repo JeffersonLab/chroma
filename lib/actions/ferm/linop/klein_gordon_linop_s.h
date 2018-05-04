@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: klein_gordon_linop_s.h,v 1.1 2006-12-07 18:26:18 edwards Exp $
 //! Klein-Gordon operator
 /*! \file
  *  \ingroup linop

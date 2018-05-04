@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: abs_hamiltonian.h,v 3.5 2006-12-25 21:40:17 bjoo Exp $
 /*! \file
  * \brief Abstract Hamiltonian
  *

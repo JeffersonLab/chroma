@@ -1,4 +1,3 @@
-// $Id: lwldslash_3d_sse_w.cc,v 3.4 2008-03-04 22:38:08 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */

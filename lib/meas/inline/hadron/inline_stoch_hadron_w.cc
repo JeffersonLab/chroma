@@ -1,4 +1,3 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.24 2009-03-19 17:12:20 mcneile Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *

@@ -1,4 +1,3 @@
-// $Id: paulitodr.cc,v 3.0 2006-04-03 04:59:11 edwards Exp $
 /*! \file
  *  \brief Basis rotation matrix from Pauli-Schwinger (Euclidean Sakurai) to Degrand-Rossi (and reverse)
  */

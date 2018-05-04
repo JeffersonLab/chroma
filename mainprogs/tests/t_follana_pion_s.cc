@@ -1,4 +1,3 @@
-// $Id: t_follana_pion_s.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

@@ -246,6 +246,23 @@ namespace Chroma
     return displace<LatticeFermion>(u, chi, length, path, sub);
   }
 
+  // Apply a displacement path to a lattice field
+  LatticePropagator displace(const multi1d<LatticeColorMatrix>& u, 
+			     const LatticePropagator& p, 
+			     int length, const multi1d<int>& path)
+  {
+    return displace<LatticePropagator>(u, p, length, path, QDP::all);
+  }
+
+  // Apply a displacement path to a lattice field
+  LatticePropagator displace(const multi1d<LatticeColorMatrix>& u, 
+			     const LatticePropagator& p, 
+			     int length, const multi1d<int>& path,
+			     const Subset& sub   )
+  {
+    return displace<LatticePropagator>(u, p, length, path, sub);
+  }
+  
 
   //! Apply a right derivative path to a lattice field
   /*! \ingroup smear */

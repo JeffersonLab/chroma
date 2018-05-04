@@ -1,4 +1,3 @@
-// $Id: baryon_spinmat_funcmap_w.cc,v 3.1 2006-12-11 17:20:34 edwards Exp $
 /*! \file
  *  \brief All baryon spin matrix contraction objects
  */

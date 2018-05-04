@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: wall_sink_smearing.h,v 1.3 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief Wall sink smearing
  */

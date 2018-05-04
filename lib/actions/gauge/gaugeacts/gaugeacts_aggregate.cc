@@ -1,4 +1,3 @@
-// $Id: gaugeacts_aggregate.cc,v 3.15 2008-01-23 15:41:51 edwards Exp $
 /*! \file
  *  \brief All gauge actions
  */
@@ -13,9 +12,13 @@
 #include "actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/plaq_plus_adjoint_gaugeact.h"
 #include "actions/gauge/gaugeacts/character_gaugeact.h"
+#include "actions/gauge/gaugeacts/constrained_plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.h"
+#include "actions/gauge/gaugeacts/plaq_plus_adj_power_gaugeact.h"
+#include "actions/gauge/gaugeacts/plaq_plus_plaq_power_gaugeact.h"
 #include "actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.h"
 #include "actions/gauge/gaugeacts/sf_plaq_plus_two_plaq_gaugeact.h"
+#include "actions/gauge/gaugeacts/plaq_plus_plaq_power_gaugeact.h"
 #include "actions/gauge/gaugeacts/pg_gaugeact.h"
 #include "actions/gauge/gaugeacts/wilson_gaugeact.h"
 #include "actions/gauge/gaugeacts/spatial_wilson_gaugeact.h"
@@ -78,6 +81,9 @@ namespace Chroma
 	success &= AnisoSpectrumGaugeActEnv::registerAll();
 	success &= AnisoSymSpatialGaugeActEnv::registerAll();	
 	success &= AnisoSymTemporalGaugeActEnv::registerAll();
+	success &= PlaqPlusAdjPowerGaugeActEnv::registerAll();
+	success &= PlaqPlusPlaqPowerGaugeActEnv::registerAll();
+	success &= ConstrainedPlaqGaugeActEnv::registerAll();
 
 	registered = true;
       }

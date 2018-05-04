@@ -1,4 +1,3 @@
-// $Id: inline_link_smear.cc,v 3.5 2007-08-23 19:02:45 edwards Exp $
 /*! \file
  *  \brief Inline Link smearing
  */

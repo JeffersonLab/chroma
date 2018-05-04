@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: gluecor.h,v 3.1 2006-08-24 02:33:52 edwards Exp $
 /*! \file
  *  \brief Construct 0++, 2++ and 1+- glueball correlation functions from fuzzy links
  */

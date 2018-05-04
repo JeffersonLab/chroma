@@ -1,4 +1,3 @@
-// $Id: pg_gaugeact.cc,v 3.3 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Parallelogram gauge action
  */

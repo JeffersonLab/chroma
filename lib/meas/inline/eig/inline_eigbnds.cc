@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 3.10 2008-01-30 18:29:07 bjoo Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *

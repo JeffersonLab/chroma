@@ -1,3 +1,33 @@
+Jun 24, 2016 - Balint Joo
+        Merged in branch feature/quda_multigrid
+ 	Fixed NEF operator parity to track fix in Quda
+  	Checked with QUDA devel (commit bc696cf85917c813497352353d22a09c5ce02966
+)
+	  + MG worked, NEF worked
+        Reran and checked regressions on CPU
+	(Not Checked: hmc -- will redo this post Titan build)
+
+Sep 9, 2015 - Balint Joo
+	Added gtest testing: enable with --enable-gtest
+
+	Added Basic FGMRES-DR solver. Uses any LinOpSystemSolver as a preconditioner (used MR in testing)
+	Needs LAPACK (--enable-lapack) to work correctly. Currently tested with MKL.
+        Modified qdp_lapack submodule appropriately. There are some unit tests in 
+        mainprogs/tests/t_inv_fgmresdr which need --enable-gtest to build and a double
+        precision build to run correctly. SP will still build, but will hit precision limits 
+        on assertions. Solver should(?) work in pure FGMRES mode (no deflation) if LAPACK is
+        not enabled. XML example is included inline in mainprogs/tests/fgmres_dr_tests.cc.
+	All testing so far done on unit testing. Now ready for larger volumes/lighter quarks.
+
+Jun 10, 2015 - Balint Joo
+	Updated Multi-Grid interface and Wilson MG
+
+Feb 6, 2015 - Balint Joo
+	 Pulled in QPhiX Mods for BG/Q
+         Updated std:: namespace issues 
+         Updated CPP-Wilson Dslash with threading patches from Jacques Bloch, Regensburg University
+	 Fixed CLANG compilation issue in the qdp-lapack submodule
+
 Sept 11, 2014 - Balint Joo
          QPhiX library for Xeon and Xeon Phi (re) integrated. 
 	 See https://http://jeffersonlab.github.io/qphix

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: two_flavor_polynomial_monomial_w.h,v 3.6 2007-03-22 17:39:23 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials

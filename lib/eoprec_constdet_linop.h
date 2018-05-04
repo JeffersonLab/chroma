@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_constdet_linop.h,v 3.2 2007-02-22 21:11:44 bjoo Exp $
 /*! @file
  * @brief Preconditioned 4D Linop with Gauge Independent Even-Even part
  */

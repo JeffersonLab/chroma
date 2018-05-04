@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: dilute_gauss_src_s.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief Dilute Gaussian sources
  */

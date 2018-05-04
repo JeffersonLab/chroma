@@ -1,4 +1,3 @@
-// $Id: inline_plaquette.cc,v 3.15 2007-09-27 04:33:49 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */

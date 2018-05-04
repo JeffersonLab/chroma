@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: nef_quarkprop4_w.h,v 3.6 2006-10-19 16:01:33 edwards Exp $
 /*! \file
  * \brief Full quark propagator solver for domain wall fermions
  *

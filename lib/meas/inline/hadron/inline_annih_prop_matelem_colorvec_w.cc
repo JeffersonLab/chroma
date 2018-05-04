@@ -1,4 +1,3 @@
-// $Id: inline_annih_prop_matelem_colorvec_w.cc,v 3.4 2009-09-14 20:50:14 edwards Exp $
 /*! \file
  * \brief Compute the annihilation diagram propagator elements    M^-1 * multi1d<LatticeColorVector>
  *

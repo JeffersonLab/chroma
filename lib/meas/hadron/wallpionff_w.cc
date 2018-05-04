@@ -1,4 +1,3 @@
-// $Id: wallpionff_w.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *

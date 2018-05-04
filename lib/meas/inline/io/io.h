@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: io.h,v 3.1 2006-04-27 02:35:38 edwards Exp $
 
 /*! \file
  * \brief Inline reader and writers for memory buffers

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: transf.h,v 3.0 2006-04-03 04:59:12 edwards Exp $
 
 #ifndef __transf_h__
 #define __transf_h__

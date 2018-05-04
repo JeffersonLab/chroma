@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_mr_params.h,v 1.2 2007-05-01 14:39:13 bjoo Exp $
 /*! \file
  *  \brief Solve a MR system
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: su3over.h,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup microcanonical overrelaxation update of SU(Nc)
  */

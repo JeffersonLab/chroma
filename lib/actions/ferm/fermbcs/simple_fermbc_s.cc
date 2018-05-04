@@ -1,4 +1,3 @@
-// $Id: simple_fermbc_s.cc,v 3.1 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */

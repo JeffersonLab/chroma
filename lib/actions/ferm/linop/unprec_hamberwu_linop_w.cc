@@ -1,4 +1,3 @@
-// $Id: unprec_hamberwu_linop_w.cc,v 3.1 2006-08-26 05:50:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Hamber-Wu linear operator
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: fuzglue.h,v 3.1 2006-08-24 02:33:52 edwards Exp $
 /*! \file
  *  \brief Compute 'fuzzy' (blocked) glueball correlation functions
  */

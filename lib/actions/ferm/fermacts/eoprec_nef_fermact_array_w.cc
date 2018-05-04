@@ -1,4 +1,3 @@
-// $Id: eoprec_nef_fermact_array_w.cc,v 3.1 2006-10-19 16:01:27 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */

@@ -1,4 +1,3 @@
-// $Id: wilslp.cc,v 3.3 2006-07-08 04:34:55 edwards Exp $
 /*! \file
  *  \brief Calculate Wilson loops
  */

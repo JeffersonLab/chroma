@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: minvcg2_accum.h,v 3.1 2008-09-02 20:10:18 bjoo Exp $
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
  */

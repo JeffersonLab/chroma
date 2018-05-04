@@ -1,4 +1,3 @@
-// $Id: wilson_flow_w.cc,v 1.12 2011/12/11 17:23:22 cmcneile Exp cmcneile $
 /*! \file
  *  \brief Code for Wilson flow
  *   

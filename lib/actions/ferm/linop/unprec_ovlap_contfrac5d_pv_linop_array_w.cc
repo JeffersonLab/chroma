@@ -1,4 +1,3 @@
-// $Id: unprec_ovlap_contfrac5d_pv_linop_array_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Pauli-Villars Continued Fraction 5D
  */

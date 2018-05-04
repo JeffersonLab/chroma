@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_qqq_diquark_w.h,v 1.1 2007-02-25 22:39:03 edwards Exp $
 /*! \file
  * \brief Inline construction of QQQ's using a diquark
  *

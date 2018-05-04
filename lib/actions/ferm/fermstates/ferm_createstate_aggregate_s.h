@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: ferm_createstate_aggregate_s.h,v 1.3 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  *  \brief All ferm create-state method
  */

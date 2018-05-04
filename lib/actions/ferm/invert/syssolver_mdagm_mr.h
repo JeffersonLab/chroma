@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_mr.h,v 1.3 2009-06-02 15:56:40 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by MR
  */

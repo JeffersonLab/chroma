@@ -1,4 +1,3 @@
-// $Id: two_flavor_ratio_conv_rat_monomial_params_w.cc,v 3.2 2008-05-24 04:29:32 edwards Exp $
 /*! @file
  * @brief Two-flavor ratio of conventional fermion action monomial params
  */

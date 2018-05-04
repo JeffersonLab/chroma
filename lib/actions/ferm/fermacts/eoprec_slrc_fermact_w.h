@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_slrc_fermact_w.h,v 1.2 2007-11-28 22:09:15 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action (fat-relevant, thin-irrelevant terms)
  *

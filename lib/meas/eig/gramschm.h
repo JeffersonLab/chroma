@@ -1,4 +1,3 @@
-// $Id: gramschm.h,v 3.2 2008-06-29 20:33:23 edwards Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */

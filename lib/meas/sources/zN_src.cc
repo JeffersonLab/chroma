@@ -1,4 +1,3 @@
-// $Id: zN_src.cc,v 3.1 2009-04-11 04:33:02 edwards Exp $
 /*! \file
  *  \brief Variety of Z(N) noise sources
  */

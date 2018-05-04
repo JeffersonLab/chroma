@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_fermact_array_w.h,v 3.2 2006-10-19 16:01:29 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) action
  */

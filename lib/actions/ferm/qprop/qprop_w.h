@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qprop_w.h,v 3.2 2006-10-19 16:01:34 edwards Exp $
 
 /*! \file
  * \brief Quark propagator solution routines

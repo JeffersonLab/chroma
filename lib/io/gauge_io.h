@@ -1,4 +1,3 @@
-// $Id: gauge_io.h,v 3.0 2006-04-03 04:58:55 edwards Exp $
 
 /*! \file
  *  \brief Gauge reader/writers in QIO format

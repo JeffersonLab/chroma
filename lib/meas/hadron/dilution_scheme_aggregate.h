@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: dilution_scheme_aggregate.h,v 1.1 2008-01-07 15:21:26 jbulava Exp $
 /*! \file
  *  \brief All dilution scheme factories
  */

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: octave.h,v 1.1 2007-11-06 22:04:15 kostas Exp $
 
 #ifndef _OCTAVE_DEBUG_H
 #define _OCTAVE_DEBUG_H

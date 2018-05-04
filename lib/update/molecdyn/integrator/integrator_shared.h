@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: integrator_shared.h,v 3.1 2006-11-20 19:15:02 bjoo Exp $
 
 #ifndef __INTEGRATOR_SHARED_H__
 #define __INTEGRATOR_SHARED_H__

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: meas.h,v 3.2 2009-09-16 21:21:53 colin Exp $
 
 /*! \file
  * \brief Include all measurement routines

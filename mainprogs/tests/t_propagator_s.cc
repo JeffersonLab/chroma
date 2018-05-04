@@ -1,4 +1,3 @@
-// $Id: t_propagator_s.cc,v 3.10 2008-03-11 21:37:51 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *

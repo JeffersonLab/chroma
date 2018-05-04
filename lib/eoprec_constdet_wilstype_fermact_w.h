@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: eoprec_constdet_wilstype_fermact_w.h,v 3.1 2006-10-19 16:01:26 edwards Exp $
 
 /*! @file
  * @brief Even-odd const determinant Wilson-like fermact

@@ -1,4 +1,3 @@
-// $Id: inline_ritz_H_w.cc,v 3.6 2008-06-17 15:36:58 edwards Exp $
 /*! \file
  * \brief Inline construction of eigenvalues (Ritz)
  *

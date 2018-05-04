@@ -1,4 +1,3 @@
-// $Id: inline_propagator_w.cc,v 3.11 2007-10-13 20:46:29 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *

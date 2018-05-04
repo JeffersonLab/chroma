@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: syssolver_qop_mg_params.h, v1.0 2012-07-06 16:00 sdcohen $
 /*! \file
  *  \brief Parameters for the external QDP clover multigrid solver
  */
@@ -39,6 +38,8 @@ namespace Chroma
   // Solver Parameters
     Real Residual;   /*!< Stopping residual for solver */
     int  MaxIter;    /*!< Maximum number of iterations to allow in solver */
+    int  RefreshThreshold; /*!< If this number of iterations is reached in an MdagM solver, the space will be refreshed */
+
     int  NumGCRVecs; /*!< Number of GCR vectors at top level */
   // Diagnostic Parameters
     int  Verbose;    /*!< Level of diagnostic verbosity */
@@ -66,6 +67,12 @@ namespace Chroma
     // Solver will run until one of the following two stopping criteria is met
     multi1d<int>  CoarseMaxIter;   /*!< Coarse-level maximum number of iterations */
     multi1d<Real> CoarseResidual;  /*!< Coarse-level relative stopping residual */
+
+
+    bool ExternalSubspace; /*!< Load an MG Subspace from Named Object Store */
+    std::string SubspaceId; /*!< The ID of the subspace to load/save */
+    Real RsdToleranceFactor; /*!< Slack in tolerance we are willing to accept -- e.g. a factor of 10, or 20% or somesuch */
+    bool TerminateOnFail; /*!< If true, the solver will terminate the program if MaxIters is reached and RsdTarget is not met */
   };
 
 

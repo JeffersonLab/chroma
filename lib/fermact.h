@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 3.6 2008-09-08 16:00:19 bjoo Exp $
 
 /*! @file
  * @brief Class structure for fermion actions

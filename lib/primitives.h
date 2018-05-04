@@ -1,4 +1,3 @@
-// $Id: primitives.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 
 #error "OBSOLETE - DO NOT USE. ONLY FOR REFERENCE"
 

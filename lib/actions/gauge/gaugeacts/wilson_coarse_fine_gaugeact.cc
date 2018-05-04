@@ -1,4 +1,3 @@
-// $Id: wilson_coarse_fine_gaugeact.cc,v 3.3 2008-01-23 15:39:00 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action supporting 2+2 anisotropy
  */

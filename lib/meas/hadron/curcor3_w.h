@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: curcor3_w.h,v 1.1 2006-07-17 20:22:31 edwards Exp $
 
 #ifndef __curcor3_h__
 #define __curcor3_h__
