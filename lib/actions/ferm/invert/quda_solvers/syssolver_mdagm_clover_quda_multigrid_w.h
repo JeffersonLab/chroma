@@ -1317,6 +1317,9 @@ public:
       res = (*this)(psi,chi,quda_pred);
       return res;
     }
+    catch(MGSolverException &e) {
+	throw; 
+    }
     catch(...) {
       QDPIO::cout << "Failed to cast predictor to QUDA predictor"
 		  << std::endl;
@@ -1329,6 +1332,9 @@ public:
 
       res = (*this)(psi,chi,two_step_pred);
       return res;
+    }
+    catch(MGSolverException &e) {
+	throw;
     }
     catch(...) {
       QDPIO::cout << "Failed to cast predictor to QUDA or Two Step  predictor"
