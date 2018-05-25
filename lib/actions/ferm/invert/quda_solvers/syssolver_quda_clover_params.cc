@@ -125,8 +125,8 @@ namespace Chroma {
       read(paramtop, "Pipeline", Pipeline);
     }
     else { 
-      // Default Pipeline = 1
-      Pipeline=1;
+      // Default Pipeline = 0
+      Pipeline=0;
     }
   }
 

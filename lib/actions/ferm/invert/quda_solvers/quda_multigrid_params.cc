@@ -12,6 +12,13 @@ namespace Chroma {
     read(paramtop, "Residual", tol);
     read(paramtop, "MaxIterations", maxIterations);
     read(paramtop, "SmootherType", smootherType);
+    if ( paramtop.count("SmootherHaloPrecision") > 0 ) {
+      read(paramtop, "SmootherHaloPrecision", smootherHaloPrecision);
+    }
+    else {
+      smootherHaloPrecision = DEFAULT;
+    }
+
     read(paramtop, "Verbosity", verbosity);
     read(paramtop, "Precision", prec);
     read(paramtop, "Reconstruct", reconstruct);
@@ -181,6 +188,9 @@ namespace Chroma {
     write(xml, "Residual", p.tol);
     write(xml, "MaxIterations", p.maxIterations);
     write(xml, "SmootherType", p.smootherType);
+    if ( p.smootherHaloPrecision != DEFAULT ) { 
+      write(xml, "SmootherHaloPrecision", p.smootherHaloPrecision);
+    }
     write(xml, "RelaxationOmegaMG", p.relaxationOmegaMG);
     write(xml, "RelaxationOmegaOuter", p.relaxationOmegaOuter);
     write(xml, "Verbosity", p.verbosity);

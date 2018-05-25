@@ -30,7 +30,7 @@ namespace Chroma
       backup_invP = false;
       dump_on_failP = false;
       cgnrP=false;
-      Pipeline=1;
+      Pipeline=0;
     };
 
     SysSolverQUDANEFParams( const SysSolverQUDANEFParams& p) {

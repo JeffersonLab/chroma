@@ -245,6 +245,28 @@ namespace Chroma {
 		          break;
 		        }
 
+			// if the value is DEFAULT -- leave the smoother halo precision unset.
+			if( ip.smootherHaloPrecision != DEFAULT ) {
+
+			  switch( ip.smootherHaloPrecision ) { 
+			  case QUARTER : 
+			    mg_param.smoother_halo_precision[i] = QUDA_QUARTER_PRECISION;
+			    break;
+			  case HALF :
+			    mg_param.smoother_halo_precision[i] = QUDA_HALF_PRECISION;
+			    break;
+			  case SINGLE : 
+			    mg_param.smoother_halo_precision[i] = QUDA_SINGLE_PRECISION;
+			    break;
+			  case DOUBLE : 
+			    mg_param.smoother_halo_precision[i] = QUDA_DOUBLE_PRECISION;
+			    break;
+			  default:
+			    // Leave unset -- default behaviour -- should never be reached
+			    break;
+			  }
+			}
+
 		        mg_param.global_reduction[i] =  (mg_param.smoother_schwarz_type[i] == QUDA_INVALID_SCHWARZ) ? QUDA_BOOLEAN_YES : QUDA_BOOLEAN_NO;
 		        mg_param.location[i] = QUDA_CUDA_FIELD_LOCATION;
 

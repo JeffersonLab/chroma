@@ -28,7 +28,7 @@ namespace Chroma
       verboseP = false;
       innerParamsP = false;
       checkShiftsP = true;
-      Pipeline=1;
+      Pipeline=0;
     };
     MultiSysSolverQUDACloverParams( const MultiSysSolverQUDACloverParams& p) {
       CloverParams = p.CloverParams;
