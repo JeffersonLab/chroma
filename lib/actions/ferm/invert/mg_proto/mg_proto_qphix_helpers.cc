@@ -36,16 +36,30 @@ createFineLinOpT( const MGProtoSolverParams& params, const multi1d<LatticeColorM
 	double m_q=toDouble(params.CloverParams.Mass);
 	double u0 = toDouble(params.CloverParams.u0);
 
-#if 0
-	int t_bc = params.AntiPeriodicT ? -1 : 1; - ignore as links already have BC on.
-#else
+	multi1d<LatticeColorMatrix> working_u(Nd);
+	for(int mu=0; mu < Nd; ++mu) {
+	  working_u[mu] = u[mu];
+	}
+
+	// If the fields are periodic t_bc=1 is fine.
 	int t_bc = 1;
-#endif
 
+	// If the fields are supposed to be antiperiodic
+	// then the links will have that multiplied in.
+	// we flop the BC-s off on our copy.
+	if( params.AntiPeriodicT ) {
+	  
+	  // OK The fields already have antiperiodic BCs applied, but the LinOp Construction
+	  // Needs the unmodified fields. So we will flip the BC-s off
+	  working_u[Nd-1] *= where(Layout::latticeCoordinate(Nd-1) == (Layout::lattSize()[Nd-1]-1),
+				   Integer(-1), Integer(1));
 
+	  t_bc = -1; 
+	}
+	
 	if( !anisoP ) {
 		double c_sw=toDouble(params.CloverParams.clovCoeffR);
-		M_fine = make_shared<QPhiXLinOpT>(info,m_q,c_sw,t_bc,u);
+		M_fine = make_shared<QPhiXLinOpT>(info,m_q,c_sw,t_bc,working_u);
 	}
 	else {
 		QDPIO::cout << "Using aniso interface" << std::endl;
@@ -54,7 +68,7 @@ createFineLinOpT( const MGProtoSolverParams& params, const multi1d<LatticeColorM
 		double nu=toDouble(params.CloverParams.anisoParam.nu);
 		double c_sw_r = toDouble(params.CloverParams.clovCoeffR);
 		double c_sw_t = toDouble(params.CloverParams.clovCoeffT);
-		M_fine = make_shared<QPhiXLinOpT>(info,m_q,u0,xi0,nu,c_sw_r,c_sw_t,t_bc,u);
+		M_fine = make_shared<QPhiXLinOpT>(info,m_q,u0,xi0,nu,c_sw_r,c_sw_t,t_bc,working_u);
 	}
 
 	return M_fine;

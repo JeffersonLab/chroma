@@ -2084,10 +2084,12 @@ libchroma_a_SOURCES += \
 if BUILD_QPHIX
 nobase_include_HEADERS += \
 	actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.h \
+	meas/inline/io/inline_erase_mg_proto_qphix_space.h \
 	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.h
 
 libchroma_a_SOURCES += \
 	actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.cc \
+	meas/inline/io/inline_erase_mg_proto_qphix_space.cc \
 	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.cc
 endif
 
