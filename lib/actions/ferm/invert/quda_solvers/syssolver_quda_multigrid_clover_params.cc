@@ -135,7 +135,13 @@ namespace Chroma {
     else { 
       dump_on_failP  = false;
     }
-    
+
+    if ( paramtop.count("SolutionCheckP") > 0 ) { 
+      read(paramtop, "SolutionCheckP", SolutionCheckP);
+    }
+    else {
+      SolutionCheckP = true; // default solution check is on
+    }
 
   }
 
@@ -177,6 +183,7 @@ namespace Chroma {
     }
 
     write(xml, "DumpOnFail", p.dump_on_failP);
+    write(xml, "SolutionCheckP", p.SolutionCheckP);
 
     if( p.backup_invP ) { 
       // Need to dump out the XML for the back up solver here...

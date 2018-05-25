@@ -619,19 +619,28 @@ namespace Chroma
 
 			swatch.stop();
 			double time = swatch.getTimeInSeconds();
+			Double rel_resid;
 
-			{
-				T r;
-				r[A->subset()]=chi;
-				T tmp;
-				(*A)(tmp, psi, PLUS);
-				r[A->subset()] -= tmp;
-				res.resid = sqrt(norm2(r, A->subset()));
+			if( invParam.SolutionCheckP )  {
+			  
+			  {
+			    T r;
+			    r[A->subset()]=chi;
+			    T tmp;
+			    (*A)(tmp, psi, PLUS);
+			    r[A->subset()] -= tmp;
+			    res.resid = sqrt(norm2(r, A->subset()));
+			  }
+
+			  rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
+
+			  QDPIO::cout << solver_string  << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
 			}
-
-			Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
-
-			QDPIO::cout << solver_string  << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
+			else { 
+			  // just believe the QUDA residuum.
+			  // which is always a true reiduum
+			  rel_resid = res.resid;
+			}
 
 			// Convergence Check/Blow Up
 			if ( ! invParam.SilentFailP ) {
