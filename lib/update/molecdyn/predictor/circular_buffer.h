@@ -102,6 +102,24 @@ namespace Chroma
       END_CODE();
     }
     
+    const T& operator[](int i) const
+    {
+      if( i >= size_internal ) { 
+	throw OutOfBoundsException(std::string("Index Out of bounds"), i, size_internal);
+      }
+      unsigned int index = (start + i) % size_max;
+      return q[index];
+    }
+
+    T& operator[](int i) 
+    {
+      if( i >= size_internal ) { 
+	throw OutOfBoundsException(std::string("Index Out of bounds"), i, size_internal);
+      }
+      unsigned int index = (start + i) % size_max;
+      return q[index];
+    }
+
     //! Is empty check
     bool isEmpty(void) const { 
       return (size_internal == 0);

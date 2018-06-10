@@ -29,6 +29,8 @@ namespace Chroma
       MULTIGRIDParamsP = false;
       backup_invP = false;
       dump_on_failP = false;
+      Pipeline = 1;
+      SolutionCheckP = true;
     };
 
     SysSolverQUDAMULTIGRIDCloverParams( const SysSolverQUDAMULTIGRIDCloverParams& p) {
@@ -55,6 +57,8 @@ namespace Chroma
       dump_on_failP = p.dump_on_failP;
       SaveSubspaceID = p.SaveSubspaceID;
       ThresholdCount = p.ThresholdCount;
+      Pipeline = p.Pipeline;
+      SolutionCheckP = p.SolutionCheckP;
     }
 
    
@@ -79,6 +83,7 @@ namespace Chroma
     //New params for MG subspace persistence within NamedObject Storage.
     std::string SaveSubspaceID;
     int ThresholdCount;
+    int Pipeline;
 
     Handle<MULTIGRIDSolverParams> MULTIGRIDParams;
 
@@ -86,7 +91,8 @@ namespace Chroma
     bool backup_invP;
     GroupXML_t backup_inv_param;
     bool dump_on_failP;
-    
+    bool SolutionCheckP;
+ 
 
   };
 

@@ -41,6 +41,9 @@
 
 #ifdef BUILD_MGPROTO
 #include "meas/inline/io/inline_erase_mg_proto_space.h"
+#ifdef BUILD_QPHIX
+#include "meas/inline/io/inline_erase_mg_proto_qphix_space.h"
+#endif
 #endif
 
 namespace Chroma
@@ -107,6 +110,9 @@ namespace Chroma
 
 #ifdef BUILD_MGPROTO
 	success &= InlineEraseMGProtoSpaceEnv::registerAll();
+#ifdef BUILD_QPHIX
+	success &= InlineEraseMGProtoQPhiXSpaceEnv::registerAll();
+#endif
 #endif
 
 	registered = true;

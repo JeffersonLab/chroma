@@ -74,9 +74,8 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    void** spinorOut;
-    spinorOut = (void **)malloc(shifts.size()*sizeof(void *));
-    if (spinorOut == NULL) { 
+    void** spinorOut = new void*[ shifts.size() ];
+    if (spinorOut == nullptr ) { 
       QDPIO::cerr << "Couldn't allocate spinorOut" << std::endl;
       QDP_abort(1);
     }

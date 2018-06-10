@@ -103,6 +103,20 @@ namespace Chroma {
       innerParamsP = false;
     }
 
+    if ( paramtop.count("CheckShifts") == 1 ) {
+      read(paramtop, "CheckShifts", checkShiftsP );
+    }
+    // Backward compatibility
+    if( paramtop.count("check_shifts") == 1) {
+      read(paramtop, "check_shifts", checkShiftsP) ;
+    }
+
+    if( paramtop.count("Pipeline") == 1 ) { 
+      read(paramtop, "Pipeline", Pipeline);
+    }
+    else {
+      Pipeline = 1;
+    }
 
   }
 
@@ -131,8 +145,10 @@ namespace Chroma {
     write(xml, "AxialGaugeFix", p.axialGaugeP);
     write(xml, "SilentFail", p.SilentFailP);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
-
+    write(xml, "CheckShifts", p.checkShiftsP);
     write(xml, "AutotuneDslash", p.tuneDslashP);
+    write(xml, "Pipeline", p.Pipeline);
+
     if( p.innerParamsP ) { 
       write(xml, "GCRInnerParams", *(p.innerParams));
     }

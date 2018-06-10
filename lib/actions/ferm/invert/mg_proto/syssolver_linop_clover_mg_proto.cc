@@ -14,7 +14,7 @@
 
 #include "lattice/solver.h"
 #include "lattice/fgmres_common.h"
-#include "lattice/fine_qdpxx/invfgmres.h"
+#include "lattice/fine_qdpxx/invfgmres_qdpxx.h"
 
 using namespace QDP;
 
@@ -111,7 +111,7 @@ namespace Chroma
 
 	  shared_ptr<const MG::QDPWilsonCloverLinearOperator > M_ptr = (mg_pointer->mg_levels->fine_level).M;
 
-	  MG::FGMRESSolver FGMRESOuter(*M_ptr, fine_solve_params, (mg_pointer->v_cycle).get());
+	  MG::FGMRESSolverQDPXX FGMRESOuter(*M_ptr, fine_solve_params, (mg_pointer->v_cycle).get());
 
 	  // Solve the system
 	  swatch2.reset();

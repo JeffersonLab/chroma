@@ -594,28 +594,30 @@ namespace Chroma
 
 	    QDPIO::cout << "HMC: finished default measurement = " << m << std::endl;
 	  }
-	
-	  // Only measure user measurements after warm up
-	  if( ! warm_up_p ) 
-	  {
-	    QDPIO::cout << "Doing " << user_measurements.size() 
-			<<" user measurements" << std::endl;
-	    for(int m=0; m < user_measurements.size(); m++) 
-	    {
-	      QDPIO::cout << "HMC: considering user measurement number = " << m << std::endl;
-	      AbsInlineMeasurement& the_meas = *(user_measurements[m]);
-	      if( cur_update % the_meas.getFrequency() == 0 ) 
-	      { 
-		// Caller writes elem rule
-		push(xml_out, "elem");
-		QDPIO::cout << "HMC: calling user measurement number = " << m << std::endl;
-		the_meas(cur_update, xml_out);
-		QDPIO::cout << "HMC: finished user measurement number = " << m << std::endl;
-		pop(xml_out); 
-	      }
+
+	  // Always do user measurements - since they may involve
+	  // things like subspace deleting or eigenbounds checking or plaquette
+	  // which you may want to track through thermalization
+	  // if there is something you fear is unstable during thermalization
+	  // take it out of the inlineMeasurement lists
+	  QDPIO::cout << "Doing " << user_measurements.size() 
+		      <<" user measurements" << std::endl;
+	  for(int m=0; m < user_measurements.size(); m++) {
+
+	    QDPIO::cout << "HMC: considering user measurement number = " << m << std::endl;
+	    AbsInlineMeasurement& the_meas = *(user_measurements[m]);
+	    if( cur_update % the_meas.getFrequency() == 0 )  {
+	      
+	      // Caller writes elem rule
+	      push(xml_out, "elem");
+	      QDPIO::cout << "HMC: calling user measurement number = " << m << std::endl;
+	      the_meas(cur_update, xml_out);
+	      QDPIO::cout << "HMC: finished user measurement number = " << m << std::endl;
+	      pop(xml_out); 
 	    }
-	    QDPIO::cout << "HMC: finished user measurements" << std::endl;
 	  }
+	  QDPIO::cout << "HMC: finished user measurements" << std::endl;
+
 	  pop(xml_out); // pop("InlineObservables");
 
 	  // Reset the default gauge field

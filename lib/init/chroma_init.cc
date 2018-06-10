@@ -7,6 +7,8 @@
 #include "init/chroma_init.h"
 #include "io/xmllog_io.h"
 
+#include "qdp_init.h"
+
 #if defined(BUILD_JIT_CLOVER_TERM)
 #if defined(QDPJIT_IS_QDPJITPTX)
 #include "../actions/ferm/linop/clover_term_ptx_w.h"
@@ -29,7 +31,9 @@
 
 #ifdef BUILD_MGPROTO
 #include "utils/memory.h"
+#include "utils/initialize.h"
 #endif
+
 namespace Chroma 
 {
 
@@ -206,14 +210,18 @@ namespace Chroma
 #if defined QDPJIT_IS_QDPJITPTX || defined QDPJIT_IS_QDPJITNVVM
 #ifdef BUILD_QUDA
   std::cout << "Setting CUDA device" << std::endl;
+#ifndef QDP_USE_COMM_SPLIT_INIT
   int cuda_device = QDP_setGPU();
-  //std::cout << "Setting QUDA verbosity to silent" << std::endl;
-  //setVerbosityQuda(QUDA_SILENT, "", stdout);
-  //std::cout << "Setting QUDA verbosity to summarize" << std::endl;
-  //setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
+#endif
   std::cout << "Initializing QMP part" << std::endl;
   QDP_initialize_QMP(argc, argv);
-  QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")" << std::endl;
+#ifdef QDP_USE_COMM_SPLIT_INIT
+  int cuda_device = QDP_setGPUCommSplit();
+#endif
+ setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
+
+ QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")" << std::endl;
+
   initQudaDevice(cuda_device);
   QDPIO::cout << "Initializing QDP-JIT GPUs" << std::endl;
   QDP_startGPU();
@@ -221,9 +229,14 @@ namespace Chroma
   initQudaMemory();
 #else
   std::cout << "Setting device" << std::endl;
+#ifndef QDP_USE_COMM_SPLIT_INIT
   QDP_setGPU();
+#endif
   std::cout << "Initializing QMP part" << std::endl;
   QDP_initialize_QMP(argc, argv);
+#ifdef QDP_USE_COMM_SPLIT_INIT
+  QDP_setGPUCommSplit();
+#endif
   QDPIO::cout << "Initializing start GPUs" << std::endl;
   QDP_startGPU();
 #endif
@@ -278,6 +291,10 @@ namespace Chroma
   	// Initialzie MG Proto memory
   	QDPIO::cout << "Initializing MG_proto memory system" << std::endl;
   	MG::InitMemory(argc,argv);
+#ifdef BUILD_QPHIX
+  	QDPIO::cout << "Initializing QPhiX CLI Args for MG_proto" << std::endl;
+  	MG::InitCLIArgs(argc,argv);
+#endif
 #endif
 
   }

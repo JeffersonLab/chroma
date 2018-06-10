@@ -17,9 +17,11 @@ namespace Chroma
     Real   F_sq;     /*!< sum norm2(F) */
     Real   F_avg;    /*!< sum sqrt(norm2(F)) */
     Real   F_max;    /*!< max(localNorm2(F)) */
+    Real   F_max_dt;
     multi1d<Real> F_sq_dir;
     multi1d<Real> F_avg_dir;
     multi1d<Real> F_max_dir;
+    multi1d<Real> F_max_dt_dir;
   };
 
 

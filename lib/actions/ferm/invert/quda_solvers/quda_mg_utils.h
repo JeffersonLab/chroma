@@ -14,6 +14,8 @@
 #include "meas/inline/io/named_objmap.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.h"
 
+#include <cuda_runtime_api.h>
+
 namespace Chroma {
 
 	namespace QUDAMGUtils {
@@ -34,7 +36,7 @@ namespace Chroma {
 		MGSubspacePointers* create_subspace(const SysSolverQUDAMULTIGRIDCloverParams& invParam)
 		{
 			MGSubspacePointers* ret_val = new MGSubspacePointers();
-
+			
 			// References so I can keep code below
 			QudaInvertParam& mg_inv_param = ret_val->mg_inv_param;
 			QudaMultigridParam& mg_param = ret_val->mg_param;
@@ -95,11 +97,12 @@ namespace Chroma {
 			mg_inv_param.cpu_prec = cpu_prec;
 			mg_inv_param.cuda_prec = gpu_prec;
 			mg_inv_param.cuda_prec_sloppy = gpu_half_prec;
+ 		        mg_inv_param.cuda_prec_precondition = gpu_half_prec;
 			//Clover stuff
 			mg_inv_param.clover_cpu_prec = cpu_prec;
 			mg_inv_param.clover_cuda_prec = gpu_prec;
 			mg_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
-			mg_inv_param.clover_cuda_prec_precondition = gpu_prec;
+			mg_inv_param.clover_cuda_prec_precondition = gpu_half_prec;
 			mg_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
 			//
 			//Done...
@@ -115,7 +118,7 @@ namespace Chroma {
 			if( invParam.MULTIGRIDParamsP ) {
 				QDPIO::cout << "Setting MULTIGRID solver params" << std::endl;
 				// Dereference handle
-				MULTIGRIDSolverParams ip = *(invParam.MULTIGRIDParams);
+				const MULTIGRIDSolverParams& ip = *(invParam.MULTIGRIDParams);
 				// Set preconditioner precision
 				switch( ip.prec ) {
 				case HALF:
@@ -142,7 +145,14 @@ namespace Chroma {
 				else {
 					mg_inv_param.verbosity = QUDA_SUMMARIZE;
 				}
+
+
+
+
 				mg_inv_param.verbosity_precondition = QUDA_SILENT;
+
+
+
 				mg_inv_param.sp_pad = 0;
 				mg_inv_param.cl_pad = 0;
 				mg_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
@@ -161,10 +171,25 @@ namespace Chroma {
 				mg_param.invert_param = &mg_inv_param;
 				mg_inv_param.Ls = 1;
 				mg_param.n_level = ip.mg_levels;
-				// FIXME: Make this an XML param
-				mg_param.run_verify = QUDA_BOOLEAN_YES;
+
+				if (ip.check_multigrid_setup == true ) {
+				  mg_param.run_verify = QUDA_BOOLEAN_YES;
+				}
+				else {
+				  mg_param.run_verify = QUDA_BOOLEAN_NO;
+				}
+
+				for (int i=0; i<mg_param.n_level-1; ++i) { 
+ 				  if( ip.setup_on_gpu[i] ) { 
+					mg_param.setup_location[i] = QUDA_CUDA_FIELD_LOCATION;
+				  }
+				  else {
+ 					mg_param.setup_location[i] = QUDA_CPU_FIELD_LOCATION;
+                                  }
+
+				} 
 				for (int i=0; i<mg_param.n_level; i++) {
-					for (int j=0; j<QUDA_MAX_DIM; j++) {
+					for (int j=0; j< Nd; j++) {
 						if( i < mg_param.n_level-1 ) {
 							mg_param.geo_block_size[i][j] = ip.blocking[i][j];
 						}
@@ -172,6 +197,14 @@ namespace Chroma {
 							mg_param.geo_block_size[i][j] = 4;
 						}
 					}
+					
+					QDPIO::cout << "Set Level " << i << " blocking as: "; 
+					for(int j=0; j < 4; ++j) { 
+					  QDPIO::cout << " " << mg_param.geo_block_size[i][j];
+					}
+					QDPIO::cout << std::endl;
+					  
+
 					mg_param.spin_block_size[i] = 1;
 					// FIXME: Elevate ip.nvec, ip.nu_pre, ip.nu_post, ip.tol to arrays in the XML
 					if ( i < mg_param.n_level-1) {
@@ -180,29 +213,73 @@ namespace Chroma {
 						mg_param.nu_post[i] = ip.nu_post[i];
 					}
 					mg_param.smoother_tol[i] = toDouble(ip.tol);
-					mg_param.global_reduction[i] = QUDA_BOOLEAN_YES;
-					//mg_param.smoother[i] = precon_type;
-					switch( ip.smootherType ) {
-					case MR:
-						mg_param.smoother[i] = QUDA_MR_INVERTER;
-						mg_param.omega[i] = toDouble(ip.relaxationOmegaMG);
-						break;
-					default:
-						QDPIO::cout << "Unknown or no smother type specified, no smoothing inverter will be used." << std::endl;
-						mg_param.smoother[i] = QUDA_INVALID_INVERTER;
-						QDP_abort(1);
-						break;
+					mg_param.mu_factor[i] = 1.0; // default is one in QUDA test program
+
+					// Hardwire setup solver now
+					if ( i < mg_param.n_level-1) {
+					  mg_param.setup_inv_type[i] = QUDA_CG_INVERTER;
+					  mg_param.setup_tol[i] = toDouble(ip.rsdTargetSubspaceCreate[i]);
+					  mg_param.setup_maxiter[i] = ip.maxIterSubspaceCreate[i];
+					  mg_param.setup_maxiter_refresh[i] = ip.maxIterSubspaceRefresh[i]; // Will set this from outside...
+					  mg_param.num_setup_iter[i] =1; // 1 refine for now
+					  mg_param.precision_null[i] = mg_inv_param.cuda_prec_precondition;
 					}
-					mg_param.location[i] = QUDA_CUDA_FIELD_LOCATION;
-					mg_param.smoother_solve_type[i] = QUDA_DIRECT_PC_SOLVE;
-					if ( ip.cycle_type == "MG_VCYCLE" ) {
-						mg_param.cycle_type[i] = QUDA_MG_CYCLE_VCYCLE;
-					} else if (ip.cycle_type == "MG_RECURSIVE" ) {
-						mg_param.cycle_type[i] = QUDA_MG_CYCLE_RECURSIVE;
-					} else {
-						QDPIO::cout << "Unknown Cycle Type" << ip.cycle_type << std::endl;
-						QDP_abort(1);
-					}
+
+					mg_param.coarse_solver[i] = QUDA_GCR_INVERTER;
+					mg_param.coarse_solver_tol[i] = toDouble(ip.tol);
+					mg_param.coarse_solver_maxiter[i] = ip.maxIterations;
+
+		        switch( ip.smootherType ) {
+		        case MR:
+		          mg_param.smoother[i] = QUDA_MR_INVERTER;
+		          mg_param.smoother_tol[i] = 0.25;
+		          mg_param.smoother_solve_type[i] = QUDA_DIRECT_PC_SOLVE;
+		          mg_param.omega[i] = toDouble(ip.relaxationOmegaMG);
+		          mg_param.smoother_schwarz_type[i] = QUDA_INVALID_SCHWARZ;
+		          mg_param.smoother_schwarz_cycle[i] = 1;
+		          break;
+		        default:
+		          QDPIO::cout << "Unknown or no smother type specified, no smoothing inverter will be used." << std::endl;
+		          mg_param.smoother[i] = QUDA_INVALID_INVERTER;
+		          QDP_abort(1);
+		          break;
+		        }
+
+			// if the value is DEFAULT -- leave the smoother halo precision unset.
+			if( ip.smootherHaloPrecision != DEFAULT ) {
+
+			  switch( ip.smootherHaloPrecision ) { 
+			  case QUARTER : 
+			    mg_param.smoother_halo_precision[i] = QUDA_QUARTER_PRECISION;
+			    break;
+			  case HALF :
+			    mg_param.smoother_halo_precision[i] = QUDA_HALF_PRECISION;
+			    break;
+			  case SINGLE : 
+			    mg_param.smoother_halo_precision[i] = QUDA_SINGLE_PRECISION;
+			    break;
+			  case DOUBLE : 
+			    mg_param.smoother_halo_precision[i] = QUDA_DOUBLE_PRECISION;
+			    break;
+			  default:
+			    // Leave unset -- default behaviour -- should never be reached
+			    break;
+			  }
+			}
+
+		        mg_param.global_reduction[i] =  (mg_param.smoother_schwarz_type[i] == QUDA_INVALID_SCHWARZ) ? QUDA_BOOLEAN_YES : QUDA_BOOLEAN_NO;
+		        mg_param.location[i] = QUDA_CUDA_FIELD_LOCATION;
+
+		        if ( ip.cycle_type == "MG_VCYCLE" ) {
+		          mg_param.cycle_type[i] = QUDA_MG_CYCLE_VCYCLE;
+		        } else if (ip.cycle_type == "MG_RECURSIVE" ) {
+		          mg_param.cycle_type[i] = QUDA_MG_CYCLE_RECURSIVE;
+		        } else {
+		          QDPIO::cout << "Unknown Cycle Type" << ip.cycle_type << std::endl;
+		          QDP_abort(1);
+		        }
+
+
 					switch( mg_param.cycle_type[i] ) {
 					case QUDA_MG_CYCLE_RECURSIVE :
 						mg_param.coarse_grid_solution_type[i] = QUDA_MATPC_SOLUTION;
@@ -216,6 +293,10 @@ namespace Chroma {
 						break;
 					}
 				}
+	      mg_param.setup_type = QUDA_NULL_VECTOR_SETUP;
+	      mg_param.pre_orthonormalize = QUDA_BOOLEAN_NO;
+	      mg_param.post_orthonormalize = QUDA_BOOLEAN_YES;
+
 				// LEvel 0 must always be matpc
 				mg_param.coarse_grid_solution_type[0] = QUDA_MATPC_SOLUTION;
 				// only coarsen the spin on the first restriction
@@ -231,13 +312,27 @@ namespace Chroma {
 				QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
 			}
 			// setup the multigrid solver
-			// This does allocate memory
+			// this allocates memory
+
 			ret_val->preconditioner = newMultigridQuda(&mg_param);
 			QDPIO::cout<<"NewMultigridQuda state initialized."<<std::endl;
 			QDPIO::cout<<"MULTIGRID preconditioner set."<<std::endl;
+			QDPIO::cout << "After call to newMultigridQuda" <<std::endl;
+
+			for(int i=0; i < mg_param.n_level; ++i) { 
+			  QDPIO::cout << "Set Level " << i << " blocking as: "; 
+			  
+			  for(int j=0; j < 4; ++j) { 
+			    QDPIO::cout << " " << mg_param.geo_block_size[i][j];
+			  }
+			  QDPIO::cout << std::endl;
+			}
+
+#if 1
 			QDPIO::cout <<"MULTIGrid Param Dump" << std::endl;
 			printQudaMultigridParam(&mg_param);
-
+#endif
+			// We have just refreshed so not due for refresh.
 			return ret_val;
 		}
 
@@ -258,6 +353,22 @@ namespace Chroma {
 			TheNamedObjMap::Instance().erase(SubspaceID);
 
 		}
+
+		inline	
+		size_t getCUDAFreeMem(void) 
+	        {
+		   cudaError_t ret;
+   	           size_t free, total;
+	           ret = cudaMemGetInfo( &free, &total );
+		   if ( ret != cudaSuccess ) { 
+			QDPIO::cout << "cudaMemGetInfo() returned unsuccesful status: " <<  ret << std::endl;
+			QDP_abort(1);
+                   }
+	           return free;
+                }
+
+
+	   
 	} // MG Utils
 } // Chroma
 

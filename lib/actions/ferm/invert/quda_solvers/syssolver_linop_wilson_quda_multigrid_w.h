@@ -296,6 +296,7 @@ namespace Chroma
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);
+      quda_inv_param.pipeline = invParam.Pipeline;
 
       // Solution type
       //quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
@@ -385,7 +386,7 @@ namespace Chroma
      if( invParam.MULTIGRIDParamsP ) {
 	QDPIO::cout << "Setting MULTIGRID solver params" << std::endl;
 	// Dereference handle
-	MULTIGRIDSolverParams ip = *(invParam.MULTIGRIDParams);
+	const MULTIGRIDSolverParams& ip = *(invParam.MULTIGRIDParams);
 
 	// Set preconditioner precision
 	switch( ip.prec ) { 
@@ -506,8 +507,19 @@ namespace Chroma
 	mg_param.run_verify = QUDA_BOOLEAN_NO;
 
 	mg_param.n_level = ip.mg_levels;
+
+        for (int i=0; i<mg_param.n_level-1; ++i) {
+          if( ip.setup_on_gpu[i] ) {
+            mg_param.setup_location[i] = QUDA_CUDA_FIELD_LOCATION;
+          }
+          else {
+            mg_param.setup_location[i] = QUDA_CPU_FIELD_LOCATION;
+          }
+
+        }        
+
 	for (int i=0; i<mg_param.n_level; i++) {
-    		for (int j=0; j<QUDA_MAX_DIM; j++) {
+    		for (int j=0; j< Nd; j++) {
 		  if( i < mg_param.n_level-1 ) {
       			mg_param.geo_block_size[i][j] = ip.blocking[i][j];
                   }

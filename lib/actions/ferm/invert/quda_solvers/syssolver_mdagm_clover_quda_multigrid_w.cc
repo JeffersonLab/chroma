@@ -91,7 +91,7 @@ namespace Chroma
 #else
     void* spinorIn = GetMemoryPtr( mod_chi.getId() );
     void* spinorOut = GetMemoryPtr( psi_s.getId() );
-    QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
+
 #endif
 
     // Do the solve here 
@@ -102,11 +102,8 @@ namespace Chroma
     swatch1.stop();
 
 
-    QDPIO::cout << "Cuda Space Required" << std::endl;
-    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << std::endl;
-    QDPIO::cout << "QUDA_MULTIGRID_"<<solver_string<<"_CLOVER_SOLVER: time="<< quda_inv_param.secs <<" s" ;
+
+    QDPIO::cout << solver_string<<"time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;
 

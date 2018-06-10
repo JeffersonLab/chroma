@@ -2,16 +2,20 @@ Makes reference to Assembler routines
 created by the BAGEL software written by Peter Boyle
 
 Main Authors: 
-   R. G. Edwards  edwards AT jlab.org	Jefferson Lab
-   B. Joo	  bjoo AT jlab.org	Jefferson Lab
+   Robert G. Edwards  edwards AT jlab.org	Jefferson Lab
+   Balint Joo	  bjoo AT jlab.org	Jefferson Lab
 
 With additions from many including:
 
-   K. Orginos     College of William and Mary
-   A. Stathopoulos College of William and Mary
-   Saul Cohen	   now Google (?)
+   Konstantinos Orginos     College of William and Mary
+   Andreas Stathopoulos College of William and Mary
+   Saul Cohen	   now NVIDIA
+
    Arjun Gambhir   College of William and Mary
    Jacques Bloch   Regensburg University
    Simon Heybrock  now at the European Spallation Source
-
-
+   Colin Morningstar Carnegie Mellon University
+   Boram Yoon        Los Alamos National Lab
+   Kate Clark        NVIDIA
+   Yi-Bo Yang 	     Michigan State University
+   

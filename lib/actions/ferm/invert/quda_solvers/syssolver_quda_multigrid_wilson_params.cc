@@ -94,6 +94,13 @@ namespace Chroma {
     }
     QDPIO::cout << "tuneDslasP = " << tuneDslashP << std::endl;
 
+    if( paramtop.count("Pipeline") > 0 ) { 
+      read(paramtop, "Pipeline", Pipeline);
+    }
+    else { 
+      Pipeline=1;
+    }
+
     if( paramtop.count("MULTIGRIDParams") > 0 ) {
       MULTIGRIDParams = new MULTIGRIDSolverParams(paramtop, "./MULTIGRIDParams");
       MULTIGRIDParamsP = true;
@@ -130,6 +137,8 @@ namespace Chroma {
     write(xml, "SilentFail", p.SilentFailP);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
     write(xml, "AutotuneDslash", p.tuneDslashP);
+    write(xml, "Pipeline", p.Pipeline);
+
     if( p.MULTIGRIDParamsP ) { 
       write(xml, "MULTIGRIDParams", *(p.MULTIGRIDParams));
     }

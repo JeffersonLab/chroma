@@ -34,7 +34,74 @@ namespace Chroma
   {
   private:
     Handle< CircularBuffer<T> > chrono_bufX;
+    Handle< CircularBuffer<T> > chrono_bufMX;
+
     Handle< CircularBuffer<T> > chrono_bufY;
+    Handle< CircularBuffer<T> > chrono_bufMY;
+
+  void 
+  find_extrap_solutionM(
+			T& psi,
+			const T& chi,
+			const CircularBuffer<T>& chrono_buf, 
+			const CircularBuffer<T>& chrono_bufM,
+			const Subset& s
+			) const
+    {
+      START_CODE();
+      
+      int Nvec = chrono_buf.size();
+      
+      
+      // Now I need to form G_n m = v_[n]^{dag} A v[m]
+      multi2d<DComplex> G(Nvec,Nvec);
+      
+      for(int m = 0 ; m < Nvec; m++) { 
+	for(int n = 0; n < Nvec; n++) { 
+	  G(n,m) = innerProduct(chrono_buf[n], chrono_bufM[m], s);
+	}
+      }
+      
+      // Now I need to form b_n = v[n]^{dag} chi
+      multi1d<DComplex> b(Nvec);
+      
+      for(int n = 0; n < Nvec; n++) { 
+	b[n] = innerProduct(chrono_buf[n], chi, s);
+      }
+      
+      // Solve G_nm a_m = b_n:
+      
+      // First LU decompose G in place 
+      multi1d<DComplex> a(Nvec);
+      
+      LUSolve(a, G, b);
+      
+      // Check solution 
+      multi1d<DComplex> Ga(Nvec);
+      
+      for(int i=0; i < Nvec; i++) { 
+	Ga[i] = G(i,0)*a[0];
+	for(int j=1; j < Nvec; j++) { 
+	  Ga[i] += G(i,j)*a[j];
+	}
+      }
+      
+      multi1d<DComplex> r(Nvec);
+      for(int i=0; i < Nvec; i++) { 
+	r[i] = b[i]-Ga[i];
+      }
+      
+      // Create teh lnear combination
+      psi[s] = Complex(a[0])*chrono_buf[0];
+      for(int n=1; n < Nvec; n++) { 
+	psi[s] += Complex(a[n])*chrono_buf[n];
+      }
+      
+      
+      
+      END_CODE();
+    }
+
 
   void 
   find_extrap_solution(
@@ -177,10 +244,98 @@ namespace Chroma
     
     MinimalResidualExtrapolation4DChronoPredictor(unsigned int max_chrono) : 
       chrono_bufX(new CircularBuffer<T>(max_chrono)),
-      chrono_bufY(new CircularBuffer<T>(max_chrono)) {}
+      chrono_bufY(new CircularBuffer<T>(max_chrono)),
+      chrono_bufMX(new CircularBuffer<T>(max_chrono)),
+      chrono_bufMY(new CircularBuffer<T>(max_chrono)){}
+
+
+    void reset(void) {
+      chrono_bufX->reset();
+      chrono_bufY->reset();
+      chrono_bufMX->reset();
+      chrono_bufMY->reset();
+    }
     
     // Destructor is automagic
     ~MinimalResidualExtrapolation4DChronoPredictor(void) {}
+
+    // Predict X new way.
+    // M is not needed anymore
+    void predictX(T& X, const T& chi, const Subset& s) const override
+    {
+      START_CODE();
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+
+      int Nvec = chrono_bufX->size();
+      switch(Nvec) {
+      case 0:
+	{
+	  QDPIO::cout << "MRE Predictor: Zero vectors stored. Giving you zero guess" << std::endl;
+	  X= zero;
+        }
+        break;
+      case 1:
+        {
+	  QDPIO::cout << "MRE Predictor: Only 1 std::vector stored. Giving you last solution " << std::endl;
+          chrono_bufX->get(0,X);
+        }
+	break;
+      default:
+	{
+	  QDPIO::cout << "MRE Predictor: Finding X extrapolation with "<< Nvec << " vectors" << std::endl;
+
+          // Expect M is either  MdagM if we use chi                                                                                                                                 
+          // or                   M    if we minimize against Y                                                                                                                      
+          find_extrap_solutionM(X,chi, (*chrono_bufX), (*chrono_bufMX), s);
+        }
+        break;
+      }
+
+      swatch.stop();
+      QDPIO::cout << "MRE_PREDICT_X_TIME = " << swatch.getTimeInSeconds() << " s" << std::endl;
+
+      END_CODE();
+    }
+
+    void predictY(T& Y, const T& chi, const Subset& s) const override
+    {
+      START_CODE();
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+
+      int Nvec = chrono_bufY->size();
+      switch(Nvec) {
+      case 0:
+	{
+	  QDPIO::cout << "MRE Predictor: Zero vectors stored. Giving you zero guess" << std::endl;
+	  Y= zero;
+        }
+        break;
+      case 1:
+        {
+	  QDPIO::cout << "MRE Predictor: Only 1 std::vector stored. Giving you last solution " << std::endl;
+          chrono_bufY->get(0,Y);
+        }
+	break;
+      default:
+	{
+	  QDPIO::cout << "MRE Predictor: Finding Y extrapolation with "<< Nvec << " vectors" << std::endl;
+
+          // Expect M is either  MdagM if we use chi                                                                                                                                 
+          // or                   M    if we minimize against Y                                                                                                                      
+          find_extrap_solutionM(Y,chi, (*chrono_bufY), (*chrono_bufMY), s);
+        }
+        break;
+      }
+
+      swatch.stop();
+      QDPIO::cout << "MRE_PREDICT_Y_TIME = " << swatch.getTimeInSeconds() << " s" << std::endl;
+
+      END_CODE();
+    }
 
     void predictX(T& X,
 		  const LinearOperator<T>& M,
@@ -221,11 +376,11 @@ namespace Chroma
       
       END_CODE();
     }
-    
+
     void predictY(T& Y,
 		  const LinearOperator<T>& M,
 		  const T& chi) 
-    {
+     {
       START_CODE();
       StopWatch swatch;
       swatch.reset();
@@ -236,7 +391,7 @@ namespace Chroma
       case 0:
 	{
 	  QDPIO::cout << "MRE Predictor: Zero vectors stored. Giving you zero guess" << std::endl;
-	  Y = zero;
+	  Y= zero;
 	}
 	break;
       case 1:
@@ -248,7 +403,9 @@ namespace Chroma
       default:
 	{
 	  QDPIO::cout << "MRE Predictor: Finding Y extrapolation with "<< Nvec << " vectors" << std::endl;
-	  // Should have M as just M (not M^\dagger M) here.
+	  
+	  // Expect M is either  MdagM if we use chi
+	  // or                   M    if we minimize against Y
 	  find_extrap_solution(Y, M, chi, chrono_bufY, MINUS);
 	}
 	break;
@@ -256,22 +413,116 @@ namespace Chroma
       
       swatch.stop();
       QDPIO::cout << "MRE_PREDICT_Y_TIME = " << swatch.getTimeInSeconds() << " s" << std::endl;
+      
       END_CODE();
     }
-    
-    // No internal state so reset is a nop
-    void reset(void) {
-      chrono_bufX->reset();
-      chrono_bufY->reset();
+
+    void checkOrthoNormal( const CircularBuffer<T>& buffer, const Subset& s) const
+    {
+      for(int i=0; i < buffer.size(); ++i) { 
+	for(int j=0; j < buffer.size(); ++j ) {
+	  DComplex ip = innerProduct(buffer[i], buffer[j], s);
+	  if( i==j ) {
+	    if( toBool( fabs(Double(1)-real(ip)) > Double(1.0e-12) ) ) {
+	      QDPIO::cout << "Lack of normalization: < v["<<i<<"] | v[" << j <<"] > = " << ip << std::endl;
+	      QDP_abort(1);
+	    }
+	    if( toBool( fabs(imag(ip)) > Double(1.0e-12) ) ) {
+	      QDPIO::cout << "Lack of normalization: < v["<<i<<"] | v[" << j <<"] > = " << ip << std::endl;
+
+	      QDP_abort(1);
+	    }
+	  }
+	  else {
+	    if( toBool( fabs(real(ip)) > Double(1.0e-12) ) ) {
+	      QDPIO::cout << "Lack of orthogonality: < v["<<i<<"] | v[" << j <<"] > = " << ip << std::endl;
+	      QDP_abort(1);
+	    }
+	    if( toBool( fabs(imag(ip)) > Double(1.0e-12) ) ) {
+	      QDPIO::cout << "Lack of orthogonality: < v["<<i<<"] | v[" << j <<"] > = " << ip << std::endl;
+	      QDP_abort(1);
+	    }
+	  }
+	}
+      }
     }
 
+    // Orthonormalize x against previous buffer vectors
+    // Implication is that X will be pushed soon.
+    // So if the buffer is full N elements only orthogonalize against the last N-1
+    void orthonormPrevious(const CircularBuffer<T>& buffer, T& x, const Subset& s) const
+    {
+      // Normalize as we will make it orthogonal to other normalized vectors
+      // This is for stability and the correct thing to do for an empty buffer
+      // or a buffer with 1 entry (which will get pushed down)
+      Double nx= Double(1)/sqrt(norm2(x,s));
+      x[s] *= nx;
+
+      // If buffer doesn't yet contain the maximum number
+      // of vectors, the last vector will not be kicked out
+      // so orthog against all existing vectors
+
+      // Gram Schmidt against previous
+      for(int i=0; i < buffer.size(); ++i) {
+	DComplex iprod = innerProduct(buffer[i],x,s);
+	x[s] -= iprod*buffer[i];
+      }
+
+      // 2nd Gram Schmidt against previous
+      for(int i=0; i < buffer.size(); ++i) {
+	DComplex iprod = innerProduct(buffer[i],x,s);
+	x[s] -= iprod*buffer[i];
+      }
+
+      // RE-normalize
+      nx= Double(1)/sqrt(norm2(x,s));
+      x[s] *= nx;
+    }
+
+
+    void newXVector(const T& X_in, const LinearOperator<T>& M) override
+    {
+      START_CODE();
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+      
+      QDPIO::cout << "MREPredictor: registering new X solution. " << std::endl;
+      T X = X_in;
+
+      // Orthonormalize X against current vectors
+      orthonormPrevious(*chrono_bufX, X, M.subset());
+
+      // Push it into the buffer
+      chrono_bufX->push(X);
+
+      checkOrthoNormal(*chrono_bufX, M.subset());
+
+      // Apply M
+      T tmpvec=zero;
+
+      M(tmpvec,X,PLUS);
+      chrono_bufMX->push(tmpvec);
+      
+      QDPIO::cout << "MREPredictor: number of X vectors stored is = " << chrono_bufX->size() << " and MX vectors = " << chrono_bufMX->size() << std::endl;
+      swatch.stop();
+      QDPIO::cout << "MRE Predictor: X_VEC_REGISTRATION_TIME = " << swatch.getTimeInSeconds() << " sec. \n";
+
+      END_CODE();
+    }
+
+	
+	
 
     void newXVector(const T& X) 
     {
       START_CODE();
 
       QDPIO::cout << "MREPredictor: registering new X solution. " << std::endl;
+
       chrono_bufX->push(X);
+
+      
       QDPIO::cout << "MREPredictor: number of X vectors stored is = " << chrono_bufX->size() << std::endl;
     
       END_CODE();
@@ -289,6 +540,36 @@ namespace Chroma
       END_CODE();
     }
 
+    void newYVector(const T& Y_in, const LinearOperator<T>& M) override
+    {
+      START_CODE();
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+      
+      QDPIO::cout << "MREPredictor: registering new Y solution. " << std::endl;
+      T Y=Y_in;
+
+      // Orthonormalize Y against current vectors
+      orthonormPrevious(*chrono_bufY, Y, M.subset());
+
+      // Push it into the buffer
+      chrono_bufY->push(Y);
+
+      checkOrthoNormal(*chrono_bufY, M.subset());
+
+      // Apply M
+      T tmpvec=zero;
+      M(tmpvec,Y,MINUS);
+      chrono_bufMY->push(tmpvec);
+      
+      QDPIO::cout << "MREPredictor: number of Y vectors stored is = " << chrono_bufY->size() << " and MY vectors = " << chrono_bufMY->size() << std::endl;
+      swatch.stop();
+      QDPIO::cout << "MRE Predictor: Y_VEC_REGISTRATION_TIME = " << swatch.getTimeInSeconds() << " sec. \n";
+
+      END_CODE();
+    }
+
     void replaceXHead(const T& v)
     {
       chrono_bufX->replaceHead(v);
@@ -298,6 +579,8 @@ namespace Chroma
     {
       chrono_bufY->replaceHead(v);
     }
+
+
 
 
   };

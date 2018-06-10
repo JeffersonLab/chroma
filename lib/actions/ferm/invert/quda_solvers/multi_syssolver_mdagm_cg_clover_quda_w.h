@@ -181,6 +181,7 @@ namespace Chroma
       };
 
       q_gauge_param.cuda_prec_sloppy = gpu_half_prec;
+      q_gauge_param.cuda_prec_precondition = gpu_half_prec;
 
       switch( invParam.cudaSloppyReconstruct ) { 
       case RECONS_NONE: 
@@ -197,6 +198,8 @@ namespace Chroma
 	break;
       };
 
+      // Default
+      q_gauge_param.reconstruct_precondition = q_gauge_param.reconstruct_sloppy;
       // Gauge fixing:
 
       // These are the links
@@ -266,6 +269,7 @@ namespace Chroma
       quda_inv_param.tol = toDouble(invParam.RsdTarget[0]);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);
+      quda_inv_param.pipeline = invParam.Pipeline;
 
       // Solution type
       quda_inv_param.solution_type = QUDA_MATPCDAG_MATPC_SOLUTION;
@@ -296,6 +300,7 @@ namespace Chroma
       quda_inv_param.cpu_prec = cpu_prec;
       quda_inv_param.cuda_prec = gpu_prec;
       quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
+      quda_inv_param.cuda_prec_precondition = gpu_half_prec;
       quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
       quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
 
@@ -358,6 +363,7 @@ namespace Chroma
       quda_inv_param.clover_cpu_prec = cpu_prec;
       quda_inv_param.clover_cuda_prec = gpu_prec;
       quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
+      quda_inv_param.clover_cuda_prec_precondition = gpu_half_prec;
 
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
       quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
@@ -499,21 +505,25 @@ namespace Chroma
       swatch.stop();
       double time = swatch.getTimeInSeconds();
 
-      if (invParam.verboseP )  { 
+      if (invParam.checkShiftsP )  {
         Double chinorm=norm2(chi, A->subset());
         multi1d<Double> r_rel(shifts.size());
-      
+
         for(int i=0; i < shifts.size(); i++) { 
-	  T tmp1,tmp2;
-	  (*A)(tmp1, psi[i], PLUS);
-	  (*A)(tmp2, tmp1, MINUS);  // tmp2 = A^\dagger A psi
-	  tmp2[ A->subset() ] +=  shifts[i]* psi[i]; // tmp2 = ( A^\dagger A + shift_i ) psi
-	  T r;
-	  r[ A->subset() ] = chi - tmp2;
-	  r_rel[i] = sqrt(norm2(r, A->subset())/chinorm );
+          T tmp1,tmp2;
+          (*A)(tmp1, psi[i], PLUS);
+          (*A)(tmp2, tmp1, MINUS);  // tmp2 = A^\dagger A psi
+          tmp2[ A->subset() ] +=  shifts[i]* psi[i]; // tmp2 = ( A^\dagger A + shift_i ) psi
+          T r;
+          r[ A->subset() ] = chi - tmp2;
+          r_rel[i] = sqrt(norm2(r, A->subset())/chinorm );
 #if 1
-  	  QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << std::endl;
+          QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << std::endl;
 #endif
+   	  if ( toBool( r_rel[i]  >  invParam.RsdTarget[i]*invParam.RsdToleranceFactor  ) ) { 
+	    QDPIO::cout << "Shift " << i << " has rel. residuum " << r_rel[i] <<  " exceeding target " 
+			<< invParam.RsdTarget[i] << " . Aborting! " << std::endl;
+          } 
         }
       }
       QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << std::endl;

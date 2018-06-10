@@ -583,7 +583,10 @@ namespace Chroma
 
 	// Loop over all sites with a spatial mask
 	// These will form the sources
-	for(int ipos=1; ipos <= num_sites; ++ipos)
+#if 0
+        for(int ipos=1; ipos <= num_sites; ++ipos)
+#endif
+	for(int ipos = num_sites; ipos > 0; --ipos)
 	  source_list.push_back(-ipos);
       }
 

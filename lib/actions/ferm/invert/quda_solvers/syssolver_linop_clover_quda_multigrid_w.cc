@@ -16,6 +16,7 @@
 // QUDA Headers
 #include <quda.h>
 // #include <util_quda.h>
+#include "actions/ferm/invert/quda_solvers/quda_mg_utils.h"
 
 namespace Chroma
 {
@@ -91,7 +92,7 @@ namespace Chroma
 #else
     void* spinorIn = GetMemoryPtr( mod_chi.getId() );
     void* spinorOut = GetMemoryPtr( psi_s.getId() );
-    QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
+
 #endif
 
     // Do the solve here 
@@ -102,12 +103,12 @@ namespace Chroma
     swatch1.stop();
 
 
-    QDPIO::cout << "QUDA_MULTIGRID_"<<solver_string<<"_CLOVER_SOLVER: time="<< quda_inv_param.secs <<" s" ;
+    QDPIO::cout << solver_string<< "time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;
 
     ret.n_count =quda_inv_param.iter;
-
+    ret.resid = quda_inv_param.true_res;
     return ret;
 
   }

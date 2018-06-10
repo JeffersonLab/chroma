@@ -46,6 +46,7 @@ namespace Chroma
   //! Quda Precision type
   enum QudaPrecisionType { 
     DEFAULT,
+    QUARTER,
     HALF,
     SINGLE,
     DOUBLE

@@ -30,6 +30,7 @@ namespace Chroma
       backup_invP = false;
       dump_on_failP = false;
       cgnrP=false;
+      Pipeline=0;
     };
 
     SysSolverQUDANEFParams( const SysSolverQUDANEFParams& p) {
@@ -55,7 +56,7 @@ namespace Chroma
       backup_inv_param = p.backup_inv_param;
       dump_on_failP = p.dump_on_failP;
       cgnrP= p.cgnrP;
-
+      Pipeline = p.Pipeline;
     }
 
    
@@ -86,6 +87,7 @@ namespace Chroma
     GroupXML_t backup_inv_param;
     bool dump_on_failP;
     bool cgnrP;    
+    int Pipeline;
 
   };
 

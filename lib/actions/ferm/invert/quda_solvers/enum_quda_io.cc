@@ -39,6 +39,7 @@ namespace Chroma {
     {
       bool success;
       success = theQudaPrecisionTypeMap::Instance().registerPair(std::string("DEFAULT"),DEFAULT);
+      success &= theQudaPrecisionTypeMap::Instance().registerPair(std::string("QUARTER"),QUARTER);
       success &= theQudaPrecisionTypeMap::Instance().registerPair(std::string("HALF"),HALF);
       success &= theQudaPrecisionTypeMap::Instance().registerPair(std::string("SINGLE"),SINGLE);
       success &= theQudaPrecisionTypeMap::Instance().registerPair(std::string("DOUBLE"),DOUBLE);

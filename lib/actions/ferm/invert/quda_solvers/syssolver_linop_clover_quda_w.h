@@ -177,6 +177,10 @@ namespace Chroma
 
       q_gauge_param.cuda_prec_sloppy = gpu_half_prec;
 
+      // Default for no preconditioner -- may be overwritten based
+      // on innerParams
+      q_gauge_param.cuda_prec_precondition = gpu_half_prec;
+
       switch( invParam.cudaSloppyReconstruct ) { 
       case RECONS_NONE: 
 	q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_NO;
@@ -192,6 +196,8 @@ namespace Chroma
 	break;
       };
 
+      // Default. This may be overrridden later.
+      q_gauge_param.reconstruct_precondition = q_gauge_param.reconstruct_sloppy;
       // Gauge fixing:
 
       // These are the links
@@ -279,6 +285,7 @@ namespace Chroma
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);
+      quda_inv_param.pipeline = invParam.Pipeline;
 
       // Solution type
       quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
@@ -320,6 +327,11 @@ namespace Chroma
       quda_inv_param.cpu_prec = cpu_prec;
       quda_inv_param.cuda_prec = gpu_prec;
       quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
+
+      // Default. May be overridden by inner params
+      quda_inv_param.cuda_prec_precondition = gpu_half_prec;
+
+
       quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
       quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
 
@@ -331,6 +343,25 @@ namespace Chroma
       quda_inv_param.input_location = QUDA_CUDA_FIELD_LOCATION;
       quda_inv_param.output_location = QUDA_CUDA_FIELD_LOCATION;
 #endif
+
+
+     // Clover precision and order
+      quda_inv_param.clover_cpu_prec = cpu_prec;
+      quda_inv_param.clover_cuda_prec = gpu_prec;
+      quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
+
+      // Default. may be overrridden by inner params
+      quda_inv_param.clover_cuda_prec_precondition = gpu_half_prec;
+
+#ifndef BUILD_QUDA_DEVIFACE_CLOVER
+      #warning "NOT USING QUDA DEVICE IFACE"
+      quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
+#else
+      #warning "USING QUDA DEVICE IFACE"
+      QDPIO::cout << "MDAGM clover CUDA location\n";
+      quda_inv_param.clover_location = QUDA_CUDA_FIELD_LOCATION;
+      quda_inv_param.clover_order = QUDA_QDPJIT_CLOVER_ORDER;
+#endif   
 
       // Autotuning
       if( invParam.tuneDslashP ) { 
@@ -368,7 +399,7 @@ namespace Chroma
      if( invParam.innerParamsP ) {
 	QDPIO::cout << "Setting inner solver params" << std::endl;
 	// Dereference handle
-	GCRInnerSolverParams ip = *(invParam.innerParams);
+	const GCRInnerSolverParams& ip = *(invParam.innerParams);
 
 	// Set preconditioner precision
 	switch( ip.precPrecondition ) { 
@@ -457,25 +488,11 @@ namespace Chroma
 	quda_inv_param.tol_precondition = 1.0e-1;
 	quda_inv_param.maxiter_precondition = 1000;
 	quda_inv_param.verbosity_precondition = QUDA_SILENT;
+        q_gauge_param.reconstruct_precondition = QUDA_RECONSTRUCT_NO;
         quda_inv_param.gcrNkrylov = 1;
       }
  
 
-      // Clover precision and order
-      quda_inv_param.clover_cpu_prec = cpu_prec;
-      quda_inv_param.clover_cuda_prec = gpu_prec;
-      quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
-
-#ifndef BUILD_QUDA_DEVIFACE_CLOVER
-      #warning "NOT USING QUDA DEVICE IFACE"
-      quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
-#else      
-      #warning "USING QUDA DEVICE IFACE"
-      QDPIO::cout << "MDAGM clover CUDA location\n";
-      quda_inv_param.clover_location = QUDA_CUDA_FIELD_LOCATION;
-      quda_inv_param.clover_order = QUDA_QDPJIT_CLOVER_ORDER;
-#endif   
- 
       if( invParam.verboseP ) { 
 	quda_inv_param.verbosity = QUDA_VERBOSE;
       }

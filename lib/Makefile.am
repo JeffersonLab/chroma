@@ -40,6 +40,7 @@ nobase_include_HEADERS = \
 	actions/ferm/fermstates/extfield.h \
 	actions/ferm/fermstates/stout_fermstate_params.h \
 	actions/ferm/fermstates/hex_fermstate_params.h \
+	actions/ferm/invert/mg_solver_exception.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_eigcg2.h \
 	actions/ferm/invert/inv_eigcg2_array.h \
@@ -317,6 +318,7 @@ nobase_include_HEADERS = \
 	meas/sources/sf_pt_source_const.h \
 	meas/sources/sf_sh_source_const.h \
 	meas/sources/sf_wall_source_const.h \
+	meas/sources/sf_wave_source_const.h \
 	meas/sources/dilutezN_source_const.h \
 	meas/sources/dilute_zN_eigvec_source_const.h \
 	meas/sources/diluteGrid_source_const.h \
@@ -334,6 +336,7 @@ nobase_include_HEADERS = \
 	util/ferm/subset_vectors.h \
 	util/ferm/block_subset.h \
 	util/ferm/block_couplings.h \
+	util/ferm/disp_soln_cache.h \
 	util/ft/sftmom.h \
         util/ft/single_phase.h \
 	util/ft/time_slice_set.h \
@@ -389,6 +392,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/integrator/lcm_integrator_leaps.h \
 	update/molecdyn/integrator/lcm_exp_sdt.h \
 	update/molecdyn/integrator/lcm_exp_tdt.h \
+	update/molecdyn/integrator/lcm_sts_force_grad_recursive.h \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.h \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.h \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.h \
@@ -888,11 +892,13 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_static_prop_colorvec_w.h \
 	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_prop_and_matelem_distillation_w.h \
+	meas/inline/hadron/inline_prop_and_matelem_distillation2_w.h \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.h \
+	meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.h \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.h \
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h \
@@ -1277,6 +1283,7 @@ libchroma_a_SOURCES = \
 	meas/sources/sf_pt_source_const.cc \
 	meas/sources/sf_sh_source_const.cc \
 	meas/sources/sf_wall_source_const.cc \
+	meas/sources/sf_wave_source_const.cc \
         meas/sources/dilutezN_source_const.cc \
         meas/sources/dilute_zN_eigvec_source_const.cc \
         meas/sources/diluteGrid_source_const.cc \
@@ -1294,6 +1301,7 @@ libchroma_a_SOURCES = \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc \
 	util/ferm/subset_vectors.cc \
 	util/ferm/block_couplings.cc \
+	util/ferm/disp_soln_cache.cc \
         util/ft/sftmom.cc \
         util/ft/single_phase.cc \
 	util/ft/time_slice_set.cc \
@@ -1344,6 +1352,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/integrator/lcm_exp_sdt.cc \
 	update/molecdyn/integrator/lcm_exp_tdt.cc \
 	update/molecdyn/integrator/lcm_integrator_leaps.cc \
+	update/molecdyn/integrator/lcm_sts_force_grad_recursive.cc \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.cc \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.cc \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.cc \
@@ -1396,7 +1405,8 @@ nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_wilso
 	actions/ferm/invert/quda_solvers/quda_gcr_params.h \
 	actions/ferm/invert/quda_solvers/quda_multigrid_params.h \
 	actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h \
-	meas/inline/io/inline_erase_quda_multigrid_space.h
+	meas/inline/io/inline_erase_quda_multigrid_space.h \
+	update/molecdyn/predictor/quda_predictor.h
 
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
@@ -1417,7 +1427,8 @@ libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc \
-	meas/inline/io/inline_erase_quda_multigrid_space.cc
+	meas/inline/io/inline_erase_quda_multigrid_space.cc \
+	update/molecdyn/predictor/quda_predictor.cc
 endif
 
 if BUILD_QPHIX
@@ -1767,10 +1778,12 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc \
+	meas/inline/hadron/inline_prop_and_matelem_distillation2_w.cc \
 	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.cc \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.cc \
@@ -2067,6 +2080,18 @@ libchroma_a_SOURCES += \
 	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.cc \
 	actions/ferm/invert/mg_proto/mg_proto_helpers.cc \
 	meas/inline/io/inline_erase_mg_proto_space.cc
+
+if BUILD_QPHIX
+nobase_include_HEADERS += \
+	actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.h \
+	meas/inline/io/inline_erase_mg_proto_qphix_space.h \
+	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.h
+
+libchroma_a_SOURCES += \
+	actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.cc \
+	meas/inline/io/inline_erase_mg_proto_qphix_space.cc \
+	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.cc
+endif
 
 endif
 

@@ -266,6 +266,7 @@ namespace Chroma
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);
+      quda_inv_param.pipeline = invParam.Pipeline;
 
       // Solution type
       quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
@@ -341,7 +342,7 @@ namespace Chroma
       if( invParam.innerParamsP ) {
 	QDPIO::cout << "Setting inner solver params" << std::endl;
 	// Dereference handle
-	GCRInnerSolverParams ip = *(invParam.innerParams);
+	const GCRInnerSolverParams& ip = *(invParam.innerParams);
 
 	// Set preconditioner precision
 	switch( ip.precPrecondition ) { 
