@@ -8,7 +8,7 @@
 #ifndef __inline_prop_and_matelem_distillation_w_h__
 #define __inline_prop_and_matelem_distillation_w_h__
 
-#ifndef QDP_IS_QDPJIT
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"

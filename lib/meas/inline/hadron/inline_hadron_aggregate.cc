@@ -158,8 +158,10 @@ namespace Chroma
 	success &= InlinePropMatElemColorVecEnv::registerAll();
 	success &= InlinePropMatElemPtColorVecEnv::registerAll();
 	success &= InlinePropAndMatElemColorVecEnv::registerAll();
-#ifndef QDP_IS_QDPJIT
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
 	success &= InlinePropAndMatElemDistillationEnv::registerAll();
+#endif
+#ifndef QDP_IS_QDPJIT
 	success &= InlinePropAndMatElemDistillation2Env::registerAll();
 	success &= InlineUnsmsearedHadronNodeDistillationEnv::registerAll();
 #endif

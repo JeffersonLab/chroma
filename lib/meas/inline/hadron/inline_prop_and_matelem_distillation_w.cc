@@ -34,7 +34,7 @@
 
 #include "meas/inline/io/named_objmap.h"
 
-#ifndef QDP_IS_QDPJIT
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
 
 namespace Chroma 
 { 
@@ -209,7 +209,6 @@ namespace Chroma
 	//! Where we store the sublattice versions
 	mutable SUB_MOD_t sub_eigen;
       };
-    
 
       //----------------------------------------------------------------------------
       //! Getter
@@ -740,8 +739,7 @@ namespace Chroma
 		  for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 		  {
 		    peram[*key].mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_map.getVec(t_slice, colorvec_sink), 
-									       ferm_out(key->spin_snk));
-
+		     							       ferm_out(key->spin_snk));
 		  } // for colorvec_sink
 		} // for key
 	      } // for t_slice
