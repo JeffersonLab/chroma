@@ -8,7 +8,8 @@
 // Hence this is the latest version
 //
 #include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.h"
-#ifndef QDP_IS_QDPJIT
+
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
 
 #include "qdp_map_obj_memory.h"
 #include "qdp_map_obj_disk.h"
