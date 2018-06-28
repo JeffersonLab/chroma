@@ -33,7 +33,7 @@
 
 #include "meas/inline/io/named_objmap.h"
 
-#ifndef QDP_IS_QDPJIT_NO_NVPTX
+#ifndef QDP_IS_QDPJIT
 
 namespace Chroma 
 { 
