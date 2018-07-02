@@ -43,6 +43,7 @@ namespace Chroma
 	  std::string   mass_label;     /*!< Some kind of mass label */
 
 	  int           num_tries;      /*!< In case of bad things happening in the solution vectors, do retries */
+	  bool          zero_colorvecs;
 	};
 
 	ChromaProp_t    prop;

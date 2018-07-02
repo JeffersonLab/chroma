@@ -107,6 +107,13 @@ namespace Chroma
       read(inputtop, "Nt_backward", input.Nt_backward);
       read(inputtop, "mass_label", input.mass_label);
       read(inputtop, "num_tries", input.num_tries);
+
+      input.zero_colorvecs = false;
+      if( inputtop.count("zero_colorvecs") == 1 ) {
+	read(inputtop, "zero_colorvecs", input.zero_colorvecs );
+	QDPIO::cout << "zero_colorvecs found, *** timing mode activated ***\n";
+      }
+
     }
 
     //! Propagator output
@@ -190,7 +197,7 @@ namespace Chroma
       {
       public:
 	//! Constructor
-	SubEigenMap(MODS_t& eigen_source_, int decay_dir) : eigen_source(eigen_source_), time_slice_set(decay_dir) {}
+	SubEigenMap(MODS_t& eigen_source_, int decay_dir, bool zero_colorvecs) : eigen_source(eigen_source_), time_slice_set(decay_dir), zero_colorvecs(zero_colorvecs) {}
 
 	//! Getter
 	const SubLatticeColorVectorF& getVec(int t_source, int colorvec_src) const;
@@ -208,6 +215,7 @@ namespace Chroma
       private:
 	//! Where we store the sublattice versions
 	mutable SUB_MOD_t sub_eigen;
+	bool zero_colorvecs;
       };
 
       //----------------------------------------------------------------------------
@@ -223,9 +231,12 @@ namespace Chroma
 
 	  LatticeColorVectorF vec_srce = zero;
 
-	  TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source);
-	  eigen_source.get(src_key, time_slice_io);
-
+	  if (!zero_colorvecs)
+	    {
+	      TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source);
+	      eigen_source.get(src_key, time_slice_io);
+	    }
+	  
 	  SubLatticeColorVectorF tmp(getSet()[t_source], vec_srce);
 
 	  sub_eigen.insert(src_key, tmp);
@@ -475,39 +486,42 @@ namespace Chroma
 
       std::string eigen_meta_data;   // holds the eigenvalues
 
-      try
-      {
-	// Open
-	QDPIO::cout << "Open file= " << params.named_obj.colorvec_files[0] << std::endl;
-	eigen_source.open(params.named_obj.colorvec_files);
+      if (!params.param.contract.zero_colorvecs)
+	{
+	  try
+	    {
+	      // Open
+	      QDPIO::cout << "Open file= " << params.named_obj.colorvec_files[0] << std::endl;
+	      eigen_source.open(params.named_obj.colorvec_files);
 
-	// Snarf the source info. 
-	QDPIO::cout << "Get user data" << std::endl;
-	eigen_source.getUserdata(eigen_meta_data);
-	//	QDPIO::cout << "User data= " << eigen_meta_data << std::endl;
+	      // Snarf the source info. 
+	      QDPIO::cout << "Get user data" << std::endl;
+	      eigen_source.getUserdata(eigen_meta_data);
+	      //	QDPIO::cout << "User data= " << eigen_meta_data << std::endl;
 
-	// Write it
-	//	QDPIO::cout << "Write to an xml file" << std::endl;
-	//	XMLBufferWriter xml_buf(eigen_meta_data);
-	//	write(xml_out, "Source_info", xml_buf);
-      }    
-      catch (std::bad_cast) {
-	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
-	QDP_abort(1);
-      }
-      catch (const std::string& e) {
-	QDPIO::cerr << name << ": error extracting source_header: " << e << std::endl;
-	QDP_abort(1);
-      }
-      catch( const char* e) {
-	QDPIO::cerr << name <<": Caught some char* exception:" << std::endl;
-	QDPIO::cerr << e << std::endl;
-	QDPIO::cerr << "Rethrowing" << std::endl;
-	throw;
-      }
+	      // Write it
+	      //	QDPIO::cout << "Write to an xml file" << std::endl;
+	      //	XMLBufferWriter xml_buf(eigen_meta_data);
+	      //	write(xml_out, "Source_info", xml_buf);
+	    }    
+	  catch (std::bad_cast) {
+	    QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
+	    QDP_abort(1);
+	  }
+	  catch (const std::string& e) {
+	    QDPIO::cerr << name << ": error extracting source_header: " << e << std::endl;
+	    QDP_abort(1);
+	  }
+	  catch( const char* e) {
+	    QDPIO::cerr << name <<": Caught some char* exception:" << std::endl;
+	    QDPIO::cerr << e << std::endl;
+	    QDPIO::cerr << "Rethrowing" << std::endl;
+	    throw;
+	  }
 
-      QDPIO::cout << "Source successfully read and parsed" << std::endl;
-
+	  QDPIO::cout << "Source successfully read and parsed" << std::endl;
+	}
+      
 #if 0
       // Sanity check
       if (params.param.contract.num_vecs > eigen_source.size())
@@ -521,7 +535,7 @@ namespace Chroma
 
       // The sub-lattice eigenstd::vector std::map
       QDPIO::cout << "Initialize sub-lattice std::map" << std::endl;
-      SubEigenMap sub_eigen_map(eigen_source, decay_dir);
+      SubEigenMap sub_eigen_map(eigen_source, decay_dir, params.param.contract.zero_colorvecs);
       QDPIO::cout << "Finished initializing sub-lattice std::map" << std::endl;
 
 
@@ -534,7 +548,6 @@ namespace Chroma
       if (! qdp_db.fileExists(params.named_obj.prop_op_file))
       {
 	XMLBufferWriter file_xml;
-
 	push(file_xml, "DBMetaData");
 	write(file_xml, "id", std::string("propElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
@@ -542,7 +555,8 @@ namespace Chroma
 	proginfo(file_xml);    // Print out basic program info
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
-	write(file_xml, "Weights", readEigVals(eigen_meta_data));
+	if (!params.param.contract.zero_colorvecs)
+	  write(file_xml, "Weights", readEigVals(eigen_meta_data));
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
@@ -657,7 +671,11 @@ namespace Chroma
 
 	      // Get the source std::vector
 	      LatticeColorVector vec_srce = zero;
-	      vec_srce = sub_eigen_map.getVec(t_source, colorvec_src);
+	      
+	      if (!params.param.contract.zero_colorvecs)
+		{
+		  vec_srce = sub_eigen_map.getVec(t_source, colorvec_src);
+		}
 
 	      //
 	      // Loop over each spin source and invert. 
@@ -672,47 +690,51 @@ namespace Chroma
 
 	      LatticeFermion quark_soln = zero;
 
-	      // Do the propagator inversion
-	      // Check if bad things are happening
-	      bool badP = true;
-	      for(int nn = 1; nn <= params.param.contract.num_tries; ++nn)
-	      {	
-		// Reset
-		quark_soln = zero;
-		badP = false;
+	      if (!params.param.contract.zero_colorvecs)
+		{
+		  // Do the propagator inversion
+		  // Check if bad things are happening
+		  bool badP = true;
+		  for(int nn = 1; nn <= params.param.contract.num_tries; ++nn)
+		    {	
+		      // Reset
+		      quark_soln = zero;
+		      badP = false;
 	      
-		// Solve for the solution std::vector
-		SystemSolverResults_t res = (*PP)(quark_soln, chi);
-		ncg_had += res.n_count;
+		      // Solve for the solution std::vector
+		      SystemSolverResults_t res = (*PP)(quark_soln, chi);
+		  
+		      ncg_had += res.n_count;
 
-		// Some sanity checks
-		if (toDouble(res.resid) > 1.0e-3)
-		{
-		  QDPIO::cerr << name << ": have a resid > 1.0e-3. That is unacceptable" << std::endl;
-		  QDP_abort(1);
-		}
+		      // Some sanity checks
+		      if (toDouble(res.resid) > 1.0e-3)
+			{
+			  QDPIO::cerr << name << ": have a resid > 1.0e-3. That is unacceptable" << std::endl;
+			  QDP_abort(1);
+			}
 
-		// Check for finite values - neither NaN nor Inf
-		if (isfinite(quark_soln))
-		{
-		  // Okay
-		  break;
-		}
-		else
-		{
-		  QDPIO::cerr << name << ": WARNING - found something not finite, may retry\n";
-		  badP = true;
-		}
-	      }
+		      // Check for finite values - neither NaN nor Inf
+		      if (isfinite(quark_soln))
+			{
+			  // Okay
+			  break;
+			}
+		      else
+			{
+			  QDPIO::cerr << name << ": WARNING - found something not finite, may retry\n";
+			  badP = true;
+			}
+		    }
 
-	      // Sanity check
-	      if (badP)
-	      {
-		QDPIO::cerr << name << ": this is bad - did not get a finite solution std::vector after num_tries= " 
-			    << params.param.contract.num_tries << std::endl;
-		QDP_abort(1);
-	      }
-
+		  // Sanity check
+		  if (badP)
+		    {
+		      QDPIO::cerr << name << ": this is bad - did not get a finite solution std::vector after num_tries= " 
+				  << params.param.contract.num_tries << std::endl;
+		      QDP_abort(1);
+		    }
+		} // zero_colorvecs ??
+	      
 	      // Extract into the temporary output array
 	      for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 	      {
@@ -726,6 +748,7 @@ namespace Chroma
 
 	      // The perambulator part
 	      // Loop over time
+	      
 	      for(int t_slice = 0; t_slice < Lt; ++t_slice)
 	      {
 		// Loop over all the keys
@@ -734,20 +757,22 @@ namespace Chroma
 		    ++key)
 		{
 		  if (key->t_slice != t_slice) {continue;}
-		  
+
 		  // Loop over the sink colorvec, form the innerproduct and the resulting perambulator
 		  for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 		  {
 		    peram[*key].mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_map.getVec(t_slice, colorvec_sink), 
-		     							       ferm_out(key->spin_snk));
+									       ferm_out(key->spin_snk));
 		  } // for colorvec_sink
 		} // for key
 	      } // for t_slice
 
 	      sniss1.stop();
 	      QDPIO::cout << "Time to compute and assemble peram for spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << "  time = " 
-			  << sniss1.getTimeInSeconds() 
-			  << " secs" << std::endl;
+			  << sniss1.getTimeInSeconds()
+			  << " secs"
+			  << " (for contraction: " << sniss1.getTimeInSeconds() - snarss1.getTimeInSeconds() << ")"
+			  << std::endl;
 
 	    } // for colorvec_src
 
