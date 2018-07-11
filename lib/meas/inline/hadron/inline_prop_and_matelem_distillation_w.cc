@@ -36,6 +36,11 @@
 
 #ifndef QDP_IS_QDPJIT_NO_NVPTX
 
+#ifdef QDP_IS_QDPJIT
+#warning "BUILDING INNER PRODUCT GPU"
+#include "inline_prop_and_matelem_distillation_nvptx.h"
+#endif
+
 namespace Chroma 
 { 
   //----------------------------------------------------------------------------
@@ -758,12 +763,32 @@ namespace Chroma
 		{
 		  if (key->t_slice != t_slice) {continue;}
 
+#ifndef QDP_IS_QDPJIT
 		  // Loop over the sink colorvec, form the innerproduct and the resulting perambulator
 		  for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 		  {
 		    peram[*key].mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_map.getVec(t_slice, colorvec_sink), 
 									       ferm_out(key->spin_snk));
 		  } // for colorvec_sink
+		  QDPIO::cout << peram[*key].mat(1,colorvec_src) << "\n";
+#else
+		  //
+		  // Pack pointers to the vectors and matrix elements
+		  //
+		  multi1d<SubLatticeColorVector*> vec_ptr( num_vecs );
+		  multi1d<ComplexD*> contr_ptr( num_vecs );
+		  for (int i=0 ; i < num_vecs ; ++i ) {
+		    vec_ptr[i] = const_cast<SubLatticeColorVector*>( &sub_eigen_map.getVec( t_slice , i ) );
+		    contr_ptr[i] = &peram[*key].mat( i , colorvec_src );
+		  }
+		  
+		  //
+		  // Big call-out 
+		  //
+		  multi_innerProduct( contr_ptr , vec_ptr , ferm_out(key->spin_snk) );
+		  QDPIO::cout << peram[*key].mat(1,colorvec_src) << "\n";
+#endif
+		  
 		} // for key
 	      } // for t_slice
 
