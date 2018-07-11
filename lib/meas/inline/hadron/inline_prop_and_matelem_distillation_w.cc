@@ -770,7 +770,6 @@ namespace Chroma
 		    peram[*key].mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_map.getVec(t_slice, colorvec_sink), 
 									       ferm_out(key->spin_snk));
 		  } // for colorvec_sink
-		  QDPIO::cout << peram[*key].mat(1,colorvec_src) << "\n";
 #else
 		  //
 		  // Pack pointers to the vectors and matrix elements
@@ -786,7 +785,6 @@ namespace Chroma
 		  // Big call-out 
 		  //
 		  multi_innerProduct( contr_ptr , vec_ptr , ferm_out(key->spin_snk) );
-		  QDPIO::cout << peram[*key].mat(1,colorvec_src) << "\n";
 #endif
 		  
 		} // for key
