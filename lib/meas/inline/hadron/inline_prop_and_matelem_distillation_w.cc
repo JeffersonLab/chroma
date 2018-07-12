@@ -116,7 +116,10 @@ namespace Chroma
       input.zero_colorvecs = false;
       if( inputtop.count("zero_colorvecs") == 1 ) {
 	read(inputtop, "zero_colorvecs", input.zero_colorvecs );
-	QDPIO::cout << "zero_colorvecs found, *** timing mode activated ***\n";
+	if (input.zero_colorvecs)
+	  {
+	    QDPIO::cout << "zero_colorvecs found, *** timing mode activated ***\n";
+	  }
       }
 
     }
@@ -774,10 +777,10 @@ namespace Chroma
 		  //
 		  // Pack pointers to the vectors and matrix elements
 		  //
-		  multi1d<SubLatticeColorVector*> vec_ptr( num_vecs );
+		  multi1d<SubLatticeColorVectorF*> vec_ptr( num_vecs );
 		  multi1d<ComplexD*> contr_ptr( num_vecs );
 		  for (int i=0 ; i < num_vecs ; ++i ) {
-		    vec_ptr[i] = const_cast<SubLatticeColorVector*>( &sub_eigen_map.getVec( t_slice , i ) );
+		    vec_ptr[i] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( t_slice , i ) );
 		    contr_ptr[i] = &peram[*key].mat( i , colorvec_src );
 		  }
 		  
