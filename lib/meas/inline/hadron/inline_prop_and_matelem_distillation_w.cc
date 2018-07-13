@@ -116,7 +116,10 @@ namespace Chroma
       input.zero_colorvecs = false;
       if( inputtop.count("zero_colorvecs") == 1 ) {
 	read(inputtop, "zero_colorvecs", input.zero_colorvecs );
-	QDPIO::cout << "zero_colorvecs found, *** timing mode activated ***\n";
+	if (input.zero_colorvecs)
+	  {
+	    QDPIO::cout << "zero_colorvecs found, *** timing mode activated ***\n";
+	  }
       }
 
     }
