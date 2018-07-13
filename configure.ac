@@ -1210,7 +1210,7 @@ then
 
    AC_DEFINE([BUILD_QUDA],[], [Build with the BU QUDA Library])  
    AC_SUBST(QUDA_CXXFLAGS, ["-I${QUDA_HOME}/include -I${CUDA_HOME}/include"] )
-   AC_SUBST(QUDA_LDFLAGS,  ["-L${CUDA_LIBDIR} -L${QUDA_HOME}/lib -Wl,-rpath=${QUDA_HOME}/lib"] )
+   AC_SUBST(QUDA_LDFLAGS,  ["-L${CUDA_LIBDIR} -L${QUDA_HOME}/lib -Wl,-rpath,${CUDA_LIBDIR} -Wl,-rpath,${QUDA_HOME}/lib"] )
    AC_SUBST(QUDA_LIBS,     ["-lquda -lcublas -lcudart -lcuda"])
 
 fi

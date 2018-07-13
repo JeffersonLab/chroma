@@ -258,6 +258,15 @@ namespace Chroma
       END_CODE();
 
       return res;
+#else
+      SystemSolverResults_t res; 
+
+      res.n_count = -1;
+      res.resid = Real(1000000);
+      QDPIO::cout << "This solver is not implemented over QDP-JIT." << std::endl;
+      QDP_abort(1);
+      return res;
+
 #endif
     }
 

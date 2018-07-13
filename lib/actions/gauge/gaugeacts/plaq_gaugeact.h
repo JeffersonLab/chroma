@@ -135,7 +135,7 @@ namespace Chroma
     PlaqGaugeActParams  param;             /*!< The parameters */
   };
 
-};
+}
 
 
 #endif

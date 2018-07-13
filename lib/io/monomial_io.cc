@@ -124,4 +124,4 @@ void readNamedMonomialArray(XMLReader& xml,
   }
 }
 
-};
+}

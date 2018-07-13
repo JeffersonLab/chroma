@@ -150,7 +150,7 @@ namespace Chroma
     Handle<PlaqPlusSpatialTwoPlaqGaugeAct> plaq_plus_two_plaq; /*!< Hold spatial plaquettes separated in time type gaugeact */
   };
 
-};
+}
 
 
 #endif

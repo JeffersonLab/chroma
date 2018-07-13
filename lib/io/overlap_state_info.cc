@@ -215,4 +215,4 @@ void write(XMLWriter& xml_out, const std::string& path, const OverlapStateInfo& 
 
 }
 
-};
+}

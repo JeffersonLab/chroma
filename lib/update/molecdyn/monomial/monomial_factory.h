@@ -49,7 +49,7 @@ namespace Chroma
   TheExactFermMonomialFactory;
   */
 
-}; // End namespace Chroma
+} // End namespace Chroma
 
 
 #endif

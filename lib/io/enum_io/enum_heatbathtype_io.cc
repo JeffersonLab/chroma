@@ -22,7 +22,7 @@ namespace Chroma {
 
     const std::string typeIDString ="HeatbathType";
     bool registered = registerAll();
-  };
+  }
 
   using namespace HeatbathTypeEnv;
   //! Read an HeatbathType enum
@@ -34,4 +34,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const HeatbathType& t) {
     theHeatbathTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
-};
+}

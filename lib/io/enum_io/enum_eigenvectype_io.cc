@@ -21,7 +21,7 @@ namespace Chroma {
     }
     const std::string typeIDString = "EigenVecType" ;
     bool registered = registerAll();
-  };
+  }
   using namespace EigenVecTypeEnv;
 
   //! Read an eigenvectype enum

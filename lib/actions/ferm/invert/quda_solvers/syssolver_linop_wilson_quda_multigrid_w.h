@@ -632,7 +632,6 @@ namespace Chroma
       }      
 
       swatch.stop();
-      double time = swatch.getTimeInSeconds();
 
 
       { 

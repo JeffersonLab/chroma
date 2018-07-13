@@ -172,5 +172,5 @@ namespace Chroma
     virtual void newVector(const multi1d<T>& psi) = 0;
   };
 
-}; // End namespace
+} // End namespace
 #endif
