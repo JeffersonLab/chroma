@@ -40,7 +40,7 @@ namespace Chroma
     write(bin_out, evpair.eigenValue.weights);
   }
 
-};
+}
 
 
 #endif

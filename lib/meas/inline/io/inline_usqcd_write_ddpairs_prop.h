@@ -63,6 +63,6 @@ namespace Chroma
     InlineUSQCDWriteDDPairsPropParams params;
   };
 
-};
+}
 
 #endif

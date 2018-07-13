@@ -43,4 +43,4 @@ void lDeltaLs::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   END_CODE();
 }
 
-};
+}

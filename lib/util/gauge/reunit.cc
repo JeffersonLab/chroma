@@ -28,7 +28,7 @@ namespace Chroma {
   namespace ReunitEnv {
     static double time_spent =0;
     double getTime() { return time_spent; }
-  };
+  }
 
   template<typename Q, typename C, typename R, typename S>
   inline

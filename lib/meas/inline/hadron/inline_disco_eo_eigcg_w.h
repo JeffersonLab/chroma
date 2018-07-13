@@ -123,6 +123,6 @@ namespace Chroma
 
     
   }; // name space InlineDiscoEoEigCGEnv
-};
+}
 
 #endif

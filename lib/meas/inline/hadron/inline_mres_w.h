@@ -71,6 +71,6 @@ namespace Chroma
     InlineMresParams params;
   };
 
-};
+}
 
 #endif

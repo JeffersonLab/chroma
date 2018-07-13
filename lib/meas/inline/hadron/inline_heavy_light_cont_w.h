@@ -84,6 +84,6 @@ namespace Chroma
     InlineHeavyLightContParams params;
   };
 
-};
+}
 
 #endif

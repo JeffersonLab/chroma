@@ -83,6 +83,6 @@ namespace Chroma
     InlineHadSpecParams params;
   };
 
-};
+}
 
 #endif

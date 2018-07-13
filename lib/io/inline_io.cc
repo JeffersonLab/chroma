@@ -27,4 +27,4 @@ namespace Chroma {
 								      path);
     
   }
-};
+}

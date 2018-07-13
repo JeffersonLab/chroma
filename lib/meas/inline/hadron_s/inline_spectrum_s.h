@@ -135,6 +135,6 @@ namespace Chroma
     InlineStaggeredSpectrumParams params;
   };
 
-};
+}
 
 #endif

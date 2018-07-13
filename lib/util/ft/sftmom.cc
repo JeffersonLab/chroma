@@ -114,7 +114,7 @@ namespace Chroma
     origin_offset.resize(Nd);  /*<! Coordinate offset of the origin. Used to fix phase factor */
     origin_offset = 0;
     decay_dir = -1;            /*!< Decay direction */
-  };
+  }
 
 
   // Anonymous namespace

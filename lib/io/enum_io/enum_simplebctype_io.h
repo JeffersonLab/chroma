@@ -48,5 +48,5 @@ namespace Chroma {
 
   /*! @} */   // end of group io
 
-};
+}
 #endif

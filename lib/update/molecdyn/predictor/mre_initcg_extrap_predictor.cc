@@ -21,7 +21,7 @@ namespace Chroma
       {
 	unsigned int max_chrono = 1;
 	std::string opt_eigen_id;
-	int nevec;
+	int nevec
 	int max_evec;
 	try 
 	{

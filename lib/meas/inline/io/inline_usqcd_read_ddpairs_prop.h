@@ -64,6 +64,6 @@ namespace Chroma
     InlineUSQCDReadDDPairsPropParams params;
   };
 
-};
+}
 
 #endif

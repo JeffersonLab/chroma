@@ -20,7 +20,7 @@ namespace Chroma {
     }
     const std::string typeIDString = "QudaSolverType";
     bool regisered = registerAll();
-  };
+  }
 
   //! Read an QudaSolverType enum
   void read(XMLReader& xml_in, const std::string& path, QudaSolverType& t) 
@@ -47,7 +47,7 @@ namespace Chroma {
     }
     const std::string typeIDString = "QudaPrecisionType";
     bool regisered = registerAll();
-  };
+  }
 
 
   //! Read an QudaSolverType enum
@@ -73,7 +73,7 @@ namespace Chroma {
     }
     const std::string typeIDString = "QudaReconsType";
     bool regisered = registerAll();
-  };
+  }
 
   //! Read an QudaSolverType enum
   void read(XMLReader& xml_in, const std::string& path, QudaReconsType& t) 
@@ -97,7 +97,7 @@ namespace Chroma {
     }
     const std::string typeIDString = "QudaSchwarzMethod";
     bool regisered = registerAll();
-  };
+  }
 
   //! Read an QudaSolverType enum
   void read(XMLReader& xml_in, const std::string& path, QudaSchwarzMethod& t) 

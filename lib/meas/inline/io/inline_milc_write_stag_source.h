@@ -62,6 +62,6 @@ namespace Chroma
     InlineMILCWriteStagSourceParams params;
   };
 
-};
+}
 
 #endif
