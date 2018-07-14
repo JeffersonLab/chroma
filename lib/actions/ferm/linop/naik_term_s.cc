@@ -100,5 +100,5 @@ void Triple_Links(multi1d<LatticeColorMatrix> & u,
 
 
 
-}; // End Namespace Chroma
+}  // End Namespace Chroma
 

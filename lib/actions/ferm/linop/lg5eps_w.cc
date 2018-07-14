@@ -428,5 +428,5 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 }
 
 
-}; // End Namespace Chroma
+}  // End Namespace Chroma
 

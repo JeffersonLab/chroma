@@ -165,5 +165,5 @@ namespace Chroma
   unsigned long 
   WilsonDslashBaseArray::nFlops() const {return size()*1320;}
 
-}; // End Namespace Chroma
+}  // End Namespace Chroma
 

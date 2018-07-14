@@ -125,7 +125,7 @@ oximate the D^\dagger D invese (as those that EigCG produces are */
 
 
 
-  }; // name space InlineDiscoEOPrecEnv
+  }  // name space InlineDiscoEOPrecEnv
 
 }
 

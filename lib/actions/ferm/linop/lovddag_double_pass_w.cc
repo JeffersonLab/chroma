@@ -441,5 +441,5 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
   END_CODE();
 }
 
-}; // End Namespace Chroma
+}  // End Namespace Chroma
 

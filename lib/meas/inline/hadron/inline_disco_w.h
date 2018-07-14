@@ -78,7 +78,7 @@ namespace Chroma
       
     };
 
-  }; // name space InlineDiscoEnv
+  }  // name space InlineDiscoEnv
 
 }
 
