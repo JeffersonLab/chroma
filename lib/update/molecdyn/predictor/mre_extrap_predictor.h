@@ -34,9 +34,9 @@ namespace Chroma
   {
   private:
     Handle< CircularBuffer<T> > chrono_bufX;
-    Handle< CircularBuffer<T> > chrono_bufMX
+    Handle< CircularBuffer<T> > chrono_bufMX;
 
-    Handle< CircularBuffer<T> > chrono_bufY
+    Handle< CircularBuffer<T> > chrono_bufY;
     Handle< CircularBuffer<T> > chrono_bufMY;
 
   void 
