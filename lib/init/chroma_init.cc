@@ -78,7 +78,7 @@ namespace Chroma
     }
 
 
-  }; // End anonymous namespace
+  } // End anonymous namespace
 
   //! Get input file name
   std::string getXMLInputFileName() {return constructFileName(input_filename);}

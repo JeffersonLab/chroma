@@ -94,4 +94,4 @@ void expmat(LatticeColorMatrix& a,
   END_CODE();
 }
 
-}; // End namespace Chroma
+} // End namespace Chroma

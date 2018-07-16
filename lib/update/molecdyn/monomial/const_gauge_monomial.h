@@ -52,6 +52,6 @@ ConstGaugeMonomial(const GaugeMonomialParams& param_):GaugeMonomial(param_){}
     };
 
 
-}; //end namespace chroma
+} //end namespace chroma
 
 #endif
