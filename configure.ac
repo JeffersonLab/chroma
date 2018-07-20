@@ -166,6 +166,14 @@ AC_ARG_ENABLE(quda_deviface,
 	[quda_deviface_enabled="no"]
 )
 
+AC_ARG_ENABLE(jit_contraction_kernels,
+	AC_HELP_STRING(
+        [--enable-jit-contraction-kernels], 
+	[Enable QDP-JIT contraction kernels]),
+	[jit_contraction_kernels_enabled="${enableval}"],
+	[jit_contraction_kernels_enabled="no"]
+)
+
 
 AC_ARG_ENABLE(lapack,
   AC_HELP_STRING([--enable-lapack=<type>],
@@ -899,6 +907,21 @@ else
 fi
 
 AM_CONDITIONAL(BUILD_JIT_CLOVER_APPLY, [test "x${jit_clover_enabled}x" = "xyesx" ])
+
+
+
+dnl ************************************************************************
+dnl **** QDP-JIT contraction kernels                                    ****
+dnl ************************************************************************
+if test "X${jit_contraction_kernels_enabled}X" = "XyesX";
+then
+   AC_MSG_NOTICE( [Building with QDP-JIT contraction kernels] )   
+   AC_DEFINE([BUILD_JIT_CONTRACTION_KERNELS],[], [ Use JIT contraction kernels, requires to build on top of QDP-JIT ])
+else
+   AC_MSG_NOTICE( [Not using QDP-JIT contraction kernels] )
+fi
+
+AM_CONDITIONAL(BUILD_JIT_CONTRACTION_KERNELS, [test "x${jit_contraction_kernels_enabled}x" = "xyesx" ])
 
 
 dnl ************************************************************************
