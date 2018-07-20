@@ -225,7 +225,15 @@ namespace Chroma {
 					  mg_param.precision_null[i] = mg_inv_param.cuda_prec_precondition;
 					}
 
-					mg_param.coarse_solver[i] = QUDA_GCR_INVERTER;
+                    // FIXME: Allow coarse_solver as an XML Parameter
+					// FIXME: What about bottom solver. Always GCR or should I make it BiCGStab?
+
+					if (i==mg_param.n_level-1) {
+						mg_param.coarse_solver[i] = QUDA_CA_GCR_INVERTER;
+					} else {
+						mg_param.coarse_solver[i] = QUDA_GCR_INVERTER;
+					}
+
 					mg_param.coarse_solver_tol[i] = toDouble(ip.tol);
 					mg_param.coarse_solver_maxiter[i] = ip.maxIterations;
 
@@ -238,6 +246,14 @@ namespace Chroma {
 		          mg_param.smoother_schwarz_type[i] = QUDA_INVALID_SCHWARZ;
 		          mg_param.smoother_schwarz_cycle[i] = 1;
 		          break;
+		        case CA_GCR:
+		        	mg_param.smoother[i] = QUDA_CA_GCR_INVERTER;
+		        	mg_param.smoother_tol[i] = 0.25;
+		        	mg_param.smoother_solve_type[i] = QUDA_DIRECT_PC_SOLVE;
+		        	mg_param.omega[i] = toDouble(ip.relaxationOmegaMG);
+		        	mg_param.smoother_schwarz_type[i] = QUDA_INVALID_SCHWARZ;
+		        	mg_param.smoother_schwarz_cycle[i] = 1;
+		        	break;
 		        default:
 		          QDPIO::cout << "Unknown or no smother type specified, no smoothing inverter will be used." << std::endl;
 		          mg_param.smoother[i] = QUDA_INVALID_INVERTER;

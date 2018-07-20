@@ -72,6 +72,6 @@ namespace Chroma
     InlineBar3ptfnParams params;
   };
 
-};
+}
 
 #endif

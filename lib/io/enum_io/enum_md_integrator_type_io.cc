@@ -21,7 +21,7 @@ namespace Chroma {
 
     const std::string typeIDString = "MDIntegratorType";
     bool registered = registerAll();
-  };
+  }
 
   using namespace MDIntegratorTypeEnv;
   //! Read an MDIntegratorType enum
@@ -33,4 +33,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const MDIntegratorType& t) {
     theMDIntegratorTypeMap::Instance().write(typeIDString,xml_out, path, t);
   }
-};
+}

@@ -21,6 +21,7 @@ namespace Chroma
     CG,
     BICGSTAB,
     GCR,
+	CA_GCR,
     MR
   };
 

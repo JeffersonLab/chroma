@@ -21,7 +21,7 @@ namespace Chroma {
 
     bool registered = registerAll();
     const std::string typeIDString = "PropLineType";
-  };
+  }
   using namespace PropLineTypeEnv;
 
   //! Reader
@@ -43,4 +43,4 @@ namespace Chroma {
   void write(BinaryWriter& bin_out, const PropLineType& t) {
     thePropLineTypeMap::Instance().write(typeIDString, bin_out, t);
   }
-};
+}

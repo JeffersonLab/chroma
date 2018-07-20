@@ -25,7 +25,6 @@ namespace Chroma {
 
     const Subset& s = D.subset();
 
-    int iter = 0;
 
     // Target Residue
     Double rsd_t = Double(RsdTarget)*Double(RsdTarget)*norm2(b,s);

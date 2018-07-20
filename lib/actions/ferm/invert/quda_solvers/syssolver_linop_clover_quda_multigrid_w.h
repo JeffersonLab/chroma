@@ -618,7 +618,6 @@ namespace Chroma
 			}
 
 			swatch.stop();
-			double time = swatch.getTimeInSeconds();
 			Double rel_resid;
 
 			if( invParam.SolutionCheckP )  {

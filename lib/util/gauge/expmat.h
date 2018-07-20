@@ -28,7 +28,7 @@ void expmat(LatticeColorMatrix& a,
 
   namespace ExpMatEnv {
     extern double getTime();
-  };
-};
+  }
+}
 
 #endif

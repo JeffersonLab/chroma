@@ -34,7 +34,7 @@ namespace Chroma {
 
     bool registered = registerAll();
     const std::string typeIDString = "CfgType";
-  };
+  }
 
   using namespace CfgTypeEnv;
 
@@ -45,4 +45,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const CfgType& t) {
     theCfgTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
-};
+}

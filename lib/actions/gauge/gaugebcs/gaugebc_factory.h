@@ -43,7 +43,7 @@ namespace Chroma
 	    multi1d<LatticeColorMatrixD> >* (*)(XMLReader&, const std::string&), 
 		StringFactoryError> >
   TheGaugeBCDFactory;
-}; // end namespace Chroma
+} // end namespace Chroma
 
 
 #endif

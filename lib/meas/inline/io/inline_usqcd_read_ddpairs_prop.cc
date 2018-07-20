@@ -399,5 +399,5 @@ namespace Chroma
 
     END_CODE();
 }
-};
+}
 

@@ -66,6 +66,6 @@ namespace Chroma
     InlineMakeSourceParams params;
   };
 
-};
+}
 
 #endif

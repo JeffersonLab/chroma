@@ -26,6 +26,6 @@ namespace Chroma {
  */
 void HotSt(multi1d<LatticeColorMatrix>& u);
 
-};
+}
 
 #endif

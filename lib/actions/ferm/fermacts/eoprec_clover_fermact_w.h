@@ -73,7 +73,7 @@ namespace Chroma
     CloverFermActParams param;
   };
 
-}; // End Namespace Chroma
+}  // End Namespace Chroma
 
 
 #endif

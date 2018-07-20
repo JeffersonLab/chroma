@@ -34,7 +34,7 @@ namespace Chroma {
 
     const std::string typeIDString = "GaugeActType";
     bool registered = registerAll();
-  };
+  }
   using namespace GaugeActTypeEnv;
 
   //! Read an GaugeActType enum
@@ -46,4 +46,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const GaugeActType& t) {
     theGaugeActTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
-};
+}

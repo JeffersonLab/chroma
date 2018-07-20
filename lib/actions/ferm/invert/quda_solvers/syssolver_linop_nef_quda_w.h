@@ -257,7 +257,7 @@ namespace Chroma
       QDPIO::cout << "Ls from matrix: " << A->size() << std::endl;
       QDPIO::cout << "Ls from params: " << invParam.NEFParams.N5 << std::endl;
       QDPIO::cout << "Ls from quda: " << quda_inv_param.Ls << std::endl;
-      for(unsigned int s = 0; s < quda_inv_param.Ls; s++){
+      for(int s = 0; s < quda_inv_param.Ls; s++){
 	quda_inv_param.b_5[s] = toDouble(invParam.NEFParams.b5[s]);
 	quda_inv_param.c_5[s] = toDouble(invParam.NEFParams.c5[s]);
 	QDPIO::cout << " b5[" <<s<<"] = " << quda_inv_param.b_5[s] << "   c5[" << s << "] = " << quda_inv_param.c_5[s] << std::endl;
@@ -503,7 +503,7 @@ namespace Chroma
 
 	// Gauge Fix source and initial guess
 	QDPIO::cout << "Gauge Fixing source and initial guess" << std::endl;
-	for(unsigned int s=0; s<invParam.NEFParams.N5; s++){
+	for(int s=0; s<invParam.NEFParams.N5; s++){
 	  g_chi[s][ rb[1] ]  = GFixMat * chi[s];
 	  g_psi[s][ rb[1] ]  = GFixMat * psi[s];
 	}
@@ -514,7 +514,7 @@ namespace Chroma
 	}
 
 	QDPIO::cout << "Untransforming solution." << std::endl;
-	for(unsigned int s=0; s<invParam.NEFParams.N5; s++){
+	for(int s=0; s<invParam.NEFParams.N5; s++){
 	  psi[s][ rb[1] ]  = adj(GFixMat)*g_psi[s];
 	}
 	
@@ -530,7 +530,6 @@ namespace Chroma
       
 
       swatch.stop();
-      double time = swatch.getTimeInSeconds();
       
       // Check Solution
       {

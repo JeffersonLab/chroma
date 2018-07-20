@@ -46,5 +46,5 @@ namespace Chroma {
   void write(XMLWriter& w, const std::string& path, const EigenVecType& t);
 
   /*! @} */   // end of group io
-};
+}
 #endif

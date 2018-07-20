@@ -86,8 +86,6 @@ namespace Chroma
   {
     // Typedefs to save typing
     typedef LatticeFermion               T;
-    typedef multi1d<LatticeColorMatrix>  P;
-    typedef multi1d<LatticeColorMatrix>  Q;
 
     return new FermActQprop<T>(linOp(state),
 			       invLinOp(state,invParam));
@@ -106,8 +104,6 @@ namespace Chroma
   {
     // Typedefs to save typing
     typedef LatticeStaggeredFermion      T;
-    typedef multi1d<LatticeColorMatrix>  P;
-    typedef multi1d<LatticeColorMatrix>  Q;
 
     return new FermActQprop<T>(linOp(state),
 			       invLinOp(state,invParam));

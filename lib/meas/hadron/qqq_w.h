@@ -108,5 +108,5 @@ namespace Chroma {
 		 std::string type,
 		 std::string sink) ;
 
-};
+}
 #endif

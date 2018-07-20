@@ -111,7 +111,7 @@ namespace Chroma
   void read(XMLReader& xml_in, const std::string& path, OverlapStateInfo& info);
   void write(XMLWriter& xml_out, const std::string& path, const OverlapStateInfo& info);
 
-};
+}
 
 
 #endif

@@ -171,7 +171,7 @@ namespace Chroma {
       }
     }
     
-  };
+  }
 
   void read(XMLReader& xml, const std::string& path, 
 	    MULTIGRIDSolverParams& p)

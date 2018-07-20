@@ -493,5 +493,5 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   END_CODE();
 }
 
-}; // End Namespace Chroma
+}  // End Namespace Chroma
 

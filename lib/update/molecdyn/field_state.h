@@ -126,6 +126,6 @@ namespace Chroma
     multi1d<LatticeColorMatrix> q;
   };
   
-};  // End namespace Chroma
+}  // End namespace Chroma
 
 #endif

@@ -7,7 +7,7 @@
 using namespace Chroma;
 extern "C" { 
  void _mcleanup();
-};
+}
 
 /*
  * Input 

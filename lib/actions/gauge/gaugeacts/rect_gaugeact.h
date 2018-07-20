@@ -20,7 +20,7 @@ namespace Chroma
     bool registerAll();
     
     extern double getTime();
-  };
+  }
 
   //! Parameter structure
   /*! @ingroup gaugeacts */
@@ -152,7 +152,7 @@ namespace Chroma
 
   };
 
-};
+}
 
 
 #endif

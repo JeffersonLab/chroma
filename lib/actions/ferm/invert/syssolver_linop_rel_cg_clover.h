@@ -135,7 +135,6 @@ namespace Chroma
       psi = psi_d;
 
       swatch.stop();
-      double time = swatch.getTimeInSeconds();
 
       { 
 	T r;

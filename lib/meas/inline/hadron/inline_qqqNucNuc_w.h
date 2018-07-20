@@ -73,6 +73,6 @@ namespace Chroma
     InlineQQQNucNucParams params;
   };
 
-};
+}
 
 #endif

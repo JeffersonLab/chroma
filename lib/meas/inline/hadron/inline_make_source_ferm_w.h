@@ -73,6 +73,6 @@ namespace Chroma
     InlineMakeSourceFermParams params;
   };
 
-};
+}
 
 #endif

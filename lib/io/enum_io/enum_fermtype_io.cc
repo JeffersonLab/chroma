@@ -22,7 +22,7 @@ namespace Chroma {
     const std::string typeIDString = "FermType";
 
     bool registered = registerAll();
-  };
+  }
 
   using namespace FermTypeEnv;
 
@@ -35,4 +35,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const FermType& t) {
     theFermTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
-};
+}

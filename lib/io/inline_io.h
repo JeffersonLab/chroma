@@ -13,6 +13,6 @@ namespace Chroma {
 	    Handle< AbsInlineMeasurement >& meas_handle);
   
 
-};
+}
 
 #endif

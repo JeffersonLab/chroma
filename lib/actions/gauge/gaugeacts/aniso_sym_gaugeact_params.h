@@ -65,7 +65,7 @@ namespace Chroma
   
 
 
-};
+}
 
 
 #endif

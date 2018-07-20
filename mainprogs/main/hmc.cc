@@ -692,7 +692,7 @@ namespace Chroma
 
     return foo;
   }
-};
+}
 
 using namespace Chroma;
 
