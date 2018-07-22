@@ -49,7 +49,6 @@ namespace Chroma
 				       multi1d<T>& psi_s,
 				       const multi1d<Real> shifts) const{
 
-    printf("qqq 2\n");
     SystemSolverResults_t ret;
 
     void *spinorIn;
