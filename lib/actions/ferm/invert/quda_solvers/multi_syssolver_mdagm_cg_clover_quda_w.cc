@@ -49,6 +49,7 @@ namespace Chroma
 				       multi1d<T>& psi_s,
 				       const multi1d<Real> shifts) const{
 
+    printf("qqq 2\n");
     SystemSolverResults_t ret;
 
     void *spinorIn;
@@ -65,7 +66,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-      spinorIn = GetMemoryPtr( chi_s.getId() );
+      // have to do this later
 #endif
 
     }
@@ -95,11 +96,17 @@ namespace Chroma
       quda_inv_param.offset[s] = toDouble(shifts[s]);
    } 
 #else
+    std::vector<int> ids = {chi_s.getId()};
     for(int s=0; s < shifts.size(); s++) {
       psi_s[s][ rb[1] ] = zero;
-      spinorOut[s] = GetMemoryPtr( psi_s[s].getId() );
+      ids.push_back( psi_s[s].getId() );
       quda_inv_param.offset[s] = toDouble(shifts[s]);
-   } 
+    }
+    auto dev_ptr = GetMemoryPtr( ids );
+    spinorIn = dev_ptr[0];
+    for(int s=0; s < shifts.size(); s++) {
+      spinorOut[s] = dev_ptr[s];
+    }
 #endif
 
    quda_inv_param.num_offset = shifts.size();

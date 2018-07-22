@@ -71,7 +71,11 @@ namespace Chroma
     SystemSolverResults_t ret;
 
     void *spinorIn;
+    void *spinorOut;
 
+#ifdef BUILD_QUDA_DEVIFACE_SPINOR
+    std::vector<int> ids;
+#endif
     T mod_chi;
     if ( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
 
@@ -85,7 +89,8 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-      spinorIn = GetMemoryPtr( chi_s.getId() );
+      //spinorIn = GetMemoryPtr( chi_s.getId() );
+      ids.push_back(chi_s.getId());
 #endif
     }
     else { 
@@ -94,9 +99,13 @@ namespace Chroma
     }
 
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
-    void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
+    spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-    void* spinorOut = GetMemoryPtr( psi_s.getId() );
+    ids.push_back(psi_s.getId());
+    auto dev_ptr = GetMemoryPtr(ids);
+    spinorIn  = dev_ptr[0];
+    spinorOut = dev_ptr[1];
+    //void* spinorOut = GetMemoryPtr( psi_s.getId() );
 #endif
 
     // Do the solve here 

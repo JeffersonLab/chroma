@@ -89,9 +89,11 @@ namespace Chroma
     void* spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-    void* spinorIn = GetMemoryPtr( mod_chi.getId() );
-    void* spinorOut = GetMemoryPtr( psi_s.getId() );
-
+    // void* spinorIn = GetMemoryPtr( mod_chi.getId() );
+    // void* spinorOut = GetMemoryPtr( psi_s.getId() );
+    void* spinorIn;
+    void* spinorOut;
+    GetMemoryPtr2(spinorIn,spinorOut,mod_chi.getId(),psi_s.getId());
 #endif
 
     // Do the solve here 

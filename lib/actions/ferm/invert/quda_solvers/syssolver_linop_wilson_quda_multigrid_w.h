@@ -440,14 +440,15 @@ public:
 		// Set up the links
 		void* gauge[4];
 
-		for(int mu=0; mu < Nd; mu++) {
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
+		for(int mu=0; mu < Nd; mu++) {
 			gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
-#else
-			gauge[mu] = GetMemoryPtr( links_single[mu].getId() );
-			QDPIO::cout << "MDAGM CUDA gauge[" << mu << "] in = " << gauge[mu] << "\n";
-#endif
 		}
+#else
+		GetMemoryPtrGauge(gauge,links_single);
+		//gauge[mu] = GetMemoryPtr( links_single[mu].getId() );
+		//QDPIO::cout << "MDAGM CUDA gauge[" << mu << "] in = " << gauge[mu] << "\n";
+#endif
 
 		loadGaugeQuda((void *)gauge, &q_gauge_param);
 

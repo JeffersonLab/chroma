@@ -384,14 +384,15 @@ namespace Chroma
       // Set up the links     
       void* gauge[4]; 
 
-      for(int mu=0; mu < Nd; mu++) { 
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
+      for(int mu=0; mu < Nd; mu++) { 
 	gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
+      }
 #else
-	gauge[mu] = GetMemoryPtr( links_single[mu].getId() );
+      GetMemoryPtrGauge(gauge,links_single);
+      //gauge[mu] = GetMemoryPtr( links_single[mu].getId() );
 #endif
 
-      }
 
       loadGaugeQuda((void *)gauge, &q_gauge_param); 
 
@@ -425,11 +426,13 @@ namespace Chroma
       void *clover[2];
       void *cloverInv[2];
 
-      clover[0] = GetMemoryPtr( clov->getOffId() );
-      clover[1] = GetMemoryPtr( clov->getDiaId() );
+      GetMemoryPtrClover(clov->getOffId(),clov->getDiaId(),invclov->getOffId(),invclov->getDiaId());
 
-      cloverInv[0] = GetMemoryPtr( invclov->getOffId() );
-      cloverInv[1] = GetMemoryPtr( invclov->getDiaId() );
+      // clover[0] = GetMemoryPtr( clov->getOffId() );
+      // clover[1] = GetMemoryPtr( clov->getDiaId() );
+
+      // cloverInv[0] = GetMemoryPtr( invclov->getOffId() );
+      // cloverInv[1] = GetMemoryPtr( invclov->getDiaId() );
 
       // std::cout << "MDAGM clover CUDA pointers: " 
       // 		<< clover[0] << " "
