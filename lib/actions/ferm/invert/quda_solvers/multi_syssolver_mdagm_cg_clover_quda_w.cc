@@ -104,7 +104,7 @@ namespace Chroma
     auto dev_ptr = GetMemoryPtr( ids );
     spinorIn = dev_ptr[0];
     for(int s=0; s < shifts.size(); s++) {
-      spinorOut[s] = dev_ptr[s];
+      spinorOut[s] = dev_ptr[s+1];
     }
 #endif
 
