@@ -12,6 +12,7 @@
 #include "update/molecdyn/predictor/chrono_predictor.h"
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
 #include "quda.h"
+#include "actions/ferm/invert/quda_solvers/enum_quda_io.h"
 
 namespace Chroma 
 { 
@@ -30,7 +31,8 @@ namespace Chroma
     public AbsTwoStepChronologicalPredictor4D<LatticeFermion> 
   {
   public:
-    QUDA4DChronoPredictor(int max_chrono) : _max_chrono(max_chrono) {
+    QUDA4DChronoPredictor(int max_chrono, QudaPrecisionType prec) :
+    	_max_chrono(max_chrono), _prec(prec) {
       // Check Static Channel IDs:
       _X_index = QUDA4DChronoPredictorEnv::getAndIncrGlobalQUDAChronoIndex(); 
       _Y_index = QUDA4DChronoPredictorEnv::getAndIncrGlobalQUDAChronoIndex();
@@ -99,10 +101,15 @@ namespace Chroma
       return _max_chrono;
     }
     
+    inline
+	QudaPrecisionType getChronoPrecision() const {
+    	return _prec;
+    }
   private:
     int _X_index;
     int _Y_index;
     int _max_chrono;
+    QudaPrecisionType  _prec;
   };
   
 } // End Namespace Chroma

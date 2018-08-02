@@ -5,19 +5,50 @@
 using namespace QDP;
 
 namespace Chroma {
+
+	template<typename T>
+	void readArray(XMLReader& paramtop, const std::string& path, multi1d<T>& array, const T& defValue)
+	{
+
+		multi1d<T> tmp;
+		// If path is not found use default
+		if ( paramtop.count(path) == 0 ) {
+
+			QDPIO::cout << "Parameter with " << path << " not found. Setting default value "
+					<< defValue <<  " for " << array.size() << " array members" << std::endl;
+
+			for(int l=0; l < array.size() ; ++l) array[l] = defValue;
+		}
+		else {
+
+			// If it is found read it to tmp
+			read(paramtop, path, tmp);
+			if ( tmp.size() == 1 ) {
+                QDPIO::cout << "Broadcasting " << path << " = " << tmp[0] << "  to "  << array.size() <<  " array members" << std::endl;
+				// if tmp is a single element array, broadcast it
+				for(int l=0; l < array.size(); ++l) array[l] = tmp[0];
+			}
+			else {
+
+				// If tmp is the same size as array copy it
+				QDPIO::cout << "Copying " << path << " values to " << array.size() << " members " << std::endl;
+				if ( tmp.size() == array.size() ) {
+					for(int l=0; l < array.size(); ++l) array[l] = tmp[l];
+				}
+				else {
+					QDPIO::cout << "Error: Array with path " << path << "has size "
+							<< tmp.size() << " but " << array.size() << " are expected. " << std::endl;
+					QDP_abort(1);
+				}
+			}
+		}
+	}
+
   MULTIGRIDSolverParams::MULTIGRIDSolverParams(XMLReader& xml, 
 					     const std::string& path)
   {
     XMLReader paramtop(xml, path);
-    read(paramtop, "Residual", tol);
-    read(paramtop, "MaxIterations", maxIterations);
-    read(paramtop, "SmootherType", smootherType);
-    if ( paramtop.count("SmootherHaloPrecision") > 0 ) {
-      read(paramtop, "SmootherHaloPrecision", smootherHaloPrecision);
-    }
-    else {
-      smootherHaloPrecision = DEFAULT;
-    }
+
 
     read(paramtop, "Verbosity", verbosity);
     read(paramtop, "Precision", prec);
@@ -25,12 +56,44 @@ namespace Chroma {
     
     read(paramtop, "Blocking", blocking);
     mg_levels = blocking.size()+1;
+
+
+
+
+
     nvec.resize(mg_levels-1);
     nu_pre.resize(mg_levels-1);
     nu_post.resize(mg_levels-1);
     maxIterSubspaceCreate.resize(mg_levels-1);
     maxIterSubspaceRefresh.resize(mg_levels-1);
     rsdTargetSubspaceCreate.resize(mg_levels-1);
+
+    coarseSolverType.resize(mg_levels-1);
+    readArray<QudaSolverType>(paramtop, "CoarseSolverType", coarseSolverType, GCR);
+
+
+    tol.resize(mg_levels);
+    readArray<Real>(paramtop, "CoarseResidual", tol, Real(0.0001));
+
+    maxIterations.resize(mg_levels);
+    readArray<int>(paramtop, "MaxCoarseIterations", maxIterations, 12 );
+
+    smootherType.resize(mg_levels);
+    readArray<QudaSolverType>(paramtop, "SmootherType", smootherType, MR);
+
+
+    smootherTol.resize(mg_levels);
+    readArray<Real>(paramtop, "SmootherTol", smootherTol, Real(0.25));
+
+    smootherHaloPrecision.resize(mg_levels);
+    readArray<QudaPrecisionType>(paramtop, "SmootherHaloPrecision", smootherHaloPrecision, DEFAULT);
+
+    smootherSchwarzType.resize(mg_levels);
+    readArray(paramtop, "SmootherSchwarzType", smootherSchwarzType, INVALID_SCHWARZ);
+
+
+    smootherSchwarzCycle.resize(mg_levels);
+    readArray(paramtop, "SmootherSchwarzCycle", smootherSchwarzCycle, 1);
 
     read(paramtop, "NullVectors", nvec);
     read(paramtop, "Pre-SmootherApplications", nu_pre);
@@ -49,6 +112,8 @@ namespace Chroma {
       QDP_abort(1);
     }
 
+    subspaceSolver.resize(mg_levels-1);
+    readArray(paramtop, "SubspaceSolver", subspaceSolver, CG);
 
     if( paramtop.count("./RsdTargetSubspaceCreate") == 1 ) { 
       read(paramtop, "RsdTargetSubspaceCreate", rsdTargetSubspaceCreate);
@@ -120,13 +185,8 @@ namespace Chroma {
       read(paramtop, "SchwarzType", schwarzType);
     }
 
-    // Read optional relaxation param
-    if( paramtop.count("RelaxationOmegaMG") > 0 ) {
-      read(paramtop, "RelaxationOmegaMG", relaxationOmegaMG);
-    }
-    else { 
-	relaxationOmegaMG = Real(1.0);
-    }
+    relaxationOmegaMG.resize(mg_levels);
+    readArray(paramtop, "RelaxationOmegaMG", relaxationOmegaMG, Real(1.0));
 
    // Read optional relaxation param
     if( paramtop.count("RelaxationOmegaOuter") > 0 ) {
@@ -188,7 +248,7 @@ namespace Chroma {
     write(xml, "Residual", p.tol);
     write(xml, "MaxIterations", p.maxIterations);
     write(xml, "SmootherType", p.smootherType);
-    if ( p.smootherHaloPrecision != DEFAULT ) { 
+    if ( p.smootherHaloPrecision[0] != DEFAULT ) {
       write(xml, "SmootherHaloPrecision", p.smootherHaloPrecision);
     }
     write(xml, "RelaxationOmegaMG", p.relaxationOmegaMG);

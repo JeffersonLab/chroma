@@ -410,8 +410,8 @@ namespace Chroma
 
 			MULTIGRIDSolverParams ip = *(invParam.MULTIGRIDParams);
 			//
-			quda_inv_param.tol_precondition = toDouble(ip.tol);
-			quda_inv_param.maxiter_precondition = ip.maxIterations;
+			quda_inv_param.tol_precondition = toDouble(ip.tol[0]);
+			quda_inv_param.maxiter_precondition = ip.maxIterations[0];
 			quda_inv_param.gcrNkrylov = ip.outer_gcr_nkrylov;
 			quda_inv_param.residual_type = static_cast<QudaResidualType>(QUDA_L2_RELATIVE_RESIDUAL);
 

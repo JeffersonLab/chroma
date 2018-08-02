@@ -37,6 +37,7 @@ using namespace QDP;
 #include "actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h"
 #endif
 
+#include "update/molecdyn/predictor/zero_guess_predictor.h"
 #include "update/molecdyn/predictor/quda_predictor.h"
 #include "meas/inline/io/named_objmap.h"
 
@@ -399,8 +400,8 @@ public:
 		loadGaugeQuda((void *)gauge, &q_gauge_param);
 
 
-		quda_inv_param.tol_precondition = toDouble(ip.tol);
-		quda_inv_param.maxiter_precondition = ip.maxIterations;
+		quda_inv_param.tol_precondition = toDouble(ip.tol[0]);
+		quda_inv_param.maxiter_precondition = ip.maxIterations[0];
 		quda_inv_param.gcrNkrylov = ip.outer_gcr_nkrylov;
 		quda_inv_param.residual_type = static_cast<QudaResidualType>(QUDA_L2_RELATIVE_RESIDUAL);
 
@@ -576,53 +577,13 @@ QDPIO::cout << solver_string << " init_time = "
 		StopWatch swatch;
 		swatch.start();
 
+		// I want to use the predictor versions of the code as they have been made robust.
+		// So I should use either a null predictor or a zero guess predictor here.
+		// The MG two step solve logic is quite complicated and may need to reinit the fields.
+		// I don't want to triplicate that logic so I'll just use a dummy predictor and call through.
+		ZeroGuess4DChronoPredictor dummy_predictor;
+		res = (*this)(psi, chi, dummy_predictor);
 
-
-
-		psi = zero; // Zero initial guess
-		T g5chi = Gamma(Nd*Nd - 1)*chi;
-		T tmp_solve = zero;
-		res1 = qudaInvert(*clov,
-				*invclov,
-				g5chi,
-				tmp_solve);
-		T g5chi_inverseg5 = Gamma(Nd*Nd -1)*tmp_solve;
-		res2 = qudaInvert(*clov,
-				*invclov,
-				g5chi_inverseg5,
-				psi);
-
-
-		swatch.stop();
-		double time = swatch.getTimeInSeconds();
-
-		{
-			T r;
-			r[A->subset()]=chi;
-			T tmp;
-			(*A)(tmp, psi, PLUS);
-			T tmp_dag;
-			(*A)(tmp_dag, tmp, MINUS);
-			r[A->subset()] -= tmp_dag;
-			res.n_count = res1.n_count + res2.n_count;
-			res.resid = sqrt(norm2(r, A->subset()));
-		}
-
-		Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
-
-		QDPIO::cout <<  solver_string  << "iterations: " << res1.n_count << " + "
-				<<  res2.n_count << " = " << res.n_count
-				<<  " Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
-
-		QDPIO::cout <<solver_string  << "Total time (with prediction)=" << time << std::endl;
-
-		// Convergence Check/Blow Up
-		if ( ! invParam.SilentFailP ) {
-			if ( toBool( rel_resid > invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
-				QDPIO::cerr << solver_string << "ERROR: QUDA MULTIGRID Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl;
-				QDP_abort(1);
-			}
-		}
 
 		END_CODE();
 		return res;
@@ -1007,7 +968,15 @@ QDPIO::cout << solver_string << " init_time = "
 		quda_inv_param.chrono_use_resident = true;
 		quda_inv_param.chrono_replace_last = false;
 
-		quda_inv_param.chrono_precision = quda_inv_param.cuda_prec_sloppy; // FIXME: expose this setting in XML
+		if ( predictor.getChronoPrecision() == DEFAULT ) {
+			QDPIO::cout << "Setting Default Chrono precision of " << cpu_prec << std::endl;
+			quda_inv_param.chrono_precision = cpu_prec;
+		}
+		else {
+			quda_inv_param.chrono_precision = theChromaToQudaPrecisionTypeMap::Instance()[ predictor.getChronoPrecision() ];
+			QDPIO::cout << "Setting Chrono precision of " << quda_inv_param.chrono_precision << std::endl;
+		}
+
 		/// channel set done
 		T Y_prime = zero;
 

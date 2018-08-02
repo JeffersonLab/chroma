@@ -455,8 +455,8 @@ public:
 
 		MULTIGRIDSolverParams ip = *(invParam.MULTIGRIDParams);
 		//
-		quda_inv_param.tol_precondition = toDouble(ip.tol);
-		quda_inv_param.maxiter_precondition = ip.maxIterations;
+		quda_inv_param.tol_precondition = toDouble(ip.tol[0]);
+		quda_inv_param.maxiter_precondition = ip.maxIterations[0];
 		quda_inv_param.gcrNkrylov = ip.outer_gcr_nkrylov;
 		mg_inv_param.gcrNkrylov = ip.precond_gcr_nkrylov;
 		//Replacing above with what's in the invert test.
@@ -534,10 +534,10 @@ public:
 				mg_param.nu_pre[i] = ip.nu_pre[i];
 				mg_param.nu_post[i] = ip.nu_post[i];
 			}
-			mg_param.smoother_tol[i] = toDouble(ip.tol);
+			mg_param.smoother_tol[i] = toDouble(ip.smootherTol[i]);
 			mg_param.global_reduction[i] = QUDA_BOOLEAN_YES;
 
-			switch( ip.smootherType ) {
+			switch( ip.smootherType[i] ) {
 			case MR:
 				mg_param.smoother[i] = QUDA_MR_INVERTER;
 				mg_param.omega[i] = 0.85;
