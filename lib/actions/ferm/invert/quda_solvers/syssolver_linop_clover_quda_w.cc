@@ -68,7 +68,7 @@ namespace Chroma
     void *spinorOut;
 
 #ifdef BUILD_QUDA_DEVIFACE_SPINOR
-    std::vector<int> ids;
+    std::vector<QDPCache::ArgKey> ids;
 #endif
     T mod_chi;
     if ( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {

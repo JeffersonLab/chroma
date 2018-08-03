@@ -95,7 +95,7 @@ namespace Chroma
       quda_inv_param.offset[s] = toDouble(shifts[s]);
    } 
 #else
-    std::vector<int> ids = {chi_s.getId()};
+    std::vector<QDPCache::ArgKey> ids = {chi_s.getId()};
     for(int s=0; s < shifts.size(); s++) {
       psi_s[s][ rb[1] ] = zero;
       ids.push_back( psi_s[s].getId() );
