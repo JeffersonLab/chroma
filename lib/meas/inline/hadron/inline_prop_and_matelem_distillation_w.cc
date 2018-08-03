@@ -656,24 +656,6 @@ namespace Chroma
 	      // The final perambulator
 	      QDP::MapObjectMemory<KeyPropElementalOperator_t, ValPropElementalOperator_t> peram;
 
-#ifdef QDP_IS_QDPJIT
-	      //QDPIO::cout << "Start of initialization of scalars on a stack" << std::endl;
-	      size_t count = 0;
-	      for(std::list<KeyPropElementalOperator_t>::const_iterator key = snk_keys.begin();
-		  key != snk_keys.end();
-		  ++key)
-		{
-		  ++count;
-		}
-	      size_t size = count * num_vecs * num_vecs * sizeof(ComplexD::SubType_t);
-	      // QDPIO::cout << "Creating stack: snk_keys = " << count
-	      // 		  << ", num_vecs = " << num_vecs
-	      // 		  << ", element size = " << sizeof(ComplexD::SubType_t)
-	      // 		  << ", total size = " << size
-	      // 		  << std::endl;
-	      qdp_stack_scalars_start( size );
-#endif
-	    	    
 	      // Initialize
 	      for(std::list<KeyPropElementalOperator_t>::const_iterator key = snk_keys.begin();
 		  key != snk_keys.end();
@@ -687,10 +669,6 @@ namespace Chroma
 		  peram[*key].mat = zero;
 		} // key
 	      QDPIO::cout << "peram initialized! " << std::endl; 
-
-#ifdef QDP_IS_QDPJIT
-	      qdp_stack_scalars_end();
-#endif
 
 	      //
 	      // The space distillation loop
@@ -856,10 +834,7 @@ namespace Chroma
 			      << " secs" << std::endl;
 		}
 
-	    } // this ends the lifetime of qdp_db. Thus after this scope it should be safe to free the stack space for the OScalars
-#ifdef QDP_IS_QDPJIT
-	    qdp_stack_scalars_free_stack();
-#endif
+	    } // this ends the lifetime of qdp_db.
 	  } // for spin_src
 	} // for tt
 
