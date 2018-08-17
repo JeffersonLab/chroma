@@ -238,7 +238,8 @@ namespace Chroma
 	{
 	  QDPIO::cout << __func__ << ": on t_source= " << t_source << "  colorvec_src= " << colorvec_src << std::endl;
 
-	  LatticeColorVectorF vec_srce = zero;
+	  // No need to initialize with 'zero' - we are returning a subtype.
+	  LatticeColorVectorF vec_srce;
 
 	  if (!zero_colorvecs)
 	    {
