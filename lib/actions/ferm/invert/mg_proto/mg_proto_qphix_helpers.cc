@@ -74,22 +74,65 @@ createFineLinOpT( const MGProtoSolverParams& params, const multi1d<LatticeColorM
 	return M_fine;
 }
 
-std::shared_ptr<MG::QPhiXWilsonCloverLinearOperatorF>
+std::shared_ptr<MGPreconditioner::LinOpFT>
 createFineLinOpF( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u,
     const MG::LatticeInfo& info)
 {
-  return createFineLinOpT<MG::QPhiXWilsonCloverLinearOperatorF>(params,u,info);
+  return createFineLinOpT<typename MGPreconditioner::LinOpFT>(params,u,info);
 }
 
-std::shared_ptr<MG::QPhiXWilsonCloverLinearOperator>
+std::shared_ptr<MGPreconditioner::LinOpT>
 createFineLinOp( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u,
     const MG::LatticeInfo& info)
 {
-  return createFineLinOpT<MG::QPhiXWilsonCloverLinearOperator>(params,u,info);
+  return createFineLinOpT<typename MGPreconditioner::LinOpT>(params,u,info);
 }
 
+std::shared_ptr<MGPreconditionerEO::LinOpFT>
+createFineEOLinOpF( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u,
+    const MG::LatticeInfo& info)
+{
+  return createFineLinOpT<typename MGPreconditionerEO::LinOpFT>(params,u,info);
+}
+
+std::shared_ptr<MGPreconditionerEO::LinOpT>
+createFineEOLinOp( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u,
+    const MG::LatticeInfo& info)
+{
+  return createFineLinOpT<typename MGPreconditionerEO::LinOpT>(params,u,info);
+}
+
+template<typename PrecT>
+void deleteMGPreconditionerT(const std::string& subspaceId)
+{
+
+	QDPIO::cout << "Deleting MG_Proto preconditioner with subspaceID=" << subspaceId << std::endl;
+	// Look up in named object map
+	QDPIO::cout << "Looking Up " << subspaceId << " in the Named Onject Map" << std::endl;
+	if( TheNamedObjMap::Instance().check(subspaceId) ) {
+		// Found it... Delete it.
+		QDPIO::cout << "  ... Subspace ID found... Deleting" <<std::endl;
+
+		// This will erase the MGPreconditioner, which has in it shared pointers.
+		// If the shared pointers are destroyed, and there are no references remaining
+		// then MG Levels will be destroyed as weill v_cycle
+		// These only hold allocated data by shared pointer, so they too should be cleaned
+		TheNamedObjMap::Instance().erase(subspaceId);
+	}
+}
+
+void deleteMGPreconditioner(const std::string& subspaceId)
+{
+	deleteMGPreconditionerT<MGPreconditioner>(subspaceId);
+}
+void deleteMGPreconditionerEO(const std::string& subspaceId)
+{
+	deleteMGPreconditionerT<MGPreconditionerEO>(subspaceId);
+}
+
+template<typename PrecT>
 void
-createMGPreconditioner( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u)
+createMGPreconditionerT( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u)
 {
 	START_CODE();
 	StopWatch swatch;
@@ -103,12 +146,12 @@ createMGPreconditioner( const MGProtoSolverParams& params, const multi1d<Lattice
 	if( TheNamedObjMap::Instance().check(subspaceId) ) {
 		// Found it... Delete it.
 		QDPIO::cout << "  ... Subspace ID found... Deleting" <<std::endl;
-		deleteMGPreconditioner(subspaceId);
+		deleteMGPreconditionerT<PrecT>(subspaceId);
 	}
 
 
 	// Now make a new one.
-	shared_ptr<MG::QPhiXMultigridLevels> mg_levels = make_shared<MG::QPhiXMultigridLevels>();
+	shared_ptr<typename PrecT::LevelT> mg_levels = make_shared<typename PrecT::LevelT>();
 
 	// First make an info from the lattice parameters:
   IndexArray latdims = {{ QDP::Layout::subgridLattSize()[0],
@@ -120,11 +163,11 @@ createMGPreconditioner( const MGProtoSolverParams& params, const multi1d<Lattice
 
 	// First make M
 	QDPIO::cout << "Creating M..." ;
-	shared_ptr<MG::QPhiXWilsonCloverLinearOperator> M=createFineLinOp( params, u, *((mg_levels->fine_level).info) );
+	shared_ptr<typename PrecT::LinOpT> M=createFineLinOpT<typename PrecT::LinOpT>( params, u, *((mg_levels->fine_level).info) );
 	QDPIO::cout << "Done" << std::endl;
 
 	QDPIO::cout << "Creating single prec M...";
-	shared_ptr<MG::QPhiXWilsonCloverLinearOperatorF> M_f=createFineLinOpF( params, u, *((mg_levels->fine_level).info) );
+	shared_ptr<typename PrecT::LinOpFT> M_f=createFineLinOpT<typename PrecT::LinOpFT>( params, u, *((mg_levels->fine_level).info) );
 	QDPIO::cout << "Done" << std::endl;
 
 	QDPIO::cout << "Creating MG Levels ... " ;
@@ -184,7 +227,7 @@ createMGPreconditioner( const MGProtoSolverParams& params, const multi1d<Lattice
 
 	QDPIO::cout << "Creating VCycle Preconditioner...";
 
-	shared_ptr<MG::VCycleRecursiveQPhiX> v_cycle=make_shared<MG::VCycleRecursiveQPhiX>(v_params, *mg_levels);
+	shared_ptr<typename PrecT::VCycleT> v_cycle=make_shared<typename PrecT::VCycleT>(v_params, *mg_levels);
 
 	QDPIO::cout << "Done";
 
@@ -199,13 +242,13 @@ createMGPreconditioner( const MGProtoSolverParams& params, const multi1d<Lattice
 	write(record_xml, "InvertParam", params);
 	pop(record_xml);
 
-	TheNamedObjMap::Instance().create<shared_ptr<MGPreconditioner>>(subspaceId);
+	TheNamedObjMap::Instance().create<shared_ptr<PrecT>>(subspaceId);
 	TheNamedObjMap::Instance().get(subspaceId).setFileXML(file_xml);
 	TheNamedObjMap::Instance().get(subspaceId).setRecordXML(record_xml);
-	TheNamedObjMap::Instance().getData<shared_ptr<MGPreconditioner>>(subspaceId)=make_shared<MGPreconditioner>();
-	TheNamedObjMap::Instance().getData<shared_ptr<MGPreconditioner>>(subspaceId)->mg_levels = mg_levels;
-	TheNamedObjMap::Instance().getData<shared_ptr<MGPreconditioner>>(subspaceId)->v_cycle = v_cycle;
-	TheNamedObjMap::Instance().getData<shared_ptr<MGPreconditioner>>(subspaceId)->M = M;
+	TheNamedObjMap::Instance().getData<shared_ptr<PrecT>>(subspaceId)=make_shared<PrecT>();
+	TheNamedObjMap::Instance().getData<shared_ptr<PrecT>>(subspaceId)->mg_levels = mg_levels;
+	TheNamedObjMap::Instance().getData<shared_ptr<PrecT>>(subspaceId)->v_cycle = v_cycle;
+	TheNamedObjMap::Instance().getData<shared_ptr<PrecT>>(subspaceId)->M = M;
 
 	swatch.stop();
 	QDPIO::cout << "MG_PROTO_QPHIX_SETUP: Subspace Creation Took : " << swatch.getTimeInSeconds() << " sec" << std::endl;
@@ -213,27 +256,25 @@ createMGPreconditioner( const MGProtoSolverParams& params, const multi1d<Lattice
 	END_CODE();
 }
 
-void deleteMGPreconditioner(const std::string& subspaceId)
+void
+createMGPreconditioner( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u)
 {
-
-	QDPIO::cout << "Deleting MG_Proto preconditioner with subspaceID=" << subspaceId << std::endl;
-	// Look up in named object map
-	QDPIO::cout << "Looking Up " << subspaceId << " in the Named Onject Map" << std::endl;
-	if( TheNamedObjMap::Instance().check(subspaceId) ) {
-		// Found it... Delete it.
-		QDPIO::cout << "  ... Subspace ID found... Deleting" <<std::endl;
-
-		// This will erase the MGPreconditioner, which has in it shared pointers.
-		// If the shared pointers are destroyed, and there are no references remaining
-		// then MG Levels will be destroyed as weill v_cycle
-		// These only hold allocated data by shared pointer, so they too should be cleaned
-		TheNamedObjMap::Instance().erase(subspaceId);
-	}
+	createMGPreconditionerT<MGPreconditioner>(params,u);
 }
 
-shared_ptr<MGPreconditioner> getMGPreconditioner(const std::string& subspaceId)
+
+void
+createMGPreconditionerEO( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u)
 {
-	shared_ptr<MGPreconditioner> ret_val = nullptr;
+	createMGPreconditionerT<MGPreconditionerEO>(params,u);
+}
+
+
+
+template<typename PrecT>
+shared_ptr<PrecT> getMGPreconditionerT(const std::string& subspaceId)
+{
+	shared_ptr<PrecT> ret_val = nullptr;
 	if( TheNamedObjMap::Instance().check(subspaceId) ) {
 		// Found it... Delete it.
 		QDPIO::cout << "  ... Subspace ID found... returning" <<std::endl;
@@ -242,7 +283,7 @@ shared_ptr<MGPreconditioner> getMGPreconditioner(const std::string& subspaceId)
 		// If the shared pointers are destroyed, and there are no references remaining
 		// then MG Levels will be destroyed as weill v_cycle
 		// These only hold allocated data by shared pointer so they too should be cleaned
-		ret_val = TheNamedObjMap::Instance().getData<shared_ptr<MGPreconditioner>>(subspaceId);
+		ret_val = TheNamedObjMap::Instance().getData<shared_ptr<PrecT>>(subspaceId);
 
 	}
 	else {
@@ -254,7 +295,16 @@ shared_ptr<MGPreconditioner> getMGPreconditioner(const std::string& subspaceId)
 
 }
 
+shared_ptr<MGPreconditioner> getMGPreconditioner(const std::string& subspaceId)
+		{
+			return getMGPreconditionerT<MGPreconditioner>(subspaceId);
+		}
 
+
+shared_ptr<MGPreconditionerEO> getMGPreconditionerEO(const std::string& subspaceId)
+		{
+			return getMGPreconditionerT<MGPreconditionerEO>(subspaceId);
+		}
 
 
 }
