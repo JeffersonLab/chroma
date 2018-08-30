@@ -10,6 +10,14 @@ namespace Chroma {
 	    const std::string& path,
 	    Handle< AbsInlineMeasurement >& meas_handle) 
   {
+    meas_handle = readInlineMeasurement(xml, path);
+  }
+
+
+  // Return an inline measurement
+  AbsInlineMeasurement* readInlineMeasurement(XMLReader& xml,
+					      const std::string& path)
+  {
 
     std::string measurement_name;
     try { 
@@ -21,10 +29,10 @@ namespace Chroma {
       QDP_abort(1);
     }
     
-    meas_handle = TheInlineMeasurementFactory::Instance().createObject(
-								      measurement_name, 
-								      xml,
-								      path);
+    return TheInlineMeasurementFactory::Instance().createObject(measurement_name, 
+								xml,
+								path);
     
   }
-};
+  
+}
