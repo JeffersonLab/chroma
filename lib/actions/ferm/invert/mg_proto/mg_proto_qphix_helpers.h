@@ -36,7 +36,7 @@ struct MGPreconditionerT
 };
 
 using MGPreconditioner = MGPreconditionerT<MG::QPhiXMultigridLevels, MG::VCycleRecursiveQPhiX,MG::QPhiXWilsonCloverLinearOperator, MG::QPhiXWilsonCloverLinearOperatorF>;
-using MGPreconditionerEO = MGPreconditionerT<MG::QPhiXMultigridLevelsEO, MG::VCycleRecursiveQPhiXEO,MG::QPhiXWilsonCloverEOLinearOperator, MG::QPhiXWilsonCloverEOLinearOperatorF>;
+using MGPreconditionerEO = MGPreconditionerT<MG::QPhiXMultigridLevelsEO, MG::VCycleRecursiveQPhiXEO2,MG::QPhiXWilsonCloverEOLinearOperator, MG::QPhiXWilsonCloverEOLinearOperatorF>;
 
 
 // for testing
