@@ -765,7 +765,7 @@ namespace Chroma
 		  // The perambulator part
 		  // Loop over time
 
-		  
+#ifndef BUILD_JIT_CONTRACTION_KERNELS
 		  for(int t_slice = 0; t_slice < Lt; ++t_slice)
 		    {
 		      // Loop over all the keys
@@ -775,33 +775,56 @@ namespace Chroma
 			{
 			  if (key->t_slice != t_slice) {continue;}
 
-#ifndef BUILD_JIT_CONTRACTION_KERNELS
 			  // Loop over the sink colorvec, form the innerproduct and the resulting perambulator
 			  for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 			    {
 			      peram[*key].mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_map.getVec(t_slice, colorvec_sink), 
 											 ferm_out(key->spin_snk));
 			    } // for colorvec_sink
+			} // for key
+		    } // for t_slice
 #else
-#warning "Using QDP-JIT contraction kernels"
+#warning "Using QDP-JIT contraction kernels v.2"
+		  for(int spin_snk = 0; spin_snk < Ns; ++spin_snk)
+		    {
+		      int count = 0;
+		      for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();  key != snk_keys.end(); ++key)
+			{
+			  if (key->spin_snk != spin_snk) { continue;}
+			  count += num_vecs;
+			}
+
+		      //QDPIO::cout << "spin_snk = " << spin_snk << ", count = " << count << "\n";
+		      
+		      multi1d<SubLatticeColorVectorF*> vec_ptr( count );
+		      multi1d<ComplexD*> contr_ptr( count );
+
+		      int run_count = 0;
+		      
+		      // Loop over all the keys
+		      for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();
+			  key != snk_keys.end();
+			  ++key)
+			{
+			  if (key->spin_snk != spin_snk) {continue;}
+
 			  //
 			  // Pack pointers to the vectors and matrix elements
 			  //
-			  multi1d<SubLatticeColorVectorF*> vec_ptr( num_vecs );
-			  multi1d<ComplexD*> contr_ptr( num_vecs );
 			  for (int i=0 ; i < num_vecs ; ++i ) {
-			    vec_ptr[i] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( t_slice , i ) );
-			    contr_ptr[i] = &peram[*key].mat( i , colorvec_src );
+			    vec_ptr[run_count] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( key->t_slice , i ) );
+			    contr_ptr[run_count] = &peram[*key].mat( i , colorvec_src );
+			    ++run_count;
 			  }
+			}
 		  
-			  //
-			  // Big call-out 
-			  //
-			  multi_innerProduct( contr_ptr , vec_ptr , ferm_out(key->spin_snk) );
+		      //
+		      // Big call-out 
+		      //
+		      multi_innerProduct( contr_ptr , vec_ptr , ferm_out(spin_snk) );
+		  
+		    } // for spin_snk
 #endif
-		  
-			} // for key
-		    } // for t_slice
 
 		  sniss1.stop();
 		  QDPIO::cout << "Time to compute and assemble peram for spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << "  time = " 
