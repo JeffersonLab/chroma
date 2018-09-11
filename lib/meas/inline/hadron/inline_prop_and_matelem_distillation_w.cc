@@ -123,6 +123,15 @@ namespace Chroma
 	  }
       }
 
+      input.fuse_timeloop = false;
+      if( inputtop.count("fuse_timeloop") == 1 ) {
+	read(inputtop, "fuse_timeloop", input.fuse_timeloop );
+	if (input.fuse_timeloop)
+	  {
+	    QDPIO::cout << "fuse_timeloop found!\n";
+	  }
+      }
+
     }
 
     //! Propagator output
@@ -625,7 +634,10 @@ namespace Chroma
 	swatch.start();
 
 #ifdef BUILD_JIT_CONTRACTION_KERNELS
-	QDPIO::cout << "Using JIT contraction kernels\n";
+	if ( params.param.contract.fuse_timeloop )
+	  QDPIO::cout << "Using JIT contraction kernels (fused timeloop)\n";
+	else
+	  QDPIO::cout << "Using JIT contraction kernels (non-fused timeloop)\n";
 #endif
 
 	//
@@ -635,6 +647,7 @@ namespace Chroma
 	const int num_vecs            = params.param.contract.num_vecs;
 	const multi1d<int>& t_sources = params.param.contract.t_sources;
 
+	
 	// Loop over each time source
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
@@ -784,46 +797,81 @@ namespace Chroma
 			} // for key
 		    } // for t_slice
 #else
-#warning "Using QDP-JIT contraction kernels v.2"
-		  for(int spin_snk = 0; spin_snk < Ns; ++spin_snk)
+		  if ( params.param.contract.fuse_timeloop)
 		    {
-		      int count = 0;
-		      for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();  key != snk_keys.end(); ++key)
-			{
-			  if (key->spin_snk != spin_snk) { continue;}
-			  count += num_vecs;
-			}
-
-		      //QDPIO::cout << "spin_snk = " << spin_snk << ", count = " << count << "\n";
-		      
-		      multi1d<SubLatticeColorVectorF*> vec_ptr( count );
-		      multi1d<ComplexD*> contr_ptr( count );
-
-		      int run_count = 0;
-		      
-		      // Loop over all the keys
-		      for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();
-			  key != snk_keys.end();
-			  ++key)
-			{
-			  if (key->spin_snk != spin_snk) {continue;}
-
-			  //
-			  // Pack pointers to the vectors and matrix elements
-			  //
-			  for (int i=0 ; i < num_vecs ; ++i ) {
-			    vec_ptr[run_count] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( key->t_slice , i ) );
-			    contr_ptr[run_count] = &peram[*key].mat( i , colorvec_src );
-			    ++run_count;
-			  }
-			}
-		  
 		      //
-		      // Big call-out 
+		      // fused timeloop
 		      //
-		      multi_innerProduct( contr_ptr , vec_ptr , ferm_out(spin_snk) );
+		      for(int spin_snk = 0; spin_snk < Ns; ++spin_snk)
+			{
+			  int count = 0;
+			  for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();  key != snk_keys.end(); ++key)
+			    {
+			      if (key->spin_snk != spin_snk) { continue;}
+			      count += num_vecs;
+			    }
+
+			  //QDPIO::cout << "spin_snk = " << spin_snk << ", count = " << count << "\n";
+		      
+			  multi1d<SubLatticeColorVectorF*> vec_ptr( count );
+			  multi1d<ComplexD*> contr_ptr( count );
+
+			  int run_count = 0;
+		      
+			  // Loop over all the keys
+			  for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();
+			      key != snk_keys.end();
+			      ++key)
+			    {
+			      if (key->spin_snk != spin_snk) {continue;}
+
+			      //
+			      // Pack pointers to the vectors and matrix elements
+			      //
+			      for (int i=0 ; i < num_vecs ; ++i ) {
+				vec_ptr[run_count] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( key->t_slice , i ) );
+				contr_ptr[run_count] = &peram[*key].mat( i , colorvec_src );
+				++run_count;
+			      }
+			    }
+		      
+			  //
+			  // Big call-out 
+			  //
+			  multi_innerProduct( contr_ptr , vec_ptr , ferm_out(spin_snk) );
 		  
-		    } // for spin_snk
+			} // for spin_snk
+		    }
+		  else
+		    {
+		      //
+		      // non-fused timeloop
+		      //
+		      for(int t_slice = 0; t_slice < Lt; ++t_slice)
+			{
+			  // Loop over all the keys
+			  for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();
+			      key != snk_keys.end();
+			      ++key)
+			    {
+			      if (key->t_slice != t_slice) {continue;}
+			      //
+			      // Pack pointers to the vectors and matrix elements
+			      //
+			      multi1d<SubLatticeColorVectorF*> vec_ptr( num_vecs );
+			      multi1d<ComplexD*> contr_ptr( num_vecs );
+			      for (int i=0 ; i < num_vecs ; ++i ) {
+				vec_ptr[i] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( t_slice , i ) );
+				contr_ptr[i] = &peram[*key].mat( i , colorvec_src );
+			      }
+		  
+			      //
+			      // Big call-out 
+			      //
+			      multi_innerProduct( contr_ptr , vec_ptr , ferm_out(key->spin_snk) );
+			    } // for key
+			} // for t_slice
+		    }
 #endif
 
 		  sniss1.stop();
