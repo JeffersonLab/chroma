@@ -30,8 +30,12 @@
 #endif
 
 #ifdef BUILD_MGPROTO
+#include "MG_config.h"
 #include "utils/memory.h"
 #include "utils/initialize.h"
+#ifdef MG_ENABLE_TIMERS
+#include "utils/timer.h"
+#endif
 #endif
 
 namespace Chroma 
@@ -309,6 +313,10 @@ namespace Chroma
 #endif
 
 #ifdef BUILD_MGPROTO
+#ifdef MG_ENABLE_TIMERS
+    (MG::Timer::TimerAPI::getInstance())->reportAllTimer();
+#endif
+
     MG::FinalizeMemory();
 #endif
 
