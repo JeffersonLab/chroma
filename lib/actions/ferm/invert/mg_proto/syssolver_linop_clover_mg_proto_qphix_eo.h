@@ -15,6 +15,16 @@
 #include "linearop.h"
 #include "actions/ferm/invert/mg_proto/mgproto_solver_params.h"
 #include "actions/ferm/invert/syssolver_linop.h"
+#include "actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.h"
+#include "lattice/solver.h"
+#include "lattice/fgmres_common.h"
+#include "lattice/qphix/invfgmres_qphix.h"
+#include "lattice/qphix/qphix_qdp_utils.h"
+#include "lattice/qphix/qphix_eo_clover_linear_operator.h"
+#include "actions/ferm/invert/mg_solver_exception.h"
+
+#include <memory>
+
 using namespace QDP;
 
 namespace Chroma {
@@ -51,6 +61,17 @@ namespace Chroma {
 	  Handle< LinearOperator< T > > A;
 	  Handle< FermState<T,Q,Q> > state;
 	  MGProtoSolverParams invParam;
+	  const std::string& subspaceId;
+	  std::shared_ptr<MGProtoHelpersQPhiX::MGPreconditionerEO> mg_pointer;
+	  std::shared_ptr<MG::QPhiXWilsonCloverEOLinearOperator > M_ptr;
+
+	  // Shorthand for the UnprecWrapper
+	  using UnprecFGMRES =  MG::UnprecFGMRESSolverQPhiXWrapper;
+
+
+	  std::shared_ptr<UnprecFGMRES> wrapped;
+
+
   };
 
 };

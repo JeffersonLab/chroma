@@ -6,20 +6,14 @@
  */
 
 #include "chromabase.h"
-#include "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix_eo.h"
 #include "handle.h"
 #include "state.h"
 #include "actions/ferm/invert/syssolver_linop_factory.h"
-#include "actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.h"
+#include "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix_eo.h"
 
-#include "lattice/solver.h"
-#include "lattice/fgmres_common.h"
-#include "lattice/qphix/invfgmres_qphix.h"
-#include "lattice/qphix/qphix_qdp_utils.h"
-#include "lattice/qphix/qphix_eo_clover_linear_operator.h"
-#include "actions/ferm/invert/mg_solver_exception.h"
 
-#include <memory>
+
+
 using namespace QDP;
 
 namespace Chroma
@@ -70,7 +64,36 @@ namespace Chroma
   // Constructor
   LinOpSysSolverMGProtoQPhiXEOClover::LinOpSysSolverMGProtoQPhiXEOClover(Handle< LinearOperator<T> > A_,
 		  Handle< FermState<T,Q,Q> > state_,
-		  const MGProtoSolverParams& invParam_) :  A(A_), state(state_), invParam(invParam_) {}
+		  const MGProtoSolverParams& invParam_) :
+				    A(A_), state(state_), invParam(invParam_), subspaceId(invParam_.SubspaceId) {
+
+
+		  mg_pointer = MGProtoHelpersQPhiX::getMGPreconditionerEO(subspaceId);
+		  if ( ! mg_pointer ) {
+			  QDPIO::cout << "EO MG Preconditioner not found in Named Obj. Creating" << std::endl;
+
+			  // Check on the links -- they are ferm state and may already have BC's applied? need to figure that out.
+			  MGProtoHelpersQPhiX::createMGPreconditionerEO(invParam, state->getLinks());
+
+			  // Now get the setup
+			  mg_pointer = MGProtoHelpersQPhiX::getMGPreconditionerEO(subspaceId);
+		  }
+
+		  M_ptr = (mg_pointer->M);
+
+		  // Next step is to  create a solver instance:
+			  MG::FGMRESParams fine_solve_params;
+			  fine_solve_params.MaxIter=invParam.OuterSolverMaxIters;
+			  fine_solve_params.RsdTarget=toDouble(invParam.OuterSolverRsdTarget);
+			  fine_solve_params.VerboseP =invParam.OuterSolverVerboseP;
+			  fine_solve_params.NKrylov = invParam.OuterSolverNKrylov;
+
+			  // Internal one with EO preconditioning
+			 	  using EoFGMRES = const MG::FGMRESSolverQPhiX;
+
+			  wrapped= std::make_shared<UnprecFGMRES>(std::make_shared<const EoFGMRES>(*M_ptr, fine_solve_params, (mg_pointer->v_cycle).get()), M_ptr);
+
+  }
 
   // Destructor
   LinOpSysSolverMGProtoQPhiXEOClover::~LinOpSysSolverMGProtoQPhiXEOClover(){}
@@ -92,33 +115,16 @@ namespace Chroma
 	  swatch.reset();
 	  swatch.start();
 
-	  // Let us see if we have a Multigrid setup lying around.
-	  const std::string& subspaceId = invParam.SubspaceId;
 
-	  std::shared_ptr<MGProtoHelpersQPhiX::MGPreconditionerEO> mg_pointer = MGProtoHelpersQPhiX::getMGPreconditionerEO(subspaceId);
-	  if ( ! mg_pointer ) {
-		  QDPIO::cout << "EO MG Preconditioner not found in Named Obj. Creating" << std::endl;
 
-		  // Check on the links -- they are ferm state and may already have BC's applied? need to figure that out.
-		  MGProtoHelpersQPhiX::createMGPreconditionerEO(invParam, state->getLinks());
 
-		  // Now get the setup
-		  mg_pointer = MGProtoHelpersQPhiX::getMGPreconditionerEO(subspaceId);
-	  }
 
-	  // Next step is to  create a solver instance:
-	  MG::FGMRESParams fine_solve_params;
-	  fine_solve_params.MaxIter=invParam.OuterSolverMaxIters;
-	  fine_solve_params.RsdTarget=toDouble(invParam.OuterSolverRsdTarget);
-	  fine_solve_params.VerboseP =invParam.OuterSolverVerboseP;
-	  fine_solve_params.NKrylov = invParam.OuterSolverNKrylov;
-
-	  std::shared_ptr<MG::QPhiXWilsonCloverEOLinearOperator > M_ptr = (mg_pointer->M);
 
 	  const LatticeInfo& info = M_ptr->GetInfo();
 	  QPhiXSpinor qphix_in(info);
 	  QPhiXSpinor qphix_out(info);
 
+#if 0
 	  // Shorthand for the UnprecWrapper
 	  using UnprecFGMRES =  MG::UnprecFGMRESSolverQPhiXWrapper;
 
@@ -127,6 +133,7 @@ namespace Chroma
 
 	//  std::shared_ptr<const MG::FGMRESSolverQPhiX> fgmres_eo=std::make_shared<const MG::FGMRESSolverQPhiX>(*M_ptr, fine_solve_params, (mg_pointer->v_cycle).get());
 	  UnprecFGMRES wrapped(std::make_shared<const EoFGMRES>(*M_ptr, fine_solve_params, (mg_pointer->v_cycle).get()), M_ptr);
+#endif
 
 	  // Solve the system
 	  QDPSpinorToQPhiXSpinor(chi,qphix_in);
@@ -134,7 +141,7 @@ namespace Chroma
 
 	  swatch2.reset();
 	  swatch2.start();
-	  MG::LinearSolverResults res=wrapped(qphix_out,qphix_in, RELATIVE);
+	  MG::LinearSolverResults res=(*wrapped)(qphix_out,qphix_in, RELATIVE);
 	  swatch2.stop();
 
 	  QPhiXSpinorToQDPSpinor(qphix_out,psi);
