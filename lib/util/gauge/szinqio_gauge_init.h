@@ -28,6 +28,7 @@ namespace Chroma
     
       std::string cfg_file;		/*!< File name */
       QDP_serialparallel_t    cfg_pario;  /*!< QIO Parallel IO flag */
+      bool reunitP;	/*!< Reunitarize after read */
     };
 
 

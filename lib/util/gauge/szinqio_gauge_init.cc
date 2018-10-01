@@ -7,6 +7,7 @@
 
 #include "util/gauge/szinqio_gauge_init.h"
 #include "io/gauge_io.h"
+#include "util/gauge/reunit.h"
 
 namespace Chroma
 {
@@ -79,7 +80,13 @@ namespace Chroma
     		}
     	}
 
-
+	if ( paramtop.count("reunit") > 0 ) {
+	     read(paramtop, "reunit", reunitP );
+        }
+        else { 
+             reunitP = false;
+        }
+ 
     	if ( pario )  {
     		cfg_pario = QDPIO_PARALLEL;
     	}
@@ -106,6 +113,7 @@ namespace Chroma
     	  pario = true;
       }
       write(xml, "parallel_io", pario);
+      write(xml, "reunit", reunitP);
 
       pop(xml);
     }
@@ -137,6 +145,12 @@ namespace Chroma
 	QDPIO::cout << "Parallel IO read" << std::endl;
       }
       readGauge(gauge_file_xml, gauge_xml, u, params.cfg_file, params.cfg_pario);
+      if( params.reunitP == true ) { 
+	QDPIO::cout << "Reunitarizing After read" << std::endl;
+	for(int mu=0; mu < Nd; ++mu) { 
+	  reunit(u[mu]);
+	} 
+      }
     }
   }
 }
