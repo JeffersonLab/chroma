@@ -38,6 +38,8 @@ namespace Chroma {
 
   }
 
+  using EoFGMRES = const MG::FGMRESSolverQPhiX;
+
   class LinOpSysSolverMGProtoQPhiXEOClover : public LinOpSystemSolver<LatticeFermion>
   {
   public:
@@ -70,7 +72,7 @@ namespace Chroma {
 
 
 	  std::shared_ptr<UnprecFGMRES> wrapped;
-
+	  std::shared_ptr<EoFGMRES> eo_solver;
 
   };
 

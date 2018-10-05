@@ -11,7 +11,7 @@
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix_eo.h"
 
-
+#include "lattice/qphix/qphix_blas_wrappers.h"
 
 
 using namespace QDP;
@@ -61,6 +61,7 @@ namespace Chroma
   using T = LinOpSysSolverMGProtoQPhiXEOClover::T;
   using Q = LinOpSysSolverMGProtoQPhiXEOClover::Q;
 
+
   // Constructor
   LinOpSysSolverMGProtoQPhiXEOClover::LinOpSysSolverMGProtoQPhiXEOClover(Handle< LinearOperator<T> > A_,
 		  Handle< FermState<T,Q,Q> > state_,
@@ -91,7 +92,9 @@ namespace Chroma
 			  // Internal one with EO preconditioning
 			 	  using EoFGMRES = const MG::FGMRESSolverQPhiX;
 
-			  wrapped= std::make_shared<UnprecFGMRES>(std::make_shared<const EoFGMRES>(*M_ptr, fine_solve_params, (mg_pointer->v_cycle).get()), M_ptr);
+			  eo_solver = std::make_shared<const EoFGMRES>(*M_ptr, fine_solve_params, (mg_pointer->v_cycle).get());
+
+			  wrapped= std::make_shared<UnprecFGMRES>(eo_solver, M_ptr);
 
   }
 
@@ -109,6 +112,7 @@ namespace Chroma
   LinOpSysSolverMGProtoQPhiXEOClover::operator()(T& psi, const T& chi) const
   {
 	  QDPIO::cout << "Jolly Greetings from Even-Odd Multigridland" << std::endl;
+	  const Subset& s = A->subset(); 
 	  StopWatch swatch;
 	  StopWatch swatch2;
 
@@ -116,10 +120,7 @@ namespace Chroma
 	  swatch.start();
 
 
-
-
-
-
+	  QDPIO::cout << "DEBUG: Norm2 Chi Before=" << norm2(chi,s) << std::endl;
 	  const LatticeInfo& info = M_ptr->GetInfo();
 	  QPhiXSpinor qphix_in(info);
 	  QPhiXSpinor qphix_out(info);
@@ -137,23 +138,37 @@ namespace Chroma
 
 	  // Solve the system
 	  QDPSpinorToQPhiXSpinor(chi,qphix_in);
-	  ZeroVec(qphix_out);
+	  ZeroVec(qphix_out,SUBSET_ALL);
 
 	  swatch2.reset();
 	  swatch2.start();
-	  MG::LinearSolverResults res=(*wrapped)(qphix_out,qphix_in, RELATIVE);
-	  swatch2.stop();
+	  //MG::LinearSolverResults res=(*wrapped)(qphix_out,qphix_in, RELATIVE);
+          MG::LinearSolverResults res=(*eo_solver)(qphix_out,qphix_in, RELATIVE);
 
+	  swatch2.stop();
+	
+	  double qphix_out_norm_cb0 = MG::Norm2Vec(qphix_out, SUBSET_EVEN);
+	  double qphix_out_norm_cb1 = MG::Norm2Vec(qphix_out, SUBSET_ODD);
+	  
+	  psi = zero;
 	  QPhiXSpinorToQDPSpinor(qphix_out,psi);
+	  Double psi_norm_cb0 = norm2(psi,rb[0]);
+	  Double psi_norm_cb1 = norm2(psi,rb[1]);
+
+	  Double chi_norm_after = norm2(chi,s);
+	  QDPIO::cout << "DEBUG: After solve Norm2 chi = " << chi_norm_after << std::endl;
+	  QDPIO::cout << "DEBUG: Norm2 qphix_out_cb_0 = " << qphix_out_norm_cb0 << "   Norm psi[0]="<< psi_norm_cb0 << std::endl;
+	  QDPIO::cout << "DEBUG: Norm2 qphix_out_cb_1 = " << qphix_out_norm_cb1 << "   Norm psi[1]="<< psi_norm_cb1 << std::endl;
+
 
 	  {
 		  // Chroma level check (may be slow)
 		  T tmp;
 		  tmp = zero;
 		  (*A)(tmp, psi, PLUS);
-		  tmp -= chi;
-		  Double n2 = norm2(tmp);
-		  Double n2rel = n2 / norm2(chi);
+		  tmp[s]  -= chi;
+		  Double n2 = norm2(tmp,s);
+		  Double n2rel = n2 / norm2(chi,s);
 		  QDPIO::cout << "MG_PROTO_QPHIX_EO_CLOVER_INVERTER: iters = "<< res.n_count << " rel resid = " << sqrt(n2rel) << std::endl;
 		  if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget ) ) {
 		    MGSolverException convergence_fail(invParam.CloverParams.Mass, 
