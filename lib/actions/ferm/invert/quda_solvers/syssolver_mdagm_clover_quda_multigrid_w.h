@@ -848,6 +848,7 @@ QDPIO::cout << solver_string << " init_time = "
 
 			// Assign the pointer into the named object
 			TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
+			quda_inv_param.preconditioner = subspace_pointers->preconditioner;
 			reinit_timer.stop();
 			QDPIO::cout << solver_string << "Subspace Reinit Time: " << reinit_timer.getTimeInSeconds() << " sec."  << std::endl;
 
@@ -1057,6 +1058,7 @@ QDPIO::cout << solver_string << " init_time = "
 
 			// Assign the pointer into the named object
 			TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
+			quda_inv_param.preconditioner = subspace_pointers->preconditioner;
 			reinit_timer.stop();
 			QDPIO::cout << solver_string << "Subspace Reinit Time: " << reinit_timer.getTimeInSeconds() << " sec."  << std::endl;
 
@@ -1198,6 +1200,7 @@ QDPIO::cout << solver_string << " init_time = "
 
 			// Assign the pointer into the named object
 			TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
+			quda_inv_param.preconditioner = subspace_pointers->preconditioner;	
 			reinit_timer.stop();
 			QDPIO::cout << solver_string << "Subspace Reinit Time: " << reinit_timer.getTimeInSeconds() << " sec."  << std::endl;
 
