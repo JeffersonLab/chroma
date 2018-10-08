@@ -7,6 +7,7 @@
 #include "update/molecdyn/monomial/unprec_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h"
+#include "update/molecdyn/monomial/seoprec_logdet_two_flavor_monomial_w.h"
 
 #include "update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.h"
 #include "update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h"
@@ -28,6 +29,8 @@
 #include "update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.h"
 
 #include "update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.h"
+
+#include "update/molecdyn/monomial/seoprec_logdet_diag_monomial_w.h"
 
 #include "update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.h"
 #include "update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.h"
@@ -57,6 +60,7 @@ namespace Chroma
 	success &= UnprecTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
 	success &= EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
 	success &= EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
+	success &= SymEvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
    
 	// 4D Ferm Monomials
 	success &= UnprecOneFlavorWilsonTypeFermRatMonomialEnv::registerAll();
@@ -83,6 +87,9 @@ namespace Chroma
 
 	// Even Even part of a logdet monomial
 	success &= EvenOddPrecLogDetEvenEvenMonomial4DEnv::registerAll();
+
+	// Diagonal parts of a logdet symmetric even-odd preconditioned monomial
+	success &= SymEvenOddPrecLogDetDiagMonomial4DEnv::registerAll();
 
 	// 5D RatioConvConv Monomials
 	success &= EvenOddPrecConstDetTwoFlavorRatioConvConvWilsonTypeFermMonomial5DEnv::registerAll();
