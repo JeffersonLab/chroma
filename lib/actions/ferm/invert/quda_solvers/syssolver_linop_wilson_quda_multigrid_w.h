@@ -304,16 +304,8 @@ public:
 		quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
 		quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
 
-#if 1
-		if( invParam.asymmetricP ) {
-			QDPIO::cout << "Using Asymmetric Linop: A_oo - D A^{-1}_ee D" << std::endl;
-			quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
-		}
-		else {
-			QDPIO::cout << "Using Symmetric Linop: 1 - A^{-1}_oo D A^{-1}_ee D" << std::endl;
-			quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
-		}
-#endif
+		QDPIO::cout << "Using Symmetric Linop: 1 - A^{-1}_oo D A^{-1}_ee D" << std::endl;
+		quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
 
 		quda_inv_param.dagger = QUDA_DAG_NO;
 		quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;

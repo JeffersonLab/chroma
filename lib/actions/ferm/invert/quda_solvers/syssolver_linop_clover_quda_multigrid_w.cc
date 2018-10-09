@@ -71,7 +71,7 @@ namespace Chroma
     mod_chi[rb[0]] = zero;
   
 
-    if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD) { 
+    if( invParam.asymmetricP ) { 
       //
       // symmetric
       // Solve with M_symm = 1 - A^{-1}_oo D A^{-1}ee D 

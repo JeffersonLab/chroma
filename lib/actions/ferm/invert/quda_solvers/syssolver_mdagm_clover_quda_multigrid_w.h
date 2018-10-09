@@ -274,6 +274,10 @@ public:
 		quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
 		quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
 
+		// Always use symmetric matrix
+		// For asymmetric preconditioned action 
+		// we take care of this by rescaling the source
+		
 		quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
 
 		quda_inv_param.dagger = QUDA_DAG_NO;
@@ -449,26 +453,18 @@ public:
 
 		multi1d<QUDAPackedClovSite<REALT> > packed_clov;
 
-		// Only compute clover if we're using asymmetric preconditioner
-		if( invParam.asymmetricP ) {
-			packed_clov.resize(all.siteTable().size());
+		packed_clov.resize(all.siteTable().size());
 
-			clov->packForQUDA(packed_clov, 0);
-			clov->packForQUDA(packed_clov, 1);
-		}
+		clov->packForQUDA(packed_clov, 0);
+		clov->packForQUDA(packed_clov, 1);
 
 		// Always need inverse
 		multi1d<QUDAPackedClovSite<REALT> > packed_invclov(all.siteTable().size());
 		invclov->packForQUDA(packed_invclov, 0);
 		invclov->packForQUDA(packed_invclov, 1);
 
-		if( invParam.asymmetricP ) {
-			loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
+		loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
 
-		}
-		else {
-			loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
-		}
 #else
 
 #warning "USING QUDA DEVICE IFACE"
@@ -481,15 +477,10 @@ public:
 
 		GetMemoryPtrClover(clov->getOffId(),clov->getDiaId(),invclov->getOffId(),invclov->getDiaId());
 
-		if( invParam.asymmetricP ) {
-			loadCloverQuda( (void*)(clover), (void *)(cloverInv), &quda_inv_param);
-		}
-		else {
-			loadCloverQuda( (void*)(clover), (void *)(cloverInv), &quda_inv_param);
-		}
+		loadCloverQuda( (void*)(clover), (void *)(cloverInv), &quda_inv_param);
 #endif
 
-quda_inv_param.omega = toDouble(ip.relaxationOmegaOuter);
+		quda_inv_param.omega = toDouble(ip.relaxationOmegaOuter);
 
 // Copy ThresholdCount from invParams into threshold_counts.
 threshold_counts = invParam.ThresholdCount;

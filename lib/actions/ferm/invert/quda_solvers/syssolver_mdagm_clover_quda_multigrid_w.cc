@@ -69,8 +69,12 @@ namespace Chroma
     // Copy source into mod_chi, and zero the off-parity
     mod_chi[rb[0]] = zero;
   
+  
+    // This solver always solves with the SYMMETRIC preconditioned
+    // Operator. If we are working with Asymmetric preconditioning 
+    // Then we must apply a clover inverse.
+    if( invParam.asymmetricP) { 
 
-    if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD) { 
       //
       // symmetric
       // Solve with M_symm = 1 - A^{-1}_oo D A^{-1}ee D 
@@ -82,6 +86,7 @@ namespace Chroma
       invclov.apply(mod_chi, chi_s, PLUS, 1);
     }
     else {
+      // If we work with symmetric preconditioning nothing else needs done
       mod_chi[rb[1]] = chi_s;
     }
 
