@@ -73,7 +73,7 @@ public:
 	MdagMSysSolverQUDAMULTIGRIDClover(Handle< LinearOperator<T> > A_,
 			Handle< FermState<T,Q,Q> > state_,
 			const SysSolverQUDAMULTIGRIDCloverParams& invParam_) :
-				A(A_), invParam(invParam_), clov(new CloverTermT<T, U>() ), invclov(new CloverTermT<T, U>())
+	  A(A_), gstate(state_), invParam(invParam_), clov(new CloverTermT<T, U>() ), invclov(new CloverTermT<T, U>())
 	{
 		StopWatch init_swatch;
 		init_swatch.reset(); init_swatch.start();
@@ -728,13 +728,13 @@ QDPIO::cout << solver_string << " init_time = "
 			// Re-solve
 			QDPIO::cout << solver_string << "Re-Solving for Y with zero guess" << std::endl;
 			SystemSolverResults_t res_tmp;
-			Y_prime = zero;
+			Y_prime[ A->subset() ]  = zero;
 			res_tmp = qudaInvert(*clov,
 					*invclov,
 					g5chi,
 					Y_prime);
 
-			Y = Gamma(Nd*Nd -1)*Y_prime;
+			Y[ A->subset() ] = Gamma(Nd*Nd -1)*Y_prime;
 
 			// Check solution
 			{
@@ -748,6 +748,9 @@ QDPIO::cout << solver_string << " init_time = "
 				if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 					QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 					QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
+
+					dumpYSolver(g5chi,Y_prime);
+
 					MGSolverException convergence_fail(invParam.CloverParams.Mass,
 							invParam.SaveSubspaceID,
 							res_tmp.n_count,
@@ -855,7 +858,7 @@ QDPIO::cout << solver_string << " init_time = "
 			// Re-solve
 			QDPIO::cout << solver_string << "Re-Solving for X with zero guess" << std::endl;
 			SystemSolverResults_t res_tmp;
-			psi = zero;
+			psi[ A->subset() ] = zero;
 			res_tmp = qudaInvert(*clov,
 					*invclov,
 					Y,
@@ -874,6 +877,9 @@ QDPIO::cout << solver_string << " init_time = "
 				if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 					QDPIO::cout << solver_string << "Re Solve for X Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 					QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
+
+					dumpXSolver(chi,Y,psi);
+
 					MGSolverException convergence_fail(invParam.CloverParams.Mass,
 							invParam.SaveSubspaceID,
 							res_tmp.n_count,
@@ -992,7 +998,8 @@ QDPIO::cout << solver_string << " init_time = "
 				Y_prime);
 
 		// Recover Y from Y' = g_5 Y  => Y = g_5 Y'
-		T Y = Gamma(Nd*Nd -1)*Y_prime;
+		T Y = zero;
+		Y[ A->subset() ] = Gamma(Nd*Nd -1)*Y_prime;
 
 		bool solution_good = true;
 
@@ -1071,14 +1078,17 @@ QDPIO::cout << solver_string << " init_time = "
 			// thanks to the setting below
 			quda_inv_param.chrono_replace_last = true;
 
-			QDPIO::cout << solver_string << "Re-Solving for Y" << std::endl;
+			QDPIO::cout << solver_string << "Re-Solving for Y with Zero Guess" << std::endl;
+
+			Y_prime[A->subset()]= zero;
 			SystemSolverResults_t res_tmp;
+
 			res_tmp = qudaInvert(*clov,
 					*invclov,
 					g5chi,
 					Y_prime);
 
-			Y = Gamma(Nd*Nd -1)*Y_prime;
+			Y[A->subset()] = Gamma(Nd*Nd -1)*Y_prime;
 
 			// Check solution
 			{
@@ -1092,7 +1102,11 @@ QDPIO::cout << solver_string << " init_time = "
 				if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 					// If we fail on the resolve then barf
 					QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
+
+					dumpYSolver(g5chi,Y_prime);
+
 					QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
+
 					MGSolverException convergence_fail(invParam.CloverParams.Mass,
 							invParam.SaveSubspaceID,
 							res_tmp.n_count,
@@ -1124,7 +1138,7 @@ QDPIO::cout << solver_string << " init_time = "
 
 
 		X_solve_timer.start();
-		psi=zero;
+		psi[A->subset()]=zero;
 
 		// Solve for psi
 		res2 = qudaInvert(*clov,
@@ -1213,7 +1227,8 @@ QDPIO::cout << solver_string << " init_time = "
 			// thanks to the setting below
 			quda_inv_param.chrono_replace_last = true;
 
-			QDPIO::cout << solver_string << "Re-Solving for X" << std::endl;
+			QDPIO::cout << solver_string << "Re-Solving for X (zero guess)" << std::endl;
+			psi[A->subset()] = zero;
 
 			SystemSolverResults_t res_tmp;
 			res_tmp = qudaInvert(*clov,
@@ -1233,6 +1248,11 @@ QDPIO::cout << solver_string << " init_time = "
 				res_tmp.resid = sqrt(norm2(r, A->subset()));
 				if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 					QDPIO::cout << solver_string << "Re Solve for X Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
+
+					QDPIO::cout << "Dumping state" << std::endl;
+					dumpXSolver(chi,Y,psi);
+
+
 					QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
 					MGSolverException convergence_fail(invParam.CloverParams.Mass,
 							invParam.SaveSubspaceID,
@@ -1331,7 +1351,8 @@ private:
 	QudaPrecision_s gpu_prec;
 	QudaPrecision_s gpu_half_prec;
 
-	Handle< LinearOperator<T> > A;
+        Handle< LinearOperator<T> > A;
+        Handle< FermState<T,Q,Q> > gstate;
 	const SysSolverQUDAMULTIGRIDCloverParams invParam;
 	QudaGaugeParam q_gauge_param;
 	mutable QudaInvertParam quda_inv_param;
@@ -1349,6 +1370,14 @@ private:
 
 	std::string solver_string;
 	int threshold_counts;
+
+        void dumpYSolver(const LatticeFermion& chi,
+			 const LatticeFermion& Y) const;
+
+        void dumpXSolver(const LatticeFermion& chi,
+			 const LatticeFermion& Y,
+			 const LatticeFermion& X) const;
+
 };
 
 } // End namespace

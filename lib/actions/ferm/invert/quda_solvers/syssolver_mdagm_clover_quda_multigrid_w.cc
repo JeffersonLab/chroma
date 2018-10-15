@@ -17,6 +17,10 @@
 #include <quda.h>
 // #include <util_quda.h>
 
+#include <string>
+#include <iomanip>
+#include <ctime>
+
 namespace Chroma
 {
   namespace MdagMSysSolverQUDAMULTIGRIDCloverEnv
@@ -114,6 +118,197 @@ namespace Chroma
     return ret;
 
  }
+
+
+  void  MdagMSysSolverQUDAMULTIGRIDClover::dumpYSolver(const LatticeFermion& chi, const LatticeFermion& Y) const
+  {
+    // Grab the time -  took this C++ way from stackoverflow
+    auto time_value = std::time(nullptr);
+    auto local_time = std::localtime(&time_value);
+    std::ostringstream  time_strstream;
+    time_strstream << "./failed_Y_solve_" << std::put_time(local_time, "%d-%m-%Y-%H-%M-%S");
+    
+   
+    std::string file_prefix( time_strstream.str() );
+
+    std::string gauge_filename = file_prefix + "_gauge_field.lime";
+    std::string chi_filename = file_prefix + "_chi.lime";
+    std::string Y_filename = file_prefix + "_Y.lime";
+
+    int foo = 5; // Some rubbish for the XML Files
+    // Dump gauge field
+    {
+      XMLBufferWriter filebuf;
+      XMLBufferWriter recbuf;
+      push( filebuf, "GaugeFile" );
+      write( filebuf, "FilePrefix", file_prefix);
+      pop( filebuf);
+
+      push( recbuf, "GaugeRecord" );
+      write( recbuf, "FilePrefix", file_prefix);
+      pop( recbuf );
+
+      QDPIO::cout << "Dumping gauge links to " << gauge_filename << std::endl;
+
+      QDPFileWriter writer(filebuf,gauge_filename, QDPIO_SINGLEFILE, QDPIO_PARALLEL);
+      write(writer, recbuf, gstate->getLinks());
+      writer.close();
+    }
+  
+    // Dump chi 
+    {
+      XMLBufferWriter filebuf;
+      XMLBufferWriter recbuf;
+      push( filebuf, "ChiFile" );
+      write( filebuf, "FilePrefix", file_prefix);
+      pop( filebuf);
+
+      push( recbuf, "ChiRecord" );
+      write( recbuf, "FilePrefix", file_prefix);
+      pop( recbuf );
+
+      QDPIO::cout << "Dumping chi (original source) vector to " << chi_filename << std::endl;
+
+      QDPFileWriter writer(filebuf, chi_filename, QDPIO_SINGLEFILE, QDPIO_PARALLEL);
+      write(writer, recbuf, chi);
+      writer.close();
+
+
+    }
+
+    // Dump Y 
+    {
+      XMLBufferWriter filebuf;
+      XMLBufferWriter recbuf;
+      push( filebuf, "YFile" );
+      write( filebuf, "FilePrefix", file_prefix);
+      pop( filebuf);
+
+      push( recbuf, "YRecord" );
+      write( recbuf, "FilePrefix", file_prefix);
+      pop( recbuf );
+
+      QDPIO::cout << "Dumping Y (source) vector to " << Y_filename << std::endl;
+
+      QDPFileWriter writer(filebuf, Y_filename, QDPIO_SINGLEFILE, QDPIO_PARALLEL);
+      write(writer, recbuf, Y);
+      writer.close();
+    }
+
+    // Dump MG state 
+    {
+      // waiting on this from Kate
+      // dumpMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+    }
+  }
+
+  void  MdagMSysSolverQUDAMULTIGRIDClover::dumpXSolver(const LatticeFermion& chi,
+		  const LatticeFermion& Y,
+		  const LatticeFermion& X) const
+
+  {
+    // Grab the time -  took this C++ way from stackoverflow
+    auto time_value = std::time(nullptr);
+    auto local_time = std::localtime(&time_value);
+    std::ostringstream  time_strstream;
+    time_strstream << "./failed_X_solve_" << std::put_time(local_time, "%d-%m-%Y-%H-%M-%S");
+    
+   
+    std::string file_prefix( time_strstream.str() );
+
+    std::string gauge_filename = file_prefix + "_gauge_field.lime";
+    std::string chi_filename = file_prefix + "_chi.lime";
+    std::string Y_filename = file_prefix + "_Y.lime";
+    std::string X_filename = file_prefix + "_X.lime";
+
+    int foo = 5; // Some rubbish for the XML Files
+    // Dump gauge field
+    {
+      XMLBufferWriter filebuf;
+      XMLBufferWriter recbuf;
+      push( filebuf, "GaugeFile" );
+      write( filebuf, "FilePrefix", file_prefix);
+      pop( filebuf);
+
+      push( recbuf, "GaugeRecord" );
+      write( recbuf, "FilePrefix", file_prefix);
+      pop( recbuf );
+
+      QDPIO::cout << "Dumping gauge links to " << gauge_filename << std::endl;
+
+      QDPFileWriter writer(filebuf,gauge_filename, QDPIO_SINGLEFILE, QDPIO_PARALLEL);
+      write(writer, recbuf, gstate->getLinks());
+      writer.close();
+    }
+  
+    // Dump chi 
+    {
+      XMLBufferWriter filebuf;
+      XMLBufferWriter recbuf;
+      push( filebuf, "ChiFile" );
+      write( filebuf, "FilePrefix", file_prefix);
+      pop( filebuf);
+
+      push( recbuf, "ChiRecord" );
+      write( recbuf, "FilePrefix", file_prefix);
+      pop( recbuf );
+
+      QDPIO::cout << "Dumping chi (original source) vector to " << chi_filename << std::endl;
+
+      QDPFileWriter writer(filebuf, chi_filename, QDPIO_SINGLEFILE, QDPIO_PARALLEL);
+      write(writer, recbuf, chi);
+      writer.close();
+
+
+    }
+
+    // Dump Y 
+    {
+      XMLBufferWriter filebuf;
+      XMLBufferWriter recbuf;
+      push( filebuf, "YFile" );
+      write( filebuf, "FilePrefix", file_prefix);
+      pop( filebuf);
+
+      push( recbuf, "YRecord" );
+      write( recbuf, "FilePrefix", file_prefix);
+      pop( recbuf );
+
+      QDPIO::cout << "Dumping Y (source) vector to " << Y_filename << std::endl;
+
+      QDPFileWriter writer(filebuf, Y_filename, QDPIO_SINGLEFILE, QDPIO_PARALLEL);
+      write(writer, recbuf, Y);
+      writer.close();
+    }
+
+    // Dump final X
+    {
+      XMLBufferWriter filebuf;
+      XMLBufferWriter recbuf;
+      push( filebuf, "XFile" );
+      write( filebuf, "FilePrefix", file_prefix);
+      pop( filebuf);
+
+      push( recbuf, "XRecord" );
+      write( recbuf, "FilePrefix", file_prefix);
+      pop( recbuf );
+
+      QDPIO::cout << "Dumping X (solution) vector to " << X_filename << std::endl;
+
+      QDPFileWriter writer(filebuf, X_filename, QDPIO_SINGLEFILE, QDPIO_PARALLEL);
+      write(writer, recbuf, X);
+      writer.close();
+    }
+
+
+    // Dump MG state 
+    {
+      // waiting on this from Kate
+      // dumpMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+    }
+  }
+
+
   
 
 }
