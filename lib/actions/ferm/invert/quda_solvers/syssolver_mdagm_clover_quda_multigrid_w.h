@@ -274,9 +274,6 @@ public:
 		quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
 		quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
 
-		// Always use symmetric matrix
-		// For asymmetric preconditioned action 
-		// we take care of this by rescaling the source
 		
 		quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
 
@@ -637,26 +634,46 @@ QDPIO::cout << solver_string << " init_time = "
 		//     =>    M Y' = chi'  with chi' = gamma_5*chi
 		Y_solve_timer.start();
 
-		T g5chi = Gamma(Nd*Nd - 1)*chi;
-		res1 = qudaInvert(*clov,
-				*invclov,
-				g5chi,
-				Y_prime);
 
-		// Recover Y from Y' = g_5 Y  => Y = g_5 Y'
-		T Y = Gamma(Nd*Nd -1)*Y_prime;
+		T g5chi = zero;
+		T Y = zero;
+		g5chi[rb[1]]= Gamma(Nd*Nd-1)*chi;
+
+		if( invParam.asymmetricP == true ) {
+			res1 = qudaInvert(*clov,
+					*invclov,
+					g5chi,
+					Y_prime);
+			Y[rb[1]] = Gamma(Nd*Nd -1)*Y_prime;
+		}
+		else {
+			T tmp = zero;
+			invclov->apply(tmp,g5chi,MINUS,1);
+
+			res1 = qudaInvert(*clov,
+						*invclov,
+						tmp,
+						Y_prime);
+
+			tmp[rb[1]] = Gamma(Nd*Nd-1)*Y_prime;
+			clov->apply(Y,tmp,MINUS,1);
+
+		}
+
 
 		bool solution_good = true;
 
 		// Check solution
 		{
-			T r;
+			T r=zero;
 			r[A->subset()]=chi;
 			T tmp;
 			(*A)(tmp, Y, MINUS);
 			r[A->subset()] -= tmp;
 
 			res1.resid = sqrt(norm2(r, A->subset()));
+			QDPIO::cout << "Y-solve: ||r||=" << res1.resid << "   ||r||/||b||="
+					<< res1.resid/sqrt(norm2(chi,rb[1])) << std::endl;
 			if ( toBool( res1.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 				solution_good = false;
 			}
@@ -719,24 +736,38 @@ QDPIO::cout << solver_string << " init_time = "
 			// Re-solve
 			QDPIO::cout << solver_string << "Re-Solving for Y with zero guess" << std::endl;
 			SystemSolverResults_t res_tmp;
-			Y_prime = zero;
-			res_tmp = qudaInvert(*clov,
-					*invclov,
-					g5chi,
-					Y_prime);
 
-			Y = Gamma(Nd*Nd -1)*Y_prime;
+			Y_prime = zero;
+			if( invParam.asymmetricP == true ) {
+				res_tmp = qudaInvert(*clov,
+						*invclov,
+						g5chi,
+						Y_prime);
+				Y[rb[1]] = Gamma(Nd*Nd -1)*Y_prime;
+			}
+			else {
+				T tmp = zero;
+				invclov->apply(tmp,g5chi,MINUS,1);
+				res_tmp = qudaInvert(*clov,
+							*invclov,
+							tmp,
+							Y_prime);
+
+				tmp[rb[1]] = Gamma(Nd*Nd-1)*Y_prime;
+				clov->apply(Y,tmp,MINUS,1);
+
+			}
 
 			// Check solution
 			{
-				T r;
+				T r=zero;
 				r[A->subset()]=chi;
 				T tmp;
-				(*A)(tmp, Y, MINUS);
+				(*A)(tmp, Y,MINUS);
 				r[A->subset()] -= tmp;
 
 				res_tmp.resid = sqrt(norm2(r, A->subset()));
-				if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
+				if ( toBool( res_tmp.resid/sqrt(norm2(chi)) > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 					QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 					QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
 					MGSolverException convergence_fail(invParam.CloverParams.Mass,
@@ -971,19 +1002,33 @@ QDPIO::cout << solver_string << " init_time = "
 
 		/// channel set done
 		T Y_prime = zero;
-
+		T Y = zero;
 		// Y solve: M^\dagger Y = chi
 		//        g_5 M g_5 Y = chi
 		//     =>    M Y' = chi'  with chi' = gamma_5*chi
 		Y_solve_timer.start();
-		T g5chi = Gamma(Nd*Nd - 1)*chi;
-		res1 = qudaInvert(*clov,
-				*invclov,
-				g5chi,
-				Y_prime);
+		T g5chi = zero;
+		g5chi[rb[1]]= Gamma(Nd*Nd-1)*chi;
+		if( invParam.asymmetricP == true ) {
+			res1 = qudaInvert(*clov,
+					*invclov,
+					g5chi,
+					Y_prime);
+			Y[rb[1]] = Gamma(Nd*Nd -1)*Y_prime;
+		}
+		else {
+			T tmp = zero;
+			invclov->apply(tmp,g5chi,MINUS,1);
 
-		// Recover Y from Y' = g_5 Y  => Y = g_5 Y'
-		T Y = Gamma(Nd*Nd -1)*Y_prime;
+			res1 = qudaInvert(*clov,
+						*invclov,
+						tmp,
+						Y_prime);
+
+			tmp[rb[1]] = Gamma(Nd*Nd-1)*Y_prime;
+			clov->apply(Y,tmp,MINUS,1);
+
+		}
 
 		bool solution_good = true;
 
@@ -1062,14 +1107,29 @@ QDPIO::cout << solver_string << " init_time = "
 			// thanks to the setting below
 			quda_inv_param.chrono_replace_last = true;
 
-			QDPIO::cout << solver_string << "Re-Solving for Y" << std::endl;
+			QDPIO::cout << solver_string << "Re-Solving for Y (zero guess)" << std::endl;
 			SystemSolverResults_t res_tmp;
-			res_tmp = qudaInvert(*clov,
-					*invclov,
-					g5chi,
-					Y_prime);
+			Y_prime = zero;
 
-			Y = Gamma(Nd*Nd -1)*Y_prime;
+			if( invParam.asymmetricP == true ) {
+				res_tmp = qudaInvert(*clov,
+						*invclov,
+						g5chi,
+						Y_prime);
+				Y[rb[1]] = Gamma(Nd*Nd -1)*Y_prime;
+			}
+			else {
+				T tmp = zero;
+				invclov->apply(tmp,g5chi,MINUS,1);
+
+				res_tmp = qudaInvert(*clov,
+							*invclov,
+							tmp,
+							Y_prime);
+
+				tmp[rb[1]] = Gamma(Nd*Nd-1)*Y_prime;
+				clov->apply(Y,tmp,MINUS,1);
+			}
 
 			// Check solution
 			{
@@ -1204,9 +1264,10 @@ QDPIO::cout << solver_string << " init_time = "
 			// thanks to the setting below
 			quda_inv_param.chrono_replace_last = true;
 
-			QDPIO::cout << solver_string << "Re-Solving for X" << std::endl;
+			QDPIO::cout << solver_string << "Re-Solving for X (zero guess)" << std::endl;
 
 			SystemSolverResults_t res_tmp;
+			psi[rb[1]] = zero;
 			res_tmp = qudaInvert(*clov,
 					*invclov,
 					Y,

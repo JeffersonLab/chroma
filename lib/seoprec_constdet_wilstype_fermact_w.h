@@ -31,28 +31,7 @@ namespace Chroma
   };
 
 
-  //! Symmetric even-odd preconditioned Wilson-like fermion actions including derivatives
-  /*! @ingroup actions
-   *
-   * Even-odd preconditioned like Wilson-like fermion actions
-   * Here, use arrays of matter fields.
-   */
-  template<typename T, typename P, typename Q>
-  class SymEvenOddPrecConstDetWilsonTypeFermAct5D : public SymEvenOddPrecWilsonTypeFermAct5D<T,P,Q>
-  {
-  public:
-    //! Virtual destructor to help with cleanup;
-    virtual ~SymEvenOddPrecConstDetWilsonTypeFermAct5D() {}
 
-    //! Override to produce a symmetric even-odd prec. linear operator for this action
-    /*! Covariant return rule - override base class function */
-    virtual SymEvenOddPrecConstDetLinearOperatorArray<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const = 0;
-
-    //! Override to produce a symmetric even-odd prec. Pauli-Villars linear operator for this action
-    /*! Covariant return rule - override base class function */
-    virtual SymEvenOddPrecConstDetLinearOperatorArray<T,P,Q>* linOpPV(Handle< FermState<T,P,Q> > state) const = 0;
-
-  };
 
 }
 

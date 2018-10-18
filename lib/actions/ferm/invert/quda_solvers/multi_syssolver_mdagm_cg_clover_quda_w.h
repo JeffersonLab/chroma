@@ -259,7 +259,14 @@ namespace Chroma
       // and probabl 1 - {1/4} A^{-1} D A^{-1} D as the preconditioned
       // op. Apart from the A_oo stuff on the antisymmetric we have
       // nothing to do...
-      quda_inv_param.kappa = 0.5;
+      if( invParam.asymmetricP ) {
+	quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
+	quda_inv_param.kappa = 0.5;
+      } 
+      else { 
+      	quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
+      	quda_inv_param.kappa = 0.5;
+      } 
 
       // FIXME: If we ever use QUDA to compute our clover term we need to fix this
       // and QUDA will have to deal with anisotropy. Right now this is a hack to make
@@ -286,7 +293,7 @@ namespace Chroma
 	break;
       }
 
-      // Only support Asymmetric linop
+      // Only suppfkort Asymmetric linop
       if ( invParam.asymmetricP ) { 
 	QDPIO::cout << "Working with asymmetric solution" << std::endl;
       	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
@@ -297,7 +304,6 @@ namespace Chroma
       }
 
       quda_inv_param.dagger = QUDA_DAG_NO;
-      quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
 
       quda_inv_param.cpu_prec = cpu_prec;
       quda_inv_param.cuda_prec = gpu_prec;

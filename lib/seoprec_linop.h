@@ -13,472 +13,333 @@ using namespace QDP::Hints;
 
 namespace Chroma 
 {
-  
-  //----------------------------------------------------------------
-  //! Even-odd preconditioned linear operator
-  /*! @ingroup linop
-   *
-   * Support for even-odd preconditioned linear operators
-   * Given a matrix M written in block form:
-   *
-   *      [      A             D        ]
-   *      [       E,E           E,O     ]
-   *      [                             ]
-   *      [      D             A        ]
-   *      [       O,E           O,O     ]
-   *
-   * The preconditioning consists of using the triangular matrices
-   *
-   *      [      1              0        ]
-   *      [       E,E            E,O     ]
-   *  L = [                              ]
-   *      [     D     A^(-1)    1        ]
-   *      [      O,E   E,E        O,O    ]
-   *
-   * and
-   *
-   *      [      1            A^{-1}  D       ]
-   *      [       E,E          EE      E,O    ]
-   *  U = [                                   ]
-   *      [      0                    1       ]
-   *      [       O,E                  O,O    ]
-   *
-   * The preconditioned matrix is formed from
-   *
-   *  M'   =  L^-1 * M * U^-1
-   *
-   * where
-   *
-   *           [      1              0        ]
-   *           [       E,E            E,O     ]
-   *  L^(-1) = [                              ]
-   *           [   - D     A^(-1)    1        ]
-   *           [      O,E   E,E        O,O    ]
-   *
-   * and
-   *
-   *           [      1            - A^(-1) D       ]
-   *           [       E,E            E,E    E,O    ]
-   *  U^(-1) = [                                    ]
-   *           [      0                1            ]
-   *           [       O,E              O,O         ]
-   *
-   * Resulting in a new  M
-   *
-   *      [      A                    0                      ]
-   *      [       E,E                  E,O                   ]
-   *      [                                                  ]
-   *      [      0                A     -  D    A^(-1)  D    ]
-   *      [       O,E              O,O      O,E   E,E    E,O ]
-   *
-   *
-   * This class is used to implement the resulting linear operator
-   *
-   *      ~
-   *      M  =  A(o,o) - D(o,e) . A^-1(e,e) . D(e,o)
-   *
-   * where A^{-1}_{ee} is independent of the gauge fields. This
-   * means that the det A_{ee} is an irrelevant constant and that
-   * the force term due to the A_{ee} part is zero.
-   *
-   * This structure suits most of the linear operators we use, and 
-   * It simplifies the force term.
-   * By construction, the linear operator is ONLY defined on the odd subset
-   *
-   */
-
-  template<typename T, typename P, typename Q>
-  class SymEvenOddPrecLinearOperator : public DiffLinearOperator<T,P,Q>
-  {
-  public:
-    //! Virtual destructor to help with cleanup;
-    virtual ~SymEvenOddPrecLinearOperator() {}
-
-    //! Only defined on the odd lattice
-    const Subset& subset() const {return rb[1];}
-
-    //! Return the fermion BC object for this linear operator
-    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
-
-    //! Apply the even-even block onto a source std::vector
-    /*! This does not need to be optimized */
-    virtual void evenEvenLinOp(T& chi, const T& psi, 
-			       enum PlusMinus isign) const = 0;
-  
-    //! Apply the inverse of the even-even block onto a source std::vector
-    virtual void evenEvenInvLinOp(T& chi, const T& psi, 
-				  enum PlusMinus isign) const = 0;
-  
-    //! Apply the inverse of the odd-odd block onto a source std::vector
-    virtual void oddOddInvLinOp(T& chi, const T& psi, 
-				enum PlusMinus isign) const = 0;
-  
-    //! Apply the the even-odd block onto a source std::vector
-    virtual void evenOddLinOp(T& chi, const T& psi, 
-			      enum PlusMinus isign) const = 0;
-
-    //! Apply the the odd-even block onto a source std::vector
-    virtual void oddEvenLinOp(T& chi, const T& psi, 
-			      enum PlusMinus isign) const = 0;
-
-    //! Apply the the odd-odd block onto a source std::vector
-    virtual void oddOddLinOp(T& chi, const T& psi, 
-			     enum PlusMinus isign) const = 0;
-
-    //! Apply the operator onto a source std::vector
-    virtual void operator() (T& chi, const T& psi, 
-			     enum PlusMinus isign) const
-    {
-      T   tmp1, tmp2; moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
-
-      /*  Tmp1   =  D     A^(-1)     D    Psi  */
-      /*      O      O,E        E,E   E,O    O */
-      evenOddLinOp(tmp1, psi, isign);
-      evenEvenInvLinOp(tmp2, tmp1, isign);
-      oddEvenLinOp(tmp1, tmp2, isign);
-
-      /*  Chi   =  A    Psi  -  Tmp1  */
-      /*     O      O,O    O        O */
-      oddOddLinOp(chi, psi, isign);
-      chi[rb[1]] -= tmp1;
-
-      getFermBC().modifyF(chi, rb[1]);
-    }
-
-
-    //! Apply the UNPRECONDITIONED operator onto a source std::vector
-    /*! Mainly intended for debugging */
-    virtual void unprecLinOp(T& chi, const T& psi, 
-			     enum PlusMinus isign) const
-    {
-      T   tmp1, tmp2;  moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
-
-      /*  Chi   =   A    Psi   +    D    Psi   */
-      /*     E       E,E    O        E,O    O  */
-      evenEvenLinOp(tmp1, psi, isign);
-      evenOddLinOp(tmp2, psi, isign);
-      chi[rb[0]] = tmp1 + tmp2;
-
-      /*  Chi   =  A    Psi  -  Tmp1  */
-      /*     O      O,O    O        O */
-      oddEvenLinOp(tmp1, psi, isign);
-      oddOddLinOp(tmp2, psi, isign);
-      chi[rb[1]] = tmp1 + tmp2;
-
-      getFermBC().modifyF(chi);
-    }
-
-
-    //! Apply the even-even block onto a source std::vector
-    virtual void derivEvenEvenLinOp(P& ds_u, const T& chi, const T& psi, 
-				    enum PlusMinus isign) const = 0;
-   
-    //! Apply the the even-odd block onto a source std::vector
-    virtual void derivEvenOddLinOp(P& ds_u, const T& chi, const T& psi, 
-				   enum PlusMinus isign) const = 0;
- 
-    //! Apply the the odd-even block onto a source std::vector
-    virtual void derivOddEvenLinOp(P& ds_u, const T& chi, const T& psi, 
-				   enum PlusMinus isign) const = 0;
-
-    //! Apply the the odd-odd block onto a source std::vector
-    virtual void derivOddOddLinOp(P& ds_u, const T& chi, const T& psi, 
-				  enum PlusMinus isign) const = 0;
-
-    /*! Mainly intended for debugging */
-    virtual void derivUnprecLinOp(P& ds_u, const T& chi, const T& psi, 
-				  enum PlusMinus isign) const
-    {
-      T   tmp1, tmp2;  moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
-      P   ds_tmp;  // deriv routines should resize
-
-      //  ds_u  =  chi^dag * A'_ee * psi
-      derivEvenEvenLinOp(ds_u, chi, psi, isign);
-
-      //  ds_u +=  chi^dag * D'_eo * psi
-      derivEvenOddLinOp(ds_tmp, chi, psi, isign);
-      ds_u += ds_tmp;
-
-      //  ds_u +=  chi^dag * D'_oe * psi
-      derivOddEvenLinOp(ds_tmp, chi, psi, isign);
-      ds_u += ds_tmp;
-
-      //  ds_u +=  chi^dag * A'_oo * psi
-      derivOddOddLinOp(ds_tmp, chi, psi, isign);
-      ds_u += ds_tmp;
-
-      getFermBC().zero(ds_u);
-    }
-
-
-    //! Apply the derivative of the operator onto a source std::vector
-    /*! User should make sure deriv routines do a resize.
-     *  This function is left pure virtual - as derived 
-     *  functions need to override it 
-     */
-    virtual void deriv(P& ds_u, const T& chi, const T& psi, 
-		       enum PlusMinus isign) const = 0;
-
-
-    //! Return flops performed by the evenEvenLinOp
-    virtual unsigned long evenEvenNFlops() const { return 0; }
-    
-    //! Return flops performed by the evenOddLinOp
-    virtual unsigned long evenOddNFlops() const { return 0; }
-
-    //! Return flops performed by the oddEvenLinOp
-    virtual unsigned long oddEvenNFlops() const { return 0; }
-
-    //! Return flops performed by the oddOddLinOp
-    virtual unsigned long oddOddNFlops() const { return 0; }
-
-    //! Return flops performed by the evenEvenInvLinOp
-    virtual unsigned long evenEvenInvNFlops() const { return 0; }
-
-    //! Return flops performed by the evenEvenInvLinOp
-    virtual unsigned long oddOddInvNFlops() const { return evenEvenInvNFlops(); }
-
-    //! Return flops performed by the operator()
-    virtual unsigned long nFlops() const { 
-      return 0;
-    }
-
-  };
-
-
-  //----------------------------------------------------------------
-  //! Even-odd preconditioned linear operator including derivatives for arrays
-  /*! @ingroup linop
-   *
-   * Support for even-odd preconditioned linear operators with derivatives
-   *
-   * Given a matrix M written in block form:
-   *
-   *      [      A             D        ]
-   *      [       E,E           E,O     ]
-   *      [                             ]
-   *      [      D             A        ]
-   *      [       O,E           O,O     ]
-   *
-   * The preconditioning consists of using the triangular matrices
-   *
-   *      [      1              0        ]
-   *      [       E,E            E,O     ]
-   *  L = [                              ]
-   *      [     D     A^(-1)    1        ]
-   *      [      O,E   E,E        O,O    ]
-   *
-   * and
-   *
-   *      [      A              D       ]
-   *      [       E,E            E,O    ]
-   *  U = [                             ]
-   *      [      0              1       ]
-   *      [       O,E            O,O    ]
-   *
-   * The preconditioned matrix is formed from
-   *
-   *  M'   =  L^-1 * M * U^-1
-   *
-   * where
-   *
-   *           [      1              0        ]
-   *           [       E,E            E,O     ]
-   *  L^(-1) = [                              ]
-   *           [   - D     A^(-1)    1        ]
-   *           [      O,E   E,E        O,O    ]
-   *
-   * and
-   *
-   *           [      A^(-1)       - A^(-1) D       ]
-   *           [       E,E            E,E    E,O    ]
-   *  U^(-1) = [                                    ]
-   *           [      0                1            ]
-   *           [       O,E              O,O         ]
-   *
-   * Resulting in a new  M
-   *
-   *      [      1                    0                      ]
-   *      [       E,E                  E,O                   ]
-   *      [                                                  ]
-   *      [      0                A     -  D    A^(-1)  D    ]
-   *      [       O,E              O,O      O,E   E,E    E,O ]
-   *
-   *
-   * This class is used to implement the resulting linear operator
-   *
-   *      ~
-   *      M  =  A(o,o) - D(o,e) . A^-1(e,e) . D(e,o)
-   *
-   * By construction, the linear operator is ONLY defined on the odd subset
-   *
-   */
-
-  template<typename T, typename P, typename Q>
-  class SymEvenOddPrecLinearOperatorArray : public DiffLinearOperatorArray<T,P,Q>
-  {
-  public:
-    //! Virtual destructor to help with cleanup;
-    virtual ~SymEvenOddPrecLinearOperatorArray() {}
-
-    //! Only defined on the odd lattice
-    const Subset& subset() const {return rb[1];}
-
-    //! Expected length of array index
-    virtual int size(void) const = 0;
-
-    //! Return the fermion BC object for this linear operator
-    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
-
-    //! Apply the even-even block onto a source std::vector
-    /*! This does not need to be optimized */
-    virtual void evenEvenLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
-			       enum PlusMinus isign) const = 0;
-  
-    //! Apply the inverse of the even-even block onto a source std::vector
-    virtual void evenEvenInvLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
-				  enum PlusMinus isign) const = 0;
-  
-    //! Apply the the even-odd block onto a source std::vector
-    virtual void evenOddLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
-			      enum PlusMinus isign) const = 0;
-
-    //! Apply the the odd-even block onto a source std::vector
-    virtual void oddEvenLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
-			      enum PlusMinus isign) const = 0;
-
-    //! Apply the the odd-odd block onto a source std::vector
-    virtual void oddOddLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
-			     enum PlusMinus isign) const = 0;
-
-    //! Apply the operator onto a source std::vector
-    virtual void operator() (multi1d<T>& chi, const multi1d<T>& psi, 
-			     enum PlusMinus isign) const
-    {
-      multi1d<T>  tmp1(size());  moveToFastMemoryHint(tmp1);
-      multi1d<T>  tmp2(size());  moveToFastMemoryHint(tmp2);
-
-      /*  Tmp2   =  A^(-1)     D     A^(-1)     D    Psi  */
-      /*      O      O,O        O,E        E,E   E,O    O */
-      evenOddLinOp(tmp1, psi, isign);
-      evenEvenInvLinOp(tmp2, tmp1, isign);
-      oddEvenLinOp(tmp1, tmp2, isign);
-      oddOddInvLinOp(tmp2, tmp1, isign);
-
-      /*  Chi   =  I    Psi  -  Tmp2  */
-      /*     O      O,O    O        O */
-      for(int n=0; n < size(); ++n)
-	chi[n][rb[1]] = psi[n] - tmp2[n];
-
-      getFermBC().modifyF(chi, rb[1]);
-    }
-
-
-    //! Apply the UNPRECONDITIONED operator onto a source std::vector
-    /*! Mainly intended for debugging */
-    virtual void unprecLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
-			     enum PlusMinus isign) const
-    {
-      multi1d<T>  tmp1(size()); moveToFastMemoryHint(tmp1);
-      multi1d<T>  tmp2(size()); moveToFastMemoryHint(tmp2);
-
-      /*  Chi   =   A    Psi   +    D    Psi   */
-      /*     E       E,E    O        E,O    O  */
-      evenEvenLinOp(tmp1, psi, isign);
-      evenOddLinOp(tmp2, psi, isign);
-      for(int n=0; n < size(); ++n)
-	chi[n][rb[0]] = tmp1[n] + tmp2[n];
-
-      /*  Chi   =   D    Psi    +    A    Psi   */
-      /*     O       O,E    E         O,O    O  */
-      oddEvenLinOp(tmp1, psi, isign);
-      oddOddLinOp(tmp2, psi, isign);
-      for(int n=0; n < size(); ++n)
-	chi[n][rb[1]] = tmp1[n] + tmp2[n];
-
-      getFermBC().modifyF(chi);
-    }
-
-
-    //! Apply the even-even block onto a source std::vector
-    virtual void derivEvenEvenLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
-				    enum PlusMinus isign) const = 0;
-  
-    //! Apply the the even-odd block onto a source std::vector
-    virtual void derivEvenOddLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
-				   enum PlusMinus isign) const = 0;
- 
-    //! Apply the the odd-even block onto a source std::vector
-    virtual void derivOddEvenLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
-				   enum PlusMinus isign) const = 0;
-
-    //! Apply the the odd-odd block onto a source std::vector
-    virtual void derivOddOddLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
-				  enum PlusMinus isign) const = 0;
-
-    /*! Mainly intended for debugging */
-    virtual void derivUnprecLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
-				  enum PlusMinus isign) const
-    {
-      T   tmp1, tmp2;  // if an array is used here, the space is not reserved
-      moveToFastMemoryHint(tmp1);
-      moveToFastMemoryHint(tmp2);
-
-      P   ds_tmp;  // deriv routines should resize
-
-      //  ds_u  =  chi^dag * A'_ee * psi
-      derivEvenEvenLinOp(ds_u, chi, psi, isign);
-
-      //  ds_u +=  chi^dag * D'_eo * psi
-      derivEvenOddLinOp(ds_tmp, chi, psi, isign);
-      ds_u += ds_tmp;
-
-      //  ds_u +=  chi^dag * D'_oe * psi
-      derivOddEvenLinOp(ds_tmp, chi, psi, isign);
-      ds_u += ds_tmp;
-
-      //  ds_u +=  chi^dag * A'_oo * psi
-      derivOddOddLinOp(ds_tmp, chi, psi, isign);
-      ds_u += ds_tmp;
-
-      getFermBC().zero(ds_u);
-    }
-
-    //! Apply the operator onto a source std::vector
-    /*! User should make sure deriv routines do a resize.
-     *  This function is left pure virtual - as derived 
-     *  functions need to override it 
-     */
-    virtual void deriv(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
-		       enum PlusMinus isign) const = 0;
-
-    //! Apply the derivative of the UNPRECONDITIONED operator onto a source std::vector
-
-    //! Return flops performed by the evenEvenLinOp
-    virtual unsigned long evenEvenNFlops() const { return 0; }
-    
-    //! Return flops performed by the evenOddLinOp
-    virtual unsigned long evenOddNFlops() const { return 0; }
-
-    //! Return flops performed by the oddEvenLinOp
-    virtual unsigned long oddEvenNFlops() const { return 0; }
-
-    //! Return flops performed by the oddOddLinOp
-    virtual unsigned long oddOddNFlops() const { return 0; }
-
-    //! Return flops performed by the evenEvenInvLinOp
-    virtual unsigned long evenEvenInvNFlops() const { return 0; }
-
-    //! Return flops performed by the operator()
-    virtual unsigned long nFlops() const { 
-      return (this->oddOddNFlops()
-	      +this->oddEvenNFlops()
-	      +this->evenEvenInvNFlops()
-	      +this->evenOddNFlops());
-    }
-
-
-  };
+
+//----------------------------------------------------------------
+//! Even-odd preconditioned linear operator
+/*! @ingroup linop
+ *
+ * Support for even-odd preconditioned linear operators
+ * Given a matrix M written in block form:
+ *
+ *      [      A             D        ]
+ *      [       E,E           E,O     ]
+ *      [                             ]
+ *      [      D             A        ]
+ *      [       O,E           O,O     ]
+ *
+ * The preconditioning consists of factorizing as
+ *
+ *
+ *      M_unprec = M_diag x M'
+ *
+ *
+ *     M_diag = [   A_E,E    0   ]
+ *              [   0      A_O,O ]
+ *
+ *              [ 1        M_E,O ]
+ *     M' =     [                ]
+ *              [ M_O,E      1   ]
+ *
+ *
+ *     M_E,O = A^{-1}_E,E D_E,O
+ *     M_O,E = A^{-1}_O,O D_E,O
+ *
+ *  We then do a schur precondition of M'
+ *
+ *  as M' =  L  M  R
+ *
+ *
+ *     L  =   [  1      0  ]
+ *            [            ]
+ *            [  M_O,E  1  ]
+ *
+ *
+ *
+ *     R  =   [  1    M_E,O ]
+ *            [             ]
+ *            [  0      1   ]
+ *
+ *
+ *     M  =   [   1                0     ]
+ *            [                          ]
+ *            [   0                S     ]
+ *
+ * where S = 1 - ( M_O,E )( M_E,O )
+ *
+ *
+ *    L^{-1}  =   [   1     0  ]
+ *                [            ]
+ *                [- M_O,E  1  ]
+ *
+ *
+ *
+ *   R^{-1}  =   [  1    - M_E,O ]
+ *               [               ]
+ *               [  0       1    ]
+ *
+ *
+ *
+ * For props we need to solve:
+ *
+ *       M  x' = L^{-1} (M_diag)^{-1} b
+ *
+ * and then x = R^{-1} x'  (backsubstitution)
+ *
+ * for HMC we have det(L)=1 det(R)=1
+ * det(M_diag) is handled by TraceLog/LogDet calls to clover
+ * and we pseudofermionize only the 'S' operators
+ *
+ *
+ * Structure: capture D_oe, D_eo, A_ee, A_oo, A^{-1}_oo and A^{-1}_ee
+ * as
+ *    unprecEvenOddLinOp
+ *    unprecOddEvenLinOp
+ *    unprecEvenEvenLinOp
+ *    unprecOddOddLinOp
+ *    unprecOddOddInvLinOp
+ *    unprecEvenEvenInvLinOp
+ *
+ *    then we can write category defaults for:
+ *
+ *    then
+ *      evenOddLinOp is M_eo = A^{-1}_ee D_eo or  h.c.
+ *      oddEvenLinOp is M_oe = A^{-1}_oo D_oe or  h.c.
+ *
+ *    the so called Jacobi Operator:
+ *         [ 1             M_eo ]
+ *         [ M_oe           1   ]
+ *
+ *    the Schur Operator:  S = 1 - M_oe M_eo
+ *
+ *    the Unprec Operator: diag( A_ee A_oo ) M_jacobi
+ *
+ *    We can also write category default for the forces in terms
+ *    of
+ *         derivEvenOddLinOp
+ *    and  derivOddEvenLinOp
+ *
+ *    Const-detness or log-det ness will depend on how the
+ *    derivEvenOdd and derivOddEven operators are coded
+ *
+ *    ConstDet will treat A as a constant (muliplicative factor)
+ *    LogDet will evaluate chain rule in derivEvenOddLinOp
+ *       and also provide lodDet terms and TraceLog forces
+ *
+ */
+
+template<typename T, typename P, typename Q>
+class SymEvenOddPrecLinearOperator : public DiffLinearOperator<T,P,Q>
+{
+public:
+	//! Virtual destructor to help with cleanup;
+	virtual ~SymEvenOddPrecLinearOperator() {}
+
+	//! Only defined on the odd lattice
+	const Subset& subset() const {return rb[1];}
+
+	//! Return the fermion BC object for this linear operator
+	virtual const FermBC<T,P,Q>& getFermBC() const = 0;
+
+	//! Apply the even-even block onto a source std::vector
+	/*! This does not need to be optimized */
+	virtual void unprecEvenEvenLinOp(T& chi, const T& psi,
+			enum PlusMinus isign) const = 0;
+
+	//! Apply the inverse of the even-even block onto a source std::vector
+	virtual void unprecEvenEvenInvLinOp(T& chi, const T& psi,
+			enum PlusMinus isign) const = 0;
+
+	//! Apply the the odd-odd block onto a source std::vector
+	virtual void unprecOddOddLinOp(T& chi, const T& psi,
+			enum PlusMinus isign) const = 0;
+
+	//! Apply the inverse of the odd-odd block onto a source std::vector
+	virtual void unprecOddOddInvLinOp(T& chi, const T& psi,
+			enum PlusMinus isign) const = 0;
+
+	//! Apply the the even-odd block onto a source std::vector
+	virtual void unprecEvenOddLinOp(T& chi, const T& psi,
+			enum PlusMinus isign) const = 0;
+
+	//! Apply the the odd-even block onto a source std::vector
+	virtual void unprecOddEvenLinOp(T& chi, const T& psi,
+			enum PlusMinus isign) const = 0;
+
+
+	//! Apply the EvenOdd Linop for which we have a category default)
+	virtual void evenOddLinOp(T& chi, const T& psi,
+			enum PlusMinus isign) const {
+
+		T tmp; moveToFastMemoryHint(tmp);
+
+		if( isign == PLUS ) {
+			unprecEvenOddLinOp(tmp, psi, PLUS);
+			unprecEvenEvenInvLinOp(chi,tmp,PLUS);
+		}
+		else {
+			unprecOddOddInvLinOp(tmp, psi, MINUS);
+			unprecEvenOddLinOp(chi, tmp, MINUS);
+		}
+
+		// Do I want to apply BC's here?
+		//getFermBC().modifyF(chi);
+	}
+
+	virtual void oddEvenLinOp(T& chi, const T& psi,
+			enum PlusMinus isign) const {
+
+		T tmp; moveToFastMemoryHint(tmp);
+
+		if( isign == PLUS ) {
+			unprecOddEvenLinOp(tmp, psi, PLUS);
+			unprecOddOddInvLinOp(chi,tmp,PLUS);
+		}
+		else {
+			unprecEvenEvenInvLinOp(tmp, psi, MINUS);
+			unprecOddEvenLinOp(chi, tmp, MINUS);
+		}
+
+		// Do I want to apply BCs here?
+		//getFermBC().modifyF(chi);
+	}
+
+
+	//! Apply the operator onto a source std::vector
+	virtual void operator() (T& chi, const T& psi,
+			enum PlusMinus isign) const
+	{
+		T   tmp1; moveToFastMemoryHint(tmp1);
+		T   tmp2; moveToFastMemoryHint(tmp2);
+
+		/*  t1 =  M_eo psi */
+		evenOddLinOp(tmp1,psi,isign);
+
+		/*  t2 = M_oe t1 */
+		oddEvenLinOp(tmp2,tmp1,isign);
+
+		/* chi = psi - M_oe M_eo psi = (1 - M_oe M_eo) psi */
+		/* NB: the construction takes care of daggering
+		 *       as the M_eo^\dagger will reverse operator order etc */
+		chi[rb[1]] = psi - tmp2;
+		getFermBC().modifyF(chi);
+	}
+
+	//! Apply the Jacobi Operator
+	virtual void jacobiOp(T& chi, const T& psi,
+			enum PlusMinus isign) const
+	{
+		T tmp; moveToFastMemoryHint(tmp);
+
+		//         [   1     A^{-1}_ee D_eo ]
+		//         [                        ]
+		//         [ A^{-1}_oo D_oe    1    ]
+		//
+		//   Or hermitian conjugate
+		chi = psi;
+		evenOddLinOp(tmp, psi, isign);
+		chi[ rb[0]] += tmp;
+		oddEvenLinOp(tmp, psi, isign);
+		chi[ rb[1]] += tmp;
+
+		getFermBC().modifyF(chi);
+	}
+
+	//! Apply the UNPRECONDITIONED operator onto a source std::vector
+	/*! Mainly intended for debugging */
+	virtual void unprecLinOp(T& chi, const T& psi,
+			enum PlusMinus isign) const
+	{
+		T   tmp1;  moveToFastMemoryHint(tmp1);
+		QDPIO::cout << "M_Unprec : " << std::endl;
+		if ( isign == PLUS ) {
+			// Apply Jacobi Operator and scale for M_unprec:
+			//
+			//   [ A_ee    0   ]  [   1     A^{-1}_ee D_eo ]
+			//   [             ]  [                        ]
+			//   [   0   A_oo  ]  [ A^{-1}_oo D_oe    1    ]
+			//
+			jacobiOp(tmp1, psi, isign);
+
+			unprecEvenEvenLinOp(chi,tmp1,isign);
+			unprecOddOddLinOp(chi,tmp1, isign);
+		}
+		else {
+			// For Hermitian conjugate scale first then apply Jacobi operator
+			//
+			// [ 1     (D^\dag)_eo A^{-dag}_oo ] [ A^dag_ee     0  ]
+			// [                               ] [                 ]
+			// [ (D^\dag)_oe A^{-dag}_ee     1 ] [  0     A^dag_oo ]
+			unprecEvenEvenLinOp(tmp1,psi,isign);
+			unprecOddOddLinOp(tmp1,psi,isign);
+			jacobiOp(chi,tmp1,isign);
+
+		}
+		getFermBC().modifyF(chi);
+	}
+
+
+	//! Compute force coming from EvenOdd (A^{-1}_ee D_eo) term
+	virtual void derivEvenOddLinOp(P& ds_u, const T& chi, const T& psi,
+			enum PlusMinus isign) const = 0;
+
+	//! Compute force coming from OddEven (A^{-1}_oo D_oe ) term
+	virtual void derivOddEvenLinOp(P& ds_u, const T& chi, const T& psi,
+			enum PlusMinus isign) const = 0;
+
+
+
+	//! Deriv
+	virtual void deriv(P& ds_u, const T& chi, const T& psi,
+			enum PlusMinus isign) const
+	{
+		T M_eo_psi; moveToFastMemoryHint(M_eo_psi);
+		T M_oe_dag_chi; moveToFastMemoryHint(M_oe_dag_chi);
+
+		enum PlusMinus msign = ( isign == PLUS ) ? MINUS : PLUS;
+
+		evenOddLinOp( M_eo_psi, psi, isign);
+		evenOddLinOp( M_oe_dag_chi, chi, msign);
+
+		ds_u.resize(Nd);
+		ds_u = zero;
+		P ds_tmp;
+		derivOddEvenLinOp(ds_tmp,chi,M_eo_psi,isign);
+		ds_u -= ds_tmp;
+
+		derivEvenOddLinOp(ds_tmp, M_oe_dag_chi,psi,isign);
+		ds_u -= ds_tmp;
+	
+		getFermBC().zero(ds_u);
+	}
+
+	//! Apply the derivative of the operator onto a source std::vector
+	/*! User should make sure deriv routines do a resize  */
+	virtual void derivMultipole(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi,
+			enum PlusMinus isign) const
+	{
+		T M_eo_psi; moveToFastMemoryHint(M_eo_psi);
+		T M_oe_dag_chi; moveToFastMemoryHint(M_oe_dag_chi);
+
+		enum PlusMinus msign = ( isign == PLUS ) ? MINUS : PLUS;
+
+
+		ds_u.resize(Nd);
+		ds_u = zero;
+		P ds_tmp;
+		for(int i=0; i < chi.size(); ++i) {
+			evenOddLinOp( M_eo_psi, psi[i], isign);
+			evenOddLinOp( M_oe_dag_chi, chi[i], msign);
+
+			derivOddEvenLinOp(ds_tmp,chi[i],M_eo_psi,isign);
+			ds_u -= ds_tmp;
+			derivEvenOddLinOp(ds_tmp, M_oe_dag_chi,psi[i],isign);
+			ds_u -= ds_tmp;
+		}
+		getFermBC().zero(ds_u);
+
+	}
+
+};
 
 
 } // End namespace Chroma

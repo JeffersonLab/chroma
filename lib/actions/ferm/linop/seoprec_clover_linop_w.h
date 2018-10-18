@@ -47,8 +47,6 @@ namespace Chroma
 
     //! Destructor is automatic
     ~SymEvenOddPrecCloverLinOp() {
-      QDPIO::cout << "CLOV_LINOP: Time spent in clov deriv (total) = " << clov_deriv_time << std::endl;
-      QDPIO::cout << "CLOV_LINOP: Time spent in clov apply/invapply (total) = " << clov_apply_time << std::endl;
     }
 
     //! Return the fermion BC object for this linear operator
@@ -59,61 +57,82 @@ namespace Chroma
 		const CloverFermActParams& param_);
 
     //! Apply the the even-even block onto a source std::vector
-    void evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+    void unprecEvenEvenLinOp(T& chi, const T& psi,
 		       enum PlusMinus isign) const;
 
     //! Apply the inverse of the even-even block onto a source std::vector
-    void evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+    void unprecEvenEvenInvLinOp(T& chi, const T& psi,
 			  enum PlusMinus isign) const;
   
+    //! Apply the the odd-odd block onto a source std::vector
+     void unprecOddOddLinOp(T& chi, const T& psi,
+ 		     enum PlusMinus isign) const;
+
+     //! Apply the inverse of the odd-odd block onto a source std::vector
+     void unprecOddOddInvLinOp(T& chi, const T& psi,
+ 			enum PlusMinus isign) const;
+
     //! Apply the the even-odd block onto a source std::vector
-    void evenOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-		      enum PlusMinus isign) const;
+    void unprecEvenOddLinOp(T& chi, const T& psi,
+		      enum PlusMinus isign) const ;
 
     //! Apply the the odd-even block onto a source std::vector
-    void oddEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-		      enum PlusMinus isign) const;
+    void unprecOddEvenLinOp(T& chi, const T& psi,
+		      enum PlusMinus isign) const ;
 
-    //! Apply the the odd-odd block onto a source std::vector
-    void oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-		     enum PlusMinus isign) const;
+#if 0
+    void operator()(T& chi,
+   					     const T& psi,
+   					     enum PlusMinus isign) const override;
+#endif
 
-    //! Apply the inverse of the odd-odd block onto a source std::vector
-    void oddOddInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-			enum PlusMinus isign) const;
-  
+    // Deriv of A_ee
+    virtual void derivUnprecEvenEvenLinOp(P& ds_u, const T& chi, const T& psi,
+    		enum PlusMinus isign) const;
+
+    // Deriv of A_oo
+    virtual void derivUnprecOddOddLinOp(P& ds_u, const T& chi, const T& psi,
+    		enum PlusMinus isign) const;
+
+    // Deriv of  D_eo
+    virtual void derivUnprecEvenOddLinOp(P& ds_u, const T& chi, const T& psi,
+    		enum PlusMinus isign) const;
+
+    // Deriv of  D_eo
+    virtual void derivUnprecOddEvenLinOp(P& ds_u, const T& chi, const T& psi,
+    		enum PlusMinus isign) const;
+
+#if 0
     // Override inherited one with a few more funkies
-    void operator()(LatticeFermion& chi, const LatticeFermion& psi, 
-		    enum PlusMinus isign) const;
+    //
+    // Optimized operator() work on it when the category default works.
+    void operator()(T& chi, const T& psi,
+		    enum PlusMinus isign) const override;
+#endif
 
+  
     //! Apply the even-even block onto a source std::vector
-    void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-			    const LatticeFermion& chi, const LatticeFermion& psi, 
-			    enum PlusMinus isign) const;
-
-    //! Apply the odd-odd block onto a source std::vector
-    void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-			  const LatticeFermion& chi, const LatticeFermion& psi, 
-			  enum PlusMinus isign) const;
-
-    //! Apply the even-even block onto a source std::vector
-    void derivLogDetEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+    void derivLogDetEvenEvenLinOp(P& ds_u,
 				  enum PlusMinus isign) const;
 
     //! Apply the odd-odd block onto a source std::vector
-    void derivLogDetOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+    void derivLogDetOddOddLinOp(P& ds_u,
 				enum PlusMinus isign) const;
 
+#if 0
+    // Optimized forms: work on these once the category defaults are working.
     //! Apply the the even-odd block onto a source std::vector
-    void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-			   const LatticeFermion& chi, const LatticeFermion& psi, 
-			   enum PlusMinus isign) const;
+    void derivEvenOddLinOp(P& ds_u,
+			   const T& chi, const T& psi,
+			   enum PlusMinus isign) const override;
  
     //! Apply the the odd-even block onto a source std::vector
-    void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-			   const LatticeFermion& chi, const LatticeFermion& psi, 
-			   enum PlusMinus isign) const;
+    void derivOddEvenLinOp(P& ds_u,
+			   const T& chi, const T& psi,
+			   enum PlusMinus isign) const override;
 
+    void deriv(P& ds_u, T& chi, const T& psi, enum PlusMinus isign) const override;
+#endif
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
 

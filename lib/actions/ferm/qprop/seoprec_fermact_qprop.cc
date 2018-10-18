@@ -43,35 +43,55 @@ namespace Chroma
       START_CODE();
 
       /* Step (i) */
-      /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_e */
-      T chi_tmp;
-      {
-	T tmp1, tmp2;
+      /* chi' = L^{-1} x M_diag^{-1} chi */
+      T Mdiag_inv_chi;
+      QDPIO::cout << "Diag Inv" << std::endl;
+      A->unprecEvenEvenInvLinOp(Mdiag_inv_chi,chi, PLUS);
+      A->unprecOddOddInvLinOp(Mdiag_inv_chi,chi,PLUS);
 
-	A->evenEvenInvLinOp(tmp1, chi, PLUS);
-	A->oddEvenLinOp(tmp2, tmp1, PLUS);
-	chi_tmp[rb[1]] = chi - tmp2;
+      /* Now apply L^{-1} = [ 1          0  ]  = [ 1      0 ]
+       *                    [ -A^-1_oo D_oe  1 ]    [ -M_oe   1]
+       */
+      {
+    	  T tmp;
+    	  A->oddEvenLinOp(tmp, Mdiag_inv_chi,PLUS);
+    	  Mdiag_inv_chi[rb[1]] -= tmp;
       }
 
-      // Call inverter
-      SystemSolverResults_t res = (*invA)(psi, chi_tmp);
+      // Now solve
+      // [   1        0   ] [x'_e] = L^{-1} M_diag^{-1} [chi_e]
+      // [   0        S   ] [x'_o]                      [chi_o]
+      //
+      //                           = [ Mdiag_inv_chi_e ]
+      //                             [ Mdiag_inv_chi_o ]
+      //
+      // Call inverter -- for rb[1]
+      SystemSolverResults_t res = (*invA)(psi, Mdiag_inv_chi);
+
+      // rb[0] is trivial:
+      psi[rb[0]]=Mdiag_inv_chi;
 
       /* Step (ii) */
-      /* psi_e = A_ee^-1 * [chi_e  -  D_eo * psi_o] */
+      /* Reconstruct solution */
+      /* psi = R^{-1} psi = [ 1  - A_ee^{-1} D_eo ] [ psi_e]
+       *                    [ 0              1    ] [ psi_o]
+       *
+       *              = [ 1  -M_eo ] [ psi_e ]
+       *                [  0    1  ] [ psi_o ]
+       */
       {
-	T tmp1, tmp2;
+    	  T tmp;
 
-	A->evenOddLinOp(tmp1, psi, PLUS);
-	tmp2[rb[0]] = chi - tmp1;
-	A->evenEvenInvLinOp(psi, tmp2, PLUS);
+    	  A->evenOddLinOp(tmp, psi, PLUS);
+    	  psi[rb[0]] -= tmp;
       }
   
       // Compute residual
       {
-	T  r;
-	A->unprecLinOp(r, psi, PLUS);
-	r -= chi;
-	res.resid = sqrt(norm2(r));
+    	  T  r;
+    	  A->unprecLinOp(r, psi, PLUS);
+    	  r -= chi;
+    	  res.resid = sqrt(norm2(r));
       }
 
       END_CODE();

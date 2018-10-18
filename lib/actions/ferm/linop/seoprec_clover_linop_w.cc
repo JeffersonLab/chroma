@@ -38,15 +38,13 @@ namespace Chroma
 
   //! Apply the the odd-odd block onto a source std::vector
   void 
-  SymEvenOddPrecCloverLinOp::oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  SymEvenOddPrecCloverLinOp::unprecOddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi,
 					 enum PlusMinus isign) const
   {
     START_CODE();
 
-    swatch.reset(); swatch.start();
+
     clov.apply(chi, psi, isign, 1);
-    swatch.stop();
-    clov_apply_time += swatch.getTimeInSeconds();
 
     END_CODE();
   }
@@ -54,47 +52,34 @@ namespace Chroma
 
   //! Apply the inverse of the odd-odd block onto a source std::vector
   void 
-  SymEvenOddPrecCloverLinOp::oddOddInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  SymEvenOddPrecCloverLinOp::unprecOddOddInvLinOp(LatticeFermion& chi, const LatticeFermion& psi,
 					    enum PlusMinus isign) const
   {
     START_CODE();
 
-    swatch.reset(); swatch.start();
     invclov.apply(chi, psi, isign, 1);
-    swatch.stop();
-    clov_apply_time += swatch.getTimeInSeconds();
-    
     END_CODE();
   }
   
 
   //! Apply the the even-even block onto a source std::vector
   void 
-  SymEvenOddPrecCloverLinOp::evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  SymEvenOddPrecCloverLinOp::unprecEvenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi,
 					   enum PlusMinus isign) const
   {
     START_CODE();
-
-    // Nuke for testing
-    swatch.reset(); swatch.start();
     clov.apply(chi, psi, isign, 0);
-    swatch.stop();
-    clov_apply_time += swatch.getTimeInSeconds();
-    
     END_CODE();
   }
 
   //! Apply the inverse of the even-even block onto a source std::vector
   void 
-  SymEvenOddPrecCloverLinOp::evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  SymEvenOddPrecCloverLinOp::unprecEvenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi,
 					      enum PlusMinus isign) const
   {
     START_CODE();
 
-    swatch.reset(); swatch.start();
     invclov.apply(chi, psi, isign, 0);
-    swatch.stop();
-    clov_apply_time += swatch.getTimeInSeconds();
     
     END_CODE();
   }
@@ -109,7 +94,7 @@ namespace Chroma
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    */
   void 
-  SymEvenOddPrecCloverLinOp::evenOddLinOp(LatticeFermion& chi, 
+  SymEvenOddPrecCloverLinOp::unprecEvenOddLinOp(LatticeFermion& chi,
 					  const LatticeFermion& psi, 
 					  enum PlusMinus isign) const
   {
@@ -132,7 +117,7 @@ namespace Chroma
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    */
   void 
-  SymEvenOddPrecCloverLinOp::oddEvenLinOp(LatticeFermion& chi, 
+  SymEvenOddPrecCloverLinOp::unprecOddEvenLinOp(LatticeFermion& chi,
 					  const LatticeFermion& psi, 
 					  enum PlusMinus isign) const
   {
@@ -146,37 +131,38 @@ namespace Chroma
     END_CODE();
   }
 
-
+#if 0
   //! Apply even-odd preconditioned Clover fermion linear operator
   /*!
    * \param chi 	  Pseudofermion field     	       (Write)
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    */
-  void SymEvenOddPrecCloverLinOp::operator()(LatticeFermion & chi, 
-					     const LatticeFermion& psi, 
+  void SymEvenOddPrecCloverLinOp::operator()(T& chi,
+					     const T& psi,
 					     enum PlusMinus isign) const
   {
     START_CODE();
 
-    LatticeFermion tmp1; moveToFastMemoryHint(tmp1);
-    LatticeFermion tmp2; moveToFastMemoryHint(tmp2);
+    T tmp1; moveToFastMemoryHint(tmp1);
+    T tmp2; moveToFastMemoryHint(tmp2);
     Real mquarter = -0.25;
-  
-    //  tmp2_o  =  A^(-1)_oo  D_oe  A^(-1)_ee  D_eo  psi_o
-    D.apply(tmp1, psi, isign, 0);
+ 
 
-    swatch.reset(); swatch.start();
-    invclov.apply(tmp2, tmp1, isign, 0);
-    swatch.stop();
-    clov_apply_time += swatch.getTimeInSeconds();
+    if( isign == PLUS) {  
+       //  tmp2_o  =  A^(-1)_oo  D_oe  A^(-1)_ee  D_eo  psi_o
+       D.apply(tmp1, psi, isign, 0);
+       invclov.apply(tmp2, tmp1, isign, 0);
 
-    D.apply(tmp1, tmp2, isign, 1);
-
-    swatch.reset(); swatch.start();
-    invclov.apply(tmp2, tmp1, isign, 1);
-    swatch.stop();
-    clov_apply_time += swatch.getTimeInSeconds();
+       D.apply(tmp1, tmp2, isign, 1);
+       invclov.apply(tmp2, tmp1, isign, 1);
+     }
+     else { 
+       invclov.apply(tmp1, psi, isign, 1);
+       D.apply(tmp2, tmp1, isign, 0);
+       invclov.apply(tmp1, tmp2, isign, 0);
+       D.apply(tmp2, tmp1, isign, 1);
+     }
 
     //  chi_o  =  psi_o  -  tmp2_o
     chi[rb[1]] = psi  +  mquarter*tmp2;
@@ -186,23 +172,35 @@ namespace Chroma
       QDPIO::cerr << __func__ << ": do not support twisted mass terms" << std::endl;
       QDP_abort(1);
     }
-
+    getFermBC().modifyF(chi);
     END_CODE();
   }
-
+#endif
 
   //! Apply the even-even block onto a source std::vector
   void 
-  SymEvenOddPrecCloverLinOp::derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+  SymEvenOddPrecCloverLinOp::derivUnprecEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
 						const LatticeFermion& chi, const LatticeFermion& psi, 
 						enum PlusMinus isign) const
   {
     START_CODE();
     
-    swatch.reset(); swatch.start();
+
     clov.deriv(ds_u, chi, psi, isign, 0);
-    swatch.stop();
-    clov_deriv_time  += swatch.getTimeInSeconds();
+
+    END_CODE();
+  }
+
+  // Inherit this
+  //! Apply the the odd-odd block onto a source std::vector
+  void
+  SymEvenOddPrecCloverLinOp::derivUnprecOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u,
+					      const LatticeFermion& chi, const LatticeFermion& psi,
+					      enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    clov.deriv(ds_u, chi, psi, isign, 1);
 
     END_CODE();
   }
@@ -233,7 +231,7 @@ namespace Chroma
 
   //! Apply the the even-odd block onto a source std::vector
   void 
-  SymEvenOddPrecCloverLinOp::derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+  SymEvenOddPrecCloverLinOp::derivUnprecEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u,
 					       const LatticeFermion& chi, const LatticeFermion& psi, 
 					       enum PlusMinus isign) const
   {
@@ -248,7 +246,7 @@ namespace Chroma
  
   //! Apply the the odd-even block onto a source std::vector
   void 
-  SymEvenOddPrecCloverLinOp::derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+  SymEvenOddPrecCloverLinOp::derivUnprecOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
 					       const LatticeFermion& chi, const LatticeFermion& psi, 
 					       enum PlusMinus isign) const
   {
@@ -262,22 +260,6 @@ namespace Chroma
     END_CODE();
   }
 
-  // Inherit this
-  //! Apply the the odd-odd block onto a source std::vector
-  void 
-  SymEvenOddPrecCloverLinOp::derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-					      const LatticeFermion& chi, const LatticeFermion& psi, 
-					      enum PlusMinus isign) const
-  {   
-    START_CODE();
-
-    swatch.reset(); swatch.start();
-    clov.deriv(ds_u, chi, psi, isign, 1);
-    swatch.stop();
-    clov_deriv_time += swatch.getTimeInSeconds();
-    
-    END_CODE();
-  }
 
   //! Return flops performed by the operator()
   unsigned long SymEvenOddPrecCloverLinOp::nFlops() const
