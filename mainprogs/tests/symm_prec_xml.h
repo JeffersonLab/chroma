@@ -285,6 +285,84 @@ std::string inv_param_quda_multigrid_asymm_xml = \
 		</Param>";
 #endif
 
+
+std::string inv_param_multi_cg_xml = \
+		"<?xml version='1.0'?> \
+		<Param> \
+		  <InvertParam>\
+           	 <invType>CG_INVERTER</invType>\
+		     <RsdCG>1.0e-8 1.0e-8 1.0e-8</RsdCG> \
+		     <MaxCG>1000</MaxCG> \
+          </InvertParam>\
+		</Param>";
+
+#ifdef BUILD_QUDA
+std::string inv_param_multi_cg_quda_xml = \
+		"<?xml version='1.0'?> \
+		 <Param>\
+		 <InvertParam> \
+		   <invType>MULTI_CG_QUDA_CLOVER_INVERTER</invType> \
+		   <CloverParams> \
+              <Mass>0.1</Mass> \
+			  <clovCoeff>1</clovCoeff> \
+			  <AnisoParam> \
+				 <anisoP>false</anisoP>	  \
+				 <t_dir>3</t_dir>	 \
+				 <xi_0>1</xi_0>	  \
+				 <nu>1</nu>	  \
+			  </AnisoParam> \
+		    </CloverParams> \
+		    <RsdTarget>1e-08 1e-08 1e-08</RsdTarget> \
+		    <Delta>1.0e-1</Delta> \
+		    <Pipeline>0</Pipeline> \
+		    <MaxIter>50000</MaxIter> \
+		    <RsdToleranceFactor>100</RsdToleranceFactor> \
+            <AntiPeriodicT>true</AntiPeriodicT> \
+		    <SolverType>CG</SolverType> \
+		    <Verbose>false</Verbose> \
+		    <CheckShifts>false</CheckShifts> \
+		    <AsymmetricLinop>false</AsymmetricLinop> \
+		    <CudaReconstruct>RECONS_12</CudaReconstruct> \
+ 		    <CudaSloppyPrecision>HALF</CudaSloppyPrecision> \
+		    <CudaSloppyReconstruct>RECONS_12</CudaSloppyReconstruct> \
+		    <AxialGaugeFix>false</AxialGaugeFix> \
+		    <AutotuneDslash>true</AutotuneDslash> \
+		  </InvertParam> \
+		 </Param>";
+
+std::string inv_param_multi_cg_quda_asymm_xml = \
+		"<?xml version='1.0'?> \
+		 <Param>\
+		 <InvertParam> \
+		   <invType>MULTI_CG_QUDA_CLOVER_INVERTER</invType> \
+		   <CloverParams> \
+              <Mass>0.1</Mass> \
+			  <clovCoeff>1</clovCoeff> \
+			  <AnisoParam> \
+				 <anisoP>false</anisoP>	  \
+				 <t_dir>3</t_dir>	 \
+				 <xi_0>1</xi_0>	  \
+				 <nu>1</nu>	  \
+			  </AnisoParam> \
+		    </CloverParams> \
+		    <RsdTarget>1e-08 1e-08 1e-08</RsdTarget> \
+		    <Delta>1.0e-1</Delta> \
+		    <Pipeline>0</Pipeline> \
+		    <MaxIter>50000</MaxIter> \
+		    <RsdToleranceFactor>100</RsdToleranceFactor> \
+            <AntiPeriodicT>true</AntiPeriodicT> \
+		    <SolverType>CG</SolverType> \
+		    <Verbose>false</Verbose> \
+		    <CheckShifts>false</CheckShifts> \
+		    <AsymmetricLinop>true</AsymmetricLinop> \
+		    <CudaReconstruct>RECONS_12</CudaReconstruct> \
+ 		    <CudaSloppyPrecision>HALF</CudaSloppyPrecision> \
+		    <CudaSloppyReconstruct>RECONS_12</CudaSloppyReconstruct> \
+		    <AxialGaugeFix>false</AxialGaugeFix> \
+		    <AutotuneDslash>true</AutotuneDslash> \
+		  </InvertParam> \
+		 </Param>";
+#endif
 }// namespace
 
 #endif /* MAINPROGS_TESTS_SYMM_PREC_XML_H_ */

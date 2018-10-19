@@ -213,6 +213,8 @@ namespace Chroma
     }
 
     //! Apply the the even-odd block onto a source std::vector
+    //
+    //  Connect chi_even through a derivative with psi_odd
     virtual void derivEvenOddLinOp(P& ds_u, const T& chi, const T& psi, 
 				   enum PlusMinus isign) const
     {
@@ -228,7 +230,9 @@ namespace Chroma
     		ds_u += ds_tmp;
     	}
     	else {
+    		// W_o = A^{-dag}_oo Y_o
     		unprecOddOddInvLinOp(tmp, psi, MINUS);
+    		// X_e^\dagger d [ D^\dagger ]_eo W_o
     		derivUnprecEvenOddLinOp(ds_u, chi, tmp, MINUS);
 
     		unprecOddEvenLinOp(tmp,chi,PLUS);
@@ -240,6 +244,8 @@ namespace Chroma
     }
  
     //! Apply the the odd-even block onto a source std::vector
+    //
+    //  Connect chi_odd with psi_even
     virtual void derivOddEvenLinOp(P& ds_u, const T& chi, const T& psi, 
     		enum PlusMinus isign) const
     {
@@ -256,7 +262,7 @@ namespace Chroma
     	}
     	else {
     		unprecEvenEvenInvLinOp(tmp, psi, MINUS);
-    		derivUnprecEvenOddLinOp(ds_u, chi, tmp, MINUS);
+    		derivUnprecOddEvenLinOp(ds_u, chi, tmp, MINUS);
 
     		unprecEvenOddLinOp(tmp,chi,PLUS);
     		derivUnprecEvenEvenInvLinOp(ds_tmp, tmp,psi, MINUS);
