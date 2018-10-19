@@ -6,6 +6,7 @@
 #include "eoprec_linop.h"
 #include "eoprec_wilstype_fermact_w.h"
 #include "seoprec_wilstype_fermact_w.h"
+#include "actions/ferm/linop/eoprec_clover_linop_w.h"
 #include "actions/ferm/linop/seoprec_clover_linop_w.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "util/gauge/reunit.h"
@@ -33,7 +34,7 @@ public:
 	using S_asymm_T = EvenOddPrecWilsonTypeFermAct<T,P,Q>;
 	using S_symm_T =  SymEvenOddPrecWilsonTypeFermAct<T,P,Q>;
 	using LinOpSymm_T = SymEvenOddPrecCloverLinOp;
-	using LinOpAsymm_T = EvenOddPrecLinearOperator<T,P,Q>;
+	using LinOpAsymm_T = EvenOddPrecCloverLinOp;
 
 
 	void SetUp() {
@@ -49,6 +50,12 @@ public:
 	    XMLReader xml_in_asymm(input_asymm);
 	    XMLReader xml_in_symm(input_symm);
 
+	    std::istringstream input_asymm_periodic(fermact_xml_asymm_periodic);
+	    std::istringstream input_symm_periodic(fermact_xml_symm_periodic);
+
+	    XMLReader xml_in_asymm_periodic(input_asymm_periodic);
+	    XMLReader xml_in_symm_periodic(input_symm_periodic);
+
 	    S_asymm = dynamic_cast<S_asymm_T*>(TheFermionActionFactory::Instance().createObject("CLOVER",
 	    											   xml_in_asymm,
 	    											   "FermionAction"));
@@ -56,9 +63,17 @@ public:
 	    S_symm = dynamic_cast<S_symm_T*>(TheFermionActionFactory::Instance().createObject("SEOPREC_CLOVER",
 	        											   xml_in_symm,
 	        											   "FermionAction"));
+
+	    S_asymm_periodic = dynamic_cast<S_asymm_T*>(TheFermionActionFactory::Instance().createObject("CLOVER",
+	   	    											   xml_in_asymm_periodic,
+	   	    											   "FermionAction"));
+
+	    S_symm_periodic = dynamic_cast<S_symm_T*>(TheFermionActionFactory::Instance().createObject("SEOPREC_CLOVER",
+	   	        											   xml_in_symm_periodic,
+	   	        											   "FermionAction"));
 	    state = S_asymm->createState(u);
 
-	    M_asymm = S_asymm->linOp(state);
+	    M_asymm =dynamic_cast<LinOpAsymm_T *>(S_asymm->linOp(state));
 	    M_symm = dynamic_cast<LinOpSymm_T *>(S_symm->linOp(state));
 	}
 
@@ -67,7 +82,10 @@ public:
 	Q u;
 	Handle<S_symm_T> S_symm;
 	Handle<S_asymm_T> S_asymm;
+	Handle<S_symm_T> S_symm_periodic;
+	Handle<S_asymm_T> S_asymm_periodic;
 	Handle<FermState<T,P,Q> > state;
+
 	Handle<LinOpAsymm_T> M_asymm;
 	Handle<LinOpSymm_T> M_symm;
 };
@@ -600,3 +618,142 @@ TEST_F(SymmFixture, TestDerivDagger)
 		ASSERT_LT(toDouble(norm_rhs_per_number), 1.0e-18 );
 	}
 }
+
+TEST_F(SymmFixture,TestLogDetUnitGauge)
+{
+	Q u_unit;
+	u_unit.resize(Nd);
+	for(int mu=0; mu < Nd; ++mu) {
+		u_unit[mu] = 1;
+	}
+
+	Handle< FermState<T,P,Q> > unit_state = S_symm->createState(u_unit);
+	QDPIO::cout << "Unit Gauge Symm Linop creation" << std::endl;
+	Handle<LinOpSymm_T> lop = dynamic_cast<LinOpSymm_T*>(S_symm->linOp(unit_state));
+
+	Double S_e = lop->logDetEvenEvenLinOp();
+	Double S_o = lop->logDetOddOddLinOp();
+	QDPIO::cout << "Unit gauge: log Det EvenEven = " << S_e << std::endl;
+	QDPIO::cout << "Unit gauge: log Det OddOdd = " << S_o << std::endl;
+
+	Double absdiff = fabs(S_e-S_o);
+	QDPIO::cout << "Unit gauge: | S_e - S_o | = " << absdiff << std::endl;
+	ASSERT_LT( toDouble(absdiff), 1.0e-14);
+}
+
+TEST_F(SymmFixture,TestLogDetShiftedGauge)
+{
+	Q u_shifted;
+	u_shifted.resize(Nd);
+	for(int mu=0; mu < Nd; ++mu) {
+		u_shifted[mu] = shift(u[mu],FORWARD,3);
+	}
+
+	Handle< FermState<T,P,Q> > shifted_state = S_symm->createState(u_shifted);
+
+	QDPIO::cout << "Shifted Gauge Symm Linop creation" << std::endl;
+
+	Handle<LinOpSymm_T> shifted_lop = dynamic_cast<LinOpSymm_T*>(S_symm->linOp(shifted_state));
+
+	Double S_e_asymm = M_asymm->logDetEvenEvenLinOp();
+	Double S_e = M_symm->logDetEvenEvenLinOp();
+	Double S_o = M_symm->logDetOddOddLinOp();
+
+	Double S_e_shifted = shifted_lop->logDetEvenEvenLinOp();
+	Double S_o_shifted = shifted_lop->logDetOddOddLinOp();
+
+	QDPIO::cout << "Asymm op log Det EvenEven = " << S_e_asymm << std::endl;
+	QDPIO::cout << "Random gauge: log Det EvenEven = " << S_e << std::endl;
+	QDPIO::cout << "Random gauge: log Det OddOdd = " << S_o << std::endl;
+	QDPIO::cout << "Shifted gauge: log Det EvenEven = " << S_e_shifted << std::endl;
+	QDPIO::cout << "Shifted gauge: log Det OddOdd = " << S_o_shifted << std::endl;
+
+	Double diff_e_symm_asymm = fabs(S_e_asymm - S_e);
+	Double diff_eo = fabs(S_e - S_o_shifted)/Double(rb[0].numSiteTable());
+	Double diff_oe = fabs(S_o - S_e_shifted)/Double(rb[1].numSiteTable());
+	QDPIO::cout << "| logDet_e_asymm - logdet_e_symm | = " << diff_e_symm_asymm << std::endl;
+	QDPIO::cout << "| logDet_e - logDet_o_shifted |/site = " << diff_eo << std::endl;
+	QDPIO::cout << "| logDet_o - logDet_e_shifted |/site = " << diff_oe << std::endl;
+
+	ASSERT_LT( toDouble(diff_e_symm_asymm), 1.0e-14);
+	ASSERT_LT( toDouble(diff_eo), 1.0e-13);
+	ASSERT_LT( toDouble(diff_oe), 1.0e-13);
+
+}
+
+class TrLogForceFixture : public SymmFixtureT<::testing::TestWithParam<enum PlusMinus>>{};
+TEST_P(TrLogForceFixture,TestShiftedGaugeTrLnForce)
+{
+	Q u_shifted;
+	u_shifted.resize(Nd);
+	for(int mu=0; mu < Nd; ++mu) {
+		u_shifted[mu] = shift(u[mu],FORWARD,3);
+	}
+
+	Handle< FermState<T,P,Q> > periodic_state = S_symm_periodic->createState(u);
+	Handle< FermState<T,P,Q> > periodic_shifted_state = S_symm_periodic->createState(u_shifted);
+
+	QDPIO::cout << "Shifted Gauge Symm Linop creation" << std::endl;
+
+	Handle<LinOpAsymm_T> asymm_periodic_op = dynamic_cast<LinOpAsymm_T*>(S_asymm_periodic->linOp(periodic_state));
+	Handle<LinOpSymm_T> symm_periodic_op = dynamic_cast<LinOpSymm_T*>(S_symm_periodic->linOp(periodic_state));
+	Handle<LinOpSymm_T> shifted_periodic_op = dynamic_cast<LinOpSymm_T*>(S_symm_periodic->linOp(periodic_shifted_state));
+
+	//! Get the force from the EvenEven Trace Log
+	//   virtual void derivLogDetEvenEvenLinOp(P& ds_u, enum PlusMinus isign) const = 0;
+	P ds_asymm;
+	asymm_periodic_op->derivLogDetEvenEvenLinOp(ds_asymm,GetParam());
+
+	P ds_symm;
+	symm_periodic_op->derivLogDetEvenEvenLinOp(ds_symm,GetParam());
+
+	P ds_symm_shifted;
+	shifted_periodic_op->derivLogDetOddOddLinOp(ds_symm_shifted, GetParam());
+
+	P ds_unshifted; ds_unshifted.resize(Nd);
+	P ds_wrong_shifted; ds_wrong_shifted.resize(Nd);
+	for(int mu=0; mu < Nd; ++mu ) {
+		ds_unshifted[mu] = shift(ds_symm_shifted[mu], BACKWARD,3);
+		ds_wrong_shifted[mu] = shift(ds_symm_shifted[mu], FORWARD, 3);
+	}
+	for(int mu=0; mu < Nd; ++mu ) {
+		Double mu_contrib_asymm = norm2(ds_asymm[mu]);
+
+		Double mu_contrib_symm = norm2(ds_symm[mu]);
+
+		Double mu_contrib_shifted = norm2(ds_symm_shifted[mu]);
+
+		QDPIO::cout << "mu=" << mu << "  asymm force norm="<< mu_contrib_asymm << std::endl;
+		QDPIO::cout << "mu=" << mu << "  symm force norm ="<< mu_contrib_symm << std::endl;
+		QDPIO::cout << "mu=" << mu << "  shifted force norm="<< mu_contrib_shifted << std::endl;
+
+
+		Double diff_symm_asymm_ee = fabs(mu_contrib_asymm - mu_contrib_symm );
+		Double diff_symm_ee_oo = fabs(mu_contrib_symm - mu_contrib_shifted );
+
+		QDPIO::cout << "mu=" << mu << " | F_asymm_ee - F_symm_ee | = " << diff_symm_asymm_ee << std::endl;
+		QDPIO::cout << "mu=" << mu << " | F_ee - F_shifted_oo | = " << diff_symm_ee_oo << std::endl;
+
+		ASSERT_LT( toDouble(diff_symm_asymm_ee), 1.0e-15);
+		ASSERT_LT( toDouble(diff_symm_ee_oo), 1.0e-15);
+
+		ds_unshifted[mu] -= ds_symm[mu];
+		ds_wrong_shifted[mu] -= ds_symm[mu];
+		Double diffnorm_unshifted = sqrt(norm2(ds_unshifted[mu]));
+		Double diffnorm_per_site = diffnorm_unshifted/Layout::vol();
+		QDPIO::cout << "mu=" << mu << " || F_mu - shift(F_shifted, BACKWARD, mu) || =" << diffnorm_unshifted << std::endl;
+		QDPIO::cout << "mu=" << mu << " || F_mu - shift(F_shifted, BACKWARD, mu) ||/site =" << diffnorm_per_site << std::endl;
+
+		ASSERT_LT( toDouble(diffnorm_per_site), 1.0e-14 );
+
+		Double diffnorm_wrong_shifted = sqrt(norm2(ds_wrong_shifted[mu]));
+		QDPIO::cout << "mu=" << mu << "  DELIBERATELY WRONG: || F_mu - shift(F_shifted, FORWARD, mu) || =" << diffnorm_wrong_shifted << std::endl;
+		ASSERT_GT( toDouble(diffnorm_wrong_shifted), 0.5);
+		QDPIO::cout << std::endl;
+	}
+
+}
+
+INSTANTIATE_TEST_CASE_P(TrLogForces,
+		TrLogForceFixture,
+		::testing::Values(PLUS,MINUS));

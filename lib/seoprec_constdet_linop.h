@@ -132,6 +132,33 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
+    //! Apply the inverse of the even-even block onto a source std::vector
+    virtual void unprecEvenEvenInvLinOp(T& chi, const T& psi,
+    		enum PlusMinus isign) const override = 0;
+
+    //! Apply the inverse of the odd-odd block onto a source std::vector
+    virtual void unprecOddOddInvLinOp(T& chi, const T& psi,
+    		enum PlusMinus isign) const override = 0;
+
+    //! Apply the even-even block onto a source std::vector
+    /*! This does not need to be optimized */
+    virtual void unprecEvenEvenLinOp(T& chi, const T& psi,
+    		enum PlusMinus isign) const override = 0;
+
+    //! Apply the odd-odd block onto a source std::vector
+    /*! This does not need to be optimized */
+    virtual void unprecOddOddLinOp(T& chi, const T& psi,
+    		enum PlusMinus isign) const override = 0;
+
+    //! Apply the even-odd block onto a source std::vector
+    /*! This does not need to be optimized */
+    virtual void unprecEvenOddLinOp(T& chi, const T& psi,
+    		enum PlusMinus isign) const override = 0;
+
+    //! Apply the odd-even block onto a source std::vector
+    /*! This does not need to be optimized */
+    virtual void unprecOddEvenLinOp(T& chi, const T& psi,
+    		enum PlusMinus isign) const override = 0;
 
     virtual void derivUnprecEvenOddLinOp(P& ds_u, const T& chi, const T& psi,
     		enum PlusMinus isign) const = 0;
@@ -148,11 +175,11 @@ namespace Chroma
 
     	T tmp; moveToFastMemoryHint(tmp);
     	if( isign == PLUS ) {
-    		unprecEvenEvenInvOp(tmp,chi,MINUS);
+    		unprecEvenEvenInvLinOp(tmp,chi,MINUS);
     		derivUnprecEvenOddLinOp(ds_u, tmp, psi, PLUS);
     	}
     	else {
-    		unprecOddOddInvOp(tmp,psi,MINUS);
+    		unprecOddOddInvLinOp(tmp,psi,MINUS);
     		derivUnprecEvenOddLinOp(ds_u,chi, tmp, MINUS);
 
     	}
@@ -168,7 +195,7 @@ namespace Chroma
 
         	T tmp; moveToFastMemoryHint(tmp);
         	if( isign == PLUS ) {
-        		unprecOddOddInvOp(tmp,chi,MINUS);
+        		unprecOddOddInvLinOp(tmp,chi,MINUS);
         		derivUnprecOddEvenLinOp(ds_u, tmp, psi, PLUS);
         	}
         	else {

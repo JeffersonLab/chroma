@@ -9,7 +9,7 @@
 #ifndef __seoprec_logdet_linop_h__
 #define __seoprec_logdet_linop_h__
 
-#include "seoprec_linop.h"
+#include "seoprec_constdet_linop.h"
 
 using namespace QDP::Hints;
 
@@ -126,8 +126,10 @@ namespace Chroma
  *
  */
 
+
+  // Inherit from ConstDet and extend structure -- Then in Monomials we can pass this as a constdet
   template<typename T, typename P, typename Q>
-  class SymEvenOddPrecLogDetLinearOperator : public SymEvenOddPrecLinearOperator<T,P,Q>
+  class SymEvenOddPrecLogDetLinearOperator : public SymEvenOddPrecConstDetLinearOperator<T,P,Q>
   {
   public:
     //! Virtual destructor to help with cleanup;
@@ -174,11 +176,11 @@ namespace Chroma
 
     // Deriv of  D_eo
     virtual void derivUnprecEvenOddLinOp(P& ds_u, const T& chi, const T& psi,
-    		enum PlusMinus isign) const = 0;
+    		enum PlusMinus isign) const override = 0;
 
     // Deriv of  D_eo
     virtual void derivUnprecOddEvenLinOp(P& ds_u, const T& chi, const T& psi,
-    		enum PlusMinus isign) const = 0;
+    		enum PlusMinus isign) const override = 0;
 
     //! deriv of  A^{-1} = - A^{-1} deriv(A) A^{-1}
     virtual void derivUnprecEvenEvenInvLinOp(P& ds_u, const T& chi, const T& psi,
@@ -216,7 +218,7 @@ namespace Chroma
     //
     //  Connect chi_even through a derivative with psi_odd
     virtual void derivEvenOddLinOp(P& ds_u, const T& chi, const T& psi, 
-				   enum PlusMinus isign) const
+				   enum PlusMinus isign) const override
     {
     	T tmp; moveToFastMemoryHint(tmp);
 
@@ -247,7 +249,7 @@ namespace Chroma
     //
     //  Connect chi_odd with psi_even
     virtual void derivOddEvenLinOp(P& ds_u, const T& chi, const T& psi, 
-    		enum PlusMinus isign) const
+    		enum PlusMinus isign) const override
     {
     	T tmp; moveToFastMemoryHint(tmp);
 

@@ -65,6 +65,58 @@ std::string fermact_xml_symm =
    </FermionAction>				      \
   </Param>";
 
+std::string fermact_xml_asymm_periodic =
+  "<?xml version='1.0'?>                              \
+   <Param>					      \
+   <FermionAction>                                    \
+     <FermAct>CLOVER</FermAct>                        \
+     <Mass>0.1</Mass>				      \
+     <clovCoeff>1</clovCoeff>			      \
+     <AnisoParam>				      \
+       <anisoP>false</anisoP>			      \
+       <t_dir>3</t_dir>				      \
+       <xi_0>1</xi_0>				      \
+       <nu>1</nu>				      \
+     </AnisoParam>				      \
+    <FermState>					      \
+       <Name>STOUT_FERM_STATE</Name>		      \
+       <rho>0.14</rho>				      \
+       <n_smear>2</n_smear>			      \
+       <orthog_dir>3</orthog_dir>		      \
+       <FermionBC>				      \
+         <FermBC>SIMPLE_FERMBC</FermBC>		      \
+         <boundary>1 1 1 1</boundary>		      \
+       </FermionBC>				      \
+     </FermState>				      \
+   </FermionAction>				      \
+  </Param>";
+
+std::string fermact_xml_symm_periodic =
+  "<?xml version='1.0'?>                              \
+   <Param>					      \
+   <FermionAction>                                    \
+     <FermAct>SEOPREC_CLOVER</FermAct>                        \
+     <Mass>0.1</Mass>				      \
+     <clovCoeff>1</clovCoeff>			      \
+     <AnisoParam>				      \
+       <anisoP>false</anisoP>			      \
+       <t_dir>3</t_dir>				      \
+       <xi_0>1</xi_0>				      \
+       <nu>1</nu>				      \
+     </AnisoParam>				      \
+    <FermState>					      \
+       <Name>STOUT_FERM_STATE</Name>		      \
+       <rho>0.14</rho>				      \
+       <n_smear>2</n_smear>			      \
+       <orthog_dir>3</orthog_dir>		      \
+       <FermionBC>				      \
+         <FermBC>SIMPLE_FERMBC</FermBC>		      \
+         <boundary>1 1 1 1</boundary>		      \
+       </FermionBC>				      \
+     </FermState>				      \
+   </FermionAction>				      \
+  </Param>";
+
 std::string inv_param_syssolver_bicgstab_xml = \
 		"<?xml version='1.0'?> \
 		<Param> \
