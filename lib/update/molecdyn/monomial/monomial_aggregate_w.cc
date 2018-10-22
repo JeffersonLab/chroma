@@ -20,6 +20,8 @@
 
 #include "update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h"
 #include "update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h"
+#include "update/molecdyn/monomial/seoprec_constdet_one_flavor_rat_monomial_w.h"
+
 #include "update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.h"
 
 #include "update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h"
@@ -69,6 +71,7 @@ namespace Chroma
 	// 4D Ferm Monomials
 	success &= UnprecOneFlavorWilsonTypeFermRatMonomialEnv::registerAll();
 	success &= EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomialEnv::registerAll();
+	success &= SymEvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomialEnv::registerAll();
 	success &= EvenOddPrecConstDetConstGaugeOneFlavorWilsonTypeFermRatMonomialEnv::registerAll();
     
 	// 5D Ferm Monomials

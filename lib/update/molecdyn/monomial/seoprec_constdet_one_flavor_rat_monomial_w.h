@@ -3,8 +3,8 @@
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
 
-#ifndef __prec_one_flavor_rat_monomial_w_h__
-#define __prec_one_flavor_rat_monomial_w_h__
+#ifndef __seoprec_one_flavor_rat_monomial_w_h__
+#define __seoprec_one_flavor_rat_monomial_w_h__
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/one_flavor_rat_monomial_w.h"
@@ -14,7 +14,7 @@ namespace Chroma
 {
 
   /*! @ingroup monomial */
-  namespace EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomialEnv 
+  namespace SymEvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomialEnv
   {
     bool registerAll();
   }
@@ -25,8 +25,8 @@ namespace Chroma
    *
    * Monomial is expected to be the same for these fermacts
    */
-  class EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial :
-    public  OneFlavorRatExactEvenOddPrecConstDetWilsonTypeFermMonomial< 
+  class SymEvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial :
+    public  OneFlavorRatExactSymEvenOddPrecConstDetWilsonTypeFermMonomial<
     multi1d<LatticeColorMatrix>,
     multi1d<LatticeColorMatrix>,
     LatticeFermion>
@@ -38,14 +38,14 @@ namespace Chroma
     typedef multi1d<LatticeColorMatrix>  Q;
 
     // Construct out of a parameter struct. Check against the desired FermAct name
-    EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(const OneFlavorWilsonTypeFermRatMonomialParams& param_);
+    SymEvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(const OneFlavorWilsonTypeFermRatMonomialParams& param_);
 
   protected:
 
     multi1d<T>& getPhi(void) {return phi;}
     const multi1d<T>& getPhi(void) const {return phi;}
 
-    const EvenOddPrecWilsonTypeFermAct<T,P,Q>& getFermAct(void) const { 
+    const SymEvenOddPrecWilsonTypeFermAct<T,P,Q>& getFermAct(void) const {
       return *fermact;
     }
 
@@ -73,14 +73,14 @@ namespace Chroma
 
   private:
     // Hide empty constructor and =
-    EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial();
-    void operator=(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial&);
+    SymEvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial();
+    void operator=(const SymEvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial&);
 
     // Pseudofermion field phi
     multi1d<T> phi;
 
     // A handle for the EvenOddPrecWilsonFermAct
-    Handle<const EvenOddPrecWilsonTypeFermAct<T,P,Q> > fermact;
+    Handle<const SymEvenOddPrecWilsonTypeFermAct<T,P,Q> > fermact;
 
     // The parameters for the inversion
     GroupXML_t actionInvParam;
