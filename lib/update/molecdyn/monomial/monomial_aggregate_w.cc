@@ -6,11 +6,14 @@
 
 #include "update/molecdyn/monomial/unprec_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h"
+#include "update/molecdyn/monomial/seoprec_constdet_two_flavor_monomial_w.h"
+
 #include "update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/seoprec_logdet_two_flavor_monomial_w.h"
 
 #include "update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.h"
 #include "update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h"
+#include "update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h"
 
 #include "update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h"
 #include "update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.h"
@@ -59,6 +62,7 @@ namespace Chroma
 	// 4D Ferm Monomials
 	success &= UnprecTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
 	success &= EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
+	success &= SymEvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
 	success &= EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
 	success &= SymEvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
    
@@ -78,7 +82,8 @@ namespace Chroma
 	// Ratio_Conv_Conv Monomials
 	success &= UnprecTwoFlavorRatioConvConvWilsonTypeFermMonomialEnv::registerAll();
 	success &= EvenOddPrecConstDetTwoFlavorRatioConvConvWilsonTypeFermMonomialEnv::registerAll();
-    
+	success &= SymEvenOddPrecConstDetTwoFlavorRatioConvConvWilsonTypeFermMonomialEnv::registerAll();
+
 	// Polynomial preconditioning Monomials
 //      success &= UnprecTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registerAll();
 	success &= EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registerAll();

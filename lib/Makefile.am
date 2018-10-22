@@ -717,8 +717,10 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h \
+	update/molecdyn/monomial/seoprec_constdet_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h \
+	update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.h \
@@ -1671,6 +1673,7 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc \
+	update/molecdyn/monomial/seoprec_constdet_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/seoprec_logdet_two_flavor_monomial_w.cc \
@@ -1679,6 +1682,7 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc \
+	update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc \

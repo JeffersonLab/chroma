@@ -277,12 +277,13 @@ namespace Chroma
    * Exact 2 degen flavor even-odd preconditioned fermact monomial.
    * Can supply a default dsdq algorithm
    */
-  template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial : public TwoFlavorExactWilsonTypeFermMonomial<P,Q,Phi>
+  template<typename P, typename Q, typename Phi, template <class,class,class> class EOFermActT,
+  	  template <class,class,class> class EOLinOpT>
+  class TwoFlavorExactEOPrecWilsonTypeFermMonomialT : public TwoFlavorExactWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial() {}
+    virtual ~TwoFlavorExactEOPrecWilsonTypeFermMonomialT() {}
 
     //! Even even contribution (eg ln det Clover)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s)  = 0;
@@ -295,14 +296,14 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "S_odd_odd");
 
-      const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
+      const EOFermActT<Phi,P,Q>& FA = getFermAct();
 
       Handle< FermState<Phi,P,Q> > state = FA.createState(s.getQ());
 
       // Get system solver
       Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
 
-      Handle< EvenOddPrecLinearOperator<Phi,P,Q> > M(FA.linOp(state));
+      Handle< EOLinOpT<Phi,P,Q> > M(FA.linOp(state));
 
       // Get the X fields
       Phi X;
@@ -350,7 +351,7 @@ namespace Chroma
 
   protected:
     //! Get at fermion action
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
+    virtual const EOFermActT<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
     virtual const GroupXML_t& getInvParams(void) const = 0;
@@ -364,6 +365,13 @@ namespace Chroma
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
   };
 
+  template<typename P, typename Q, typename Phi>
+  using  TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial =
+		  TwoFlavorExactEOPrecWilsonTypeFermMonomialT<P,Q,Phi,EvenOddPrecWilsonTypeFermAct,EvenOddPrecLinearOperator>;
+
+  template<typename P, typename Q, typename Phi>
+  using  TwoFlavorExactSymEvenOddPrecWilsonTypeFermMonomial =
+ 		  TwoFlavorExactEOPrecWilsonTypeFermMonomialT<P,Q,Phi,SymEvenOddPrecWilsonTypeFermAct,SymEvenOddPrecLinearOperator>;
 
   //------------------------------------------------------------------------
   //! Exact 2 degen flavor even-odd preconditioned fermact monomial
@@ -372,12 +380,15 @@ namespace Chroma
    * Exact 2 degen flavor even-odd preconditioned fermact monomial.
    * Constand even even determinant so can supplyt
    */
-  template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactEvenOddPrecConstDetWilsonTypeFermMonomial : public TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial<P,Q,Phi>
+  template<typename P, typename Q, typename Phi,
+  	  template<class,class,class> class EOFermActT,
+	  template<class,class,class> class EOLinOpT>
+  class TwoFlavorExactEOPrecConstDetWilsonTypeFermMonomialT :
+		  public TwoFlavorExactEOPrecWilsonTypeFermMonomialT<P,Q,Phi,EOFermActT,EOLinOpT>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactEvenOddPrecConstDetWilsonTypeFermMonomial() {}
+    virtual ~TwoFlavorExactEOPrecConstDetWilsonTypeFermMonomialT() {}
 
     //! Even even contribution (eg For this kind of Monomial it is 0)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s) {
@@ -390,9 +401,16 @@ namespace Chroma
     //! Get at fermion action
     //! For now the prototype is the same as before -- wait until we 
     //! refactor these before making them EvenOddPrecConstDetWilsonType...
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
+    virtual const EOFermActT<Phi,P,Q>& getFermAct() const = 0;
   };
 
+  template<typename P, typename Q, typename Phi>
+  using TwoFlavorExactEvenOddPrecConstDetWilsonTypeFermMonomial =
+		  TwoFlavorExactEOPrecConstDetWilsonTypeFermMonomialT<P,Q,Phi,EvenOddPrecWilsonTypeFermAct,EvenOddPrecLinearOperator>;
+
+  template<typename P, typename Q, typename Phi>
+    using TwoFlavorExactSymEvenOddPrecConstDetWilsonTypeFermMonomial =
+  		  TwoFlavorExactEOPrecConstDetWilsonTypeFermMonomialT<P,Q,Phi,SymEvenOddPrecWilsonTypeFermAct,SymEvenOddPrecLinearOperator>;
 
   //------------------------------------------------------------------------
   //! Exact 2 degen flavor even-odd preconditioned fermact monomial
@@ -401,23 +419,26 @@ namespace Chroma
    * Exact 2 degen flavor even-odd preconditioned fermact monomial.
    * Constand even even determinant so can supplyt
    */
-  template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial : public TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial<P,Q,Phi>
+  template<typename P, typename Q, typename Phi,
+   template<class,class,class> class EOFermActT,
+   template<class,class,class> class EOLinOpT>
+  class TwoFlavorExactEOPrecLogDetWilsonTypeFermMonomialT
+		  : public TwoFlavorExactEOPrecWilsonTypeFermMonomialT<P,Q,Phi,EOFermActT,EOLinOpT>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial() {}
+    virtual ~TwoFlavorExactEOPrecLogDetWilsonTypeFermMonomialT() {}
 
     //! Even even contribution 
     virtual Double S_even_even(const AbsFieldState<P,Q>& s) 
     {
       START_CODE();
 
-      const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
+      const EOFermActT<Phi,P,Q>& FA = getFermAct();
       Handle< FermState<Phi,P,Q> > state = FA.createState(s.getQ());
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > M(FA.linOp(state));
+      Handle< EOLinOpT<Phi,P,Q> > M(FA.linOp(state));
       
       Double S_ee =(Double(-2)*M->logDetEvenEvenLinOp());
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
@@ -473,7 +494,7 @@ namespace Chroma
       //
 
       // Create FermAct
-      const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
+      const EOFermActT<Phi,P,Q>& FA = getFermAct();
       
       // Create a state for linop
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
@@ -482,7 +503,7 @@ namespace Chroma
       Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
 
       //Create LinOp
-      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > M(FA.linOp(state));
+      Handle< EOLinOpT<Phi,P,Q> > M(FA.linOp(state));
 
       P F_tmp;
 
@@ -541,7 +562,7 @@ namespace Chroma
     //! Get at fermion action
     //! For now the prototype is the same as before -- wait until we 
     //! refactor these before making them EvenOddPrecConstDetWilsonType...
-    virtual const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
+    virtual const EOFermActT<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
     virtual const GroupXML_t& getInvParams(void) const = 0;
@@ -549,7 +570,18 @@ namespace Chroma
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
   };
 
+template<typename P, typename Q, typename Phi>
+using TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial
+		= TwoFlavorExactEOPrecLogDetWilsonTypeFermMonomialT<P,Q,Phi,EvenOddPrecLogDetWilsonTypeFermAct,
+		EvenOddPrecLogDetLinearOperator>;
 
+template<typename P, typename Q, typename Phi>
+using TwoFlavorExactSymEvenOddPrecLogDetWilsonTypeFermMonomial
+		= TwoFlavorExactEOPrecLogDetWilsonTypeFermMonomialT<P,Q,Phi,SymEvenOddPrecLogDetWilsonTypeFermAct,
+		SymEvenOddPrecLogDetLinearOperator>;
+
+
+#if 0
   //-------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------
@@ -657,30 +689,7 @@ namespace Chroma
    * Exact 2 degen flavor symmetric even-odd preconditioned fermact monomial.
    * Constand even even determinant so can supplyt
    */
-  template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactSymEvenOddPrecConstDetWilsonTypeFermMonomial : public TwoFlavorExactSymEvenOddPrecWilsonTypeFermMonomial<P,Q,Phi>
-  {
-  public:
-     //! virtual destructor:
-    ~TwoFlavorExactSymEvenOddPrecConstDetWilsonTypeFermMonomial() {}
 
-    //! Even even contribution (eg For this kind of Monomial it is 0)
-    virtual Double S_even_even(const AbsFieldState<P,Q>& s) {
-      return Double(0);
-    }
-
-    //! Odd odd contribution (eg For this kind of Monomial it is 0)
-    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) {
-      return Double(0);
-    }
-    
-    // Inherit everything from Base Class
-  protected:
-    //! Get at fermion action
-    //! For now the prototype is the same as before -- wait until we 
-    //! refactor these before making them SymEvenOddPrecConstDetWilsonType...
-    virtual const SymEvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
-  };
 
 
   //------------------------------------------------------------------------
@@ -865,7 +874,7 @@ namespace Chroma
 
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
   };
-
+#endif
   
 }
 
