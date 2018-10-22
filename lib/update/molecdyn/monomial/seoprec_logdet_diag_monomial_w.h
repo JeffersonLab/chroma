@@ -50,7 +50,7 @@ namespace Chroma
       F += F_tmp;
 
       for(int mu=0; mu < Nd; mu++) { 
-	F[mu] *= Real(-getNumFlavors());	  
+    	  F[mu] *= Real(-getNumFlavors());
       }
 	
       state->deriv(F);
@@ -85,7 +85,7 @@ namespace Chroma
 
       END_CODE();
 
-      return S_ee;
+      return S;
     }
 	
 	
