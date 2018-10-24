@@ -259,7 +259,14 @@ namespace Chroma
       // and probabl 1 - {1/4} A^{-1} D A^{-1} D as the preconditioned
       // op. Apart from the A_oo stuff on the antisymmetric we have
       // nothing to do...
-      quda_inv_param.kappa = 0.5;
+      if( invParam.asymmetricP ) {
+	quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
+	quda_inv_param.kappa = 0.5;
+      } 
+      else { 
+      	quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
+      	quda_inv_param.kappa = 0.5;
+      } 
 
       // FIXME: If we ever use QUDA to compute our clover term we need to fix this
       // and QUDA will have to deal with anisotropy. Right now this is a hack to make
@@ -286,16 +293,17 @@ namespace Chroma
 	break;
       }
 
-      if( ! invParam.asymmetricP ) { 
-	QDPIO::cout << "For MdagM we can only use asymmetric Linop: A_oo - D A^{-1}_ee D, overriding your choice" << std::endl;
-	
+      // Only suppfkort Asymmetric linop
+      if ( invParam.asymmetricP ) { 
+	QDPIO::cout << "Working with asymmetric solution" << std::endl;
+      	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
       }
-      // Only support Asymmetric linop
-      quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
-
+      else {
+	QDPIO::cout << "Working with symmetric solution" << std::endl; 
+	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
+      }
 
       quda_inv_param.dagger = QUDA_DAG_NO;
-      quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
 
       quda_inv_param.cpu_prec = cpu_prec;
       quda_inv_param.cuda_prec = gpu_prec;
@@ -399,7 +407,6 @@ namespace Chroma
       //      Setup the clover term...
       QDPIO::cout << "Creating CloverTerm" << std::endl;
       clov->create(fstate, invParam_.CloverParams);
-      // Don't recompute, just copy
       invclov->create(fstate, invParam_.CloverParams);
       
       QDPIO::cout << "Inverting CloverTerm" << std::endl;
@@ -410,7 +417,6 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
       multi1d<QUDAPackedClovSite<REALT> > packed_clov;
 
-      // Only compute clover if we're using asymmetric preconditioner
       packed_clov.resize(all.siteTable().size());
 
       clov->packForQUDA(packed_clov, 0);
@@ -423,23 +429,16 @@ namespace Chroma
 
       loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
 #else
+
+	quda_inv_param.clover_location = QUDA_CUDA_FIELD_LOCATION;
+	quda_inv_param.clover_order = QUDA_QDPJIT_CLOVER_ORDER;
+
       void *clover[2];
       void *cloverInv[2];
 
       GetMemoryPtrClover(clov->getOffId(),clov->getDiaId(),invclov->getOffId(),invclov->getDiaId());
 
-      // clover[0] = GetMemoryPtr( clov->getOffId() );
-      // clover[1] = GetMemoryPtr( clov->getDiaId() );
-
-      // cloverInv[0] = GetMemoryPtr( invclov->getOffId() );
-      // cloverInv[1] = GetMemoryPtr( invclov->getDiaId() );
-
-      // std::cout << "MDAGM clover CUDA pointers: " 
-      // 		<< clover[0] << " "
-      // 		<< clover[1] << " "
-      // 		<< cloverInv[0] << " "
-      // 		<< cloverInv[1] << "\n";
-
+   
       loadCloverQuda( (void*)(clover) , (void*)(cloverInv) ,&quda_inv_param);
 #endif
 

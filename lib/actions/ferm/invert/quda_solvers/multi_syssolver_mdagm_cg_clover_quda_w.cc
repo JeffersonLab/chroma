@@ -53,26 +53,11 @@ namespace Chroma
 
     void *spinorIn;
 
-    if ( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
-
-      // Because of the vaguaries of our HMC Formulation we need to 
-      // solve the Asymmetric system. Symmetric won't work unless we change
-      // preconditioning strategy
-      // asymmetric 
-      //
-      // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
-      // No need to transform source
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
       // have to do this later
 #endif
-
-    }
-    else { 
-      QDPIO::cout << "MATPC Type not allowed." << std::endl;
-      QDP_abort(1);
-    }
 
     void** spinorOut = new void*[ shifts.size() ];
     if (spinorOut == nullptr ) { 

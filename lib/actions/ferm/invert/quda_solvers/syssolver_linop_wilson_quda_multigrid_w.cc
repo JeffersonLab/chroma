@@ -73,7 +73,7 @@ namespace Chroma
     mod_chi[rb[0]] = zero; // Zero odd parity
     mod_chi[rb[1]] = chi_s;
 
-    if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD  ) {
+    if( invParam.asymmetricP  ) {
 
       // In this case Chroma and QUDA operators disagree by A_oo = (Mass Term)
       // (or clover term  in the case of clover). SO I need to rescale mod_chi

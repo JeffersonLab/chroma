@@ -113,13 +113,12 @@ namespace Chroma
     }
 
 
-
     //! Apply the derivative of the operator onto a source std::vector to some precision
     /*! Default implementation */
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign, const Real& epsilon) const
     {
-      deriv(ds_u,chi,psi,isign);
+      this->deriv(ds_u,chi,psi,isign);
     }
 
     //! Return the force for multiple poles
@@ -131,7 +130,7 @@ namespace Chroma
 
       P F_tmp;
       for(int i=0; i < chi.size(); i++) { 
-	deriv(F_tmp, chi[i], psi[i], isign);
+	this->deriv(F_tmp, chi[i], psi[i], isign);
 	ds_u += F_tmp;
       }
     }

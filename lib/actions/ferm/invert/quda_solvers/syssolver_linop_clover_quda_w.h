@@ -535,49 +535,29 @@ public:
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
 		multi1d<QUDAPackedClovSite<REALT> > packed_clov;
 
-		// Only compute clover if we're using asymmetric preconditioner
-		if( invParam.asymmetricP ) {
-			packed_clov.resize(all.siteTable().size());
+		
+		packed_clov.resize(all.siteTable().size());
 
-			clov->packForQUDA(packed_clov, 0);
-			clov->packForQUDA(packed_clov, 1);
-		}
+		clov->packForQUDA(packed_clov, 0);
+		clov->packForQUDA(packed_clov, 1);
+		
 
 		// Always need inverse
 		multi1d<QUDAPackedClovSite<REALT> > packed_invclov(all.siteTable().size());
 		invclov->packForQUDA(packed_invclov, 0);
 		invclov->packForQUDA(packed_invclov, 1);
 
-		if( invParam.asymmetricP ) {
-			loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
-		}
-		else {
-			loadCloverQuda(NULL, &(packed_invclov[0]), &quda_inv_param);
-		}
+		
+		loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
+		
 #else
 		void *clover[2];
 		void *cloverInv[2];
 
 		GetMemoryPtrClover(clov->getOffId(),clov->getDiaId(),invclov->getOffId(),invclov->getDiaId());
 
-		// clover[0] = GetMemoryPtr( clov->getOffId() );
-		// clover[1] = GetMemoryPtr( clov->getDiaId() );
-
-		// cloverInv[0] = GetMemoryPtr( invclov->getOffId() );
-		// cloverInv[1] = GetMemoryPtr( invclov->getDiaId() );
-
-		QDPIO::cout << "MDAGM clover CUDA pointers: "
-				<< clover[0] << " "
-				<< clover[1] << " "
-				<< cloverInv[0] << " "
-				<< cloverInv[1] << "\n";
-
-		if( invParam.asymmetricP ) {
-			loadCloverQuda( (void*)(clover) , (void*)(cloverInv) ,&quda_inv_param);
-		}
-		else {
-			loadCloverQuda( NULL , (void*)(cloverInv) ,&quda_inv_param);
-		}
+		loadCloverQuda( (void*)(clover) , (void*)(cloverInv) ,&quda_inv_param);
+		
 #endif
 
 

@@ -295,8 +295,14 @@ namespace Chroma
       }
 
 
-      quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
-
+      if ( invParam.asymmetricP )  { 
+	QDPIO::cout << "Using asymmetric preconditioning" << std::endl;
+	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
+      }
+      else {
+	QDPIO::cout << "Using symmetric preconditioning" << std::endl;
+        quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
+      }
 
       quda_inv_param.dagger = QUDA_DAG_NO;
 

@@ -250,9 +250,13 @@ t_minvert_quda_SOURCES = t_minvert_quda.cc
 endif
 
 if BUILD_GTEST
-check_PROGRAMS += t_inv_fgmres_dr
+check_PROGRAMS += t_inv_fgmres_dr  t_symm_prec
+	
 t_inv_fgmres_dr_SOURCES = t_inv_fgmres_dr.cc chroma_gtest_env.h \
 	fgmres_dr_tests.cc
+	
+t_symm_prec_SOURCES = t_symm_prec.cc chroma_gtest_env.h \
+	symm_prec_xml.h symm_prec_tests.cc
 endif
 
 if BUILD_QPHIX

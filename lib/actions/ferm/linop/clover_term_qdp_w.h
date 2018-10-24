@@ -216,6 +216,7 @@ namespace Chroma
       choles_done[i] = from.choles_done[i];
     }
     
+    // This is for the whole lattice (LatticeReal)
     tr_log_diag_ = from.tr_log_diag_;
     
 
@@ -281,6 +282,7 @@ namespace Chroma
     mesField(f, u);
     makeClov(f, diag_mass);
     
+
     choles_done.resize(rb.numSubsets());
     for(int i=0; i < rb.numSubsets(); i++) {
       choles_done[i] = false;
@@ -588,19 +590,14 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    LatticeREAL ff=tr_log_diag_;
 
-    if( param.sub_zero_usedP ) { 
- 	QDPIO::cout << "Subtracting "<< param.sub_zero<<std::endl;
-	LatticeREAL tmp;
-	tmp[rb[cb]] = param.sub_zero;
-	ff[rb[cb]] -= tmp;
-    }
     END_CODE();
 
     // Need to thread generic sums in QDP++?
     // Need to thread generic norm2() in QDP++?
-    return sum(ff, rb[cb]);
+
+
+    return sum(tr_log_diag_, rb[cb]);
 #else
     assert(!"ni");
     Double ret=0.;
@@ -834,14 +831,16 @@ namespace Chroma
     }
 
     // Zero trace log
-    tr_log_diag = zero;
+    tr_log_diag[rb[cb]] = zero;
 
     QDPCloverEnv::LDagDLInvArgs<U> a = { tr_log_diag, tri, cb };
-    dispatch_to_threads(rb[cb].numSiteTable(), a, QDPCloverEnv::LDagDLInvSiteLoop<U>);
+    int num_site_table = rb[cb].numSiteTable();
+    dispatch_to_threads(num_site_table, a, QDPCloverEnv::LDagDLInvSiteLoop<U>);
 
     
     // This comes from the days when we used to do Cholesky
     choles_done[cb] = true;
+
     END_CODE();
 #endif
   }

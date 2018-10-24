@@ -462,26 +462,19 @@ namespace Chroma
 
 			multi1d<QUDAPackedClovSite<REALT> > packed_clov;
 
-			// Only compute clover if we're using asymmetric preconditioner
-			if( invParam.asymmetricP ) {
-				packed_clov.resize(all.siteTable().size());
+			
+			packed_clov.resize(all.siteTable().size());
 
-				clov->packForQUDA(packed_clov, 0);
-				clov->packForQUDA(packed_clov, 1);
-			}
-
+			clov->packForQUDA(packed_clov, 0);
+			clov->packForQUDA(packed_clov, 1);
+			
 			// Always need inverse
 			multi1d<QUDAPackedClovSite<REALT> > packed_invclov(all.siteTable().size());
 			invclov->packForQUDA(packed_invclov, 0);
 			invclov->packForQUDA(packed_invclov, 1);
 
-			if( invParam.asymmetricP ) {
-				loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
+			loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
 
-			}
-			else {
-				loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
-			}
 #else
 
 #warning "USING QUDA DEVICE IFACE"
@@ -493,19 +486,8 @@ namespace Chroma
 
 			GetMemoryPtrClover(clov->getOffId(),clov->getDiaId(),invclov->getOffId(),invclov->getDiaId());
 
-			// clover[0] = GetMemoryPtr( clov->getOffId() );
-			// clover[1] = GetMemoryPtr( clov->getDiaId() );
-
-			// cloverInv[0] = GetMemoryPtr( invclov->getOffId() );
-			// cloverInv[1] = GetMemoryPtr( invclov->getDiaId() );
-
-
-			if( invParam.asymmetricP ) {
-				loadCloverQuda( (void*)(clover), (void *)(cloverInv), &quda_inv_param);
-			}
-			else {
-				loadCloverQuda( (void*)(clover), (void *)(cloverInv), &quda_inv_param);
-			}
+			loadCloverQuda( (void*)(clover), (void *)(cloverInv), &quda_inv_param);
+			
 #endif
 
 			quda_inv_param.omega = toDouble(ip.relaxationOmegaOuter);
