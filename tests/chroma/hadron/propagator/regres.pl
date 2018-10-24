@@ -101,6 +101,18 @@
 	 metric      => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.bicgstab.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.bicgstab.out.xml" ,
      },
+
+# seoprec_clover-stout3d.bicgstab.
+# uses same metric as regular prec_clover-stout3d.bicgstab
+    {
+         exec_path   => "$top_builddir/mainprogs/main" ,
+         execute     => "chroma" ,
+         input       => "$test_dir/chroma/hadron/propagator/seoprec_clover-stout3d.bicgstab.ini.xml" ,
+         output      => "seoprec_clover-stout3d.bicgstab.candidate.xml",
+         metric      => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.bicgstab.metric.xml" ,
+         controlfile => "$test_dir/chroma/hadron/propagator/seoprec_clover-stout3d.bicgstab.out.xml" ,
+     },
+
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
