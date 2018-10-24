@@ -167,11 +167,18 @@ namespace Chroma
     //  chi_o  =  psi_o  -  tmp2_o
     chi[rb[1]] = psi  +  mquarter*tmp2;
 
-    // Twisted Term?
-    if( param.twisted_m_usedP ){ 
-      QDPIO::cerr << __func__ << ": do not support twisted mass terms" << std::endl;
-      QDP_abort(1);
+    if( param.twisted_m_usedP ){
+    	// tmp1 = i mu gamma_5 tmp1
+    	tmp1[rb[1]] = (GammaConst<Ns,Ns*Ns-1>() * timesI(psi));
+
+    	if( isign == PLUS ) {
+    		chi[rb[1]] += param.twisted_m * tmp1;
+    	}
+    	else {
+    		chi[rb[1]] -= param.twisted_m * tmp1;
+    	}
     }
+
     getFermBC().modifyF(chi);
     END_CODE();
   }
