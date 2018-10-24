@@ -131,7 +131,7 @@ namespace Chroma
     END_CODE();
   }
 
-#if 0
+
   //! Apply even-odd preconditioned Clover fermion linear operator
   /*!
    * \param chi 	  Pseudofermion field     	       (Write)
@@ -175,7 +175,7 @@ namespace Chroma
     getFermBC().modifyF(chi);
     END_CODE();
   }
-#endif
+
 
   //! Apply the even-even block onto a source std::vector
   void 
@@ -259,6 +259,93 @@ namespace Chroma
     }
     END_CODE();
   }
+
+	//! Deriv
+	void SymEvenOddPrecCloverLinOp::deriv(P& ds_u, const T& chi, const T& psi,
+			enum PlusMinus isign) const
+	{
+		T M_eo_psi; moveToFastMemoryHint(M_eo_psi);
+		T M_oe_dag_chi; moveToFastMemoryHint(M_oe_dag_chi);
+		T tmp;
+		T Ainv_left;
+		T Ainv_right;
+
+		enum PlusMinus msign = ( isign == PLUS ) ? MINUS : PLUS;
+
+		if( isign == PLUS ) {
+			D.apply(tmp, psi, PLUS, 0);
+			invclov.apply(M_eo_psi, tmp, PLUS, 0);
+
+			invclov.apply(tmp, chi, MINUS,1);
+			D.apply(M_oe_dag_chi,tmp,MINUS,0);
+		}
+		else {
+			invclov.apply(tmp,psi,MINUS,1);
+			D.apply(M_eo_psi,tmp,MINUS,0);
+
+			D.apply(tmp,chi,PLUS,0);
+			invclov.apply(M_oe_dag_chi,tmp,PLUS,0);
+		}
+		M_eo_psi[rb[0]] *= Real(-0.5);
+		M_oe_dag_chi[rb[0]] *= Real(-0.5);
+
+		ds_u.resize(Nd);
+		ds_u = zero;
+		P ds_tmp;
+		ds_tmp.resize(Nd);
+
+		//derivOddEvenLinOp(ds_tmp,chi,M_eo_psi,isign);
+		if( isign == PLUS ) {
+
+			//
+		   D.apply(tmp,M_eo_psi, PLUS,1);
+		   invclov.apply(Ainv_right,tmp, PLUS,1);
+		   invclov.apply(Ainv_left,chi,MINUS,1);
+		   clov.deriv(ds_u,Ainv_left,Ainv_right, PLUS, 1);
+
+
+		   invclov.apply(tmp, chi, MINUS,1);
+		   D.deriv(ds_tmp, tmp,M_eo_psi, PLUS,1);
+		   ds_u -= ds_tmp;
+
+
+		   D.apply(tmp,psi, PLUS,0);
+		   invclov.apply(Ainv_right,tmp,PLUS,0);
+		   invclov.apply(Ainv_left, M_oe_dag_chi,PLUS,0);
+		   clov.deriv(ds_tmp,Ainv_left, Ainv_right,PLUS,0);
+		   ds_u += ds_tmp;
+
+
+		   invclov.apply(tmp, M_oe_dag_chi, MINUS,0);
+		   D.deriv(ds_tmp, tmp,psi, PLUS,0);
+		   ds_u -= ds_tmp;
+		}
+		else {
+			D.apply(tmp,chi,PLUS,0);
+			invclov.apply(Ainv_left,tmp,PLUS,0);
+			invclov.apply(Ainv_right,M_eo_psi,MINUS,0);
+			clov.deriv(ds_u,Ainv_left,Ainv_right,MINUS,0);
+
+			invclov.apply(tmp, M_eo_psi, MINUS,0);
+			D.deriv(ds_tmp, chi, tmp, MINUS,1);
+			ds_u -= ds_tmp;
+
+	    	invclov.apply(tmp, psi, MINUS,1);
+	    	D.deriv(ds_tmp, M_oe_dag_chi, tmp, MINUS,0);
+	    	ds_u -= ds_tmp;
+
+	    	D.apply(tmp,M_oe_dag_chi,PLUS,1);
+	    	invclov.apply(Ainv_left,tmp,PLUS,1);
+	    	invclov.apply(Ainv_right,psi,MINUS,1);
+	    	clov.deriv(ds_tmp, Ainv_left,Ainv_right, MINUS,1);
+	    	ds_u += ds_tmp;
+		}
+
+		for(int mu=0; mu < Nd; ++mu) {
+			ds_u[mu] *= Real(-0.5);
+		}
+		getFermBC().zero(ds_u);
+	}
 
 
   //! Return flops performed by the operator()

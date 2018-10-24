@@ -80,11 +80,7 @@ namespace Chroma
     void unprecOddEvenLinOp(T& chi, const T& psi,
 		      enum PlusMinus isign) const ;
 
-#if 0
-    void operator()(T& chi,
-   					     const T& psi,
-   					     enum PlusMinus isign) const override;
-#endif
+
 
     // Deriv of A_ee
     virtual void derivUnprecEvenEvenLinOp(P& ds_u, const T& chi, const T& psi,
@@ -101,15 +97,6 @@ namespace Chroma
     // Deriv of  D_eo
     virtual void derivUnprecOddEvenLinOp(P& ds_u, const T& chi, const T& psi,
     		enum PlusMinus isign) const;
-
-#if 0
-    // Override inherited one with a few more funkies
-    //
-    // Optimized operator() work on it when the category default works.
-    void operator()(T& chi, const T& psi,
-		    enum PlusMinus isign) const override;
-#endif
-
   
     //! Apply the even-even block onto a source std::vector
     void derivLogDetEvenEvenLinOp(P& ds_u,
@@ -119,20 +106,16 @@ namespace Chroma
     void derivLogDetOddOddLinOp(P& ds_u,
 				enum PlusMinus isign) const;
 
-#if 0
-    // Optimized forms: work on these once the category defaults are working.
-    //! Apply the the even-odd block onto a source std::vector
-    void derivEvenOddLinOp(P& ds_u,
-			   const T& chi, const T& psi,
-			   enum PlusMinus isign) const override;
- 
-    //! Apply the the odd-even block onto a source std::vector
-    void derivOddEvenLinOp(P& ds_u,
-			   const T& chi, const T& psi,
-			   enum PlusMinus isign) const override;
+    // Override inherited one with a few more funkies
+    //
+    // Optimized operator() work on it when the category default works.
+    void operator()(T& chi, const T& psi,
+    		enum PlusMinus isign) const override;
 
-    void deriv(P& ds_u, T& chi, const T& psi, enum PlusMinus isign) const override;
-#endif
+    void deriv(P& ds_u, const T& chi, const T& psi,
+    		enum PlusMinus isign) const override;
+
+
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
 
