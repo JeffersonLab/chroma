@@ -52,9 +52,11 @@ public:
 
 	    std::istringstream input_asymm_periodic(fermact_xml_asymm_periodic);
 	    std::istringstream input_symm_periodic(fermact_xml_symm_periodic);
+	    std::istringstream twisted_fermact(fermact_xml_symm_twisted);
 
 	    XMLReader xml_in_asymm_periodic(input_asymm_periodic);
 	    XMLReader xml_in_symm_periodic(input_symm_periodic);
+	    XMLReader xml_in_twisted(twisted_fermact);
 
 	    S_asymm = dynamic_cast<S_asymm_T*>(TheFermionActionFactory::Instance().createObject("CLOVER",
 	    											   xml_in_asymm,
@@ -71,11 +73,18 @@ public:
 	    S_symm_periodic = dynamic_cast<S_symm_T*>(TheFermionActionFactory::Instance().createObject("SEOPREC_CLOVER",
 	   	        											   xml_in_symm_periodic,
 	   	        											   "FermionAction"));
+
+
+		S_symm_twisted = dynamic_cast<S_symm_T*>(TheFermionActionFactory::Instance().createObject("SEOPREC_CLOVER",
+			    											   xml_in_twisted,
+			    											   "FermionAction"));
 	    state = S_asymm->createState(u);
 
 	    M_asymm =dynamic_cast<LinOpAsymm_T *>(S_asymm->linOp(state));
-	    M_symm = dynamic_cast<LinOpSymm_T *>(S_symm->linOp(state));
+	    M_symm =dynamic_cast<LinOpSymm_T *>(S_symm->linOp(state));
+	    M_tw = dynamic_cast<LinOpSymm_T *>(S_symm_twisted->linOp(state));
 	}
+
 
 	void TearDown() {}
 
@@ -84,10 +93,12 @@ public:
 	Handle<S_asymm_T> S_asymm;
 	Handle<S_symm_T> S_symm_periodic;
 	Handle<S_asymm_T> S_asymm_periodic;
+	Handle<S_symm_T> S_symm_twisted;
 	Handle<FermState<T,P,Q> > state;
 
 	Handle<LinOpAsymm_T> M_asymm;
 	Handle<LinOpSymm_T> M_symm;
+	Handle<LinOpSymm_T> M_tw;
 };
 
 class SymmFixture : public SymmFixtureT<::testing::Test> {};
@@ -355,7 +366,7 @@ TEST_P(MdagMInvTestAsymm, CheckMdagMInvAsymmQUDAPredict)
 	Double resid = sqrt(norm2(r,rb[1]));
 	Double resid_rel = resid/sqrt(norm2(b,rb[1]));
 	QDPIO::cout << "MdagM check: || r || = " << resid << "   || r || / || b ||=" << resid_rel << std::endl;
-	ASSERT_LT( toDouble(resid_rel),1.0e-8);
+	ASSERT_LT( toDouble(resid_rel),2.0e-8);
 
 }
 #endif
@@ -681,6 +692,73 @@ TEST_F(SymmFixture,TestLogDetShiftedGauge)
 
 }
 
+TEST_F(SymmFixture,TestTwist)
+{
+
+	Real twist=Real(0.05);
+
+
+
+
+	LatticeFermion source;
+	gaussian(source,rb[1]);
+    LatticeFermion t1, t2;
+
+    {
+	(*M_tw)(t1,source,PLUS);
+	(*M_symm)(t2,source, PLUS);
+	t2[ rb[1] ] += twist*(GammaConst<Ns,Ns*Ns-1>()*timesI(source));
+
+	t2[ rb[1] ] -= t1;
+	Double normdiff = sqrt(norm2(t2,rb[1]));
+	QDPIO::cout << "PLUS : || M(mu) - ( Mdag + i gamma_5 mu ) || = "
+			<< normdiff << std::endl;
+
+	ASSERT_LT( toDouble(normdiff), 1.0e-14);
+    }
+
+    {
+ 	(*M_tw)(t1,source,MINUS);
+ 	(*M_symm)(t2,source, MINUS);
+ 	t2[ rb[1] ] -= twist*(GammaConst<Ns,Ns*Ns-1>()*timesI(source));
+
+ 	t2[ rb[1] ] -= t1;
+ 	Double normdiff = sqrt(norm2(t2,rb[1]));
+ 	QDPIO::cout << "MINUS : || M^dag(mu) - ( Mdag - igamma5 mu ) || = "  << normdiff << std::endl;
+
+ 	ASSERT_LT( toDouble(normdiff), 1.0e-14);
+     }
+
+    {
+    	LatticeFermion mdagm,t3;
+    	(*M_tw)(t1,source, PLUS);
+    	(*M_tw)(t2,t1,MINUS);
+
+    	// M^\dag M
+    	(*M_symm)(t1,source,PLUS);
+    	(*M_symm)(mdagm,t1,MINUS);
+
+    	// + mu^2 source
+    	mdagm[rb[1]] += (twist*twist)*source;
+
+    	// +i mu M^\dag gamma_5
+    	t1[rb[1]] = (GammaConst<Ns,Ns*Ns-1>()*timesI(source));
+    	(*M_symm)(t3,t1,MINUS);
+    	mdagm[rb[1]] += twist*t3;
+
+    	// -i mu gamma_5 M soure
+    	(*M_symm)(t1,source,PLUS);
+    	t3[rb[1]] = (GammaConst<Ns,Ns*Ns-1>()*timesI(t1));
+    	mdagm[rb[1]] -= twist*t3;
+
+
+    	mdagm[rb[1]] -= t2;
+    	Double normdiff = sqrt(norm2(mdagm,rb[1]));
+    	QDPIO::cout << "MDAGM : || M^dag(mu)M(mu) - ( Mdag M + mu^2 + imu[ M^dag g_5 - g_5 M ]) || = "  << normdiff << std::endl;
+    	ASSERT_LT( toDouble(normdiff), 1.0e-13);
+    }
+}
+
 class TrLogForceFixture : public SymmFixtureT<::testing::TestWithParam<enum PlusMinus>>{};
 TEST_P(TrLogForceFixture,TestShiftedGaugeTrLnForce)
 {
@@ -757,3 +835,5 @@ TEST_P(TrLogForceFixture,TestShiftedGaugeTrLnForce)
 INSTANTIATE_TEST_CASE_P(TrLogForces,
 		TrLogForceFixture,
 		::testing::Values(PLUS,MINUS));
+
+
