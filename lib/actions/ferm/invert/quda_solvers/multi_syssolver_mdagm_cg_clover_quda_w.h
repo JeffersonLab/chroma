@@ -121,7 +121,24 @@ namespace Chroma
 	gpu_half_prec = gpu_prec;
 	break;
       }
-          
+
+      // Work out GPU Sloppy precision
+      // Default: No Sloppy
+      switch( invParam.cudaRefinementPrecision ) {
+      case HALF:
+    	  gpu_ref_prec = QUDA_HALF_PRECISION;
+    	  break;
+      case SINGLE:
+    	  gpu_ref_prec = QUDA_SINGLE_PRECISION;
+    	  break;
+      case DOUBLE:
+    	  gpu_ref_prec = QUDA_DOUBLE_PRECISION;
+    	  break;
+      default:
+    	  gpu_ref_prec = gpu_prec;
+    	  break;
+      }
+
       // 2) pull 'new; GAUGE and Invert params
       // 
       QDPIO::cout << " Calling new QUDA Invert Param" << std::endl;
@@ -182,6 +199,7 @@ namespace Chroma
 
       q_gauge_param.cuda_prec_sloppy = gpu_half_prec;
       q_gauge_param.cuda_prec_precondition = gpu_half_prec;
+      q_gauge_param.cuda_prec_refinement_sloppy = gpu_ref_prec;
 
       switch( invParam.cudaSloppyReconstruct ) { 
       case RECONS_NONE: 
@@ -200,6 +218,27 @@ namespace Chroma
 
       // Default
       q_gauge_param.reconstruct_precondition = q_gauge_param.reconstruct_sloppy;
+
+      //  Mathias's Hardwired version:
+      //    q_gauge_param.reconstruct_refinement_sloppy = q_gauge_param.reconstruct_sloppy;
+
+      // Parameter file based version
+      switch( invParam.cudaRefinementReconstruct ) {
+      case RECONS_NONE:
+    	  q_gauge_param.reconstruct_refinement_sloppy = QUDA_RECONSTRUCT_NO;
+    	  break;
+      case RECONS_8:
+    	  q_gauge_param.reconstruct_refinement_sloppy = QUDA_RECONSTRUCT_8;
+    	  break;
+      case RECONS_12:
+    	  q_gauge_param.reconstruct_refinement_sloppy = QUDA_RECONSTRUCT_12;
+    	  break;
+      default:
+    	  q_gauge_param.reconstruct_refinement_sloppy = QUDA_RECONSTRUCT_12;
+    	  break;
+      };
+
+
       // Gauge fixing:
 
       // These are the links
@@ -309,6 +348,7 @@ namespace Chroma
       quda_inv_param.cuda_prec = gpu_prec;
       quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
       quda_inv_param.cuda_prec_precondition = gpu_half_prec;
+      quda_inv_param.cuda_prec_refinement_sloppy = gpu_ref_prec;
       quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
       quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
 
@@ -372,6 +412,7 @@ namespace Chroma
       quda_inv_param.clover_cuda_prec = gpu_prec;
       quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
       quda_inv_param.clover_cuda_prec_precondition = gpu_half_prec;
+      quda_inv_param.clover_cuda_prec_refinement_sloppy = gpu_ref_prec;
 
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
       quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
@@ -543,6 +584,7 @@ namespace Chroma
     QudaPrecision_s cpu_prec;
     QudaPrecision_s gpu_prec;
     QudaPrecision_s gpu_half_prec;
+    QudaPrecision_s gpu_ref_prec;
 
     Handle< LinearOperator<T> > A;
     const MultiSysSolverQUDACloverParams invParam;

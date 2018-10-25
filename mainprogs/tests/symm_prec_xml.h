@@ -403,6 +403,8 @@ std::string inv_param_multi_cg_quda_xml = \
 		    <CudaReconstruct>RECONS_12</CudaReconstruct> \
  		    <CudaSloppyPrecision>HALF</CudaSloppyPrecision> \
 		    <CudaSloppyReconstruct>RECONS_12</CudaSloppyReconstruct> \
+            <CudaRefinementPrecision>HALF</CudaRefinementPrecision> \
+            <CudaRefinementReconstruct>RECONS_8</CudaRefinementReconstruct> \
 		    <AxialGaugeFix>false</AxialGaugeFix> \
 		    <AutotuneDslash>true</AutotuneDslash> \
 		  </InvertParam> \

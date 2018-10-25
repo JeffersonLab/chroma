@@ -51,6 +51,13 @@ namespace Chroma {
       cudaSloppyPrecision = DEFAULT;
     }
 
+    if( paramtop.count("CudaRefinementPrecision") > 0 ) {
+    	read(paramtop, "CudaRefinementPrecision", cudaRefinementPrecision);
+    }
+    else {
+    	cudaRefinementPrecision = DEFAULT;
+    }
+
     if( paramtop.count("CudaReconstruct") > 0 ) {
       read(paramtop, "CudaReconstruct", cudaReconstruct);
     }
@@ -63,6 +70,13 @@ namespace Chroma {
     }
     else { 
       cudaSloppyReconstruct = RECONS_12;
+    }
+
+    if( paramtop.count("CudaRefinementReconstruct") > 0 ) {
+    	read(paramtop, "CudaRefinementReconstruct", cudaRefinementReconstruct);
+    }
+    else {
+    	cudaRefinementReconstruct = RECONS_12;
     }
 
     if( paramtop.count("AxialGaugeFix") > 0 ) {
