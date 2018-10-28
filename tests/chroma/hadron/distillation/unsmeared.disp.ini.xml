@@ -317,13 +317,47 @@
           <no_smear_dir>3</no_smear_dir>
         </LinkSmearing>
 
+        <PropSources>
+	  <elem>
+            <cacheP>true</cacheP>
+            <num_vecs>10</num_vecs>
+            <t_source>0</t_source>
+            <Nt_forward>7</Nt_forward>
+            <Nt_backward>0</Nt_backward>
+	  </elem>
+	  <elem>
+            <cacheP>true</cacheP>
+            <num_vecs>10</num_vecs>
+            <t_source>6</t_source>
+            <Nt_forward>0</Nt_forward>
+            <Nt_backward>7</Nt_backward>
+	  </elem>
+        </PropSources>
+
+        <SinkSourcePairs>
+	  <elem>
+            <t_sink>6</t_sink>
+            <t_source>0</t_source>
+            <Nt_forward>7</Nt_forward>
+            <Nt_backward>0</Nt_backward>
+	  </elem>
+	  <elem>
+            <t_sink>0</t_sink>
+            <t_source>0</t_source>
+            <Nt_forward>7</Nt_forward>
+            <Nt_backward>0</Nt_backward>
+	  </elem>
+	  <elem>
+            <t_sink>6</t_sink>
+            <t_source>6</t_source>
+            <Nt_forward>0</Nt_forward>
+            <Nt_backward>7</Nt_backward>
+	  </elem>
+        </SinkSourcePairs>
+
         <Contractions>
           <use_derivP>false</use_derivP>
           <mass_label>U0.05</mass_label>
-          <srce_num_vecs>10</srce_num_vecs>
-          <sink_num_vecs>10</sink_num_vecs>
-          <t_source>0</t_source>
-          <t_sink>6</t_sink>
           <decay_dir>3</decay_dir>
           <displacement_length>1</displacement_length>
           <num_tries>0</num_tries>

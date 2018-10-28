@@ -96,15 +96,62 @@ namespace Chroma
 
 
     //! Propagator input
+    void read(XMLReader& xml, const std::string& path, Params::Param_t::KeySolnProp_t& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "cacheP", input.cacheP);
+      read(inputtop, "num_vecs", input.num_vecs);
+      read(inputtop, "t_source", input.t_source);
+      read(inputtop, "Nt_forward", input.Nt_forward);
+      read(inputtop, "Nt_backward", input.Nt_backward);
+    }
+
+    //! Propagator output
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t::KeySolnProp_t& input)
+    {
+      push(xml, path);
+
+      write(xml, "cacheP", input.cacheP);
+      write(xml, "num_vecs", input.num_vecs);
+      write(xml, "t_source", input.t_source);
+      write(xml, "Nt_forward", input.Nt_forward);
+      write(xml, "Nt_backward", input.Nt_backward);
+
+      pop(xml);
+    }
+
+
+    //! Propagator input
+    void read(XMLReader& xml, const std::string& path, Params::Param_t::SinkSource_t& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "t_sink", input.t_sink);
+      read(inputtop, "t_source", input.t_source);
+      read(inputtop, "Nt_forward", input.Nt_forward);
+      read(inputtop, "Nt_backward", input.Nt_backward);
+    }
+
+    //! Propagator output
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t::SinkSource_t& input)
+    {
+      push(xml, path);
+
+      write(xml, "t_sink", input.t_sink);
+      write(xml, "t_source", input.t_source);
+      write(xml, "Nt_forward", input.Nt_forward);
+      write(xml, "Nt_backward", input.Nt_backward);
+
+      pop(xml);
+    }
+
+    //! Propagator input
     void read(XMLReader& xml, const std::string& path, Params::Param_t::Contract_t& input)
     {
       XMLReader inputtop(xml, path);
 
       read(inputtop, "use_derivP", input.use_derivP);
-      read(inputtop, "srce_num_vecs", input.srce_num_vecs);
-      read(inputtop, "sink_num_vecs", input.sink_num_vecs);
-      read(inputtop, "t_source", input.t_source);
-      read(inputtop, "t_sink", input.t_sink);
       read(inputtop, "decay_dir", input.decay_dir);
       read(inputtop, "displacement_length", input.displacement_length);
       read(inputtop, "mass_label", input.mass_label);
@@ -117,10 +164,6 @@ namespace Chroma
       push(xml, path);
 
       write(xml, "use_derivP", input.use_derivP);
-      write(xml, "srce_num_vecs", input.srce_num_vecs);
-      write(xml, "sink_num_vecs", input.sink_num_vecs);
-      write(xml, "t_source", input.t_source);
-      write(xml, "t_sink", input.t_sink);
       write(xml, "decay_dir", input.decay_dir);
       write(xml, "displacement_length", input.displacement_length);
       write(xml, "mass_label", input.mass_label);
@@ -137,6 +180,8 @@ namespace Chroma
 
       read(inputtop, "DispGammaMomList", input.disp_gamma_mom_list);
       read(inputtop, "Propagator", input.prop);
+      read(inputtop, "PropSources", input.prop_sources);
+      read(inputtop, "SinkSourcePairs", input.sink_source_pairs);
       read(inputtop, "Contractions", input.contract);
 
       input.link_smearing  = readXMLGroup(inputtop, "LinkSmearing", "LinkSmearingType");
@@ -149,6 +194,8 @@ namespace Chroma
 
       write(xml, "DispGammaMomList", input.disp_gamma_mom_list);
       write(xml, "Propagator", input.prop);
+      write(xml, "PropSources", input.prop_sources);
+      write(xml, "SinkSourcePairs", input.sink_source_pairs);
       write(xml, "Contractions", input.contract);
       xml << input.link_smearing.xml;
 
@@ -295,13 +342,33 @@ namespace Chroma
 
 
     //----------------------------------------------------------------------------
+    //! KeySolnProp reader
+    void read(BinaryReader& bin, Params::Param_t::KeySolnProp_t& param)
+    {
+      read(bin, param.cacheP);
+      read(bin, param.num_vecs);
+      read(bin, param.t_source);
+      read(bin, param.Nt_forward);
+      read(bin, param.Nt_backward);
+    }
+
+    //! KeySolnProp write
+    void write(BinaryWriter& bin, const Params::Param_t::KeySolnProp_t& param)
+    {
+      write(bin, param.cacheP);
+      write(bin, param.num_vecs);
+      write(bin, param.t_source);
+      write(bin, param.Nt_forward);
+      write(bin, param.Nt_backward);
+    }
+
+    //----------------------------------------------------------------------------
     //! Unsmeared meson operator
     struct KeyUnsmearedMesonElementalOperator_t
     {
       int                t_sink;       /*!< Time sink */
       int                t_slice;      /*!< Meson operator time slice */
       int                t_source;     /*!< Time source */
-      int                spin_src;     /*!< Spin source component */
       int                colorvec_src; /*!< Colorvec source component */
       int                gamma;        /*!< The "gamma" in Gamma(gamma) */
       bool               derivP;       /*!< Uses derivatives */
@@ -312,7 +379,7 @@ namespace Chroma
     //! Meson operator
     struct ValUnsmearedMesonElementalOperator_t
     {
-      multi2d<ComplexD>  op;          /*!< Colorvector source and spin sink */
+      multi3d<ComplexD>  op;          /*!< Colorvector source and spin sink */
     };
 
 
@@ -332,7 +399,6 @@ namespace Chroma
       read(bin, param.t_sink);
       read(bin, param.t_slice);
       read(bin, param.t_source);
-      read(bin, param.spin_src);
       read(bin, param.colorvec_src);
       read(bin, param.gamma);
       read(bin, param.derivP);
@@ -346,7 +412,6 @@ namespace Chroma
       write(bin, param.t_sink);
       write(bin, param.t_slice);
       write(bin, param.t_source);
-      write(bin, param.spin_src);
       write(bin, param.colorvec_src);
       write(bin, param.gamma);
       write(bin, param.derivP);
@@ -362,7 +427,6 @@ namespace Chroma
       read(paramtop, "t_sink", param.t_sink);
       read(paramtop, "t_slice", param.t_slice);
       read(paramtop, "t_source", param.t_source);
-      read(paramtop, "spin_src", param.spin_src);
       read(paramtop, "colorvec_src", param.colorvec_src);
       read(paramtop, "gamma", param.gamma);
       read(paramtop, "derivP", param.derivP);
@@ -378,7 +442,6 @@ namespace Chroma
       write(xml, "t_sink", param.t_sink);
       write(xml, "t_slice", param.t_slice);
       write(xml, "t_source", param.t_source);
-      write(xml, "spin_src", param.spin_src);
       write(xml, "colorvec_src", param.colorvec_src);
       write(xml, "gamma", param.gamma);
       write(xml, "derivP", param.derivP);
@@ -525,7 +588,178 @@ namespace Chroma
     }
     
 
+    //-------------------------------------------------------------------------------
+    class SourcePropCache
+    {
+    public:
+      SourcePropCache(const multi1d<LatticeColorMatrix>& u,
+		      const ChromaProp_t& prop, MODS_t& eigs, int num_tries);
+
+      //! New t-slice
+      void newTimeSource(const Params::Param_t::KeySolnProp_t& key_);
+
+      //! The solution
+      const LatticeColorVectorSpinMatrix& getSoln(int t_source, int colorvec_src);
+
+      //! Getters
+      int getNumVecs(int t_source);
+
+    private:
+      //! Eigenvectors
+      MODS_t& eigen_source;
+
+      //! Put it here
+      int num_tries;
+
+      //! t_source -> prop keys
+      std::map<int, Params::Param_t::KeySolnProp_t> keys;
+
+      //! Cache:  {key -> {colorvec -> LCVSM}}
+      MapObjectMemory<Params::Param_t::KeySolnProp_t, std::map<int, LatticeColorVectorSpinMatrix> > cache;
+
+      //! qprop
+      Handle< SystemSolver<LatticeFermion> > PP;
+    };
+
+
+    //-------------------------------------------------------------------------------
+    SourcePropCache::SourcePropCache(const multi1d<LatticeColorMatrix>& u,
+				     const ChromaProp_t& prop, MODS_t& eigs_, int num_tries_) : eigen_source(eigs_), num_tries(num_tries_)
+    {
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+      QDPIO::cout << __func__ << ": initialize the prop cache" << std::endl;
+
+      // Typedefs to save typing
+      typedef LatticeFermion               T;
+      typedef multi1d<LatticeColorMatrix>  P;
+      typedef multi1d<LatticeColorMatrix>  Q;
+
+      //
+      // Initialize fermion action
+      //
+      std::istringstream  xml_s(prop.fermact.xml);
+      XMLReader  fermacttop(xml_s);
+      QDPIO::cout << "FermAct = " << prop.fermact.id << std::endl;
+
+      // Generic Wilson-Type stuff
+      Handle< FermionAction<T,P,Q> >
+	S_f(TheFermionActionFactory::Instance().createObject(prop.fermact.id,
+							     fermacttop,
+							     prop.fermact.path));
+
+      Handle< FermState<T,P,Q> > state(S_f->createState(u));
+
+      PP = S_f->qprop(state, prop.invParam);
+      
+      swatch.stop(); 
+      QDPIO::cout << __func__ << ": finished initializing the prop cache"
+		    << "  time = " << swatch.getTimeInSeconds() 
+		    << " secs" << std::endl;
+    }
+
   
+    //-------------------------------------------------------------------------------
+    //! New t-slice
+    void SourcePropCache::newTimeSource(const Params::Param_t::KeySolnProp_t& key)
+    {
+      if (cache.exist(key)) {
+	QDPIO::cerr << __func__ << ": cache entry already exists" << std::endl;
+	QDP_abort(1);
+      }
+
+      QDPIO::cout << __func__ << ": new t_source = " << key.t_source << std::endl;
+
+      //! Insert a new entry
+      keys.insert(std::make_pair(key.t_source, key));
+
+      //! Cache size will depend on cacheP flag
+      cache.insert(key, std::map<int, LatticeColorVectorSpinMatrix>());
+    }
+
+
+    //-------------------------------------------------------------------------------
+    //! New t-slice
+    const LatticeColorVectorSpinMatrix& SourcePropCache::getSoln(int t_slice, int colorvec_ind)
+    {
+      if (keys.find(t_slice) == keys.end()) {
+	QDPIO::cerr << __func__ << ": t_ind does not exist in cache = " << t_slice << std::endl;
+	QDP_abort(1);
+      }
+
+      // Key
+      const Params::Param_t::KeySolnProp_t& key = keys[t_slice];
+
+      if (cache[key].find(colorvec_ind) != cache[key].end()) {
+	//QDPIO::cout << __func__ << ": FOUND KEY - t_slice = " << t_slice << "  colorvec_ind = " << colorvec_ind << std::endl; 
+	return cache[key].at(colorvec_ind);
+      }
+      else {
+	QDPIO::cout << __func__ << ": CREATING KEY - t_slice = " << t_slice << "  colorvec_ind = " << colorvec_ind << std::endl; 
+	cache[key].insert(std::make_pair(colorvec_ind, LatticeColorVectorSpinMatrix(zero)));
+      }
+
+      // Get the source vector
+      LatticeColorVectorF vec_srce = zero;
+      KeyTimeSliceColorVec_t src_key(t_slice, colorvec_ind);
+      TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_slice);
+      eigen_source.get(src_key, time_slice_io);
+
+      // Loop over each spin source
+      for(int spin_ind=0; spin_ind < Ns; ++spin_ind)
+      {	
+	QDPIO::cout << __func__ << ": do t_slice= " << t_slice << "  spin_ind= " << spin_ind << "  colorvec_ind= " << colorvec_ind << std::endl; 
+	    
+	StopWatch snarss1;
+	snarss1.reset();
+	snarss1.start();
+
+	//
+	// Loop over each spin source and invert. 
+	// Use the same color vector source. No spin dilution will be used.
+	//
+	// NOTE: ultimately, we are using gamma5 hermiticity to change the propagator from source at time
+	// t_sink to, instead, the t_slice
+	// Will need a corresponding gamma5 multipling the other side when the elemental is read back in.
+	//
+	// Also NOTE: the gamma5 is hermitian. It could be put into the insertion, but since the need for the G5
+	// is a part of the sink solution vector, we will multiply here.
+	//
+	///      FIXME
+	QDPIO::cout << __func__ << ": FIXME\n";
+
+	LatticeFermion tmp = doInversion(*PP, vec_srce, spin_ind, num_tries);
+
+	// shove a fermion into a colorvec-spinmatrix 
+	FermToProp(tmp, cache[key][colorvec_ind], spin_ind);
+
+	snarss1.stop();
+	QDPIO::cout << __func__ << ": time to compute prop for t_slice= " << t_slice
+		    << "  spin_ind= " << spin_ind
+		    << "  colorvec_ind= " << colorvec_ind
+		    << "  time = " << snarss1.getTimeInSeconds() 
+		    << " secs" << std::endl;
+      } // for spin_src
+
+      QDPIO::cout << __func__ << ": FINISHED - t_slice = " << t_slice << "  colorvec_ind = " << colorvec_ind << std::endl; 
+      return cache[key][colorvec_ind];
+    }
+
+    //-------------------------------------------------------------------------------
+    //! New t-slice
+    int SourcePropCache::getNumVecs(int t_source)
+    {
+      if (keys.find(t_source) == keys.end()) {
+	QDPIO::cerr << __func__ << ": t_source does not exist in cache = " << t_source << std::endl;
+	QDP_abort(1);
+      }
+
+      // Key
+      const Params::Param_t::KeySolnProp_t& key = keys[t_source];
+
+      return key.num_vecs;
+    }
     //----------------------------------------------------------------------------
     //! Normalize just one displacement array
     std::vector<int> normDisp(const std::vector<int>& orig)
@@ -832,34 +1066,6 @@ namespace Chroma
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
 
-      // 
-      // Build active t_slice list
-      //
-      std::vector<bool> active_t_slices(Lt);
-
-      if (1)
-      {
-	int t_source = params.param.contract.t_source;
-	int t_sink   = params.param.contract.t_sink;
-
-	int Nt_forward = (t_sink - t_source + 1 + 2*Lt) % Lt;
-
-	// Initialize the active time slices
-	for(int t=0; t < Lt; ++t)
-	{
-	  active_t_slices[t] = false;
-	}
-
-	// Forward
-	for(int dt=0; dt < Nt_forward; ++dt)
-	{
-	  int t = t_source + dt;
-	  active_t_slices[t % Lt] = true;
-	}
-      }
-
-
-
       //
       // DB storage
       //
@@ -900,120 +1106,72 @@ namespace Chroma
       {
 	StopWatch swatch;
 	swatch.reset();
-	QDPIO::cout << "Try the various factories" << std::endl;
 
-	// Typedefs to save typing
-	typedef LatticeFermion               T;
-	typedef multi1d<LatticeColorMatrix>  P;
-	typedef multi1d<LatticeColorMatrix>  Q;
+	// Cache manager
+	QDPIO::cout << name << ": initialize the prop cache" << std::endl;
+	SourcePropCache prop_cache(u, params.param.prop, eigen_source, params.param.contract.num_tries);
 
-	//
-	// Initialize fermion action
-	//
-	std::istringstream  xml_s(params.param.prop.fermact.xml);
-	XMLReader  fermacttop(xml_s);
-	QDPIO::cout << "FermAct = " << params.param.prop.fermact.id << std::endl;
+	// All the desired solutions
+	QDPIO::cout << name << ": initialize the time sources" << std::endl;
+	for(auto key = params.param.prop_sources.begin(); key != params.param.prop_sources.end(); ++key)
+	{
+	  prop_cache.newTimeSource(*key);
+	}
 
-	// Generic Wilson-Type stuff
-	Handle< FermionAction<T,P,Q> >
-	  S_f(TheFermionActionFactory::Instance().createObject(params.param.prop.fermact.id,
-							       fermacttop,
-							       params.param.prop.fermact.path));
-
-	Handle< FermState<T,P,Q> > state(S_f->createState(u));
-
-	Handle< SystemSolver<LatticeFermion> > PP = S_f->qprop(state,
-							       params.param.prop.invParam);
-      
-	QDPIO::cout << "Suitable factory found: compute all the quark props" << std::endl;
-
-
+	
 	//
 	// Loop over the source color and spin, creating the source
 	// and calling the relevant propagator routines.
 	//
-	const int sink_num_vecs       = params.param.contract.sink_num_vecs;
-	const int srce_num_vecs       = params.param.contract.srce_num_vecs;
-	const int t_source            = params.param.contract.t_source;
-	const int t_sink              = params.param.contract.t_sink;
-	const int g5                  = Ns*Ns-1;
+	const int g5 = Ns*Ns-1;
 
-	// Sink solution vectors
-	multi2d<LatticeFermion> ferm_snk(sink_num_vecs,Ns);
-	    
-	//
-	// The sink distillation loop
-	//
-	QDPIO::cout << "\nSINK: t_sink = " << t_sink << std::endl; 
-	swatch.reset();
-	swatch.start();
-
-	for(int colorvec_src=0; colorvec_src < sink_num_vecs; ++colorvec_src)
+	for(auto sink_source = params.param.sink_source_pairs.begin(); sink_source != params.param.sink_source_pairs.end(); ++sink_source)
 	{
-	  QDPIO::cout << "SINK: colorvec_src = " << colorvec_src << std::endl; 
+	  int t_sink         = sink_source->t_sink;
+	  int t_source       = sink_source->t_source;
+	  int sink_num_vecs  = prop_cache.getNumVecs(t_sink);
+	  int srce_num_vecs  = prop_cache.getNumVecs(t_source);
 
-	  // Get the source vector
-	  LatticeColorVectorF vec_srce = zero;
-	  KeyTimeSliceColorVec_t src_key(t_sink, colorvec_src);
-	  TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_sink);
-	  eigen_source.get(src_key, time_slice_io);
+	  QDPIO::cout << "\n\n--------------------------\nSink-Source pair: t_sink = " << t_sink << " t_source = " << t_source << std::endl; 
+	  swatch.reset();
+	  swatch.start();
 
-	  // Loop over each spin source
-	  for(int spin_source=0; spin_source < Ns; ++spin_source)
-	  {	
-	    QDPIO::cout << "SINK: do spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << std::endl; 
-	    
-	    StopWatch snarss1;
-	    snarss1.reset();
-	    snarss1.start();
+	  // 
+	  // Build active t_slice list
+	  //
+	  std::vector<bool> active_t_slices(Lt);
 
-	    //
-	    // Loop over each spin source and invert. 
-	    // Use the same color vector source. No spin dilution will be used.
-	    //
-	    // NOTE: ultimately, we are using gamma5 hermiticity to change the propagator from source at time
-	    // t_sink to, instead, the t_slice
-	    // Will need a corresponding gamma5 multipling the other side when the elemental is read back in.
-	    //
-	    // Also NOTE: the gamma5 is hermitian. It could be put into the insertion, but since the need for the G5
-	    // is a part of the sink solution vector, we will multiply here.
-	    //
-	    ferm_snk(colorvec_src, spin_source) = Gamma(g5) * doInversion(*PP, vec_srce, spin_source, params.param.contract.num_tries);
-
-	    snarss1.stop();
-	    QDPIO::cout << "SINK: time to compute prop for spin_source= " << spin_source
-			<< "  colorvec_src= " << colorvec_src
-			<< "  time = " << snarss1.getTimeInSeconds() 
-			<< " secs" << std::endl;
-	  } // for spin_src
-	} // for colorvec_src
-
-	swatch.stop(); 
-	QDPIO::cout << " SINK: time to compute all sink solution vectors= " << swatch.getTimeInSeconds() << " secs" <<std::endl;
-
-
-	//
-	// The source distillation loop
-	//
-	QDPIO::cout << "\n\nSOURCE: t_source = " << t_source << std::endl; 
-	swatch.reset();
-	swatch.start();
-
-	for(int colorvec_src=0; colorvec_src < srce_num_vecs; ++colorvec_src)
-	{
-	  QDPIO::cout << "SOURCE: colorvec_src = " << colorvec_src << std::endl;
-	  
-	  // Get the source vector
-	  LatticeColorVectorF vec_srce = zero;
-	  KeyTimeSliceColorVec_t src_key(t_source, colorvec_src);
-	  TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source);
-	  eigen_source.get(src_key, time_slice_io);
-
-	  // Loop over each spin source
-	  for(int spin_source=0; spin_source < Ns; ++spin_source)
+	  if (1)
 	  {
-	    QDPIO::cout << "SOURCE: do spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << std::endl; 
-	  
+	    // Initialize the active time slices
+	    for(int t=0; t < Lt; ++t)
+	    {
+	      active_t_slices[t] = false;
+	    }
+
+	    // Forward
+	    for(int dt=0; dt < sink_source->Nt_forward; ++dt)
+	    {
+	      int t = (t_source + dt) % Lt;
+	      active_t_slices[t] = true;
+	    }
+
+	    // Backward
+	    for(int dt=0; dt < sink_source->Nt_backward; ++dt)
+	    {
+	      int t = (t_source - dt + 2*Lt) % Lt;
+	      active_t_slices[t] = true;
+	    }
+	  }
+
+
+	  //
+	  // Look through sources, do the funny stuff through each soln, and stream the sink vectors past them
+	  //
+	  for(int colorvec_src=0; colorvec_src < srce_num_vecs; ++colorvec_src)
+	  {
+	    QDPIO::cout << "SOURCE: colorvec_src = " << colorvec_src << std::endl;
+	    
 	    StopWatch snarss1;
 	    snarss1.reset();
 	    snarss1.start();
@@ -1022,27 +1180,19 @@ namespace Chroma
 	    // Loop over each spin source and invert. 
 	    // Use the same color vector source. No spin dilution will be used.
 	    //
-	    LatticeFermion ferm_srce = doInversion(*PP, vec_srce, spin_source, params.param.contract.num_tries);
-
-	    snarss1.stop();
-	    QDPIO::cout << "SOURCE: time to compute prop for spin_source= " << spin_source
-			<< "  colorvec_src= " << colorvec_src
-			<< "  time = " << snarss1.getTimeInSeconds() 
-			<< " secs" << std::endl;
-
-
+	    const LatticeColorVectorSpinMatrix& soln_srce = prop_cache.getSoln(t_source, colorvec_src);
 
 	    //
 	    // Cache holding original solution vectors including displacements/derivatives
 	    //
-	    DispSolnCache disp_soln_cache(u_smr, ferm_srce);
+	    DispSolnCache disp_soln_cache(u_smr, soln_srce);
 	    
 	    //
 	    // Loop over insertions for this source solutiuon vector
 	    // Multiply by insertions
 	    // Stream the sink solution vectors past it, and contract
 	    //
-	    QDPIO::cout << "SOURCE: do insertions for = " << spin_source << "  colorvec_src= " << colorvec_src << std::endl;
+	    QDPIO::cout << "SOURCE: do insertions for colorvec_src= " << colorvec_src << std::endl;
 	    snarss1.reset();
 	    snarss1.start();
 
@@ -1061,6 +1211,8 @@ namespace Chroma
 		  auto mom     = mm->first;
 		  int  mom_num = phases.momToNum(mom);
 
+		  QDPIO::cout << "Insertion: disp= " << disp << "  gamma= " << gamma << " mom= " << mom << std::endl;
+
 		  //
 		  // Finally, the actual insertion
 		  // NOTE: if we did not have the possibility for derivatives, then the displacement,
@@ -1070,9 +1222,9 @@ namespace Chroma
 		  // a traversal of the lattice
 		  // The phases mult is a straight up cost.
 		  //
-		  LatticeFermion tmp = phases[mom_num] * (Gamma(gamma) * disp_soln_cache.getDispVector(params.param.contract.use_derivP,
-												       mom,
-												       disp));
+		  LatticeColorVectorSpinMatrix tmp = phases[mom_num] * (Gamma(gamma) * disp_soln_cache.getDispVector(params.param.contract.use_derivP,
+														     mom,
+														     disp));
 	      
 		  // Keys and stuff
 		  SerialDBKey<KeyUnsmearedMesonElementalOperator_t>  key;
@@ -1090,27 +1242,29 @@ namespace Chroma
 		    buf[t].key.key().t_sink        = t_sink;
 		    buf[t].key.key().t_slice       = t;
 		    buf[t].key.key().t_source      = t_source;
-		    buf[t].key.key().spin_src      = spin_source;
 		    buf[t].key.key().colorvec_src  = colorvec_src;
 		    buf[t].key.key().gamma         = gamma;
 		    buf[t].key.key().displacement  = disp;
 		    buf[t].key.key().mom           = mom;
-		    buf[t].val.data().op.resize(sink_num_vecs,Ns);
+		    buf[t].val.data().op.resize(sink_num_vecs,Ns,Ns);
 		  }
 
-		  for(int spin_snk=0; spin_snk < Ns; ++spin_snk)
+		  // Stream the sink vectors past the insertion
+		  // Will save a column of the genprop - corresponding to the current colorvec_src
+		  for(int colorvec_snk=0; colorvec_snk < sink_num_vecs; ++colorvec_snk)
 		  {
-		    for(int colorvec_snk=0; colorvec_snk < sink_num_vecs; ++colorvec_snk)
+		    //QDPIO::cout << "stream: colorvec_snk = " << colorvec_snk << std::endl;
+		    
+		    // Slow fourier-transform
+		    multi1d<SpinMatrixD> fred = sumMulti(localColorInnerProduct(prop_cache.getSoln(t_sink, colorvec_snk), tmp), phases.getSet());
+
+		    for(int t=0; t < phases.numSubsets(); ++t)
 		    {
-		      // Slow fourier-transform
-		      multi1d<DComplex> fred = sumMulti(localInnerProduct(ferm_snk(colorvec_snk, spin_snk), tmp), phases.getSet());
-	
-		      for(int t=0; t < phases.numSubsets(); ++t)
-		      {
-			if (! active_t_slices[t]) {continue;}
+		      if (! active_t_slices[t]) {continue;}
 			
-			buf[t].val.data().op(colorvec_snk,spin_snk) = fred[t];
-		      }
+		      for (int spin_snk = 0; spin_snk < Ns; ++spin_snk)
+			for (int spin_src = 0; spin_src < Ns; ++spin_src)
+			  buf[t].val.data().op(colorvec_snk,spin_snk,spin_src) = peekSpin(fred[t], spin_snk, spin_src);
 		    }
 		  }
 
@@ -1120,14 +1274,13 @@ namespace Chroma
 		    if (! active_t_slices[t]) {continue;}
 
 		    //QDPIO::cout << "insert key= " << buf[t].key.key() << std::endl;
-		    write(xml_out, "Insertion", buf[t].key.key());
+		    //write(xml_out, "Insertion", buf[t].key.key());
 
 		    qdp_db.insert(buf[t].key, buf[t].val);
 		  }
 
 		  snarss2.stop(); 
-		  QDPIO::cout << " Time to build elemental: spin_source= " << spin_source
-			      << "  colorvec_src= " << colorvec_src
+		  QDPIO::cout << " Time to build elemental: colorvec_src= " << colorvec_src
 			      << "  gamma= " << gamma
 			      << "  disp= " << disp
 			      << "  mom= " << mom
@@ -1138,8 +1291,8 @@ namespace Chroma
 
 	    snarss1.stop(); 
 	    QDPIO::cout << " Time to do all insertions: time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
-	  } // for spin_src
-	} // for colorvec_src
+	  } // for colorvec_src
+	} // for sink_source
 
 	swatch.stop(); 
 	QDPIO::cout << " SOURCE: time to compute all source solution vectors and insertions= " << swatch.getTimeInSeconds() << " secs" <<std::endl;

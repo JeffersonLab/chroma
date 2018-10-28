@@ -120,6 +120,10 @@ namespace Chroma
 			  const LatticeFermion& chi, 
 			  int length, int dir);
 
+  // Apply a displacement operator to a lattice field
+  LatticeColorVectorSpinMatrix displace(const multi1d<LatticeColorMatrix>& u, 
+					const LatticeColorVectorSpinMatrix& chi, 
+					int length, int dir);
 
   //! Apply a displacement operator to a lattice field
   /*! \ingroup smear */
@@ -203,7 +207,6 @@ namespace Chroma
 			       const multi1d<LatticeColorMatrix>& u,
 			       int mu, int length);
 
-
   //----------------------------------------------------------------------------------
   //! Apply left-right deriv to the right onto source
   /*!
@@ -231,6 +234,11 @@ namespace Chroma
 				   int mu, int length,
 				   int mom);
 
+  //! Apply first deriv to the right onto source
+  LatticeColorVectorSpinMatrix leftRightNabla(const LatticeColorVectorSpinMatrix& F, 
+					      const multi1d<LatticeColorMatrix>& u,
+					      int mu, int length,
+					      int mom);
 
   //! Apply left-right deriv to the right onto source
   LatticeColorVector leftRightNabla(const multi1d<LatticeColorMatrix>& u, 

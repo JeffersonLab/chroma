@@ -135,6 +135,50 @@ namespace Chroma
   }
 
 
+  //-------------------------------------------------------------------------------
+  //! Insert a LatticeFermion into a LatticeColorVectorSpinMatrix
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source fermion
+   * \param b      Destination propagator
+   * \param color_index  Color index
+   * \param spin_index   Spin index
+   */
+  void FermToProp(const LatticeFermionF& a, LatticeColorVectorSpinMatrixF& b, 
+		  int spin_index)
+  {
+    for(int j = 0; j < Ns; ++j)
+    {
+      LatticeColorVectorF bb = peekSpin(b, j, spin_index);
+
+      pokeSpin(b, bb, j, spin_index);
+    }
+  }
+
+  
+  //-------------------------------------------------------------------------------
+  //! Insert a LatticeFermion into a LatticeColorVectorSpinMatrix
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source fermion
+   * \param b      Destination propagator
+   * \param color_index  Color index
+   * \param spin_index   Spin index
+   */
+  void FermToProp(const LatticeFermionD& a, LatticeColorVectorSpinMatrixD& b, 
+		  int spin_index)
+  {
+    for(int j = 0; j < Ns; ++j)
+    {
+      LatticeColorVectorD bb = peekSpin(b, j, spin_index);
+
+      pokeSpin(b, bb, j, spin_index);
+    }
+  }
+
+  
   //! Insert a LatticeStaggeredFermion into a LatticeStaggeredPropagator
   /*!
    * \ingroup ferm
