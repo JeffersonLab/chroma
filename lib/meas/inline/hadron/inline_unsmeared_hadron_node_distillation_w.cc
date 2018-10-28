@@ -719,16 +719,6 @@ namespace Chroma
 	// Loop over each spin source and invert. 
 	// Use the same color vector source. No spin dilution will be used.
 	//
-	// NOTE: ultimately, we are using gamma5 hermiticity to change the propagator from source at time
-	// t_sink to, instead, the t_slice
-	// Will need a corresponding gamma5 multipling the other side when the elemental is read back in.
-	//
-	// Also NOTE: the gamma5 is hermitian. It could be put into the insertion, but since the need for the G5
-	// is a part of the sink solution vector, we will multiply here.
-	//
-	///      FIXME
-	QDPIO::cout << __func__ << ": FIXME\n";
-
 	LatticeFermion tmp = doInversion(*PP, vec_srce, spin_ind, num_tries);
 
 	// shove a fermion into a colorvec-spinmatrix 
@@ -1222,9 +1212,17 @@ namespace Chroma
 		  // a traversal of the lattice
 		  // The phases mult is a straight up cost.
 		  //
-		  LatticeColorVectorSpinMatrix tmp = phases[mom_num] * (Gamma(gamma) * disp_soln_cache.getDispVector(params.param.contract.use_derivP,
-														     mom,
-														     disp));
+		  // NOTE: ultimately, we are using gamma5 hermiticity to change the propagator from source at time
+		  // t_sink to, instead, the t_slice
+		  //
+		  // Also NOTE: the gamma5 is hermitian. We will put the gamma_5 into the insertion, but since the need for the G5
+		  // is a part of the sink solution vector, we will multiply here.
+		  //
+		  // NOTE: with suitable signs, the gamma_5 could be merged with the gamma
+		  LatticeColorVectorSpinMatrix tmp = phases[mom_num] *
+		    (Gamma(g5) * (Gamma(gamma) * disp_soln_cache.getDispVector(params.param.contract.use_derivP,
+									       mom,
+									       disp)));
 	      
 		  // Keys and stuff
 		  SerialDBKey<KeyUnsmearedMesonElementalOperator_t>  key;
@@ -1261,10 +1259,13 @@ namespace Chroma
 		    for(int t=0; t < phases.numSubsets(); ++t)
 		    {
 		      if (! active_t_slices[t]) {continue;}
+
+		      // Complete the gamma_5 hermitian adj on the sink by tacking on the gamma_5
+		      SpinMatrixD gred = Gamma(g5) * fred[t];
 			
 		      for (int spin_snk = 0; spin_snk < Ns; ++spin_snk)
 			for (int spin_src = 0; spin_src < Ns; ++spin_src)
-			  buf[t].val.data().op(colorvec_snk,spin_snk,spin_src) = peekSpin(fred[t], spin_snk, spin_src);
+			  buf[t].val.data().op(colorvec_snk,spin_snk,spin_src) = peekSpin(gred, spin_snk, spin_src);
 		    }
 		  }
 
