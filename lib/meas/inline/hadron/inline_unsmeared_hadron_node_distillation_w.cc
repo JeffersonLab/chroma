@@ -374,6 +374,7 @@ namespace Chroma
       bool               derivP;       /*!< Uses derivatives */
       std::vector<int>   displacement; /*!< Displacement dirs of right colorstd::vector */
       multi1d<int>       mom;          /*!< D-1 momentum of this operator */
+      std::string        mass;         /*!< Some kind of mass label */
     };
 
     //! Meson operator
@@ -404,6 +405,7 @@ namespace Chroma
       read(bin, param.derivP);
       read(bin, param.displacement);
       read(bin, param.mom);
+      readDesc(bin, param.mass);
     }
 
     //! UnsmearedMesonElementalOperator write
@@ -417,6 +419,7 @@ namespace Chroma
       write(bin, param.derivP);
       write(bin, param.displacement);
       write(bin, param.mom);
+      writeDesc(bin, param.mass);
     }
 
     //! UnsmearedMesonElementalOperator reader
@@ -432,6 +435,7 @@ namespace Chroma
       read(paramtop, "derivP", param.derivP);
       read(paramtop, "displacement", param.displacement);
       read(paramtop, "mom", param.mom);
+      read(paramtop, "mass", param.mass);
     }
 
     //! UnsmearedMesonElementalOperator writer
@@ -447,6 +451,7 @@ namespace Chroma
       write(xml, "derivP", param.derivP);
       write(xml, "displacement", param.displacement);
       write(xml, "mom", param.mom);
+      write(xml, "mass", param.mass);
 
       pop(xml);
     }
@@ -1244,6 +1249,7 @@ namespace Chroma
 		    buf[t].key.key().gamma         = gamma;
 		    buf[t].key.key().displacement  = disp;
 		    buf[t].key.key().mom           = mom;
+		    buf[t].key.key().mass          = params.param.contract.mass_label;
 		    buf[t].val.data().op.resize(sink_num_vecs,Ns,Ns);
 		  }
 
