@@ -281,7 +281,7 @@ namespace Chroma
 		T Ainv_left;
 		T Ainv_right;
 
-		enum PlusMinus msign = ( isign == PLUS ) ? MINUS : PLUS;
+		//enum PlusMinus msign = ( isign == PLUS ) ? MINUS : PLUS;
 
 		if( isign == PLUS ) {
 			D.apply(tmp, psi, PLUS, 0);
@@ -349,6 +349,116 @@ namespace Chroma
 	    	invclov.apply(Ainv_left,tmp,PLUS,1);
 	    	invclov.apply(Ainv_right,psi,MINUS,1);
 	    	clov.deriv(ds_tmp, Ainv_left,Ainv_right, MINUS,1);
+	    	ds_u += ds_tmp;
+		}
+
+		for(int mu=0; mu < Nd; ++mu) {
+			ds_u[mu] *= Real(-0.5);
+		}
+		getFermBC().zero(ds_u);
+	}
+
+
+	//! Deriv
+	void SymEvenOddPrecCloverLinOp::derivMultipole(P& ds_u, const multi1d<T>& chi,
+			const multi1d<T>& psi,
+			enum PlusMinus isign) const
+	{
+		if( chi.size() != psi.size() ) {
+			QDPIO::cerr << "Incompatible array sizes in SymEvenOddPrecCloverOp::derivMultipole" << std::endl;
+			QDP_abort(1);
+		}
+		int n_poles= psi.size();
+		multi1d<T> M_eo_psi(n_poles);
+		multi1d<T> M_oe_dag_chi(n_poles);
+		T tmp;
+		multi1d<T> Ainv_left(n_poles);
+		multi1d<T> Ainv_right(n_poles);
+
+		//enum PlusMinus msign = ( isign == PLUS ) ? MINUS : PLUS;
+
+		if( isign == PLUS ) {
+			for(int i=0; i < n_poles; ++i) {
+				D.apply(tmp, psi[i], PLUS, 0);
+				invclov.apply(M_eo_psi[i], tmp, PLUS, 0);
+
+				invclov.apply(tmp, chi[i], MINUS,1);
+				D.apply(M_oe_dag_chi[i],tmp,MINUS,0);
+			}
+		}
+		else {
+			for(int i=0; i < n_poles; ++i) {
+				invclov.apply(tmp,psi[i],MINUS,1);
+				D.apply(M_eo_psi[i],tmp,MINUS,0);
+
+				D.apply(tmp,chi[i],PLUS,0);
+				invclov.apply(M_oe_dag_chi[i],tmp,PLUS,0);
+			}
+		}
+		for(int i=0; i < n_poles; ++i) {
+			(M_eo_psi[i])[rb[0]] *= Real(-0.5);
+			(M_oe_dag_chi[i])[rb[0]] *= Real(-0.5);
+		}
+		ds_u.resize(Nd);
+		ds_u = zero;
+		P ds_tmp;
+		ds_tmp.resize(Nd);
+
+		//derivOddEvenLinOp(ds_tmp,chi,M_eo_psi,isign);
+		if( isign == PLUS ) {
+
+		   for(int i=0; i < n_poles; ++i) {
+			   D.apply(tmp,M_eo_psi[i], PLUS,1);
+			   invclov.apply(Ainv_right[i],tmp, PLUS,1);
+			   invclov.apply(Ainv_left[i],chi[i],MINUS,1);
+		   }
+		   clov.derivMultipole(ds_u,Ainv_left,Ainv_right, PLUS, 1);
+
+		   for(int i=0; i < n_poles; ++i) {
+			   invclov.apply(tmp, chi[i], MINUS,1);
+			   D.deriv(ds_tmp, tmp,M_eo_psi[i], PLUS,1);
+			   ds_u -= ds_tmp;
+		   }
+
+		   for(int i=0; i < n_poles; ++i) {
+			   D.apply(tmp,psi[i], PLUS,0);
+			   invclov.apply(Ainv_right[i],tmp,PLUS,0);
+			   invclov.apply(Ainv_left[i], M_oe_dag_chi[i],PLUS,0);
+		   }
+		   clov.derivMultipole(ds_tmp,Ainv_left, Ainv_right,PLUS,0);
+		   ds_u += ds_tmp;
+
+		   for(int i=0; i < n_poles; ++i) {
+			   invclov.apply(tmp, M_oe_dag_chi[i], MINUS,0);
+			   D.deriv(ds_tmp, tmp,psi[i], PLUS,0);
+			   ds_u -= ds_tmp;
+		   }
+		}
+		else {
+			for(int i=0; i < n_poles; ++i) {
+				D.apply(tmp,chi[i],PLUS,0);
+				invclov.apply(Ainv_left[i],tmp,PLUS,0);
+				invclov.apply(Ainv_right[i],M_eo_psi[i],MINUS,0);
+			}
+			clov.derivMultipole(ds_u,Ainv_left,Ainv_right,MINUS,0);
+
+			for(int i=0; i < n_poles; ++i) {
+				invclov.apply(tmp, M_eo_psi[i], MINUS,0);
+				D.deriv(ds_tmp, chi[i], tmp, MINUS,1);
+				ds_u -= ds_tmp;
+
+
+				invclov.apply(tmp, psi[i], MINUS,1);
+				D.deriv(ds_tmp, M_oe_dag_chi[i], tmp, MINUS,0);
+				ds_u -= ds_tmp;
+			}
+
+			for(int i=0; i < n_poles; ++i) {
+				D.apply(tmp,M_oe_dag_chi[i],PLUS,1);
+				invclov.apply(Ainv_left[i],tmp,PLUS,1);
+				invclov.apply(Ainv_right[i],psi[i],MINUS,1);
+			}
+	    	clov.derivMultipole(ds_tmp, Ainv_left,Ainv_right, MINUS,1);
 	    	ds_u += ds_tmp;
 		}
 

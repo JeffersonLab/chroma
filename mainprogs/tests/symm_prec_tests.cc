@@ -837,3 +837,55 @@ INSTANTIATE_TEST_CASE_P(TrLogForces,
 		::testing::Values(PLUS,MINUS));
 
 
+TEST_F(SymmFixture, CheckDerivMultipole)
+{
+	int n_poles = 5;
+	multi1d<T> X(n_poles);
+	multi1d<T> Y(n_poles);
+
+
+	for(int i=0; i < n_poles; ++i) {
+		gaussian(X[i],rb[1]);
+		gaussian(Y[i],rb[1]);
+	}
+
+	multi1d<LatticeColorMatrix> ds_u(Nd);
+	multi1d<LatticeColorMatrix> ds_tmp(Nd);
+	multi1d<LatticeColorMatrix> ds_mp(Nd);
+
+	for(int dag=0; dag < 2; ++dag ) {
+		QDPIO::cout << "Dagger = " << dag << std::endl;
+
+		enum PlusMinus isign = (dag == 0 ) ? PLUS : MINUS;
+		// Isign = PLUS
+		// Zero sum
+		for(int mu=0; mu < Nd; ++mu) {
+			ds_u[mu] = zero;
+		}
+
+		// Accumulate forces
+		StopWatch swatch;
+		swatch.start();
+		for(int i=0; i < n_poles; ++i) {
+			M_symm->deriv(ds_tmp, X[i],Y[i], isign);
+			ds_u += ds_tmp;
+		}
+		swatch.stop();
+		QDPIO::cout << "Individual Poles took: " << swatch.getTimeInSeconds() << " sec." << std::endl;
+
+		// do Multipole version
+		swatch.reset(); swatch.start();
+		M_symm->derivMultipole(ds_mp, X,Y,isign);
+		swatch.stop();
+		QDPIO::cout << "Multipole took: " << swatch.getTimeInSeconds() << " sec." << std::endl;
+
+		for(int mu=0; mu < Nd; ++mu) {
+			ds_mp[mu] -= ds_u[mu];
+			Double normdiff = sqrt(norm2(ds_mp[mu]));
+			Double normdiff_per_link = normdiff/static_cast<double>(4*Layout::vol());
+			QDPIO::cout << "mu="<< mu << " normdiff = " << normdiff
+					<< " normdiff per link = " << normdiff_per_link << std::endl;
+			ASSERT_LT( toDouble(normdiff_per_link), 1.0e-17);
+		}
+	}
+}

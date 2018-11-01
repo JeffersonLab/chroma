@@ -116,6 +116,11 @@ namespace Chroma
     		enum PlusMinus isign) const override;
 
 
+	//! Deriv
+	void derivMultipole(P& ds_u, const multi1d<T>& chi,
+			const multi1d<T>& psi,
+			enum PlusMinus isign) const override;
+
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
 
