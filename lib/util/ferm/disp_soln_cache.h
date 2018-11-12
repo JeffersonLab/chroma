@@ -6,9 +6,10 @@
 #ifndef __disp_soln_cache_h__
 #define __disp_soln_cache_h__
 
-#ifndef QDP_IS_QDPJIT
 
 #include "chromabase.h"
+
+#ifndef QDP_IS_QDPJIT
 
 #include <qdp_map_obj_disk_multiple.h>
 #include <qdp_map_obj_memory.h>
@@ -83,5 +84,5 @@ namespace Chroma
 
 } // namespace Chroma
 
-#endif
-#endif
+#endif // QDP_IS_QDPJIT
+#endif // HEADER GUARD

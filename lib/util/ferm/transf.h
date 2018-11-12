@@ -3,6 +3,7 @@
 #ifndef __transf_h__
 #define __transf_h__
 
+#include "qdp_config.h"
 namespace Chroma
 {
  //! Convert (insert) a LatticeColorVector into a LatticeFermion
@@ -93,6 +94,7 @@ namespace Chroma
 		  int color_index, int spin_index);
 
 
+#ifndef QDP_IS_QDPJIT
   //! Insert a LatticeFermion into a LatticeColorVectorSpinMatrix
   /*!
    * \ingroup ferm
@@ -116,7 +118,7 @@ namespace Chroma
    */
   void FermToProp(const LatticeFermionD& a, LatticeColorVectorSpinMatrixD& b, 
 		  int spin_index);
-  
+#endif 
 
   //! Insert a LatticeFermion into a LatticePropagator
   /*!

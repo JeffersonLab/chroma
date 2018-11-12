@@ -134,7 +134,7 @@ namespace Chroma
     }
   }
 
-
+#ifndef QDP_IS_QDPJIT
   //-------------------------------------------------------------------------------
   //! Insert a LatticeFermion into a LatticeColorVectorSpinMatrix
   /*!
@@ -177,7 +177,7 @@ namespace Chroma
       pokeSpin(b, bb, j, spin_index);
     }
   }
-
+#endif
   
   //! Insert a LatticeStaggeredFermion into a LatticeStaggeredPropagator
   /*!
