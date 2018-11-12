@@ -74,6 +74,10 @@ namespace Chroma
 	  // Copy the key/value-s
 	  int Lt = Layout::lattSize()[decay_dir];
 
+	  int start = params.param.start_t;
+	  int end = params.param.end_t;
+	  QDPIO::cout << "start_t = " << start << ", end_t = " << end << "\n";
+
 	  for(int i=0; i < keys.size(); i++) 
 	  {
 	    // Get the value
@@ -83,11 +87,15 @@ namespace Chroma
 	    // Write with a time-slice key.
 	    for(int t=0; t < Lt; t++) 
 	    {
-	      KeyTimeSliceColorVec_t time_key;
-	      time_key.t_slice = t;
-	      time_key.colorvec = keys[i];
+	      if ( ( ( start < end ) && ( t >= start && t < end ) ) ||
+		   ( ( end < start ) && ( t >= start || t < end ) ) )
+		{
+		  KeyTimeSliceColorVec_t time_key;
+		  time_key.t_slice = t;
+		  time_key.colorvec = keys[i];
 
-	      output_obj.insert(time_key, TimeSliceIO<LatticeColorVector>(tmpvec.eigenVector,t));
+		  output_obj.insert(time_key, TimeSliceIO<LatticeColorVector>(tmpvec.eigenVector,t));
+		}
 	    }
 	  }
 
@@ -262,6 +270,15 @@ namespace Chroma
       return success;
     }
 
+    
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "start_t", input.start_t);
+      read(inputtop, "end_t", input.end_t);
+    }
+
 
     //! Object buffer
     void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
@@ -289,6 +306,14 @@ namespace Chroma
 
 	// Parameters for source construction
 	read(paramtop, "NamedObject", named_obj);
+	
+	if (paramtop.count("Param") == 1)
+	  read(paramtop, "Param", param);
+	else
+	  {
+	    param.start_t = 0;
+	    param.end_t = Layout::lattSize()[Nd-1];
+	  }
       }
       catch(const std::string& e) 
       {

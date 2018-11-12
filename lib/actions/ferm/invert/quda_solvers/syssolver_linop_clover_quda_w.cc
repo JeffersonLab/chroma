@@ -68,7 +68,7 @@ namespace Chroma
     void *spinorOut;
 
 #ifdef BUILD_QUDA_DEVIFACE_SPINOR
-    std::vector<int> ids;
+    std::vector<QDPCache::ArgKey> ids;
 #endif
   
       // No need to transform source

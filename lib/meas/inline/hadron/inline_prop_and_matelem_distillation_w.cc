@@ -123,6 +123,15 @@ namespace Chroma
 	  }
       }
 
+      input.fuse_timeloop = false;
+      if( inputtop.count("fuse_timeloop") == 1 ) {
+	read(inputtop, "fuse_timeloop", input.fuse_timeloop );
+	if (input.fuse_timeloop)
+	  {
+	    QDPIO::cout << "fuse_timeloop found!\n";
+	  }
+      }
+
     }
 
     //! Propagator output
@@ -238,7 +247,8 @@ namespace Chroma
 	{
 	  QDPIO::cout << __func__ << ": on t_source= " << t_source << "  colorvec_src= " << colorvec_src << std::endl;
 
-	  LatticeColorVectorF vec_srce = zero;
+	  // No need to initialize with 'zero' - we are returning a subtype.
+	  LatticeColorVectorF vec_srce;
 
 	  if (!zero_colorvecs)
 	    {
@@ -624,7 +634,10 @@ namespace Chroma
 	swatch.start();
 
 #ifdef BUILD_JIT_CONTRACTION_KERNELS
-	QDPIO::cout << "Using JIT contraction kernels\n";
+	if ( params.param.contract.fuse_timeloop )
+	  QDPIO::cout << "Using JIT contraction kernels (fused timeloop)\n";
+	else
+	  QDPIO::cout << "Using JIT contraction kernels (non-fused timeloop)\n";
 #endif
 
 	//
@@ -634,6 +647,7 @@ namespace Chroma
 	const int num_vecs            = params.param.contract.num_vecs;
 	const multi1d<int>& t_sources = params.param.contract.t_sources;
 
+	
 	// Loop over each time source
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
@@ -656,24 +670,6 @@ namespace Chroma
 	      // The final perambulator
 	      QDP::MapObjectMemory<KeyPropElementalOperator_t, ValPropElementalOperator_t> peram;
 
-#ifdef QDP_IS_QDPJIT
-	      //QDPIO::cout << "Start of initialization of scalars on a stack" << std::endl;
-	      size_t count = 0;
-	      for(std::list<KeyPropElementalOperator_t>::const_iterator key = snk_keys.begin();
-		  key != snk_keys.end();
-		  ++key)
-		{
-		  ++count;
-		}
-	      size_t size = count * num_vecs * num_vecs * sizeof(ComplexD::SubType_t);
-	      // QDPIO::cout << "Creating stack: snk_keys = " << count
-	      // 		  << ", num_vecs = " << num_vecs
-	      // 		  << ", element size = " << sizeof(ComplexD::SubType_t)
-	      // 		  << ", total size = " << size
-	      // 		  << std::endl;
-	      qdp_stack_scalars_start( size );
-#endif
-	    	    
 	      // Initialize
 	      for(std::list<KeyPropElementalOperator_t>::const_iterator key = snk_keys.begin();
 		  key != snk_keys.end();
@@ -687,10 +683,6 @@ namespace Chroma
 		  peram[*key].mat = zero;
 		} // key
 	      QDPIO::cout << "peram initialized! " << std::endl; 
-
-#ifdef QDP_IS_QDPJIT
-	      qdp_stack_scalars_end();
-#endif
 
 	      //
 	      // The space distillation loop
@@ -786,7 +778,7 @@ namespace Chroma
 		  // The perambulator part
 		  // Loop over time
 
-		  
+#ifndef BUILD_JIT_CONTRACTION_KERNELS
 		  for(int t_slice = 0; t_slice < Lt; ++t_slice)
 		    {
 		      // Loop over all the keys
@@ -796,33 +788,91 @@ namespace Chroma
 			{
 			  if (key->t_slice != t_slice) {continue;}
 
-#ifndef BUILD_JIT_CONTRACTION_KERNELS
 			  // Loop over the sink colorvec, form the innerproduct and the resulting perambulator
 			  for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 			    {
 			      peram[*key].mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_map.getVec(t_slice, colorvec_sink), 
 											 ferm_out(key->spin_snk));
 			    } // for colorvec_sink
+			} // for key
+		    } // for t_slice
 #else
-#warning "Using QDP-JIT contraction kernels"
-			  //
-			  // Pack pointers to the vectors and matrix elements
-			  //
-			  multi1d<SubLatticeColorVectorF*> vec_ptr( num_vecs );
-			  multi1d<ComplexD*> contr_ptr( num_vecs );
-			  for (int i=0 ; i < num_vecs ; ++i ) {
-			    vec_ptr[i] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( t_slice , i ) );
-			    contr_ptr[i] = &peram[*key].mat( i , colorvec_src );
-			  }
-		  
+		  if ( params.param.contract.fuse_timeloop)
+		    {
+		      //
+		      // fused timeloop
+		      //
+		      for(int spin_snk = 0; spin_snk < Ns; ++spin_snk)
+			{
+			  int count = 0;
+			  for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();  key != snk_keys.end(); ++key)
+			    {
+			      if (key->spin_snk != spin_snk) { continue;}
+			      count += num_vecs;
+			    }
+
+			  //QDPIO::cout << "spin_snk = " << spin_snk << ", count = " << count << "\n";
+		      
+			  multi1d<SubLatticeColorVectorF*> vec_ptr( count );
+			  multi1d<ComplexD*> contr_ptr( count );
+
+			  int run_count = 0;
+		      
+			  // Loop over all the keys
+			  for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();
+			      key != snk_keys.end();
+			      ++key)
+			    {
+			      if (key->spin_snk != spin_snk) {continue;}
+
+			      //
+			      // Pack pointers to the vectors and matrix elements
+			      //
+			      for (int i=0 ; i < num_vecs ; ++i ) {
+				vec_ptr[run_count] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( key->t_slice , i ) );
+				contr_ptr[run_count] = &peram[*key].mat( i , colorvec_src );
+				++run_count;
+			      }
+			    }
+		      
 			  //
 			  // Big call-out 
 			  //
-			  multi_innerProduct( contr_ptr , vec_ptr , ferm_out(key->spin_snk) );
-#endif
+			  multi_innerProduct( contr_ptr , vec_ptr , ferm_out(spin_snk) );
 		  
-			} // for key
-		    } // for t_slice
+			} // for spin_snk
+		    }
+		  else
+		    {
+		      //
+		      // non-fused timeloop
+		      //
+		      for(int t_slice = 0; t_slice < Lt; ++t_slice)
+			{
+			  // Loop over all the keys
+			  for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();
+			      key != snk_keys.end();
+			      ++key)
+			    {
+			      if (key->t_slice != t_slice) {continue;}
+			      //
+			      // Pack pointers to the vectors and matrix elements
+			      //
+			      multi1d<SubLatticeColorVectorF*> vec_ptr( num_vecs );
+			      multi1d<ComplexD*> contr_ptr( num_vecs );
+			      for (int i=0 ; i < num_vecs ; ++i ) {
+				vec_ptr[i] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( t_slice , i ) );
+				contr_ptr[i] = &peram[*key].mat( i , colorvec_src );
+			      }
+		  
+			      //
+			      // Big call-out 
+			      //
+			      multi_innerProduct( contr_ptr , vec_ptr , ferm_out(key->spin_snk) );
+			    } // for key
+			} // for t_slice
+		    }
+#endif
 
 		  sniss1.stop();
 		  QDPIO::cout << "Time to compute and assemble peram for spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << "  time = " 
@@ -856,10 +906,7 @@ namespace Chroma
 			      << " secs" << std::endl;
 		}
 
-	    } // this ends the lifetime of qdp_db. Thus after this scope it should be safe to free the stack space for the OScalars
-#ifdef QDP_IS_QDPJIT
-	    qdp_stack_scalars_free_stack();
-#endif
+	    } // this ends the lifetime of qdp_db.
 	  } // for spin_src
 	} // for tt
 

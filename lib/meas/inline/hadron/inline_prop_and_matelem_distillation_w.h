@@ -44,6 +44,7 @@ namespace Chroma
 
 	  int           num_tries;      /*!< In case of bad things happening in the solution vectors, do retries */
 	  bool          zero_colorvecs;
+	  bool          fuse_timeloop;  
 	};
 
 	ChromaProp_t    prop;

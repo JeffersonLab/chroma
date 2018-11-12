@@ -15,6 +15,8 @@ void function_get_fs_bs_exec(CUfunction function,
 				   multi1d<LatticeComplex>& b2,
 				   bool dobs)
 {
+  //QDPIO::cout << __FILE__ << ":" << __LINE__ << "\n";
+
   AddressLeaf addr_leaf(all);
 
   int junk_0 = forEach(Q, addr_leaf, NullCombine());
@@ -35,7 +37,7 @@ void function_get_fs_bs_exec(CUfunction function,
   JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
   JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
   JitParam jit_dobs( QDP_get_global_cache().addJitParamBool( dobs ) );
-  std::vector<int> ids;
+  std::vector<QDPCache::ArgKey> ids;
   ids.push_back( jit_lo.get_id() );
   ids.push_back( jit_hi.get_id() );
   ids.push_back( jit_dobs.get_id() );
