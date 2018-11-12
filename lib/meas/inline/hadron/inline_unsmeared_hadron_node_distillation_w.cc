@@ -47,7 +47,7 @@ namespace Chroma
    *
    * @{
    */
-  namespace InlineUnsmsearedHadronNodeDistillationEnv 
+  namespace InlineUnsmearedHadronNodeDistillationEnv 
   { 
     //! Propagator input
     void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
@@ -226,7 +226,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------
-  namespace InlineUnsmsearedHadronNodeDistillationEnv
+  namespace InlineUnsmearedHadronNodeDistillationEnv
   { 
     //----------------------------------------------------------------------------
     // Convenience type
@@ -242,7 +242,7 @@ namespace Chroma
 
 
   //-------------------------------------------------------------------------------
-  namespace InlineUnsmsearedHadronNodeDistillationEnv
+  namespace InlineUnsmearedHadronNodeDistillationEnv
   { 
     // Anonymous namespace for registration
     namespace
@@ -1325,7 +1325,7 @@ namespace Chroma
 
       END_CODE();
     } // func
-  } // namespace InlineUnsmsearedHadronNodeDistillationEnv
+  } // namespace InlineUnsmearedHadronNodeDistillationEnv
 
   /*! @} */  // end of group hadron
 
