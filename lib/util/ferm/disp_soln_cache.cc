@@ -2,6 +2,8 @@
  * \brief Cache for distillation - holds solution vectors
  */
 
+#ifndef QDP_IS_QDPJIT
+
 #include "util/ferm/disp_soln_cache.h"
 #include "meas/smear/displace.h"
 
@@ -124,3 +126,5 @@ namespace Chroma
   /*! @} */  // end of group smear
 
 } // namespace Chroma
+#endif
+#endif
