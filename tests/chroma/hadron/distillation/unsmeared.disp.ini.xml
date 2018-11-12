@@ -251,62 +251,497 @@
             <gamma>15</gamma>
             <mom>-1 0 0</mom>
 	  </elem>
+	  
 
           <elem>
             <displacement></displacement>
-            <gamma>1</gamma>
-            <mom>1 0 0</mom>
+            <gamma>0</gamma>
+            <mom>1 1 0</mom>
 	  </elem>
           <elem>
             <displacement></displacement>
             <gamma>1</gamma>
-            <mom>-1 0 0</mom>
-	  </elem>
-	  
-          <elem>
-            <displacement></displacement>
-            <gamma>2</gamma>
-            <mom>1 0 0</mom>
+            <mom>1 1 0</mom>
 	  </elem>
           <elem>
             <displacement></displacement>
             <gamma>2</gamma>
-            <mom>-1 0 0</mom>
-	  </elem>
-	  
-          <elem>
-            <displacement></displacement>
-            <gamma>4</gamma>
-            <mom>1 0 0</mom>
+            <mom>1 1 0</mom>
 	  </elem>
           <elem>
             <displacement></displacement>
-            <gamma>4</gamma>
-            <mom>-1 0 0</mom>
+            <gamma>3</gamma>
+            <mom>1 1 0</mom>
 	  </elem>
-	  
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
           <elem>
             <displacement></displacement>
             <gamma>2</gamma>
-            <mom>0 1 0</mom>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+	  
+
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>1 1 1</mom>
 	  </elem>
           <elem>
             <displacement></displacement>
             <gamma>2</gamma>
-            <mom>0 -1 0</mom>
-	  </elem>
-	  
-          <elem>
-            <displacement></displacement>
-            <gamma>4</gamma>
-            <mom>1 0 0</mom>
+            <mom>1 1 1</mom>
 	  </elem>
           <elem>
             <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
             <gamma>4</gamma>
-            <mom>-1 0 0</mom>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>-1 -1 -1</mom>
 	  </elem>
 	  
+
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+  
+
         </DispGammaMomList>
 
         <LinkSmearing>
@@ -399,6 +834,7 @@
       <Name>UNSMEARED_HADRON_NODE_DISTILLATION</Name>
       <Frequency>1</Frequency>
       <Param>
+	  
         <!-- List of displacement arrays -->
         <DispGammaMomList>
           <elem>
@@ -643,62 +1079,497 @@
             <gamma>15</gamma>
             <mom>-1 0 0</mom>
 	  </elem>
+	  
 
           <elem>
             <displacement></displacement>
-            <gamma>1</gamma>
-            <mom>1 0 0</mom>
+            <gamma>0</gamma>
+            <mom>1 1 0</mom>
 	  </elem>
           <elem>
             <displacement></displacement>
             <gamma>1</gamma>
-            <mom>-1 0 0</mom>
-	  </elem>
-	  
-          <elem>
-            <displacement></displacement>
-            <gamma>2</gamma>
-            <mom>1 0 0</mom>
+            <mom>1 1 0</mom>
 	  </elem>
           <elem>
             <displacement></displacement>
             <gamma>2</gamma>
-            <mom>-1 0 0</mom>
-	  </elem>
-	  
-          <elem>
-            <displacement></displacement>
-            <gamma>4</gamma>
-            <mom>1 0 0</mom>
+            <mom>1 1 0</mom>
 	  </elem>
           <elem>
             <displacement></displacement>
-            <gamma>4</gamma>
-            <mom>-1 0 0</mom>
+            <gamma>3</gamma>
+            <mom>1 1 0</mom>
 	  </elem>
-	  
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>1 1 0</mom>
+	  </elem>
+
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
           <elem>
             <displacement></displacement>
             <gamma>2</gamma>
-            <mom>0 1 0</mom>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>-1 -1 0</mom>
+	  </elem>
+	  
+
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>1 1 1</mom>
 	  </elem>
           <elem>
             <displacement></displacement>
             <gamma>2</gamma>
-            <mom>0 -1 0</mom>
-	  </elem>
-	  
-          <elem>
-            <displacement></displacement>
-            <gamma>4</gamma>
-            <mom>1 0 0</mom>
+            <mom>1 1 1</mom>
 	  </elem>
           <elem>
             <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
             <gamma>4</gamma>
-            <mom>-1 0 0</mom>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>1 1 1</mom>
+	  </elem>
+
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>-1 -1 -1</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>-1 -1 -1</mom>
 	  </elem>
 	  
+
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+
+          <elem>
+            <displacement></displacement>
+            <gamma>0</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>1</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>2</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>3</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>4</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>5</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>6</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>7</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>8</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>9</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>10</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>11</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>12</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>13</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>14</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+          <elem>
+            <displacement></displacement>
+            <gamma>15</gamma>
+            <mom>2 0 0</mom>
+	  </elem>
+ 
+
         </DispGammaMomList>
 
         <LinkSmearing>
