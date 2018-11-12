@@ -93,6 +93,30 @@ namespace Chroma
 		  int color_index, int spin_index);
 
 
+  //! Insert a LatticeFermion into a LatticeColorVectorSpinMatrix
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source fermion
+   * \param b      Destination propagator
+   * \param color_index  Color index
+   * \param spin_index   Spin index
+   */
+  void FermToProp(const LatticeFermionF& a, LatticeColorVectorSpinMatrixF& b, 
+		  int spin_index);
+
+  //! Insert a LatticeFermion into a LatticeColorVectorSpinMatrix
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source fermion
+   * \param b      Destination propagator
+   * \param color_index  Color index
+   * \param spin_index   Spin index
+   */
+  void FermToProp(const LatticeFermionD& a, LatticeColorVectorSpinMatrixD& b, 
+		  int spin_index);
+  
 
   //! Insert a LatticeFermion into a LatticePropagator
   /*!
