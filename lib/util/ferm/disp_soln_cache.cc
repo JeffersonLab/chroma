@@ -2,6 +2,7 @@
  * \brief Cache for distillation - holds solution vectors
  */
 
+#include "chromabase.h"
 #ifndef QDP_IS_QDPJIT
 
 #include "util/ferm/disp_soln_cache.h"

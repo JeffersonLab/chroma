@@ -6,7 +6,8 @@
 #ifndef __inline_unsmeared_hadron_node_distillation_h__
 #define __inline_unsmeared_hadron_node_distillation_h__
 
-#ifndef QDP_IS_QDPJIT_NO_NVPTX
+#include "chromabase.h"
+#ifndef QDP_IS_QDPJIT
 
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
@@ -15,7 +16,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineUnsmsearedHadronNodeDistillationEnv 
+  namespace InlineUnsmearedHadronNodeDistillationEnv 
   {
     bool registerAll();
 
@@ -111,7 +112,7 @@ namespace Chroma
       Params params;
     };
 
-  } // namespace InlineUnsmsearedHadronNodeDistillationEnv
+  } // namespace InlineUnsmearedHadronNodeDistillationEnv
 }
 #endif
 #endif

@@ -124,6 +124,7 @@ namespace Chroma
   }
 
 
+#ifndef QDP_IS_QDPJIT
   // Apply a displacement operator to a lattice field
   LatticeColorVectorSpinMatrix displace(const multi1d<LatticeColorMatrix>& u, 
 					const LatticeColorVectorSpinMatrix& chi, 
@@ -131,6 +132,7 @@ namespace Chroma
   {
     return displace<LatticeColorVectorSpinMatrix>(u, chi, length, dir, QDP::all);
   }
+#endif
 
   // Apply a displacement operator to a lattice field
   LatticeStaggeredFermion displace(const multi1d<LatticeColorMatrix>& u, 
@@ -436,6 +438,7 @@ namespace Chroma
     return leftRightNablaT<LatticePropagator>(F, u, mu, length, mom);
   }
 
+#ifndef QDP_IS_QDPJIT
   //! Apply first deriv to the right onto source
   LatticeColorVectorSpinMatrix leftRightNabla(const LatticeColorVectorSpinMatrix& F, 
 					      const multi1d<LatticeColorMatrix>& u,
@@ -445,6 +448,7 @@ namespace Chroma
     return leftRightNablaT<LatticeColorVectorSpinMatrix>(F, u, mu, length, mom);
   }
 
+#endif
 
   //! Apply a right derivative path to a lattice field
   /*! \ingroup smear */
