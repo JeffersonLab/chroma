@@ -290,6 +290,7 @@ namespace Chroma
       quda_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH;
       solver_string = "MULTI_CG";
       quda_inv_param.inv_type = QUDA_CG_INVERTER;
+      quda_inv_param.use_alternative_reliable = 1;
       // Mass
 
       // Fiendish idea from Ron. Set the kappa=1/2 and use 
