@@ -3,10 +3,11 @@
  */
 
 #include "chromabase.h"
-#ifndef QDP_IS_QDPJIT
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
 
 #include "util/ferm/disp_soln_cache.h"
 #include "meas/smear/displace.h"
+
 
 namespace Chroma 
 {
@@ -46,6 +47,7 @@ namespace Chroma
     write(bin, param.mom);
   }
 
+  
 
   //----------------------------------------------------------------------------
   // Constructor from smeared map 
@@ -74,6 +76,7 @@ namespace Chroma
   const LatticeColorVectorSpinMatrix&
   DispSolnCache::displaceObject(const KeyDispSolnVector_t& key)
   {
+
     // If no entry, then create a displaced version of the quark
     if (! disp_src_map.exist(key))
     {
@@ -124,7 +127,9 @@ namespace Chroma
     return disp_src_map[key];
   }
 
+  
   /*! @} */  // end of group smear
 
 } // namespace Chroma
 #endif
+

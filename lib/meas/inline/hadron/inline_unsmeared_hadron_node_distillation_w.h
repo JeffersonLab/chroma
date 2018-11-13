@@ -7,7 +7,7 @@
 #define __inline_unsmeared_hadron_node_distillation_h__
 
 #include "chromabase.h"
-#ifndef QDP_IS_QDPJIT
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
 
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
