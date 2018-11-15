@@ -1304,12 +1304,12 @@ namespace Chroma
 	    } // dd
 
 	    snarss1.stop(); 
-	    QDPIO::cout << " Time to do all insertions: time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
+	    QDPIO::cout << "Time to do all insertions for colorvec_src= " << colorvec_src << "  time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
 	  } // for colorvec_src
-	} // for sink_source
 
-	swatch.stop(); 
-	QDPIO::cout << " SOURCE: time to compute all source solution vectors and insertions= " << swatch.getTimeInSeconds() << " secs" <<std::endl;
+	  swatch.stop(); 
+	  QDPIO::cout << "SINK-SOURCE: time to compute all source solution vectors and insertions for t_sink= " << t_sink << "  t_source= " << t_source << "  time= " << swatch.getTimeInSeconds() << " secs" <<std::endl;
+	} // for sink_source
       }
       catch (const std::string& e) 
       {
