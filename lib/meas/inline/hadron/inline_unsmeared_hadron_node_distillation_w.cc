@@ -701,11 +701,15 @@ namespace Chroma
 	return cache[key].at(colorvec_ind);
       }
       else {
-	QDPIO::cout << __func__ << ": CREATING KEY - t_slice = " << t_slice << "  colorvec_ind = " << colorvec_ind << std::endl; 
+	QDPIO::cout << __func__ << ": CREATING KEY: t_slice = " << t_slice << "  colorvec_ind = " << colorvec_ind << std::endl; 
 	cache[key].insert(std::make_pair(colorvec_ind, LatticeColorVectorSpinMatrix(zero)));
       }
 
       // Get the source vector
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+
       LatticeColorVectorF vec_srce = zero;
       KeyTimeSliceColorVec_t src_key(t_slice, colorvec_ind);
       TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_slice);
@@ -737,7 +741,10 @@ namespace Chroma
 		    << " secs" << std::endl;
       } // for spin_src
 
-      QDPIO::cout << __func__ << ": FINISHED - t_slice = " << t_slice << "  colorvec_ind = " << colorvec_ind << std::endl; 
+      swatch.stop(); 
+      QDPIO::cout << __func__ << ": FINISHED: total time for t_slice = " << t_slice << "  colorvec_ind = " << colorvec_ind
+		  << "  time= " << swatch.getTimeInSeconds() << " secs" << std::endl;
+      
       return cache[key][colorvec_ind];
     }
 
