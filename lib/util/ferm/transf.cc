@@ -167,11 +167,7 @@ namespace Chroma
 		  int spin_index)
   {
     for(int j = 0; j < Ns; ++j)
-    {
-      LatticeColorVectorD bb = peekSpin(b, j, spin_index);
-
-      pokeSpin(b, bb, j, spin_index);
-    }
+      pokeSpin(b, peekSpin(a, j), j, spin_index);
   }
 #endif
   
