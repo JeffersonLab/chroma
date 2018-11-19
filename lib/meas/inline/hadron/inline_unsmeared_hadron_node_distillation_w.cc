@@ -40,8 +40,9 @@
 
 #include "meas/inline/io/named_objmap.h"
 
+
 namespace Chroma 
-{ 
+{
   /*!
    * \ingroup hadron
    *
@@ -653,11 +654,10 @@ namespace Chroma
 	S_f(TheFermionActionFactory::Instance().createObject(prop.fermact.id,
 							     fermacttop,
 							     prop.fermact.path));
-
       Handle< FermState<T,P,Q> > state(S_f->createState(u));
 
       PP = S_f->qprop(state, prop.invParam);
-      
+
       swatch.stop(); 
       QDPIO::cout << __func__ << ": finished initializing the prop cache"
 		    << "  time = " << swatch.getTimeInSeconds() 
@@ -961,22 +961,20 @@ namespace Chroma
       // Read through the momentum list and find all the unique phases
       //
       QDPIO::cout << "Parse momentum list" << std::endl;
-      
-      //
-      // Initialize the slow Fourier transform phases
-      //
-      SftMom phases(0, false, params.param.contract.decay_dir);
 
       //
       // Check displacements
       //
       MapTwoQuarkDispGammaMom_t disp_gamma_moms;
 
-      if (params.param.disp_gamma_mom_list.size() > 0)
-      {
-	int mom_size = 0;
-	MapObjectMemory<multi1d<int>, int> uniq_mom;
-	for(auto ins = params.param.disp_gamma_mom_list.begin(); ins != params.param.disp_gamma_mom_list.end(); ++ins)
+      if ( params.param.disp_gamma_mom_list.size() <= 0 ) {
+	QDPIO::cout << "disp_gamma_mom_list empty!" << std::endl;
+	QDP_abort(1);
+      }
+
+      int mom_size = 0;
+      MapObjectMemory<multi1d<int>, int> uniq_mom;
+      for(auto ins = params.param.disp_gamma_mom_list.begin(); ins != params.param.disp_gamma_mom_list.end(); ++ins)
 	{	
 	  // Sort out momentum
 	  QDPIO::cout << name << ": mom= " << ins->mom << std::endl;
@@ -999,38 +997,31 @@ namespace Chroma
 	  fred.insert(ins->gamma, george);
 
 	  if (disp_gamma_moms.exist(disp))
-	  {
-	    if (disp_gamma_moms[disp].exist(ins->gamma))
 	    {
-	      disp_gamma_moms[disp][ins->gamma].insert(ins->mom, 1);
+	      if (disp_gamma_moms[disp].exist(ins->gamma))
+		{
+		  disp_gamma_moms[disp][ins->gamma].insert(ins->mom, 1);
+		}
+	      else
+		{
+		  disp_gamma_moms[disp].insert(ins->gamma, george);
+		}
 	    }
-	    else
-	    {
-	      disp_gamma_moms[disp].insert(ins->gamma, george);
-	    }
-	  }
 	  else
-	  {
-	    disp_gamma_moms.insert(disp, fred);
-	  }
+	    {
+	      disp_gamma_moms.insert(disp, fred);
+	    }
 	}
 
-	int num_mom = uniq_mom.size();
-	QDPIO::cout << name << ": num_mom= " << num_mom << "  mom_size= " << mom_size << std::endl;
-	multi2d<int> moms(num_mom,mom_size);
-	int i = 0;
-	for(auto mom = uniq_mom.begin(); mom != uniq_mom.end(); ++mom)
-	  moms[i++] = mom->first;
-
-	SftMom temp_phases(moms, params.param.contract.decay_dir);
-	phases = temp_phases;
-      }
-      else
-      {
-	QDPIO::cerr << name << ": warning - you have an empty disp_gamma_mom_list. Will allow under your insistence." << std::endl;
-	QDP_abort(1);
-      }
-
+      int num_mom = uniq_mom.size();
+      QDPIO::cout << name << ": num_mom= " << num_mom << "  mom_size= " << mom_size << std::endl;
+      multi2d<int> moms(num_mom,mom_size);
+      int i = 0;
+      for(auto mom = uniq_mom.begin(); mom != uniq_mom.end(); ++mom)
+	moms[i++] = mom->first;
+      
+      SftMom phases(moms, params.param.contract.decay_dir);
+      
 
       //
       // Smear the gauge field if needed
@@ -1059,7 +1050,6 @@ namespace Chroma
 
       // Record the smeared observables
       MesPlq(xml_out, "Smeared_Observables", u_smr);
-
 
       //
       // DB storage
@@ -1113,7 +1103,6 @@ namespace Chroma
 	  prop_cache.newTimeSource(*key);
 	}
 
-	
 	//
 	// Loop over the source color and spin, creating the source
 	// and calling the relevant propagator routines.
@@ -1158,7 +1147,6 @@ namespace Chroma
 	      active_t_slices[t] = true;
 	    }
 	  }
-
 
 	  //
 	  // Look through sources, do the funny stuff through each soln, and stream the sink vectors past them
