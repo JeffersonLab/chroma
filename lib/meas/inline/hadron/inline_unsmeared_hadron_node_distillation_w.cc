@@ -963,16 +963,14 @@ namespace Chroma
       QDPIO::cout << "Parse momentum list" << std::endl;
       
       //
-      // Initialize the slow Fourier transform phases
-      //
-      SftMom phases(0, false, params.param.contract.decay_dir);
-
-      //
       // Check displacements
       //
       MapTwoQuarkDispGammaMom_t disp_gamma_moms;
 
-      if (params.param.disp_gamma_mom_list.size() > 0)
+      // Possible momenta
+      multi2d<int> moms;
+
+      if (params.param.disp_gamma_mom_list.size() >= 0)
       {
 	int mom_size = 0;
 	MapObjectMemory<multi1d<int>, int> uniq_mom;
@@ -1017,19 +1015,21 @@ namespace Chroma
 
 	int num_mom = uniq_mom.size();
 	QDPIO::cout << name << ": num_mom= " << num_mom << "  mom_size= " << mom_size << std::endl;
-	multi2d<int> moms(num_mom,mom_size);
+	moms.resize(num_mom,mom_size);
 	int i = 0;
 	for(auto mom = uniq_mom.begin(); mom != uniq_mom.end(); ++mom)
 	  moms[i++] = mom->first;
-
-	SftMom temp_phases(moms, params.param.contract.decay_dir);
-	phases = temp_phases;
       }
       else
       {
-	QDPIO::cerr << name << ": warning - you have an empty disp_gamma_mom_list. Will allow under your insistence." << std::endl;
+	QDPIO::cerr << name << ": warning - you have an empty disp_gamma_mom_list" << std::endl;
 	QDP_abort(1);
       }
+
+      //
+      // Initialize the slow Fourier transform phases
+      //
+      SftMom phases(moms, params.param.contract.decay_dir);
 
 
       //
