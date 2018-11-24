@@ -2,11 +2,6 @@
  * \brief Inline measurement that construct unsmeared hadron nodes using distillation
  */
 
-// Reverted version from master
-// NB: The master version is what was in Boram's branch. In master it was dated Nov 25,
-// whereas the previous version I integrated from feture/unsmeared-node was dated Nov 23
-// Hence this is the latest version
-//
 #include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.h"
 
 #ifndef QDP_IS_QDPJIT_NO_NVPTX
@@ -701,11 +696,15 @@ namespace Chroma
 	return cache[key].at(colorvec_ind);
       }
       else {
-	QDPIO::cout << __func__ << ": CREATING KEY - t_slice = " << t_slice << "  colorvec_ind = " << colorvec_ind << std::endl; 
+	QDPIO::cout << __func__ << ": CREATING KEY: t_slice = " << t_slice << "  colorvec_ind = " << colorvec_ind << std::endl; 
 	cache[key].insert(std::make_pair(colorvec_ind, LatticeColorVectorSpinMatrix(zero)));
       }
 
       // Get the source vector
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+
       LatticeColorVectorF vec_srce = zero;
       KeyTimeSliceColorVec_t src_key(t_slice, colorvec_ind);
       TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_slice);
@@ -737,7 +736,10 @@ namespace Chroma
 		    << " secs" << std::endl;
       } // for spin_src
 
-      QDPIO::cout << __func__ << ": FINISHED - t_slice = " << t_slice << "  colorvec_ind = " << colorvec_ind << std::endl; 
+      swatch.stop(); 
+      QDPIO::cout << __func__ << ": FINISHED: total time for t_slice = " << t_slice << "  colorvec_ind = " << colorvec_ind
+		  << "  time= " << swatch.getTimeInSeconds() << " secs" << std::endl;
+      
       return cache[key][colorvec_ind];
     }
 
@@ -1031,6 +1033,7 @@ namespace Chroma
       //
       SftMom phases(moms, params.param.contract.decay_dir);
 
+    
 
       //
       // Smear the gauge field if needed
@@ -1297,12 +1300,12 @@ namespace Chroma
 	    } // dd
 
 	    snarss1.stop(); 
-	    QDPIO::cout << " Time to do all insertions: time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
+	    QDPIO::cout << "Time to do all insertions for colorvec_src= " << colorvec_src << "  time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
 	  } // for colorvec_src
-	} // for sink_source
 
-	swatch.stop(); 
-	QDPIO::cout << " SOURCE: time to compute all source solution vectors and insertions= " << swatch.getTimeInSeconds() << " secs" <<std::endl;
+	  swatch.stop(); 
+	  QDPIO::cout << "SINK-SOURCE: time to compute all source solution vectors and insertions for t_sink= " << t_sink << "  t_source= " << t_source << "  time= " << swatch.getTimeInSeconds() << " secs" <<std::endl;
+	} // for sink_source
       }
       catch (const std::string& e) 
       {
