@@ -134,7 +134,7 @@ namespace Chroma
     }
   }
 
-#ifndef QDP_IS_QDPJIT
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
   //-------------------------------------------------------------------------------
   //! Insert a LatticeFermion into a LatticeColorVectorSpinMatrix
   /*!

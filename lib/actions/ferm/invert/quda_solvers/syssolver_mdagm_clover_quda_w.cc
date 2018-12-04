@@ -74,7 +74,7 @@ namespace Chroma
     void *spinorOut;
 
 #ifdef BUILD_QUDA_DEVIFACE_SPINOR
-    std::vector<int> ids;
+    std::vector<QDPCache::ArgKey> ids;
 #endif
   
       // Solve A_oo - D A^{-1}_ee D -- chroma conventions.

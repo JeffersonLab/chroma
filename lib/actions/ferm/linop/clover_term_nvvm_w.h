@@ -629,7 +629,7 @@ namespace Chroma
     JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
     JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
 
-    std::vector<int> ids;
+    std::vector<QDPCache::ArgKey> ids;
     ids.push_back( jit_lo.get_id() );
     ids.push_back( jit_hi.get_id() );
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
@@ -908,7 +908,7 @@ namespace Chroma
 #ifndef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
     JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
     JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
-    std::vector<int> ids;
+    std::vector<QDPCache::ArgKey> ids;
     ids.push_back( jit_lo.get_id() );
     ids.push_back( jit_hi.get_id() );
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
@@ -1240,7 +1240,7 @@ namespace Chroma
     JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
     JitParam jit_mat( QDP_get_global_cache().addJitParamInt( mat ) );
 
-    std::vector<int> ids;
+    std::vector<QDPCache::ArgKey> ids;
     ids.push_back( jit_lo.get_id() );
     ids.push_back( jit_hi.get_id() );
     ids.push_back( jit_mat.get_id() );
@@ -1695,7 +1695,7 @@ namespace Chroma
 #ifndef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
     JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
     JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
-    std::vector<int> ids;
+    std::vector<QDPCache::ArgKey> ids;
     ids.push_back( jit_lo.get_id() );
     ids.push_back( jit_hi.get_id() );
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 

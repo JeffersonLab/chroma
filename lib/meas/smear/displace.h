@@ -120,7 +120,7 @@ namespace Chroma
 			  const LatticeFermion& chi, 
 			  int length, int dir);
 
-#ifndef QDP_IS_QDPJIT
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
   // Apply a displacement operator to a lattice field
   LatticeColorVectorSpinMatrix displace(const multi1d<LatticeColorMatrix>& u, 
 					const LatticeColorVectorSpinMatrix& chi, 
@@ -234,7 +234,7 @@ namespace Chroma
 				   const multi1d<LatticeColorMatrix>& u,
 				   int mu, int length,
 				   int mom);
-#ifndef QDP_IS_QDPJIT
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
   //! Apply first deriv to the right onto source
   LatticeColorVectorSpinMatrix leftRightNabla(const LatticeColorVectorSpinMatrix& F, 
 					      const multi1d<LatticeColorMatrix>& u,

@@ -9,7 +9,7 @@
 
 #include "chromabase.h"
 
-#ifndef QDP_IS_QDPJIT
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
 
 #include <qdp_map_obj_disk_multiple.h>
 #include <qdp_map_obj_memory.h>
