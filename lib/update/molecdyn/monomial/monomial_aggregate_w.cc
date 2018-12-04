@@ -14,6 +14,7 @@
 #include "update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.h"
 #include "update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h"
 #include "update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h"
+#include "update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_multihasen_monomial_w.h"
 
 #include "update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h"
 #include "update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.h"
@@ -86,6 +87,7 @@ namespace Chroma
 	success &= UnprecTwoFlavorRatioConvConvWilsonTypeFermMonomialEnv::registerAll();
 	success &= EvenOddPrecConstDetTwoFlavorRatioConvConvWilsonTypeFermMonomialEnv::registerAll();
 	success &= SymEvenOddPrecConstDetTwoFlavorRatioConvConvWilsonTypeFermMonomialEnv::registerAll();
+	success &= SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomialEnv::registerAll();
 
 	// Polynomial preconditioning Monomials
 //      success &= UnprecTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registerAll();

@@ -469,6 +469,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/clover_fermact_params_w.h \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
 	actions/ferm/fermacts/seoprec_clover_fermact_w.h \
+	actions/ferm/fermacts/shifted_seoprec_clover_fermact_w.h \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
 	actions/ferm/fermacts/nef_fermact_params_w.h \
@@ -575,6 +576,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/clover_term_qdp_w.h \
 	actions/ferm/linop/eoprec_clover_linop_w.h \
 	actions/ferm/linop/seoprec_clover_linop_w.h \
+	actions/ferm/linop/shifted_seoprec_clover_linop_w.h \
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.h \
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.h \
 	actions/ferm/linop/unprec_clover_linop_w.h \
@@ -708,6 +710,7 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_multihasen_monomial_params_w.h \
 	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.h \
@@ -722,6 +725,7 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h \
 	update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h \
+	update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_multihasen_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.h \
@@ -1491,6 +1495,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/seoprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/shifted_seoprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/nef_fermact_params_w.cc \
@@ -1587,6 +1592,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/clover_term_qdp_w.cc \
 	actions/ferm/linop/eoprec_clover_linop_w.cc \
 	actions/ferm/linop/seoprec_clover_linop_w.cc \
+	actions/ferm/linop/shifted_seoprec_clover_linop_w.cc \
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.cc \
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.cc \
 	actions/ferm/linop/unprec_clover_linop_w.cc \
@@ -1671,6 +1677,7 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/two_flavor_monomial_params_w.cc \
 	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_multihasen_monomial_params_w.cc \
 	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc \
@@ -1685,6 +1692,7 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc \
 	update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc \
+	update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_multihasen_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc \
