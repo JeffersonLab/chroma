@@ -99,6 +99,12 @@ namespace Chroma
 			for(int i=0; i< numHasenTerms+1; ++i){
 				mu[i] = param.mu[i];
 			}
+
+			// Pseudofermion field phi
+			phi.resize(numHasenTerms);
+			for(int i=0; i<numHasenTerms; ++i)
+				phi[i] = zero;
+
 			//*********************************************************************
 			// Get Chronological predictor
 			{
@@ -136,6 +142,7 @@ namespace Chroma
 		S(const AbsFieldState<P,Q>& s){
 
 			START_CODE();
+			QDPIO::cout << "start test at " << __func__ << std::endl;
 			XMLWriter& xml_out = TheXMLLogWriter::Instance();
 			push(xml_out, "S");
 
@@ -184,6 +191,8 @@ namespace Chroma
 			}
 			write(xml_out, "S_Multihasen", S);
 			pop(xml_out);
+
+			QDPIO::cout << "end test at " << __func__ << std::endl;
 			END_CODE();
 			return S;
 		}
@@ -191,13 +200,17 @@ namespace Chroma
 	// Sum over all Force terms
 	void SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial::
 		dsdq(P& F, const AbsFieldState<P,Q>& s){
+			QDPIO::cout << "start test at " << __func__ << std::endl;
 			P F_t;
+			F_t.resize(Nd);
+			F.resize(Nd);
+
 			for(int i=0; i<Nd; ++i)
 				F_t[i] = zero;
 			for(int i=0; i<numHasenTerms; ++i){
-				F_t += F;
+				F += F_t;
 			}
-			F = F_t;
+			QDPIO::cout << "end test at " << __func__ << std::endl;
 			QDPIO::cout<<"Not implemented yet!"<<std::endl;
 		}
 
@@ -206,6 +219,7 @@ namespace Chroma
 		refreshInternalFields(const AbsFieldState<P,Q>& field_state){
 			START_CODE();
 
+			QDPIO::cout << "start test at " << __func__ << std::endl;
 			ShiftSymEvenOddPrecCloverFermAct& FA = getFermAct();
 			ShiftSymEvenOddPrecCloverFermAct FA_prec(FA);
 
@@ -268,6 +282,7 @@ namespace Chroma
 				write(xml_out, "n_count_"+i, res.n_count);
 				pop(xml_out);
 			}
+			QDPIO::cout << "end test at " << __func__ << std::endl;
 			END_CODE();
 		}
 
@@ -275,6 +290,7 @@ namespace Chroma
 	void SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial::
 		setInternalFields(const Monomial<P,Q>& m){
 			START_CODE();
+			QDPIO::cout << "start test at " << __func__ << std::endl;
 			try{
 				const SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial& fm =
 					dynamic_cast<const SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial&>(m);
@@ -285,6 +301,7 @@ namespace Chroma
 					<<std::endl;
 				QDP_abort(1);
 			}
+			QDPIO::cout << "end test at " << __func__ << std::endl;
 			END_CODE();
 		}
 
