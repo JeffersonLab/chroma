@@ -18,7 +18,6 @@ namespace Chroma
 			const CloverFermActParams& param_)
 	{
 		START_CODE();
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 		param = param_;
 		// TODO:: may remove twisted mass term in this shifted mass linop
 		QDPIO::cout << "Using Twisted Mass: " << param.twisted_m_usedP << std::endl;
@@ -35,7 +34,6 @@ namespace Chroma
 
 		clov_deriv_time = 0;
 		clov_apply_time = 0;
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 		END_CODE();
 	}
 
@@ -45,9 +43,7 @@ namespace Chroma
 				enum PlusMinus isign) const
 		{
 			START_CODE();
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			clov.apply(chi, psi, isign, 1);
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -57,9 +53,7 @@ namespace Chroma
 				enum PlusMinus isign) const
 		{
 			START_CODE();
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			invclov.apply(chi, psi, isign, 1);
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -69,9 +63,7 @@ namespace Chroma
 				enum PlusMinus isign) const
 		{
 			START_CODE();
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			clov.apply(chi, psi, isign, 0);
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -81,9 +73,7 @@ namespace Chroma
 				enum PlusMinus isign) const
 		{
 			START_CODE();
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			invclov.apply(chi, psi, isign, 0);
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -102,12 +92,10 @@ namespace Chroma
 		{
 			START_CODE();
 
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			Real mhalf = -0.5;
 			D.apply(chi, psi, isign, 0);
 			chi[rb[0]] *= mhalf;
 
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -125,12 +113,10 @@ namespace Chroma
 		{
 			START_CODE();
 
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			Real mhalf = -0.5;
 			D.apply(chi, psi, isign, 1);
 			chi[rb[1]] *= mhalf;
 
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -147,7 +133,6 @@ namespace Chroma
 		{
 			START_CODE();
 
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			T tmp1; moveToFastMemoryHint(tmp1);
 			T tmp2; moveToFastMemoryHint(tmp2);
 			Real mquarter = -0.25;
@@ -178,7 +163,6 @@ namespace Chroma
 			}
 			getFermBC().modifyF(chi);
 
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -189,9 +173,7 @@ namespace Chroma
 				enum PlusMinus isign) const
 		{
 			START_CODE();
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			clov.deriv(ds_u, chi, psi, isign, 0);
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -202,9 +184,7 @@ namespace Chroma
 				enum PlusMinus isign) const
 		{
 			START_CODE();
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			clov.deriv(ds_u, chi, psi, isign, 1);
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -214,9 +194,7 @@ namespace Chroma
 				enum PlusMinus isign) const
 		{
 			START_CODE();
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			invclov.derivTrLn(ds_u, isign, 0);
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -226,9 +204,7 @@ namespace Chroma
 				enum PlusMinus isign) const
 		{
 			START_CODE();
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			invclov.derivTrLn(ds_u, isign, 1);
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -239,13 +215,11 @@ namespace Chroma
 				enum PlusMinus isign) const
 		{
 			START_CODE();
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			ds_u.resize(Nd);
 			D.deriv(ds_u, chi, psi, isign, 0);
 			for(int id=0; id<Nd; id++){
 				ds_u[id] *= Real(-0.5);
 			}
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -256,13 +230,11 @@ namespace Chroma
 				enum PlusMinus isign) const
 		{
 			START_CODE();
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			ds_u.resize(Nd);
 			D.deriv(ds_u, chi, psi, isign, 1);
 			for(int id=0; id<Nd; id++){
 				ds_u[id] *= Real(-0.5);
 			}
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 			END_CODE();
 		}
 
@@ -271,7 +243,6 @@ namespace Chroma
 		deriv(P& ds_u, const T& chi, const T& psi,
 				enum PlusMinus isign) const
 		{
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			T M_eo_psi; moveToFastMemoryHint(M_eo_psi);
 			T M_oe_dag_chi; moveToFastMemoryHint(M_oe_dag_chi);
 			T tmp;
@@ -374,14 +345,12 @@ namespace Chroma
 			}
 
 			getFermBC().zero(ds_u);
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 		}
 
 	void ShiftSymEvenOddPrecCloverLinOp::
 		derivMultipole(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi,
 				enum PlusMinus isign) const
 		{
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 			if( chi.size() != psi.size() ) {
 				QDPIO::cerr << "Incompatible array sizes in ShiftSymEvenOddPrecCloverOp::derivMultipole" << std::endl;
 				QDP_abort(1);
@@ -508,34 +477,27 @@ namespace Chroma
 			}
 			getFermBC().zero(ds_u);
 
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 		}
 
 	//! Return flops performed by the operator()
 	// TODO:: need modify
 	unsigned long ShiftSymEvenOddPrecCloverLinOp::nFlops() const
 	{
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 		unsigned long cbsite_flops = 2*D.nFlops()+2*clov.nFlops()+4*Nc*Ns;
 
 		return cbsite_flops*(Layout::sitesOnNode()/2);
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 	}
 
 	//! Get the log det of the even even part
 	// BUt for now, return zero for testing.
 	Double ShiftSymEvenOddPrecCloverLinOp::logDetEvenEvenLinOp(void) const  {
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 		return invclov.cholesDet(0);
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 	}
 
 	//! Get the log det of the odd odd part
 	// BUt for now, return zero for testing.
 	Double ShiftSymEvenOddPrecCloverLinOp::logDetOddOddLinOp(void) const  {
-		QDPIO::cout<< "test start in "<<__func__<<std::endl;
 		return invclov.cholesDet(1);
-		QDPIO::cout<<"test end in "<<__func__<<std::endl;
 	}
 
 

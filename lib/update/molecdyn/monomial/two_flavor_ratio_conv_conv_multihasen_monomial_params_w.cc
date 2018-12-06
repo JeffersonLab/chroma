@@ -11,7 +11,6 @@ namespace Chroma
 	TwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomialParams::
 		TwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomialParams(XMLReader& xml_in, const std::string& path){
 			// Get the top of the parameter XML tree
-			QDPIO::cout<<"start test at "<<__func__<<std::endl;
 			XMLReader paramtop(xml_in, path);
 			try{
 				read(paramtop, "Action", fermactInv);
@@ -26,26 +25,21 @@ namespace Chroma
 				QDPIO::cerr<<"Caught Exception while reading parameters: "<<s<<std::endl;
 				QDP_abort(1);
 			}
-			QDPIO::cout<<"end test at "<<__func__<<std::endl;
 		}
 
 	//! Read Parameters
 	void read(XMLReader& xml, const std::string& path,
 			TwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomialParams& params){
-			QDPIO::cout<<"start test at "<<__func__<<std::endl;
 		TwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomialParams tmp(xml, path);
 		params = tmp;
-			QDPIO::cout<<"end test at "<<__func__<<std::endl;
 	}
 
 	//! Write Parameters
 	void write(XMLWriter& xml, const std::string& path,
 			const TwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomialParams& params){
-			QDPIO::cout<<"start test at "<<__func__<<std::endl;
 		write(xml, "Action", params.fermactInv);
 		write(xml, "ShiftedMass", params.mu);
 		write(xml, "NumofHasenTerms", params.numHasenTerms);
-			QDPIO::cout<<"end test at "<<__func__<<std::endl;
 	}
 
 }// end namespace Chroma

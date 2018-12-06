@@ -43,9 +43,7 @@ namespace Chroma
 		    ShiftSymEvenOddPrecCloverLinOp(Handle< FermState<T,P,Q> > fs,
 					      const CloverFermActParams& param_, const Real& mu_):mu(mu_)
 		    {
-				QDPIO::cout<<"start test at "<<__func__<<std::endl;
 		      create(fs,param_);
-			  QDPIO::cout<<"end test at "<<__func__<<std::endl;
 		    }
 		
 		    //! Destructor is automatic
