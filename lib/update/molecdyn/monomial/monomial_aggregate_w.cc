@@ -7,6 +7,7 @@
 #include "update/molecdyn/monomial/unprec_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/seoprec_constdet_two_flavor_monomial_w.h"
+#include "update/molecdyn/monomial/seoprec_constdet_two_flavor_multihasen_cancle_monomial_w.h"
 
 #include "update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/seoprec_logdet_two_flavor_monomial_w.h"
@@ -68,7 +69,8 @@ namespace Chroma
 	success &= SymEvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
 	success &= EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
 	success &= SymEvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
-   
+	success &= SymEvenOddPrecConstDetTwoFlavorWilsonMultihasenCancleMonomialEnv::registerAll();
+
 	// 4D Ferm Monomials
 	success &= UnprecOneFlavorWilsonTypeFermRatMonomialEnv::registerAll();
 	success &= EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomialEnv::registerAll();
