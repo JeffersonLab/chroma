@@ -48,14 +48,12 @@ namespace Chroma
 		}
 	} //end namespace SeoPrec TwoFlavorRatioConvConvWilsonFermMonomialEnv
 
-
 	// Constructor
 	SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial::
 		SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial(
 				const TwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomialParams& param) 
 		{
 			START_CODE();
-
 			QDPIO::cout << "Constructor: " << __func__ << std::endl;
 
 			if( param.fermactInv.invParam.id == "NULL" ) {
@@ -64,9 +62,30 @@ namespace Chroma
 			}
 
 			invParam = param.fermactInv.invParam;
+			// Fermion action (old shifted action)
+		//	{
+		//		std::istringstream is(param.fermactInv.fermact.xml);
+		//		XMLReader fermact_reader(is);
+		//		QDPIO::cout << "Construct fermion action= " << param.fermactInv.fermact.id << std::endl;
 
-			//*********************************************************************
-			// Fermion action
+		//		WilsonTypeFermAct<T,P,Q>* tmp_act = 
+		//			TheWilsonTypeFermActFactory::Instance().createObject(param.fermactInv.fermact.id, 
+		//					fermact_reader, 
+		//					param.fermactInv.fermact.path);
+
+		//		ShiftSymEvenOddPrecCloverFermAct* downcast=dynamic_cast<ShiftSymEvenOddPrecCloverFermAct*>(tmp_act);
+
+		//		// Check success of the downcast 
+		//		if( downcast == 0x0 ) 
+		//		{
+		//			QDPIO::cerr << __func__ << ": unable to downcast FermAct to ShiftSymEvenOddPrecCloverFermAct" << std::endl;
+		//			QDP_abort(1);
+		//		}
+
+		//		fermact = downcast;    
+		//	}
+
+			// Fermion action (with original seoprec action)
 			{
 				std::istringstream is(param.fermactInv.fermact.xml);
 				XMLReader fermact_reader(is);
@@ -77,22 +96,21 @@ namespace Chroma
 							fermact_reader, 
 							param.fermactInv.fermact.path);
 
-				ShiftSymEvenOddPrecCloverFermAct* downcast=dynamic_cast<ShiftSymEvenOddPrecCloverFermAct*>(tmp_act);
+				SymEvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>* 
+					downcast=dynamic_cast<SymEvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
 				// Check success of the downcast 
 				if( downcast == 0x0 ) 
 				{
-					QDPIO::cerr << __func__ << ": unable to downcast FermAct to ShiftSymEvenOddPrecCloverFermAct" << std::endl;
+					QDPIO::cerr << __func__ << 
+						": unable to downcast FermAct to SymEvenOddPrecWilsonTypeFermAct" << std::endl;
 					QDP_abort(1);
 				}
-
 				fermact = downcast;    
 			}
 
-			//*********************************************************************
 			// Number of Hasenbusch term
 			numHasenTerms = param.numHasenTerms;
-			//*********************************************************************
 
 			// Shifted mass
 			mu.resize(numHasenTerms+1);
@@ -105,7 +123,6 @@ namespace Chroma
 			for(int i=0; i<numHasenTerms; ++i)
 				phi[i] = zero;
 
-			//*********************************************************************
 			// Get Chronological predictor
 			{
 				AbsChronologicalPredictor4D<LatticeFermion>* tmp = 0x0;
@@ -124,20 +141,19 @@ namespace Chroma
 						QDP_abort(1);
 					}
 				}
-
 				if( tmp == 0x0 ) { 
 					QDPIO::cerr << "Failed to create the 4D ChronoPredictor" << std::endl;
 					QDP_abort(1);
 				}
 				chrono_predictor = tmp;
 			}
-			//*********************************************************************
 
 			QDPIO::cout << "Finished constructing: " << __func__ << std::endl;
-
 			END_CODE();
 		}
 	// Sum over all Hasenbusch term to get total action
+// old shifted fermact method
+#if 0
 	Double SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial::
 		S(const AbsFieldState<P,Q>& s){
 
@@ -273,26 +289,180 @@ namespace Chroma
 			pop(xml_out);
 			END_CODE();
 		}
+#endif
+
+	// based on TwistedShiftedLinOp
+	Double SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial::
+		S(const AbsFieldState<P,Q>& s){
+			START_CODE();
+			XMLWriter& xml_out = TheXMLLogWriter::Instance();
+			push(xml_out, "SeoprecConstDetTwoFlavorRatioConvConvMultihasenFermMonomial");
+
+			// Fermion action
+			//SymEvenOddPrecWilsonTypeFermAct<T,P,Q>& FA = getFermAct();
+			SymEvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>& FA = getFermAct();
+			Double S=0;
+			// Get the X fields
+			T X;
+			Handle<FermState<T,P,Q> > state(FA.createState(s.getQ()));
+			Handle<SymEvenOddPrecLogDetLinearOperator<T,P,Q> > base_op(FA.linOp(state));
+
+			for(int i=0; i<numHasenTerms; ++i){
+				Handle<LinearOperator<T> > 
+					M(new TwistedShiftedLinOp<T,P,Q,SymEvenOddPrecLogDetLinearOperator>(*base_op, mu[i]));
+				Handle<LinearOperator<T> > 
+					M_prec(new TwistedShiftedLinOp<T,P,Q,SymEvenOddPrecLogDetLinearOperator>(*base_op, mu[i+1]));
+
+				// Action calc doesnt use chrono predictor use zero guess
+				X[M->subset()] = zero;
+				// Reset chrono predictor
+				QDPIO::cout << 
+					"TwoFlavorRatioConvConvMultihasenWilson4DMonomial: resetting Predictor before energy calc solve" << std::endl;
+				(getMDSolutionPredictor()).reset();
+				// Get system solver
+				const GroupXML_t& invParam = getInvParams();
+				std::istringstream xml(invParam.xml);
+				XMLReader paramtop(xml);
+				Handle<MdagMSystemSolver<T> > 
+					invMdagM(TheMdagMFermSystemSolverFactory::Instance().createObject(
+								invParam.id, paramtop, invParam.path, state, M));
+				// M_dag_prec phi = M^{dag}_prec \phi - the RHS
+				T M_dag_prec_phi;
+				(*M_prec)(M_dag_prec_phi, getPhi(i), MINUS);
+
+				// Solve MdagM X = eta
+				SystemSolverResults_t res = (*invMdagM)(X, M_dag_prec_phi);
+
+				T phi_tmp = zero;
+				(*M_prec)(phi_tmp, X, PLUS);
+				Double action = innerProductReal(getPhi(i), phi_tmp, M->subset());
+				// Write out inversion number and action for every hasenbusch term 
+				std::string n_count = "n_count_hasenterm_" + std::to_string(i+1);
+				std::string s_action = "S_hasenterm_" + std::to_string(i+1);
+
+				write(xml_out, n_count, res.n_count);
+				write(xml_out, s_action, action);
+				S += action;
+			}
+			write(xml_out, "S", S);
+			pop(xml_out);
+
+			END_CODE();
+			return S;
+		}
+	
+	void SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial::
+		dsdq(P& F, const AbsFieldState<P,Q>& s){
+			START_CODE();
+			XMLWriter& xml_out = TheXMLLogWriter::Instance();
+			push(xml_out, "TwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial");
+
+			P F_t;
+			P F_tmp;
+			F_t.resize(Nd);
+			F_tmp.resize(Nd);
+			F.resize(Nd);
+			for(int i=0; i<Nd; ++i)
+			{
+				F_t[i] = zero;
+				F_tmp[i] = zero;
+				F[i] = zero;
+			}
+			// Fermion action
+			SymEvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>& FA = getFermAct();
+			// X = (M^\dag M)^(-1) M_prec^\dag \phi
+			// Y = M X
+			T X = zero;
+			T Y = zero;
+			// M_dag_prec_phi = M^\dag_prec \phi
+			T M_dag_prec_phi;
+
+			Handle<FermState<T,P,Q> > state(FA.createState(s.getQ()));
+			Handle<SymEvenOddPrecLogDetLinearOperator<T,P,Q> > base_op(FA.linOp(state));
+			
+			for(int i=0; i<numHasenTerms; ++i){
+				Handle<LinearOperator<T> > 
+					M(new TwistedShiftedLinOp<T,P,Q,SymEvenOddPrecLogDetLinearOperator>(*base_op, mu[i]));
+				Handle<LinearOperator<T> > 
+					M_prec(new TwistedShiftedLinOp<T,P,Q,SymEvenOddPrecLogDetLinearOperator>(*base_op, mu[i+1]));
+				// Get system solver
+				const GroupXML_t& invParam = getInvParams();
+				std::istringstream xml(invParam.xml);
+				XMLReader paramtop(xml);
+				Handle<MdagMSystemSolver<T> > 
+					invMdagM(TheMdagMFermSystemSolverFactory::Instance().createObject(
+								invParam.id,paramtop, invParam.path, state, M));
+				
+				(*M_prec)(M_dag_prec_phi, getPhi(i), MINUS);
+				SystemSolverResults_t res = (*invMdagM)(X, M_dag_prec_phi, getMDSolutionPredictor());
+				(*M)(Y, X, PLUS);
+				// cast linearop to difflinearop
+				const DiffLinearOperator<T,P,Q>& diffM = dynamic_cast<const DiffLinearOperator<T,P,Q>&>(*M);
+				const DiffLinearOperator<T,P,Q>& diffM_prec = dynamic_cast<const DiffLinearOperator<T,P,Q>&>(*M_prec);
+#if 0
+				// deriv part 1: \phi^\dag \dot(M_prec) X
+				M_prec->deriv(F_t, getPhi(i), X, PLUS);
+
+				// deriv part 2: - X^\dag \dot(M^\dag) Y
+				M->deriv(F_tmp, X, Y, MINUS);
+				F_t -= F_tmp;
+
+				// deriv part 3: - Y^\dag \dot(M) X
+				M->deriv(F_tmp, Y, X, PLUS);
+				F_t -= F_tmp;
+
+				// deriv part 4: X^\dag \dot(M_prec)^\dag \phi
+				M_prec->deriv(F_tmp, X, getPhi(i), MINUS);
+				F_t += F_tmp;
+#endif
+				// deriv part 1: \phi^\dag \dot(M_prec) X
+				diffM_prec.deriv(F_t, getPhi(i), X, PLUS);
+
+				// deriv part 2: - X^\dag \dot(M^\dag) Y
+				diffM.deriv(F_tmp, X, Y, MINUS);
+				F_t -= F_tmp;
+
+				// deriv part 3: - Y^\dag \dot(M) X
+				diffM.deriv(F_tmp, Y, X, PLUS);
+				F_t -= F_tmp;
+
+				// deriv part 4: X^\dag \dot(M_prec)^\dag \phi
+				diffM_prec.deriv(F_tmp, X, getPhi(i), MINUS);
+				F_t += F_tmp;
+				
+				// total force from all Hasenbusch terms
+				F += F_t;
+				
+				// F now holds derivative with respect to possibly fat links
+				// now derive it with respect to the thin links if needs be
+				state->deriv(F);
+
+				// Write out inversion number and action for every hasenbusch term 
+				std::string n_count = "n_count_hasenterm_" + std::to_string(i+1);
+				std::string force = "Forces_hasenterm_" + std::to_string(i+1);
+				
+				write(xml_out, n_count, res.n_count);
+				monitorForces(xml_out, force, F_t);
+			}
+			// Total force from all Hasenbusch terms
+			monitorForces(xml_out, "Forces", F);
+			pop(xml_out);
+			END_CODE();
+		}
 
 	// Refresh pseudofermion field of all Hasenbusch term
 	void SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial::
-		refreshInternalFields(const AbsFieldState<P,Q>& field_state){
+		refreshInternalFields(const AbsFieldState<P,Q>& s){
 			START_CODE();
+			SymEvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>& FA = getFermAct();
 
-			ShiftSymEvenOddPrecCloverFermAct& FA = getFermAct();
-			ShiftSymEvenOddPrecCloverFermAct FA_prec(FA);
-
+			Handle<FermState<T,P,Q> > state(FA.createState(s.getQ()));
+			Handle<SymEvenOddPrecLogDetLinearOperator<T,P,Q> > base_op(FA.linOp(state));
 			for(int i=0; i<numHasenTerms; ++i){
-
-				FA.setMu(mu[i]);
-				FA_prec.setMu(mu[i+1]);
-
-				// Create a state for linop
-				Handle<FermState<T,P,Q> > state(FA.createState(field_state.getQ()));
-				// Need way to get gauge state from AbsFieldState<P,Q>
-				Handle<SymEvenOddPrecLogDetLinearOperator<T,P,Q> > M(FA.linOp(state));
-				Handle<SymEvenOddPrecLogDetLinearOperator<T,P,Q> > M_prec(FA_prec.linOp(state));
-
+				Handle<LinearOperator<T> > 
+					M(new TwistedShiftedLinOp<T,P,Q,SymEvenOddPrecLogDetLinearOperator>(*base_op, mu[i]));
+				Handle<LinearOperator<T> > 
+					M_prec(new TwistedShiftedLinOp<T,P,Q,SymEvenOddPrecLogDetLinearOperator>(*base_op, mu[i+1]));
 				T eta = zero;
 				gaussian(eta, M->subset());
 
@@ -300,24 +470,13 @@ namespace Chroma
 				FA.getFermBC().modifyF(eta);
 
 				eta *= sqrt(0.5);
-
 				// Now we have to get the refreshment right:
-				//
 				// We have  \eta^{\dag} \eta = \phi M_prec (M^dag M )^-1 M^dag_prec \phi
-				//
 				//  so that \eta = (M^\dag)^{-1} M^{dag}_prec \phi
-				//
 				//  So need to solve M^{dag}_prec \phi = M^{\dag} \eta
-				//
 				// Which we can solve as 
-				//
 				//      M^{dag}_prec M_prec ( M_prec^{-1} ) \phi = M^{\dag} \eta
 				//
-				// I will dedicate a function to this:
-				//
-				// 
-				//
-				// prepare the source
 				// Zero out everything - to make sure there is no junk
 				// in uninitialised places
 				T eta_tmp = zero;
@@ -327,16 +486,19 @@ namespace Chroma
 				(*M)(eta_tmp, eta, MINUS); // M^\dag \eta
 
 				// Get system solver
-				Handle<MdagMSystemSolver<T> > invMdagM(FA_prec.invMdagM(state, getInvParams()));
-
+				const GroupXML_t& invParam = getInvParams();
+				std::istringstream xml(invParam.xml);
+				XMLReader paramtop(xml);
+				Handle<MdagMSystemSolver<T> > 
+					invMdagM(TheMdagMFermSystemSolverFactory::Instance().createObject(
+								invParam.id,paramtop, invParam.path, state, M_prec));
+				
 				// Solve MdagM_prec X = eta
 				SystemSolverResults_t res = (*invMdagM)(phi_tmp, eta_tmp);
 				(*M_prec)(getPhi(i), phi_tmp, PLUS); // (Now get phi = M_prec (M_prec^{-1}\phi)
-
 				QDPIO::cout<<"TwoFlavRatioConvConvMultihasenWilson4DMonomial: resetting Predictor at end of field refresh"<<std::endl;
 				getMDSolutionPredictor().reset();
 				XMLWriter& xml_out = TheXMLLogWriter::Instance();
-				
 				std::string field_refrs = "FieldRefreshment_"+std::to_string(i);
 				std::string n_count = "n_count_"+std::to_string(i);
 				push(xml_out, field_refrs);
@@ -345,7 +507,7 @@ namespace Chroma
 			}
 			END_CODE();
 		}
-
+	
 	//! Copy pseudofermions if any
 	void SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial::
 		setInternalFields(const Monomial<P,Q>& m){

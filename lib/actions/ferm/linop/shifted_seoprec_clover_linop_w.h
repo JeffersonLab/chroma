@@ -47,7 +47,7 @@ namespace Chroma
 		    }
 		
 		    //! Destructor is automatic
-		    ~ShiftSymEvenOddPrecCloverLinOp() {
+		    virtual ~ShiftSymEvenOddPrecCloverLinOp() {
 		    }
 		
 		    //! Return the fermion BC object for this linear operator

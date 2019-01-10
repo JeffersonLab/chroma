@@ -10,6 +10,8 @@
 #include "update/molecdyn/monomial/two_flavor_ratio_conv_conv_multihasen_monomial_params_w.h"
 #include "actions/ferm/linop/shifted_seoprec_clover_linop_w.h"
 #include "actions/ferm/fermacts/shifted_seoprec_clover_fermact_w.h"
+#include "actions/ferm/linop/shifted_linop_w.h"
+#include "actions/ferm/invert/syssolver_mdagm_factory.h"
 
 namespace Chroma
 {
@@ -72,10 +74,12 @@ namespace Chroma
 				return phi[i];
 			}
 
-			ShiftSymEvenOddPrecCloverFermAct& getFermAct(){
+			//ShiftSymEvenOddPrecCloverFermAct& getFermAct(){
+			//	return *fermact;
+			//}
+			SymEvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>& getFermAct(){
 				return *fermact;
 			}
-
 			AbsChronologicalPredictor4D<T>& getMDSolutionPredictor() { 
 				return *chrono_predictor;
 			};
@@ -94,8 +98,8 @@ namespace Chroma
 			multi1d<T> phi;
 
 			// A handle for the ShiftSymEvenOddPrecCloverFermAct
-			Handle<ShiftSymEvenOddPrecCloverFermAct > fermact;
-
+			//Handle<ShiftSymEvenOddPrecCloverFermAct > fermact;
+			Handle<SymEvenOddPrecLogDetWilsonTypeFermAct<T,P,Q> > fermact;
 			// Shifted mass sym even-odd prec linear op
 			//multi1d<Handle<ShiftSymEvenOddPrecCloverLinOp> > shift_linop;
 			// Shifted mass sym even-odd prec ferm action

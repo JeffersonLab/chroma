@@ -148,7 +148,7 @@ namespace Chroma
 				clov.apply(tmp1, psi, isign, 1);
 
 				// add shifted mass term i*mu*gamma_5*A_oo
-				chi[rb[1]] = psi + mquarter*tmp2 + Gamma(15)*timesI(tmp1);
+				chi[rb[1]] = psi + mquarter*tmp2 + mu*(Gamma(15)*timesI(tmp1));
 			}else{
 				invclov.apply(tmp1, psi, isign, 1);
 				D.apply(tmp2, tmp1, isign, 0);
@@ -159,7 +159,7 @@ namespace Chroma
 				clov.apply(tmp1, psi, isign, 1);
 
 				// add shifted mass term -i*mu*gamma_5*A_oo
-				chi[rb[1]] = psi + mquarter*tmp2 - Gamma(15)*timesI(tmp1);
+				chi[rb[1]] = psi + mquarter*tmp2 - mu*(Gamma(15)*timesI(tmp1));
 			}
 			getFermBC().modifyF(chi);
 

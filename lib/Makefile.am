@@ -577,6 +577,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/eoprec_clover_linop_w.h \
 	actions/ferm/linop/seoprec_clover_linop_w.h \
 	actions/ferm/linop/shifted_seoprec_clover_linop_w.h \
+	actions/ferm/linop/shifted_linop_w.h \
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.h \
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.h \
 	actions/ferm/linop/unprec_clover_linop_w.h \
@@ -723,7 +724,7 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/seoprec_constdet_two_flavor_monomial_w.h \
-	update/molecdyn/monomial/seoprec_constdet_two_flavor_multihasen_cancle_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_multihasen_cancle_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h \
 	update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h \

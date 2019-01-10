@@ -7,7 +7,8 @@
 #include "update/molecdyn/monomial/unprec_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/seoprec_constdet_two_flavor_monomial_w.h"
-#include "update/molecdyn/monomial/seoprec_constdet_two_flavor_multihasen_cancle_monomial_w.h"
+#include "two_flavor_multihasen_cancle_monomial_w.h"
+//#include "update/molecdyn/monomial/seoprec_constdet_two_flavor_multihasen_cancle_monomial_w.h"
 
 #include "update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/seoprec_logdet_two_flavor_monomial_w.h"
