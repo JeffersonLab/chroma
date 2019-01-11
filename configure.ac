@@ -1221,7 +1221,7 @@ then
    AC_MSG_NOTICE([ Using QUDA Library in ${QUDA_HOME} ])
 
    case "$host" in 
-   x86_64*|ppc64*)
+   x86_64*|ppc64*|powerpc64*)
         CUDA_LIBDIR="${CUDA_HOME}/lib64"	
 	;;
    *)	
