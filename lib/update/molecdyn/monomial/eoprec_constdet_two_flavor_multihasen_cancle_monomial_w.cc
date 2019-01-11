@@ -6,7 +6,7 @@
 #include "update/molecdyn/monomial/two_flavor_multihasen_cancle_monomial_w.h"
 namespace Chroma
 {
-	namespace SymEvenOddPrecConstDetTwoFlavorWilsonMultihasenCancleMonomialEnv
+	namespace EvenOddPrecConstDetTwoFlavorWilsonMultihasenCancleMonomialEnv
 	{
 		namespace
 		{
@@ -19,13 +19,13 @@ namespace Chroma
 					using Q = multi1d<LatticeColorMatrix>;
 					
 					return new PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial<T,P,Q,
-						   SymEvenOddPrecLogDetWilsonTypeFermAct, SymEvenOddPrecLogDetLinearOperator>(
+						   EvenOddPrecWilsonTypeFermAct, EvenOddPrecLinearOperator>(
 							TwoFlavorMultihasenCancleMonomialParams(xml, path));
 				}
 			bool registered = false;
 		}
 
-		const std::string name("TWO_FLAVOR_SEOPREC_CONSTDET_MULTIHASEN_CANCLE_FERM_MONOMIAL");
+		const std::string name("TWO_FLAVOR_EOPREC_CONSTDET_MULTIHASEN_CANCLE_FERM_MONOMIAL");
 		bool registerAll()
 		{
 			bool success = true;

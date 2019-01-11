@@ -1,12 +1,12 @@
 /*! @file
- * @brief Symmetric even-odd preconditioned multi-Hasenbusch monomial
+ * @brief Asymmetric even-odd preconditioned multi-Hasenbusch monomial
  */
 
 #include "update/molecdyn/monomial/two_flavor_ratio_conv_conv_multihasen_monomial_w.h"
 
 namespace Chroma 
 { 
-	namespace SymEvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomialEnv
+	namespace EvenOddPrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomialEnv
 	{
 		namespace
 		{
@@ -19,7 +19,7 @@ namespace Chroma
 					using Q = multi1d<LatticeColorMatrix>;
 
 					return new PrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial<T,P,Q,
-						   SymEvenOddPrecLogDetWilsonTypeFermAct, SymEvenOddPrecLogDetLinearOperator>(
+						   EvenOddPrecWilsonTypeFermAct, EvenOddPrecLinearOperator>(
 							TwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomialParams(xml, path));
 				}
 
@@ -27,7 +27,7 @@ namespace Chroma
 			bool registered = false;
 		}
 
-		const std::string name("TWO_FLAVOR_SEOPREC_CONSTDET_RATIO_CONV_CONV_MULTIHASEN_FERM_MONOMIAL");
+		const std::string name("TWO_FLAVOR_EOPREC_CONSTDET_RATIO_CONV_CONV_MULTIHASEN_FERM_MONOMIAL");
 
 		//! Register all the factories
 		bool registerAll() 
@@ -41,5 +41,5 @@ namespace Chroma
 			}
 			return success;
 		}
-	} //end namespace SeoPrec TwoFlavorRatioConvConvWilsonFermMonomialEnv
+	} //end namespace EoPrec TwoFlavorRatioConvConvWilsonFermMonomialEnv
 } //end namespace Chroma
