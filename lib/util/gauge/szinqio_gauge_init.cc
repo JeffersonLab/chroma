@@ -147,9 +147,13 @@ namespace Chroma
       readGauge(gauge_file_xml, gauge_xml, u, params.cfg_file, params.cfg_pario);
       if( params.reunitP == true ) { 
 	QDPIO::cout << "Reunitarizing After read" << std::endl;
-	for(int mu=0; mu < Nd; ++mu) { 
-	  reunit(u[mu]);
+	int numbad=0;
+	for(int mu=0; mu < Nd; ++mu) {
+	  int numbad_mu=0;
+	  reunit(u[mu], numbad_mu, REUNITARIZE_LABEL);
+	  numbad += numbad_mu;
 	} 
+	QDPIO::cout << "Reunitarize reported " << numbad << " unitarity violations" << std::endl;
       }
     }
   }
