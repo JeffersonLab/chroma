@@ -20,7 +20,7 @@
 #include <string>
 #include <iomanip>
 #include <ctime>
-
+#include <cstring>
 namespace Chroma
 {
   namespace MdagMSysSolverQUDAMULTIGRIDCloverEnv
@@ -202,10 +202,21 @@ namespace Chroma
 
     // Dump MG state 
     {
-      // waiting on this from Kate
-      // dumpMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+     std::string subspace_prefix = file_prefix + "_subspace";
+
+     // 256 is the size of the buffer -- this will pad with zeros
+     std::strncpy((subspace_pointers->mg_param).vec_outfile, subspace_prefix.c_str(), 256);
+
+     // if the source string is too long result will not be null terminated, so null terminate in that case 
+     if(  subspace_prefix.size() > 255 ) { (subspace_pointers->mg_param).vec_outfile[255] = '\0'; }
+     QDPInternal::broadcast( (void*)(subspace_pointers->mg_param).vec_outfile, 256);
+     dumpMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+     (subspace_pointers->mg_param).vec_outfile[0]='\0';
     }
   }
+
+
+  unsigned long MdagMSysSolverQUDAMULTIGRIDClover::seqno = 0;
 
   void  MdagMSysSolverQUDAMULTIGRIDClover::dumpXSolver(const LatticeFermion& chi,
 		  const LatticeFermion& Y,
@@ -308,8 +319,16 @@ namespace Chroma
 
     // Dump MG state 
     {
-      // waiting on this from Kate
-      // dumpMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+     std::string subspace_prefix = file_prefix + "_subspace";
+
+     // Up to the length of the buffer (256) padded with zeros
+     std::strncpy((subspace_pointers->mg_param).vec_outfile, subspace_prefix.c_str(), 256);
+
+     // If source string is too long it will be truncated and not null terminated, so null terminate
+     if(  subspace_prefix.size() > 255 ) { (subspace_pointers->mg_param).vec_outfile[255] = '\0'; }
+     QDPInternal::broadcast( (void*)(subspace_pointers->mg_param).vec_outfile, 256);
+     dumpMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+     (subspace_pointers->mg_param).vec_outfile[0] ='\0';
     }
   }
 

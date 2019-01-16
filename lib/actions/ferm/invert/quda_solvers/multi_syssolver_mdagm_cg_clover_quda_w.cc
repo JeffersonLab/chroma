@@ -75,14 +75,16 @@ namespace Chroma
 
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
     for(int s=0; s < shifts.size(); s++) {
-      psi_s[s][ rb[1] ] = zero;
+      //psi_s[s][ rb[1] ] = zero;
+      psi_s[s] = zero; // Sanity check 
       spinorOut[s] = (void *)&(psi_s[s].elem(rb[1].start()).elem(0).elem(0).real());
       quda_inv_param.offset[s] = toDouble(shifts[s]);
    } 
 #else
     std::vector<int> ids = {chi_s.getId()};
     for(int s=0; s < shifts.size(); s++) {
-      psi_s[s][ rb[1] ] = zero;
+      // psi_s[s][ rb[1] ] = zero;
+      psi_s[s] = zero; // Sanity Check
       ids.push_back( psi_s[s].getId() );
       quda_inv_param.offset[s] = toDouble(shifts[s]);
     }

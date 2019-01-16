@@ -8,6 +8,9 @@
 
 #include "chroma_config.h"
 #include "chromabase.h"
+#include <cfloat>
+#include <cstdio>
+
 using namespace QDP;
 
 
@@ -587,7 +590,7 @@ QDPIO::cout << solver_string << " init_time = "
 		StopWatch swatch;
 		swatch.start();
 
-		const MULTIGRIDSolverParams& ip = *(invParam.MULTIGRIDParams);
+		MULTIGRIDSolverParams& ip = *(invParam.MULTIGRIDParams);
 		// Use this in residuum checks.
 		Double norm2chi=sqrt(norm2(chi, A->subset()));
 
@@ -639,6 +642,8 @@ QDPIO::cout << solver_string << " init_time = "
 		T Y = zero;
 		g5chi[rb[1]]= Gamma(Nd*Nd-1)*chi;
 
+		// Y solve at 0.5 * Target Residuum -- Evan's bound
+		quda_inv_param.tol = toDouble(Real(0.5)*invParam.RsdTarget);
 		if( invParam.asymmetricP == true ) {
 			res1 = qudaInvert(*clov,
 					*invclov,
@@ -655,6 +660,13 @@ QDPIO::cout << solver_string << " init_time = "
 						tmp,
 						Y_prime);
 
+			{
+			   char Y_prime_norm[256];
+ 			   char Y_prime_norm_full[256];
+			   std::sprintf(Y_prime_norm, "%.*e", DECIMAL_DIG, toDouble(norm2(Y_prime, A->subset())));
+			   std::sprintf(Y_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(Y_prime)));
+			   QDPIO::cout << "Y solution: norm2(subset) = " << Y_prime_norm << " norm(full) = " << Y_prime_norm_full << std::endl;
+		        }
 			tmp[rb[1]] = Gamma(Nd*Nd-1)*Y_prime;
 			clov->apply(Y,tmp,MINUS,1);
 
@@ -699,7 +711,7 @@ QDPIO::cout << solver_string << " init_time = "
 			}
 		}
 		else {
-			QDPIO::cout << solver_string << "Y-Solve failed. Blowing away and reiniting subspace" << std::endl;
+			QDPIO::cout << solver_string << "Y-Solve failed (seq: "<< seqno <<"). Blowing away and reiniting subspace" << std::endl;
 			StopWatch reinit_timer; reinit_timer.reset();
 			reinit_timer.start();
 
@@ -707,7 +719,10 @@ QDPIO::cout << solver_string << " init_time = "
 			QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
 			// Recreate the subspace
+			bool saved_value = ip.check_multigrid_setup;
+			ip.check_multigrid_setup = true;
 			subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+			ip.check_multigrid_setup = saved_value;
 
 			// Make subspace XML snippets
 			XMLBufferWriter file_xml;
@@ -753,6 +768,14 @@ QDPIO::cout << solver_string << " init_time = "
 							tmp,
 							Y_prime);
 
+			{
+                           char Y_prime_norm[256];
+                           char Y_prime_norm_full[256];
+                           std::sprintf(Y_prime_norm, "%.*e", DECIMAL_DIG, toDouble(norm2(Y_prime, A->subset())));
+                           std::sprintf(Y_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(Y_prime)));
+                           QDPIO::cout << "Y solution: norm2(subset) = " << Y_prime_norm << " norm(full) = " << Y_prime_norm_full << std::endl;
+                        }
+
 				tmp[rb[1]] = Gamma(Nd*Nd-1)*Y_prime;
 				clov->apply(Y,tmp,MINUS,1);
 
@@ -768,7 +791,7 @@ QDPIO::cout << solver_string << " init_time = "
 
 				res_tmp.resid = sqrt(norm2(r, A->subset()));
 				if ( toBool( res_tmp.resid/sqrt(norm2(chi)) > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
-					QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
+					QDPIO::cout << solver_string << "Re Solve for Y Failed (seq: " << seqno << " ) Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 					QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
 
 					dumpYSolver(g5chi,Y_prime);
@@ -798,12 +821,23 @@ QDPIO::cout << solver_string << " init_time = "
 		// Can predict psi in the usual way without reference to Y
 		predictor.predictX(psi, (*MdagM), chi);
 		X_prediction_timer.stop();
+
+		// Restore resid target for X solve
+		quda_inv_param.tol = toDouble(invParam.RsdTarget);
 		X_solve_timer.start();
 		// Solve for psi
 		res2 = qudaInvert(*clov,
 				*invclov,
 				Y,
 				psi);
+
+			{
+                           char X_prime_norm[256];
+                           char X_prime_norm_full[256];
+                           std::sprintf(X_prime_norm, "%.*e", DECIMAL_DIG, toDouble(norm2(psi, A->subset())));
+                           std::sprintf(X_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(psi)));
+                           QDPIO::cout << "X solution: norm2(subset) = " << X_prime_norm << " norm(full) = " << X_prime_norm_full << std::endl;
+                        }
 
 		solution_good = true;
 
@@ -844,7 +878,7 @@ QDPIO::cout << solver_string << " init_time = "
 		}
 		else {
 
-			QDPIO::cout << solver_string << "X-Solve failed. Blowing away and reiniting subspace" << std::endl;
+			QDPIO::cout << solver_string << "X-Solve failed (seq: "<<seqno<<") . Blowing away and reiniting subspace" << std::endl;
 			StopWatch reinit_timer; reinit_timer.reset();
 			reinit_timer.start();
 
@@ -852,7 +886,11 @@ QDPIO::cout << solver_string << " init_time = "
 			QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
 			// Recreate the subspace
-			subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+			bool saved_value = ip.check_multigrid_setup;
+                        ip.check_multigrid_setup = true;
+                        subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+                        ip.check_multigrid_setup = saved_value;
+
 
 			// Make subspace XML snippets
 			XMLBufferWriter file_xml;
@@ -880,11 +918,18 @@ QDPIO::cout << solver_string << " init_time = "
 			// Re-solve
 			QDPIO::cout << solver_string << "Re-Solving for X with zero guess" << std::endl;
 			SystemSolverResults_t res_tmp;
-			psi[ A->subset() ] = zero;
+			psi = zero;
 			res_tmp = qudaInvert(*clov,
 					*invclov,
 					Y,
 					psi);
+                        {
+                           char X_prime_norm[256];
+                           char X_prime_norm_full[256];
+                           std::sprintf(X_prime_norm, "%.*e", DECIMAL_DIG, toDouble(norm2(psi, A->subset())));
+                           std::sprintf(X_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(psi)));
+                           QDPIO::cout << "X solution: norm2(subset) = " << X_prime_norm << " norm(full) = " << X_prime_norm_full << std::endl;
+                        }
 
 
 			// Check solution
@@ -897,7 +942,7 @@ QDPIO::cout << solver_string << " init_time = "
 
 				res_tmp.resid = sqrt(norm2(r, A->subset()));
 				if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
-					QDPIO::cout << solver_string << "Re Solve for X Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
+					QDPIO::cout << solver_string << "Re Solve for X Failed (seq: " << seqno << " ) Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 					QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
 
 					dumpXSolver(chi,Y,psi);
@@ -930,7 +975,7 @@ QDPIO::cout << solver_string << " init_time = "
 
 		Double rel_resid = res.resid/norm2chi;
 
-		QDPIO::cout <<  solver_string  << "iterations: " << res1.n_count << " + "
+		QDPIO::cout <<  solver_string   << " seq: " << (seqno++) << " iterations: " << res1.n_count << " + "
 				<<  res2.n_count << " = " << res.n_count
 				<<  " Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
 
@@ -956,7 +1001,7 @@ QDPIO::cout << solver_string << " init_time = "
 		StopWatch swatch;
 		swatch.start();
 
-		const MULTIGRIDSolverParams& ip = *(invParam.MULTIGRIDParams);
+		MULTIGRIDSolverParams& ip = *(invParam.MULTIGRIDParams);
 		// Use this in residuum checks.
 		Double norm2chi=sqrt(norm2(chi, A->subset()));
 
@@ -997,6 +1042,8 @@ QDPIO::cout << solver_string << " init_time = "
 		quda_inv_param.chrono_use_resident = true;
 		quda_inv_param.chrono_replace_last = false;
 
+		// Y solve is at 0.5*RsdTarget  -- Evan's analysis
+		quda_inv_param.tol = toDouble(Real(0.5)*invParam.RsdTarget);
 		if ( predictor.getChronoPrecision() == DEFAULT ) {
 			QDPIO::cout << "Setting Default Chrono precision of " << cpu_prec << std::endl;
 			quda_inv_param.chrono_precision = cpu_prec;
@@ -1030,6 +1077,14 @@ QDPIO::cout << solver_string << " init_time = "
 						*invclov,
 						tmp,
 						Y_prime);
+
+			{
+                           char Y_prime_norm[256];
+                           char Y_prime_norm_full[256];
+                           std::sprintf(Y_prime_norm, "%.*e", DECIMAL_DIG, toDouble(norm2(Y_prime, A->subset())));
+                           std::sprintf(Y_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(Y_prime)));
+                           QDPIO::cout << "Y solution: norm2(subset) = " << Y_prime_norm << " norm(full) = " << Y_prime_norm_full << std::endl;
+                        }
 
 			tmp[rb[1]] = Gamma(Nd*Nd-1)*Y_prime;
 			clov->apply(Y,tmp,MINUS,1);
@@ -1072,14 +1127,18 @@ QDPIO::cout << solver_string << " init_time = "
 			}
 		}
 		else {
-			QDPIO::cout << solver_string << "Y-Solve failed. Blowing away and reiniting subspace" << std::endl;
+			QDPIO::cout << solver_string << "Y-Solve failed (seq: "<<seqno<<"). Blowing away and reiniting subspace" << std::endl;
 			StopWatch reinit_timer; reinit_timer.reset();
 			reinit_timer.start();
 			// BLow away subspace, re-set it up and then re-solve
 			QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
 			// Recreate the subspace
-			subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+			bool saved_value = ip.check_multigrid_setup;
+                        ip.check_multigrid_setup = true;
+                        subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+                        ip.check_multigrid_setup = saved_value;
+
 
 			// Make subspace XML snippets
 			XMLBufferWriter file_xml;
@@ -1132,6 +1191,14 @@ QDPIO::cout << solver_string << " init_time = "
 							*invclov,
 							tmp,
 							Y_prime);
+	
+				{
+                           char Y_prime_norm[256];
+                           char Y_prime_norm_full[256];
+                           std::sprintf(Y_prime_norm, "%.*e", DECIMAL_DIG, toDouble(norm2(Y_prime, A->subset())));
+                           std::sprintf(Y_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(Y_prime)));
+                           QDPIO::cout << "Y solution: norm2(subset) = " << Y_prime_norm << " norm(full) = " << Y_prime_norm_full << std::endl;
+                       	        }
 
 				tmp[rb[1]] = Gamma(Nd*Nd-1)*Y_prime;
 				clov->apply(Y,tmp,MINUS,1);
@@ -1148,7 +1215,7 @@ QDPIO::cout << solver_string << " init_time = "
 				res_tmp.resid = sqrt(norm2(r, A->subset()));
 				if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 					// If we fail on the resolve then barf
-					QDPIO::cout << solver_string << "Re Solve for Y Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
+					QDPIO::cout << solver_string << "Re Solve for Y Failed (seq: " << seqno << " )  Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 
 					dumpYSolver(g5chi,Y_prime);
 
@@ -1183,22 +1250,39 @@ QDPIO::cout << solver_string << " init_time = "
 		quda_inv_param.chrono_use_resident = true;
 		quda_inv_param.chrono_replace_last = false;
 
-
+		// Reset Target Residuum for X solve
+		quda_inv_param.tol = toDouble(invParam.RsdTarget);
 		X_solve_timer.start();
-		psi[A->subset()]=zero;
-
+		//psi[A->subset()]=zero;
+		psi = zero;
 		// Solve for psi
 		res2 = qudaInvert(*clov,
 				*invclov,
 				Y,
 				psi);
 
+                   {
+                           char X_prime_norm[256];
+                           char X_prime_norm_full[256];
+                           std::sprintf(X_prime_norm, "%.*e", DECIMAL_DIG, toDouble(norm2(psi, A->subset())));
+                           std::sprintf(X_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(psi)));
+                           QDPIO::cout << "X solution: norm2(subset) = " << X_prime_norm << " norm(full) = " << X_prime_norm_full << std::endl;
+                        }
+
+
 		solution_good = true;
 		// Check solution
 		{
-			T r;
+			T r=zero;
+			r[A->subset()]=Y;
+			T tmp=zero;
+			// Checkin MX = Y solve
+		        (*A)(tmp, psi, PLUS);
+			r[ A->subset() ] -= tmp;
+			Double resid_MXY = sqrt(norm2(r,A->subset()));
+			Double normY = sqrt(norm2(Y,A->subset()));
+			QDPIO::cout << "X solve: || Y - MX || / || Y || = " << resid_MXY/normY << std::endl;
 			r[A->subset()]=chi;
-			T tmp;
 			(*MdagM)(tmp, psi, PLUS);
 			r[A->subset()] -= tmp;
 
@@ -1232,7 +1316,7 @@ QDPIO::cout << solver_string << " init_time = "
 		}
 		else {
 
-			QDPIO::cout << solver_string << "X-Solve failed. Blowing away and reiniting subspace" << std::endl;
+			QDPIO::cout << solver_string << "X-Solve failed (seq: "<<seqno<<")  Blowing away and reiniting subspace" << std::endl;
 			StopWatch reinit_timer; reinit_timer.reset();
 			reinit_timer.start();
 
@@ -1240,8 +1324,11 @@ QDPIO::cout << solver_string << " init_time = "
 			QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
 			// Recreate the subspace
-			subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
-
+		        bool saved_value = ip.check_multigrid_setup;
+                        ip.check_multigrid_setup = true;
+                        subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+                        ip.check_multigrid_setup = saved_value;
+	
 			// Make subspace XML snippets
 			XMLBufferWriter file_xml;
 			push(file_xml, "FileXML");
@@ -1277,26 +1364,43 @@ QDPIO::cout << solver_string << " init_time = "
 			QDPIO::cout << solver_string << "Re-Solving for X (zero guess)" << std::endl;
 
 			SystemSolverResults_t res_tmp;
-			psi[rb[1]] = zero;
+			
+		 //	psi[rb[1]] = zero;
+			psi = zero;
 			res_tmp = qudaInvert(*clov,
 					*invclov,
 					Y,
 					psi);
 
 
+                   {
+                           char X_prime_norm[256];
+                           char X_prime_norm_full[256];
+                           std::sprintf(X_prime_norm, "%.*e", DECIMAL_DIG, toDouble(norm2(psi, A->subset())));
+                           std::sprintf(X_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(psi)));
+                           QDPIO::cout << "X solution: norm2(subset) = " << X_prime_norm << " norm(full) = " << X_prime_norm_full << std::endl;
+                        }
+
 			// Check solution
 			{
-				T r;
+				T r=zero;
+             			r[A->subset()]=Y;
+                        	T tmp=zero;
+                        	// Checkin MX = Y solve
+                        	(*A)(tmp, psi, PLUS);
+                        	r[ A->subset() ] -= tmp;
+                       		Double resid_MXY = sqrt(norm2(r,A->subset()));
+                        	Double normY = sqrt(norm2(Y,A->subset()));
+                        	QDPIO::cout << "X re-solve: || Y - MX || / || Y || = " << resid_MXY/normY << std::endl;
 				r[A->subset()]=chi;
-				T tmp;
 				(*MdagM)(tmp, psi, PLUS);
 				r[A->subset()] -= tmp;
 
 				res_tmp.resid = sqrt(norm2(r, A->subset()));
 				if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
-					QDPIO::cout << solver_string << "Re Solve for X Failed. Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
+					QDPIO::cout << solver_string << "Re Solve for X Failed (seq: " << seqno << " ) Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 
-					QDPIO::cout << "Dumping state" << std::endl;
+					QDPIO::cout << "Dumping state (solve seqno : " << seqno << " ) " << std::endl;
 					dumpXSolver(chi,Y,psi);
 
 
@@ -1326,7 +1430,7 @@ QDPIO::cout << solver_string << " init_time = "
 
 		Double rel_resid = res.resid/norm2chi;
 
-		QDPIO::cout <<  solver_string  << "iterations: " << res1.n_count << " + "
+		QDPIO::cout <<  solver_string  << " seq: " << (seqno++) << " iterations: " << res1.n_count << " + "
 				<<  res2.n_count << " = " << res.n_count
 				<<  " Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
 
@@ -1400,7 +1504,7 @@ private:
 
         Handle< LinearOperator<T> > A;
         Handle< FermState<T,Q,Q> > gstate;
-	const SysSolverQUDAMULTIGRIDCloverParams invParam;
+	mutable SysSolverQUDAMULTIGRIDCloverParams invParam;
 	QudaGaugeParam q_gauge_param;
 	mutable QudaInvertParam quda_inv_param;
 	mutable QUDAMGUtils::MGSubspacePointers* subspace_pointers;
@@ -1424,6 +1528,8 @@ private:
         void dumpXSolver(const LatticeFermion& chi,
 			 const LatticeFermion& Y,
 			 const LatticeFermion& X) const;
+
+	static unsigned long seqno;
 
 };
 
