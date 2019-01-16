@@ -34,17 +34,14 @@ namespace Chroma {
 
     template<>
     struct fuzzForType<LatticeColorMatrixF> {
-	static const Real value;
+	static constexpr float value() { return 1.0e-5; }
     };
 
     template<>
     struct fuzzForType<LatticeColorMatrixD> {
-        static const Double value;
-    }
+        static constexpr double value() { return 1.0e-13; }
+    };
 
-    const Real fuzz<LatticeColorMatrixF>::value = Real(1.0e-5);
-
-    const Double fuzz<LatticeColorMatrixD>::value = Double(1.0e-13);
   }
 
   template<typename Q, typename C, typename R, typename S>
@@ -74,7 +71,7 @@ namespace Chroma {
     numbad = 0;
     
     // some kind of small floating point number, should be prec. dep.
-    R fuzz = fuzzForType<Q>::value;
+    R fuzz(ReunitEnv::fuzzForType<Q>::value());
     
     // Extract initial components 
     for(int i=0; i < Nc; ++i)
