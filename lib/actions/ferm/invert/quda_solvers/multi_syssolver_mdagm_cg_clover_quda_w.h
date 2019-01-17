@@ -556,6 +556,7 @@ namespace Chroma
         Double chinorm=norm2(chi, A->subset());
         multi1d<Double> r_rel(shifts.size());
 
+#ifdef QUDA_DEBUG
         for(int i=0; i < shifts.size(); i++) {
 	  char normpsi_subset[256];
 	  char normpsi_full[256];
@@ -563,7 +564,7 @@ namespace Chroma
           std::sprintf( normpsi_full, "%.*e", DECIMAL_DIG, toDouble(norm2(psi[i])) );
 	  QDPIO::cout << "psi[ " << i << " ] : norm( A->subset() ) = " << normpsi_subset << " norm(total) = " << normpsi_full << std::endl;
         }
-
+#endif
         for(int i=0; i < shifts.size(); i++) { 
           T tmp1,tmp2;
           (*A)(tmp1, psi[i], PLUS);

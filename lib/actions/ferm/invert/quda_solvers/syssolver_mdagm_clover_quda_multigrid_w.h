@@ -635,6 +635,7 @@ QDPIO::cout << solver_string << " init_time = "
 		// Y solve: M^\dagger Y = chi
 		//        g_5 M g_5 Y = chi
 		//     =>    M Y' = chi'  with chi' = gamma_5*chi
+
 		Y_solve_timer.start();
 
 
@@ -659,7 +660,7 @@ QDPIO::cout << solver_string << " init_time = "
 						*invclov,
 						tmp,
 						Y_prime);
-
+#ifdef QUDA_DEBUG
 			{
 			   char Y_prime_norm[256];
  			   char Y_prime_norm_full[256];
@@ -667,6 +668,7 @@ QDPIO::cout << solver_string << " init_time = "
 			   std::sprintf(Y_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(Y_prime)));
 			   QDPIO::cout << "Y solution: norm2(subset) = " << Y_prime_norm << " norm(full) = " << Y_prime_norm_full << std::endl;
 		        }
+#endif
 			tmp[rb[1]] = Gamma(Nd*Nd-1)*Y_prime;
 			clov->apply(Y,tmp,MINUS,1);
 
@@ -768,6 +770,7 @@ QDPIO::cout << solver_string << " init_time = "
 							tmp,
 							Y_prime);
 
+#ifdef QUDA_DEBUG
 			{
                            char Y_prime_norm[256];
                            char Y_prime_norm_full[256];
@@ -775,6 +778,7 @@ QDPIO::cout << solver_string << " init_time = "
                            std::sprintf(Y_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(Y_prime)));
                            QDPIO::cout << "Y solution: norm2(subset) = " << Y_prime_norm << " norm(full) = " << Y_prime_norm_full << std::endl;
                         }
+#endif
 
 				tmp[rb[1]] = Gamma(Nd*Nd-1)*Y_prime;
 				clov->apply(Y,tmp,MINUS,1);
@@ -792,7 +796,7 @@ QDPIO::cout << solver_string << " init_time = "
 				res_tmp.resid = sqrt(norm2(r, A->subset()));
 				if ( toBool( res_tmp.resid/sqrt(norm2(chi)) > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 					QDPIO::cout << solver_string << "Re Solve for Y Failed (seq: " << seqno << " ) Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
-					QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
+					QDPIO::cout << solver_string << "Throwing Exception! This will ABORT" << std::endl;
 
 					dumpYSolver(g5chi,Y_prime);
 
@@ -830,7 +834,7 @@ QDPIO::cout << solver_string << " init_time = "
 				*invclov,
 				Y,
 				psi);
-
+#ifdef QUDA_DEBUG
 			{
                            char X_prime_norm[256];
                            char X_prime_norm_full[256];
@@ -838,7 +842,7 @@ QDPIO::cout << solver_string << " init_time = "
                            std::sprintf(X_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(psi)));
                            QDPIO::cout << "X solution: norm2(subset) = " << X_prime_norm << " norm(full) = " << X_prime_norm_full << std::endl;
                         }
-
+#endif
 		solution_good = true;
 
 		// Check solution
@@ -923,6 +927,7 @@ QDPIO::cout << solver_string << " init_time = "
 					*invclov,
 					Y,
 					psi);
+#ifdef QUDA_DEBUG
                         {
                            char X_prime_norm[256];
                            char X_prime_norm_full[256];
@@ -930,6 +935,7 @@ QDPIO::cout << solver_string << " init_time = "
                            std::sprintf(X_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(psi)));
                            QDPIO::cout << "X solution: norm2(subset) = " << X_prime_norm << " norm(full) = " << X_prime_norm_full << std::endl;
                         }
+#endif
 
 
 			// Check solution
@@ -943,7 +949,7 @@ QDPIO::cout << solver_string << " init_time = "
 				res_tmp.resid = sqrt(norm2(r, A->subset()));
 				if ( toBool( res_tmp.resid/norm2chi > invParam.RsdToleranceFactor * invParam.RsdTarget ) ) {
 					QDPIO::cout << solver_string << "Re Solve for X Failed (seq: " << seqno << " ) Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
-					QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
+					QDPIO::cout << solver_string << "Throwing Exception! This will ABORT" << std::endl;
 
 					dumpXSolver(chi,Y,psi);
 
@@ -1078,6 +1084,7 @@ QDPIO::cout << solver_string << " init_time = "
 						tmp,
 						Y_prime);
 
+#ifdef QUDA_DEBUG
 			{
                            char Y_prime_norm[256];
                            char Y_prime_norm_full[256];
@@ -1085,6 +1092,7 @@ QDPIO::cout << solver_string << " init_time = "
                            std::sprintf(Y_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(Y_prime)));
                            QDPIO::cout << "Y solution: norm2(subset) = " << Y_prime_norm << " norm(full) = " << Y_prime_norm_full << std::endl;
                         }
+#endif
 
 			tmp[rb[1]] = Gamma(Nd*Nd-1)*Y_prime;
 			clov->apply(Y,tmp,MINUS,1);
@@ -1191,7 +1199,8 @@ QDPIO::cout << solver_string << " init_time = "
 							*invclov,
 							tmp,
 							Y_prime);
-	
+
+#ifdef QUDA_DEBUG
 				{
                            char Y_prime_norm[256];
                            char Y_prime_norm_full[256];
@@ -1199,7 +1208,7 @@ QDPIO::cout << solver_string << " init_time = "
                            std::sprintf(Y_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(Y_prime)));
                            QDPIO::cout << "Y solution: norm2(subset) = " << Y_prime_norm << " norm(full) = " << Y_prime_norm_full << std::endl;
                        	        }
-
+#endif
 				tmp[rb[1]] = Gamma(Nd*Nd-1)*Y_prime;
 				clov->apply(Y,tmp,MINUS,1);
 			}
@@ -1219,7 +1228,7 @@ QDPIO::cout << solver_string << " init_time = "
 
 					dumpYSolver(g5chi,Y_prime);
 
-					QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
+					QDPIO::cout << solver_string << "Throwing Exception! This will ABORT" << std::endl;
 
 					MGSolverException convergence_fail(invParam.CloverParams.Mass,
 							invParam.SaveSubspaceID,
@@ -1260,7 +1269,7 @@ QDPIO::cout << solver_string << " init_time = "
 				*invclov,
 				Y,
 				psi);
-
+#ifdef QUDA_DEBUG
                    {
                            char X_prime_norm[256];
                            char X_prime_norm_full[256];
@@ -1268,11 +1277,12 @@ QDPIO::cout << solver_string << " init_time = "
                            std::sprintf(X_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(psi)));
                            QDPIO::cout << "X solution: norm2(subset) = " << X_prime_norm << " norm(full) = " << X_prime_norm_full << std::endl;
                         }
+#endif
 
 
 		solution_good = true;
 		// Check solution
-		{
+		{   
 			T r=zero;
 			r[A->subset()]=Y;
 			T tmp=zero;
@@ -1372,7 +1382,7 @@ QDPIO::cout << solver_string << " init_time = "
 					Y,
 					psi);
 
-
+#ifdef QUDA_DEBUG
                    {
                            char X_prime_norm[256];
                            char X_prime_norm_full[256];
@@ -1380,7 +1390,7 @@ QDPIO::cout << solver_string << " init_time = "
                            std::sprintf(X_prime_norm_full, "%.*e", DECIMAL_DIG, toDouble(norm2(psi)));
                            QDPIO::cout << "X solution: norm2(subset) = " << X_prime_norm << " norm(full) = " << X_prime_norm_full << std::endl;
                         }
-
+#endif
 			// Check solution
 			{
 				T r=zero;
@@ -1404,7 +1414,7 @@ QDPIO::cout << solver_string << " init_time = "
 					dumpXSolver(chi,Y,psi);
 
 
-					QDPIO::cout << solver_string << "Throwing Exception! This will REJECT your trajectory" << std::endl;
+					QDPIO::cout << solver_string << "Throwing Exception! This will ABORT" << std::endl;
 					MGSolverException convergence_fail(invParam.CloverParams.Mass,
 							invParam.SaveSubspaceID,
 							res_tmp.n_count,
