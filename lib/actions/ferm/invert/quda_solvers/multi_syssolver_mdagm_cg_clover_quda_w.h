@@ -6,6 +6,8 @@
 #ifndef __multi_syssolver_mdagm_cg_clover_quda_w_h__
 #define __multi_syssolver_mdagm_cg_clover_quda_w_h__
 
+#include <cfloat>
+#include <cstdio>
 #include "chroma_config.h"
 
 #ifdef BUILD_QUDA
@@ -549,10 +551,20 @@ namespace Chroma
       swatch.stop();
       double time = swatch.getTimeInSeconds();
 
+      bool abortFound = false;
       if (invParam.checkShiftsP )  {
         Double chinorm=norm2(chi, A->subset());
         multi1d<Double> r_rel(shifts.size());
 
+#ifdef QUDA_DEBUG
+        for(int i=0; i < shifts.size(); i++) {
+	  char normpsi_subset[256];
+	  char normpsi_full[256];
+	  std::sprintf( normpsi_subset, "%.*e", DECIMAL_DIG, toDouble(norm2(psi[i],A->subset())) );
+          std::sprintf( normpsi_full, "%.*e", DECIMAL_DIG, toDouble(norm2(psi[i])) );
+	  QDPIO::cout << "psi[ " << i << " ] : norm( A->subset() ) = " << normpsi_subset << " norm(total) = " << normpsi_full << std::endl;
+        }
+#endif
         for(int i=0; i < shifts.size(); i++) { 
           T tmp1,tmp2;
           (*A)(tmp1, psi[i], PLUS);
@@ -567,11 +579,15 @@ namespace Chroma
    	  if ( toBool( r_rel[i]  >  invParam.RsdTarget[i]*invParam.RsdToleranceFactor  ) ) { 
 	    QDPIO::cout << "Shift " << i << " has rel. residuum " << r_rel[i] <<  " exceeding target " 
 			<< invParam.RsdTarget[i] << " . Aborting! " << std::endl;
+	    abortFound = true;
           } 
         }
       }
       QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << std::endl;
- QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: "<<time<< " sec" << std::endl;
+      QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: "<<time<< " sec" << std::endl;
+      if( abortFound ) QDP_abort(1);
+
+
       END_CODE();
       
       return res;

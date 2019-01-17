@@ -77,7 +77,7 @@ namespace Chroma
 	QDPIO::cout << "ERROR: Caught MG Solver exception in pseudofermion refresh" << std::endl;
 	QDPIO::cout << "ERROR: Exception Was: " << e.whatStr() << std::endl;
 	QDPIO::cout << "Aborting";
-	QDP_abort(1);
+	QDP_abort(2);
       }
 
       // SaveState -- Perhaps this could be done better?
@@ -109,7 +109,7 @@ namespace Chroma
 	QDPIO::cout << "ERROR: Caught MG Solver exception in Start Energy Calculation" << std::endl;
 	QDPIO::cout << "ERROR: Exception Was: " << e.whatStr() << std::endl;
 	QDPIO::cout << "Aborting";
-	QDP_abort(1);
+	QDP_abort(2);
       }
       
       // Try-Catch Case for MD
@@ -186,12 +186,8 @@ namespace Chroma
 	// Automatic rejection
 	QDPIO::cout << "WARNING: Caught MG Solver Convergence Exception, during MD or Final Energy Calculation!" << std::endl;
 	QDPIO::cout << "WARNING: Exception was: " << e.whatStr() << std::endl;
-	QDPIO::cout << "WARNING: REJECTING Traj" << std::endl;
-	acceptTraj = false;
-
-	// Stop swatch in case it was running. 
-	swatch.stop();
-	QDPIO::cout << "HMC_TIME: Aborted Traj Time: " << swatch.getTimeInSeconds() << " \n";
+	QDPIO::cout << "WARNING: Aborting" << std::endl;
+	QDP_abort(2);
       }
 
       write(xml_out, "AcceptP", acceptTraj);
@@ -256,12 +252,8 @@ namespace Chroma
 
 	  QDPIO::cout << "WARNING: Caught MG Solver Exception in Reverse Trajectory" << std::endl;
 	  QDPIO::cout << "WARNING: Exception was: " << e.whatStr() << std::endl;
-	  QDPIO::cout << "WARNING: Since traj already finished, I will ignore this" << std::endl;
-
-	  // Stop swatch in case it was running. 
-	  swatch.stop();
-	  QDPIO::cout << "HMC_TIME: Aborted Reverse Traj Time: " << swatch.getTimeInSeconds() << " \n";
-
+	  QDPIO::cout << "WARNING: Aborting" << std::endl;
+	  QDP_abort(2);
 	}
 
 	// s_rev goes away here.

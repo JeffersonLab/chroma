@@ -251,6 +251,15 @@ AC_ARG_WITH(quda,
    [ quda_enabled="no" ]
 )
 
+AC_ARG_ENABLE(quda-debug,
+    AC_HELP_STRING(
+	[--enable-quda-debug],
+	[ define QUDA_DEBUG for extra diagnostics from QUDA solvers ]
+    ),
+    [ quda_debug_enabled="yes" ],
+    [ quda_debug_enabled="no" ]
+)
+
 AC_ARG_WITH(cuda,
    AC_HELP_STRING(
       [--with-cuda=<DIR>],
@@ -923,7 +932,13 @@ fi
 
 AM_CONDITIONAL(BUILD_JIT_CONTRACTION_KERNELS, [test "x${jit_contraction_kernels_enabled}x" = "xyesx" ])
 
-
+dnl ************
+dnl ** QUDA DEBUG
+if test "X${quda_debug_enabled}X" = "XyesX";
+then
+  AC_MSG_NOTICE( [Enabling extra QUDA debugging] ) 
+  AC_DEFINE([QUDA_DEBUG],[],[Enable extra QUDA Debugging])
+fi
 dnl ************************************************************************
 dnl **** QUDA device interface                                          ****
 dnl ************************************************************************

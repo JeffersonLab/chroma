@@ -787,12 +787,16 @@ int main(int argc, char *argv[])
 
     swatch.reset();
     swatch.start();
+    int numbad = 0;
     {
       for(int mu=0; mu < Nd; mu++) { 
-	reunit(u[mu]);
+	int numbad_mu = 0; 
+	reunit(u[mu],numbad_mu,REUNITARIZE_LABEL);
+	numbad += numbad_mu;
       }
     }
     swatch.stop();
+    QDPIO::cout << "Gauge field reunitarization found " << numbad << " unitarity violations" << std::endl; 
     QDPIO::cout << "Gauge field reunitarized: time="
 		<< swatch.getTimeInSeconds()
 		<< " secs" << std::endl;
