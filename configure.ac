@@ -949,7 +949,7 @@ then
   AC_DEFINE([QUDA_DEBUG],[],[Enable extra QUDA Debugging])
 fi
 
-if test "X$(quda_mg_dump_enabled}X" = "XyesX";
+if test "X${quda_mg_dump_enabled}X" = "XyesX";
 then 
   AC_MSG_NOTICE( [ Enabling QUDA MG Dump. QUDA must be set up for this or build will fail ])
   AC_DEFINE([QUDA_MG_DUMP_ENABLED],[],[Enable QUDA MG Dump])
