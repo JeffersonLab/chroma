@@ -260,6 +260,15 @@ AC_ARG_ENABLE(quda-debug,
     [ quda_debug_enabled="no" ]
 )
 
+AC_ARG_ENABLE(quda-mg-dump,
+     AC_HELP_STRING(
+	[--enable-quda-mg-dump],
+	[ dump QUDA MG on fail. Needs QUDA compiled with QIO and have MG dump enabled in QUDA]
+     ),
+     [ quda_mg_dump_enabled="yes" ],
+     [ quda_mg_dump_enabled="no" ]
+)
+
 AC_ARG_WITH(cuda,
    AC_HELP_STRING(
       [--with-cuda=<DIR>],
@@ -939,6 +948,13 @@ then
   AC_MSG_NOTICE( [Enabling extra QUDA debugging] ) 
   AC_DEFINE([QUDA_DEBUG],[],[Enable extra QUDA Debugging])
 fi
+
+if test "X$(quda_mg_dump_enabled}X" = "XyesX";
+then 
+  AC_MSG_NOTICE( [ Enabling QUDA MG Dump. QUDA must be set up for this or build will fail ])
+  AC_DEFINE([QUDA_MG_DUMP_ENABLED],[],[Enable QUDA MG Dump])
+fi
+
 dnl ************************************************************************
 dnl **** QUDA device interface                                          ****
 dnl ************************************************************************
