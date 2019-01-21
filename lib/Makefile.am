@@ -455,6 +455,7 @@ nobase_include_HEADERS += \
         wilstype_fermact_w.h \
         unprec_wilstype_fermact_w.h \
         eoprec_wilstype_fermact_w.h \
+	seoprec_wilstype_fermact_w.h \
         central_tprec_fermact_w.h \
         eoprec_constdet_wilstype_fermact_w.h \
         eoprec_logdet_wilstype_fermact_w.h \
