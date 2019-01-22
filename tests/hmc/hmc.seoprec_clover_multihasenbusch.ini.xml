@@ -127,7 +127,7 @@
         </NamedObject>
 	  </elem>
 	  <elem>
-		<Name>TWO_FLAVOR_SEOPREC_CONSTDET_MULTIHASEN_CANCLE_FERM_MONOMIAL</Name>
+		<Name>TWO_FLAVOR_SEOPREC_CONSTDET_MULTIHASEN_CANCEL_FERM_MONOMIAL</Name>
 		<ShiftedMass>0.003</ShiftedMass>
 		<FermionAction>
 		<FermAct>SEOPREC_CLOVER</FermAct>

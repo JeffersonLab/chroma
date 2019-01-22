@@ -1,8 +1,8 @@
-/* Multi-Hasenbusch cancle monomial term for both 
+/* Multi-Hasenbusch cancel monomial term for both 
  * symm and asymm even-odd precondition
  */
-#ifndef __TWO_FLAVOR_MULTIHASEN_CANCLE_MONOMIAL_W_H__
-#define __TWO_FLAVOR_MULTIHASEN_CANCLE_MONOMIAL_W_H__
+#ifndef __TWO_FLAVOR_MULTIHASEN_CANCEL_MONOMIAL_W_H__
+#define __TWO_FLAVOR_MULTIHASEN_CANCEL_MONOMIAL_W_H__
 
 #include "update/molecdyn/field_state.h"
 #include "actions/ferm/linop/shifted_linop_w.h"
@@ -19,19 +19,19 @@
 #include "eoprec_logdet_wilstype_fermact_w.h"
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
 #include "update/molecdyn/predictor/zero_guess_predictor.h"
-#include "update/molecdyn/monomial/two_flavor_multihasen_cancle_monomial_params_w.h"
+#include "update/molecdyn/monomial/two_flavor_multihasen_cancel_monomial_params_w.h"
 
 
 namespace Chroma
 {
 	// Symmetric preconditioned 
-	namespace SymEvenOddPrecConstDetTwoFlavorWilsonMultihasenCancleMonomialEnv
+	namespace SymEvenOddPrecConstDetTwoFlavorWilsonMultihasenCancelMonomialEnv
 	{
 		bool registerAll();
 	}
 
 	// Asymmetric preconditioned
-	namespace EvenOddPrecConstDetTwoFlavorWilsonMultihasenCancleMonomialEnv
+	namespace EvenOddPrecConstDetTwoFlavorWilsonMultihasenCancelMonomialEnv
 	{
 		bool registerAll();
 	}
@@ -39,21 +39,21 @@ namespace Chroma
 	template<typename T, typename P, typename Q,
 		template<typename, typename, typename> class FAType,
 		template<typename, typename, typename> class LOType>
-			class PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial: 
+			class PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial: 
 				public ExactWilsonTypeFermMonomial<P,Q,T>
 	{
 		// same as old monomial body but replace the specific FermionAction
 		// typename with "FAType" and every specific LinearOperator type with
 		// LOType
 		public:
-			PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial(const
-					TwoFlavorMultihasenCancleMonomialParams& param_);
-			PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial(const
-					PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial& m):
+			PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial(const
+					TwoFlavorMultihasenCancelMonomialParams& param_);
+			PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial(const
+					PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial& m):
 				phi(m.phi), fermact(m.fermact), inv_param(m.inv_param),
 				chrono_predictor(m.chrono_predictor){}
 
-			virtual ~PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial(){}
+			virtual ~PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial(){}
 
 			virtual Double S(const AbsFieldState<P,Q>& s)
 			{
@@ -74,7 +74,7 @@ namespace Chroma
 					M(new TwistedShiftedLinOp<T,P,Q,LOType>(*base_op, mu));
 				X[M->subset()] = zero;
 				// Energy calc doesnt use Chrono Predictor
-				QDPIO::cout << "TwoFlavWilson4DCancleMonomial: resetting Predictor before energy calc solve" << std::endl;
+				QDPIO::cout << "TwoFlavWilson4DCancelMonomial: resetting Predictor before energy calc solve" << std::endl;
 				(getMDSolutionPredictor()).reset();
 
 				// Get system solver
@@ -86,7 +86,7 @@ namespace Chroma
 								invParam.id, paramtop, invParam.path, state, M));
 				// Solve MdagM X = eta
 				SystemSolverResults_t res = (*invMdagM)(X, getPhi());
-				QDPIO::cout<<"2FlavCancle::invert, n_count = "<<res.n_count<<std::endl;
+				QDPIO::cout<<"2FlavCancel::invert, n_count = "<<res.n_count<<std::endl;
 
 				// Action
 				Double action = innerProductReal(getPhi(), X, M->subset());
@@ -103,7 +103,7 @@ namespace Chroma
 				START_CODE();
 
 				XMLWriter& xml_out = TheXMLLogWriter::Instance();
-				push(xml_out, "TwoFlavorWilsonTypeMultihasenCancleMonomial");
+				push(xml_out, "TwoFlavorWilsonTypeMultihasenCancelMonomial");
 
 				const FAType<T,P,Q>& FA = getFermAct();
 				Handle<FermState<T,P,Q> > state = FA.createState(s.getQ());
@@ -124,7 +124,7 @@ namespace Chroma
 				T X;
 				// Solve MdagM X = eta
 				SystemSolverResults_t res = (*invMdagM)(X, getPhi(),getMDSolutionPredictor());
-				QDPIO::cout << "2FlavCancle::invert,  n_count = " << res.n_count << std::endl;
+				QDPIO::cout << "2FlavCancel::invert,  n_count = " << res.n_count << std::endl;
 
 				P F_tmp;
 				T Y;
@@ -170,7 +170,7 @@ namespace Chroma
 				eta *= sqrt(0.5);
 				(*M)(getPhi(), eta, MINUS);
 
-				QDPIO::cout << "TwoFlavWilson4DCancleMonomial: resetting Predictor after field refresh" << std::endl;
+				QDPIO::cout << "TwoFlavWilson4DCancelMonomial: resetting Predictor after field refresh" << std::endl;
 				getMDSolutionPredictor().reset();
 
 				END_CODE();
@@ -180,12 +180,12 @@ namespace Chroma
 			{
 				START_CODE();
 				try{
-					const PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial<T,P,Q,FAType,LOType>& fm = 
-						dynamic_cast<const PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial<T,P,Q,FAType,LOType>& >(m);
+					const PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial<T,P,Q,FAType,LOType>& fm = 
+						dynamic_cast<const PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial<T,P,Q,FAType,LOType>& >(m);
 					getPhi() = fm.getPhi();
 				}
 				catch(std::bad_cast){
-					QDPIO::cerr<<"Failed to cast input Monomial to PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial "<<std::endl;
+					QDPIO::cerr<<"Failed to cast input Monomial to PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial "<<std::endl;
 					QDP_abort(1);
 				}
 				END_CODE();
@@ -212,8 +212,8 @@ namespace Chroma
 			}
 
 		private:
-			PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial();
-			void operator=(const PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial&);
+			PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial();
+			void operator=(const PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial&);
 			// Pseudofermion field phi
 			T phi;
 			Handle<const FAType<T,P,Q> > fermact;
@@ -226,9 +226,9 @@ namespace Chroma
 	template<typename T, typename P, typename Q,
 		template<typename, typename, typename> class FAType,
 		template<typename, typename, typename> class LOType> 
-			PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial<T,P,Q,FAType,LOType>::
-			PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial(const
-					TwoFlavorMultihasenCancleMonomialParams& param)
+			PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial<T,P,Q,FAType,LOType>::
+			PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial(const
+					TwoFlavorMultihasenCancelMonomialParams& param)
 			{
 				START_CODE();
 				inv_param = param.inv_param;

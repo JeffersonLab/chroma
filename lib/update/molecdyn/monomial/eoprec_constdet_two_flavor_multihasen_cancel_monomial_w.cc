@@ -1,12 +1,12 @@
 /*! @file
- * @brief cancle monomial for the multi-Hasenbusch term
+ * @brief cancel monomial for the multi-Hasenbusch term
  * with shifted linop
  */
 
-#include "update/molecdyn/monomial/two_flavor_multihasen_cancle_monomial_w.h"
+#include "update/molecdyn/monomial/two_flavor_multihasen_cancel_monomial_w.h"
 namespace Chroma
 {
-	namespace SymEvenOddPrecConstDetTwoFlavorWilsonMultihasenCancleMonomialEnv
+	namespace EvenOddPrecConstDetTwoFlavorWilsonMultihasenCancelMonomialEnv
 	{
 		namespace
 		{
@@ -18,14 +18,14 @@ namespace Chroma
 					using P = multi1d<LatticeColorMatrix>;
 					using Q = multi1d<LatticeColorMatrix>;
 					
-					return new PrecConstDetTwoFlavorWilsonMultihasenCancleMonomial<T,P,Q,
-						   SymEvenOddPrecLogDetWilsonTypeFermAct, SymEvenOddPrecLogDetLinearOperator>(
-							TwoFlavorMultihasenCancleMonomialParams(xml, path));
+					return new PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial<T,P,Q,
+						   EvenOddPrecWilsonTypeFermAct, EvenOddPrecLinearOperator>(
+							TwoFlavorMultihasenCancelMonomialParams(xml, path));
 				}
 			bool registered = false;
 		}
 
-		const std::string name("TWO_FLAVOR_SEOPREC_CONSTDET_MULTIHASEN_CANCLE_FERM_MONOMIAL");
+		const std::string name("TWO_FLAVOR_EOPREC_CONSTDET_MULTIHASEN_CANCEL_FERM_MONOMIAL");
 		bool registerAll()
 		{
 			bool success = true;

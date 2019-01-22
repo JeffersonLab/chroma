@@ -1,13 +1,13 @@
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
  */
-#include "update/molecdyn/monomial/two_flavor_multihasen_cancle_monomial_params_w.h"
+#include "update/molecdyn/monomial/two_flavor_multihasen_cancel_monomial_params_w.h"
 
 namespace Chroma
 {
 	// Read the parameters
-	TwoFlavorMultihasenCancleMonomialParams::
-		TwoFlavorMultihasenCancleMonomialParams(XMLReader& xml_in, const std::string& path)
+	TwoFlavorMultihasenCancelMonomialParams::
+		TwoFlavorMultihasenCancelMonomialParams(XMLReader& xml_in, const std::string& path)
 		{
 			// Get the top of the parameter XML tree
 			XMLReader paramtop(xml_in, path);
@@ -28,20 +28,20 @@ namespace Chroma
 				QDP_abort(1);
 			}
 
-			QDPIO::cout<<"TwoFlavorMultihasenCancleMonomialParams: read \n"<<fermact.id<<std::endl;
+			QDPIO::cout<<"TwoFlavorMultihasenCancelMonomialParams: read \n"<<fermact.id<<std::endl;
 		}
 	
 	//! Read Parameters
 	void read(XMLReader& xml, const std::string& path,
-			TwoFlavorMultihasenCancleMonomialParams& params)
+			TwoFlavorMultihasenCancelMonomialParams& params)
 	{
-		TwoFlavorMultihasenCancleMonomialParams tmp(xml, path);
+		TwoFlavorMultihasenCancelMonomialParams tmp(xml, path);
 		params = tmp;
 	}
 
 	//! Write Parameters
 	void write(XMLWriter& xml, const std::string& path,
-			const TwoFlavorMultihasenCancleMonomialParams& params)
+			const TwoFlavorMultihasenCancelMonomialParams& params)
 	{
 		write(xml, "ShiftedMass", params.mu);
 		xml<<params.fermact.xml;
