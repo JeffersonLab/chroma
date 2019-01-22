@@ -94,7 +94,7 @@ namespace Chroma
     virtual void derivUnprecEvenOddLinOp(P& ds_u, const T& chi, const T& psi,
     		enum PlusMinus isign) const;
 
-    // Deriv of  D_eo
+    // Deriv of  D_oe
     virtual void derivUnprecOddEvenLinOp(P& ds_u, const T& chi, const T& psi,
     		enum PlusMinus isign) const;
   
@@ -127,7 +127,7 @@ namespace Chroma
     //! Get the log det of the even even part
     Double logDetEvenEvenLinOp(void) const; 
 
-    //! Get the log det of the even even part
+    //! Get the log det of the odd odd part
     Double logDetOddOddLinOp(void) const; 
 
   private:
