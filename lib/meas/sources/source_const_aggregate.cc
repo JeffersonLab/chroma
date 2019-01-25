@@ -16,6 +16,7 @@
 #include "meas/sources/dilutezN_source_const.h"
 #include "meas/sources/dilute_zN_eigvec_source_const.h"
 #include "meas/sources/diluteGrid_source_const.h"
+#include "meas/sources/sh_zN_grid_source_const.h"
 
 #include "meas/sources/sf_pt_source_const.h"
 #include "meas/sources/sf_sh_source_const.h"
@@ -48,6 +49,7 @@ namespace Chroma
 	success &= PartialWallQuarkSourceConstEnv::registerAll();
 	success &= DiluteZNQuarkSourceConstEnv::registerAll();
 	success &= DiluteZNEigVecQuarkSourceConstEnv::registerAll();
+	success &= ShellZnGridQuarkSourceConstEnv::registerAll();
 
 	success &= DiluteGridQuarkSourceConstEnv::registerAll();
 

@@ -324,6 +324,7 @@ nobase_include_HEADERS = \
 	meas/sources/dilutezN_source_const.h \
 	meas/sources/dilute_zN_eigvec_source_const.h \
 	meas/sources/diluteGrid_source_const.h \
+	meas/sources/sh_zN_grid_source_const.h \
 	meas/sources/rndz2wall_source_const.h \
 	meas/sources/rndzNwall_source_const.h \
 	meas/sources/wall_source_const.h \
@@ -1300,6 +1301,7 @@ libchroma_a_SOURCES = \
         meas/sources/dilutezN_source_const.cc \
         meas/sources/dilute_zN_eigvec_source_const.cc \
         meas/sources/diluteGrid_source_const.cc \
+	meas/sources/sh_zN_grid_source_const.cc \
         meas/sources/rndz2wall_source_const.cc \
         meas/sources/rndzNwall_source_const.cc \
         meas/sources/wall_source_const.cc \
