@@ -78,11 +78,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const std::string& path, ShellQuarkSourceConstEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, ShellZnGridQuarkSourceConstEnv::Params& param);
 
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const std::string& path, const ShellQuarkSourceConstEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const ShellZnGridQuarkSourceConstEnv::Params& param);
 
 
 }  // end namespace Chroma

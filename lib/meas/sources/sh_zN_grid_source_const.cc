@@ -21,6 +21,7 @@
 
 #include "meas/smear/simple_quark_displacement.h"
 #include "meas/smear/no_quark_displacement.h"
+#include "meas/sources/zN_src.h"
 
 namespace Chroma
 {
@@ -264,7 +265,7 @@ namespace Chroma
 	LatticeBoolean mask = false ;
 	LatticeBoolean btmp = true;
 	for(int j=0; j < params.grd.size(); ++j){
-	  LatticeInteger X= Layout::latticeCoordinate(j) - param.t_srce[j];
+	  LatticeInteger X= Layout::latticeCoordinate(j) - params.t_srce[j];
 	  if(params.grd[j] > 0)
 	    X = X % params.grd[j];
 	  btmp &= (X==0) ;
@@ -285,9 +286,10 @@ namespace Chroma
 	    QDPIO::cout << "spin = " << spin_source << std::endl; 
 
 	    LatticeColorVector src_color_vec = zero;
+	    LatticeColorVector cv=zero ;
 	    LatticeComplex ZNc = zN_rng(Nc);
-
-	    src_color_vec = where(mask,ZNc,zero);
+	    pokeColor(cv,ZNc,color_source) ;
+	    src_color_vec = where(mask,cv,LatticeColorVector(zero));
 	    // Insert a ColorVector into spin index spin_source
 	    // This only overwrites sections, so need to initialize first
 	    LatticeFermion chi = zero;
