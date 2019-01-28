@@ -46,6 +46,7 @@ namespace Chroma
       
       multi1d<int>     t_srce;               /*!< source location */
       multi1d<int>     grd   ;               /*!< grid spacing negative means no grid in this direction. */
+      multi1d<multi1d<int> > moms ; /*!<  If not empty add a linear combination of momenta to the source */
       Seed ran_seed; /*!< Set the seed to this value */
     };
 

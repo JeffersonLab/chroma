@@ -22,6 +22,7 @@
 #include "meas/smear/simple_quark_displacement.h"
 #include "meas/smear/no_quark_displacement.h"
 #include "meas/sources/zN_src.h"
+#include "util/ft/single_phase.h"
 
 namespace Chroma
 {
@@ -169,6 +170,7 @@ namespace Chroma
 
       read(paramtop, "t_srce", t_srce);
       read(paramtop, "grd", grd);
+      read(paramtop, "moms", moms);
       read(paramtop, "j_decay",  j_decay);
       read(paramtop, "ran_seed",  ran_seed);
     }
@@ -191,6 +193,7 @@ namespace Chroma
       write(xml, "j_decay",  j_decay);
       write(xml, "quark_smear_lastP",  quark_smear_lastP);
       write(xml, "grd",  grd);
+      write(xml, "moms",  moms);
       write(xml, "ran_seed",  ran_seed);
 
       pop(xml);
@@ -271,7 +274,15 @@ namespace Chroma
 	  btmp &= (X==0) ;
 	}
 	mask |= btmp;
-	
+
+	//setup phases
+	LatticeComplex phases = 1.0 ;
+	if(params.moms.size()>0){
+	  //add phases for the given list of momenta
+	  for (int k(0);k<params.moms.size();k++){
+	    phases += singlePhase(params.t_srce,params.moms[k], params.j_decay);
+	  }
+	}
 	for(int color_source = 0; color_source < Nc; ++color_source)
 	{
 	  QDPIO::cout << "color = " << color_source << std::endl; 
@@ -288,6 +299,7 @@ namespace Chroma
 	    LatticeColorVector src_color_vec = zero;
 	    LatticeColorVector cv=zero ;
 	    LatticeComplex ZNc = zN_rng(Nc);
+	    ZNc *= phases ; // add the phases 
 	    pokeColor(cv,ZNc,color_source) ;
 	    src_color_vec = where(mask,cv,LatticeColorVector(zero));
 	    // Insert a ColorVector into spin index spin_source
