@@ -329,7 +329,9 @@ namespace Chroma
      // If source string is too long it will be truncated and not null terminated, so null terminate
      if(  subspace_prefix.size() > 255 ) { (subspace_pointers->mg_param).vec_outfile[255] = '\0'; }
      QDPInternal::broadcast( (void*)(subspace_pointers->mg_param).vec_outfile, 256);
+#ifdef QUDA_MG_DUMP_ENABLED
      dumpMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+#endif
      (subspace_pointers->mg_param).vec_outfile[0] ='\0';
     }
   }
