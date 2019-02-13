@@ -76,7 +76,8 @@ namespace Chroma
 	 *
 	 * u_tmp(x) += u_dag(x-nu,nu)*u(x-nu,mu)*u(x-nu+mu,nu)
 	 */
-	u_tmp += shift(adj(u[nu]) * u[mu] * shift(u[nu],FORWARD,mu),BACKWARD,nu);
+	LatticeColorMatrix u_nu_tmp = shift(u[nu],FORWARD,mu);
+	u_tmp += shift(adj(u[nu]) * u[mu] * u_nu_tmp,BACKWARD,nu);
 
 	/*
 	 * Unprojected level 1 link
@@ -138,7 +139,8 @@ namespace Chroma
 	   *
 	   * u_tmp(x) += u_lv1_dag(x-nu,kk)*u_lv1(x-nu,jj)*u_lv1(x-nu+mu,kk)
 	   */
-	  u_tmp += shift(adj(u_lv1[kk]) * u_lv1[jj] * shift(u_lv1[kk],FORWARD,mu),BACKWARD,nu);
+	  LatticeColorMatrix u_lv1_tmp = shift(u_lv1[kk],FORWARD,mu);
+	  u_tmp += shift(adj(u_lv1[kk]) * u_lv1[jj] * u_lv1_tmp , BACKWARD,nu);
 	}
 
 	/*
@@ -198,7 +200,8 @@ namespace Chroma
 	     *
 	     * u_tmp(x) += u_lv1_dag(x-rho,kk)*u_lv1(x-rho,jj)*u_lv1(x-rho+mu,kk)
 	     */
-	    u_tmp += shift(adj(u_lv1[kk]) * u_lv1[jj] * shift(u_lv1[kk],FORWARD,mu),BACKWARD,rho);
+	    LatticeColorMatrix u_lv1_tmp = shift(u_lv1[kk],FORWARD,mu);
+	    u_tmp += shift(adj(u_lv1[kk]) * u_lv1[jj] * u_lv1_tmp , BACKWARD,rho);
 	  }
 
 	  /*
@@ -246,7 +249,8 @@ namespace Chroma
 	   *
 	   * u_tmp(x) += u_lv2_dag(x-nu,kk)*u_lv2(x-nu,jj)*u_lv2(x-nu+mu,kk)
 	   */
-	  u_tmp += shift(adj(u_lv2[kk]) * u_lv2[jj] * shift(u_lv2[kk],FORWARD,mu),BACKWARD,nu);
+	  LatticeColorMatrix u_lv2_tmp = shift(u_lv2[kk],FORWARD,mu);
+	  u_tmp += shift(adj(u_lv2[kk]) * u_lv2[jj] * u_lv2_tmp , BACKWARD,nu);
 	}
 
 	/*
