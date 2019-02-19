@@ -42,14 +42,15 @@ namespace Chroma
 					if(isign == PLUS){
 						// shift with i\gamma_5 A_oo
 						base_op(out, in, isign);
-						base_op.unprecOddOddLinOp(tmp, in, isign);
-						out[rb[1]] += mu*(Gamma(15)*timesI(tmp));
+						base_op.scaleOddOddLinOp(tmp, in, isign);
+						out[rb[1]] -= mu*(Gamma(15)*timesI(tmp));
 					}else{
 						// shift with -i\gamma_5 A_oo
 						base_op(out, in, isign);
-						base_op.unprecOddOddLinOp(tmp, in, isign);
-						out[rb[1]] -= mu*(Gamma(15)*timesI(tmp));
+						base_op.scaleOddOddLinOp(tmp, in, isign);
+						out[rb[1]] += mu*(Gamma(15)*timesI(tmp));
 					}
+					base_op.getFermBC().modifyF(out);
 					END_CODE();
 				}
 
@@ -71,17 +72,18 @@ namespace Chroma
 					// add deriv of shifted mass term
 					T Y_prime = zero;
 					Y_prime = Gamma(15)*Y;
-					base_op.derivUnprecOddOddLinOp(ds_extra, Y_prime, X, isign);
+					base_op.derivScaleOddOddLinOp(ds_extra, Y_prime, X, isign);
 					for(int i=0; i<Nd; ++i)
 					ds_extra[i] *= mu;
 
 					if(isign == PLUS){
 						for(int i=0; i<Nd; ++i)
-						ds_u[i] += timesI(ds_extra[i]);
+						ds_u[i] -= timesI(ds_extra[i]);
 					}else{
 						for(int i=0; i<Nd; ++i)
-						ds_u[i] -= timesI(ds_extra[i]);
+						ds_u[i] += timesI(ds_extra[i]);
 					}
+					base_op.getFermBC().zero(ds_u);
 					END_CODE();
 				}
 
@@ -110,14 +112,15 @@ namespace Chroma
 				{
 					START_CODE();
 					if(isign == PLUS){
-						// shift with i\gamma_5
-						base_op(out, in, isign);
-						out[rb[1]] += mu*(Gamma(15)*timesI(in));
-					}else{
 						// shift with -i\gamma_5
 						base_op(out, in, isign);
 						out[rb[1]] -= mu*(Gamma(15)*timesI(in));
+					}else{
+						// shift with +i\gamma_5
+						base_op(out, in, isign);
+						out[rb[1]] += mu*(Gamma(15)*timesI(in));
 					}
+					base_op.getFermBC().modifyF(out);
 					END_CODE();
 				}
 
@@ -125,6 +128,8 @@ namespace Chroma
 				{
 					// its +/- i gamma_5 so indep of gauge fields
 					base_op.deriv(ds_u, Y, X, isign);
+					// Base Op will have called getFermBC().zero()
+
 				}
 
 			private:

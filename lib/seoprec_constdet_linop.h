@@ -93,10 +93,10 @@ namespace Chroma
  * as
  *    unprecEvenOddLinOp
  *    unprecOddEvenLinOp
- *    unprecEvenEvenLinOp
- *    unprecOddOddLinOp
- *    unprecOddOddInvLinOp
- *    unprecEvenEvenInvLinOp
+ *    scaleEvenEvenLinOp
+ *    scaleOddOddLinOp
+ *    scaleOddOddInvLinOp
+ *    scaleEvenEvenInvLinOp
  *
  *    then we can write category defaults for:
  *
@@ -133,21 +133,21 @@ namespace Chroma
     virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
     //! Apply the inverse of the even-even block onto a source std::vector
-    virtual void unprecEvenEvenInvLinOp(T& chi, const T& psi,
+    virtual void scaleEvenEvenInvLinOp(T& chi, const T& psi,
     		enum PlusMinus isign) const override = 0;
 
     //! Apply the inverse of the odd-odd block onto a source std::vector
-    virtual void unprecOddOddInvLinOp(T& chi, const T& psi,
+    virtual void scaleOddOddInvLinOp(T& chi, const T& psi,
     		enum PlusMinus isign) const override = 0;
 
     //! Apply the even-even block onto a source std::vector
     /*! This does not need to be optimized */
-    virtual void unprecEvenEvenLinOp(T& chi, const T& psi,
+    virtual void scaleEvenEvenLinOp(T& chi, const T& psi,
     		enum PlusMinus isign) const override = 0;
 
     //! Apply the odd-odd block onto a source std::vector
     /*! This does not need to be optimized */
-    virtual void unprecOddOddLinOp(T& chi, const T& psi,
+    virtual void scaleOddOddLinOp(T& chi, const T& psi,
     		enum PlusMinus isign) const override = 0;
 
     //! Apply the even-odd block onto a source std::vector
@@ -175,11 +175,11 @@ namespace Chroma
 
     	T tmp; moveToFastMemoryHint(tmp);
     	if( isign == PLUS ) {
-    		unprecEvenEvenInvLinOp(tmp,chi,MINUS);
+    		scaleEvenEvenInvLinOp(tmp,chi,MINUS);
     		derivUnprecEvenOddLinOp(ds_u, tmp, psi, PLUS);
     	}
     	else {
-    		unprecOddOddInvLinOp(tmp,psi,MINUS);
+    		scaleOddOddInvLinOp(tmp,psi,MINUS);
     		derivUnprecEvenOddLinOp(ds_u,chi, tmp, MINUS);
 
     	}
@@ -191,19 +191,19 @@ namespace Chroma
 				   enum PlusMinus isign) const override
     {
     	ds_u.resize(Nd);
-        	ds_u = zero;
+    	ds_u = zero;
 
-        	T tmp; moveToFastMemoryHint(tmp);
-        	if( isign == PLUS ) {
-        		unprecOddOddInvLinOp(tmp,chi,MINUS);
-        		derivUnprecOddEvenLinOp(ds_u, tmp, psi, PLUS);
-        	}
-        	else {
-        		unprecEvenEvenLinOp(tmp,psi,MINUS);
-        		derivUnprecEvenOddLinOp(ds_u,chi, tmp, MINUS);
+    	T tmp; moveToFastMemoryHint(tmp);
+    	if( isign == PLUS ) {
+    		scaleOddOddInvLinOp(tmp,chi,MINUS);
+    		derivUnprecOddEvenLinOp(ds_u, tmp, psi, PLUS);
+    	}
+    	else {
+    		scaleEvenEvenLinOp(tmp,psi,MINUS);
+    		derivUnprecEvenOddLinOp(ds_u,chi, tmp, MINUS);
 
-        	}
-        	getFermBC().zero(ds_u);
+    	}
+    	getFermBC().zero(ds_u);
     }
 
 

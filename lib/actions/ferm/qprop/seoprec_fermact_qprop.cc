@@ -46,8 +46,8 @@ namespace Chroma
       /* chi' = L^{-1} x M_diag^{-1} chi */
       T Mdiag_inv_chi;
       QDPIO::cout << "Diag Inv" << std::endl;
-      A->unprecEvenEvenInvLinOp(Mdiag_inv_chi,chi, PLUS);
-      A->unprecOddOddInvLinOp(Mdiag_inv_chi,chi,PLUS);
+      A->scaleEvenEvenInvLinOp(Mdiag_inv_chi,chi, PLUS);
+      A->scaleOddOddInvLinOp(Mdiag_inv_chi,chi,PLUS);
 
       /* Now apply L^{-1} = [ 1          0  ]  = [ 1      0 ]
        *                    [ -A^-1_oo D_oe  1 ]    [ -M_oe   1]

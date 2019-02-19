@@ -646,7 +646,14 @@ public:
 		return res;
 	}
 
+	// For testing purposes
+	QudaGaugeParam& getQudaGaugeParam() {
+			return q_gauge_param;
+	}
 
+	QudaInvertParam& getQudaInvertParam() {
+		return quda_inv_param;
+	}
 private:
 	// Hide default constructor
 	LinOpSysSolverQUDAClover() {}

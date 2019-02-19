@@ -142,19 +142,19 @@ public:
 
 	//! Apply the even-even block onto a source std::vector
 	/*! This does not need to be optimized */
-	virtual void unprecEvenEvenLinOp(T& chi, const T& psi,
+	virtual void scaleEvenEvenLinOp(T& chi, const T& psi,
 			enum PlusMinus isign) const = 0;
 
 	//! Apply the inverse of the even-even block onto a source std::vector
-	virtual void unprecEvenEvenInvLinOp(T& chi, const T& psi,
+	virtual void scaleEvenEvenInvLinOp(T& chi, const T& psi,
 			enum PlusMinus isign) const = 0;
 
 	//! Apply the the odd-odd block onto a source std::vector
-	virtual void unprecOddOddLinOp(T& chi, const T& psi,
+	virtual void scaleOddOddLinOp(T& chi, const T& psi,
 			enum PlusMinus isign) const = 0;
 
 	//! Apply the inverse of the odd-odd block onto a source std::vector
-	virtual void unprecOddOddInvLinOp(T& chi, const T& psi,
+	virtual void scaleOddOddInvLinOp(T& chi, const T& psi,
 			enum PlusMinus isign) const = 0;
 
 	//! Apply the the even-odd block onto a source std::vector
@@ -174,15 +174,15 @@ public:
 
 		if( isign == PLUS ) {
 			unprecEvenOddLinOp(tmp, psi, PLUS);
-			unprecEvenEvenInvLinOp(chi,tmp,PLUS);
+			scaleEvenEvenInvLinOp(chi,tmp,PLUS);
 		}
 		else {
-			unprecOddOddInvLinOp(tmp, psi, MINUS);
+			scaleOddOddInvLinOp(tmp, psi, MINUS);
 			unprecEvenOddLinOp(chi, tmp, MINUS);
 		}
 
 		// Do I want to apply BC's here?
-		//getFermBC().modifyF(chi);
+		getFermBC().modifyF(chi);
 	}
 
 	virtual void oddEvenLinOp(T& chi, const T& psi,
@@ -192,17 +192,20 @@ public:
 
 		if( isign == PLUS ) {
 			unprecOddEvenLinOp(tmp, psi, PLUS);
-			unprecOddOddInvLinOp(chi,tmp,PLUS);
+			scaleOddOddInvLinOp(chi,tmp,PLUS);
 		}
 		else {
-			unprecEvenEvenInvLinOp(tmp, psi, MINUS);
+			scaleEvenEvenInvLinOp(tmp, psi, MINUS);
 			unprecOddEvenLinOp(chi, tmp, MINUS);
 		}
 
 		// Do I want to apply BCs here?
-		//getFermBC().modifyF(chi);
+		getFermBC().modifyF(chi);
 	}
 
+	// The odd odd block. Typically this is the identity
+	// but may include something like a twisted clover term.
+	virtual void oddOddLinOp(T& chi, const T& psi, enum PlusMinus isign) const =0;
 
 	//! Apply the operator onto a source std::vector
 	virtual void operator() (T& chi, const T& psi,
@@ -217,10 +220,11 @@ public:
 		/*  t2 = M_oe t1 */
 		oddEvenLinOp(tmp2,tmp1,isign);
 
-		/* chi = psi - M_oe M_eo psi = (1 - M_oe M_eo) psi */
+		/* chi = M_oo psi - M_oe M_eo psi = (M_oo - M_oe M_eo) psi */
 		/* NB: the construction takes care of daggering
 		 *       as the M_eo^\dagger will reverse operator order etc */
-		chi[rb[1]] = psi - tmp2;
+		oddOddLinOp(chi,psi,isign);
+		chi[rb[1]] -=  tmp2;
 		getFermBC().modifyF(chi);
 	}
 
@@ -232,12 +236,15 @@ public:
 
 		//         [   1     A^{-1}_ee D_eo ]
 		//         [                        ]
-		//         [ A^{-1}_oo D_oe    1    ]
+		//         [ A^{-1}_oo D_oe    M_oo    ]
 		//
 		//   Or hermitian conjugate
-		chi = psi;
+		oddOddLinOp(chi,psi, isign);
+		chi[rb[0]] = psi;
+
 		evenOddLinOp(tmp, psi, isign);
 		chi[ rb[0]] += tmp;
+
 		oddEvenLinOp(tmp, psi, isign);
 		chi[ rb[1]] += tmp;
 
@@ -254,14 +261,14 @@ public:
 		if ( isign == PLUS ) {
 			// Apply Jacobi Operator and scale for M_unprec:
 			//
-			//   [ A_ee    0   ]  [   1     A^{-1}_ee D_eo ]
-			//   [             ]  [                        ]
-			//   [   0   A_oo  ]  [ A^{-1}_oo D_oe    1    ]
+			//   [ A_ee    0   ]  [   1     A^{-1}_ee D_eo    ]
+			//   [             ]  [                           ]
+			//   [   0   A_oo  ]  [ A^{-1}_oo D_oe    M_oo    ]
 			//
 			jacobiOp(tmp1, psi, isign);
 
-			unprecEvenEvenLinOp(chi,tmp1,isign);
-			unprecOddOddLinOp(chi,tmp1, isign);
+			scaleEvenEvenLinOp(chi,tmp1,isign);
+			scaleOddOddLinOp(chi,tmp1, isign);
 		}
 		else {
 			// For Hermitian conjugate scale first then apply Jacobi operator
@@ -269,8 +276,8 @@ public:
 			// [ 1     (D^\dag)_eo A^{-dag}_oo ] [ A^dag_ee     0  ]
 			// [                               ] [                 ]
 			// [ (D^\dag)_oe A^{-dag}_ee     1 ] [  0     A^dag_oo ]
-			unprecEvenEvenLinOp(tmp1,psi,isign);
-			unprecOddOddLinOp(tmp1,psi,isign);
+			scaleEvenEvenLinOp(tmp1,psi,isign);
+			scaleOddOddLinOp(tmp1,psi,isign);
 			jacobiOp(chi,tmp1,isign);
 
 		}
@@ -287,6 +294,9 @@ public:
 			enum PlusMinus isign) const = 0;
 
 
+	//! Compute the force coming from the M_oo part. Typically this would be zero
+    virtual void derivOddOddLinOp(P& ds_u, const T& chi, const T& psi,
+    		enum PlusMinus isign) const = 0;
 
 	//! Deriv
 	virtual void deriv(P& ds_u, const T& chi, const T& psi,
@@ -303,12 +313,19 @@ public:
 		ds_u.resize(Nd);
 		ds_u = zero;
 		P ds_tmp;
+		ds_tmp.resize(Nd);
+
+		derivOddOddLinOp(ds_u, chi,psi,isign);
+
+		ds_tmp = zero;
 		derivOddEvenLinOp(ds_tmp,chi,M_eo_psi,isign);
 		ds_u -= ds_tmp;
 
+		ds_tmp = zero;
 		derivEvenOddLinOp(ds_tmp, M_oe_dag_chi,psi,isign);
 		ds_u -= ds_tmp;
 	
+
 		getFermBC().zero(ds_u);
 	}
 
@@ -326,7 +343,12 @@ public:
 		ds_u.resize(Nd);
 		ds_u = zero;
 		P ds_tmp;
+		ds_tmp.resize(Nd);
 		for(int i=0; i < chi.size(); ++i) {
+			ds_tmp = zero;
+			derivOddOddLinOp(ds_tmp, chi[i],psi[i], isign);
+			ds_u += ds_tmp;
+
 			evenOddLinOp( M_eo_psi, psi[i], isign);
 			evenOddLinOp( M_oe_dag_chi, chi[i], msign);
 

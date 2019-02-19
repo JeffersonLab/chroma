@@ -43,7 +43,7 @@ std::string fermact_xml_symm =  "<?xml version='1.0'?>                          
    <FermionAction>                                    \
      <FermAct>SEOPREC_CLOVER</FermAct>                        \
      <Mass>0.1</Mass>				      \
-     <clovCoeff>1</clovCoeff>			      \
+     <clovCoeff>1.0</clovCoeff>			      \
      <AnisoParam>				      \
        <anisoP>false</anisoP>			      \
        <t_dir>3</t_dir>				      \
@@ -62,6 +62,34 @@ std::string fermact_xml_symm =  "<?xml version='1.0'?>                          
      </FermState>				      \
    </FermionAction>				      \
   </Param>";
+
+std::string fermact_xml_asymm_twisted = \
+  "<?xml version='1.0'?>                              \
+   <Param>					      \
+   <FermionAction>                                    \
+     <FermAct>CLOVER</FermAct>                        \
+     <Mass>0.1</Mass>				      \
+     <clovCoeff>1</clovCoeff>			      \
+     <AnisoParam>				      \
+       <anisoP>false</anisoP>			      \
+       <t_dir>3</t_dir>				      \
+       <xi_0>1</xi_0>				      \
+       <nu>1</nu>				      \
+     </AnisoParam> \
+    <TwistedM>0.05</TwistedM>  \
+    <FermState>					      \
+       <Name>STOUT_FERM_STATE</Name>		      \
+       <rho>0.14</rho>				      \
+       <n_smear>2</n_smear>			      \
+       <orthog_dir>3</orthog_dir>		      \
+       <FermionBC>				      \
+         <FermBC>SIMPLE_FERMBC</FermBC>		      \
+         <boundary>1 1 1 -1</boundary>		      \
+       </FermionBC>				      \
+     </FermState>				      \
+   </FermionAction>				      \
+  </Param>";
+
 std::string fermact_xml_symm_twisted = \
   "<?xml version='1.0'?>                              \
    <Param>					      \
@@ -88,6 +116,19 @@ std::string fermact_xml_symm_twisted = \
      </FermState>				      \
    </FermionAction>				      \
   </Param>";
+
+std::string twisted_linop_param = \
+	     "<CloverParams> \
+	        <Mass>0.1</Mass>				      \
+	        <clovCoeff>1</clovCoeff>			      \
+	        <AnisoParam>				      \
+	          <anisoP>false</anisoP>			      \
+	          <t_dir>3</t_dir>				      \
+	          <xi_0>1</xi_0>				      \
+	          <nu>1</nu>				      \
+	        </AnisoParam> \
+	        <TwistedM>0.05</TwistedM> \
+	     </CloverParams>";
 
 std::string fermact_xml_asymm_periodic = \
   "<?xml version='1.0'?>                              \
@@ -151,6 +192,15 @@ std::string inv_param_syssolver_bicgstab_xml = \
           </InvertParam>\
 		</Param>";
 
+std::string inv_param_syssolver_cg_xml = \
+		"<?xml version='1.0'?> \
+		<Param> \
+		  <InvertParam>\
+           	 <invType>CG_INVERTER</invType>\
+		     <RsdCG>1.0e-8</RsdCG> \
+		     <MaxCG>1000</MaxCG> \
+          </InvertParam>\
+		</Param>";
 
 
 #ifdef BUILD_QUDA
@@ -161,7 +211,7 @@ std::string inv_param_quda_bicgstab_xml = \
             <invType>QUDA_CLOVER_INVERTER</invType>\
   	  	  	<CloverParams>\
               <Mass>0.1</Mass>				      \
-              <clovCoeff>1</clovCoeff>			      \
+              <clovCoeff>1.0</clovCoeff>			      \
               <AnisoParam>				      \
                 <anisoP>false</anisoP>			      \
                 <t_dir>3</t_dir>				      \

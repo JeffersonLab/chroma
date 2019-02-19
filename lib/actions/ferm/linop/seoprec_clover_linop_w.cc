@@ -42,7 +42,7 @@ namespace Chroma
 
   //! Apply the the odd-odd block onto a source std::vector
   void 
-  SymEvenOddPrecCloverLinOp::unprecOddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi,
+  SymEvenOddPrecCloverLinOp::scaleOddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi,
 					 enum PlusMinus isign) const
   {
     START_CODE();
@@ -56,7 +56,7 @@ namespace Chroma
 
   //! Apply the inverse of the odd-odd block onto a source std::vector
   void 
-  SymEvenOddPrecCloverLinOp::unprecOddOddInvLinOp(LatticeFermion& chi, const LatticeFermion& psi,
+  SymEvenOddPrecCloverLinOp::scaleOddOddInvLinOp(LatticeFermion& chi, const LatticeFermion& psi,
 					    enum PlusMinus isign) const
   {
     START_CODE();
@@ -68,7 +68,7 @@ namespace Chroma
 
   //! Apply the the even-even block onto a source std::vector
   void 
-  SymEvenOddPrecCloverLinOp::unprecEvenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi,
+  SymEvenOddPrecCloverLinOp::scaleEvenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi,
 					   enum PlusMinus isign) const
   {
     START_CODE();
@@ -78,7 +78,7 @@ namespace Chroma
 
   //! Apply the inverse of the even-even block onto a source std::vector
   void 
-  SymEvenOddPrecCloverLinOp::unprecEvenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi,
+  SymEvenOddPrecCloverLinOp::scaleEvenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi,
 					      enum PlusMinus isign) const
   {
     START_CODE();
@@ -135,7 +135,40 @@ namespace Chroma
     END_CODE();
   }
 
+  //! Apply odd-odd part of linop
+   /*!
+    * The operator acts on the entire odd sublattice
+    *
+    * \param chi 	  Pseudofermion field     	       (Write)
+    * \param psi 	  Pseudofermion field     	       (Read)
+    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
+    */
+   void
+   SymEvenOddPrecCloverLinOp::oddOddLinOp(LatticeFermion& chi,
+ 					  const LatticeFermion& psi,
+ 					  enum PlusMinus isign) const
+   {
+	   LatticeFermion tmp2;
+	   LatticeFermion tmp1;
 
+	   chi[rb[1]] = psi;
+	   if( param.twisted_m_usedP ){
+	     	// tmp1 = i mu gamma_5 tmp2
+	     	//      = mu * I * gamma_5 * A psi
+	     	clov.apply(tmp2,psi,isign,1);
+
+	     	// i gamma_5 A psi
+	     	tmp1[rb[1]] = timesI(GammaConst<Ns,Ns*Ns-1>()*tmp2);
+
+	     	if( isign == PLUS ) {
+	     		chi[rb[1]] -= param.twisted_m * tmp1;
+	     	}
+	     	else {
+	     		chi[rb[1]] += param.twisted_m * tmp1;
+	     	}
+	     }
+
+   }
   //! Apply even-odd preconditioned Clover fermion linear operator
   /*!
    * \param chi 	  Pseudofermion field     	       (Write)
@@ -172,14 +205,18 @@ namespace Chroma
     chi[rb[1]] = psi  +  mquarter*tmp2;
 #if 1
     if( param.twisted_m_usedP ){
-    	// tmp1 = i mu gamma_5 tmp1
-    	tmp1[rb[1]] = (GammaConst<Ns,Ns*Ns-1>() * timesI(psi));
+    	// tmp1 = i mu gamma_5 tmp2
+    	//      = mu * I * gamma_5 * A psi
+    	clov.apply(tmp2,psi,isign,1);
+
+    	// i gamma_5 A psi
+    	tmp1[rb[1]] = timesI(GammaConst<Ns,Ns*Ns-1>()*tmp2);
 
     	if( isign == PLUS ) {
-    		chi[rb[1]] += param.twisted_m * tmp1;
+    		chi[rb[1]] -= param.twisted_m * tmp1;
     	}
     	else {
-    		chi[rb[1]] -= param.twisted_m * tmp1;
+    		chi[rb[1]] += param.twisted_m * tmp1;
     	}
     }
 #endif
@@ -190,7 +227,7 @@ namespace Chroma
 
   //! Apply the even-even block onto a source std::vector
   void 
-  SymEvenOddPrecCloverLinOp::derivUnprecEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
+  SymEvenOddPrecCloverLinOp::derivScaleEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
 						const LatticeFermion& chi, const LatticeFermion& psi, 
 						enum PlusMinus isign) const
   {
@@ -205,7 +242,7 @@ namespace Chroma
   // Inherit this
   //! Apply the the odd-odd block onto a source std::vector
   void
-  SymEvenOddPrecCloverLinOp::derivUnprecOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u,
+  SymEvenOddPrecCloverLinOp::derivScaleOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u,
 					      const LatticeFermion& chi, const LatticeFermion& psi,
 					      enum PlusMinus isign) const
   {
@@ -213,9 +250,45 @@ namespace Chroma
 
     clov.deriv(ds_u, chi, psi, isign, 1);
 
+
     END_CODE();
   }
 
+  // Inherit this
+   //! Apply the the odd-odd block onto a source std::vector
+   void
+   SymEvenOddPrecCloverLinOp::derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u,
+ 					      const LatticeFermion& chi, const LatticeFermion& psi,
+ 					      enum PlusMinus isign) const
+   {
+     START_CODE();
+
+     ds_u.resize(Nd);
+     ds_u = zero;
+
+
+     // Add twisted term here.
+     // add on (-/+) i mu  chi^\dag gamma_5 \dot{A} psi
+     if( param.twisted_m_usedP) {
+    	 LatticeFermion tmp;
+    	 P ds_tmp;  ds_tmp.resize(Nd);
+    	 tmp[rb[0]] = zero;
+    	 tmp[rb[1]] = GammaConst<Ns,Ns*Ns-1>()*chi;
+    	 ds_tmp=zero;
+    	 clov.deriv(ds_tmp,tmp,psi,isign,1);
+    	 for(int mu=0; mu < Nd; ++mu) {
+    		 if ( isign == PLUS ) {
+    			 ds_u[mu] -= param.twisted_m * timesI(ds_tmp[mu]);
+    		 }
+    		 else {
+    			 ds_u[mu] += param.twisted_m * timesI(ds_tmp[mu]);
+    		 }
+    	 }
+     }
+     getFermBC().zero(ds_u);
+
+     END_CODE();
+   }
   //! Apply the even-even block onto a source std::vector
   void 
   SymEvenOddPrecCloverLinOp::derivLogDetEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
@@ -227,6 +300,9 @@ namespace Chroma
     
     END_CODE();
   }
+
+
+
 
   //! Apply the even-even block onto a source std::vector
   void 
@@ -355,6 +431,23 @@ namespace Chroma
 		for(int mu=0; mu < Nd; ++mu) {
 			ds_u[mu] *= Real(-0.5);
 		}
+
+		// Add twisted term here.
+		// add on (-/+) i mu  chi^\dag gamma_5 \dot{A} psi
+		if( param.twisted_m_usedP) {
+			tmp[rb[0]] = zero;
+			tmp[rb[1]] = GammaConst<Ns,Ns*Ns-1>()*chi;
+			ds_tmp=zero;
+			clov.deriv(ds_tmp,tmp,psi,isign,1);
+			for(int mu=0; mu < Nd; ++mu) {
+				if ( isign == PLUS ) {
+					ds_u[mu] -= param.twisted_m * timesI(ds_tmp[mu]);
+				}
+				else {
+					ds_u[mu] += param.twisted_m * timesI(ds_tmp[mu]);
+				}
+			}
+		}
 		getFermBC().zero(ds_u);
 	}
 
@@ -465,6 +558,26 @@ namespace Chroma
 		for(int mu=0; mu < Nd; ++mu) {
 			ds_u[mu] *= Real(-0.5);
 		}
+
+		// Add twisted term here.
+			// add on (-/+) i mu  chi^\dag gamma_5 \dot{A} psi
+		if( param.twisted_m_usedP) {
+			for(int i=0; i < n_poles; ++i) {
+				Ainv_left[i][rb[0]] = zero;
+				Ainv_left[i][rb[1]] = GammaConst<Ns,Ns*Ns-1>()*chi[i];
+			}
+			ds_tmp=zero;
+			clov.derivMultipole(ds_tmp,Ainv_left,psi,isign,1);
+			for(int mu=0; mu < Nd; ++mu)	 {
+				if ( isign == PLUS ) {
+					ds_u[mu] -= param.twisted_m * timesI(ds_tmp[mu]);
+				}
+				else {
+					ds_u[mu] += param.twisted_m * timesI(ds_tmp[mu]);
+				}
+			}
+		}
+
 		getFermBC().zero(ds_u);
 	}
 

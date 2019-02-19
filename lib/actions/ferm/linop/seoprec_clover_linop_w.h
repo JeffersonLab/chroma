@@ -57,19 +57,19 @@ namespace Chroma
 		const CloverFermActParams& param_);
 
     //! Apply the the even-even block onto a source std::vector
-    void unprecEvenEvenLinOp(T& chi, const T& psi,
+    void scaleEvenEvenLinOp(T& chi, const T& psi,
 		       enum PlusMinus isign) const;
 
     //! Apply the inverse of the even-even block onto a source std::vector
-    void unprecEvenEvenInvLinOp(T& chi, const T& psi,
+    void scaleEvenEvenInvLinOp(T& chi, const T& psi,
 			  enum PlusMinus isign) const;
   
     //! Apply the the odd-odd block onto a source std::vector
-     void unprecOddOddLinOp(T& chi, const T& psi,
+     void scaleOddOddLinOp(T& chi, const T& psi,
  		     enum PlusMinus isign) const;
 
      //! Apply the inverse of the odd-odd block onto a source std::vector
-     void unprecOddOddInvLinOp(T& chi, const T& psi,
+     void scaleOddOddInvLinOp(T& chi, const T& psi,
  			enum PlusMinus isign) const;
 
     //! Apply the the even-odd block onto a source std::vector
@@ -81,13 +81,18 @@ namespace Chroma
 		      enum PlusMinus isign) const ;
 
 
+    //! Apply the Odd Odd part of the Jacobi operator
+    void oddOddLinOp(T& chi, const T& psi, enum PlusMinus isign) const;
+
+    //! Apply the derivative of the odd odd part of the jacobi operator
+    void derivOddOddLinOp(P& ds_u, const T& chi, const T& psi, enum PlusMinus isign) const;
 
     // Deriv of A_ee
-    virtual void derivUnprecEvenEvenLinOp(P& ds_u, const T& chi, const T& psi,
+    virtual void derivScaleEvenEvenLinOp(P& ds_u, const T& chi, const T& psi,
     		enum PlusMinus isign) const;
 
     // Deriv of A_oo
-    virtual void derivUnprecOddOddLinOp(P& ds_u, const T& chi, const T& psi,
+    virtual void derivScaleOddOddLinOp(P& ds_u, const T& chi, const T& psi,
     		enum PlusMinus isign) const;
 
     // Deriv of  D_eo

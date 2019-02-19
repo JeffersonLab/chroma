@@ -176,13 +176,14 @@ namespace Chroma
       tmp1[rb[1]] = (GammaConst<Ns,Ns*Ns-1>() * timesI(psi));
       
       if( isign == PLUS ) {
-	chi[rb[1]] += param.twisted_m * tmp1;
+    	  chi[rb[1]] -= param.twisted_m * tmp1;
       }
       else {
-	chi[rb[1]] -= param.twisted_m * tmp1;
+    	  chi[rb[1]] += param.twisted_m * tmp1;
       }
     }
 
+    getFermBC().modifyF(chi);
     END_CODE();
   }
 

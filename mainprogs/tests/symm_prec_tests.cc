@@ -20,6 +20,10 @@
 #include "update/molecdyn/predictor/quda_predictor.h"
 #endif
 
+#include "actions/ferm/linop/shifted_linop_w.h"
+#include "actions/ferm/fermacts/clover_fermact_params_w.h"
+#include "actions/ferm/linop/unprec_clover_plus_igmuA2_linop_w.h"
+
 using namespace Chroma;
 using namespace QDP;
 using namespace SymmPrecTesting;
@@ -53,10 +57,12 @@ public:
 	    std::istringstream input_asymm_periodic(fermact_xml_asymm_periodic);
 	    std::istringstream input_symm_periodic(fermact_xml_symm_periodic);
 	    std::istringstream twisted_fermact(fermact_xml_symm_twisted);
+	    std::istringstream asymm_twisted_fermact(fermact_xml_asymm_twisted);
 
 	    XMLReader xml_in_asymm_periodic(input_asymm_periodic);
 	    XMLReader xml_in_symm_periodic(input_symm_periodic);
 	    XMLReader xml_in_twisted(twisted_fermact);
+	    XMLReader xml_in_asymm_twisted(asymm_twisted_fermact);
 
 	    S_asymm = dynamic_cast<S_asymm_T*>(TheFermionActionFactory::Instance().createObject("CLOVER",
 	    											   xml_in_asymm,
@@ -78,11 +84,15 @@ public:
 		S_symm_twisted = dynamic_cast<S_symm_T*>(TheFermionActionFactory::Instance().createObject("SEOPREC_CLOVER",
 			    											   xml_in_twisted,
 			    											   "FermionAction"));
+		S_asymm_twisted = dynamic_cast<S_asymm_T*>(TheFermionActionFactory::Instance().createObject("CLOVER",
+					    											   xml_in_asymm_twisted,
+					    											   "FermionAction"));
 	    state = S_asymm->createState(u);
 
 	    M_asymm =dynamic_cast<LinOpAsymm_T *>(S_asymm->linOp(state));
 	    M_symm =dynamic_cast<LinOpSymm_T *>(S_symm->linOp(state));
 	    M_tw = dynamic_cast<LinOpSymm_T *>(S_symm_twisted->linOp(state));
+	    M_tw_asymm = dynamic_cast<LinOpAsymm_T *>(S_asymm_twisted->linOp(state));
 	}
 
 
@@ -94,11 +104,14 @@ public:
 	Handle<S_symm_T> S_symm_periodic;
 	Handle<S_asymm_T> S_asymm_periodic;
 	Handle<S_symm_T> S_symm_twisted;
+	Handle<S_asymm_T> S_asymm_twisted;
+
 	Handle<FermState<T,P,Q> > state;
 
 	Handle<LinOpAsymm_T> M_asymm;
 	Handle<LinOpSymm_T> M_symm;
 	Handle<LinOpSymm_T> M_tw;
+	Handle<LinOpAsymm_T> M_tw_asymm;
 };
 
 class SymmFixture : public SymmFixtureT<::testing::Test> {};
@@ -120,7 +133,7 @@ TEST_F(SymmFixture, CheckOp)
 		QDPIO::cout << "Op: " << std::endl;
 		// AM_symm_x = A_oo t_1 = A_oo M_symm x
 		(*M_symm)(t1,x,PLUS);
-		(*M_symm).unprecOddOddLinOp(AM_symm_x,t1,PLUS);
+		(*M_symm).scaleOddOddLinOp(AM_symm_x,t1,PLUS);
 
 
 		(*M_asymm)(M_asymm_x, x, PLUS);
@@ -140,7 +153,7 @@ TEST_F(SymmFixture, CheckOp)
 	// Now check herm conj
 	{
 		QDPIO::cout << "Daggered Op: " << std::endl;
-		(*M_symm).unprecOddOddLinOp(t1,x,MINUS);
+		(*M_symm).scaleOddOddLinOp(t1,x,MINUS);
 		(*M_symm)(AM_symm_x,t1,MINUS);
 
 		(*M_asymm)(M_asymm_x, x, MINUS);
@@ -277,7 +290,7 @@ TEST_P(MdagMInvTestSymm, CheckMdagMInvSymm)
 	Double resid = sqrt(norm2(r,rb[1]));
 	Double resid_rel = resid/sqrt(norm2(b,rb[1]));
 	QDPIO::cout << "MdagM check: || r || = " << resid << "   || r || / || b ||=" << resid_rel << std::endl;
-	ASSERT_LT( toDouble(resid_rel),1.0e-8);
+	ASSERT_LT( toDouble(resid_rel),5.0e-8);
 
 
 
@@ -306,7 +319,7 @@ TEST_P(MdagMInvTestSymm, CheckMdagMInvSymmQUDAPredict)
 	Double resid = sqrt(norm2(r,rb[1]));
 	Double resid_rel = resid/sqrt(norm2(b,rb[1]));
 	QDPIO::cout << "MdagM check: || r || = " << resid << "   || r || / || b ||=" << resid_rel << std::endl;
-	ASSERT_LT( toDouble(resid_rel),1.0e-8);
+	ASSERT_LT( toDouble(resid_rel),5.0e-8);
 
 
 
@@ -335,7 +348,7 @@ TEST_P(MdagMInvTestAsymm, CheckMdagMInvAsymm)
 	Double resid = sqrt(norm2(r,rb[1]));
 	Double resid_rel = resid/sqrt(norm2(b,rb[1]));
 	QDPIO::cout << "MdagM check: || r || = " << resid << "   || r || / || b ||=" << resid_rel << std::endl;
-	ASSERT_LT( toDouble(resid_rel),1.0e-8);
+	ASSERT_LT( toDouble(resid_rel),1.5e-8);
 
 
 
@@ -366,7 +379,7 @@ TEST_P(MdagMInvTestAsymm, CheckMdagMInvAsymmQUDAPredict)
 	Double resid = sqrt(norm2(r,rb[1]));
 	Double resid_rel = resid/sqrt(norm2(b,rb[1]));
 	QDPIO::cout << "MdagM check: || r || = " << resid << "   || r || / || b ||=" << resid_rel << std::endl;
-	ASSERT_LT( toDouble(resid_rel),2.0e-8);
+	ASSERT_LT( toDouble(resid_rel),5.0e-8);
 
 }
 #endif
@@ -545,9 +558,9 @@ TEST_F(SymmFixture, TestDeriv)
 
 	// W = M^{-1}_oo M_asymm Y
 	(*M_asymm)(tmp,Y,PLUS);
-	(*M_symm).unprecOddOddInvLinOp(W,tmp,PLUS);
+	(*M_symm).scaleOddOddInvLinOp(W,tmp,PLUS);
 
-	(*M_symm).unprecOddOddInvLinOp(Z,X,MINUS);
+	(*M_symm).scaleOddOddInvLinOp(Z,X,MINUS);
 
 	// The derivative of M_symm
 	(*M_symm).deriv(ds_symm,X,Y,PLUS);
@@ -556,7 +569,7 @@ TEST_F(SymmFixture, TestDeriv)
 	(*M_asymm).deriv(rhs,Z,Y,PLUS);
 
 	// rhs -= Z^\dagger d[ M_oo ] W
-	(*M_symm).derivUnprecOddOddLinOp(ds_tmp,Z,W,PLUS);
+	(*M_symm).derivScaleOddOddLinOp(ds_tmp,Z,W,PLUS);
 	rhs -= ds_tmp;
 
 	for(int mu=0; mu < Nd; ++mu) {
@@ -567,6 +580,172 @@ TEST_F(SymmFixture, TestDeriv)
 				<< "  || rhs - ds_symm || / number =" << norm_rhs_per_number << std::endl;
 
 		ASSERT_LT(toDouble(norm_rhs_per_number), 1.0e-18 );
+	}
+}
+
+// Forces
+TEST_F(SymmFixture, TestDerivTwistedSymmOp)
+{
+	P ds_symm;
+	P ds_twisted;
+	P ds_tmp;
+
+	Real twist=Real(0.05);
+
+	T X = zero;
+	T Y = zero;
+	T g5_X = zero;
+
+	gaussian(X,rb[1]);
+	gaussian(Y,rb[1]);
+
+	g5_X[rb[1]] = GammaConst<Ns,Ns*Ns-1>() * X;
+
+	for(int dagger=0; dagger < 2; ++dagger) {
+		enum PlusMinus isign = ( dagger == 0 ? PLUS : MINUS );
+		std::string sign_str = (isign == PLUS ) ? "-" : "+";
+		Real signtwist = (isign == PLUS) ? Real(-twist) : twist;
+
+		(*M_tw).deriv(ds_twisted, X, Y, isign);
+
+		(*M_symm).deriv(ds_symm, X, Y, isign);
+		(*M_symm).derivScaleOddOddLinOp(ds_tmp, g5_X, Y, isign);
+		for(int mu=0; mu < Nd; ++mu ) {
+			ds_symm[mu] += signtwist*timesI(ds_tmp[mu]);
+		}
+		(*M_symm).getFermBC().zero(ds_symm);
+
+		for(int mu=0; mu < Nd; ++mu) {
+			ds_symm[mu] -= ds_twisted[mu];
+
+			Double norm_rhs = sqrt(norm2(ds_symm[mu]));
+			Double norm_rhs_per_number = norm_rhs/Double(3*3*2*Layout::vol());
+			QDPIO::cout << "mu=" << mu << " " << sign_str<< ": || ds_symm +  twist - ds_twisted || = " << norm_rhs
+					<< "  || ds_symm + twist - ds_twisted || / number =" << norm_rhs_per_number << std::endl;
+
+			ASSERT_LT(toDouble(norm_rhs_per_number), 1.0e-18 );
+		}
+	}
+}
+
+TEST_F(SymmFixture, TestDerivTwistedAsymmOp)
+{
+	P ds_asymm;
+	P ds_twisted;
+	P ds_tmp;
+
+	Real twist=Real(0.05);
+
+	T X = zero;
+	T Y = zero;
+
+	gaussian(X,rb[1]);
+	gaussian(Y,rb[1]);
+
+	for(int dagger=0; dagger < 2; ++dagger) {
+		enum PlusMinus isign = ( dagger == 0 ? PLUS : MINUS );
+		std::string sign_str = (isign == PLUS ) ? "-" : "+";
+		Real signtwist = (isign == PLUS) ? Real(-twist) : twist;
+
+		(*M_tw_asymm).deriv(ds_twisted, X, Y, isign);
+
+		// Should be identical... -ig5mu I is gauge independent.
+		(*M_asymm).deriv(ds_asymm, X, Y, isign);
+
+		for(int mu=0; mu < Nd; ++mu) {
+			ds_asymm[mu] -= ds_twisted[mu];
+
+			Double norm_rhs = sqrt(norm2(ds_asymm[mu]));
+			Double norm_rhs_per_number = norm_rhs/Double(3*3*2*Layout::vol());
+			QDPIO::cout << "mu=" << mu << " " << sign_str<< ": || ds_asymm - ds_twisted || = " << norm_rhs
+					<< "  || ds_asymm  - ds_twisted || / number =" << norm_rhs_per_number << std::endl;
+
+			ASSERT_LT(toDouble(norm_rhs_per_number), 1.0e-18 );
+		}
+	}
+}
+
+// Forces
+TEST_F(SymmFixture, TestDerivTwistedShiftedSymmOp)
+{
+	P ds_symm;
+	P ds_twisted;
+	P ds_tmp;
+
+	Real twist=Real(0.05);
+	TwistedShiftedLinOp<T,P,Q,SymEvenOddPrecLogDetLinearOperator> M_shifted((*M_symm),twist);
+
+	T X = zero;
+	T Y = zero;
+	T g5_X = zero;
+
+	gaussian(X,rb[1]);
+	gaussian(Y,rb[1]);
+
+	g5_X[rb[1]] = GammaConst<Ns,Ns*Ns-1>() * X;
+
+	for(int dagger=0; dagger < 2; ++dagger) {
+		enum PlusMinus isign = ( dagger == 0 ? PLUS : MINUS );
+		std::string sign_str = (isign == PLUS ) ? "-" : "+";
+		Real signtwist = (isign == PLUS) ? Real(-twist) : twist;
+
+		M_shifted.deriv(ds_twisted, X, Y, isign);
+
+		(*M_symm).deriv(ds_symm, X, Y, isign);
+		(*M_symm).derivScaleOddOddLinOp(ds_tmp, g5_X, Y, isign);
+		for(int mu=0; mu < Nd; ++mu ) {
+			ds_symm[mu] += signtwist*timesI(ds_tmp[mu]);
+		}
+		(*M_symm).getFermBC().zero(ds_symm);
+
+		for(int mu=0; mu < Nd; ++mu) {
+			ds_symm[mu] -= ds_twisted[mu];
+
+			Double norm_rhs = sqrt(norm2(ds_symm[mu]));
+			Double norm_rhs_per_number = norm_rhs/Double(3*3*2*Layout::vol());
+			QDPIO::cout << "mu=" << mu << " " << sign_str<< ": || ds_symm +  twist - ds_twisted || = " << norm_rhs
+					<< "  || ds_symm + twist - ds_twisted || / number =" << norm_rhs_per_number << std::endl;
+
+			ASSERT_LT(toDouble(norm_rhs_per_number), 1.0e-18 );
+		}
+	}
+}
+
+// Forces
+TEST_F(SymmFixture, TestDerivTwistedShiftedAymmOp)
+{
+	P ds_asymm;
+	P ds_twisted;
+
+	Real twist=Real(0.05);
+	TwistedShiftedLinOp<T,P,Q,EvenOddPrecLinearOperator> M_shifted((*M_asymm),twist);
+
+	T X = zero;
+	T Y = zero;
+
+
+	gaussian(X,rb[1]);
+	gaussian(Y,rb[1]);
+
+	for(int dagger=0; dagger < 2; ++dagger) {
+		enum PlusMinus isign = ( dagger == 0 ? PLUS : MINUS );
+		std::string sign_str = (isign == PLUS ) ? "-" : "+";
+		Real signtwist = (isign == PLUS) ? Real(-twist) : twist;
+
+		M_shifted.deriv(ds_twisted, X, Y, isign);
+
+		(*M_asymm).deriv(ds_asymm, X, Y, isign);
+
+		for(int mu=0; mu < Nd; ++mu) {
+			ds_asymm[mu] -= ds_twisted[mu];
+
+			Double norm_rhs = sqrt(norm2(ds_asymm[mu]));
+			Double norm_rhs_per_number = norm_rhs/Double(3*3*2*Layout::vol());
+			QDPIO::cout << "mu=" << mu << " " << sign_str<< ": || ds_asymm  - ds_twisted || = " << norm_rhs
+					<< "  || ds_asymm  - ds_twisted || / number =" << norm_rhs_per_number << std::endl;
+
+			ASSERT_LT(toDouble(norm_rhs_per_number), 1.0e-18 );
+		}
 	}
 }
 
@@ -603,11 +782,11 @@ TEST_F(SymmFixture, TestDerivDagger)
 	T Z = zero;
 
 	// W = M^{-dagger}_oo Y
-	(*M_symm).unprecOddOddInvLinOp(W,Y,MINUS);
+	(*M_symm).scaleOddOddInvLinOp(W,Y,MINUS);
 
 	//Z = M_oo^{-1} M_asymm  X
 	(*M_asymm)(tmp,X,PLUS);
-	(*M_symm).unprecOddOddInvLinOp(Z,tmp,PLUS);
+	(*M_symm).scaleOddOddInvLinOp(Z,tmp,PLUS);
 
 	// The derivative of M_symm^dagger
 	(*M_symm).deriv(ds_symm,X,Y,MINUS);
@@ -616,7 +795,7 @@ TEST_F(SymmFixture, TestDerivDagger)
 	(*M_asymm).deriv(rhs,X,W,MINUS);
 
 	// rhs -= Z^\dagger d[ M_oo ] W
-	(*M_symm).derivUnprecOddOddLinOp(ds_tmp,Z,W,MINUS);
+	(*M_symm).derivScaleOddOddLinOp(ds_tmp,Z,W,MINUS);
 	rhs -= ds_tmp;
 
 	for(int mu=0; mu < Nd; ++mu) {
@@ -696,38 +875,31 @@ TEST_F(SymmFixture,TestTwist)
 {
 
 	Real twist=Real(0.05);
-
-
-
-
 	LatticeFermion source;
 	gaussian(source,rb[1]);
-    LatticeFermion t1, t2;
+    LatticeFermion t1, t2, t3;
 
+    for(int dagger = 0; dagger < 2; ++dagger)
     {
-	(*M_tw)(t1,source,PLUS);
-	(*M_symm)(t2,source, PLUS);
-	t2[ rb[1] ] += twist*(GammaConst<Ns,Ns*Ns-1>()*timesI(source));
+    	enum PlusMinus isign = ( dagger == 0 ? PLUS : MINUS );
 
-	t2[ rb[1] ] -= t1;
-	Double normdiff = sqrt(norm2(t2,rb[1]));
-	QDPIO::cout << "PLUS : || M(mu) - ( Mdag + i gamma_5 mu ) || = "
-			<< normdiff << std::endl;
+    	(*M_tw)(t1,source,isign);
+    	(*M_symm)(t2,source, isign);
+    	M_symm->scaleOddOddLinOp(t3,source,isign);
+    	std::string Mstr = (isign == PLUS ) ? "M" : "M^dag";
+    	std::string signstr = (isign == PLUS ) ? "-" : "+" ;
+    	std::string ident = (isign == PLUS ) ? "PLUS" : "MINUS";
+    	Real sign = (isign == PLUS ? Real(-1) : Real(1) );
+    	t2[ rb[1] ] += sign*twist*(GammaConst<Ns,Ns*Ns-1>()*timesI(t3));
 
-	ASSERT_LT( toDouble(normdiff), 1.0e-14);
+    	t2[ rb[1] ] -= t1;
+    	Double normdiff = sqrt(norm2(t2,rb[1]));
+    	QDPIO::cout << ident << ": || "<< Mstr << " - ( "<< Mstr << " " << signstr
+    			<< " i gamma_5 mu A_oo ) || = "<< normdiff << std::endl;
+
+    	ASSERT_LT( toDouble(normdiff), 1.0e-14);
     }
 
-    {
- 	(*M_tw)(t1,source,MINUS);
- 	(*M_symm)(t2,source, MINUS);
- 	t2[ rb[1] ] -= twist*(GammaConst<Ns,Ns*Ns-1>()*timesI(source));
-
- 	t2[ rb[1] ] -= t1;
- 	Double normdiff = sqrt(norm2(t2,rb[1]));
- 	QDPIO::cout << "MINUS : || M^dag(mu) - ( Mdag - igamma5 mu ) || = "  << normdiff << std::endl;
-
- 	ASSERT_LT( toDouble(normdiff), 1.0e-14);
-     }
 
     {
     	LatticeFermion mdagm,t3;
@@ -739,25 +911,184 @@ TEST_F(SymmFixture,TestTwist)
     	(*M_symm)(mdagm,t1,MINUS);
 
     	// + mu^2 source
-    	mdagm[rb[1]] += (twist*twist)*source;
+    	M_symm->scaleOddOddLinOp(t1,source,PLUS);
+    	M_symm->scaleOddOddLinOp(t3,t1,MINUS);
+    	mdagm[rb[1]] += (twist*twist)*t3;
 
-    	// +i mu M^\dag gamma_5
-    	t1[rb[1]] = (GammaConst<Ns,Ns*Ns-1>()*timesI(source));
-    	(*M_symm)(t3,t1,MINUS);
-    	mdagm[rb[1]] += twist*t3;
-
-    	// -i mu gamma_5 M soure
-    	(*M_symm)(t1,source,PLUS);
-    	t3[rb[1]] = (GammaConst<Ns,Ns*Ns-1>()*timesI(t1));
-    	mdagm[rb[1]] -= twist*t3;
 
 
     	mdagm[rb[1]] -= t2;
     	Double normdiff = sqrt(norm2(mdagm,rb[1]));
-    	QDPIO::cout << "MDAGM : || M^dag(mu)M(mu) - ( Mdag M + mu^2 + imu[ M^dag g_5 - g_5 M ]) || = "  << normdiff << std::endl;
+    	QDPIO::cout << "MDAGM : || M^dag(mu)M(mu) - [ M^dag(0)M(0) +mu^2 A^dag A ] || = "  << normdiff << std::endl;
     	ASSERT_LT( toDouble(normdiff), 1.0e-13);
     }
 }
+
+TEST_F(SymmFixture,TestAsymmTwist)
+{
+
+	Real twist=Real(0.05);
+	LatticeFermion source;
+	gaussian(source,rb[1]);
+    LatticeFermion t1, t2, t3;
+
+    for(int dagger = 0; dagger < 2; ++dagger)
+    {
+    	enum PlusMinus isign = ( dagger == 0 ? PLUS : MINUS );
+
+    	(*M_tw_asymm)(t1,source,isign);
+    	(*M_asymm)(t2,source, isign);
+
+    	std::string Mstr = (isign == PLUS ) ? "M" : "M^dag";
+    	std::string signstr = (isign == PLUS ) ? "-" : "+" ;
+    	std::string ident = (isign == PLUS ) ? "PLUS" : "MINUS";
+    	Real sign = (isign == PLUS ? Real(-1) : Real(1) );
+    	t2[ rb[1] ] += sign*twist*(GammaConst<Ns,Ns*Ns-1>()*timesI(source));
+
+    	t2[ rb[1] ] -= t1;
+    	Double normdiff = sqrt(norm2(t2,rb[1]));
+    	QDPIO::cout << ident << ": || "<< Mstr << " - ( "<< Mstr << " " << signstr
+    			<< " i gamma_5 mu ) || = "<< normdiff << std::endl;
+
+    	ASSERT_LT( toDouble(normdiff), 1.0e-14);
+    }
+
+
+    {
+    	LatticeFermion mdagm,t3;
+    	(*M_tw_asymm)(t1,source, PLUS);
+    	(*M_tw_asymm)(t2,t1,MINUS);
+
+    	// M^\dag M
+    	(*M_asymm)(t1,source,PLUS);
+    	(*M_asymm)(mdagm,t1,MINUS);
+
+    	// + mu^2 source
+    	mdagm[rb[1]] += (twist*twist)*source;
+
+
+
+    	mdagm[rb[1]] -= t2;
+    	Double normdiff = sqrt(norm2(mdagm,rb[1]));
+    	QDPIO::cout << "MDAGM : || M^dag(mu)M(mu) - [ M^dag(0)M(0) +mu^2 ] || = "  << normdiff << std::endl;
+    	ASSERT_LT( toDouble(normdiff), 5.0e-13);
+    }
+}
+
+TEST_F(SymmFixture,TestShiftedLinop)
+{
+
+	Real twist=Real(0.05);
+
+	TwistedShiftedLinOp<T,P,Q,SymEvenOddPrecLogDetLinearOperator> M_shifted((*M_symm),twist);
+
+
+
+	LatticeFermion source;
+	gaussian(source,rb[1]);
+    LatticeFermion t1, t2, t3;
+
+    for(int dagger = 0; dagger < 2; ++dagger)
+    {
+    	enum PlusMinus isign = ( dagger == 0 ? PLUS : MINUS );
+
+    	M_shifted(t1,source,isign);
+    	(*M_symm)(t2,source, isign);
+    	M_symm->scaleOddOddLinOp(t3,source,isign);
+    	std::string Mstr = (isign == PLUS ) ? "M" : "M^dag";
+    	std::string signstr = (isign == PLUS ) ? "-" : "+" ;
+    	std::string ident = (isign == PLUS ) ? "PLUS" : "MINUS";
+    	Real sign = (isign == PLUS ? Real(-1) : Real(1) );
+    	t2[ rb[1] ] += sign*twist*(GammaConst<Ns,Ns*Ns-1>()*timesI(t3));
+
+    	t2[ rb[1] ] -= t1;
+    	Double normdiff = sqrt(norm2(t2,rb[1]));
+    	QDPIO::cout << ident << ": || "<< Mstr << " - ( "<< Mstr << " " << signstr
+    			<< " i gamma_5 mu A_oo ) || = "<< normdiff << std::endl;
+
+    	ASSERT_LT( toDouble(normdiff), 1.0e-14);
+    }
+
+
+    {
+    	LatticeFermion mdagm,t3;
+    	M_shifted(t1,source, PLUS);
+    	M_shifted(t2,t1,MINUS);
+
+    	// M^\dag M
+    	(*M_symm)(t1,source,PLUS);
+    	(*M_symm)(mdagm,t1,MINUS);
+
+    	// + mu^2 source
+    	M_symm->scaleOddOddLinOp(t1,source,PLUS);
+    	M_symm->scaleOddOddLinOp(t3,t1,MINUS);
+    	mdagm[rb[1]] += (twist*twist)*t3;
+
+
+
+    	mdagm[rb[1]] -= t2;
+    	Double normdiff = sqrt(norm2(mdagm,rb[1]));
+    	QDPIO::cout << "MDAGM : || M^dag(mu)M(mu) - [ M^dag(0)M(0) +mu^2 A^dag A ] || = "  << normdiff << std::endl;
+    	ASSERT_LT( toDouble(normdiff), 1.0e-13);
+    }
+}
+
+TEST_F(SymmFixture,TestShiftedAsymmLinop)
+{
+
+	Real twist=Real(0.05);
+
+	TwistedShiftedLinOp<T,P,Q,EvenOddPrecLinearOperator> M_shifted((*M_asymm),twist);
+
+
+
+	LatticeFermion source;
+	gaussian(source,rb[1]);
+    LatticeFermion t1, t2, t3;
+
+    for(int dagger = 0; dagger < 2; ++dagger)
+    {
+    	enum PlusMinus isign = ( dagger == 0 ? PLUS : MINUS );
+
+    	M_shifted(t1,source,isign);
+    	(*M_asymm)(t2,source, isign);
+
+    	std::string Mstr = (isign == PLUS ) ? "M" : "M^dag";
+    	std::string signstr = (isign == PLUS ) ? "-" : "+" ;
+    	std::string ident = (isign == PLUS ) ? "PLUS" : "MINUS";
+    	Real sign = (isign == PLUS ? Real(-1) : Real(1) );
+
+    	t2[ rb[1] ] += sign*twist*(GammaConst<Ns,Ns*Ns-1>()*timesI(source));
+
+    	t2[ rb[1] ] -= t1;
+    	Double normdiff = sqrt(norm2(t2,rb[1]));
+    	QDPIO::cout << ident << ": || "<< Mstr << " - ( "<< Mstr << " " << signstr
+    			<< " i gamma_5 mu  ) || = "<< normdiff << std::endl;
+
+    	ASSERT_LT( toDouble(normdiff), 1.0e-14);
+    }
+
+
+    {
+    	LatticeFermion mdagm,t3;
+    	M_shifted(t1,source, PLUS);
+    	M_shifted(t2,t1,MINUS);
+
+    	// M^\dag M
+    	(*M_asymm)(t1,source,PLUS);
+    	(*M_asymm)(mdagm,t1,MINUS);
+
+    	mdagm[rb[1]] += (twist*twist)*source;
+
+
+
+    	mdagm[rb[1]] -= t2;
+    	Double normdiff = sqrt(norm2(mdagm,rb[1]));
+    	QDPIO::cout << "MDAGM : || M^dag(mu)M(mu) - [ M^dag(0)M(0) +mu^2 ] || = "  << normdiff << std::endl;
+    	ASSERT_LT( toDouble(normdiff), 5.0e-13);
+    }
+}
+
 
 class TrLogForceFixture : public SymmFixtureT<::testing::TestWithParam<enum PlusMinus>>{};
 TEST_P(TrLogForceFixture,TestShiftedGaugeTrLnForce)
@@ -888,4 +1219,90 @@ TEST_F(SymmFixture, CheckDerivMultipole)
 			ASSERT_LT( toDouble(normdiff_per_link), 1.0e-17);
 		}
 	}
+}
+
+TEST_F(SymmFixture, UnprecHasTwistOp)
+{
+	CloverFermActParams p;
+	p.Mass = Real(0.1);
+	p.clovCoeffR=Real(1.0);
+	p.clovCoeffT=Real(1.0);
+	p.u0 = Real(1);
+	p.anisoParam.anisoP=false;
+	p.anisoParam.t_dir=3;
+	p.anisoParam.xi_0 =Real(1);
+	p.anisoParam.nu=Real(1);
+	p.twisted_m_usedP = true;
+	p.twisted_m = Real(0.05);
+
+	UnprecCloverPlusIG5MuA2Linop M_u(state,p);
+
+	LatticeFermion X;
+	LatticeFermion Y,Y2;
+	gaussian(X);
+
+	for(int dagger=0; dagger  < 2; ++dagger) {
+		enum PlusMinus isign = (dagger == 0) ? PLUS : MINUS;
+
+
+		M_u(Y,X,isign);
+		(*M_tw).unprecLinOp(Y2,X,isign);
+
+		Y2 -= Y;
+		Double diff_cb0 = sqrt(norm2(Y2,rb[0]));
+		Double diff_cb1 = sqrt(norm2(Y2,rb[1]));
+
+		std::string dag_str = (isign == PLUS ) ? "":"dag";
+		QDPIO::cout << "M"<<dag_str<<" : diff[ cb0 ] = " << diff_cb0 << std::endl;
+		QDPIO::cout << "M"<<dag_str<<" : diff[ cb1 ] = " << diff_cb1 << std::endl;
+
+
+	}
+}
+
+// Check QProp Functionality.
+TEST_F(QPropTest, CheckQpropTwisted)
+{
+	CloverFermActParams p;
+	p.Mass = Real(0.1);
+	p.clovCoeffR=Real(1.0);
+	p.clovCoeffT=Real(1.0);
+	p.u0 = Real(1);
+	p.anisoParam.anisoP=false;
+	p.anisoParam.t_dir=3;
+	p.anisoParam.xi_0 =Real(1);
+	p.anisoParam.nu=Real(1);
+	p.twisted_m_usedP = true;
+	p.twisted_m = Real(0.05);
+
+	UnprecCloverPlusIG5MuA2Linop M_u(state,p);
+	LatticeFermion rhs=zero;
+	gaussian(rhs);
+
+	std::istringstream inv_param_xml_stream(inv_param_syssolver_cg_xml);
+	XMLReader xml_in(inv_param_xml_stream);
+
+	GroupXML_t inv_param = readXMLGroup(xml_in, "//InvertParam", "invType");
+    Handle<SystemSolver<T>>	qprop_solver = S_symm_twisted->qprop(state,inv_param);
+	LatticeFermion x = zero;
+
+	(*qprop_solver)(x,rhs);
+
+	// Check residuum
+	LatticeFermion Ax=zero;
+	M_u(Ax,x,PLUS);
+	Ax -= rhs;
+
+	Double resid_cb0 = sqrt(norm2(Ax,rb[0]));
+	Double resid_cb1 = sqrt(norm2(Ax,rb[1]));
+	QDPIO::cout << "Qprop: rsd cb0 = " << resid_cb0 << std::endl;
+	QDPIO::cout << "Qprop: rsd cb1 = " << resid_cb1 << std::endl;
+
+	Double resid = sqrt(norm2(Ax));
+	Double resid_rel = resid/sqrt(norm2(rhs));
+	QDPIO::cout << "QProp Check Back: || r || = " << resid << "  || r ||/||b|| = "
+			<< resid_rel << std::endl;
+
+	ASSERT_LT(toDouble(resid_rel), 1.0e-8);
+
 }

@@ -69,11 +69,14 @@ namespace Chroma
       SystemSolverResults_t res1,res2,res3;  // initialized by a constructo
       swatch.reset(); swatch.start();
 
+      // Evan's analysis
+      Real RsdDag = Real(0.5)*invParam.RsdBiCGStab;
       T Y;
       Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
       (*A)(Y, psi, PLUS); // Y = M X
       
-      res1 = InvBiCGStab(*A, chi, Y, invParam.RsdBiCGStab, invParam.MaxBiCGStab, MINUS );
+
+      res1 = InvBiCGStab(*A, chi, Y, RsdDag, invParam.MaxBiCGStab, MINUS );
 	
       // Step 2: Solve M X = Y
       res2 = InvBiCGStab(*A, Y, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab, PLUS );
@@ -126,6 +129,8 @@ namespace Chroma
 	SystemSolverResults_t res1,res2,res3;  // initialized by a constructo
 	swatch.reset(); swatch.start();
 
+	// Evan's Analysis
+	Real RsdDag = Real(0.5)*invParam.RsdBiCGStab;
 	T Y = psi;
 
 	try { 
@@ -137,7 +142,8 @@ namespace Chroma
 	  // Step 1: Solve M^\dagger Y = chi
 
 	  two_step_predictor.predictY(Y,*A,chi);
-	  res1 = InvBiCGStab(*A, chi, Y, invParam.RsdBiCGStab, invParam.MaxBiCGStab, MINUS );
+
+	  res1 = InvBiCGStab(*A, chi, Y, RsdDag, invParam.MaxBiCGStab, MINUS );
 	  two_step_predictor.newYVector(Y);
 
 	  // Step 2: Solve M X = Y
@@ -160,7 +166,9 @@ namespace Chroma
 	  Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
 	  predictor(psi, (*MdagM), chi);
 	  (*A)(Y, psi, PLUS); // Y = M X
-	  res1 = InvBiCGStab(*A, chi, Y, invParam.RsdBiCGStab, invParam.MaxBiCGStab, MINUS );
+
+
+	  res1 = InvBiCGStab(*A, chi, Y, RsdDag, invParam.MaxBiCGStab, MINUS );
 	  // Step 2: Solve M X = Y
 	  res2 = InvBiCGStab(*A, Y, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab, PLUS );
 

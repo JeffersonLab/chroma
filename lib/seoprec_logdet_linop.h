@@ -96,10 +96,10 @@ namespace Chroma
  * as
  *    unprecEvenOddLinOp
  *    unprecOddEvenLinOp
- *    unprecEvenEvenLinOp
- *    unprecOddOddLinOp
- *    unprecOddOddInvLinOp
- *    unprecEvenEvenInvLinOp
+ *    scaleEvenEvenLinOp
+ *    scaleOddOddLinOp
+ *    scaleOddOddInvLinOp
+ *    scaleEvenEvenInvLinOp
  *
  *    then we can write category defaults for:
  *
@@ -109,9 +109,9 @@ namespace Chroma
  *
  *    the so called Jacobi Operator:
  *         [ 1             M_eo ]
- *         [ M_oe           1   ]
+ *         [ M_oe           M_oo   ]
  *
- *    the Schur Operator:  S = 1 - M_oe M_eo
+ *    the Schur Operator:  S = M_oo - M_oe M_eo
  *
  *    the Unprec Operator: diag( A_ee A_oo ) M_jacobi
  *
@@ -119,11 +119,7 @@ namespace Chroma
  *    of
  *         derivEvenOddLinOp
  *    and  derivOddEvenLinOp
- *
- *    Const-detness or log-det ness will depend on how the
- *    derivEvenOdd and derivOddEven operators are coded
-
- *
+ * *
  */
 
 
@@ -143,19 +139,19 @@ namespace Chroma
 
 	//! Apply the even-even block onto a source std::vector
 	/*! This does not need to be optimized */
-	virtual void unprecEvenEvenLinOp(T& chi, const T& psi,
+	virtual void scaleEvenEvenLinOp(T& chi, const T& psi,
 			enum PlusMinus isign) const override = 0;
 
 	//! Apply the inverse of the even-even block onto a source std::vector
-	virtual void unprecEvenEvenInvLinOp(T& chi, const T& psi,
+	virtual void scaleEvenEvenInvLinOp(T& chi, const T& psi,
 			enum PlusMinus isign) const override = 0;
 
 	//! Apply the the odd-odd block onto a source std::vector
-	virtual void unprecOddOddLinOp(T& chi, const T& psi,
+	virtual void scaleOddOddLinOp(T& chi, const T& psi,
 			enum PlusMinus isign)  const override  = 0;
 
 	//! Apply the inverse of the odd-odd block onto a source std::vector
-	virtual void unprecOddOddInvLinOp(T& chi, const T& psi,
+	virtual void scaleOddOddInvLinOp(T& chi, const T& psi,
 			enum PlusMinus isign) const override = 0;
 
 	//! Apply the the even-odd block onto a source std::vector
@@ -167,11 +163,11 @@ namespace Chroma
 			enum PlusMinus isign) const override = 0;
 
     // Deriv of A_ee
-    virtual void derivUnprecEvenEvenLinOp(P& ds_u, const T& chi, const T& psi,
+    virtual void derivScaleEvenEvenLinOp(P& ds_u, const T& chi, const T& psi,
     		enum PlusMinus isign) const = 0;
 
     // Deriv of A_oo
-    virtual void derivUnprecOddOddLinOp(P& ds_u, const T& chi, const T& psi,
+    virtual void derivScaleOddOddLinOp(P& ds_u, const T& chi, const T& psi,
     		enum PlusMinus isign) const = 0;
 
     // Deriv of  D_eo
@@ -183,15 +179,15 @@ namespace Chroma
     		enum PlusMinus isign) const override = 0;
 
     //! deriv of  A^{-1} = - A^{-1} deriv(A) A^{-1}
-    virtual void derivUnprecEvenEvenInvLinOp(P& ds_u, const T& chi, const T& psi,
+    virtual void derivScaleEvenEvenInvLinOp(P& ds_u, const T& chi, const T& psi,
 				    enum PlusMinus isign) const
     {
     	enum PlusMinus msign = ( isign == PLUS ) ? MINUS : PLUS;
     	T Achi = zero;
     	T Apsi = zero;
-    	unprecEvenEvenInvLinOp(Achi,chi, msign);
-    	unprecEvenEvenInvLinOp(Apsi,psi, isign);
-    	derivUnprecEvenEvenLinOp(ds_u, Achi,Apsi, isign);
+    	scaleEvenEvenInvLinOp(Achi,chi, msign);
+    	scaleEvenEvenInvLinOp(Apsi,psi, isign);
+    	derivScaleEvenEvenLinOp(ds_u, Achi,Apsi, isign);
     	for(int mu=0; mu < Nd; ++mu) {
     		ds_u[mu] *= Real(-1);
     	}
@@ -200,15 +196,15 @@ namespace Chroma
     }
 
     //! deriv of  A^{-1} = - A^{-1} deriv(A) A^{-1}
-    virtual void derivUnprecOddOddInvLinOp(P& ds_u, const T& chi, const T& psi,
+    virtual void derivScaleOddOddInvLinOp(P& ds_u, const T& chi, const T& psi,
     		enum PlusMinus isign) const
     {
     	enum PlusMinus msign = ( isign == PLUS ) ? MINUS : PLUS;
     	T Achi = zero;
     	T Apsi = zero;
-    	unprecOddOddInvLinOp(Achi,chi, msign);
-    	unprecOddOddInvLinOp(Apsi,psi, isign);
-    	derivUnprecOddOddLinOp(ds_u, Achi,Apsi, isign);
+    	scaleOddOddInvLinOp(Achi,chi, msign);
+    	scaleOddOddInvLinOp(Apsi,psi, isign);
+    	derivScaleOddOddLinOp(ds_u, Achi,Apsi, isign);
     	for(int mu=0; mu < Nd; ++mu) ds_u[mu] *= Real(-1);
     	getFermBC().zero(ds_u);
 
@@ -225,20 +221,20 @@ namespace Chroma
     	P ds_tmp;
     	if( isign == PLUS ) {
     		unprecEvenOddLinOp(tmp,psi, PLUS);
-    		derivUnprecEvenEvenInvLinOp(ds_u, chi, tmp, PLUS);
+    		derivScaleEvenEvenInvLinOp(ds_u, chi, tmp, PLUS);
 
-    		unprecEvenEvenInvLinOp(tmp, chi, MINUS);
+    		scaleEvenEvenInvLinOp(tmp, chi, MINUS);
     		derivUnprecEvenOddLinOp(ds_tmp, tmp,psi, PLUS);
     		ds_u += ds_tmp;
     	}
     	else {
     		// W_o = A^{-dag}_oo Y_o
-    		unprecOddOddInvLinOp(tmp, psi, MINUS);
+    		scaleOddOddInvLinOp(tmp, psi, MINUS);
     		// X_e^\dagger d [ D^\dagger ]_eo W_o
     		derivUnprecEvenOddLinOp(ds_u, chi, tmp, MINUS);
 
     		unprecOddEvenLinOp(tmp,chi,PLUS);
-    		derivUnprecOddOddInvLinOp(ds_tmp, tmp,psi, MINUS);
+    		derivScaleOddOddInvLinOp(ds_tmp, tmp,psi, MINUS);
     		ds_u += ds_tmp;
     	}
     	getFermBC().zero(ds_u);
@@ -256,18 +252,18 @@ namespace Chroma
     	P ds_tmp;
     	if( isign == PLUS ) {
     		unprecOddEvenLinOp(tmp,psi, PLUS);
-    		derivUnprecOddOddInvLinOp(ds_u, chi, tmp, PLUS);
+    		derivScaleOddOddInvLinOp(ds_u, chi, tmp, PLUS);
 
-    		unprecOddOddInvLinOp(tmp, chi, MINUS);
+    		scaleOddOddInvLinOp(tmp, chi, MINUS);
     		derivUnprecOddEvenLinOp(ds_tmp, tmp,psi, PLUS);
     		ds_u += ds_tmp;
     	}
     	else {
-    		unprecEvenEvenInvLinOp(tmp, psi, MINUS);
+    		scaleEvenEvenInvLinOp(tmp, psi, MINUS);
     		derivUnprecOddEvenLinOp(ds_u, chi, tmp, MINUS);
 
     		unprecEvenOddLinOp(tmp,chi,PLUS);
-    		derivUnprecEvenEvenInvLinOp(ds_tmp, tmp,psi, MINUS);
+    		derivScaleEvenEvenInvLinOp(ds_tmp, tmp,psi, MINUS);
     		ds_u += ds_tmp;
     	}
     	getFermBC().zero(ds_u);

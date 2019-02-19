@@ -87,7 +87,7 @@ endif
 HDRS =
 
 ## Production tests:
-bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array t_leapfrog t_lwldslash_new t_minvert t_meas_wilson_flow 
+bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array t_leapfrog t_lwldslash_new t_minvert t_meas_wilson_flow t_symm_prec
 
 #
 # add the programs to build in here
@@ -249,13 +249,16 @@ t_minvert_quda_SOURCES = t_minvert_quda.cc
 endif
 
 if BUILD_GTEST
-check_PROGRAMS += t_inv_fgmres_dr  t_symm_prec
-	
+check_PROGRAMS += t_inv_fgmres_dr  t_symm_prec t_quda_cmat
+
 t_inv_fgmres_dr_SOURCES = t_inv_fgmres_dr.cc chroma_gtest_env.h \
 	fgmres_dr_tests.cc
-	
+
 t_symm_prec_SOURCES = t_symm_prec.cc chroma_gtest_env.h \
 	symm_prec_xml.h symm_prec_tests.cc
+
+t_quda_cmat_SOURCES = t_quda_cmat.cc chroma_gtest_env.h \
+	quda_cmat_tests.cc
 endif
 
 if BUILD_QPHIX
