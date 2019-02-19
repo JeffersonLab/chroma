@@ -47,7 +47,7 @@ namespace Chroma
 
   void measure_wilson_gauge(multi1d<LatticeColorMatrix> & u,
 			    Real & gspace, Real & gtime,
-			    int jomit)
+			    int t_dir)
   {
 
     multi1d<LatticeColorMatrix> field_st(10) ;
@@ -76,7 +76,7 @@ namespace Chroma
 	// Real tt = 2.0 * tr ; 
 	//	  std::cout << "DEBUG " << mu << " " << nu  << " " << tt << std::endl ;
 
-	if (nu==jomit)
+	if (nu==t_dir)
 	{
 	  gtime += 2.0*(tr);
 	}
@@ -95,7 +95,7 @@ namespace Chroma
   }
 
 
-  void wilson_flow_one_step(multi1d<LatticeColorMatrix> & u, Real rho)
+  void wilson_flow_one_step(multi1d<LatticeColorMatrix> & u, Real rho, const multi1d<bool>& smear_in_this_dirP)
   {
     int mu, dir;
     multi1d<LatticeColorMatrix> dest(Nd);
@@ -104,7 +104,6 @@ namespace Chroma
 
     // -------------------------------------
 
-    multi1d<bool> smear_in_this_dirP(4) ;
     multi2d<Real> rho_a(4,4) ;
     multi2d<Real> rho_b1(4,4) ;
     multi2d<Real> rho_b2(4,4) ;
@@ -112,7 +111,6 @@ namespace Chroma
 
     for (mu = 0; mu <= Nd-1; mu++)
     {
-      smear_in_this_dirP(mu) = true ;
       for (dir = 0; dir <= Nd-1; dir++)
       {
 	rho_a[mu][dir] = rho * 0.25 ;
@@ -126,7 +124,7 @@ namespace Chroma
     }
 
 
-    Stouting::smear_links(u, dest,smear_in_this_dirP, rho_a);
+    Stouting::smear_links(u, dest, smear_in_this_dirP, rho_a);
 
     LatticeColorMatrix  Q, QQ, C ;
     LatticeColorMatrix  Q2, QQ2  ;
@@ -185,7 +183,7 @@ namespace Chroma
 
   void wilson_flow(XMLWriter& xml,
 		   multi1d<LatticeColorMatrix> & u, int nstep, 
-		   Real  wflow_eps, int jomit)
+		   Real  wflow_eps, int t_dir, const multi1d<bool>& smear_dirs)
   {
     Real gact4i, gactij;
     int dim = nstep + 1 ;
@@ -195,7 +193,7 @@ namespace Chroma
 
 
 
-    measure_wilson_gauge(u,gactij,gact4i,jomit) ;
+    measure_wilson_gauge(u,gactij,gact4i,t_dir);
     gact4i_vec[0] = gact4i ;
     gactij_vec[0] = gactij ;
     step_vec[0] = 0.0 ;
@@ -207,9 +205,9 @@ namespace Chroma
 
     for(int i=0 ; i < nstep ; ++i)
     {
-      wilson_flow_one_step(u,wflow_eps) ;
+      wilson_flow_one_step(u,wflow_eps,smear_dirs) ;
 
-      measure_wilson_gauge(u,gactij,gact4i,jomit) ;
+      measure_wilson_gauge(u,gactij,gact4i,t_dir) ;
       gact4i_vec[i+1] = gact4i ;
       gactij_vec[i+1] = gactij ;
 

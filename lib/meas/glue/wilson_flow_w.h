@@ -16,14 +16,14 @@ namespace Chroma
    * \param u      gauge field      (Read)
    * \param nstep  number of steps  (Read)
    * \param wflow_eps  size of step (Read)
-   * \param time direction (Read)
+   * \param t_dir  time direction (Read)
    * FIXME This comment does not match the code any more.
 
    */
 
   void wilson_flow(XMLWriter& xml,
 		   multi1d<LatticeColorMatrix> & u, int nstep, 
-		   Real  wflow_eps, int jomit)  ;
+		   Real  wflow_eps, int t_dir, const multi1d<bool>& smear_in_this_dirP);
 
 
 }  // end namespace Chroma
