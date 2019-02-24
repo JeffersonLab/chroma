@@ -258,7 +258,7 @@ t_symm_prec_SOURCES = t_symm_prec.cc chroma_gtest_env.h \
 	symm_prec_xml.h symm_prec_tests.cc
 
 t_quda_cmat_SOURCES = t_quda_cmat.cc chroma_gtest_env.h \
-	quda_cmat_tests.cc
+	quda_cmat_xml.h quda_cmat_tests.cc
 endif
 
 if BUILD_QPHIX

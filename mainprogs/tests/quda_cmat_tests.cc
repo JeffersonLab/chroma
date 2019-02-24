@@ -18,12 +18,14 @@
 #include "gtest/gtest.h"
 
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h"
+#include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "io/xml_group_reader.h"
 #ifdef BUILD_QUDA
 #include "quda.h"
 #endif
 
 #include "symm_prec_xml.h"
+#include "quda_cmat_xml.h"
 #include "actions/ferm/linop/shifted_linop_w.h"
 #include "actions/ferm/linop/unprec_clover_plus_igmuA2_linop_w.h"
 
@@ -73,8 +75,11 @@ public:
 
 
 		std::istringstream inv_param_xml_stream(inv_param_quda_bicgstab_xml);
+		std::istringstream inv_param_twisted_gcr_stream(inv_param_quda_gcr_twisted_xml);
 		XMLReader xml_in(inv_param_xml_stream);
 		GroupXML_t inv_param = readXMLGroup(xml_in, "//InvertParam", "invType");
+
+
 	    linop_solver = S_symm->invLinOp(state,inv_param);
 
 	}
@@ -561,3 +566,141 @@ TEST_F(QudaFixture, TestAsymmPrecTwistedNonZeroTwistMdagM)
 		ASSERT_LT( toDouble(norm_diff_per_site), 5.0e-14);
 
 }
+
+TEST_F(QudaFixture, TestShiftedSymmGCRSolver )
+{
+	Real twist = Real(0.2345);
+	std::istringstream inv_param_twisted_gcr_stream(inv_param_quda_gcr_twisted_xml);
+	XMLReader xml_in_gcr_twisted(inv_param_twisted_gcr_stream);
+	GroupXML_t inv_param_gcr_twisted = readXMLGroup(xml_in_gcr_twisted, "//InvertParam", "invType");
+	Handle<SystemSolver<T>>	twisted_gcr_solver=S_symm->invLinOp(state,inv_param_gcr_twisted);
+	TwistedShiftedLinOp<T, P, Q, SymEvenOddPrecLogDetLinearOperator> M_shifted(*M_symm, twist);
+
+	auto downcast_solver=dynamic_cast<LinOpSysSolverQUDAClover&>(*twisted_gcr_solver);
+	auto quda_inv_param = downcast_solver.getQudaInvertParam();
+	// Let us not do dagger initially, get the op working.
+	for(int dagger = 0; dagger < 2; ++dagger) {
+
+		enum PlusMinus isign = ( dagger == 0 ) ? PLUS : MINUS;
+		quda_inv_param.dagger = (dagger == 0 ) ? QUDA_DAG_NO : QUDA_DAG_YES;
+		std::string op_str = (dagger == 0 ) ? "Op :" : "Dag :" ;
+		T src=zero;
+		T res=zero;
+		T res_quda = zero;
+
+		// Apply symmetric clover operator
+		gaussian(src, rb[1]);
+		M_shifted(res,src,isign);
+		auto src_ptr = (void *)&(src.elem(rb[1].start()).elem(0).elem(0).real());
+		auto res_quda_ptr = (void *)&(res_quda.elem(rb[1].start()).elem(0).elem(0).real());
+
+
+		//quda_inv_param.matpc_type = QUDA_MATPC_EVEN_EVEN;
+		// Now I want to apply the QUDA operator.
+		MatQuda(res_quda_ptr, src_ptr, &quda_inv_param);
+
+		T diff = zero;
+		diff[rb[1]] = res_quda - res;
+		Double norm_diff = norm2(diff,rb[1]);
+		QDPIO::cout << op_str << " || QUDA - Chroma || = " << sqrt(norm_diff) << std::endl;
+		Double sites = Double(Layout::vol())/Double(2);
+		Double norm_diff_per_site = sqrt(norm_diff/sites);
+		QDPIO::cout << op_str << " || QUDA - Chroma ||/site = " << norm_diff_per_site << std::endl;
+
+		ASSERT_LT( toDouble(norm_diff_per_site), 1.0e-14);
+	}
+
+
+}
+
+TEST_F(QudaFixture, TestShiftedSymmGCRSolverSolve )
+{
+	// Create Twisted Op
+	Real twist = Real(0.2345);
+	Handle<LinearOperator<T>> M_shifted(
+	  new TwistedShiftedLinOp<T, P, Q, SymEvenOddPrecLogDetLinearOperator>(*M_symm, twist));
+
+	// Create a Group XML from the solver input XML
+	std::istringstream inv_param_twisted_gcr_stream(inv_param_quda_gcr_twisted_xml);
+	XMLReader xml_in_gcr_twisted(inv_param_twisted_gcr_stream);
+	GroupXML_t inv_param_gcr_twisted = readXMLGroup(xml_in_gcr_twisted, "//InvertParam", "invType");
+
+	// Create a soplver from the factory using the twisted op.
+	std::istringstream  xml(inv_param_gcr_twisted.xml);
+	XMLReader  paramtop(xml);
+
+	Handle<SystemSolver<T>>	twisted_gcr_solver=
+			TheLinOpFermSystemSolverFactory::Instance().createObject(inv_param_gcr_twisted.id,
+					paramtop,
+					inv_param_gcr_twisted.path,
+					state,
+					M_shifted);
+
+
+
+	T src = zero;
+	T res = zero;
+			// Apply symmetric clover operator
+	gaussian(src, rb[1]);
+
+	(*twisted_gcr_solver)(res, src);
+
+	T M_res=zero;
+	(*M_shifted)(M_res,res,PLUS);
+	M_res[rb[1]] -= src;
+	Double norm_diff = norm2(M_res,rb[1]);
+	QDPIO::cout << " || b - Mx || = " << sqrt(norm_diff) << std::endl;
+	Double rel_norm_diff = sqrt(norm_diff/norm2(src,rb[1]));
+	QDPIO::cout <<  " || b - Mx ||/ b= " << rel_norm_diff << std::endl;
+
+	ASSERT_LT( toDouble(rel_norm_diff), 1.0e-8);
+
+
+}
+
+
+TEST_F(QudaFixture, TestShiftedAsymmGCRSolverSolve )
+{
+	// Create Twisted Op
+	Real twist = Real(0.2345);
+	Handle<LinearOperator<T>> M_shifted(
+			new TwistedShiftedLinOp<T, P, Q, EvenOddPrecLinearOperator>(*M_asymm, twist));
+
+	// Create a Group XML from the solver input XML
+	std::istringstream inv_param_twisted_gcr_stream(inv_param_quda_gcr_twisted_asymm_xml);
+	XMLReader xml_in_gcr_twisted(inv_param_twisted_gcr_stream);
+	GroupXML_t inv_param_gcr_twisted = readXMLGroup(xml_in_gcr_twisted, "//InvertParam", "invType");
+
+	// Create a soplver from the factory using the twisted op.
+	std::istringstream  xml(inv_param_gcr_twisted.xml);
+	XMLReader  paramtop(xml);
+
+	Handle<SystemSolver<T>>	twisted_gcr_solver=
+			TheLinOpFermSystemSolverFactory::Instance().createObject(inv_param_gcr_twisted.id,
+					paramtop,
+					inv_param_gcr_twisted.path,
+					state,
+					M_shifted);
+
+
+
+	T src = zero;
+	T res = zero;
+			// Apply symmetric clover operator
+	gaussian(src, rb[1]);
+
+	(*twisted_gcr_solver)(res, src);
+
+	T M_res=zero;
+	(*M_shifted)(M_res,res,PLUS);
+	M_res[rb[1]] -= src;
+	Double norm_diff = norm2(M_res,rb[1]);
+	QDPIO::cout << " || b - Mx || = " << sqrt(norm_diff) << std::endl;
+	Double rel_norm_diff = sqrt(norm_diff/norm2(src,rb[1]));
+	QDPIO::cout <<  " || b - Mx ||/ b= " << rel_norm_diff << std::endl;
+
+	ASSERT_LT( toDouble(rel_norm_diff), 1.0e-8);
+
+
+}
+
