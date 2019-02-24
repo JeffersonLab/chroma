@@ -466,3 +466,98 @@ TEST_F(QudaFixture, TestPrecTwistedMatNonZeroTwist)
 	}
 }
 
+TEST_F(QudaFixture, TestSymmPrecTwistedNonZeroTwistMdagM)
+{
+	auto the_quda_solver = getSolver();
+	auto quda_inv_param = the_quda_solver.getQudaInvertParam();
+	quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
+	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
+	quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
+
+	Real twist = Real(0.2345);
+	// There is a normalization difference with a sign of -4
+	quda_inv_param.m5 = -2.0*toDouble(twist);
+
+	QDPIO::cout << "Twist is " << quda_inv_param.m5 << std::endl;
+
+	TwistedShiftedLinOp<T, P, Q, SymEvenOddPrecLogDetLinearOperator> M_shifted(*M_symm, twist);
+
+	quda_inv_param.dagger = QUDA_DAG_NO;
+
+	T src=zero;
+	T res=zero;
+	T res2=zero;
+	T res_quda = zero;
+
+	// Apply symmetric clover operator
+		gaussian(src, rb[1]);
+		M_shifted(res2,src,PLUS);
+		M_shifted(res,res2,MINUS);
+
+		auto src_ptr = (void *)&(src.elem(rb[1].start()).elem(0).elem(0).real());
+		auto res_quda_ptr = (void *)&(res_quda.elem(rb[1].start()).elem(0).elem(0).real());
+
+
+		//quda_inv_param.matpc_type = QUDA_MATPC_EVEN_EVEN;
+		// Now I want to apply the QUDA operator.
+		MatDagMatQuda(res_quda_ptr, src_ptr, &quda_inv_param);
+
+		T diff = zero;
+		diff[rb[1]] = res_quda - res;
+		Double norm_diff = norm2(diff,rb[1]);
+		QDPIO::cout << "MdagM: || QUDA - Chroma || = " << sqrt(norm_diff) << std::endl;
+		Double sites = Double(Layout::vol())/Double(2);
+		Double norm_diff_per_site = sqrt(norm_diff/sites);
+		QDPIO::cout << "MdagM || QUDA - Chroma ||/site = " << norm_diff_per_site << std::endl;
+
+		ASSERT_LT( toDouble(norm_diff_per_site), 1.0e-14);
+
+}
+
+TEST_F(QudaFixture, TestAsymmPrecTwistedNonZeroTwistMdagM)
+{
+	auto the_quda_solver = getSolver();
+	auto quda_inv_param = the_quda_solver.getQudaInvertParam();
+	quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
+	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
+	quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
+
+	Real twist = Real(0.2345);
+	// There is a normalization difference with a sign of -4
+	quda_inv_param.m5 = -toDouble(twist);
+
+	QDPIO::cout << "Twist is " << quda_inv_param.m5 << std::endl;
+
+	TwistedShiftedLinOp<T, P, Q, EvenOddPrecLinearOperator> M_shifted(*M_asymm, twist);
+
+	quda_inv_param.dagger = QUDA_DAG_NO;
+
+	T src=zero;
+	T res=zero;
+	T res2=zero;
+	T res_quda = zero;
+
+	// Apply symmetric clover operator
+		gaussian(src, rb[1]);
+		M_shifted(res2,src,PLUS);
+		M_shifted(res,res2,MINUS);
+
+		auto src_ptr = (void *)&(src.elem(rb[1].start()).elem(0).elem(0).real());
+		auto res_quda_ptr = (void *)&(res_quda.elem(rb[1].start()).elem(0).elem(0).real());
+
+
+		//quda_inv_param.matpc_type = QUDA_MATPC_EVEN_EVEN;
+		// Now I want to apply the QUDA operator.
+		MatDagMatQuda(res_quda_ptr, src_ptr, &quda_inv_param);
+
+		T diff = zero;
+		diff[rb[1]] = res_quda - res;
+		Double norm_diff = norm2(diff,rb[1]);
+		QDPIO::cout << "MdagM: || QUDA - Chroma || = " << sqrt(norm_diff) << std::endl;
+		Double sites = Double(Layout::vol())/Double(2);
+		Double norm_diff_per_site = sqrt(norm_diff/sites);
+		QDPIO::cout << "MdagM || QUDA - Chroma ||/site = " << norm_diff_per_site << std::endl;
+
+		ASSERT_LT( toDouble(norm_diff_per_site), 5.0e-14);
+
+}
