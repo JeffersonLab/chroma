@@ -328,12 +328,11 @@ TEST_F(QudaFixture, TestPrecTwistedAsymmMatNonZeroTwist)
 	quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
 	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
 	quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
-	quda_inv_param.mass_normalization == QUDA_ASYMMETRIC_MASS_NORMALIZATION;
 
 	Real twist = Real(0.2345);
 
 	// There is a normalization difference with a sign of -4
-	quda_inv_param.m5 = -4*toDouble(twist);
+	quda_inv_param.m5 = -toDouble(twist);
 
 	QDPIO::cout << "Twist is " << quda_inv_param.m5 << std::endl;
 
@@ -428,12 +427,13 @@ TEST_F(QudaFixture, TestPrecTwistedMatNonZeroTwist)
 
 	Real twist = Real(0.2345);
 	// There is a normalization difference with a sign of -4
-	quda_inv_param.m5 = -4*toDouble(twist);
+	quda_inv_param.m5 = -2.0*toDouble(twist);
 
 	QDPIO::cout << "Twist is " << quda_inv_param.m5 << std::endl;
 
 	TwistedShiftedLinOp<T, P, Q, SymEvenOddPrecLogDetLinearOperator> M_shifted(*M_symm, twist);
 
+	// Let us not do dagger initially, get the op working.
 	for(int dagger = 0; dagger < 2; ++dagger) {
 
 		enum PlusMinus isign = ( dagger == 0 ) ? PLUS : MINUS;
