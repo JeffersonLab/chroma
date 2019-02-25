@@ -20,7 +20,7 @@
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h"
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_mdagm_factory.h"
-#include "actions/ferm/linop/unprec_clover_plus_igmuA2_linop_w.h"
+// #include "actions/ferm/linop/unprec_clover_plus_igmuA2_linop_w.h"
 
 #include "io/xml_group_reader.h"
 #ifdef BUILD_QUDA
@@ -808,19 +808,6 @@ TEST_F(QudaFixture, TestShiftedAsymmGCRMdagMSolverSolve )
 // Check QProp Functionality.
 TEST_F(QudaFixture, CheckQprop)
 {
-	CloverFermActParams p;
-	p.Mass = Real(0.1);
-	p.clovCoeffR=Real(1.0);
-	p.clovCoeffT=Real(1.0);
-	p.u0 = Real(1);
-	p.anisoParam.anisoP=false;
-	p.anisoParam.t_dir=3;
-	p.anisoParam.xi_0 =Real(1);
-	p.anisoParam.nu=Real(1);
-	p.twisted_m_usedP = true;
-	p.twisted_m = Real(0.05);
-
-	UnprecCloverPlusIG5MuA2Linop M_u(state,p);
 
 	std::istringstream twisted_fermact(fermact_xml_symm_twisted);
 	XMLReader xml_in_twisted(twisted_fermact);
@@ -832,8 +819,9 @@ TEST_F(QudaFixture, CheckQprop)
 	XMLReader xml_in(inv_param_xml_stream);
 
 	GroupXML_t inv_param = readXMLGroup(xml_in, "//InvertParam", "invType");
-    Handle<SystemSolver<T>>	qprop_solver = S_symm_twisted->qprop(state,inv_param);
+	Handle<SystemSolver<T>>	qprop_solver = S_symm_twisted->qprop(state,inv_param);
 
+    Handle<SymEvenOddPrecLinearOperator<T,P,Q>> M = S_symm_twisted->linOp(state);
 
     LatticeFermion rhs=zero;
     LatticeFermion x = zero;
@@ -842,8 +830,8 @@ TEST_F(QudaFixture, CheckQprop)
 
 	// Check residuum
 	LatticeFermion Ax=zero;
-	M_u(Ax,x,PLUS);
-
+	//M_u(Ax,x,PLUS);
+	M->unprecLinOp(Ax,x,PLUS);
 	Ax -= rhs;
 
 	Double resid_cb0 = sqrt(norm2(Ax,rb[0]));
