@@ -43,14 +43,29 @@ namespace Chroma
   EvenOddPrecCloverLinOp::oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 				      enum PlusMinus isign) const
   {
-    START_CODE();
+	  START_CODE();
 
-    swatch.reset(); swatch.start();
-    clov.apply(chi, psi, isign, 1);
-    swatch.stop();
-    clov_apply_time += swatch.getTimeInSeconds();
+	  swatch.reset(); swatch.start();
+	  clov.apply(chi, psi, isign, 1);
 
-    END_CODE();
+	  // Twisted Term?
+	  if( param.twisted_m_usedP ){
+		  LatticeFermion tmp;
+		  // tmp = i mu gamma_5 tmp1
+		  tmp[rb[1]] = (GammaConst<Ns,Ns*Ns-1>() * timesI(psi));
+
+		  if( isign == PLUS ) {
+			  chi[rb[1]] -= param.twisted_m * tmp;
+		  }
+		  else {
+			  chi[rb[1]] += param.twisted_m * tmp;
+		  }
+	  }
+
+	  swatch.stop();
+	  clov_apply_time += swatch.getTimeInSeconds();
+
+	  END_CODE();
   }
 
 

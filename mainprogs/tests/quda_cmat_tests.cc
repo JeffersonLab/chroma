@@ -806,7 +806,7 @@ TEST_F(QudaFixture, TestShiftedAsymmGCRMdagMSolverSolve )
 }
 
 // Check QProp Functionality.
-TEST_F(QudaFixture, CheckQprop)
+TEST_F(QudaFixture, CheckQpropSymm)
 {
 
 	std::istringstream twisted_fermact(fermact_xml_symm_twisted);
@@ -848,3 +848,45 @@ TEST_F(QudaFixture, CheckQprop)
 
 }
 
+// Check QProp Functionality.
+TEST_F(QudaFixture, CheckQpropAsymm)
+{
+
+	std::istringstream twisted_fermact(fermact_xml_asymm_twisted);
+	XMLReader xml_in_twisted(twisted_fermact);
+	Handle<S_asymm_T> S_asymm_twisted = dynamic_cast<S_asymm_T*>(TheFermionActionFactory::Instance().createObject("CLOVER",
+				    											   xml_in_twisted,
+				    											   "FermionAction"));
+
+	std::istringstream inv_param_xml_stream(inv_param_quda_gcr_twisted_asymm_xml);
+	XMLReader xml_in(inv_param_xml_stream);
+
+	GroupXML_t inv_param = readXMLGroup(xml_in, "//InvertParam", "invType");
+	Handle<SystemSolver<T>>	qprop_solver = S_asymm_twisted->qprop(state,inv_param);
+
+    Handle<EvenOddPrecLinearOperator<T,P,Q>> M = S_asymm_twisted->linOp(state);
+
+    LatticeFermion rhs=zero;
+    LatticeFermion x = zero;
+    gaussian(rhs);
+	(*qprop_solver)(x,rhs);
+
+	// Check residuum
+	LatticeFermion Ax=zero;
+	//M_u(Ax,x,PLUS);
+	M->unprecLinOp(Ax,x,PLUS);
+	Ax -= rhs;
+
+	Double resid_cb0 = sqrt(norm2(Ax,rb[0]));
+	Double resid_cb1 = sqrt(norm2(Ax,rb[1]));
+	QDPIO::cout << "Qprop: rsd cb0 = " << resid_cb0 << std::endl;
+	QDPIO::cout << "Qprop: rsd cb1 = " << resid_cb1 << std::endl;
+
+	Double resid = sqrt(norm2(Ax));
+	Double resid_rel = resid/sqrt(norm2(rhs));
+	QDPIO::cout << "QProp Check Back: || r || = " << resid << "  || r ||/||b|| = "
+			<< resid_rel << std::endl;
+
+	ASSERT_LT(toDouble(resid_rel), 1.0e-8);
+
+}
