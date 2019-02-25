@@ -22,7 +22,7 @@ std::string inv_param_quda_gcr_twisted_xml = \
   	  	  	<CloverParams>\
               <Mass>0.1</Mass>				      \
               <clovCoeff>1.0</clovCoeff>			      \
-			  <TwistedM>0.2345</TwistedM> \
+			  <TwistedM>0.05</TwistedM> \
               <AnisoParam>				      \
                 <anisoP>false</anisoP>			      \
                 <t_dir>3</t_dir>				      \
@@ -67,7 +67,7 @@ std::string inv_param_quda_gcr_twisted_asymm_xml = \
   	  	  	<CloverParams>\
               <Mass>0.1</Mass>				      \
               <clovCoeff>1.0</clovCoeff>			      \
-			  <TwistedM>0.2345</TwistedM> \
+			  <TwistedM>0.05</TwistedM> \
               <AnisoParam>				      \
                 <anisoP>false</anisoP>			      \
                 <t_dir>3</t_dir>				      \
