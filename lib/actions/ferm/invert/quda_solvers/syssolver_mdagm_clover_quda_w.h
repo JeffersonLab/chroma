@@ -567,7 +567,18 @@ public:
 		
 		loadCloverQuda( (void*)(clover) , (void*)(cloverInv) ,&quda_inv_param);
 #endif
-
+		if ( invParam.CloverParams.twisted_m_usedP == true ) {
+			quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
+			if ( invParam.asymmetricP ) {
+				// - comes from add/subtract convention
+				quda_inv_param.m5 = -toDouble(invParam.CloverParams.twisted_m);
+			}
+			else {
+				// - comes from add/subtract convention
+				// 2 comes from clover normalization
+				quda_inv_param.m5 = -2.0*toDouble(invParam.CloverParams.twisted_m);
+			}
+		}
 	}
 
 
