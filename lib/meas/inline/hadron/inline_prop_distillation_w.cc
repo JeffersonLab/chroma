@@ -12,6 +12,7 @@
 #include "qdp_map_obj_disk.h"
 #include "qdp_disk_map_slice.h"
 #include "util/ferm/key_prop_distillation.h"
+#include "util/ferm/key_timeslice_colorvec.h"
 #include "util/ferm/transf.h"
 #include "util/ferm/spin_rep.h"
 #include "util/ferm/diractodr.h"
@@ -126,6 +127,130 @@ namespace Chroma
   //----------------------------------------------------------------------------
   namespace InlinePropDistillationEnv 
   {
+
+#if 1
+    // Anonymous namespace
+    namespace
+    {
+      // Convenience type
+      typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MOD_t;
+
+      //----------------------------------------------------------------------------
+      //! Get source key
+      KeyTimeSliceColorVec_t getSrcKey(int t_source, int colorvec_src)
+      {
+	KeyTimeSliceColorVec_t key;
+
+	key.t_slice  = t_source;
+	key.colorvec = colorvec_src;
+
+	return key;
+      }
+
+	
+      //----------------------------------------------------------------------------
+      //! Read a source std::vector
+      LatticeColorVector getSrc(MOD_t& source_obj, int t_source, int colorvec_src)
+      {
+	QDPIO::cout << __func__ << ": on t_source= " << t_source << "  colorvec_src= " << colorvec_src << std::endl;
+
+	// Get the source std::vector
+	KeyTimeSliceColorVec_t src_key = getSrcKey(t_source, colorvec_src);
+	LatticeColorVectorF vec_srce = zero;
+
+	TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source);
+	source_obj.get(src_key, time_slice_io);
+
+	return vec_srce;
+      }
+
+
+      //----------------------------------------------------------------------------
+      //! Get active time-slices
+      std::vector<bool> getActiveTSlices(int t_source, int Nt_forward, int Nt_backward)
+      {
+	// Initialize the active time slices
+	const int decay_dir = Nd-1;
+	const int Lt = Layout::lattSize()[decay_dir];
+
+	std::vector<bool> active_t_slices(Lt);
+	for(int t=0; t < Lt; ++t)
+	{
+	  active_t_slices[t] = false;
+	}
+
+	// Forward
+	for(int dt=0; dt < Nt_forward; ++dt)
+	{
+	  int t = t_source + dt;
+	  active_t_slices[t % Lt] = true;
+	}
+
+	// Backward
+	for(int dt=0; dt < Nt_backward; ++dt)
+	{
+	  int t = t_source - dt;
+	  while (t < 0) {t += Lt;} 
+
+	  active_t_slices[t % Lt] = true;
+	}
+
+	return active_t_slices;
+      }
+
+
+      //----------------------------------------------------------------------------
+      //! Get source keys
+      std::list<KeyTimeSliceColorVec_t> getSrcKeys(int t_source, int colorvec_src)
+      {
+	std::list<KeyTimeSliceColorVec_t> keys;
+
+	keys.push_back(getSrcKey(t_source,colorvec_src));
+
+	return keys;
+      }
+
+	
+      //----------------------------------------------------------------------------
+      //! Get sink keys
+      std::list<KeyPropDistillation_t> getSnkKeys(int t_source, int colorvec_src, int Nt_forward, int Nt_backward, const std::string mass)
+      {
+	std::list<KeyPropDistillation_t> keys;
+
+	std::vector<bool> active_t_slices = getActiveTSlices(t_source, Nt_forward, Nt_backward);
+	
+	const int decay_dir = Nd-1;
+	const int Lt = Layout::lattSize()[decay_dir];
+
+	for(int spin_source=0; spin_source < Ns; ++spin_source)
+	{
+	  for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+	  {
+	    for(int t=0; t < Lt; ++t)
+	    {
+	      if (! active_t_slices[t]) {continue;}
+
+	      KeyPropDistillation_t key;
+
+	      key.t_source     = t_source;
+	      key.t_slice      = t;
+	      key.colorvec_src = colorvec_src;
+	      key.spin_src     = spin_source;
+	      key.spin_snk     = spin_sink;
+	      key.mass         = mass;
+
+	      //            QDPIO::cout << key << std::flush;
+
+	      keys.push_back(key);
+	    } // for t
+	  } // for spin_sink
+	} // for spin_source
+
+	return keys;
+      }
+	
+    } // end anonymous
+#else    
     // Anonymous namespace
     namespace
     {
@@ -251,6 +376,8 @@ namespace Chroma
       }
 	
     } // end anonymous
+#endif
+    
   } // end namespace
 
 	
@@ -415,7 +542,7 @@ namespace Chroma
       //
       // Map-object-disk storage of the source file
       //
-      QDP::MapObjectDisk<KeyPropDistillation_t, TimeSliceIO<LatticeColorVectorF> > source_obj;
+      QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > source_obj;
       source_obj.setDebug(0);
 
       QDPIO::cout << "Open source file" << std::endl;
@@ -610,7 +737,7 @@ namespace Chroma
 		key != snk_keys.end();
 		++key)
 	    {
-	      LatticeColorVectorF tmptmp = ferm_out(key->spin_snk,key->spin_src); 
+	      LatticeColorVectorF tmptmp = ferm_out(key->spin_snk,key->spin_src);
 
 	      prop_obj.insert(*key, TimeSliceIO<LatticeColorVectorF>(tmptmp, key->t_slice));
 	    } // for key

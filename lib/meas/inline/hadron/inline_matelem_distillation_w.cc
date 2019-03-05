@@ -6,7 +6,7 @@
 
 #include "qdp.h"
 #include "fermact.h"
-#include "meas/inline/hadron/inline_prop_and_matelem_distillation_w.h"
+#include "meas/inline/hadron/inline_matelem_distillation_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "qdp_map_obj.h"
@@ -48,6 +48,7 @@ namespace Chroma
   // Utilities
   namespace
   {
+    
     multi1d<SubsetVectorWeight_t> readEigVals(const std::string& meta)
     {    
       std::istringstream  xml_l(meta);
@@ -75,20 +76,21 @@ namespace Chroma
 
       return eigenvalues;
     }
-  }
-  
+  } // end anonymous namespace
+
+
 
   //----------------------------------------------------------------------------
-  namespace InlinePropAndMatElemDistillationEnv 
+  namespace InlineMatElemDistillationEnv 
   {
     //! Propagator input
     void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
-      read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "colorvec_files", input.colorvec_files);
-      read(inputtop, "prop_op_file", input.prop_op_file);
+      read(inputtop, "prop_file", input.prop_file);
+      read(inputtop, "peram_file", input.peram_file);
     }
 
     //! Propagator output
@@ -96,9 +98,9 @@ namespace Chroma
     {
       push(xml, path);
 
-      write(xml, "gauge_id", input.gauge_id);
       write(xml, "colorvec_files", input.colorvec_files);
-      write(xml, "prop_op_file", input.prop_op_file);
+      write(xml, "prop_file", input.prop_file);
+      write(xml, "peram_file", input.peram_file);
 
       pop(xml);
     }
@@ -110,12 +112,13 @@ namespace Chroma
       XMLReader inputtop(xml, path);
 
       read(inputtop, "num_vecs", input.num_vecs);
+      read(inputtop, "lt_orig", input.lt_orig);
+      read(inputtop, "t_offset", input.t_offset);
       read(inputtop, "t_sources", input.t_sources);
       read(inputtop, "decay_dir", input.decay_dir);
       read(inputtop, "Nt_forward", input.Nt_forward);
       read(inputtop, "Nt_backward", input.Nt_backward);
       read(inputtop, "mass_label", input.mass_label);
-      read(inputtop, "num_tries", input.num_tries);
 
       input.zero_colorvecs = false;
       if( inputtop.count("zero_colorvecs") == 1 ) {
@@ -148,7 +151,6 @@ namespace Chroma
       write(xml, "Nt_forward", input.Nt_forward);
       write(xml, "Nt_backward", input.Nt_backward);
       write(xml, "mass_label", input.mass_label);
-      write(xml, "num_tries", input.num_tries);
 
       pop(xml);
     }
@@ -159,7 +161,6 @@ namespace Chroma
     {
       XMLReader inputtop(xml, path);
 
-      read(inputtop, "Propagator", input.prop);
       read(inputtop, "Contractions", input.contract);
     }
 
@@ -168,7 +169,6 @@ namespace Chroma
     {
       push(xml, path);
 
-      write(xml, "Propagator", input.prop);
       write(xml, "Contractions", input.contract);
 
       pop(xml);
@@ -197,7 +197,7 @@ namespace Chroma
 
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
-  namespace InlinePropAndMatElemDistillationEnv 
+  namespace InlineMatElemDistillationEnv 
   {
     //----------------------------------------------------------------------------
     // Convenience type
@@ -209,6 +209,8 @@ namespace Chroma
     // Convenience type
     typedef QDP::MapObjectMemory<KeyTimeSliceColorVec_t, SubLatticeColorVectorF> SUB_MOD_t;
 
+
+    
     // Anonymous namespace
     namespace
     {
@@ -218,7 +220,7 @@ namespace Chroma
       {
       public:
 	//! Constructor
-	SubEigenMap(MODS_t& eigen_source_, int decay_dir, bool zero_colorvecs) : eigen_source(eigen_source_), time_slice_set(decay_dir), zero_colorvecs(zero_colorvecs) {}
+	SubEigenMap(MODS_t& eigen_source_, int decay_dir, bool zero_colorvecs, int t_offset, int lt_orig) : eigen_source(eigen_source_), time_slice_set(decay_dir), zero_colorvecs(zero_colorvecs), t_offset(t_offset), lt_orig(lt_orig) {}
 
 	//! Getter
 	const SubLatticeColorVectorF& getVec(int t_source, int colorvec_src) const;
@@ -237,6 +239,8 @@ namespace Chroma
 	//! Where we store the sublattice versions
 	mutable SUB_MOD_t sub_eigen;
 	bool zero_colorvecs;
+	int t_offset;
+	int lt_orig;
       };
 
       //----------------------------------------------------------------------------
@@ -244,7 +248,8 @@ namespace Chroma
       const SubLatticeColorVectorF& SubEigenMap::getVec(int t_source, int colorvec_src) const
       {
 	// The key
-	KeyTimeSliceColorVec_t src_key(t_source, colorvec_src);
+	KeyTimeSliceColorVec_t src_key( (t_source + t_offset ) % lt_orig , colorvec_src);
+
 	// If item does not exist, read from original std::map and put in memory std::map
 	if (! sub_eigen.exist(src_key))
 	{
@@ -255,7 +260,7 @@ namespace Chroma
 
 	  if (!zero_colorvecs)
 	    {
-	      TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source);
+	      TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source );
 	      eigen_source.get(src_key, time_slice_io);
 	    }
 	  
@@ -338,7 +343,7 @@ namespace Chroma
 
 	
   //----------------------------------------------------------------------------
-  namespace InlinePropAndMatElemDistillationEnv 
+  namespace InlineMatElemDistillationEnv 
   {
     namespace
     {
@@ -352,7 +357,7 @@ namespace Chroma
       bool registered = false;
     }
       
-    const std::string name = "PROP_AND_MATELEM_DISTILLATION";
+    const std::string name = "MATELEM_DISTILLATION";
 
     //! Register all the factories
     bool registerAll() 
@@ -441,48 +446,23 @@ namespace Chroma
       snoop.reset();
       snoop.start();
 
-      // Test and grab a reference to the gauge field
-      multi1d<LatticeColorMatrix> u;
-      XMLBufferWriter gauge_xml;
-      try
-      {
-	u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
-	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
-      }
-      catch( std::bad_cast ) 
-      {
-	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
-	QDP_abort(1);
-      }
-      catch (const std::string& e) 
-      {
-	QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
-	QDP_abort(1);
-      }
-
       push(xml_out, "PropDistillation");
       write(xml_out, "update_no", update_no);
-
-      QDPIO::cout << name << ": propagator calculation" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
       // Write out the input
       write(xml_out, "Input", params);
 
-      // Write out the config header
-      write(xml_out, "Config_info", gauge_xml);
-
       push(xml_out, "Output_version");
       write(xml_out, "out_version", 1);
       pop(xml_out);
 
-      // Calculate some gauge invariant observables just for info.
-      MesPlq(xml_out, "Observables", u);
-
       // Will use TimeSliceSet-s a lot
       const int decay_dir = params.param.contract.decay_dir;
       const int Lt        = Layout::lattSize()[decay_dir];
+      const int lt_orig   = params.param.contract.lt_orig;
+      const int t_offset  = params.param.contract.t_offset;
 
       // A sanity check
       if (decay_dir != Nd-1)
@@ -491,13 +471,25 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      // Reset
-      if (params.param.contract.num_tries <= 0)
+
+      QDP::MapObjectDisk<KeyPropDistillation_t, TimeSliceIO<LatticeColorVectorF> > prop_obj;
+      prop_obj.setDebug(0);
+
+      QDPIO::cout << "Open source prop file" << std::endl;
+
+      if (! prop_obj.fileExists(params.named_obj.prop_file))
       {
-	params.param.contract.num_tries = 1;
+	QDPIO::cerr << name << ": source file does not exist: src_file= " << params.named_obj.prop_file << std::endl;
+	QDP_abort(1);
+      }
+      else
+      {
+	prop_obj.open(params.named_obj.prop_file, std::ios_base::in);
       }
 
+      QDPIO::cout << "Finished opening solution file" << std::endl;
 
+      
       //
       // Read in the source along with relevant information.
       // 
@@ -557,7 +549,7 @@ namespace Chroma
 
       // The sub-lattice eigenstd::vector std::map
       QDPIO::cout << "Initialize sub-lattice std::map" << std::endl;
-      SubEigenMap sub_eigen_map(eigen_source, decay_dir, params.param.contract.zero_colorvecs);
+      SubEigenMap sub_eigen_map(eigen_source, decay_dir, params.param.contract.zero_colorvecs, t_offset , lt_orig );
       QDPIO::cout << "Finished initializing sub-lattice std::map" << std::endl;
 
 
@@ -569,16 +561,19 @@ namespace Chroma
       if (!params.param.contract.zero_colorvecs)
 	{
 	  // Open the file, and write the meta-data and the binary for this operator
-	  if (! qdp_db.fileExists(params.named_obj.prop_op_file))
+	  if (! qdp_db.fileExists(params.named_obj.peram_file))
 	    {
 	      XMLBufferWriter file_xml;
 	      push(file_xml, "DBMetaData");
 	      write(file_xml, "id", std::string("propElemOp"));
-	      write(file_xml, "lattSize", QDP::Layout::lattSize());
+
+	      auto tmp = QDP::Layout::lattSize();
+	      tmp[Nd-1] = lt_orig;
+	      
+	      write(file_xml, "lattSize", tmp );
 	      write(file_xml, "decay_dir", params.param.contract.decay_dir);
 	      proginfo(file_xml);    // Print out basic program info
 	      write(file_xml, "Params", params.param);
-	      write(file_xml, "Config_info", gauge_xml);
 	      if (!params.param.contract.zero_colorvecs)
 		write(file_xml, "Weights", readEigVals(eigen_meta_data));
 	      pop(file_xml);
@@ -586,13 +581,13 @@ namespace Chroma
 	      std::string file_str(file_xml.str());
 	      qdp_db.setMaxUserInfoLen(file_str.size());
 
-	      qdp_db.open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
+	      qdp_db.open(params.named_obj.peram_file, O_RDWR | O_CREAT, 0664);
 
 	      qdp_db.insertUserdata(file_str);
 	    }
 	  else
 	    {
-	      qdp_db.open(params.named_obj.prop_op_file, O_RDWR, 0664);
+	      qdp_db.open(params.named_obj.peram_file, O_RDWR, 0664);
 	    }
 
 	  QDPIO::cout << "Finished opening peram file" << std::endl;
@@ -610,30 +605,6 @@ namespace Chroma
 	swatch.reset();
 	QDPIO::cout << "Try the various factories" << std::endl;
 
-	// Typedefs to save typing
-	typedef LatticeFermion               T;
-	typedef multi1d<LatticeColorMatrix>  P;
-	typedef multi1d<LatticeColorMatrix>  Q;
-
-	//
-	// Initialize fermion action
-	//
-	std::istringstream  xml_s(params.param.prop.fermact.xml);
-	XMLReader  fermacttop(xml_s);
-	QDPIO::cout << "FermAct = " << params.param.prop.fermact.id << std::endl;
-
-	// Generic Wilson-Type stuff
-	Handle< FermionAction<T,P,Q> >
-	  S_f(TheFermionActionFactory::Instance().createObject(params.param.prop.fermact.id,
-							       fermacttop,
-							       params.param.prop.fermact.path));
-
-	Handle< FermState<T,P,Q> > state(S_f->createState(u));
-
-	Handle< SystemSolver<LatticeFermion> > PP = S_f->qprop(state,
-							       params.param.prop.invParam);
-      
-	QDPIO::cout << "Suitable factory found: compute all the quark props" << std::endl;
 	swatch.start();
 
 #ifdef BUILD_JIT_CONTRACTION_KERNELS
@@ -657,6 +628,9 @@ namespace Chroma
 	  int t_source = t_sources[tt];  // This is the actual time-slice.
 	  QDPIO::cout << "t_source = " << t_source << std::endl; 
 
+	  t_source -= t_offset;
+	  QDPIO::cout << "new t_source in current lattice = " << t_source << std::endl;
+	  
 	  // Loop over each spin source
 	  for(int spin_source=0; spin_source < Ns; ++spin_source)
 	  {
@@ -701,13 +675,6 @@ namespace Chroma
 		  snarss1.start();
 		  QDPIO::cout << "Do spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << std::endl; 
 
-		  // Get the source std::vector
-		  LatticeColorVector vec_srce = zero;
-	      
-		  if (!params.param.contract.zero_colorvecs)
-		    {
-		      vec_srce = sub_eigen_map.getVec(t_source, colorvec_src);
-		    }
 
 		  //
 		  // Loop over each spin source and invert. 
@@ -715,67 +682,45 @@ namespace Chroma
 		  //
 		  multi1d<LatticeColorVector> ferm_out(Ns);
 
-		  // Insert a ColorVector into spin index spin_source
-		  // This only overwrites sections, so need to initialize first
-		  LatticeFermion chi = zero;
-		  CvToFerm(vec_srce, chi, spin_source);
-
-		  LatticeFermion quark_soln = zero;
-
 		  if (!params.param.contract.zero_colorvecs)
 		    {
-		      // Do the propagator inversion
-		      // Check if bad things are happening
-		      bool badP = true;
-		      for(int nn = 1; nn <= params.param.contract.num_tries; ++nn)
-			{	
-			  // Reset
-			  quark_soln = zero;
-			  badP = false;
-	      
-			  // Solve for the solution std::vector
-			  SystemSolverResults_t res = (*PP)(quark_soln, chi);
-		  
-			  ncg_had += res.n_count;
-
-			  // Some sanity checks
-			  if (toDouble(res.resid) > 1.0e-3)
-			    {
-			      QDPIO::cerr << name << ": have a resid > 1.0e-3. That is unacceptable" << std::endl;
-			      QDP_abort(1);
-			    }
-
-			  // Check for finite values - neither NaN nor Inf
-			  if (isfinite(quark_soln))
-			    {
-			      // Okay
-			      break;
-			    }
-			  else
-			    {
-			      QDPIO::cerr << name << ": WARNING - found something not finite, may retry\n";
-			      badP = true;
-			    }
-			}
-
-		      // Sanity check
-		      if (badP)
+		      // Extract into the temporary output array
+		      for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 			{
-			  QDPIO::cerr << name << ": this is bad - did not get a finite solution std::vector after num_tries= " 
-				      << params.param.contract.num_tries << std::endl;
-			  QDP_abort(1);
+			  for ( int t = 0 ; t < Lt ; ++t )
+			    {
+			      KeyPropDistillation_t key;
+
+			      key.t_source = ( t_source + t_offset ) % lt_orig;
+			      key.t_slice = ( t + t_offset ) % lt_orig;
+			      key.colorvec_src = colorvec_src;
+			      key.spin_src = spin_source;
+			      key.spin_snk = spin_sink;
+			      key.mass = params.param.contract.mass_label;
+
+			      LatticeColorVectorF tmp;
+
+			      TimeSliceIO<LatticeColorVectorF> time_slice_io(tmp, t);
+
+			      prop_obj.get( key , time_slice_io );
+			      
+			      ferm_out(spin_sink)[ sub_eigen_map.getSet()[t] ] = tmp;
+			    }
 			}
+
 		    } // zero_colorvecs ??
-	      
-		  // Extract into the temporary output array
-		  for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+		  else
 		    {
-		      ferm_out(spin_sink) = peekSpin(quark_soln, spin_sink);
+		      for ( int s = 0 ; s < Ns ; ++s )
+			{
+			  zero_rep( ferm_out[s] );
+			}
 		    }
+	      
 
 		  snarss1.stop();
-		  QDPIO::cout << "Time to compute prop for spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << "  time = " 
-			      << snarss1.getTimeInSeconds() 
+		  QDPIO::cout << "Time to read prop for spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << "  time = " 
+			      << snarss1.getTimeInSeconds()
 			      << " secs" << std::endl;
 
 		  // The perambulator part
@@ -899,8 +844,12 @@ namespace Chroma
 		      key != snk_keys.end();
 		      ++key)
 		    {
+		      KeyPropElementalOperator_t tmp = *key;
+		      tmp.t_source = ( tmp.t_source + t_offset ) % lt_orig;
+		      tmp.t_slice  = ( tmp.t_slice + t_offset ) % lt_orig;
+		      
 		      // Insert/write to disk
-		      qdp_db.insert(*key, peram[*key]);
+		      qdp_db.insert( tmp , peram[*key]);
 
 		    } // for key
 		
