@@ -10,6 +10,7 @@
 #include "meas/glue/mesplq.h"
 #include "qdp_map_obj.h"
 #include "qdp_map_obj_disk.h"
+#include "qdp_map_obj_disk_multiple.h"
 #include "qdp_disk_map_slice.h"
 #include "util/ferm/key_prop_distillation.h"
 #include "util/ferm/key_timeslice_colorvec.h"
@@ -36,7 +37,7 @@ namespace Chroma
       XMLReader inputtop(xml, path);
 
       read(inputtop, "gauge_id", input.gauge_id);
-      read(inputtop, "src_file", input.src_file);
+      read(inputtop, "colorvec_files", input.colorvec_files);
       read(inputtop, "soln_file", input.soln_file);
     }
 
@@ -46,7 +47,7 @@ namespace Chroma
       push(xml, path);
 
       write(xml, "gauge_id", input.gauge_id);
-      write(xml, "src_file", input.src_file);
+      write(xml, "colorvec_files", input.colorvec_files);
       write(xml, "soln_file", input.soln_file);
 
       pop(xml);
@@ -133,7 +134,8 @@ namespace Chroma
     namespace
     {
       // Convenience type
-      typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MOD_t;
+      //typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MOD_t;
+      typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MODS_t;
 
       //----------------------------------------------------------------------------
       //! Get source key
@@ -150,7 +152,7 @@ namespace Chroma
 	
       //----------------------------------------------------------------------------
       //! Read a source std::vector
-      LatticeColorVector getSrc(MOD_t& source_obj, int t_source, int colorvec_src)
+      LatticeColorVector getSrc(MODS_t& source_obj, int t_source, int colorvec_src)
       {
 	QDPIO::cout << __func__ << ": on t_source= " << t_source << "  colorvec_src= " << colorvec_src << std::endl;
 
@@ -542,22 +544,37 @@ namespace Chroma
       //
       // Map-object-disk storage of the source file
       //
-      QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > source_obj;
+      //QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > source_obj;
+      MODS_t source_obj;
       source_obj.setDebug(0);
 
-      QDPIO::cout << "Open source file" << std::endl;
+      try
+	{
+	  QDPIO::cout << "Open source file" << std::endl;
+	  source_obj.open(params.named_obj.colorvec_files);
 
-      if (! source_obj.fileExists(params.named_obj.src_file))
-      {
-	QDPIO::cerr << name << ": source file does not exist: src_file= " << params.named_obj.src_file << std::endl;
-	QDP_abort(1);
-      }
-      else
-      {
-	source_obj.open(params.named_obj.src_file, std::ios_base::in);
-      }
+	  QDPIO::cout << "Finished opening solution file" << std::endl;
 
-      QDPIO::cout << "Finished opening solution file" << std::endl;
+	  std::string eigen_meta_data;   // holds the eigenvalues
+	  QDPIO::cout << "Get user data" << std::endl;
+	  source_obj.getUserdata(eigen_meta_data);
+	}    
+	  catch (std::bad_cast) {
+	    QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
+	    QDP_abort(1);
+	  }
+	  catch (const std::string& e) {
+	    QDPIO::cerr << name << ": error extracting source_header: " << e << std::endl;
+	    QDP_abort(1);
+	  }
+	  catch( const char* e) {
+	    QDPIO::cerr << name <<": Caught some char* exception:" << std::endl;
+	    QDPIO::cerr << e << std::endl;
+	    QDPIO::cerr << "Rethrowing" << std::endl;
+	    throw;
+	  }
+
+	  QDPIO::cout << "Source successfully read and parsed" << std::endl;
 
 
       //
