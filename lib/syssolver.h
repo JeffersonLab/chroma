@@ -22,7 +22,16 @@ namespace Chroma
 			*    resid = sqrt(norm2(rhs - A.soln)) */
   };
 
+  struct SystemSolverResultsMRHS_t
+  {
+	  multi1d<Double> resid;
+	  multi1d<int> n_count;
 
+	  SystemSolverResultsMRHS_t(int n) {
+		  resid.resize(n); n_count.resize(n);
+		  resid[0]=zero; n_count[0]=0;
+	  }
+  };
   //-----------------------------------------------------------------------------------
   //! Linear system solvers
   /*! @ingroup solvers
@@ -107,6 +116,33 @@ namespace Chroma
     virtual SystemSolverResults_t operator() (multi1d<T>& psi, 
 					      const multi1d<Real>& shifts, 
 					      const T& chi) const = 0;
+
+    //! Return the subset on which the operator acts
+    virtual const Subset& subset() const = 0;
+  };
+
+  //! Linear multi-system solvers
+  /*! @ingroup solvers
+   *
+   * Solves multi-shift linear systems of equations. The solver may only live on a subset.
+   */
+  template<typename T>
+  class MultiRHSSystemSolver
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~MultiRHSSystemSolver() {}
+
+    //! Apply the operator onto a source std::vector
+    /*!
+     * Solves   A*psi = chi  or  psi = A^(-1)*chi up to some accuracy.
+     * There is the interesting possibility of generalizing to support PLUS/MINUS
+     *
+     * Should the accuracy be specified here ???
+     *
+     * Should the shifts be here or in the constructor???
+     */
+    virtual SystemSolverResultsMRHS_t operator() (multi1d<T>& psi, const multi1d<T>& chi) const = 0;
 
     //! Return the subset on which the operator acts
     virtual const Subset& subset() const = 0;

@@ -21,6 +21,7 @@
 #include "actions/ferm/invert/multi_syssolver_linop.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_accumulate.h"
+#include "actions/ferm/linop/single_to_multi_linop.h"
 namespace Chroma
 {
   //! Base class for quadratic matter actions (e.g., fermions)
@@ -231,6 +232,8 @@ namespace Chroma
 
     //! Produce a linear operator M^dag.M for this action
     virtual DiffLinearOperator<T,Q,P>* lMdagM(Handle< FermState<T,P,Q> > state) const = 0;
+
+
   };
 
 

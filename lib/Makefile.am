@@ -79,9 +79,13 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/norm_gram_schm.h \
 	actions/ferm/invert/syssolver_linop.h \
 	actions/ferm/invert/syssolver_linop_factory.h \
+	actions/ferm/invert/syssolver_linop_mrhs.h \
+	actions/ferm/invert/syssolver_linop_mrhs_factory.h \
 	actions/ferm/invert/syssolver_linop_aggregate.h \
 	actions/ferm/invert/syssolver_mdagm.h \
 	actions/ferm/invert/syssolver_mdagm_factory.h \
+	actions/ferm/invert/syssolver_mdagm_mrhs.h \
+	actions/ferm/invert/syssolver_mdagm_mrhs_factory.h \
 	actions/ferm/invert/syssolver_mdagm_aggregate.h \
 	actions/ferm/invert/syssolver_polyprec.h \
 	actions/ferm/invert/syssolver_polyprec_factory.h \
