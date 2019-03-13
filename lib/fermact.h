@@ -18,6 +18,8 @@
 #include "io/enum_io/enum_quarkspintype_io.h"
 #include "actions/ferm/invert/syssolver_linop.h"
 #include "actions/ferm/invert/syssolver_mdagm.h"
+#include "actions/ferm/invert/syssolver_linop_mrhs.h"
+#include "actions/ferm/invert/syssolver_mdagm_mrhs.h"
 #include "actions/ferm/invert/multi_syssolver_linop.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_accumulate.h"
@@ -185,12 +187,30 @@ namespace Chroma
     //! Produce a linear operator M^dag.M for this action
     virtual LinearOperator<T>* lMdagM(Handle< FermState<T,P,Q> > state) const = 0;
 
+    virtual LinearOperatorArray<T>* linOpMRHS(Handle< FermState<T,P,Q> > state, const int N) const {
+    	Handle<LinearOperator<T>> linOpSRHS( linOp(state));
+    	return new SingleRHSToMultiRHSProxyLinOp<T>( linOpSRHS, N);
+    }
+
+    virtual LinearOperatorArray<T>* lMdagMMRHS(Handle< FermState<T,P,Q> > state, const int N) const {
+        	Handle<LinearOperator<T>> lMdagMSRHS( lMdagM(state));
+        	return new SingleRHSToMultiRHSProxyLinOp<T>( lMdagMSRHS, N);
+    }
+
     //! Return a linear operator solver for this action to solve M*psi=chi 
     virtual LinOpSystemSolver<T>* invLinOp(Handle< FermState<T,P,Q> > state,
 					   const GroupXML_t& invParam) const = 0;
 
     //! Return a linear operator solver for this action to solve MdagM*psi=chi 
     virtual MdagMSystemSolver<T>* invMdagM(Handle< FermState<T,P,Q> > state,
+					   const GroupXML_t& invParam) const = 0;
+
+    //! Return a linear operator solver for this action to solve M*psi=chi
+    virtual LinOpMRHSSystemSolver<T>* invLinOpMRHS(Handle< FermState<T,P,Q> > state,
+					   const GroupXML_t& invParam) const = 0;
+
+    //! Return a linear operator solver for this action to solve MdagM*psi=chi
+    virtual MdagMMRHSSystemSolver<T>* invMdagMMRHS(Handle< FermState<T,P,Q> > state,
 					   const GroupXML_t& invParam) const = 0;
 
     //! Return a multi-shift linear operator solver for this action to solve (M+shift)*psi=chi 
@@ -205,6 +225,7 @@ namespace Chroma
     //  for solving  A \sum_j p_j (MdagM + shift_j)^{-1} psi_j
     virtual MdagMMultiSystemSolverAccumulate<T>* mInvMdagMAcc(Handle< FermState<T,P,Q> > state,
 						 const GroupXML_t& invParam) const = 0;
+
 
     //! Return quark prop solver, solution of unpreconditioned system
     /*! Default implementation provided */
@@ -233,7 +254,11 @@ namespace Chroma
     //! Produce a linear operator M^dag.M for this action
     virtual DiffLinearOperator<T,Q,P>* lMdagM(Handle< FermState<T,P,Q> > state) const = 0;
 
-
+    virtual DiffLinearOperatorArray<T,P,Q>* linOpMRHS(Handle< FermState<T,P,Q> > state,
+    			const int N) const {
+        	Handle<DiffLinearOperator<T,P,Q>> linOpSRHS( linOp(state));
+        	return new SingleRHSToMultiRHSProxyDiffLinOp<T,P,Q>( linOpSRHS, N );
+        }
   };
 
 

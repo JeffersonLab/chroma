@@ -11,7 +11,8 @@
 #include "actions/ferm/fermstates/asqtad_state.h"
 #include "actions/ferm/fermstates/simple_fermstate.h"
 #include "actions/ferm/fermacts/hisq_fermact_params_s.h"
-
+#include "actions/ferm/invert/syssolver_linop_mrhs.h"
+#include "actions/ferm/invert/syssolver_mdagm_mrhs.h"
 
 namespace Chroma 
 { 
@@ -56,6 +57,16 @@ namespace Chroma
 
     //! Produce a linear operator M^dag.M for this action
     DiffLinearOperator<T,P,Q>* lMdagM(Handle< FermState<T,P,Q> > state_) const;
+
+    //! Return a linear operator solver for this action to solve M*psi=chi
+    /*! Default implementation */
+   LinOpMRHSSystemSolver<T>* invLinOpMRHS(Handle< FermState<T,P,Q> > state,
+    		const GroupXML_t& invParam) const override;
+
+    //! Return a linear operator solver for this action to solve MdagM*psi=chi
+    /*! Default implementation */
+   MdagMMRHSSystemSolver<T>* invMdagMMRHS(Handle< FermState<T,P,Q> > state,
+    		const GroupXML_t& invParam) const override;
 
     //! Return quark prop solver, solution of unpreconditioned system
     SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,

@@ -46,6 +46,16 @@ namespace Chroma
     virtual MdagMSystemSolver<T>* invMdagM(Handle< FermState<T,P,Q> > state,
 					   const GroupXML_t& invParam) const;
 
+    //! Return a linear operator solver for this action to solve M*psi=chi
+    /*! Default implementation */
+    virtual LinOpMRHSSystemSolver<T>* invLinOpMRHS(Handle< FermState<T,P,Q> > state,
+					   const GroupXML_t& invParam) const;
+
+    //! Return a linear operator solver for this action to solve MdagM*psi=chi
+    /*! Default implementation */
+    virtual MdagMMRHSSystemSolver<T>* invMdagMMRHS(Handle< FermState<T,P,Q> > state,
+					   const GroupXML_t& invParam) const;
+
     //! Return a multi-shift linear operator solver for this action to solve (M+shift)*psi=chi 
     /*! Default implementation */
     virtual LinOpMultiSystemSolver<T>* mInvLinOp(Handle< FermState<T,P,Q> > state,

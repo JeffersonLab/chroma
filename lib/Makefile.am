@@ -100,6 +100,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_OPTeigcg_params.h \
 	actions/ferm/invert/syssolver_OPTeigbicg_params.h \
 	actions/ferm/invert/syssolver_fgmres_dr_params.h \
+	actions/ferm/invert/syssolver_mrhs_proxy_params.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
@@ -1118,6 +1119,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
 	actions/ferm/invert/syssolver_OPTeigbicg_params.cc \
 	actions/ferm/invert/syssolver_fgmres_dr_params.cc \
+	actions/ferm/invert/syssolver_mrhs_proxy_params.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \

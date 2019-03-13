@@ -30,6 +30,7 @@ namespace Chroma
     write(xml, "NDefl",     p.NDefl);
     write(xml, "MaxIter",   p.MaxIter);
     xml << p.PrecondParams.xml;
+    pop(xml);
   }
 
   SysSolverFGMRESDRParams::SysSolverFGMRESDRParams()

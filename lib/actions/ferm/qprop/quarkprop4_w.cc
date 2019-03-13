@@ -293,6 +293,8 @@ namespace Chroma
   }
 
 
+
+
   //! Return a linear operator solver for this action to solve MdagM*psi=chi 
   /*! \ingroup qprop */
   template<>
@@ -310,6 +312,40 @@ namespace Chroma
 								    this->linOp(state));
   }
 
+  template<>
+  LinOpMRHSSystemSolver<LF>*
+  WilsonTypeFermAct<LF,LCM,LCM>::invLinOpMRHS(Handle< FermState<LF,LCM,LCM> > state,
+					  const GroupXML_t& invParam) const
+  {
+#if 0
+    std::istringstream  xml(invParam.xml);
+    XMLReader  paramtop(xml);
+
+    return TheLinOpFermSystemSolverFactory::Instance().createObject(invParam.id,
+								    paramtop,
+								    invParam.path,
+								    state,
+								    this->linOp(state));
+#endif
+  }
+
+  template<>
+   MdagMMRHSSystemSolver<LF>*
+   WilsonTypeFermAct<LF,LCM,LCM>::invMdagMMRHS(Handle< FermState<LF,LCM,LCM> > state,
+ 					  const GroupXML_t& invParam) const
+   {
+#if 0
+    std::istringstream  xml(invParam.xml);
+    XMLReader  paramtop(xml);
+
+    return TheLinOpFermSystemSolverFactory::Instance().createObject(invParam.id,
+								    paramtop,
+								    invParam.path,
+								    state,
+								    this->linOp(state));
+#endif
+
+   }
 
   //! Return a linear operator solver for this action to solve (M+shift_i)*psi_i = chi 
   /*! \ingroup qprop */

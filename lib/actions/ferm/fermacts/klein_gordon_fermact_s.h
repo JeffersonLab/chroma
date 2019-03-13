@@ -72,6 +72,16 @@ namespace Chroma
     //! Produce a linear operator M^dag.M for this action
     DiffLinearOperator<T,P,Q>* lMdagM(Handle< FermState<T,P,Q> > state_) const;
 
+    //! Return a linear operator solver for this action to solve M*psi=chi
+      /*! Default implementation */
+     LinOpMRHSSystemSolver<T>* invLinOpMRHS(Handle< FermState<T,P,Q> > state,
+      		const GroupXML_t& invParam) const override;
+
+      //! Return a linear operator solver for this action to solve MdagM*psi=chi
+      /*! Default implementation */
+     MdagMMRHSSystemSolver<T>* invMdagMMRHS(Handle< FermState<T,P,Q> > state,
+      		const GroupXML_t& invParam) const override;
+
     //! Return a linear operator solver for this action to solve MdagM*psi=chi 
     /*! Default implementation provided */
 //    MdagMSystemSolver<T>* invMdagM(Handle< FermState<T,P,Q> > state,

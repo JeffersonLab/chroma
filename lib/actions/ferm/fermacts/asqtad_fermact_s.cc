@@ -136,5 +136,26 @@ namespace Chroma
     return new AsqtadConnectState(cfs->getFermBC(), u_with_phases, u_fat, u_triple);
   }
 
+  //! Return a linear operator solver for this action to solve M*psi=chi
+  /*! Default implementation */
+  LinOpMRHSSystemSolver<AsqtadFermAct::T>*
+  AsqtadFermAct::invLinOpMRHS(Handle< FermState<T,P,Q> > state,
+		  const GroupXML_t& invParam) const
+  {
+	  QDPIO::cout << "invLinOpMRHS is not implemented" << std::endl;
+	  QDP_abort(1);
+	  return nullptr;
+  }
+  //! Return a linear operator solver for this action to solve MdagM*psi=chi
+  /*! Default implementation */
+  MdagMMRHSSystemSolver<AsqtadFermAct::T>*
+  AsqtadFermAct::invMdagMMRHS(Handle< FermState<T,P,Q> > state,
+		  const GroupXML_t& invParam) const
+  {
+	  QDPIO::cout << "invLinOpMRHS is not implemented" << std::endl;
+	  QDP_abort(1);
+	  return nullptr;
+  }
+
 } // End Namespace Chroma
 

@@ -122,7 +122,26 @@ namespace Chroma
     return new DiffMdagMLinOp<T,P,Q>(this->linOp(state));
   }
 
-
+  //! Return a linear operator solver for this action to solve M*psi=chi
+  /*! Default implementation */
+  LinOpMRHSSystemSolver<KleinGordonFermAct::T>*
+  KleinGordonFermAct::invLinOpMRHS(Handle< FermState<T,P,Q> > state,
+		  const GroupXML_t& invParam) const
+  {
+	  QDPIO::cout << "invLinOpMRHS is not implemented" << std::endl;
+	  QDP_abort(1);
+	  return nullptr;
+  }
+  //! Return a linear operator solver for this action to solve MdagM*psi=chi
+  /*! Default implementation */
+  MdagMMRHSSystemSolver<KleinGordonFermAct::T>*
+  KleinGordonFermAct::invMdagMMRHS(Handle< FermState<T,P,Q> > state,
+		  const GroupXML_t& invParam) const
+  {
+	  QDPIO::cout << "invLinOpMRHS is not implemented" << std::endl;
+	  QDP_abort(1);
+	  return nullptr;
+  }
 #if 0
   // Already supplied in  chroma/lib/actions/ferm/qprop/quarkprop_s.cc
 
