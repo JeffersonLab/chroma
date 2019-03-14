@@ -162,7 +162,7 @@
       </Param>
       <NamedObject>
         <gauge_file>./gauge.mod</gauge_file>
-        <colorvec_file>./colorvec.mod</colorvec_file>
+        <colorvec_files></elem>./colorvec.mod</elem></colorvec_files>
         <meson_op_file>meson.deriv.sdb</meson_op_file>
       </NamedObject>
     </elem>
