@@ -57,6 +57,7 @@
 #include "actions/ferm/fermacts/ovext_tuning_strategy_aggregate.h"
 
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
+#include "actions/ferm/invert/syssolver_linop_mrhs_aggregate.h"
 #include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_aggregate.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_accumulate_aggregate.h"
@@ -80,6 +81,7 @@ namespace Chroma
       {
 	// All system solvers
 	success &= LinOpSysSolverEnv::registerAll();
+	success &- LinOpSysSolverMRHSEnv::registerAll();
 	success &= MdagMSysSolverEnv::registerAll();
 	success &= MdagMMultiSysSolverEnv::registerAll();
 	success &= MdagMMultiSysSolverAccumulateEnv::registerAll();

@@ -115,7 +115,7 @@ std::string inv_param_syssolver_cg_xml = \
           </InvertParam>\
 		</Param>";
 
-std::string inv_param_multi_rhs_proxy_xml = \
+std::string inv_param_multi_rhs_proxy_cg_xml = \
 		"<?xml version='1.0' ?> \
 		<Param> \
 		   <InvertParam> \
@@ -129,14 +129,29 @@ std::string inv_param_multi_rhs_proxy_xml = \
 	       </InvertParam> \
          </Param>";
 
-
+std::string inv_param_multi_rhs_proxy_bicgstab_xml = \
+		"<?xml version='1.0' ?> \
+		<Param> \
+		   <InvertParam> \
+		     <invType>MULTI_RHS_PROXY_INVERTER</invType> \
+			 <BlockSize>4</BlockSize> \
+			 <SubInvertParam> \
+			    <invType>BICGSTAB_INVERTER</invType>\
+				<RsdBiCGStab>1.0e-8</RsdBiCGStab> \
+				<MaxBiCGStab>1000</MaxBiCGStab> \
+			 </SubInvertParam> \
+	       </InvertParam> \
+         </Param>";
 
 
 #ifdef BUILD_QUDA
-std::string inv_param_quda_bicgstab_xml = \
+std::string inv_param_multi_rhs_proxy_quda_bicgstab_xml = \
 		"<?xml version='1.0'?> \
 		<Param> \
 		  <InvertParam>\
+			<BlockSize>4</BlockSize> \
+		    <invType>MULTI_RHS_PROXY_INVERTER</invType> \
+		    <SubInvertParam> \
             <invType>QUDA_CLOVER_INVERTER</invType>\
   	  	  	<CloverParams>\
               <Mass>0.1</Mass>				      \
@@ -148,7 +163,7 @@ std::string inv_param_quda_bicgstab_xml = \
                 <nu>1</nu>				      \
               </AnisoParam>\
             </CloverParams>\
-            <RsdTarget>1.0e-8</RsdTarget>\
+            <RsdTarget>5.0e-9</RsdTarget>\
             <Delta>1.0e-1</Delta>\
             <Pipeline>0</Pipeline>\
             <MaxIter>500</MaxIter>\
@@ -163,13 +178,17 @@ std::string inv_param_quda_bicgstab_xml = \
             <AxialGaugeFix>false</AxialGaugeFix>\
             <AutotuneDslash>true</AutotuneDslash>\
             <SolutionCheckP>true</SolutionCheckP>\
-          </InvertParam>\
+          </SubInvertParam>\
+		</InvertParam>\
 		</Param>";
 
-std::string inv_param_quda_multigrid_xml = \
+std::string inv_param_multi_rhs_proxy_quda_multigrid_xml = \
 		"<?xml version='1.0'?> \
 		<Param> \
 		  <InvertParam>\
+		    <BlockSize>4</BlockSize> \
+		    <invType>MULTI_RHS_PROXY_INVERTER</invType> \
+		    <SubInvertParam> \
             <invType>QUDA_MULTIGRID_CLOVER_INVERTER</invType>\
   	  	  	<CloverParams>\
               <Mass>0.1</Mass>				      \
@@ -234,112 +253,11 @@ std::string inv_param_quda_multigrid_xml = \
             </MULTIGRIDParams>\
             <SubspaceID>mg_subspace</SubspaceID>\
             <SolutionCheckP>true</SolutionCheckP>\
-          </InvertParam>\
+          </SubInvertParam>\
+		</InvertParam> \
 		</Param>";
 
-std::string inv_param_quda_bicgstab_asymm_xml = \
-		"<?xml version='1.0'?> \
-		<Param> \
-		  <InvertParam>\
-            <invType>QUDA_CLOVER_INVERTER</invType>\
-  	  	  	<CloverParams>\
-              <Mass>0.1</Mass>				      \
-              <clovCoeff>1</clovCoeff>			      \
-              <AnisoParam>				      \
-                <anisoP>false</anisoP>			      \
-                <t_dir>3</t_dir>				      \
-                <xi_0>1</xi_0>				      \
-                <nu>1</nu>				      \
-              </AnisoParam>\
-            </CloverParams>\
-            <RsdTarget>1.0e-8</RsdTarget>\
-            <Delta>1.0e-1</Delta>\
-            <Pipeline>0</Pipeline>\
-            <MaxIter>500</MaxIter>\
-		    <SolverType>BICGSTAB</SolverType> \
-            <RsdToleranceFactor>100.0</RsdToleranceFactor>\
-            <AntiPeriodicT>true</AntiPeriodicT>\
-            <Verbose>true</Verbose>\
-            <AsymmetricLinop>true</AsymmetricLinop>\
-            <CudaReconstruct>RECONS_12</CudaReconstruct>\
-            <CudaSloppyPrecision>SINGLE</CudaSloppyPrecision>\
-            <CudaSloppyReconstruct>RECONS_12</CudaSloppyReconstruct>\
-            <AxialGaugeFix>false</AxialGaugeFix>\
-            <AutotuneDslash>true</AutotuneDslash>\
-            <SolutionCheckP>true</SolutionCheckP>\
-          </InvertParam>\
-		</Param>";
 
-std::string inv_param_quda_multigrid_asymm_xml = \
-		"<?xml version='1.0'?> \
-		<Param> \
-		  <InvertParam>\
-            <invType>QUDA_MULTIGRID_CLOVER_INVERTER</invType>\
-  	  	  	<CloverParams>\
-              <Mass>0.1</Mass>				      \
-              <clovCoeff>1</clovCoeff>			      \
-              <AnisoParam>				      \
-                <anisoP>false</anisoP>			      \
-                <t_dir>3</t_dir>				      \
-                <xi_0>1</xi_0>				      \
-                <nu>1</nu>				      \
-              </AnisoParam>\
-            </CloverParams>\
-               <RsdTarget>1.0e-8</RsdTarget> \
-            <Delta>1.0e-1</Delta>\
-            <Pipeline>4</Pipeline> \
-            <MaxIter>500</MaxIter> \
-            <RsdToleranceFactor>100.0</RsdToleranceFactor>\
-            <AntiPeriodicT>true</AntiPeriodicT>\
-            <SolverType>GCR</SolverType>\
-            <Verbose>false</Verbose>\
-            <AsymmetricLinop>true</AsymmetricLinop>\
-            <CudaReconstruct>RECONS_12</CudaReconstruct>\
-            <CudaSloppyPrecision>SINGLE</CudaSloppyPrecision>\
-            <CudaSloppyReconstruct>RECONS_12</CudaSloppyReconstruct>\
-            <AxialGaugeFix>false</AxialGaugeFix>\
-            <AutotuneDslash>true</AutotuneDslash>\
-            <MULTIGRIDParams>\
-              <Verbosity>true</Verbosity>\
-              <Precision>HALF</Precision>\
-              <Reconstruct>RECONS_12</Reconstruct>\
-              <Blocking>\
-                <elem>2 2 2 4</elem>\
-              </Blocking>\
-              <CoarseSolverType>\
-                <elem>CA_GCR</elem>\
-              </CoarseSolverType>\
-              <CoarseResidual>1.0e-1</CoarseResidual>\
-              <MaxCoarseIterations>12</MaxCoarseIterations>\
-              <RelaxationOmegaMG>1.0</RelaxationOmegaMG>\
-              <SmootherType>\
-                <elem>CA_GCR</elem>\
-              </SmootherType>\
-              <SmootherTol>0.25</SmootherTol>\
-              <SmootherSchwarzCycle>1</SmootherSchwarzCycle>\
-              <NullVectors>24</NullVectors>\
-              <Pre-SmootherApplications>0</Pre-SmootherApplications>\
-              <Post-SmootherApplications>8</Post-SmootherApplications>\
-              <SubspaceSolver>\
-                <elem>CG</elem>\
-              </SubspaceSolver>\
-              <RsdTargetSubspaceCreate>5e-06</RsdTargetSubspaceCreate>\
-              <MaxIterSubspaceCreate>500</MaxIterSubspaceCreate>\
-              <MaxIterSubspaceRefresh>500</MaxIterSubspaceRefresh>\
-              <OuterGCRNKrylov>20</OuterGCRNKrylov>\
-              <PrecondGCRNKrylov>10</PrecondGCRNKrylov>\
-              <GenerateNullspace>true</GenerateNullspace>\
-              <CheckMultigridSetup>false</CheckMultigridSetup>\
-              <GenerateAllLevels>true</GenerateAllLevels>\
-              <CycleType>MG_RECURSIVE</CycleType>\
-              <SchwarzType>ADDITIVE_SCHWARZ</SchwarzType>\
-              <RelaxationOmegaOuter>1.0</RelaxationOmegaOuter>\
-              <SetupOnGPU>1</SetupOnGPU>\
-            </MULTIGRIDParams>\
-            <SubspaceID>mg_subspace</SubspaceID>\
-            <SolutionCheckP>true</SolutionCheckP>\
-          </InvertParam>\
-		</Param>";
 #endif
 
 

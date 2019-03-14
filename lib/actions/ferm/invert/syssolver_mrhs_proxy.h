@@ -19,6 +19,19 @@
 #include <sstream>
 
 namespace Chroma {
+
+ //! CG1 system solver namespace
+ namespace LinOpSysSolverMRHSProxyEnv
+ {
+ 	 bool registerAll();
+ }
+
+ //! CG1 system solver namespace
+  namespace MdagMSysSolverMRHSProxyEnv
+  {
+  	 bool registerAll();
+  }
+
 template<typename T,typename P, typename Q>
 class LinOpMRHSSysSolverProxy : public LinOpMRHSSystemSolver<T> {
 public:

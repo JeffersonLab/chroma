@@ -14,52 +14,31 @@
 #include "singleton.h"
 #include "typelist.h"
 #include "objfactory.h"
+#include "fermact.h"
 #include "actions/ferm/invert/syssolver_linop_mrhs.h"
 
 namespace Chroma
 {
   namespace {
 
+
     using FSHandle =  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >;
 
     using FSHandleF = Handle< FermState< LatticeFermionF, multi1d<LatticeColorMatrixF>, multi1d<LatticeColorMatrixF> > >;
 
     using FSHandleD = Handle< FermState< LatticeFermionD, multi1d<LatticeColorMatrixD>, multi1d<LatticeColorMatrixD> > >;
+
+    using FAHandle = Handle< FermAct4D< LatticeFermion, multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> > >;
   }
   //! LinOp system solver factory (foundry)
   /*! @ingroup invert */
   typedef SingletonHolder<
     ObjectFactory<LinOpMRHSSystemSolver<LatticeFermion>,
 		  std::string,
-		  TYPELIST_4(XMLReader&, const std::string&, FSHandle,  Handle< LinearOperatorArray<LatticeFermion> >),
-		  LinOpMRHSSystemSolver<LatticeFermion>* (*)(XMLReader&,
-							 const std::string&,
-							 FSHandle,
-							 Handle< LinearOperatorArray<LatticeFermion> >),
+		  TYPELIST_4(XMLReader&,const std::string&,FAHandle,FSHandle),
+		  LinOpMRHSSystemSolver<LatticeFermion>* (*)(XMLReader&,const std::string&,FAHandle,FSHandle),
 		  StringFactoryError> >
   TheLinOpFermMRHSSystemSolverFactory;
-
-  typedef SingletonHolder<
-    ObjectFactory<LinOpMRHSSystemSolver<LatticeFermionF>,
-		  std::string,
-		  TYPELIST_4(XMLReader&, const std::string&, FSHandleF,  Handle< LinearOperatorArray<LatticeFermionF> >),
-		  LinOpMRHSSystemSolver<LatticeFermionF>* (*)(XMLReader&,
-							 const std::string&,
-							 FSHandleF,
-							 Handle< LinearOperatorArray<LatticeFermionF> >),
-		  StringFactoryError> >
-  TheLinOpFFermMRHSSystemSolverFactory;
-
-  typedef SingletonHolder<
-    ObjectFactory<LinOpMRHSSystemSolver<LatticeFermionD>,
-		  std::string,
-		  TYPELIST_4(XMLReader&, const std::string&, FSHandleD,  Handle< LinearOperatorArray<LatticeFermionD> >),
-		  LinOpMRHSSystemSolver<LatticeFermionD>* (*)(XMLReader&,
-							 const std::string&,
-							 FSHandleD,
-							 Handle< LinearOperatorArray<LatticeFermionD> >),
-		  StringFactoryError> >
-  TheLinOpDFermMRHSSystemSolverFactory;
 
 
 } // Namespace chroma
