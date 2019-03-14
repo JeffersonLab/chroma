@@ -87,6 +87,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_mdagm_mrhs.h \
 	actions/ferm/invert/syssolver_mdagm_mrhs_factory.h \
 	actions/ferm/invert/syssolver_mdagm_aggregate.h \
+	actions/ferm/invert/syssolver_mrhs_proxy.h \
 	actions/ferm/invert/syssolver_polyprec.h \
 	actions/ferm/invert/syssolver_polyprec_factory.h \
 	actions/ferm/invert/syssolver_polyprec_aggregate.h \

@@ -1,5 +1,6 @@
 #include "chromabase.h"
 #include "handle.h"
+#include "linearop.h"
 #include "seoprec_linop.h"
 #include "eoprec_linop.h"
 #include "eoprec_wilstype_fermact_w.h"
@@ -14,6 +15,8 @@
 #include "multi_rhs_xml.h"
 
 #include "actions/ferm/invert/syssolver_mrhs_proxy_params.h"
+#include "actions/ferm/invert/syssolver_mrhs_proxy.h"
+
 using namespace Chroma;
 using namespace QDP;
 using namespace MultiRHSTesting;
@@ -50,6 +53,11 @@ public:
 	    S_symm = dynamic_cast<S_symm_T*>(TheFermionActionFactory::Instance().createObject("SEOPREC_CLOVER",
 	        											   xml_in_symm,
 	        											   "FermionAction"));
+
+		state = S_asymm->createState(u);
+		M_asymm =dynamic_cast<LinOpAsymm_T *>(S_asymm->linOp(state));
+		M_symm =dynamic_cast<LinOpSymm_T *>(S_symm->linOp(state));
+
 	}
 
 
@@ -58,6 +66,9 @@ public:
 	Q u;
 	Handle<S_symm_T> S_symm;
 	Handle<S_asymm_T> S_asymm;
+	Handle<FermState<T,P,Q> > state;
+	Handle<LinOpAsymm_T> M_asymm;
+	Handle<LinOpSymm_T> M_symm;
 };
 
 class MultiRHSFixture : public MultiRHSFixtureT<::testing::Test> {};
@@ -84,4 +95,129 @@ TEST_F(MultiRHSFixture, CheckParamReader)
 	}
 
  }
+
+TEST_F(MultiRHSFixture, CheckMRHSOperator)
+{
+	int num_rhs =4;
+	Handle< LinearOperatorArray<T> > M_multi(S_symm->linOpMRHS(state,num_rhs));
+	auto& s = M_multi->subset();
+	ASSERT_EQ( M_multi->size(), 4);
+
+	multi1d<T> psi(num_rhs);
+	multi1d<T> chi(num_rhs);
+
+
+	for(int i=0;i < num_rhs; ++i) gaussian(psi[i]);
+	(*M_multi)(chi,psi,PLUS);
+
+	for(int i=0; i < num_rhs; ++i) {
+		T tmp = zero;
+		(*M_symm)( tmp, psi[i], PLUS );
+		tmp[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+ }
+
+TEST_F(MultiRHSFixture, CheckLinOpMRHSWProxy)
+{
+	std::istringstream inv_param_stream(inv_param_multi_rhs_proxy_xml);
+	XMLReader inv_param_xml(inv_param_stream);
+
+	SysSolverMRHSProxyParams param(inv_param_xml,"InvertParam");
+
+	// Smart pointers including our handle cannot cast covariantly.\
+	// This is a Handle<> mimic of static_cast_ptr
+	LinOpMRHSSysSolverProxy<T,P,Q> the_solver(param, S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+
+	ASSERT_EQ( the_solver.size(), param.BlockSize);
+
+}
+
+TEST_F(MultiRHSFixture, CheckLinOpMRHSWProxyWorks)
+{
+	std::istringstream inv_param_stream(inv_param_multi_rhs_proxy_xml);
+	XMLReader inv_param_xml(inv_param_stream);
+
+	SysSolverMRHSProxyParams param(inv_param_xml,"InvertParam");
+
+	// Smart pointers including our handle cannot cast covariantly.\
+	// This is a Handle<> mimic of static_cast_ptr
+	LinOpMRHSSysSolverProxy<T,P,Q> the_solver(param, S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+
+	const int N = the_solver.size();
+	const Subset& s = the_solver.subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res = the_solver(psi, chi);
+
+	ASSERT_EQ( res.resid.size(), the_solver.size());
+	ASSERT_EQ( res.n_count.size(), the_solver.size());
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		(*M_symm)( tmp, psi[i], PLUS );
+		tmp[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+}
+
+TEST_F(MultiRHSFixture, CheckMdagMMRHSWProxyWorks)
+{
+	std::istringstream inv_param_stream(inv_param_multi_rhs_proxy_xml);
+	XMLReader inv_param_xml(inv_param_stream);
+
+	SysSolverMRHSProxyParams param(inv_param_xml,"InvertParam");
+
+	// Smart pointers including our handle cannot cast covariantly.\
+	// This is a Handle<> mimic of static_cast_ptr
+	MdagMMRHSSysSolverProxy<T,P,Q> the_solver(param, S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+
+	const int N = the_solver.size();
+	const Subset& s = the_solver.subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res = the_solver(psi, chi);
+
+	ASSERT_EQ( res.resid.size(), the_solver.size());
+	ASSERT_EQ( res.n_count.size(), the_solver.size());
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		T tmp2 = zero;
+		(*M_symm)( tmp, psi[i], PLUS );
+		(*M_symm)( tmp2, tmp, MINUS );
+		tmp2[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp2,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+}
+
+
 

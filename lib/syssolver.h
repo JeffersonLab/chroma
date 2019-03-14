@@ -146,6 +146,9 @@ namespace Chroma
 
     //! Return the subset on which the operator acts
     virtual const Subset& subset() const = 0;
+
+    // Return the block size
+    virtual int size() const = 0;
   };
 
 

@@ -59,21 +59,40 @@ namespace Chroma
     //! RGE's addition. A cast function to morph the actual type
     template<typename Q>
     Handle<Q> cast()
-      {
-	Handle<Q> q;
-	q.ptr = dynamic_cast<Q*>(ptr);
-	if( q.ptr == 0x0 ) { 
-	  QDPIO::cerr << "Dynamic cast failed in Handle::cast()" <<std::endl;
-	  QDPIO::cerr << "You are trying to cast to a class you cannot cast to" << std::endl;
-	  QDP_abort(1);
+	{
+    	Handle<Q> q;
+    	q.ptr = dynamic_cast<Q*>(ptr);
+    	if( q.ptr == 0x0 ) {
+    		QDPIO::cerr << "Dynamic cast failed in Handle::cast()" <<std::endl;
+    		QDPIO::cerr << "You are trying to cast to a class you cannot cast to" << std::endl;
+    		QDP_abort(1);
+    	}
+    	delete q.count;
+
+    	q.count = count;
+    	++*count;
+    	return q;
 	}
-	delete q.count;
 
-	q.count = count;
-	++*count;
-	return q;
-      }
+    //! BJ addition. A cast function to morph at compile time where safe.
+    template<typename Q>
+    Handle<Q> cast_static()
+	{
+    	Handle<Q> q;
+    	q.ptr = static_cast<Q*>(ptr);
+#if 0
+    	if( q.ptr == 0x0 ) {
+    		QDPIO::cerr << "Dynamic cast failed in Handle::cast()" <<std::endl;
+    		QDPIO::cerr << "You are trying to cast to a class you cannot cast to" << std::endl;
+    		QDP_abort(1);
+    	}
+#endif
+    	delete q.count;
 
+    	q.count = count;
+    	++*count;
+    	return q;
+	}
     //! The cast function requires all Handles<Q> to be friends of Handle<T>
     template<typename Q> friend class Handle;
 
