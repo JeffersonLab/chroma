@@ -3,10 +3,11 @@
 #include "linearop.h"
 #include "seoprec_linop.h"
 #include "eoprec_linop.h"
-#include "eoprec_wilstype_fermact_w.h"
-#include "seoprec_wilstype_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_clover_fermact_w.h"
+#include "actions/ferm/fermacts/seoprec_clover_fermact_w.h"
 #include "actions/ferm/linop/eoprec_clover_linop_w.h"
 #include "actions/ferm/linop/seoprec_clover_linop_w.h"
+
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "util/gauge/reunit.h"
 #include "gtest/gtest.h"
@@ -15,9 +16,14 @@
 #include "multi_rhs_xml.h"
 
 #include "actions/ferm/invert/syssolver_mrhs_proxy_params.h"
+#include "actions/ferm/invert/syssolver_mrhs_twisted_params.h"
 #include "actions/ferm/invert/syssolver_mrhs_proxy.h"
 #include "actions/ferm/invert/syssolver_linop_mrhs_factory.h"
 #include "actions/ferm/invert/syssolver_mdagm_mrhs_factory.h"
+
+#include "actions/ferm/linop/shifted_linop_w.h"
+#include "actions/ferm/linop/multi_twist_linop_w.h"
+
 using namespace Chroma;
 using namespace QDP;
 using namespace MultiRHSTesting;
@@ -30,9 +36,9 @@ public:
 	using P = multi1d<LatticeColorMatrix>;
 
 	using S_asymm_T = EvenOddPrecWilsonTypeFermAct<T,P,Q>;
-	using S_symm_T =  SymEvenOddPrecWilsonTypeFermAct<T,P,Q>;
-	using LinOpSymm_T = SymEvenOddPrecCloverLinOp;
-	using LinOpAsymm_T = EvenOddPrecCloverLinOp;
+	using S_symm_T =  SymEvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>;
+	using LinOpSymm_T = SymEvenOddPrecLogDetLinearOperator<T,P,Q>;
+	using LinOpAsymm_T = EvenOddPrecLinearOperator<T,P,Q>;
 
 	void SetUp() {
 	  u.resize(Nd);
@@ -56,8 +62,8 @@ public:
 	        											   "FermionAction"));
 
 		state = S_asymm->createState(u);
-		M_asymm =dynamic_cast<LinOpAsymm_T *>(S_asymm->linOp(state));
-		M_symm =dynamic_cast<LinOpSymm_T *>(S_symm->linOp(state));
+		M_asymm =S_asymm->linOp(state);
+		M_symm =S_symm->linOp(state);
 
 	}
 
@@ -97,6 +103,35 @@ TEST_F(MultiRHSFixture, CheckParamReader)
 
  }
 
+TEST_F(MultiRHSFixture, CheckTwistedParamReader)
+{
+	std::istringstream inv_param_stream(inv_param_multi_rhs_twisted_proxy_cg_xml);
+	XMLReader inv_param_xml(inv_param_stream);
+
+	try {
+	SysSolverMRHSTwistedParams param(inv_param_xml,"InvertParam");
+
+	QDPIO::cout << "param has BlockSize = " << param.BlockSize << std::endl;
+	QDPIO::cout << "param has Twists = {";
+	for(int i=0; i < param.Twists.size(); ++i) {
+		QDPIO::cout << " " << param.Twists[i];
+	}
+	QDPIO::cout << " }" << std::endl;
+
+	QDPIO::cout << "param has SubSolver ID =" << param.SubInverterXML.id << std::endl;
+	QDPIO::cout << "param has SubSolver Path =" << param.SubInverterXML.path << std::endl;
+	QDPIO::cout << "param has SubSolver XML = " << param.SubInverterXML.xml << std::endl;
+
+		ASSERT_EQ( param.BlockSize, 4 );
+	}
+	catch( const std::string & e ) {
+		QDPIO::cout << "Caught exception " << e << std::endl;
+		FAIL();
+	}
+
+ }
+
+
 TEST_F(MultiRHSFixture, CheckMRHSOperator)
 {
 	int num_rhs =4;
@@ -123,7 +158,99 @@ TEST_F(MultiRHSFixture, CheckMRHSOperator)
 	}
  }
 
-TEST_F(MultiRHSFixture, CheckLinOpMRHSWProxy)
+TEST_F(MultiRHSFixture, CheckMRHSTwistedOperator)
+{
+
+	// Base operator
+	Handle< LinOpSymm_T > M_base( S_symm->linOp(state));
+
+	// Setup Twisted Params
+	std::istringstream inv_param_stream(inv_param_multi_rhs_twisted_proxy_cg_xml);
+	XMLReader inv_param_xml(inv_param_stream);
+	SysSolverMRHSTwistedParams param(inv_param_xml,"InvertParam");
+
+	// Create a MultiTwist Op
+	SymEvenOddPrecLogDetMultiTwistLinOp<T,P,Q> M_multi(M_base, param.Twists);
+
+	// Get the subset
+	auto& s = M_multi.subset();
+
+	// Get the Size
+	ASSERT_EQ( M_multi.size(), param.BlockSize);
+	const int N = M_multi.size();
+
+	multi1d<T> psi(N);
+	multi1d<T> chi(N);
+
+
+	for(int i=0;i < N; ++i) {
+		psi[i] = zero;
+		gaussian(psi[i],s);
+	}
+
+	(M_multi)(chi,psi,PLUS);
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		SymEvenOddPrecLogDetTwistedShiftedLinOp<T,P,Q> theShiftedOp((*M_base), param.Twists[i]);
+
+		(theShiftedOp)( tmp, psi[i], PLUS );
+		tmp[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+ }
+TEST_F(MultiRHSFixture, CheckAsymmMRHSTwistedOperator)
+{
+
+	// Base operator
+	Handle< LinOpAsymm_T > M_base( S_asymm->linOp(state));
+
+	// Setup Twisted Params
+	std::istringstream inv_param_stream(inv_param_multi_rhs_twisted_proxy_cg_xml);
+	XMLReader inv_param_xml(inv_param_stream);
+	SysSolverMRHSTwistedParams param(inv_param_xml,"InvertParam");
+
+	// Create a MultiTwist Op
+	EvenOddPrecMultiTwistLinOp<T,P,Q> M_multi(M_base, param.Twists);
+
+	// Get the subset
+	auto& s = M_multi.subset();
+
+	// Get the Size
+	ASSERT_EQ( M_multi.size(), param.BlockSize);
+	const int N = M_multi.size();
+
+	multi1d<T> psi(N);
+	multi1d<T> chi(N);
+
+
+	for(int i=0;i < N; ++i) {
+		psi[i] = zero;
+		gaussian(psi[i],s);
+	}
+
+	(M_multi)(chi,psi,PLUS);
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		EvenOddPrecTwistedShiftedLinOp<T,P,Q> theShiftedOp((*M_base), param.Twists[i]);
+
+		(theShiftedOp)( tmp, psi[i], PLUS );
+		tmp[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+ }
+
+
+TEST_F(MultiRHSFixture, CheckLinOpMRHSSysSolverProxy)
 {
 	std::istringstream inv_param_stream(inv_param_multi_rhs_proxy_cg_xml);
 	XMLReader inv_param_xml(inv_param_stream);

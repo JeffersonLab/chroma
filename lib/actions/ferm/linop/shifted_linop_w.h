@@ -154,78 +154,11 @@ private:
 	const EvenOddPrecLinearOperator<T, P, Q>& base_op;
 };
 
-template<typename T, typename P, typename Q, template<typename, typename,
-		typename > class LinOp>
-class MultiTwistProxyDiffLinOp: public DiffLinearOperatorArray<T, P, Q> {
-public:
-	MultiTwistProxyDiffLinOp(const LinOp<T, P, Q>& base_op,
-			const multi1d<Real>& twists) :
-			_theLinOp(base_op), _twists(twists) {
-	}
-
-	~MultiTwistProxyDiffLinOp() {
-	}
-	//! Return the fermion BC object for this linear operator
-	const FermBC<T, P, Q>& getFermBC() const override {
-		return _theLinOp.getFermBC();
-	}
-
-	//! Apply the operator onto a source std::vector to some precision
-	void operator()(multi1d<T>& chi, const multi1d<T>& psi,
-			enum PlusMinus isign) const override
-			{
-		assertArraySizes(chi, psi);
-
-		for (int i = 0; i < chi.size(); ++i) {
-			TwistedShiftedLinOp<T, P, Q, LinOp> M_shifted(_theLinOp,
-					_twists[i]);
-			M_shifted(psi[i], chi[i], isign);
-		}
-	}
-
-	//! Apply the derivative of the operator onto a source std::vector
-	/*! Default implementation */
-	void deriv(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi,
-			enum PlusMinus isign) const override
-			{
-		assertArraySizes(chi, psi);
-		ds_u.resize(Nd);
-		ds_u = zero;
-
-		P ds_tmp;
-		for (int i = 0; i < chi.size(); ++i) {
-			TwistedShiftedLinOp<T, P, Q, LinOp> M_shifted(_theLinOp,
-					_twists[i]);
-			M_shifted.deriv(ds_tmp, chi[i], psi[i], isign);
-			ds_u += ds_tmp;
-		}
-	}
-
-private:
-	void assertArraySizes(const multi1d<T>& chi, const multi1d<T>& psi) const {
-		if (chi.size() != psi.size()) {
-			QDPIO::cout << "Array sizes dont match in MultiTwistProxyDiffLinOp "
-					<< std::endl;
-			QDP_abort(1);
-
-		}
-		if (chi.size() != _twists.size()) {
-			QDPIO::cout
-					<< "Array sizes dont match twist array size in MultiTwistProxyDiffLinOp"
-					<< std::endl;
-			QDP_abort(1);
-		}
-	}
-
-	const DiffLinearOperator<T, P, Q>& _theLinOp;
-	const multi1d<Real>& _twists;
-};
+template<typename T, typename P, typename Q>
+using EvenOddPrecTwistedShiftedLinOp = TwistedShiftedLinOp<T,P,Q,EvenOddPrecLinearOperator>;
 
 template<typename T, typename P, typename Q>
-using EvenOddPrecMultiTwistProxyDiffLinOp = MultiTwistProxyDiffLinOp<T,P,Q,EvenOddPrecLinearOperator>;
-
-template<typename T, typename P, typename Q>
-using SymEvenOddPrecLogDetMultiTwistProxyDiffLinOp = MultiTwistProxyDiffLinOp<T,P,Q,SymEvenOddPrecLogDetLinearOperator>;
+using SymEvenOddPrecLogDetTwistedShiftedLinOp = TwistedShiftedLinOp<T,P,Q,SymEvenOddPrecLogDetLinearOperator>;
 
 }
 
