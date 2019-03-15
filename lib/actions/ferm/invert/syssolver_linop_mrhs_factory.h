@@ -20,15 +20,8 @@
 namespace Chroma
 {
   namespace {
-
-
-    using FSHandle =  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >;
-
-    using FSHandleF = Handle< FermState< LatticeFermionF, multi1d<LatticeColorMatrixF>, multi1d<LatticeColorMatrixF> > >;
-
-    using FSHandleD = Handle< FermState< LatticeFermionD, multi1d<LatticeColorMatrixD>, multi1d<LatticeColorMatrixD> > >;
-
-    using FAHandle = Handle< FermAct4D< LatticeFermion, multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> > >;
+  	  using FSHandle =  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >;
+  	  using FAHandle = Handle< FermAct4D< LatticeFermion, multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> > >;
   }
   //! LinOp system solver factory (foundry)
   /*! @ingroup invert */

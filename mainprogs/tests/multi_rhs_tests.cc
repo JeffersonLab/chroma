@@ -17,6 +17,7 @@
 #include "actions/ferm/invert/syssolver_mrhs_proxy_params.h"
 #include "actions/ferm/invert/syssolver_mrhs_proxy.h"
 #include "actions/ferm/invert/syssolver_linop_mrhs_factory.h"
+#include "actions/ferm/invert/syssolver_mdagm_mrhs_factory.h"
 using namespace Chroma;
 using namespace QDP;
 using namespace MultiRHSTesting;
@@ -231,7 +232,7 @@ INSTANTIATE_TEST_CASE_P(MRHSQUDASyssolverProxy,
                         		inv_param_multi_rhs_proxy_quda_multigrid_xml));
 #endif
 
-TEST_F(MultiRHSFixture, CheckLinOpMRHSProxyFectoryCreateion)
+TEST_F(MultiRHSFixture, CheckLinOpMRHSProxyFectoryCreation)
 {
 	std::istringstream inv_param_stream(inv_param_multi_rhs_proxy_cg_xml);
 	XMLReader inv_param_xml(inv_param_stream);
@@ -268,3 +269,44 @@ TEST_F(MultiRHSFixture, CheckLinOpMRHSProxyFectoryCreateion)
 		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
 	}
 }
+
+TEST_F(MultiRHSFixture, CheckMdagMMRHSProxyFectoryCreation)
+{
+	std::istringstream inv_param_stream(inv_param_multi_rhs_proxy_cg_xml);
+	XMLReader inv_param_xml(inv_param_stream);
+
+	Handle<MdagMMRHSSystemSolver<LatticeFermion>> the_solver =
+			TheMdagMFermMRHSSystemSolverFactory::Instance().createObject("MULTI_RHS_PROXY_INVERTER",
+					inv_param_xml,"InvertParam",S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+
+	const int N = the_solver->size();
+	const Subset& s = the_solver->subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res =(*the_solver)(psi, chi);
+
+	ASSERT_EQ( res.resid.size(), N);
+	ASSERT_EQ( res.n_count.size(), N);
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		T tmp2 = zero;
+		(*M_symm)( tmp, psi[i], PLUS );
+		(*M_symm)( tmp2, tmp, MINUS );
+		tmp2[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp2,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+}
+

@@ -3,7 +3,7 @@
  */
 
 #include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
-
+#include "actions/ferm/invert/syssolver_mrhs_proxy.h"
 namespace Chroma
 {
 
@@ -17,8 +17,10 @@ namespace Chroma
     bool registerAll() 
     {
       bool success = true; 
+
       if (! registered)
       {
+    	  MdagMSysSolverMRHSProxyEnv::registerAll();
     	  registered = true;
       }
       return success;

@@ -1114,6 +1114,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_mrhs_proxy.cc \
 	actions/ferm/invert/syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/syssolver_mdagm_mrhs_aggregate.cc \
+	actions/ferm/invert/syssolver_mdagm_mrhs_proxy.cc \
 	actions/ferm/invert/syssolver_polyprec_aggregate.cc \
 	actions/ferm/invert/syssolver_cg_params.cc \
 	actions/ferm/invert/syssolver_mr_params.cc \
