@@ -104,6 +104,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_OPTeigbicg_params.h \
 	actions/ferm/invert/syssolver_fgmres_dr_params.h \
 	actions/ferm/invert/syssolver_mrhs_proxy_params.h \
+	actions/ferm/invert/syssolver_mrhs_twisted_params.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
@@ -580,6 +581,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lwldslash_array_qdpopt_w.h \
 	actions/ferm/linop/lwldslash_base_3d_w.h \
 	actions/ferm/linop/lwldslash_3d_qdp_w.h \
+	actions/ferm/linop/multi_twist_linop_w.h \
 	actions/ferm/linop/clover_term_w.h \
 	actions/ferm/linop/clover_term_base_w.h \
 	actions/ferm/linop/clover_term_qdp_w.h \
@@ -1127,6 +1129,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_OPTeigbicg_params.cc \
 	actions/ferm/invert/syssolver_fgmres_dr_params.cc \
 	actions/ferm/invert/syssolver_mrhs_proxy_params.cc \
+	actions/ferm/invert/syssolver_mrhs_twisted_params.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
