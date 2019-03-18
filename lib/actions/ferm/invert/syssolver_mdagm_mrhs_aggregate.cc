@@ -4,6 +4,8 @@
 
 #include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
 #include "actions/ferm/invert/syssolver_mrhs_proxy.h"
+#include "actions/ferm/invert/syssolver_mrhs_twisted_proxy.h"
+
 namespace Chroma
 {
 
@@ -21,6 +23,7 @@ namespace Chroma
       if (! registered)
       {
     	  MdagMSysSolverMRHSProxyEnv::registerAll();
+    	  MdagMSysSolverMRHSTwistedProxyEnv::registerAll();
     	  registered = true;
       }
       return success;

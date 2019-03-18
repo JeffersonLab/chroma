@@ -123,26 +123,13 @@ std::string inv_param_multi_rhs_proxy_cg_xml = \
 			 <BlockSize>4</BlockSize> \
 			 <SubInvertParam> \
 			    <invType>CG_INVERTER</invType>\
-				<RsdCG>1.0e-8</RsdCG> \
+				<RsdCG>1.0e-9</RsdCG> \
 				<MaxCG>1000</MaxCG> \
 			 </SubInvertParam> \
 	       </InvertParam> \
          </Param>";
 
-std::string inv_param_multi_rhs_twisted_proxy_cg_xml = \
-		"<?xml version='1.0' ?> \
-		<Param> \
-		   <InvertParam> \
-		     <invType>MULTI_RHS_TWISTED_PROXY_INVERTER</invType> \
-			 <BlockSize>4</BlockSize> \
-		     <Twists>0.01 0.02 0.03 0.04</Twists> \
-			 <SubInvertParam> \
-			    <invType>CG_INVERTER</invType>\
-				<RsdCG>1.0e-8</RsdCG> \
-				<MaxCG>1000</MaxCG> \
-			 </SubInvertParam> \
-	       </InvertParam> \
-         </Param>";
+
 
 std::string inv_param_multi_rhs_proxy_bicgstab_xml = \
 		"<?xml version='1.0' ?> \
@@ -152,12 +139,42 @@ std::string inv_param_multi_rhs_proxy_bicgstab_xml = \
 			 <BlockSize>4</BlockSize> \
 			 <SubInvertParam> \
 			    <invType>BICGSTAB_INVERTER</invType>\
-				<RsdBiCGStab>1.0e-8</RsdBiCGStab> \
+				<RsdBiCGStab>1.0e-9</RsdBiCGStab> \
 				<MaxBiCGStab>1000</MaxBiCGStab> \
 			 </SubInvertParam> \
 	       </InvertParam> \
          </Param>";
 
+
+std::string inv_param_multi_rhs_twisted_proxy_seoprec_cg_xml = \
+		"<?xml version='1.0' ?> \
+		<Param> \
+		   <InvertParam> \
+		     <invType>MULTI_RHS_SEOPREC_TWISTED_PROXY_INVERTER</invType> \
+			 <BlockSize>4</BlockSize> \
+		     <Twists>0.01 0.02 0.03 0.04</Twists> \
+			 <SubInvertParam> \
+			    <invType>CG_INVERTER</invType>\
+				<RsdCG>5.0e-9</RsdCG> \
+				<MaxCG>1000</MaxCG> \
+			 </SubInvertParam> \
+	       </InvertParam> \
+         </Param>";
+
+std::string inv_param_multi_rhs_twisted_proxy_eoprec_cg_xml = \
+		"<?xml version='1.0' ?> \
+		<Param> \
+		   <InvertParam> \
+		     <invType>MULTI_RHS_EOPREC_TWISTED_PROXY_INVERTER</invType> \
+			 <BlockSize>4</BlockSize> \
+		     <Twists>0.01 0.02 0.03 0.04</Twists> \
+			 <SubInvertParam> \
+			    <invType>CG_INVERTER</invType>\
+				<RsdCG>5.0e-9</RsdCG> \
+				<MaxCG>1000</MaxCG> \
+			 </SubInvertParam> \
+	       </InvertParam> \
+         </Param>";
 
 #ifdef BUILD_QUDA
 std::string inv_param_multi_rhs_proxy_quda_bicgstab_xml = \

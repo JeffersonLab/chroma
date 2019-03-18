@@ -5,6 +5,7 @@
 
 #include "actions/ferm/invert/syssolver_linop_mrhs_aggregate.h"
 #include "actions/ferm/invert/syssolver_mrhs_proxy.h"
+#include "actions/ferm/invert/syssolver_mrhs_twisted_proxy.h"
 
 namespace Chroma
 {
@@ -22,6 +23,7 @@ namespace Chroma
       if (! registered)
       {
     	  success &= LinOpSysSolverMRHSProxyEnv::registerAll();
+    	  success &= LinOpSysSolverMRHSTwistedProxyEnv::registerAll();
     	  registered = true;
       }
       return success;

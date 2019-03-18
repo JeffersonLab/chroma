@@ -90,6 +90,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_mdagm_aggregate.h \
 	actions/ferm/invert/syssolver_mdagm_mrhs_aggregate.h \
 	actions/ferm/invert/syssolver_mrhs_proxy.h \
+	actions/ferm/invert/syssolver_mrhs_twisted_proxy.h \
 	actions/ferm/invert/syssolver_polyprec.h \
 	actions/ferm/invert/syssolver_polyprec_factory.h \
 	actions/ferm/invert/syssolver_polyprec_aggregate.h \
@@ -1114,9 +1115,12 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_aggregate.cc \
 	actions/ferm/invert/syssolver_linop_mrhs_aggregate.cc \
 	actions/ferm/invert/syssolver_linop_mrhs_proxy.cc \
+	actions/ferm/invert/syssolver_linop_mrhs_twisted_proxy.cc \
+	actions/ferm/invert/syssolver_mdagm_mrhs_proxy.cc \
 	actions/ferm/invert/syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/syssolver_mdagm_mrhs_aggregate.cc \
 	actions/ferm/invert/syssolver_mdagm_mrhs_proxy.cc \
+	actions/ferm/invert/syssolver_mdagm_mrhs_twisted_proxy.cc \
 	actions/ferm/invert/syssolver_polyprec_aggregate.cc \
 	actions/ferm/invert/syssolver_cg_params.cc \
 	actions/ferm/invert/syssolver_mr_params.cc \

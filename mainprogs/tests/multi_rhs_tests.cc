@@ -18,6 +18,7 @@
 #include "actions/ferm/invert/syssolver_mrhs_proxy_params.h"
 #include "actions/ferm/invert/syssolver_mrhs_twisted_params.h"
 #include "actions/ferm/invert/syssolver_mrhs_proxy.h"
+#include "actions/ferm/invert/syssolver_mrhs_twisted_proxy.h"
 #include "actions/ferm/invert/syssolver_linop_mrhs_factory.h"
 #include "actions/ferm/invert/syssolver_mdagm_mrhs_factory.h"
 
@@ -80,6 +81,10 @@ public:
 
 class MultiRHSFixture : public MultiRHSFixtureT<::testing::Test> {};
 class MHRSSolverProxyTest : public MultiRHSFixtureT<::testing::TestWithParam<std::string>>{};
+class MHRSSolverTwistedSeoprecProxyTest : public MultiRHSFixtureT<::testing::TestWithParam<std::string>>{};
+class MHRSSolverTwistedEoprecProxyTest : public MultiRHSFixtureT<::testing::TestWithParam<std::string>>{};
+class MHRSSolverTwistedSeoprecProxyFactoryTest : public MultiRHSFixtureT<::testing::TestWithParam<std::string>>{};
+
 
 TEST_F(MultiRHSFixture, CheckParamReader)
 {
@@ -105,7 +110,7 @@ TEST_F(MultiRHSFixture, CheckParamReader)
 
 TEST_F(MultiRHSFixture, CheckTwistedParamReader)
 {
-	std::istringstream inv_param_stream(inv_param_multi_rhs_twisted_proxy_cg_xml);
+	std::istringstream inv_param_stream(inv_param_multi_rhs_twisted_proxy_seoprec_cg_xml);
 	XMLReader inv_param_xml(inv_param_stream);
 
 	try {
@@ -165,7 +170,7 @@ TEST_F(MultiRHSFixture, CheckMRHSTwistedOperator)
 	Handle< LinOpSymm_T > M_base( S_symm->linOp(state));
 
 	// Setup Twisted Params
-	std::istringstream inv_param_stream(inv_param_multi_rhs_twisted_proxy_cg_xml);
+	std::istringstream inv_param_stream(inv_param_multi_rhs_twisted_proxy_seoprec_cg_xml);
 	XMLReader inv_param_xml(inv_param_stream);
 	SysSolverMRHSTwistedParams param(inv_param_xml,"InvertParam");
 
@@ -203,6 +208,7 @@ TEST_F(MultiRHSFixture, CheckMRHSTwistedOperator)
 		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
 	}
  }
+
 TEST_F(MultiRHSFixture, CheckAsymmMRHSTwistedOperator)
 {
 
@@ -210,7 +216,7 @@ TEST_F(MultiRHSFixture, CheckAsymmMRHSTwistedOperator)
 	Handle< LinOpAsymm_T > M_base( S_asymm->linOp(state));
 
 	// Setup Twisted Params
-	std::istringstream inv_param_stream(inv_param_multi_rhs_twisted_proxy_cg_xml);
+	std::istringstream inv_param_stream(inv_param_multi_rhs_twisted_proxy_eoprec_cg_xml);
 	XMLReader inv_param_xml(inv_param_stream);
 	SysSolverMRHSTwistedParams param(inv_param_xml,"InvertParam");
 
@@ -265,7 +271,7 @@ TEST_F(MultiRHSFixture, CheckLinOpMRHSSysSolverProxy)
 
 }
 
-TEST_P(MHRSSolverProxyTest, CheckLinOpMRHSWProxyWorks)
+TEST_P(MHRSSolverProxyTest, CheckLinOpMRHSProxyWorks)
 {
 	std::istringstream inv_param_stream(GetParam());
 	XMLReader inv_param_xml(inv_param_stream);
@@ -305,7 +311,7 @@ TEST_P(MHRSSolverProxyTest, CheckLinOpMRHSWProxyWorks)
 	}
 }
 
-TEST_P(MHRSSolverProxyTest, CheckMdagMMRHSWProxyWorks)
+TEST_P(MHRSSolverProxyTest, CheckMdagMMRHSProxyWorks)
 {
 	std::istringstream inv_param_stream(GetParam());
 	XMLReader inv_param_xml(inv_param_stream);
@@ -436,4 +442,281 @@ TEST_F(MultiRHSFixture, CheckMdagMMRHSProxyFectoryCreation)
 		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
 	}
 }
+
+TEST_P(MHRSSolverTwistedSeoprecProxyTest, CheckLinOpMRHSTwistedProxySolverWorks)
+{
+	std::istringstream inv_param_stream(GetParam());
+	XMLReader inv_param_xml(inv_param_stream);
+
+	SysSolverMRHSTwistedParams param(inv_param_xml,"InvertParam");
+
+	// Smart pointers including our handle cannot cast covariantly.\
+	// This is a Handle<> mimic of static_cast_ptr
+	SymEvenOddPrecLogDetLinOpMRHSSysSolverTwistedProxy<T,P,Q>
+		the_solver(param, S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+
+	const int N = the_solver.size();
+	const Subset& s = the_solver.subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res = the_solver(psi, chi);
+
+	ASSERT_EQ( res.resid.size(), the_solver.size());
+	ASSERT_EQ( res.n_count.size(), the_solver.size());
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		SymEvenOddPrecLogDetTwistedShiftedLinOp<T,P,Q> M_twisted((*M_symm), param.Twists[i]);
+		(M_twisted)( tmp, psi[i], PLUS );
+		tmp[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+}
+
+TEST_P(MHRSSolverTwistedSeoprecProxyTest, CheckMdagMMRHSTwistedProxySolverWorks)
+{
+	std::istringstream inv_param_stream(GetParam());
+	XMLReader inv_param_xml(inv_param_stream);
+
+	SysSolverMRHSTwistedParams param(inv_param_xml,"InvertParam");
+
+	// Smart pointers including our handle cannot cast covariantly.\
+	// This is a Handle<> mimic of static_cast_ptr
+	SymEvenOddPrecLogDetMdagMMRHSSysSolverTwistedProxy<T,P,Q>
+		the_solver(param, S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+
+	const int N = the_solver.size();
+	const Subset& s = the_solver.subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res = the_solver(psi, chi);
+
+	ASSERT_EQ( res.resid.size(), the_solver.size());
+	ASSERT_EQ( res.n_count.size(), the_solver.size());
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		T tmp2 = zero;
+		SymEvenOddPrecLogDetTwistedShiftedLinOp<T,P,Q> M_twisted((*M_symm), param.Twists[i]);
+		(M_twisted)( tmp, psi[i], PLUS );
+		(M_twisted)( tmp2, tmp, MINUS );
+		tmp2[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp2,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+}
+#if 1
+INSTANTIATE_TEST_CASE_P(MRHSSyssolverTwistedSeoprecProxy,
+						MHRSSolverTwistedSeoprecProxyTest,
+                        ::testing::Values(inv_param_multi_rhs_twisted_proxy_seoprec_cg_xml));
+#endif
+
+TEST_P(MHRSSolverTwistedEoprecProxyTest, CheckLinOpMRHSTwistedProxySolverWorks)
+{
+	std::istringstream inv_param_stream(GetParam());
+	XMLReader inv_param_xml(inv_param_stream);
+
+	SysSolverMRHSTwistedParams param(inv_param_xml,"InvertParam");
+
+	// Smart pointers including our handle cannot cast covariantly.\
+	// This is a Handle<> mimic of static_cast_ptr
+	EvenOddPrecLinOpMRHSSysSolverTwistedProxy<T,P,Q>
+		the_solver(param, S_asymm.cast_static<FermAct4D<T,P,Q>>(), state);
+
+	const int N = the_solver.size();
+	const Subset& s = the_solver.subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res = the_solver(psi, chi);
+
+	ASSERT_EQ( res.resid.size(), the_solver.size());
+	ASSERT_EQ( res.n_count.size(), the_solver.size());
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		EvenOddPrecTwistedShiftedLinOp<T,P,Q> M_twisted((*M_asymm), param.Twists[i]);
+		(M_twisted)( tmp, psi[i], PLUS );
+		tmp[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+}
+
+TEST_P(MHRSSolverTwistedEoprecProxyTest, CheckMdagMMRHSTwistedProxySolverWorks)
+{
+	std::istringstream inv_param_stream(GetParam());
+	XMLReader inv_param_xml(inv_param_stream);
+
+	SysSolverMRHSTwistedParams param(inv_param_xml,"InvertParam");
+
+	// Smart pointers including our handle cannot cast covariantly.\
+	// This is a Handle<> mimic of static_cast_ptr
+	EvenOddPrecMdagMMRHSSysSolverTwistedProxy<T,P,Q>
+		the_solver(param, S_asymm.cast_static<FermAct4D<T,P,Q>>(), state);
+
+	const int N = the_solver.size();
+	const Subset& s = the_solver.subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res = the_solver(psi, chi);
+
+	ASSERT_EQ( res.resid.size(), the_solver.size());
+	ASSERT_EQ( res.n_count.size(), the_solver.size());
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		T tmp2 = zero;
+		EvenOddPrecTwistedShiftedLinOp<T,P,Q> M_twisted((*M_asymm), param.Twists[i]);
+		(M_twisted)( tmp, psi[i], PLUS );
+		(M_twisted)( tmp2, tmp, MINUS );
+		tmp2[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp2,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+}
+#if 1
+INSTANTIATE_TEST_CASE_P(MRHSSyssolverTwistedEoprecProxy,
+						MHRSSolverTwistedEoprecProxyTest,
+                        ::testing::Values(inv_param_multi_rhs_twisted_proxy_eoprec_cg_xml));
+#endif
+
+TEST_P(MHRSSolverTwistedSeoprecProxyFactoryTest, CheckLinOpMRHSTwistedProxyFactoryCreate)
+{
+	std::istringstream inv_param_stream(GetParam());
+	XMLReader inv_param_xml(inv_param_stream);
+
+	// To grab the twists for checking
+	SysSolverMRHSTwistedParams param(inv_param_xml,"InvertParam");
+
+	Handle<LinOpMRHSSystemSolver<LatticeFermion>> the_solver(
+			TheLinOpFermMRHSSystemSolverFactory::Instance().createObject("MULTI_RHS_SEOPREC_TWISTED_PROXY_INVERTER",
+					inv_param_xml, "InvertParam", S_symm.cast_static<FermAct4D<T,P,Q>>(), state)
+	);
+
+
+	const int N = the_solver->size();
+	const Subset& s = the_solver->subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res = (*the_solver)(psi, chi);
+
+	ASSERT_EQ( res.resid.size(), N);
+	ASSERT_EQ( res.n_count.size(), N);
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		SymEvenOddPrecLogDetTwistedShiftedLinOp<T,P,Q> M_twisted((*M_symm), param.Twists[i]);
+		(M_twisted)( tmp, psi[i], PLUS );
+		tmp[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+}
+
+TEST_P(MHRSSolverTwistedSeoprecProxyFactoryTest, CheckMdagMMRHSTwistedProxyFactoryCreate)
+{
+	std::istringstream inv_param_stream(GetParam());
+	XMLReader inv_param_xml(inv_param_stream);
+	// To grab the twists for checking
+	SysSolverMRHSTwistedParams param(inv_param_xml,"InvertParam");
+
+	// Smart pointers including our handle cannot cast covariantly.\
+	// This is a Handle<> mimic of static_cast_ptr
+	Handle<MdagMMRHSSystemSolver<LatticeFermion>> the_solver(
+			TheMdagMFermMRHSSystemSolverFactory::Instance().createObject("MULTI_RHS_SEOPREC_TWISTED_PROXY_INVERTER",
+					inv_param_xml, "InvertParam", S_symm.cast_static<FermAct4D<T,P,Q>>(), state)
+	);
+
+	const int N = the_solver->size();
+	const Subset& s = the_solver->subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res = (*the_solver)(psi, chi);
+
+	ASSERT_EQ( res.resid.size(), N);
+	ASSERT_EQ( res.n_count.size(), N);
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		T tmp2 = zero;
+		SymEvenOddPrecLogDetTwistedShiftedLinOp<T,P,Q> M_twisted((*M_symm), param.Twists[i]);
+		(M_twisted)( tmp, psi[i], PLUS );
+		(M_twisted)( tmp2, tmp, MINUS );
+		tmp2[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp2,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+}
+#if 1
+INSTANTIATE_TEST_CASE_P(MRHSSyssolverTwistedSeoprecProxy,
+						MHRSSolverTwistedSeoprecProxyFactoryTest,
+                        ::testing::Values(inv_param_multi_rhs_twisted_proxy_seoprec_cg_xml));
+#endif
 
