@@ -25,6 +25,9 @@
 #include "actions/ferm/linop/shifted_linop_w.h"
 #include "actions/ferm/linop/multi_twist_linop_w.h"
 
+
+#include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
+
 using namespace Chroma;
 using namespace QDP;
 using namespace MultiRHSTesting;
@@ -714,9 +717,47 @@ TEST_P(MHRSSolverTwistedSeoprecProxyFactoryTest, CheckMdagMMRHSTwistedProxyFacto
 		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
 	}
 }
-#if 1
+
 INSTANTIATE_TEST_CASE_P(MRHSSyssolverTwistedSeoprecProxy,
 						MHRSSolverTwistedSeoprecProxyFactoryTest,
                         ::testing::Values(inv_param_multi_rhs_twisted_proxy_seoprec_cg_xml));
+
+#ifdef BUILD_QUDA
+INSTANTIATE_TEST_CASE_P(MRHSSyssolverTwistedSeoprecQUDAProxy,
+						MHRSSolverTwistedSeoprecProxyFactoryTest,
+                        ::testing::Values(inv_param_multi_rhs_twisted_proxy_quda_cg_symm_xml));
 #endif
 
+TEST_F(MultiRHSFixture, CheckSetXMLTwist)
+{
+	std::istringstream inv_param_stream(inv_param_multi_rhs_twisted_proxy_quda_cg_symm_xml);
+	XMLReader inv_param_xml(inv_param_stream);
+
+	// To grab the twists for checking
+	SysSolverMRHSTwistedParams param(inv_param_xml,"InvertParam");
+
+	std::istringstream sub_inverter_stream(param.SubInverterXML.xml);
+	XMLReader sub_inverter_xml(sub_inverter_stream);
+
+
+	SysSolverQUDACloverParams original(sub_inverter_xml,".");
+
+	for(int i=0; i < param.BlockSize; ++i) {
+		std::istringstream new_sub_inverter_stream(param.SubInverterXML.xml);
+		XMLReader new_sub_inverter_xml(new_sub_inverter_stream);
+
+		MRHSUtils::resetTwist(new_sub_inverter_xml, param.Twists[i]);
+
+		SysSolverQUDACloverParams new_params(new_sub_inverter_xml, ".");
+		QDPIO::cout << "Old Twisted Mass=" << original.CloverParams.twisted_m << std::endl;
+		QDPIO::cout << "New Twisted Mass=" << new_params.CloverParams.twisted_m << std::endl;
+
+		ASSERT_EQ( toBool(original.CloverParams.twisted_m_usedP),true);
+		ASSERT_EQ( toBool(new_params.CloverParams.twisted_m_usedP),true);
+		ASSERT_FLOAT_EQ( toDouble(original.CloverParams.twisted_m), 99.99);
+		ASSERT_FLOAT_EQ( toDouble(new_params.CloverParams.twisted_m),
+				toDouble(param.Twists[i]));
+
+	}
+
+}

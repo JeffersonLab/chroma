@@ -289,6 +289,45 @@ std::string inv_param_multi_rhs_proxy_quda_multigrid_xml = \
 		</InvertParam> \
 		</Param>";
 
+std::string inv_param_multi_rhs_twisted_proxy_quda_cg_symm_xml = \
+		"<?xml version='1.0'?> \
+		<Param> \
+		  <InvertParam>\
+			<BlockSize>4</BlockSize> \
+			<Twists>0.01 0.02 0.03 0.04</Twists> \
+		    <invType>MULTI_RHS_SEOPREC_TWISTED_PROXY_INVERTER</invType> \
+		    <SubInvertParam> \
+            <invType>QUDA_CLOVER_INVERTER</invType>\
+  	  	  	<CloverParams>\
+              <Mass>0.1</Mass>				      \
+              <clovCoeff>1.0</clovCoeff>          \
+		      <TwistedM>99.99</TwistedM>     \
+              <AnisoParam>				      \
+                <anisoP>false</anisoP>			      \
+                <t_dir>3</t_dir>				      \
+                <xi_0>1</xi_0>				      \
+                <nu>1</nu>				      \
+              </AnisoParam>\
+            </CloverParams>\
+            <RsdTarget>5.0e-9</RsdTarget>\
+            <Delta>1.0e-1</Delta>\
+            <Pipeline>0</Pipeline>\
+            <MaxIter>500</MaxIter>\
+		    <SolverType>CG</SolverType> \
+            <RsdToleranceFactor>100.0</RsdToleranceFactor>\
+            <AntiPeriodicT>true</AntiPeriodicT>\
+            <Verbose>true</Verbose>\
+            <AsymmetricLinop>false</AsymmetricLinop>\
+            <CudaReconstruct>RECONS_12</CudaReconstruct>\
+            <CudaSloppyPrecision>SINGLE</CudaSloppyPrecision>\
+            <CudaSloppyReconstruct>RECONS_12</CudaSloppyReconstruct>\
+            <AxialGaugeFix>false</AxialGaugeFix>\
+            <AutotuneDslash>true</AutotuneDslash>\
+            <SolutionCheckP>true</SolutionCheckP>\
+          </SubInvertParam>\
+		</InvertParam>\
+		</Param>";
+
 
 #endif
 

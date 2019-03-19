@@ -566,12 +566,12 @@ public:
 			quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
 			if ( invParam.asymmetricP ) {
 				// - comes from add/subtract convention
-				quda_inv_param.m5 = -toDouble(invParam.CloverParams.twisted_m);
+				quda_inv_param.mu = -toDouble(invParam.CloverParams.twisted_m);
 			}
 			else {
 				// - comes from add/subtract convention
 				// 2 comes from clover normalization
-				quda_inv_param.m5 = -2.0*toDouble(invParam.CloverParams.twisted_m);
+				quda_inv_param.mu = -2.0*toDouble(invParam.CloverParams.twisted_m);
 			}
 		}
 

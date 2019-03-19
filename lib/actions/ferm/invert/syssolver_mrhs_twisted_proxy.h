@@ -18,9 +18,59 @@
 #include "actions/ferm/invert/syssolver_mdagm_factory.h"
 #include "actions/ferm/linop/shifted_linop_w.h"
 #include <sstream>
-
+#include <string>
 namespace Chroma {
 
+ namespace MRHSUtils {
+
+	void resetTwist(XMLReader& xml, const Real& Twist)
+	{
+		std::string sub_solver_type;
+		read(xml, "invType", sub_solver_type);
+
+		if( sub_solver_type == "QUDA_WILSON_INVERTER"
+				|| sub_solver_type == "QUDA_MULTIGRID_WILSON_INVERTER" ) {
+			QDPIO::cout << "QUDA Wilson is not supported in Twisted Linop, only Clover" <<std::endl;
+			QDP_abort(1);
+		}
+
+		if( sub_solver_type.find("QOP") != std::string::npos) {
+			QDPIO::cout << "QOP solver is not supported in Twisted Linop, only Clover" <<std::endl;
+			QDP_abort(1);
+		}
+
+		if ( sub_solver_type.find("QPHIX") != std::string::npos
+				|| sub_solver_type.find("MG_PROTO") != std::string::npos ) {
+			QDPIO::cout << "QPHIX and MGPROTO solvers are not supported in Twisted Linop, only Clover" <<std::endl;
+			QDP_abort(1);
+		}
+
+		if ( sub_solver_type == "QUDA_CLOVER_INVERTER"
+				|| sub_solver_type == "QUDA_MULTIGRID_CLOVER_INVERTER"
+			    || sub_solver_type.find("MP_CLOVER") != std::string::npos ) {
+
+			const std::string twist_path = "./CloverParams/TwistedM";
+			// const std::string rsd_target_path = "./RsdTarget";
+
+			QDPIO::cout << "Resetting Twisted Mass to " << Twist << std::endl;
+
+			if( xml.count(twist_path) != 1) {
+				QDPIO::cout << "Error: CloverParams does not contain TwistedMass. Cant reset" <<std::endl;
+				QDP_abort(1);
+			}
+
+			xml.set<Real>(twist_path, Twist);
+			// xml.set<Real>(rsd_target_path, RsdTarget);
+
+			QDPIO::cout << "SUCCESS" << std::endl;
+			return;
+		}
+
+		// If we haven't returned we are not using
+		QDPIO::cout << "Syssolver doesnt need param reset" << std::endl;
+		return;
+	}
+}
  //! CG1 system solver namespace
  namespace LinOpSysSolverMRHSTwistedProxyEnv
  {
@@ -48,6 +98,7 @@ public:
 	{}
 
 
+
 	SystemSolverResultsMRHS_t operator() (multi1d<T>& psi, const multi1d<T>& chi) const {
 		int N = size();
 		SystemSolverResultsMRHS_t res(N);
@@ -61,9 +112,14 @@ public:
 			std::istringstream sub_solver_xml_stream(_params.SubInverterXML.xml);
 			XMLReader sub_solver_xml(sub_solver_xml_stream);
 
-
-
-
+			QDPIO::cout << "Setting twist " << _params.Twists[i] << std::endl;
+			try {
+			MRHSUtils::resetTwist(sub_solver_xml, _params.Twists[i]);
+			}
+			catch( const std::string& e) {
+				QDPIO::cout << "Caught Exception in resetTwist: " << e << std::endl;
+				QDP_abort(1);
+			}
 
 			QDPIO::cout << "Creating SubSolver " << std::endl;
 			Handle<SystemSolver<T>> _solver_single = TheLinOpFermSystemSolverFactory::Instance().createObject(
@@ -125,7 +181,14 @@ public:
 
 			std::istringstream sub_solver_xml_stream(_params.SubInverterXML.xml);
 			XMLReader sub_solver_xml(sub_solver_xml_stream);
-
+			QDPIO::cout << "Setting twist " << _params.Twists[i] << std::endl;
+			try {
+				MRHSUtils::resetTwist(sub_solver_xml, _params.Twists[i]);
+			}
+			catch( const std::string& e) {
+				QDPIO::cout << "Caught Exception in resetTwist: " << e << std::endl;
+				QDP_abort(1);
+			}
 
 			QDPIO::cout << "Creating SubSolver " << std::endl;
 			Handle<SystemSolver<T>> _solver_single = TheMdagMFermSystemSolverFactory::Instance().createObject(
