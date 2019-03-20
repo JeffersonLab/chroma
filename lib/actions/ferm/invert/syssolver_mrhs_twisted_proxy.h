@@ -89,11 +89,10 @@ class LinOpMRHSSysSolverTwistedProxy : public LinOpMRHSSystemSolver<T> {
 public:
 
 	LinOpMRHSSysSolverTwistedProxy(const SysSolverMRHSTwistedParams& params,
-			const Handle< FermAct4D<T,P,Q> > S_ferm,
+			const FermAct4D<T,P,Q>& S_ferm,
 			const Handle< FermState<T,P,Q> > state) :
 				_params(params),
-				_S_ferm(S_ferm),
-				_M_single(static_cast<LinOp<T,P,Q>*>(S_ferm->linOp(state))),
+				_M_single(static_cast<LinOp<T,P,Q>*>(S_ferm.linOp(state))),
 				_state(state)
 	{}
 
@@ -148,7 +147,6 @@ public:
 	}
 private:
 	const SysSolverMRHSTwistedParams _params;
-	const Handle< FermAct4D<T,P,Q> > _S_ferm;
 	const Handle<LinOp<T,P,Q>> _M_single;
 	const Handle< FermState<T,P,Q> > _state;
 };
@@ -160,11 +158,10 @@ class MdagMMRHSSysSolverTwistedProxy : public MdagMMRHSSystemSolver<T> {
 public:
 
 	MdagMMRHSSysSolverTwistedProxy(const SysSolverMRHSTwistedParams& params,
-			const Handle< FermAct4D<T,P,Q> > S_ferm,
+			const FermAct4D<T,P,Q>& S_ferm,
 			const Handle< FermState<T,P,Q> > state) :
 				_params(params),
-				_S_ferm(S_ferm),
-				_M_single(static_cast<LinOp<T,P,Q>*>(S_ferm->linOp(state))),
+				_M_single(static_cast<LinOp<T,P,Q>*>(S_ferm.linOp(state))),
 				_state(state)
 	{}
 
@@ -217,7 +214,6 @@ public:
 	}
 private:
 	const SysSolverMRHSTwistedParams _params;
-	const Handle< FermAct4D<T,P,Q> > _S_ferm;
 	const Handle<LinOp<T,P,Q>> _M_single;
 	const Handle< FermState<T,P,Q> > _state;
 };

@@ -268,7 +268,7 @@ TEST_F(MultiRHSFixture, CheckLinOpMRHSSysSolverProxy)
 
 	// Smart pointers including our handle cannot cast covariantly.\
 	// This is a Handle<> mimic of static_cast_ptr
-	LinOpMRHSSysSolverProxy<T,P,Q> the_solver(param, S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+	LinOpMRHSSysSolverProxy<T,P,Q> the_solver(param, (*S_symm), state);
 
 	ASSERT_EQ( the_solver.size(), param.BlockSize);
 
@@ -283,7 +283,7 @@ TEST_P(MHRSSolverProxyTest, CheckLinOpMRHSProxyWorks)
 
 	// Smart pointers including our handle cannot cast covariantly.\
 	// This is a Handle<> mimic of static_cast_ptr
-	LinOpMRHSSysSolverProxy<T,P,Q> the_solver(param, S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+	LinOpMRHSSysSolverProxy<T,P,Q> the_solver(param, (*S_symm), state);
 
 	const int N = the_solver.size();
 	const Subset& s = the_solver.subset();
@@ -323,7 +323,7 @@ TEST_P(MHRSSolverProxyTest, CheckMdagMMRHSProxyWorks)
 
 	// Smart pointers including our handle cannot cast covariantly.\
 	// This is a Handle<> mimic of static_cast_ptr
-	MdagMMRHSSysSolverProxy<T,P,Q> the_solver(param, S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+	MdagMMRHSSysSolverProxy<T,P,Q> the_solver(param, (*S_symm), state);
 
 	const int N = the_solver.size();
 	const Subset& s = the_solver.subset();
@@ -368,14 +368,14 @@ INSTANTIATE_TEST_CASE_P(MRHSQUDASyssolverProxy,
                         		inv_param_multi_rhs_proxy_quda_multigrid_xml));
 #endif
 
-TEST_F(MultiRHSFixture, CheckLinOpMRHSProxyFectoryCreation)
+TEST_F(MultiRHSFixture, CheckLinOpMRHSProxyFactoryCreation)
 {
 	std::istringstream inv_param_stream(inv_param_multi_rhs_proxy_cg_xml);
 	XMLReader inv_param_xml(inv_param_stream);
 
 	Handle<LinOpMRHSSystemSolver<LatticeFermion>> the_solver =
 			TheLinOpFermMRHSSystemSolverFactory::Instance().createObject("MULTI_RHS_PROXY_INVERTER",
-					inv_param_xml,"InvertParam",S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+					inv_param_xml,"InvertParam",(*S_symm), state);
 
 	const int N = the_solver->size();
 	const Subset& s = the_solver->subset();
@@ -406,14 +406,14 @@ TEST_F(MultiRHSFixture, CheckLinOpMRHSProxyFectoryCreation)
 	}
 }
 
-TEST_F(MultiRHSFixture, CheckMdagMMRHSProxyFectoryCreation)
+TEST_F(MultiRHSFixture, CheckMdagMMRHSProxyFactoryCreation)
 {
 	std::istringstream inv_param_stream(inv_param_multi_rhs_proxy_cg_xml);
 	XMLReader inv_param_xml(inv_param_stream);
 
 	Handle<MdagMMRHSSystemSolver<LatticeFermion>> the_solver =
 			TheMdagMFermMRHSSystemSolverFactory::Instance().createObject("MULTI_RHS_PROXY_INVERTER",
-					inv_param_xml,"InvertParam",S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+					inv_param_xml,"InvertParam",(*S_symm), state);
 
 	const int N = the_solver->size();
 	const Subset& s = the_solver->subset();
@@ -446,6 +446,167 @@ TEST_F(MultiRHSFixture, CheckMdagMMRHSProxyFectoryCreation)
 	}
 }
 
+TEST_F(MultiRHSFixture, CheckLinOpMRHSProxyActionCreation)
+{
+
+	GroupXML_t group_xml;
+	group_xml.id = "MULTI_RHS_PROXY_INVERTER";
+	group_xml.path = "InvertParam";
+	group_xml.xml = inv_param_multi_rhs_proxy_cg_xml;
+
+	Handle<LinOpMRHSSystemSolver<LatticeFermion>> the_solver =S_symm->invLinOpMRHS(state, group_xml);
+
+	const int N = the_solver->size();
+	const Subset& s = the_solver->subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res =(*the_solver)(psi, chi);
+
+
+
+	ASSERT_EQ( res.resid.size(), N);
+	ASSERT_EQ( res.n_count.size(), N);
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		(*M_symm)( tmp, psi[i], PLUS );
+		tmp[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+
+}
+
+TEST_F(MultiRHSFixture, CheckMdagMMRHSProxyActionCreation)
+{
+	GroupXML_t group_xml;
+	group_xml.id = "MULTI_RHS_PROXY_INVERTER";
+	group_xml.path = "InvertParam";
+	group_xml.xml = inv_param_multi_rhs_proxy_cg_xml;
+
+	Handle<MdagMMRHSSystemSolver<LatticeFermion>> the_solver( S_symm->invMdagMMRHS(state,group_xml) );
+
+	const int N = the_solver->size();
+	const Subset& s = the_solver->subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res =(*the_solver)(psi, chi);
+
+	ASSERT_EQ( res.resid.size(), N);
+	ASSERT_EQ( res.n_count.size(), N);
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		T tmp2 = zero;
+		(*M_symm)( tmp, psi[i], PLUS );
+		(*M_symm)( tmp2, tmp, MINUS );
+		tmp2[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp2,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+}
+
+TEST_F(MultiRHSFixture, CheckLinOpMRHSProxyAsymmActionCreation)
+{
+
+	GroupXML_t group_xml;
+	group_xml.id = "MULTI_RHS_PROXY_INVERTER";
+	group_xml.path = "InvertParam";
+	group_xml.xml = inv_param_multi_rhs_proxy_cg_xml;
+
+	Handle<LinOpMRHSSystemSolver<LatticeFermion>> the_solver(S_asymm->invLinOpMRHS(state, group_xml));
+
+	const int N = the_solver->size();
+	const Subset& s = the_solver->subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res =(*the_solver)(psi, chi);
+
+	ASSERT_EQ( res.resid.size(), N);
+	ASSERT_EQ( res.n_count.size(), N);
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		(*M_asymm)( tmp, psi[i], PLUS );
+		tmp[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+}
+
+TEST_F(MultiRHSFixture, CheckMdagMMRHSProxyAsymmActionCreation)
+{
+	GroupXML_t group_xml;
+	group_xml.id = "MULTI_RHS_PROXY_INVERTER";
+	group_xml.path = "InvertParam";
+	group_xml.xml = inv_param_multi_rhs_proxy_cg_xml;
+
+	Handle<MdagMMRHSSystemSolver<LatticeFermion>> the_solver( S_asymm->invMdagMMRHS(state,group_xml) );
+
+	const int N = the_solver->size();
+	const Subset& s = the_solver->subset();
+	multi1d<T> chi(N);
+	multi1d<T> psi(N);
+
+	for(int i=0; i < N; ++i) {
+		chi[i]=zero;
+		psi[i]=zero;
+		gaussian(chi[i], s);
+	}
+
+	// Solve all poles at once
+	SystemSolverResultsMRHS_t res =(*the_solver)(psi, chi);
+
+	ASSERT_EQ( res.resid.size(), N);
+	ASSERT_EQ( res.n_count.size(), N);
+
+	for(int i=0; i < N; ++i) {
+		T tmp = zero;
+		T tmp2 = zero;
+		(*M_asymm)( tmp, psi[i], PLUS );
+		(*M_asymm)( tmp2, tmp, MINUS );
+		tmp2[ s ] -= chi[i];
+		Double diff = sqrt(norm2(tmp2,s));
+		Double diff_chi = sqrt(norm2(chi[i],s));
+		Double rel_diff = diff/diff_chi;
+		QDPIO::cout << "i= "<<i << " Diff= " << diff << " Rel diff= " << rel_diff << std::endl;
+		ASSERT_LT( toDouble(rel_diff), 1.0e-8);
+	}
+}
+
 TEST_P(MHRSSolverTwistedSeoprecProxyTest, CheckLinOpMRHSTwistedProxySolverWorks)
 {
 	std::istringstream inv_param_stream(GetParam());
@@ -456,7 +617,7 @@ TEST_P(MHRSSolverTwistedSeoprecProxyTest, CheckLinOpMRHSTwistedProxySolverWorks)
 	// Smart pointers including our handle cannot cast covariantly.\
 	// This is a Handle<> mimic of static_cast_ptr
 	SymEvenOddPrecLogDetLinOpMRHSSysSolverTwistedProxy<T,P,Q>
-		the_solver(param, S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+		the_solver(param, (*S_symm), state);
 
 	const int N = the_solver.size();
 	const Subset& s = the_solver.subset();
@@ -498,7 +659,7 @@ TEST_P(MHRSSolverTwistedSeoprecProxyTest, CheckMdagMMRHSTwistedProxySolverWorks)
 	// Smart pointers including our handle cannot cast covariantly.\
 	// This is a Handle<> mimic of static_cast_ptr
 	SymEvenOddPrecLogDetMdagMMRHSSysSolverTwistedProxy<T,P,Q>
-		the_solver(param, S_symm.cast_static<FermAct4D<T,P,Q>>(), state);
+		the_solver(param, (*S_symm), state);
 
 	const int N = the_solver.size();
 	const Subset& s = the_solver.subset();
@@ -547,7 +708,7 @@ TEST_P(MHRSSolverTwistedEoprecProxyTest, CheckLinOpMRHSTwistedProxySolverWorks)
 	// Smart pointers including our handle cannot cast covariantly.\
 	// This is a Handle<> mimic of static_cast_ptr
 	EvenOddPrecLinOpMRHSSysSolverTwistedProxy<T,P,Q>
-		the_solver(param, S_asymm.cast_static<FermAct4D<T,P,Q>>(), state);
+		the_solver(param, (*S_asymm), state);
 
 	const int N = the_solver.size();
 	const Subset& s = the_solver.subset();
@@ -589,7 +750,7 @@ TEST_P(MHRSSolverTwistedEoprecProxyTest, CheckMdagMMRHSTwistedProxySolverWorks)
 	// Smart pointers including our handle cannot cast covariantly.\
 	// This is a Handle<> mimic of static_cast_ptr
 	EvenOddPrecMdagMMRHSSysSolverTwistedProxy<T,P,Q>
-		the_solver(param, S_asymm.cast_static<FermAct4D<T,P,Q>>(), state);
+		the_solver(param, (*S_asymm), state);
 
 	const int N = the_solver.size();
 	const Subset& s = the_solver.subset();
@@ -638,7 +799,7 @@ TEST_P(MHRSSolverTwistedSeoprecProxyFactoryTest, CheckLinOpMRHSTwistedProxyFacto
 
 	Handle<LinOpMRHSSystemSolver<LatticeFermion>> the_solver(
 			TheLinOpFermMRHSSystemSolverFactory::Instance().createObject("MULTI_RHS_SEOPREC_TWISTED_PROXY_INVERTER",
-					inv_param_xml, "InvertParam", S_symm.cast_static<FermAct4D<T,P,Q>>(), state)
+					inv_param_xml, "InvertParam", (*S_symm), state)
 	);
 
 
@@ -683,7 +844,7 @@ TEST_P(MHRSSolverTwistedSeoprecProxyFactoryTest, CheckMdagMMRHSTwistedProxyFacto
 	// This is a Handle<> mimic of static_cast_ptr
 	Handle<MdagMMRHSSystemSolver<LatticeFermion>> the_solver(
 			TheMdagMFermMRHSSystemSolverFactory::Instance().createObject("MULTI_RHS_SEOPREC_TWISTED_PROXY_INVERTER",
-					inv_param_xml, "InvertParam", S_symm.cast_static<FermAct4D<T,P,Q>>(), state)
+					inv_param_xml, "InvertParam", (*S_symm), state)
 	);
 
 	const int N = the_solver->size();
@@ -761,3 +922,5 @@ TEST_F(MultiRHSFixture, CheckSetXMLTwist)
 	}
 
 }
+
+

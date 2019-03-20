@@ -24,15 +24,15 @@ namespace Chroma
 {
   namespace {
   	  using FSHandle =  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >;
-  	  using FAHandle = Handle< FermAct4D< LatticeFermion, multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> > >;
+  	  using FA = FermAct4D< LatticeFermion, multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> >;
   }
   //! LinOp system solver factory (foundry)
   /*! @ingroup invert */
   typedef SingletonHolder<
     ObjectFactory<MdagMMRHSSystemSolver<LatticeFermion>,
 		  std::string,
-		  TYPELIST_4(XMLReader&,const std::string&,FAHandle,FSHandle),
-		  MdagMMRHSSystemSolver<LatticeFermion>* (*)(XMLReader&,const std::string&,FAHandle,FSHandle),
+		  TYPELIST_4(XMLReader&,const std::string&,const FA&,FSHandle),
+		  MdagMMRHSSystemSolver<LatticeFermion>* (*)(XMLReader&,const std::string&,const FA&,FSHandle),
 		  StringFactoryError> >
   TheMdagMFermMRHSSystemSolverFactory;
 

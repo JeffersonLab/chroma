@@ -36,31 +36,20 @@ template<typename T,typename P, typename Q>
 class LinOpMRHSSysSolverProxy : public LinOpMRHSSystemSolver<T> {
 public:
 	LinOpMRHSSysSolverProxy(const SysSolverMRHSProxyParams& params,
-			const Handle< FermAct4D<T,P,Q> > S_ferm,
+		    const FermAct4D<T,P,Q>& S_ferm,
 			const Handle< FermState<T,P,Q> > state) :
-				_params(params),
-				_M_single(S_ferm->linOp(state))
-	{
-		std::istringstream sub_solver_xml_stream(_params.SubInverterXML.xml);
-		XMLReader sub_solver_xml(sub_solver_xml_stream);
-
-		QDPIO::cout << "Creating SubSolver " << std::endl;
-		_solver_single = TheLinOpFermSystemSolverFactory::Instance().createObject(
-				_params.SubInverterXML.id,
-				sub_solver_xml,
-				_params.SubInverterXML.path,
-				state,
-				_M_single);
-		QDPIO::cout << "Done" << std::endl;
-	}
+				_N(params.BlockSize),
+				_M_single(S_ferm.linOp(state)),
+				_solver_single(S_ferm.invLinOp(state,params.SubInverterXML))
+	{}
 
 
 	SystemSolverResultsMRHS_t operator() (multi1d<T>& psi, const multi1d<T>& chi) const {
-		int N = size();
-		SystemSolverResultsMRHS_t res(N);
+
+		SystemSolverResultsMRHS_t res(_N);
 
 		// Do the do.
-		for(int i=0; i < N; ++i) {
+		for(int i=0; i < _N; ++i) {
 			SystemSolverResults_t res_tmp = (*_solver_single)(psi[i],chi[i]);
 			res.n_count[i] = res_tmp.n_count;
 			res.resid[i] = res_tmp.resid;
@@ -73,43 +62,33 @@ public:
 	}
 
 	int size() const {
-		return _params.BlockSize;
+		return _N;
 	}
 private:
-	const SysSolverMRHSProxyParams _params;
+	const int _N;
 	const Handle<LinearOperator<T>> _M_single;
-	Handle<SystemSolver<T>> _solver_single;
+	const Handle<SystemSolver<T>> _solver_single;
 };
 
 template<typename T,typename P, typename Q>
 class MdagMMRHSSysSolverProxy : public MdagMMRHSSystemSolver<T> {
 public:
 	MdagMMRHSSysSolverProxy(const SysSolverMRHSProxyParams& params,
-			const Handle< FermAct4D<T,P,Q> > S_ferm,
+			const FermAct4D<T,P,Q>& S_ferm,
 			const Handle< FermState<T,P,Q> > state) :
-				_params(params),
-				_M_single(S_ferm->linOp(state))
-	{
-		std::istringstream sub_solver_xml_stream(_params.SubInverterXML.xml);
-		XMLReader sub_solver_xml(sub_solver_xml_stream);
+				_N(params.BlockSize),
+				_M_single(S_ferm.linOp(state)),
+				_solver_single(S_ferm.invMdagM(state,params.SubInverterXML))
+	{}
 
-		QDPIO::cout << "Creating SubSolver " << std::endl;
-		_solver_single = TheMdagMFermSystemSolverFactory::Instance().createObject(
-				_params.SubInverterXML.id,
-				sub_solver_xml,
-				_params.SubInverterXML.path,
-				state,
-				_M_single);
-		QDPIO::cout << "Done" << std::endl;
-	}
 
 
 	SystemSolverResultsMRHS_t operator() (multi1d<T>& psi, const multi1d<T>& chi) const {
-		int N = size();
-		SystemSolverResultsMRHS_t res(N);
+
+		SystemSolverResultsMRHS_t res(_N);
 
 		// Do the do.
-		for(int i=0; i < N; ++i) {
+		for(int i=0; i < _N; ++i) {
 			SystemSolverResults_t res_tmp = (*_solver_single)(psi[i],chi[i]);
 			res.n_count[i] = res_tmp.n_count;
 			res.resid[i] = res_tmp.resid;
@@ -122,10 +101,10 @@ public:
 	}
 
 	int size() const {
-		return _params.BlockSize;
+		return _N;
 	}
 private:
-	const SysSolverMRHSProxyParams _params;
+	const int _N;
 	const Handle<LinearOperator<T>> _M_single;
 	Handle<SystemSolver<T>> _solver_single;
 };

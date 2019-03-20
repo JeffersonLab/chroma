@@ -8,7 +8,9 @@
 #include "util/ferm/transf.h"
 #include "actions/ferm/qprop/quarkprop4_w.h"
 #include "actions/ferm/invert/syssolver_linop_factory.h"
+#include "actions/ferm/invert/syssolver_linop_mrhs_factory.h"
 #include "actions/ferm/invert/syssolver_mdagm_factory.h"
+#include "actions/ferm/invert/syssolver_mdagm_mrhs_factory.h"
 #include "actions/ferm/invert/multi_syssolver_linop_factory.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_factory.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_accumulate_factory.h"
@@ -317,16 +319,15 @@ namespace Chroma
   WilsonTypeFermAct<LF,LCM,LCM>::invLinOpMRHS(Handle< FermState<LF,LCM,LCM> > state,
 					  const GroupXML_t& invParam) const
   {
-#if 0
     std::istringstream  xml(invParam.xml);
     XMLReader  paramtop(xml);
 
-    return TheLinOpFermSystemSolverFactory::Instance().createObject(invParam.id,
-								    paramtop,
-								    invParam.path,
-								    state,
-								    this->linOp(state));
-#endif
+
+    return TheLinOpFermMRHSSystemSolverFactory::Instance().createObject(invParam.id,
+    					paramtop,
+						invParam.path,
+						(*this),
+						state);
   }
 
   template<>
@@ -334,17 +335,15 @@ namespace Chroma
    WilsonTypeFermAct<LF,LCM,LCM>::invMdagMMRHS(Handle< FermState<LF,LCM,LCM> > state,
  					  const GroupXML_t& invParam) const
    {
-#if 0
-    std::istringstream  xml(invParam.xml);
-    XMLReader  paramtop(xml);
+	  std::istringstream  xml(invParam.xml);
+	  XMLReader  paramtop(xml);
 
-    return TheLinOpFermSystemSolverFactory::Instance().createObject(invParam.id,
-								    paramtop,
-								    invParam.path,
-								    state,
-								    this->linOp(state));
-#endif
 
+	  return TheMdagMFermMRHSSystemSolverFactory::Instance().createObject(invParam.id,
+	    					paramtop,
+							invParam.path,
+							(*this),
+							state);
    }
 
   //! Return a linear operator solver for this action to solve (M+shift_i)*psi_i = chi 

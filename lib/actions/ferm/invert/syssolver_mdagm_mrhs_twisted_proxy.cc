@@ -33,9 +33,9 @@ namespace Chroma
     //! Callback function
     MdagMMRHSSystemSolver<LatticeFermion>* createFermEoprec(XMLReader& xml_in,
 						  const std::string& path,
-						  Handle< FermAct4D< LatticeFermion,
+						  const FermAct4D< LatticeFermion,
 						  	  	  	  	  	  	 multi1d<LatticeColorMatrix>,
-												 multi1d<LatticeColorMatrix> > > S_ferm,
+												 multi1d<LatticeColorMatrix> >& S_ferm,
 						  Handle< FermState<
 						                     LatticeFermion,
 						                     multi1d<LatticeColorMatrix>,
@@ -52,9 +52,9 @@ namespace Chroma
 
     MdagMMRHSSystemSolver<LatticeFermion>* createFermSeoprec(XMLReader& xml_in,
 						  const std::string& path,
-						  Handle< FermAct4D< LatticeFermion,
+						  const FermAct4D< LatticeFermion,
 						  	  	  	  	  	  	 multi1d<LatticeColorMatrix>,
-												 multi1d<LatticeColorMatrix> > > S_ferm,
+												 multi1d<LatticeColorMatrix> >& S_ferm,
 						  Handle< FermState<
 						                     LatticeFermion,
 						                     multi1d<LatticeColorMatrix>,
