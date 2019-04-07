@@ -6,6 +6,7 @@
 
 #include "actions/gauge/gaugeacts/gaugeacts_aggregate.h"
 
+#include "actions/gauge/gaugeacts/rmc_gaugeact.h"
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
 #include "actions/gauge/gaugeacts/plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/rect_gaugeact.h"
@@ -59,6 +60,7 @@ namespace Chroma
 	success &= CreateGaugeStateEnv::registerAll();
 
 	// Register gauge actions
+	success &= RMCGaugeActEnv::registerAll();
 	success &= PlaqGaugeActEnv::registerAll();
 	success &= RectGaugeActEnv::registerAll();
 	success &= PgGaugeActEnv::registerAll();

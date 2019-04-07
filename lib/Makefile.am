@@ -146,6 +146,7 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/gaugeacts.h \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.h \
 	actions/gauge/gaugeacts/gaugeact_factory.h \
+	actions/gauge/gaugeacts/rmc_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_gaugeact.h \
 	actions/gauge/gaugeacts/rect_gaugeact.h \
 	actions/gauge/gaugeacts/pg_gaugeact.h \
@@ -1132,6 +1133,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/qprop/asqtad_qprop.cc \
 	actions/ferm/qprop/hisq_qprop.cc \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.cc \
+	actions/gauge/gaugeacts/rmc_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
 	actions/gauge/gaugeacts/pg_gaugeact.cc \
