@@ -23,6 +23,11 @@
 #include "eoprec_logdet_wilstype_fermact_w.h"
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
 #include "update/molecdyn/predictor/zero_guess_predictor.h"
+#include "actions/ferm/invert/syssolver_mrhs_twisted_params.h"
+#include "actions/ferm/invert/syssolver_mrhs_twisted_proxy.h"
+#include "actions/ferm/invert/syssolver_linop_mrhs_factory.h"
+#include "actions/ferm/invert/syssolver_mdagm_mrhs_factory.h"
+#include "actions/ferm/linop/multi_twist_linop_w.h"
 
 namespace Chroma
 {
@@ -59,46 +64,57 @@ namespace Chroma
 				// Fermion action
 				const FAType<T,P,Q>& FA = getFermAct();
 
+				const int N = numHasenTerms;
 				Double S=0;
 				// Get the X fields
-				T X;
+				multi1d<T> X(N);
 				Handle<FermState<T,P,Q> > state(FA.createState(s.getQ()));
 				Handle<LOType<T,P,Q> > base_op(FA.linOp(state));
+				
+				// Construct Linop with multi-twist
+				// Denominator of multi-Hasenbusch monomial
+				Handle<MultiTwistLinOp<T,P,Q,LOType> >
+					M_den(new MultiTwistLinOp<T,P,Q,LOType>(base_op, mu_den));
+				// Numerator of multi-Hasenbusch monomial, not needed here,
+				// use fermion action directly.
+				//Handle<MultiTwistLinOp<T,P,Q,LOType> >
+				//	M_num(new MultiTwistLinOp<T,P,Q,LOType>(base_op, mu_num));
+				
+				// Action calc doesnt use chrono predictor use zero guess
+				for(int i=0; i<N; ++i){
+					X[i][M_den->subset()] = zero;
+				}
+				// Reset chrono predictor
+				QDPIO::cout << 
+					"TwoFlavorRatioConvConvMultihasenWilson4DMonomial: resetting Predictor before energy calc solve" << std::endl;
+				(getMDSolutionPredictor()).reset();
+			
+				// A bit tedious work to set up the Twists for numerator
+				// MdagM solver
+				SysSolverMRHSTwistedParams paramnum = invParam;
+				paramnum.Twists = mu_num;
+				// Set up the MRHS solver for MdagM, where M is the
+				// twisted linop on numerator.
+				MdagMMRHSSysSolverTwistedProxy<T,P,Q,LOType> invMdagM(paramnum, FA, state);
+				
+				// M_dag_den_phi = M^{dag}_den \phi - the RHS
+				multi1d<T> M_dag_den_phi(N);
+				(*M_den)(M_dag_den_phi, phi, MINUS);
 
-				for(int i=0; i<numHasenTerms; ++i){
-					Handle<LinearOperator<T> > 
-						M(new TwistedShiftedLinOp<T,P,Q,LOType>(*base_op, mu[i]));
-					Handle<LinearOperator<T> > 
-						M_prec(new TwistedShiftedLinOp<T,P,Q,LOType>(*base_op, mu[i+1]));
+				// Solve MdagM X = eta
+				SystemSolverResultsMRHS_t res = invMdagM(X, M_dag_den_phi);
+				multi1d<T> phi_tmp(N);
+				phi_tmp = zero;
+				(*M_den)(phi_tmp, X, PLUS);
 
-					// Action calc doesnt use chrono predictor use zero guess
-					X[M->subset()] = zero;
-					// Reset chrono predictor
-					QDPIO::cout << 
-						"TwoFlavorRatioConvConvMultihasenWilson4DMonomial: resetting Predictor before energy calc solve" << std::endl;
-					(getMDSolutionPredictor()).reset();
-					// Get system solver
-					const GroupXML_t& invParam = getInvParams();
-					std::istringstream xml(invParam.xml);
-					XMLReader paramtop(xml);
-					Handle<MdagMSystemSolver<T> > 
-						invMdagM(TheMdagMFermSystemSolverFactory::Instance().createObject(
-									invParam.id, paramtop, invParam.path, state, M));
-					// M_dag_prec phi = M^{dag}_prec \phi - the RHS
-					T M_dag_prec_phi;
-					(*M_prec)(M_dag_prec_phi, getPhi(i), MINUS);
+				for(int i=0; i<N; ++i){
 
-					// Solve MdagM X = eta
-					SystemSolverResults_t res = (*invMdagM)(X, M_dag_prec_phi);
-
-					T phi_tmp = zero;
-					(*M_prec)(phi_tmp, X, PLUS);
-					Double action = innerProductReal(getPhi(i), phi_tmp, M->subset());
+					Double action = innerProductReal(getPhi(i), phi_tmp[i], M_den->subset());
 					// Write out inversion number and action for every hasenbusch term 
 					std::string n_count = "n_count_hasenterm_" + std::to_string(i+1);
 					std::string s_action = "S_hasenterm_" + std::to_string(i+1);
 
-					write(xml_out, n_count, res.n_count);
+					write(xml_out, n_count, res.n_count[i]);
 					write(xml_out, s_action, action);
 					S += action;
 				}
@@ -110,87 +126,82 @@ namespace Chroma
 			}
 
 			// Total force of multi-hasen terms
-			virtual void dsdq(P& F, const AbsFieldState<P, Q>& s)
+			virtual void dsdq(P& F_t, const AbsFieldState<P, Q>& s)
 			{
 				START_CODE();
 				XMLWriter& xml_out = TheXMLLogWriter::Instance();
 				push(xml_out, "TwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial");
 
-				P F_t;
 				P F_tmp;
 				F_t.resize(Nd);
 				F_tmp.resize(Nd);
-				F.resize(Nd);
 				for(int i=0; i<Nd; ++i)
 				{
 					F_t[i] = zero;
 					F_tmp[i] = zero;
-					F[i] = zero;
 				}
+				const int N = numHasenTerms;
 				// Fermion action
 				const FAType<T,P,Q>& FA = getFermAct();
-				// X = (M^\dag M)^(-1) M_prec^\dag \phi
+				// X = (M^\dag M)^(-1) M_den^\dag \phi
 				// Y = M X
-				T X = zero;
-				T Y = zero;
-				// M_dag_prec_phi = M^\dag_prec \phi
-				T M_dag_prec_phi;
+				multi1d<T> X(N), Y(N);
+				for(int i=0; i<N; ++i){
+					X[i] = zero;
+					Y[i] = zero;
+				}
+				// M_dag_den_phi = M^\dag_den \phi
+				multi1d<T> M_dag_den_phi(N);
 
 				Handle<FermState<T,P,Q> > state(FA.createState(s.getQ()));
 				Handle<LOType<T,P,Q> > base_op(FA.linOp(state));
 
-				for(int i=0; i<numHasenTerms; ++i){
-					Handle<LinearOperator<T> > 
-						M(new TwistedShiftedLinOp<T,P,Q,LOType>(*base_op, mu[i]));
-					Handle<LinearOperator<T> > 
-						M_prec(new TwistedShiftedLinOp<T,P,Q,LOType>(*base_op, mu[i+1]));
-					// Get system solver
-					const GroupXML_t& invParam = getInvParams();
-					std::istringstream xml(invParam.xml);
-					XMLReader paramtop(xml);
-					Handle<MdagMSystemSolver<T> > 
-						invMdagM(TheMdagMFermSystemSolverFactory::Instance().createObject(
-									invParam.id,paramtop, invParam.path, state, M));
+				// Construct Linop with multi-twist
+				// Denominator of multi-Hasenbusch monomial
+				Handle<MultiTwistLinOp<T,P,Q,LOType> >
+					M_den(new MultiTwistLinOp<T,P,Q,LOType>(base_op, mu_den));
+				// Numerator of multi-Hasenbusch monomial
+				Handle<MultiTwistLinOp<T,P,Q,LOType> >
+					M_num(new MultiTwistLinOp<T,P,Q,LOType>(base_op, mu_num));
+				
+				// A bit tedious work to set up the Twists for numerator
+				// MdagM solver
+				SysSolverMRHSTwistedParams paramnum = invParam;
+				paramnum.Twists = mu_num;
+				// Set up the MRHS solver for MdagM, where M is the
+				// twisted linop on numerator.
+				MdagMMRHSSysSolverTwistedProxy<T,P,Q,LOType> invMdagM(paramnum, FA, state);
+			
+				(*M_den)(M_dag_den_phi, phi, MINUS);
+				SystemSolverResultsMRHS_t res = invMdagM(X, M_dag_den_phi);
+				(*M_num)(Y, X, PLUS);
+				
+				// deriv part 1: \phi^\dag \dot(M_den) X
+				M_den->deriv(F_t, phi, X, PLUS);
 
-					(*M_prec)(M_dag_prec_phi, getPhi(i), MINUS);
-					SystemSolverResults_t res = (*invMdagM)(X, M_dag_prec_phi, getMDSolutionPredictor());
-					(*M)(Y, X, PLUS);
+				// deriv part 2: - X^\dag \dot(M_num^\dag) Y
+				M_num->deriv(F_tmp, X, Y, MINUS);
+				F_t -= F_tmp;
 
-					// cast linearop to difflinearop
-					const DiffLinearOperator<T,P,Q>& diffM = dynamic_cast<const DiffLinearOperator<T,P,Q>&>(*M);
-					const DiffLinearOperator<T,P,Q>& diffM_prec = dynamic_cast<const DiffLinearOperator<T,P,Q>&>(*M_prec);
+				// deriv part 3: - Y^\dag \dot(M_num) X
+				M_num->deriv(F_tmp, Y, X, PLUS);
+				F_t -= F_tmp;
 
-					// deriv part 1: \phi^\dag \dot(M_prec) X
-					diffM_prec.deriv(F_t, getPhi(i), X, PLUS);
+				// deriv part 4: X^\dag \dot(M_prec)^\dag \phi
+				M_den->deriv(F_tmp, X, phi, MINUS);
+				F_t += F_tmp;
 
-					// deriv part 2: - X^\dag \dot(M^\dag) Y
-					diffM.deriv(F_tmp, X, Y, MINUS);
-					F_t -= F_tmp;
+				// F now holds derivative with respect to possibly fat links
+				// now derive it with respect to the thin links if needs be
+				state->deriv(F_t);
 
-					// deriv part 3: - Y^\dag \dot(M) X
-					diffM.deriv(F_tmp, Y, X, PLUS);
-					F_t -= F_tmp;
-
-					// deriv part 4: X^\dag \dot(M_prec)^\dag \phi
-					diffM_prec.deriv(F_tmp, X, getPhi(i), MINUS);
-					F_t += F_tmp;
-
-					// total force from all Hasenbusch terms
-					F += F_t;
-
-					// F now holds derivative with respect to possibly fat links
-					// now derive it with respect to the thin links if needs be
-					state->deriv(F);
-
-					// Write out inversion number and action for every hasenbusch term 
+				for(int i=0; i<N; ++i){
+					// Write out inversion number for every hasenbusch term 
 					std::string n_count = "n_count_hasenterm_" + std::to_string(i+1);
-					std::string force = "Forces_hasenterm_" + std::to_string(i+1);
-
-					write(xml_out, n_count, res.n_count);
-					monitorForces(xml_out, force, F_t);
+					write(xml_out, n_count, res.n_count[i]);
 				}
 				// Total force from all Hasenbusch terms
-				monitorForces(xml_out, "Forces", F);
+				monitorForces(xml_out, "Forces", F_t);
 				pop(xml_out);
 				END_CODE();
 			}
@@ -199,54 +210,59 @@ namespace Chroma
 			{
 				START_CODE();
 				const FAType<T,P,Q>& FA = getFermAct();
-
+				const int N = numHasenTerms;
+				
 				Handle<FermState<T,P,Q> > state(FA.createState(s.getQ()));
 				Handle<LOType<T,P,Q> > base_op(FA.linOp(state));
-				for(int i=0; i<numHasenTerms; ++i){
-					Handle<LinearOperator<T> > 
-						M(new TwistedShiftedLinOp<T,P,Q,LOType>(*base_op, mu[i]));
-					Handle<LinearOperator<T> > 
-						M_prec(new TwistedShiftedLinOp<T,P,Q,LOType>(*base_op, mu[i+1]));
-					T eta = zero;
-					gaussian(eta, M->subset());
-
-					// Account for fermion BC by modifying the proposed field
-					FA.getFermBC().modifyF(eta);
-
-					eta *= sqrt(0.5);
-					// Now we have to get the refreshment right:
-					// We have  \eta^{\dag} \eta = \phi M_prec (M^dag M )^-1 M^dag_prec \phi
-					//  so that \eta = (M^\dag)^{-1} M^{dag}_prec \phi
-					//  So need to solve M^{dag}_prec \phi = M^{\dag} \eta
-					// Which we can solve as 
-					//      M^{dag}_prec M_prec ( M_prec^{-1} ) \phi = M^{\dag} \eta
-					//
-					// Zero out everything - to make sure there is no junk
-					// in uninitialised places
-					T eta_tmp = zero;
-					T phi_tmp = zero;
+				// Construct Linop with multi-twist
+				// Denominator of multi-Hasenbusch monomial
+				Handle<MultiTwistLinOp<T,P,Q,LOType> >
+					M_den(new MultiTwistLinOp<T,P,Q,LOType>(base_op, mu_den));
+				// Numerator of multi-Hasenbusch monomial
+				Handle<MultiTwistLinOp<T,P,Q,LOType> >
+					M_num(new MultiTwistLinOp<T,P,Q,LOType>(base_op, mu_num));
+				
+				multi1d<T> eta(N);
+				for(int i=0; i<N; ++i){
+					eta[i] = zero;
+					gaussian(eta[i], M_num->subset());
+					FA.getFermBC().modifyF(eta[i]);
+					eta[i] *= sqrt(0.5);
+				}
+				// Now we have to get the refreshment right:
+				// We have  \eta^{\dag} \eta = \phi^{\dag} M_den (M_num^dag M_num )^-1 M^dag_den \phi
+				//  so that \eta = (M_num^\dag)^{-1} M^{dag}_den \phi
+				//  So need to solve M^{dag}_den \phi = M_num^{\dag} \eta
+				// Which we can solve as 
+				//      M^{dag}_den M_den ( M_den^{-1} ) \phi = M_num^{\dag} \eta
+				//
+				// Zero out everything - to make sure there is no junk
+				// in uninitialised places
+				multi1d<T> eta_tmp(N), phi_tmp(N);
+				for(int i=0; i<N; ++i){
+					eta_tmp[i] = zero;
+					phi_tmp[i] = zero;
 					getPhi(i) = zero;
-
-					(*M)(eta_tmp, eta, MINUS); // M^\dag \eta
-
-					// Get system solver
-					const GroupXML_t& invParam = getInvParams();
-					std::istringstream xml(invParam.xml);
-					XMLReader paramtop(xml);
-					Handle<MdagMSystemSolver<T> > 
-						invMdagM(TheMdagMFermSystemSolverFactory::Instance().createObject(
-									invParam.id,paramtop, invParam.path, state, M_prec));
-
-					// Solve MdagM_prec X = eta
-					SystemSolverResults_t res = (*invMdagM)(phi_tmp, eta_tmp);
-					(*M_prec)(getPhi(i), phi_tmp, PLUS); // (Now get phi = M_prec (M_prec^{-1}\phi)
-					QDPIO::cout<<"TwoFlavRatioConvConvMultihasenWilson4DMonomial: resetting Predictor at end of field refresh"<<std::endl;
-					getMDSolutionPredictor().reset();
-					XMLWriter& xml_out = TheXMLLogWriter::Instance();
+				}
+				(*M_num)(eta_tmp, eta, MINUS); // M_num^\dag \eta
+			
+				// Get system solver
+				//SysSolverMRHSTwistedParams paramnum = invParam;
+				//paramnum.Twists = mu_num;
+				// Set up the MRHS solver for MdagM, here for denomerator.
+				MdagMMRHSSysSolverTwistedProxy<T,P,Q,LOType> invMdagM(invParam, FA, state);
+				// Solve MdagM_den X = eta
+				SystemSolverResultsMRHS_t res = invMdagM(phi_tmp, eta_tmp);
+				(*M_den)(phi, phi_tmp, PLUS); // (Now get phi = M_den (M_den^{-1}\phi)
+				QDPIO::cout<<"TwoFlavRatioConvConvMultihasenWilson4DMonomial: resetting Predictor at end of field refresh"<<std::endl;
+				getMDSolutionPredictor().reset();
+				
+				XMLWriter& xml_out = TheXMLLogWriter::Instance();
+				for(int i=0; i<N; ++i){
 					std::string field_refrs = "FieldRefreshment_"+std::to_string(i);
 					std::string n_count = "n_count_"+std::to_string(i);
 					push(xml_out, field_refrs);
-					write(xml_out, n_count, res.n_count);
+					write(xml_out, n_count, res.n_count[i]);
 					pop(xml_out);
 				}
 				END_CODE();
@@ -310,14 +326,14 @@ namespace Chroma
 
 			Handle<const FAType<T,P,Q> > fermact;
 
-			// Shifted mass mu
-			multi1d<Real> mu;
-
-			// Number of Hasenbusch terms
+			// Shifted mass from denominator of multi-Hasenbusch term
+			multi1d<Real> mu_den;
+			// Shifted mass from numerator of multi-Hasenbusch term
+			multi1d<Real> mu_num;
+			// No. of Hasenbusch terms
 			int numHasenTerms;
-
 			// The parameters for the inversion
-			GroupXML_t invParam;
+			SysSolverMRHSTwistedParams invParam;
 
 			Handle<AbsChronologicalPredictor4D<T> > chrono_predictor;
 	};
@@ -333,23 +349,23 @@ namespace Chroma
 				START_CODE();
 				QDPIO::cout << "Constructor: " << __func__ << std::endl;
 
-				if( param.fermactInv.invParam.id == "NULL" ) {
+				if( param.fermact.id == "NULL" ) {
 					QDPIO::cerr << "Fermact inverter params are NULL" << std::endl;
 					QDP_abort(1);
 				}
 
-				invParam = param.fermactInv.invParam;
+				invParam = param.inverter;
 
 				// Fermion action (with original seoprec action)
 				{
-					std::istringstream is(param.fermactInv.fermact.xml);
+					std::istringstream is(param.fermact.xml);
 					XMLReader fermact_reader(is);
-					QDPIO::cout << "Construct fermion action= " << param.fermactInv.fermact.id << std::endl;
+					QDPIO::cout << "Construct fermion action= " << param.fermact.id << std::endl;
 
 					WilsonTypeFermAct<T,P,Q>* tmp_act = 
-						TheWilsonTypeFermActFactory::Instance().createObject(param.fermactInv.fermact.id, 
+						TheWilsonTypeFermActFactory::Instance().createObject(param.fermact.id, 
 								fermact_reader, 
-								param.fermactInv.fermact.path);
+								param.fermact.path);
 
 					FAType<T,P,Q>* downcast=dynamic_cast<FAType<T,P,Q>* >(tmp_act);
 
@@ -363,12 +379,17 @@ namespace Chroma
 				}
 
 				// Number of Hasenbusch term
-				numHasenTerms = param.numHasenTerms;
-
-				// Shifted mass
-				mu.resize(numHasenTerms+1);
-				for(int i=0; i< numHasenTerms+1; ++i){
-					mu[i] = param.mu[i];
+				numHasenTerms = param.inverter.BlockSize;
+				// Shifted mass of denominator
+				mu_den.resize(numHasenTerms);
+				for(int i=0; i< numHasenTerms; ++i){
+					mu_den[i] = param.inverter.Twists[i];
+				}
+				// Shifted mass of numerator
+				mu_num.resize(numHasenTerms);
+				mu_num[0] = param.base_twist;
+				for(int i=1; i< numHasenTerms; ++i){
+					mu_num[i] = param.inverter.Twists[i-1];
 				}
 
 				// Pseudofermion field phi

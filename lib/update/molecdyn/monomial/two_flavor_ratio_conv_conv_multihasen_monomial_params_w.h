@@ -6,6 +6,7 @@
 #ifndef __TWO_FLAVOR_RATIO_CONV_CONV_MULTIHASEN_MONOMIAL_PARAMS_W_H__
 #define __TWO_FLAVOR_RATIO_CONV_CONV_MULTIHASEN_MONOMIAL_PARAMS_W_H__
 #include "update/molecdyn/monomial/comp_approx.h"
+#include "actions/ferm/invert/syssolver_mrhs_twisted_params.h"
 
 namespace Chroma 
 {
@@ -19,9 +20,10 @@ namespace Chroma
 
     // Read monomial from some root path
     TwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomialParams(XMLReader& in, const std::string&  path);
-    CompActionInv_t   fermactInv;         /*!< Fermion action and invert params */
-    GroupXML_t        predictor;		  /*!< The Chrono Predictor XML */
-	multi1d<Real> mu;					  /*!< Shifted mass term */
+	SysSolverMRHSTwistedParams inverter;  /*!< Multi-right hand solver parameter */
+	GroupXML_t fermact;					  /*!< Fermion action */
+	GroupXML_t predictor;				  /*!< The Chrono Predictor XML */
+	Real base_twist;					  /*!< Shifted mass of base operator */
 	int numHasenTerms;					  /*!< Number of Hasenbusch terms */
   };
 

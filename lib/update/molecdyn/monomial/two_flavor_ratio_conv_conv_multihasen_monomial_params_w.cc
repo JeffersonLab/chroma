@@ -13,9 +13,9 @@ namespace Chroma
 			// Get the top of the parameter XML tree
 			XMLReader paramtop(xml_in, path);
 			try{
-				read(paramtop, "Action", fermactInv);
-				read(paramtop, "ShiftedMass", mu);
-				read(paramtop, "NumofHasenTerms", numHasenTerms);
+				fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
+				read(paramtop, "InvertParam", inverter);
+				read(paramtop, "BaseTwist", base_twist);
 				if(paramtop.count("./ChronologicalPredictor") == 0){
 					predictor.xml = "";
 				}else{
@@ -37,9 +37,9 @@ namespace Chroma
 	//! Write Parameters
 	void write(XMLWriter& xml, const std::string& path,
 			const TwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomialParams& params){
-		write(xml, "Action", params.fermactInv);
-		write(xml, "ShiftedMass", params.mu);
-		write(xml, "NumofHasenTerms", params.numHasenTerms);
+		write(xml, "FermionAction", params.fermact.id);
+		write(xml, "BaseTwist", params.base_twist);
+		write(xml, "NumofHasenTerms", params.inverter.BlockSize);
 	}
 
 }// end namespace Chroma

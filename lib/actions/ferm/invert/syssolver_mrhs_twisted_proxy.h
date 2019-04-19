@@ -23,7 +23,7 @@ namespace Chroma {
 
  namespace MRHSUtils {
 
-	void resetTwist(XMLReader& xml, const Real& Twist)
+	static void resetTwist(XMLReader& xml, const Real& Twist)
 	{
 		std::string sub_solver_type;
 		read(xml, "invType", sub_solver_type);
