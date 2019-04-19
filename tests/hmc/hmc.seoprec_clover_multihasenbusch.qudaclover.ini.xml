@@ -108,11 +108,12 @@
 			<BlockSize>3</BlockSize>
 			<Twists>0.001 0.002 0.003</Twists>
 			<SubInvertParam>
-				<invType>CG_INVERTER</invType>
+				<invType>QUDA_CLOVER_INVERTER</invType>
 				<CloverParams>
 					<Mass>-0.0640</Mass>
 					<clovCoeffR>1.58932722549812</clovCoeffR>
 					<clovCoeffT>0.902783591772098</clovCoeffT>
+					<TwistedM>666</TwistedM>
 					<AnisoParam>
 						<anisoP>true</anisoP>
 						<t_dir>3</t_dir>
@@ -120,8 +121,21 @@
 						<nu>1.265</nu>
 					</AnisoParam>
 				</CloverParams>
-				<RsdCG>1.0e-7</RsdCG>
-				<MaxCG>1000</MaxCG>
+				<RsdTarget>1.0e-7</RsdTarget>
+				<Delta>1.0e-1</Delta>
+				<Pipeline>0</Pipeline>
+				<MaxIter>1000</MaxIter>
+				<SolverType>CG</SolverType>
+				<RsdToleranceFactor>10.0</RsdToleranceFactor>
+				<AntiPeriodicT>true</AntiPeriodicT>
+				<Verbose>false</Verbose>
+				<AsymmetricLinop>false</AsymmetricLinop>
+				<CudaReconstruct>RECONS_12</CudaReconstruct>
+				<CudaSloppyPrecision>SINGLE</CudaSloppyPrecision>
+				<CudaSloppyReconstruct>RECONS_12</CudaSloppyReconstruct>
+				<AxialGaugeFix>false</AxialGaugeFix>
+				<AutotuneDslash>true</AutotuneDslash>
+				<SolutionCheckP>true</SolutionCheckP>
 		</SubInvertParam>
 		</InvertParam>
         <NamedObject>
