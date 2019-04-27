@@ -24,7 +24,7 @@ namespace Chroma
    
 
   template<typename Q>
-  void MesPlq_t(const multi1d<Q>& u, 
+  void MesPlq(const multi1d<Q>& u, 
 	      multi2d<Double>& plane_plaq, Double& link)
   {
     START_CODE();
@@ -41,10 +41,10 @@ namespace Chroma
 	// This is the the longer way to write the 1-liner in the else clause
 
 	/* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
-	LatticeColorMatrix tmp_0 = shift(u[nu],FORWARD,mu) * adj(shift(u[mu],FORWARD,nu));
+	Q tmp_0 = shift(u[nu],FORWARD,mu) * adj(shift(u[mu],FORWARD,nu));
 
 	/* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
-	LatticeColorMatrix tmp_1 = tmp_0 * adj(u[nu]);
+	Q tmp_1 = tmp_0 * adj(u[nu]);
 
 	/* tmp = sum(tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu))) */
 	Double tmp = sum(real(trace(u[mu]*tmp_1)));
@@ -80,17 +80,6 @@ namespace Chroma
     END_CODE();
   }
 
-  void MesPlq(const multi1d<LatticeColorMatrixF3>& u, 
-	      multi2d<Double>& plane_plaq, Double& link) 
-  {
-      MesPlq_t(u,plane_plaq, link);
-  }
-
-  void MesPlq(const multi1d<LatticeColorMatrixD3>& u, 
-	      multi2d<Double>& plane_plaq, Double& link)
-  {
-      MesPlq_t(u,plane_plaq, link);
-  }
 
   //! Return the value of the average plaquette normalized to 1
   /*!
@@ -104,7 +93,7 @@ namespace Chroma
    * \param link        space-time average link (Write)
    */
   template<typename Q>
-  void MesPlq_t(const multi1d<Q>& u, 
+  void MesPlq(const multi1d<Q>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, 
 	      multi2d<Double>& plane_plaq,
 	      Double& link)
@@ -143,21 +132,6 @@ namespace Chroma
     END_CODE();
   }
 
-  void MesPlq(const multi1d<LatticeColorMatrixF3>& u, 
-	      Double& w_plaq, Double& s_plaq, Double& t_plaq, 
-	      multi2d<Double>& plane_plaq,
-	      Double& link) 
-  {
-     MesPlq_t(u,w_plaq,s_plaq,t_plaq, plane_plaq, link);
-  }
-
-  void MesPlq(const multi1d<LatticeColorMatrixD3>& u, 
-	      Double& w_plaq, Double& s_plaq, Double& t_plaq, 
-	      multi2d<Double>& plane_plaq,
-	      Double& link)
-  {
-     MesPlq_t(u,w_plaq,s_plaq,t_plaq, plane_plaq, link);
-  }
 
   //! Return the value of the average plaquette normalized to 1
   /*!
@@ -170,29 +144,6 @@ namespace Chroma
    * \param link        space-time average link (Write)
    */
 
-  void MesPlq(const multi1d<LatticeColorMatrixF3>& u, 
-	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link)
-  {
-    START_CODE();
-
-    multi2d<Double> plane_plaq;
-
-    MesPlq(u, w_plaq, s_plaq, t_plaq, plane_plaq, link);
-
-    END_CODE();
-  }
- 
-  void MesPlq(const multi1d<LatticeColorMatrixD3>& u, 
-	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link)
-  {
-    START_CODE();
-
-    multi2d<Double> plane_plaq;
-
-    MesPlq(u, w_plaq, s_plaq, t_plaq, plane_plaq, link);
-
-    END_CODE();
-  }
 
   //! Print the value of the average plaquette normalized to 1
   /*!
@@ -203,7 +154,7 @@ namespace Chroma
    * \param u          gauge field (Read)
    */
   template<typename Q>
-  void MesPlq_t(XMLWriter& xml, 
+  void MesPlq(XMLWriter& xml, 
 	        const std::string& xml_group,
 	        const multi1d<Q>& u)
   {
@@ -264,18 +215,49 @@ namespace Chroma
     END_CODE();
   }
 
- void MesPlq(XMLWriter& xml, 
-	     const std::string& xml_group,
-	     const multi1d<LatticeColorMatrixF3>& u)
- {
-   MesPlq_t(xml, xml_group, u);
- }
+  // ***** Instantiate templates for needed types *******
 
- void MesPlq(XMLWriter& xml, 
+  template void MesPlq(const multi1d<LatticeColorMatrix>& u, 
+		       multi2d<Double>& plane_plaq, Double& link);
+#if DEFAULT_PRECISION!=64 && QDP_NC==3
+  template void MesPlq(const multi1d<LatticeColorMatrixD3>& u, 
+		       multi2d<Double>& plane_plaq, Double& link);
+#endif
+
+  template void MesPlq(const multi1d<LatticeColorMatrix>& u,
+		       Double& w_plaq, Double& s_plaq, Double& t_plaq, 
+		       multi2d<Double>& plane_plaq,
+		       Double& link);
+#if DEFAULT_PRECISION!=64 && QDP_NC==3
+  template void MesPlq(const multi1d<LatticeColorMatrixD3>& u, 
+		       Double& w_plaq, Double& s_plaq, Double& t_plaq, 
+		       multi2d<Double>& plane_plaq,
+		       Double& link);
+#endif
+
+  template<typename Q>
+  void MesPlq(const multi1d<Q>& u, 
+	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link)
+  {
+    START_CODE();
+    multi2d<Double> plane_plaq;
+    MesPlq(u, w_plaq, s_plaq, t_plaq, plane_plaq, link);
+    END_CODE();
+  }
+  template void MesPlq(const multi1d<LatticeColorMatrix>& u, 
+	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link);
+#if DEFAULT_PRECISION!=64 && QDP_NC==3
+  template void MesPlq(const multi1d<LatticeColorMatrixD3>& u, 
+	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link);
+#endif
+
+  template void MesPlq(XMLWriter& xml, 
+		       const std::string& xml_group,
+		       const multi1d<LatticeColorMatrix>& u);
+#if DEFAULT_PRECISION!=64 && QDP_NC==3
+  template void MesPlq(XMLWriter& xml, 
 	        const std::string& xml_group,
-	        const multi1d<LatticeColorMatrixD3>& u)
- {
-   MesPlq_t(xml, xml_group, u);
- }
+		       const multi1d<LatticeColorMatrixD3>& u);
+#endif
 
 }  // end namespace Chroma
