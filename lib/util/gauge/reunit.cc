@@ -314,7 +314,7 @@ namespace Chroma {
 	    for(int c = 0; c < Nc; ++c)
 	      (a[c][0])[mstag] *= t3;
 	    
-	    /* Do Gramm-Schmidt on the remaining rows */
+	    /* Apply Gram-Schmidt to the remaining rows */
 	    for(int j = 1; j < Nc; j++ )
 	      {
 		for(int i = 0; i < j; i++ )
@@ -359,14 +359,14 @@ namespace Chroma {
 		    sigmasq[mstag] += pow(1-t1,2);
 		  }
 	      }
-	    
+
 	    /* Now we have a unitary matrix. We need to multiply the last
 	       row with a phase to make the determinant 1. */
 	    /* We compute the determinant by LU decomposition */
 	    for(int j = 0; j < Nc; j++)
 	      for(int i = 0; i < Nc; i++)
 		(b[j][i])[mstag] = a[j][i];
-	    
+
 	    for(int j = 0; j < Nc; j++)
 	      {
 		for(int i = 0; i <= j; i++)
@@ -377,7 +377,7 @@ namespace Chroma {
 		    
 		    (b[j][i])[mstag] = t2;
 		  }
-		
+
 		for(int i = (j+1); i < Nc; i++)
 		  {
 		    t2[mstag] = b[j][i];
@@ -387,19 +387,20 @@ namespace Chroma {
 		    (b[j][i])[mstag] = adj(b[j][j]) * t2 / localNorm2(b[j][j]);
 		  }
 	      }
-	    
+
 	    /* The determinant */
 	    t2[mstag] = b[0][0] * b[1][1];
 	    for(int c = 2; c < Nc; c++)
 	      t2[mstag] *= b[c][c];
-	    
-	    /* The phase of the determinant */
-	    t4[mstag] = atan2(imag(t2), real(t1));
-	    t2[mstag] = cmplx(cos(t4), -sin(t4));
+
+	    /* Apply the phase correction to the last row.
+	     * Normalize the correction, since the matrix
+	     * rows are already normalized. */
+	    t2[mstag] = adj(t2)/sqrt(localNorm2(t2));
 	    for(int c = 0; c < Nc; ++c)
 	      (a[c][Nc-1])[mstag] *= t2;
-	    
-            
+
+
 	    /* Now, do various things depending on the input flag. */
 	    /* For use later, finish calculating the mean squared deviation */
 	    if ( ruflag == REUNITARIZE_ERROR ||
