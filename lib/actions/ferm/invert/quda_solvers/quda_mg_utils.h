@@ -219,9 +219,13 @@ namespace Chroma {
 
 				if (ip.check_multigrid_setup == true ) {
 					mg_param.run_verify = QUDA_BOOLEAN_YES;
+					mg_param.run_low_mode_check = QUDA_BOOLEAN_NO;
+					mg_param.run_oblique_proj_check = QUDA_BOOLEAN_NO;
 				}
 				else {
 					mg_param.run_verify = QUDA_BOOLEAN_NO;
+					mg_param.run_low_mode_check = QUDA_BOOLEAN_NO;
+					mg_param.run_oblique_proj_check = QUDA_BOOLEAN_NO;
 				}
 
 				for (int i=0; i<mg_param.n_level-1; ++i) { 
@@ -383,6 +387,9 @@ namespace Chroma {
 						QDP_abort(1);
 						break;
 					}
+					
+					mg_param.vec_infile[i][0] = '\0';
+					mg_param.vec_outfile[i][0] = '\0';
 				}
 				mg_param.setup_type = QUDA_NULL_VECTOR_SETUP;
 				mg_param.pre_orthonormalize = QUDA_BOOLEAN_NO;
@@ -398,8 +405,6 @@ namespace Chroma {
 						: QUDA_COMPUTE_NULL_VECTOR_NO;
 				mg_param.generate_all_levels = ip.generate_all_levels ? QUDA_BOOLEAN_YES
 						: QUDA_BOOLEAN_NO;
-				mg_param.vec_infile[0] = '\0';
-				mg_param.vec_outfile[0] = '\0';
 				QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
 			}
 			// setup the multigrid solver

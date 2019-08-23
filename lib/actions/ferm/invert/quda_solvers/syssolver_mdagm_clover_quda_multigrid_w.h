@@ -481,7 +481,16 @@ public:
 #endif
 
 		quda_inv_param.omega = toDouble(ip.relaxationOmegaOuter);
-
+		
+		if(invParam.CloverParams.twisted_m_usedP == true){
+			quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
+			if(invParam.asymmetricP){
+				quda_inv_param.mu = -toDouble(invParam.CloverParams.twisted_m);
+			}else{
+				// 2 to match the convention in Quda, no special meaning
+				quda_inv_param.mu = -2.0 * toDouble(invParam.CloverParams.twisted_m);
+			}
+		}
 // Copy ThresholdCount from invParams into threshold_counts.
 threshold_counts = invParam.ThresholdCount;
 
