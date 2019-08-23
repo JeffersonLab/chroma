@@ -189,8 +189,8 @@ TEST_F(QudaFixture, TestUnprecTwistedMatDispatchZeroTwist)
 	quda_inv_param.solution_type = QUDA_MAT_SOLUTION;
 	quda_inv_param.matpc_type = QUDA_MATPC_INVALID;
 	quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
-	quda_inv_param.m5 = 0.0;
-	QDPIO::cout << "Twist is " << quda_inv_param.m5 << std::endl;
+	quda_inv_param.mu = 0.0;
+	QDPIO::cout << "Twist is " << quda_inv_param.mu << std::endl;
 	for(int dagger = 0; dagger < 2; ++dagger) {
 
 		enum PlusMinus isign = ( dagger == 0 ) ? PLUS : MINUS;
@@ -245,12 +245,12 @@ TEST_F(QudaFixture, TestUnprecTwistedMatDispatchNonZeroTwist)
 	p.twisted_m = Real(0.2345);
 
 	// There is a normalization difference with a sign of -4
-	quda_inv_param.m5 =-4*toDouble(p.twisted_m);
+	quda_inv_param.mu =-4*toDouble(p.twisted_m);
 
 
 	UnprecCloverPlusIG5MuA2Linop M_u_tw(state,p);
 
-	QDPIO::cout << "Twist is " << quda_inv_param.m5 << std::endl;
+	QDPIO::cout << "Twist is " << quda_inv_param.mu << std::endl;
 	for(int dagger = 0; dagger < 2; ++dagger) {
 
 		enum PlusMinus isign = ( dagger == 0 ) ? PLUS : MINUS;
@@ -294,9 +294,9 @@ TEST_F(QudaFixture, TestPrecTwistedAsymmMatZeroTwist)
 	quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
 
 	// There is a normalization difference with a sign of -4
-	quda_inv_param.m5 = 0;
+	quda_inv_param.mu = 0;
 
-	QDPIO::cout << "Twist is " << quda_inv_param.m5 << std::endl;
+	QDPIO::cout << "Twist is " << quda_inv_param.mu << std::endl;
 	for(int dagger = 0; dagger < 2; ++dagger) {
 
 		enum PlusMinus isign = ( dagger == 0 ) ? PLUS : MINUS;
@@ -333,6 +333,7 @@ TEST_F(QudaFixture, TestPrecTwistedAsymmMatNonZeroTwist)
 {
 	auto the_quda_solver = getSolver();
 	auto quda_inv_param = the_quda_solver.getQudaInvertParam();
+	quda_inv_param.verbosity = QUDA_DEBUG_VERBOSE;
 	quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
 	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
 	quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
@@ -340,9 +341,9 @@ TEST_F(QudaFixture, TestPrecTwistedAsymmMatNonZeroTwist)
 	Real twist = Real(0.2345);
 
 	// There is a normalization difference with a sign of -4
-	quda_inv_param.m5 = -toDouble(twist);
+	quda_inv_param.mu = -toDouble(twist);
 
-	QDPIO::cout << "Twist is " << quda_inv_param.m5 << std::endl;
+	QDPIO::cout << "Twist is " << quda_inv_param.mu << std::endl;
 
 	TwistedShiftedLinOp<T, P, Q, EvenOddPrecLinearOperator> M_shifted(*M_asymm, twist);
 
@@ -389,9 +390,9 @@ TEST_F(QudaFixture, TestPrecTwistedMatZeroTwist)
 	quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
 
 	// There is a normalization difference with a sign of -4
-	quda_inv_param.m5 = 0;
+	quda_inv_param.mu = 0;
 
-	QDPIO::cout << "Twist is " << quda_inv_param.m5 << std::endl;
+	QDPIO::cout << "Twist is " << quda_inv_param.mu << std::endl;
 	for(int dagger = 0; dagger < 2; ++dagger) {
 
 		enum PlusMinus isign = ( dagger == 0 ) ? PLUS : MINUS;
@@ -435,9 +436,9 @@ TEST_F(QudaFixture, TestPrecTwistedMatNonZeroTwist)
 
 	Real twist = Real(0.2345);
 	// There is a normalization difference with a sign of -4
-	quda_inv_param.m5 = -2.0*toDouble(twist);
+	quda_inv_param.mu = -2.0*toDouble(twist);
 
-	QDPIO::cout << "Twist is " << quda_inv_param.m5 << std::endl;
+	QDPIO::cout << "Twist is " << quda_inv_param.mu << std::endl;
 
 	TwistedShiftedLinOp<T, P, Q, SymEvenOddPrecLogDetLinearOperator> M_shifted(*M_symm, twist);
 
@@ -484,9 +485,9 @@ TEST_F(QudaFixture, TestSymmPrecTwistedNonZeroTwistMdagM)
 
 	Real twist = Real(0.2345);
 	// There is a normalization difference with a sign of -4
-	quda_inv_param.m5 = -2.0*toDouble(twist);
+	quda_inv_param.mu = -2.0*toDouble(twist);
 
-	QDPIO::cout << "Twist is " << quda_inv_param.m5 << std::endl;
+	QDPIO::cout << "Twist is " << quda_inv_param.mu << std::endl;
 
 	TwistedShiftedLinOp<T, P, Q, SymEvenOddPrecLogDetLinearOperator> M_shifted(*M_symm, twist);
 
@@ -532,9 +533,9 @@ TEST_F(QudaFixture, TestAsymmPrecTwistedNonZeroTwistMdagM)
 
 	Real twist = Real(0.2345);
 	// There is a normalization difference with a sign of -4
-	quda_inv_param.m5 = -toDouble(twist);
+	quda_inv_param.mu = -toDouble(twist);
 
-	QDPIO::cout << "Twist is " << quda_inv_param.m5 << std::endl;
+	QDPIO::cout << "Twist is " << quda_inv_param.mu << std::endl;
 
 	TwistedShiftedLinOp<T, P, Q, EvenOddPrecLinearOperator> M_shifted(*M_asymm, twist);
 
