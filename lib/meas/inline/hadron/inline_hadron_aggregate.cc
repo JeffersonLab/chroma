@@ -85,6 +85,10 @@
 //#include "meas/inline/hadron/inline_stoch_laph_quark_w.h"
 //#include "meas/inline/hadron/inline_stoch_laph_baryon_w.h"
 
+#if defined(BUILD_HADRON_OPT)
+#include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_opt_w.h"
+#endif
+
 #include "meas/inline/hadron/inline_barspec_db_w.h"
 
 // Grab all fermacts to make sure they are registered
@@ -166,6 +170,9 @@ namespace Chroma
 #endif
 #ifndef QDP_IS_QDPJIT
 	success &= InlinePropAndMatElemDistillation2Env::registerAll();
+#endif
+#if defined(BUILD_HADRON_OPT)
+        success &= InlineUnsmearedHadronNodeDistillationOptEnv::registerAll();
 #endif
 	success &= InlinePropMatElemLowMemoryColorVecEnv::registerAll();
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();

@@ -4,7 +4,7 @@
   <InlineMeasurements>
 
     <elem>
-      <Name>UNSMEARED_HADRON_NODE_DISTILLATION</Name>
+      <Name>UNSMEARED_HADRON_NODE_DISTILLATION_OPT</Name>
       <Frequency>1</Frequency>
       <Param>
         <!-- List of displacement arrays -->
@@ -826,12 +826,12 @@
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_files><elem>./colorvec.mod</elem></colorvec_files>
-        <dist_op_file>unsmeared_meson.sdb</dist_op_file>
+        <dist_op_file>unsmeared_genprop.sdb</dist_op_file>
       </NamedObject>
     </elem>
 
     <elem>
-      <Name>UNSMEARED_HADRON_NODE_DISTILLATION</Name>
+      <Name>UNSMEARED_HADRON_NODE_DISTILLATION_OPT</Name>
       <Frequency>1</Frequency>
       <Param>
         <!-- List of displacement arrays -->
@@ -1653,7 +1653,7 @@
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_files><elem>./colorvec.mod</elem></colorvec_files>
-        <dist_op_file>unsmeared_meson.sdb</dist_op_file>
+        <dist_op_file>unsmeared_genprop.sdb</dist_op_file>
       </NamedObject>
     </elem>
 

@@ -81,6 +81,12 @@ AM_LDFLAGS += @QPHIX_LDFLAGS@
 LDADD += @QPHIX_LIBS@
 endif
 
+if BUILD_HADRON
+AM_CXXFLAGS += @HADRON_CXXFLAGS@
+AM_LDFLAGS  += @HADRON_LDFLAGS@
+LDADD += @HADRON_LIBS@
+endif
+
 #
 # Local Headers
 #
@@ -250,10 +256,10 @@ endif
 
 if BUILD_GTEST
 check_PROGRAMS += t_inv_fgmres_dr  t_symm_prec
-	
+
 t_inv_fgmres_dr_SOURCES = t_inv_fgmres_dr.cc chroma_gtest_env.h \
 	fgmres_dr_tests.cc
-	
+
 t_symm_prec_SOURCES = t_symm_prec.cc chroma_gtest_env.h \
 	symm_prec_xml.h symm_prec_tests.cc
 endif

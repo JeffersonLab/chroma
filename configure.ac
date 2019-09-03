@@ -26,9 +26,6 @@ dnl
 dnl --with-xxxx and --enable-xxxx switches 
 dnl
 
-dnl George T. Fleming, 12 February 2003
-dnl Complete rewrite of configure switches based on new config scripts.
-
 dnl --with-qdp=DIR
 AC_ARG_WITH(qdp,
   AC_HELP_STRING(
@@ -421,6 +418,48 @@ if test "X${QDPCVER_HOME}X" = "XX" ; then
 else
   AC_SUBST(QDPC_DIR, "${QDPCVER_HOME}")
 fi
+
+
+
+##################################
+# Build optimized peram routine
+dnl --with-hadron=DIR
+##################################
+AC_ARG_WITH(hadron,
+   AC_HELP_STRING(
+    [--with-hadron=<DIR>],
+    [Building on top of HADRON where HADRON is installed in DIR]
+   ),
+   [ hadron_enabled="yes"
+     HADRON_HOME="$with_hadron"],
+   [ hadron_enabled="no" ]
+)
+
+
+if test "X${HADRON_HOME}X" = "XX" ; then
+  AC_PATH_PROG(HADRON_CONFIG, [hadron-config], [])
+else
+  AC_PATH_PROG(HADRON_CONFIG, [hadron-config], [], [${HADRON_HOME}/bin:${PATH}])
+fi
+
+if test "X${HADRON_CONFIG}X" = "XX" ; then
+  AC_MSG_NOTICE([HADRON configuration program hadron-config not found.])
+  AC_SUBST(HADRON_CXXFLAGS, "")
+  AC_SUBST(HADRON_LDFLAGS,  "")
+  AC_SUBST(HADRON_LIBS,  "")
+else
+  AC_MSG_NOTICE([Will configure using HADRON for optimization.])
+  AC_MSG_NOTICE([Found HADRON configuration program ${HADRON_CONFIG}])
+  AC_SUBST(HADRON_CXXFLAGS, "`${HADRON_CONFIG} --cxxflags`")
+  AC_MSG_NOTICE([HADRON compile flags: ${HADRON_CXXFLAGS}])
+  AC_SUBST(HADRON_LDFLAGS,  "`${HADRON_CONFIG} --ldflags`")
+  AC_MSG_NOTICE([HADRON linking flags: ${HADRON_LDFLAGS}])
+  AC_SUBST(HADRON_LIBS,     "`${HADRON_CONFIG} --libs`")
+  AC_MSG_NOTICE([HADRON libraries flags: ${HADRON_LIBS}])
+  AC_DEFINE([BUILD_HADRON_OPT],[], [Build optimized routines using HADRON])
+fi
+
+AM_CONDITIONAL(BUILD_HADRON, [test "x${hadron_enabled}x" = "xyesx" ])
 
 
 ###########

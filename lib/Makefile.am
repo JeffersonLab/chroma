@@ -1049,6 +1049,9 @@ if BUILD_MGPROTO
 AM_CXXFLAGS += @MGPROTO_CXXFLAGS@
 endif
 
+if BUILD_HADRON
+AM_CXXFLAGS += @HADRON_CXXFLAGS@
+endif
 
 lib_LIBRARIES = libchroma.a
 
@@ -1894,6 +1897,12 @@ libchroma_a_SOURCES += \
 #
 # Hooks for optimized code
 #
+if BUILD_HADRON
+nobase_include_HEADERS += meas/inline/hadron/inline_unsmeared_hadron_node_distillation_opt_w.h
+libchroma_a_SOURCES += meas/inline/hadron/inline_unsmeared_hadron_node_distillation_opt_w.cc
+endif
+
+
 if BUILD_SSE_WILSON_DSLASH
 nobase_include_HEADERS += \
         actions/ferm/linop/lwldslash_w_sse.h \
@@ -2037,6 +2046,7 @@ nobase_include_HEADERS +=
 
 libchroma_a_SOURCES += actions/ferm/invert/bicgstab_kernels_scalarsite.cc
 endif
+
 
 #
 # Staggered specific sources
