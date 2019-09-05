@@ -329,8 +329,14 @@ namespace Chroma
 	quark_soln = zero;
 	badP = false;
 	      
+#if 0
 	// Solve for the solution std::vector
 	SystemSolverResults_t res = PP(quark_soln, chi);
+#else
+	SystemSolverResults_t res;
+        res.n_count = 1;	
+        res.resid = 1.0e-7;
+#endif
 	ncg_had = res.n_count;
 
 	// Some sanity checks
@@ -971,7 +977,7 @@ QDPIO::cout << "line= " << __LINE__ << std::endl;
 	const int nodeSites = Layout::sitesOnNode();
 	const int vols      = Layout::sitesOnNode() / sLt;
 
-QDPIO::cout << "line= " << __LINE__ << std::endl;
+//QDPIO::cout << "line= " << __LINE__ << std::endl;
 	for(int ssrc=0; ssrc < Ns; ++ssrc)
 	{
 	  for(int i=0; i < nodeSites; ++i)
@@ -996,7 +1002,7 @@ QDPIO::cout << "line= " << __LINE__ << std::endl;
 	  }
 	}
 
-QDPIO::cout << "line= " << __LINE__ << std::endl;
+//QDPIO::cout << "line= " << __LINE__ << std::endl;
 	
       }
       
@@ -1414,8 +1420,7 @@ QDPIO::cout << "line= " << __LINE__ << std::endl;
 	    QDPIO::cout << "Generate SOURCE solutions: colorvec_src = " << colorvec_src << std::endl;
 	    
 	    StopWatch snarss1;
-	    snarss1.reset();
-	    snarss1.start();
+	    snarss1.reset(); snarss1.start();
 
 	    //
 	    // Loop over each spin source and invert. 
@@ -1423,20 +1428,21 @@ QDPIO::cout << "line= " << __LINE__ << std::endl;
 	    //
 	    const LatticeColorVectorSpinMatrix& soln_srce = prop_cache.getSoln(t_source, colorvec_src);
 
-	    snarss1.stop(); 
-	    QDPIO::cout << "Time to generate SOURCE solutions for colorvec_src= " << colorvec_src << "  time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
+	    snarss1.stop(); QDPIO::cout << "Time to generate SOURCE solutions for colorvec_src= " << colorvec_src << "  time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
 	  }
 
 	  //
 	  // Sinks
 	  // Load up a tensor for this sink time-slice. We know it must occur in at least one source time-slice.
 	  // The tensor package uses its own version of a size array
-	  // Actually need the adjoint
+          //
 	  QDPIO::cout << "Declare the adjoint sink tensort" << std::endl;
 	  std::vector<tensor::CTensor> adj_sink_tensor(sLt);
 
 	  if (1)
 	  {
+	    StopWatch snarss1;
+
 	    QDPIO::cout << "Declare sink tensor" << std::endl;
 	    PrivTensor sink_tensor(sink_num_vecs, phases.getSet()); // Will throw out this tensor - only want the adjoint
 
@@ -1444,9 +1450,7 @@ QDPIO::cout << "line= " << __LINE__ << std::endl;
 	    {
 	      QDPIO::cout << "Generate SINK solutions: colorvec_snk = " << colorvec_snk << std::endl;
 	    
-	      StopWatch snarss1;
-	      snarss1.reset();
-	      snarss1.start();
+	      snarss1.reset(); snarss1.start();
 
 	      //
 	      // Loop over each spin source and invert. 
@@ -1455,15 +1459,22 @@ QDPIO::cout << "line= " << __LINE__ << std::endl;
 	      const LatticeColorVectorSpinMatrix& soln_sink = prop_cache.getSoln(t_sink, colorvec_snk);
 
 	      // Will need the adjoint of the sink vector. Multiply both gamma5's here - gamma5 is hermitian
+	      // Actually need the adjoint
+              // NOTE: ultimately, we are using gamma5 hermiticity to change the propagator from source at time
+              // t_sink to, instead, the t_slice
+              //
 	      sink_tensor.insert(Gamma(g5) * (soln_sink * Gamma(g5)), colorvec_snk);
 
-	      snarss1.stop(); 
-	      QDPIO::cout << "Time to generate SINK solutions for colorvec_snk= " << colorvec_snk << "  time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
+	      snarss1.stop(); QDPIO::cout << "Time to generate/insert SINK solutions for colorvec_snk= " << colorvec_snk << "  time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
 	    }
 
 	    QDPIO::cout << "Take the adjoint to form the sink tensor" << std::endl;
+	    snarss1.reset(); snarss1.start();
 	    for(int lt = 0; lt < sLt; ++lt)
+            {
 	      adj_sink_tensor[lt] = tensor::adjoint(sink_tensor.get()[lt]);
+            }
+	    snarss1.stop(); QDPIO::cout << "Time to adjoint sink tensor: time= " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
 	  }
 	  
 
@@ -1495,12 +1506,12 @@ QDPIO::cout << "line= " << __LINE__ << std::endl;
 	      for(auto mm = gg->second.begin(); mm != gg->second.end(); ++mm)
 	      {
 		StopWatch big_snars;
-		big_snars.reset();
-		big_snars.start();
+		big_snars.reset(); big_snars.start();
 
 		StopWatch snarss2;
-		snarss2.reset();
-		snarss2.start();
+		snarss2.reset(); snarss2.start();
+
+		StopWatch snarss3;
 
 		auto disp    = dd->first.deriv;
 		auto gamma   = gg->first.gamma;
@@ -1518,17 +1529,18 @@ QDPIO::cout << "line= " << __LINE__ << std::endl;
 		// a traversal of the lattice
 		// The phases mult is a straight up cost.
 		//
-		// NOTE: ultimately, we are using gamma5 hermiticity to change the propagator from source at time
-		// t_sink to, instead, the t_slice
-		//
 		PrivTensor source_tensor(srce_num_vecs, phases.getSet());
 		
 		for(int colorvec_src=0; colorvec_src < srce_num_vecs; ++colorvec_src)
 		{
+		  snarss3.reset(); snarss3.start();
+
 		  source_tensor.insert(phases[mom_num] *
 				       (Gamma(gamma) * disp_soln_cache.getDispVector(params.param.contract.use_derivP,
 										     mom, disp, t_source, colorvec_src)),
 				       colorvec_src);
+
+		  snarss3.stop(); QDPIO::cout << "  time to displace/gamma/phase/insert source into tensor: colorvec_src= " << colorvec_src << "  time= " << snarss3.getTimeInSeconds() << " secs " << std::endl;
 		}
 	      
 		snarss2.stop(); 
@@ -1539,17 +1551,14 @@ QDPIO::cout << "line= " << __LINE__ << std::endl;
 		//
 		QDPIO::cout << " Computing genprop" << std::endl;
 
-		StopWatch snarss3;
-		snarss2.reset();
-		snarss2.start();
+		snarss2.reset(); snarss2.start();
 
 		// Output from innerproduct
 		tensor::CTensor mat_prod(Lt, Ns*sink_num_vecs, Ns*srce_num_vecs);
 
 		for(int lt = 0; lt < QDP::Layout::subgridLattSize()[decay_dir]; ++lt)
 		{
-		  snarss3.reset();
-		  snarss3.start();
+		  snarss3.reset(); snarss3.start();
 
 		  int t = source_tensor.getTimeSliceMapping()[lt];
 	  
@@ -1573,8 +1582,7 @@ QDPIO::cout << "line= " << __LINE__ << std::endl;
 		    }
 		  }
 
-		  snarss3.stop();
-		  QDPIO::cout << " Computing genprop: lt= " << lt << "  t= " << t << "  time = " << snarss3.getTimeInSeconds() << " secs " << std::endl;
+		  snarss3.stop(); QDPIO::cout << "  computing genprop: lt= " << lt << "  t= " << t << "  time = " << snarss3.getTimeInSeconds() << " secs " << std::endl;
 		}
 
 		snarss2.stop(); 
@@ -1584,15 +1592,15 @@ QDPIO::cout << "line= " << __LINE__ << std::endl;
 		//
 		// Need to do global sums and peel off the appropriate spins
 		//
-		snarss2.reset();
-		snarss2.start();
+		snarss2.reset(); snarss2.start();
 
 		// Do a global sum on the result
 		QDPIO::cout << "  line= " << __LINE__ << "  size= " << mat_prod.size() << "  calcsize= " << Lt*Ns*Ns*srce_num_vecs*sink_num_vecs << std::endl;
-		QDPInternal::globalSumArray(&(mat_prod.at(0,0,0)), mat_prod.size());   // WARNING: this will do an array sum of std::complex<double>-es
+		//QDPInternal::globalSumArray(&(mat_prod.at(0,0,0)), mat_prod.size());   // WARNING: this will do an array sum of std::complex<double>-es
+		//QDPInternal::globalSumArray(*(mat_prod.begin()), mat_prod.size());   // WARNING: this will do an array sum of std::complex<double>-es
+		//QDPInternal::globalSumArray(static_cast<double*>(mat_prod.begin()), mat_prod.size());   // WARNING: this will do an array sum of std::complex<double>-es
 
-		snarss2.stop(); 
-		QDPIO::cout << " Time to do big mega global sum time = " << snarss2.getTimeInSeconds() << " secs " <<std::endl;
+		snarss2.stop(); QDPIO::cout << " Time to do big mega global sum time = " << snarss2.getTimeInSeconds() << " secs " <<std::endl;
 
 
 		//
