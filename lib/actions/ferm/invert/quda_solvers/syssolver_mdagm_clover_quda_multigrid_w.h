@@ -654,16 +654,41 @@ QDPIO::cout << solver_string << " init_time = "
 
 		// Y solve at 0.5 * Target Residuum -- Evan's bound
 		quda_inv_param.tol = toDouble(Real(0.5)*invParam.RsdTarget);
+		
+		// For twisted-Hasenbusch operator, we have
+		//    asymmetric: M_a(mu) = A_oo - kappa^2 D_oe A^{-1}_ee D_eo - i*mu*gamma5
+		//    symmetric:  M_s(mu) = 1 - kappa^2 A^{-1}_oo D_oe A^{-1}_ee D_eo - i*mu*gamma5*A_oo
+		//    
+		//    NOTE: both M_a(mu) and M_s(mu) are not gamma5 hermitian,
+		//    and current Quda just support the multigrid solver for symmetric preconditioned
+		//    linear operator M, not Mdag
+		//
+		// To solve MdagM X = chi, use two step solver
+		// 1). solve Mdag Y = chi with M_s^\dagger(mu) = gamma5 A_oo M_s(-mu) A^{-1}_oo gamma5,
+		//     therefore we need to solve the M_s(-mu) Y' = chi' system just by flip the sign of twisted term 
+		//     in Quda's multigrid parameter
+		// 2). Y = A_oo gamma5 Y', then flip back to solve M_s(mu) X = Y
+		//
+
 		if( invParam.asymmetricP == true ) {
-			res1 = qudaInvert(*clov,
+			if(quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH){
+				QDPIO::cout<<"Multigrid solver for asymmetric preconditioned twisted-Hasenbusch operator not yet implemented!\n";
+				QDP_abort(1);
+			}else{
+				res1 = qudaInvert(*clov,
 					*invclov,
 					g5chi,
 					Y_prime);
-			Y[rb[1]] = Gamma(Nd*Nd -1)*Y_prime;
+				Y[rb[1]] = Gamma(Nd*Nd -1)*Y_prime;
+			}
 		}
 		else {
 			T tmp = zero;
 			invclov->apply(tmp,g5chi,MINUS,1);
+
+			if(quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
+				// flip the sign of twisted term to solve the Mdag Y = chi' system
+				quda_inv_param.mu = 2.0 * toDouble(invParam.CloverParams.twisted_m);
 
 			res1 = qudaInvert(*clov,
 						*invclov,
@@ -839,6 +864,9 @@ QDPIO::cout << solver_string << " init_time = "
 		quda_inv_param.tol = toDouble(invParam.RsdTarget);
 		X_solve_timer.start();
 		// Solve for psi
+		if(quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
+			// flip back the twisted term to solve M X = Y system
+			quda_inv_param.mu = -2.0 * toDouble(invParam.CloverParams.twisted_m);
 		res2 = qudaInvert(*clov,
 				*invclov,
 				Y,
@@ -1078,16 +1106,23 @@ QDPIO::cout << solver_string << " init_time = "
 		T g5chi = zero;
 		g5chi[rb[1]]= Gamma(Nd*Nd-1)*chi;
 		if( invParam.asymmetricP == true ) {
-			res1 = qudaInvert(*clov,
+			if(quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH){
+				QDPIO::cout<<"Multigrid solver for asymmetric preconditioned twisted-Hasenbusch operator not yet implemented!\n";
+				QDP_abort(1);
+			}else{
+				res1 = qudaInvert(*clov,
 					*invclov,
 					g5chi,
 					Y_prime);
-			Y[rb[1]] = Gamma(Nd*Nd -1)*Y_prime;
+				Y[rb[1]] = Gamma(Nd*Nd -1)*Y_prime;
+			}
 		}
 		else {
 			T tmp = zero;
 			invclov->apply(tmp,g5chi,MINUS,1);
 
+			if(quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
+				quda_inv_param.mu = 2.0 * toDouble(invParam.CloverParams.twisted_m);
 			res1 = qudaInvert(*clov,
 						*invclov,
 						tmp,
@@ -1274,6 +1309,8 @@ QDPIO::cout << solver_string << " init_time = "
 		//psi[A->subset()]=zero;
 		psi = zero;
 		// Solve for psi
+		if(quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
+			quda_inv_param.mu = -2.0 * toDouble(invParam.CloverParams.twisted_m);
 		res2 = qudaInvert(*clov,
 				*invclov,
 				Y,
