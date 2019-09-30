@@ -67,6 +67,11 @@ MGProtoSolverParams::MGProtoSolverParams(XMLReader& xml, const std::string& path
 	read( paramtop, "OuterSolverRsdTarget", OuterSolverRsdTarget);
 	read( paramtop, "OuterSolverMaxIters", OuterSolverMaxIters);
 	read( paramtop, "OuterSolverVerboseP", OuterSolverVerboseP);
+    if( paramtop.count("RsdToleranceFactor") > 0 ) {
+        read(paramtop, "RsdToleranceFactor", RsdToleranceFactor);
+    } else {
+        RsdToleranceFactor = 10;
+    }
 
 	read( paramtop, "VCyclePreSmootherMaxIters", VCyclePreSmootherMaxIters, MGLevels-1);
 	read( paramtop, "VCyclePreSmootherRsdTarget", VCyclePreSmootherRsdTarget, MGLevels-1);

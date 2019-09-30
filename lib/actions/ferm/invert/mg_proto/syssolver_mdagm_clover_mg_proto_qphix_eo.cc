@@ -187,7 +187,7 @@ namespace Chroma
                 Double n2rel = n2 / norm2(chi, s);
                 QDPIO::cout << "MG_PROTO_QPHIX_EO_CLOVER_INVERTER: iters = "
                     << res1.n_count + res2.n_count << " rel resid = " << sqrt(n2rel) << std::endl;
-                if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget ) ) {
+                if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget * invParam.RsdToleranceFactor ) ) {
                     QDPIO::cout<<"Error in MG_PROTO convergence, retrying..."<<std::endl;
                     solution_good = false;
                 }
@@ -254,7 +254,7 @@ namespace Chroma
                     Double n2 = norm2(tmp1, s);
                     Double n2rel = n2 / norm2(chi, s);
                     QDPIO::cout << "MG_PROTO_QPHIX_EO_CLOVER_INVERTER: iters = "<< res1.n_count + res2.n_count<< " rel resid = " << sqrt(n2rel) << std::endl;
-                    if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget ) ) {
+                    if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget * invParam.RsdToleranceFactor ) ) {
                         QDPIO::cout<<"Error in MG_PROTO convergence, exiting"<<std::endl;
                         MGSolverException convergence_fail(invParam.CloverParams.Mass,
                                 subspaceId,
