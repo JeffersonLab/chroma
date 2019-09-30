@@ -58,7 +58,7 @@ namespace Chroma
  */
   using namespace QPhiXVecTraits;
 
-  template<typename T, typename U>  
+  template<typename T, typename U>
   class MdagMSysSolverQPhiXClover : public MdagMSystemSolver<T>
   {
   public:
@@ -68,7 +68,7 @@ namespace Chroma
     typedef typename QPhiX::Geometry<REALT,VecTraits<REALT>::Vec,VecTraits<REALT>::Soa,VecTraits<REALT>::compress12>::SU3MatrixBlock QPhiX_Gauge;
     typedef typename QPhiX::Geometry<REALT,VecTraits<REALT>::Vec,VecTraits<REALT>::Soa,VecTraits<REALT>::compress12>::CloverBlock QPhiX_Clover;
 
-    
+
     //! Constructor
     /*!
      * \param M_        Linear operator ( Read )
@@ -76,20 +76,20 @@ namespace Chroma
      */
     MdagMSysSolverQPhiXClover(Handle< LinearOperator<T> > A_,
 			      Handle< FermState<T,Q,Q> > state_,
-			      const SysSolverQPhiXCloverParams& invParam_) : 
+			      const SysSolverQPhiXCloverParams& invParam_) :
       A(A_), invParam(invParam_), clov(new CloverTermT<T, U>()), invclov(new CloverTermT<T, U>())
     {
       QDPIO::cout << "MdagMSysSolverQPhiXClover:" << std::endl;
       QDPIO::cout << "AntiPeriodicT is: " << invParam.AntiPeriodicT << std::endl;
-      
+
 
       QDPIO::cout << "Veclen is " << VecTraits<REALT>::Vec << std::endl;
       QDPIO::cout << "Soalen is " << VecTraits<REALT>::Soa << std::endl;
-      if ( VecTraits<REALT>::Soa > VecTraits<REALT>::Vec ) { 
+      if ( VecTraits<REALT>::Soa > VecTraits<REALT>::Vec ) {
 	QDPIO::cerr << "PROBLEM: Soalen > Veclen. Please set soalen appropriately (<=VECLEN) at compile time" << std::endl;
 	QDP_abort(1);
       }
-      
+
       Q u(Nd);
       for(int mu=0; mu < Nd; mu++) {
 	u[mu] = state_->getLinks()[mu];
@@ -98,12 +98,12 @@ namespace Chroma
       // Set up aniso coefficients
       multi1d<Real> aniso_coeffs(Nd);
       for(int mu=0; mu < Nd; mu++) aniso_coeffs[mu] = Real(1);
-      
+
       bool anisotropy = invParam.CloverParams.anisoParam.anisoP;
-      if( anisotropy ) { 
+      if( anisotropy ) {
 	aniso_coeffs = makeFermCoeffs( invParam.CloverParams.anisoParam );
       }
-      
+
       double t_boundary=(double)(1);
       // NB: In this case, the state will have boundaries applied.
       // So we only need to apply our own boundaries if Compression is enabled
@@ -114,7 +114,7 @@ namespace Chroma
 	u[3] *= where(Layout::latticeCoordinate(3) == (Layout::lattSize()[3]-1),
 		      Real(t_boundary), Real(1));
       }
-      
+
       cbsize_in_blocks = rb[0].numSiteTable()/VecTraits<REALT>::Soa;
 
       const QPhiX::QPhiXCLIArgs& QPhiXParams = TheQPhiXParams::Instance();
@@ -138,7 +138,7 @@ namespace Chroma
 														   pad_xy,
 														   pad_xyz,
 														   QPhiXParams.getMinCt());
-      
+
       QDPIO::cout << " Allocating p and c" << std::endl << std::flush ;
 
 #ifndef QPD_IS_QDPJIT
@@ -155,61 +155,61 @@ namespace Chroma
       tmp_qphix = nullptr;
 
 #endif
-      
-      
+
+
       QDPIO::cout << " Allocating Clover" << std::endl << std::flush ;
       QPhiX_Clover* A_cb0=(QPhiX_Clover *)geom->allocCBClov();
       QPhiX_Clover* A_cb1=(QPhiX_Clover *)geom->allocCBClov();
       clov_packed[0] = A_cb0;
       clov_packed[1] = A_cb1;
-      
+
       QDPIO::cout << " Allocating CloverInv " << std::endl << std::flush ;
       QPhiX_Clover* A_inv_cb0=(QPhiX_Clover *)geom->allocCBClov();
       QPhiX_Clover* A_inv_cb1=(QPhiX_Clover *)geom->allocCBClov();
       invclov_packed[0] = A_inv_cb0;
       invclov_packed[1] = A_inv_cb1;
-      
+
       // Pack the gauge field
       QDPIO::cout << "Packing gauge field..."  << std::endl << std::flush ;
       QPhiX_Gauge* packed_gauge_cb0=(QPhiX_Gauge *)geom->allocCBGauge();
       QPhiX_Gauge* packed_gauge_cb1=(QPhiX_Gauge *)geom->allocCBGauge();
-      
+
       QPhiX::qdp_pack_gauge<>(u, packed_gauge_cb0,packed_gauge_cb1, *geom);
       u_packed[0] = packed_gauge_cb0;
       u_packed[1] = packed_gauge_cb1;
-      
-      
+
+
       QDPIO::cout << "Creating Clover Term" << std::endl;
       CloverTerm clov_qdp;
       clov->create(state_, invParam.CloverParams);
       QDPIO::cout << "Inverting Clover Term" << std::endl;
       invclov->create(state_, invParam.CloverParams, (*clov));
-      for(int cb=0; cb < 2; cb++) { 
+      for(int cb=0; cb < 2; cb++) {
 	invclov->choles(cb);
       }
       QDPIO::cout << "Done" << std::endl;
       QDPIO::cout << "Packing Clover term..." << std::endl;
-      
-      for(int cb=0; cb < 2; cb++) { 
+
+      for(int cb=0; cb < 2; cb++) {
 	QPhiX::qdp_pack_clover<>((*invclov), invclov_packed[cb], *geom, cb);
       }
-      
-      for(int cb=0; cb < 2; cb++) { 
+
+      for(int cb=0; cb < 2; cb++) {
 	QPhiX::qdp_pack_clover<>((*clov), clov_packed[cb], *geom, cb);
       }
       QDPIO::cout << "Done" << std::endl;
-      
+
       QDPIO::cout << "Creating the Even Odd Operator" << std::endl;
-      M=new QPhiX::EvenOddCloverOperator<REALT,VecTraits<REALT>::Vec,VecTraits<REALT>::Soa,VecTraits<REALT>::compress12>(u_packed,  
-															 clov_packed[1], 
-															 invclov_packed[0],  
+      M=new QPhiX::EvenOddCloverOperator<REALT,VecTraits<REALT>::Vec,VecTraits<REALT>::Soa,VecTraits<REALT>::compress12>(u_packed,
+															 clov_packed[1],
+															 invclov_packed[0],
 															 geom,
 															 t_boundary,
 															 toDouble(aniso_coeffs[0]),
 															 toDouble(aniso_coeffs[3]));
-      
-      
-      switch( invParam.SolverType ) { 
+
+
+      switch( invParam.SolverType ) {
       case CG:
 	{
 	  QDPIO::cout << "Creating the CG Solver" << std::endl;
@@ -227,12 +227,12 @@ namespace Chroma
       }
     }
 
-    
+
 
     //! Destructor is automatic
-    ~MdagMSysSolverQPhiXClover() 
+    ~MdagMSysSolverQPhiXClover()
     {
-      
+
       // Need to unalloc all the memory...
       QDPIO::cout << "Destructing" << std::endl;
 
@@ -247,17 +247,17 @@ namespace Chroma
       psi_qphix = nullptr;
       chi_qphix = nullptr;
       tmp_qphix = nullptr;
-      
+
       geom->free(invclov_packed[0]);
       geom->free(invclov_packed[1]);
       invclov_packed[0] = nullptr;
       invclov_packed[1] = nullptr;
-      
+
       geom->free(clov_packed[0]);
       geom->free(clov_packed[1]);
       clov_packed[0] = nullptr;
       clov_packed[1] = nullptr;
-      
+
       geom->free(u_packed[0]);
       geom->free(u_packed[1]);
       u_packed[0] = nullptr;
@@ -270,18 +270,18 @@ namespace Chroma
 
     //! Return the subset on which the operator acts
     const Subset& subset() const {return A->subset();}
-    
 
-    SystemSolverResults_t operator()(T& psi, const T& chi, 
-				     Chroma::AbsChronologicalPredictor4D<T>& predictor) const 
+
+    SystemSolverResults_t operator()(T& psi, const T& chi,
+				     Chroma::AbsChronologicalPredictor4D<T>& predictor) const
     {
-      
+
       START_CODE();
       StopWatch swatch;
       swatch.reset(); swatch.start();
       /* Factories here later? */
       SystemSolverResults_t res;
-      switch( invParam.SolverType ) { 
+      switch( invParam.SolverType ) {
       case CG:
 	{
 	  res = cgSolve(psi,chi,predictor);
@@ -303,7 +303,7 @@ namespace Chroma
       return res;
     }
 
-    
+
     //! Solver the linear system
     /*!
      * \param psi      solution ( Modify )
@@ -311,14 +311,14 @@ namespace Chroma
      * \return syssolver results
      */
 
-    // NEED THE CHRONO Predictor argument here... 
+    // NEED THE CHRONO Predictor argument here...
     SystemSolverResults_t operator()(T& psi, const T& chi) const
     {
        START_CODE();
        SystemSolverResults_t res;
        Null4DChronoPredictor not_predicting;
        res=(*this)(psi,chi, not_predicting);
-     
+
        END_CODE();
        return res;
     }
@@ -330,7 +330,7 @@ namespace Chroma
   private:
     // Hide default constructor
     MdagMSysSolverQPhiXClover() {}
-    
+
 
 
     Handle< LinearOperator<T> > A;
@@ -339,17 +339,17 @@ namespace Chroma
     Handle< CloverTermT<T, U> > invclov;
 
     QPhiX::Geometry<REALT, VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>* geom;
-    
+
     Handle< QPhiX::EvenOddCloverOperator<REALT, VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12> > M;
 
     Handle< QPhiX::InvCG<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12> > cg_solver;
 
     Handle< QPhiX::InvBiCGStab<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>  > bicgstab_solver;
-    
+
     QPhiX_Clover* invclov_packed[2];
     QPhiX_Clover* clov_packed[2];
     QPhiX_Gauge* u_packed[2];
-    
+
     mutable QPhiX_Spinor* psi_qphix;
     mutable QPhiX_Spinor* chi_qphix;
     mutable QPhiX_Spinor* tmp_qphix;
@@ -374,7 +374,7 @@ namespace Chroma
       double rsd_final;
       unsigned long site_flops=0;
       unsigned long mv_apps=0;
-      
+
       double start = omp_get_wtime();
       int my_isign=1;
       (*cg_solver)(psi_qphix, chi_qphix, toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, my_isign, invParam.VerboseP);
@@ -386,7 +386,7 @@ namespace Chroma
 
       predictor.newVector(psi);
 
-      // Chi Should now hold the result spinor 
+      // Chi Should now hold the result spinor
       // Check it against chroma.
       {
 	T r = chi;
@@ -394,22 +394,22 @@ namespace Chroma
 	(*A)(tmp, psi, PLUS);
 	(*A)(tmp2, tmp, MINUS);
 	r[ A->subset() ] -= tmp2;
-	
+
 	Double r2 = norm2(r,A->subset());
 	Double b2 = norm2(chi, A->subset());
 	Double rel_resid = sqrt(r2/b2);
 	res.resid = rel_resid;
-      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rel_resid << std::endl;      
+      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rel_resid << std::endl;
 
 	QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: || r || / || b || = " << rel_resid << std::endl;
-	
-#if 0
+
+#if 1
 	if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
 	  QDPIO::cout << "SOLVE FAILED" << std::endl;
 	  QDP_abort(1);
 	}
 #endif
-      }  
+      }
 
       int num_cb_sites = Layout::vol()/2;
       unsigned long total_flops = (site_flops + (1320+504+1320+504+48)*mv_apps)*num_cb_sites;
@@ -432,23 +432,23 @@ namespace Chroma
 
       SystemSolverResults_t res;
       Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
-    
+
       T Y;
       Y[ A->subset() ] = psi; // Y is initial guess
-      
+
       try  {
-	// Try to cast the predictor to a two step predictor 
-	AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor = 
+	// Try to cast the predictor to a two step predictor
+	AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor =
 	  dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>& >(predictor);
-	
-	
+
+
 	// Predict Y and X separately
 	two_step_predictor.predictY(Y,*A,chi);
 	two_step_predictor.predictX(psi,*MdagM, chi);
       }
       catch( std::bad_cast) {
 
-	// Not a 2 step predictor. Predict X 
+	// Not a 2 step predictor. Predict X
 	// Then MX = Y is a good guess.
 	predictor(psi,*MdagM, chi);
 	(*A)(Y,psi,PLUS);
@@ -516,28 +516,28 @@ namespace Chroma
 #endif
 
       try  {
-	// Try to cast the predictor to a two step predictor 
-	AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor = 
+	// Try to cast the predictor to a two step predictor
+	AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor =
 	  dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>& >(predictor);
-	two_step_predictor.newYVector(Y);	
+	two_step_predictor.newYVector(Y);
 	two_step_predictor.newXVector(psi);
 
       }
       catch( std::bad_cast) {
 
-	// Not a 2 step predictor. Predict X 
+	// Not a 2 step predictor. Predict X
 	// Then MX = Y is a good guess.
 	predictor.newVector(psi);
       }
 
-      // Chi Should now hold the result spinor 
+      // Chi Should now hold the result spinor
       // Check it against chroma. -- reuse Y as the residuum
       Y[ A->subset() ] = chi;
       {
 	T tmp,tmp2;
 	(*A)(tmp, psi, PLUS);
 	(*A)(tmp2, tmp, MINUS);
-	
+
 	Y[ A->subset() ] -= tmp2;
       }
 
@@ -549,13 +549,13 @@ namespace Chroma
       QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: total_iters="<<res.n_count<<" || r || / || b || = " << res.resid << std::endl;
 
 
-#if 0
+#if 1
       if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
 	QDPIO::cout << "SOLVE FAILED" << std::endl;
 	QDP_abort(1);
       }
 #endif
-      
+
       swatch.stop();
       QDPIO::cout << "QPHIX_MDAGM_SOLVER: total time: " << swatch.getTimeInSeconds() << " (sec)" << std::endl;
       END_CODE();
@@ -568,5 +568,5 @@ namespace Chroma
 } // End namespace
 
 #endif // BUILD_QPHIX
-#endif 
+#endif
 

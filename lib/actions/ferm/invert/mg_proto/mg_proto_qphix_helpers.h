@@ -40,6 +40,11 @@ using MGPreconditionerEO = MGPreconditionerT<MG::QPhiXMultigridLevelsEO, MG::VCy
 
 
 // for testing
+template<typename QPhiXLinOpT>
+std::shared_ptr<QPhiXLinOpT>
+createFineLinOpT( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u,
+    const MG::LatticeInfo& info);
+
 std::shared_ptr<MG::QPhiXWilsonCloverLinearOperator>
 createFineLinOp( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u,
     const MG::LatticeInfo& info);
