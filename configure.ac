@@ -220,6 +220,15 @@ AC_ARG_ENABLE(gtest,
   [ chroma_enable_gtest="no" ]
 )
 
+
+AC_ARG_ENABLE(shmharom,
+  AC_HELP_STRING([--enable-shmharom],
+  [ Enable cooperation with harom via shared mem ]),
+  [ shmharom_enabled="yes" ],
+  [ shmharom_enabled="no" ]
+)
+
+
 AC_ARG_WITH(gmp,
    AC_HELP_STRING(
     [--with-gmp=<DIR>],
@@ -423,6 +432,15 @@ else
 fi
 
 
+if test "X${shmharom_enabled}X" = "XyesX";
+then
+  AC_MSG_NOTICE([ Enabling harom via shared memory])
+  AC_DEFINE([BUILD_SHMHAROM], [], [Build with shared memory harom])
+  AC_SUBST(SHMHAROM_LIBS,"-lrt")
+fi
+
+
+
 ###########
 #
 # ISOLVER (Intel Level 3 -- needs a better name ) support
@@ -504,6 +522,8 @@ fi
 
 AM_CONDITIONAL(BUILD_QPHIX,
 	[test "x${qphix_enabled}x" = "xyesx" ])
+
+AM_CONDITIONAL(BUILD_SHMHAROM,[test "x${shmharom_enabled}x" = "xyesx" ])
 
 
 

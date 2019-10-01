@@ -21,6 +21,10 @@ LDADD = -lchroma @MGPROTO_LIBS@ @QUDA_LIBS@ @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LI
 AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/lib
 LDADD += -lqdp-lapack
 
+if BUILD_SHMHAROM
+LDADD += @SHMHAROM_LIBS@
+endif
+
 if BUILD_SSE_WILSON_DSLASH
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/lib
@@ -250,10 +254,10 @@ endif
 
 if BUILD_GTEST
 check_PROGRAMS += t_inv_fgmres_dr  t_symm_prec
-	
+
 t_inv_fgmres_dr_SOURCES = t_inv_fgmres_dr.cc chroma_gtest_env.h \
 	fgmres_dr_tests.cc
-	
+
 t_symm_prec_SOURCES = t_symm_prec.cc chroma_gtest_env.h \
 	symm_prec_xml.h symm_prec_tests.cc
 endif

@@ -40,6 +40,10 @@ AM_LDFLAGS += -L@top_builddir@/other_libs/wilsonmg/lib @QOP_MG_LDFLAGS@
 LDADD += @QOP_MG_LIBS@
 endif
 
+if BUILD_SHMHAROM
+LDADD += @SHMHAROM_LIBS@
+endif
+
 if BUILD_QPHIX
 AM_CXXFLAGS += @QPHIX_CXXFLAGS@
 AM_LDFLAGS += @QPHIX_LDFLAGS@
