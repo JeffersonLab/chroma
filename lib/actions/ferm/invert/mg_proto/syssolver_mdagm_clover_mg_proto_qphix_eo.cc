@@ -173,6 +173,7 @@ namespace Chroma
             QDPIO::cout << "DEBUG: Norm2 qphix_out_cb_0 = " << qphix_out_norm_cb0 << "   Norm psi[0]="<< psi_norm_cb0 << std::endl;
             QDPIO::cout << "DEBUG: Norm2 qphix_out_cb_1 = " << qphix_out_norm_cb1 << "   Norm psi[1]="<< psi_norm_cb1 << std::endl;
 
+            res.n_count = res1.n_count + res2.n_count;
             bool solution_good = true;
             {
                 // Chroma level check (may be slow)
@@ -186,14 +187,30 @@ namespace Chroma
                 Double n2 = norm2(tmp1, s);
                 Double n2rel = n2 / norm2(chi, s);
                 QDPIO::cout << "MG_PROTO_QPHIX_EO_CLOVER_INVERTER: iters = "
-                    << res1.n_count + res2.n_count << " rel resid = " << sqrt(n2rel) << std::endl;
+                    << res.n_count << " rel resid = " << sqrt(n2rel) << std::endl;
                 if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget * invParam.RsdToleranceFactor ) ) {
                     QDPIO::cout<<"Error in MG_PROTO convergence, retrying..."<<std::endl;
                     solution_good = false;
                 }
             }
 
-            if(!solution_good){
+            // Using subspace from previous MD step will save the setup time,
+            // but may increase the total number of iterations, so recreate the subspace
+            // if the #iteration exceeds some threshold.
+            if(solution_good){
+                if(res.n_count >= invParam.ThresholdCount){
+                    QDPIO::cout<<"Iteration Threshold Exceeded! iters = "<<res.n_count<<" Threshold = "<<invParam.ThresholdCount<<std::endl;
+                    QDPIO::cout<<"Refreshing Subspace"<<std::endl;
+
+                    StopWatch refresh;
+                    refresh.reset();
+                    refresh.start();
+                    MGProtoHelpersQPhiX::createMGPreconditionerEO(invParam, state->getLinks());
+                    refresh.stop();
+
+                    QDPIO::cout<<"Subspace Refreshing Time = "<<refresh.getTimeInSeconds()<<" secs"<<std::endl;
+                }
+            } else {
                 QDPIO::cout<<"Bazinga! MG_PROTO solver failed, retry with new multigrid subspace"<<std::endl;
 
                 MGProtoHelpersQPhiX::createMGPreconditionerEO(invParam, state->getLinks());
@@ -253,7 +270,7 @@ namespace Chroma
                     tmp1[s] -= chi;
                     Double n2 = norm2(tmp1, s);
                     Double n2rel = n2 / norm2(chi, s);
-                    QDPIO::cout << "MG_PROTO_QPHIX_EO_CLOVER_INVERTER: iters = "<< res1.n_count + res2.n_count<< " rel resid = " << sqrt(n2rel) << std::endl;
+                    QDPIO::cout << "MG_PROTO_QPHIX_EO_CLOVER_INVERTER: retry iters = "<< res1.n_count + res2.n_count<< " rel resid = " << sqrt(n2rel) << std::endl;
                     if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget * invParam.RsdToleranceFactor ) ) {
                         QDPIO::cout<<"Error in MG_PROTO convergence, exiting"<<std::endl;
                         MGSolverException convergence_fail(invParam.CloverParams.Mass,
@@ -264,10 +281,9 @@ namespace Chroma
                         throw convergence_fail;
                     }
                 }
+            res.n_count += (res1.n_count + res2.n_count);
             }
-
-            res.n_count = res1.n_count + res2.n_count;
-            res.resid = res1.resid;
+            res.resid = res2.resid;
 
             swatch.stop();
             QDPIO::cout << "MG_PROTO_QPHIX_EO_CLOVER_INVERTER_TIME: total_time=" << swatch.getTimeInSeconds() << " sec." << std::endl;

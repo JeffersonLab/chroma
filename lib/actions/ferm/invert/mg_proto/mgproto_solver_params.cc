@@ -73,6 +73,12 @@ MGProtoSolverParams::MGProtoSolverParams(XMLReader& xml, const std::string& path
         RsdToleranceFactor = 10;
     }
 
+    if( paramtop.count("ThresholdCount") > 0 ) {
+        read(paramtop, "ThresholdCount", ThresholdCount);
+    } else {
+        ThresholdCount = 50; // current setup for test
+    }
+
 	read( paramtop, "VCyclePreSmootherMaxIters", VCyclePreSmootherMaxIters, MGLevels-1);
 	read( paramtop, "VCyclePreSmootherRsdTarget", VCyclePreSmootherRsdTarget, MGLevels-1);
 	read( paramtop, "VCyclePreSmootherRelaxOmega", VCyclePreSmootherRelaxOmega, MGLevels-1);
