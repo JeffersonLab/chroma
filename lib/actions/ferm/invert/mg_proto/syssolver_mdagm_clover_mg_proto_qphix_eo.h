@@ -61,15 +61,13 @@ namespace Chroma {
 	  Handle< LinearOperator< T > > A;
 	  Handle< FermState<T,Q,Q> > state;
 	  MGProtoSolverParams invParam;
-	  std::string subspaceId;
+      MG::FGMRESParams fine_solve_params;
+      std::string subspaceId;
 	  mutable std::shared_ptr<MGProtoHelpersQPhiX::MGPreconditionerEO> mg_pointer;
 	  mutable std::shared_ptr<MG::QPhiXWilsonCloverEOLinearOperator > M_ptr;
 
 	  // Shorthand for the UnprecWrapper
 	  using UnprecFGMRES =  MG::UnprecFGMRESSolverQPhiXWrapper;
-
-
-	  mutable std::shared_ptr<UnprecFGMRES> wrapped;
 	  mutable std::shared_ptr<EoFGMRES> eo_solver;
 
   };

@@ -133,6 +133,7 @@
                     <OuterSolverMaxIters>100</OuterSolverMaxIters>
                     <OuterSolverVerboseP>true</OuterSolverVerboseP>
                     <RsdToleranceFactor>5.0</RsdToleranceFactor>
+                    <ThresholdCount>10</ThresholdCount>
 
                     <VCyclePreSmootherMaxIters>0 0</VCyclePreSmootherMaxIters>
                     <VCyclePreSmootherRsdTarget>0.1 0.1</VCyclePreSmootherRsdTarget>
