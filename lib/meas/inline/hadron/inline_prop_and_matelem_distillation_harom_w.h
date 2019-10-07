@@ -169,18 +169,6 @@ namespace Chroma
 		      {
 			assert( mi->second.size() > 0 );
 			printf("ts = %d, n = %d, size = %d bytes\n", mi->first , mi->second.size() , sizeof(mi->second.at(0)) * mi->second.size() );
-			// std::cout << "ts " << mi->first
-			// 	  << " n = " << mi->second.size() 
-			// 	  << " size = " << sizeof(mi->second.at(0)) * mi->second.size() << " bytes\n";
-#if 0
-			for ( int n = 0 ; n < mi->second.size() ; ++n )
-			  {
-			    std::cout << mi->second[n].elem().elem(0).real() << " "
-				      << mi->second[n].elem().elem(1).real() << " "
-				      << mi->second[n].elem().elem(2).real() << " "
-				      << mi->second[n].elem().elem(0).imag() << "\n";
-			  }
-#endif
 		      }
 		  }
 
@@ -194,17 +182,12 @@ namespace Chroma
 			size += ts->second;
 		      }
 		    printf("recv from node %d, %d bytes\n" , it->first , size );
-		    //std::cout << "recv from node " << it->first << ", " << size << " bytes\n";
 		  }
 
 	      }
 	    QMP_barrier();
 	  }
       }
-
-
-      // multi1d< multi3d< TypeSend_t > >& getRecv() { return _recv; }
-      // const multi1d< multi3d< TypeSend_t > >& getRecv() const { return _recv; }
 
 
       struct xyz 
@@ -217,172 +200,130 @@ namespace Chroma
       };
 
 
-  void exec_prepare( int ts_per_node , int t_source , int Nt_forward , int nodes_per_cn )
-  {
-    _ts_per_node  = ts_per_node;
-    _t_source     = t_source;
-    _nodes_per_cn = nodes_per_cn;
-    _Nt_forward = Nt_forward;
-
-    const int Nt = Layout::lattSize()[3];
-    const int t_end = ( t_source + Nt_forward ) % Nt;
-
-    for(int site=0; site < Layout::vol(); ++site)
+      void exec_prepare( int ts_per_node , int t_source , int Nt_forward , int nodes_per_cn )
       {
-	multi1d<int> coord = crtesn(site, Layout::lattSize());
+	_ts_per_node  = ts_per_node;
+	_t_source     = t_source;
+	_nodes_per_cn = nodes_per_cn;
+	_Nt_forward = Nt_forward;
 
-	if (t_source < t_end)
+	const int Nt = Layout::lattSize()[3];
+	const int t_end = ( t_source + Nt_forward ) % Nt;
+
+	for(int site=0; site < Layout::vol(); ++site)
 	  {
-	    if ( coord[3] < t_source  ||   coord[3] >= t_end )
-	      continue;
-	  }
-	else
-	  {
-	    if ( t_end <= coord[3]     &&   coord[3] < t_source )
-	      continue;
-	  }
+	    multi1d<int> coord = crtesn(site, Layout::lattSize());
+
+	    if (t_source < t_end)
+	      {
+		if ( coord[3] < t_source  ||   coord[3] >= t_end )
+		  continue;
+	      }
+	    else
+	      {
+		if ( t_end <= coord[3]     &&   coord[3] < t_source )
+		  continue;
+	      }
       
-	int node	 = Layout::nodeNumber(coord);
-	int linear = Layout::linearSiteIndex(coord);
+	    int node	 = Layout::nodeNumber(coord);
+	    int linear = Layout::linearSiteIndex(coord);
 
-	int tcorr = ( coord[3] - t_source + Nt ) % Nt;
-	int to_node = ( tcorr / ts_per_node ) * nodes_per_cn ;
+	    int tcorr = ( coord[3] - t_source + Nt ) % Nt;
+	    int to_node = ( tcorr / ts_per_node ) * nodes_per_cn ;
 
-	if (Layout::nodeNumber() == node)
-	  {
-	    multi1d<int> size_ts(3);
-	    size_ts[0] = Layout::subgridLattSize()[0];
-	    size_ts[1] = Layout::subgridLattSize()[1];
-	    size_ts[2] = Layout::subgridLattSize()[2];
-	    int voln_ts = size_ts[0] * size_ts[1] * size_ts[2];
-
-	    multi1d<int> coord_ts(3);
-	    coord_ts[0] = coord[0] % Layout::subgridLattSize()[0];
-	    coord_ts[1] = coord[1] % Layout::subgridLattSize()[1];
-	    coord_ts[2] = coord[2] % Layout::subgridLattSize()[2];
-
-	    int linear_ts = local_site( coord_ts , size_ts );
-	  
-	    assert( linear_ts >= 0 );
-	    assert( linear_ts < voln_ts );
-
-	    _sendbuf[ to_node ][ tcorr ].resize( voln_ts );
-
-	    _sendbuf_linear[ to_node ][ tcorr ].resize( voln_ts );
-	    _sendbuf_linear[ to_node ][ tcorr ][ linear_ts ] = linear;
-	    //sendbuf[ to_node ][ tcorr ][ linear_ts ] = lattice.elem(linear);
-	  }
-	if (Layout::nodeNumber() == to_node)
-	  {
-	    _recvsize[ node ][ tcorr ] += sizeof( TypeSend_t );
-	    _receiving_node = true;
-	  }
-      }
-
-
-    if (_receiving_node)
-      {
-	// First, resize the receive vector
-	//
-	//_recv.resize(ts_per_node);
-
-	// for ( int i = 0 ; i < ts_per_node ; ++i )
-	//   _recv[i].resize( Layout::lattSize()[0],Layout::lattSize()[1],Layout::lattSize()[2] );
-
-
-	// Next, prepare the cache for the receive vector
-	//
-	assert( Layout::nodeNumber() % _nodes_per_cn == 0 );
-	    
-	_recv_vector_xyz.resize( _ts_per_node );
-
-	for ( int h = 0 ; h < _ts_per_node ; ++h )
-	  {
-	    int ts_vol = Layout::lattSize()[0] * Layout::lattSize()[1] * Layout::lattSize()[2];
-
-	    _recv_vector_xyz[ h ].resize( ts_vol );
-
-	    // int ts    = (Layout::nodeNumber() * ts_per_node + h + t_source ) % Nt;
-	    // int tcorr = (Layout::nodeNumber() * ts_per_node + h ) % Nt;
-
-	    int ts    = ( Layout::nodeNumber() / _nodes_per_cn * _ts_per_node + h + _t_source ) % Nt;
-	    int tcorr = ( Layout::nodeNumber() / _nodes_per_cn * _ts_per_node + h ) % Nt;
-	  
-	    // if (Layout::primaryNode())
-	    //   std::cout << "node " << Layout::nodeNumber() << " receives ts " << ts << "\n";
-
-	    for( int site_ts = 0 ; site_ts < ts_vol ; ++site_ts )
+	    if (Layout::nodeNumber() == node)
 	      {
 		multi1d<int> size_ts(3);
-		size_ts[0] = Layout::lattSize()[0];
-		size_ts[1] = Layout::lattSize()[1];
-		size_ts[2] = Layout::lattSize()[2];
+		size_ts[0] = Layout::subgridLattSize()[0];
+		size_ts[1] = Layout::subgridLattSize()[1];
+		size_ts[2] = Layout::subgridLattSize()[2];
+		int voln_ts = size_ts[0] * size_ts[1] * size_ts[2];
 
-		multi1d<int> coord_ts = crtesn( site_ts , size_ts );
+		multi1d<int> coord_ts(3);
+		coord_ts[0] = coord[0] % Layout::subgridLattSize()[0];
+		coord_ts[1] = coord[1] % Layout::subgridLattSize()[1];
+		coord_ts[2] = coord[2] % Layout::subgridLattSize()[2];
 
-		multi1d<int> coord(4);
-		coord[0] = coord_ts[0];
-		coord[1] = coord_ts[1];
-		coord[2] = coord_ts[2];
-		coord[3] = ts;
+		int linear_ts = local_site( coord_ts , size_ts );
+	  
+		assert( linear_ts >= 0 );
+		assert( linear_ts < voln_ts );
 
-		int node_from = Layout::nodeNumber(coord);
-		//int linear    = Layout::linearSiteIndex(coord);
+		_sendbuf[ to_node ][ tcorr ].resize( voln_ts );
 
-		//std::cout << linear << " from node " << node_from << "\n";
+		_sendbuf_linear[ to_node ][ tcorr ].resize( voln_ts );
+		_sendbuf_linear[ to_node ][ tcorr ][ linear_ts ] = linear;
 
-		// if (site_ts == 0)
-		//   if (Layout::primaryNode())
-		// 	printf("node %d recvs  ts %d  from node %d\n",Layout::nodeNumber(), ts ,  node_from);
-
-		//int ts_data = ts_vol * sizeof(TypeSend_t);
-
-		//Buffer<TypeSend_t> buf( comms.get_recvbuf( node_from ) );
-		//TypeSend_t* buf = static_cast<TypeSend_t*>( comms.get_recvbuf( node_from ) );
-
-		multi1d<int> coord_ts_subgrid(3);
-		coord_ts_subgrid[0] = coord_ts[0] % Layout::subgridLattSize()[0];
-		coord_ts_subgrid[1] = coord_ts[1] % Layout::subgridLattSize()[1];
-		coord_ts_subgrid[2] = coord_ts[2] % Layout::subgridLattSize()[2];
-
-		multi1d<int> size_ts_subgrid(3);
-		size_ts_subgrid[0] = Layout::subgridLattSize()[0];
-		size_ts_subgrid[1] = Layout::subgridLattSize()[1];
-		size_ts_subgrid[2] = Layout::subgridLattSize()[2];
-
-		int linear = local_site( coord_ts_subgrid , size_ts_subgrid );
-
-		//_recv(h)( coord_ts[0] , coord_ts[1] , coord_ts[2] ) = buf.get_buf(tcorr)[ linear ];
-
-		_recv_vector_xyz[ h ][ site_ts ].node_from = node_from;
-		_recv_vector_xyz[ h ][ site_ts ].linear = linear;
-		_recv_vector_xyz[ h ][ site_ts ].x = coord_ts[0];
-		_recv_vector_xyz[ h ][ site_ts ].y = coord_ts[1];
-		_recv_vector_xyz[ h ][ site_ts ].z = coord_ts[2];
-
+	      }
+	    if (Layout::nodeNumber() == to_node)
+	      {
+		_recvsize[ node ][ tcorr ] += sizeof( TypeSend_t );
+		_receiving_node = true;
 	      }
 	  }
 
 
+	if (_receiving_node)
+	  {
+	    assert( Layout::nodeNumber() % _nodes_per_cn == 0 );
+	    
+	    _recv_vector_xyz.resize( _ts_per_node );
 
+	    for ( int h = 0 ; h < _ts_per_node ; ++h )
+	      {
+		int ts_vol = Layout::lattSize()[0] * Layout::lattSize()[1] * Layout::lattSize()[2];
+
+		_recv_vector_xyz[ h ].resize( ts_vol );
+
+		int ts    = ( Layout::nodeNumber() / _nodes_per_cn * _ts_per_node + h + _t_source ) % Nt;
+		int tcorr = ( Layout::nodeNumber() / _nodes_per_cn * _ts_per_node + h ) % Nt;
+	  
+		for( int site_ts = 0 ; site_ts < ts_vol ; ++site_ts )
+		  {
+		    multi1d<int> size_ts(3);
+		    size_ts[0] = Layout::lattSize()[0];
+		    size_ts[1] = Layout::lattSize()[1];
+		    size_ts[2] = Layout::lattSize()[2];
+
+		    multi1d<int> coord_ts = crtesn( site_ts , size_ts );
+
+		    multi1d<int> coord(4);
+		    coord[0] = coord_ts[0];
+		    coord[1] = coord_ts[1];
+		    coord[2] = coord_ts[2];
+		    coord[3] = ts;
+
+		    int node_from = Layout::nodeNumber(coord);
+
+		    multi1d<int> coord_ts_subgrid(3);
+		    coord_ts_subgrid[0] = coord_ts[0] % Layout::subgridLattSize()[0];
+		    coord_ts_subgrid[1] = coord_ts[1] % Layout::subgridLattSize()[1];
+		    coord_ts_subgrid[2] = coord_ts[2] % Layout::subgridLattSize()[2];
+
+		    multi1d<int> size_ts_subgrid(3);
+		    size_ts_subgrid[0] = Layout::subgridLattSize()[0];
+		    size_ts_subgrid[1] = Layout::subgridLattSize()[1];
+		    size_ts_subgrid[2] = Layout::subgridLattSize()[2];
+
+		    int linear = local_site( coord_ts_subgrid , size_ts_subgrid );
+
+		    _recv_vector_xyz[ h ][ site_ts ].node_from = node_from;
+		    _recv_vector_xyz[ h ][ site_ts ].linear = linear;
+		    _recv_vector_xyz[ h ][ site_ts ].x = coord_ts[0];
+		    _recv_vector_xyz[ h ][ site_ts ].y = coord_ts[1];
+		    _recv_vector_xyz[ h ][ site_ts ].z = coord_ts[2];
+
+		  }
+	      }
+	  }
+	_prep_done = true;
       }
-
-    _prep_done = true;
-  }
 
 
 
       void exec( const T& lattice , std::vector< TypeSend_t * >& buf_shm )
       {
-	//printf("exec1 enter %d\n",Layout::nodeNumber());
-
-	//const int ts_per_node = 4; // ts_per_node
 	const int Nt = Layout::lattSize()[3];
-	// const int t_end = ( t_source + Nt_forward ) % Nt;
-
-	//std::map< int , std::map< int , std::vector< TypeSend_t > > > sendbuf;  // send[to_node][tcorr][elems]
-	//std::map< int , std::map< int , int > > recvsize;                       // recv[from_node][tcorr] size in bytes
-	//bool receiving_node = false;
 
 	StopWatch sniss2;
 	sniss2.reset();
@@ -406,8 +347,6 @@ namespace Chroma
 
 	      }
 	  }
-
-	//printf("exec2 enter %d\n",Layout::nodeNumber());
 
 	QMP_barrier();
 	
@@ -436,18 +375,11 @@ namespace Chroma
 
 
 #if 1
-	// int vvv = Layout::lattSize()[0] * Layout::lattSize()[1] * Layout::lattSize()[2];
-	// std::vector< TypeSend_t > tmp;
-	// tmp.resize( vvv );
-	// for (int i=0;i<vvv;++i)
-	//   zero_rep(tmp[i]);
-
-
 	StopWatch sniss1;
 	sniss1.reset();
 	sniss1.start();
 
-#if 1
+
 	if ( _receiving_node )
 	  {
 	    assert( Layout::nodeNumber() % _nodes_per_cn == 0 );
@@ -472,84 +404,10 @@ namespace Chroma
 		  {
 		    auto& access = _recv_vector_xyz[h][site_ts];
 
-		    //_recv(h)( access.x , access.y , access.z ) = tmp[ access.linear ];
-
-		    // Buffer<TypeSend_t> buf( comms.get_recvbuf( access.node_from ) );
-		    // _recv(h)( access.x , access.y , access.z ) = buf.get_buf(tcorr)[ access.linear ];
-
-		    //_recv(h)( access.x , access.y , access.z ) = 
-
 		    buf_shm[ h ][ site_ts ] = buffers[access.node_from].get_buf(tcorr)[ access.linear ];
-
-
 		  }
 	      }
 	  }
-#else
-	if ( _receiving_node )
-	  {
-	    assert( Layout::nodeNumber() % _nodes_per_cn == 0 );
-	    
-	    for ( int h = 0 ; h < _ts_per_node ; ++h )
-	      {
-		int ts_vol = Layout::lattSize()[0] * Layout::lattSize()[1] * Layout::lattSize()[2];
-
-		// int ts    = (Layout::nodeNumber() * ts_per_node + h + t_source ) % Nt;
-		// int tcorr = (Layout::nodeNumber() * ts_per_node + h ) % Nt;
-
-		int ts    = ( Layout::nodeNumber() / _nodes_per_cn * _ts_per_node + h + _t_source ) % Nt;
-		int tcorr = ( Layout::nodeNumber() / _nodes_per_cn * _ts_per_node + h ) % Nt;
-	  
-		// if (Layout::primaryNode())
-		//   std::cout << "node " << Layout::nodeNumber() << " receives ts " << ts << "\n";
-
-		for( int site_ts = 0 ; site_ts < ts_vol ; ++site_ts )
-		  {
-		    multi1d<int> size_ts(3);
-		    size_ts[0] = Layout::lattSize()[0];
-		    size_ts[1] = Layout::lattSize()[1];
-		    size_ts[2] = Layout::lattSize()[2];
-
-		    multi1d<int> coord_ts = crtesn( site_ts , size_ts );
-
-		    multi1d<int> coord(4);
-		    coord[0] = coord_ts[0];
-		    coord[1] = coord_ts[1];
-		    coord[2] = coord_ts[2];
-		    coord[3] = ts;
-
-		    int node_from = Layout::nodeNumber(coord);
-		    //int linear    = Layout::linearSiteIndex(coord);
-
-		    //std::cout << linear << " from node " << node_from << "\n";
-
-		    // if (site_ts == 0)
-		    //   if (Layout::primaryNode())
-		    // 	printf("node %d recvs  ts %d  from node %d\n",Layout::nodeNumber(), ts ,  node_from);
-
-		    //int ts_data = ts_vol * sizeof(TypeSend_t);
-
-		    Buffer<TypeSend_t> buf( comms.get_recvbuf( node_from ) );
-		    //TypeSend_t* buf = static_cast<TypeSend_t*>( comms.get_recvbuf( node_from ) );
-
-		    multi1d<int> coord_ts_subgrid(3);
-		    coord_ts_subgrid[0] = coord_ts[0] % Layout::subgridLattSize()[0];
-		    coord_ts_subgrid[1] = coord_ts[1] % Layout::subgridLattSize()[1];
-		    coord_ts_subgrid[2] = coord_ts[2] % Layout::subgridLattSize()[2];
-
-		    multi1d<int> size_ts_subgrid(3);
-		    size_ts_subgrid[0] = Layout::subgridLattSize()[0];
-		    size_ts_subgrid[1] = Layout::subgridLattSize()[1];
-		    size_ts_subgrid[2] = Layout::subgridLattSize()[2];
-
-		    int linear = local_site( coord_ts_subgrid , size_ts_subgrid );
-
-		    _recv(h)( coord_ts[0] , coord_ts[1] , coord_ts[2] ) = buf.get_buf(tcorr)[ linear ];
-		  }
-	      }
-	  }
-#endif
-
 
 	QMP_barrier();
 	
@@ -592,7 +450,6 @@ namespace Chroma
 	      }
 	  
 	    comms.add_send_to( it->first , size );
-	    //std::cout << "send added : " <<  it->first << " " <<  size << "\n";
 	  }
   
 	for( auto it = recvsize.begin() ; it != recvsize.end() ; ++it )
@@ -607,11 +464,6 @@ namespace Chroma
 	      }
 
 	    comms.add_receive_from( it->first , size );    // total number of records
-
-	    //std::cout << "recv added : " <<  it->first << " " <<  size << "\n";
-
-	    // int size = it->second + sizeof(int);
-	    // std::cout << "recv added : " <<  it->first << " " <<  size << "\n";
 	  }
 
 	comms.finishSetup();
@@ -623,10 +475,10 @@ namespace Chroma
       template < class S >
       void do_comms( S& sendbuf )
       {
-  QMP_barrier();
-  StopWatch sniss1;
-  sniss1.reset();
-  sniss1.start();
+	QMP_barrier();
+	StopWatch sniss1;
+	sniss1.reset();
+	sniss1.start();
 
 	for( auto it = sendbuf.begin() ; it != sendbuf.end() ; ++it )
 	  {
@@ -648,28 +500,26 @@ namespace Chroma
 		pos += sizeof(ts->second.at(0)) * ts->second.size();
 	      }
 	  }
-	//QDPIO::cout << "MPI start..\n";
-	// //comms.fake_comms();
 
-  sniss1.stop();
+	sniss1.stop();
 
-  QMP_barrier();
+	QMP_barrier();
 
-  QDPIO::cout << "Time for comms copy = " << sniss1.getTimeInSeconds() << std::endl;
+	QDPIO::cout << "Time for comms copy = " << sniss1.getTimeInSeconds() << std::endl;
 
-  StopWatch sniss2;
-  sniss2.reset();
-  sniss2.start();
+	StopWatch sniss2;
+	sniss2.reset();
+	sniss2.start();
 
   
 	comms.send_receive();
 	comms.qmp_wait();
 
-  sniss2.stop();
+	sniss2.stop();
 
-  QMP_barrier();
+	QMP_barrier();
 
-  QDPIO::cout << "Time for comms MPI = " << sniss2.getTimeInSeconds() << std::endl;
+	QDPIO::cout << "Time for comms MPI = " << sniss2.getTimeInSeconds() << std::endl;
 
 	//QDPIO::cout << "MPI done.\n";
       }
@@ -688,8 +538,6 @@ namespace Chroma
 
       std::map< int , std::map< int , std::vector< int > > > _sendbuf_linear;  // send[to_node][tcorr][linear]
       std::map< int , std::map< int , int > > _recvsize;                       // recv[from_node][tcorr] size in bytes
-
-      //multi1d< multi3d< TypeSend_t > > _recv;
 
       std::vector< std::vector< struct xyz > > _recv_vector_xyz;                // [ts_per_node][linear]
 
@@ -752,18 +600,12 @@ namespace Chroma
 	int recs = *(int*)cur;
 	cur += sizeof(int);
 
-	// if (Layout::primaryNode())
-	//   printf("buffer has %d records, looking for ts = %d\n",recs,ts);
-
 	bool found=false;
 	char* iter = cur;
 	for ( ; iter < cur + recs * rec_bytes ; iter += rec_bytes )
 	  {
 	    int iter_ts = *(int*)iter;
 
-	    // if (Layout::primaryNode())
-	    //   printf("ts %d\n",iter_ts);
-	
 	    if (iter_ts == ts) {
 	      found=true;
 	      break;
@@ -771,7 +613,6 @@ namespace Chroma
 	  }
 	if (!found)
 	  {
-	    // if (Layout::primaryNode())
 	    printf("node %d, ts %d not found!\n",Layout::nodeNumber(),ts);
 	    
 	    printf("avail ts:\n");

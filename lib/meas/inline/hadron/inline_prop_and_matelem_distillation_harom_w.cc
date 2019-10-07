@@ -58,115 +58,6 @@ namespace Chroma
   // Utilities
   namespace
   {
-#if 0
-void test_mpi_speed()
-{
-  QDPIO::cout << "beginning test...\n";
-  InlinePropAndMatElemDistillationHaromEnv::Comms comms;
-
-  int s;
-
-  int m1=1572864;
-  int m2=23592960;
-  int m3=14155776;
-  int m4=11010048;
-  int m5=25165824;
-
-  switch ( Layout::nodeNumber() )
-    {
-    case 0:
-      s = m1;
-      comms.add_send_to( 8 , s ); 
-      
-      s = m2;
-      comms.add_receive_from( 13 , s );
-
-      s = m3;
-      comms.add_receive_from( 14 , s );
-      break;
-
-    case 1:
-      break;
-    case 2:
-      break;
-    case 3:
-      break;
-    case 4:
-      break;
-    case 5:
-      break;
-    case 6:
-      break;
-    case 7:
-      break;
-    case 8:
-      s = m1;
-      comms.add_receive_from( 0 , s );
-
-      s = m4;
-      comms.add_receive_from( 14 , s );
-
-      s = m5;
-      comms.add_receive_from( 15 , s );
-      break;
-
-    case 9:
-      break;
-    case 10:
-      break;
-    case 11:
-      break;
-    case 12:
-      break;
-    case 13:
-      s = m2;
-      comms.add_send_to( 0 , s );
-      break;
-
-    case 14:
-      s = m3;
-      comms.add_send_to( 0 , s );
-
-      s = m4;
-      comms.add_send_to( 8 , s );
-      break;
-
-    case 15:
-      s = m5;
-      comms.add_send_to( 8 , s );
-      break;
-
-    }
-
-  comms.finishSetup();
-
-  QDPIO::cout << "comms setup!\n";  
-
-  QMP_barrier();
-
-  StopWatch sniss1;
-  sniss1.reset();
-  sniss1.start();
-
-
-  comms.send_receive();
-  comms.qmp_wait();
-
-  QMP_barrier();
-
-  sniss1.stop();
-  QDPIO::cout << "Time = " << sniss1.getTimeInSeconds() << std::endl;
-
-  int size = m1+m2+m3+m4+m5;
-  QDPIO::cout << "MB/s = " << (double)size/1024./1024/(double)sniss1.getTimeInSeconds() << std::endl;
-
-  
-}
-#endif
-
-
-
-
     multi1d<SubsetVectorWeight_t> readEigVals(const std::string& meta)
     {    
       std::istringstream  xml_l(meta);
@@ -596,41 +487,6 @@ void test_mpi_speed()
     }
 
 
-#if 0    
-    struct ts_comms_t
-    {
-      std::string fifo_send_name;
-      std::string fifo_recv_name;
-
-      int         fifo_send_fd;
-      int         fifo_recv_fd;
-      
-      std::string shm_name;
-      int         shm_fd;
-
-      void*       ts_buf;
-    };
-#endif
-
-#if 0    
-    namespace
-    {
-      int local_site(const multi1d<int>& coord, const multi1d<int>& latt_size)
-      {
-	int order = 0;
-
-	for(int mmu=latt_size.size()-1; mmu >= 1; --mmu)
-	  order = latt_size[mmu-1]*(coord[mmu] + order);
-
-	order += coord[0];
-
-	return order;
-      }
-    }
-#endif
-
-
-
     namespace
     {
       std::ostream& operator<< (std::ostream& stream, const KeyPropElementalOperator_t& k) {
@@ -658,10 +514,6 @@ void test_mpi_speed()
     {
       START_CODE();
 
-      //test_mpi_speed();
-      // Time = 0.018653
-      // MB/s = 3859.96890580604
-
 
       StopWatch snoop;
       snoop.reset();
@@ -688,9 +540,6 @@ void test_mpi_speed()
 
       }
 #endif
-
-
-      //test_mpi_speed();
 
 
       
@@ -960,26 +809,13 @@ void test_mpi_speed()
 		  }
 
 		ts_eig_collect.exec( eig , buf_eig );
-		//auto& recv_eig = ts_eig_collect.getRecv();
 
 		if (Layout::nodeNumber() % nodes_per_cn == 0)
 		  {
 		    for (int i = 0 ; i < ts_per_node ; ++i )
 		      {
-			//auto buf_eig = reinterpret_cast< typename TSCollect<LatticeColorVector>::TypeSend_t * >( ts_comms_get_shm( i ) );
-
 			int ts = ( t_source + ( Layout::nodeNumber() / nodes_per_cn ) * ts_per_node + i ) % Nt;
 
-			// for(int site=0; site < ts_vol; ++site)
-			//   {
-			//     multi1d<int> coord = crtesn(site, ts_lattsize);
-			//     int lsite = local_site( coord , ts_lattsize );
-			//     buf_eig[ lsite ] = recv_eig[ i ]( coord[0] , coord[1] , coord[2] );
-			//   }
-
-			// send the t_slice info, which lets harom know the eig is in shm
-			//
-			//QDPIO::cout << "sending to slot " << i << "  timeslice info " << ts << "\n";
 			ts_comms_send( i , ts );
 
 			// optimize, can wait for ack in separate loop
@@ -1062,8 +898,6 @@ void test_mpi_speed()
 		else
 		  vec_srce = sub_eigen_getter.get( t_source, colorvec_src );
 
-		//vec_srce = sub_eigen_map.getVec(t_source, colorvec_src);
-
 		//
 		// Loop over each spin source and invert. 
 		// Use the same colorstd::vector source. No spin dilution will be used.
@@ -1138,26 +972,6 @@ void test_mpi_speed()
 		for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 		  {
 		    ferm_out(spin_sink) = peekSpin(quark_soln, spin_sink);
-
-#if 0
-		    for(int site=0; site < Layout::vol(); ++site)
-		      {
-			multi1d<int> coord = crtesn(site, Layout::lattSize());
-			int node	 = Layout::nodeNumber(coord);
-			int linear = Layout::linearSiteIndex(coord);
-			if (Layout::nodeNumber() == node)
-			  {
-			    ferm_out(spin_sink).elem(linear).elem().elem(0).real() = coord[0];
-			    ferm_out(spin_sink).elem(linear).elem().elem(1).real() = coord[1];
-			    ferm_out(spin_sink).elem(linear).elem().elem(2).real() = coord[2];
-
-			    ferm_out(spin_sink).elem(linear).elem().elem(0).imag() = coord[3];
-			    ferm_out(spin_sink).elem(linear).elem().elem(1).imag() = 0;
-			    ferm_out(spin_sink).elem(linear).elem().elem(2).imag() = 0;
-			  }
-		      }
-#endif
-
 		  }
 
 		snarss1.stop();
@@ -1225,7 +1039,7 @@ void test_mpi_speed()
 		    sniss3.reset();
 		    sniss3.start();
 
-#if 1
+
 		    std::vector< typename TSCollect<LatticeColorVector>::TypeSend_t * > buf_shm( ts_per_node );
 		    if (Layout::nodeNumber() % nodes_per_cn == 0)
 		      {
@@ -1234,14 +1048,6 @@ void test_mpi_speed()
 		      }
 
 		    tscollect.exec( ferm_out(spin_sink) , buf_shm );
-
-
-		    //auto& recv = tscollect.getRecv();
-#else
-		    multi1d< multi3d< typename TSCollect<LatticeColorVector>::TypeSend_t > > recv(ts_per_node);
-		    for ( int i = 0 ; i < ts_per_node ; ++i )
-		      recv[i].resize( Layout::lattSize()[0],Layout::lattSize()[1],Layout::lattSize()[2] );
-#endif
 
 
 		    QMP_barrier();
@@ -1258,26 +1064,13 @@ void test_mpi_speed()
 			    ts_comms_send( i , ts );
 			  }
 
-			// StopWatch sniss5;
-			// sniss5.reset();
-			// sniss5.start();
-
 			// Wait for harom instance to finish
 			//
 			for (int i = 0 ; i < ts_per_node ; ++i )
 			  {
-			    //QDPIO::cout << "waiting for contraction to be done on slot " << i << "\n";
 			    int rcv = ts_comms_recv( i );
 			    assert(rcv==23);
 			  }
-
-			// sniss5.stop();
-			// printf("time waiting for harom to finish = %d secs\n", sniss5.getTimeInSeconds() );
-
-
-			// StopWatch sniss6;
-			// sniss6.reset();
-			// sniss6.start();
 
 			for (int i = 0 ; i < ts_per_node ; ++i )
 			  {
@@ -1297,10 +1090,6 @@ void test_mpi_speed()
 				peram_access(peram,key).mat(colorvec_sink,colorvec_src) = buf_complex[ colorvec_sink ];
 			      }
 			  }
-
-			// sniss6.stop();
-			// printf("time waiting to copy peram = %d secs\n", sniss6.getTimeInSeconds() );
-
 
 			
 		      }  // node % nodes_per_cn
@@ -1339,25 +1128,13 @@ void test_mpi_speed()
 
 		int ts = key->t_slice;
 
-		//QDPIO::cout << "t_slice = " << ts << "\n";
-
 		int tcorr = ( Nt + key->t_slice - t_source ) % Nt;
 		int ts_node = tcorr / ts_per_node * nodes_per_cn;
 
 
-		// if (ts_node == 0)
-		//   QDPIO::cout << "primary node\n";
-		// else
-		//   QDPIO::cout << "on node " << ts_node << ", have to send it\n";
-
 		if (ts_node != 0)
 		  {
 		    int size = peram_access(peram,*key).mat.size1() * peram_access(peram,*key).mat.size2() * sizeof( ComplexD );
-
-		    // QDPIO::cout << "size1 = " << peram_access(peram,*key).mat.size1() 
-		    // 	    << ", size2 = " << peram_access(peram,*key).mat.size2()
-		    // 	    << ", bytes = " << size << "\n";
-
 
 		    if (Layout::nodeNumber() == ts_node)
 		      {
