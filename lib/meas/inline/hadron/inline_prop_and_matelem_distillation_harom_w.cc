@@ -538,6 +538,16 @@ namespace Chroma
 	if (ret < 0)
 	  QDP_error_exit("Error during ts comms setup");
 
+	for ( int i = 0 ; i < ts_per_node ; ++i )
+	  {	
+	    int base_harom = ts_comms_recv( i ); // read base precision of harom
+	    if (base_harom != sizeof(Real) )
+	      {
+		QDPIO::cout << "harom base precision = " << base_harom << "\n";
+		QDPIO::cout << "chroma base precision = " << sizeof(Real) << "\n";
+		QDP_error_exit("harom/chroma base precision mismatch");
+	      }
+	  }
       }
 #endif
 
@@ -1012,7 +1022,6 @@ namespace Chroma
 				  peram_access(peram2,*key).mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_map.getVec(t_slice, colorvec_sink) , ferm_out(key->spin_snk));
 				else
 				  peram_access(peram2,*key).mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_getter.get(t_slice, colorvec_sink) , ferm_out(key->spin_snk));
-				
 
 			      } // for colorvec_sink
 			  } // for key
