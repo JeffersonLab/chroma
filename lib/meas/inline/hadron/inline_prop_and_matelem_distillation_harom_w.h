@@ -42,8 +42,6 @@ namespace Chroma
 	  int           decay_dir;      /*!< Decay direction */
 	  multi1d<int>  t_sources;      /*!< Array of time slice sources for props */
 	  int           Nt_forward;     /*!< Time-slices in the forward direction */
-
-	  // not supported, always set to zero !!!
 	  int           Nt_backward;    /*!< Time-slices in the backward direction */
 	  
 	  std::string   mass_label;     /*!< Some kind of mass label */
@@ -378,7 +376,6 @@ namespace Chroma
 	StopWatch sniss1;
 	sniss1.reset();
 	sniss1.start();
-
 
 	if ( _receiving_node )
 	  {

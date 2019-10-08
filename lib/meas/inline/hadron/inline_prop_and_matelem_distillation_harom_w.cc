@@ -123,8 +123,7 @@ namespace Chroma
       read(inputtop, "t_sources", input.t_sources);
       read(inputtop, "decay_dir", input.decay_dir);
       read(inputtop, "Nt_forward", input.Nt_forward);
-      //read(inputtop, "Nt_backward", input.Nt_backward);
-      input.Nt_backward = 0;
+      read(inputtop, "Nt_backward", input.Nt_backward);
       read(inputtop, "mass_label", input.mass_label);
       read(inputtop, "num_tries", input.num_tries);
 
@@ -522,6 +521,7 @@ namespace Chroma
       const int ts_per_node = params.param.contract.fifo.size();
       const int nodes_per_cn = params.param.contract.nodes_per_cn;
       const int Nt_forward = params.param.contract.Nt_forward;
+      const int Nt_backward = params.param.contract.Nt_backward;
       const int Nt = Layout::lattSize()[3];
 
 #if 1
@@ -756,6 +756,12 @@ namespace Chroma
 	const int num_vecs            = params.param.contract.num_vecs;
 	const multi1d<int>& t_sources = params.param.contract.t_sources;
 
+
+	if (t_sources.size() > 1)
+	  {
+	    QDP_error_exit("More than one source is not supported.");
+	  }
+
 	
 	// Loop over each time source
 	for(int tt=0; tt < t_sources.size(); ++tt)
@@ -763,6 +769,23 @@ namespace Chroma
 	  int t_source = t_sources[tt];  // This is the actual time-slice.
 	  QDPIO::cout << "t_source = " << t_source << std::endl;
 
+	  int t_start;
+	  if (Nt_backward < 2)
+	    t_start = t_source;
+	  else
+	    t_start = ( Nt + t_source - Nt_backward + 1) % Nt;
+
+
+	  int t_length = Nt_forward + Nt_backward;
+	  if (Nt_forward > 0 && Nt_backward > 0)
+	    {
+	      t_length -= 1;
+	    }
+
+	  if (t_length % ts_per_node)
+	    {
+	      QDP_error_exit("Nt_forward and Nt_backward's total length must be divisible by the number of harom processes per node.");
+	    }
 
 #if 1
 	  //
@@ -778,7 +801,8 @@ namespace Chroma
 
 	  {
 	    TSCollect<LatticeColorVector> ts_eig_collect;
-	    ts_eig_collect.exec_prepare( ts_per_node , t_source , Nt_forward , nodes_per_cn );
+
+	    ts_eig_collect.exec_prepare( ts_per_node , t_start , t_length , nodes_per_cn );
 
 	    //
 	    StopWatch sniss_send;
@@ -796,9 +820,9 @@ namespace Chroma
 		sniss4.start();
 
 		LatticeColorVector eig;
-		for ( int t0 = 0 ; t0 < Nt_forward ; ++t0 )
+		for ( int t0 = 0 ; t0 < t_length ; ++t0 )
 		  {
-		    int t = ( t0 + t_source ) % Nt;
+		    int t = ( t0 + t_start ) % Nt;
 		    if (params.param.contract.cache_eigs)
 		      eig = sub_eigen_map.getVec( t , colorvec_n );
 		    else
@@ -880,7 +904,7 @@ namespace Chroma
 
 
 	    TSCollect<LatticeColorVector> tscollect;
-	    tscollect.exec_prepare( ts_per_node , t_source , Nt_forward , nodes_per_cn );
+	    tscollect.exec_prepare( ts_per_node , t_start , t_length , nodes_per_cn );
 	    
 	    //
 	    // The space distillation loop
@@ -1022,6 +1046,7 @@ namespace Chroma
 				  peram_access(peram2,*key).mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_map.getVec(t_slice, colorvec_sink) , ferm_out(key->spin_snk));
 				else
 				  peram_access(peram2,*key).mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_getter.get(t_slice, colorvec_sink) , ferm_out(key->spin_snk));
+				
 
 			      } // for colorvec_sink
 			  } // for key
@@ -1083,7 +1108,7 @@ namespace Chroma
 
 			for (int i = 0 ; i < ts_per_node ; ++i )
 			  {
-			    int ts = ( t_source + ( Layout::nodeNumber() / nodes_per_cn ) * ts_per_node + i ) % Nt;
+			    int ts = ( t_start + ( Layout::nodeNumber() / nodes_per_cn ) * ts_per_node + i ) % Nt;
 
 			    KeyPropElementalOperator_t key;
 			    key.t_slice    = ts;
@@ -1135,9 +1160,7 @@ namespace Chroma
 		// Make sure the perambulator is available on the primary node.
 		// If not, make it available.
 
-		int ts = key->t_slice;
-
-		int tcorr = ( Nt + key->t_slice - t_source ) % Nt;
+		int tcorr = ( Nt + key->t_slice - t_start ) % Nt;
 		int ts_node = tcorr / ts_per_node * nodes_per_cn;
 
 
@@ -1172,7 +1195,9 @@ namespace Chroma
 			      {
 				if ( toBool(norm2(peram_access(peram,*key).mat(q,w) - peram_access(peram2,*key).mat(q,w)) > 0.0001) )
 				  {
-				    QDPIO::cout << "mismatch: " << q << "," << w << " \t"
+				    QDPIO::cout << "mismatch on " 
+						<< "t_slice = " << key->t_slice << " : "
+						<< q << "," << w << " \t"
 						<< peram_access(peram,*key).mat(q,w) << " vs "
 						<< peram_access(peram2,*key).mat(q,w) << "\n";
 				  }
