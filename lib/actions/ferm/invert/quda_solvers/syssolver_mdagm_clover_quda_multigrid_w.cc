@@ -200,20 +200,32 @@ namespace Chroma
       writer.close();
     }
 
-    // Dump MG state 
+        // Dump MG state 
     {
-     std::string subspace_prefix = file_prefix + "_subspace";
+      auto mg_params = *(invParam.MULTIGRIDParams);
+      for(int l = 0; l < mg_params.mg_levels; ++l) {
+	std::ostringstream subspace_prefix;
+	subspace_prefix << file_prefix << "_subspace_l" << l;
 
-     // 256 is the size of the buffer -- this will pad with zeros
-     std::strncpy((subspace_pointers->mg_param).vec_outfile, subspace_prefix.c_str(), 256);
+	// Up to the length of the buffer (256) padded with zeros
+	std::strncpy((subspace_pointers->mg_param).vec_outfile[l], (subspace_prefix.str()).c_str(), 256);
+	// If source string is too long it will be truncated and not null terminated, so null terminate
+	if(  subspace_prefix.str().size() > 255 ) { (subspace_pointers->mg_param).vec_outfile[l][255] = '\0'; }
+	
+      }
+      // Make sure everyone has thei varibles set before calling dump Multigrid
+      // Strictly speaking I am using a sum as a barrier;
+      double i=10;
+      QDPInternal::globalSum(i);
 
-     // if the source string is too long result will not be null terminated, so null terminate in that case 
-     if(  subspace_prefix.size() > 255 ) { (subspace_pointers->mg_param).vec_outfile[255] = '\0'; }
-     QDPInternal::broadcast( (void*)(subspace_pointers->mg_param).vec_outfile, 256);
 #ifdef QUDA_MG_DUMP_ENABLED
-     dumpMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+      dumpMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
 #endif
-     (subspace_pointers->mg_param).vec_outfile[0]='\0';
+
+      for(int l = 0; l < mg_params.mg_levels; ++l) {
+	(subspace_pointers->mg_param).vec_outfile[l][0] ='\0';
+      }
+      QDPInternal::globalSum(i);
     }
   }
 
@@ -321,23 +333,36 @@ namespace Chroma
 
     // Dump MG state 
     {
-     std::string subspace_prefix = file_prefix + "_subspace";
+      auto mg_params = *(invParam.MULTIGRIDParams);
+      for(int l = 0; l < mg_params.mg_levels; ++l) {
+	std::ostringstream subspace_prefix;
+	subspace_prefix << file_prefix << "_subspace_l" << l;
 
-     // Up to the length of the buffer (256) padded with zeros
-     std::strncpy((subspace_pointers->mg_param).vec_outfile, subspace_prefix.c_str(), 256);
+	// Up to the length of the buffer (256) padded with zeros
+	std::strncpy((subspace_pointers->mg_param).vec_outfile[l], (subspace_prefix.str()).c_str(), 256);
+	// If source string is too long it will be truncated and not null terminated, so null terminate
+	if(  subspace_prefix.str().size() > 255 ) { (subspace_pointers->mg_param).vec_outfile[l][255] = '\0'; }
+	
+      }
+      // Make sure everyone has thei varibles set before calling dump Multigrid
+      // I use a global sum as a barrier here
+      double i=10;
+      QDPInternal::globalSum(i);
+    
 
-     // If source string is too long it will be truncated and not null terminated, so null terminate
-     if(  subspace_prefix.size() > 255 ) { (subspace_pointers->mg_param).vec_outfile[255] = '\0'; }
-     QDPInternal::broadcast( (void*)(subspace_pointers->mg_param).vec_outfile, 256);
 #ifdef QUDA_MG_DUMP_ENABLED
      dumpMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
 #endif
-     (subspace_pointers->mg_param).vec_outfile[0] ='\0';
+
+     for(int l = 0; l < mg_params.mg_levels; ++l) {
+       (subspace_pointers->mg_param).vec_outfile[l][0] ='\0';
+     }
+     // I use a global sum as a weak barrier here.
+     QDPInternal::globalSum(i);  // Make sure everyone is done
     }
   }
 
-
   
 
-}
+} // namespace 
 
