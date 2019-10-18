@@ -557,9 +557,11 @@ public:
 		mg_param.compute_null_vector = ip.generate_nullspace ? QUDA_COMPUTE_NULL_VECTOR_YES
 				: QUDA_COMPUTE_NULL_VECTOR_NO;
 
-		mg_param.vec_infile[0] = '\0';
-		mg_param.vec_outfile[0] = '\0';
-
+		for(int l=0; l < ip.mg_levels; l++) {
+		  mg_param.vec_infile[l][0] = '\0';
+		  mg_param.vec_outfile[l][0] = '\0';
+		}
+		
 		QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
 		quda_inv_param.verbosity = QUDA_VERBOSE;
 
