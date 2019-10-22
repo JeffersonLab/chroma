@@ -86,7 +86,7 @@ namespace Chroma
     ts_size_ = ts_size;
     
     ts_comms.resize( fifos.size() );
-    
+
     for ( int i = 0 ; i < fifos.size() ; ++i )
       {
 	std::cout << "creating comms for TS " << i << "\n";
@@ -97,17 +97,17 @@ namespace Chroma
 	if( access( ts_comms[i].fifo_send_name.c_str() , F_OK ) != -1 ) {
 	  std::cout << "File exists: " << ts_comms[i].fifo_send_name.c_str() << "\n";
 	  if ( remove(ts_comms[i].fifo_send_name.c_str() ) ) {
-	      std::cout << "..and could not remove the file. giving up\n";
-	      return -1;
-	    }
+	    std::cout << "..and could not remove the file. giving up\n";
+	    return -1;
+	  }
 	}
 	
 	if( access( ts_comms[i].fifo_recv_name.c_str() , F_OK ) != -1 ) {
 	  std::cout << "File exists: " << ts_comms[i].fifo_recv_name.c_str() << "\n";
 	  if ( remove(ts_comms[i].fifo_recv_name.c_str() ) ) {
-	      std::cout << "..and could not remove the file. giving up\n";
-	      return -1;
-	    }
+	    std::cout << "..and could not remove the file. giving up\n";
+	    return -1;
+	  }
 	}
 
 	
@@ -141,13 +141,32 @@ namespace Chroma
 	//
 	ts_comms_send( i , i );
 
-	ts_comms[i].shm_name = "shm_ts_" + std::to_string(i);
+	//
+	// Now find a non-existing name for the shared memory object
+	//
+	int shm_number = 0;
 
-	ts_comms[i].shm_fd = shm_open( ts_comms[i].shm_name.c_str() , O_CREAT | O_RDWR , 0666 );
-	if (ts_comms[i].shm_fd == -1) {
-	  std::cout << "Failed to open shared memory file " << ts_comms[i].shm_name << "\n";
-	  return -1;
-	}
+	ts_comms[i].shm_name = "/shm_" + std::to_string( shm_number ) + "_ts_" + std::to_string( i );
+
+	while ( ( ts_comms[i].shm_fd = shm_open( ts_comms[i].shm_name.c_str() , O_CREAT | O_RDWR , 0666 ) ) < 0 )
+	  {
+	    std::cout << "Unsuccessful with " << ts_comms[i].shm_name << "\n";
+
+	    shm_number++;
+
+	    ts_comms[i].shm_name = "/shm_" + std::to_string( shm_number ) + "_ts_" + std::to_string(i);
+
+	    if (shm_number > 9999)
+	      {
+		std::cout << "Reached 10000 distict sets of shared memory files. Giving up\n";
+		return -1;
+	      }
+	  }
+	std::cout << "Successful with " << ts_comms[i].shm_name << "\n";
+
+	ts_comms_send( i , shm_number );
+
+	std::cout << "Created (RW) shared memory file " << ts_comms[i].shm_name << "\n";
 
 	ftruncate( ts_comms[i].shm_fd , ts_size );
 
@@ -158,13 +177,17 @@ namespace Chroma
 	  std::cout << "Map failed for TS = " << i << "\n";
 	  return -1;
 	}
+
+	//
+	// According to shm_open man page it is safe to close the FD after the mapping was successful. Let's do it
+	//
+	close( ts_comms[i].shm_fd );
 	
 	std::cout << "shared memory sucessfully mapped.\n";
 
 
-      }
+      } // i fifo
+    
+  } // setup
 
-
-  }
-
-}
+} // Chroma
