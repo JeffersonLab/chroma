@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<harom>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>UNSMEARED_HADRON_NODE_DISTILLATION_CHROMA_OPT</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Displacements>
+	  <elem></elem>
+	</Displacements>
+        <Moms>
+          <elem>0 0 0</elem>
+          <elem>1 0 0</elem>
+          <elem>-1 0 0</elem>
+<annotation>
+          <elem>1 1 0</elem>
+          <elem>1 1 1</elem>
+          <elem>2 0 0</elem>
+          <elem>-1 -1 0</elem>
+          <elem>-1 -1 -1</elem>
+          <elem>-2 0 0</elem>
+</annotation>
+	</Moms>
+        <LinkSmearing>
+          <LinkSmearingType>NONE</LinkSmearingType>
+          <!-- LinkSmearingType>STOUT_SMEAR</LinkSmearingType -->
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+
+        <SinkSources>
+	  <elem>
+	    <Key>0</Key>
+	    <Val>0 6</Val>
+	  </elem>
+	  <elem>
+	    <Key>6</Key>
+	    <Val>6</Val>
+	  </elem>
+        </SinkSources>
+
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <mass_label>U0.05</mass_label>
+          <decay_dir>3</decay_dir>
+          <displacement_length>1</displacement_length>
+          <num_tries>0</num_tries>
+        </Contractions>
+      </Param>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>4 4 4 16</nrow> 
+</Param>
+</harom>
+
+
