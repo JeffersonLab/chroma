@@ -756,12 +756,7 @@ namespace Chroma
 	const int num_vecs            = params.param.contract.num_vecs;
 	const multi1d<int>& t_sources = params.param.contract.t_sources;
 
-
-	if (t_sources.size() > 1)
-	  {
-	    QDP_error_exit("More than one source is not supported.");
-	  }
-
+	
 	
 	// Loop over each time source
 	for(int tt=0; tt < t_sources.size(); ++tt)
@@ -769,6 +764,18 @@ namespace Chroma
 	  int t_source = t_sources[tt];  // This is the actual time-slice.
 	  QDPIO::cout << "t_source = " << t_source << std::endl;
 
+
+	  if (Layout::nodeNumber() % nodes_per_cn == 0)
+	    {
+	      for (int i = 0 ; i < ts_per_node ; ++i )
+		{
+		  ts_comms_send( i , t_source );
+		}
+	    }
+	  QMP_barrier();
+
+
+	  
 	  int t_start;
 	  if (Nt_backward < 2)
 	    t_start = t_source;
@@ -1216,19 +1223,30 @@ namespace Chroma
 
 	  } // for spin_src
 
+	  //
+	  // Tell harom the last solution vector has been sent
+	  //
+	  if (Layout::nodeNumber() % nodes_per_cn == 0)
+	    {
+	      for (int i = 0 ; i < ts_per_node ; ++i )
+		ts_comms_send( i , -1 );
+	    }
+	  QMP_barrier();
+	  
 		
 	} // for t_source
 
 	//
-	// Send harom instances the message to quit
+	// Tell harom the last t_source has been processed
 	//
 	if (Layout::nodeNumber() % nodes_per_cn == 0)
 	  {
 	    for (int i = 0 ; i < ts_per_node ; ++i )
-	      ts_comms_send( i , -1 );
+	      ts_comms_send( i , -2 );
 
 	    ts_comms_done();
 	  }
+	QMP_barrier();
 
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 
