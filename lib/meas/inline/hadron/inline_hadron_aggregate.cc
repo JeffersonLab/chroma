@@ -88,6 +88,7 @@
 
 #if defined(BUILD_SHMHAROM)
 #include "meas/inline/hadron/inline_prop_and_matelem_distillation_harom_w.h"
+#include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt_w.h"
 #endif
 
 #include "meas/inline/hadron/inline_barspec_db_w.h"
@@ -174,6 +175,7 @@ namespace Chroma
 	success &= InlinePropAndMatElemDistillation2Env::registerAll();
 #if defined(BUILD_SHMHAROM)
 	success &= InlinePropAndMatElemDistillationHaromEnv::registerAll();
+	success &= InlineUnsmearedHadronNodeDistillationHaromOptEnv::registerAll();
 #endif
 #endif
 	success &= InlinePropMatElemLowMemoryColorVecEnv::registerAll();
