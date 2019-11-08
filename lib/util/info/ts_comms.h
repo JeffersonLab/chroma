@@ -8,6 +8,8 @@ namespace Chroma
   void ts_comms_done();
   
   void ts_comms_send( int harom_instance , int val );
+  void ts_comms_send( int harom_instance , const std::string& str );
+  
   int ts_comms_recv( int harom_instance );
   void* ts_comms_get_shm(int ts);
     

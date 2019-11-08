@@ -45,6 +45,19 @@ namespace Chroma
     assert( ts >= 0 && ts < ts_comms.size() );
     return ts_comms[ts].ts_buf;
   }
+
+  
+  void ts_comms_send( int ts , const std::string& str )
+  {
+    if (str.empty())
+      {
+	std::cout << "ts_comms_send: attempted to send an empty string\n";
+	exit(1);
+      }
+    int size = str.size();
+    write( ts_comms[ts].fifo_send_fd , &size , sizeof(int) );
+    write( ts_comms[ts].fifo_send_fd , str.data() , size );
+  }
   
 
   void ts_comms_send( int ts , int val )
