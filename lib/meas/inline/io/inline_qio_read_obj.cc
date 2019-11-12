@@ -364,7 +364,7 @@ namespace Chroma
 	    // BJOO: Yes that's all very well. but RecordXML has to hold something
 	    XMLBufferWriter dummy;
 	    push(dummy,"DummyRecordXML");
-	    write(dummy, "std::mapSize", num_vecs);
+	    write(dummy, "std_mapSize", num_vecs);
 	    pop(dummy);
 	    record_xml.open(dummy);
 
