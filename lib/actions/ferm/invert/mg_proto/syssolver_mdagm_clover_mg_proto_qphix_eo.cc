@@ -263,6 +263,7 @@ namespace Chroma
             psi = zero;
             QPhiXSpinorToQDPSpinor(qphix_out, psi);
 
+            solution_good = true;
             res.n_count += res2.n_count;
             res.resid = res2.resid;
             {
