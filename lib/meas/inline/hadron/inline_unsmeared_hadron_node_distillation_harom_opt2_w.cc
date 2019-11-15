@@ -27,6 +27,7 @@
 #include "meas/inline/make_xml_file.h"
 
 #include "util/info/ts_comms.h"
+//#include "util/ft/sftmom.h"
 
 #include "meas/inline/io/named_objmap.h"
 #include <algorithm>
@@ -449,49 +450,43 @@ namespace Chroma
 
     //----------------------------------------------------------------------------
     //! Generalized propagator operator
-    struct KeyGenPropElementalOperator_t
+    struct KeyGenProp4ElementalOperator_t
     {
+      int                t_sink;        /*!< Source time slice */
       int                t_slice;       /*!< Propagator time slice */
       int                t_source;      /*!< Source time slice */
-      int                t_sink;        /*!< Source time slice */
-      int                spin_l;        /*!< Four spin indices */
-      int                ins_l;         /*!< Four spin indices */
-      int                ins_r;         /*!< Four spin indices */
-      int                spin_r;        /*!< Four spin indices */
+      int                g;             /*!< DR gamma */
       std::vector<int>   displacement;  /*!< Displacement dirs of right colorstd::vector */
       multi1d<int>       mom;           /*!< D-1 momentum of this operator */
       std::string        mass;          /*!< A mass label */
     };
 
     //! Generalized propagator operator
-    struct ValGenPropElementalOperator_t
+    struct ValGenProp4ElementalOperator_t
     {
-      ValGenPropElementalOperator_t() {}
-      ValGenPropElementalOperator_t( ComplexD* F , int size ): op(F,size,size) {}
-      multi2d<ComplexD>  op;
+      ValGenProp4ElementalOperator_t() {}
+      ValGenProp4ElementalOperator_t( ComplexD* F , int size ): op(F,size,size, Ns,Ns ) {}
+      multi4d<ComplexD>  op;              /*!< Colorstd::vector source and sink with momentum projection */
     };
 
     //----------------------------------------------------------------------------
     //! Holds key and value as temporaries
-    struct KeyValGenPropElementalOperator_t
+    struct KeyValGenProp4ElementalOperator_t
     {
-      KeyGenPropElementalOperator_t  key;
-      ValGenPropElementalOperator_t  val;
+      KeyGenProp4ElementalOperator_t  key;
+      ValGenProp4ElementalOperator_t  val;
     };
 
 
 
     //----------------------------------------------------------------------------
-    StandardOutputStream& operator<<(StandardOutputStream& os, const KeyGenPropElementalOperator_t& d)
+    StandardOutputStream& operator<<(StandardOutputStream& os, const KeyGenProp4ElementalOperator_t& d)
     {
-      os << "GenProp:"
+      os << "GenProp4:"
 	 << " t_sink= " << d.t_sink
 	 << " t_slice= " << d.t_slice
 	 << " t_source= " << d.t_source
-	 << " spin_l= " << d.spin_l
-	 << " ins_l= " << d.ins_l
-	 << " ins_r= " << d.ins_r
-	 << " spin_r= " << d.spin_r
+	 << " g= " << d.g
 	 << " displacement= " << d.displacement
 	 << " mom= " << d.mom
 	 << " mass= " << d.mass;
@@ -501,31 +496,25 @@ namespace Chroma
     
 
     //----------------------------------------------------------------------------
-    //! KeyGenPropElementalOperator reader
-    void read(BinaryReader& bin, KeyGenPropElementalOperator_t& param)
+    //! KeyGenProp4ElementalOperator reader
+    void read(BinaryReader& bin, KeyGenProp4ElementalOperator_t& param)
     {
+      read(bin, param.t_sink);
       read(bin, param.t_slice);
       read(bin, param.t_source);
-      read(bin, param.t_sink);
-      read(bin, param.spin_l);
-      read(bin, param.ins_l);
-      read(bin, param.ins_r);
-      read(bin, param.spin_r);
+      read(bin, param.g);
       read(bin, param.displacement);
       read(bin, param.mom);
       readDesc(bin, param.mass);
     }
 
-    //! GenPropElementalOperator write
-    void write(BinaryWriter& bin, const KeyGenPropElementalOperator_t& param)
+    //! GenProp4ElementalOperator write
+    void write(BinaryWriter& bin, const KeyGenProp4ElementalOperator_t& param)
     {
+      write(bin, param.t_sink);
       write(bin, param.t_slice);
       write(bin, param.t_source);
-      write(bin, param.t_sink);
-      write(bin, param.spin_l);
-      write(bin, param.ins_l);
-      write(bin, param.ins_r);
-      write(bin, param.spin_r);
+      write(bin, param.g);
       write(bin, param.displacement);
       write(bin, param.mom);
       writeDesc(bin, param.mass);
@@ -534,35 +523,23 @@ namespace Chroma
 
     //----------------------------------------------------------------------------
     //! PropElementalOperator reader
-    void read(BinaryReader& bin, ValGenPropElementalOperator_t& param)
+    void read(BinaryReader& bin, ValGenProp4ElementalOperator_t& param)
     {
-      int n;
-      read(bin, n);    // the size is always written, even if 0
-      param.op.resize(n,n);
-  
-      for(int i=0; i < n; ++i)
-      {
-	for(int j=0; j < n; ++j)
-	{
-	  read(bin, param.op(i,j));
-	}
-      }
+      read(bin, param.op);
     }
 
-    //! GenPropElementalOperator write
-    void write(BinaryWriter& bin, const ValGenPropElementalOperator_t& param)
+    //! GenProp4ElementalOperator write
+    void write(BinaryWriter& bin, const ValGenProp4ElementalOperator_t& param)
     {
-      int n = param.op.size1();  // all sizes the same
-      write(bin, n);
-      for(int i=0; i < n; ++i)
-      {
-	for(int j=0; j < n; ++j)
-	{
-	  write(bin, param.op(i,j));
-	}
-      }
+      write(bin, param.op);
     }
 
+
+
+
+    //
+    //  class Comms -------------------------------------
+    //
 
     void* Comms::get_sendbuf( int node )
     {
@@ -827,7 +804,7 @@ namespace Chroma
       
       const int    ts_vol  = Layout::lattSize()[0] * Layout::lattSize()[1] * Layout::lattSize()[2];
       const size_t ts_size_bytes = ts_vol * sizeof( typename TSCollect<LatticeColorVectorSpinMatrix>::TypeSend_t );
-      const size_t tensor_size_bytes = sizeof( ComplexD ) * num_vecs * num_vecs;
+      const size_t tensor_size_bytes = sizeof( ComplexD ) * num_vecs * num_vecs * Ns * Ns;
       
       if (Layout::nodeNumber() % nodes_per_cn == 0) {
 	int ret = ts_comms_setup( params.param.contract.fifo , std::max( ts_size_bytes , tensor_size_bytes ) );
@@ -956,7 +933,7 @@ namespace Chroma
       // DB storage
       //
       QDPIO::cout << name << ": initialize sdb" << std::endl;
-      BinaryStoreDB< SerialDBKey<KeyGenPropElementalOperator_t>, SerialDBData<ValGenPropElementalOperator_t> > qdp_db;
+      BinaryStoreDB< SerialDBKey<KeyGenProp4ElementalOperator_t>, SerialDBData<ValGenProp4ElementalOperator_t> > qdp_db;
 
       // Open the file, and write the meta-data and the binary for this operator
       if (! qdp_db.fileExists(params.named_obj.dist_op_file))
@@ -985,6 +962,40 @@ namespace Chroma
 
       QDPIO::cout << "Finished opening distillation file" << std::endl;
 
+
+
+      
+      //
+      // Build momentum phases
+      //
+      QDPIO::cout << "Parse momentum list" << std::endl;
+      
+      // Possible momenta
+      multi2d<int> moms;
+
+      if (params.param.moms.size() > 0)
+	{
+	  int num_mom = params.param.moms.size();
+	  int mom_size = params.param.moms[0].size();
+	  moms.resize(num_mom,mom_size);
+	  for(int i = 0; i < num_mom; i++)
+	    {
+	      moms[i] = params.param.moms[i];
+	    }
+	}
+      else
+	{
+	  QDPIO::cerr << "Error - you have an empty mom list" << std::endl;
+	  QDP_abort(1);
+	}
+
+#if 0
+      // Initialize the slow Fourier transform phases
+      QDPIO::cout << "Initialize phases" << std::endl;
+      SftMom phases(moms,3);
+#endif
+
+      
       
 
       //
@@ -1016,6 +1027,19 @@ namespace Chroma
       QDPIO::cout << "Finished link smearing" << std::endl;
 
       
+#if 0
+      for (int i = 0 ; i < Nt_forward ; ++i )
+	{
+	  int t = ( i + t_start ) % Lt;
+
+	  for (int q = 0 ; q < 3 ; ++q )
+	    {
+	      LatticeColorMatrix tmp = zero;
+	      tmp[ phases.getSet()[t] ] = u_smr[q];
+	      QDPIO::cout << "t_slice " << t << "  dir = " << q << " norm2(real(phase * field)) = " << norm2(real( phases[1] * tmp )) << "\n";
+	    }
+	}
+#endif
 
       //
       // Sending gauge field to harom
@@ -1052,7 +1076,8 @@ namespace Chroma
 	  QMP_barrier();
 	}
 
-      
+
+      //return;
 
       QDPIO::cout << "Check displacement list" << std::endl;
       std::vector< std::vector<int> > disps;
@@ -1165,96 +1190,82 @@ namespace Chroma
 		for(auto mm = params.param.moms.begin(); mm != params.param.moms.end(); ++mm)
 		  {
 		    auto mom     = *mm;
-		    //int  mom_num = phases.momToNum(mom);
 
 		    for(auto sink_ptr = source_ptr->second.begin(); sink_ptr != source_ptr->second.end(); ++sink_ptr)
 		      {
 			int t_sink = *sink_ptr;
-
-			for (int sl = 0; sl < Ns; ++sl)
+			
+			for (int g = 0; g < Ns*Ns; ++g)
 			  {
-			    for (int il = 0; il < Ns; ++il)
+
+			    std::vector< KeyGenProp4ElementalOperator_t >  key( ts_per_node );
+			    std::vector< ValGenProp4ElementalOperator_t >  val( ts_per_node );
+
+			    for (int i = 0 ; i < ts_per_node ; ++i )
 			      {
-				for (int ir = 0; ir < Ns; ++ir)
+				key[i].t_sink        = t_sink;
+				key[i].t_source      = t_source;
+				key[i].g             = g;
+				key[i].displacement  = disp;
+				key[i].mom           = mom;
+				key[i].mass          = params.param.contract.mass_label;
+				//key.t_slice       = t_slice;
+			      }
+
+			    if (Layout::nodeNumber() % nodes_per_cn == 0)
+			      {
+				for (int i = 0 ; i < ts_per_node ; ++i )
 				  {
-				    for (int sr = 0; sr < Ns; ++sr)
-				      {
-					
-					std::vector< KeyGenPropElementalOperator_t >  key( ts_per_node );
-					std::vector< ValGenPropElementalOperator_t >  val( ts_per_node );
+				    //
+				    // Wait for harom instance to finish writing to shared mem
+				    //
+				    int rcv = ts_comms_recv( i );
+				    assert(rcv==23);
 
-					for (int i = 0 ; i < ts_per_node ; ++i )
-					  {
-					    key[i].t_sink        = t_sink;
-					    key[i].t_source      = t_source;
-					    key[i].spin_l        = sl;
-					    key[i].ins_l         = il;
-					    key[i].ins_r         = ir;
-					    key[i].spin_r        = sr;
-					    key[i].displacement  = disp;
-					    key[i].mom           = mom;
-					    key[i].mass          = params.param.contract.mass_label;
-					    //key.t_slice       = t_slice;
-					  }
+				    val[i].op.late_constructor( reinterpret_cast< ComplexD * >( ts_comms_get_shm( i ) ) , num_vecs , num_vecs , Ns , Ns );
 
-					
-					if (Layout::nodeNumber() % nodes_per_cn == 0)
-					  {
-					    for (int i = 0 ; i < ts_per_node ; ++i )
-					      {
-						//
-						// Wait for harom instance to finish writing to shared mem
-						//
-						int rcv = ts_comms_recv( i );
-						assert(rcv==23);
+				    int t_slice = ( t_start + ( Layout::nodeNumber() / nodes_per_cn ) * ts_per_node + i ) % Lt;
 
-						val[i].op.late_constructor( reinterpret_cast< ComplexD * >( ts_comms_get_shm( i ) ) , num_vecs , num_vecs );
-
-						int t_slice = ( t_start + ( Layout::nodeNumber() / nodes_per_cn ) * ts_per_node + i ) % Lt;
-
-						key[i].t_slice    = t_slice;
+				    key[i].t_slice    = t_slice;
 
 											    
-						//QDPIO::cout << key[i] << "\n";
+				    //QDPIO::cout << key[i] << "\n";
 
 
 
-						int tcorr = ( Lt + t_slice - t_start ) % Lt;
-						int ts_node = tcorr / ts_per_node * nodes_per_cn;
+				    int tcorr = ( Lt + t_slice - t_start ) % Lt;
+				    int ts_node = tcorr / ts_per_node * nodes_per_cn;
 
 
-						if (ts_node != 0)
-						  {
-						    int size = num_vecs * num_vecs * sizeof( ComplexD );
+				    if (ts_node != 0)
+				      {
+					int size = sizeof( ComplexD ) * num_vecs * num_vecs * Ns * Ns;
 						    
-						    if (Layout::nodeNumber() == ts_node)
-						      {
-							QDPInternal::sendToWait( const_cast<ComplexD*>(val[i].op.slice(0)) , 0 , size );
-						      }
-						    if (Layout::nodeNumber() == 0)
-						      {
-							QDPInternal::recvFromWait( const_cast<ComplexD*>(val[i].op.slice(0)) , ts_node , size );
-						      }
-						  }
+					if (Layout::nodeNumber() == ts_node)
+					  {
+					    QDPInternal::sendToWait( const_cast<ComplexD*>(val[i].op.slice(0,0,0)) , 0 , size );
+					  }
+					if (Layout::nodeNumber() == 0)
+					  {
+					    QDPInternal::recvFromWait( const_cast<ComplexD*>(val[i].op.slice(0,0,0)) , ts_node , size );
+					  }
+				      }
 
-						qdp_db.insert(key[i], val[i]);
+				    qdp_db.insert(key[i], val[i]);
 
-						//
-						// Tell harom we're done with using the shared memory
-						//
-						for (int i = 0 ; i < ts_per_node ; ++i )
-						  {
-						    ts_comms_send( i , 24 );
-						  }
+				    //
+				    // Tell harom we're done with using the shared memory
+				    //
+				    for (int i = 0 ; i < ts_per_node ; ++i )
+				      {
+					ts_comms_send( i , 24 );
+				      }
 						
-					      } // i
-					  } // node %
-					QMP_barrier();
+				  } // i
+			      } // node %
+			    QMP_barrier();
 					
-				      } // sr
-				  } // ir
-			      } // il
-			  } // sl
+			  } // g
 
 		      } // t_sink
 		  } // mom
@@ -1264,27 +1275,7 @@ namespace Chroma
 	
 	return;
 
-#if 0
-	//
-	// Receive genprops from harom
-	//
-	swatch.reset(); swatch.start();
-	
-	int t_comm = 0;
-	while (t_comm >= 0)
-	{
-	  KeyGenPropElementalOperator_t  key;
-	  ValGenPropElementalOperator_t  val;
 
-	  // Write perambulators
-	  //QDPIO::cout << "Write perambulators to disk" << std::endl;
-	  qdp_db.insert(key, val);
-
-	  // HACK
-	  QDPIO::cout << "HACK - receive genprops from harom\n";
-	  t_comm = -1;
-	}
-#endif	  
 	swatch.stop(); 
 	QDPIO::cout << "Time to receive and write all genprops: time= " << swatch.getTimeInSeconds() << " secs" <<std::endl;
       }

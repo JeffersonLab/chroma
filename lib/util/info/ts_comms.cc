@@ -7,6 +7,7 @@
 #include <sys/mman.h>
 #include <stdio.h>
 #include <string.h>
+#include<bits/stdc++.h>
 
 #include <string>
 #include <iostream>
@@ -153,6 +154,14 @@ namespace Chroma
 	// Sending each harom its assigned number used later to open the correct shared memory file
 	//
 	ts_comms_send( i , i );
+
+	if (ts_size > INT_MAX)
+	  {
+	    std::cout << "ts_size too big, " << ts_size << "\n";
+	    return  -1;
+	  }
+	
+	ts_comms_send( i , ts_size );
 
 	//
 	// Now find a non-existing name for the shared memory object
