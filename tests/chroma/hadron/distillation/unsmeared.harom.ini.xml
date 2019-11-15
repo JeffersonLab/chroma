@@ -9,6 +9,8 @@
       <Param>
         <Displacements>
 	  <elem></elem>
+	  <elem>3</elem>
+	  <elem>3 3</elem>
 	</Displacements>
         <Moms>
           <elem>0 0 0</elem>
