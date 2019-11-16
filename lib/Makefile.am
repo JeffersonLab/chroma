@@ -1898,8 +1898,12 @@ libchroma_a_SOURCES += \
 # Hooks for optimized code
 #
 if BUILD_HADRON
-nobase_include_HEADERS += meas/inline/hadron/inline_unsmeared_hadron_node_distillation_opt_w.h
-libchroma_a_SOURCES += meas/inline/hadron/inline_unsmeared_hadron_node_distillation_opt_w.cc
+nobase_include_HEADERS += \
+        meas/inline/hadron/inline_unsmeared_hadron_node_distillation_opt_w.h \
+        meas/inline/hadron/inline_prop_smw_opt_w.h
+libchroma_a_SOURCES += \
+        meas/inline/hadron/inline_unsmeared_hadron_node_distillation_opt_w.cc \
+        meas/inline/hadron/inline_prop_smw_opt_w.cc
 endif
 
 

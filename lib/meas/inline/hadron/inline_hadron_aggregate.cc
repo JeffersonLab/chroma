@@ -87,6 +87,7 @@
 
 #if defined(BUILD_HADRON_OPT)
 #include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_opt_w.h"
+#include "meas/inline/hadron/inline_prop_smw_opt_w.h"
 #endif
 
 #include "meas/inline/hadron/inline_barspec_db_w.h"
@@ -173,6 +174,7 @@ namespace Chroma
 #endif
 #if defined(BUILD_HADRON_OPT)
         success &= InlineUnsmearedHadronNodeDistillationOptEnv::registerAll();
+        success &= InlinePropSMWOptEnv::registerAll();
 #endif
 	success &= InlinePropMatElemLowMemoryColorVecEnv::registerAll();
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();

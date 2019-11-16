@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<chroma>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>PROP_SMW_OPT</Name>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <mass_label>U0.05</mass_label>
+          <decay_dir>3</decay_dir>
+          <num_tries>0</num_tries>
+        </Contractions>
+
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.05</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_files><elem>./colorvec.mod</elem></colorvec_files>
+        <prop_op_file>prop.smw.sdb</prop_op_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>4 4 4 16</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
