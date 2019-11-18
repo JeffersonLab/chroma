@@ -7,7 +7,7 @@
 #include <sys/mman.h>
 #include <stdio.h>
 #include <string.h>
-#include<bits/stdc++.h>
+//#include<bits/stdc++.h>
 
 #include <string>
 #include <iostream>
@@ -155,11 +155,13 @@ namespace Chroma
 	//
 	ts_comms_send( i , i );
 
+#if 0
 	if (ts_size > INT_MAX)
 	  {
 	    std::cout << "ts_size too big, " << ts_size << "\n";
 	    return  -1;
 	  }
+#endif
 	
 	ts_comms_send( i , ts_size );
 
