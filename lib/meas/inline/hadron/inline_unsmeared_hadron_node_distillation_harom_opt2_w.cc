@@ -1136,7 +1136,6 @@ namespace Chroma
 	    LatticeColorVectorSpinMatrix soln_srce;
 	    prop_factory.getSoln(soln_srce, t_source, colorvec_src);
 
-
 	    snarss1.stop();
 	    QDPIO::cout << "Time to generate SOURCE solutions for colorvec_src= " << colorvec_src << "  time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
 
@@ -1212,6 +1211,7 @@ namespace Chroma
 				//key.t_slice       = t_slice;
 			      }
 
+
 			    if (Layout::nodeNumber() % nodes_per_cn == 0)
 			      {
 				for (int i = 0 ; i < ts_per_node ; ++i )
@@ -1220,22 +1220,20 @@ namespace Chroma
 				    // Wait for harom instance to finish writing to shared mem
 				    //
 				    int rcv = ts_comms_recv( i );
-				    assert(rcv==23);
+
+				    if (rcv != key[i].g)
+				      {
+					QDPIO::cout << "expected gamma = " << key[i].g << ", but got gamma = " << key[i].g << " instead!\n";
+					QDP_abort(1);
+				      }
+
+				    int t_slice = ( t_start + ( Layout::nodeNumber() / nodes_per_cn ) * ts_per_node + i ) % Lt;
+				    key[i].t_slice    = t_slice;
 
 				    val[i].op.late_constructor( reinterpret_cast< ComplexD * >( ts_comms_get_shm( i ) ) , num_vecs , num_vecs , Ns , Ns );
 
-				    int t_slice = ( t_start + ( Layout::nodeNumber() / nodes_per_cn ) * ts_per_node + i ) % Lt;
-
-				    key[i].t_slice    = t_slice;
-
-											    
-				    //QDPIO::cout << key[i] << "\n";
-
-
-
 				    int tcorr = ( Lt + t_slice - t_start ) % Lt;
 				    int ts_node = tcorr / ts_per_node * nodes_per_cn;
-
 
 				    if (ts_node != 0)
 				      {
@@ -1252,14 +1250,11 @@ namespace Chroma
 				      }
 
 				    qdp_db.insert(key[i], val[i]);
-
+				    
 				    //
 				    // Tell harom we're done with using the shared memory
 				    //
-				    for (int i = 0 ; i < ts_per_node ; ++i )
-				      {
-					ts_comms_send( i , 24 );
-				      }
+				    ts_comms_send( i , 24 );
 						
 				  } // i
 			      } // node %
