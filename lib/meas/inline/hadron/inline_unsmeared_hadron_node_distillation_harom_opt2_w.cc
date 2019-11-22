@@ -743,6 +743,38 @@ namespace Chroma
       return disp;
     } // void normDisp
 
+
+
+
+    void recv_array( int ts , std::vector<int>& array )
+    {
+      int size = ts_comms_recv( ts );
+      array.resize(size);
+      for ( int i = 0 ; i < array.size() ; ++i )
+	array[i] = ts_comms_recv( ts );
+    }
+
+    void recv_array( int ts , multi1d<int>& array )
+    {
+      int size = ts_comms_recv( ts );
+      array.resize(size);
+      for ( int i = 0 ; i < array.size() ; ++i )
+	array[i] = ts_comms_recv( ts );
+    }
+    
+
+    void recv_key( int ts , KeyGenProp4ElementalOperator_t& key )
+    {
+      key.t_sink = ts_comms_recv( ts );
+      key.t_source = ts_comms_recv( ts );
+      key.g = ts_comms_recv( ts );
+      recv_array( ts , key.displacement );
+      recv_array( ts , key.mom );
+      key.mass = ts_comms_recv_str( ts );
+      key.t_slice = ts_comms_recv( ts );
+    }
+
+    
     
 
  
@@ -831,9 +863,17 @@ namespace Chroma
 	  for ( int i = 0 ; i < ts_per_node ; ++i )
 	    {
 	      ts_comms_send( i , params.xml_str );
+
+	      int t_slice = ( t_start + ( Layout::nodeNumber() / nodes_per_cn ) * ts_per_node + i ) % Lt;
+
+	      ts_comms_send( i , t_slice );
 	    }
 	}
       QMP_barrier();
+
+
+
+
       
       
       // Test and grab a reference to the gauge field
@@ -1176,101 +1216,72 @@ namespace Chroma
 	swatch.stop();
 	QDPIO::cout << "Time to generate all solutions: time = " << swatch.getTimeInSeconds() << " secs " <<std::endl;
 
+	QDPIO::cout << "Receiving tensors from genprop/harom:\n";
 
-
-	for(auto source_ptr = params.param.sink_sources.begin(); source_ptr != params.param.sink_sources.end(); ++source_ptr)
+	if (Layout::nodeNumber() % nodes_per_cn == 0)
 	  {
-	    int t_source = source_ptr->first;
-	    
-	    for(auto dd = disps.begin(); dd != disps.end(); ++dd)
+	    std::vector<int> do_recv(ts_per_node);
+
+	    for (int i = 0 ; i < ts_per_node ; ++i )
+	      {	
+		do_recv[i] = ts_comms_recv( i );
+	      }
+
+	    // Arbitrarily choose the first harom node to determine stopping condition
+	    //
+	    while ( do_recv[0] == 23 )
 	      {
-		auto disp    = *dd;
+		std::vector< KeyGenProp4ElementalOperator_t >  key( ts_per_node );
+		std::vector< ValGenProp4ElementalOperator_t* >  val( ts_per_node );
 
-		for(auto mm = params.param.moms.begin(); mm != params.param.moms.end(); ++mm)
+		for (int i = 0 ; i < ts_per_node ; ++i )
 		  {
-		    auto mom     = *mm;
+		    recv_key( i , key[i] );
 
-		    for(auto sink_ptr = source_ptr->second.begin(); sink_ptr != source_ptr->second.end(); ++sink_ptr)
-		      {
-			int t_sink = *sink_ptr;
-			
-			for (int g = 0; g < Ns*Ns; ++g)
-			  {
+		    val[i] = new ValGenProp4ElementalOperator_t( reinterpret_cast< ComplexD * >( ts_comms_get_shm( i ) ) , num_vecs );
 
-			    std::vector< KeyGenProp4ElementalOperator_t >  key( ts_per_node );
-			    std::vector< ValGenProp4ElementalOperator_t >  val( ts_per_node );
-
-			    for (int i = 0 ; i < ts_per_node ; ++i )
-			      {
-				key[i].t_sink        = t_sink;
-				key[i].t_source      = t_source;
-				key[i].g             = g;
-				key[i].displacement  = disp;
-				key[i].mom           = mom;
-				key[i].mass          = params.param.contract.mass_label;
-				//key.t_slice       = t_slice;
-			      }
-
-
-			    if (Layout::nodeNumber() % nodes_per_cn == 0)
-			      {
-				for (int i = 0 ; i < ts_per_node ; ++i )
-				  {
-				    //
-				    // Wait for harom instance to finish writing to shared mem
-				    //
-				    int rcv = ts_comms_recv( i );
-
-				    if (rcv != key[i].g)
-				      {
-					QDPIO::cout << "expected gamma = " << key[i].g << ", but got gamma = " << key[i].g << " instead!\n";
-					QDP_abort(1);
-				      }
-
-				    int t_slice = ( t_start + ( Layout::nodeNumber() / nodes_per_cn ) * ts_per_node + i ) % Lt;
-				    key[i].t_slice    = t_slice;
-
-				    val[i].op.late_constructor( reinterpret_cast< ComplexD * >( ts_comms_get_shm( i ) ) , num_vecs , num_vecs , Ns , Ns );
-
-				    int tcorr = ( Lt + t_slice - t_start ) % Lt;
-				    int ts_node = tcorr / ts_per_node * nodes_per_cn;
-
-				    if (ts_node != 0)
-				      {
-					int size = sizeof( ComplexD ) * num_vecs * num_vecs * Ns * Ns;
-						    
-					if (Layout::nodeNumber() == ts_node)
-					  {
-					    QDPInternal::sendToWait( const_cast<ComplexD*>(val[i].op.slice(0,0,0)) , 0 , size );
-					  }
-					if (Layout::nodeNumber() == 0)
-					  {
-					    QDPInternal::recvFromWait( const_cast<ComplexD*>(val[i].op.slice(0,0,0)) , ts_node , size );
-					  }
-				      }
-
-				    qdp_db.insert(key[i], val[i]);
+		    //QDPIO::cout << val[i]->op(0,0,0,0) << "\n";
 				    
-				    //
-				    // Tell harom we're done with using the shared memory
-				    //
-				    ts_comms_send( i , 24 );
+		    int tcorr = ( Lt + key[i].t_slice - t_start ) % Lt;
+		    int ts_node = tcorr / ts_per_node * nodes_per_cn;
+
+		    if (ts_node != 0)
+		      {
+			int size = sizeof( ComplexD ) * num_vecs * num_vecs * Ns * Ns;
+			
+			if (Layout::nodeNumber() == ts_node)
+			  {
+			    QDPInternal::sendToWait( const_cast<ComplexD*>(val[i]->op.slice(0,0,0)) , 0 , size );
+			  }
+			if (Layout::nodeNumber() == 0)
+			  {
+			    QDPInternal::recvFromWait( const_cast<ComplexD*>(val[i]->op.slice(0,0,0)) , ts_node , size );
+			  }
+		      }
+
+		    QDPIO::cout << key[i] << "\n";
+				    
+		    qdp_db.insert(key[i], *val[i]);
+		    
+		    //
+		    // Tell harom we're done with using the shared memory
+		    //
+		    ts_comms_send( i , 24 );
+
+		    delete val[i];
 						
-				  } // i
-			      } // node %
-			    QMP_barrier();
-					
-			  } // g
+		  } // i
 
-		      } // t_sink
-		  } // mom
-	      } // disp
-	  } // t_source
-
+		for (int i = 0 ; i < ts_per_node ; ++i )
+		  {
+		    do_recv[i] = ts_comms_recv( i );
+		  }
+		
+	      } // while
+	    
+	  } // node %
+	QMP_barrier();
 	
-	return;
-
-
 	swatch.stop(); 
 	QDPIO::cout << "Time to receive and write all genprops: time= " << swatch.getTimeInSeconds() << " secs" <<std::endl;
       }

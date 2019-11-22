@@ -78,6 +78,32 @@ namespace Chroma
   }
 
 
+  std::string ts_comms_recv_str( int ts )
+  {
+    int size;
+    int r = read( ts_comms[ts].fifo_recv_fd , &size, sizeof(int) );
+    if ( r != sizeof(int) ) {
+      std::cout << "fifo read less than the size of an integer\n";
+      exit(1);
+    }
+
+    char* tmp = new char[ size ];
+    
+    r = read( ts_comms[ts].fifo_recv_fd , tmp , size );
+    if ( r != size ) {
+      std::cout << "fifo read " << r << " bytes\n";
+      std::cout << "but expected " << size << " bytes\n";
+      exit(1);
+    }
+
+    std::string str( tmp , size );
+
+    delete[] tmp;
+    
+    return str;
+  }
+
+
     void ts_comms_done()
     {
       for ( int i = 0 ; i < ts_comms.size() ; ++i )

@@ -11,6 +11,8 @@ namespace Chroma
   void ts_comms_send( int harom_instance , const std::string& str );
   
   int ts_comms_recv( int harom_instance );
+  std::string ts_comms_recv_str( int ts );
+
   void* ts_comms_get_shm(int ts);
     
 }
