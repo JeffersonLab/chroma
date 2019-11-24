@@ -84,7 +84,8 @@ public:
 		// Set the solver string
 		{
 			std::ostringstream solver_string_stream;
-			solver_string_stream << "QUDA_MULTIGRID_CLOVER_MDAGM_SOLVER( Mass = " << invParam.CloverParams.Mass <<" , Id = "
+			solver_string_stream << "QUDA_MULTIGRID_CLOVER_MDAGM_SOLVER( Mass = " << invParam.CloverParams.Mass << ", Twist = "
+                    << invParam.CloverParams.twisted_m<<" , Id = "
 					<< invParam.SaveSubspaceID << " ): ";
 			solver_string = solver_string_stream.str();
 
@@ -427,12 +428,14 @@ public:
 
 		if( invParam.verboseP ) {
 			quda_inv_param.verbosity = QUDA_VERBOSE;
+			quda_inv_param.verbosity_precondition = QUDA_VERBOSE;
 		}
 		else {
 			quda_inv_param.verbosity = QUDA_SUMMARIZE;
+			quda_inv_param.verbosity_precondition = QUDA_SILENT;
 		}
 
-		quda_inv_param.verbosity_precondition = QUDA_SILENT;
+		//quda_inv_param.verbosity_precondition = QUDA_SILENT;
 
 		quda_inv_param.inv_type_precondition = QUDA_MG_INVERTER;
 
@@ -481,14 +484,14 @@ public:
 #endif
 
 		quda_inv_param.omega = toDouble(ip.relaxationOmegaOuter);
-		
 		if(invParam.CloverParams.twisted_m_usedP == true){
 			quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
 			if(invParam.asymmetricP){
-				quda_inv_param.mu = -toDouble(invParam.CloverParams.twisted_m);
+				quda_inv_param.mu = toDouble(invParam.CloverParams.twisted_m);
 			}else{
 				// 2 to match the convention in Quda, no special meaning
-				quda_inv_param.mu = -2.0 * toDouble(invParam.CloverParams.twisted_m);
+				quda_inv_param.mu = 2.0 * toDouble(invParam.CloverParams.twisted_m);
+                invParam.twist = quda_inv_param.mu;
 			}
 		}
 // Copy ThresholdCount from invParams into threshold_counts.
@@ -615,7 +618,6 @@ QDPIO::cout << solver_string << " init_time = "
 		// Create MdagM op
 		Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
 
-
 		QDPIO::cout << solver_string <<"Two Step Solve" << std::endl;
 
 
@@ -670,8 +672,9 @@ QDPIO::cout << solver_string << " init_time = "
 		// 2). Y = A_oo gamma5 Y', then flip back to solve M_s(mu) X = Y
 		//
 
-		if( invParam.asymmetricP == true ) {
-			if(quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH){
+			quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
+        if( invParam.asymmetricP == true ) {
+			if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH){
 				QDPIO::cout<<"Multigrid solver for asymmetric preconditioned twisted-Hasenbusch operator not yet implemented!\n";
 				QDP_abort(1);
 			}else{
@@ -686,9 +689,12 @@ QDPIO::cout << solver_string << " init_time = "
 			T tmp = zero;
 			invclov->apply(tmp,g5chi,MINUS,1);
 
-			if(quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
+			if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
 				// flip the sign of twisted term to solve the Mdag Y = chi' system
-				quda_inv_param.mu = 2.0 * toDouble(invParam.CloverParams.twisted_m);
+            {
+                quda_inv_param.mu = 2.0 * toDouble(invParam.CloverParams.twisted_m);
+                invParam.twist = quda_inv_param.mu;
+            }
 
 			res1 = qudaInvert(*clov,
 						*invclov,
@@ -755,11 +761,16 @@ QDPIO::cout << solver_string << " init_time = "
 			QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
 			// Recreate the subspace
-			bool saved_value = ip.check_multigrid_setup;
-			ip.check_multigrid_setup = true;
-			subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
-			ip.check_multigrid_setup = saved_value;
-
+			// Currently not check the subspace for twisted-Hasenbusch operator with mu_factor turned on
+            // cause this check haven't added in Quda properly yet
+			if(quda_inv_param.dslash_type == QUDA_CLOVER_WILSON_DSLASH){
+                bool saved_value = ip.check_multigrid_setup;
+			    ip.check_multigrid_setup = true;
+			    subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+			    ip.check_multigrid_setup = saved_value;
+            }else if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH){
+                subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+            }
 			// Make subspace XML snippets
 			XMLBufferWriter file_xml;
 			push(file_xml, "FileXML");
@@ -832,7 +843,7 @@ QDPIO::cout << solver_string << " init_time = "
 					QDPIO::cout << solver_string << "Re Solve for Y Failed (seq: " << seqno << " ) Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 					QDPIO::cout << solver_string << "Throwing Exception! This will ABORT" << std::endl;
 
-					dumpYSolver(g5chi,Y_prime);
+				//	dumpYSolver(g5chi,Y_prime);
 
 					MGSolverException convergence_fail(invParam.CloverParams.Mass,
 							invParam.SaveSubspaceID,
@@ -864,9 +875,12 @@ QDPIO::cout << solver_string << " init_time = "
 		quda_inv_param.tol = toDouble(invParam.RsdTarget);
 		X_solve_timer.start();
 		// Solve for psi
-		if(quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
+		if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
 			// flip back the twisted term to solve M X = Y system
-			quda_inv_param.mu = -2.0 * toDouble(invParam.CloverParams.twisted_m);
+        {
+            quda_inv_param.mu = -2.0 * toDouble(invParam.CloverParams.twisted_m);
+            invParam.twist = quda_inv_param.mu;
+        }
 		res2 = qudaInvert(*clov,
 				*invclov,
 				Y,
@@ -927,12 +941,14 @@ QDPIO::cout << solver_string << " init_time = "
 			QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
 			// Recreate the subspace
-			bool saved_value = ip.check_multigrid_setup;
-                        ip.check_multigrid_setup = true;
-                        subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
-                        ip.check_multigrid_setup = saved_value;
-
-
+			if(quda_inv_param.dslash_type == QUDA_CLOVER_WILSON_DSLASH){
+                bool saved_value = ip.check_multigrid_setup;
+			    ip.check_multigrid_setup = true;
+			    subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+			    ip.check_multigrid_setup = saved_value;
+            }else if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH){
+                subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+            }
 			// Make subspace XML snippets
 			XMLBufferWriter file_xml;
 			push(file_xml, "FileXML");
@@ -988,7 +1004,7 @@ QDPIO::cout << solver_string << " init_time = "
 					QDPIO::cout << solver_string << "Re Solve for X Failed (seq: " << seqno << " ) Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 					QDPIO::cout << solver_string << "Throwing Exception! This will ABORT" << std::endl;
 
-					dumpXSolver(chi,Y,psi);
+				//	dumpXSolver(chi,Y,psi);
 
 					MGSolverException convergence_fail(invParam.CloverParams.Mass,
 							invParam.SaveSubspaceID,
@@ -1060,7 +1076,6 @@ QDPIO::cout << solver_string << " init_time = "
 		// Create MdagM op
 		Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
 
-
 		QDPIO::cout << solver_string <<"Two Step Solve" << std::endl;
 
 
@@ -1106,7 +1121,7 @@ QDPIO::cout << solver_string << " init_time = "
 		T g5chi = zero;
 		g5chi[rb[1]]= Gamma(Nd*Nd-1)*chi;
 		if( invParam.asymmetricP == true ) {
-			if(quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH){
+			if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH){
 				QDPIO::cout<<"Multigrid solver for asymmetric preconditioned twisted-Hasenbusch operator not yet implemented!\n";
 				QDP_abort(1);
 			}else{
@@ -1121,8 +1136,11 @@ QDPIO::cout << solver_string << " init_time = "
 			T tmp = zero;
 			invclov->apply(tmp,g5chi,MINUS,1);
 
-			if(quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
-				quda_inv_param.mu = 2.0 * toDouble(invParam.CloverParams.twisted_m);
+			if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
+            {
+                quda_inv_param.mu = 2.0 * toDouble(invParam.CloverParams.twisted_m);
+                invParam.twist = quda_inv_param.mu;
+            }
 			res1 = qudaInvert(*clov,
 						*invclov,
 						tmp,
@@ -1186,11 +1204,14 @@ QDPIO::cout << solver_string << " init_time = "
 			QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
 			// Recreate the subspace
-			bool saved_value = ip.check_multigrid_setup;
-                        ip.check_multigrid_setup = true;
-                        subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
-                        ip.check_multigrid_setup = saved_value;
-
+			if(quda_inv_param.dslash_type == QUDA_CLOVER_WILSON_DSLASH){
+                bool saved_value = ip.check_multigrid_setup;
+			    ip.check_multigrid_setup = true;
+			    subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+			    ip.check_multigrid_setup = saved_value;
+            }else if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH){
+                subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+            }
 
 			// Make subspace XML snippets
 			XMLBufferWriter file_xml;
@@ -1270,7 +1291,7 @@ QDPIO::cout << solver_string << " init_time = "
 					// If we fail on the resolve then barf
 					QDPIO::cout << solver_string << "Re Solve for Y Failed (seq: " << seqno << " )  Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 
-					dumpYSolver(g5chi,Y_prime);
+				//	dumpYSolver(g5chi,Y_prime);
 
 					QDPIO::cout << solver_string << "Throwing Exception! This will ABORT" << std::endl;
 
@@ -1309,8 +1330,11 @@ QDPIO::cout << solver_string << " init_time = "
 		//psi[A->subset()]=zero;
 		psi = zero;
 		// Solve for psi
-		if(quda_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
-			quda_inv_param.mu = -2.0 * toDouble(invParam.CloverParams.twisted_m);
+		if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
+        {
+            quda_inv_param.mu = -2.0 * toDouble(invParam.CloverParams.twisted_m);
+            invParam.twist = quda_inv_param.mu;
+        }
 		res2 = qudaInvert(*clov,
 				*invclov,
 				Y,
@@ -1380,10 +1404,14 @@ QDPIO::cout << solver_string << " init_time = "
 			QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
 			// Recreate the subspace
-		        bool saved_value = ip.check_multigrid_setup;
-                        ip.check_multigrid_setup = true;
-                        subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
-                        ip.check_multigrid_setup = saved_value;
+			if(quda_inv_param.dslash_type == QUDA_CLOVER_WILSON_DSLASH){
+                bool saved_value = ip.check_multigrid_setup;
+			    ip.check_multigrid_setup = true;
+			    subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+			    ip.check_multigrid_setup = saved_value;
+            }else if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH){
+                subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+            }
 	
 			// Make subspace XML snippets
 			XMLBufferWriter file_xml;
@@ -1457,7 +1485,7 @@ QDPIO::cout << solver_string << " init_time = "
 					QDPIO::cout << solver_string << "Re Solve for X Failed (seq: " << seqno << " ) Rsd = " << res_tmp.resid/norm2chi << " RsdTarget = " << invParam.RsdTarget << std::endl;
 
 					QDPIO::cout << "Dumping state (solve seqno : " << seqno << " ) " << std::endl;
-					dumpXSolver(chi,Y,psi);
+				//	dumpXSolver(chi,Y,psi);
 
 
 					QDPIO::cout << solver_string << "Throwing Exception! This will ABORT" << std::endl;

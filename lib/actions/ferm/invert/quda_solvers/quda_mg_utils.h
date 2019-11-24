@@ -116,8 +116,12 @@ namespace Chroma {
 
 			QDPIO::cout<<"Creating MG subspace."<<std::endl;
 			//Taken from various places in the old constructor.
-
-			mg_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH;
+            if(invParam.CloverParams.twisted_m_usedP == true){
+                mg_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
+                mg_inv_param.mu = toDouble(invParam.twist); 
+            }else{
+                mg_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH;
+            }
 			mg_inv_param.inv_type = QUDA_GCR_INVERTER;
 			mg_inv_param.tol = 1e-10;
 			mg_inv_param.maxiter = 10000;
@@ -132,7 +136,7 @@ namespace Chroma {
 			mg_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
 			mg_inv_param.clover_cuda_prec_precondition = gpu_half_prec;
 			mg_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
-			//
+			// 
 			//Done...
 			// Autotuning
 			if( invParam.tuneDslashP ) {
@@ -262,9 +266,8 @@ namespace Chroma {
 						mg_param.nu_pre[i] = ip.nu_pre[i];
 						mg_param.nu_post[i] = ip.nu_post[i];
 					}
-
-					mg_param.mu_factor[i] = 1.0; // default is one in QUDA test program
-
+					//mg_param.mu_factor[i] = 1.0; // default is one in QUDA test program
+                    mg_param.mu_factor[i] = toDouble(ip.mu_factor[i]);
 					// Hardwire setup solver now
 					if ( i < mg_param.n_level-1) {
 						mg_param.setup_inv_type[i] = theChromaToQudaSolverTypeMap::Instance()[ ip.subspaceSolver[i]];

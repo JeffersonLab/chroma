@@ -43,7 +43,8 @@ namespace Chroma
     multi1d<int> maxIterSubspaceCreate;
     multi1d<Real> rsdTargetSubspaceCreate;
     multi1d<int> maxIterSubspaceRefresh;
-    
+    multi1d<Real> mu_factor;
+
     MULTIGRIDSolverParams(XMLReader& xml, const std::string& path);
     MULTIGRIDSolverParams() {
 
@@ -73,12 +74,13 @@ namespace Chroma
       tol.resize(mg_levels);
       maxIterations.resize(mg_levels);
       coarseSolverType.resize(mg_levels);
-
+        
       smootherType.resize(mg_levels);
       smootherTol.resize(mg_levels);
       relaxationOmegaMG.resize(mg_levels);
       smootherSchwarzType.resize(mg_levels);
       smootherSchwarzCycle.resize(mg_levels);
+      mu_factor.resize(mg_levels);
       generate_nullspace = true;
       for(int l = 0; l < mg_levels - 1; l++) 
       {
@@ -103,6 +105,7 @@ namespace Chroma
     	  relaxationOmegaMG[l] = 0.85;
     	  smootherSchwarzType[l] = INVALID_SCHWARZ;
     	  smootherSchwarzCycle[l] = 1;
+          mu_factor[l] = 1.0;
       }
       outer_gcr_nkrylov = 12;
       precond_gcr_nkrylov = 12;

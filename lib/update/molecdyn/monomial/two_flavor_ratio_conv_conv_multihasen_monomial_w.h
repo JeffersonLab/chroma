@@ -132,16 +132,22 @@ namespace Chroma
 				XMLWriter& xml_out = TheXMLLogWriter::Instance();
 				push(xml_out, "TwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial");
 
-				P F_tmp;
 				F_t.resize(Nd);
-				F_tmp.resize(Nd);
 				for(int i=0; i<Nd; ++i)
 				{
 					F_t[i] = zero;
-					F_tmp[i] = zero;
 				}
 				const int N = numHasenTerms;
-				// Fermion action
+				multi1d<P> F_tmp1(N), F_tmp2(N);
+                for(int i=0; i<N; ++i){
+                    F_tmp1[i].resize(Nd);
+                    F_tmp2[i].resize(Nd);
+                    for(int j=0; j<Nd; ++j){
+                        F_tmp1[i][j] = zero;
+                        F_tmp2[i][j] = zero;
+                    }
+                }
+                // Fermion action
 				const FAType<T,P,Q>& FA = getFermAct();
 				// X = (M^\dag M)^(-1) M_den^\dag \phi
 				// Y = M X
@@ -150,7 +156,7 @@ namespace Chroma
 					X[i] = zero;
 					Y[i] = zero;
 				}
-				// M_dag_den_phi = M^\dag_den \phi
+                // M_dag_den_phi = M^\dag_den \phi
 				multi1d<T> M_dag_den_phi(N);
 
 				Handle<FermState<T,P,Q> > state(FA.createState(s.getQ()));
@@ -177,20 +183,24 @@ namespace Chroma
 				(*M_num)(Y, X, PLUS);
 				
 				// deriv part 1: \phi^\dag \dot(M_den) X
-				M_den->deriv(F_t, phi, X, PLUS);
+				M_den->deriv(F_tmp1, phi, X, PLUS);
 
 				// deriv part 2: - X^\dag \dot(M_num^\dag) Y
-				M_num->deriv(F_tmp, X, Y, MINUS);
-				F_t -= F_tmp;
+				M_num->deriv(F_tmp2, X, Y, MINUS);
+				F_tmp1 -= F_tmp2;
 
 				// deriv part 3: - Y^\dag \dot(M_num) X
-				M_num->deriv(F_tmp, Y, X, PLUS);
-				F_t -= F_tmp;
+				M_num->deriv(F_tmp2, Y, X, PLUS);
+				F_tmp1 -= F_tmp2;
 
 				// deriv part 4: X^\dag \dot(M_prec)^\dag \phi
-				M_den->deriv(F_tmp, X, phi, MINUS);
-				F_t += F_tmp;
-
+				M_den->deriv(F_tmp2, X, phi, MINUS);
+				F_tmp1 += F_tmp2;
+    
+                // Total force
+                for(int i=0; i<N; ++i){
+                    F_t += F_tmp1[i];
+                }
 				// F now holds derivative with respect to possibly fat links
 				// now derive it with respect to the thin links if needs be
 				state->deriv(F_t);
@@ -199,9 +209,10 @@ namespace Chroma
 					// Write out inversion number for every hasenbusch term 
 					std::string n_count = "n_count_hasenterm_" + std::to_string(i+1);
 					write(xml_out, n_count, res.n_count[i]);
+                    monitorForces(xml_out, "Forces_hasenterm_" + std::to_string(i+1), F_tmp1[i]);
 				}
 				// Total force from all Hasenbusch terms
-				monitorForces(xml_out, "Forces", F_t);
+				monitorForces(xml_out, "ForcesTotal", F_t);
 				pop(xml_out);
 				END_CODE();
 			}

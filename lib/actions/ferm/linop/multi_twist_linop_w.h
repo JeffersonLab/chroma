@@ -46,6 +46,19 @@ public:
 			ds_u += ds_tmp;
 		}
 	}
+    // return different component of force term
+    void deriv(multi1d<P>& ds_u, const multi1d<T>& chi, const multi1d<T>& psi,
+            enum PlusMinus isign)
+    {
+        assertArraySizes(chi, psi, _N);
+        for(int i=0; i<_N; ++i){
+            ds_u[i].resize(Nd);
+            ds_u[i]= zero;
+
+            TwistedShiftedLinOp<T, P, Q, LinOp> theShiftedOp((*_theLinOp), _Twists[i]);
+            theShiftedOp.deriv(ds_u[i], chi[i], psi[i], isign);
+        }
+    }
 
 
 	int size() const {
