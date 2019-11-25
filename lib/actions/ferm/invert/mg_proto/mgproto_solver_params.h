@@ -39,8 +39,10 @@ public:
 	// Details of Outer Solver
 	int OuterSolverNKrylov;
 	Double OuterSolverRsdTarget;
+    Double RsdToleranceFactor;
 	int OuterSolverMaxIters;
 	bool OuterSolverVerboseP;
+    int ThresholdCount;
 
 	// VCycle Details (MGLevels - 1 of these)
 	// Presmoother

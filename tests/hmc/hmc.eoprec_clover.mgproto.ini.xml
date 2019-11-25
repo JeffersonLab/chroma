@@ -1,0 +1,230 @@
+<?xml version="1.0"?>
+<Params>
+    <MCControl>
+        <Cfg>
+            <cfg_type>DISORDERED</cfg_type>
+            <cfg_file>DUMMY</cfg_file>
+            <parallel_io>false</parallel_io>
+        </Cfg>
+        <RNG>
+            <Seed>
+                <elem>2846</elem>
+                <elem>1259</elem>
+                <elem>980</elem>
+                <elem>108</elem>
+            </Seed>
+        </RNG>
+        <StartUpdateNum>0</StartUpdateNum>
+        <NWarmUpUpdates>0</NWarmUpUpdates>
+        <NProductionUpdates>5</NProductionUpdates>
+        <NUpdatesThisRun>5</NUpdatesThisRun>
+        <SaveInterval>5</SaveInterval>
+        <SavePrefix>dummy_run_</SavePrefix>
+        <SaveVolfmt>SINGLEFILE</SaveVolfmt>
+        <ParallelIO>false</ParallelIO>
+        <ReproCheckP>false</ReproCheckP>
+        <ReproCheckFrequency>20</ReproCheckFrequency>
+        <ReverseCheckP>false</ReverseCheckP>
+        <ReverseCheckFrequency>1</ReverseCheckFrequency>
+        <MonitorForces>true</MonitorForces>
+        <InlineMeasurements>
+            <elem>
+                <Name>PLAQUETTE</Name>
+                <Frequency>1</Frequency>
+                <Param>
+                    <version>2</version>
+                    <GaugeState>
+                        <Name>SIMPLE_GAUGE_STATE</Name>
+                        <GaugeBC>
+                            <Name>PERIODIC_GAUGEBC</Name>
+                        </GaugeBC>
+                    </GaugeState>
+                </Param>
+                <NamedObject>
+                    <gauge_id>default_gauge_field</gauge_id>
+                </NamedObject>
+            </elem>
+        </InlineMeasurements>
+    </MCControl>
+    <HMCTrj>
+        <nrow>8 8 8 8</nrow>
+        <Monomials>
+            <elem>
+                <Name>N_FLAVOR_LOGDET_EVEN_EVEN_FERM_MONOMIAL</Name>
+                <FermionAction>
+                    <FermAct>CLOVER</FermAct>
+                    <Mass>-0.0640</Mass>
+                    <clovCoeffR>1.58932722549812</clovCoeffR>
+                    <clovCoeffT>0.902783591772098</clovCoeffT>
+                    <AnisoParam>
+                        <anisoP>true</anisoP>
+                        <t_dir>3</t_dir>
+                        <xi_0>4.3</xi_0>
+                        <nu>1.265</nu>
+                    </AnisoParam>
+                    <FermState>
+                        <Name>STOUT_FERM_STATE</Name>
+                        <rho>0.14</rho>
+                        <n_smear>2</n_smear>
+                        <orthog_dir>3</orthog_dir>
+                        <FermionBC>
+                            <FermBC>SIMPLE_FERMBC</FermBC>
+                            <boundary>1 1 1 -1</boundary>
+                        </FermionBC>
+                    </FermState>
+                </FermionAction>
+                <num_flavors>2</num_flavors>
+                <NamedObject>
+                    <monomial_id>HMC::logdet_2flav</monomial_id>
+                </NamedObject>
+            </elem>
+            <elem>
+                <Name>TWO_FLAVOR_EOPREC_CONSTDET_FERM_MONOMIAL</Name>
+                <FermionAction>
+                    <FermAct>CLOVER</FermAct>
+                    <Mass>-0.0640</Mass>
+                    <clovCoeffR>1.58932722549812</clovCoeffR>
+                    <clovCoeffT>0.902783591772098</clovCoeffT>
+                    <AnisoParam>
+                        <anisoP>true</anisoP>
+                        <t_dir>3</t_dir>
+                        <xi_0>4.3</xi_0>
+                        <nu>1.265</nu>
+                    </AnisoParam>
+                    <FermState>
+                        <Name>STOUT_FERM_STATE</Name>
+                        <rho>0.14</rho>
+                        <n_smear>2</n_smear>
+                        <orthog_dir>3</orthog_dir>
+                        <FermionBC>
+                            <FermBC>SIMPLE_FERMBC</FermBC>
+                            <boundary>1 1 1 -1</boundary>
+                        </FermionBC>
+                    </FermState>
+                </FermionAction>
+                <InvertParam>
+                    <invType>MG_PROTO_QPHIX_EO_CLOVER_INVERTER</invType>
+                    <CloverParams>
+                        <Mass>-0.0640</Mass>
+                        <clovCoeffR>1.58932722549812</clovCoeffR>
+                        <clovCoeffT>0.902783591772098</clovCoeffT>
+                        <AnisoParam>
+                            <anisoP>true</anisoP>
+                            <t_dir>3</t_dir>
+                            <xi_0>4.3</xi_0>
+                            <nu>1.265</nu>
+                        </AnisoParam>
+                    </CloverParams>
+                    <AntiPeriodicT>true</AntiPeriodicT>
+
+                    <MGLevels>3</MGLevels>
+                    <Blocking>
+                        <elem>2 2 2 2</elem>
+                        <elem>2 2 2 2</elem>
+                    </Blocking>
+
+                    <NullVecs>24 16</NullVecs>
+                    <NullSolverMaxIters>250 250</NullSolverMaxIters>
+                    <NullSolverRsdTarget>5e-6 5e-6</NullSolverRsdTarget>
+                    <NullSolverVerboseP>0 0</NullSolverVerboseP>
+
+                    <OuterSolverNKrylov>25</OuterSolverNKrylov>
+                    <OuterSolverRsdTarget>1.0e-7</OuterSolverRsdTarget>
+                    <OuterSolverMaxIters>100</OuterSolverMaxIters>
+                    <OuterSolverVerboseP>true</OuterSolverVerboseP>
+                    <RsdToleranceFactor>5.0</RsdToleranceFactor>
+                    <ThresholdCount>10</ThresholdCount>
+
+                    <VCyclePreSmootherMaxIters>0 0</VCyclePreSmootherMaxIters>
+                    <VCyclePreSmootherRsdTarget>0.1 0.1</VCyclePreSmootherRsdTarget>
+                    <VCyclePreSmootherRelaxOmega>1.1 1.1</VCyclePreSmootherRelaxOmega>
+                    <VCyclePreSmootherVerboseP>0 0</VCyclePreSmootherVerboseP>
+
+                    <VCyclePostSmootherMaxIters>8 8</VCyclePostSmootherMaxIters>
+                    <VCyclePostSmootherRsdTarget>0.1 0.1</VCyclePostSmootherRsdTarget>
+                    <VCyclePostSmootherRelaxOmega>1.1 1.1</VCyclePostSmootherRelaxOmega>
+                    <VCyclePostSmootherVerboseP>0 0</VCyclePostSmootherVerboseP>
+
+                    <VCycleBottomSolverMaxIters>25 25</VCycleBottomSolverMaxIters>
+                    <VCycleBottomSolverRsdTarget>0.1 0.1</VCycleBottomSolverRsdTarget>
+                    <VCycleBottomSolverNKrylov>10 10</VCycleBottomSolverNKrylov>
+                    <VCycleBottomSolverVerboseP>0 0</VCycleBottomSolverVerboseP>
+
+                    <VCycleMaxIters>5 5</VCycleMaxIters>
+                    <VCycleRsdTarget>0.1 0.1</VCycleRsdTarget>
+                    <VCycleVerboseP>0 0</VCycleVerboseP>
+
+                    <SubspaceId>foo</SubspaceId>
+                </InvertParam>
+                <NamedObject>
+                    <monomial_id>HMC::conv_2flav</monomial_id>
+                </NamedObject>
+            </elem>
+            <elem>
+                <Name>GAUGE_MONOMIAL</Name>
+                <GaugeAction>
+                    <Name>ANISO_SYM_SPATIAL_GAUGEACT</Name>
+                    <beta>1.5</beta>
+                    <u_s>0.73356648935927</u_s>
+                    <ZeroEnergy>0.0</ZeroEnergy>
+                    <AnisoParam>
+                        <anisoP>true</anisoP>
+                        <t_dir>3</t_dir>
+                        <xi_0>4.3</xi_0>
+                    </AnisoParam>
+                    <GaugeBC>
+                        <Name>PERIODIC_GAUGEBC</Name>
+                    </GaugeBC>
+                </GaugeAction>
+                <NamedObject>
+                    <monomial_id>HMC::gauge_s</monomial_id>
+                </NamedObject>
+            </elem>
+            <elem>
+                <Name>GAUGE_MONOMIAL</Name>
+                <GaugeAction>
+                    <Name>ANISO_SYM_TEMPORAL_GAUGEACT</Name>
+                    <beta>1.5</beta>
+                    <u_s>0.73356648935927</u_s>
+                    <u_t>1.0</u_t>
+                    <ZeroEnergy>0.0</ZeroEnergy>
+                    <AnisoParam>
+                        <anisoP>true</anisoP>
+                        <t_dir>3</t_dir>
+                        <xi_0>4.3</xi_0>
+                    </AnisoParam>
+                    <GaugeBC>
+                        <Name>PERIODIC_GAUGEBC</Name>
+                    </GaugeBC>
+                </GaugeAction>
+                <NamedObject>
+                    <monomial_id>HMC::gauge_t</monomial_id>
+                </NamedObject>
+            </elem>
+        </Monomials>
+        <Hamiltonian>
+            <monomial_ids>
+                <elem>HMC::logdet_2flav</elem>
+                <elem>HMC::conv_2flav</elem>
+                <elem>HMC::gauge_s</elem>
+                <elem>HMC::gauge_t</elem>
+            </monomial_ids>
+        </Hamiltonian>
+        <MDIntegrator>
+            <tau0>0.5</tau0>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_mom>3.5</xi_mom>
+            <Integrator>
+                <Name>LCM_STS_LEAPFROG</Name>
+                <n_steps>10</n_steps>
+                <monomial_ids>
+                    <elem>HMC::logdet_2flav</elem>
+                    <elem>HMC::conv_2flav</elem>
+                    <elem>HMC::gauge_s</elem>
+                    <elem>HMC::gauge_t</elem>
+                </monomial_ids>
+            </Integrator>
+        </MDIntegrator>
+    </HMCTrj>
+</Params>

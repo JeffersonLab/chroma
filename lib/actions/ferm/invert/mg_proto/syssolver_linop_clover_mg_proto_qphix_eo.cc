@@ -112,7 +112,7 @@ namespace Chroma
   LinOpSysSolverMGProtoQPhiXEOClover::operator()(T& psi, const T& chi) const
   {
 	  QDPIO::cout << "Jolly Greetings from Even-Odd Multigridland" << std::endl;
-	  const Subset& s = A->subset(); 
+	  const Subset& s = A->subset();
 	  StopWatch swatch;
 	  StopWatch swatch2;
 
@@ -146,10 +146,10 @@ namespace Chroma
           MG::LinearSolverResults res=(*eo_solver)(qphix_out,qphix_in, RELATIVE);
 
 	  swatch2.stop();
-	
+
 	  double qphix_out_norm_cb0 = MG::Norm2Vec(qphix_out, SUBSET_EVEN);
 	  double qphix_out_norm_cb1 = MG::Norm2Vec(qphix_out, SUBSET_ODD);
-	  
+
 	  psi = zero;
 	  QPhiXSpinorToQDPSpinor(qphix_out,psi);
 	  Double psi_norm_cb0 = norm2(psi,rb[0]);
@@ -170,8 +170,9 @@ namespace Chroma
 		  Double n2 = norm2(tmp,s);
 		  Double n2rel = n2 / norm2(chi,s);
 		  QDPIO::cout << "MG_PROTO_QPHIX_EO_CLOVER_INVERTER: iters = "<< res.n_count << " rel resid = " << sqrt(n2rel) << std::endl;
-		  if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget ) ) {
-		    MGSolverException convergence_fail(invParam.CloverParams.Mass, 
+		  if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget * invParam.RsdToleranceFactor) ) {
+              QDPIO::cout<<"MG_PROTO Solver Not Converged!"<<std::endl;
+            MGSolverException convergence_fail(invParam.CloverParams.Mass,
 						       subspaceId,
 						       res.n_count,
 						       Real(sqrt(n2rel)),

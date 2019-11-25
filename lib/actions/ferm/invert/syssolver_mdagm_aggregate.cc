@@ -33,6 +33,12 @@
 #include "actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_iter_refine_w.h"
 #endif
 
+#ifdef BUILD_MGPROTO
+#ifdef BUILD_QPHIX
+#include "actions/ferm/invert/mg_proto/syssolver_mdagm_clover_mg_proto_qphix_eo.h"
+#endif
+#endif
+
 namespace Chroma
 {
 
@@ -72,6 +78,13 @@ namespace Chroma
 	success &= MdagMSysSolverQPhiXCloverEnv::registerAll();
 	success &= MdagMSysSolverQPhiXCloverIterRefineEnv::registerAll();
 #endif
+
+#ifdef BUILD_MGPROTO
+#ifdef BUILD_QPHIX
+	success &= MdagMSysSolverMGProtoQPhiXEOCloverEnv::registerAll();
+#endif
+#endif
+
 	registered = true;
       }
       return success;
