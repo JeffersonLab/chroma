@@ -659,8 +659,12 @@ namespace Chroma
 	    // The temporal perambulator part
 	    for(int colorvec_snk=0; colorvec_snk < num_vecs; ++colorvec_snk)
 	    {
-	      multi1d<ComplexD> fred = sumMulti(localInnerProduct(eig_vecs[colorvec_snk],
+	      multi1d<ComplexD> fredf = sumMulti(localInnerProduct(eig_vecs[colorvec_snk],
 								  u[Nd-1]*shift(eig_vecs[colorvec_src], FORWARD, Nd-1)),
+						phases.getSet());
+
+	      multi1d<ComplexD> fredb = sumMulti(localInnerProduct(eig_vecs[colorvec_snk],
+								   shift(adj(u[Nd-1])*eig_vecs[colorvec_src], BACKWARD, Nd-1)),
 						phases.getSet());
 
 	      for(int spin_snk=0; spin_snk < Ns; ++spin_snk)
@@ -669,8 +673,8 @@ namespace Chroma
 		{
 		  for(int t=0; t < Lt; ++t)
 		  {
-		    time_plus_peram[t].at(packSpinDist(spin_snk,colorvec_snk), packSpinDist(spin_src,colorvec_src))  = quickConvert(fred[t] * peekSpin(g4p, spin_snk, spin_src));
-		    time_minus_peram[t].at(packSpinDist(spin_snk,colorvec_snk), packSpinDist(spin_src,colorvec_src)) = quickConvert(fred[t] * peekSpin(g4p, spin_snk, spin_src));
+		    time_plus_peram[t].at(packSpinDist(spin_snk,colorvec_snk), packSpinDist(spin_src,colorvec_src))  = quickConvert(-fredf[t] * peekSpin(g4m, spin_snk, spin_src));
+		    time_minus_peram[t].at(packSpinDist(spin_snk,colorvec_snk), packSpinDist(spin_src,colorvec_src)) = quickConvert( fredb[t] * peekSpin(g4p, spin_snk, spin_src));
 		  } // for t
 		} // for spin_src
 	      } // for spin_snk
