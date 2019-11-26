@@ -636,6 +636,52 @@ namespace Chroma
 
 
 	//
+	// Make a t-slice perambulator
+	//
+	std::vector<tensor::CTensor> time_plus_peram(Lt);
+	std::vector<tensor::CTensor> time_minus_peram(Lt);
+	for(int t = 0; t < Lt; ++t)
+	{
+	  time_plus_peram[t]  = tensor::CTensor(num_vecs*Ns, num_vecs*Ns);
+	  time_minus_peram[t] = tensor::CTensor(num_vecs*Ns, num_vecs*Ns);
+	}
+
+	if (1)
+	{
+	  SpinMatrix one(1.0);
+	  SpinMatrix g4p = 0.5 * (one + Gamma(8)*one);
+	  SpinMatrix g4m = 0.5 * (one - Gamma(8)*one);
+
+	  for(int colorvec_src=0; colorvec_src < num_vecs; ++colorvec_src)
+	  {
+	    QDPIO::cout << "colorvec_src = " << colorvec_src << std::endl; 
+
+	    // The temporal perambulator part
+	    for(int colorvec_snk=0; colorvec_snk < num_vecs; ++colorvec_snk)
+	    {
+	      multi1d<ComplexD> fred = sumMulti(localInnerProduct(eig_vecs[colorvec_snk],
+								  u[Nd-1]*shift(eig_vecs[colorvec_src], FORWARD, Nd-1)),
+						phases.getSet());
+
+	      for(int spin_snk=0; spin_snk < Ns; ++spin_snk)
+	      {
+		for(int spin_src=0; spin_src < Ns; ++spin_src)
+		{
+		  for(int t=0; t < Lt; ++t)
+		  {
+		    time_plus_peram[t].at(packSpinDist(spin_snk,colorvec_snk), packSpinDist(spin_src,colorvec_src))  = quickConvert(fred[t] * peekSpin(g4p, spin_snk, spin_src));
+		    time_minus_peram[t].at(packSpinDist(spin_snk,colorvec_snk), packSpinDist(spin_src,colorvec_src)) = quickConvert(fred[t] * peekSpin(g4p, spin_snk, spin_src));
+		  } // for t
+		} // for spin_src
+	      } // for spin_snk
+	    } // for colorvec_snk
+	  } // for colorvec_src
+	  
+	  QDPIO::cout << "Finished constructing temporal perams" << std::endl;
+	}
+
+
+	//
 	// Loop over each distillation source and generate the full propagator
 	//
 	for(int colorvec_src=0; colorvec_src < num_vecs; ++colorvec_src)
