@@ -1004,7 +1004,6 @@ namespace Chroma
 
 
 
-      
       //
       // Build momentum phases
       //
@@ -1218,68 +1217,103 @@ namespace Chroma
 
 	QDPIO::cout << "Receiving tensors from genprop/harom:\n";
 
-	if (Layout::nodeNumber() % nodes_per_cn == 0)
-	  {
-	    std::vector<int> do_recv(ts_per_node);
+	{
+	  std::vector<int> do_recv(ts_per_node);
 
-	    for (int i = 0 ; i < ts_per_node ; ++i )
-	      {	
-		do_recv[i] = ts_comms_recv( i );
-	      }
-
-	    // Arbitrarily choose the first harom node to determine stopping condition
-	    //
-	    while ( do_recv[0] == 23 )
-	      {
-		std::vector< KeyGenProp4ElementalOperator_t >  key( ts_per_node );
-		std::vector< ValGenProp4ElementalOperator_t* >  val( ts_per_node );
-
-		for (int i = 0 ; i < ts_per_node ; ++i )
-		  {
-		    recv_key( i , key[i] );
-
-		    val[i] = new ValGenProp4ElementalOperator_t( reinterpret_cast< ComplexD * >( ts_comms_get_shm( i ) ) , num_vecs );
-
-		    //QDPIO::cout << val[i]->op(0,0,0,0) << "\n";
-				    
-		    int tcorr = ( Lt + key[i].t_slice - t_start ) % Lt;
-		    int ts_node = tcorr / ts_per_node * nodes_per_cn;
-
-		    if (ts_node != 0)
-		      {
-			int size = sizeof( ComplexD ) * num_vecs * num_vecs * Ns * Ns;
-			
-			if (Layout::nodeNumber() == ts_node)
-			  {
-			    QDPInternal::sendToWait( const_cast<ComplexD*>(val[i]->op.slice(0,0,0)) , 0 , size );
-			  }
-			if (Layout::nodeNumber() == 0)
-			  {
-			    QDPInternal::recvFromWait( const_cast<ComplexD*>(val[i]->op.slice(0,0,0)) , ts_node , size );
-			  }
-		      }
-
-		    QDPIO::cout << key[i] << "\n";
-				    
-		    qdp_db.insert(key[i], *val[i]);
-		    
-		    //
-		    // Tell harom we're done with using the shared memory
-		    //
-		    ts_comms_send( i , 24 );
-
-		    delete val[i];
-						
-		  } // i
-
-		for (int i = 0 ; i < ts_per_node ; ++i )
-		  {
-		    do_recv[i] = ts_comms_recv( i );
-		  }
-		
-	      } // while
+	  if (Layout::nodeNumber() % nodes_per_cn == 0)
+	    {
+	      for (int i = 0 ; i < ts_per_node ; ++i )
+		{	
+		  do_recv[i] = ts_comms_recv( i );
+		}
+	    }
 	    
-	  } // node %
+	  Integer do_recv_global = do_recv[0];
+	  QDPInternal::broadcast( do_recv_global );
+
+	  printf("node = %d, do_recv_global = %d\n",Layout::nodeNumber(), toInt(do_recv_global) );
+
+	  // Arbitrarily choose the first harom node to determine stopping condition
+	  //
+	  while ( toInt(do_recv_global) == 23 )
+	    {
+	      std::vector< KeyGenProp4ElementalOperator_t >  key( ts_per_node );
+	      std::vector< ValGenProp4ElementalOperator_t* >  val( ts_per_node );
+
+	      if (Layout::nodeNumber() % nodes_per_cn == 0)
+		{
+		  for (int i = 0 ; i < ts_per_node ; ++i )
+		    {
+		      recv_key( i , key[i] );
+
+		      QDPIO::cout << "genprop " << i << ", got key: " << key[i] << "\n";
+
+		      val[i] = new ValGenProp4ElementalOperator_t( reinterpret_cast< ComplexD * >( ts_comms_get_shm( i ) ) , num_vecs );
+
+		      //QDPIO::cout << val[i]->op(0,0,0,0) << "\n";
+				    
+		      int tcorr = ( Lt + key[i].t_slice - t_start ) % Lt;
+		      int ts_node = tcorr / ts_per_node * nodes_per_cn;
+
+		      if (ts_node != 0)
+			{
+			  int size = sizeof( ComplexD ) * num_vecs * num_vecs * Ns * Ns;
+			
+			  if (Layout::nodeNumber() == ts_node)
+			    {
+			      QDPInternal::sendToWait( const_cast<ComplexD*>(val[i]->op.slice(0,0,0)) , 0 , size );
+			    }
+			  if (Layout::nodeNumber() == 0)
+			    {
+			      QDPInternal::recvFromWait( const_cast<ComplexD*>(val[i]->op.slice(0,0,0)) , ts_node , size );
+			    }
+			}
+		    }
+		}
+
+	      // Need to add dummy entries, since on nodes other than the first on each physical box val[i] is not initialized (yet)
+	      //				    
+	      for (int i = 0 ; i < ts_per_node ; ++i )
+		{
+		  if (Layout::nodeNumber() % nodes_per_cn != 0)
+		    val[i] = new ValGenProp4ElementalOperator_t;
+
+		  qdp_db.insert(key[i], *val[i]);
+
+		  if (Layout::nodeNumber() % nodes_per_cn != 0)
+		    delete val[i];
+
+		}
+		    
+	      //
+	      // Tell harom we're done with using the shared memory
+	      //
+	      if (Layout::nodeNumber() % nodes_per_cn == 0)
+		{
+		  for (int i = 0 ; i < ts_per_node ; ++i )
+		    {
+		      ts_comms_send( i , 24 );
+
+		      delete val[i];
+		    }
+		}
+
+	      if (Layout::nodeNumber() % nodes_per_cn == 0)
+		{
+		  for (int i = 0 ; i < ts_per_node ; ++i )
+		    {	
+		      do_recv[i] = ts_comms_recv( i );
+		    }
+		}
+	    
+	      do_recv_global = do_recv[0];
+	      QDPInternal::broadcast( do_recv_global );
+	      
+	      printf("node = %d, do_recv_global = %d\n",Layout::nodeNumber(), toInt(do_recv_global) );
+
+	    } // while
+	    
+	} // node %
 	QMP_barrier();
 	
 	swatch.stop(); 
