@@ -504,7 +504,11 @@ if(TheNamedObjMap::Instance().check(invParam.SaveSubspaceID))
 	// Subspace ID exists add it to mg_state
 	QDPIO::cout<< solver_string <<"Recovering subspace..."<<std::endl;
 	subspace_pointers = TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID);
-	for(int j=0; j < ip.mg_levels-1;++j) {
+	// Reset the twist parameter to current value
+    if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH){
+        (subspace_pointers->mg_inv_param).mu = toDouble(invParam.twist);
+    }
+    for(int j=0; j < ip.mg_levels-1;++j) {
 		(subspace_pointers->mg_param).setup_maxiter_refresh[j] = 0;
 	}
 	updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
@@ -865,7 +869,7 @@ QDPIO::cout << solver_string << " init_time = "
 		Y_predictor_add_timer.start();
 		predictor.newYVector(Y);
 		Y_predictor_add_timer.stop();
-
+        
 		X_prediction_timer.start();
 		// Can predict psi in the usual way without reference to Y
 		predictor.predictX(psi, (*MdagM), chi);
@@ -880,8 +884,24 @@ QDPIO::cout << solver_string << " init_time = "
         {
             quda_inv_param.mu = -2.0 * toDouble(invParam.CloverParams.twisted_m);
             invParam.twist = quda_inv_param.mu;
+            
+            StopWatch subspaceX;
+            subspaceX.reset();
+            subspaceX.start();
+
+            for(int i=0; i<ip.mg_levels-1; i++){
+                (subspace_pointers->mg_param).setup_maxiter_refresh[i] = 0;
+            }
+            (subspace_pointers->mg_inv_param).mu = toDouble(invParam.twist);
+            updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+            quda_inv_param.preconditioner = subspace_pointers->preconditioner;
+
+            subspaceX.stop();
+            QDPIO::cout<<solver_string<<"Subspace Update Time Before X Solver = "<<subspaceX.getTimeInSeconds() << "secs\n";
         }
-		res2 = qudaInvert(*clov,
+
+        
+        res2 = qudaInvert(*clov,
 				*invclov,
 				Y,
 				psi);
@@ -938,7 +958,7 @@ QDPIO::cout << solver_string << " init_time = "
 			reinit_timer.start();
 
 			// Delete the saved subspace completely
-			QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
+            QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
 			// Recreate the subspace
 			if(quda_inv_param.dslash_type == QUDA_CLOVER_WILSON_DSLASH){
@@ -967,7 +987,7 @@ QDPIO::cout << solver_string << " init_time = "
 			TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
 
 			// Assign the pointer into the named object
-			TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
+            TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
 			quda_inv_param.preconditioner = subspace_pointers->preconditioner;
 			reinit_timer.stop();
 			QDPIO::cout << solver_string << "Subspace Reinit Time: " << reinit_timer.getTimeInSeconds() << " sec."  << std::endl;
@@ -1047,6 +1067,7 @@ QDPIO::cout << solver_string << " init_time = "
 				<< "Total time: " << time <<  "(s)" << std::endl;
 
 		quda_inv_param.use_init_guess = old_guess_policy;
+
 
 		return res;
 	}
@@ -1330,11 +1351,24 @@ QDPIO::cout << solver_string << " init_time = "
 		//psi[A->subset()]=zero;
 		psi = zero;
 		// Solve for psi
-		if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
+        if(quda_inv_param.dslash_type == QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH)
         {
             quda_inv_param.mu = -2.0 * toDouble(invParam.CloverParams.twisted_m);
             invParam.twist = quda_inv_param.mu;
+            
+            StopWatch subspaceX;
+            subspaceX.reset();
+            subspaceX.start();
+            for(int i=0; i<ip.mg_levels-1; i++){
+                (subspace_pointers->mg_param).setup_maxiter_refresh[i] = 0;
+            }
+            (subspace_pointers->mg_inv_param).mu = toDouble(invParam.twist);
+            updateMultigridQuda(subspace_pointers->preconditioner, &(subspace_pointers->mg_param));
+            quda_inv_param.preconditioner = subspace_pointers->preconditioner;
+            subspaceX.stop();
+            QDPIO::cout<<solver_string<<"Subspace Update Time Before X Solver = "<<subspaceX.getTimeInSeconds() << "secs\n";
         }
+
 		res2 = qudaInvert(*clov,
 				*invclov,
 				Y,
@@ -1401,7 +1435,7 @@ QDPIO::cout << solver_string << " init_time = "
 			reinit_timer.start();
 
 			// Delete the saved subspace completely
-			QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
+            QUDAMGUtils::delete_subspace(invParam.SaveSubspaceID);
 
 			// Recreate the subspace
 			if(quda_inv_param.dslash_type == QUDA_CLOVER_WILSON_DSLASH){
@@ -1431,8 +1465,8 @@ QDPIO::cout << solver_string << " init_time = "
 			TheNamedObjMap::Instance().get(invParam.SaveSubspaceID).setRecordXML(record_xml);
 
 			// Assign the pointer into the named object
-			TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
-			quda_inv_param.preconditioner = subspace_pointers->preconditioner;	
+            TheNamedObjMap::Instance().getData< QUDAMGUtils::MGSubspacePointers* >(invParam.SaveSubspaceID) = subspace_pointers;
+			quda_inv_param.preconditioner = subspace_pointers->preconditioner;
 			reinit_timer.stop();
 			QDPIO::cout << solver_string << "Subspace Reinit Time: " << reinit_timer.getTimeInSeconds() << " sec."  << std::endl;
 
@@ -1528,7 +1562,7 @@ QDPIO::cout << solver_string << " init_time = "
 		quda_inv_param.chrono_make_resident = false;
 		quda_inv_param.chrono_use_resident = false;
 		quda_inv_param.chrono_replace_last = false;
-
+        
 
 		return res;
 	}
