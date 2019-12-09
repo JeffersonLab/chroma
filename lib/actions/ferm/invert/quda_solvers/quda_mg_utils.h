@@ -116,8 +116,12 @@ namespace Chroma {
 
 			QDPIO::cout<<"Creating MG subspace."<<std::endl;
 			//Taken from various places in the old constructor.
-
-			mg_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH;
+            if(invParam.CloverParams.twisted_m_usedP == true){
+                mg_inv_param.dslash_type = QUDA_CLOVER_HASENBUSCH_TWIST_DSLASH;
+                mg_inv_param.mu = toDouble(invParam.twist); 
+            }else{
+                mg_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH;
+            }
 			mg_inv_param.inv_type = QUDA_GCR_INVERTER;
 			mg_inv_param.tol = 1e-10;
 			mg_inv_param.maxiter = 10000;
@@ -132,7 +136,7 @@ namespace Chroma {
 			mg_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
 			mg_inv_param.clover_cuda_prec_precondition = gpu_half_prec;
 			mg_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
-			//
+			// 
 			//Done...
 			// Autotuning
 			if( invParam.tuneDslashP ) {
@@ -219,9 +223,13 @@ namespace Chroma {
 
 				if (ip.check_multigrid_setup == true ) {
 					mg_param.run_verify = QUDA_BOOLEAN_YES;
+					mg_param.run_low_mode_check = QUDA_BOOLEAN_NO;
+					mg_param.run_oblique_proj_check = QUDA_BOOLEAN_NO;
 				}
 				else {
 					mg_param.run_verify = QUDA_BOOLEAN_NO;
+					mg_param.run_low_mode_check = QUDA_BOOLEAN_NO;
+					mg_param.run_oblique_proj_check = QUDA_BOOLEAN_NO;
 				}
 
 				for (int i=0; i<mg_param.n_level-1; ++i) { 
@@ -258,9 +266,8 @@ namespace Chroma {
 						mg_param.nu_pre[i] = ip.nu_pre[i];
 						mg_param.nu_post[i] = ip.nu_post[i];
 					}
-
-					mg_param.mu_factor[i] = 1.0; // default is one in QUDA test program
-
+					//mg_param.mu_factor[i] = 1.0; // default is one in QUDA test program
+                    mg_param.mu_factor[i] = toDouble(ip.mu_factor[i]);
 					// Hardwire setup solver now
 					if ( i < mg_param.n_level-1) {
 						mg_param.setup_inv_type[i] = theChromaToQudaSolverTypeMap::Instance()[ ip.subspaceSolver[i]];
@@ -383,6 +390,9 @@ namespace Chroma {
 						QDP_abort(1);
 						break;
 					}
+					
+					mg_param.vec_infile[i][0] = '\0';
+					mg_param.vec_outfile[i][0] = '\0';
 				}
 				mg_param.setup_type = QUDA_NULL_VECTOR_SETUP;
 				mg_param.pre_orthonormalize = QUDA_BOOLEAN_NO;
@@ -398,11 +408,6 @@ namespace Chroma {
 						: QUDA_COMPUTE_NULL_VECTOR_NO;
 				mg_param.generate_all_levels = ip.generate_all_levels ? QUDA_BOOLEAN_YES
 						: QUDA_BOOLEAN_NO;
-
-				for(int l=0; l < ip.mg_levels; l++) {
-				  mg_param.vec_infile[l][0] = '\0';
-				  mg_param.vec_outfile[l][0] = '\0';
-				}
 				QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
 			}
 			// setup the multigrid solver

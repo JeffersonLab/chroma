@@ -546,6 +546,9 @@ public:
 			mg_param.location[i] = QUDA_CUDA_FIELD_LOCATION;
 			mg_param.smoother_solve_type[i] = QUDA_DIRECT_PC_SOLVE;
 			mg_param.coarse_grid_solution_type[i] = QUDA_MATPC_SOLUTION;
+		
+			mg_param.vec_infile[i][0] = '\0';
+			mg_param.vec_outfile[i][0] = '\0';
 		}
 
 		// only coarsen the spin on the first restriction
@@ -557,10 +560,6 @@ public:
 		mg_param.compute_null_vector = ip.generate_nullspace ? QUDA_COMPUTE_NULL_VECTOR_YES
 				: QUDA_COMPUTE_NULL_VECTOR_NO;
 
-		for(int l=0; l < ip.mg_levels; ++l) {
-		  mg_param.vec_infile[l][0] = '\0';
-		  mg_param.vec_outfile[l][0] = '\0';
-		}
 		QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
 		quda_inv_param.verbosity = QUDA_VERBOSE;
 

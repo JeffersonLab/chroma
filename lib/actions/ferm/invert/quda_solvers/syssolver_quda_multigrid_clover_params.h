@@ -31,6 +31,7 @@ namespace Chroma
       dump_on_failP = false;
       Pipeline = 1;
       SolutionCheckP = true;
+      twist = 0;
     };
 
     SysSolverQUDAMULTIGRIDCloverParams( const SysSolverQUDAMULTIGRIDCloverParams& p) {
@@ -59,6 +60,7 @@ namespace Chroma
       ThresholdCount = p.ThresholdCount;
       Pipeline = p.Pipeline;
       SolutionCheckP = p.SolutionCheckP;
+      twist = p.twist;
     }
 
    
@@ -92,7 +94,8 @@ namespace Chroma
     GroupXML_t backup_inv_param;
     bool dump_on_failP;
     bool SolutionCheckP;
- 
+    // twist parameter used in MG subspace creation
+    Real twist;
 
   };
 

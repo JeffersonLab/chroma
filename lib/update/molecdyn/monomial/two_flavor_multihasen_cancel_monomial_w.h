@@ -60,7 +60,7 @@ namespace Chroma
 				START_CODE();
 
 				XMLWriter& xml_out = TheXMLLogWriter::Instance();
-				push(xml_out, "S");
+				push(xml_out, "PrecConstDetTwoFlavorMultihasenCancelMonomial");
 
 				const FAType<T,P,Q>& FA = getFermAct();
 				Handle<FermState<T,P,Q> > state = FA.createState(s.getQ());

@@ -87,7 +87,7 @@ namespace Chroma
       //
       //  So  M x = b => A_oo (M_symm) x = b 
       //              =>       M_symm x = A^{-1}_oo b = chi_mod
-      invclov.apply(mod_chi, chi_s, PLUS, 1);
+	  invclov.apply(mod_chi, chi_s, PLUS, 1);
     }
     else {
       // If we work with symmetric preconditioning nothing else needs done

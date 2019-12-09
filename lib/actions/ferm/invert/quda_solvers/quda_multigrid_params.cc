@@ -78,6 +78,9 @@ namespace Chroma {
     maxIterations.resize(mg_levels);
     readArray<int>(paramtop, "MaxCoarseIterations", maxIterations, 12 );
 
+    mu_factor.resize(mg_levels);
+    readArray<Real>(paramtop, "MuFactor", mu_factor, 1.0);
+
     smootherType.resize(mg_levels);
     readArray<QudaSolverType>(paramtop, "SmootherType", smootherType, MR);
 

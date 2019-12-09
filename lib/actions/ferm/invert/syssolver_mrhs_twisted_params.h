@@ -20,6 +20,7 @@ namespace Chroma {
 		int BlockSize;   // Number of right hand sides
 		multi1d<Real> Twists;
 		GroupXML_t  SubInverterXML; // XML to create the sub-integrator from
+		SysSolverMRHSTwistedParams() = default;
 		SysSolverMRHSTwistedParams(XMLReader& xml_in, const std::string& path);
 	};
 
