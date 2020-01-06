@@ -170,13 +170,18 @@ namespace Chroma
 		  Double n2 = norm2(tmp,s);
 		  Double n2rel = n2 / norm2(chi,s);
 		  QDPIO::cout << "MG_PROTO_QPHIX_EO_CLOVER_INVERTER: iters = "<< res.n_count << " rel resid = " << sqrt(n2rel) << std::endl;
+
 		  if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget ) ) {
+		    QDPIO::cout << "WARNING: final relative residual " << sqrt(n2rel) << " is greater than "
+				<< "target residual: " << invParam.OuterSolverRsdTarget << std::endl;
+#if 0
 		    MGSolverException convergence_fail(invParam.CloverParams.Mass, 
 						       subspaceId,
 						       res.n_count,
 						       Real(sqrt(n2rel)),
 						       invParam.OuterSolverRsdTarget);
 		    throw convergence_fail;
+#endif
 
 		  }
 	  }

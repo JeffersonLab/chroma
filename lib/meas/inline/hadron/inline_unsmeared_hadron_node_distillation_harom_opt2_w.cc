@@ -1231,7 +1231,7 @@ namespace Chroma
 	  Integer do_recv_global = do_recv[0];
 	  QDPInternal::broadcast( do_recv_global );
 
-	  printf("node = %d, do_recv_global = %d\n",Layout::nodeNumber(), toInt(do_recv_global) );
+	  //printf("node = %d, do_recv_global = %d\n",Layout::nodeNumber(), toInt(do_recv_global) );
 
 	  // Arbitrarily choose the first harom node to determine stopping condition
 	  //
@@ -1309,7 +1309,7 @@ namespace Chroma
 	      do_recv_global = do_recv[0];
 	      QDPInternal::broadcast( do_recv_global );
 	      
-	      printf("node = %d, do_recv_global = %d\n",Layout::nodeNumber(), toInt(do_recv_global) );
+	      //printf("node = %d, do_recv_global = %d\n",Layout::nodeNumber(), toInt(do_recv_global) );
 
 	    } // while
 	    
