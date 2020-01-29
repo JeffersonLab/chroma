@@ -466,6 +466,7 @@ namespace Chroma
     {
       ValGenProp4ElementalOperator_t() {}
       ValGenProp4ElementalOperator_t( ComplexD* F , int size ): op(F,size,size, Ns,Ns ) {}
+      ValGenProp4ElementalOperator_t( int size ): op(size,size, Ns,Ns ) {}
       multi4d<ComplexD>  op;              /*!< Colorstd::vector source and sink with momentum projection */
     };
 
@@ -1141,6 +1142,10 @@ namespace Chroma
 	StopWatch swatch;
 	swatch.reset();
 
+
+	StopWatch swatch2;
+	swatch2.reset();
+
 	// Cache manager
 	QDPIO::cout << name << ": initialize the prop factory" << std::endl;
 	SourcePropFactory prop_factory(u, params.param.prop, eigen_source, params.param.contract.num_tries);
@@ -1227,6 +1232,7 @@ namespace Chroma
 		  do_recv[i] = ts_comms_recv( i );
 		}
 	    }
+	  QMP_barrier();
 	    
 	  Integer do_recv_global = do_recv[0];
 	  QDPInternal::broadcast( do_recv_global );
@@ -1235,69 +1241,106 @@ namespace Chroma
 
 	  // Arbitrarily choose the first harom node to determine stopping condition
 	  //
+	  swatch2.reset(); swatch2.start();
+
 	  while ( toInt(do_recv_global) == 23 )
 	    {
-	      std::vector< KeyGenProp4ElementalOperator_t >  key( ts_per_node );
-	      std::vector< ValGenProp4ElementalOperator_t* >  val( ts_per_node );
+	      std::vector< KeyGenProp4ElementalOperator_t >  key( Nt_forward );
+	      std::vector< ValGenProp4ElementalOperator_t* >  val( Nt_forward );
 
+	      for (int tcorr = 0 ; tcorr < Nt_forward ; ++tcorr )
+		val[ tcorr ] = new ValGenProp4ElementalOperator_t;
+
+	      int key_ref = -1;
+
+	      //
+	      // Now wait until all tensors are available in shared memory
+	      //				    
 	      if (Layout::nodeNumber() % nodes_per_cn == 0)
 		{
 		  for (int i = 0 ; i < ts_per_node ; ++i )
 		    {
-		      recv_key( i , key[i] );
+		      int tcorr = ( Layout::nodeNumber() / nodes_per_cn ) * ts_per_node + i;
 
-		      QDPIO::cout << "genprop " << i << ", got key: " << key[i] << "\n";
+		      recv_key( i , key[ tcorr ] );
 
-		      val[i] = new ValGenProp4ElementalOperator_t( reinterpret_cast< ComplexD * >( ts_comms_get_shm( i ) ) , num_vecs );
+		      if ( key_ref == -1 && Layout::nodeNumber() == 0 )
+			key_ref = tcorr;
 
-		      //QDPIO::cout << val[i]->op(0,0,0,0) << "\n";
-				    
-		      int tcorr = ( Lt + key[i].t_slice - t_start ) % Lt;
+		      //QDPIO::cout << "genprop " << i << ", got key: " << key[i] << "\n";
+
+		      delete val[ tcorr ];
+		      val[ tcorr ] = new ValGenProp4ElementalOperator_t( reinterpret_cast< ComplexD * >( ts_comms_get_shm( i ) ) , num_vecs );
+		    }
+		}
+	      QMP_barrier();
+	      swatch2.stop();
+	      QDPIO::cout << "Time for genprop:                    time = " << swatch2.getTimeInSeconds() << " secs " <<std::endl;
+
+
+	      swatch2.reset(); swatch2.start();
+	      if (Layout::nodeNumber() % nodes_per_cn == 0)
+		{
+		  for (int tcorr = 0 ; tcorr < Nt_forward ; ++tcorr )
+		    {
 		      int ts_node = tcorr / ts_per_node * nodes_per_cn;
 
 		      if (ts_node != 0)
 			{
 			  int size = sizeof( ComplexD ) * num_vecs * num_vecs * Ns * Ns;
-			
 			  if (Layout::nodeNumber() == ts_node)
 			    {
-			      QDPInternal::sendToWait( const_cast<ComplexD*>(val[i]->op.slice(0,0,0)) , 0 , size );
+			      QDPInternal::sendToWait( const_cast<ComplexD*>(val[tcorr]->op.slice(0,0,0)) , 0 , size );
 			    }
 			  if (Layout::nodeNumber() == 0)
 			    {
-			      QDPInternal::recvFromWait( const_cast<ComplexD*>(val[i]->op.slice(0,0,0)) , ts_node , size );
+			      delete val[ tcorr ];
+			      val[ tcorr ] = new ValGenProp4ElementalOperator_t (num_vecs );
+
+			      QDPInternal::recvFromWait( const_cast<ComplexD*>(val[tcorr]->op.slice(0,0,0)) , ts_node , size );
+
+			      key[ tcorr ] = key[ key_ref ];
+			      key[ tcorr ].t_slice = ( t_start + tcorr ) % Lt;
 			    }
 			}
+		      if ( tcorr == 0 || tcorr == Nt_forward-1 )
+			QDPIO::cout << key[ tcorr ] << "\n";
 		    }
 		}
+	      QMP_barrier();
+	      swatch2.stop();
+	      QDPIO::cout << "Time to copy tensor to primary node: time = " << swatch2.getTimeInSeconds() << " secs " <<std::endl;
 
-	      // Need to add dummy entries, since on nodes other than the first on each physical box val[i] is not initialized (yet)
+	      //
+	      // Now store the tensors
 	      //				    
-	      for (int i = 0 ; i < ts_per_node ; ++i )
+	      swatch2.reset(); swatch2.start();
+	      for (int tcorr = 0 ; tcorr < Nt_forward ; ++tcorr )
 		{
-		  if (Layout::nodeNumber() % nodes_per_cn != 0)
-		    val[i] = new ValGenProp4ElementalOperator_t;
-
-		  qdp_db.insert(key[i], *val[i]);
-
-		  if (Layout::nodeNumber() % nodes_per_cn != 0)
-		    delete val[i];
-
+		  qdp_db.insert(key[ tcorr ], *val[ tcorr ]);
+		  delete val[ tcorr ];
 		}
+	      swatch2.stop();
+	      QDPIO::cout << "Time to store tensors:               time = " << swatch2.getTimeInSeconds() << " secs " <<std::endl;
+
 		    
 	      //
 	      // Tell harom we're done with using the shared memory
 	      //
+	      swatch2.reset(); swatch2.start();
 	      if (Layout::nodeNumber() % nodes_per_cn == 0)
 		{
 		  for (int i = 0 ; i < ts_per_node ; ++i )
 		    {
 		      ts_comms_send( i , 24 );
-
-		      delete val[i];
 		    }
 		}
+	      QMP_barrier();
 
+
+	      //
+	      // Now make sure the tensors are on the primary node
+	      //				    
 	      if (Layout::nodeNumber() % nodes_per_cn == 0)
 		{
 		  for (int i = 0 ; i < ts_per_node ; ++i )
@@ -1305,13 +1348,14 @@ namespace Chroma
 		      do_recv[i] = ts_comms_recv( i );
 		    }
 		}
+	      QMP_barrier();
 	    
 	      do_recv_global = do_recv[0];
 	      QDPInternal::broadcast( do_recv_global );
 	      
-	      //printf("node = %d, do_recv_global = %d\n",Layout::nodeNumber(), toInt(do_recv_global) );
-
 	    } // while
+
+	  swatch2.stop();
 	    
 	} // node %
 	QMP_barrier();
