@@ -78,9 +78,9 @@ namespace Chroma
 
       // tmp = (A + fact) psi
       // Yucky...
-      const int *tab = rb3[cb3d].siteTable().slice();
-      for(int j=0; j < rb3[cb3d].siteTable().size(); j++) { 
-	int site = tab[j];
+      const auto *tab = rb3[cb3d].siteTable().slice();
+      for(auto j=0; j < rb3[cb3d].siteTable().size(); j++) { 
+	auto site = tab[j];
 	APlusFact.applySite(tmp1, psi, isign, site);
       }
 

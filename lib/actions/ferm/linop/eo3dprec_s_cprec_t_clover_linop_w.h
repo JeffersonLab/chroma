@@ -126,9 +126,9 @@ namespace Chroma
 	{
 	  cRightLinOp(tmp1, psi, PLUS, cb3);
 
-	  const int* tab = rb3[cb3].siteTable().slice();
-	  for(int j=0; j < rb3[cb3].siteTable().size(); j++) { 
-	    int site=tab[j];
+	  const auto* tab = rb3[cb3].siteTable().slice();
+	  for(auto j=0; j < rb3[cb3].siteTable().size(); j++) { 
+	    auto site=tab[j];
 	    APlusFact.applySite(tmp2, tmp1, PLUS, site);
 	  }
 	  tmp2[rb3[cb3]] -= fact * tmp1;
@@ -141,9 +141,9 @@ namespace Chroma
       case MINUS:
 	{
 	  cLeftLinOp(tmp1, psi, MINUS, cb3);
-	  const int* tab = rb3[cb3].siteTable().slice();
-	  for(int j=0; j < rb3[cb3].siteTable().size(); j++) { 
-	    int site=tab[j];
+	  const auto* tab = rb3[cb3].siteTable().slice();
+	  for(auto j=0; j < rb3[cb3].siteTable().size(); j++) { 
+	    auto site=tab[j];
 	    APlusFact.applySite(tmp2, tmp1, MINUS, site);
 	  }
 
