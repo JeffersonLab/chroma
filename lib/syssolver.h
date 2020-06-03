@@ -7,6 +7,8 @@
 #define __syssolver_h__
 
 #include "chromabase.h"
+#include <vector>
+#include <memory>
 
 namespace Chroma
 {
@@ -44,6 +46,16 @@ namespace Chroma
      * Should the accuracy be specified here ???
      */
     virtual SystemSolverResults_t operator() (T& psi, const T& chi) const = 0;
+
+    virtual std::vector<SystemSolverResults_t> operator() (const std::vector<std::shared_ptr<T>>& psi, const std::vector<std::shared_ptr<const T>>& chi) const
+    {
+       QDPIO::cout << "Solving the linear systems one by one" << std::endl;
+       assert(psi.size() == chi.size());
+       std::vector<SystemSolverResults_t> res(psi.size());
+       for(int ncols = psi.size(), col=0; col < ncols; ++col)
+         res[col] = this->operator()(*psi[col], *chi[col]);
+       return res;
+    }
 
     //! Return the subset on which the operator acts
     virtual const Subset& subset() const = 0;

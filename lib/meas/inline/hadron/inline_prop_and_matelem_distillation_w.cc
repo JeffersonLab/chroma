@@ -654,237 +654,252 @@ namespace Chroma
 	// Loop over each time source
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
-	  int t_source = t_sources[tt];  // This is the actual time-slice.
-	  QDPIO::cout << "t_source = " << t_source << std::endl; 
+	    int t_source = t_sources[tt];  // This is the actual time-slice.
+	    QDPIO::cout << "t_source = " << t_source << std::endl; 
 
-	  // Loop over each spin source
-	  for(int spin_source=0; spin_source < Ns; ++spin_source)
-	  {
-	    QDPIO::cout << "spin_source = " << spin_source << std::endl; 
+	    // Loop over each spin source
+	    for(int spin_source=0; spin_source < Ns; ++spin_source)
+	    {
+	      QDPIO::cout << "spin_source = " << spin_source << std::endl; 
 
-	    // These are the common parts of a perambulator that are needed for this time source
-	    std::list<KeyPropElementalOperator_t> snk_keys(getSnkKeys(t_source,
-								      spin_source,
-								      params.param.contract.Nt_forward,
+	      // These are the common parts of a perambulator that are needed for this time source
+	      std::list<KeyPropElementalOperator_t> snk_keys(getSnkKeys(t_source,
+	  							      spin_source,
+	  							      params.param.contract.Nt_forward,
 								      params.param.contract.Nt_backward,
 								      params.param.contract.mass_label));
 
-	    if (1) {
-	      // The final perambulator
-	      QDP::MapObjectMemory<KeyPropElementalOperator_t, ValPropElementalOperator_t> peram;
+	      if (1) {
+	        // The final perambulator
+	        QDP::MapObjectMemory<KeyPropElementalOperator_t, ValPropElementalOperator_t> peram;
 
-	      // Initialize
-	      for(std::list<KeyPropElementalOperator_t>::const_iterator key = snk_keys.begin();
-		  key != snk_keys.end();
-		  ++key)
-		{
-		  // The perambulator value
-		  ValPropElementalOperator_t tmp;
-		  peram.insert(*key, tmp);
+	        // Initialize
+	        for(std::list<KeyPropElementalOperator_t>::const_iterator key = snk_keys.begin();
+		    key != snk_keys.end();
+		    ++key)
+		  {
+		    // The perambulator value
+		    ValPropElementalOperator_t tmp;
+		    peram.insert(*key, tmp);
 	      
-		  peram[*key].mat.resize(num_vecs,num_vecs);
-		  peram[*key].mat = zero;
-		} // key
-	      QDPIO::cout << "peram initialized! " << std::endl; 
+		    peram[*key].mat.resize(num_vecs,num_vecs);
+		    peram[*key].mat = zero;
+		  } // key
+	        QDPIO::cout << "peram initialized! " << std::endl; 
 
-	      //
-	      // The space distillation loop
-	      //
-	      for(int colorvec_src=0; colorvec_src < num_vecs; ++colorvec_src)
-		{
-		  StopWatch sniss1;
-		  sniss1.reset();
-		  sniss1.start();
+	        //
+	        // The space distillation loop
+	        //
+	        for(int colorvec_src0=0,colorvec_src_step=std::min(8,num_vecs); colorvec_src0 < num_vecs; colorvec_src0+=colorvec_src_step, colorvec_src_step=std::min(colorvec_src_step, num_vecs-colorvec_src0))
+	        {
+		  std::vector<std::shared_ptr<LatticeFermion>> chis(colorvec_src_step), quark_solns(colorvec_src_step);
+	          for (int col=0; col<colorvec_src_step; col++) chis[col].reset(new LatticeFermion);
+	          for (int col=0; col<colorvec_src_step; col++) quark_solns[col].reset(new LatticeFermion);
 
-		  StopWatch snarss1;
-		  snarss1.reset();
-		  snarss1.start();
-		  QDPIO::cout << "Do spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << std::endl; 
+                  StopWatch sniss1;
+	          sniss1.reset();
+	          sniss1.start();
 
-		  // Get the source std::vector
-		  LatticeColorVector vec_srce = zero;
-	      
-		  if (!params.param.contract.zero_colorvecs)
-		    {
-		      vec_srce = sub_eigen_map.getVec(t_source, colorvec_src);
-		    }
+	          StopWatch snarss1;
+	          snarss1.reset();
+	          snarss1.start();
+  
+	          for(int colorvec_src=colorvec_src0,col=0; col < colorvec_src_step; ++colorvec_src,++col)
+	          {
+	            QDPIO::cout << "Do spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << std::endl; 
 
-		  //
-		  // Loop over each spin source and invert. 
-		  // Use the same colorstd::vector source. No spin dilution will be used.
-		  //
-		  multi1d<LatticeColorVector> ferm_out(Ns);
+	            // Get the source std::vector
+	            LatticeColorVector vec_srce = zero;
+	        
+	            if (!params.param.contract.zero_colorvecs)
+	              {
+	                vec_srce = sub_eigen_map.getVec(t_source, colorvec_src);
+	              }
 
-		  // Insert a ColorVector into spin index spin_source
-		  // This only overwrites sections, so need to initialize first
-		  LatticeFermion chi = zero;
-		  CvToFerm(vec_srce, chi, spin_source);
+	            //
+	            // Loop over each spin source and invert. 
+	            // Use the same colorstd::vector source. No spin dilution will be used.
+	            //
 
-		  LatticeFermion quark_soln = zero;
+	            // Insert a ColorVector into spin index spin_source
+	            // This only overwrites sections, so need to initialize first
+	            *chis[col] = zero;
+	            CvToFerm(vec_srce, *chis[col], spin_source);
 
-		  if (!params.param.contract.zero_colorvecs)
-		    {
-		      // Do the propagator inversion
-		      // Check if bad things are happening
-		      bool badP = true;
-		      for(int nn = 1; nn <= params.param.contract.num_tries; ++nn)
-			{	
-			  // Reset
-			  quark_soln = zero;
-			  badP = false;
-	      
-			  // Solve for the solution std::vector
-			  SystemSolverResults_t res = (*PP)(quark_soln, chi);
-		  
-			  ncg_had += res.n_count;
+	            *quark_solns[col] = zero;
+		  } // colorvec_src
 
-			  // Some sanity checks
-			  if (toDouble(res.resid) > 1.0e-3)
-			    {
-			      QDPIO::cerr << name << ": have a resid > 1.0e-3. That is unacceptable" << std::endl;
-			      QDP_abort(1);
-			    }
+	          if (!params.param.contract.zero_colorvecs)
+	            {
+	              // Do the propagator inversion
+	              // Check if bad things are happening
+	              bool badP = true;
+	              for(int nn = 1; nn <= params.param.contract.num_tries; ++nn)
+	              {	
+	                // Reset
+	                for (int col=0; col<colorvec_src_step; col++) *quark_solns[col] = zero;
+	                badP = false;
+	          
+	                // Solve for the solution std::vector
+	                std::vector<SystemSolverResults_t> res = PP->operator()(quark_solns, std::vector<std::shared_ptr<const LatticeFermion>>(chis.begin(), chis.end()));
+	          
+	                for (int col=0; col<colorvec_src_step; col++)
+	                {
+	                  ncg_had += res[col].n_count;
 
-			  // Check for finite values - neither NaN nor Inf
-			  if (isfinite(quark_soln))
-			    {
-			      // Okay
-			      break;
-			    }
-			  else
-			    {
-			      QDPIO::cerr << name << ": WARNING - found something not finite, may retry\n";
-			      badP = true;
-			    }
-			}
+	                  // Some sanity checks
+	                  if (toDouble(res[col].resid) > 1.0e-3)
+	                    {
+	                      QDPIO::cerr << name << ": have a resid > 1.0e-3. That is unacceptable" << std::endl;
+	                      QDP_abort(1);
+	                    }
+		        }
 
-		      // Sanity check
-		      if (badP)
-			{
-			  QDPIO::cerr << name << ": this is bad - did not get a finite solution std::vector after num_tries= " 
-				      << params.param.contract.num_tries << std::endl;
-			  QDP_abort(1);
-			}
-		    } // zero_colorvecs ??
-	      
-		  // Extract into the temporary output array
-		  for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
-		    {
-		      ferm_out(spin_sink) = peekSpin(quark_soln, spin_sink);
-		    }
+	                // Check for finite values - neither NaN nor Inf
+	                for (int col=0; col<colorvec_src_step; col++) if (isfinite(*quark_solns[col]))
+	                  {
+	                    // Okay
+	                    break;
+	                  }
+	                else
+	                  {
+	                    QDPIO::cerr << name << ": WARNING - found something not finite, may retry\n";
+	                    badP = true;
+	                  }
+	              }
 
-		  snarss1.stop();
-		  QDPIO::cout << "Time to compute prop for spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << "  time = " 
+	            // Sanity check
+	            if (badP)
+	              {
+	                QDPIO::cerr << name << ": this is bad - did not get a finite solution std::vector after num_tries= " 
+	              	      << params.param.contract.num_tries << std::endl;
+	                QDP_abort(1);
+	              }
+	          } // zero_colorvecs ??
+
+	          snarss1.stop();
+		  QDPIO::cout << "Time to compute prop for spin_source= " << spin_source << "  colorvec_src= " << colorvec_src0 << " to " << colorvec_src0+colorvec_src_step-1 << "  time = " 
 			      << snarss1.getTimeInSeconds() 
-			      << " secs" << std::endl;
+		              << " secs" << std::endl;
 
-		  // The perambulator part
-		  // Loop over time
+	          for(int colorvec_src=colorvec_src0,col=0; col < colorvec_src_step; ++colorvec_src,++col) {
+      
+	            multi1d<LatticeColorVector> ferm_out(Ns);
+
+		    // Extract into the temporary output array
+		    for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+		      {
+		        ferm_out(spin_sink) = peekSpin(*quark_solns[col], spin_sink);
+		      }
+
+		    // The perambulator part
+		    // Loop over time
 
 #ifndef BUILD_JIT_CONTRACTION_KERNELS
-		  for(int t_slice = 0; t_slice < Lt; ++t_slice)
-		    {
-		      // Loop over all the keys
-		      for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();
-			  key != snk_keys.end();
-			  ++key)
-			{
-			  if (key->t_slice != t_slice) {continue;}
+		    for(int t_slice = 0; t_slice < Lt; ++t_slice)
+		      {
+		        // Loop over all the keys
+		        for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();
+		            key != snk_keys.end();
+		            ++key)
+		          {
+		            if (key->t_slice != t_slice) {continue;}
 
-			  // Loop over the sink colorvec, form the innerproduct and the resulting perambulator
-			  for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
-			    {
-			      peram[*key].mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_map.getVec(t_slice, colorvec_sink), 
-											 ferm_out(key->spin_snk));
-			    } // for colorvec_sink
-			} // for key
-		    } // for t_slice
+		            // Loop over the sink colorvec, form the innerproduct and the resulting perambulator
+		            for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
+		              {
+		                peram[*key].mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_map.getVec(t_slice, colorvec_sink), 
+		          								 ferm_out(key->spin_snk));
+		              } // for colorvec_sink
+		          } // for key
+		      } // for t_slice
 #else
-		  if ( params.param.contract.fuse_timeloop)
-		    {
-		      //
-		      // fused timeloop
-		      //
-		      for(int spin_snk = 0; spin_snk < Ns; ++spin_snk)
-			{
-			  int count = 0;
-			  for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();  key != snk_keys.end(); ++key)
-			    {
-			      if (key->spin_snk != spin_snk) { continue;}
-			      count += num_vecs;
-			    }
+		    if ( params.param.contract.fuse_timeloop)
+		      {
+		        //
+		        // fused timeloop
+		        //
+		        for(int spin_snk = 0; spin_snk < Ns; ++spin_snk)
+		          {
+		            int count = 0;
+		            for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();  key != snk_keys.end(); ++key)
+		              {
+		                if (key->spin_snk != spin_snk) { continue;}
+		                count += num_vecs;
+		              }
 
-			  //QDPIO::cout << "spin_snk = " << spin_snk << ", count = " << count << "\n";
-		      
-			  multi1d<SubLatticeColorVectorF*> vec_ptr( count );
-			  multi1d<ComplexD*> contr_ptr( count );
+		            //QDPIO::cout << "spin_snk = " << spin_snk << ", count = " << count << "\n";
+		        
+		            multi1d<SubLatticeColorVectorF*> vec_ptr( count );
+		            multi1d<ComplexD*> contr_ptr( count );
 
-			  int run_count = 0;
-		      
-			  // Loop over all the keys
-			  for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();
-			      key != snk_keys.end();
-			      ++key)
-			    {
-			      if (key->spin_snk != spin_snk) {continue;}
+		            int run_count = 0;
+		        
+		            // Loop over all the keys
+		            for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();
+		                key != snk_keys.end();
+		                ++key)
+		              {
+		                if (key->spin_snk != spin_snk) {continue;}
 
-			      //
-			      // Pack pointers to the vectors and matrix elements
-			      //
-			      for (int i=0 ; i < num_vecs ; ++i ) {
-				vec_ptr[run_count] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( key->t_slice , i ) );
-				contr_ptr[run_count] = &peram[*key].mat( i , colorvec_src );
-				++run_count;
-			      }
-			    }
-		      
-			  //
-			  // Big call-out 
-			  //
-			  multi_innerProduct( contr_ptr , vec_ptr , ferm_out(spin_snk) );
-		  
-			} // for spin_snk
-		    }
-		  else
-		    {
-		      //
-		      // non-fused timeloop
-		      //
-		      for(int t_slice = 0; t_slice < Lt; ++t_slice)
-			{
-			  // Loop over all the keys
-			  for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();
-			      key != snk_keys.end();
-			      ++key)
-			    {
-			      if (key->t_slice != t_slice) {continue;}
-			      //
-			      // Pack pointers to the vectors and matrix elements
-			      //
-			      multi1d<SubLatticeColorVectorF*> vec_ptr( num_vecs );
-			      multi1d<ComplexD*> contr_ptr( num_vecs );
-			      for (int i=0 ; i < num_vecs ; ++i ) {
-				vec_ptr[i] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( t_slice , i ) );
-				contr_ptr[i] = &peram[*key].mat( i , colorvec_src );
-			      }
-		  
-			      //
-			      // Big call-out 
-			      //
-			      multi_innerProduct( contr_ptr , vec_ptr , ferm_out(key->spin_snk) );
-			    } // for key
-			} // for t_slice
-		    }
+		                //
+		                // Pack pointers to the vectors and matrix elements
+		                //
+		                for (int i=0 ; i < num_vecs ; ++i ) {
+		          	vec_ptr[run_count] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( key->t_slice , i ) );
+		          	contr_ptr[run_count] = &peram[*key].mat( i , colorvec_src );
+		          	++run_count;
+		                }
+		              }
+		        
+		            //
+		            // Big call-out 
+		            //
+		            multi_innerProduct( contr_ptr , vec_ptr , ferm_out(spin_snk) );
+		    
+		          } // for spin_snk
+		      }
+		    else
+		      {
+		        //
+		        // non-fused timeloop
+		        //
+		        for(int t_slice = 0; t_slice < Lt; ++t_slice)
+		          {
+		            // Loop over all the keys
+		            for(std::list<KeyPropElementalOperator_t>::const_iterator key= snk_keys.begin();
+		                key != snk_keys.end();
+		                ++key)
+		              {
+		                if (key->t_slice != t_slice) {continue;}
+		                //
+		                // Pack pointers to the vectors and matrix elements
+		                //
+		                multi1d<SubLatticeColorVectorF*> vec_ptr( num_vecs );
+		                multi1d<ComplexD*> contr_ptr( num_vecs );
+		                for (int i=0 ; i < num_vecs ; ++i ) {
+		          	vec_ptr[i] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( t_slice , i ) );
+		          	contr_ptr[i] = &peram[*key].mat( i , colorvec_src );
+		                }
+		    
+		                //
+		                // Big call-out 
+		                //
+		                multi_innerProduct( contr_ptr , vec_ptr , ferm_out(key->spin_snk) );
+		              } // for key
+		          } // for t_slice
+		      }
 #endif
 
+		  } // for colorvec_src
+
 		  sniss1.stop();
-		  QDPIO::cout << "Time to compute and assemble peram for spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << "  time = " 
+		  QDPIO::cout << "Time to compute and assemble peram for spin_source= " << spin_source << "  colorvec_src= " << colorvec_src0 << " to " << colorvec_src0+colorvec_src_step-1 << "  time = " 
 			      << sniss1.getTimeInSeconds()
 			      << " secs"
 			      << " (for contraction: " << sniss1.getTimeInSeconds() - snarss1.getTimeInSeconds() << ")"
 			      << std::endl;
-
-		} // for colorvec_src
+	      } // colorvec_src0
 
 	      if (!params.param.contract.zero_colorvecs)
 		{
@@ -910,7 +925,7 @@ namespace Chroma
 			      << " secs" << std::endl;
 		}
 
-	    } // this ends the lifetime of qdp_db.
+	    } // if (1)
 	  } // for spin_src
 	} // for tt
 

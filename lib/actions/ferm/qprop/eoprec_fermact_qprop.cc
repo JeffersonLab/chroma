@@ -79,6 +79,59 @@ namespace Chroma
       return res;
     }
 
+    //! Solver the linear system
+    /*!
+     * \param psi      quark propagator ( Modify )
+     * \param chi      source ( Read )
+     * \return number of CG iterations
+     */
+    std::vector<SystemSolverResults_t> operator() (const std::vector<std::shared_ptr<T>>& psis, const std::vector<std::shared_ptr<const T>>& chis) const override
+    {
+      START_CODE();
+
+      assert(psis.size() == chis.size());
+      int ncols = psis.size();
+
+      /* Step (i) */
+      /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_e */
+      std::vector<std::shared_ptr<T>> chi_tmp(ncols);
+      for (int col=0; col<ncols; ++col) {
+	T tmp1, tmp2;
+
+	A->evenEvenInvLinOp(tmp1, *chis[col], PLUS);
+	A->oddEvenLinOp(tmp2, tmp1, PLUS);
+	chi_tmp[col].reset(new T);
+	(*chi_tmp[col])[rb[1]] = *chis[col] - tmp2;
+      }
+
+      // Call inverter
+      std::vector<SystemSolverResults_t> res = (*invA)(psis, std::vector<std::shared_ptr<const T>>(chi_tmp.begin(), chi_tmp.end()));
+
+      /* Step (ii) */
+      /* psi_e = A_ee^-1 * [chi_e  -  D_eo * psi_o] */
+      for (int col=0; col<ncols; ++col) {
+	T tmp1, tmp2;
+
+	A->evenOddLinOp(tmp1, *psis[col], PLUS);
+	tmp2[rb[0]] = *chis[col] - tmp1;
+	A->evenEvenInvLinOp(*psis[col], tmp2, PLUS);
+      }
+  
+      // Compute residual
+      for (int col=0; col<ncols; ++col) {
+        res[col].resid = 0;
+	T  r;
+	A->unprecLinOp(r, *psis[col], PLUS);
+	r -= *chis[col];
+	Real norm_r = sqrt(norm2(r));
+	if (toDouble(res[col].resid) < toDouble(norm_r)) res[col].resid = norm_r;
+      }
+
+      END_CODE();
+
+      return res;
+    }
+
   private:
     // Hide default constructor
     PrecFermActQprop() {}
