@@ -27,12 +27,12 @@
 
 namespace Chroma 
 { 
-  namespace InlineHadaDisco4DEnv 
+  namespace InlineDiscoProbDefl 
   {
     
 
     //! Propagator input
-    void read(XMLReader& xml, const std::string& path, InlineHadaDisco4DEnv::Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineDiscoProbDefl::Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -41,7 +41,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const std::string& path, const InlineHadaDisco4DEnv::Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineDiscoProbDefl::Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -52,7 +52,7 @@ namespace Chroma
     }
 
     //! Propagator input
-    void read(XMLReader& xml, const std::string& path, InlineHadaDisco4DEnv::Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, InlineDiscoProbDefl::Params::Param_t& param)
     {
       XMLReader inputtop(xml, path);
       
@@ -113,7 +113,7 @@ namespace Chroma
      }
 
     //! Propagator output
-    void write(XMLWriter& xml, const std::string& path, const InlineHadaDisco4DEnv::Params::Param_t& param)
+    void write(XMLWriter& xml, const std::string& path, const InlineDiscoProbDefl::Params::Param_t& param)
     {
       push(xml, path);
 
@@ -131,14 +131,14 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const std::string& path, InlineHadaDisco4DEnv::Params& input)
+    void read(XMLReader& xml, const std::string& path, InlineDiscoProbDefl::Params& input)
     {
-      InlineHadaDisco4DEnv::Params tmp(xml, path);
+      InlineDiscoProbDefl::Params tmp(xml, path);
       input = tmp;
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const std::string& path, const InlineHadaDisco4DEnv::Params& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineDiscoProbDefl::Params& input)
     {
       push(xml, path);
     

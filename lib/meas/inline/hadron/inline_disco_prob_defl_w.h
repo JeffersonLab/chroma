@@ -17,7 +17,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineHadaDisco4DEnv 
+  namespace InlineDiscoProbDefl 
   {
     bool registerAll();
 

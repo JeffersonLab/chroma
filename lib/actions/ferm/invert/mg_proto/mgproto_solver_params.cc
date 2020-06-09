@@ -164,6 +164,7 @@ MGProtoMGDeflationParams::MGProtoMGDeflationParams(XMLReader& xml, const std::st
 	read( paramtop, "NullSolverVerboseP", NullSolverVerboseP, MGLevels-1);
 
 	read( paramtop, "EigenSolverMaxRestartSize", EigenSolverMaxRestartSize);
+	read( paramtop, "EigenSolverMaxRank", EigenSolverMaxRank);
 	read( paramtop, "EigenSolverRsdTarget", EigenSolverRsdTarget);
 	read( paramtop, "EigenSolverMaxIters", EigenSolverMaxIters);
 	read( paramtop, "EigenSolverVerboseP", EigenSolverVerboseP);
@@ -207,6 +208,7 @@ void write(XMLWriter& xml, const std::string& path, const MGProtoMGDeflationPara
 	write(xml, "NullSolverVerboseP", p.NullSolverVerboseP);
 
 	write(xml, "EigenSolverMaxRestartSize", p.EigenSolverMaxRestartSize);
+	write(xml, "EigenSolverMaxRank", p.EigenSolverMaxRank);
 	write(xml, "EigenSolverRsdTarget", p.EigenSolverRsdTarget);
 	write(xml, "EigenSolverMaxIters", p.EigenSolverMaxIters);
 	write(xml, "EigenSolverVerboseP", p.EigenSolverVerboseP);

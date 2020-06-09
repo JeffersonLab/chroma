@@ -70,7 +70,7 @@ namespace Chroma
   // Constructor
   ProjectorMGProtoQPhiXClover::ProjectorMGProtoQPhiXClover(Handle< LinearOperator<T> > A_,
 		  Handle< FermState<T,Q,Q> > state_,
-		  const MGProtoMGDeflationParams& param_) :  A(A_), deflation(MGProtoHelpersQPhiX::createMGDeflation(param_, state_->getLinks())), _subset(A->subset())
+		  const MGProtoMGDeflationParams& param_) :  A(A_), deflation(MGProtoHelpersQPhiX::createMGDeflation(param_, state_->getLinks())), _subset(A_->subset())
   {
 	  diag_inv_VAV = deflation->GetDiagInvCoarse();
   }

@@ -7,6 +7,7 @@
 
 #include "chromabase.h"
 #include "meas/hadron/greedy_coloring.h"
+#include "qdp_layout.h"
 #include <stdexcept>
 #include <vector>
 #include <array>
@@ -324,6 +325,7 @@ Coloring::Coloring(unsigned int distance) {
 
 	// Store the colors of the local nodes
 	int this_node = Layout::nodeNumber();
+	local_colors.resize(Layout::sitesOnNode());
 	for (unsigned int i=0; i<Layout::sitesOnNode(); i++) {
 		// Local coordinates of node i
 		multi1d<int> x = Layout::siteCoords(this_node, i);
