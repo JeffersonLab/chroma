@@ -314,7 +314,7 @@ namespace Chroma
 
 #ifdef BUILD_MGPROTO
 #ifdef MG_ENABLE_TIMERS
-    (MG::Timer::TimerAPI::getInstance())->reportAllTimer();
+    MG::Timer::TimerAPI::reportAllTimer();
 #endif
 
     MG::FinalizeMemory();

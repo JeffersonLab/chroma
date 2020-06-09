@@ -106,4 +106,18 @@ namespace Chroma
 								    linOp(state));
   }
 
+  //! Return a linear operator solver for this action to solve M*psi=chi 
+  Projector<LatticeFermion>* 
+  EvenOddPrecWilsonFermAct::projector(Handle< FermState<T,P,Q> > state,
+				     const GroupXML_t& projParam) const
+  {
+    std::istringstream  is(projParam.xml);
+    XMLReader  paramtop(is);
+	
+    return TheLinOpFermProjectorFactory::Instance().createObject(projParam.id,
+								    paramtop,
+								    projParam.path,
+								    state,
+								    linOp(state));
+  }
 }

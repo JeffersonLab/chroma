@@ -18,6 +18,7 @@
 
 #include "meas/inline/hadron/inline_prop_3pt_w.h"
 #include "meas/inline/hadron/inline_disco_w.h"
+#include "meas/inline/hadron/inline_disco_prob_defl_w.h"
 #include "meas/inline/hadron/inline_disco_eoprec_w.h"
 #include "meas/inline/hadron/inline_disco_eo_eigcg_w.h"
 #include "meas/inline/hadron/inline_disco_eigcg_w.h"

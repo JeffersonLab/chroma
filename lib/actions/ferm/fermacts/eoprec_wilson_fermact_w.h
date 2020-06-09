@@ -67,6 +67,10 @@ namespace Chroma
     MdagMSystemSolver<T>* invMdagM(Handle< FermState<T,P,Q> > state,
 				   const GroupXML_t& invParam) const;
 
+    //! Return a projector after this action
+    Projector<T>* projector(Handle< FermState<T,P,Q> > state,
+                            const GroupXML_t& projParam) const override;
+
     //! Destructor is automatic
     ~EvenOddPrecWilsonFermAct() {}
 

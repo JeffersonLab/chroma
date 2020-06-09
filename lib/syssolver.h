@@ -50,6 +50,51 @@ namespace Chroma
   };
 
 
+  //-----------------------------------------------------------------------------------
+  //! Projector, that is, P*P*x = P*x
+  /*! @ingroup solvers
+   *
+   * Apply a projector. The projector may only live on a subset.
+   */
+  template<typename T>
+  class Projector
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~Projector() {}
+
+    //! Apply the orthonormal projector
+    /*! 
+     * Returns   V*V^H*chi = psi at some accuracy.
+     */
+    virtual void orthonormalProjector(T& psi, const T& chi) const = 0;
+
+    //! Apply the oblique projector A*V*inv(V^H*A*V)*V^H
+    /*! 
+     * Returns A*V*inv(V^H*A*V)*V^H*chi = psi
+     */
+    virtual void AVVObliueProjector(T& psi, const T& chi) const = 0;
+
+    //! Apply the oblique projector V*inv(V^H*A*V)*V^H*A
+    /*! 
+     * Returns V*inv(V^H*A*V)*V^H*A*chi = psi
+     */
+    virtual void VVAObliueProjector(T& psi, const T& chi) const = 0;
+
+    //! Rank of the projector, which is the rank of V also
+    virtual unsigned int rank() const = 0;
+
+    //! Return v_i
+    virtual void V(unsigned int i, T& psi) const = 0;
+
+    //! Return v_i^H*A*V_i
+    virtual void lambda(unsigned int i, DComplex& lambda) const = 0;
+
+    //! Return the subset on which the operator acts
+    virtual const Subset& subset() const = 0;
+  };
+
+
 
   //-----------------------------------------------------------------------------------
   //! Linear system solvers of arrays

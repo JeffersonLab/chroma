@@ -91,6 +91,21 @@ namespace Chroma
   TheLinOpStagFermSystemSolverFactory;
 
 
+
+  //! Projector factory (foundry)
+  /*! @ingroup projector */
+  typedef SingletonHolder< 
+    ObjectFactory<Projector<LatticeFermion>, 
+		  std::string,
+		  TYPELIST_4(XMLReader&, const std::string&, FSHandle,  Handle< LinearOperator<LatticeFermion> >),
+		  Projector<LatticeFermion>* (*)(XMLReader&,
+							 const std::string&,
+							 FSHandle,
+							 Handle< LinearOperator<LatticeFermion> >), 
+		  StringFactoryError> >
+  TheLinOpFermProjectorFactory;
+
+
 }
 
 

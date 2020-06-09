@@ -137,21 +137,21 @@ namespace Chroma
 #endif
 
 	  // Solve the system
-	  QDPSpinorToQPhiXSpinor(chi,qphix_in);
+	  QDPSpinorToQPhiXSpinor(chi,qphix_in,0);
 	  ZeroVec(qphix_out,SUBSET_ALL);
 
 	  swatch2.reset();
 	  swatch2.start();
 	  //MG::LinearSolverResults res=(*wrapped)(qphix_out,qphix_in, RELATIVE);
-          MG::LinearSolverResults res=(*eo_solver)(qphix_out,qphix_in, RELATIVE);
+          MG::LinearSolverResults res=(*eo_solver)(qphix_out,qphix_in, RELATIVE)[0];
 
 	  swatch2.stop();
 	
-	  double qphix_out_norm_cb0 = MG::Norm2Vec(qphix_out, SUBSET_EVEN);
-	  double qphix_out_norm_cb1 = MG::Norm2Vec(qphix_out, SUBSET_ODD);
+	  double qphix_out_norm_cb0 = MG::Norm2Vec(qphix_out, SUBSET_EVEN)[0];
+	  double qphix_out_norm_cb1 = MG::Norm2Vec(qphix_out, SUBSET_ODD)[0];
 	  
 	  psi = zero;
-	  QPhiXSpinorToQDPSpinor(qphix_out,psi);
+	  QPhiXSpinorToQDPSpinor(qphix_out,0,psi);
 	  Double psi_norm_cb0 = norm2(psi,rb[0]);
 	  Double psi_norm_cb1 = norm2(psi,rb[1]);
 

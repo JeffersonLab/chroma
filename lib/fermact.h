@@ -95,6 +95,11 @@ namespace Chroma
     virtual SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
 				   const GroupXML_t& invParam) const = 0;
 
+    //! Return a projector onto the unpreconditioned system
+    virtual Projector<T>* projector(Handle< FermState<T,P,Q> > state,
+				   const GroupXML_t& invParam) const
+    { return nullptr; }
+
     //! Given a complete propagator as a source, this does all the inversions needed
     /*!
      * \param q_sol         quark propagator ( Write )

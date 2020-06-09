@@ -147,5 +147,78 @@ void write(XMLWriter& xml, const std::string& path, const MGProtoSolverParams& p
 
 }
 
+MGProtoMGDeflationParams::MGProtoMGDeflationParams(XMLReader& xml, const std::string& path)
+{
+	try {
+	XMLReader paramtop(xml, path);
+	read( paramtop, "CloverParams", CloverParams);
+
+	read( paramtop, "AntiPeriodicT", AntiPeriodicT );
+	read( paramtop, "MGLevels", MGLevels);
+
+	read( paramtop, "Blocking", Blocking, MGLevels-1);
+
+	read( paramtop, "NullVecs", NullVecs, MGLevels-1);
+	read( paramtop, "NullSolverMaxIters", NullSolverMaxIters, MGLevels-1);
+	read( paramtop, "NullSolverRsdTarget", NullSolverRsdTarget, MGLevels-1);
+	read( paramtop, "NullSolverVerboseP", NullSolverVerboseP, MGLevels-1);
+
+	read( paramtop, "EigenSolverMaxRestartSize", EigenSolverMaxRestartSize);
+	read( paramtop, "EigenSolverRsdTarget", EigenSolverRsdTarget);
+	read( paramtop, "EigenSolverMaxIters", EigenSolverMaxIters);
+	read( paramtop, "EigenSolverVerboseP", EigenSolverVerboseP);
+
+	read( paramtop, "BottomSolverNKrylov", BottomSolverNKrylov);
+	read( paramtop, "BottomSolverMaxIters", BottomSolverMaxIters);
+	read( paramtop, "BottomSolverRsdTarget", BottomSolverRsdTarget);
+	read( paramtop, "BottomSolverVerboseP", BottomSolverVerboseP);
+
+	read( paramtop, "SubspaceId", SubspaceId);
+
+	}
+	catch( const std::string& e) {
+		QDPIO::cout << "Caught exception " << e << std::endl;
+		QDP_abort(1);
+	}
+	catch(...) {
+		QDPIO::cout << "Caught unknown exception " << std::endl;
+		QDP_abort(1);
+	}
+}
+
+
+void read(XMLReader& xml, const std::string& path, MGProtoMGDeflationParams& p)
+{
+	MGProtoMGDeflationParams ret_val(xml,path);
+	p = ret_val;
+}
+
+void write(XMLWriter& xml, const std::string& path, const MGProtoMGDeflationParams& p)
+{
+	push(xml, path);
+	write(xml, "CloverParams", p.CloverParams);
+	write(xml, "AntiPeriodicT", p.AntiPeriodicT);
+
+	write(xml, "MGLevels", p.MGLevels);
+	write(xml, "Blocking", p.Blocking);
+	write(xml, "NullVecs", p.NullVecs);
+	write(xml, "NullSolverMaxIters", p.NullSolverMaxIters);
+	write(xml, "NullSolverRsdTarget", p.NullSolverRsdTarget);
+	write(xml, "NullSolverVerboseP", p.NullSolverVerboseP);
+
+	write(xml, "EigenSolverMaxRestartSize", p.EigenSolverMaxRestartSize);
+	write(xml, "EigenSolverRsdTarget", p.EigenSolverRsdTarget);
+	write(xml, "EigenSolverMaxIters", p.EigenSolverMaxIters);
+	write(xml, "EigenSolverVerboseP", p.EigenSolverVerboseP);
+
+	write(xml, "BottomSolverNKrylov", p.BottomSolverNKrylov);
+	write(xml, "BottomSolverMaxIters", p.BottomSolverMaxIters);
+	write(xml, "BottomSolverRsdTarget", p.BottomSolverRsdTarget);
+	write(xml, "BottomSolverVerboseP", p.BottomSolverVerboseP);
+
+	write(xml, "SubspaceId", p.SubspaceId);
+
+}
+
 
 }

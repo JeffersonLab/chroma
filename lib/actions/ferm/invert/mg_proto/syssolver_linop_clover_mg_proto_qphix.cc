@@ -122,15 +122,15 @@ namespace Chroma
 	  MG::FGMRESSolverQPhiX FGMRESOuter(*M_ptr, fine_solve_params, (mg_pointer->v_cycle).get());
 
 	  // Solve the system
-	  QDPSpinorToQPhiXSpinor(chi,qphix_in);
+	  QDPSpinorToQPhiXSpinor(chi,qphix_in,0);
 	  ZeroVec(qphix_out);
 
 	  swatch2.reset();
 	  swatch2.start();
-	  MG::LinearSolverResults res=FGMRESOuter(qphix_out,qphix_in, RELATIVE);
+	  MG::LinearSolverResults res=FGMRESOuter(qphix_out,qphix_in, RELATIVE)[0];
 	  swatch2.stop();
 
-	  QPhiXSpinorToQDPSpinor(qphix_out,psi);
+	  QPhiXSpinorToQDPSpinor(qphix_out,0,psi);
 
 	  {
 		  T tmp;

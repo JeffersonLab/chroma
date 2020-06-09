@@ -673,6 +673,7 @@ nobase_include_HEADERS += \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
 	meas/hadron/npr_vertex_w.h \
+	meas/hadron/greedy_coloring.h \
 	meas/smear/deriv_quark_displacement_w.h \
 	meas/smear/gamma_displacement_w.h \
         meas/schrfun/sfpcac_w.h \
@@ -884,6 +885,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_prop_3pt_w.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
+	meas/inline/hadron/inline_disco_prob_defl_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
 	meas/inline/hadron/inline_disco_eigcg_w.h \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
@@ -1653,6 +1655,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/hadron/npr_vertex_w.cc \
+	meas/hadron/greedy_coloring.cc \
 	meas/pbp/mespbp_w.cc \
         meas/schrfun/sfpcac_w.cc \
         meas/schrfun/sfcorr_w.cc \
@@ -1786,6 +1789,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_prop_3pt_w.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
+	meas/inline/hadron/inline_disco_prob_defl_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
 	meas/inline/hadron/inline_disco_eigcg_w.cc \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
@@ -2106,6 +2110,7 @@ if BUILD_MGPROTO
 nobase_include_HEADERS += \
 	actions/ferm/invert/mg_proto/mgproto_solver_params.h \
 	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.h \
+	actions/ferm/invert/mg_proto/projector_clover_mg_proto_qphix.h \
 	actions/ferm/invert/mg_proto/mg_proto_helpers.h \
 	meas/inline/io/inline_erase_mg_proto_space.h
 
@@ -2113,6 +2118,7 @@ nobase_include_HEADERS += \
 libchroma_a_SOURCES += \
 	actions/ferm/invert/mg_proto/mgproto_solver_params.cc \
 	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.cc \
+	actions/ferm/invert/mg_proto/projector_clover_mg_proto_qphix.cc \
 	actions/ferm/invert/mg_proto/mg_proto_helpers.cc \
 	meas/inline/io/inline_erase_mg_proto_space.cc
 

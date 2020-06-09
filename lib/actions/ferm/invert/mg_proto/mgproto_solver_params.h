@@ -73,6 +73,44 @@ public:
 void read(XMLReader& xml, const std::string& path, MGProtoSolverParams& p);
 void write(XMLWriter& xml, const std::string& path, const MGProtoSolverParams& p);
 
+struct MGProtoMGDeflationParams {
+public:
+	MGProtoMGDeflationParams(){ }
+
+	MGProtoMGDeflationParams(XMLReader& xml, const std::string& path);
+
+	// Clover Params
+	Chroma::CloverFermActParams CloverParams;
+	bool AntiPeriodicT;
+	// Details of the NullSpace Construction
+	int MGLevels;
+	multi1d< multi1d<int> > Blocking;
+	multi1d< int > NullVecs;
+	multi1d< int > NullSolverMaxIters;
+	multi1d< Double > NullSolverRsdTarget;
+	multi1d< bool > NullSolverVerboseP;
+
+	// Details of the eigensolver
+	int EigenSolverMaxRestartSize;
+	Double EigenSolverRsdTarget;
+	int EigenSolverMaxIters;
+	bool EigenSolverVerboseP;
+	int EigenSolverMaxRank;
+
+	// Bottom Solver
+	int BottomSolverNKrylov;
+	int BottomSolverMaxIters;
+	Double BottomSolverRsdTarget;
+	bool BottomSolverVerboseP;
+
+	std::string SubspaceId;
+
+};
+
+void read(XMLReader& xml, const std::string& path, MGProtoMGDeflationParams& p);
+void write(XMLWriter& xml, const std::string& path, const MGProtoMGDeflationParams& p);
+
+
 };
 
 

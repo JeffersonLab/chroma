@@ -116,7 +116,7 @@ namespace Chroma
 	  // Solve the system
 	  swatch2.reset();
 	  swatch2.start();
-	  MG::LinearSolverResults res=FGMRESOuter(psi, chi, RELATIVE);
+	  MG::LinearSolverResults res=FGMRESOuter(psi, chi, RELATIVE)[0];
 	  swatch2.stop();
 
 	  {
@@ -130,6 +130,8 @@ namespace Chroma
 	  }
 	  swatch.stop();
 	  QDPIO::cout << "MG_PROTO_CLOVER_INVERTER_TIME: call_time = "<< swatch2.getTimeInSeconds() << " sec.  total_time=" << swatch.getTimeInSeconds() << " sec." << std::endl;
+
+	  return SystemSolverResults_t();
   }
 };
 

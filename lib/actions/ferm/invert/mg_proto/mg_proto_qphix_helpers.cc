@@ -9,6 +9,7 @@
 #include "actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.h"
 #include "lattice/fine_qdpxx/mg_params_qdpxx.h"
 #include "lattice/qphix/mg_level_qphix.h"
+#include "lattice/qphix/qphix_mgdeflation.h"
 #include "lattice/qphix/vcycle_recursive_qphix.h"
 #include "lattice/qphix/qphix_clover_linear_operator.h"
 
@@ -25,9 +26,9 @@ using namespace QDP;
 namespace Chroma {
 namespace  MGProtoHelpersQPhiX{
 
-template<typename QPhiXLinOpT>
+template<typename QPhiXLinOpT, typename MGProtoParams>
 shared_ptr<QPhiXLinOpT>
-createFineLinOpT( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u,
+createFineLinOpT( const MGProtoParams& params, const multi1d<LatticeColorMatrix>& u,
     const MG::LatticeInfo& info)
 {
 	shared_ptr<QPhiXLinOpT> M_fine=nullptr;
@@ -74,15 +75,17 @@ createFineLinOpT( const MGProtoSolverParams& params, const multi1d<LatticeColorM
 	return M_fine;
 }
 
+template<typename MGProtoParams>
 std::shared_ptr<MGPreconditioner::LinOpFT>
-createFineLinOpF( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u,
+createFineLinOpF( const MGProtoParams& params, const multi1d<LatticeColorMatrix>& u,
     const MG::LatticeInfo& info)
 {
   return createFineLinOpT<typename MGPreconditioner::LinOpFT>(params,u,info);
 }
 
+template<typename MGProtoParams>
 std::shared_ptr<MGPreconditioner::LinOpT>
-createFineLinOp( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u,
+createFineLinOp( const MGProtoParams& params, const multi1d<LatticeColorMatrix>& u,
     const MG::LatticeInfo& info)
 {
   return createFineLinOpT<typename MGPreconditioner::LinOpT>(params,u,info);
@@ -159,7 +162,7 @@ createMGPreconditionerT( const MGProtoSolverParams& params, const multi1d<Lattic
                 QDP::Layout::subgridLattSize()[2],
                 QDP::Layout::subgridLattSize()[3] }};
 
-  (mg_levels->fine_level).info = std::make_shared<LatticeInfo>( latdims, 4,3,NodeInfo());
+  (mg_levels->fine_level).info = std::make_shared<LatticeInfo>( latdims, 4,3,*new NodeInfo());
 
 	// First make M
 	QDPIO::cout << "Creating M..." ;
@@ -269,6 +272,72 @@ createMGPreconditionerEO( const MGProtoSolverParams& params, const multi1d<Latti
 	createMGPreconditionerT<MGPreconditionerEO>(params,u);
 }
 
+std::shared_ptr<MG::MGDeflation>
+createMGDeflation( const MGProtoMGDeflationParams& params, const multi1d<LatticeColorMatrix>& u)
+{
+	START_CODE();
+	StopWatch swatch;
+	swatch.reset();
+	swatch.start();
+
+	// First make an info from the lattice parameters:
+	IndexArray latdims = {{ QDP::Layout::subgridLattSize()[0],
+                QDP::Layout::subgridLattSize()[1],
+                QDP::Layout::subgridLattSize()[2],
+                QDP::Layout::subgridLattSize()[3] }};
+
+	std::shared_ptr<LatticeInfo> info = std::make_shared<LatticeInfo>( latdims, 4,3,*new NodeInfo());
+
+	// First make M
+	QDPIO::cout << "Creating M..." ;
+	shared_ptr<MG::QPhiXWilsonCloverEOLinearOperatorF> M=createFineLinOpT<MG::QPhiXWilsonCloverEOLinearOperatorF>( params, u, *info);
+	QDPIO::cout << "Done" << std::endl;
+
+	QDPIO::cout << "Creating MG Levels ... " ;
+	MG::SetupParams level_params;
+	int n_levels = params.MGLevels;
+	level_params.n_levels = n_levels;
+	level_params.n_vecs.resize(n_levels-1);
+	level_params.null_solver_max_iter.resize(n_levels-1);
+	level_params.null_solver_rsd_target.resize(n_levels -1);
+	level_params.null_solver_verboseP.resize(n_levels -1);
+	for(int l=0; l < n_levels-1;++l) {
+		QDPIO::cout << "Level L=" << l << " Null Vecs=" << params.NullVecs[l] << std::endl;
+
+		level_params.n_vecs[l] = params.NullVecs[l];
+		level_params.null_solver_max_iter[l]=params.NullSolverMaxIters[l];
+		level_params.null_solver_rsd_target[l]=toDouble(params.NullSolverRsdTarget[l]);
+		level_params.null_solver_verboseP[l]=toDouble(params.NullSolverVerboseP[l]);
+	}
+	level_params.block_sizes.resize(n_levels-1);
+	for(int l=0; l < n_levels-1;++l) {
+		for(int mu=0; mu < 4; ++mu) {
+			(level_params.block_sizes[l])[mu] = (params.Blocking[l])[mu];
+		}
+	}
+
+	MG::FGMRESParams solver_params;
+	solver_params.MaxIter=params.BottomSolverMaxIters;
+	solver_params.NKrylov = params.BottomSolverNKrylov;
+	solver_params.RsdTarget= toDouble(params.BottomSolverRsdTarget);
+	solver_params.VerboseP = params.BottomSolverVerboseP;
+
+	MG::EigsParams eigs_params;
+	eigs_params.MaxRestartSize = params.EigenSolverMaxRestartSize;
+	eigs_params.MaxNumEvals = params.EigenSolverMaxRank;
+	eigs_params.RsdTarget = toDouble(params.EigenSolverRsdTarget);
+	eigs_params.VerboseP = params.EigenSolverVerboseP;
+
+	std::shared_ptr<MG::MGDeflation> mgdefl = std::make_shared<MG::MGDeflation>(info, M, level_params, solver_params, eigs_params);
+	QDPIO::cout << "... Done " << std::endl;
+
+	swatch.stop();
+	QDPIO::cout << "MG_PROTO_QPHIX_MGDEFLATION_SETUP: Subspace Creation Took : " << swatch.getTimeInSeconds() << " sec" << std::endl;
+
+	END_CODE();
+
+	return mgdefl;
+}
 
 
 template<typename PrecT>
