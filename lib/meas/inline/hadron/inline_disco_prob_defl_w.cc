@@ -293,12 +293,7 @@ namespace Chroma
           std::pair<std::map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
 
           itbo = db.insert(kv);
-          if( itbo.second ){ 
-            QDPIO::cout<<"Inserting new entry in std::map\n";
-          }
-          else{ // if insert fails, key already exists, so add result
-            std::cout<<"Key = "<<kv.first<<std::endl;
-            QDPIO::cout<<"Adding result to value already there"<<std::endl;
+          if(!itbo.second ){ 
             for(int i(0);i<kv.second.op.size();i++){
               itbo.first->second.op[i] += kv.second.op[i] ;
             }
@@ -307,10 +302,7 @@ namespace Chroma
       }
 
       if(path.size()<max_path_length){
-	QDPIO::cout<<" attempt to add new path. "
-		   <<" current path length is : "<<path.size();
 	multi1d<int> new_path(path.size()+1);
-	QDPIO::cout<<" new path length is : "<<new_path.size()<<std::endl;
 	for(int i(0);i<path.size();i++)
 	  new_path[i] = path[i] ;
 	for(int sign(-1);sign<2;sign+=2)
@@ -517,12 +509,9 @@ namespace Chroma
       //const multi1d<int>& t_sources = hada.t_sources;
 
 
-      //Handle< LinAlg::HadamardBase > hvecs ;
-
       // doing 4d hadamard 
       int t_source=-1 ;
       QDPIO::cout << " Doing a volume source" << std::endl; 
-      //hvecs = new  LinAlg::Hadamard(hada.end_vec+1) ;
       DComplex tr = 0.0 ;
       DComplex trDef = 0.0 ;
 
@@ -565,8 +554,8 @@ namespace Chroma
               //Calculate the trace
               //Calculate the trace for debuging (here is the full trace)
               LatticeFermion q;
-              proj->VVAObliueProjector(q, quark_soln);
-              q = quark_soln - q;
+              proj->VUAObliqueProjector(q, quark_soln);
+              q = quark_soln - q; // q <= (I - V*inv(U'*AV*)*U'*A)*quark_soln
               scTr += innerProduct(chi,quark_soln);
               // q = Dslash^{-1}.chi - invDslashL.chi
               //Calculate the trace for debuging (here is the deflated trace)
@@ -610,24 +599,25 @@ namespace Chroma
 	}// loop over db entries
       }
 
-      // now do the SVD part of the trace
-      // loop over singular vectors
+      // now do the projector part of the trace
+      // loop over the U and V vectors
       QDPIO::cout<<"Now computing the Singular vector contribution"<<std::endl;
       for (int k = 0 ; k < proj->rank() ; k++) {
         // collect dk pairs of vectors
-        LatticeFermion v_lambda, // = v[i]/(v[i]'*Dslash*v[i])
-                       v;        // = v[i]
-	proj->V(k,v);
+        LatticeFermion vi_lambda, // = v[i]/(u[i]'*Dslash*v[i])
+                       ui, vi;     // = u[i], v[i]
+	proj->V(k,vi);
         DComplex lambda;
         proj->lambda(k, lambda);
-        v_lambda = v / lambda;
+        vi_lambda = vi / lambda;
+	proj->U(k,ui);
 
-        multi1d<int> d ;
+        multi1d<int> d;
         if (params.param.use_ferm_state_links)
-          do_disco(db, v_lambda, v, ft, state->getLinks(),
+          do_disco(db, vi_lambda, ui, ft, state->getLinks(),
                    d, params.param.max_path_length);
         else
-          do_disco(db, v_lambda, v, ft, u, 
+          do_disco(db, vi_lambda, ui, ft, u, 
                    d, params.param.max_path_length);
       }
 

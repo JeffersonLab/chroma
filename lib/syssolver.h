@@ -63,31 +63,28 @@ namespace Chroma
     //! Virtual destructor to help with cleanup;
     virtual ~Projector() {}
 
-    //! Apply the orthonormal projector
+    //! Apply the oblique projector A*V*inv(U^H*A*V)*U^H
     /*! 
-     * Returns   V*V^H*chi = psi at some accuracy.
+     * Returns A*V*inv(U^H*A*V)*U^H*chi = psi
      */
-    virtual void orthonormalProjector(T& psi, const T& chi) const = 0;
+    virtual void AVUObliqueProjector(T& psi, const T& chi) const = 0;
 
-    //! Apply the oblique projector A*V*inv(V^H*A*V)*V^H
+    //! Apply the oblique projector V*inv(U^H*A*V)*U^H*A
     /*! 
-     * Returns A*V*inv(V^H*A*V)*V^H*chi = psi
+     * Returns V*inv(V^H*A*V)*U^H*A*chi = psi
      */
-    virtual void AVVObliueProjector(T& psi, const T& chi) const = 0;
+    virtual void VUAObliqueProjector(T& psi, const T& chi) const = 0;
 
-    //! Apply the oblique projector V*inv(V^H*A*V)*V^H*A
-    /*! 
-     * Returns V*inv(V^H*A*V)*V^H*A*chi = psi
-     */
-    virtual void VVAObliueProjector(T& psi, const T& chi) const = 0;
-
-    //! Rank of the projector, which is the rank of V also
+    //! Rank of the projector, which is the rank of U and V also
     virtual unsigned int rank() const = 0;
 
-    //! Return v_i
+    //! Return U[i]
+    virtual void U(unsigned int i, T& psi) const = 0;
+
+     //! Return V[i]
     virtual void V(unsigned int i, T& psi) const = 0;
 
-    //! Return v_i^H*A*V_i
+    //! Return U[i]^H*A*V[i]
     virtual void lambda(unsigned int i, DComplex& lambda) const = 0;
 
     //! Return the subset on which the operator acts

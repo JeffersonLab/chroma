@@ -44,35 +44,32 @@ namespace Chroma {
 
 	  ~ProjectorMGProtoQPhiXClover();
 
-    	  //! Apply the orthonormal projector
+    	  //! Apply the oblique projector A*V*inv(U^H*A*V)*U^H
     	  /*! 
-    	   * Returns   V*V^H*chi = psi at some accuracy.
+    	   * Returns A*V*inv(U^H*A*V)*U^H*chi = psi
     	   */
-    	  void orthonormalProjector(T& psi, const T& chi) const;
+    	  void AVUObliqueProjector(T& psi, const T& chi) const override;
 
-    	  //! Apply the oblique projector A*V*inv(V^H*A*V)*V^H
+    	  //! Apply the oblique projector V*inv(U^H*A*V)*U^H*A
     	  /*! 
-    	   * Returns A*V*inv(V^H*A*V)*V^H*chi = psi
+    	   * Returns V*inv(U^H*A*V)*U^H*A*chi = psi
     	   */
-    	  void AVVObliueProjector(T& psi, const T& chi) const;
+    	  void VUAObliqueProjector(T& psi, const T& chi) const override;
 
-    	  //! Apply the oblique projector V*inv(V^H*A*V)*V^H*A
-    	  /*! 
-    	   * Returns V*inv(V^H*A*V)*V^H*A*chi = psi
-    	   */
-    	  void VVAObliueProjector(T& psi, const T& chi) const;
+    	  //! Rank of the projector, which is the rank of U and V also
+    	  unsigned int rank() const override;
 
-    	  //! Rank of the projector, which is the rank of V also
-    	  unsigned int rank() const;
+    	  //! Return U[i]
+    	  void U(unsigned int i, T& psi) const override;
 
-    	  //! Return v_i
-    	  void V(unsigned int i, T& psi) const;
+     	  //! Return V[i]
+    	  void V(unsigned int i, T& psi) const override;
 
-    	  //! Return v_i^H*A*V_i
-    	  void lambda(unsigned int i, DComplex& lambda) const;
+    	  //! Return U[i]^H*A*V[i]
+    	  void lambda(unsigned int i, DComplex& lambda) const override;
 
 	  //! Return the subset on which the operator acts
-	  const Subset& subset() const { return _subset; }
+	  const Subset& subset() const override { return _subset; }
 
   private:
 	  void apply(T& psi, const T& chi, bool do_VVA=true) const;

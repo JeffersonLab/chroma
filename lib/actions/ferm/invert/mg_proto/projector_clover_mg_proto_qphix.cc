@@ -78,27 +78,19 @@ namespace Chroma
   // Destructor
   ProjectorMGProtoQPhiXClover::~ProjectorMGProtoQPhiXClover(){}
 
-  //! Apply the orthonormal projector
+  //! Apply the oblique projector A*V*inv(U^H*A*V)*U^H
   /*! 
-   * Returns   V*V^H*chi = psi at some accuracy.
+   * Returns A*V*inv(U^H*A*V)*U^H*chi = psi
    */
-  void ProjectorMGProtoQPhiXClover::orthonormalProjector(T& psi, const T& chi) const {
-	  throw std::runtime_error("Not implemented!");
-  }
-
-  //! Apply the oblique projector A*V*inv(V^H*A*V)*V^H
-  /*! 
-   * Returns A*V*inv(V^H*A*V)*V^H*chi = psi
-   */
-  void ProjectorMGProtoQPhiXClover::AVVObliueProjector(T& psi, const T& chi) const {
+  void ProjectorMGProtoQPhiXClover::AVUObliqueProjector(T& psi, const T& chi) const {
 	  apply(psi, chi, false);
   }
 
-  //! Apply the oblique projector V*inv(V^H*A*V)*V^H*A
+  //! Apply the oblique projector V*inv(U^H*A*V)*U^H*A
   /*! 
-   * Returns V*inv(V^H*A*V)*V^H*A*chi = psi
+   * Returns V*inv(U^H*A*V)*U^H*A*chi = psi
    */
-  void ProjectorMGProtoQPhiXClover::VVAObliueProjector(T& psi, const T& chi) const {
+  void ProjectorMGProtoQPhiXClover::VUAObliqueProjector(T& psi, const T& chi) const {
 	  apply(psi, chi, true);
   }
 
@@ -107,25 +99,32 @@ namespace Chroma
 	  return deflation->GetRank();
   }
 
-  //! Return v_i
-  void ProjectorMGProtoQPhiXClover::V(unsigned int i, T& psi) const {
+  //! Return U[i]
+  void ProjectorMGProtoQPhiXClover::U(unsigned int i, T& psi) const {
 	  const LatticeInfo& info = deflation->GetInfo();
 	  QPhiXSpinor qphix_out(info);
 	  deflation->V(i, qphix_out);
 	  QPhiXSpinorToQDPSpinor(qphix_out,0,psi);
   }
 
-  //! Return V_i^H*A*V_i
+  //! Return V[i]
+  void ProjectorMGProtoQPhiXClover::V(unsigned int i, T& psi) const {
+	  const LatticeInfo& info = deflation->GetInfo();
+	  QPhiXSpinor qphix_out(info);
+	  deflation->g5V(i, qphix_out);
+	  QPhiXSpinorToQDPSpinor(qphix_out,0,psi);
+  }
+
+  //! Return U_i^H*A*V_i
   void ProjectorMGProtoQPhiXClover::lambda(unsigned int i, DComplex& lambda) const {
 	  assert(i < diag_inv_VAV.size());
 	  std::complex<double> vav = 1./diag_inv_VAV[i];
-	  //lambda = DComplex(RComplex<double>(std::real(vav), std::imag(vav)));
 	  lambda.elem().elem().elem() = RComplex<double>(std::real(vav), std::imag(vav));
   }
 
 
   void
-  ProjectorMGProtoQPhiXClover::apply(T& psi, const T& chi, bool do_VVA) const
+  ProjectorMGProtoQPhiXClover::apply(T& psi, const T& chi, bool do_VUA) const
   {
 	  QDPIO::cout << "Jolly Greetings from Multigridland for deflation" << std::endl;
 	  StopWatch swatch;
@@ -144,7 +143,7 @@ namespace Chroma
 
 	  swatch2.reset();
 	  swatch2.start();
-	  if (do_VVA) {
+	  if (do_VUA) {
 	  	  deflation->VVA(qphix_out, qphix_in);
 	  } else {
 	  	  deflation->AVV(qphix_out, qphix_in);
