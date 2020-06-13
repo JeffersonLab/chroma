@@ -7,6 +7,7 @@
 
 #include "actions/ferm/linop/eoprec_clover_linop_w.h"
 #include "actions/ferm/fermacts/eoprec_clover_fermact_w.h"
+#include "actions/ferm/invert/syssolver_linop_factory.h"
 
 //#include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
@@ -69,6 +70,21 @@ namespace Chroma
   EvenOddPrecCloverFermAct::linOp(Handle< FermState<T,P,Q> > state) const
   {
     return new EvenOddPrecCloverLinOp(state,param);
+  }
+
+  //! Return a linear operator solver for this action to solve M*psi=chi 
+  Projector<LatticeFermion>* 
+  EvenOddPrecCloverFermAct::projector(Handle< FermState<T,P,Q> > state,
+				     const GroupXML_t& projParam) const
+  {
+    std::istringstream  is(projParam.xml);
+    XMLReader  paramtop(is);
+	
+    return TheLinOpFermProjectorFactory::Instance().createObject(projParam.id,
+								    paramtop,
+								    projParam.path,
+								    state,
+								    linOp(state));
   }
 
 }

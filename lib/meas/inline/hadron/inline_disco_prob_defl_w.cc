@@ -24,6 +24,7 @@
 
 #include <cassert>
 #include <string>
+#include <complex>
 
 namespace Chroma 
 { 
@@ -110,6 +111,12 @@ namespace Chroma
       }
       else
 	param.probing_distance = param.max_path_length;
+
+      if(inputtop.count("noise_vectors")!=0){ 
+	read(inputtop,"noise_vectors",param.noise_vectors) ;
+      }
+      else
+	param.noise_vectors = 1;
      }
 
     //! Propagator output
@@ -124,6 +131,7 @@ namespace Chroma
       write(xml,"Propagator",param.prop) ;
       write(xml,"use_ferm_state_links",param.use_ferm_state_links) ;
       write(xml,"probing_distance",param.probing_distance) ;
+      write(xml,"noise_vectors",param.noise_vectors) ;
       xml << param.projParam.xml;
 
       pop(xml);
@@ -161,11 +169,24 @@ namespace Chroma
       }
     };
     
-    bool operator<(const KeyOperator_t& a, const KeyOperator_t& b){
-      return ((a.t_slice<b.t_slice)||(a.mom<b.mom)||(a.disp<b.disp)||(a.mass_label<b.mass_label));
+    bool operator<(const KeyOperator_t& a, const KeyOperator_t& b) {
+      return (a.t_slice != b.t_slice ? a.t_slice < b.t_slice : (
+               a.mom != b.mom ? a.mom < b.mom : (
+               a.disp != b.disp ? a.disp < b.disp : (
+               a.mass_label < b.mass_label))));
     }
     
-    std::ostream& operator<<(std::ostream& os, const KeyOperator_t& d)
+    template <typename T, typename Q>
+    T& operator<<(T& os, const multi1d<Q>& d)
+    {
+      for (int i=0; i<d.size();i++){
+        os << d[i] << " " ;
+      }
+      return os;
+    }
+
+    template <typename T>
+    T& operator<<(T& os, const KeyOperator_t& d)
     {
       os << "KeyOperator_t:"
          << " t_slice = " << d.t_slice
@@ -190,7 +211,8 @@ namespace Chroma
 
     //-------------------------------------------------------------------------
     //! stream IO
-    std::ostream& operator<<(std::ostream& os, const ValOperator_t& d)
+    template <typename T>
+    T& operator<<(T& os, const ValOperator_t& d)
     {
       os << "ValOperator_t:\n";
       for (int i=0; i<d.op.size();i++){
@@ -278,7 +300,7 @@ namespace Chroma
 	for (int m(0); m < p.numMom(); m++){
           LatticeComplex pcc = p[m]*cc;
           for (int t(0); t < Nt; t++) {
-	      foo(m,t)[g] = sum(pcc,p.getSet()[t]) ;
+	      foo(m,t)[g] = sum(pcc,p.getSet()[t]);
           }
 	}
       }
@@ -293,7 +315,8 @@ namespace Chroma
           std::pair<std::map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
 
           itbo = db.insert(kv);
-          if(!itbo.second ){ 
+          if(!itbo.second ){
+            // if insert fails, key already exists, so add result
             for(int i(0);i<kv.second.op.size();i++){
               itbo.first->second.op[i] += kv.second.op[i] ;
             }
@@ -319,6 +342,39 @@ namespace Chroma
 	      do_disco(db, qbar, q_mu, p, u, new_path, max_path_length);
 	    } // skip backtracking
 	  } // mu
+      }
+    }
+
+
+    // Update the mean and var for each observable in db
+    void do_update(std::map< KeyOperator_t, ValOperator_t >& dbmean,
+	          std::map< KeyOperator_t, ValOperator_t >& dbvar,
+	          const std::map< KeyOperator_t, ValOperator_t >& db, bool first_it)
+    {
+      for(std::map< KeyOperator_t, ValOperator_t >::const_iterator it=db.begin(); it != db.end(); it++) {
+        std::pair<std::map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
+        // Insert mean
+        itbo = dbmean.insert(*it);
+	assert(itbo.second == first_it);
+        if(!itbo.second ){
+          // if insert fails, key already exists, so add result
+          for(int i(0);i<it->second.op.size();i++)
+              itbo.first->second.op[i] += it->second.op[i];
+        }
+
+        // Insert variance
+        std::pair<KeyOperator_t, ValOperator_t> kv; 
+        kv.first = it->first;
+        kv.second.op.resize(it->second.op.size());
+        for(int i(0); i<it->second.op.size(); i++)
+          kv.second.op[i] = it->second.op[i] * conj(it->second.op[i]);
+        itbo = dbvar.insert(kv);
+	assert(itbo.second == first_it);
+        if(!itbo.second ){
+          // if insert fails, key already exists, so add result
+          for(int i(0);i<it->second.op.size();i++)
+              itbo.first->second.op[i] += kv.second.op[i];
+        }
       }
     }
 
@@ -483,7 +539,6 @@ namespace Chroma
       Handle< SystemSolver<LatticeFermion> > PP = S_f->qprop(state,
 							       params.param.prop.invParam);
       Handle< Projector<LatticeFermion> > proj = S_f->projector(state, params.param.projParam); 
-      std::map< KeyOperator_t, ValOperator_t > db ;
 
       // Initialize the slow Fourier transform phases
       int decay_dir           = Nd-1 ; // hadamard needs this for now
@@ -492,116 +547,123 @@ namespace Chroma
 
       // number of colors
       int Nsrc = coloring.numColors();
+      QDPIO::cout << "num colors " << Nsrc << std::endl;
 
-      //generate a random std::vector
-      LatticeComplex vec ;
-      vec = 1.0 ;
+      DComplex tr = 0.0 ;
+      DComplex trDef = 0.0 ;
 
       StopWatch swatch;
       
       swatch.start();
 
+      std::map< KeyOperator_t, ValOperator_t > dbmean, dbvar;
+
       //
       // Loop over the source color and spin, creating the source
       // and calling the relevant propagator routines.
       //
-      //	const int num_vecs            = params.param.contract.num_vecs;
-      //const multi1d<int>& t_sources = hada.t_sources;
+      for (int noise = 0 ; noise < params.param.noise_vectors; noise++) {
 
+        std::map< KeyOperator_t, ValOperator_t > db;
 
-      // doing 4d hadamard 
-      int t_source=-1 ;
-      QDPIO::cout << " Doing a volume source" << std::endl; 
-      DComplex tr = 0.0 ;
-      DComplex trDef = 0.0 ;
+        // doing a new noise vector
+        QDPIO::cout << " Doing noise vector " << noise  << std::endl; 
 
-      // All the loops
-      const int HADA_VEC_STRIDE = 1;
-      for (int k1 = 0 ; k1 < Nsrc ; k1 += HADA_VEC_STRIDE) {
-        int dk = (k1 + HADA_VEC_STRIDE <= Nsrc) 
-                    ? HADA_VEC_STRIDE 
-                    : Nsrc - k1 ;
-        // collect (Ns*Nc*dk) pairs of vectors
-        multi1d<LatticeFermion> v_chi(Ns * Nc * dk), 
-                                v_q  (Ns * Nc * dk);
-        int cnt_v = 0;
-        for (int i_v = 0 ; i_v < dk ; i_v++) {
-          int k = k1 + i_v;
-	  LatticeInteger hh ; 
-	  coloring.getVec(hh, k);
-          LatticeComplex rv = vec*hh;
-          DComplex scTr = 0.0;
-          DComplex scTrDef = 0.0;
-          for(int color_source(0);color_source<Nc;color_source++){
-            QDPIO::cout << "color_source = " << color_source << std::endl; 
-            
-            LatticeColorVector vec_srce = zero ;
-            pokeColor(vec_srce,rv,color_source) ;
-            
-            for(int spin_source=0; spin_source < Ns; ++spin_source){
-              QDPIO::cout << "spin_source = " << spin_source << std::endl; 
+	//generate a random std::vector
+	LatticeComplex vec ;
+	LatticeReal rnd1, theta;
+	random(rnd1); 
+	Real twopiN = Chroma::twopi / 4; 
+        theta = twopiN * floor(4*rnd1);
+	vec = cmplx(cos(theta),sin(theta));
+
+        // All the loops
+        const int HADA_VEC_STRIDE = 1;
+        for (int k1 = 0 ; k1 < Nsrc ; k1 += HADA_VEC_STRIDE) {
+          int dk = (k1 + HADA_VEC_STRIDE <= Nsrc) 
+                      ? HADA_VEC_STRIDE 
+                      : Nsrc - k1 ;
+          // collect (Ns*Nc*dk) pairs of vectors
+          multi1d<LatticeFermion> v_chi(Ns * Nc * dk), 
+                                  v_q  (Ns * Nc * dk);
+          int cnt_v = 0;
+          for (int i_v = 0 ; i_v < dk ; i_v++) {
+            int k = k1 + i_v;
+            LatticeInteger hh ; 
+            coloring.getVec(hh, k);
+            LatticeComplex rv = vec*hh;
+            DComplex scTr = 0.0;
+            DComplex scTrDef = 0.0;
+            for(int color_source(0);color_source<Nc;color_source++){
+              QDPIO::cout << "color_source = " << color_source << std::endl; 
               
-              // Insert a ColorVector into spin index spin_source
-              // This only overwrites sections, so need to initialize first
-              LatticeFermion chi = zero;
-              CvToFerm(vec_srce, chi, spin_source);
+              LatticeColorVector vec_srce = zero ;
+              pokeColor(vec_srce,rv,color_source) ;
               
-              LatticeFermion quark_soln ;
-              quark_soln=zero ;
-              SystemSolverResults_t res = (*PP)(quark_soln, chi);
-              QDPIO::cout<<"Norm of solution: "<<norm2(quark_soln)<<std::endl;
-              QDPIO::cout<<"Norm of source  : "<<norm2(chi)<<std::endl ;
-              //Calculate the trace
-              //Calculate the trace for debuging (here is the full trace)
-              LatticeFermion q;
-              proj->VUAObliqueProjector(q, quark_soln);
-              q = quark_soln - q; // q <= (I - V*inv(U'*AV*)*U'*A)*quark_soln
-              scTr += innerProduct(chi,quark_soln);
-              // q = Dslash^{-1}.chi - invDslashL.chi
-              //Calculate the trace for debuging (here is the deflated trace)
-              scTrDef += innerProduct(chi,q);
+              for(int spin_source=0; spin_source < Ns; ++spin_source){
+                QDPIO::cout << "spin_source = " << spin_source << std::endl; 
+                
+                // Insert a ColorVector into spin index spin_source
+                // This only overwrites sections, so need to initialize first
+                LatticeFermion chi = zero;
+                CvToFerm(vec_srce, chi, spin_source);
+                
+                LatticeFermion quark_soln ;
+                quark_soln=zero ;
+                SystemSolverResults_t res = (*PP)(quark_soln, chi);
+                QDPIO::cout<<"Norm of solution: "<<norm2(quark_soln)<<std::endl;
+                QDPIO::cout<<"Norm of source  : "<<norm2(chi)<<std::endl ;
+                //Calculate the trace
+                //Calculate the trace for debuging (here is the full trace)
+                LatticeFermion q;
+                proj->VUAObliqueProjector(q, quark_soln);
+                q = quark_soln - q; // q <= (I - V*inv(U'*AV*)*U'*A)*quark_soln
+                scTr += innerProduct(chi,quark_soln);
+                // q = Dslash^{-1}.chi - invDslashL.chi
+                //Calculate the trace for debuging (here is the deflated trace)
+                scTrDef += innerProduct(chi,q);
 
-              v_chi[cnt_v] = chi;
-              v_q  [cnt_v] = q;
-              cnt_v       += 1;
-            } // for spin_source
+                v_chi[cnt_v] = chi;
+                v_q  [cnt_v] = q;
+                cnt_v       += 1;
+              } // for spin_source
 
-          } // for color_source
-          tr += scTr ;
-          trDef += scTrDef ;
-          QDPIO::cout<<"Hadamard "<<k<<" -- Trace: "<<tr/(k+1)<<std::endl ;
-          QDPIO::cout<<"Deflated Hadamard "<<k<<" -- Trace: "<<trDef/(k+1)<<std::endl ;
-        } // for i_v
-        assert(cnt_v == Ns * Nc * dk);
+            } // for color_source
+            tr += scTr ;
+            trDef += scTrDef ;
+            QDPIO::cout<<"Hadamard "<<k<<" -- Trace: "<<tr/(k+1)<<std::endl ;
+            QDPIO::cout<<"Deflated Hadamard "<<k<<" -- Trace: "<<trDef/(k+1)<<std::endl ;
+          } // for i_v
+          assert(cnt_v == Ns * Nc * dk);
 
-        // here the recursive call goes to compute the loops
-        // result is ADDED to db
-	for (int i = 0 ; i < v_chi.size() ; i++) {
-          multi1d<int> d ;
-          if (params.param.use_ferm_state_links)
-            do_disco(db, v_chi[i], v_q[i], ft, state->getLinks(),
-                     d, params.param.max_path_length);
-          else
-            do_disco(db, v_chi[i], v_q[i], ft, u, 
-                     d, params.param.max_path_length);
-         }
-      } // for k1
+          // here the recursive call goes to compute the loops
+          // result is ADDED to db
+          for (int i = 0 ; i < v_chi.size() ; i++) {
+            multi1d<int> d ;
+            if (params.param.use_ferm_state_links)
+              do_disco(db, v_chi[i], v_q[i], ft, state->getLinks(),
+                       d, params.param.max_path_length);
+            else
+              do_disco(db, v_chi[i], v_q[i], ft, u, 
+                       d, params.param.max_path_length);
+           }
+        } // for k1
 
-      // Normalize the hadamard trace at write time
-      // FIXME can do normalization in the contraction ; any gain to separate it?
-      {
-	std::map< KeyOperator_t, ValOperator_t >::iterator it ;
-	for(it=db.begin();it != db.end(); it++){
-	  for(int k=0;k<it->second.op.size();k++){
-	    //QDPIO::cout<<"element in database "<<k<<std::endl;
-	    it->second.op[k] = it->second.op[k]/toDouble(Nsrc);
-	  }
-	}// loop over db entries
+        // Update dbmean, dbvar
+        do_update(dbmean, dbvar, db, noise == 0);
+      } // noise
+
+      // Normalize the traces
+      for(std::map< KeyOperator_t, ValOperator_t >::iterator it=dbmean.begin();it != dbmean.end(); it++){
+        for(int k=0;k<it->second.op.size();k++){
+          it->second.op[k] = it->second.op[k]/toDouble(Nsrc*params.param.noise_vectors);
+        }
       }
 
       // now do the projector part of the trace
       // loop over the U and V vectors
       QDPIO::cout<<"Now computing the Singular vector contribution"<<std::endl;
+      std::map< KeyOperator_t, ValOperator_t > dbdet;
       for (int k = 0 ; k < proj->rank() ; k++) {
         // collect dk pairs of vectors
         LatticeFermion vi_lambda, // = v[i]/(u[i]'*Dslash*v[i])
@@ -614,12 +676,69 @@ namespace Chroma
 
         multi1d<int> d;
         if (params.param.use_ferm_state_links)
-          do_disco(db, vi_lambda, ui, ft, state->getLinks(),
+          do_disco(dbdet, vi_lambda, ui, ft, state->getLinks(),
                    d, params.param.max_path_length);
         else
-          do_disco(db, vi_lambda, ui, ft, u, 
+          do_disco(dbdet, vi_lambda, ui, ft, u, 
                    d, params.param.max_path_length);
       }
+
+      // Normalize the variance and show the results
+      if (params.param.noise_vectors > 1) {
+        const int Nt = Layout::lattSize()[3];
+        std::map<KeyOperator_t, std::vector<double>> dbmean_avg, dbdet_avg, dbvar_avg;
+        std::map<KeyOperator_t, unsigned int> avg_n; // number of averaged values
+        for(std::map< KeyOperator_t, ValOperator_t >::iterator it=dbvar.begin();it != dbvar.end(); it++){
+          std::map< KeyOperator_t, ValOperator_t >::iterator itmean = dbmean.find(it->first);
+          assert(itmean != dbmean.end());
+          // Compute the variance as E[x^2] - E[x]^2
+          for(int k=0;k<it->second.op.size();k++)
+            it->second.op[k] = it->second.op[k]/toDouble(Nsrc*Nsrc*params.param.noise_vectors) - itmean->second.op[k] * conj(itmean->second.op[k]);
+
+          // Average over t_slice and forward/backward directions
+          std::pair<KeyOperator_t, std::vector<double>> kv; 
+          kv.first = it->first;
+          kv.first.t_slice = 0;
+          kv.second.resize(it->second.op.size());
+          for(int k=0;k<it->first.disp.size();k++) kv.first.disp[k] = abs(kv.first.disp[k]);
+
+          // Update dbvar_avg
+          for(int i(0);i<it->second.op.size();i++) kv.second[i] = it->second.op[i].elem().elem().elem().real();
+          std::pair<std::map< KeyOperator_t, std::vector<double> >::iterator, bool> itbo = dbvar_avg.insert(kv);
+          if(itbo.second ){
+            avg_n[kv.first] = 1;
+          } else {
+            // if insert fails, key already exists, so add result
+            for(int i(0);i<kv.second.size();i++) itbo.first->second[i] += kv.second[i];
+            avg_n[kv.first]++;
+          }
+
+          // Update dbmean_avg
+          for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag()));
+          itbo = dbmean_avg.insert(kv);
+          if(!itbo.second){
+            for(int i(0);i<it->second.op.size();i++) itbo.first->second[i] += kv.second[i];
+          }
+
+          // Update dbdet_avg
+          itmean = dbdet.find(it->first);
+          assert(itmean != dbdet.end());
+          for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag()));
+          itbo = dbdet_avg.insert(kv);
+          if(!itbo.second){
+            for(int i(0);i<it->second.op.size();i++) itbo.first->second[i] += kv.second[i];
+          }
+        }
+        for(std::map< KeyOperator_t, std::vector<double>>::iterator it=dbvar_avg.begin();it != dbvar_avg.end(); it++) {
+          const unsigned int n = avg_n[it->first];
+          QDPIO::cout << "DISCO VARIANCE key: disp = " << it->first.disp << " mom = " << it->first.mom << "   val: " << std::endl;
+          for(int i(0);i<it->second.size();i++) QDPIO::cout << "Gamma[" << i << "]: avg_det = " << dbdet_avg[it->first][i]/n << " avg = " << dbmean_avg[it->first][i]/n << "   var = " << it->second[i]/n << std::endl;
+        }
+      }
+
+      // Add the deterministic part to the traces
+      for(std::map< KeyOperator_t, ValOperator_t >::iterator it=dbmean.begin();it != dbmean.end(); it++)
+        it->second.op += dbdet[it->first].op;
 
       swatch.stop();
       QDPIO::cout << "Traces were  computed: time= " 
@@ -660,12 +779,12 @@ namespace Chroma
       SerialDBData<ValOperator_t> val ;
       std::map< KeyOperator_t, ValOperator_t >::iterator it;
       // Store all the data
-      for(it=db.begin();it!=db.end();it++){
+      for(it=dbmean.begin();it!=dbmean.end();it++){
 	key.key()  = it->first  ;
 	val.data().op.resize(it->second.op.size()) ;
 	for(int i(0);i<it->second.op.size();i++)
           val.data().op[i] = it->second.op[i];
-	qdp_db.insert(key,val) ;
+	qdp_db.insert(key,val);
       }
       
 

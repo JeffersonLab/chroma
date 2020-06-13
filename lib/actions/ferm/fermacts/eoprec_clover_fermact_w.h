@@ -58,6 +58,10 @@ namespace Chroma
 	return new lgherm<LatticeFermion>(linOp(state));
       }
 
+    //! Return a projector after this action
+    Projector<T>* projector(Handle< FermState<T,P,Q> > state,
+                            const GroupXML_t& projParam) const override;
+
     //! Destructor is automatic
     ~EvenOddPrecCloverFermAct() {}
 

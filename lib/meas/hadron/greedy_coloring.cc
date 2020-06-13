@@ -256,7 +256,6 @@ namespace {
 		for (unsigned int i=0; i<vol; i++) color[i]--;
 
 		//assert(check_coloring(color, dist, dim));
-		std::cout << "num colors " << 2*num_colors << std::endl;
 		return color;
 	}
 
@@ -345,7 +344,7 @@ void Coloring::getVec(LatticeInteger& vec, unsigned int color) const {
 	int node = Layout::nodeNumber();
 	for( int s(0); s<Layout::sitesOnNode(); s++) {
 		multi1d<int> x = Layout::siteCoords(node,s) ;
-		Integer v = local_colors[s] == color ? 1 : 0;
+		Integer v = local_colors[s] == color ? 1 : -1;
 		pokeSite(vec,v,x);
 	}
 }
