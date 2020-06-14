@@ -344,7 +344,7 @@ void Coloring::getVec(LatticeInteger& vec, unsigned int color) const {
 	int node = Layout::nodeNumber();
 	for( int s(0); s<Layout::sitesOnNode(); s++) {
 		multi1d<int> x = Layout::siteCoords(node,s) ;
-		Integer v = local_colors[s] == color ? 1 : -1;
+		Integer v = local_colors[s] == color ? 1 : 0;
 		pokeSite(vec,v,x);
 	}
 }

@@ -380,7 +380,7 @@ namespace Chroma
     void show_stats(const std::map< KeyOperator_t, ValOperator_t >& dbmean,
 	          const std::map< KeyOperator_t, ValOperator_t >& dbvar,
 	          const std::map< KeyOperator_t, ValOperator_t >& dbdet,
-                  unsigned int num_colors, unsigned num_noise)
+                  unsigned int hadamard_normalization, unsigned num_noise)
     {
       if (num_noise <= 1) return;
 
@@ -401,7 +401,7 @@ namespace Chroma
         kv.second.resize(it->second.op.size());
         for(int i(0);i<it->second.op.size();i++) {
           DComplex a = it->second.op[i] / num_noise - itmean->second.op[i] * conj(itmean->second.op[i]) / num_noise / num_noise;
-          kv.second[i] = a.elem().elem().elem().real() / num_colors / num_colors;
+          kv.second[i] = a.elem().elem().elem().real() / hadamard_normalization / hadamard_normalization;
         }
         std::pair<std::map< KeyOperator_t, std::vector<double> >::iterator, bool> itbo = dbvar_avg.insert(kv);
         if(itbo.second ){
@@ -413,7 +413,7 @@ namespace Chroma
         }
 
         // Update dbmean_avg
-        for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag())) / num_colors / num_noise;
+        for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag())) / hadamard_normalization / num_noise;
         itbo = dbmean_avg.insert(kv);
         if(!itbo.second){
           for(int i(0);i<it->second.op.size();i++) itbo.first->second[i] += kv.second[i];
@@ -421,8 +421,11 @@ namespace Chroma
 
         // Update dbdet_avg
         itmean = dbdet.find(it->first);
-        assert(itmean != dbdet.cend());
-        for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag()));
+        if (itmean != dbdet.cend()) {
+          for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag()));
+        } else {
+          for(int i(0);i<it->second.op.size();i++) kv.second[i] = 0.0;
+        }
         itbo = dbdet_avg.insert(kv);
         if(!itbo.second){
           for(int i(0);i<it->second.op.size();i++) itbo.first->second[i] += kv.second[i];
@@ -737,13 +740,13 @@ namespace Chroma
         do_update(dbmean, dbvar, db, noise == 0);
 
         // Show stats
-        show_stats(dbmean, dbvar, dbdet, Nsrc, noise+1);
+        show_stats(dbmean, dbvar, dbdet, 1, noise+1);
       } // noise
 
       // Normalize the traces
       for(std::map< KeyOperator_t, ValOperator_t >::iterator it=dbmean.begin();it != dbmean.end(); it++){
         for(int k=0;k<it->second.op.size();k++){
-          it->second.op[k] = it->second.op[k]/toDouble(Nsrc*params.param.noise_vectors);
+          it->second.op[k] = it->second.op[k]/toDouble(params.param.noise_vectors);
         }
       }
 
