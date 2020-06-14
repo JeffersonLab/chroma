@@ -8,6 +8,7 @@
 #include "inline_disco_prob_defl_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
+#include "qdp_stdio.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/map_obj/map_obj_aggregate_w.h"
 #include "util/ferm/map_obj/map_obj_factory_w.h"
@@ -358,8 +359,7 @@ namespace Chroma
 	assert(itbo.second == first_it);
         if(!itbo.second ){
           // if insert fails, key already exists, so add result
-          for(int i(0);i<it->second.op.size();i++)
-              itbo.first->second.op[i] += it->second.op[i];
+           itbo.first->second.op += it->second.op;
         }
 
         // Insert variance
@@ -372,12 +372,69 @@ namespace Chroma
 	assert(itbo.second == first_it);
         if(!itbo.second ){
           // if insert fails, key already exists, so add result
-          for(int i(0);i<it->second.op.size();i++)
-              itbo.first->second.op[i] += kv.second.op[i];
+          itbo.first->second.op += kv.second.op;
         }
       }
     }
 
+    void show_stats(const std::map< KeyOperator_t, ValOperator_t >& dbmean,
+	          const std::map< KeyOperator_t, ValOperator_t >& dbvar,
+	          const std::map< KeyOperator_t, ValOperator_t >& dbdet,
+                  unsigned int num_colors, unsigned num_noise)
+    {
+      if (num_noise <= 1) return;
+
+      const int Nt = Layout::lattSize()[3];
+      std::map<KeyOperator_t, std::vector<double>> dbmean_avg, dbdet_avg, dbvar_avg;
+      std::map<KeyOperator_t, unsigned int> avg_n; // number of averaged values
+      for(std::map< KeyOperator_t, ValOperator_t >::const_iterator it=dbvar.cbegin();it != dbvar.cend(); it++){
+        // Average over t_slice and forward/backward directions
+        std::pair<KeyOperator_t, std::vector<double>> kv;
+        kv.first = it->first;
+        kv.first.t_slice = 0;
+        for(int k=0;k<it->first.disp.size();k++) kv.first.disp[k] = abs(kv.first.disp[k]);
+
+        // Update dbvar_avg
+        // Compute the variance as E[x^2] - E[x]^2
+        std::map< KeyOperator_t, ValOperator_t >::const_iterator itmean = dbmean.find(it->first);
+        assert(itmean != dbmean.cend());
+        kv.second.resize(it->second.op.size());
+        for(int i(0);i<it->second.op.size();i++) {
+          DComplex a = it->second.op[i] / num_noise - itmean->second.op[i] * conj(itmean->second.op[i]) / num_noise / num_noise;
+          kv.second[i] = a.elem().elem().elem().real() / num_colors / num_colors;
+        }
+        std::pair<std::map< KeyOperator_t, std::vector<double> >::iterator, bool> itbo = dbvar_avg.insert(kv);
+        if(itbo.second ){
+          avg_n[kv.first] = 1;
+        } else {
+          // if insert fails, key already exists, so add result
+          for(int i(0);i<kv.second.size();i++) itbo.first->second[i] += kv.second[i];
+          avg_n[kv.first]++;
+        }
+
+        // Update dbmean_avg
+        for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag())) / num_colors / num_noise;
+        itbo = dbmean_avg.insert(kv);
+        if(!itbo.second){
+          for(int i(0);i<it->second.op.size();i++) itbo.first->second[i] += kv.second[i];
+        }
+
+        // Update dbdet_avg
+        itmean = dbdet.find(it->first);
+        assert(itmean != dbdet.cend());
+        for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag()));
+        itbo = dbdet_avg.insert(kv);
+        if(!itbo.second){
+          for(int i(0);i<it->second.op.size();i++) itbo.first->second[i] += kv.second[i];
+        }
+      }
+      for(std::map< KeyOperator_t, std::vector<double>>::iterator it=dbvar_avg.begin();it != dbvar_avg.end(); it++) {
+        const unsigned int n = avg_n[it->first];
+        QDPIO::cout << "DISCO VARIANCE with " << num_noise << " noise vectors key: disp = " << it->first.disp << " mom = " << it->first.mom << "   val: " << std::endl;
+        for(int i(0);i<it->second.size();i++) QDPIO::cout << "Gamma[" << i << "]: avg_det = " << dbdet_avg[it->first][i]/n << " avg = " << dbmean_avg[it->first][i]/n << "   var = " << it->second[i]/n << std::endl;
+      }
+    }
+ 
     namespace
     {
       AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
@@ -542,7 +599,7 @@ namespace Chroma
 
       // Initialize the slow Fourier transform phases
       int decay_dir           = Nd-1 ; // hadamard needs this for now
-      //Initilize ft differently based on momentum list or max value.
+      //Initialize ft differently based on momentum list or max value.
       SftMom ft = params.param.use_p_list ? SftMom(params.param.p_list, decay_dir) : SftMom(params.param.p2_max, false, decay_dir);
 
       // number of colors
@@ -553,17 +610,40 @@ namespace Chroma
       DComplex trDef = 0.0 ;
 
       StopWatch swatch;
-      
       swatch.start();
 
-      std::map< KeyOperator_t, ValOperator_t > dbmean, dbvar;
+      // Do the projector part of the trace
+      // Loop over the U and V vectors
+      QDPIO::cout<<"Now computing the projector contribution"<<std::endl;
+      StopWatch swatch_det;
+      swatch_det.start();
+      std::map< KeyOperator_t, ValOperator_t > dbdet;
+      for (int k = 0 ; k < proj->rank() ; k++) {
+        // collect dk pairs of vectors
+        LatticeFermion vi_lambda, // = v[i]/(u[i]'*Dslash*v[i])
+                       ui, vi;     // = u[i], v[i]
+	proj->V(k,vi);
+        DComplex lambda;
+        proj->lambda(k, lambda);
+        vi_lambda = vi / lambda;
+	proj->U(k,ui);
 
-      //
+        multi1d<int> d;
+        if (params.param.use_ferm_state_links)
+          do_disco(dbdet, vi_lambda, ui, ft, state->getLinks(),
+                   d, params.param.max_path_length);
+        else
+          do_disco(dbdet, vi_lambda, ui, ft, u, 
+                   d, params.param.max_path_length);
+      }
+      swatch_det.stop();
+      QDPIO::cout << "Projector contribution computed in time= " << swatch_det.getTimeInSeconds() << " secs" << std::endl;
+ 
+
       // Loop over the source color and spin, creating the source
       // and calling the relevant propagator routines.
-      //
+      std::map< KeyOperator_t, ValOperator_t > dbmean, dbvar;
       for (int noise = 0 ; noise < params.param.noise_vectors; noise++) {
-
         std::map< KeyOperator_t, ValOperator_t > db;
 
         // doing a new noise vector
@@ -638,6 +718,8 @@ namespace Chroma
 
           // here the recursive call goes to compute the loops
           // result is ADDED to db
+          StopWatch swatch_dots;
+          swatch_dots.start();
           for (int i = 0 ; i < v_chi.size() ; i++) {
             multi1d<int> d ;
             if (params.param.use_ferm_state_links)
@@ -647,92 +729,21 @@ namespace Chroma
               do_disco(db, v_chi[i], v_q[i], ft, u, 
                        d, params.param.max_path_length);
            }
+           swatch_dots.stop();
+           QDPIO::cout << "Computing inner products " << swatch_dots.getTimeInSeconds() << " secs" << std::endl;
         } // for k1
 
         // Update dbmean, dbvar
         do_update(dbmean, dbvar, db, noise == 0);
+
+        // Show stats
+        show_stats(dbmean, dbvar, dbdet, Nsrc, noise+1);
       } // noise
 
       // Normalize the traces
       for(std::map< KeyOperator_t, ValOperator_t >::iterator it=dbmean.begin();it != dbmean.end(); it++){
         for(int k=0;k<it->second.op.size();k++){
           it->second.op[k] = it->second.op[k]/toDouble(Nsrc*params.param.noise_vectors);
-        }
-      }
-
-      // now do the projector part of the trace
-      // loop over the U and V vectors
-      QDPIO::cout<<"Now computing the Singular vector contribution"<<std::endl;
-      std::map< KeyOperator_t, ValOperator_t > dbdet;
-      for (int k = 0 ; k < proj->rank() ; k++) {
-        // collect dk pairs of vectors
-        LatticeFermion vi_lambda, // = v[i]/(u[i]'*Dslash*v[i])
-                       ui, vi;     // = u[i], v[i]
-	proj->V(k,vi);
-        DComplex lambda;
-        proj->lambda(k, lambda);
-        vi_lambda = vi / lambda;
-	proj->U(k,ui);
-
-        multi1d<int> d;
-        if (params.param.use_ferm_state_links)
-          do_disco(dbdet, vi_lambda, ui, ft, state->getLinks(),
-                   d, params.param.max_path_length);
-        else
-          do_disco(dbdet, vi_lambda, ui, ft, u, 
-                   d, params.param.max_path_length);
-      }
-
-      // Normalize the variance and show the results
-      if (params.param.noise_vectors > 1) {
-        const int Nt = Layout::lattSize()[3];
-        std::map<KeyOperator_t, std::vector<double>> dbmean_avg, dbdet_avg, dbvar_avg;
-        std::map<KeyOperator_t, unsigned int> avg_n; // number of averaged values
-        for(std::map< KeyOperator_t, ValOperator_t >::iterator it=dbvar.begin();it != dbvar.end(); it++){
-          std::map< KeyOperator_t, ValOperator_t >::iterator itmean = dbmean.find(it->first);
-          assert(itmean != dbmean.end());
-          // Compute the variance as E[x^2] - E[x]^2
-          for(int k=0;k<it->second.op.size();k++)
-            it->second.op[k] = it->second.op[k]/toDouble(Nsrc*Nsrc*params.param.noise_vectors) - itmean->second.op[k] * conj(itmean->second.op[k]);
-
-          // Average over t_slice and forward/backward directions
-          std::pair<KeyOperator_t, std::vector<double>> kv; 
-          kv.first = it->first;
-          kv.first.t_slice = 0;
-          kv.second.resize(it->second.op.size());
-          for(int k=0;k<it->first.disp.size();k++) kv.first.disp[k] = abs(kv.first.disp[k]);
-
-          // Update dbvar_avg
-          for(int i(0);i<it->second.op.size();i++) kv.second[i] = it->second.op[i].elem().elem().elem().real();
-          std::pair<std::map< KeyOperator_t, std::vector<double> >::iterator, bool> itbo = dbvar_avg.insert(kv);
-          if(itbo.second ){
-            avg_n[kv.first] = 1;
-          } else {
-            // if insert fails, key already exists, so add result
-            for(int i(0);i<kv.second.size();i++) itbo.first->second[i] += kv.second[i];
-            avg_n[kv.first]++;
-          }
-
-          // Update dbmean_avg
-          for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag()));
-          itbo = dbmean_avg.insert(kv);
-          if(!itbo.second){
-            for(int i(0);i<it->second.op.size();i++) itbo.first->second[i] += kv.second[i];
-          }
-
-          // Update dbdet_avg
-          itmean = dbdet.find(it->first);
-          assert(itmean != dbdet.end());
-          for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag()));
-          itbo = dbdet_avg.insert(kv);
-          if(!itbo.second){
-            for(int i(0);i<it->second.op.size();i++) itbo.first->second[i] += kv.second[i];
-          }
-        }
-        for(std::map< KeyOperator_t, std::vector<double>>::iterator it=dbvar_avg.begin();it != dbvar_avg.end(); it++) {
-          const unsigned int n = avg_n[it->first];
-          QDPIO::cout << "DISCO VARIANCE key: disp = " << it->first.disp << " mom = " << it->first.mom << "   val: " << std::endl;
-          for(int i(0);i<it->second.size();i++) QDPIO::cout << "Gamma[" << i << "]: avg_det = " << dbdet_avg[it->first][i]/n << " avg = " << dbmean_avg[it->first][i]/n << "   var = " << it->second[i]/n << std::endl;
         }
       }
 
