@@ -251,6 +251,7 @@ namespace {
 			c[0]++;
 			color[i] = color[coor2index(Coors(1, c), dim)[0]] + num_colors;
 		}
+ 		num_colors *= 2;
 
 		// Make zero the first color index
 		for (unsigned int i=0; i<vol; i++) color[i]--;
