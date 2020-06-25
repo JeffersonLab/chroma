@@ -5,6 +5,7 @@
  *      Author: bjoo
  */
 #include "chromabase.h"
+#include "lattice/solver.h"
 #include "meas/inline/io/named_objmap.h"
 #include "actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.h"
 #include "lattice/fine_qdpxx/mg_params_qdpxx.h"
@@ -178,16 +179,14 @@ createMGPreconditionerT( const MGProtoSolverParams& params, const multi1d<Lattic
 	int n_levels = params.MGLevels;
 	level_params.n_levels = n_levels;
 	level_params.n_vecs.resize(n_levels-1);
-	level_params.null_solver_max_iter.resize(n_levels-1);
-	level_params.null_solver_rsd_target.resize(n_levels -1);
-	level_params.null_solver_verboseP.resize(n_levels -1);
+	level_params.null_solver_params.resize(n_levels-1);
 	for(int l=0; l < n_levels-1;++l) {
 		QDPIO::cout << "Level L=" << l << " Null Vecs=" << params.NullVecs[l] << std::endl;
 
 		level_params.n_vecs[l] = params.NullVecs[l];
-		level_params.null_solver_max_iter[l]=params.NullSolverMaxIters[l];
-		level_params.null_solver_rsd_target[l]=toDouble(params.NullSolverRsdTarget[l]);
-		level_params.null_solver_verboseP[l]=toDouble(params.NullSolverVerboseP[l]);
+		level_params.null_solver_params[l].MaxIter=params.NullSolverMaxIters[l];
+		level_params.null_solver_params[l].RsdTarget=toDouble(params.NullSolverRsdTarget[l]);
+		level_params.null_solver_params[l].VerboseP=toDouble(params.NullSolverVerboseP[l]);
 	}
 	level_params.block_sizes.resize(n_levels-1);
 	for(int l=0; l < n_levels-1;++l) {
@@ -298,16 +297,14 @@ createMGDeflation( const MGProtoMGDeflationParams& params, const multi1d<Lattice
 	int n_levels = params.MGLevels;
 	level_params.n_levels = n_levels;
 	level_params.n_vecs.resize(n_levels-1);
-	level_params.null_solver_max_iter.resize(n_levels-1);
-	level_params.null_solver_rsd_target.resize(n_levels -1);
-	level_params.null_solver_verboseP.resize(n_levels -1);
+	level_params.null_solver_params.resize(n_levels-1);
 	for(int l=0; l < n_levels-1;++l) {
 		QDPIO::cout << "Level L=" << l << " Null Vecs=" << params.NullVecs[l] << std::endl;
 
 		level_params.n_vecs[l] = params.NullVecs[l];
-		level_params.null_solver_max_iter[l]=params.NullSolverMaxIters[l];
-		level_params.null_solver_rsd_target[l]=toDouble(params.NullSolverRsdTarget[l]);
-		level_params.null_solver_verboseP[l]=toDouble(params.NullSolverVerboseP[l]);
+		level_params.null_solver_params[l].MaxIter=params.NullSolverMaxIters[l];
+		level_params.null_solver_params[l].RsdTarget=toDouble(params.NullSolverRsdTarget[l]);
+		level_params.null_solver_params[l].VerboseP=toDouble(params.NullSolverVerboseP[l]);
 	}
 	level_params.block_sizes.resize(n_levels-1);
 	for(int l=0; l < n_levels-1;++l) {
@@ -316,7 +313,7 @@ createMGDeflation( const MGProtoMGDeflationParams& params, const multi1d<Lattice
 		}
 	}
 
-	MG::FGMRESParams solver_params;
+	MG::LinearSolverParamsBase solver_params;
 	solver_params.MaxIter=params.BottomSolverMaxIters;
 	solver_params.NKrylov = params.BottomSolverNKrylov;
 	solver_params.RsdTarget= toDouble(params.BottomSolverRsdTarget);

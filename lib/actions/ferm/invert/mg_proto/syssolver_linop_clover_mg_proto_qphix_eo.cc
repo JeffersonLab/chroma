@@ -83,7 +83,7 @@ namespace Chroma
 		  M_ptr = (mg_pointer->M);
 
 		  // Next step is to  create a solver instance:
-			  MG::FGMRESParams fine_solve_params;
+			  MG::LinearSolverParamsBase fine_solve_params;
 			  fine_solve_params.MaxIter=invParam.OuterSolverMaxIters;
 			  fine_solve_params.RsdTarget=toDouble(invParam.OuterSolverRsdTarget);
 			  fine_solve_params.VerboseP =invParam.OuterSolverVerboseP;

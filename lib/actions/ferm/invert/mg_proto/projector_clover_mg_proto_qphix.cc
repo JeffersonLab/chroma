@@ -66,6 +66,8 @@ namespace Chroma
   // Save me typing, by exposing this file level from here
   using T = ProjectorMGProtoQPhiXClover::T;
   using Q = ProjectorMGProtoQPhiXClover::Q;
+  using Ts = ProjectorMGProtoQPhiXClover::Ts;
+  using const_Ts = ProjectorMGProtoQPhiXClover::const_Ts;
 
   // Constructor
   ProjectorMGProtoQPhiXClover::ProjectorMGProtoQPhiXClover(Handle< LinearOperator<T> > A_,
@@ -82,7 +84,7 @@ namespace Chroma
   /*! 
    * Returns A*V*inv(U^H*A*V)*U^H*chi = psi
    */
-  void ProjectorMGProtoQPhiXClover::AVUObliqueProjector(T& psi, const T& chi) const {
+  void ProjectorMGProtoQPhiXClover::AVUObliqueProjector(Ts& psi, const_Ts& chi) const {
 	  apply(psi, chi, false);
   }
 
@@ -90,7 +92,7 @@ namespace Chroma
   /*! 
    * Returns V*inv(U^H*A*V)*U^H*A*chi = psi
    */
-  void ProjectorMGProtoQPhiXClover::VUAObliqueProjector(T& psi, const T& chi) const {
+  void ProjectorMGProtoQPhiXClover::VUAObliqueProjector(Ts& psi, const_Ts& chi) const {
 	  apply(psi, chi, true);
   }
 
@@ -124,8 +126,11 @@ namespace Chroma
 
 
   void
-  ProjectorMGProtoQPhiXClover::apply(T& psi, const T& chi, bool do_VUA) const
+  ProjectorMGProtoQPhiXClover::apply(Ts& psi, const_Ts& chi, bool do_VUA) const
   {
+	  assert(psi.size() == chi.size());
+	  int ncols = psi.size();
+
 	  QDPIO::cout << "Jolly Greetings from Multigridland for deflation" << std::endl;
 	  StopWatch swatch;
 	  StopWatch swatch2;
@@ -134,11 +139,10 @@ namespace Chroma
 	  swatch.start();
 
 	  const LatticeInfo& info = deflation->GetInfo();
-	  QPhiXSpinor qphix_in(info);
-	  QPhiXSpinor qphix_out(info);
+	  QPhiXSpinor qphix_in(info, ncols);
+	  QPhiXSpinor qphix_out(info, ncols);
 
-	  // Solve the system
-	  QDPSpinorToQPhiXSpinor(chi,qphix_in,0);
+	  for (int col=0; col<ncols; ++col) QDPSpinorToQPhiXSpinor(*chi[col],qphix_in,col);
 	  ZeroVec(qphix_out);
 
 	  swatch2.reset();
@@ -150,7 +154,11 @@ namespace Chroma
 	  }
 	  swatch2.stop();
 
-	  QPhiXSpinorToQDPSpinor(qphix_out,0,psi);
+	  for (int col=0; col<ncols; ++col) {
+	    *psi[col] = zero;
+	    QPhiXSpinorToQDPSpinor(qphix_out,col,*psi[col]);
+	  }
+
 
 	  swatch.stop();
 	  QDPIO::cout << "MG_PROTO_CLOVER_PROJECTOR_TIME: call_time = "<< swatch2.getTimeInSeconds() << " sec.  total_time=" << swatch.getTimeInSeconds() << " sec." << std::endl;

@@ -79,13 +79,23 @@ namespace Chroma
     /*! 
      * Returns A*V*inv(U^H*A*V)*U^H*chi = psi
      */
-    virtual void AVUObliqueProjector(T& psi, const T& chi) const = 0;
+    virtual void AVUObliqueProjector(T& psi, const T& chi) const {
+      AVUObliqueProjector(std::vector<std::shared_ptr<T>>(1, std::shared_ptr<T>(&psi, [](auto &p){})),
+                          std::vector<std::shared_ptr<const T>>(1, std::shared_ptr<const T>(&chi, [](auto &p){})));
+    }
+
+    virtual void AVUObliqueProjector(const std::vector<std::shared_ptr<T>>& psi, const std::vector<std::shared_ptr<const T>>& chi) const = 0;
 
     //! Apply the oblique projector V*inv(U^H*A*V)*U^H*A
     /*! 
      * Returns V*inv(V^H*A*V)*U^H*A*chi = psi
      */
-    virtual void VUAObliqueProjector(T& psi, const T& chi) const = 0;
+    virtual void VUAObliqueProjector(T& psi, const T& chi) const {
+      VUAObliqueProjector(std::vector<std::shared_ptr<T>>(1, std::shared_ptr<T>(&psi, [](auto &p){})),
+                          std::vector<std::shared_ptr<const T>>(1, std::shared_ptr<const T>(&chi, [](auto &p){})));
+    }
+
+    virtual void VUAObliqueProjector(const std::vector<std::shared_ptr<T>>& psi, const std::vector<std::shared_ptr<const T>>& chi) const = 0;
 
     //! Rank of the projector, which is the rank of U and V also
     virtual unsigned int rank() const = 0;

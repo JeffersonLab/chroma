@@ -37,6 +37,8 @@ namespace Chroma {
   public:
 	  using T = LatticeFermion;
 	  using Q = multi1d<LatticeColorMatrix>;
+	  using Ts = const std::vector<std::shared_ptr<T>>;
+	  using const_Ts = const std::vector<std::shared_ptr<const T>>;
 
 	  ProjectorMGProtoQPhiXClover(Handle< LinearOperator<T> > A_,
 			  Handle< FermState<T,Q,Q> > state_,
@@ -48,13 +50,13 @@ namespace Chroma {
     	  /*! 
     	   * Returns A*V*inv(U^H*A*V)*U^H*chi = psi
     	   */
-    	  void AVUObliqueProjector(T& psi, const T& chi) const override;
+    	  void AVUObliqueProjector(Ts& psi, const_Ts& chi) const override;
 
     	  //! Apply the oblique projector V*inv(U^H*A*V)*U^H*A
     	  /*! 
     	   * Returns V*inv(U^H*A*V)*U^H*A*chi = psi
     	   */
-    	  void VUAObliqueProjector(T& psi, const T& chi) const override;
+    	  void VUAObliqueProjector(Ts& psi, const_Ts& chi) const override;
 
     	  //! Rank of the projector, which is the rank of U and V also
     	  unsigned int rank() const override;
@@ -72,7 +74,7 @@ namespace Chroma {
 	  const Subset& subset() const override { return _subset; }
 
   private:
-	  void apply(T& psi, const T& chi, bool do_VVA=true) const;
+	  void apply(Ts& psi, const_Ts& chi, bool do_VVA=true) const;
 	  const Subset _subset;
 	  const Handle< LinearOperator< T > > A;
 	  const std::shared_ptr<MG::MGDeflation> deflation;
