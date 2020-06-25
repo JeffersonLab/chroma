@@ -252,10 +252,6 @@ namespace Chroma
     swatch.reset();
     swatch.start();
 
-    int machsize[4], latsize[4];
-    for (int d=0;d<4;d++) machsize[d] = Layout::logicalSize()[d];
-    for (int d=0;d<4;d++) latsize[d]  = Layout::lattSize()[d];
-
     // This will get the subspace
     //   If the subspace is externally managed it will be loaded/created
     //   If the subspace is internally managed it will be used/created
@@ -301,9 +297,9 @@ namespace Chroma
 		    << "Mass: "  << invParam.Mass
 		    << " did NOT CONVERGE: Target RelRsd = " << invParam.Residual
 		    << " Actual RelRsd = " << rel_resid << std::endl;
-	QDPIO::cout << "Exiting !!!!! " << std::endl;
-	QDP_abort(1);
-      }
+	    QDPIO::cout << "Exiting !!!!! " << std::endl;
+	    QDP_abort(1);
+	}
     }
 	
      

@@ -133,5 +133,5 @@ namespace Chroma
 
 	  return SystemSolverResults_t();
   }
-};
+}
 

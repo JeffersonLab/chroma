@@ -57,13 +57,14 @@ namespace Chroma {
 	  const Subset& subset() const;
 
 	  //! Solve It!
-	  SystemSolverResults_t operator()(T& psi, const T& chi) const;
+	  SystemSolverResults_t operator()(T& psi, const T& chi) const override;
+  	  std::vector<SystemSolverResults_t> operator()(const std::vector<std::shared_ptr<T>>& psi, const std::vector<std::shared_ptr<const T>>& chi) const override;
 
   private:
 	  Handle< LinearOperator< T > > A;
 	  Handle< FermState<T,Q,Q> > state;
 	  MGProtoSolverParams invParam;
-	  const std::string& subspaceId;
+	  const std::string subspaceId;
 	  std::shared_ptr<MGProtoHelpersQPhiX::MGPreconditionerEO> mg_pointer;
 	  std::shared_ptr<MG::QPhiXWilsonCloverEOLinearOperator > M_ptr;
 
