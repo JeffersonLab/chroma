@@ -38,9 +38,9 @@ namespace Chroma
         int p_num;  //Maximum number of momenta in the file.
 	std::string p_file; //Name of file that contains list of momenta.
         bool use_p_list; //A boolean that keeps track of which momentum structure to pass to the fourier transform.
-	multi1d<int> write_number; //A list of hadamard numbers to write out.
 	bool multifile_write; //A boolean that switches between new and old code for writing to multiple databases,
 	std::string mass_label ; /*! a std::string flag maybe used in analysis*/
+        int max_rhs;            /*! maximum number of linear systems solved simultaneously */
 	ChromaProp_t prop;
         GroupXML_t projParam;
 	int probing_distance;

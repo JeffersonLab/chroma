@@ -118,6 +118,12 @@ namespace Chroma
       }
       else
 	param.noise_vectors = 1;
+
+      if(inputtop.count("max_rhs")!=0){ 
+	read(inputtop,"max_rhs",param.max_rhs) ;
+      }
+      else
+	param.max_rhs = 1;
      }
 
     //! Propagator output
@@ -133,6 +139,7 @@ namespace Chroma
       write(xml,"use_ferm_state_links",param.use_ferm_state_links) ;
       write(xml,"probing_distance",param.probing_distance) ;
       write(xml,"noise_vectors",param.noise_vectors) ;
+      write(xml,"max_rhs",param.max_rhs) ;
       xml << param.projParam.xml;
 
       pop(xml);
@@ -661,63 +668,35 @@ namespace Chroma
 	vec = cmplx(cos(theta),sin(theta));
 
         // All the loops
-        const int HADA_VEC_STRIDE = 1;
-        for (int k1 = 0 ; k1 < Nsrc ; k1 += HADA_VEC_STRIDE) {
-          int dk = (k1 + HADA_VEC_STRIDE <= Nsrc) 
-                      ? HADA_VEC_STRIDE 
-                      : Nsrc - k1 ;
+        const int N_rhs = (params.param.max_rhs + Ns * Nc - 1) / Ns / Nc;
+        for (int k1 = 0, dk = std::min(Nsrc, N_rhs); k1 < Nsrc ; k1 += dk, dk = std::min(Nsrc - k1, N_rhs)) {
           // collect (Ns*Nc*dk) pairs of vectors
-          multi1d<LatticeFermion> v_chi(Ns * Nc * dk), 
-                                  v_q  (Ns * Nc * dk);
-          int cnt_v = 0;
+          std::vector<std::shared_ptr<LatticeFermion>> v_chi(Ns * Nc * dk), v_psi(Ns * Nc * dk), v_q(Ns * Nc * dk);
+          for (int col=0; col<v_chi.size(); col++) v_chi[col].reset(new LatticeFermion);
+          for (int col=0; col<v_psi.size(); col++) v_psi[col].reset(new LatticeFermion);
+          for (int col=0; col<v_q.size(); col++) v_q[col].reset(new LatticeFermion);
           for (int i_v = 0 ; i_v < dk ; i_v++) {
-            int k = k1 + i_v;
             LatticeInteger hh ; 
-            coloring.getVec(hh, k);
+            coloring.getVec(hh, k1 + i_v);
             LatticeComplex rv = vec*hh;
-            DComplex scTr = 0.0;
-            DComplex scTrDef = 0.0;
             for(int color_source(0);color_source<Nc;color_source++){
-              QDPIO::cout << "color_source = " << color_source << std::endl; 
-              
               LatticeColorVector vec_srce = zero ;
               pokeColor(vec_srce,rv,color_source) ;
               
               for(int spin_source=0; spin_source < Ns; ++spin_source){
-                QDPIO::cout << "spin_source = " << spin_source << std::endl; 
-                
                 // Insert a ColorVector into spin index spin_source
                 // This only overwrites sections, so need to initialize first
-                LatticeFermion chi = zero;
-                CvToFerm(vec_srce, chi, spin_source);
-                
-                LatticeFermion quark_soln ;
-                quark_soln=zero ;
-                SystemSolverResults_t res = (*PP)(quark_soln, chi);
-                QDPIO::cout<<"Norm of solution: "<<norm2(quark_soln)<<std::endl;
-                QDPIO::cout<<"Norm of source  : "<<norm2(chi)<<std::endl ;
-                //Calculate the trace
-                //Calculate the trace for debuging (here is the full trace)
-                LatticeFermion q;
-                proj->VUAObliqueProjector(q, quark_soln);
-                q = quark_soln - q; // q <= (I - V*inv(U'*AV*)*U'*A)*quark_soln
-                scTr += innerProduct(chi,quark_soln);
-                // q = Dslash^{-1}.chi - invDslashL.chi
-                //Calculate the trace for debuging (here is the deflated trace)
-                scTrDef += innerProduct(chi,q);
+                *v_chi[i_v * Ns * Nc + color_source * Ns + spin_source]  = zero;
+                CvToFerm(vec_srce, *v_chi[i_v * Ns * Nc + color_source * Ns + spin_source], spin_source);
+                *v_psi[i_v * Ns * Nc + color_source * Ns + spin_source]  = zero;
+              } 
+            }
+          }
 
-                v_chi[cnt_v] = chi;
-                v_q  [cnt_v] = q;
-                cnt_v       += 1;
-              } // for spin_source
-
-            } // for color_source
-            tr += scTr ;
-            trDef += scTrDef ;
-            QDPIO::cout<<"Hadamard "<<k<<" -- Trace: "<<tr/(k+1)<<std::endl ;
-            QDPIO::cout<<"Deflated Hadamard "<<k<<" -- Trace: "<<trDef/(k+1)<<std::endl ;
-          } // for i_v
-          assert(cnt_v == Ns * Nc * dk);
+          (*PP)(v_psi, std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
+          proj->VUAObliqueProjector(v_q, std::vector<std::shared_ptr<const LatticeFermion>>(v_psi.begin(), v_psi.end()));
+          for (int i=0; i<v_psi.size(); ++i)
+            *v_q[i] = *v_psi[i] - *v_q[i]; // q <= (I - V*inv(U'*AV*)*U'*A)*quark_soln
 
           // here the recursive call goes to compute the loops
           // result is ADDED to db
@@ -726,10 +705,10 @@ namespace Chroma
           for (int i = 0 ; i < v_chi.size() ; i++) {
             multi1d<int> d ;
             if (params.param.use_ferm_state_links)
-              do_disco(db, v_chi[i], v_q[i], ft, state->getLinks(),
+              do_disco(db, *v_chi[i], *v_q[i], ft, state->getLinks(),
                        d, params.param.max_path_length);
             else
-              do_disco(db, v_chi[i], v_q[i], ft, u, 
+              do_disco(db, *v_chi[i], *v_q[i], ft, u, 
                        d, params.param.max_path_length);
            }
            swatch_dots.stop();
@@ -795,6 +774,7 @@ namespace Chroma
       // Store all the data
       for(it=dbmean.begin();it!=dbmean.end();it++){
 	key.key()  = it->first  ;
+        key.key().mass_label = params.param.mass_label;
 	val.data().op.resize(it->second.op.size()) ;
 	for(int i(0);i<it->second.op.size();i++)
           val.data().op[i] = it->second.op[i];
