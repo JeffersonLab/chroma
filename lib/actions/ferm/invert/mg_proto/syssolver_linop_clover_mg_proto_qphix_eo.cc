@@ -164,6 +164,7 @@ namespace Chroma
 	  }
 
 
+	  std::vector<SystemSolverResults_t> r(ncols);
 	  for (int col=0; col<ncols; ++col) {
 		  // Chroma level check (may be slow)
 		  T tmp;
@@ -172,6 +173,7 @@ namespace Chroma
 		  tmp[s]  -= *chi[col];
 		  Double n2 = norm2(tmp,s);
 		  Double n2rel = n2 / norm2(*chi[col],s);
+		  r[col].n_count = res[col].n_count;
 		  QDPIO::cout << "MG_PROTO_QPHIX_EO_CLOVER_INVERTER: iters = "<< res[col].n_count << " rel resid = " << sqrt(n2rel) << std::endl;
 		  if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget ) ) {
 		    MGSolverException convergence_fail(invParam.CloverParams.Mass, 
@@ -185,7 +187,7 @@ namespace Chroma
 	  }
 	  swatch.stop();
 	  QDPIO::cout << "MG_PROTO_QPHIX_EO_CLOVER_INVERTER_TIME: call_time = "<< swatch2.getTimeInSeconds() << " sec.  total_time=" << swatch.getTimeInSeconds() << " sec." << std::endl;
-	  return std::vector<SystemSolverResults_t>();
+	  return r;
   }
 };
 
