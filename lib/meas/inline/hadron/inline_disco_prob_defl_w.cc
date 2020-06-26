@@ -341,7 +341,8 @@ namespace Chroma
 	for(int i(0);i<path.size();i++)
 	  new_path[i] = path[i] ;
 	for(int sign(-1);sign<2;sign+=2)
-	  for(int mu(0);mu<Nd;mu++){
+          // NOTE: restrict displacement to the z direction
+	  for(int mu(2);mu<3;mu++){
 	    new_path[path.size()]= sign*(mu+1) ;
 	    //skip back tracking 
 	    bool back_track=false ;
