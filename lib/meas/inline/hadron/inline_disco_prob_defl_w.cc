@@ -113,6 +113,10 @@ namespace Chroma
       else
 	param.probing_distance = param.max_path_length;
 
+      if(inputtop.count("probing_file")!=0){ 
+	read(inputtop,"probing_file",param.probing_file) ;
+      }
+
       if(inputtop.count("noise_vectors")!=0){ 
 	read(inputtop,"noise_vectors",param.noise_vectors) ;
       }
@@ -587,7 +591,14 @@ namespace Chroma
       // Calculate some gauge invariant observables just for info.
       MesPlq(xml_out, "Observables", u);
 
-      Coloring coloring(params.param.probing_distance);
+      std::shared_ptr<Coloring> coloring;
+      if (!params.param.probing_file.empty()) {
+        QDPIO::cout << "Reading colors from file " << params.param.probing_file << std::endl;
+        coloring.reset(new Coloring(params.param.probing_file));
+      } else {
+        QDPIO::cout << "Generating a " << params.param.probing_distance << "-distance coloring" << std::endl;
+        coloring.reset(new Coloring(params.param.probing_distance));
+      }
     
       //
       // Initialize fermion action
@@ -613,7 +624,7 @@ namespace Chroma
       SftMom ft = params.param.use_p_list ? SftMom(params.param.p_list, decay_dir) : SftMom(params.param.p2_max, false, decay_dir);
 
       // number of colors
-      int Nsrc = coloring.numColors();
+      int Nsrc = coloring->numColors();
       QDPIO::cout << "num colors " << Nsrc << std::endl;
 
       DComplex tr = 0.0 ;
@@ -677,7 +688,7 @@ namespace Chroma
           for (int col=0; col<v_q.size(); col++) v_q[col].reset(new LatticeFermion);
           for (int i_v = 0 ; i_v < dk ; i_v++) {
             LatticeInteger hh ; 
-            coloring.getVec(hh, k1 + i_v);
+            coloring->getVec(hh, k1 + i_v);
             LatticeComplex rv = vec*hh;
             for(int color_source(0);color_source<Nc;color_source++){
               LatticeColorVector vec_srce = zero ;

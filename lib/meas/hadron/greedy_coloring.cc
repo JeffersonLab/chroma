@@ -8,6 +8,7 @@
 #include "chromabase.h"
 #include "meas/hadron/greedy_coloring.h"
 #include "qdp_layout.h"
+#include <fstream>
 #include <stdexcept>
 #include <vector>
 #include <array>
@@ -82,6 +83,34 @@ namespace {
 		CoorType p;
 		p.back() = 1;
 		for (int i=p.size()-1; i>=1; i--) p[i-1] = p[i]*dim[i];
+
+		// coors(i,j) = indices(i) / p(i)
+		// NOTE: every coordinate value is normalize to modulus the lattice dimension
+		for (unsigned int i=0; i<indices.size(); i++)
+			for (unsigned int j=0; j<dim.size(); j++)
+				coors[i][j] = (indices[i] / p[j]) % dim[j];
+
+		return coors;
+	}
+
+	// Return the coordinates associated to each index in natural order
+	// \param indices: input vertex indices
+	// \param dim: lattice dimension
+	//
+	// Return a vector with the coordinates of the passed indices in
+	// the same order.
+
+	Coors natindex2coor(const Indices &indices, const CoorType dim) {
+		// Quick exit
+		if (dim.size() <= 0) return Coors();
+
+		// Output array
+		Coors coors(indices.size());
+
+		// p(i) = prod(dim(1:i-1))
+		CoorType p;
+		p[0] = 1;
+		for (int i=1; i<dim.size(); i++) p[i] = p[i-1]*dim[i-1];
 
 		// coors(i,j) = indices(i) / p(i)
 		// NOTE: every coordinate value is normalize to modulus the lattice dimension
@@ -322,6 +351,48 @@ Coloring::Coloring(unsigned int distance) {
 	
 	// Get colors for all nodes
 	Indices colors = get_colors(distance, latt_size, num_colors);
+
+	// Store the colors of the local nodes
+	int this_node = Layout::nodeNumber();
+	local_colors.resize(Layout::sitesOnNode());
+	for (unsigned int i=0; i<Layout::sitesOnNode(); i++) {
+		// Local coordinates of node i
+		multi1d<int> x = Layout::siteCoords(this_node, i);
+
+		CoorType c;
+		for (unsigned int j=0; j<c.size(); j++) c[j] = x[j];
+
+		local_colors[i] = colors[coor2index(Coors(1, c), latt_size)[0]];
+	}
+}
+
+// Read the coloring from a file
+Coloring::Coloring(const std::string& filename) {
+	// Get lattice dimensions
+	CoorType latt_size;
+	for (unsigned int i=0; i<latt_size.size(); i++)
+		latt_size[i] = Layout::lattSize()[i];
+	
+	// Read colors for all nodes from 'filename' which are
+	// stored in natural order
+	std::size_t vol = volume(latt_size);
+	Indices colors(vol);
+	{
+		std::ifstream f(filename);
+		IndexType idx;
+		std::size_t i=0;
+		for(i=0; f >> idx; ++i) {
+			if (i >= vol) {
+				throw std::runtime_error("The coloring file has too many rows!");
+			}
+			colors[coor2index(natindex2coor(Indices(1, i), latt_size), latt_size)[0]] = idx - 1;
+		}
+		if (i < vol) {
+			throw std::runtime_error("Missing rows from the coloring file!");
+		}
+	}
+
+	num_colors = *std::max_element(colors.begin(), colors.end()) + 1;
 
 	// Store the colors of the local nodes
 	int this_node = Layout::nodeNumber();
