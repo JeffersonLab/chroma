@@ -50,6 +50,7 @@
 #ifdef BUILD_QPHIX
 #include  "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.h"
 #include  "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix_eo.h"
+#include  "actions/ferm/invert/mg_proto/syssolver_linop_ali_mg_proto_qphix_eo.h"
 #include  "actions/ferm/invert/mg_proto/projector_clover_mg_proto_qphix.h"
 #endif
 #endif
@@ -102,10 +103,11 @@ namespace Chroma
 
 #ifdef BUILD_MGPROTO
 	success &= LinOpSysSolverMGProtoCloverEnv::registerAll();
-	success &= ProjectorMGProtoQPhiXCloverEnv::registerAll();
 #ifdef BUILD_QPHIX
-  success &= LinOpSysSolverMGProtoQPhiXCloverEnv::registerAll();
-  success &= LinOpSysSolverMGProtoQPhiXEOCloverEnv::registerAll();
+	success &= LinOpSysSolverMGProtoQPhiXCloverEnv::registerAll();
+	success &= LinOpSysSolverMGProtoQPhiXEOCloverEnv::registerAll();
+	success &= LinOpSysSolverMGProtoQPhiXALIEnv::registerAll();
+	success &= ProjectorMGProtoQPhiXCloverEnv::registerAll();
 #endif
 #endif
 	registered = true;

@@ -251,6 +251,7 @@ MGProtoALIPrecParams::MGProtoALIPrecParams(XMLReader& xml, const std::string& pa
 	read( defl, "BottomSolverVerboseP", Deflation.BottomSolverVerboseP);
 
         XMLReader recon(paramtop, "Reconstruction");
+	read( recon, "ali_distance", Reconstruction.ali_distance);
 	read( recon, "probing_distance", Reconstruction.probing_distance);
 
 	read( recon, "MGLevels", Reconstruction.MGLevels);

@@ -2,6 +2,10 @@
 #include <exception>
 #include <string>
 #include <sstream>
+
+#ifndef MG_SOLVER_EXCEPTON_H
+#define MG_SOLVER_EXCEPTON_H
+
 namespace Chroma  {
 
   class MGSolverException : public std::exception 
@@ -47,3 +51,5 @@ namespace Chroma  {
 
 
 }
+
+#endif // MG_SOLVER_EXCEPTON_H
