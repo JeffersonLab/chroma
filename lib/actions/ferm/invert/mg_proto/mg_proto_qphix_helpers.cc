@@ -5,12 +5,14 @@
  *      Author: bjoo
  */
 #include "chromabase.h"
-#include "lattice/solver.h"
 #include "meas/inline/io/named_objmap.h"
 #include "actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.h"
+#include "lattice/qphix/qphix_eo_clover_linear_operator.h"
+#include "lattice/solver.h"
 #include "lattice/fine_qdpxx/mg_params_qdpxx.h"
 #include "lattice/qphix/mg_level_qphix.h"
 #include "lattice/qphix/qphix_mgdeflation.h"
+#include "lattice/qphix/qphix_ali.h"
 #include "lattice/qphix/vcycle_recursive_qphix.h"
 #include "lattice/qphix/qphix_clover_linear_operator.h"
 
@@ -104,6 +106,13 @@ createFineEOLinOp( const MGProtoSolverParams& params, const multi1d<LatticeColor
     const MG::LatticeInfo& info)
 {
   return createFineLinOpT<typename MGPreconditionerEO::LinOpT>(params,u,info);
+}
+
+std::shared_ptr<MG::QPhiXWilsonCloverEOLinearOperator>
+createFineEOLinOp( const MGProtoALIPrecParams& params, const multi1d<LatticeColorMatrix>& u,
+    const MG::LatticeInfo& info)
+{
+  return createFineLinOpT<MG::QPhiXWilsonCloverEOLinearOperator>(params,u,info);
 }
 
 template<typename PrecT>
@@ -334,6 +343,130 @@ createMGDeflation( const MGProtoMGDeflationParams& params, const multi1d<Lattice
 	END_CODE();
 
 	return mgdefl;
+}
+
+std::shared_ptr<MG::ALIPrec>
+createALIPrec( const MGProtoALIPrecParams& params, const multi1d<LatticeColorMatrix>& u)
+{
+	START_CODE();
+	StopWatch swatch;
+	swatch.reset();
+	swatch.start();
+
+	// First make an info from the lattice parameters:
+	IndexArray latdims = {{ QDP::Layout::subgridLattSize()[0],
+                QDP::Layout::subgridLattSize()[1],
+                QDP::Layout::subgridLattSize()[2],
+                QDP::Layout::subgridLattSize()[3] }};
+
+	std::shared_ptr<LatticeInfo> info = std::make_shared<LatticeInfo>( latdims, 4,3,*new NodeInfo());
+
+	// First make M
+	shared_ptr<MG::QPhiXWilsonCloverEOLinearOperatorF> M=createFineLinOpT<MG::QPhiXWilsonCloverEOLinearOperatorF>( params, u, *info);
+
+	//
+	// Deflation
+	//
+	MG::SetupParams defl_level_params;
+	{
+		MG::SetupParams level_params;
+		int n_levels = params.Deflation.MGLevels;
+		level_params.n_levels = n_levels;
+		level_params.n_vecs.resize(n_levels-1);
+		level_params.null_solver_params.resize(n_levels-1);
+		for(int l=0; l < n_levels-1;++l) {
+			level_params.n_vecs[l] = params.Deflation.NullVecs[l];
+			level_params.null_solver_params[l].MaxIter=params.Deflation.NullSolverMaxIters[l];
+			level_params.null_solver_params[l].RsdTarget=toDouble(params.Deflation.NullSolverRsdTarget[l]);
+			level_params.null_solver_params[l].VerboseP=toDouble(params.Deflation.NullSolverVerboseP[l]);
+		}
+		level_params.block_sizes.resize(n_levels-1);
+		for(int l=0; l < n_levels-1;++l) {
+			for(int mu=0; mu < 4; ++mu) {
+				(level_params.block_sizes[l])[mu] = (params.Deflation.Blocking[l])[mu];
+			}
+		}
+		defl_level_params = level_params;
+	}
+
+	MG::LinearSolverParamsBase deflation_solver_params;
+	deflation_solver_params.MaxIter=params.Deflation.BottomSolverMaxIters;
+	deflation_solver_params.NKrylov = params.Deflation.BottomSolverNKrylov;
+	deflation_solver_params.RsdTarget= toDouble(params.Deflation.BottomSolverRsdTarget);
+	deflation_solver_params.VerboseP = params.Deflation.BottomSolverVerboseP;
+
+	MG::EigsParams eigs_params;
+	eigs_params.MaxRestartSize = params.Deflation.EigenSolverMaxRestartSize;
+	eigs_params.MaxNumEvals = params.Deflation.EigenSolverMaxRank;
+	eigs_params.RsdTarget = toDouble(params.Deflation.EigenSolverRsdTarget);
+	eigs_params.VerboseP = params.Deflation.EigenSolverVerboseP;
+
+	//
+	// Reconstruction
+	//
+
+	MG::SetupParams recon_level_params;
+	int recon_n_levels = params.Reconstruction.MGLevels;
+	{
+		MG::SetupParams level_params;
+		int n_levels = recon_n_levels;
+		level_params.n_levels = n_levels;
+		level_params.n_vecs.resize(n_levels-1);
+		level_params.null_solver_params.resize(n_levels-1);
+		for(int l=0; l < n_levels-1;++l) {
+			level_params.n_vecs[l] = params.Reconstruction.NullVecs[l];
+			level_params.null_solver_params[l].MaxIter=params.Reconstruction.NullSolverMaxIters[l];
+			level_params.null_solver_params[l].RsdTarget=toDouble(params.Reconstruction.NullSolverRsdTarget[l]);
+			level_params.null_solver_params[l].VerboseP=toDouble(params.Reconstruction.NullSolverVerboseP[l]);
+		}
+		level_params.block_sizes.resize(n_levels-1);
+		for(int l=0; l < n_levels-1;++l) {
+			for(int mu=0; mu < 4; ++mu) {
+				(level_params.block_sizes[l])[mu] = (params.Reconstruction.Blocking[l])[mu];
+			}
+		}
+		recon_level_params = level_params;
+	}
+
+	vector<MG::VCycleParams> v_params(recon_n_levels-1);
+	for(int l=0; l < recon_n_levels-1;++l) {
+		QDPIO::cout << "   Level " << l << std::endl;
+		v_params[l].pre_smoother_params.MaxIter=params.Reconstruction.VCyclePreSmootherMaxIters[l];
+		v_params[l].pre_smoother_params.RsdTarget=toDouble(params.Reconstruction.VCyclePreSmootherRsdTarget[l]);
+		v_params[l].pre_smoother_params.VerboseP =params.Reconstruction.VCyclePreSmootherVerboseP[l];
+		v_params[l].pre_smoother_params.Omega =toDouble(params.Reconstruction.VCyclePreSmootherRelaxOmega[l]);
+
+		v_params[l].post_smoother_params.MaxIter=params.Reconstruction.VCyclePostSmootherMaxIters[l];
+		v_params[l].post_smoother_params.RsdTarget=toDouble(params.Reconstruction.VCyclePostSmootherRsdTarget[l]);
+		v_params[l].post_smoother_params.VerboseP =params.Reconstruction.VCyclePostSmootherVerboseP[l];
+		v_params[l].post_smoother_params.Omega =toDouble(params.Reconstruction.VCyclePostSmootherRelaxOmega[l]);
+
+		v_params[l].bottom_solver_params.MaxIter=params.Reconstruction.VCycleBottomSolverMaxIters[l];
+		v_params[l].bottom_solver_params.NKrylov = params.Reconstruction.VCycleBottomSolverNKrylov[l];
+		v_params[l].bottom_solver_params.RsdTarget= toDouble(params.Reconstruction.VCycleBottomSolverRsdTarget[l]);
+		v_params[l].bottom_solver_params.VerboseP = params.Reconstruction.VCycleBottomSolverVerboseP[l];
+
+		v_params[l].cycle_params.MaxIter=params.Reconstruction.VCycleMaxIters[l];
+		v_params[l].cycle_params.RsdTarget=toDouble(params.Reconstruction.VCycleRsdTarget[l]);
+		v_params[l].cycle_params.VerboseP = params.Reconstruction.VCycleVerboseP[l];
+	}
+
+
+	MG::LinearSolverParamsBase recon_solver_params;
+	recon_solver_params.MaxIter=params.Reconstruction.OuterSolverMaxIters;
+	recon_solver_params.NKrylov = params.Reconstruction.OuterSolverNKrylov;
+	recon_solver_params.RsdTarget= toDouble(params.Reconstruction.OuterSolverRsdTarget);
+	recon_solver_params.VerboseP = params.Reconstruction.OuterSolverVerboseP;
+
+	std::shared_ptr<MG::ALIPrec> aliprec = std::make_shared<MG::ALIPrec>(info, M, defl_level_params, deflation_solver_params, eigs_params, recon_level_params, v_params, recon_solver_params, params.Reconstruction.ali_distance, params.Reconstruction.probing_distance, MG::SUBSET_ALL);
+	QDPIO::cout << "... Done " << std::endl;
+
+	swatch.stop();
+	QDPIO::cout << "MG_PROTO_QPHIX_ALI_SETUP: Subspace Creation Took : " << swatch.getTimeInSeconds() << " sec" << std::endl;
+
+	END_CODE();
+
+	return aliprec;
 }
 
 

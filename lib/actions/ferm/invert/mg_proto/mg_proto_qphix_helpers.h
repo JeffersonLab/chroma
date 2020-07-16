@@ -18,6 +18,7 @@
 #include <lattice/lattice_info.h>
 #include <lattice/qphix/qphix_clover_linear_operator.h>
 #include <lattice/qphix/qphix_eo_clover_linear_operator.h>
+#include <lattice/qphix/qphix_ali.h>
 
 namespace Chroma {
 
@@ -67,12 +68,19 @@ std::shared_ptr<MG::QPhiXWilsonCloverEOLinearOperatorF>
 createFineEOLinOpF( const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u,
     const MG::LatticeInfo& info);
 
+std::shared_ptr<MG::QPhiXWilsonCloverEOLinearOperator>
+createFineEOLinOp( const MGProtoALIPrecParams& params, const multi1d<LatticeColorMatrix>& u,
+    const MG::LatticeInfo& info);
+
 void createMGPreconditionerEO(const MGProtoSolverParams& params, const multi1d<LatticeColorMatrix>& u);
 void deleteMGPreconditionerEO(const std::string& subspaceID);
 std::shared_ptr<MGPreconditionerEO> getMGPreconditionerEO(const std::string& subspaceId);
 
 std::shared_ptr<MG::MGDeflation>
 createMGDeflation( const MGProtoMGDeflationParams& params, const multi1d<LatticeColorMatrix>& u);
+
+std::shared_ptr<MG::ALIPrec>
+createALIPrec( const MGProtoALIPrecParams& params, const multi1d<LatticeColorMatrix>& u);
 
 }  // Namespace MGProtoHelpers
 
