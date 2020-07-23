@@ -458,7 +458,7 @@ createALIPrec( const MGProtoALIPrecParams& params, const multi1d<LatticeColorMat
 	recon_solver_params.RsdTarget= toDouble(params.Reconstruction.OuterSolverRsdTarget);
 	recon_solver_params.VerboseP = params.Reconstruction.OuterSolverVerboseP;
 
-	std::shared_ptr<MG::ALIPrec> aliprec = std::make_shared<MG::ALIPrec>(info, M, defl_level_params, deflation_solver_params, eigs_params, recon_level_params, v_params, recon_solver_params, params.Reconstruction.ali_distance, params.Reconstruction.probing_distance, MG::SUBSET_ALL);
+	std::shared_ptr<MG::ALIPrec> aliprec = std::make_shared<MG::ALIPrec>(info, M, defl_level_params, deflation_solver_params, eigs_params, recon_level_params, v_params, recon_solver_params, params.Reconstruction.ali_distance, params.Reconstruction.probing_distance, MG::SUBSET_ODD);
 	QDPIO::cout << "... Done " << std::endl;
 
 	swatch.stop();
