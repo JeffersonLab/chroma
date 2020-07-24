@@ -23,7 +23,10 @@ namespace  {
  void read(XMLReader& xml, const std::string& path, multi1d<T>& result, int N)
  {
 	 multi1d<T> read_result;
-	 read(xml, path, read_result);
+	 try {
+	 	 read(xml, path, read_result);
+	 }
+	 catch (...) {}
 	 result.resize(N);
 
 	 if( read_result.size() == 1 ) {
@@ -32,17 +35,49 @@ namespace  {
 			 result[i] = read_result[0];
 		 }
 	 }
+	 else if( read_result.size() == N ) {
+		 // Copy
+		 for(int i=0; i < N; ++i) {
+			 result[i] = read_result[i];
+		 }
+	 }
 	 else {
-		 if( read_result.size() == N ) {
-			 // Copy
-			 for(int i=0; i < N; ++i) {
-				 result[i] = read_result[i];
-			 }
+		 QDPIO::cerr << "Wrong number of elements reading" << path << " should be either 1 or " << N << std::endl;
+		 QDP_abort(1);
+	 }
+ }
+
+ template<typename T>
+ void read(XMLReader& xml, const std::string& path, multi1d<T>& result, int N, T default_value)
+ {
+	 multi1d<T> read_result;
+	 try {
+	 	 read(xml, path, read_result);
+	 }
+	 catch (...) {}
+	 result.resize(N);
+
+	 if( read_result.size() == 1 ) {
+		 // Broadcast
+		 for(int i=0; i < N; ++i) {
+			 result[i] = read_result[0];
 		 }
-		 else {
-			 QDPIO::cerr << "Wrong number of elements reading" << path << " should be either 1 or " << N << std::endl;
-			 QDP_abort(1);
+	 }
+	 else if( read_result.size() == 0 ) {
+		// Set default
+		 for(int i=0; i < N; ++i) {
+			 result[i] = default_value;
 		 }
+	 }
+	 else if( read_result.size() == N ) {
+		 // Copy
+		 for(int i=0; i < N; ++i) {
+			 result[i] = read_result[i];
+		 }
+	 }
+	 else {
+		 QDPIO::cerr << "Wrong number of elements reading" << path << " should be either 1 or " << N << std::endl;
+		 QDP_abort(1);
 	 }
  }
 
@@ -60,6 +95,7 @@ MGProtoSolverParams::MGProtoSolverParams(XMLReader& xml, const std::string& path
 
 	read( paramtop, "NullVecs", NullVecs, MGLevels-1);
 	read( paramtop, "NullSolverMaxIters", NullSolverMaxIters, MGLevels-1);
+	read( paramtop, "NullSolverNKrylov", NullSolverNKrylov, MGLevels-1, 0);
 	read( paramtop, "NullSolverRsdTarget", NullSolverRsdTarget, MGLevels-1);
 	read( paramtop, "NullSolverVerboseP", NullSolverVerboseP, MGLevels-1);
 
@@ -117,6 +153,7 @@ void write(XMLWriter& xml, const std::string& path, const MGProtoSolverParams& p
 	write(xml, "Blocking", p.Blocking);
 	write(xml, "NullVecs", p.NullVecs);
 	write(xml, "NullSolverMaxIters", p.NullSolverMaxIters);
+	write(xml, "NullSolverNKrylov", p.NullSolverNKrylov);
 	write(xml, "NullSolverRsdTarget", p.NullSolverRsdTarget);
 	write(xml, "NullSolverVerboseP", p.NullSolverVerboseP);
 
@@ -160,6 +197,7 @@ MGProtoMGDeflationParams::MGProtoMGDeflationParams(XMLReader& xml, const std::st
 
 	read( paramtop, "NullVecs", NullVecs, MGLevels-1);
 	read( paramtop, "NullSolverMaxIters", NullSolverMaxIters, MGLevels-1);
+	read( paramtop, "NullSolverNKrylov", NullSolverNKrylov, MGLevels-1, 0);
 	read( paramtop, "NullSolverRsdTarget", NullSolverRsdTarget, MGLevels-1);
 	read( paramtop, "NullSolverVerboseP", NullSolverVerboseP, MGLevels-1);
 
@@ -204,6 +242,7 @@ void write(XMLWriter& xml, const std::string& path, const MGProtoMGDeflationPara
 	write(xml, "Blocking", p.Blocking);
 	write(xml, "NullVecs", p.NullVecs);
 	write(xml, "NullSolverMaxIters", p.NullSolverMaxIters);
+	write(xml, "NullSolverNKrylov", p.NullSolverNKrylov);
 	write(xml, "NullSolverRsdTarget", p.NullSolverRsdTarget);
 	write(xml, "NullSolverVerboseP", p.NullSolverVerboseP);
 
@@ -236,6 +275,7 @@ MGProtoALIPrecParams::MGProtoALIPrecParams(XMLReader& xml, const std::string& pa
 
 	read( defl, "NullVecs", Deflation.NullVecs, Deflation.MGLevels-1);
 	read( defl, "NullSolverMaxIters", Deflation.NullSolverMaxIters, Deflation.MGLevels-1);
+	read( defl, "NullSolverNKrylov", Deflation.NullSolverNKrylov, Deflation.MGLevels-1, 0);
 	read( defl, "NullSolverRsdTarget", Deflation.NullSolverRsdTarget, Deflation.MGLevels-1);
 	read( defl, "NullSolverVerboseP", Deflation.NullSolverVerboseP, Deflation.MGLevels-1);
 
@@ -260,6 +300,7 @@ MGProtoALIPrecParams::MGProtoALIPrecParams(XMLReader& xml, const std::string& pa
 
 	read( recon, "NullVecs", Reconstruction.NullVecs, Reconstruction.MGLevels-1);
 	read( recon, "NullSolverMaxIters", Reconstruction.NullSolverMaxIters, Reconstruction.MGLevels-1);
+	read( recon, "NullSolverNKrylov", Reconstruction.NullSolverNKrylov, Reconstruction.MGLevels-1, 0);
 	read( recon, "NullSolverRsdTarget", Reconstruction.NullSolverRsdTarget, Reconstruction.MGLevels-1);
 	read( recon, "NullSolverVerboseP", Reconstruction.NullSolverVerboseP, Reconstruction.MGLevels-1);
 
@@ -326,6 +367,7 @@ void write(XMLWriter& xml, const std::string& path, const MGProtoALIPrecParams& 
 
 	write( xml, "NullVecs", p.Deflation.NullVecs);
 	write( xml, "NullSolverMaxIters", p.Deflation.NullSolverMaxIters);
+	write( xml, "NullSolverNKrylov", p.Deflation.NullSolverNKrylov);
 	write( xml, "NullSolverRsdTarget", p.Deflation.NullSolverRsdTarget);
 	write( xml, "NullSolverVerboseP", p.Deflation.NullSolverVerboseP);
 
@@ -351,6 +393,7 @@ void write(XMLWriter& xml, const std::string& path, const MGProtoALIPrecParams& 
 
 	write( xml, "NullVecs", p.Reconstruction.NullVecs);
 	write( xml, "NullSolverMaxIters", p.Reconstruction.NullSolverMaxIters);
+	write( xml, "NullSolverNKrylov", p.Reconstruction.NullSolverNKrylov);
 	write( xml, "NullSolverRsdTarget", p.Reconstruction.NullSolverRsdTarget);
 	write( xml, "NullSolverVerboseP", p.Reconstruction.NullSolverVerboseP);
 

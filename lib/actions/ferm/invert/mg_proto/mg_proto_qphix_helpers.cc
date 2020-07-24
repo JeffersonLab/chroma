@@ -194,6 +194,7 @@ createMGPreconditionerT( const MGProtoSolverParams& params, const multi1d<Lattic
 
 		level_params.n_vecs[l] = params.NullVecs[l];
 		level_params.null_solver_params[l].MaxIter=params.NullSolverMaxIters[l];
+		level_params.null_solver_params[l].NKrylov=params.NullSolverNKrylov[l];
 		level_params.null_solver_params[l].RsdTarget=toDouble(params.NullSolverRsdTarget[l]);
 		level_params.null_solver_params[l].VerboseP=toDouble(params.NullSolverVerboseP[l]);
 	}
@@ -312,6 +313,7 @@ createMGDeflation( const MGProtoMGDeflationParams& params, const multi1d<Lattice
 
 		level_params.n_vecs[l] = params.NullVecs[l];
 		level_params.null_solver_params[l].MaxIter=params.NullSolverMaxIters[l];
+		level_params.null_solver_params[l].NKrylov=params.NullSolverNKrylov[l];
 		level_params.null_solver_params[l].RsdTarget=toDouble(params.NullSolverRsdTarget[l]);
 		level_params.null_solver_params[l].VerboseP=toDouble(params.NullSolverVerboseP[l]);
 	}
@@ -377,6 +379,7 @@ createALIPrec( const MGProtoALIPrecParams& params, const multi1d<LatticeColorMat
 		for(int l=0; l < n_levels-1;++l) {
 			level_params.n_vecs[l] = params.Deflation.NullVecs[l];
 			level_params.null_solver_params[l].MaxIter=params.Deflation.NullSolverMaxIters[l];
+			level_params.null_solver_params[l].NKrylov=params.Deflation.NullSolverNKrylov[l];
 			level_params.null_solver_params[l].RsdTarget=toDouble(params.Deflation.NullSolverRsdTarget[l]);
 			level_params.null_solver_params[l].VerboseP=toDouble(params.Deflation.NullSolverVerboseP[l]);
 		}
@@ -416,6 +419,7 @@ createALIPrec( const MGProtoALIPrecParams& params, const multi1d<LatticeColorMat
 		for(int l=0; l < n_levels-1;++l) {
 			level_params.n_vecs[l] = params.Reconstruction.NullVecs[l];
 			level_params.null_solver_params[l].MaxIter=params.Reconstruction.NullSolverMaxIters[l];
+			level_params.null_solver_params[l].NKrylov=params.Reconstruction.NullSolverNKrylov[l];
 			level_params.null_solver_params[l].RsdTarget=toDouble(params.Reconstruction.NullSolverRsdTarget[l]);
 			level_params.null_solver_params[l].VerboseP=toDouble(params.Reconstruction.NullSolverVerboseP[l]);
 		}

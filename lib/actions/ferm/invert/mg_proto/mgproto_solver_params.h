@@ -34,6 +34,7 @@ public:
 	multi1d< multi1d<int> > Blocking;
 	multi1d< int > NullVecs;
 	multi1d< int > NullSolverMaxIters;
+	multi1d< int > NullSolverNKrylov;
 	multi1d< Double > NullSolverRsdTarget;
 	multi1d< bool > NullSolverVerboseP;
 
@@ -89,6 +90,7 @@ public:
 	multi1d< multi1d<int> > Blocking;
 	multi1d< int > NullVecs;
 	multi1d< int > NullSolverMaxIters;
+	multi1d< int > NullSolverNKrylov;
 	multi1d< Double > NullSolverRsdTarget;
 	multi1d< bool > NullSolverVerboseP;
 
@@ -131,6 +133,7 @@ public:
 		multi1d< multi1d<int> > Blocking;
 		multi1d< int > NullVecs;
 		multi1d< int > NullSolverMaxIters;
+		multi1d< int > NullSolverNKrylov;
 		multi1d< Double > NullSolverRsdTarget;
 		multi1d< bool > NullSolverVerboseP;
 
@@ -161,6 +164,7 @@ public:
 		multi1d< multi1d<int> > Blocking;
 		multi1d< int > NullVecs;
 		multi1d< int > NullSolverMaxIters;
+		multi1d< int > NullSolverNKrylov;
 		multi1d< Double > NullSolverRsdTarget;
 		multi1d< bool > NullSolverVerboseP;
 
