@@ -23,10 +23,7 @@ namespace  {
  void read(XMLReader& xml, const std::string& path, multi1d<T>& result, int N)
  {
 	 multi1d<T> read_result;
-	 try {
-	 	 read(xml, path, read_result);
-	 }
-	 catch (...) {}
+	 read(xml, path, read_result);
 	 result.resize(N);
 
 	 if( read_result.size() == 1 ) {
@@ -51,10 +48,9 @@ namespace  {
  void read(XMLReader& xml, const std::string& path, multi1d<T>& result, int N, T default_value)
  {
 	 multi1d<T> read_result;
-	 try {
+	 if (xml.count(path) > 0) {
 	 	 read(xml, path, read_result);
 	 }
-	 catch (...) {}
 	 result.resize(N);
 
 	 if( read_result.size() == 1 ) {
