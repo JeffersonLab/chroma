@@ -920,6 +920,12 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+      if (params.param.displacements.size() == 0)
+      {
+	QDPIO::cerr << name << ": displacements.size == 0 which is not allowed. The displacement can be empty, though\n" << std::endl;
+	QDP_abort(1);
+      }
+
       // Reset
       if (params.param.contract.num_tries <= 0)
       {
@@ -1119,19 +1125,6 @@ namespace Chroma
 
       //return;
 
-      QDPIO::cout << "Check displacement list" << std::endl;
-      std::vector< std::vector<int> > disps;
-
-      if (params.param.displacements.size() != 0)
-	{
-	  for(auto ins = params.param.displacements.begin(); ins != params.param.displacements.end(); ++ins)
-	    {	
-	      // Make sure displacement is something sensible
-	      std::vector<int> disp = normDisp(*ins);
-	  
-	      disps.push_back(disp);
-	    }
-	}
 
 
       //
