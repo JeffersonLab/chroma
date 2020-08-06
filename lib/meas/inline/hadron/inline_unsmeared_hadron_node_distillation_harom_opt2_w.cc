@@ -982,7 +982,7 @@ namespace Chroma
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "DBMetaData");
-	write(file_xml, "id", std::string("unsmearedGenpropElemOp"));
+	write(file_xml, "id", std::string("unsmearedGenprop4ElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "decay_dir", decay_dir);
 	proginfo(file_xml);    // Print out basic program info
