@@ -628,7 +628,12 @@ namespace Chroma
 
 	      // Contract over color indices
 	      // Do the relevant quark contraction
-	      EVPair<LatticeColorVector> tmpvec; eigen_source.get(i,tmpvec);
+	      EVPair<LatticeColorVector> tmpvec;
+	      if (eigen_source.get(i, tmpvec) != 0)
+	      {
+		QDPIO::cerr << __func__ << ": error retrieving eigenvec" << std::endl;
+		QDP_abort(1);
+	      }
 	      LatticeComplex lop = localInnerProduct(tmpvec.eigenVector, shift_vec);
 
 	      // Slow fourier-transform

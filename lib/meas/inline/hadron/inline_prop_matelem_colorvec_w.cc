@@ -278,7 +278,13 @@ namespace Chroma
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, Nd-1);
 
-	EVPair<LatticeColorVector> tmpvec; eigen_source.get(0,tmpvec);
+	EVPair<LatticeColorVector> tmpvec; 
+	if (eigen_source.get(0,tmpvec) != 0)
+	{
+	  QDPIO::cerr << __func__ << ": error retrieving eigenvec" << std::endl;
+	  QDP_abort(1);
+	}
+	
 	multi1d<Double> source_corrs = sumMulti(localNorm2(tmpvec.eigenVector), phases.getSet());
 
 	push(xml_out, "Source_correlators");
@@ -413,7 +419,12 @@ namespace Chroma
 
 	      for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 	      {
-		EVPair<LatticeColorVector> vec_sink; eigen_source.get(colorvec_sink,vec_sink);
+		EVPair<LatticeColorVector> vec_sink; 
+		if (eigen_source.get(colorvec_sink,vec_sink) != 0)
+		{
+		  QDPIO::cerr << __func__ << ": error retrieving eigenvec" << std::endl;
+		  QDP_abort(1);
+		}
 
 		for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 		{

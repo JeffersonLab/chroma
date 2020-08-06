@@ -708,7 +708,11 @@ namespace Chroma
       LatticeColorVectorF vec_srce = zero;
       KeyTimeSliceColorVec_t src_key(t_slice, colorvec_ind);
       TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_slice);
-      eigen_source.get(src_key, time_slice_io);
+      if (eigen_source.get(src_key, time_slice_io) != 0)
+      {
+	QDPIO::cerr << __func__ << ": error retrieving colorvec=" << colorvec_ind << "  t_slice= " << t_slice << std::endl;
+	QDP_abort(1);
+      }
 
       // Loop over each spin source
       for(int spin_ind=0; spin_ind < Ns; ++spin_ind)

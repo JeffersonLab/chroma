@@ -250,7 +250,11 @@ namespace Chroma
 	  LatticeColorVectorF vec_srce = zero;
 
 	  TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source);
-	  eigen_source.get(src_key, time_slice_io);
+	  if (eigen_source.get(src_key, time_slice_io) != 0)
+	  {
+	    QDPIO::cerr << __func__ << ": error retrieving eigenvec" << std::endl;
+	    QDP_abort(1);
+	  }
 
 	  SubLatticeColorVectorF tmp(getSet()[t_source], vec_srce);
 
