@@ -39,8 +39,6 @@ namespace Chroma {
 
   }
 
-  using EoFGMRES = const MG::FGMRESSolverQPhiX;
-
   class LinOpSysSolverMGProtoQPhiXALI : public LinOpSystemSolver<LatticeFermion>
   {
   public:
@@ -68,7 +66,7 @@ namespace Chroma {
 	  const std::string subspaceId;
 	  std::shared_ptr<MG::ALIPrec> aliprec;
 	  std::shared_ptr<MG::QPhiXWilsonCloverEOLinearOperator> M;
-	  std::shared_ptr<EoFGMRES> eo_solver;
+	  MG::LinearSolverParamsBase fine_solve_params;
   };
 
 };

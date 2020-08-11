@@ -72,14 +72,10 @@ namespace Chroma
 	  M = MGProtoHelpersQPhiX::createFineEOLinOp(param_, state_->getLinks(), aliprec->GetInfo());
 
 	  // Next step is to  create a solver instance:
-	  MG::LinearSolverParamsBase fine_solve_params;
 	  fine_solve_params.MaxIter=invParam.OuterSolverMaxIters;
 	  fine_solve_params.RsdTarget=toDouble(invParam.OuterSolverRsdTarget);
 	  fine_solve_params.VerboseP =invParam.OuterSolverVerboseP;
 	  fine_solve_params.NKrylov = invParam.OuterSolverNKrylov;
-
-	  // Internal one with EO preconditioning
-	  eo_solver = std::make_shared<const EoFGMRES>(*M, fine_solve_params, aliprec.get());
   }
 
   // Destructor
@@ -126,8 +122,29 @@ namespace Chroma
 	  swatch2.reset();
 	  swatch2.start();
           MG::Timer::TimerAPI::reset();
-          std::vector<MG::LinearSolverResults> res=(*eo_solver)(qphix_out,qphix_in, RELATIVE);
-	  assert(res.size() == ncols);
+
+	  // Single precision solution
+          std::vector<MG::LinearSolverResults> res_f;
+	  {
+	  QPhiXSpinorF qphix_in_f(info, ncols);
+	  QPhiXSpinorF qphix_out_f(info, ncols);
+	  ZeroVec(qphix_out_f,SUBSET_ALL);
+	  ConvertSpinor(qphix_in,qphix_in_f,SUBSET_ODD);
+	  MG::LinearSolverParamsBase solver_params_f(fine_solve_params);
+	  solver_params_f.RsdTarget = std::max(3e-6, solver_params_f.RsdTarget);
+	  MG::FGMRESSolverQPhiXF solver(*aliprec->GetM(), solver_params_f, aliprec.get());
+          res_f = solver(qphix_out_f,qphix_in_f, RELATIVE, MG::InitialGuessNotGiven);
+	  assert(res_f.size() == ncols);
+	  ConvertSpinor(qphix_out_f,qphix_out,SUBSET_ODD);
+	  }
+
+	  // Double precision solution
+	  std::vector<MG::LinearSolverResults> res;
+	  {
+	  MG::FGMRESSolverQPhiX solver(*M, fine_solve_params, aliprec.get());
+          res = solver(qphix_out,qphix_in, RELATIVE, MG::InitialGuessGiven);
+	  }
+
 	  swatch2.stop();
           MG::Timer::TimerAPI::reportAllTimer();
 	
@@ -135,7 +152,6 @@ namespace Chroma
 	    *psi[col] = zero;
 	    QPhiXSpinorToQDPSpinor(qphix_out,col,*psi[col]);
 	  }
-
 
 	  std::vector<SystemSolverResults_t> r(ncols);
 	  for (int col=0; col<ncols; ++col) {
@@ -146,14 +162,14 @@ namespace Chroma
 		  tmp[s]  -= *chi[col];
 		  Double n2 = norm2(tmp,s);
 		  Double n2rel = n2 / norm2(*chi[col],s);
-		  r[col].n_count = res[col].n_count;
-		  QDPIO::cout << "MG_PROTO_QPHIX_ALI_INVERTER: iters = "<< res[col].n_count << " rel resid = " << sqrt(n2rel) << std::endl;
+		  r[col].n_count = res_f[col].n_count + res[col].n_count;
+		  QDPIO::cout << "MG_PROTO_QPHIX_ALI_INVERTER: iters = "<< r[col].n_count << " rel resid = " << sqrt(n2rel) << std::endl;
 		  if( toBool( sqrt(n2rel) > invParam.OuterSolverRsdTarget ) ) {
 		    MGSolverException convergence_fail(invParam.CloverParams.Mass, 
-						       subspaceId,
-						       res[col].n_count,
-						       Real(sqrt(n2rel)),
-						       invParam.OuterSolverRsdTarget);
+		        			       subspaceId,
+		        			       res[col].n_count,
+		        			       Real(sqrt(n2rel)),
+		        			       invParam.OuterSolverRsdTarget);
 		    throw convergence_fail;
 
 		  }
