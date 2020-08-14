@@ -117,6 +117,11 @@ namespace Chroma
       read(inputtop, "mass_label", input.mass_label);
       read(inputtop, "num_tries", input.num_tries);
 
+      input.max_rhs = 8;
+      if( inputtop.count("max_rhs") == 1 ) {
+        read(inputtop, "max_rhs", input.max_rhs);
+      }
+
       input.zero_colorvecs = false;
       if( inputtop.count("zero_colorvecs") == 1 ) {
 	read(inputtop, "zero_colorvecs", input.zero_colorvecs );
@@ -149,6 +154,7 @@ namespace Chroma
       write(xml, "Nt_backward", input.Nt_backward);
       write(xml, "mass_label", input.mass_label);
       write(xml, "num_tries", input.num_tries);
+      write(xml, "max_rhs", input.max_rhs);
 
       pop(xml);
     }
@@ -649,6 +655,7 @@ namespace Chroma
 	//
 	const int num_vecs            = params.param.contract.num_vecs;
 	const multi1d<int>& t_sources = params.param.contract.t_sources;
+	const int max_rhs             = params.param.contract.max_rhs;
 
 	
 	// Loop over each time source
@@ -690,7 +697,7 @@ namespace Chroma
 	        //
 	        // The space distillation loop
 	        //
-	        for(int colorvec_src0=0,colorvec_src_step=std::min(8,num_vecs); colorvec_src0 < num_vecs; colorvec_src0+=colorvec_src_step, colorvec_src_step=std::min(colorvec_src_step, num_vecs-colorvec_src0))
+	        for(int colorvec_src0=0,colorvec_src_step=std::min(max_rhs,num_vecs); colorvec_src0 < num_vecs; colorvec_src0+=colorvec_src_step, colorvec_src_step=std::min(colorvec_src_step, num_vecs-colorvec_src0))
 	        {
 		  std::vector<std::shared_ptr<LatticeFermion>> chis(colorvec_src_step), quark_solns(colorvec_src_step);
 	          for (int col=0; col<colorvec_src_step; col++) chis[col].reset(new LatticeFermion);
