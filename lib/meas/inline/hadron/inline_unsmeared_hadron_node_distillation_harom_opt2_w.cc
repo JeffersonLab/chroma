@@ -992,7 +992,7 @@ namespace Chroma
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "DBMetaData");
-	write(file_xml, "id", std::string("unsmearedGenprop4ElemOp"));
+	write(file_xml, "id", std::string("genprop4ElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "decay_dir", decay_dir);
 	proginfo(file_xml);    // Print out basic program info
@@ -1140,9 +1140,6 @@ namespace Chroma
 	swatch.reset();
 
 
-	StopWatch swatch2;
-	swatch2.reset();
-
 	// Cache manager
 	QDPIO::cout << name << ": initialize the prop factory" << std::endl;
 	SourcePropFactory prop_factory(u, params.param.prop, eigen_source, params.param.contract.num_tries);
@@ -1238,6 +1235,7 @@ namespace Chroma
 
 	  // Arbitrarily choose the first harom node to determine stopping condition
 	  //
+	  StopWatch swatch2;
 	  swatch2.reset(); swatch2.start();
 
 	  while ( toInt(do_recv_global) == 23 )
