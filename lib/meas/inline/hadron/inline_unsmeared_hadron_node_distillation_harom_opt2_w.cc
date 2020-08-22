@@ -1358,7 +1358,7 @@ namespace Chroma
 	QMP_barrier();
 	
 	swatch.stop(); 
-	QDPIO::cout << "Time to receive and write all genprops: time= " << swatch2.getTimeInSeconds() << " secs" <<std::endl;
+	QDPIO::cout << "Time to receive and write all genprops: time= " << swatch.getTimeInSeconds() << " secs" <<std::endl;
       }
       catch (const std::string& e) 
       {
