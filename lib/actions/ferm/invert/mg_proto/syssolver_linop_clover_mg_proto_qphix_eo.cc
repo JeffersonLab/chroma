@@ -94,8 +94,6 @@ namespace Chroma
 
 			  eo_solver = std::make_shared<const EoFGMRES>(*M_ptr, fine_solve_params, (mg_pointer->v_cycle).get());
 
-			  wrapped= std::make_shared<UnprecFGMRES>(eo_solver, M_ptr);
-
   }
 
   // Destructor
