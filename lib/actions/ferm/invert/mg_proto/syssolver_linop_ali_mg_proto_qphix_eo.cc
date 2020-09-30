@@ -91,8 +91,8 @@ namespace Chroma
   SystemSolverResults_t
   LinOpSysSolverMGProtoQPhiXALI::operator()(T& psi, const T& chi) const
   {
-	  return (*this)(std::vector<std::shared_ptr<T>>(1, std::shared_ptr<T>(&psi, [](auto &p){})),
-	                 std::vector<std::shared_ptr<const T>>(1, std::shared_ptr<const T>(&chi, [](auto &p){})))[0];
+	  return (*this)(std::vector<std::shared_ptr<T>>(1, std::shared_ptr<T>(&psi, [](T* p){})),
+	                 std::vector<std::shared_ptr<const T>>(1, std::shared_ptr<const T>(&chi, [](const T* p){})))[0];
   }
 
   std::vector<SystemSolverResults_t>
