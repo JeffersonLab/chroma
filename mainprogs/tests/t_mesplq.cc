@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
   pop(xml);
 
   pop(xml);
+  xml.close();
 
   // Time to bolt
   Chroma::finalize();
