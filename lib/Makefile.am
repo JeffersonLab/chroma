@@ -1002,6 +1002,12 @@ AM_CFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
                -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
 
 
+
+
+if BUILD_GENPROP
+AM_CXXFLAGS += @GENPROP_CXXFLAGS@
+endif
+
 if BUILD_GMP_REMEZ
 AM_CXXFLAGS += @GMP_CXXFLAGS@
 endif
@@ -1482,14 +1488,24 @@ if BUILD_SHMHAROM
 nobase_include_HEADERS += util/info/ts_comms.h \
                           meas/inline/hadron/inline_prop_and_matelem_distillation_harom_w.h \
                           meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt_w.h \
-                          meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt2_w.h
+                          meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt2_w.h \
+                          meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt3_w.h
 
 libchroma_a_SOURCES += util/info/ts_comms.cc \
                        meas/inline/hadron/inline_prop_and_matelem_distillation_harom_w.cc \
                        meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt_w.cc \
-                       meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt2_w.cc
+                       meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt2_w.cc \
+                       meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt3_w.cc
 endif
 
+
+
+#if BUILD_GENPROP
+#AM_CXXFLAGS += @GENPROP_CXXFLAGS@
+#AM_CXXFLAGS += -I/home/fwinter/toolchain/install/harom-QND-shm-scalar-single/include
+#nobase_include_HEADERS += meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt3_w.h
+#libchroma_a_SOURCES += meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt3_w.cc
+#endif
 
 
 #

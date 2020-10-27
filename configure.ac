@@ -229,6 +229,27 @@ AC_ARG_ENABLE(shmharom,
 )
 
 
+AC_ARG_WITH(genprop,
+   AC_HELP_STRING(
+      [--with-genprop=<DIR>],
+      [Use GENPROP Library installed in DIR]
+   ),
+   [ genprop_enabled="yes"
+     genprop_home=${with_genprop} ],
+   [ genprop_enabled="no" ]
+)
+
+AC_ARG_WITH(qnd,
+  AC_HELP_STRING(
+    [--with-qnd=DIR],
+    [genprop requires QND]
+  ),
+  [QNDXX_HOME="$with_qnd"]
+)
+
+
+
+
 AC_ARG_WITH(gmp,
    AC_HELP_STRING(
     [--with-gmp=<DIR>],
@@ -436,8 +457,8 @@ if test "X${shmharom_enabled}X" = "XyesX";
 then
   AC_MSG_NOTICE([ Enabling harom via shared memory])
   AC_DEFINE([BUILD_SHMHAROM], [], [Build with shared memory harom])
-##  AC_SUBST(SHMHAROM_LIBS,"-lrt")
-  AC_SUBST(SHMHAROM_LIBS," ")
+  AC_SUBST(SHMHAROM_LIBS,"-lrt")
+##  AC_SUBST(SHMHAROM_LIBS," ")
 fi
 
 
@@ -525,6 +546,8 @@ AM_CONDITIONAL(BUILD_QPHIX,
 	[test "x${qphix_enabled}x" = "xyesx" ])
 
 AM_CONDITIONAL(BUILD_SHMHAROM,[test "x${shmharom_enabled}x" = "xyesx" ])
+
+AM_CONDITIONAL(BUILD_GENPROP,[test "x${genprop_enabled}x" = "xyesx" ])
 
 
 
@@ -1136,6 +1159,51 @@ else
 
 fi
 AM_CONDITIONAL(BUILD_QMT, [test "x${qmt_enabled}x" = "xyesx" ])
+
+
+
+
+if test "X${genprop_enabled}X" == "XyesX";
+then
+	AC_MSG_NOTICE([Configuring GENPROP])
+	AC_DEFINE([BUILD_GENPROP], [], [ Use genprop library ])
+	AC_SUBST(GENPROP_CXXFLAGS, "-I${genprop_home}/include")
+	AC_SUBST(GENPROP_LDFLAGS, "-L${genprop_home}/lib")
+	AC_SUBST(GENPROP_LIBS, "-lharom ")
+
+	if test "X${QNDXX_HOME}X" = "XX" ; then
+	  AC_PATH_PROG(QNDXX_CONFIG, [qdp++-config], [])
+	else
+          AC_PATH_PROG(QNDXX_CONFIG, [qdp++-config], [], [${QNDXX_HOME}/bin:${PATH}])
+        fi
+
+        if test "X${QNDXX_CONFIG}X" = "XX" ; then
+          AC_MSG_ERROR([QND++ configuration program qdp++-config not found.])
+        fi
+
+        AC_MSG_NOTICE([Found QND++ configuration program ${QNDXX_CONFIG}])
+        AC_SUBST(QNDXX_CXXFLAGS, "`${QNDXX_CONFIG} --cxxflags`")
+        AC_MSG_NOTICE([QND++ compile flags: ${QNDXX_CXXFLAGS}])
+        AC_SUBST(QNDXX_LDFLAGS,  "`${QNDXX_CONFIG} --ldflags`")
+        AC_MSG_NOTICE([QND++ linking flags: ${QNDXX_LDFLAGS}])
+	# AC_SUBST(QNDXX_LIBS,     "`${QNDXX_CONFIG} --libs`")
+        AC_SUBST(QNDXX_LIBS,     "${QNDXX_HOME}/lib/libqdp.a")
+        AC_MSG_NOTICE([QND++ libraries flags: ${QNDXX_LIBS}])
+        AC_SUBST(QNDXX_ND,       "`${QNDXX_CONFIG} --Nd`")
+        if test "X${QNDXX_ND}X" = "X3X" ; then
+          AC_MSG_NOTICE([QND++ spacetime dimension: 3])
+        else
+          AC_MSG_ERROR([Cannot determine QND++ spacetime dimension or not set to 3])
+        fi
+else 
+	AC_SUBST(GENPROP_CXXFLAGS, "")
+	AC_SUBST(GENPROP_LDFLAGS, "")
+	AC_SUBST(GENPROP_LIBS, "")
+
+fi
+
+
+
 
 case "${chroma_testcase_runner}" in
 trivial)
