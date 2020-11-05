@@ -782,10 +782,20 @@ namespace Chroma
       key.t_slice = ts_comms_recv( ts );
     }
 
-    
-    
 
- 
+
+    
+    void store_genprop(std::vector<void*> val_ret, std::string key_buf)
+    {
+      QDPIO::cout << "Chroma::store_genprop called.\n";
+
+      
+    }
+
+
+
+
+    
     //-------------------------------------------------------------------------------
     // Function call
     void 
@@ -1154,9 +1164,38 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+
+      //
+      // Generate all sink tensors
+      //
+      if (Layout::nodeNumber() % nodes_per_cn == 0)
+	Harom::genprop::generate_sink_tensors();
+      QMP_barrier();
+      
+      QDPIO::cout << "Sink tensors generated!" << std::endl;
+	
+      
 	
       //swatch.stop();
       //QDPIO::cout << "Time to generate all solutions: time = " << swatch.getTimeInSeconds() << " secs " <<std::endl;
+
+      size_t genprop_elem = num_vecs * num_vecs * Ns * Ns;
+      size_t genprop_size = sizeof(ComplexD) * genprop_elem;
+      std::vector<ComplexD*> genprop_mem;
+      for (int i = 0 ; i < ts_per_node ; ++i )
+	genprop_mem.push_back( new ComplexD[genprop_elem] );
+
+      std::vector<void*> genprop_mem_param(genprop_mem.size());
+      for (int i = 0 ; i < genprop_mem.size() ; ++i )
+	genprop_mem_param[i] = (void*)genprop_mem[i];
+	
+      if (Layout::nodeNumber() % nodes_per_cn == 0)
+	Harom::genprop::generate_genprops( &store_genprop , genprop_mem_param );
+      QMP_barrier();
+
+      
+      for (int i = 0 ; i < ts_per_node ; ++i )
+	delete[] genprop_mem[i];
 
 	
 #if 0

@@ -248,6 +248,14 @@ AC_ARG_WITH(qnd,
 )
 
 
+AC_ARG_WITH(tensor, 
+  AC_HELP_STRING(
+    [--with-tensor=DIR],
+    [Use TENSOR in DIR]),
+    [TENSOR_HOME="$with_tensor"],
+    [TENSOR_HOME="no"]
+)
+
 
 
 AC_ARG_WITH(gmp,
@@ -1195,6 +1203,21 @@ then
         else
           AC_MSG_ERROR([Cannot determine QND++ spacetime dimension or not set to 3])
         fi
+
+	if test "X${TENSOR_HOME}X" != "XnoX"; then
+	  AC_MSG_NOTICE("Using TENSOR in ${TENSOR_HOME}")
+          AC_PATH_PROG(TENSOR_CONFIG, [tensor-config], [], [${TENSOR_HOME}/bin:$PATH] )
+	  if test "X${TENSOR_CONFIG}X" = "XX"; then 
+	    AC_MSG_ERROR([Program tensor-config not found])
+	  fi
+          AC_MSG_NOTICE([Found TENSOR configuration program ${TENSOR_CONFIG}])
+          AC_SUBST(TENSOR_LDFLAGS, "`${TENSOR_CONFIG} --ldflags`")
+          AC_MSG_NOTICE([TENSOR libraries flags: ${TENSOR_LDFLAGS}])
+        else
+          AC_MSG_NOTICE([No TENSOR configuration program])
+          AC_SUBST(TENSOR_LDFLAGS,     "")
+        fi
+
 else 
 	AC_SUBST(GENPROP_CXXFLAGS, "")
 	AC_SUBST(GENPROP_LDFLAGS, "")
