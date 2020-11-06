@@ -43,6 +43,7 @@ namespace Chroma
 	  int                       displacement_length;    /*!< Displacement length for insertions */
 	  std::string               mass_label;             /*!< Some kind of mass label */
 	  int                       num_tries;              /*!< In case of bad things happening in the solution vectors, do retries */
+	  bool                      use_disp_cache;
 
 	  std::vector<std::string>  fifo;
 	  int                       nodes_per_cn;   // (QDP++) nodes per compute node

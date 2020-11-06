@@ -77,6 +77,11 @@ namespace Chroma
       read(inputtop, "mass_label", input.mass_label);
       read(inputtop, "num_tries", input.num_tries);
 
+      if (inputtop.count("use_disp_cache") != 0)
+	read(inputtop, "use_disp_cache", input.use_disp_cache);
+      else
+	input.use_disp_cache = true;
+
       read(inputtop, "fifo", input.fifo );
       read(inputtop, "nodes_per_cn", input.nodes_per_cn );
     }
@@ -1314,6 +1319,14 @@ namespace Chroma
 	      swatch2.reset(); swatch2.start();
 	      for (int tcorr = 0 ; tcorr < Nt_forward ; ++tcorr )
 		{
+		  auto& g = *val[ tcorr ];
+		  for (int q1 = 0 ; q1 < g.op.size1() ; ++q1 )
+		    for (int q2 = 0 ; q2 < g.op.size2() ; ++q2 )
+		      for (int q3 = 0 ; q3 < g.op.size3() ; ++q3 )
+			for (int q4 = 0 ; q4 < g.op.size4() ; ++q4 )
+			  QDPIO::cout << g.op(q4,q3,q2,q1) << "\n";
+		  QDPIO::cout << "\n";
+		  
 		  qdp_db.insert(key[ tcorr ], *val[ tcorr ]);
 		  delete val[ tcorr ];
 		}
