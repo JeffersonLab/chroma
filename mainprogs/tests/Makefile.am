@@ -100,7 +100,9 @@ bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_ar
 check_PROGRAMS  = t_io t_mesons_w  t_conslinop t_hypsmear \
     t_ape_smear t_dwf4d t_propagator_s t_disc_loop_s \
     t_remez t_ritz t_dwflocality t_precact_4d t_precact_5d \
-    t_gauge_force t_stout_state t_aniso_gaugeact t_temp_prec t_meas_wilson_flow_loop
+    t_gauge_force t_stout_state t_aniso_gaugeact t_temp_prec 
+
+# t_meas_wilson_flow_loop
 
 if BUILD_QUDA
 check_PROGRAMS += t_quda_tprec t_minvert_quda
