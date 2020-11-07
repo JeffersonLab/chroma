@@ -242,7 +242,7 @@ t_solver_accum_SOURCES = t_solver_accum.cc
 t_eigcginv_SOURCES = t_eigcginv.cc
 
 t_meas_wilson_flow_SOURCES  = t_meas_wilson_flow.cc
-t_meas_wilson_flow_loop_SOURCES = t_meas_wilson_flow_loop.cc
+#t_meas_wilson_flow_loop_SOURCES = t_meas_wilson_flow_loop.cc
 
 t_minvert_SOURCES = t_minvert.cc
 if BUILD_QUDA
