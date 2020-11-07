@@ -2,8 +2,12 @@
  * \brief Cache for distillation - holds solution vectors
  */
 
+#include "chromabase.h"
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
+
 #include "util/ferm/disp_soln_cache.h"
 #include "meas/smear/displace.h"
+
 
 namespace Chroma 
 {
@@ -43,18 +47,19 @@ namespace Chroma
     write(bin, param.mom);
   }
 
+  
 
   //----------------------------------------------------------------------------
   // Constructor from smeared map 
   DispSolnCache::DispSolnCache(const multi1d<LatticeColorMatrix>& u_smr,
-			       const LatticeFermion& soln_)
+			       const LatticeColorVectorSpinMatrix& soln_)
     : displacement_length(1), u(u_smr), soln(soln_)
   {
   }
 
 
   //! Accessor
-  const LatticeFermion&
+  const LatticeColorVectorSpinMatrix&
   DispSolnCache::getDispVector(bool use_derivP, const multi1d<int>& mom,
 			       const std::vector<int>& disp)
   {
@@ -68,9 +73,10 @@ namespace Chroma
 
 
   //! Accessor
-  const LatticeFermion&
+  const LatticeColorVectorSpinMatrix&
   DispSolnCache::displaceObject(const KeyDispSolnVector_t& key)
   {
+
     // If no entry, then create a displaced version of the quark
     if (! disp_src_map.exist(key))
     {
@@ -90,7 +96,7 @@ namespace Chroma
 	prev_key.displacement.pop_back();
 
 	// Recursively get a reference to the object to be shifted 
-	const LatticeFermion& disp_q = this->displaceObject(prev_key);
+	const LatticeColorVectorSpinMatrix& disp_q = this->displaceObject(prev_key);
 
 	// Displace or deriv the old vector
 	if (d > 0)
@@ -121,6 +127,9 @@ namespace Chroma
     return disp_src_map[key];
   }
 
+  
   /*! @} */  // end of group smear
 
 } // namespace Chroma
+#endif
+

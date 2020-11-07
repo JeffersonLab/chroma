@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<LeapfrogTest>
+  <nrow>4 4 4 8</nrow>
+  <GaugeStartup>
+    <cfg_type>DISORDERED</cfg_type>
+    <cfg_file>dummy</cfg_file>
+  </GaugeStartup>
+  <Monomials>
+    <elem>
+      <Name>ONE_FLAVOR_SEOPREC_CONSTDET_FERM_RAT_MONOMIAL</Name>
+      <num_pf>1</num_pf>
+      <Action>
+        <FermionAction>
+          <FermAct>SEOPREC_CLOVER</FermAct>
+          <Mass>0.05</Mass>
+          <clovCoeff>1.0</clovCoeff>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1</xi_0>
+            <nu>1</nu>
+          </AnisoParam>
+          <FermState>
+            <Name>STOUT_FERM_STATE</Name>
+            <rho>0.125</rho>
+            <n_smear>1</n_smear>
+            <orthog_dir>-1</orthog_dir>
+            <FermionBC>
+              <FermBC>SIMPLE_FERMBC</FermBC>
+              <boundary>1 1 1 -1</boundary>
+            </FermionBC>
+          </FermState>
+        </FermionAction>
+        <ActionApprox>
+          <RationalApprox>
+            <ratApproxType>READ_COEFFS</ratApproxType>
+            <ApproxInfo>
+              <lowerMin>0.0001</lowerMin>
+              <upperMax>32</upperMax>
+              <numPower>-1</numPower>
+              <denPower>4</denPower>
+              <degree>15</degree>
+              <error>7.00122143944335e-09</error>
+            </ApproxInfo>
+            <PFECoeffs>
+              <norm>0.175183515383125</norm>
+              <res>0.000131741431695193 0.000286963643233361 0.000583839184881073 0.00120869287002138 0.00253114858000159 0.00532704136910596 0.0112349479471401 0.0237248285336875 0.0501865398076211 0.10659525451176 0.228865123604555 0.506001699560568 1.21257116247969 3.6539542271505 23.4237516509798</res>
+              <pole>1.04789880048683e-05 8.19513551415903e-05 0.000295263551290057 0.000880173392137391 0.00246666346840436 0.00676370967834939 0.0184018404039281 0.049935059846594 0.135471182777157 0.368215807129672 1.00687861402725 2.80015277059116 8.16525394244164 27.4214025199622 154.127103408366</pole>
+            </PFECoeffs>
+            <IPFECoeffs>
+              <norm>5.70829965258437</norm>
+              <res>-7.50474421274669e-07 -3.69846274092674e-06 -1.38422062657256e-05 -4.91163398875365e-05 -0.000171815704014205 -0.000598370930659532 -0.00208128177516143 -0.00724151451990551 -0.0252514323511463 -0.0886244650105862 -0.316617786473472 -1.1874544571221 -5.09695776276423 -32.5201149068151 -913.105934245105</res>
+              <pole>2.0762084858764e-05 0.000116697167392167 0.000391904528941461 0.00114279479091579 0.00317813880980234 0.00869055575029422 0.023621259772005 0.0640832314976842 0.173895650095788 0.473113151240537 1.29729897936585 3.63564728107629 10.837775221556 39.047554423856 305.372999617267</pole>
+            </IPFECoeffs>
+          </RationalApprox>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10</RsdCG>
+            <MaxCG>50000</MaxCG>
+          </InvertParam>
+        </ActionApprox>
+        <ForceApprox>
+          <RationalApprox>
+            <ratApproxType>READ_COEFFS</ratApproxType>
+            <ApproxInfo>
+              <lowerMin>0.0001</lowerMin>
+              <upperMax>32</upperMax>
+              <numPower>-1</numPower>
+              <denPower>2</denPower>
+              <degree>13</degree>
+              <error>1.29052025498211e-07</error>
+            </ApproxInfo>
+            <PFECoeffs>
+              <norm>0.0321960523590065</norm>
+              <res>0.00379265142626359 0.00506855204693218 0.00804961848123283 0.0137389327013699 0.0240516570806491 0.0424638611236076 0.07520722297374 0.133506664312715 0.238148817302763 0.430996327020976 0.816299686565728 1.78994928413466 6.60025006403669</res>
+              <pole>8.4102947784011e-06 9.36204970474656e-05 0.000388348776534535 0.00132256730692932 0.00425930228015617 0.0134844097927878 0.0424723717137684 0.133676623446297 0.421785585774175 1.34350213168777 4.41330623862228 16.0734254438302 87.742117349805</pole>
+            </PFECoeffs>
+            <IPFECoeffs>
+              <norm>31.0597084651671</norm>
+              <res>-1.55191930920789e-07 -1.25414806743776e-06 -7.58658746259376e-06 -4.32236877194301e-05 -0.000242320372893846 -0.00135243679648202 -0.00754695036348417 -0.0422747028588882 -0.239989944399162 -1.42181272792838 -9.66176304080075 -104.680790325827 -9706.11563662856</res>
+              <pole>3.64705126415223e-05 0.000199086374661247 0.00072507998017354 0.00238183470239828 0.0075867931667852 0.0239383664660379 0.075343096485536 0.237311091043195 0.751296759309291 2.41953659615979 8.24001565952 34.1805491416863 380.486069075496</pole>
+            </IPFECoeffs>
+          </RationalApprox>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1e-14 1e-14 1e-14 1e-14 1e-14 1e-14 1e-14 1e-14 1e-14 1e-14 1e-14 1e-14 1e-14</RsdCG>
+            <MaxCG>50000</MaxCG>
+          </InvertParam>
+        </ForceApprox>
+      </Action>
+      <NamedObject>
+        <monomial_id>HMC::rat_1strange</monomial_id>
+      </NamedObject>
+    </elem>
+  </Monomials>
+  <Hamiltonian>
+    <monomial_ids>
+      <elem>HMC::rat_1strange</elem>
+    </monomial_ids>
+  </Hamiltonian>
+  <MDIntegrator>
+    <tau0>1.0</tau0>
+    <Integrator>
+      <Name>LCM_STS_LEAPFROG</Name>
+      <n_steps>8</n_steps>
+      <lambda>0.1931833275037836</lambda>
+      <monomial_ids>
+        <elem>HMC::rat_1strange</elem>
+      </monomial_ids>
+    </Integrator>
+  </MDIntegrator>
+</LeapfrogTest>

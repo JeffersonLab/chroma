@@ -59,7 +59,7 @@ namespace Chroma
 
 } // end namespace
 
-};
+}
 
 #endif
 

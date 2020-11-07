@@ -87,7 +87,33 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData<T>(output_id) = g * input_obj;
       }
 
+      //! Transform a generic object. This works only for non-array objects.
+       template<typename T>
+       void gaugeTransfGaugeField(const std::string& output_id, const LatticeColorMatrix& g, const std::string& input_id)
+       {
 
+    	   T g_prec = g;
+    	   // Grab the source
+    	   const multi1d<T>& input_obj =
+    			   TheNamedObjMap::Instance().getData< multi1d<T> >(input_id);
+
+    	   XMLReader input_file_xml, input_record_xml;
+    	   TheNamedObjMap::Instance().get(input_id).getFileXML(input_file_xml);
+    	   TheNamedObjMap::Instance().get(input_id).getRecordXML(input_record_xml);
+
+    	   // Create space for the target
+    	   TheNamedObjMap::Instance().create< multi1d<T> >(output_id);
+    	   TheNamedObjMap::Instance().get(output_id).setFileXML(input_file_xml);
+    	   TheNamedObjMap::Instance().get(output_id).setRecordXML(input_record_xml);
+
+    	   // Do the actual rotation
+    	   multi1d<T>& dest_gauge = TheNamedObjMap::Instance().getData< multi1d<T> >(output_id);
+    	   dest_gauge.resize(Nd);
+    	   for(int mu=0; mu < Nd; ++mu) {
+    		   //  r_mu = g * u * g^\dagger(x + mu)
+    		   dest_gauge[mu] = g_prec*input_obj[mu]*adj(shift(g_prec,FORWARD,mu));
+    	   }
+       }
       //! Transform a subset_vectors object. This only works for non-array objects
       void gaugeTransfSubsetVectors(const std::string& output_id, const LatticeColorMatrix& g, const std::string& input_id)
       {
@@ -140,6 +166,9 @@ namespace Chroma
 									 gaugeTransfObj<LatticeStaggeredFermion>);
 	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(std::string("SubsetVectorsLatticeColorVector"), 
 									 gaugeTransfSubsetVectors);
+	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(std::string("Multi1dLatticeColorMatrix"),
+			gaugeTransfGaugeField<LatticeColorMatrix>);
+
 	registered = true;
       }
       return success;

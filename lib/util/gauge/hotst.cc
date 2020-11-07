@@ -48,4 +48,4 @@ void HotSt(multi1d<LatticeColorMatrix>& u)
   END_CODE();
 }
 
-};
+}

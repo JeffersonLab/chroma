@@ -25,7 +25,7 @@ namespace Chroma {
     if( paramtop.count("PreconditionCycle") > 0 ) { 
       read(paramtop, "PreconditionCycle", preconditionCycle);
     }
-  };
+  }
 
   void read(XMLReader& xml, const std::string& path, 
 	    GCRInnerSolverParams& p)

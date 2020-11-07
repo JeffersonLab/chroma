@@ -93,6 +93,6 @@ namespace Chroma
     InlineMesonSpecParams params;
   };
 
-};
+}
 
 #endif

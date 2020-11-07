@@ -22,7 +22,7 @@ namespace Chroma {
 
     bool registered = registerAll();
     const std::string typeIDString = "CoeffType";
-  };
+  }
   using namespace CoeffTypeEnv;
 
   //! read an approximation coefficient type enum
@@ -34,4 +34,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const CoeffType& t) {
     theCoeffTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
-};
+}

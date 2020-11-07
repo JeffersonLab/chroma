@@ -25,6 +25,9 @@
 #include "util/gauge/reunit.h"
 
 //#include <util_quda.h>
+#ifdef QDP_IS_QDPJIT
+#include "actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h"
+#endif
 
 namespace Chroma
 {
@@ -254,7 +257,7 @@ namespace Chroma
       QDPIO::cout << "Ls from matrix: " << A->size() << std::endl;
       QDPIO::cout << "Ls from params: " << invParam.NEFParams.N5 << std::endl;
       QDPIO::cout << "Ls from quda: " << quda_inv_param.Ls << std::endl;
-      for(unsigned int s = 0; s < quda_inv_param.Ls; s++){
+      for(int s = 0; s < quda_inv_param.Ls; s++){
 	quda_inv_param.b_5[s] = toDouble(invParam.NEFParams.b5[s]);
 	quda_inv_param.c_5[s] = toDouble(invParam.NEFParams.c5[s]);
 	QDPIO::cout << " b5[" <<s<<"] = " << quda_inv_param.b_5[s] << "   c5[" << s << "] = " << quda_inv_param.c_5[s] << std::endl;
@@ -263,7 +266,8 @@ namespace Chroma
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);
-      
+      quda_inv_param.pipeline = invParam.Pipeline;
+ 
       // Solution type
       quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
 
@@ -363,14 +367,15 @@ namespace Chroma
       // Set up the links     
       void* gauge[4]; 
       
-      for(int mu=0; mu < Nd; mu++) { 
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
+      for(int mu=0; mu < Nd; mu++) { 
 	gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
-#else
-	gauge[mu] = QDPCache::Instance().getDevicePtr( links_single[mu].getId() );
-	std::cout << "MDAGM CUDA gauge[" << mu << "] in = " << gauge[mu] << "\n";
-#endif
       }
+#else
+      GetMemoryPtrGauge(gauge,links_single);
+      //gauge[mu] = GetMemoryPtr( links_single[mu].getId() );
+      //std::cout << "MDAGM CUDA gauge[" << mu << "] in = " << gauge[mu] << "\n";
+#endif
 
       loadGaugeQuda((void *)gauge, &q_gauge_param); 
       
@@ -499,7 +504,7 @@ namespace Chroma
 
 	// Gauge Fix source and initial guess
 	QDPIO::cout << "Gauge Fixing source and initial guess" << std::endl;
-	for(unsigned int s=0; s<invParam.NEFParams.N5; s++){
+	for(int s=0; s<invParam.NEFParams.N5; s++){
 	  g_chi[s][ rb[1] ]  = GFixMat * chi[s];
 	  g_psi[s][ rb[1] ]  = GFixMat * psi[s];
 	}
@@ -510,7 +515,7 @@ namespace Chroma
 	}
 
 	QDPIO::cout << "Untransforming solution." << std::endl;
-	for(unsigned int s=0; s<invParam.NEFParams.N5; s++){
+	for(int s=0; s<invParam.NEFParams.N5; s++){
 	  psi[s][ rb[1] ]  = adj(GFixMat)*g_psi[s];
 	}
 	
@@ -526,7 +531,6 @@ namespace Chroma
       
 
       swatch.stop();
-      double time = swatch.getTimeInSeconds();
       
       // Check Solution
       {

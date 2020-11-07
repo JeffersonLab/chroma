@@ -91,7 +91,7 @@ namespace Chroma
     multi1d<Complex> boundary;
   };
 
-};
+}
 
 
 #endif

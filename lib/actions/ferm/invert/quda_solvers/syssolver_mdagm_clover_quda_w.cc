@@ -63,40 +63,37 @@ namespace Chroma
   }
 
   SystemSolverResults_t 
-  MdagMSysSolverQUDAClover::qudaInvert(const CloverTermT<T, U>::Type_t& clover,
-				       const CloverTermT<T, U>::Type_t& invclov,
+  MdagMSysSolverQUDAClover::qudaInvert(const CloverTermT<T, U>& clover,
+				       const CloverTermT<T, U>& invclov,
 				       const T& chi_s,
 				       T& psi_s) const{
 
     SystemSolverResults_t ret;
 
     void *spinorIn;
+    void *spinorOut;
 
-    T mod_chi;
-    if ( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
-
-      // Because of the vaguaries of our HMC Formulation we need to 
-      // solve the Asymmetric system. Symmetric won't work unless we change
-      // preconditioning strategy
-      // asymmetric 
-      //
+#ifdef BUILD_QUDA_DEVIFACE_SPINOR
+    std::vector<QDPCache::ArgKey> ids;
+#endif
+  
       // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
       // No need to transform source
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-      spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
+      //spinorIn = GetMemoryPtr( chi_s.getId() );
+      ids.push_back(chi_s.getId());
 #endif
-    }
-    else { 
-      QDPIO::cout << "MATPC Type not allowed." << std::endl;
-      QDP_abort(1);
-    }
-
+  
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
-    void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
+    spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-    void* spinorOut = QDPCache::Instance().getDevicePtr( psi_s.getId() );
+    ids.push_back(psi_s.getId());
+    auto dev_ptr = GetMemoryPtr(ids);
+    spinorIn  = dev_ptr[0];
+    spinorOut = dev_ptr[1];
+    //void* spinorOut = GetMemoryPtr( psi_s.getId() );
 #endif
 
     // Do the solve here 
@@ -107,10 +104,7 @@ namespace Chroma
     swatch1.stop();
 
 
-    QDPIO::cout << "Cuda Space Required" << std::endl;
-    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << std::endl;
+
     QDPIO::cout << "QUDA_"<<solver_string<<"_CLOVER_SOLVER: time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;

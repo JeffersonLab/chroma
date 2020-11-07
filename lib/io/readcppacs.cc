@@ -30,25 +30,9 @@ void readCPPACS(CPPACSGauge_t& header, multi1d<LatticeColorMatrix>& u, const std
 #define NBC 144  /* = 8*2*3*3 = number of bytes to copy */
 #define NBK   0  /* = 8*2*3*0 = number of bytes to skip */
 #define NBS 576  /* = 8*2*3*3*4 = number of bytes for each site */
-typedef unsigned short int  n_uint16_t;
-typedef unsigned int        n_uint32_t;
-typedef unsigned long int   n_uint64_t;
-     char *file ;
      int NX,NY,NZ,NT ;
-     int ix0,ix1,iy0,iy1,iz0,iz1,it0,it1 ;
-     double *config ;
-  int one=1, four=4, eight=8 ;
-  int data_endian = 1, machine_endian ;
-  int fd ; 
   char header_ildg[1020] ;
-  int c,ix,iy,iz,it,mu,n,ndata ;
-  int Nsp, Ntm, Ntx, Nty, Ntz, Ntt ;
-  int xseek0,xseek1,yseek0,yseek1,zseek0,zseek1,tseek0,tseek1;
-  int pos;
-  long lSize ;
-  char *conf ;
-  int site ;
-  long size;
+  int Nsp, Ntm;
 
 #ifdef PLAQ
   double wss,wst ;

@@ -27,7 +27,7 @@ namespace Chroma
 						   const std::string&), 
 		StringFactoryError> >
   TheGaugeActFactory;
-}; // end namespace Chroma
+} // end namespace Chroma
 
 
 #endif

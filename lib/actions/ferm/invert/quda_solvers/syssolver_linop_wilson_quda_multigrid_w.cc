@@ -73,7 +73,7 @@ namespace Chroma
     mod_chi[rb[0]] = zero; // Zero odd parity
     mod_chi[rb[1]] = chi_s;
 
-    if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD  ) {
+    if( invParam.asymmetricP  ) {
 
       // In this case Chroma and QUDA operators disagree by A_oo = (Mass Term)
       // (or clover term  in the case of clover). SO I need to rescale mod_chi
@@ -97,10 +97,13 @@ namespace Chroma
     void *spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-    void*  spinorIn = QDPCache::Instance().getDevicePtr( mod_chi.getId() );
-    QDPIO::cout << "QUDA_MULTIGRID_QDPJIT spinor in = " << spinorIn << "\n";
-    void* spinorOut = QDPCache::Instance().getDevicePtr( psi_s.getId() );
-    QDPIO::cout << "QUDA_MULTIGRID_QDPJIT spinor out  = " << spinorOut << "\n";
+    // void*  spinorIn = GetMemoryPtr( mod_chi.getId() );
+    // QDPIO::cout << "QUDA_MULTIGRID_QDPJIT spinor in = " << spinorIn << "\n";
+    // void* spinorOut = GetMemoryPtr( psi_s.getId() );
+    // QDPIO::cout << "QUDA_MULTIGRID_QDPJIT spinor out  = " << spinorOut << "\n";
+    void* spinorIn;
+    void* spinorOut;
+    GetMemoryPtr2(spinorIn,spinorOut,mod_chi.getId(),psi_s.getId());
 #endif
 
     // Do the solve here 
@@ -111,9 +114,6 @@ namespace Chroma
     swatch1.stop();
 
    
-    QDPIO::cout << "Cuda Space Required" << std::endl;
-    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << std::endl;
     QDPIO::cout << "QUDA_MULTIGRID_"<<solver_string<<"_WILSON_SOLVER: time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;

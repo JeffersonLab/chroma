@@ -51,6 +51,13 @@ namespace Chroma {
       cudaSloppyPrecision = DEFAULT;
     }
 
+    if( paramtop.count("CudaRefinementPrecision") > 0 ) {
+    	read(paramtop, "CudaRefinementPrecision", cudaRefinementPrecision);
+    }
+    else {
+    	cudaRefinementPrecision = DEFAULT;
+    }
+
     if( paramtop.count("CudaReconstruct") > 0 ) {
       read(paramtop, "CudaReconstruct", cudaReconstruct);
     }
@@ -63,6 +70,13 @@ namespace Chroma {
     }
     else { 
       cudaSloppyReconstruct = RECONS_12;
+    }
+
+    if( paramtop.count("CudaRefinementReconstruct") > 0 ) {
+    	read(paramtop, "CudaRefinementReconstruct", cudaRefinementReconstruct);
+    }
+    else {
+    	cudaRefinementReconstruct = RECONS_12;
     }
 
     if( paramtop.count("AxialGaugeFix") > 0 ) {
@@ -103,6 +117,20 @@ namespace Chroma {
       innerParamsP = false;
     }
 
+    if ( paramtop.count("CheckShifts") == 1 ) {
+      read(paramtop, "CheckShifts", checkShiftsP );
+    }
+    // Backward compatibility
+    if( paramtop.count("check_shifts") == 1) {
+      read(paramtop, "check_shifts", checkShiftsP) ;
+    }
+
+    if( paramtop.count("Pipeline") == 1 ) { 
+      read(paramtop, "Pipeline", Pipeline);
+    }
+    else {
+      Pipeline = 1;
+    }
 
   }
 
@@ -131,8 +159,10 @@ namespace Chroma {
     write(xml, "AxialGaugeFix", p.axialGaugeP);
     write(xml, "SilentFail", p.SilentFailP);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
-
+    write(xml, "CheckShifts", p.checkShiftsP);
     write(xml, "AutotuneDslash", p.tuneDslashP);
+    write(xml, "Pipeline", p.Pipeline);
+
     if( p.innerParamsP ) { 
       write(xml, "GCRInnerParams", *(p.innerParams));
     }

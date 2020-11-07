@@ -363,4 +363,4 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
   END_CODE();
 }
 
-}; // End namespace Chroma
+} // End namespace Chroma

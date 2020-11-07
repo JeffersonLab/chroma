@@ -78,7 +78,7 @@ namespace Chroma
       const multi1d<int>& getSinkMom() const {return params.sink_mom;}
 
       //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
+      int getDecayDir() const {return params.j_decay;}
 
     private:
       //! Hide partial constructor
@@ -139,7 +139,7 @@ namespace Chroma
       const multi1d<int>& getSinkMom() const {return params.sink_mom;}
 
       //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
+      int getDecayDir() const {return params.j_decay;}
 
     private:
       //! Hide partial constructor
@@ -200,7 +200,7 @@ namespace Chroma
       const multi1d<int>& getSinkMom() const {return params.sink_mom;}
 
       //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
+      int getDecayDir() const {return params.j_decay;}
 
     private:
       //! Hide partial constructor
@@ -260,7 +260,7 @@ namespace Chroma
       const multi1d<int>& getSinkMom() const {return params.sink_mom;}
 
       //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
+      int getDecayDir() const {return params.j_decay;}
 
     private:
       //! Hide partial constructor

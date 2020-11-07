@@ -27,9 +27,6 @@ namespace Chroma
     Real max_norm;
     bool max_norm_usedP;
 
-    // Zero point energy
-    Real sub_zero;
-    bool sub_zero_usedP;
 
     // Optional mass twist...
     Real twisted_m;

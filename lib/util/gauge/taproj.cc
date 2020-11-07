@@ -13,7 +13,7 @@ namespace Chroma
   namespace TaprojEnv {
     static double time_spent =0;
     double getTime() { return time_spent; }
-  };
+  }
 
   //! Take the traceless antihermitian projection of a color matrix
   /*!

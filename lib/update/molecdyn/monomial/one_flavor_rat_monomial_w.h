@@ -9,6 +9,7 @@
 
 #include "unprec_wilstype_fermact_w.h"
 #include "eoprec_constdet_wilstype_fermact_w.h"
+#include "seoprec_constdet_wilstype_fermact_w.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/monomial/force_monitors.h"
 #include "update/molecdyn/monomial/remez_coeff.h"
@@ -449,12 +450,13 @@ namespace Chroma
    * Exact 1 flavor even-odd preconditioned fermact monomial.
    * Can supply a default dsdq algorithm
    */
-  template<typename P, typename Q, typename Phi>
-  class OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial : public OneFlavorRatExactWilsonTypeFermMonomial<P,Q,Phi>
+  template<typename P, typename Q, typename Phi,
+  	  template<class, class,class> class EOFermActT>
+  class OneFlavorRatExactEOPrecWilsonTypeFermMonomialT : public OneFlavorRatExactWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial() {}
+    virtual  ~OneFlavorRatExactEOPrecWilsonTypeFermMonomialT() {}
 
     //! Even even contribution (eg ln det Clover)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s) = 0;
@@ -489,7 +491,7 @@ namespace Chroma
 
   protected:
     //! Get at fermion action
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
+    virtual const EOFermActT<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
     virtual const GroupXML_t& getActionInvParams(void) const = 0;
@@ -516,6 +518,14 @@ namespace Chroma
     virtual multi1d<Phi>& getPhi(void) = 0;    
   };
 
+  template<typename P, typename Q, typename Phi>
+  using OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial =
+		  OneFlavorRatExactEOPrecWilsonTypeFermMonomialT<P,Q,Phi,EvenOddPrecWilsonTypeFermAct>;
+
+  template<typename P, typename Q, typename Phi>
+    using OneFlavorRatExactSymEvenOddPrecWilsonTypeFermMonomial =
+  		  OneFlavorRatExactEOPrecWilsonTypeFermMonomialT<P,Q,Phi,SymEvenOddPrecWilsonTypeFermAct>;
+
   //-------------------------------------------------------------------------------------------
   //! Exact 1 flavor even-odd preconditioned fermact monomial constant determinant
   //  Can fill out the S_odd_odd piece
@@ -525,13 +535,14 @@ namespace Chroma
    * Exact 1 flavor even-odd preconditioned fermact monomial.
    * Can supply a default dsdq algorithm
    */
-  template<typename P, typename Q, typename Phi>
-  class OneFlavorRatExactEvenOddPrecConstDetWilsonTypeFermMonomial : 
-    public OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial<P,Q,Phi>
+  template<typename P, typename Q, typename Phi,
+  	  template<class,class,class> class EOFermActT>
+  class OneFlavorRatExactEOPrecConstDetWilsonTypeFermMonomialT :
+    public OneFlavorRatExactEOPrecWilsonTypeFermMonomialT<P,Q,Phi,EOFermActT>
   {
   public:
      //! virtual destructor:
-    ~OneFlavorRatExactEvenOddPrecConstDetWilsonTypeFermMonomial() {}
+    virtual ~OneFlavorRatExactEOPrecConstDetWilsonTypeFermMonomialT() {}
 
     //! Even even contribution (eg ln det Clover)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s) {
@@ -540,9 +551,16 @@ namespace Chroma
 
   protected:
     //!  Replace thiw with PrecConstDet
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
+    virtual const EOFermActT<Phi,P,Q>& getFermAct() const = 0;
   };
 
+  template<typename P, typename Q, typename Phi>
+  using OneFlavorRatExactEvenOddPrecConstDetWilsonTypeFermMonomial =
+		  OneFlavorRatExactEOPrecConstDetWilsonTypeFermMonomialT<P,Q,Phi,EvenOddPrecWilsonTypeFermAct>;
+
+  template<typename P, typename Q, typename Phi>
+    using OneFlavorRatExactSymEvenOddPrecConstDetWilsonTypeFermMonomial =
+  		  OneFlavorRatExactEOPrecConstDetWilsonTypeFermMonomialT<P,Q,Phi,SymEvenOddPrecWilsonTypeFermAct>;
 }
 
 

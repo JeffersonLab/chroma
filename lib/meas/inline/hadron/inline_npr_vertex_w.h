@@ -74,6 +74,6 @@ namespace Chroma
     InlineNprVertexParams params;
   };
 
-};
+}
 
 #endif

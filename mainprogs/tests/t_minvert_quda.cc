@@ -57,11 +57,10 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
   Handle< LinearOperator<LatticeFermion> > D_op( S_f->linOp(connect_state) );
   
 
-  MdagMMultiSysSolverCGQudaClover mprec(D_op, connect_state, p.invParam);
 
   int n_shifts=12;
   multi1d<Real> shifts(n_shifts);
-  shifts[0]  =  1.51480322230288e-05  ;
+  shifts[0]  =  0.00005;
   shifts[1]  =  0.000165259114300968  ;
   shifts[2]  =  0.000661184012887753  ;
   shifts[3]  =  0.00214955953261573  ;
@@ -74,19 +73,15 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
   shifts[10] = 5.78532483906374   ;
   shifts[11] = 30.6835527589452  ;
 
-  multi1d<Real> RsdCG(shifts.size());
-  if( p.invParam.RsdTarget.size() == 1 ) {
-    
-    for(int i=0; i < shifts.size(); i++){ 
-      RsdCG[i] = p.invParam.RsdTarget[0];
-    }
-  }
-  else { 
-    for(int i=0; i < shifts.size();i++) { 
-      RsdCG[i] = p.invParam.RsdTarget[i];
-    }
+  multi1d<Real> RsdCG(n_shifts);
+  for(int i=0; i < n_shifts;i++) { 
+    RsdCG[i] = p.invParam.RsdTarget[i];
   }
   
+ 
+
+  MdagMMultiSysSolverCGQudaClover mprec(D_op, connect_state, p.invParam);
+ 
     
   LatticeFermion chi; 
   gaussian(chi, D_op->subset());

@@ -9,7 +9,7 @@ namespace Chroma
 
   namespace LCMMDIntegratorSteps 
   { 
-
+    
     //! LeapP for just a selected list of monomials
     void leapP(const multi1d< IntegratorShared::MonomialPair >& monomials,
 	                                       

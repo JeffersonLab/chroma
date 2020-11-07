@@ -38,6 +38,7 @@ typedef CPPWilsonDslashD WilsonDslash;
 
 } // End Namespace Chroma
 
+
 #elif defined BUILD_LLVM_WILSON_DSLASH
 
 #warning "Using LLVM Dslash"
@@ -56,6 +57,26 @@ typedef LLVMWilsonDslashD WilsonDslash;
 #endif
 }
 
+#elif defined(CHROMA_QPHIX_DSLASH_ENABLED)
+#include "qphix_singleton.h"
+#ifdef CHROMA_BUILDING_QPHIX_DSLASH
+#warning YAY!!!
+#include "lwldslash_w_qphix.h"
+namespace Chroma {
+	using WilsonDslash = QPhiXWilsonDslashFloating;
+	using WilsonDslashF = QPhiXWilsonDslashF;
+	using WilsonDslashD = QPhiXWilsonDslashD;
+}
+#else
+#warning BOOOO!!!!!// We aren't really building the QPhiX dslash... fallback
+namespace Chroma {
+
+  using WilsonDslash =  QDPWilsonDslash;
+  using WilsonDslashF =  QDPWilsonDslashF;
+  using WilsonDslashD = QDPWilsonDslashD;
+
+}  // end namespace Chroma
+#endif // BUILDING_CHROMA_QPHIX_DSLASH
 
 #elif defined BUILD_SSE_WILSON_DSLASH
 // The lwldslash_w_sse.h defines the SSE Dslash class

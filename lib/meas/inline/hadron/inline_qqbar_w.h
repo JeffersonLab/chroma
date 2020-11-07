@@ -64,6 +64,6 @@ namespace Chroma
     InlineQQbarParams params;
   };
 
-};
+}
 
 #endif

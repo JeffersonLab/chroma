@@ -21,7 +21,7 @@ namespace Chroma {
     }
     const std::string typeIDString = "PropType";
     bool registered = registerAll();
-  };
+  }
   using namespace PropTypeEnv;
 
   //! Read a propagator type enum
@@ -33,4 +33,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const PropType& t) {
     thePropTypeMap::Instance().write(typeIDString,xml_out, path, t);
   }
-};
+}

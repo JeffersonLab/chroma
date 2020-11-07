@@ -23,7 +23,7 @@ namespace Chroma {
     const std::string typeIDString = "QDP_volfmt_t";
 
     bool registered = registerAll();
-  };
+  }
   using namespace QDPVolfmtEnv;
 
   //! Read a QDP volume format type
@@ -35,4 +35,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const QDP_volfmt_t& t) {
     theQDPVolfmtMap::Instance().write(typeIDString,xml_out, path, t);
   }
-};
+}

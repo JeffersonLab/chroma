@@ -2,6 +2,7 @@
  *  \brief Chrono predictor aggregator
  */
 
+#include "chroma_config.h"
 #include "update/molecdyn/predictor/predictor_aggregate.h"
 
 #include "update/molecdyn/predictor/null_predictor.h"
@@ -12,6 +13,10 @@
 #include "update/molecdyn/predictor/linear_extrap_predictor.h"
 #include "update/molecdyn/predictor/mre_extrap_predictor.h"
 #include "update/molecdyn/predictor/mre_initcg_extrap_predictor.h"
+
+#ifdef BUILD_QUDA
+#include "update/molecdyn/predictor/quda_predictor.h"
+#endif
 
 namespace Chroma
 {
@@ -43,8 +48,13 @@ namespace Chroma
 	success &= LinearExtrapolation5DChronoPredictorEnv::registerAll();
 	success &= MinimalResidualExtrapolation4DChronoPredictorEnv::registerAll();
 	success &= MinimalResidualExtrapolation5DChronoPredictorEnv::registerAll();
+
 	success &= MREInitCG4DChronoPredictorEnv::registerAll();
 
+
+#ifdef BUILD_QUDA
+	success &= QUDA4DChronoPredictorEnv::registerAll();
+#endif
 	registered = true;
       }
       return success;

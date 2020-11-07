@@ -22,7 +22,7 @@ namespace Chroma
 
     bool registered = registerAll();
     const std::string typeIDString = "PlusMinus";
-  };
+  }
 
   using namespace PlusMinusEnv ;
 
@@ -35,4 +35,4 @@ namespace Chroma
   void write(XMLWriter& xml_out, const std::string& path, const PlusMinus& t) {
     thePlusMinusMap::Instance().write(typeIDString, xml_out, path, t);
   }
-};
+}

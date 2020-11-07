@@ -45,5 +45,5 @@ namespace Chroma {
   void write(XMLWriter& w, const std::string& path, const OverlapInnerSolverType& t);
 
   /*! @} */   // end of group io
-};
+}
 #endif

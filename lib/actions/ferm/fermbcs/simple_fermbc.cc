@@ -11,7 +11,7 @@ namespace Chroma
   namespace SimpleFermBCEnv
   {
     const std::string name = "SIMPLE_FERMBC";
-  };
+  }
 
   //! Read parameters
   SimpleFermBCParams::SimpleFermBCParams(XMLReader& xml, const std::string& path)

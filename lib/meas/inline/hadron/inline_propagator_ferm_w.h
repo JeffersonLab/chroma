@@ -74,6 +74,6 @@ namespace Chroma
     InlinePropagatorFermParams params;
   };
 
-};
+}
 
 #endif

@@ -21,7 +21,7 @@ namespace Chroma {
 
     bool registered = registerAll();
     const std::string typeIDString = "PropDistType";
-  };
+  }
   using namespace PropDistTypeEnv;
 
   //! Reader
@@ -43,4 +43,4 @@ namespace Chroma {
   void write(BinaryWriter& bin_out, const PropDistType& t) {
     thePropDistTypeMap::Instance().write(typeIDString, bin_out, t);
   }
-};
+}

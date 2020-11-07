@@ -246,4 +246,4 @@ void coulGauge(multi1d<LatticeColorMatrix>& u,
 }
 
 
-}; // Namespace Chroma
+} // Namespace Chroma

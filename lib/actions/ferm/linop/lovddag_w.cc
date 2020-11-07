@@ -1,7 +1,6 @@
 /*! \file
  *  \brief Overlap-pole operator
  */
-#include <math.h>
 #include "chromabase.h"
 #include "actions/ferm/linop/lovddag_w.h"
 #include "meas/eig/gramschm.h"
@@ -460,5 +459,5 @@ namespace Chroma
     END_CODE();
   }
 
-}; // End Namespace Chroma
+}  // End Namespace Chroma
 

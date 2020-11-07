@@ -64,6 +64,7 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
       read(paramtop, "k", k);
+      read(paramtop, "zeta", zeta);
     }
 
 
@@ -94,9 +95,13 @@ namespace Chroma
       for(int d(0);d<Nd;d++)
 	if(params.smear_dirs[d]){
 	  if(params.k[d]!=0){
-	    Real foo = params.zeta*params.k[d] ;
-	    LatticeReal f = foo ;
-	    u[d]*=cmplx(cos(f),sin(f)) ;
+	    QDPIO::cout<<" Adding phase to direction: "<<d<<std::endl ;
+	    Real f = twopi / Real(Layout::lattSize()[d])*
+	      params.zeta*Real(params.k[d]) ;
+	    Complex c = cmplx(cos(f),sin(f)) ;
+	    QDPIO::cout<<"    exp(i*phase)= "<<c<<std::endl ;
+	    QDPIO::cout<<"    2*pi= "<<twopi<<std::endl ;
+	    u[d]*=c ;
 	  }
 	}
     }

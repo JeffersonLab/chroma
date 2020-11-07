@@ -24,7 +24,7 @@
 namespace Chroma {
   namespace ReunitEnv {
     extern double getTime();
-  };
+  }
 
   enum Reunitarize {REUNITARIZE, REUNITARIZE_ERROR, REUNITARIZE_LABEL};
   
@@ -80,5 +80,5 @@ namespace Chroma {
 	      enum Reunitarize ruflag,
 	      const Subset& mstag);
   
-}; // End namespace
+} // End namespace
 #endif

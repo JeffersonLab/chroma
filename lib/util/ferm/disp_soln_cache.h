@@ -6,7 +6,10 @@
 #ifndef __disp_soln_cache_h__
 #define __disp_soln_cache_h__
 
+
 #include "chromabase.h"
+
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
 
 #include <qdp_map_obj_disk_multiple.h>
 #include <qdp_map_obj_memory.h>
@@ -50,18 +53,18 @@ namespace Chroma
   public:
     //! Default constructor
     DispSolnCache(const multi1d<LatticeColorMatrix>& u_smr,
-		  const LatticeFermion& soln_);
+		  const LatticeColorVectorSpinMatrix& soln_);
 
     //! Destructor
     virtual ~DispSolnCache() {} 
   
     //! Accessor
-    const LatticeFermion& getDispVector(bool use_derivP, const multi1d<int>& mom,
+    const LatticeColorVectorSpinMatrix& getDispVector(bool use_derivP, const multi1d<int>& mom,
 					const std::vector<int>& disp);
 
   protected:
     //! Displace an object
-    const LatticeFermion& displaceObject(const KeyDispSolnVector_t& key);
+    const LatticeColorVectorSpinMatrix& displaceObject(const KeyDispSolnVector_t& key);
 			
   private:
     //! Displacement length
@@ -71,14 +74,15 @@ namespace Chroma
     const multi1d<LatticeColorMatrix>& u;
 			
     // Disk cache of solutions
-    const LatticeFermion& soln;
+    const LatticeColorVectorSpinMatrix& soln;
 
     //! Unsmeared vectors
-    QDP::MapObjectMemory<KeyDispSolnVector_t, LatticeFermion>  disp_src_map;
+    QDP::MapObjectMemory<KeyDispSolnVector_t, LatticeColorVectorSpinMatrix>  disp_src_map;
   };
 
   /*! @} */  // end of group ferm
 
 } // namespace Chroma
 
-#endif
+#endif // QDP_IS_QDPJIT
+#endif // HEADER GUARD

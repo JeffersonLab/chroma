@@ -28,7 +28,7 @@ namespace Chroma {
 
     const std::string typeIDString = "WaveStateType";
     bool registered = registerAll();
-  };
+  }
   
   using namespace WaveStateTypeEnv;
   //! Read an WaveType enum
@@ -40,4 +40,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const WaveStateType& t) {
     theWaveStateTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
-};
+}

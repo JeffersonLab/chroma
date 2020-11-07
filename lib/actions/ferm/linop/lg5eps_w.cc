@@ -1,7 +1,6 @@
 /*! \file
  *  \brief Overlap-pole operator
  */
-#include <math.h>
 #include "chromabase.h"
 #include "actions/ferm/linop/lg5eps_w.h"
 #include "meas/eig/gramschm.h"
@@ -429,5 +428,5 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 }
 
 
-}; // End Namespace Chroma
+}  // End Namespace Chroma
 

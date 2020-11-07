@@ -87,8 +87,8 @@ namespace Chroma
       
     };
 
-  }; // name space InlineProp3ptEnv
+  }  // name space InlineProp3ptEnv
 
-};
+}
 
 #endif

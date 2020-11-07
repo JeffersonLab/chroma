@@ -1,4 +1,4 @@
-AC_INIT(chroma,3.43.0,edwards@jlab.org)
+AC_INIT(chroma,3.44.0,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
@@ -101,7 +101,11 @@ AC_ARG_WITH(llvm-wilson-dslash,
 	 build_llvm_wd="no"]
 )
 
-
+AC_ARG_ENABLE(static-packed-gauge,
+	AC_HELP_STRING([--enable-static-packed-gauge. Enable Static packed gauges for cpp_wilson_dslash and QPhiX. This may be dangerous, but improve balance ]),
+	[enable_static_packed_gauge=${enableval} ],
+	[enable_static_packed_gauge="no"]
+)
 
 
 AC_ARG_ENABLE(asqtad_level3_inverter,
@@ -110,7 +114,7 @@ AC_ARG_ENABLE(asqtad_level3_inverter,
     [Wrap the level3 asqtad inverter])
 )
 
-
+	
 AC_ARG_WITH(bagel_wilson_dslash,
   AC_HELP_STRING(
     [--with-bagel-wilson-dslash=DIR],
@@ -160,6 +164,14 @@ AC_ARG_ENABLE(quda_deviface,
 	[Enable QUDA device pointer interface]),
 	[quda_deviface_enabled="${enableval}"],
 	[quda_deviface_enabled="no"]
+)
+
+AC_ARG_ENABLE(jit_contraction_kernels,
+	AC_HELP_STRING(
+        [--enable-jit-contraction-kernels], 
+	[Enable QDP-JIT contraction kernels]),
+	[jit_contraction_kernels_enabled="${enableval}"],
+	[jit_contraction_kernels_enabled="no"]
 )
 
 
@@ -239,6 +251,24 @@ AC_ARG_WITH(quda,
    [ quda_enabled="no" ]
 )
 
+AC_ARG_ENABLE(quda-debug,
+    AC_HELP_STRING(
+	[--enable-quda-debug],
+	[ define QUDA_DEBUG for extra diagnostics from QUDA solvers ]
+    ),
+    [ quda_debug_enabled="yes" ],
+    [ quda_debug_enabled="no" ]
+)
+
+AC_ARG_ENABLE(quda-mg-dump,
+     AC_HELP_STRING(
+	[--enable-quda-mg-dump],
+	[ dump QUDA MG on fail. Needs QUDA compiled with QIO and have MG dump enabled in QUDA]
+     ),
+     [ quda_mg_dump_enabled="yes" ],
+     [ quda_mg_dump_enabled="no" ]
+)
+
 AC_ARG_WITH(cuda,
    AC_HELP_STRING(
       [--with-cuda=<DIR>],
@@ -302,9 +332,17 @@ AC_ARG_ENABLE(qphix-solver-compress12,
     [If enabled will employ compression in the QPhiX solver]
   ),
   [ qphix_compress12="${enable_qphix_solver_compress12}" ],
-  [ qphix_sompress12="no" ]
+  [ qphix_compress12="no" ]
 )
 
+AC_ARG_ENABLE(qphix-dslash,
+  AC_HELP_STRING(
+    [--enable-qphix-dslash],
+    [ Will enable a QPhiX based Dslash for use with QDP-JIT/LLVM. Restrictions apply]
+  ),
+  [ qphix_dslash="${enable_qphix_dslash}" ],
+  [ qphix_dslash="no" ]
+)
 
 dnl level 3 libraries for asqtad inverter
 AC_ARG_WITH(asqtadlevel3,
@@ -369,6 +407,14 @@ AC_ARG_ENABLE(qop-mg,
    [BUILD_QOP_MG=${enableval}]
 )
 
+AC_ARG_WITH(mg-proto,
+   AC_HELP_STRING(
+    [ --with-mg-proto=DIR],
+    [ Use MG Proto MG library ]
+   ),
+   [ MGPROTO_DIR="${with_mg_proto}" ],
+   [ MGPROTO_DIR="not_given" ]
+)
 
 if test "X${QDPCVER_HOME}X" = "XX" ; then
   AC_MSG_NOTICE([QDPCVER_HOME variable not set.])
@@ -388,11 +434,20 @@ then
   AC_DEFINE([BUILD_QPHIX], [], [Build with the QPHIX_LIBRARY])
   AC_SUBST(QPHIX_CXXFLAGS, "-I${QPHIX_HOME}/include" ) 
   AC_SUBST(QPHIX_LDFLAGS, "-L${QPHIX_HOME}/lib" )
-  AC_SUBST(QPHIX_LIBS,"-lqphix_solver")
+  AC_SUBST(QPHIX_LIBS,"-lqphix_solver -lqphix_codegen")
 
   case "${qphix_arch}" in
+  sse|SSE)
+     AC_DEFINE(CHROMA_QPHIX_ARCH_SSE,[], [QPhiX Arch is SSE])
+     ;;   
   avx|AVX)
      AC_DEFINE(CHROMA_QPHIX_ARCH_AVX,[], [QPhiX Arch is AVX])
+     ;;
+  avx2|AVX2)
+     AC_DEFINE(CHROMA_QPHIX_ARCH_AVX2,[], [QPhiX Arch is AVX2])
+     ;;
+  avx512|AVX512)
+     AC_DEFINE(CHROMA_QPHIX_ARCH_AVX512,[], [QPhiX Arch is AVX512])
      ;;
   mic|MIC)
      AC_DEFINE(CHROMA_QPHIX_ARCH_MIC,[], [QPhiX Arch is MIC])
@@ -439,6 +494,12 @@ then
      AC_DEFINE(CHROMA_QPHIX_INNER_TYPE,[float], [QPhiX Inner Type is float ] )
      ;;
   esac
+
+  if test "X${qphix_dslash}X" == "XyesX";
+  then
+	AC_MSG_NOTICE([Enabling QPhiX Dslash. This will only work under VERY SPECIAL circumstances.]) 
+	AC_DEFINE(CHROMA_QPHIX_DSLASH_ENABLED,[1],[Enable QPhiX Dslash] )
+  fi
 fi
 
 AM_CONDITIONAL(BUILD_QPHIX,
@@ -629,6 +690,49 @@ else
 	AC_MSG_NOTICE([Not building CG DWF])
 fi
 
+case "${enable_static_packed_gauge}" in
+yes|YES|Yes)
+	AC_MSG_NOTICE([Enabling Static Packed Gauge Fields ])
+	AC_DEFINE([CHROMA_STATIC_PACKED_GAUGE], [1], [Define static packed gauges])
+	;;
+*)
+	AC_MSG_NOTICE([Not enabling Static Packed Gauge Fields])
+	;;
+esac
+
+AC_ARG_ENABLE(ittnotify,
+	AC_HELP_STRING([--enable-ittnotify ],[ Use VTune ITTNOTIFY Inteface in some test. Please ensure CXXFLAGS, LDFLAGS, LIBS are correctly set for Vtue]),
+	[ use_ittnotify="${enableval}" ],
+	[ use_ittnotify="no" ]
+)
+
+case ${use_ittnotify} in 
+yes)
+	AC_MSG_NOTICE([Enabling use of code sections using ITTNOTIFY])
+    AC_DEFINE([CHROMA_USE_ITTNOTIFY], [1], [ Enable use of itnotify interface. User guarantees to set up include, link etc ])
+    ;;
+*)
+	AC_MSG_NOTICE([Not using ITTNOTIFY instrumentaiton])
+	;;
+esac
+	
+
+AC_ARG_ENABLE(fused-clover-deriv-loops,
+	AC_HELP_STRING(	[--enable-fused-clover-deriv-loops],[ Enable fused clover deriv_loops function contributed by J Bloch of Regensburg University ] ),
+	[fused_clover_deriv_loops=${enableval}],
+	[fused_clover_deriv_loops="no"]
+)
+	
+case ${fused_clover_deriv_loops} in
+yes)
+	AC_MSG_NOTICE([Enabling use of fused clover deriv_loops routine contributed by J. Bloch of Regensburg University ])
+	AC_DEFINE([CHROMA_FUSED_CLOVER_DERIV_LOOPS],[1],[ Enable use of clover deriv_loops routine contrinuted by J. Bloch of Regensburg University ])
+	;;
+*) 
+	AC_MSG_NOTICE([Not using fused clover deriv loops routine])
+	;;
+esac
+	
 
  
 AM_CONDITIONAL(BUILD_CG_DWF,
@@ -822,6 +926,34 @@ fi
 
 AM_CONDITIONAL(BUILD_JIT_CLOVER_APPLY, [test "x${jit_clover_enabled}x" = "xyesx" ])
 
+
+
+dnl ************************************************************************
+dnl **** QDP-JIT contraction kernels                                    ****
+dnl ************************************************************************
+if test "X${jit_contraction_kernels_enabled}X" = "XyesX";
+then
+   AC_MSG_NOTICE( [Building with QDP-JIT contraction kernels] )   
+   AC_DEFINE([BUILD_JIT_CONTRACTION_KERNELS],[], [ Use JIT contraction kernels, requires to build on top of QDP-JIT ])
+else
+   AC_MSG_NOTICE( [Not using QDP-JIT contraction kernels] )
+fi
+
+AM_CONDITIONAL(BUILD_JIT_CONTRACTION_KERNELS, [test "x${jit_contraction_kernels_enabled}x" = "xyesx" ])
+
+dnl ************
+dnl ** QUDA DEBUG
+if test "X${quda_debug_enabled}X" = "XyesX";
+then
+  AC_MSG_NOTICE( [Enabling extra QUDA debugging] ) 
+  AC_DEFINE([QUDA_DEBUG],[],[Enable extra QUDA Debugging])
+fi
+
+if test "X${quda_mg_dump_enabled}X" = "XyesX";
+then 
+  AC_MSG_NOTICE( [ Enabling QUDA MG Dump. QUDA must be set up for this or build will fail ])
+  AC_DEFINE([QUDA_MG_DUMP_ENABLED],[],[Enable QUDA MG Dump])
+fi
 
 dnl ************************************************************************
 dnl **** QUDA device interface                                          ****
@@ -1120,7 +1252,7 @@ then
    AC_MSG_NOTICE([ Using QUDA Library in ${QUDA_HOME} ])
 
    case "$host" in 
-   x86_64*)
+   x86_64*|ppc64*|powerpc64*)
         CUDA_LIBDIR="${CUDA_HOME}/lib64"	
 	;;
    *)	
@@ -1131,15 +1263,25 @@ then
    AC_MSG_NOTICE([ Linking to CUDA Runtime in ${CUDA_LIBDIR}])
 
    AC_DEFINE([BUILD_QUDA],[], [Build with the BU QUDA Library])  
-   AC_SUBST(QUDA_CXXFLAGS, "-I${QUDA_HOME}/include -I${CUDA_HOME}/include" )
-   AC_SUBST(QUDA_LDFLAGS,  "-L${CUDA_LIBDIR} -L${QUDA_HOME}/lib" )
-   AC_SUBST(QUDA_LIBS,     "-lquda -lcudart" )
+   AC_SUBST(QUDA_CXXFLAGS, ["-I${QUDA_HOME}/include -I${CUDA_HOME}/include"] )
+   AC_SUBST(QUDA_LDFLAGS,  ["-L${CUDA_LIBDIR} -L${QUDA_HOME}/lib -Wl,-rpath,${CUDA_LIBDIR} -Wl,-rpath,${QUDA_HOME}/lib"] )
+   AC_SUBST(QUDA_LIBS,     ["-lquda -lcublas -lcudart -lcuda"])
+
 fi
 
 AM_CONDITIONAL(BUILD_QUDA,
 	[test "x${quda_enabled}x" = "xyesx" ])
 
 
+if test "X${MGPROTO_DIR}X" != "Xnot_givenX";
+then 
+  AC_MSG_NOTICE([  Configuring MG PROTO in ${MGPROTO_DIR} ])
+  AC_SUBST(MGPROTO_ENABLED, [yes])
+  AC_DEFINE(BUILD_MGPROTO, [], [ Build interface to MGPROTO Library] )
+  AC_SUBST(MGPROTO_CXXFLAGS, "-I${MGPROTO_DIR}/include" )
+  AC_SUBST(MGPROTO_LDFLAGS,  "-L${MGPROTO_DIR}/lib" )
+  AC_SUBST(MGPROTO_LIBS, "-lmg")
+fi
 
 if test "X${BUILD_QOP_MG}X" = "XyesX";
 then
@@ -1207,6 +1349,9 @@ esac
 
 AM_CONDITIONAL(BUILD_GTEST,
 	[test "x${chroma_enable_gtest}x" = "xyesx" ])
+	
+AM_CONDITIONAL(BUILD_MGPROTO, 
+	[test "X${MGPROTO_DIR}X" != "Xnot_givenX"])
 
 #######################
 # Produce output

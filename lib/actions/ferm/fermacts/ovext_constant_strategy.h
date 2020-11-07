@@ -49,6 +49,6 @@ namespace Chroma
     const Real tuningConstant;
   };
   
-};
+}
 
 #endif

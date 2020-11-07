@@ -73,6 +73,18 @@ namespace Chroma
     // and we are trying to get a guess for phi which 
     // minimises the initial residual.
 
+    virtual void predictX(T& X, const T& chi, const Subset& s) const
+    {
+      QDPIO::cerr << "Not Implemented" << std::endl;
+      QDP_abort(1);
+    }
+
+    virtual void predictY(T& Y, const T& chi, const Subset& s) const
+    {
+      QDPIO::cerr << "Not Implemented" << std::endl;
+      QDP_abort(1);
+    }
+
 
     
     virtual void predictX(T& X, 
@@ -92,6 +104,18 @@ namespace Chroma
     virtual void newXVector(const T& X) = 0;
     virtual void newYVector(const T& Y) = 0;
 
+
+    virtual void newXVector(const T& X_in, const LinearOperator<T>& M) 
+    {
+      QDPIO::cerr << "Not Implemented" <<std::endl;
+      QDP_abort(1);
+    }
+
+    virtual void newYVector(const T& Y_in, const LinearOperator<T>& M) 
+    {
+      QDPIO::cerr << "Not Implemented" <<std::endl;
+      QDP_abort(1);
+    }
 
     // This is a 'predict X' which is always MdagM X = phi
     // These two are backward compatibilities until everything 
@@ -148,5 +172,5 @@ namespace Chroma
     virtual void newVector(const multi1d<T>& psi) = 0;
   };
 
-}; // End namespace
+} // End namespace
 #endif

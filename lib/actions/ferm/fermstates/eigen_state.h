@@ -182,7 +182,7 @@ namespace Chroma
 
 
 
-};
+}
 
 
 

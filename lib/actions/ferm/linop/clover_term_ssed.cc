@@ -488,17 +488,12 @@ namespace Chroma
       QDPIO::cout << "You sure you shouldn't be asking invclov?" << std::endl;
       QDP_abort(1);
     }
-LatticeReal ff=tr_log_diag_;
 
-    if( param.sub_zero_usedP ) { 
- 	QDPIO::cout << "Subtracting "<< param.sub_zero<<std::endl;
-	LatticeReal tmp;
-	tmp[rb[cb]] = param.sub_zero;
-	ff[rb[cb]] -= tmp;
-    }
+
+
     END_CODE();
 
-    return sum(ff, rb[cb]);
+    return sum(tr_log_diag_, rb[cb]);
   }    
 
 
@@ -716,7 +711,7 @@ LatticeReal ff=tr_log_diag_;
       QDP_error_exit("Matrix is too small", Nc, Ns);
 
     // Zero trace log
-    tr_log_diag = zero;
+    tr_log_diag[rb[cb]] = zero;
 
     SSEDCloverEnv::LDagDLInvArgs a = { tr_log_diag, tri_diag, tri_off_diag, cb };
     dispatch_to_threads(rb[cb].numSiteTable(), a, SSEDCloverEnv::lDagDLInvSiteLoop);

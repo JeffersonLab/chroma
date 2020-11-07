@@ -7,7 +7,7 @@
 using namespace Chroma;
 extern "C" { 
  void _mcleanup();
-};
+}
 
 /*
  * Input 
@@ -140,13 +140,13 @@ int main(int argc, char *argv[])
   XMLReader gauge_file_xml, gauge_xml;
 
   // Start up the gauge field
-  QDPIO::cout << "Attempt to read gauge field" << std::endl;
+  QDPIO::cout << "CHROMA: Attempt to read gauge field" << std::endl;
   swatch.start();
   try 
   {
     std::istringstream  xml_c(input.cfg.xml);
     XMLReader  cfgtop(xml_c);
-    QDPIO::cout << "Gauge initialization: cfg_type = " << input.cfg.id << std::endl;
+    QDPIO::cout << "CHROMA: Gauge initialization: cfg_type = " << input.cfg.id << std::endl;
 
     Handle< GaugeInit >
       gaugeInit(TheGaugeInitFactory::Instance().createObject(input.cfg.id,
@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
   }
   swatch.stop();
 
-  QDPIO::cout << "Gauge field successfully read: time= " 
+  QDPIO::cout << "CHROMA: Gauge field successfully read: time= " 
 	      << swatch.getTimeInSeconds() 
 	      << " secs" << std::endl;
 
@@ -193,19 +193,28 @@ int main(int argc, char *argv[])
 
   // Write out the config header
   write(xml_out, "Config_info", gauge_xml);
+
+  swatch.reset();
+  swatch.start();
   
   // Calculate some gauge invariant observables
   MesPlq(xml_out, "Observables", u);
+  swatch.stop();
+  QDPIO::cout << "CHROMA: initial plaquette measurement time=" << swatch.getTimeInSeconds() << " secs" << std::endl;
 
+
+ 
   // Get the measurements
   try 
   {
+    swatch.reset();
+    swatch.start();
     std::istringstream Measurements_is(input.param.inline_measurement_xml);
     XMLReader MeasXML(Measurements_is);
     multi1d < Handle< AbsInlineMeasurement > > the_measurements;
     read(MeasXML, "/InlineMeasurements", the_measurements);
 
-    QDPIO::cout << "There are " << the_measurements.size() << " measurements " << std::endl;
+    QDPIO::cout << "CHROMA: There are " << the_measurements.size() << " measurements " << std::endl;
 
     // Reset and set the default gauge field
     InlineDefaultGaugeField::reset();
@@ -215,8 +224,11 @@ int main(int argc, char *argv[])
     push(xml_out, "InlineObservables");
     xml_out.flush();
 
-    QDPIO::cout << "Doing " << the_measurements.size() 
+    swatch.stop();
+    QDPIO::cout << "CHROMA: parsing inline measurements time=" << swatch.getTimeInSeconds() << " secs" << std::endl;
+    QDPIO::cout << "CHROMA: Doing " << the_measurements.size() 
 		<<" measurements" << std::endl;
+    swatch.reset();
     swatch.start();
     unsigned long cur_update = 0;
     for(int m=0; m < the_measurements.size(); m++) 
@@ -234,7 +246,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
 
-    QDPIO::cout << "CHROMA measurements: time= " 
+    QDPIO::cout << "CHROMA: measurements: time= " 
 		<< swatch.getTimeInSeconds() 
 		<< " secs" << std::endl;
 

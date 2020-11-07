@@ -5,7 +5,8 @@
 #include <string>
 #include "singleton.h"
 #include "io/enum_io/enum_type_map.h"
-
+#include <quda.h>
+#include <map>
 namespace Chroma
 {
   /*!
@@ -21,6 +22,7 @@ namespace Chroma
     CG,
     BICGSTAB,
     GCR,
+	CA_GCR,
     MR
   };
 
@@ -33,6 +35,7 @@ namespace Chroma
 
   // A singleton to hold the typemap
   typedef SingletonHolder<EnumTypeMap<QudaSolverType> > theQudaSolverTypeMap;
+  typedef SingletonHolder<std::map<QudaSolverType,QudaInverterType> > theChromaToQudaSolverTypeMap;
 
   // Reader and writer
 
@@ -46,6 +49,7 @@ namespace Chroma
   //! Quda Precision type
   enum QudaPrecisionType { 
     DEFAULT,
+    QUARTER,
     HALF,
     SINGLE,
     DOUBLE
@@ -59,7 +63,7 @@ namespace Chroma
 
   // A singleton to hold the typemap
   typedef SingletonHolder<EnumTypeMap<QudaPrecisionType> > theQudaPrecisionTypeMap;
-
+  typedef SingletonHolder<std::map<QudaPrecisionType,QudaPrecision> > theChromaToQudaPrecisionTypeMap;
   // Reader and writer
 
   //! Read an QudaSolverType enum
@@ -84,7 +88,7 @@ namespace Chroma
 
   // A singleton to hold the typemap
   typedef SingletonHolder<EnumTypeMap<QudaReconsType> > theQudaReconsTypeMap;
-
+  typedef SingletonHolder<std::map<QudaReconsType,QudaReconstructType> > theChromaToQudaReconsTypeMap;
   // Reader and writer
 
   //! Read an QudaReconsType enum
@@ -95,8 +99,9 @@ namespace Chroma
 
 
   enum QudaSchwarzMethod { 
+	  INVALID_SCHWARZ,
     ADDITIVE_SCHWARZ,
-    MULTIPLICATIVE_SCHWARZ
+    MULTIPLICATIVE_SCHWARZ,
   };
   
   namespace QudaSchwarzMethodEnv { 
@@ -107,7 +112,7 @@ namespace Chroma
 
   // A singleton to hold the typemap
   typedef SingletonHolder<EnumTypeMap<QudaSchwarzMethod> > theQudaSchwarzMethodMap;
-
+  typedef SingletonHolder<std::map<QudaSchwarzMethod,QudaSchwarzType> > theChromaToQudaSchwarzTypeMap;
   // Reader and writer
 
   //! Read an QudaSchwarzMethod enum
@@ -118,16 +123,5 @@ namespace Chroma
 
 
 
-  /*! @} */   // end of group io
-
-
-
-
-
-
 }
-
-
-
-
 #endif
