@@ -20,6 +20,8 @@ namespace Chroma
       cudaReconstruct=RECONS_12;
       cudaSloppyPrecision=DEFAULT;
       cudaSloppyReconstruct=RECONS_12;
+      cudaRefinementPrecision=DEFAULT;
+      cudaRefinementReconstruct=RECONS_12;
       asymmetricP = false; //< Use asymmetric version of the linear operator
       axialGaugeP = false; //< Fix Axial Gauge?
       SilentFailP = false; //< If set to true ignore lack of convergence. Default is 'loud' 
@@ -27,6 +29,8 @@ namespace Chroma
       tuneDslashP = false ; //< v0.3 autotune feature
       verboseP = false;
       innerParamsP = false;
+      checkShiftsP = true;
+      Pipeline=0;
     };
     MultiSysSolverQUDACloverParams( const MultiSysSolverQUDACloverParams& p) {
       CloverParams = p.CloverParams;
@@ -41,12 +45,16 @@ namespace Chroma
       cudaReconstruct = p.cudaReconstruct;
       cudaSloppyPrecision = p.cudaSloppyPrecision;
       cudaSloppyReconstruct = p.cudaSloppyReconstruct;
+      cudaRefinementPrecision = p.cudaRefinementPrecision;
+      cudaRefinementReconstruct = p.cudaRefinementReconstruct;
       axialGaugeP = p.axialGaugeP;
       SilentFailP = p.SilentFailP;
       RsdToleranceFactor = p.RsdToleranceFactor;
       tuneDslashP = p.tuneDslashP;
       innerParamsP = p.innerParamsP;
       innerParams = p.innerParams;
+      checkShiftsP = p.checkShiftsP;
+      Pipeline = p.Pipeline;
     }
 
    
@@ -62,11 +70,15 @@ namespace Chroma
     QudaReconsType cudaReconstruct;
     QudaPrecisionType cudaSloppyPrecision;
     QudaReconsType cudaSloppyReconstruct;
+    QudaPrecisionType cudaRefinementPrecision;
+    QudaReconsType cudaRefinementReconstruct;
     bool axialGaugeP;
     bool SilentFailP;
     Real RsdToleranceFactor;
     bool tuneDslashP;
     bool innerParamsP;
+    bool checkShiftsP;
+    int Pipeline;
 
     // GCR Specific params
     // Params for the preconditioner

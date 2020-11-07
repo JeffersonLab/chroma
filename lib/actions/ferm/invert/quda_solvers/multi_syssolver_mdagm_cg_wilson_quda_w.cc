@@ -55,10 +55,10 @@ namespace Chroma
     void *spinorIn=(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
 
 
-    void** spinorOut;
+    void** spinorOut = new void*[shifts.size()];
 
-    spinorOut = (void **)malloc(shifts.size()*sizeof(void *));
-    if (spinorOut == NULL) { 
+    // This is a hangover from mallocing. I expect now new will throw an exception
+    if (spinorOut == nullptr ) { 
       QDPIO::cerr << "Couldn't allocate spinorOut" << std::endl;
       QDP_abort(1);
     }
@@ -92,9 +92,7 @@ namespace Chroma
     // Tidy Up
     delete [] spinorOut;
 
-    QDPIO::cout << "Cuda Space Required" << std::endl;
-    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << std::endl;
+
     QDPIO::cout << "QUDA_"<<solver_string<<"_WILSON_SOLVER: time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;

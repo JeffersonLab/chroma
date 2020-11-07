@@ -122,7 +122,7 @@ namespace Chroma
     LWTreeGaugeActParams param;   /*!< The coupling Beta */
   };
 
-};
+}
 
 
 #endif

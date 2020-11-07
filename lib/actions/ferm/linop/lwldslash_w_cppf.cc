@@ -16,7 +16,8 @@ namespace Chroma
   //! Initialization routine
   void CPPWilsonDslashF::init()
   {
-    // Initialize using the total problem size
+    // Initialize using the total problem size -- this is a handle so will be destroyed/refcounted as needed.
+
     D = new Dslash<float>(Layout::lattSize().slice(),
 			  Layout::QDPXX_getSiteCoords,
 			  Layout::QDPXX_getLinearSiteIndex,
@@ -26,13 +27,21 @@ namespace Chroma
 
   //! Empty constructor
   CPPWilsonDslashF::CPPWilsonDslashF()
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+  	  : packed_gauge(nullptr)
+#endif
   {
-    init();
+
+	 init();
   }
   
   //! Full constructor
   CPPWilsonDslashF::CPPWilsonDslashF(Handle< FermState<T,P,Q> > state)
-  { 
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+  	  : packed_gauge(nullptr)
+#endif
+  {
+
     init();
     create(state);
   }
@@ -40,7 +49,11 @@ namespace Chroma
   //! Full constructor with anisotropy
   CPPWilsonDslashF::CPPWilsonDslashF(Handle< FermState<T,P,Q> > state,
 				   const AnisoParam_t& aniso_) 
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+  	  : packed_gauge(nullptr)
+#endif
   {
+
     init();
     create(state, aniso_);
   }
@@ -48,7 +61,11 @@ namespace Chroma
   //! Full constructor with general coefficients
   CPPWilsonDslashF::CPPWilsonDslashF(Handle< FermState<T,P,Q> > state,
 				   const multi1d<Real>& coeffs_)
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+  	  : packed_gauge(nullptr)
+#endif
   {
+
     init();
     create(state, coeffs_);
   }
@@ -101,7 +118,17 @@ namespace Chroma
     }
 
     // Pack the gauge fields
-    packed_gauge.resize( Nd * Layout::sitesOnNode() );
+    //packed_gauge.resize( Nd * Layout::sitesOnNode() );
+    // Allocate as a pointer -- In the case of static allocation
+    // Always allocate if null. If the packed gauge is static, it will not be null after the first allocation.
+    if ( packed_gauge == nullptr ) {
+    	packed_gauge = (PrimitiveSU3MatrixF *)QDP::Allocator::theQDPAllocator::Instance().allocate( Layout::sitesOnNode()*Nd*sizeof(PrimitiveSU3MatrixF),
+    			QDP::Allocator::DEFAULT);
+    	if( packed_gauge == nullptr ) {
+    		QDPIO::cout << "Failed to allocate packed gauge in CPP_Dslash " <<std::endl;
+    		QDP_abort(1);
+    	}
+    }
 
 #if 0
     QDPIO::cout << "Done " << std::endl << std::flush;
@@ -124,6 +151,12 @@ namespace Chroma
     START_CODE();
 
     // Handle will free the operator.
+
+    // If we are not using static packed gauges, we need to free here
+   // otherwise we never free.
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+    QDP::Allocator::theQDPAllocator::Instance().free(packed_gauge);
+#endif
 
     END_CODE();
   }

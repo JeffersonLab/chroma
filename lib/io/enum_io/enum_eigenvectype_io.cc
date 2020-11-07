@@ -21,7 +21,7 @@ namespace Chroma {
     }
     const std::string typeIDString = "EigenVecType" ;
     bool registered = registerAll();
-  };
+  }
   using namespace EigenVecTypeEnv;
 
   //! Read an eigenvectype enum
@@ -33,4 +33,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const EigenVecType& t) {
     theEigenVecTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
-};
+}

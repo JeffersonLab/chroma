@@ -47,5 +47,5 @@ namespace Chroma {
   void write(XMLWriter& w, const std::string& path, const PropType& t);
 
   /*! @} */   // end of group io
-};
+}
 #endif

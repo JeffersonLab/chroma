@@ -204,7 +204,6 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 
   push(xml_out, "EigSpecRitzKS");
   
-  bool convP = false;
 
   for( int KS_iter = 0; KS_iter < n_max_KS; KS_iter++) {
     n_KS++;
@@ -352,7 +351,6 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
   LatticeFermion tmp;
   Double lambda_H_sq;
   Double delta_lambda;
-  bool zeroMatchedP;
   bool convP;
   // We are all set -- lets do it
 

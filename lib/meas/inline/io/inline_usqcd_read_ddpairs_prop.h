@@ -41,6 +41,7 @@ namespace Chroma
     std::string   input_file_name;
     std::string   prop_xml;    
     std::string   xml_file;
+    QDP_serialparallel_t 		  parallel_io;
   };
 
   //! Inline writing of memory objects
@@ -63,6 +64,6 @@ namespace Chroma
     InlineUSQCDReadDDPairsPropParams params;
   };
 
-};
+}
 
 #endif

@@ -856,19 +856,12 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-    LatticeREAL ff=tr_log_diag_;
 
-    if( param.sub_zero_usedP ) { 
-      QDPIO::cout << "Subtracting "<< param.sub_zero<<std::endl;
-      LatticeREAL tmp;
-      tmp[rb[cb]] = param.sub_zero;
-      ff[rb[cb]] -= tmp;
-    }
     END_CODE();
 
     // Need to thread generic sums in QDP++?
     // Need to thread generic norm2() in QDP++?
-    return sum(ff, rb[cb]);
+    return sum(tr_log_diag_, rb[cb]);
   }
 
 
@@ -1126,7 +1119,7 @@ namespace Chroma
       }
 
     // Zero trace log
-    tr_log_diag = zero;
+    tr_log_diag[rb[cb]] = zero;
 
     //QDPIO::cout << "PTX Clover ldagdlinv " << (void*)this << "\n";
     //std::cout << "PTX Clover ldagdlinv " << (void*)this << "\n";

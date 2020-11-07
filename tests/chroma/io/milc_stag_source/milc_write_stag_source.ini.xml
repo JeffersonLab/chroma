@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+Write some QIO objects
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+        Make a gaussian prop 
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_0</object_id>
+        <object_type>LatticeStaggeredPropagator</object_type>
+      </NamedObject>
+    </elem>
+
+  <!-- write/read double prec -->
+    <elem>
+      <Name>MILC_WRITE_STAGGERED_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <OutputFile>test_out</OutputFile>
+        <OutputVolfmt>SINGLEFILE</OutputVolfmt>
+        <Precision>single</Precision>
+	<parallel_io>true</parallel_io>
+	<t_slice>7</t_slice>
+      </Param>
+      <NamedObject>
+        <source_id>prop_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the default_gauge_field. NOTE: this is a bad idea
+        in practice - do not do this. Once deleted it cannot be
+        retrieved.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_0</object_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+

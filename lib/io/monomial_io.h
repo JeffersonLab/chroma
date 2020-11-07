@@ -39,7 +39,7 @@ namespace Chroma
 			      const std::string& path);
 
 
-}; // End namespace Chroma
+} // End namespace Chroma
 
 
 #endif

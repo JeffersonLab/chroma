@@ -20,7 +20,7 @@ namespace Chroma {
 
     double getTime() { return time_spent ; }
 
-  };
+  }
 
 
 //! Exponentiate a SU(n) lie algebra element by some method.
@@ -94,4 +94,4 @@ void expmat(LatticeColorMatrix& a,
   END_CODE();
 }
 
-}; // End namespace Chroma
+} // End namespace Chroma

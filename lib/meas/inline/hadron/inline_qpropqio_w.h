@@ -63,6 +63,6 @@ namespace Chroma
     InlineQpropQIOParams params;
   };
 
-};
+}
 
 #endif

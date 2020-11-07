@@ -7,6 +7,6 @@ namespace Chroma {
 
 void expsu3(LatticeColorMatrix& m, Reunitarize cflag);
 
-};
+}
 
 #endif

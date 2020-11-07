@@ -57,7 +57,6 @@ int SN_Jacob_Array_t(multi2d<T>& psi,
   Real s;
   Real al1;
   Real al2;
-  int cb;
   int i;
   int j;
   int ij;

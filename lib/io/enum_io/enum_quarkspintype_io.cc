@@ -19,7 +19,7 @@ namespace Chroma
 
     bool registered = registerAll();
     const std::string typeIDString = "QuarkSpinType";
-  };
+  }
   using namespace QuarkSpinTypeEnv;
 
   //! Read a quark spin type enum

@@ -47,20 +47,29 @@ namespace Chroma
       read(paramtop, "./SavePrefix", p.save_prefix);
       read(paramtop, "./SaveVolfmt", p.save_volfmt);
 
-      // -- Deal with parallel IO
-      p.save_pario = QDPIO_SERIAL; // Default
 
-      // If there is a ParalelIO tag 
-      if ( paramtop.count("./ParallelIO") > 0 ) {
 
-	bool parioP=false;
-	read(paramtop, "./ParallelIO", parioP);
-	if ( parioP ) {
-	  QDPIO::cout << "Setting parallel write mode" << std::endl;
-	  p.save_pario = QDPIO_PARALLEL;
-	}
+      bool parioP = Layout::isIOGridDefined() && ( Layout::numIONodeGrid() > 1); // Default
+
+      if ( paramtop.count("./parallel_io") > 0 ) {
+    	  read(paramtop, "./parallel_io", parioP);
+      }
+      else {
+    	  // If there is a ParalelIO tag
+    	  if ( paramtop.count("./ParallelIO") > 0 ) {
+    		  read(paramtop, "./ParallelIO", parioP);
+    	  }
       }
 
+	  if ( parioP ) {
+    		  QDPIO::cout << "Setting parallel write mode for saving configurations" << std::endl;
+    		  p.save_pario = QDPIO_PARALLEL;
+	  }
+	  else {
+		  	 QDPIO::cout << "Setting serial write mode for saving configurations" << std::endl;
+		  	 p.save_pario = QDPIO_SERIAL;
+
+	  }
       // Default values: repro check is on, frequency is 10%
       p.repro_checkP = true;
       p.repro_check_frequency = 10;
@@ -585,28 +594,30 @@ namespace Chroma
 
 	    QDPIO::cout << "HMC: finished default measurement = " << m << std::endl;
 	  }
-	
-	  // Only measure user measurements after warm up
-	  if( ! warm_up_p ) 
-	  {
-	    QDPIO::cout << "Doing " << user_measurements.size() 
-			<<" user measurements" << std::endl;
-	    for(int m=0; m < user_measurements.size(); m++) 
-	    {
-	      QDPIO::cout << "HMC: considering user measurement number = " << m << std::endl;
-	      AbsInlineMeasurement& the_meas = *(user_measurements[m]);
-	      if( cur_update % the_meas.getFrequency() == 0 ) 
-	      { 
-		// Caller writes elem rule
-		push(xml_out, "elem");
-		QDPIO::cout << "HMC: calling user measurement number = " << m << std::endl;
-		the_meas(cur_update, xml_out);
-		QDPIO::cout << "HMC: finished user measurement number = " << m << std::endl;
-		pop(xml_out); 
-	      }
+
+	  // Always do user measurements - since they may involve
+	  // things like subspace deleting or eigenbounds checking or plaquette
+	  // which you may want to track through thermalization
+	  // if there is something you fear is unstable during thermalization
+	  // take it out of the inlineMeasurement lists
+	  QDPIO::cout << "Doing " << user_measurements.size() 
+		      <<" user measurements" << std::endl;
+	  for(int m=0; m < user_measurements.size(); m++) {
+
+	    QDPIO::cout << "HMC: considering user measurement number = " << m << std::endl;
+	    AbsInlineMeasurement& the_meas = *(user_measurements[m]);
+	    if( cur_update % the_meas.getFrequency() == 0 )  {
+	      
+	      // Caller writes elem rule
+	      push(xml_out, "elem");
+	      QDPIO::cout << "HMC: calling user measurement number = " << m << std::endl;
+	      the_meas(cur_update, xml_out);
+	      QDPIO::cout << "HMC: finished user measurement number = " << m << std::endl;
+	      pop(xml_out); 
 	    }
-	    QDPIO::cout << "HMC: finished user measurements" << std::endl;
 	  }
+	  QDPIO::cout << "HMC: finished user measurements" << std::endl;
+
 	  pop(xml_out); // pop("InlineObservables");
 
 	  // Reset the default gauge field
@@ -681,7 +692,7 @@ namespace Chroma
 
     return foo;
   }
-};
+}
 
 using namespace Chroma;
 
@@ -776,12 +787,16 @@ int main(int argc, char *argv[])
 
     swatch.reset();
     swatch.start();
+    int numbad = 0;
     {
       for(int mu=0; mu < Nd; mu++) { 
-	reunit(u[mu]);
+	int numbad_mu = 0; 
+	reunit(u[mu],numbad_mu,REUNITARIZE_LABEL);
+	numbad += numbad_mu;
       }
     }
     swatch.stop();
+    QDPIO::cout << "Gauge field reunitarization found " << numbad << " unitarity violations" << std::endl; 
     QDPIO::cout << "Gauge field reunitarized: time="
 		<< swatch.getTimeInSeconds()
 		<< " secs" << std::endl;

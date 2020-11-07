@@ -84,14 +84,15 @@ namespace Chroma
 
       //------------------------------------------------------------------------
       //! Write a fermion
+      template<typename T>
       void QIOWriteLatFerm(const std::string& buffer_id,
 			   const std::string& file, 
 			   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
-	LatticeFermion obj;
+	T obj;
 	XMLBufferWriter file_xml, record_xml;
 
-	obj = TheNamedObjMap::Instance().getData<LatticeFermion>(buffer_id);
+	obj = TheNamedObjMap::Instance().getData<T>(buffer_id);
 	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
 	TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
     
@@ -516,7 +517,10 @@ namespace Chroma
 								      QIOWriteLatPropD);
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticeFermion"), 
-								      QIOWriteLatFerm);
+								      QIOWriteLatFerm<LatticeFermion>);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticeStaggeredFermion"),
+                                                                      QIOWriteLatFerm<LatticeStaggeredFermion>);
+
 //      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticeFermionF"), 
 //								    QIOWriteLatFermF);
 //      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticeFermionD"), 

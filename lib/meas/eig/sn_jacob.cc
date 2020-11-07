@@ -53,7 +53,6 @@ int SN_Jacob_t(multi1d<T>& psi,
   Real s;
   Real al1;
   Real al2;
-  int cb;
   int i;
   int j;
   int ij;

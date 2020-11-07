@@ -12,13 +12,13 @@
         <elem>
           <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
             <S_even_even>
-              <S_ee>-5640.69518881183</S_ee>
+              <S_ee>-5640.69518881185</S_ee>
             </S_even_even>
             <S_odd_odd>
               <n_count>22</n_count>
               <S_oo>3059.93881944511</S_oo>
             </S_odd_odd>
-            <S>-2580.75636936672</S>
+            <S>-2580.75636936674</S>
           </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
         </elem>
       </PEByMonomials>
@@ -580,7 +580,7 @@
   </leapP>
   <mesE>
     <mesKE>
-      <KE>-3.81165718992862</KE>
+      <KE>-3.81165718992858</KE>
     </mesKE>
     <mesPE>
       <num_terms>1</num_terms>
@@ -592,7 +592,7 @@
             </S_even_even>
             <S_odd_odd>
               <n_count>51</n_count>
-              <S_oo>3102.54028590492</S_oo>
+              <S_oo>3102.54028590493</S_oo>
             </S_odd_odd>
             <S>-2505.92519559852</S>
           </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
@@ -602,7 +602,7 @@
   </mesE>
   <DeltaE>
     <DeltaKE>-74.8368014343401</DeltaKE>
-    <DeltaPE>74.8311737682002</DeltaPE>
-    <DeltaH>-0.00562766613990107</DeltaH>
+    <DeltaPE>74.8311737682225</DeltaPE>
+    <DeltaH>-0.00562766611764687</DeltaH>
   </DeltaE>
 </t_leapfrog>

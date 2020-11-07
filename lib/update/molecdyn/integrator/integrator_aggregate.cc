@@ -7,6 +7,7 @@
 #include "update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.h"
 #include "update/molecdyn/integrator/lcm_tst_min_norm2_recursive.h"
 #include "update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.h"
+#include "update/molecdyn/integrator/lcm_sts_force_grad_recursive.h"
 #include "update/molecdyn/integrator/lcm_4mn5fv_recursive.h"
 #include "update/molecdyn/integrator/lcm_4mn5fp_recursive.h"
 #include "update/molecdyn/integrator/lcm_4mn4fp_recursive.h"
@@ -35,6 +36,7 @@ namespace Chroma
 	success &=  LatColMatSTSMinNorm2DTauRecursiveIntegratorEnv::registerAll();
 	success &=  LatColMatTSTMinNorm2RecursiveIntegratorEnv::registerAll();
 	success &=  LatColMatTSTMinNorm2DTauRecursiveIntegratorEnv::registerAll();
+  success &=  LatColMatSTSForceGradRecursiveIntegratorEnv::registerAll();
 
 	success &=  LatColMat4MN4FPRecursiveIntegratorEnv::registerAll();
 	success &=  LatColMat4MN5FVRecursiveIntegratorEnv::registerAll();

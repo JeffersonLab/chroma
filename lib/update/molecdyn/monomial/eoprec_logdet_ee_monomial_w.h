@@ -94,7 +94,7 @@ namespace Chroma
 
   protected:
     virtual const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
-    virtual const int getNumFlavors() const = 0;
+    virtual int getNumFlavors() const = 0;
   };
 
 
@@ -155,7 +155,7 @@ namespace Chroma
       return *fermact;
     }
 
-    const int getNumFlavors() const {
+    int getNumFlavors() const {
       return num_flavors;
     }
 

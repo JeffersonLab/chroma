@@ -132,4 +132,4 @@ namespace Chroma {
 							  ncg_had);
   }
 
-};
+}

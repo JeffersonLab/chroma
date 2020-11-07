@@ -42,7 +42,7 @@ namespace Chroma
     
     static double time_spent = 0;
     double getTime() { return time_spent; }
-  };
+  }
 
 
   PlaqPlusSpatialTwoPlaqGaugeActParams::PlaqPlusSpatialTwoPlaqGaugeActParams(XMLReader& xml_in, const std::string& path) 

@@ -34,7 +34,6 @@ void InvRelGMRESR_CG_a(const LinearOperator<T>& PrecMM,
   int iter=0;
 
   int prec_count;
-  int prec_count_total = 0;
 
   // Do the loop
   while( toBool( norm_r > terminate) && iter < MaxGMRESR ) {

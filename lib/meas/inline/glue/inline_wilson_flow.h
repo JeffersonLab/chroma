@@ -35,6 +35,7 @@ namespace Chroma
 	int nstep ;
 	Real  wtime ;
 	int t_dir ; // the time direction of measurements 
+	multi1d<bool>  smear_dirs;         /*!< Only allow smearing and staples in these directions */
       } param;
 
       struct NamedObject_t

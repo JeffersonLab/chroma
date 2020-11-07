@@ -60,6 +60,7 @@
 #include "meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h"
 #include "meas/inline/hadron/inline_prop_and_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_prop_and_matelem_distillation_w.h"
+#include "meas/inline/hadron/inline_matelem_distillation_w.h"
 #include "meas/inline/hadron/inline_prop_and_matelem_distillation2_w.h"
 #include "meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h"
 #include "meas/inline/hadron/inline_baryon_matelem_colorvec_w.h"
@@ -71,6 +72,8 @@
 #include "meas/inline/hadron/inline_mres_w.h"
 #include "meas/inline/hadron/inline_qpropqio_w.h"
 #include "meas/inline/hadron/inline_qpropadd_w.h"
+#include "meas/inline/hadron/inline_qpropdiff_w.h"
+#include "meas/inline/hadron/inline_qprop_matmul_w.h"
 #include "meas/inline/hadron/inline_qqqNucNuc_w.h"
 #include "meas/inline/hadron/inline_stoch_meson_w.h"
 #include "meas/inline/hadron/inline_stoch_baryon_w.h"
@@ -156,14 +159,17 @@ namespace Chroma
 	success &= InlinePropMatElemColorVecEnv::registerAll();
 	success &= InlinePropMatElemPtColorVecEnv::registerAll();
 	success &= InlinePropAndMatElemColorVecEnv::registerAll();
-#ifndef QDP_IS_QDPJIT
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
+	success &= InlineMatElemDistillationEnv::registerAll();
 	success &= InlinePropAndMatElemDistillationEnv::registerAll();
+        success &= InlineUnsmearedHadronNodeDistillationEnv::registerAll();
+#endif
+#ifndef QDP_IS_QDPJIT
 	success &= InlinePropAndMatElemDistillation2Env::registerAll();
 #endif
 	success &= InlinePropMatElemLowMemoryColorVecEnv::registerAll();
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();
 	success &= InlineMesonMatElemColorVecEnv::registerAll();
- 	success &= InlineUnsmsearedHadronNodeDistillationEnv::registerAll();
 	success &= InlineGenPropMatElemColorVecEnv::registerAll();
 	success &= InlineGenPropMatElemDAColorVecEnv::registerAll();
 	success &= InlineGenPropMatElemPtColorVecEnv::registerAll();
@@ -172,6 +178,8 @@ namespace Chroma
 	success &= InlineRotateSpinEnv::registerAll();
 	success &= InlineQpropQIOEnv::registerAll();
 	success &= InlineQpropAddEnv::registerAll();
+	success &= InlineQpropDiffEnv::registerAll();
+	success &= InlineQpropMatMulEnv::registerAll();
 	success &= InlineQQQNucNucEnv::registerAll();
 	success &= InlineBarSpecEnv::registerAll();
 //	success &= InlineSpectrumQllEnv::registerAll();

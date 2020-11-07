@@ -35,7 +35,7 @@ namespace Chroma {
 
     bool registered = registerAll();
     const std::string typeIDString = "StochSrc";
-  };
+  }
 
   using namespace StochSrcEnv ;
 
@@ -48,4 +48,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const VolSrc& t) {
     theStochSrc::Instance().write(typeIDString, xml_out, path, t);
   }
-};
+}

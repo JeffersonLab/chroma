@@ -133,6 +133,6 @@ namespace Chroma
     END_CODE();
   }
 
-}; // End Namespace Chroma
+}  // End Namespace Chroma
 
 

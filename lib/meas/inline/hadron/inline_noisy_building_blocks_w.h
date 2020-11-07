@@ -94,6 +94,6 @@ namespace Chroma
     InlineNoisyBuildingBlocksParams params;
   };
 
-};
+}
 
 #endif

@@ -102,6 +102,24 @@ namespace Chroma
       END_CODE();
     }
     
+    const T& operator[](int i) const
+    {
+      if( i >= size_internal ) { 
+	throw OutOfBoundsException(std::string("Index Out of bounds"), i, size_internal);
+      }
+      unsigned int index = (start + i) % size_max;
+      return q[index];
+    }
+
+    T& operator[](int i) 
+    {
+      if( i >= size_internal ) { 
+	throw OutOfBoundsException(std::string("Index Out of bounds"), i, size_internal);
+      }
+      unsigned int index = (start + i) % size_max;
+      return q[index];
+    }
+
     //! Is empty check
     bool isEmpty(void) const { 
       return (size_internal == 0);
@@ -274,7 +292,7 @@ namespace Chroma
 	unsigned int index = (start + i) % size_max;
 
 	x.resize(N5);
-	for(int s=0; s < N5; s++) { 
+	for(unsigned int s=0; s < N5; s++) { 
 	  x[s] = q[index][s];
 	}
       }
@@ -293,7 +311,7 @@ namespace Chroma
     {
       START_CODE();
 
-      if( e.size() != N5) { 
+      if( static_cast<int>(e.size()) != N5) { 
 	throw SizeMismatchException("Attempting to push std::vector of wrong size into circular buffer", N5, e.size());
       }
 
@@ -303,7 +321,7 @@ namespace Chroma
 	start = size_max -1; // end of list for first element
 	end = size_max -1;   // first element is also last element
 
-	for(int s = 0; s < N5; s++) {
+	for(unsigned int s = 0; s < N5; s++) {
 	  q[start][s]=e[s];          // store element
 	}
 
@@ -345,7 +363,7 @@ namespace Chroma
 	  } 
 	  
 	  // copy element to start
-	  for(int s = 0; s < N5; s++) { 
+	  for(unsigned int s = 0; s < N5; s++) { 
 	    q[start][s] = e[s];
 	  }
 	  // don't increase size
@@ -363,7 +381,7 @@ namespace Chroma
 	  }
 	  
 	  // Store element
-	  for(int s = 0; s < N5; s++) { 
+	  for(unsigned int s = 0; s < N5; s++) { 
 	    q[start][s] = e[s];
 	  }
 	  // Increase size count

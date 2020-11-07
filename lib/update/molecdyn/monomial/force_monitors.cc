@@ -3,6 +3,7 @@
  */
 
 #include "update/molecdyn/monomial/force_monitors.h"
+#include "update/molecdyn/integrator/lcm_integrator_leaps.h"
 #include "util/gauge/taproj.h"
 
 namespace Chroma 
@@ -18,10 +19,11 @@ namespace Chroma
     write(xml_out, "F_sq_per_direction", param.F_sq_dir);
     write(xml_out, "F_avg_per_direction", param.F_avg_dir);
     write(xml_out, "F_max_per_direction", param.F_max_dir);
-
+    write(xml_out, "F_max_dt_per_direction", param.F_max_dt_dir);
     write(xml_out, "F_sq", param.F_sq);
     write(xml_out, "F_avg", param.F_avg);
     write(xml_out, "F_max", param.F_max);
+    write(xml_out, "F_max_dt", param.F_max_dt);
 
     pop(xml_out);
   }
@@ -43,6 +45,7 @@ namespace Chroma
     forces.F_sq_dir.resize(Nd);
     forces.F_avg_dir.resize(Nd);
     forces.F_max_dir.resize(Nd);
+    forces.F_max_dt_dir.resize(Nd);
 
     // Precompute these
     multi1d<LatticeReal> f2(F.size());
@@ -66,6 +69,9 @@ namespace Chroma
       f1[mu] = sqrt(f2[mu]);
     }
 
+    auto aniso_step = LCMMDIntegratorSteps::theAnisoStepSizeArray::Instance();
+
+  
     // Standard kind of sums
     for(int mu=0; mu < F.size(); ++mu)
     {
@@ -77,6 +83,9 @@ namespace Chroma
 
       // Get max force for direction mu - this is already 'per site'
       forces.F_max_dir[mu] = globalMax(f1[mu]);
+
+      //  multiply max force per dir with its actual step-size.
+      forces.F_max_dt_dir[mu] = aniso_step.getStepSizeFactor(mu)*forces.F_max_dir[mu];
     
       //Sum up squares and averages
       forces.F_sq  += forces.F_sq_dir[mu];
@@ -90,10 +99,15 @@ namespace Chroma
 
     // Find the maximum of the 4 directions.
     forces.F_max = forces.F_max_dir[0];
+    forces.F_max_dt =forces.F_max_dt_dir[0];
+
     for(int mu=1; mu < F.size(); ++mu)
     {
       if(  toBool( forces.F_max < forces.F_max_dir[mu] ) ) {
 	forces.F_max = forces.F_max_dir[mu];
+      }
+      if(  toBool( forces.F_max_dt < forces.F_max_dt_dir[mu]) ) {
+        forces.F_max_dt = forces.F_max_dt_dir[mu];
       }
     }
 

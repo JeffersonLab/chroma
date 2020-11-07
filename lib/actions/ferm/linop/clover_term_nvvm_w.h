@@ -13,6 +13,7 @@
 #include "actions/ferm/linop/clover_term_base_w.h"
 #include "meas/glue/mesfield.h"
 
+//#define QDP_JIT_NVVM_USE_LEGACY_LAUNCH
 
 namespace QDP
 {
@@ -624,21 +625,25 @@ namespace Chroma
     int lo = 0;
     int hi = Layout::sitesOnNode();
 
+#ifndef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
+    JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
+    JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
+
+    std::vector<QDPCache::ArgKey> ids;
+    ids.push_back( jit_lo.get_id() );
+    ids.push_back( jit_hi.get_id() );
+    for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
+      ids.push_back( addr_leaf.ids[i] );
+    jit_launch(function,Layout::sitesOnNode(),ids);
+#else
     std::vector<void*> addr;
-
     addr.push_back( &lo );
-    //std::cout << "addr lo = " << addr[0] << " lo=" << lo << "\n";
-
     addr.push_back( &hi );
-    //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
-
-    //int addr_dest=addr.size();
     for(unsigned i=0; i < addr_leaf.addr.size(); ++i) {
       addr.push_back( &addr_leaf.addr[i] );
-      //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
     }
-
     jit_launch(function,Layout::sitesOnNode(),addr);
+#endif
   }
 
 
@@ -870,17 +875,12 @@ namespace Chroma
 
     LatticeREAL ff=tr_log_diag_;
 
-    if( param.sub_zero_usedP ) { 
-      QDPIO::cout << "Subtracting "<< param.sub_zero<<std::endl;
-      LatticeREAL tmp;
-      tmp[rb[cb]] = param.sub_zero;
-      ff[rb[cb]] -= tmp;
-    }
+
     END_CODE();
 
     // Need to thread generic sums in QDP++?
     // Need to thread generic norm2() in QDP++?
-    return sum(ff, rb[cb]);
+    return sum(tr_log_diag_, rb[cb]);
   }
 
 
@@ -905,21 +905,24 @@ namespace Chroma
     int lo = s.start();
     int hi = s.end();
 
+#ifndef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
+    JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
+    JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
+    std::vector<QDPCache::ArgKey> ids;
+    ids.push_back( jit_lo.get_id() );
+    ids.push_back( jit_hi.get_id() );
+    for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
+      ids.push_back( addr_leaf.ids[i] );
+    jit_launch(function,s.numSiteTable(),ids);
+#else
     std::vector<void*> addr;
-
     addr.push_back( &lo );
-    //std::cout << "addr lo = " << addr[0] << " lo=" << lo << "\n";
-
     addr.push_back( &hi );
-    //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
-
-    //int addr_dest=addr.size();
     for(unsigned i=0; i < addr_leaf.addr.size(); ++i) {
       addr.push_back( &addr_leaf.addr[i] );
-      //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
     }
-
     jit_launch(function,s.numSiteTable(),addr);
+#endif
   }
 
 
@@ -1144,7 +1147,7 @@ namespace Chroma
       }
 
     // Zero trace log
-    tr_log_diag = zero;
+    tr_log_diag[rb[cb]] = zero;
 
     //QDPIO::cout << "PTX Clover ldagdlinv " << (void*)this << "\n";
     //std::cout << "PTX Clover ldagdlinv " << (void*)this << "\n";
@@ -1232,24 +1235,28 @@ namespace Chroma
     int lo = s.start();
     int hi = s.end();
 
+#ifndef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
+    JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
+    JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
+    JitParam jit_mat( QDP_get_global_cache().addJitParamInt( mat ) );
+
+    std::vector<QDPCache::ArgKey> ids;
+    ids.push_back( jit_lo.get_id() );
+    ids.push_back( jit_hi.get_id() );
+    ids.push_back( jit_mat.get_id() );
+    for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
+      ids.push_back( addr_leaf.ids[i] );
+    jit_launch(function,s.numSiteTable(),ids);
+#else
     std::vector<void*> addr;
-
     addr.push_back( &lo );
-    //std::cout << "addr lo = " << addr[0] << " lo=" << lo << "\n";
-
     addr.push_back( &hi );
-    //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
-
     addr.push_back( &mat );
-    //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
-
-    //int addr_dest=addr.size();
     for(unsigned i=0; i < addr_leaf.addr.size(); ++i) {
       addr.push_back( &addr_leaf.addr[i] );
-      //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
     }
-
     jit_launch(function,s.numSiteTable(),addr);
+#endif
   }
 
 
@@ -1685,21 +1692,24 @@ namespace Chroma
     int lo = s.start();
     int hi = s.end();
 
+#ifndef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
+    JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
+    JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
+    std::vector<QDPCache::ArgKey> ids;
+    ids.push_back( jit_lo.get_id() );
+    ids.push_back( jit_hi.get_id() );
+    for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
+      ids.push_back( addr_leaf.ids[i] );
+    jit_launch(function,s.numSiteTable(),ids);
+#else
     std::vector<void*> addr;
-
     addr.push_back( &lo );
-    //std::cout << "addr lo = " << addr[0] << " lo=" << lo << "\n";
-
     addr.push_back( &hi );
-    //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
-
-    //int addr_dest=addr.size();
     for(unsigned i=0; i < addr_leaf.addr.size(); ++i) {
       addr.push_back( &addr_leaf.addr[i] );
-      //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
     }
-
     jit_launch(function,s.numSiteTable(),addr);
+#endif
   }
 
 
@@ -1954,5 +1964,7 @@ namespace Chroma
   typedef NVVMCloverTermT<LatticeFermionD, LatticeColorMatrixD> NVVMCloverTermD;
 } // End Namespace Chroma
 
+
+#undef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
 
 #endif

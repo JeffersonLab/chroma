@@ -175,6 +175,13 @@ namespace Chroma
 	}
       }
 
+      void AddVector(const T& v){
+	if(N<vec.size()){
+	  vec[N] = v;
+	  N++;
+	}
+      }
+
       void NormalizeAndAddVector(const T& v,const Double& inorm, 
 				 const Subset& s){
 	if(N<vec.size()){// inorm is the inverse of the norm
@@ -197,6 +204,11 @@ namespace Chroma
       void AddVectors(multi1d<T>& v,const Subset& s){
 	for(int i(0);i<v.size();i++)
 	  AddVector(v[i],s);
+      }
+
+      void AddVectors(multi1d<T>& v){
+	for(int i(0);i<v.size();i++)
+	  AddVector(v[i]);
       }
 
     
@@ -283,7 +295,7 @@ namespace Chroma
       }
 
       void AddVector(const Double& e, const T& v,const Subset& s){
-	eval.AddVector(e,s);
+	eval.AddVector(e);
 	evec.AddVector(v,s);
 	if (eval.N != evec.N)
 	{
@@ -296,7 +308,7 @@ namespace Chroma
       // This will only add as many vectors as they fit
       void AddVectors(const multi1d<Double>& e,const multi1d<T>& v,const Subset& s){
 	for(int i(0);i<e.size();i++)
-	  eval.AddVector(e[i],s);
+	  eval.AddVector(e[i]);
 	for(int i(0);i<v.size();i++)
 	  evec.AddVector(v[i],s);
 	if (eval.N != evec.N)

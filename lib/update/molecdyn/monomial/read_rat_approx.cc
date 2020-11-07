@@ -73,7 +73,7 @@ namespace Chroma {
 
 
     
-  }; // Namespace   
+  } // Namespace   
 
   void read(XMLReader &xml, const std::string& path, ReadRatApproxEnv::Params& param) {
     ReadRatApproxEnv::Params tmp(xml, path);
@@ -93,4 +93,4 @@ namespace Chroma {
     ipfe=params.ipfe;
   }
 
-};
+}

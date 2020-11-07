@@ -60,6 +60,31 @@ namespace Chroma
     pokeSpin(b, a, 0);
   }
 
+  //! Convert a LatticeStaggeredFermion into a LatticeColorVector (extract)
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source Fermion
+   * \param b      Destination ColorVector
+   */
+  void FermToCv(const LatticeStaggeredFermionD& a, LatticeColorVectorD& b)
+    {
+      b = peekSpin(a, 0);
+    }
+
+  //! Convert  a LatticeStaggeredFermion into a LatticeColorVector (extract)
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source Fermion
+   * \param b      Destination ColorVector
+   */
+  void FermToCv(const LatticeStaggeredFermionF& a, LatticeColorVectorF& b)
+    {
+	  b = peekSpin(a,0);
+    }
+
+
 
   //! Insert a LatticeFermion into a LatticePropagator
   /*!
@@ -109,7 +134,43 @@ namespace Chroma
     }
   }
 
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
+  //-------------------------------------------------------------------------------
+  //! Insert a LatticeFermion into a LatticeColorVectorSpinMatrix
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source fermion
+   * \param b      Destination propagator
+   * \param color_index  Color index
+   * \param spin_index   Spin index
+   */
+  void FermToProp(const LatticeFermionF& a, LatticeColorVectorSpinMatrixF& b, 
+		  int spin_index)
+  {
+    for(int j = 0; j < Ns; ++j)
+      pokeSpin(b, peekSpin(a, j), j, spin_index);
+  }
 
+  
+  //-------------------------------------------------------------------------------
+  //! Insert a LatticeFermion into a LatticeColorVectorSpinMatrix
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source fermion
+   * \param b      Destination propagator
+   * \param color_index  Color index
+   * \param spin_index   Spin index
+   */
+  void FermToProp(const LatticeFermionD& a, LatticeColorVectorSpinMatrixD& b, 
+		  int spin_index)
+  {
+    for(int j = 0; j < Ns; ++j)
+      pokeSpin(b, peekSpin(a, j), j, spin_index);
+  }
+#endif
+  
   //! Insert a LatticeStaggeredFermion into a LatticeStaggeredPropagator
   /*!
    * \ingroup ferm

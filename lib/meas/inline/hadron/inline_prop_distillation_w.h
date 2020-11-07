@@ -48,7 +48,7 @@ namespace Chroma
       struct NamedObject_t
       {
 	std::string     gauge_id;           /*!< Gauge field */
-	std::string     src_file;           /*!< File output propagator sources */
+	std::vector<std::string>    colorvec_files;           /*!< File output propagator sources */
 	std::string     soln_file;          /*!< File output propagator solutions */
       };
 

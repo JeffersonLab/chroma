@@ -5,6 +5,7 @@
 
 using namespace QDP;
 
+//#define QDP_JIT_NVVM_USE_LEGACY_LAUNCH
 
 void function_get_fs_bs_exec(CUfunction function, 
 				   const LatticeColorMatrix& Q,
@@ -14,6 +15,8 @@ void function_get_fs_bs_exec(CUfunction function,
 				   multi1d<LatticeComplex>& b2,
 				   bool dobs)
 {
+  //QDPIO::cout << __FILE__ << ":" << __LINE__ << "\n";
+
   AddressLeaf addr_leaf(all);
 
   int junk_0 = forEach(Q, addr_leaf, NullCombine());
@@ -28,29 +31,31 @@ void function_get_fs_bs_exec(CUfunction function,
   int junk_9 = forEach(b2[1], addr_leaf, NullCombine());
   int junk_10= forEach(b2[2], addr_leaf, NullCombine());
 
-
-  // lo <= idx < hi
   int lo = 0;
   int hi = Layout::sitesOnNode();
+#ifndef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
+  JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
+  JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
+  JitParam jit_dobs( QDP_get_global_cache().addJitParamBool( dobs ) );
+  std::vector<QDPCache::ArgKey> ids;
+  ids.push_back( jit_lo.get_id() );
+  ids.push_back( jit_hi.get_id() );
+  ids.push_back( jit_dobs.get_id() );
+  for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
+    ids.push_back( addr_leaf.ids[i] );
+  jit_launch(function,hi-lo,ids);
+#else
   unsigned char dobs_u8 = dobs ? 1 : 0;
-
   std::vector<void*> addr;
-
   addr.push_back( &lo );
-  //std::cout << "addr lo = " << addr[0] << " lo=" << lo << "\n";
-
   addr.push_back( &hi );
-  //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
-
   addr.push_back( &dobs_u8 );
-
   int addr_dest=addr.size();
   for(int i=0; i < addr_leaf.addr.size(); ++i) {
     addr.push_back( &addr_leaf.addr[i] );
-    //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
   }
-
   jit_launch(function,hi-lo,addr);
+#endif
 }
 
 

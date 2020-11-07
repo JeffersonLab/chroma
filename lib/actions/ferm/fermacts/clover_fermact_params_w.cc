@@ -18,9 +18,9 @@ namespace Chroma
     clovCoeffR = clovCoeffT = Real(0);
     max_norm=0;
     max_norm_usedP=false;
+    twisted_m_usedP = false;
+    twisted_m = Real(0);
 
-    sub_zero=0;
-    sub_zero_usedP=false;
   }
 
   //! Read parameters
@@ -86,14 +86,7 @@ namespace Chroma
       max_norm=Real(0);
     }
 
-    if( paramtop.count("ZeroEnergy") != 0 ) { 
-      read(paramtop, "ZeroEnergy", sub_zero);
-      sub_zero_usedP=true;
-    }
-    else { 
-      sub_zero_usedP=false;
-      sub_zero=Real(0);
-    }
+
 
     if( paramtop.count("TwistedM") != 0 ) { 
       twisted_m_usedP = true;
@@ -135,9 +128,6 @@ namespace Chroma
       write(xml, "MaxNorm", param.max_norm);
     }
 
-    if (param.sub_zero_usedP == true ) {
-      write(xml, "ZeroEnergy", param.sub_zero);
-    }
 
     if (param.twisted_m_usedP == true ) { 
       write(xml, "TwistedM", param.twisted_m);

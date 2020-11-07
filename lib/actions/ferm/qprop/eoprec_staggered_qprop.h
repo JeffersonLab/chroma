@@ -128,7 +128,7 @@ namespace Chroma
     SysSolverCGParams invParam; 
   };
 
-}; // End namespace
+} // End namespace
 
 #endif 
 
