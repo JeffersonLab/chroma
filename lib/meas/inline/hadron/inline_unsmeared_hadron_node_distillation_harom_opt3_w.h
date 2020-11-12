@@ -44,7 +44,7 @@ namespace Chroma
 	  std::string               mass_label;             /*!< Some kind of mass label */
 	  int                       num_tries;              /*!< In case of bad things happening in the solution vectors, do retries */
 
-	  std::vector<std::string>  fifo;
+	  int                       ts_per_node;
 	  int                       nodes_per_cn;   // (QDP++) nodes per compute node
 	};
 
