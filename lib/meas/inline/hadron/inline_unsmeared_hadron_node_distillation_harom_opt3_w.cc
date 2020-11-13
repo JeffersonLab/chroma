@@ -822,90 +822,10 @@ namespace Chroma
 	return disp;
       } // void normDisp
 
-
       
-    }
+    } // namespace
 
     
-#if 0
-    void store_genprop(std::vector<void*> val_ret, std::string key_buf)
-    {
-      QDPIO::cout << "Chroma::store_genprop called.\n";
-
-      std::vector< KeyGenProp4ElementalOperator_t >  key( Nt_forward );
-      std::vector< ValGenProp4ElementalOperator_t* >  val( Nt_forward );
-
-      // for (int tcorr = 0 ; tcorr < Nt_forward ; ++tcorr )
-      // 	val[ tcorr ] = new ValGenProp4ElementalOperator_t;
-
-
-      for (int tcorr = 0 ; tcorr < Nt_forward ; ++tcorr )
-	{
-	  int ts_node = tcorr / ts_per_node * nodes_per_cn;
-
-	  QDPIO::cout << "gather for tcorr = " << tcorr << ". On node = " << ts_node << "\n";
-
-	  if (ts_node != 0)
-	    {
-	      int size = sizeof( ComplexD ) * num_vecs * num_vecs * Ns * Ns;
-	      if (Layout::nodeNumber() == ts_node)
-		{
-		  //QDPInternal::sendToWait( const_cast<ComplexD*>(val[tcorr]->op.slice(0,0,0)) , 0 , size );
-
-		  int tcorr_local = tcorr % ts_per_node;
-			      
-		  QDPInternal::sendToWait( val_ret[ tcorr_local ] , 0 , size );
-		}
-	      if (Layout::nodeNumber() == 0)
-		{
-		  //delete val[ tcorr ];
-		  val[ tcorr ] = new ValGenProp4ElementalOperator_t (num_vecs );
-
-		  QDPInternal::recvFromWait( const_cast<ComplexD*>(val[tcorr]->op.slice(0,0,0)) , ts_node , size );
-
-		  BinaryBufferReader tmp( key_buf );
-		  read( tmp , key[ tcorr ] );
-		  key[ tcorr ].t_slice = ( t_start + tcorr ) % Lt;
-		}
-	    }
-	  else
-	    {
-	      if (Layout::nodeNumber() == 0)
-		{
-		  int tcorr_local = tcorr % ts_per_node;
-		  val[ tcorr ] = new ValGenProp4ElementalOperator_t( reinterpret_cast< ComplexD * >( val_ret[ tcorr_local ] ) , num_vecs );
-
-		  BinaryBufferReader tmp( key_buf );
-		  read( tmp , key[ tcorr ] );
-		  key[ tcorr ].t_slice = ( t_start + tcorr ) % Lt;
-		}
-	    }
-	}
-
-      // swatch2.stop();
-      // QDPIO::cout << "Time to copy tensor to primary node: time = " << swatch2.getTimeInSeconds() << " secs " <<std::endl;
-
-      //
-      // Now store the tensors
-      //				    
-      //swatch2.reset(); swatch2.start();
-      if (Layout::nodeNumber() == 0)
-	{
-	  for (int tcorr = 0 ; tcorr < Nt_forward ; ++tcorr )
-	    {
-	      QDPIO::cout << "storing for tcorr = " << tcorr << "\n";
-	      
-	      qdp_db->insert(key[ tcorr ], *val[ tcorr ]);
-	      delete val[ tcorr ];
-	    }
-	}
-      //swatch2.stop();
-      //QDPIO::cout << "Time to store tensors:               time = " << swatch2.getTimeInSeconds() << " secs " <<std::endl;
-
-      
-    }
-#endif
-
 
 
     
@@ -947,6 +867,10 @@ namespace Chroma
       snoop.reset();
       snoop.start();
 
+      StopWatch clock;
+
+
+      
       QDPIO::cout << name << ": construct unsmeared hadron nodes via distillation" << std::endl;
 
       const int ts_per_node = params.param.contract.ts_per_node;
@@ -1284,11 +1208,14 @@ namespace Chroma
       //
       // Generate all sink tensors
       //
+      clock.reset(); clock.start();
+      
       if (Layout::nodeNumber() % nodes_per_cn == 0)
 	Harom::genprop::generate_sink_tensors();
       QMP_barrier();
       
-      QDPIO::cout << "Sink tensors generated!" << std::endl;
+      clock.stop();
+      QDPIO::cout << "Sink tensors generated: time = " << clock.getTimeInSeconds() << " secs " <<std::endl;
 
 
       std::vector< std::vector<int> > disps;
@@ -1309,21 +1236,21 @@ namespace Chroma
 	}
 
 
-      
-	
-      //swatch.stop();
-      //QDPIO::cout << "Time to generate all solutions: time = " << swatch.getTimeInSeconds() << " secs " <<std::endl;
 
       size_t genprop_elem = num_vecs * num_vecs * Ns * Ns;
       size_t genprop_size = sizeof(ComplexD) * genprop_elem;
+
       std::vector<ComplexD*> genprop_mem;
-      for (int i = 0 ; i < ts_per_node ; ++i )
-	genprop_mem.push_back( new ComplexD[genprop_elem] );
+      std::vector<void*    > genprop_mem_param;
 
-      std::vector<void*> genprop_mem_param(genprop_mem.size());
-      for (int i = 0 ; i < genprop_mem.size() ; ++i )
-	genprop_mem_param[i] = (void*)genprop_mem[i];
-
+      if (Layout::nodeNumber() % nodes_per_cn == 0)
+	{
+	  for (int i = 0 ; i < ts_per_node ; ++i )
+	    {
+	      genprop_mem.push_back( new ComplexD[genprop_elem] );
+	      genprop_mem_param.push_back( (void*)genprop_mem.back() );
+	    }
+	}
 
 
       for(auto source_ptr = params.param.sink_sources.begin(); source_ptr != params.param.sink_sources.end(); ++source_ptr)
@@ -1339,21 +1266,15 @@ namespace Chroma
 	  //
 	  QDPIO::cout << "SOURCE: start insertions" << std::endl;
 
-	  // StopWatch snarss1;
-	  // snarss1.reset();
-	  // snarss1.start();
 
 	  //
 	  // Big loop over insertions - deriv-s, mom-s
 	  //
 	  for(auto dd = disps.begin(); dd != disps.end(); ++dd)
 	    {
-	      // StopWatch big_snars;
-	      // big_snars.reset(); big_snars.start();
-
 	      auto disp    = *dd;
 
-	      QDPIO::cout << "disp= " << disp << std::endl;
+	      //QDPIO::cout << "disp= " << disp << std::endl;
 
 	      for(auto mm = params.param.moms.begin(); mm != params.param.moms.end(); ++mm)
 		{
@@ -1367,10 +1288,16 @@ namespace Chroma
 		  mom_vec.push_back( mom[1] );
 		  mom_vec.push_back( mom[2] );
 
+		  QDPIO::cout << "---- disp = " << disp << ", mom = " << mom << std::endl;
 
+		  clock.reset(); clock.start();
+		  
 		  if (Layout::nodeNumber() % nodes_per_cn == 0)
 		    Harom::genprop::generate_source_tensors( t_source , mom_vec , disp );
 		  QMP_barrier();
+
+		  clock.stop();
+		  QDPIO::cout << "Source tensors generated: \t\ttime = " << clock.getTimeInSeconds() << " secs " <<std::endl;
 
 
 		  for(auto sink_ptr = source_ptr->second.begin(); sink_ptr != source_ptr->second.end(); ++sink_ptr)
@@ -1378,10 +1305,9 @@ namespace Chroma
 		      int t_sink = *sink_ptr;
 		      QDPIO::cout << "t_sink = " << t_sink << "\n";
 		      
-		      //for (int g = 0; g < 1; ++g)
 		      for (int g = 0; g < Ns*Ns; ++g)
 			{
-			  QDPIO::cout << "g = " << g << "\n";
+			  //QDPIO::cout << "g = " << g << "\n";
 			  
 			  KeyGenProp4ElementalOperator_t key_templ;
 
@@ -1393,35 +1319,44 @@ namespace Chroma
 			  key_templ.mass          = params.param.contract.mass_label;
 			  key_templ.t_slice       = -1;
 
+			  clock.reset(); clock.start();
+			  
 			  if (Layout::nodeNumber() % nodes_per_cn == 0)
 			    Harom::genprop::generate_genprops( t_sink , g , genprop_mem_param );
 			  QMP_barrier();
-
-
+			  
+			  clock.stop();
+			  QDPIO::cout << "Tensors contracted ( g = " << g << " ):\t\ttime = " << clock.getTimeInSeconds() << " secs " <<std::endl;
+		  
 			  std::vector< KeyGenProp4ElementalOperator_t >  key( Nt_forward );
 			  std::vector< ValGenProp4ElementalOperator_t* >  val( Nt_forward );
 
+
+			  clock.reset(); clock.start();
+						  
+			  for (int tcorr = 0 ; tcorr < Nt_forward ; ++tcorr )
+			    val[ tcorr ] = new ValGenProp4ElementalOperator_t;
+
+			  
 			  for (int tcorr = 0 ; tcorr < Nt_forward ; ++tcorr )
 			    {
 			      int ts_node = tcorr / ts_per_node * nodes_per_cn;
 
-			      QDPIO::cout << "gather for tcorr = " << tcorr << ". On node = " << ts_node << "\n";
+			      //QDPIO::cout << "gather for tcorr = " << tcorr << ". On node = " << ts_node << "\n";
 
 			      if (ts_node != 0)
 				{
 				  int size = sizeof( ComplexD ) * num_vecs * num_vecs * Ns * Ns;
 				  if (Layout::nodeNumber() == ts_node)
 				    {
-				      //QDPInternal::sendToWait( const_cast<ComplexD*>(val[tcorr]->op.slice(0,0,0)) , 0 , size );
-
 				      int tcorr_local = tcorr % ts_per_node;
 			      
 				      QDPInternal::sendToWait( genprop_mem_param[ tcorr_local ] , 0 , size );
 				    }
 				  if (Layout::nodeNumber() == 0)
 				    {
-				      //delete val[ tcorr ];
-				      val[ tcorr ] = new ValGenProp4ElementalOperator_t (num_vecs );
+				      delete val[ tcorr ];
+				      val[ tcorr ] = new ValGenProp4ElementalOperator_t( num_vecs );
 
 				      QDPInternal::recvFromWait( const_cast<ComplexD*>(val[tcorr]->op.slice(0,0,0)) , ts_node , size );
 
@@ -1434,6 +1369,7 @@ namespace Chroma
 				  if (Layout::nodeNumber() == 0)
 				    {
 				      int tcorr_local = tcorr % ts_per_node;
+				      delete val[ tcorr ];
 				      val[ tcorr ] = new ValGenProp4ElementalOperator_t( reinterpret_cast< ComplexD * >( genprop_mem_param[ tcorr_local ] ) , num_vecs );
 
 				      key[ tcorr ] = key_templ;
@@ -1442,40 +1378,40 @@ namespace Chroma
 				}
 			    }
 
-			  // swatch2.stop();
-			  // QDPIO::cout << "Time to copy tensor to primary node: time = " << swatch2.getTimeInSeconds() << " secs " <<std::endl;
+			  QMP_barrier();
 
+			  clock.stop();
+			  QDPIO::cout << "Tensors transferred to primary node: \ttime = " << clock.getTimeInSeconds() << " secs " <<std::endl;
+			  
 			  //
 			  // Now store the tensors
 			  //				    
-			  //swatch2.reset(); swatch2.start();
+
+			  clock.reset(); clock.start();
+			  
 			  for (int tcorr = 0 ; tcorr < Nt_forward ; ++tcorr )
 			    {
-			      QDPIO::cout << "storing for tcorr = " << tcorr << "\n";
+			      //QDPIO::cout << "storing for tcorr = " << tcorr << "\n";
 
-			      auto& g = *val[ tcorr ];
-			      for (int q1 = 0 ; q1 < g.op.size1() ; ++q1 )
-				for (int q2 = 0 ; q2 < g.op.size2() ; ++q2 )
-				  for (int q3 = 0 ; q3 < g.op.size3() ; ++q3 )
-				    for (int q4 = 0 ; q4 < g.op.size4() ; ++q4 )
-				      QDPIO::cout << g.op(q4,q3,q2,q1) << "\n";
-			      QDPIO::cout << "\n";
 #if 0
-			      for( int n0 = 0 ; n0 < num_vecs ; ++n0 )
-				for( int n1 = 0 ; n1 < num_vecs ; ++n1 )
-				  for( int s0 = 0 ; s0 < 1 ; ++s0 )
-				    {
-				      for( int s1 = 0 ; s1 < 1 ; ++s1 )
-					QDPIO::cout << val[tcorr]->op(n1,n0,s1,s0) << "\n";
-				    }
+			      if (Layout::nodeNumber() == 0)
+				{
+				  auto& g = *val[ tcorr ];
+				  for (int q1 = 0 ; q1 < g.op.size1() ; ++q1 )
+				    for (int q2 = 0 ; q2 < g.op.size2() ; ++q2 )
+				      for (int q3 = 0 ; q3 < g.op.size3() ; ++q3 )
+					for (int q4 = 0 ; q4 < g.op.size4() ; ++q4 )
+					  QDPIO::cout << g.op(q4,q3,q2,q1) << "\n";
+				  QDPIO::cout << "\n";
+				}
 #endif
 			      
 			      qdp_db.insert( key[ tcorr ] , *val[ tcorr ] );
 			      delete val[ tcorr ];
 			    }
-			  //swatch2.stop();
-			  //QDPIO::cout << "Time to store tensors:               time = " << swatch2.getTimeInSeconds() << " secs " <<std::endl;
-
+			  
+			  clock.stop();
+			  QDPIO::cout << "Tensors stored: \t\t\ttime = " << clock.getTimeInSeconds() << " secs " << std::endl << std::endl;
 
 			  
 
@@ -1488,9 +1424,14 @@ namespace Chroma
 	    } // disp
 	
 	} // source_t
+
       
-      for (int i = 0 ; i < ts_per_node ; ++i )
-	delete[] genprop_mem[i];
+      //QDPIO::cout << "deleting memory for genprops\n";
+      if (Layout::nodeNumber() % nodes_per_cn == 0)
+	{      
+	  for (int i = 0 ; i < ts_per_node ; ++i )
+	    delete[] genprop_mem[i];
+	}
 
             
 
