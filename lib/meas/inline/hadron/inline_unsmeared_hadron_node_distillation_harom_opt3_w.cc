@@ -26,8 +26,6 @@
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "meas/inline/make_xml_file.h"
 
-#include "util/info/ts_comms.h"
-//#include "util/ft/sftmom.h"
 
 // This searches in Harom
 #include "meas/hadron/genprop.h"
@@ -80,6 +78,16 @@ namespace Chroma
       read(inputtop, "mass_label", input.mass_label);
       read(inputtop, "num_tries", input.num_tries);
 
+      if (inputtop.count("t_start_store") != 0)
+	read(inputtop, "t_start_store", input.t_start_store);
+      else
+	input.t_start_store = input.t_start;
+
+      if (inputtop.count("Nt_forward_store") != 0)
+	read(inputtop, "Nt_forward_store", input.Nt_forward_store);
+      else
+	input.Nt_forward_store = input.Nt_forward;
+
       read(inputtop, "ts_per_node", input.ts_per_node );
       read(inputtop, "nodes_per_cn", input.nodes_per_cn );
     }
@@ -91,7 +99,9 @@ namespace Chroma
 
       write(xml, "num_vecs", input.num_vecs);
       write(xml, "t_start", input.t_start);
+      write(xml, "t_start_store", input.t_start_store);
       write(xml, "Nt_forward", input.Nt_forward);
+      write(xml, "Nt_forward_store", input.Nt_forward_store);
       write(xml, "decay_dir", input.decay_dir);
       write(xml, "displacement_length", input.displacement_length);
       write(xml, "mass_label", input.mass_label);
@@ -543,8 +553,6 @@ namespace Chroma
     }
 
 
-
-
     //
     //  class Comms -------------------------------------
     //
@@ -721,82 +729,9 @@ namespace Chroma
     }
 
 
-#if 0
-        //----------------------------------------------------------------------------
-    //! Normalize just one displacement array
-    std::vector<int> normDisp(const std::vector<int>& orig)
-    {
-      START_CODE();
-
-      std::vector<int> disp;
-      std::vector<int> empty; 
-      std::vector<int> no_disp(1); no_disp[0] = 0;
-
-      // NOTE: a no-displacement is recorded as a zero-length array
-      // Convert a length one array with no displacement into a no-displacement array
-      if (orig.size() == 1)
-	{
-	  if (orig == no_disp)
-	    disp = empty;
-	  else
-	    disp = orig;
-	}
-      else
-	{
-	  disp = orig;
-	}
-
-      END_CODE();
-
-      return disp;
-    } // void normDisp
-#endif
-
-
-
-    void recv_array( int ts , std::vector<int>& array )
-    {
-      int size = ts_comms_recv( ts );
-      array.resize(size);
-      for ( int i = 0 ; i < array.size() ; ++i )
-	array[i] = ts_comms_recv( ts );
-    }
-
-    void recv_array( int ts , multi1d<int>& array )
-    {
-      int size = ts_comms_recv( ts );
-      array.resize(size);
-      for ( int i = 0 ; i < array.size() ; ++i )
-	array[i] = ts_comms_recv( ts );
-    }
-    
-
-    void recv_key( int ts , KeyGenProp4ElementalOperator_t& key )
-    {
-      key.t_sink = ts_comms_recv( ts );
-      key.t_source = ts_comms_recv( ts );
-      key.g = ts_comms_recv( ts );
-      recv_array( ts , key.displacement );
-      recv_array( ts , key.mom );
-      key.mass = ts_comms_recv_str( ts );
-      key.t_slice = ts_comms_recv( ts );
-    }
-
 
     namespace
     {
-      // int ts_per_node;
-      // int nodes_per_cn;
-      // int t_start;
-      // int Nt_forward;
-
-      // int num_vecs;
-      // int decay_dir;
-      // int Lt;
-
-      // BinaryStoreDB< SerialDBKey<KeyGenProp4ElementalOperator_t>, SerialDBData<ValGenProp4ElementalOperator_t> >* qdp_db;
-
-
       //----------------------------------------------------------------------------
       //! Normalize just one displacement array
       std::vector<int> normDisp(const std::vector<int>& orig)
@@ -863,6 +798,7 @@ namespace Chroma
     {
       START_CODE();
 
+
       StopWatch snoop;
       snoop.reset();
       snoop.start();
@@ -882,8 +818,41 @@ namespace Chroma
       const int decay_dir = params.param.contract.decay_dir;
       const int Lt        = Layout::lattSize()[decay_dir];
 
+      const int t_start_store = params.param.contract.t_start_store;
+      const int Nt_forward_store = params.param.contract.Nt_forward_store;
 
       
+      
+      for ( int t = 0 ; t < Nt_forward_store ; ++t )
+	{
+	  int t_store = ( t + t_start_store ) % Lt;
+
+	  bool contained = false;
+
+	  for ( int t1 = 0 ; t1 < Nt_forward ; ++t1 )
+	    {
+	      int t_compute = ( t1 + t_start ) % Lt;
+
+	      if ( t_compute == t_store )
+		contained = true;
+	    }
+
+	  if (!contained)
+	    {
+	      QDPIO::cerr << "t_start, t_start_store, Nt_forward, Nt_forward_store problem: store interval not entirely contained in compute interval\n";
+	      QDP_abort(1);
+	    }
+	}
+
+      {
+	int t_last_store = ( t_start_store + Nt_forward_store - 1 ) % Lt;
+	int t_last_compute = ( t_start + Nt_forward - 1 ) % Lt;
+	QDPIO::cout << "Computing genprops from timeslice " << t_start << " to " << t_last_compute << " (last)\n";
+	QDPIO::cout << "Storing genprops from timeslice " << t_start_store << " to " << t_last_store << " (last)\n";
+      }
+
+
+
       
       multi1d<int> ts_lattsize(3);
       ts_lattsize[0] = Layout::lattSize()[0];
@@ -1204,6 +1173,26 @@ namespace Chroma
 	  QDP_abort(1);
 	}
 
+#if 0
+      //
+      // Solver use done, increase number of threads on primary process on each node
+      //
+      int omp_num_threads_old = qdpNumThreads();
+      int omp_num_threads_new;
+      if (Layout::nodeNumber() % nodes_per_cn == 0)
+	{
+	  omp_num_threads_new = qdpNumThreads() * nodes_per_cn;
+	}
+      else
+	{
+	  omp_num_threads_new = 1;
+	}
+      omp_set_num_threads( omp_num_threads_new );
+      QDPIO::cout << "OMP number of threads set to " << omp_num_threads_new << "\n";
+
+      QDPIO::cout << "qdpNumThreads() = " << qdpNumThreads() << "\n";
+#endif
+
 
       //
       // Generate all sink tensors
@@ -1405,8 +1394,26 @@ namespace Chroma
 				  QDPIO::cout << "\n";
 				}
 #endif
-			      
-			      qdp_db.insert( key[ tcorr ] , *val[ tcorr ] );
+
+			      bool store = false;
+
+			      for ( int t = 0 ; t < Nt_forward_store ; ++t )
+				{
+				  int t_store = ( t + t_start_store ) % Lt;
+		      
+				  if ( t_store == key[ tcorr ].t_slice )
+				    store = true;
+				}
+
+			      //
+			      QDPInternal::broadcast(store);
+
+			      if (store)
+				{
+				  //QDPIO::cout << "storing timeslice " << tcorr << "\n";
+				  qdp_db.insert( key[ tcorr ] , *val[ tcorr ] );
+				}
+
 			      delete val[ tcorr ];
 			    }
 			  
@@ -1433,6 +1440,14 @@ namespace Chroma
 	    delete[] genprop_mem[i];
 	}
 
+
+#if 0
+      //
+      // Restore original number of threads
+      //
+      omp_set_num_threads( omp_num_threads_old );
+      QDPIO::cout << "OMP number of threads restored to " << omp_num_threads_old << "\n";
+#endif
             
 
       // Close db

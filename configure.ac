@@ -465,7 +465,7 @@ if test "X${shmharom_enabled}X" = "XyesX";
 then
   AC_MSG_NOTICE([ Enabling harom via shared memory])
   AC_DEFINE([BUILD_SHMHAROM], [], [Build with shared memory harom])
-  AC_SUBST(SHMHAROM_LIBS,"-lrt")
+  AC_SUBST(SHMHAROM_LIBS,"")
 ##  AC_SUBST(SHMHAROM_LIBS," ")
 fi
 

@@ -1485,17 +1485,9 @@ endif
 
 
 if BUILD_SHMHAROM
-nobase_include_HEADERS += util/info/ts_comms.h \
-                          meas/inline/hadron/inline_prop_and_matelem_distillation_harom_w.h \
-                          meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt_w.h \
-                          meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt2_w.h \
-                          meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt3_w.h
+nobase_include_HEADERS += meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt3_w.h
 
-libchroma_a_SOURCES += util/info/ts_comms.cc \
-                       meas/inline/hadron/inline_prop_and_matelem_distillation_harom_w.cc \
-                       meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt_w.cc \
-                       meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt2_w.cc \
-                       meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt3_w.cc
+libchroma_a_SOURCES += meas/inline/hadron/inline_unsmeared_hadron_node_distillation_harom_opt3_w.cc
 endif
 
 

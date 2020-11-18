@@ -38,7 +38,9 @@ namespace Chroma
 	{
 	  int                       num_vecs;               /*!< Number of color vectors to use */
 	  int                       t_start;                /*!< Starting time-slice for genprops */
+	  int                       t_start_store;                /*!< Starting time-slice for genprops */
  	  int                       Nt_forward;             /*!< Forward relative to t_start */
+ 	  int                       Nt_forward_store;             /*!< Forward relative to t_start */
 	  int                       decay_dir;              /*!< Decay direction */
 	  int                       displacement_length;    /*!< Displacement length for insertions */
 	  std::string               mass_label;             /*!< Some kind of mass label */

@@ -40,9 +40,6 @@ AM_LDFLAGS += -L@top_builddir@/other_libs/wilsonmg/lib @QOP_MG_LDFLAGS@
 LDADD += @QOP_MG_LIBS@
 endif
 
-if BUILD_SHMHAROM
-LDADD += @SHMHAROM_LIBS@
-endif
 
 if BUILD_GENPROP
 AM_CXXFLAGS += @GENPROP_CXXFLAGS@ @QNDXX_CXXFLAGS@
