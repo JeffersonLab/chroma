@@ -16,6 +16,8 @@ namespace Chroma {
 struct Coloring {
 	// Construct a k-distance coloring
 	Coloring(unsigned int distance);
+	// Reading the coloring from a file
+	Coloring(const std::string& filename);
 
 	// Return a probing vector for the given color
 	void getVec(LatticeInteger& vec, unsigned int color) const;
