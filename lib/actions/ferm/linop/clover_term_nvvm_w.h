@@ -598,7 +598,7 @@ namespace Chroma
    */
 
   template<typename RealT,typename U,typename X,typename Y>
-  void function_make_clov_exec(CUfunction function, 
+  void function_make_clov_exec(JitFunction function, 
 				     const RealT& diag_mass, 
 				     const U& f0,
 				     const U& f1,
@@ -649,7 +649,7 @@ namespace Chroma
 
 
   template<typename RealT,typename U,typename X,typename Y>
-  CUfunction function_make_clov_build(const RealT& diag_mass, 
+  JitFunction function_make_clov_build(const RealT& diag_mass, 
 				      const U& f0,
 				      const U& f1,
 				      const U& f2,
@@ -661,8 +661,8 @@ namespace Chroma
   {
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
     if (ptx_db::db_enabled) {
-      CUfunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
-      if (func)
+      JitFunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
+      if (!func.empty())
 	return func;
     }
 
@@ -825,9 +825,9 @@ namespace Chroma
 
     //QDPIO::cout << "PTX Clover make "  << (void*)this << "\n";
     //std::cout << "PTX Clover make "  << (void*)this << "\n";
-    static CUfunction function;
+    static JitFunction function;
 
-    if (function == NULL)
+    if (function.empty())
       function = function_make_clov_build(diag_mass, f0,f1,f2,f3,f4,f5, tri_dia , tri_off );
 
     // Execute the function
@@ -886,7 +886,7 @@ namespace Chroma
 
 
   template<typename T,typename X,typename Y>
-  void function_ldagdlinv_exec( CUfunction function,
+  void function_ldagdlinv_exec( JitFunction function,
 				      T& tr_log_diag,
 				      X& tri_dia,
 				      Y& tri_off,
@@ -930,7 +930,7 @@ namespace Chroma
 
 
   template<typename U,typename T,typename X,typename Y>
-  CUfunction function_ldagdlinv_build( const T& tr_log_diag,
+  JitFunction function_ldagdlinv_build( const T& tr_log_diag,
 				       const X& tri_dia,
 				       const Y& tri_off,
 				       const Subset& s)
@@ -938,8 +938,8 @@ namespace Chroma
     typedef typename WordType<U>::Type_t REALT;
 
     if (ptx_db::db_enabled) {
-      CUfunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
-      if (func)
+      JitFunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
+      if (!func.empty())
 	return func;
     }
 
@@ -1151,9 +1151,9 @@ namespace Chroma
 
     //QDPIO::cout << "PTX Clover ldagdlinv " << (void*)this << "\n";
     //std::cout << "PTX Clover ldagdlinv " << (void*)this << "\n";
-    static CUfunction function;
+    static JitFunction function;
 
-    if (function == NULL)
+    if (function.empty())
       function = function_ldagdlinv_build<U>(tr_log_diag, tri_dia, tri_off, rb[cb] );
 
     // Execute the function
@@ -1215,7 +1215,7 @@ namespace Chroma
 
 
   template<typename U,typename X,typename Y>
-  void function_triacntr_exec( CUfunction function,
+  void function_triacntr_exec( JitFunction function,
 				     U& B,
 				     const X& tri_dia,
 				     const Y& tri_off,
@@ -1263,15 +1263,15 @@ namespace Chroma
 
 
   template<typename U,typename X,typename Y>
-  CUfunction function_triacntr_build( const U& B,
+  JitFunction function_triacntr_build( const U& B,
 				      const X& tri_dia,
 				      const Y& tri_off,
 				      int mat,
 				      const Subset& s)
   {
     if (ptx_db::db_enabled) {
-      CUfunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
-      if (func)
+      JitFunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
+      if (!func.empty())
 	return func;
     }
 
@@ -1630,9 +1630,9 @@ namespace Chroma
 
     //QDPIO::cout << "PTX Clover triacntr " << (void*)this << "\n";
     //std::cout << "PTX Clover triacntr " << (void*)this << "\n";
-    static CUfunction function;
+    static JitFunction function;
 
-    if (function == NULL)
+    if (function.empty())
       function = function_triacntr_build<U>( B, tri_dia, tri_off, mat, rb[cb] );
 
     // Execute the function
@@ -1669,7 +1669,7 @@ namespace Chroma
 
 
   template<typename T,typename X,typename Y>
-  void function_apply_clov_exec(CUfunction function,
+  void function_apply_clov_exec(JitFunction function,
 				T& chi,
 				const T& psi,
 				const X& tri_dia,
@@ -1716,22 +1716,22 @@ namespace Chroma
 
 
   template<typename T,typename X,typename Y>
-  CUfunction function_apply_clov_build(const T& chi,
+  JitFunction function_apply_clov_build(const T& chi,
 				       const T& psi,
 				       const X& tri_dia,
 				       const Y& tri_off,
 				       const Subset& s)
   {
     if (ptx_db::db_enabled) {
-      CUfunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
-      if (func)
+      JitFunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
+      if (!func.empty())
 	return func;
     }
 
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
     //typedef typename WordType<RealT>::Type_t REALT;
 
-    //CUfunction func;
+    //JitFunction func;
 
     llvm_start_new_function();
 
@@ -1850,9 +1850,9 @@ namespace Chroma
 
     //QDPIO::cout << "PTX Clover apply"  << (void*)this << "\n";
     //std::cout << "PTX Clover apply"  << (void*)this << "\n";
-    static CUfunction function;
+    static JitFunction function;
 
-    if (function == NULL)
+    if (function.empty())
       function = function_apply_clov_build(chi, psi, tri_dia, tri_off, rb[cb] );
 
     // Execute the function

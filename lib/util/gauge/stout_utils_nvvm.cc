@@ -7,7 +7,7 @@ using namespace QDP;
 
 //#define QDP_JIT_NVVM_USE_LEGACY_LAUNCH
 
-void function_get_fs_bs_exec(CUfunction function, 
+void function_get_fs_bs_exec(JitFunction function, 
 				   const LatticeColorMatrix& Q,
 				   const LatticeColorMatrix& QQ,
 				   multi1d<LatticeComplex>& f,
@@ -66,15 +66,15 @@ WordREG<REAL> jit_constant( double f )
 }
 
 
-CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
+JitFunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
 				    const LatticeColorMatrix& QQ,
 				    multi1d<LatticeComplex>& f,
 				    multi1d<LatticeComplex>& b1,
 				    multi1d<LatticeComplex>& b2)
 {
   if (ptx_db::db_enabled) {
-    CUfunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
-    if (func)
+    JitFunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
+    if (!func.empty())
       return func;
   }
 
