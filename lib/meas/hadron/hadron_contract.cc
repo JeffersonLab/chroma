@@ -16,7 +16,7 @@ namespace Chroma
   HadronContract::getTSrce(const multi1d<ForwardProp_t>& forward_headers) const
   {
     multi1d<int> t_srce = forward_headers[0].source_header.getTSrce();
-    int j_decay = forward_headers[0].source_header.j_decay;
+    //int j_decay = forward_headers[0].source_header.j_decay;
 
     for(int loop=1; loop < forward_headers.size(); ++loop)
     {

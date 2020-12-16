@@ -15,7 +15,9 @@ nobase_include_HEADERS = \
 	chroma_config.h chroma.h chromabase.h chromainc.h common_declarations.h \
         boundcond.h create_state.h fermact.h \
 	fermbc.h funcmap.h syssolver.h gaugeact.h gaugebc.h handle.h lib.h \
-	linearop.h eo_linop.h eoprec_linop.h eoprec_constdet_linop.h eoprec_logdet_linop.h \
+	linearop.h eo_linop.h \
+        eoprec_linop.h eoprec_constdet_linop.h eoprec_logdet_linop.h \
+        seoprec_linop.h seoprec_constdet_linop.h seoprec_logdet_linop.h \
 	ldag.h lmdagm.h objfactory.h objfunctor.h primitives.h \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
         named_obj.h polylinop.h \
@@ -40,6 +42,7 @@ nobase_include_HEADERS = \
 	actions/ferm/fermstates/extfield.h \
 	actions/ferm/fermstates/stout_fermstate_params.h \
 	actions/ferm/fermstates/hex_fermstate_params.h \
+	actions/ferm/invert/mg_solver_exception.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_eigcg2.h \
 	actions/ferm/invert/inv_eigcg2_array.h \
@@ -317,9 +320,11 @@ nobase_include_HEADERS = \
 	meas/sources/sf_pt_source_const.h \
 	meas/sources/sf_sh_source_const.h \
 	meas/sources/sf_wall_source_const.h \
+	meas/sources/sf_wave_source_const.h \
 	meas/sources/dilutezN_source_const.h \
 	meas/sources/dilute_zN_eigvec_source_const.h \
 	meas/sources/diluteGrid_source_const.h \
+	meas/sources/sh_zN_grid_source_const.h \
 	meas/sources/rndz2wall_source_const.h \
 	meas/sources/rndzNwall_source_const.h \
 	meas/sources/wall_source_const.h \
@@ -391,6 +396,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/integrator/lcm_integrator_leaps.h \
 	update/molecdyn/integrator/lcm_exp_sdt.h \
 	update/molecdyn/integrator/lcm_exp_tdt.h \
+	update/molecdyn/integrator/lcm_sts_force_grad_recursive.h \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.h \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.h \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.h \
@@ -451,9 +457,12 @@ nobase_include_HEADERS += \
         wilstype_fermact_w.h \
         unprec_wilstype_fermact_w.h \
         eoprec_wilstype_fermact_w.h \
+	seoprec_wilstype_fermact_w.h \
         central_tprec_fermact_w.h \
         eoprec_constdet_wilstype_fermact_w.h \
         eoprec_logdet_wilstype_fermact_w.h \
+        seoprec_constdet_wilstype_fermact_w.h \
+        seoprec_logdet_wilstype_fermact_w.h \
 	unprec_s_cprec_t_wilstype_fermact_w.h \
 	iluprec_s_cprec_t_wilstype_fermact_w.h \
 	eo3dprec_s_cprec_t_wilstype_fermact_w.h \
@@ -462,6 +471,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/clover_fermact_params_w.h \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
+	actions/ferm/fermacts/seoprec_clover_fermact_w.h \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
 	actions/ferm/fermacts/nef_fermact_params_w.h \
@@ -567,6 +577,8 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/clover_term_base_w.h \
 	actions/ferm/linop/clover_term_qdp_w.h \
 	actions/ferm/linop/eoprec_clover_linop_w.h \
+	actions/ferm/linop/seoprec_clover_linop_w.h \
+	actions/ferm/linop/shifted_linop_w.h \
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.h \
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.h \
 	actions/ferm/linop/unprec_clover_linop_w.h \
@@ -687,6 +699,7 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/seoprec_constdet_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.h \
@@ -696,9 +709,12 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/two_flavor_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_monomial_params_w.h \
+	update/molecdyn/monomial/two_flavor_multihasen_cancel_monomial_params_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_multihasen_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_multihasen_monomial_params_w.h \
 	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.h \
@@ -709,13 +725,18 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h \
+	update/molecdyn/monomial/seoprec_constdet_two_flavor_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_multihasen_cancel_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h \
+	update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.h \
+	update/molecdyn/monomial/seoprec_logdet_diag_monomial_w.h \
         update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h \
+        update/molecdyn/monomial/seoprec_logdet_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_polynomial_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.h \
@@ -890,6 +911,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_static_prop_colorvec_w.h \
 	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_prop_and_matelem_distillation_w.h \
+	meas/inline/hadron/inline_matelem_distillation_w.h \
 	meas/inline/hadron/inline_prop_and_matelem_distillation2_w.h \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h \
@@ -903,6 +925,8 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
+	meas/inline/hadron/inline_qpropdiff_w.h \
+	meas/inline/hadron/inline_qprop_matmul_w.h \
 	meas/inline/hadron/inline_qqqNucNuc_w.h \
 	meas/inline/hadron/inline_stoch_baryon_w.h \
 	meas/inline/hadron/inline_stoch_hadron_w.h \
@@ -943,6 +967,7 @@ nobase_include_HEADERS += \
         meas/inline/io/xml_write_obj_funcmap.h \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.h \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.h \
+	meas/inline/io/inline_milc_write_stag_source.h \
 	meas/inline/pbp/pbp.h \
 	meas/inline/pbp/inline_pbp_aggregate.h \
 	meas/inline/pbp/inline_psibarpsi_w.h \
@@ -1020,6 +1045,11 @@ endif
 if BUILD_QOP_MG
 AM_CXXFLAGS += -I@top_srcdir@/other_libs/wilsonmg/include @QOP_MG_CXXFLAGS@
 endif
+
+if BUILD_MGPROTO
+AM_CXXFLAGS += @MGPROTO_CXXFLAGS@
+endif
+
 
 lib_LIBRARIES = libchroma.a
 
@@ -1127,6 +1157,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/qprop/fermact_qprop.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \
 	actions/ferm/qprop/eoprec_fermact_qprop.cc \
+	actions/ferm/qprop/seoprec_fermact_qprop.cc \
 	actions/ferm/qprop/central_tprec_fermact_qprop_w.cc \
 	actions/ferm/qprop/eoprec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
@@ -1273,9 +1304,11 @@ libchroma_a_SOURCES = \
 	meas/sources/sf_pt_source_const.cc \
 	meas/sources/sf_sh_source_const.cc \
 	meas/sources/sf_wall_source_const.cc \
+	meas/sources/sf_wave_source_const.cc \
         meas/sources/dilutezN_source_const.cc \
         meas/sources/dilute_zN_eigvec_source_const.cc \
         meas/sources/diluteGrid_source_const.cc \
+	meas/sources/sh_zN_grid_source_const.cc \
         meas/sources/rndz2wall_source_const.cc \
         meas/sources/rndzNwall_source_const.cc \
         meas/sources/wall_source_const.cc \
@@ -1342,6 +1375,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/integrator/lcm_exp_sdt.cc \
 	update/molecdyn/integrator/lcm_exp_tdt.cc \
 	update/molecdyn/integrator/lcm_integrator_leaps.cc \
+	update/molecdyn/integrator/lcm_sts_force_grad_recursive.cc \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.cc \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.cc \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.cc \
@@ -1385,12 +1419,17 @@ nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_wilso
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_multigrid_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/enum_quda_io.h \
+	actions/ferm/invert/quda_solvers/quda_mg_utils.h \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.h \
-	actions/ferm/invert/quda_solvers/quda_multigrid_params.h
+	actions/ferm/invert/quda_solvers/quda_multigrid_params.h \
+	actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h \
+	meas/inline/io/inline_erase_quda_multigrid_space.h \
+	update/molecdyn/predictor/quda_predictor.h
 
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
@@ -1407,21 +1446,34 @@ libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.cc \
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_multigrid_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc \
-	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc
+	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc \
+	meas/inline/io/inline_erase_quda_multigrid_space.cc \
+	update/molecdyn/predictor/quda_predictor.cc
 endif
 
 if BUILD_QPHIX
 nobase_include_HEADERS += actions/ferm/invert/qphix/syssolver_qphix_clover_params.h \
 	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.h \
 	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h\
-	actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_w.h
+	actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_iter_refine_w.h\
+	actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_w.h \
+	actions/ferm/invert/qphix/multi_syssolver_qphix_clover_params.h \
+	actions/ferm/invert/qphix/multi_syssolver_mdagm_cg_clover_qphix_w.h \
+	actions/ferm/invert/qphix/qphix_vec_traits.h \
+	qphix_singleton.h \
+	actions/ferm/linop/lwldslash_w_qphix.h
 
 libchroma_a_SOURCES += actions/ferm/invert/qphix/syssolver_qphix_clover_params.cc \
 	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.cc \
 	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.cc \
-	actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_w.cc
+	actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_w.cc \
+	actions/ferm/invert/qphix/syssolver_mdagm_clover_qphix_iter_refine_w.cc \
+	actions/ferm/invert/qphix/multi_syssolver_qphix_clover_params.cc \
+	actions/ferm/invert/qphix/multi_syssolver_mdagm_cg_clover_qphix_w.cc
+
 
 endif
 
@@ -1449,6 +1501,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/eoprec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/seoprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/nef_fermact_params_w.cc \
@@ -1544,6 +1597,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/clover_term_base_w.cc \
 	actions/ferm/linop/clover_term_qdp_w.cc \
 	actions/ferm/linop/eoprec_clover_linop_w.cc \
+	actions/ferm/linop/seoprec_clover_linop_w.cc \
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.cc \
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.cc \
 	actions/ferm/linop/unprec_clover_linop_w.cc \
@@ -1619,6 +1673,7 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc \
+	update/molecdyn/monomial/seoprec_constdet_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc \
@@ -1626,22 +1681,32 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/two_flavor_monomial_params_w.cc \
+	update/molecdyn/monomial/two_flavor_multihasen_cancel_monomial_params_w.cc \
 	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_multihasen_monomial_params_w.cc \
 	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc \
+	update/molecdyn/monomial/seoprec_constdet_two_flavor_monomial_w.cc \
+	update/molecdyn/monomial/seoprec_constdet_two_flavor_multihasen_cancel_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_multihasen_cancel_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc \
+	update/molecdyn/monomial/seoprec_logdet_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc \
+	update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_multihasen_monomial_w.cc \
+	update/molecdyn/monomial/seoprec_constdet_two_flavor_ratio_conv_conv_multihasen_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc \
+	update/molecdyn/monomial/seoprec_logdet_diag_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.cc \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.cc \
@@ -1749,6 +1814,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc \
+	meas/inline/hadron/inline_matelem_distillation_w.cc \
 	meas/inline/hadron/inline_prop_and_matelem_distillation2_w.cc \
 	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.cc \
@@ -1761,6 +1827,8 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
+	meas/inline/hadron/inline_qpropdiff_w.cc \
+	meas/inline/hadron/inline_qprop_matmul_w.cc \
 	meas/inline/hadron/inline_qqqNucNuc_w.cc \
 	meas/inline/hadron/inline_stoch_baryon_w.cc \
 	meas/inline/hadron/inline_stoch_hadron_w.cc \
@@ -1807,6 +1875,7 @@ libchroma_a_SOURCES += \
         meas/inline/io/xml_write_obj_funcmap.cc \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.cc \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
+	meas/inline/io/inline_milc_write_stag_source.cc \
 	meas/inline/io/inline_read_map_obj_disk.cc \
 	meas/inline/io/inline_copy_map_obj.cc \
 	meas/inline/io/inline_write_timeslice_map_obj_disk.cc \
@@ -2033,6 +2102,36 @@ libchroma_a_SOURCES += \
 	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.cc \
 	actions/ferm/invert/qop_mg/syssolver_mdagm_qop_mg_w.cc \
 	meas/inline/io/inline_erase_mg_space.cc
+endif
+
+if BUILD_MGPROTO 
+nobase_include_HEADERS += \
+	actions/ferm/invert/mg_proto/mgproto_solver_params.h \
+	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.h \
+	actions/ferm/invert/mg_proto/mg_proto_helpers.h \
+	meas/inline/io/inline_erase_mg_proto_space.h
+
+
+libchroma_a_SOURCES += \
+	actions/ferm/invert/mg_proto/mgproto_solver_params.cc \
+	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.cc \
+	actions/ferm/invert/mg_proto/mg_proto_helpers.cc \
+	meas/inline/io/inline_erase_mg_proto_space.cc
+
+if BUILD_QPHIX
+nobase_include_HEADERS += \
+	actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.h \
+	meas/inline/io/inline_erase_mg_proto_qphix_space.h \
+	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.h \
+	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix_eo.h
+
+libchroma_a_SOURCES += \
+	actions/ferm/invert/mg_proto/mg_proto_qphix_helpers.cc \
+	meas/inline/io/inline_erase_mg_proto_qphix_space.cc \
+	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.cc \
+	actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix_eo.cc
+endif
+
 endif
 
 

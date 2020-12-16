@@ -234,6 +234,7 @@ namespace Chroma
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);
+      quda_inv_param.pipeline = invParam.Pipeline;
 
       // Solution type
       quda_inv_param.solution_type = QUDA_MATPCDAG_MATPC_SOLUTION;
@@ -250,9 +251,14 @@ namespace Chroma
 	break;
       }
 
-      // Only support Asymmetric linop
-      quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
-
+      if( invParam.asymmetricP ) { 
+	QDPIO::cout << "Asymmetric LinOP" << std::endl;
+	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
+      }
+      else {
+	QDPIO::cout << "Symmetric LinOp" << std::endl;
+      	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
+      }
 
       quda_inv_param.dagger = QUDA_DAG_NO;
 

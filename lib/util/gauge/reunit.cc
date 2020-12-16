@@ -28,7 +28,21 @@ namespace Chroma {
   namespace ReunitEnv {
     static double time_spent =0;
     double getTime() { return time_spent; }
-  };
+
+    template<typename Q>
+    struct fuzzForType {};
+
+    template<>
+    struct fuzzForType<LatticeColorMatrixF> {
+	static constexpr float value() { return 1.0e-5; }
+    };
+
+    template<>
+    struct fuzzForType<LatticeColorMatrixD> {
+        static constexpr double value() { return 1.0e-13; }
+    };
+
+  }
 
   template<typename Q, typename C, typename R, typename S>
   inline
@@ -57,7 +71,7 @@ namespace Chroma {
     numbad = 0;
     
     // some kind of small floating point number, should be prec. dep.
-    R fuzz = 1.0e-5; 
+    R fuzz(ReunitEnv::fuzzForType<Q>::value());
     
     // Extract initial components 
     for(int i=0; i < Nc; ++i)

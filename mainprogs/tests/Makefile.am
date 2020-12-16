@@ -10,13 +10,13 @@ INCFLAGS=-I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 #
 # Any other compiler flags
 #
-AM_CXXFLAGS = $(INCFLAGS) @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ @GMP_CXXFLAGS@ @QOP_MG_CXXFLAGS@ @CXXFLAGS@
+AM_CXXFLAGS = $(INCFLAGS) @MGPROTO_CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ @GMP_CXXFLAGS@ @QOP_MG_CXXFLAGS@ @CXXFLAGS@
 
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
                -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
 
-AM_LDFLAGS = -L$(BUILDDIR)/lib @QDPXX_LDFLAGS@ @BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @LDFLAGS@
-LDADD = -lchroma @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @GMP_LIBS@  @LIBS@
+AM_LDFLAGS = -L$(BUILDDIR)/lib @MGPROTO_LDFLAGS@ @QDPXX_LDFLAGS@ @BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @LDFLAGS@
+LDADD = -lchroma @MGPROTO_LIBS@ @QUDA_LIBS@ @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @GMP_LIBS@  @LIBS@
 
 AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/lib
 LDADD += -lqdp-lapack
@@ -55,7 +55,6 @@ endif
 if BUILD_QUDA
 AM_CXXFLAGS += @QUDA_CXXFLAGS@
 AM_LDFLAGS += @QUDA_LDFLAGS@
-LDADD	+= @QUDA_LIBS@
 endif
 
 if BUILD_QOP_MG
@@ -101,12 +100,21 @@ bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_ar
 check_PROGRAMS  = t_io t_mesons_w  t_conslinop t_hypsmear \
     t_ape_smear t_dwf4d t_propagator_s t_disc_loop_s \
     t_remez t_ritz t_dwflocality t_precact_4d t_precact_5d \
-    t_gauge_force t_stout_state t_aniso_gaugeact t_temp_prec t_meas_wilson_flow_loop
+    t_gauge_force t_stout_state t_aniso_gaugeact t_temp_prec 
+
+# t_meas_wilson_flow_loop
 
 if BUILD_QUDA
 check_PROGRAMS += t_quda_tprec t_minvert_quda
 endif
 
+if BUILD_QPHIX
+check_PROGRAMS += t_minvert_qphix
+endif
+
+if BUILD_MGPROTO
+check_PROGRAMS += t_mgproto
+endif
 
 #
 ## Move programs under development to EXTRA_PROGRAMS if they currently
@@ -234,7 +242,7 @@ t_solver_accum_SOURCES = t_solver_accum.cc
 t_eigcginv_SOURCES = t_eigcginv.cc
 
 t_meas_wilson_flow_SOURCES  = t_meas_wilson_flow.cc
-t_meas_wilson_flow_loop_SOURCES = t_meas_wilson_flow_loop.cc
+#t_meas_wilson_flow_loop_SOURCES = t_meas_wilson_flow_loop.cc
 
 t_minvert_SOURCES = t_minvert.cc
 if BUILD_QUDA
@@ -243,9 +251,21 @@ t_minvert_quda_SOURCES = t_minvert_quda.cc
 endif
 
 if BUILD_GTEST
-check_PROGRAMS += t_inv_fgmres_dr
+check_PROGRAMS += t_inv_fgmres_dr  t_symm_prec
+	
 t_inv_fgmres_dr_SOURCES = t_inv_fgmres_dr.cc chroma_gtest_env.h \
 	fgmres_dr_tests.cc
+	
+t_symm_prec_SOURCES = t_symm_prec.cc chroma_gtest_env.h \
+	symm_prec_xml.h symm_prec_tests.cc
+endif
+
+if BUILD_QPHIX
+t_minvert_qphix_SOURCES= t_minvert_qphix.cc
+endif
+
+if BUILD_MGPROTO
+t_mgproto_SOURCES = t_mgproto.cc
 endif
 
 # build lib is a target that goes to the build dir of the library and 

@@ -28,7 +28,7 @@ namespace Chroma
       RemezCoeff_t ipfe;
     };
 
-  };
+  }
 
   //! Remez type of rational approximations
   /*! @ingroup monomial */

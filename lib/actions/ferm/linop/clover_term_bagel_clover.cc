@@ -579,7 +579,7 @@ namespace Chroma
       QDP_error_exit("Matrix is too small", Nc, Ns);
 
     // Zero trace log
-    tr_log_diag = zero;
+    tr_log_diag[rb[cb]] = zero;
     RScalar<REAL> zip=0;
 
     int N = 2*Nc;

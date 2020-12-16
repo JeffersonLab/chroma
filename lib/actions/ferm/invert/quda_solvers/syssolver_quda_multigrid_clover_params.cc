@@ -94,6 +94,21 @@ namespace Chroma {
     }
     QDPIO::cout << "tuneDslasP = " << tuneDslashP << std::endl;
 
+    read(paramtop, "SubspaceID", SaveSubspaceID);
+
+    if( paramtop.count("ThresholdCount") == 1 ) {
+    	read(paramtop, "ThresholdCount", ThresholdCount);
+    }
+    else {
+    	ThresholdCount = 2*MaxIter + 1;
+    }
+
+    if( paramtop.count("Pipeline") > 0 ) {
+      read(paramtop, "Pipeline", Pipeline);
+    }
+    else {
+      Pipeline=1;
+    }
 
     if( paramtop.count("MULTIGRIDParams") > 0 ) {
       MULTIGRIDParams = new MULTIGRIDSolverParams(paramtop, "./MULTIGRIDParams");
@@ -120,7 +135,13 @@ namespace Chroma {
     else { 
       dump_on_failP  = false;
     }
-    
+
+    if ( paramtop.count("SolutionCheckP") > 0 ) { 
+      read(paramtop, "SolutionCheckP", SolutionCheckP);
+    }
+    else {
+      SolutionCheckP = true; // default solution check is on
+    }
 
   }
 
@@ -151,11 +172,18 @@ namespace Chroma {
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
 
     write(xml, "AutotuneDslash", p.tuneDslashP);
+
+    //Write the MG persistence params.
+    write(xml, "SubspaceID", p.SaveSubspaceID);
+    write(xml, "ThresholdCount", p.ThresholdCount);
+    write(xml, "Pipeline", p.Pipeline);
+ 
     if( p.MULTIGRIDParamsP ) { 
       write(xml, "MULTIGRIDParams", *(p.MULTIGRIDParams));
     }
 
     write(xml, "DumpOnFail", p.dump_on_failP);
+    write(xml, "SolutionCheckP", p.SolutionCheckP);
 
     if( p.backup_invP ) { 
       // Need to dump out the XML for the back up solver here...

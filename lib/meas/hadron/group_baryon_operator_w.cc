@@ -781,7 +781,7 @@ namespace Chroma
       // Reset the seed
       QDP::RNG::setrn( ran_seed );
       return quark_source;
-    };
+    }
 		
 		
     //! Construct array of std::maps of displacements

@@ -20,7 +20,7 @@ namespace Chroma
 
   namespace InlineWilsonFlowEnv 
   {
-    //! read input -- gauge fields
+    //! Read input -- gauge fields
     void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
@@ -51,6 +51,23 @@ namespace Chroma
       read(inputtop, "wtime", input.wtime);
       read(inputtop, "t_dir",input.t_dir);
 
+      switch (input.version) 
+      {
+      case 1:
+	input.smear_dirs.resize(Nd);
+	input.smear_dirs = true;
+	break;
+
+      case 2:
+	read(inputtop, "smear_dirs", input.smear_dirs);
+	break;
+
+      default:
+	QDPIO::cerr << "WILSON_FLOW: Input version " << input.version 
+		    << " unsupported." << std::endl;
+	QDP_abort(1);
+      }
+
     }
 
     //! write output
@@ -62,7 +79,8 @@ namespace Chroma
       write(xml, "nstep", input.nstep);
       write(xml, "wtime", input.wtime);
       write(xml, "t_dir",input.t_dir);
-
+      write(xml, "smear_dirs", input.smear_dirs);
+	
       pop(xml);
     }
 
@@ -238,11 +256,11 @@ namespace Chroma
       multi1d<LatticeColorMatrix> wf_u = u ; 
       Real eps  = params.param.wtime/params.param.nstep ;
 
-      wilson_flow(xml_out, wf_u, params.param.nstep,eps ,params.param.t_dir) ;
+      wilson_flow(xml_out, wf_u, params.param.nstep, eps, params.param.t_dir, params.param.smear_dirs);
 
 
       // Calculate some gauge invariant observables just for info.
-      MesPlq(xml_out, "WislonFlowGaugeObservables", wf_u);
+      MesPlq(xml_out, "WilsonFlowGaugeObservables", wf_u);
 
 
        // Now store the configuration to a memory object

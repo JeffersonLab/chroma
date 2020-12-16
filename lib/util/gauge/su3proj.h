@@ -24,5 +24,5 @@ void su3proj(LatticeColorMatrix& u,
 	     int su2_index,
 	     const Subset& mstag);
 
-};
+}
 #endif

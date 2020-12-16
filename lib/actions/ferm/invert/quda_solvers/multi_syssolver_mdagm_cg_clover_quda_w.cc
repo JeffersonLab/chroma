@@ -53,30 +53,14 @@ namespace Chroma
 
     void *spinorIn;
 
-    if ( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
-
-      // Because of the vaguaries of our HMC Formulation we need to 
-      // solve the Asymmetric system. Symmetric won't work unless we change
-      // preconditioning strategy
-      // asymmetric 
-      //
-      // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
-      // No need to transform source
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-      spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
+      // have to do this later
 #endif
 
-    }
-    else { 
-      QDPIO::cout << "MATPC Type not allowed." << std::endl;
-      QDP_abort(1);
-    }
-
-    void** spinorOut;
-    spinorOut = (void **)malloc(shifts.size()*sizeof(void *));
-    if (spinorOut == NULL) { 
+    void** spinorOut = new void*[ shifts.size() ];
+    if (spinorOut == nullptr ) { 
       QDPIO::cerr << "Couldn't allocate spinorOut" << std::endl;
       QDP_abort(1);
     }
@@ -91,16 +75,24 @@ namespace Chroma
 
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
     for(int s=0; s < shifts.size(); s++) {
-      psi_s[s][ rb[1] ] = zero;
+      //psi_s[s][ rb[1] ] = zero;
+      psi_s[s] = zero; // Sanity check 
       spinorOut[s] = (void *)&(psi_s[s].elem(rb[1].start()).elem(0).elem(0).real());
       quda_inv_param.offset[s] = toDouble(shifts[s]);
    } 
 #else
+    std::vector<QDPCache::ArgKey> ids = {chi_s.getId()};
     for(int s=0; s < shifts.size(); s++) {
-      psi_s[s][ rb[1] ] = zero;
-      spinorOut[s] = QDPCache::Instance().getDevicePtr( psi_s[s].getId() );
+      // psi_s[s][ rb[1] ] = zero;
+      psi_s[s] = zero; // Sanity Check
+      ids.push_back( psi_s[s].getId() );
       quda_inv_param.offset[s] = toDouble(shifts[s]);
-   } 
+    }
+    auto dev_ptr = GetMemoryPtr( ids );
+    spinorIn = dev_ptr[0];
+    for(int s=0; s < shifts.size(); s++) {
+      spinorOut[s] = dev_ptr[s+1];
+    }
 #endif
 
    quda_inv_param.num_offset = shifts.size();
@@ -123,10 +115,7 @@ namespace Chroma
     // Tidy Up
     delete [] spinorOut;
 
-    QDPIO::cout << "Cuda Space Required" << std::endl;
-    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << std::endl;
+
     QDPIO::cout << "QUDA_"<<solver_string<<"_CLOVER_SOLVER: time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;

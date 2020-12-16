@@ -22,7 +22,7 @@ namespace Chroma {
     }
     const std::string typeIDString = "OverlapInnerSolverType";
     bool registered = registerAll();
-  };
+  }
   using namespace OverlapInnerSolverTypeEnv;
 
   //! Read an OverlapInnerSolverType enum
@@ -34,4 +34,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const OverlapInnerSolverType& t) {
     theOverlapInnerSolverTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
-};
+}

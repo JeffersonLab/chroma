@@ -235,7 +235,13 @@ int main(int argc, char **argv)
 
   int j_decay = Nd-1;
   int jomit=3 ; 
-  wilson_flow(xml_out, u, input.param.nstep,input.param.wflow_eps ,jomit) ;
+  multi1d<bool> smear_in_this_dirP(Nd);
+
+  smear_in_this_dirP[0] = true;
+  smear_in_this_dirP[1] = true;
+  smear_in_this_dirP[2] = true;
+  smear_in_this_dirP[3] = false; // this is smear_in_this_dirP[jomit] 
+  wilson_flow(xml_out, u, input.param.nstep,input.param.wflow_eps, j_decay, smear_in_this_dirP) ;
 
 
   pop(xml_out);

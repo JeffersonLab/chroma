@@ -51,7 +51,6 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
 
   TF vn_1, zn_1,qn_1;
 
-  int k;
   ComplexD rhon, rhon_1;             // rho_n, rho_{n-1}
   ComplexD alphan, alphan_1;         // alpha_{n}, alpha_{n-1}
   ComplexD omegan, omegan_1;          // omega_{n} AND omega_{n-1} (before omega update)

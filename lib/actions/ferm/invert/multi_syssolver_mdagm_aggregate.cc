@@ -16,6 +16,10 @@
 #include "actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h"
 #endif
 
+#ifdef BUILD_QPHIX
+#include "actions/ferm/invert/qphix/multi_syssolver_mdagm_cg_clover_qphix_w.h"
+#endif
+
 namespace Chroma
 {
   //! Registration aggregator
@@ -36,6 +40,9 @@ namespace Chroma
 #ifdef BUILD_QUDA
 	success &= MdagMMultiSysSolverCGQudaCloverEnv::registerAll();
 	success &= MdagMMultiSysSolverCGQudaWilsonEnv::registerAll();
+#endif
+#ifdef BUILD_QPHIX
+	success &= MdagMMultiSysSolverQPhiXCloverEnv::registerAll();
 #endif
 
 	registered = true;

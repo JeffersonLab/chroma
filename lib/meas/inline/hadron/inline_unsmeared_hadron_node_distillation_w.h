@@ -6,6 +6,9 @@
 #ifndef __inline_unsmeared_hadron_node_distillation_h__
 #define __inline_unsmeared_hadron_node_distillation_h__
 
+#include "chromabase.h"
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
+
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
 #include "io/xml_group_reader.h"
@@ -13,7 +16,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineUnsmsearedHadronNodeDistillationEnv 
+  namespace InlineUnsmearedHadronNodeDistillationEnv 
   {
     bool registerAll();
 
@@ -39,19 +42,34 @@ namespace Chroma
 	  multi1d<int>              mom;                    /*!< Array of momenta to generate */
 	};
 
+	struct KeySolnProp_t
+	{
+	  bool                      cacheP;
+	  int                       num_vecs;               /*!< Number of color vectors to use */
+	  int                       t_source;               /*!< Time slice source for props */
+	  int                       Nt_forward;             /*!< Forward */
+	  int                       Nt_backward;            /*!< Backward */
+	};
+
+	struct SinkSource_t
+	{
+	  int                       t_sink;                 /*!< Time slice for sinks */
+	  int                       t_source;               /*!< Time slice source for props */
+	  int                       Nt_backward;            /*!< Backward relative to source */
+ 	  int                       Nt_forward;             /*!< Forward relative to source */
+	};
+	
 	struct Contract_t
 	{
 	  bool                      use_derivP;             /*!< Use derivatives */
-	  int                       srce_num_vecs;          /*!< Number of color vectors to use */
-	  int                       sink_num_vecs;          /*!< Number of color vectors to use */
-	  int                       t_source;               /*!< Time slice source for props */
-	  int                       t_sink;                 /*!< Time slice sink for props */
 	  int                       decay_dir;              /*!< Decay direction */
 	  int                       displacement_length;    /*!< Displacement length for insertions */
 	  std::string               mass_label;             /*!< Some kind of mass label */
 	  int                       num_tries;              /*!< In case of bad things happening in the solution vectors, do retries */
 	};
 
+	std::vector<KeySolnProp_t>  prop_sources;           /*!< Sources */
+	std::vector<SinkSource_t>   sink_source_pairs;      /*!< Combos */
 	std::vector<DispGammaMom_t> disp_gamma_mom_list;    /*!< Array of displacements, gammas, and moms to generate */	
 	ChromaProp_t                prop;                   /*!< Propagator input */
 	Contract_t                  contract;               /*!< Backward propagator and contraction pieces */
@@ -94,7 +112,7 @@ namespace Chroma
       Params params;
     };
 
-  } // namespace InlineUnsmsearedHadronNodeDistillationEnv
+  } // namespace InlineUnsmearedHadronNodeDistillationEnv
 }
-
+#endif
 #endif

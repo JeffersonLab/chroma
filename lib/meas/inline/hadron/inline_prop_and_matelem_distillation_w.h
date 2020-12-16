@@ -8,7 +8,7 @@
 #ifndef __inline_prop_and_matelem_distillation_w_h__
 #define __inline_prop_and_matelem_distillation_w_h__
 
-#ifndef QDP_IS_QDPJIT
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -43,6 +43,8 @@ namespace Chroma
 	  std::string   mass_label;     /*!< Some kind of mass label */
 
 	  int           num_tries;      /*!< In case of bad things happening in the solution vectors, do retries */
+	  bool          zero_colorvecs;
+	  bool          fuse_timeloop;  
 	};
 
 	ChromaProp_t    prop;

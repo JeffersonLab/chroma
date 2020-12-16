@@ -1,7 +1,6 @@
 /*! \file
  *  \brief Overlap-pole operator
  */
-#include <math.h>
 #include "chromabase.h"
 #include "actions/ferm/linop/lovddag_double_pass_w.h"
 #include "meas/eig/gramschm.h"
@@ -442,5 +441,5 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
   END_CODE();
 }
 
-}; // End Namespace Chroma
+}  // End Namespace Chroma
 

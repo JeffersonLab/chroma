@@ -121,6 +121,6 @@ namespace Chroma
     };
 
 
-}; //end namespace chroma
+} //end namespace chroma
 
 #endif

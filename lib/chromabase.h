@@ -65,6 +65,6 @@ const Real twopi = 6.283185307179586476925286;
 #define END_CODE()   QDP_POP_PROFILE()
 
 #endif
-};
+}
 
 #endif

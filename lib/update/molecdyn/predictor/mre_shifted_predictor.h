@@ -215,7 +215,6 @@ namespace Chroma
     void newXVector(const T& X) 
     {
       START_CODE();
-      const Subset& s = M.subset();
       chrono_buf->push(X);
       T Mv;
       M(Mv,X,PLUS);

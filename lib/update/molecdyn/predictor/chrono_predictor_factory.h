@@ -42,7 +42,7 @@ namespace Chroma
   The5DChronologicalPredictorFactory;
 
 
-}; // End namespace Chroma
+} // End namespace Chroma
 
 
 #endif

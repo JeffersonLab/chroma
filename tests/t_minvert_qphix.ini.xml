@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<Param>
+  <nrow>16 16 16 16</nrow>
+  <Cfg>
+    <cfg_type>WEAK_FIELD</cfg_type>
+    <cfg_file>dummy</cfg_file>
+ </Cfg>
+        <FermionAction>
+         <FermAct>CLOVER</FermAct>
+         <Kappa>0.115</Kappa>
+         <clovCoeff>2.0171</clovCoeff>
+         <clovCoeffR>2.0171</clovCoeffR>
+         <clovCoeffT>0.95</clovCoeffT>
+         <AnisoParam>
+           <anisoP>true</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.9</xi_0>
+           <nu>0.94</nu>
+         </AnisoParam>
+         <FermState>
+           <Name>STOUT_FERM_STATE</Name>
+           <rho>0.22</rho>
+           <n_smear>2</n_smear>
+           <orthog_dir>3</orthog_dir>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+         </FermState>
+        </FermionAction>
+
+	<InvertParam>
+          <invType>QPHIX_CLOVER_MULTI_SHIFT_INVERTER</invType>
+          <MaxIter>1000</MaxIter>
+	  <MaxShifts>12</MaxShifts>
+          <RsdTarget>1.0e-7</RsdTarget>
+	  <CloverParams>
+	    <Kappa>0.115</Kappa>
+	    <clovCoeff>2.0171</clovCoeff>
+	    <clovCoeffR>2.0171</clovCoeffR>
+	    <clovCoeffT>0.95</clovCoeffT>
+	    <AnisoParam>
+	      <anisoP>true</anisoP>
+	      <t_dir>3</t_dir>
+	      <xi_0>2.9</xi_0>
+	      <nu>0.94</nu>
+	    </AnisoParam>
+          </CloverParams>
+	  <AntiPeriodicT>true</AntiPeriodicT>
+	  <Verbose>false</Verbose>
+	  <SolutionCheck>true</SolutionCheck>
+	  <NCores>16</NCores>
+	  <ThreadsPerCore>2</ThreadsPerCore>
+	  <By>8</By>
+	  <Bz>8</Bz>
+	  <Sy>1</Sy>
+	  <Sz>2</Sz>
+	  <PadXY>1</PadXY>
+	  <PadXYZ>0</PadXYZ>
+	  <MinCt>4</MinCt>
+	  <RsdToleranceFactor>5.0</RsdToleranceFactor>
+	  <Tune>true</Tune>
+
+ </InvertParam>
+
+
+</Param>

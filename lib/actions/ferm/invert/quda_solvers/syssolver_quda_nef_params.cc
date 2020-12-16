@@ -127,6 +127,13 @@ namespace Chroma {
     else { 
 	cgnrP = false ; // Do CGNE by default
     }
+
+    if( paramtop.count("Pipeline") > 0 ) { 
+       read(paramtop, "Pipeline", Pipeline);
+    }
+    else { 
+	Pipeline = 1;
+    }
   }
 
   void read(XMLReader& xml, const std::string& path, 
@@ -162,7 +169,7 @@ namespace Chroma {
 
     write(xml, "DumpOnFail", p.dump_on_failP);
     write(xml, "DoCGNR", p.cgnrP );
-
+    write(xml, "Pipeline", p.Pipeline);
     if( p.backup_invP ) { 
       // Need to dump out the XML for the back up solver here...
       // Turn XML into an std::istringstream

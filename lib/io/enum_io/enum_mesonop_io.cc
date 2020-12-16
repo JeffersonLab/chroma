@@ -23,7 +23,7 @@ namespace Chroma {
 
     bool registered = registerAll();
     const std::string typeIDString = "MesonOpType";
-  };
+  }
   using namespace MesonOpTypeEnv;
 
   //! read an approximation coefficient type enum
@@ -35,4 +35,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const MesonOpType& t) {
     theMesonOpTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
-};
+}

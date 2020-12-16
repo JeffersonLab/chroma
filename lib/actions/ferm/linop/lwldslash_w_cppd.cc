@@ -7,6 +7,8 @@
 #include "cpp_dslash.h"
 #include "cpp_dslash_qdp_packer.h"
 
+
+
 using namespace CPlusPlusWilsonDslash;
 
 namespace Chroma 
@@ -31,13 +33,20 @@ namespace Chroma
 
   //! Empty constructor
   CPPWilsonDslashD::CPPWilsonDslashD()
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+	 : packed_gauge(nullptr)
+#endif
   {
+
     init();
   }
   
   //! Full constructor
   CPPWilsonDslashD::CPPWilsonDslashD(Handle< FermState<T,P,Q> > state)
-  { 
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+	 : packed_gauge(nullptr)
+#endif
+  {
     init();
     create(state);
   }
@@ -45,6 +54,9 @@ namespace Chroma
   //! Full constructor with anisotropy
   CPPWilsonDslashD::CPPWilsonDslashD(Handle< FermState<T,P,Q> > state,
 				   const AnisoParam_t& aniso_) 
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+	 : packed_gauge(nullptr)
+#endif
   {
     init();
     create(state, aniso_);
@@ -53,6 +65,9 @@ namespace Chroma
   //! Full constructor with general coefficients
   CPPWilsonDslashD::CPPWilsonDslashD(Handle< FermState<T,P,Q> > state,
 				   const multi1d<Real>& coeffs_)
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+	 : packed_gauge(nullptr)
+#endif
   {
     init();
     create(state, coeffs_);
@@ -106,7 +121,17 @@ namespace Chroma
     }
 
     // Pack the gauge fields
-    packed_gauge.resize( Nd * Layout::sitesOnNode() );
+    //packed_gauge.resize( Nd * Layout::sitesOnNode() );
+    // Allocate as a pointer -- In the case of static allocation
+    // Always allocate if null. If the packed gauge is static, it will not be null after the first allocation.
+    if ( packed_gauge == nullptr ) {
+    	packed_gauge = (PrimitiveSU3MatrixD*)QDP::Allocator::theQDPAllocator::Instance().allocate( Layout::sitesOnNode()*Nd*sizeof(PrimitiveSU3MatrixD),
+    			QDP::Allocator::DEFAULT);
+    	if( packed_gauge == nullptr ) {
+    		QDPIO::cout << "Failed to allocate packed gauge in CPP_Dslash " <<std::endl;
+    		QDP_abort(1);
+    	}
+    }
 
 #if 0
     QDPIO::cout << "Done " << std::endl << std::flush;
@@ -128,12 +153,9 @@ namespace Chroma
   {
     START_CODE();
 
-#if 0
-    QDPIO::cout << "Calling free_sse_su3dslash()... " << std::endl;
+#ifndef CHROMA_STATIC_PACKED_GAUGE
+    QDP::Allocator::theQDPAllocator::Instance().free(packed_gauge);
 #endif
-
-    // Never free
-    // free_sse_su3dslash();
 
     END_CODE();
   }

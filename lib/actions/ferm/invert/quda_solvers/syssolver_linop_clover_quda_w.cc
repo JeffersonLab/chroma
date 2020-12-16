@@ -57,56 +57,38 @@ namespace Chroma
   }
 
   SystemSolverResults_t 
-  LinOpSysSolverQUDAClover::qudaInvert(const CloverTermT<T, U>::Type_t& clover,
-				       const CloverTermT<T, U>::Type_t& invclov,
+  LinOpSysSolverQUDAClover::qudaInvert(const CloverTermT<T, U>& clover,
+				       const CloverTermT<T, U>& invclov,
 				       const T& chi_s,
 				       T& psi_s) const{
 
     SystemSolverResults_t ret;
 
     void *spinorIn;
+    void *spinorOut;
 
-    T mod_chi;
-    if ( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
-      // asymmetric 
-      //
-      // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
+#ifdef BUILD_QUDA_DEVIFACE_SPINOR
+    std::vector<QDPCache::ArgKey> ids;
+#endif
+  
       // No need to transform source
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-      spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
-      QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
+      //spinorIn = GetMemoryPtr( chi_s.);
+      //QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
+      ids.push_back(chi_s.getId());
 #endif
-    }
-    else if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD) { 
-      //
-      // symmetric
-      // Solve with M_symm = 1 - A^{-1}_oo D A^{-1}ee D 
-      //
-      // Chroma M =  A_oo ( M_symm )
-      //
-      //  So  M x = b => A_oo (M_symm) x = b 
-      //              =>       M_symm x = A^{-1}_oo b = chi_mod
-      invclov.apply(mod_chi, chi_s, PLUS, 1);
-#ifndef BUILD_QUDA_DEVIFACE_SPINOR
-      spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
-#else
-      spinorIn = QDPCache::Instance().getDevicePtr( mod_chi.getId() );
-      QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
-#endif
-    }
-    else { 
-      QDPIO::cout << "MATPC Type not allowed." << std::endl;
-      QDPIO::cout << " Allowed are: QUDA_MATPC_ODD_ODD_ASYMMETRIC or QUDA_MATPC_ODD_ODD" << std::endl;
-      QDP_abort(1);
-    }
+  
 
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
-    void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
+    spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
-    void* spinorOut = QDPCache::Instance().getDevicePtr( psi_s.getId() );
-    QDPIO::cout << "MDAGM spinor out = " << spinorOut << "\n";
+    ids.push_back(psi_s.getId());
+    auto dev_ptr = GetMemoryPtr(ids);
+    spinorIn  = dev_ptr[0];
+    spinorOut = dev_ptr[1];
+  
 #endif
 
     // Do the solve here 
@@ -116,11 +98,6 @@ namespace Chroma
     invertQuda(spinorOut, spinorIn, (QudaInvertParam*)&quda_inv_param);
     swatch1.stop();
 
-
-    QDPIO::cout << "Cuda Space Required" << std::endl;
-    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << std::endl;
-    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << std::endl;
     QDPIO::cout << "QUDA_"<<solver_string<<"_CLOVER_SOLVER: time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;

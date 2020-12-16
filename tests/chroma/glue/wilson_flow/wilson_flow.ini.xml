@@ -15,10 +15,11 @@
       <Name>WILSON_FLOW</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
+        <version>2</version>
 	<nstep>100</nstep>
 	<wtime>1.0</wtime>
 	<t_dir>3</t_dir>
+	<smear_dirs>1 1 1 1</smear_dirs>
       </Param>
       <NamedObject>
 	  <gauge_in>default_gauge_field</gauge_in>

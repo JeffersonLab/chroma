@@ -26,12 +26,18 @@ namespace Chroma
 
       unsigned int frequency;
 
+      struct Param_t {
+	int start_t;
+	int end_t;
+      };
+
       struct NamedObject_t {
 	std::string   object_type;         /*!< Input object type */
 	std::string   input_id;            /*!< Input object id */
 	std::string   output_file;         /*!< Output std::map-object-disk */
       };
 
+      Param_t           param;
       NamedObject_t   named_obj;
     };
 

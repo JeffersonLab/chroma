@@ -232,7 +232,7 @@ namespace Chroma
   };	      
   
 
-};
+}
 
 
 #endif 

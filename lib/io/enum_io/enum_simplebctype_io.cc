@@ -23,7 +23,7 @@ namespace Chroma {
     // Boilerplate stuff from here on
     const std::string typeIDString = "SimpleBCType";
     bool registered = registerAll();
-  };
+  }
   using namespace SimpleBCTypeEnv;
 
   //! Read an simpleBC type enum
@@ -35,4 +35,4 @@ namespace Chroma {
   void write(XMLWriter& xml_out, const std::string& path, const SimpleBCType& t) {
     theSimpleBCTypeMap::Instance().write(typeIDString,xml_out, path, t);
   }
-};
+}

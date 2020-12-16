@@ -1,7 +1,8 @@
 /*! \file
  *  \brief Overlap-pole operator
  */
-#include <math.h>
+
+
 #include "chromabase.h"
 #include "actions/ferm/linop/lg5eps_double_pass_w.h"
 #include "meas/eig/gramschm.h"
@@ -370,6 +371,6 @@ void lg5eps_double_pass::operator() (LatticeFermion& chi,
   END_CODE();
 }
 
-}; // End Namespace Chroma
+}  // End Namespace Chroma
 
 

@@ -62,6 +62,6 @@ namespace Chroma
     InlineXMLWriteNamedObjParams params;
   };
 
-};
+}
 
 #endif

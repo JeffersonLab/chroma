@@ -6,6 +6,7 @@
 #ifndef __clover_term_base_w_h__
 #define __clover_term_base_w_h__
 
+#include "chroma_config.h"
 #include "linearop.h"
 
 
@@ -181,6 +182,140 @@ namespace Chroma
 
 
 
+#if defined(CHROMA_FUSED_CLOVER_DERIV_LOOPS) && !defined(BUILD_JIT_CLOVER_TERM)
+  /* Fused Deriv Loops code contributed by Jacques Block of Regensburg University */
+#warning "Using Fused deriv_loops contributed by Jacques Bloch of Regensburg University"
+  template<typename LCM>
+  inline
+  void fused_deriv_loops(const multi1d<LCM>& u,
+		  const int mu, const int nu, const int cb,
+		  LCM& ds_u_mu, LCM& ds_u_nu, const LCM& Lambda)
+  {
+	  // shifted input
+	  LCM tmp;
+
+	  LCM Lambda_xplus_mu;
+	  Lambda_xplus_mu = shift(Lambda, FORWARD, mu);
+
+	  // output to be shifted
+	  LCM ds_tmp_mu;
+	  LCM ds_tmp_nu;
+
+	  LCM u_nu_for_mu;
+	  u_nu_for_mu = shift(u[nu],FORWARD, mu);
+	  LCM u_mu_for_nu;
+	  u_mu_for_nu = shift(u[mu],FORWARD, nu);
+
+	  using MatSU3 =  PColorMatrix< RComplex< typename WordType<LCM>::Type_t>, 3>;
+#define _elem(x,i) (x.elem(i).elem())
+
+	  MatSU3 staple_for;
+	  MatSU3 staple_back;
+	  MatSU3 staple_left;
+	  MatSU3 staple_right;
+
+	  MatSU3 u_tmp3;
+	  MatSU3 up_left_corner;
+	  MatSU3 up_right_corner;
+	  MatSU3 low_right_corner;
+	  MatSU3 low_left_corner;
+
+	  // EVEN
+	  {
+		  const Subset &s=rb[cb];
+		  const int* tab = s.siteTable().slice();
+		  const int numSiteTable = s.numSiteTable();
+		  LCM &Lambda_xplus_muplusnu=tmp;
+		  Lambda_xplus_muplusnu[s] = shift(Lambda_xplus_mu, FORWARD, nu);
+
+#pragma omp parallel for private(staple_for, staple_back, staple_left, staple_right, u_tmp3, up_left_corner, up_right_corner, low_right_corner, low_left_corner)
+		  for(int j=0; j < numSiteTable; ++j)
+		  {
+			  int i = tab[j];
+
+			  up_left_corner = adj(_elem(u_mu_for_nu,i))*adj(_elem(u[nu],i));
+			  low_right_corner = adj(_elem(u_nu_for_mu,i))*adj(_elem(u[mu],i));
+			  low_left_corner = adj(_elem(u[mu],i))*_elem(u[nu],i);
+
+			  u_tmp3 = _elem(u_nu_for_mu,i)*_elem(Lambda_xplus_muplusnu,i);
+			  _elem(ds_u_mu,i) = u_tmp3*up_left_corner;
+
+			  u_tmp3 = up_left_corner*_elem(Lambda,i);
+			  _elem(ds_tmp_nu,i) = u_tmp3*_elem(u[mu],i);
+
+			  u_tmp3 = low_right_corner*_elem(Lambda,i);
+			  _elem(ds_tmp_mu,i) = u_tmp3*_elem(u[nu],i);
+
+			  u_tmp3 = _elem(u_mu_for_nu,i)*_elem(Lambda_xplus_muplusnu,i);
+			  _elem(ds_u_nu,i) = u_tmp3*low_right_corner;
+
+			  staple_for = _elem(u_nu_for_mu,i)*up_left_corner;
+			  staple_right = up_left_corner*_elem(u[mu],i);
+			  staple_left  = _elem(u_mu_for_nu,i)*low_right_corner;
+			  staple_back = adj(_elem(u_nu_for_mu,i))*low_left_corner;
+
+			  _elem(ds_u_mu,i) += staple_for*_elem(Lambda,i);
+			  _elem(ds_tmp_nu,i) += _elem(Lambda_xplus_muplusnu,i)*staple_right;
+			  _elem(ds_u_nu,i) += staple_left*_elem(Lambda,i);
+			  _elem(ds_tmp_mu,i) += _elem(Lambda_xplus_muplusnu,i)*staple_back;
+		  }
+	  }
+
+	  // ODD
+	  {
+		  const Subset &s=rb[1-cb];
+		  const int* tab = s.siteTable().slice();
+		  const int numSiteTable = s.numSiteTable();
+
+		  LCM &Lambda_xplus_nu=tmp;
+		  Lambda_xplus_nu[s] = shift(Lambda, FORWARD, nu);
+
+#pragma omp parallel for private(staple_for, staple_back, staple_left, staple_right, u_tmp3, up_left_corner, up_right_corner, low_right_corner, low_left_corner)
+		  for (int j=0; j < numSiteTable; ++j)
+		  {
+			  int i = tab[j];
+
+			  up_left_corner = adj(_elem(u_mu_for_nu,i))*adj(_elem(u[nu],i));
+			  up_right_corner = _elem(u_nu_for_mu,i)*adj(_elem(u_mu_for_nu,i));
+			  low_right_corner = adj(_elem(u_nu_for_mu,i))*adj(_elem(u[mu],i));
+			  low_left_corner = adj(_elem(u[mu],i))*_elem(u[nu],i);
+
+			  u_tmp3 = adj(_elem(u_mu_for_nu,i))*_elem(Lambda_xplus_nu,i);
+			  _elem(ds_tmp_nu,i) = u_tmp3*adj(low_left_corner);
+
+			  u_tmp3 = _elem(Lambda_xplus_nu,i)*adj(_elem(u[nu],i));
+			  _elem(ds_u_mu,i) = up_right_corner * u_tmp3;
+
+			  u_tmp3 = adj(_elem(u_nu_for_mu,i))*_elem(Lambda_xplus_mu,i);
+			  _elem(ds_tmp_mu,i) = u_tmp3*low_left_corner;
+
+			  u_tmp3 = adj(up_right_corner)*_elem(Lambda_xplus_mu,i);
+			  _elem(ds_u_nu,i) = u_tmp3*adj(_elem(u[mu],i));
+
+			  staple_for = _elem(u_nu_for_mu,i)*up_left_corner;
+			  staple_right = up_left_corner*_elem(u[mu],i);
+			  staple_left  = _elem(u_mu_for_nu,i)*low_right_corner;
+			  staple_back = adj(_elem(u_nu_for_mu,i))*low_left_corner;
+
+			  _elem(ds_tmp_nu,i) += staple_right*_elem(Lambda_xplus_mu,i);
+			  _elem(ds_u_mu,i) += _elem(Lambda_xplus_mu,i)*staple_for;
+			  _elem(ds_tmp_mu,i) += staple_back*_elem(Lambda_xplus_nu,i);
+			  _elem(ds_u_nu,i) += _elem(Lambda_xplus_nu,i)*staple_left;
+		  }
+	  }
+
+	  // Now shift the accumulated pieces to mu and nu
+	  //
+	  // Hope that this is not too slow as an expression
+	  ds_u_mu -= shift(ds_tmp_mu, BACKWARD, nu);
+	  ds_u_nu -= shift(ds_tmp_nu, BACKWARD, mu);
+#undef _elem
+
+	  END_CODE();
+
+  }
+#endif
+
   template<typename T, typename U>
   void CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
 				   U& ds_u_mu,
@@ -191,6 +326,11 @@ namespace Chroma
 
     const multi1d<U>& u = getU();
 
+#if defined(CHROMA_FUSED_CLOVER_DERIV_LOOPS)  && !defined(BUILD_JIT_CLOVER_TERM)
+    // Code from Jacques
+    fused_deriv_loops<U>(u,mu,nu,cb,ds_u_mu,ds_u_nu,Lambda);
+
+#else
     // New thingie - now assume Lambda lives only on sites with checkerboard 
     // CB
     //            Lambda
@@ -531,8 +671,11 @@ namespace Chroma
     ds_u_mu -= shift(ds_tmp_mu, BACKWARD, nu);
     ds_u_nu -= shift(ds_tmp_nu, BACKWARD, mu); 
 
+#endif
+
     END_CODE();
   }
+
 
 
   //! Take deriv of D

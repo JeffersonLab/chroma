@@ -147,8 +147,8 @@ namespace Chroma
       
     };
 
-  }; // name space InlineHadronEnv
+  }  // name space InlineHadronEnv
 
-};
+}
 
 #endif

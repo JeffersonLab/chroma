@@ -90,6 +90,6 @@ namespace Chroma
     InlineBuildingBlocksParams params;
   };
 
-};
+}
 
 #endif

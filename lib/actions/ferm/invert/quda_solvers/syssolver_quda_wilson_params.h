@@ -29,7 +29,7 @@ namespace Chroma
       tuneDslashP = false ; //< v0.3 autotune feature
       verboseP = false;
       innerParamsP = false;
-
+      Pipeline = 1;
       
     };
     SysSolverQUDAWilsonParams( const SysSolverQUDAWilsonParams& p) {
@@ -51,7 +51,7 @@ namespace Chroma
       tuneDslashP = p.tuneDslashP;
       innerParamsP = p.innerParamsP;
       innerParams = p.innerParams;
-
+      Pipeline = p.Pipeline;
     }
 
    
@@ -72,6 +72,7 @@ namespace Chroma
     Real RsdToleranceFactor;
     bool tuneDslashP;
     bool innerParamsP;
+    int Pipeline;
 
     // Params for preconditioner
     Handle<GCRInnerSolverParams> innerParams;

@@ -364,6 +364,11 @@ namespace Chroma
     int getDiaId() const { return tri_dia.getId(); }
     int getOffId() const { return tri_off.getId(); }
 
+    using DiagType =  OLattice<PComp<PTriDia<RScalar <Word<REALT> > > > >;
+    using OffDiagType =  OLattice<PComp<PTriOff<RComplex<Word<REALT> > > > >;
+
+    const DiagType& getDiagBuffer() const { return tri_dia ; }
+    const OffDiagType& getOffDiagBuffer() const { return tri_off; }
       
   protected:
     //! Create the clover term on cb
@@ -610,15 +615,15 @@ namespace Chroma
   {
     AddressLeaf addr_leaf(all);
 
-    int junk_0 = forEach(diag_mass, addr_leaf, NullCombine());
-    int junk_1 = forEach(f0, addr_leaf, NullCombine());
-    int junk_2 = forEach(f1, addr_leaf, NullCombine());
-    int junk_3 = forEach(f2, addr_leaf, NullCombine());
-    int junk_4 = forEach(f3, addr_leaf, NullCombine());
-    int junk_5 = forEach(f4, addr_leaf, NullCombine());
-    int junk_6 = forEach(f5, addr_leaf, NullCombine());
-    int junk_7 = forEach(tri_dia, addr_leaf, NullCombine());
-    int junk_8 = forEach(tri_off, addr_leaf, NullCombine());
+    forEach(diag_mass, addr_leaf, NullCombine());
+    forEach(f0, addr_leaf, NullCombine());
+    forEach(f1, addr_leaf, NullCombine());
+    forEach(f2, addr_leaf, NullCombine());
+    forEach(f3, addr_leaf, NullCombine());
+    forEach(f4, addr_leaf, NullCombine());
+    forEach(f5, addr_leaf, NullCombine());
+    forEach(tri_dia, addr_leaf, NullCombine());
+    forEach(tri_off, addr_leaf, NullCombine());
 
     jit_dispatch(function.func().at(0),Layout::sitesOnNode(),getDataLayoutInnerSize(),true,0,addr_leaf);
   }
@@ -842,19 +847,12 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-    LatticeREAL ff=tr_log_diag_;
 
-    if( param.sub_zero_usedP ) { 
-      QDPIO::cout << "Subtracting "<< param.sub_zero<<std::endl;
-      LatticeREAL tmp;
-      tmp[rb[cb]] = param.sub_zero;
-      ff[rb[cb]] -= tmp;
-    }
     END_CODE();
 
     // Need to thread generic sums in QDP++?
     // Need to thread generic norm2() in QDP++?
-    return sum(ff, rb[cb]);
+    return sum(tr_log_diag_, rb[cb]);
   }
 
 
@@ -871,9 +869,9 @@ namespace Chroma
 
     AddressLeaf addr_leaf(s);
 
-    int junk_0 = forEach(tr_log_diag, addr_leaf, NullCombine());
-    int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
-    int junk_3 = forEach(tri_off, addr_leaf, NullCombine());
+    forEach(tr_log_diag, addr_leaf, NullCombine());
+    forEach(tri_dia, addr_leaf, NullCombine());
+    forEach(tri_off, addr_leaf, NullCombine());
 
     jit_dispatch(function.func().at(0),s.numSiteTable(),getDataLayoutInnerSize(),s.hasOrderedRep(),s.start(),addr_leaf);
   }
@@ -923,7 +921,7 @@ namespace Chroma
     zero_rep(zip);
     int N = 2*Nc;
       
-    int site_neg_logdet=0;
+    //int site_neg_logdet=0;
   
     for(int block=0; block < 2; block++) {
 	  
@@ -1086,7 +1084,7 @@ namespace Chroma
       }
 
     // Zero trace log
-    tr_log_diag = zero;
+    tr_log_diag[rb[cb]] = zero;
 
     //QDPIO::cout << "LLVM Clover ldagdlinv " << (void*)this << "\n";
     //std::cout << "LLVM Clover ldagdlinv " << (void*)this << "\n";
@@ -1170,9 +1168,9 @@ namespace Chroma
 
     addr_leaf.setLit( mat );
 
-    int junk_0 = forEach(B, addr_leaf, NullCombine());
-    int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
-    int junk_3 = forEach(tri_off, addr_leaf, NullCombine());
+    forEach(B, addr_leaf, NullCombine());
+    forEach(tri_dia, addr_leaf, NullCombine());
+    forEach(tri_off, addr_leaf, NullCombine());
 
     jit_dispatch(function.func().at(0),s.numSiteTable(),getDataLayoutInnerSize(),s.hasOrderedRep(),s.start(),addr_leaf);
   }
@@ -1588,10 +1586,10 @@ namespace Chroma
 
     AddressLeaf addr_leaf(s);
 
-    int junk_0 = forEach(chi, addr_leaf, NullCombine());
-    int junk_1 = forEach(psi, addr_leaf, NullCombine());
-    int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
-    int junk_3 = forEach(tri_off, addr_leaf, NullCombine());
+    forEach(chi, addr_leaf, NullCombine());
+    forEach(psi, addr_leaf, NullCombine());
+    forEach(tri_dia, addr_leaf, NullCombine());
+    forEach(tri_off, addr_leaf, NullCombine());
 
     jit_dispatch(function.func().at(0),s.numSiteTable(),getDataLayoutInnerSize(),s.hasOrderedRep(),s.start(),addr_leaf);
   }

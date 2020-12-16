@@ -20,7 +20,7 @@ namespace Chroma
     bool registerAll();
     
     extern double getTime();
-  };
+  }
 
   //! Parameter structure
   /*! @ingroup gaugeacts */
@@ -127,7 +127,7 @@ namespace Chroma
 
     //! Anisotropic direction
     int tDir() const {return params.aniso.t_dir;}
-    const bool noTemporal21LoopsP(void) const {return params.no_temporal_2link;}
+    bool noTemporal21LoopsP(void) const {return params.no_temporal_2link;}
 
   protected:
     //! Partial construcor
@@ -152,7 +152,7 @@ namespace Chroma
 
   };
 
-};
+}
 
 
 #endif

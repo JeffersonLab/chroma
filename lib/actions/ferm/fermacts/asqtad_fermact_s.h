@@ -82,6 +82,6 @@ namespace Chroma
   };
 
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 #endif

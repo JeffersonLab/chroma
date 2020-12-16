@@ -3,6 +3,7 @@
 #ifndef __transf_h__
 #define __transf_h__
 
+#include "qdp_config.h"
 namespace Chroma
 {
  //! Convert (insert) a LatticeColorVector into a LatticeFermion
@@ -49,6 +50,23 @@ namespace Chroma
    */
   void CvToFerm(const LatticeColorVectorD& a, LatticeStaggeredFermionD& b);
 
+  //! Convert a LatticeStaggeredFermion into a LatticeColorVector (extract)
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source Fermion
+   * \param b      Destination ColorVector
+   */
+  void FermToCv(const LatticeStaggeredFermionF& a, LatticeColorVectorF& b);
+
+  //! Convert a LatticeStaggeredFermion into a LatticeColorVector (extract)
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source Fermion
+   * \param b      Destination ColorVector
+   */
+  void FermToCv(const LatticeStaggeredFermionD& a, LatticeColorVectorD& b);
 
 
   //! Insert a LatticeFermion into a LatticePropagator
@@ -76,6 +94,31 @@ namespace Chroma
 		  int color_index, int spin_index);
 
 
+#ifndef QDP_IS_QDPJIT_NO_NVPTX
+  //! Insert a LatticeFermion into a LatticeColorVectorSpinMatrix
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source fermion
+   * \param b      Destination propagator
+   * \param color_index  Color index
+   * \param spin_index   Spin index
+   */
+  void FermToProp(const LatticeFermionF& a, LatticeColorVectorSpinMatrixF& b, 
+		  int spin_index);
+
+  //! Insert a LatticeFermion into a LatticeColorVectorSpinMatrix
+  /*!
+   * \ingroup ferm
+   *
+   * \param a      Source fermion
+   * \param b      Destination propagator
+   * \param color_index  Color index
+   * \param spin_index   Spin index
+   */
+  void FermToProp(const LatticeFermionD& a, LatticeColorVectorSpinMatrixD& b, 
+		  int spin_index);
+#endif 
 
   //! Insert a LatticeFermion into a LatticePropagator
   /*!

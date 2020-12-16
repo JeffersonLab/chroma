@@ -573,4 +573,4 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
   QDPIO::cout << "fuz_wlp1 and fuz_wlp2 written to .xml file " << std::endl;
 }
 
-};
+}

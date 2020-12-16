@@ -16,7 +16,7 @@ namespace Chroma {
   { 
     extern const std::string name;
     bool registerAll();
-  };
+  }
 
   //! Periodic gauge
   /*! @ingroup gaugebcs */

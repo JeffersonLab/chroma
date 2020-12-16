@@ -79,6 +79,6 @@ namespace Chroma
     InlineHeavyHadSpecParams params;
   };
 
-};
+}
 
 #endif

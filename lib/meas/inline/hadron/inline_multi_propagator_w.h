@@ -70,6 +70,6 @@ namespace Chroma
     InlineMultiPropagatorParams params;
   };
 
-};
+}
 
 #endif

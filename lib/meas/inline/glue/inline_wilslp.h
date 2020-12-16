@@ -74,6 +74,6 @@ namespace Chroma
     InlineWilsonLoopParams params;
   };
 
-};
+}
 
 #endif
