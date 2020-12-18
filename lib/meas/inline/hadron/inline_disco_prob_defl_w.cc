@@ -273,10 +273,14 @@ namespace Chroma
         const LatticeFermion& q, const multi1d<LatticeColorMatrix>& u, int mu, int sign)
     {
         // FIXME reuse template
+        // if(sign>0)
+        //   q_mu = u[mu] * shift(q, FORWARD, mu);
+        // else
+        //   q_mu = shift(adj(u[mu]) * q, BACKWARD, mu);
         if(sign>0)
-          q_mu = u[mu] * shift(q, FORWARD, mu);
+          q_mu = shift(q, FORWARD, mu);
         else
-          q_mu = shift(adj(u[mu]) * q, BACKWARD, mu);
+          q_mu = shift(q, BACKWARD, mu);
     }
 
     void do_disco(std::map< KeyOperator_t, ValOperator_t >& db,
@@ -287,7 +291,8 @@ namespace Chroma
 		  const multi1d<int>& path,
 	 	  const int& max_path_length ){
       
-      const int Nt = Layout::lattSize()[3];
+      //const int Nt = Layout::lattSize()[3];
+      const int Nt = 1;
 
       ValOperator_t val ;
       KeyOperator_t key ;
@@ -309,6 +314,7 @@ namespace Chroma
           LatticeComplex pcc = p[m]*cc;
           for (int t(0); t < Nt; t++) {
 	      foo(m,t)[g] = sum(pcc,p.getSet()[t]);
+	      if (g == 0) QDPIO::cout<<"Trace t="<< t << " path=" << path << " val= " << foo(m,t)[g] << std::endl;
           }
 	}
       }
