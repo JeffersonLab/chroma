@@ -60,9 +60,23 @@ void function_get_fs_bs_exec(JitFunction function,
 
 
 
-WordREG<REAL> jit_constant( double f )
+using real_t = RScalarREG< WordREG<REAL> >;
+
+namespace
 {
-  return WordREG<REAL>(f);
+  template <class T>
+  decltype(auto) poke_real( T& t )
+  {
+    typedef typename JITType< real_t >::Type_t T_jit;
+    return T_jit( t.elem().elem().real() );
+  }
+
+  template <class T>
+  decltype(auto) poke_imag( T& t )
+  {
+    typedef typename JITType< real_t >::Type_t T_jit;
+    return (T_jit( t.elem().elem().imag() ));
+  }
 }
 
 
@@ -79,6 +93,7 @@ JitFunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
   }
 
   //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
+
 
   llvm_start_new_function();
 
@@ -127,519 +142,429 @@ JitFunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
   auto& b21_j = b21_jit.elem(JitDeviceLayout::Coalesced,r_idx);
   auto& b22_j = b22_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
-  llvm::BasicBlock * block_exit = llvm_new_basic_block();
-  { 
-    // Get the traces
-    PColorMatrixREG< RComplexREG< WordREG<REAL> >, Nc>  Q_site = Q_j.elem();
-    PColorMatrixREG< RComplexREG< WordREG<REAL> >, Nc>  QQ_site = QQ_j.elem();
-    PColorMatrixREG< RComplexREG< WordREG<REAL> >, Nc>  QQQ = QQ_site*Q_site;
+
+  // Get the traces
+  PColorMatrixREG< RComplexREG< WordREG<REAL> >, Nc>  Q_site = Q_j.elem();
+  PColorMatrixREG< RComplexREG< WordREG<REAL> >, Nc>  QQ_site = QQ_j.elem();
+  PColorMatrixREG< RComplexREG< WordREG<REAL> >, Nc>  QQQ = QQ_site*Q_site;
 	
-    // Real trQQQ; 
-    // trQQQ.elem()  = realTrace(QQQ);
-    // Real trQQ;
-    // trQQ.elem()   = realTrace(QQ_site);
 
-    // auto trQQQ = realTrace(QQQ);
-    // auto trQQ  = realTrace(QQ_site);
+  PScalarREG< RScalarREG< WordREG<REAL> > > trQQQ = realTrace(QQQ);
+  PScalarREG< RScalarREG< WordREG<REAL> > > trQQ  = realTrace(QQ_site);
 
-    PScalarREG< RScalarREG< WordREG<REAL> > > trQQQ = realTrace(QQQ);
-    PScalarREG< RScalarREG< WordREG<REAL> > > trQQ  = realTrace(QQ_site);
+  real_t c0    = real_t( 1./3.) * trQQQ.elem();  // eq 13
+  real_t c1    = real_t( 1./2.) * trQQ.elem();	 // eq 15 
 
-    WordREG<REAL> c0    = jit_constant((REAL)1/(REAL)3) * trQQQ.elem().elem();  // eq 13
-    WordREG<REAL> c1    = jit_constant((REAL)1/(REAL)2) * trQQ.elem().elem();	 // eq 15 
 
-    llvm::BasicBlock * block_c1_lt = llvm_new_basic_block();
-    llvm::BasicBlock * block_c1_nlt = llvm_new_basic_block();
-    llvm_cond_branch( llvm_lt( c1.get_val() , llvm_create_value( 4.0e-3 ) ) , block_c1_lt , block_c1_nlt );
+  auto lv_c1_lt_0p004 = real_t( c1 < real_t( 4.0e-3 ) ).elem().get_val();
 
-    llvm_set_insert_point( block_c1_lt );
-    { //    if( c1 < 4.0e-3  ) 
-      f0_j.elem().elem().real() = jit_constant(1.0) - c0 * c0 / jit_constant(720.0);
-      f0_j.elem().elem().imag() =  -( c0 / jit_constant(6.0) )*( jit_constant(1.0) -(c1/jit_constant(20.0))*(jit_constant(1.0)-(c1/jit_constant(42.0)))) ;
+  JitIf c1_lt_0p004( lv_c1_lt_0p004 );   //    if( c1 < 4.0e-3  ) 
+  {
 
-      f1_j.elem().elem().real() =  c0/jit_constant(24.0)*(jit_constant(1.0)-c1/jit_constant(15.0)*(jit_constant(1.0)-jit_constant(3.0)*c1/jit_constant(112.0))) ;
-      f1_j.elem().elem().imag() =  jit_constant(1.0)-c1/jit_constant(6.0)*(jit_constant(1.0)-c1/jit_constant(20.0)*(jit_constant(1.0)-c1/jit_constant(42.0)))-c0*c0/jit_constant(5040.0);
+    poke_real(f0_j) = real_t(1.0) - c0 * c0 / real_t(720.0);
+    poke_imag(f0_j) =  -( c0 / real_t(6.0) )*( real_t(1.0) -(c1/real_t(20.0))*(real_t(1.0)-(c1/real_t(42.0)))) ;
+
+    poke_real(f1_j) =  c0/real_t(24.0)*(real_t(1.0)-c1/real_t(15.0)*(real_t(1.0)-real_t(3.0)*c1/real_t(112.0))) ;
+    poke_imag(f1_j) =  real_t(1.0)-c1/real_t(6.0)*(real_t(1.0)-c1/real_t(20.0)*(real_t(1.0)-c1/real_t(42.0)))-c0*c0/real_t(5040.0);
 	  
-      f2_j.elem().elem().real() = jit_constant(0.5)*(jit_constant(-1.0)+c1/jit_constant(12.0)*(jit_constant(1.0)-c1/jit_constant(30.0)*(jit_constant(1.0)-c1/jit_constant(56.0)))+c0*c0/jit_constant(20160.0));
-      f2_j.elem().elem().imag() = jit_constant(0.5)*(c0/jit_constant(60.0)*(jit_constant(1.0)-c1/jit_constant(21.0)*(jit_constant(1.0)-c1/jit_constant(48.0))));
+    poke_real(f2_j) = real_t(0.5)*(real_t(-1.0)+c1/real_t(12.0)*(real_t(1.0)-c1/real_t(30.0)*(real_t(1.0)-c1/real_t(56.0)))+c0*c0/real_t(20160.0));
+    poke_imag(f2_j) = real_t(0.5)*(c0/real_t(60.0)*(real_t(1.0)-c1/real_t(21.0)*(real_t(1.0)-c1/real_t(48.0))));
 
 
-      llvm::BasicBlock * block_dobs_0 = llvm_new_basic_block();
-      llvm_cond_branch( r_dobs , block_dobs_0 , block_exit );
-
-      { // dobs
-	llvm_set_insert_point( block_dobs_0 );
-
-	b20_j.elem().elem().real() = -c0/jit_constant(360.0);
-	b20_j.elem().elem().imag() =  -jit_constant(1.0/6.0)*(jit_constant(1.0)-(c1/jit_constant(20.0))*(jit_constant(1.0)-c1/jit_constant(42.0)));
+    JitIf if_dobs( r_dobs ); // dobs
+    {
+      poke_real(b20_j) = -c0/real_t(360.0);
+      poke_imag(b20_j) =  -real_t(1.0/6.0)*(real_t(1.0)-(c1/real_t(20.0))*(real_t(1.0)-c1/real_t(42.0)));
 	    
-	// partial f0 / partial c1
-	//
-	b10_j.elem().elem().real() = jit_constant(0);
-	b10_j.elem().elem().imag() = (c0/jit_constant(120.0))*(jit_constant(1.0)-c1/jit_constant(21.0));
+      // partial f0 / partial c1
+      //
+      poke_real(b10_j) = real_t(0);
+      poke_imag(b10_j) = (c0/real_t(120.0))*(real_t(1.0)-c1/real_t(21.0));
 	    
-	// partial f1 / partial c0
-	//
-	b21_j.elem().elem().real() = jit_constant(1.0/24.0)*(jit_constant(1.0)-c1/jit_constant(15.0)*(jit_constant(1.0)-jit_constant(3.0)*c1/jit_constant(112.0)));
-	b21_j.elem().elem().imag() = -c0/jit_constant(2520.0);
+      // partial f1 / partial c0
+      //
+      poke_real(b21_j) = real_t(1.0/24.0)*(real_t(1.0)-c1/real_t(15.0)*(real_t(1.0)-real_t(3.0)*c1/real_t(112.0)));
+      poke_imag(b21_j) = -c0/real_t(2520.0);
 	    
 	    
-	// partial f1 / partial c1
-	b11_j.elem().elem().real() = -c0/jit_constant(360.0)*(jit_constant(1.0) - jit_constant(3.0)*c1/jit_constant(56.0) );
-	b11_j.elem().elem().imag() = -jit_constant(1.0/6.0)*(jit_constant(1.0)-c1/jit_constant(10.0)*(jit_constant(1.0)-c1/jit_constant(28.0)));
+      // partial f1 / partial c1
+      poke_real(b11_j) = -c0/real_t(360.0)*(real_t(1.0) - real_t(3.0)*c1/real_t(56.0) );
+      poke_imag(b11_j) = -real_t(1.0/6.0)*(real_t(1.0)-c1/real_t(10.0)*(real_t(1.0)-c1/real_t(28.0)));
 	    
-	// partial f2/ partial c0
-	b22_j.elem().elem().real() = jit_constant(0.5)*c0/jit_constant(10080.0);
-	b22_j.elem().elem().imag() = jit_constant(0.5)*(  jit_constant(1.0/60.0)*(jit_constant(1.0)-c1/jit_constant(21.0)*(jit_constant(1.0)-c1/jit_constant(48.0))) );
+      // partial f2/ partial c0
+      poke_real(b22_j) = real_t(0.5)*c0/real_t(10080.0);
+      poke_imag(b22_j) = real_t(0.5)*(  real_t(1.0/60.0)*(real_t(1.0)-c1/real_t(21.0)*(real_t(1.0)-c1/real_t(48.0))) );
 	    
-	// partial f2/ partial c1
-	b12_j.elem().elem().real() = jit_constant(0.5)*(  jit_constant(1.0/12.0)*(jit_constant(1.0)-(jit_constant(2.0)*c1/jit_constant(30.0))*(jit_constant(1.0)-jit_constant(3.0)*c1/jit_constant(112.0))) ); 
-	b12_j.elem().elem().imag() = jit_constant(0.5)*( -c0/jit_constant(1260.0)*(jit_constant(1.0)-c1/jit_constant(24.0)) );
+      // partial f2/ partial c1
+      poke_real(b12_j) = real_t(0.5)*(  real_t(1.0/12.0)*(real_t(1.0)-(real_t(2.0)*c1/real_t(30.0))*(real_t(1.0)-real_t(3.0)*c1/real_t(112.0))) ); 
+      poke_imag(b12_j) = real_t(0.5)*( -c0/real_t(1260.0)*(real_t(1.0)-c1/real_t(24.0)) );
 
-	llvm_branch( block_exit );
-
-      } // Dobs==true
-
-    } // if (c1 < 4.0e-3 )
-
-    llvm_set_insert_point( block_c1_nlt );
-
-
-    llvm::Value*  c0_negativeP = llvm_lt( c0.get_val() , llvm_create_value(0.0) );
-    WordREG<REAL> c0abs = fabs(c0);
-    WordREG<REAL> c0max = jit_constant(2.0) * pow( c1 / jit_constant(3.0) , jit_constant(1.5) );
-    WordREG<REAL> theta;
-    WordREG<REAL> eps = (c0max - c0abs)/c0max;
+    } // Dobs==true
+    if_dobs.end();
+    
+  }
+  c1_lt_0p004.els(); // if (c1 < 4.0e-3 )
+  {
+    
+    real_t c0abs = fabs( c0 );
+    real_t c0max = real_t( 2.0 ) * pow( c1 / real_t( 3.0 ) , real_t( 1.5 ) );
+    real_t theta;
+    real_t eps = ( c0max - c0abs ) / c0max ;
 
 
-    // llvm::BasicBlock * block_dobs_0 = llvm_new_basic_block();
-    // llvm_cond_branch( r_dobs , block_dobs_0 , block_exit );
+    auto theta_stack = stack_alloc< real_t >();
+    
+    auto lv_eps_lt_0 = real_t(eps < real_t( 0.0 )).elem().get_val();
+    
+    JitIf eps_lt_0( lv_eps_lt_0 ); // epsilon < 0
+    {
+      theta_stack = real_t( 0.0 );
+    }
+    eps_lt_0.els();
+    {
+      auto lv_eps_lt_0p001 = real_t(eps < real_t( 0.001 )).elem().get_val();
 
-    llvm::Value* theta_phi0;
-    llvm::Value* theta_phi1;
-    llvm::Value* theta_phi2;
-
-    llvm::BasicBlock * block_eps_0 = llvm_new_basic_block();
-    llvm::BasicBlock * block_eps_1 = llvm_new_basic_block();
-    llvm::BasicBlock * block_eps_2 = llvm_new_basic_block();
-    llvm::BasicBlock * block_eps_3 = llvm_new_basic_block();
-    llvm::BasicBlock * block_eps_exit = llvm_new_basic_block();
-
-    llvm_cond_branch( llvm_lt( eps.get_val() , llvm_create_value(0.0) ) , block_eps_0 , block_eps_1 );
-
-    llvm_set_insert_point( block_eps_0 ); // epsilon < 0
-    theta_phi0 = llvm_create_value(0.0);
-    llvm_branch(block_eps_exit);
-
-    llvm_set_insert_point( block_eps_1 ); 
-    llvm_cond_branch( llvm_lt( eps.get_val() , llvm_create_value(1.0e-3) ) , block_eps_2 , block_eps_3 );
-
-    llvm_set_insert_point( block_eps_2 ); // epsilon < 1.e-3
-    WordREG<REAL> sqtwo = sqrt( jit_constant(2.0) );
-    WordREG<REAL> theta_tmp;
-    theta_tmp = 
-      sqtwo * 
-      sqrt(eps) * 
-      ( jit_constant(1.0) + 
-	( jit_constant(1/(REAL)12) + 
-	  ( jit_constant(3/(REAL)160) + 
-	    ( jit_constant(5/(REAL)896) + 
-	      ( jit_constant(35/(REAL)18432) + 
-		jit_constant(63/(REAL)90112) * eps ) * 
+      JitIf eps_lt_0p001( lv_eps_lt_0p001 ); // epsilon < 1.e-3
+      {
+	real_t sqtwo = sqrt( real_t(2.0) );
+	real_t theta_tmp;
+	theta_tmp = 
+	  sqtwo * 
+	  sqrt(eps) * 
+	  ( real_t(1.0) + 
+	    ( real_t(1/(REAL)12) + 
+	      ( real_t(3/(REAL)160) + 
+		( real_t(5/(REAL)896) + 
+		  ( real_t(35/(REAL)18432) + 
+		    real_t(63/(REAL)90112) * eps ) * 
+		  eps) *
+		eps) *
 	      eps) *
-	    eps) *
-	  eps) *
-	eps);
-    theta_phi1 = theta_tmp.get_val();
-    llvm_branch(block_eps_exit);
-
-    llvm_set_insert_point( block_eps_3 ); // else
-    WordREG<REAL> theta_tmp2;
-    theta_tmp2 = acos( c0abs/c0max );
-    theta_phi2 = theta_tmp2.get_val();
-    llvm_branch(block_eps_exit);
-
-    llvm_set_insert_point( block_eps_exit ); // exit
-
-    llvm::PHINode* theta_phi = llvm_phi( llvm_type<REAL>::value , 3 );
-    theta_phi->addIncoming( theta_phi0 , block_eps_0 );
-    theta_phi->addIncoming( theta_phi1 , block_eps_2 );
-    theta_phi->addIncoming( theta_phi2 , block_eps_3 );
-
-    theta.setup( theta_phi );
+	    eps);
+	theta_stack = theta_tmp;
+      }
+      eps_lt_0p001.els();                       // else
+      {
+	real_t theta_tmp2;
+	theta_tmp2 = acos( c0abs/c0max );
+	theta_stack = theta_tmp2;
+      }
+      eps_lt_0p001.end();
+    }
+    eps_lt_0.end();
+    
+    theta.setup( theta_stack );
 
 
 	
-    multi1d<WordREG<REAL> > f_site_re(3);
-    multi1d<WordREG<REAL> > f_site_im(3);
+    multi1d< real_t > f_site_re(3);
+    multi1d< real_t > f_site_im(3);
 	  
-    multi1d<WordREG<REAL> > b1_site_re_phi0(3);
-    multi1d<WordREG<REAL> > b1_site_im_phi0(3);
-	      
-    multi1d<WordREG<REAL> > b2_site_re_phi0(3);
-    multi1d<WordREG<REAL> > b2_site_im_phi0(3);
-	  
-	  
-	  
-    WordREG<REAL> u = sqrt(c1/jit_constant(3.0))*cos(theta/jit_constant(3.0));
-    WordREG<REAL> w = sqrt(c1)*sin(theta/jit_constant(3.0));
-	  
-    WordREG<REAL> u_sq = u*u;
-    WordREG<REAL> w_sq = w*w;
-	  
-    WordREG<REAL> xi0,xi1;
+    auto b1_site_re_0_stack = stack_alloc< real_t >();
+    auto b1_site_re_1_stack = stack_alloc< real_t >();
+    auto b1_site_re_2_stack = stack_alloc< real_t >();
 
-    llvm::Value *w_smallP = llvm_lt( (fabs( w )).get_val() , llvm_create_value( 0.05 ) );
-    llvm::BasicBlock * block_xi0_exit = llvm_new_basic_block();
+    auto b1_site_im_0_stack = stack_alloc< real_t >();
+    auto b1_site_im_1_stack = stack_alloc< real_t >();
+    auto b1_site_im_2_stack = stack_alloc< real_t >();
+    
+    auto b2_site_re_0_stack = stack_alloc< real_t >();
+    auto b2_site_re_1_stack = stack_alloc< real_t >();
+    auto b2_site_re_2_stack = stack_alloc< real_t >();
+
+    auto b2_site_im_0_stack = stack_alloc< real_t >();
+    auto b2_site_im_1_stack = stack_alloc< real_t >();
+    auto b2_site_im_2_stack = stack_alloc< real_t >();
+	  
+	  
+    real_t u = sqrt(c1/real_t(3.0))*cos(theta/real_t(3.0));
+    real_t w = sqrt(c1)*sin(theta/real_t(3.0));
+	  
+    real_t u_sq = u*u;
+    real_t w_sq = w*w;
+	  
+    real_t xi0,xi1;
+
     { // xi0
-      llvm::BasicBlock * block_xi0_small = llvm_new_basic_block();
-      llvm::BasicBlock * block_xi0_not_small = llvm_new_basic_block();
-      llvm::Value* xi0_phi0;
-      llvm::Value* xi0_phi1;
 
-      llvm_cond_branch( w_smallP , block_xi0_small , block_xi0_not_small );
+      auto xi0_stack = stack_alloc< real_t >();
 
-      llvm_set_insert_point( block_xi0_small ); 
-      WordREG<REAL> xi0_tmp0 =
-	jit_constant(1.0) - 
-	(jit_constant(1.0/6.0)*w_sq*( jit_constant(1.0) - 
-				      (jit_constant(1.0/20.)*w_sq*( jit_constant(1.0) - 
-								    (jit_constant(1.0/42.0)*w_sq ) ))));
-      xi0_phi0 = xi0_tmp0.get_val();
-
-      llvm_branch( block_xi0_exit );
-
-      llvm_set_insert_point( block_xi0_not_small ); 
-      WordREG<REAL> xi0_tmp1 = sin(w)/w;
-      xi0_phi1 = xi0_tmp1.get_val();
-      llvm_branch( block_xi0_exit );
-
-      llvm_set_insert_point( block_xi0_exit ); 
-
-      llvm::PHINode* xi0_phi = llvm_phi( llvm_type<REAL>::value , 2 );
-      xi0_phi->addIncoming( xi0_phi0 , block_xi0_small );
-      xi0_phi->addIncoming( xi0_phi1 , block_xi0_not_small );
-      xi0.setup( xi0_phi );
+      llvm::Value* lv_w_small = real_t( fabs( w ) < real_t( 0.05 ) ).elem().get_val();
+	
+      JitIf w_small( lv_w_small );
+      {
+	real_t xi0_tmp0 =
+	  real_t(1.0) - 
+	  (real_t(1.0/6.0)*w_sq*( real_t(1.0) - 
+				  (real_t(1.0/20.)*w_sq*( real_t(1.0) - 
+							  (real_t(1.0/42.0)*w_sq ) ))));
+	xi0_stack = xi0_tmp0;
+      }
+      w_small.els();
+      {
+	real_t xi0_tmp1 = sin(w)/w;
+	xi0_stack = xi0_tmp1;
+      }
+      w_small.end();
+      
+      xi0.setup( xi0_stack );
     } // xi0
 
-    llvm::BasicBlock * block_dobs1 = llvm_new_basic_block();
-    llvm::BasicBlock * block_dobs1_exit = llvm_new_basic_block();
-    llvm_cond_branch( r_dobs , block_dobs1 , block_dobs1_exit );
-    llvm_set_insert_point( block_dobs1 );
-    //llvm::BasicBlock * block_xi1_exit = llvm_new_basic_block();
-    llvm::BasicBlock * block_xi1_small = llvm_new_basic_block();
-    llvm::BasicBlock * block_xi1_not_small = llvm_new_basic_block();
-    llvm::Value* xi1_phi0;
-    llvm::Value* xi1_phi1;
-    { // xi1
+    
+    auto xi1_stack = stack_alloc< real_t >();
 
-      llvm_cond_branch( w_smallP , block_xi1_small , block_xi1_not_small );
+    xi1_stack = real_t(0.0);
+    
+    JitIf if_dobs2( r_dobs );
+    {
+      { // xi1
+	
+	llvm::Value* lv_w_small = real_t( fabs( w ) < real_t( 0.05 ) ).elem().get_val();
+	
+	JitIf w_small( lv_w_small );
+	{
+	  real_t xi1_tmp0 = 	    
+	    real_t(-1.0)*
+	    ( real_t((REAL)1/(REAL)3) - 
+	      real_t((REAL)1/(REAL)30)*w_sq*( real_t((REAL)1) - 
+					      real_t((REAL)1/(REAL)28)*w_sq*( real_t((REAL)1) - 
+									      real_t((REAL)1/(REAL)54)*w_sq ) ) );
+	  xi1_stack = xi1_tmp0;
+	}
+	w_small.els();
+	{
+	  real_t xi1_tmp1 = cos(w)/w_sq - sin(w)/(w_sq*w);
+	  xi1_stack = xi1_tmp1;
+	}
+	w_small.end();
+      } // xi1
+    }
+    if_dobs2.end();
 
-      llvm_set_insert_point( block_xi1_small ); 
-      WordREG<REAL> xi1_tmp0 = 	    
-	jit_constant(-1.0)*
-	( jit_constant((REAL)1/(REAL)3) - 
-	  jit_constant((REAL)1/(REAL)30)*w_sq*( jit_constant((REAL)1) - 
-						jit_constant((REAL)1/(REAL)28)*w_sq*( jit_constant((REAL)1) - 
-										      jit_constant((REAL)1/(REAL)54)*w_sq ) ) );
-      xi1_phi0 = xi1_tmp0.get_val();
-      //llvm_branch( block_xi1_exit );
-      llvm_branch( block_dobs1_exit );
+    xi1.setup( xi1_stack );
 
-      llvm_set_insert_point( block_xi1_not_small ); 
-      WordREG<REAL> xi1_tmp1 = cos(w)/w_sq - sin(w)/(w_sq*w);
-      xi1_phi1 = xi1_tmp1.get_val();
-      //llvm_branch( block_xi1_exit );
-      llvm_branch( block_dobs1_exit );
-
-      //llvm_set_insert_point( block_xi1_exit ); 
-
-      //llvm_branch( block_dobs1_exit );
-    } // xi1
-    llvm_set_insert_point( block_dobs1_exit );
-
-    llvm::PHINode* xi1_phi = llvm_phi( llvm_type<REAL>::value , 3 );
-    xi1_phi->addIncoming( xi1_phi0 , block_xi1_small );
-    xi1_phi->addIncoming( xi1_phi1 , block_xi1_not_small );
-    xi1_phi->addIncoming( llvm_cast( llvm_type<REAL>::value , llvm_create_value(0.0) ) , block_xi0_exit );
-    xi1.setup( xi1_phi );
-
-    WordREG<REAL> cosu = cos(u);
-    WordREG<REAL> sinu = sin(u);
-    WordREG<REAL> cosw = cos(w);
-    WordREG<REAL> sinw = sin(w);
-    WordREG<REAL> sin2u = sin(jit_constant(2.0)*u);
-    WordREG<REAL> cos2u = cos(jit_constant(2.0)*u);
-    WordREG<REAL> ucosu = u*cosu;
-    WordREG<REAL> usinu = u*sinu;
-    WordREG<REAL> ucos2u = u*cos2u;
-    WordREG<REAL> usin2u = u*sin2u;
+    real_t cosu = cos(u);
+    real_t sinu = sin(u);
+    real_t cosw = cos(w);
+    real_t sinw = sin(w);
+    real_t sin2u = sin(real_t(2.0)*u);
+    real_t cos2u = cos(real_t(2.0)*u);
+    real_t ucosu = u*cosu;
+    real_t usinu = u*sinu;
+    real_t ucos2u = u*cos2u;
+    real_t usin2u = u*sin2u;
 	  
-    WordREG<REAL> denum = jit_constant(9.0) * u_sq - w_sq;
-
+    real_t denum = real_t(9.0) * u_sq - w_sq;
 
     {
-      WordREG<REAL> subexp1 = u_sq - w_sq;
-      WordREG<REAL> subexp2 = jit_constant(8.0)*u_sq*cosw;
-      WordREG<REAL> subexp3 = (jit_constant(3.0)*u_sq + w_sq)*xi0;
+      real_t subexp1 = u_sq - w_sq;
+      real_t subexp2 = real_t(8.0)*u_sq*cosw;
+      real_t subexp3 = (real_t(3.0)*u_sq + w_sq)*xi0;
 	    
-      f_site_re[0] = ( (subexp1)*cos2u + cosu*subexp2 + jit_constant(2.0)*usinu*subexp3 ) / denum ;
-      f_site_im[0] = ( (subexp1)*sin2u - sinu*subexp2 + jit_constant(2.0)*ucosu*subexp3 ) / denum ;
+      f_site_re[0] = ( (subexp1)*cos2u + cosu*subexp2 + real_t(2.0)*usinu*subexp3 ) / denum ;
+      f_site_im[0] = ( (subexp1)*sin2u - sinu*subexp2 + real_t(2.0)*ucosu*subexp3 ) / denum ;
     }
 
     {
-      WordREG<REAL> subexp = (jit_constant(3.0)*u_sq -w_sq)*xi0;
+      real_t subexp = (real_t(3.0)*u_sq -w_sq)*xi0;
 	    
-      f_site_re[1] = (jit_constant(2.0)*(ucos2u - ucosu*cosw)+subexp*sinu)/denum;
-      f_site_im[1] = (jit_constant(2.0)*(usin2u + usinu*cosw)+subexp*cosu)/denum;
+      f_site_re[1] = (real_t(2.0)*(ucos2u - ucosu*cosw)+subexp*sinu)/denum;
+      f_site_im[1] = (real_t(2.0)*(usin2u + usinu*cosw)+subexp*cosu)/denum;
     }
 
 	  
     {
-      WordREG<REAL> subexp=jit_constant(3.0)*xi0;
+      real_t subexp=real_t(3.0)*xi0;
 	    
       f_site_re[2] = (cos2u - cosu*cosw -usinu*subexp) /denum ;
       f_site_im[2] = (sin2u + sinu*cosw -ucosu*subexp) /denum ;
     }
 
-    llvm::BasicBlock * block_dobs2 = llvm_new_basic_block();
-    llvm::BasicBlock * block_dobs2_exit = llvm_new_basic_block();
-    llvm_cond_branch( r_dobs , block_dobs2 , block_dobs2_exit );
-    llvm_set_insert_point( block_dobs2 );
-    //if( dobs == true ) 
+    
+    JitIf if_dobs3( r_dobs );
     {
-      multi1d<WordREG<REAL> > r_1_re(3);
-      multi1d<WordREG<REAL> > r_1_im(3);
-      multi1d<WordREG<REAL> > r_2_re(3);
-      multi1d<WordREG<REAL> > r_2_im(3);
+      multi1d<real_t > r_1_re(3);
+      multi1d<real_t > r_1_im(3);
+      multi1d<real_t > r_2_re(3);
+      multi1d<real_t > r_2_im(3);
 	      
       //	  r_1[0]=Double(2)*cmplx(u, u_sq-w_sq)*exp2iu
       //          + 2.0*expmiu*( cmplx(8.0*u*cosw, -4.0*u_sq*cosw)
       //	      + cmplx(u*(3.0*u_sq+w_sq),9.0*u_sq+w_sq)*xi0 );
       {
-	WordREG<REAL> subexp1 = u_sq - w_sq;
-	WordREG<REAL> subexp2 =  jit_constant(8.0)*cosw + (jit_constant(3.0)*u_sq + w_sq)*xi0 ;
-	WordREG<REAL> subexp3 =  jit_constant(4.0)*u_sq*cosw - (jit_constant(9.0)*u_sq + w_sq)*xi0 ;
+	real_t subexp1 = u_sq - w_sq;
+	real_t subexp2 =  real_t(8.0)*cosw + (real_t(3.0)*u_sq + w_sq)*xi0 ;
+	real_t subexp3 =  real_t(4.0)*u_sq*cosw - (real_t(9.0)*u_sq + w_sq)*xi0 ;
 		
-	r_1_re[0] = jit_constant(2.0)*(ucos2u - sin2u *(subexp1)+ucosu*( subexp2 )- sinu*( subexp3 ) );
-	r_1_im[0] = jit_constant(2.0)*(usin2u + cos2u *(subexp1)-usinu*( subexp2 )- cosu*( subexp3 ) );
+	r_1_re[0] = real_t(2.0)*(ucos2u - sin2u *(subexp1)+ucosu*( subexp2 )- sinu*( subexp3 ) );
+	r_1_im[0] = real_t(2.0)*(usin2u + cos2u *(subexp1)-usinu*( subexp2 )- cosu*( subexp3 ) );
       }
 	      
       // r_1[1]=cmplx(2.0, 4.0*u)*exp2iu + expmiu*cmplx(-2.0*cosw-(w_sq-3.0*u_sq)*xi0,2.0*u*cosw+6.0*u*xi0);
       {
-	WordREG<REAL> subexp1 = cosw + jit_constant(3.0) * xi0;
-	WordREG<REAL> subexp2 = jit_constant(2.0)*cosw + xi0*(w_sq - jit_constant(3.0)*u_sq);
+	real_t subexp1 = cosw + real_t(3.0) * xi0;
+	real_t subexp2 = real_t(2.0)*cosw + xi0*(w_sq - real_t(3.0)*u_sq);
 		
-	r_1_re[1] = jit_constant(2.0)*((cos2u - jit_constant(2.0)*usin2u) + usinu*( subexp1 )) - cosu*( subexp2 );
-	r_1_im[1] = jit_constant(2.0)*((sin2u + jit_constant(2.0)*ucos2u) + ucosu*( subexp1 )) + sinu*( subexp2 );
+	r_1_re[1] = real_t(2.0)*((cos2u - real_t(2.0)*usin2u) + usinu*( subexp1 )) - cosu*( subexp2 );
+	r_1_im[1] = real_t(2.0)*((sin2u + real_t(2.0)*ucos2u) + ucosu*( subexp1 )) + sinu*( subexp2 );
       }
 	      
 	      
       // r_1[2]=2.0*timesI(exp2iu)  +expmiu*cmplx(-3.0*u*xi0, cosw-3*xi0);
       {
-	WordREG<REAL> subexp = cosw - jit_constant(3.0)*xi0;
-	r_1_re[2] = -jit_constant(2.0)*sin2u -jit_constant(3.0)*ucosu*xi0 + sinu*( subexp );
-	r_1_im[2] = jit_constant(2.0)*cos2u  +jit_constant(3.0)*usinu*xi0 + cosu*( subexp );
+	real_t subexp = cosw - real_t(3.0)*xi0;
+	r_1_re[2] = -real_t(2.0)*sin2u -real_t(3.0)*ucosu*xi0 + sinu*( subexp );
+	r_1_im[2] = real_t(2.0)*cos2u  +real_t(3.0)*usinu*xi0 + cosu*( subexp );
       }
 	      
 	      
       //r_2[0]=-2.0*exp2iu + 2*cmplx(0,u)*expmiu*cmplx(cosw+xi0+3*u_sq*xi1,
       //						 4*u*xi0);
       {
-	WordREG<REAL> subexp = cosw + xi0 + jit_constant(3.0)*u_sq*xi1;
-	r_2_re[0] = -jit_constant(2.0)*(cos2u + u*( jit_constant(4.0)*ucosu*xi0 - sinu*(subexp )) );
-	r_2_im[0] = -jit_constant(2.0)*(sin2u - u*( jit_constant(4.0)*usinu*xi0 + cosu*(subexp )) );
+	real_t subexp = cosw + xi0 + real_t(3.0)*u_sq*xi1;
+	r_2_re[0] = -real_t(2.0)*(cos2u + u*( real_t(4.0)*ucosu*xi0 - sinu*(subexp )) );
+	r_2_im[0] = -real_t(2.0)*(sin2u - u*( real_t(4.0)*usinu*xi0 + cosu*(subexp )) );
       }
 	      
 	      
       // r_2[1]= expmiu*cmplx(cosw+xi0-3.0*u_sq*xi1, 2.0*u*xi0);
       // r_2[1] = timesMinusI(r_2[1]);
       {
-	WordREG<REAL> subexp =  cosw + xi0 - jit_constant(3.0)*u_sq*xi1;
-	r_2_re[1] =  jit_constant(2.0)*ucosu*xi0 - sinu*( subexp ) ;
-	r_2_im[1] = jit_constant(-2.0)*usinu*xi0 - cosu*( subexp ) ;
+	real_t subexp =  cosw + xi0 - real_t(3.0)*u_sq*xi1;
+	r_2_re[1] =  real_t(2.0)*ucosu*xi0 - sinu*( subexp ) ;
+	r_2_im[1] = real_t(-2.0)*usinu*xi0 - cosu*( subexp ) ;
       }
 	      
       //r_2[2]=expmiu*cmplx(xi0, -3.0*u*xi1);
       {
-	WordREG<REAL> subexp = jit_constant(3.0)*xi1;
+	real_t subexp = real_t(3.0)*xi1;
 		
 	r_2_re[2] =    cosu*xi0 - usinu*subexp ;
 	r_2_im[2] = -( sinu*xi0 + ucosu*subexp ) ;
       }      
 	      
-      WordREG<REAL> b_denum=jit_constant(2.0)*denum*denum;
+      real_t b_denum=real_t(2.0)*denum*denum;
 	      
-	      
-      for(int j=0; j < 3; j++) { 
-		
-	{
-	  WordREG<REAL> subexp1 = jit_constant(2.0)*u;
-	  WordREG<REAL> subexp2 = jit_constant(3.0)*u_sq - w_sq;
-	  WordREG<REAL> subexp3 = jit_constant(2.0)*(jit_constant(15.0)*u_sq + w_sq);
-		  
-	  b1_site_re_phi0[j]=( subexp1*r_1_re[j] + subexp2*r_2_re[j] - subexp3*f_site_re[j] )/b_denum;
-	  b1_site_im_phi0[j]=( subexp1*r_1_im[j] + subexp2*r_2_im[j] - subexp3*f_site_im[j] )/b_denum;
-	}
-		
-	{ 
-	  WordREG<REAL> subexp1 = jit_constant(3.0)*u;
-	  WordREG<REAL> subexp2 = jit_constant(24.0)*u;
+      real_t subexp1_b1 = real_t(2.0)*u;
+      real_t subexp2_b1 = real_t(3.0)*u_sq - w_sq;
+      real_t subexp3_b1 = real_t(2.0)*(real_t(15.0)*u_sq + w_sq);
+      
+      real_t subexp1_b2 = real_t(3.0)*u;
+      real_t subexp2_b2 = real_t(24.0)*u;
 
-	  b2_site_re_phi0[j]=( r_1_re[j]- subexp1*r_2_re[j] - subexp2 * f_site_re[j] )/b_denum;
-	  b2_site_im_phi0[j]=( r_1_im[j] -subexp1*r_2_im[j] - subexp2 * f_site_im[j] )/b_denum;
-	}
-      }
+      b1_site_re_0_stack = ( subexp1_b1*r_1_re[0] + subexp2_b1*r_2_re[0] - subexp3_b1*f_site_re[0] )/b_denum;
+      b1_site_re_1_stack = ( subexp1_b1*r_1_re[1] + subexp2_b1*r_2_re[1] - subexp3_b1*f_site_re[1] )/b_denum;
+      b1_site_re_2_stack = ( subexp1_b1*r_1_re[2] + subexp2_b1*r_2_re[2] - subexp3_b1*f_site_re[2] )/b_denum;
+      
+      b1_site_im_0_stack = ( subexp1_b1*r_1_im[0] + subexp2_b1*r_2_im[0] - subexp3_b1*f_site_im[0] )/b_denum;
+      b1_site_im_1_stack = ( subexp1_b1*r_1_im[1] + subexp2_b1*r_2_im[1] - subexp3_b1*f_site_im[1] )/b_denum;
+      b1_site_im_2_stack = ( subexp1_b1*r_1_im[2] + subexp2_b1*r_2_im[2] - subexp3_b1*f_site_im[2] )/b_denum;
 
+      b2_site_re_0_stack=( r_1_re[0]- subexp1_b2*r_2_re[0] - subexp2_b2 * f_site_re[0] )/b_denum;
+      b2_site_re_1_stack=( r_1_re[1]- subexp1_b2*r_2_re[1] - subexp2_b2 * f_site_re[1] )/b_denum;
+      b2_site_re_2_stack=( r_1_re[2]- subexp1_b2*r_2_re[2] - subexp2_b2 * f_site_re[2] )/b_denum;
+      
+      b2_site_im_0_stack=( r_1_im[0] -subexp1_b2*r_2_im[0] - subexp2_b2 * f_site_im[0] )/b_denum;
+      b2_site_im_1_stack=( r_1_im[1] -subexp1_b2*r_2_im[1] - subexp2_b2 * f_site_im[1] )/b_denum;
+      b2_site_im_2_stack=( r_1_im[2] -subexp1_b2*r_2_im[2] - subexp2_b2 * f_site_im[2] )/b_denum;
 
+      
       // Now flip the coefficients of the b-s
 
-      llvm::BasicBlock * block_c0neg = llvm_new_basic_block();
-      llvm::BasicBlock * block_c0neg_exit = llvm_new_basic_block();
-      llvm_cond_branch( c0_negativeP , block_c0neg , block_c0neg_exit );
-      llvm_set_insert_point( block_c0neg );
-
-      multi1d<WordREG<REAL> > b1_site_re_phi1(3);
-      multi1d<WordREG<REAL> > b1_site_im_phi1(3);
+      multi1d<real_t > b1_site_re_phi1(3);
+      multi1d<real_t > b1_site_im_phi1(3);
 	      
-      multi1d<WordREG<REAL> > b2_site_re_phi1(3);
-      multi1d<WordREG<REAL> > b2_site_im_phi1(3);
+      multi1d<real_t > b2_site_re_phi1(3);
+      multi1d<real_t > b2_site_im_phi1(3);
 
-      //if( c0_negativeP ) 
-      {
-	//b1_site[0] = conj(b1_site[0]);
-	b1_site_im_phi1[0] = b1_site_im_phi0[0] * jit_constant(-1.0);
-		
-	//b1_site[1] = -conj(b1_site[1]);
-	b1_site_re_phi1[1] = b1_site_re_phi0[1] * jit_constant(-1.0);
-		
-	//b1_site[2] = conj(b1_site[2]);
-	b1_site_im_phi1[2] = b1_site_im_phi0[2] * jit_constant(-1.0);
-		
-	//b2_site[0] = -conj(b2_site[0]);
-	b2_site_re_phi1[0] = b2_site_re_phi0[0] * jit_constant(-1.0);
-		
-	//b2_site[1] = conj(b2_site[1]);
-	b2_site_im_phi1[1] = b2_site_im_phi0[1] * jit_constant(-1.0);
-		
-	//b2_site[2] = -conj(b2_site[2]);
-	b2_site_re_phi1[2] = b2_site_re_phi0[2] * jit_constant(-1.0);
-      }
-      llvm_branch( block_c0neg_exit );
-
-      llvm_set_insert_point( block_c0neg_exit );
-
-      //
-      // Now, PHI' them together
-      //
-      multi1d<WordREG<REAL> > f_site_re(3);
-      multi1d<WordREG<REAL> > f_site_im(3);
-	  
-      multi1d<WordREG<REAL> > b1_site_re(3);
-      multi1d<WordREG<REAL> > b1_site_im(3);
+      auto lv_c0_neg = real_t( c0 < real_t(0.0) ).elem().get_val();
       
-      multi1d<WordREG<REAL> > b2_site_re(3);
-      multi1d<WordREG<REAL> > b2_site_im(3);
-
-      b1_site_im[1] = b1_site_im_phi0[1];
-      b1_site_re[0] = b1_site_re_phi0[0];
-      b1_site_re[2] = b1_site_re_phi0[2];
-
-      b2_site_re[1] = b2_site_re_phi0[1];
-      b2_site_im[0] = b2_site_im_phi0[0];
-      b2_site_im[2] = b2_site_im_phi0[2];
-
-
-      qdpPHI( b1_site_im[0] , b1_site_im_phi1[0] , block_c0neg ,
-	      b1_site_im_phi0[0] , block_dobs2 );
-      qdpPHI( b1_site_re[1] , b1_site_re_phi1[1] , block_c0neg ,
-	      b1_site_re_phi0[1] , block_dobs2 );
-      qdpPHI( b1_site_im[2] , b1_site_im_phi1[2] , block_c0neg ,
-	      b1_site_im_phi0[2] , block_dobs2 );
-      qdpPHI( b2_site_re[0] , b2_site_re_phi1[0] , block_c0neg ,
-	      b2_site_re_phi0[0] , block_dobs2 );
-      qdpPHI( b2_site_im[1] , b2_site_im_phi1[1] , block_c0neg ,
-	      b2_site_im_phi0[1] , block_dobs2 );
-      qdpPHI( b2_site_re[2] , b2_site_re_phi1[2] , block_c0neg ,
-	      b2_site_re_phi0[2] , block_dobs2 );
-
-	      
-      // Load back into the lattice sized object
-      //for(int j=0; j < 3; j++) {
-		
-      b10_j.elem().elem().real() = b1_site_re[0];
-      b10_j.elem().elem().imag() = b1_site_im[0];
-		
-      b20_j.elem().elem().real() = b2_site_re[0]; //ok
-      b20_j.elem().elem().imag() = b2_site_im[0]; //ok
-
-      b11_j.elem().elem().real() = b1_site_re[1]; //ok
-      b11_j.elem().elem().imag() = b1_site_im[1]; //ok
-		
-      b21_j.elem().elem().real() = b2_site_re[1];
-      b21_j.elem().elem().imag() = b2_site_im[1];
-
-      b12_j.elem().elem().real() = b1_site_re[2];
-      b12_j.elem().elem().imag() = b1_site_im[2];
-		
-      b22_j.elem().elem().real() = b2_site_re[2];
-      b22_j.elem().elem().imag() = b2_site_im[2];
-
-      llvm_branch( block_dobs2_exit );
-      //}
-    } // end of if (dobs==true)
-    //llvm_label( cont_6 );
-
-    llvm_set_insert_point( block_dobs2_exit );
-
-
-    // Now when everything is done flip signs of the b-s (can't do this before
-    // as the unflipped f-s are needed to find the b-s
+      JitIf if_c0_neg( lv_c0_neg );   // if( c0_negativeP ) 
+      {
+	b1_site_im_0_stack *= real_t(-1.0);
+	b1_site_re_1_stack *= real_t(-1.0);
+	b1_site_im_2_stack *= real_t(-1.0);
+	b2_site_re_0_stack *= real_t(-1.0);
+	b2_site_im_1_stack *= real_t(-1.0);
+	b2_site_re_2_stack *= real_t(-1.0);
+      }
+      if_c0_neg.end();
+  
+      multi1d<real_t > f_site_re(3);
+      multi1d<real_t > f_site_im(3);
 	  
-    // Load back into the lattice sized object
-    //      for(int j=0; j < 3; j++) { 
-    f0_j.elem().elem().real() = f_site_re[0];
-    f0_j.elem().elem().imag() = f_site_im[0];
+      multi1d<real_t > b1_site_re(3);
+      multi1d<real_t > b1_site_im(3);
+      
+      multi1d<real_t > b2_site_re(3);
+      multi1d<real_t > b2_site_im(3);
 
-    f1_j.elem().elem().real() = f_site_re[1];
-    f1_j.elem().elem().imag() = f_site_im[1];
+      b1_site_re[0].setup( b1_site_re_0_stack );
+      b1_site_re[1].setup( b1_site_re_1_stack );
+      b1_site_re[2].setup( b1_site_re_2_stack );
 
-    f2_j.elem().elem().real() = f_site_re[2];
-    f2_j.elem().elem().imag() = f_site_im[2];
-    //}
+      b1_site_im[0].setup( b1_site_im_0_stack );
+      b1_site_im[1].setup( b1_site_im_1_stack );
+      b1_site_im[2].setup( b1_site_im_2_stack );
+
+      b2_site_re[0].setup( b2_site_re_0_stack );
+      b2_site_re[1].setup( b2_site_re_1_stack );
+      b2_site_re[2].setup( b2_site_re_2_stack );
+
+      b2_site_im[0].setup( b2_site_im_0_stack );
+      b2_site_im[1].setup( b2_site_im_1_stack );
+      b2_site_im[2].setup( b2_site_im_2_stack );
+
+		
+      poke_real(b10_j) = b1_site_re[0];
+      poke_imag(b10_j) = b1_site_im[0];
+		
+      poke_real(b20_j) = b2_site_re[0];
+      poke_imag(b20_j) = b2_site_im[0];
+
+      poke_real(b11_j) = b1_site_re[1];
+      poke_imag(b11_j) = b1_site_im[1];
+		
+      poke_real(b21_j) = b2_site_re[1];
+      poke_imag(b21_j) = b2_site_im[1];
+
+      poke_real(b12_j) = b1_site_re[2];
+      poke_imag(b12_j) = b1_site_im[2];
+		
+      poke_real(b22_j) = b2_site_re[2];
+      poke_imag(b22_j) = b2_site_im[2];
+
+    } 
+    if_dobs3.end();
 
 
-    llvm::BasicBlock * block_c0neg1 = llvm_new_basic_block();
-    llvm::BasicBlock * block_c0neg1_exit = llvm_new_basic_block();
-    llvm_cond_branch( c0_negativeP , block_c0neg1 , block_c0neg1_exit );
-    llvm_set_insert_point( block_c0neg1 );
+    poke_real(f0_j) = f_site_re[0];
+    poke_imag(f0_j) = f_site_im[0];
 
-    //      if( c0_negativeP ) {
-    // f_site[0] = conj(f_site[0]);
-    //f_site_im[0] *= jit_constant(-1.0);
-    f0_j.elem().elem().imag() *= jit_constant(-1.0);
-	    
-    //f_site[1] = -conj(f_site[1]);
-    //f_site_re[1] *= jit_constant(-1.0);
-    f1_j.elem().elem().real() *= jit_constant(-1.0);
-	    
-    //f_site[2] = conj(f_site[2]);
-    //f_site_im[2] *= jit_constant(-1.0);
-    f2_j.elem().elem().imag() *= jit_constant(-1.0);
+    poke_real(f1_j) = f_site_re[1];
+    poke_imag(f1_j) = f_site_im[1];
 
-    llvm_branch( block_c0neg1_exit );
+    poke_real(f2_j) = f_site_re[2];
+    poke_imag(f2_j) = f_site_im[2];
 
-    llvm_set_insert_point( block_c0neg1_exit );
-	    
-    //}
 
-  } // End of if( corner_caseP ) else {}
+    auto lv_c0_neg = real_t( c0 < real_t(0.0) ).elem().get_val();
+      
+    JitIf if_c0_neg2( lv_c0_neg );   // if( c0_negativeP ) 
+    {
+      poke_imag(f0_j) *= real_t(-1.0);
+      poke_real(f1_j) *= real_t(-1.0);
+      poke_imag(f2_j) *= real_t(-1.0);
+    }
+    if_c0_neg2.end();
 
-  llvm_branch( block_exit );
-  llvm_set_insert_point( block_exit );
+  }
+  c1_lt_0p004.end(); // if (c1 < 4.0e-3 )
+
 
   return jit_function_epilogue_get_cuf("jit_get_fs_bs.ptx" , __PRETTY_FUNCTION__ );
 }
+
 
 
 #endif
