@@ -55,9 +55,7 @@ namespace Chroma
 	START_CODE();	
 	SystemSolverResults_t res;  // initialized by a constructor
 
-        const Subset& s = M.subset();
-
-        psi[s] = chi;
+        psi[A->subset()] = chi;
 
         res.n_count = 0;
         res.resid   = 0;

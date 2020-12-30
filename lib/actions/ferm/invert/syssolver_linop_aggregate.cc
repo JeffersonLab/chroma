@@ -6,6 +6,7 @@
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 
 #include "actions/ferm/invert/syssolver_linop_cg.h"
+#include "actions/ferm/invert/syssolver_linop_fake.h"
 #include "actions/ferm/invert/syssolver_linop_bicgstab.h"
 #include "actions/ferm/invert/syssolver_linop_ibicgstab.h"
 #include "actions/ferm/invert/syssolver_linop_bicrstab.h"
@@ -70,6 +71,7 @@ namespace Chroma
       {
 	// 4D system solvers
 	success &= LinOpSysSolverCGEnv::registerAll();
+	success &= LinOpSysSolverFakeEnv::registerAll();
 	success &= LinOpSysSolverBiCGStabEnv::registerAll();
 	success &= LinOpSysSolverBiCRStabEnv::registerAll();
 	success &= LinOpSysSolverIBiCGStabEnv::registerAll();

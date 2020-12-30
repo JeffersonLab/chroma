@@ -1,17 +1,17 @@
 /*! \file
- *  \brief Solve a M*psi=chi linear system by CG2
+ *  \brief Solve a M*psi=chi linear system by Fake
  */
 #include "state.h"
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 
-#include "actions/ferm/invert/syssolver_linop_cg.h"
+#include "actions/ferm/invert/syssolver_linop_fake.h"
 
 namespace Chroma
 {
 
-  //! CG1 system solver namespace
-  namespace LinOpSysSolverCGEnv
+  //! Fake system solver namespace
+  namespace LinOpSysSolverFakeEnv
   {
     //! Anonymous namespace
     namespace
@@ -36,7 +36,7 @@ namespace Chroma
 
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new LinOpSysSolverCG<LatticeFermion>(A, SysSolverCGParams(xml_in, path));
+      return new LinOpSysSolverFake<LatticeFermion>(A);
     }
 
     //! Callback function
@@ -51,7 +51,7 @@ namespace Chroma
 
 						  Handle< LinearOperator<LatticeFermionF> > A)
     {
-      return new LinOpSysSolverCG<LatticeFermionF>(A, SysSolverCGParams(xml_in, path));
+      return new LinOpSysSolverFake<LatticeFermionF>(A);
     }
 
     //! Callback function
@@ -59,7 +59,7 @@ namespace Chroma
 							       const std::string& path,
 							       Handle< LinearOperator<LatticeStaggeredFermion> > A)
     {
-      return new LinOpSysSolverCG<LatticeStaggeredFermion>(A, SysSolverCGParams(xml_in, path));
+      return new LinOpSysSolverFake<LatticeStaggeredFermion>(A);
     }
 
     //! Register all the factories
