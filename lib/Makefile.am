@@ -99,6 +99,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
+	actions/ferm/invert/syssolver_linop_fake.h \
 	actions/ferm/invert/syssolver_linop_eigcg.h \
 	actions/ferm/invert/syssolver_linop_eigcg_array.h \
 	actions/ferm/invert/syssolver_linop_eigbicg.h \
@@ -1124,6 +1125,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
+	actions/ferm/invert/syssolver_linop_fake.cc \
 	actions/ferm/invert/syssolver_linop_eigcg.cc \
 	actions/ferm/invert/syssolver_linop_eigcg_array.cc \
 	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.cc \
