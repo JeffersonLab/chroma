@@ -1127,7 +1127,7 @@ namespace Chroma
 	    {
 	      int t_source       = *t_source_ptr;
 
-	      QDPIO::cout << "\n\nt_source= " << t_source << std::endl; 
+	      QDPIO::cout << "\n\n---------------------\nStart NEW set of source solution vectors: t_source= " << t_source << std::endl; 
 	      swatch.reset(); swatch.start();
 
 	      // Sources
@@ -1164,6 +1164,9 @@ namespace Chroma
 
 		} // colorvec_src
 	  
+	      swatch.stop();
+	      QDPIO::cout << "\n\nFinished set of source solution vectors: t_source= " << t_source  << "  time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
+
 	    } // t_source
 	
 	}
@@ -1197,6 +1200,7 @@ namespace Chroma
       //
       // Generate all sink tensors
       //
+      QDPIO::cout << "\n\n------------------\nGenerate sink tensors" << std::endl;
       clock.reset(); clock.start();
       
       if (Layout::nodeNumber() % nodes_per_cn == 0)
@@ -1225,7 +1229,8 @@ namespace Chroma
 	}
 
 
-
+ 
+      QDPIO::cout << "\nCreate space for genprops" << std::endl;
       size_t genprop_elem = num_vecs * num_vecs * Ns * Ns;
       size_t genprop_size = sizeof(ComplexD) * genprop_elem;
 
@@ -1246,15 +1251,15 @@ namespace Chroma
 	{
 	  int t_source = source_ptr->first;
 	    
-	  QDPIO::cout << "\n\n--------------------------\nSource: t_source = " << t_source << "\n\n" << std::endl; 
+	  QDPIO::cout << "\n\n--------------------------\nSOURCE: start insertions for t_source= " << t_source << std::endl;
 
 	  //-----------------------------------------------------------------------------------------
 	  // Loop over insertions for this source solution vector
 	  // Multiply by insertions
 	  // Stream the sink solution vectors past it, and contract
 	  //
-	  QDPIO::cout << "SOURCE: start insertions" << std::endl;
-
+	  StopWatch swatch;
+	  swatch.reset(); swatch.start();
 
 	  //
 	  // Big loop over insertions - deriv-s, mom-s
@@ -1308,8 +1313,9 @@ namespace Chroma
 			  key_templ.mass          = params.param.contract.mass_label;
 			  key_templ.t_slice       = -1;
 
+			  //QDPIO::cout << "Contract genprops" << std::endl;
 			  clock.reset(); clock.start();
-			  
+
 			  if (Layout::nodeNumber() % nodes_per_cn == 0)
 			    Harom::genprop::generate_genprops( t_sink , g , genprop_mem_param );
 			  QMP_barrier();
@@ -1430,6 +1436,9 @@ namespace Chroma
 
 	    } // disp
 	
+	  swatch.stop();
+	  QDPIO::cout << "Source insertions generated for t_source= " << t_source << "\t\ttime = " << swatch.getTimeInSeconds() << " secs " <<std::endl;
+
 	} // source_t
 
       
