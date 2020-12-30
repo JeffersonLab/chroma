@@ -1165,7 +1165,7 @@ namespace Chroma
 		} // colorvec_src
 	  
 	      swatch.stop();
-	      QDPIO::cout << "\n\nFinished set of source solution vectors: t_source= " << t_source  << "  time = " << snarss1.getTimeInSeconds() << " secs " <<std::endl;
+	      QDPIO::cout << "\n\nFinished set of source solution vectors: t_source= " << t_source  << "  time = " << swatch.getTimeInSeconds() << " secs " <<std::endl;
 
 	    } // t_source
 	
