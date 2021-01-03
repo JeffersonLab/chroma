@@ -1299,6 +1299,16 @@ namespace Chroma
 		      int t_sink = *sink_ptr;
 		      QDPIO::cout << "t_sink = " << t_sink << "\n";
 		      
+		      //QDPIO::cout << "Contract tensors" << std::endl;
+		      clock.reset(); clock.start();
+
+		      if (Layout::nodeNumber() % nodes_per_cn == 0)
+			Harom::genprop::contract_tensors( t_sink );
+		      QMP_barrier();
+			  
+		      clock.stop();
+		      QDPIO::cout << "Tensors contracted:\t\ttime = " << clock.getTimeInSeconds() << " secs " <<std::endl;
+		  
 		      for (int g = 0; g < Ns*Ns; ++g)
 			{
 			  //QDPIO::cout << "g = " << g << "\n";
@@ -1317,7 +1327,7 @@ namespace Chroma
 			  clock.reset(); clock.start();
 
 			  if (Layout::nodeNumber() % nodes_per_cn == 0)
-			    Harom::genprop::generate_genprops( t_sink , g , genprop_mem_param );
+			    Harom::genprop::generate_genprops( g , genprop_mem_param );
 			  QMP_barrier();
 			  
 			  clock.stop();
@@ -1446,7 +1456,9 @@ namespace Chroma
       if (Layout::nodeNumber() % nodes_per_cn == 0)
 	{      
 	  for (int i = 0 ; i < ts_per_node ; ++i )
+	  {
 	    delete[] genprop_mem[i];
+	  }
 	}
 
 
