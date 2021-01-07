@@ -154,23 +154,6 @@ namespace Chroma
 	return (v + dim * (v < 0 ? -v / dim + 1 : 0)) % dim;
       }
 
-      template <typename T, std::size_t N>
-      static std::array<T, N> reverse(std::array<T, N> c)
-      {
-	std::reverse(c.begin(), c.end());
-	return c;
-      }
-
-      template <typename T, std::size_t N>
-      static std::array<T, N> reverse(multi1d<T> c)
-      {
-	std::array<T, N> r;
-	for (std::size_t i = 0; i < N; ++i)
-	  r[i] = c[i];
-	std::reverse(r.begin(), r.end());
-	return r;
-      }
-
       template <std::size_t N>
       Order<N> update_order(Order<N> order, remap m)
       {
@@ -257,15 +240,15 @@ namespace Chroma
 
     public:
       // Construct used by non-Chroma tensors
-      Tensor(const char* order_, Coor<N> dim_, DeviceHost dev = OnDefaultDevice,
+      Tensor(const char* order_, Coor<N> dim, DeviceHost dev = OnDefaultDevice,
 	     Distribution dist = OnEveryone)
-	: order(detail::reverse(detail::toOrder<N>(order_))),
-	  dim(detail::reverse(dim_)),
+	: order(detail::toOrder<N>(order_)),
+	  dim(dim),
 	  ctx(getContext(dev)),
 	  dist(dist),
 	  from{},
-	  size(detail::reverse(dim_)),
-	  strides(detail::get_strides<N>(detail::reverse(dim_)))
+	  size(dim),
+	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow))
       {
 
 	data = std::shared_ptr<T[]>(superbblas::allocate<T>(detail::volume<N>(dim), ctx),
@@ -275,16 +258,16 @@ namespace Chroma
       }
 
       // Construct used by Chroma tensors (see `asTensorView`)
-      Tensor(const char* order_, Coor<N> dim_, DeviceHost dev, Distribution dist,
+      Tensor(const char* order_, Coor<N> dim, DeviceHost dev, Distribution dist,
 	     std::shared_ptr<T[]> data)
-	: order(detail::reverse(detail::toOrder<N>(order_))),
-	  dim(dim_),
+	: order(detail::toOrder<N>(order_)),
+	  dim(dim),
 	  ctx(getContext(dev)),
 	  data(data),
 	  dist(dist),
 	  from{},
-	  size(detail::reverse(dim_)),
-	  strides(detail::get_strides<N>(detail::reverse(dim_)))
+	  size(dim),
+	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow))
       {
 
 	// For now, TensorPartition creates the same distribution as chroma for tensor with
@@ -296,14 +279,14 @@ namespace Chroma
     protected:
       // Construct a slice of a tensor
       Tensor(const Tensor& t, Order<N> order, Coor<N> from, Coor<N> size)
-	: order(detail::reverse(order)),
+	: order(order),
 	  dim(t.dim),
 	  ctx(t.ctx),
 	  data(t.data),
 	  p(t.p),
 	  dist(t.dist),
-	  from(detail::reverse(from)),
-	  size(detail::reverse(size)),
+	  from(from),
+	  size(size),
 	  strides(t.strides)
       {
       }
@@ -320,7 +303,7 @@ namespace Chroma
 	    "Unsupported to `get` elements on tensor not being fully on the master node");
 
 	using superbblas::detail::operator+;
-	return data.get()[detail::coor2index<N>(detail::reverse(coor) + from, dim, strides)];
+	return data.get()[detail::coor2index<N>(coor + from, dim, strides)];
       }
 
       // Return a slice of the tensor starting at coordinate `kvfrom` and taking `kvsize` elements in each direction.
@@ -328,29 +311,26 @@ namespace Chroma
       Tensor<N, T> kvslice_from_size(std::map<char, int> kvfrom = {},
 				     std::map<char, int> kvsize = {}) const
       {
-	Order<N> rorder = detail::reverse(order);
 	std::map<char, int> updated_kvsize;
 	for (unsigned int i = 0; i < N; ++i)
 	  updated_kvsize[order[i]] = size[i];
 	updated_kvsize.insert(kvsize.begin(), kvsize.end());
-	return slice_from_size(kvcoors(rorder, kvfrom), kvcoors(rorder, updated_kvsize));
+	return slice_from_size(kvcoors(order, kvfrom), kvcoors(order, updated_kvsize));
       }
 
       // Return a slice of the tensor starting at coordinate `from` and taking `size` elements in each direction.
       Tensor<N, T> slice_from_size(Coor<N> from, Coor<N> size) const
       {
-	Coor<N> rfrom = detail::reverse(from);
-	Coor<N> rsize = detail::reverse(size);
 	for (unsigned int i = 0; i < N; ++i)
 	{
-	  if (rsize[i] > this->size[i])
+	  if (size[i] > this->size[i])
 	    throw std::runtime_error(
 	      "The size of the slice cannot be larger than the original tensor");
-	  if (rfrom[i] + rsize[i] >= this->size[i] && this->size[i] != this->dim[i])
+	  if (from[i] + size[i] >= this->size[i] && this->size[i] != this->dim[i])
 	    throw std::runtime_error(
 	      "Unsupported to make a view on a non-contiguous range on the tensor");
 	}
-	return Tensor<N, T>(*this, detail::reverse(order), from, size);
+	return Tensor<N, T>(*this, order, from, size);
       }
 
       // Copy `this` tensor into the given one
@@ -366,7 +346,8 @@ namespace Chroma
 	Order<N + 1> order_ = detail::toOrderStr(order);
 	Order<Nw + 1> orderw_ = detail::toOrderStr(w.order);
 	superbblas::copy<N, Nw>(p->p, 1, &order_[0], from, size, (const T**)&ptr, &ctx, w.p->p, 1,
-				&orderw_[0], w.from, &w_ptr, &w.ctx, MPI_COMM_WORLD);
+				&orderw_[0], w.from, &w_ptr, &w.ctx, MPI_COMM_WORLD,
+				superbblas::FastToSlow);
       }
 
       // Contract the dimensions with the same label in `v` and `w` than do not appear on `this` tensor.
@@ -380,10 +361,10 @@ namespace Chroma
 	Order<Nv + 1> orderv_ = detail::toOrderStr(detail::update_order(v.order, mv));
 	Order<Nw + 1> orderw_ = detail::toOrderStr(detail::update_order(w.order, mw));
 	Order<N + 1> order_ = detail::toOrderStr(detail::update_order(order, mr));
-	superbblas::contraction<Nv, Nw, N>(v.p->p, 1, &orderv_[0], conjv == Conjugate,
-					   (const T**)&v_ptr, &v.ctx, w.p->p, 1, &orderw_[0],
-					   conjw == Conjugate, (const T**)&w_ptr, &w.ctx, p->p, 1,
-					   &order_[0], &ptr, &ctx, MPI_COMM_WORLD);
+	superbblas::contraction<Nv, Nw, N>(
+	  v.p->p, 1, &orderv_[0], conjv == Conjugate, (const T**)&v_ptr, &v.ctx, w.p->p, 1,
+	  &orderw_[0], conjw == Conjugate, (const T**)&w_ptr, &w.ctx, p->p, 1, &order_[0], &ptr,
+	  &ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
       const Order<N> order;		///< Labels of the tensor dimensions
