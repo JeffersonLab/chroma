@@ -668,7 +668,7 @@ namespace Chroma
 
     typedef typename WordType<RealT>::Type_t REALT;
 
-    llvm_start_new_function();
+    llvm_start_new_function("make_clov",__PRETTY_FUNCTION__ );
 
     ParamRef  p_lo     = llvm_add_param<int>();
     ParamRef  p_hi     = llvm_add_param<int>();
@@ -794,7 +794,7 @@ namespace Chroma
 
     //    std::cout << __PRETTY_FUNCTION__ << ": leaving\n";
 
-    return jit_function_epilogue_get_cuf("jit_make_clov.ptx" , __PRETTY_FUNCTION__ );
+    return jit_get_function();
   }
 
 
@@ -946,7 +946,7 @@ namespace Chroma
 
     //std::cout << __PRETTY_FUNCTION__ << " entering\n";
 
-    llvm_start_new_function();
+    llvm_start_new_function("ldagdlinv",__PRETTY_FUNCTION__);
 
     ParamRef  p_lo     = llvm_add_param<int>();
     ParamRef  p_hi     = llvm_add_param<int>();
@@ -1127,7 +1127,7 @@ namespace Chroma
 
     //    std::cout << __PRETTY_FUNCTION__ << " leaving\n";
 
-    return jit_function_epilogue_get_cuf("jit_ldagdlinv.ptx" , __PRETTY_FUNCTION__ );
+    return jit_get_function();
   }
 
 
@@ -1280,7 +1280,7 @@ namespace Chroma
 
     typedef typename WordType<U>::Type_t REALT;
 
-    llvm_start_new_function();
+    llvm_start_new_function( "triacntr" , __PRETTY_FUNCTION__ );
 
     ParamRef  p_lo     = llvm_add_param<int>();
     ParamRef  p_hi     = llvm_add_param<int>();
@@ -1608,7 +1608,7 @@ namespace Chroma
 
     llvm_set_insert_point( case_default );
 
-    return jit_function_epilogue_get_cuf("jit_triacntr.ptx" , __PRETTY_FUNCTION__ );
+    return jit_get_function();
 
   }
 
@@ -1733,7 +1733,7 @@ namespace Chroma
 
     //JitFunction func;
 
-    llvm_start_new_function();
+    llvm_start_new_function("apply_clov",__PRETTY_FUNCTION__);
 
     //std::vector<ParamRef> params = jit_function_preamble_param();
 
@@ -1811,7 +1811,7 @@ namespace Chroma
 
     chi_j = chi_r;
 
-    return jit_function_epilogue_get_cuf("jit_apply_clov.ptx" , __PRETTY_FUNCTION__ );
+    return jit_get_function();
   }
 
 

@@ -95,7 +95,7 @@ JitFunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
   //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
 
-  llvm_start_new_function();
+  llvm_start_new_function("get_fs_bs",__PRETTY_FUNCTION__);
 
   ParamRef  p_lo     = llvm_add_param<int>();
   ParamRef  p_hi     = llvm_add_param<int>();
@@ -562,7 +562,7 @@ JitFunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
   c1_lt_0p004.end(); // if (c1 < 4.0e-3 )
 
 
-  return jit_function_epilogue_get_cuf("jit_get_fs_bs.ptx" , __PRETTY_FUNCTION__ );
+  return jit_get_function();
 }
 
 
