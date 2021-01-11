@@ -13,7 +13,6 @@
 #include "actions/ferm/linop/clover_term_base_w.h"
 #include "meas/glue/mesfield.h"
 
-//#define QDP_JIT_NVVM_USE_LEGACY_LAUNCH
 
 namespace QDP
 {
@@ -598,16 +597,16 @@ namespace Chroma
    */
 
   template<typename RealT,typename U,typename X,typename Y>
-  void function_make_clov_exec(JitFunction function, 
-				     const RealT& diag_mass, 
-				     const U& f0,
-				     const U& f1,
-				     const U& f2,
-				     const U& f3,
-				     const U& f4,
-				     const U& f5,
-				     X& tri_dia,
-				     Y& tri_off)
+  void function_make_clov_exec(JitFunction& function, 
+			       const RealT& diag_mass, 
+			       const U& f0,
+			       const U& f1,
+			       const U& f2,
+			       const U& f3,
+			       const U& f4,
+			       const U& f5,
+			       X& tri_dia,
+			       Y& tri_off)
   {
     AddressLeaf addr_leaf(all);
 
@@ -625,7 +624,6 @@ namespace Chroma
     int lo = 0;
     int hi = Layout::sitesOnNode();
 
-#ifndef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
     JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
     JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
 
@@ -635,36 +633,30 @@ namespace Chroma
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
       ids.push_back( addr_leaf.ids[i] );
     jit_launch(function,Layout::sitesOnNode(),ids);
-#else
-    std::vector<void*> addr;
-    addr.push_back( &lo );
-    addr.push_back( &hi );
-    for(unsigned i=0; i < addr_leaf.addr.size(); ++i) {
-      addr.push_back( &addr_leaf.addr[i] );
-    }
-    jit_launch(function,Layout::sitesOnNode(),addr);
-#endif
   }
 
 
 
   template<typename RealT,typename U,typename X,typename Y>
-  JitFunction function_make_clov_build(const RealT& diag_mass, 
-				      const U& f0,
-				      const U& f1,
-				      const U& f2,
-				      const U& f3,
-				      const U& f4,
-				      const U& f5,
-				      const X& tri_dia,
-				      const Y& tri_off)
+  void function_make_clov_build(JitFunction& function,
+				const RealT& diag_mass, 
+				const U& f0,
+				const U& f1,
+				const U& f2,
+				const U& f3,
+				const U& f4,
+				const U& f5,
+				const X& tri_dia,
+				const Y& tri_off)
   {
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
-    if (ptx_db::db_enabled) {
-      JitFunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
-      if (!func.empty())
-	return func;
-    }
+
+    if (ptx_db::db_enabled)
+      {
+	llvm_ptx_db( function , __PRETTY_FUNCTION__ );
+	if (!function.empty())
+	  return;
+      }
 
     typedef typename WordType<RealT>::Type_t REALT;
 
@@ -794,7 +786,7 @@ namespace Chroma
 
     //    std::cout << __PRETTY_FUNCTION__ << ": leaving\n";
 
-    return jit_get_function();
+    jit_get_function(function);
   }
 
 
@@ -828,7 +820,7 @@ namespace Chroma
     static JitFunction function;
 
     if (function.empty())
-      function = function_make_clov_build(diag_mass, f0,f1,f2,f3,f4,f5, tri_dia , tri_off );
+      function_make_clov_build(function, diag_mass, f0,f1,f2,f3,f4,f5, tri_dia , tri_off );
 
     // Execute the function
     function_make_clov_exec(function, diag_mass, f0,f1,f2,f3,f4,f5,tri_dia, tri_off);
@@ -886,11 +878,11 @@ namespace Chroma
 
 
   template<typename T,typename X,typename Y>
-  void function_ldagdlinv_exec( JitFunction function,
-				      T& tr_log_diag,
-				      X& tri_dia,
-				      Y& tri_off,
-				      const Subset& s)
+  void function_ldagdlinv_exec( JitFunction& function,
+				T& tr_log_diag,
+				X& tri_dia,
+				Y& tri_off,
+				const Subset& s)
   {
     if (!s.hasOrderedRep())
       QDP_error_exit("ldagdlinv on subset with unordered representation not implemented");
@@ -905,7 +897,6 @@ namespace Chroma
     int lo = s.start();
     int hi = s.end();
 
-#ifndef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
     JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
     JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
     std::vector<QDPCache::ArgKey> ids;
@@ -914,15 +905,6 @@ namespace Chroma
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
       ids.push_back( addr_leaf.ids[i] );
     jit_launch(function,s.numSiteTable(),ids);
-#else
-    std::vector<void*> addr;
-    addr.push_back( &lo );
-    addr.push_back( &hi );
-    for(unsigned i=0; i < addr_leaf.addr.size(); ++i) {
-      addr.push_back( &addr_leaf.addr[i] );
-    }
-    jit_launch(function,s.numSiteTable(),addr);
-#endif
   }
 
 
@@ -930,18 +912,19 @@ namespace Chroma
 
 
   template<typename U,typename T,typename X,typename Y>
-  JitFunction function_ldagdlinv_build( const T& tr_log_diag,
-				       const X& tri_dia,
-				       const Y& tri_off,
-				       const Subset& s)
+  void function_ldagdlinv_build(JitFunction& function,
+				const T& tr_log_diag,
+				const X& tri_dia,
+				const Y& tri_off,
+				const Subset& s)
   {
     typedef typename WordType<U>::Type_t REALT;
-
-    if (ptx_db::db_enabled) {
-      JitFunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
-      if (!func.empty())
-	return func;
-    }
+    if (ptx_db::db_enabled)
+      {
+	llvm_ptx_db( function , __PRETTY_FUNCTION__ );
+	if (!function.empty())
+	  return;
+      }
 
 
     //std::cout << __PRETTY_FUNCTION__ << " entering\n";
@@ -1127,7 +1110,7 @@ namespace Chroma
 
     //    std::cout << __PRETTY_FUNCTION__ << " leaving\n";
 
-    return jit_get_function();
+    jit_get_function(function);
   }
 
 
@@ -1154,7 +1137,7 @@ namespace Chroma
     static JitFunction function;
 
     if (function.empty())
-      function = function_ldagdlinv_build<U>(tr_log_diag, tri_dia, tri_off, rb[cb] );
+      function_ldagdlinv_build<U>(function, tr_log_diag, tri_dia, tri_off, rb[cb] );
 
     // Execute the function
     function_ldagdlinv_exec(function, tr_log_diag, tri_dia, tri_off, rb[cb] );
@@ -1215,12 +1198,12 @@ namespace Chroma
 
 
   template<typename U,typename X,typename Y>
-  void function_triacntr_exec( JitFunction function,
-				     U& B,
-				     const X& tri_dia,
-				     const Y& tri_off,
-				     int mat,
-				     const Subset& s)
+  void function_triacntr_exec( JitFunction& function,
+			       U& B,
+			       const X& tri_dia,
+			       const Y& tri_off,
+			       int mat,
+			       const Subset& s)
   {
     if (!s.hasOrderedRep())
       QDP_error_exit("triacntr on subset with unordered representation not implemented");
@@ -1235,7 +1218,6 @@ namespace Chroma
     int lo = s.start();
     int hi = s.end();
 
-#ifndef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
     JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
     JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
     JitParam jit_mat( QDP_get_global_cache().addJitParamInt( mat ) );
@@ -1247,33 +1229,25 @@ namespace Chroma
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
       ids.push_back( addr_leaf.ids[i] );
     jit_launch(function,s.numSiteTable(),ids);
-#else
-    std::vector<void*> addr;
-    addr.push_back( &lo );
-    addr.push_back( &hi );
-    addr.push_back( &mat );
-    for(unsigned i=0; i < addr_leaf.addr.size(); ++i) {
-      addr.push_back( &addr_leaf.addr[i] );
-    }
-    jit_launch(function,s.numSiteTable(),addr);
-#endif
   }
 
 
 
 
   template<typename U,typename X,typename Y>
-  JitFunction function_triacntr_build( const U& B,
-				      const X& tri_dia,
-				      const Y& tri_off,
-				      int mat,
-				      const Subset& s)
+  void function_triacntr_build( JitFunction& function,
+				const U& B,
+				const X& tri_dia,
+				const Y& tri_off,
+				int mat,
+				const Subset& s)
   {
-    if (ptx_db::db_enabled) {
-      JitFunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
-      if (!func.empty())
-	return func;
-    }
+    if (ptx_db::db_enabled)
+      {
+	llvm_ptx_db( function , __PRETTY_FUNCTION__ );
+	if (!function.empty())
+	  return;
+      }
 
 
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
@@ -1608,8 +1582,7 @@ namespace Chroma
 
     llvm_set_insert_point( case_default );
 
-    return jit_get_function();
-
+    jit_get_function(function);
   }
 
 
@@ -1633,7 +1606,7 @@ namespace Chroma
     static JitFunction function;
 
     if (function.empty())
-      function = function_triacntr_build<U>( B, tri_dia, tri_off, mat, rb[cb] );
+      function_triacntr_build<U>( function, B, tri_dia, tri_off, mat, rb[cb] );
 
     // Execute the function
     function_triacntr_exec(function, B, tri_dia, tri_off, mat, rb[cb] );
@@ -1669,7 +1642,7 @@ namespace Chroma
 
 
   template<typename T,typename X,typename Y>
-  void function_apply_clov_exec(JitFunction function,
+  void function_apply_clov_exec(JitFunction& function,
 				T& chi,
 				const T& psi,
 				const X& tri_dia,
@@ -1692,7 +1665,6 @@ namespace Chroma
     int lo = s.start();
     int hi = s.end();
 
-#ifndef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
     JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
     JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
     std::vector<QDPCache::ArgKey> ids;
@@ -1701,47 +1673,30 @@ namespace Chroma
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
       ids.push_back( addr_leaf.ids[i] );
     jit_launch(function,s.numSiteTable(),ids);
-#else
-    std::vector<void*> addr;
-    addr.push_back( &lo );
-    addr.push_back( &hi );
-    for(unsigned i=0; i < addr_leaf.addr.size(); ++i) {
-      addr.push_back( &addr_leaf.addr[i] );
-    }
-    jit_launch(function,s.numSiteTable(),addr);
-#endif
   }
 
 
 
 
   template<typename T,typename X,typename Y>
-  JitFunction function_apply_clov_build(const T& chi,
-				       const T& psi,
-				       const X& tri_dia,
-				       const Y& tri_off,
-				       const Subset& s)
+  void function_apply_clov_build( JitFunction& function,
+				  const T& chi,
+				  const T& psi,
+				  const X& tri_dia,
+				  const Y& tri_off,
+				  const Subset& s)
   {
-    if (ptx_db::db_enabled) {
-      JitFunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
-      if (!func.empty())
-	return func;
-    }
-
-    //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
-    //typedef typename WordType<RealT>::Type_t REALT;
-
-    //JitFunction func;
+    if (ptx_db::db_enabled)
+      {
+	llvm_ptx_db( function , __PRETTY_FUNCTION__ );
+	if (!function.empty())
+	  return;
+      }
 
     llvm_start_new_function("apply_clov",__PRETTY_FUNCTION__);
 
-    //std::vector<ParamRef> params = jit_function_preamble_param();
-
     ParamRef  p_lo     = llvm_add_param<int>();
     ParamRef  p_hi     = llvm_add_param<int>();
-
-
-
 
     ParamLeaf param_leaf;
 
@@ -1811,7 +1766,7 @@ namespace Chroma
 
     chi_j = chi_r;
 
-    return jit_get_function();
+    jit_get_function(function);
   }
 
 
@@ -1853,7 +1808,7 @@ namespace Chroma
     static JitFunction function;
 
     if (function.empty())
-      function = function_apply_clov_build(chi, psi, tri_dia, tri_off, rb[cb] );
+      function_apply_clov_build( function, chi, psi, tri_dia, tri_off, rb[cb] );
 
     // Execute the function
     function_apply_clov_exec(function, chi, psi, tri_dia, tri_off, rb[cb] );
@@ -1965,6 +1920,6 @@ namespace Chroma
 } // End Namespace Chroma
 
 
-#undef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
+
 
 #endif

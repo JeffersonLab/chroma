@@ -7,13 +7,13 @@ using namespace QDP;
 
 //#define QDP_JIT_NVVM_USE_LEGACY_LAUNCH
 
-void function_get_fs_bs_exec(JitFunction function, 
-				   const LatticeColorMatrix& Q,
-				   const LatticeColorMatrix& QQ,
-				   multi1d<LatticeComplex>& f,
-				   multi1d<LatticeComplex>& b1,
-				   multi1d<LatticeComplex>& b2,
-				   bool dobs)
+void function_get_fs_bs_exec(JitFunction& function, 
+			     const LatticeColorMatrix& Q,
+			     const LatticeColorMatrix& QQ,
+			     multi1d<LatticeComplex>& f,
+			     multi1d<LatticeComplex>& b1,
+			     multi1d<LatticeComplex>& b2,
+			     bool dobs)
 {
   //QDPIO::cout << __FILE__ << ":" << __LINE__ << "\n";
 
@@ -33,29 +33,21 @@ void function_get_fs_bs_exec(JitFunction function,
 
   int lo = 0;
   int hi = Layout::sitesOnNode();
-#ifndef QDP_JIT_NVVM_USE_LEGACY_LAUNCH
+
   JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
   JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
   JitParam jit_dobs( QDP_get_global_cache().addJitParamBool( dobs ) );
+  
   std::vector<QDPCache::ArgKey> ids;
+  
   ids.push_back( jit_lo.get_id() );
   ids.push_back( jit_hi.get_id() );
   ids.push_back( jit_dobs.get_id() );
+  
   for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
     ids.push_back( addr_leaf.ids[i] );
+  
   jit_launch(function,hi-lo,ids);
-#else
-  unsigned char dobs_u8 = dobs ? 1 : 0;
-  std::vector<void*> addr;
-  addr.push_back( &lo );
-  addr.push_back( &hi );
-  addr.push_back( &dobs_u8 );
-  int addr_dest=addr.size();
-  for(int i=0; i < addr_leaf.addr.size(); ++i) {
-    addr.push_back( &addr_leaf.addr[i] );
-  }
-  jit_launch(function,hi-lo,addr);
-#endif
 }
 
 
@@ -80,17 +72,19 @@ namespace
 }
 
 
-JitFunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
-				    const LatticeColorMatrix& QQ,
-				    multi1d<LatticeComplex>& f,
-				    multi1d<LatticeComplex>& b1,
-				    multi1d<LatticeComplex>& b2)
+void function_get_fs_bs_build(JitFunction& function,
+			      const LatticeColorMatrix& Q,
+			      const LatticeColorMatrix& QQ,
+			      multi1d<LatticeComplex>& f,
+			      multi1d<LatticeComplex>& b1,
+			      multi1d<LatticeComplex>& b2)
 {
-  if (ptx_db::db_enabled) {
-    JitFunction func = llvm_ptx_db( __PRETTY_FUNCTION__ );
-    if (!func.empty())
-      return func;
-  }
+  if (ptx_db::db_enabled)
+    {
+      llvm_ptx_db( function , __PRETTY_FUNCTION__ );
+      if (!function.empty())
+	return;
+    }
 
   //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
@@ -562,7 +556,7 @@ JitFunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
   c1_lt_0p004.end(); // if (c1 < 4.0e-3 )
 
 
-  return jit_get_function();
+  jit_get_function(function);
 }
 
 
