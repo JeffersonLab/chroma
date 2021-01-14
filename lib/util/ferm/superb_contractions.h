@@ -286,15 +286,15 @@ namespace Chroma
 	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow))
       {
 
-	data = std::shared_ptr<T[]>(superbblas::allocate<T>(detail::volume<N>(dim), ctx),
-				    [&](const T* ptr) { superbblas::deallocate(ptr, ctx); });
+	data = std::shared_ptr<T>(superbblas::allocate<T>(detail::volume<N>(dim), ctx),
+				  [=](const T* ptr) { superbblas::deallocate(ptr, ctx); });
 	p = std::make_shared<detail::TensorPartition<N>>(
 	  detail::TensorPartition<N>(order, dim, dist));
       }
 
       // Construct used by Chroma tensors (see `asTensorView`)
       Tensor(const char* order_, Coor<N> dim, DeviceHost dev, Distribution dist,
-	     std::shared_ptr<T[]> data)
+	     std::shared_ptr<T> data)
 	: order(detail::toOrder<N>(order_)),
 	  dim(dim),
 	  ctx(getContext(dev)),
@@ -409,7 +409,7 @@ namespace Chroma
       const Order<N> order;		///< Labels of the tensor dimensions
       const Coor<N> dim;		///< Length of the tensor dimensions
       const superbblas::Context ctx;	///< Tensor storage information (device/host)
-      std::shared_ptr<T[]> data;	///< Pointer to the tensor storage
+      std::shared_ptr<T> data;		///< Pointer to the tensor storage
       std::shared_ptr<detail::TensorPartition<N>>
 	p;				///< Distribution of the tensor among the processes
       const Distribution dist;		///< Whether the tensor is stored on the cpu or a device
@@ -489,8 +489,7 @@ namespace Chroma
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 2, Complex>("csxyzt", latticeSize<Nd + 2>("csxyzt"), OnDefaultDevice,
-				     OnEveryone,
-				     std::shared_ptr<Complex[]>(v_ptr, [](Complex*) {}));
+				     OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
     typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, Tensor<Nd + 1, ComplexF>> MODS_t;
