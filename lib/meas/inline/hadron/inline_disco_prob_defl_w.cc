@@ -395,6 +395,33 @@ namespace Chroma
       }
     }
 
+    template <typename T>
+    struct detox_aux {
+      using rtype = T;
+      static T get(const T& e)
+      {
+	return e;
+      }
+    };
+
+#ifdef QDP_IS_QDPJIT
+    template <typename T>
+    struct detox_aux<QDP::Word<T>> {
+      using rtype = T;
+      static T get(const QDP::Word<T>& w)
+      {
+	return w.elem();
+      }
+    };
+#endif
+
+    // Return the same value but with the most elemental type
+    template <typename T>
+    typename detox_aux<T>::rtype detox(const T& e)
+    {
+      return detox_aux<T>::get(e);
+    }
+
     void show_stats(const std::map< KeyOperator_t, ValOperator_t >& dbmean,
 	          const std::map< KeyOperator_t, ValOperator_t >& dbvar,
 	          const std::map< KeyOperator_t, ValOperator_t >& dbdet,
@@ -418,8 +445,8 @@ namespace Chroma
         assert(itmean != dbmean.cend());
         kv.second.resize(it->second.op.size());
         for(int i(0);i<it->second.op.size();i++) {
-          DComplex a = it->second.op[i] / num_noise - itmean->second.op[i] * conj(itmean->second.op[i]) / num_noise / num_noise;
-          kv.second[i] = a.elem().elem().elem().real() / hadamard_normalization / hadamard_normalization;
+          DComplex a = it->second.op[i] / num_noise - itmean->second.op[i] * conj(itmean->second.op[i]) / num_noise / num_noise / hadamard_normalization / hadamard_normalization;
+          kv.second[i] = detox(a.elem().elem().elem().real());
         }
         std::pair<std::map< KeyOperator_t, std::vector<double> >::iterator, bool> itbo = dbvar_avg.insert(kv);
         if(itbo.second ){
@@ -431,7 +458,7 @@ namespace Chroma
         }
 
         // Update dbmean_avg
-        for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag())) / hadamard_normalization / num_noise;
+        for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(detox(itmean->second.op[i].elem().elem().elem().real()), detox(itmean->second.op[i].elem().elem().elem().imag()))) / hadamard_normalization / num_noise;
         itbo = dbmean_avg.insert(kv);
         if(!itbo.second){
           for(int i(0);i<it->second.op.size();i++) itbo.first->second[i] += kv.second[i];
@@ -440,7 +467,7 @@ namespace Chroma
         // Update dbdet_avg
         itmean = dbdet.find(it->first);
         if (itmean != dbdet.cend()) {
-          for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag()));
+          for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(detox(itmean->second.op[i].elem().elem().elem().real()), detox(itmean->second.op[i].elem().elem().elem().imag())));
         } else {
           for(int i(0);i<it->second.op.size();i++) kv.second[i] = 0.0;
         }
