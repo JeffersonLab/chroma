@@ -42,35 +42,32 @@ namespace Chroma
     enum Conjugation { NotConjugate, Conjugate };
 
     template <std::size_t N>
-    Coor<N> kvcoors(const char* order, std::map<char, int> m, Index missing = 0)
+    Coor<N> kvcoors(const char* order, std::map<char, int> m, Index missing = 0,
+		    bool throw_on_unmatch_label = true)
     {
       if (std::strlen(order) != N)
 	throw std::runtime_error(
 	  "The length of the string `order` should match the template argument `N`");
       Coor<N> r;
+      unsigned int found = 0;
       for (std::size_t i = 0; i < N; ++i)
       {
 	auto it = m.find(order[i]);
 	if (it != m.end())
+	{
 	  r[i] = it->second;
+	  ++found;
+	}
 	else
+	{
 	  r[i] = missing;
+	}
       }
-      return r;
-    }
 
-    template <std::size_t N>
-    Coor<N> kvcoors(Order<N> order, std::map<char, int> m, Index missing = 0)
-    {
-      Coor<N> r;
-      for (std::size_t i = 0; i < N; ++i)
-      {
-	auto it = m.find(order[i]);
-	if (it != m.end())
-	  r[i] = it->second;
-	else
-	  r[i] = missing;
-      }
+      if (found != m.size() && throw_on_unmatch_label)
+	throw std::runtime_error(
+	  "Some dimension label does not correspond to any tensor dimension");
+
       return r;
     }
 
@@ -87,8 +84,9 @@ namespace Chroma
 				{'t', Layout::lattSize()[3]},
 				{'s', Ns},
 				{'c', Nc}};
-      m0.insert(m.begin(), m.end());
-      return kvcoors<N>(order, m0);
+      for (const auto& it : m)
+	m0[it.first] = it.second;
+      return kvcoors<N>(order, m0, 0, false);
     }
 
     // Replace a label by another label
@@ -116,6 +114,23 @@ namespace Chroma
 	std::copy_n(order.begin(), N, o.begin());
 	o[N] = 0;
 	return o;
+      }
+
+      template <std::size_t N>
+      Coor<N> kvcoors(Order<N> order, std::map<char, int> m, Index missing = 0,
+		      bool throw_on_unmatch_label = true)
+      {
+	Order<N + 1> order_str = toOrderStr(order);
+	return SB::kvcoors<N>(&order_str[0], m, missing, throw_on_unmatch_label);
+      }
+
+      template <std::size_t N>
+      std::map<char, int> toKvcoors(Order<N> order, Coor<N> coor)
+      {
+	std::map<char, int> m;
+	for (unsigned int i = 0; i < N; ++i)
+	  m[order[i]] = coor[i];
+	return m;
       }
 
       // Throw an error if `order` does not contain a label in `should_contain`
@@ -152,6 +167,15 @@ namespace Chroma
       int normalize_coor(int v, int dim)
       {
 	return (v + dim * (v < 0 ? -v / dim + 1 : 0)) % dim;
+      }
+
+      template <std::size_t N>
+      Coor<N> normalize_coor(Coor<N> v, Coor<N> dim)
+      {
+	Coor<N> r;
+	for (std::size_t i = 0; i < N; ++i)
+	  r[i] = normalize_coor(v[i], dim[i]);
+	return r;
       }
 
       template <std::size_t N>
@@ -207,8 +231,9 @@ namespace Chroma
 	  // Get the number of procs use in each dimension; for know we put as many as chroma
 	  // put onto the lattice dimensions
 	  multi1d<int> procs_ = Layout::logicalSize();
-	  Coor<N> procs = kvcoors(
-	    order, {{'x', procs_[0]}, {'y', procs_[1]}, {'z', procs_[2]}, {'t', procs_[3]}}, 1);
+	  Coor<N> procs = detail::kvcoors(
+	    order, {{'x', procs_[0]}, {'y', procs_[1]}, {'z', procs_[2]}, {'t', procs_[3]}}, 1,
+	    false);
 
 	  // For each proc, get its coordinate in procs (logical coordinate) and compute the
 	  // fair range of the tensor supported on the proc
@@ -217,8 +242,9 @@ namespace Chroma
 	  for (int rank = 0; rank < num_procs; ++rank)
 	  {
 	    multi1d<int> cproc_ = Layout::getLogicalCoordFrom(rank);
-	    Coor<N> cproc = kvcoors(
-	      order, {{'x', cproc_[0]}, {'y', cproc_[1]}, {'z', cproc_[2]}, {'t', cproc_[3]}});
+	    Coor<N> cproc = detail::kvcoors(
+	      order, {{'x', cproc_[0]}, {'y', cproc_[1]}, {'z', cproc_[2]}, {'t', cproc_[3]}}, 0,
+	      false);
 	    for (unsigned int i = 0; i < N; ++i)
 	    {
 	      // First coordinate in process with rank 'rank' on dimension 'i'
@@ -231,7 +257,16 @@ namespace Chroma
 	}
       };
 
-    }
+      template <typename T>
+      struct WordType {
+	using type = T;
+      };
+
+      template <typename T>
+      struct WordType<std::complex<T>> {
+	using type = T;
+      };
+     }
 
     template <std::size_t N, typename T>
     class Tensor
@@ -285,7 +320,7 @@ namespace Chroma
 	  data(t.data),
 	  p(t.p),
 	  dist(t.dist),
-	  from(from),
+	  from(detail::normalize_coor(from, t.dim)),
 	  size(size),
 	  strides(t.strides)
       {
@@ -314,8 +349,9 @@ namespace Chroma
 	std::map<char, int> updated_kvsize;
 	for (unsigned int i = 0; i < N; ++i)
 	  updated_kvsize[order[i]] = size[i];
-	updated_kvsize.insert(kvsize.begin(), kvsize.end());
-	return slice_from_size(kvcoors(order, kvfrom), kvcoors(order, updated_kvsize));
+	for (const auto& it : kvsize)
+	  updated_kvsize[it.first] = it.second;
+	return slice_from_size(detail::kvcoors(order, kvfrom), detail::kvcoors(order, updated_kvsize));
       }
 
       // Return a slice of the tensor starting at coordinate `from` and taking `size` elements in each direction.
@@ -330,15 +366,18 @@ namespace Chroma
 	    throw std::runtime_error(
 	      "Unsupported to make a view on a non-contiguous range on the tensor");
 	}
-	return Tensor<N, T>(*this, order, from, size);
+
+	using superbblas::detail::operator+;
+	return Tensor<N, T>(*this, order, this->from + from, size);
       }
 
       // Copy `this` tensor into the given one
       template <std::size_t Nw, typename Tw>
       void copyTo(Tensor<Nw, Tw> w) const
       {
+	Coor<N> wsize = detail::kvcoors(order, detail::toKvcoors(w.order, w.size), 1, false);
 	for (unsigned int i = 0; i < N; ++i)
-	  if (size[i] > w.size[i])
+	  if (size[i] > wsize[i])
 	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
 
 	T* ptr = this->data.get();
@@ -381,10 +420,19 @@ namespace Chroma
       // Return whether the current view is contiguous in memory
       bool isContiguous() const
       {
-	if (superbblas::detail::volume<N>(size) > 0)
-	  for (unsigned int i = 1; i < N; ++i)
+	if (superbblas::detail::volume<N>(size) > 0 && N > 1)
+	{
+	  bool non_full_dim = false; // some dimension is not full
+	  for (unsigned int i = 0; i < N - 1; ++i)
+	  {
 	    if (from[i] != 0 || size[i] != dim[i])
-	      return false;
+	    {
+	      if (non_full_dim && size[i] != 1)
+		return false;
+	      non_full_dim = true;
+	    }
+	  }
+	}
 	return true;
       }
 
@@ -419,7 +467,8 @@ namespace Chroma
 	// Only on primary node read the data
 	std::size_t vol = superbblas::detail::volume<N>(size);
 	std::size_t disp = detail::coor2index<N>(from, dim, strides);
-	bin.readArrayPrimaryNode((char*)&data.get()[disp], sizeof(T), vol);
+	std::size_t word_size = sizeof(typename detail::WordType<T>::type);
+	bin.readArrayPrimaryNode((char*)&data.get()[disp], word_size, sizeof(T) / word_size * vol);
       }
 
       void binaryWrite(BinaryWriter& bin) const
@@ -456,10 +505,10 @@ namespace Chroma
 
       from_tslice = detail::normalize_coor(from_tslice, Layout::lattSize()[decay_dir]);
 
-      Tensor<Nd + 2, ComplexF> r(order, latticeSize<Nd + 2>(order, {{'n', n_colorvecs}}));
+      Tensor<Nd + 2, ComplexF> r(
+	order, latticeSize<Nd + 2>(order, {{'t', n_tslices}, {'n', n_colorvecs}}));
       Tensor<Nd + 1, ComplexF> t("cxyzn", latticeSize<Nd + 1>("cxyzn", {{'n', n_colorvecs}}),
 				 OnHost, OnMaster);
-      //Tensor<Nd, ComplexF> v("cxyz", latticeSize<Nd>("cxyz"), OnHost, OnMaster);
       for (int t_slice = from_tslice, i_slice = 0, n_tslices = Layout::lattSize()[decay_dir];
 	   i_slice < n_tslices; ++i_slice, t_slice = (t_slice + 1) % n_tslices)
       {
@@ -468,7 +517,6 @@ namespace Chroma
 	  KeyTimeSliceColorVec_t key(t_slice, colorvec);
 	  Tensor<Nd + 1, ComplexF> v = t.kvslice_from_size({{'n', colorvec}}, {{'n', 1}});
 	  eigen_source.get(key, v);
-	  // v.copyTo(t.kvslice_from_size({{'n', colorvec}})); // t[n=colorvec] = v
 	}
 	t.copyTo(r.kvslice_from_size({{'t', i_slice}})); // r[t=i_slice] = t
       }
