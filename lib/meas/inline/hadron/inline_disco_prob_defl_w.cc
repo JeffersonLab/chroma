@@ -276,15 +276,10 @@ namespace Chroma
     void do_shift(LatticeFermion& q_mu, 
         const LatticeFermion& q, const multi1d<LatticeColorMatrix>& u, int mu, int sign)
     {
-        // FIXME reuse template
-        // if(sign>0)
-        //   q_mu = u[mu] * shift(q, FORWARD, mu);
-        // else
-        //   q_mu = shift(adj(u[mu]) * q, BACKWARD, mu);
         if(sign>0)
-          q_mu = shift(q, FORWARD, mu);
+          q_mu = u[mu] * shift(q, FORWARD, mu);
         else
-          q_mu = shift(q, BACKWARD, mu);
+          q_mu = shift(adj(u[mu]) * q, BACKWARD, mu);
     }
 
     void do_disco(std::map< KeyOperator_t, ValOperator_t >& db,
