@@ -28,53 +28,53 @@ namespace Chroma {
 
   enum Reunitarize {REUNITARIZE, REUNITARIZE_ERROR, REUNITARIZE_LABEL};
   
-  void reunit(LatticeColorMatrixF3& xa);
-  void reunit(LatticeColorMatrixD3& xa);
+  void reunit(LatticeColorMatrixFNC& xa);
+  void reunit(LatticeColorMatrixDNC& xa);
   
-  void reunit(LatticeColorMatrixF3& xa,
+  void reunit(LatticeColorMatrixFNC& xa,
 	      const Subset& mstag);
 
-  void reunit(LatticeColorMatrixD3& xa,
+  void reunit(LatticeColorMatrixDNC& xa,
 	      const Subset& mstag);
   
   // With ruflag
-  void reunit(LatticeColorMatrixF3& xa,
+  void reunit(LatticeColorMatrixFNC& xa,
 	      int& numbad, 
 	      enum Reunitarize ruflag);
 
-  void reunit(LatticeColorMatrixD3& xa,
+  void reunit(LatticeColorMatrixDNC& xa,
 	      int& numbad, 
 	      enum Reunitarize ruflag);
   
   
-  void reunit(LatticeColorMatrixF3& xa,
+  void reunit(LatticeColorMatrixFNC& xa,
 	      int& numbad, 
 	      enum Reunitarize ruflag,
 	      const Subset& mstag);
   
-  void reunit(LatticeColorMatrixD3& xa,
+  void reunit(LatticeColorMatrixDNC& xa,
 	      int& numbad, 
 	      enum Reunitarize ruflag,
 	      const Subset& mstag);
   
   // With numbad and ruflag
-  void reunit(LatticeColorMatrixF3& xa, 
+  void reunit(LatticeColorMatrixFNC& xa, 
 	      LatticeBoolean& bad, 
 	      int& numbad, 
 	      enum Reunitarize ruflag);
   
-  void reunit(LatticeColorMatrixD3& xa, 
+  void reunit(LatticeColorMatrixDNC& xa, 
 	      LatticeBoolean& bad, 
 	      int& numbad, 
 	      enum Reunitarize ruflag);
   
-  void reunit(LatticeColorMatrixF3& xa, 
+  void reunit(LatticeColorMatrixFNC& xa, 
 	      LatticeBoolean& bad, 
 	      int& numbad, 
 	      enum Reunitarize ruflag,
 	      const Subset& mstag);
 
-  void reunit(LatticeColorMatrixD3& xa, 
+  void reunit(LatticeColorMatrixDNC& xa, 
 	      LatticeBoolean& bad, 
 	      int& numbad, 
 	      enum Reunitarize ruflag,

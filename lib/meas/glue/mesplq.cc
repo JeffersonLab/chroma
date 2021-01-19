@@ -6,7 +6,6 @@
 #include "meas/glue/mesplq.h"
 #include "meas/glue/polylp.h"
 
-
 namespace Chroma 
 {
 
@@ -80,13 +79,13 @@ namespace Chroma
     END_CODE();
   }
 
-  void MesPlq(const multi1d<LatticeColorMatrixF3>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixFNC>& u, 
 	      multi2d<Double>& plane_plaq, Double& link) 
   {
       MesPlq_t(u,plane_plaq, link);
   }
 
-  void MesPlq(const multi1d<LatticeColorMatrixD3>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixDNC>& u, 
 	      multi2d<Double>& plane_plaq, Double& link)
   {
       MesPlq_t(u,plane_plaq, link);
@@ -143,7 +142,7 @@ namespace Chroma
     END_CODE();
   }
 
-  void MesPlq(const multi1d<LatticeColorMatrixF3>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixFNC>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, 
 	      multi2d<Double>& plane_plaq,
 	      Double& link) 
@@ -151,7 +150,7 @@ namespace Chroma
      MesPlq_t(u,w_plaq,s_plaq,t_plaq, plane_plaq, link);
   }
 
-  void MesPlq(const multi1d<LatticeColorMatrixD3>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixDNC>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, 
 	      multi2d<Double>& plane_plaq,
 	      Double& link)
@@ -170,7 +169,7 @@ namespace Chroma
    * \param link        space-time average link (Write)
    */
 
-  void MesPlq(const multi1d<LatticeColorMatrixF3>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixFNC>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link)
   {
     START_CODE();
@@ -182,7 +181,7 @@ namespace Chroma
     END_CODE();
   }
  
-  void MesPlq(const multi1d<LatticeColorMatrixD3>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixDNC>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link)
   {
     START_CODE();
@@ -266,14 +265,14 @@ namespace Chroma
 
  void MesPlq(XMLWriter& xml, 
 	     const std::string& xml_group,
-	     const multi1d<LatticeColorMatrixF3>& u)
+	     const multi1d<LatticeColorMatrixFNC>& u)
  {
    MesPlq_t(xml, xml_group, u);
  }
 
  void MesPlq(XMLWriter& xml, 
 	        const std::string& xml_group,
-	        const multi1d<LatticeColorMatrixD3>& u)
+	        const multi1d<LatticeColorMatrixDNC>& u)
  {
    MesPlq_t(xml, xml_group, u);
  }
