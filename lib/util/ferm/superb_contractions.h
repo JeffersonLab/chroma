@@ -194,8 +194,9 @@ namespace Chroma
       class TensorPartition
       {
       public:
+	using PartitionStored = std::vector<superbblas::PartitionItem<N>>;
 	Coor<N> dim;
-	superbblas::From_size<N> p;
+	PartitionStored p;
 	TensorPartition(Order<N> order, Coor<N> dim, Distribution dist) : dim(dim)
 	{
 	  switch (dist)
@@ -205,7 +206,7 @@ namespace Chroma
 	  }
 	}
 
-	TensorPartition(Coor<N> dim, superbblas::From_size<N> p) : dim(dim), p(p)
+	TensorPartition(Coor<N> dim, PartitionStored p) : dim(dim), p(p)
 	{
 	}
 
@@ -213,10 +214,10 @@ namespace Chroma
 	/// Return a partitioning where the root node has support for the whole tensor
 	/// \param dim: dimension size for the tensor
 
-	static superbblas::From_size<N> all_tensor_on_master(Coor<N> dim)
+	static PartitionStored all_tensor_on_master(Coor<N> dim)
 	{
 	  int nprocs = Layout::numNodes();
-	  superbblas::From_size<N> fs(nprocs);
+	  PartitionStored fs(nprocs);
 	  if (1 <= nprocs)
 	    fs[0][1] = dim;
 	  return fs;
@@ -226,7 +227,7 @@ namespace Chroma
 	/// \param order: dimension labels (use x, y, z, t for lattice dimensions)
 	/// \param dim: dimension size for the tensor
 
-	static superbblas::From_size<N> partitioning_chroma_compatible(Order<N> order, Coor<N> dim)
+	static PartitionStored partitioning_chroma_compatible(Order<N> order, Coor<N> dim)
 	{
 	  // Get the number of procs use in each dimension; for know we put as many as chroma
 	  // put onto the lattice dimensions
@@ -238,7 +239,7 @@ namespace Chroma
 	  // For each proc, get its coordinate in procs (logical coordinate) and compute the
 	  // fair range of the tensor supported on the proc
 	  int num_procs = Layout::numNodes();
-	  superbblas::From_size<N> fs(num_procs);
+	  PartitionStored fs(num_procs);
 	  for (int rank = 0; rank < num_procs; ++rank)
 	  {
 	    multi1d<int> cproc_ = Layout::getLogicalCoordFrom(rank);
@@ -384,9 +385,9 @@ namespace Chroma
 	Tw* w_ptr = w.data.get();
 	Order<N + 1> order_ = detail::toOrderStr(order);
 	Order<Nw + 1> orderw_ = detail::toOrderStr(w.order);
-	superbblas::copy<N, Nw>(p->p, 1, &order_[0], from, size, (const T**)&ptr, &ctx, w.p->p, 1,
-				&orderw_[0], w.from, &w_ptr, &w.ctx, MPI_COMM_WORLD,
-				superbblas::FastToSlow);
+	superbblas::copy<N, Nw>(p->p.data(), 1, &order_[0], from, size, (const T**)&ptr, &ctx,
+				w.p->p.data(), 1, &orderw_[0], w.from, &w_ptr, &w.ctx,
+				MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
       // Contract the dimensions with the same label in `v` and `w` than do not appear on `this` tensor.
@@ -401,9 +402,9 @@ namespace Chroma
 	Order<Nw + 1> orderw_ = detail::toOrderStr(detail::update_order(w.order, mw));
 	Order<N + 1> order_ = detail::toOrderStr(detail::update_order(order, mr));
 	superbblas::contraction<Nv, Nw, N>(
-	  v.p->p, 1, &orderv_[0], conjv == Conjugate, (const T**)&v_ptr, &v.ctx, w.p->p, 1,
-	  &orderw_[0], conjw == Conjugate, (const T**)&w_ptr, &w.ctx, p->p, 1, &order_[0], &ptr,
-	  &ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
+	  v.p->p.data(), 1, &orderv_[0], conjv == Conjugate, (const T**)&v_ptr, &v.ctx,
+	  w.p->p.data(), 1, &orderw_[0], conjw == Conjugate, (const T**)&w_ptr, &w.ctx, p->p.data(),
+	  1, &order_[0], &ptr, &ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
       const Order<N> order;		///< Labels of the tensor dimensions
