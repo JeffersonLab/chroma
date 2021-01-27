@@ -49,8 +49,9 @@ namespace Chroma
 							   const std::string& path)
     {
       XMLReader top(xml_in, path);
-
-      bool success = registered;  // make sure all codes loaded
+      
+      // Unused variable
+      //bool success = registered;  // make sure all codes loaded
 
       std::string gaugebc;
       std::string gaugebc_path;
