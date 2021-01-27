@@ -287,10 +287,10 @@ namespace Chroma
 { 
   template<typename R>
   struct QUDAPackedClovSite {
-    R diag1[6];
-    R offDiag1[15][2];
-    R diag2[6];
-    R offDiag2[15][2];
+    R diag1[2*Nc];
+    R offDiag1[2*Nc*Nc-Nc][2];
+    R diag2[2*Nc];
+    R offDiag2[2*Nc*Nc-Nc][2];
   };
 
 
@@ -989,16 +989,16 @@ namespace Chroma
   
     for(int block=0; block < 2; block++) {
 	  
-      RScalarREG<WordREG<REALT> >   inv_d[6] ;
-      RComplexREG<WordREG<REALT> >  inv_offd[15] ;
-      RComplexREG<WordREG<REALT> >  v[6] ;
-      RScalarREG<WordREG<REALT> >   diag_g[6] ;
+      RScalarREG<WordREG<REALT> >   inv_d[2*Nc] ;
+      RComplexREG<WordREG<REALT> >  inv_offd[2*Nc*Nc-Nc] ;
+      RComplexREG<WordREG<REALT> >  v[2*Nc] ;
+      RScalarREG<WordREG<REALT> >   diag_g[2*Nc] ;
 
       for(int i=0; i < N; i++) {
 	inv_d[i] = tri_dia_r.elem(block).elem(i);
       }
 
-      for(int i=0; i < 15; i++) { 
+      for(int i=0; i < 2*Nc*Nc-Nc; i++) { 
 	inv_offd[i] = tri_off_r.elem(block).elem(i);
       }
 
@@ -1120,7 +1120,7 @@ namespace Chroma
       for(int i=0; i < N; i++) { 
 	tri_dia_j.elem(block).elem(i) = inv_d[i];
       }
-      for(int i=0; i < 15; i++) { 
+      for(int i=0; i < 2*Nc*Nc-Nc; i++) { 
 	tri_off_j.elem(block).elem(i) = inv_offd[i];
       }
     }
@@ -1891,7 +1891,7 @@ namespace Chroma
       for(int ssite=lo; ssite < hi; ++ssite) {
 	int site = rb[cb].siteTable()[ssite];
 	// First Chiral Block
-	for(int i=0; i < 6; i++) { 
+	for(int i=0; i < 2*Nc; i++) { 
 	  quda_array[site].diag1[i] = tri_dia.elem(site).comp[0].diag[i].elem().elem();
 	}
 
@@ -1908,7 +1908,7 @@ namespace Chroma
 	  }
 	}
 	// Second Chiral Block
-	for(int i=0; i < 6; i++) { 
+	for(int i=0; i < 2*Nc; i++) { 
 	  quda_array[site].diag2[i] = tri_dia.elem(site).comp[1].diag[i].elem().elem();
 	}
 
