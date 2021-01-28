@@ -385,9 +385,9 @@ namespace Chroma
 	Tw* w_ptr = w.data.get();
 	Order<N + 1> order_ = detail::toOrderStr(order);
 	Order<Nw + 1> orderw_ = detail::toOrderStr(w.order);
-	superbblas::copy<N, Nw>(p->p.data(), 1, &order_[0], from, size, (const T**)&ptr, &ctx,
+	superbblas::copy<N, Nw>(T{1}, p->p.data(), 1, &order_[0], from, size, (const T**)&ptr, &ctx,
 				w.p->p.data(), 1, &orderw_[0], w.from, &w_ptr, &w.ctx,
-				MPI_COMM_WORLD, superbblas::FastToSlow);
+				MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Copy);
       }
 
       // Contract the dimensions with the same label in `v` and `w` than do not appear on `this` tensor.
@@ -402,9 +402,9 @@ namespace Chroma
 	Order<Nw + 1> orderw_ = detail::toOrderStr(detail::update_order(w.order, mw));
 	Order<N + 1> order_ = detail::toOrderStr(detail::update_order(order, mr));
 	superbblas::contraction<Nv, Nw, N>(
-	  v.p->p.data(), 1, &orderv_[0], conjv == Conjugate, (const T**)&v_ptr, &v.ctx,
-	  w.p->p.data(), 1, &orderw_[0], conjw == Conjugate, (const T**)&w_ptr, &w.ctx, p->p.data(),
-	  1, &order_[0], &ptr, &ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
+	  T{1}, v.p->p.data(), 1, &orderv_[0], conjv == Conjugate, (const T**)&v_ptr, &v.ctx,
+	  w.p->p.data(), 1, &orderw_[0], conjw == Conjugate, (const T**)&w_ptr, &w.ctx, T{0},
+	  p->p.data(), 1, &order_[0], &ptr, &ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
       const Order<N> order;		///< Labels of the tensor dimensions
