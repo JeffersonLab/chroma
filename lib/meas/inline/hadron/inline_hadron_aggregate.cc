@@ -68,6 +68,7 @@
 #include "meas/inline/hadron/inline_baryon_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.h"
+#include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.h"
 #include "meas/inline/hadron/inline_genprop_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.h"
 #include "meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h"
@@ -163,6 +164,7 @@ namespace Chroma
 	success &= InlinePropMatElemPtColorVecEnv::registerAll();
 	success &= InlinePropAndMatElemColorVecEnv::registerAll();
 	success &= InlinePropAndMatElemDistillationEnv::registerAll();
+        success &= InlineUnsmearedHadronNodeDistillationSuperbEnv::registerAll();
 #ifndef QDP_IS_QDPJIT_NO_NVPTX
 	success &= InlineMatElemDistillationEnv::registerAll();
 	success &= InlinePropAndMatElemDistillationOldEnv::registerAll();
