@@ -533,6 +533,10 @@ namespace Chroma
 	  {
 	    QDPIO::cout << "spin_source = " << spin_source << std::endl;
 
+	    StopWatch snarss1;
+	    snarss1.reset();
+	    snarss1.start();
+
 	    //
 	    // The space distillation loop
 	    //
@@ -546,10 +550,6 @@ namespace Chroma
 		chis[col].reset(new LatticeFermion);
 	      for (int col = 0; col < colorvec_src_step; col++)
 		quark_solns[col].reset(new LatticeFermion);
-
-	      StopWatch snarss1;
-	      snarss1.reset();
-	      snarss1.start();
 
 	      for (int colorvec_src = colorvec_src0, col = 0; col < colorvec_src_step;
 		   ++colorvec_src, ++col)
@@ -624,12 +624,6 @@ namespace Chroma
 		}
 	      } // zero_colorvecs ??
 
-	      snarss1.stop();
-	      QDPIO::cout << "Time to compute prop for spin_source= " << spin_source
-			  << "  colorvec_src= " << colorvec_src0 << " to "
-			  << colorvec_src0 + colorvec_src_step - 1
-			  << "  time = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
-
 	      for (int colorvec_src = colorvec_src0, col = 0; col < colorvec_src_step;
 		   ++colorvec_src, ++col)
 	      {
@@ -641,6 +635,13 @@ namespace Chroma
 	      }
 	    }
 
+	    snarss1.stop();
+	    QDPIO::cout << "Time to compute prop for spin_source= " << spin_source
+			  << "  time = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+
+	    snarss1.reset();
+	    snarss1.start();
+
 	    // Contract the distillation elements
 	    const char order_in_elems[] =
 	      "nNst"; // N: colorvec in sink, n: colorvec in source, s: spin in sink
@@ -650,9 +651,16 @@ namespace Chroma
 	    elems.contract(active_colorvec, {}, SB::Conjugate, tensor_quark_solns, {{'n', 'N'}},
 			   SB::NotConjugate, {});
 
+	    snarss1.stop();
+	    QDPIO::cout << "Time to compute prop for spin_source= " << spin_source
+			  << "  contraction time = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+
 	    // Store them
 	    if (!params.param.contract.zero_colorvecs)
 	    {
+	      snarss1.reset();
+	      snarss1.start();
+
 	      QDPIO::cout << "Write all perambulator for spin_source= " << spin_source
 			  << "  to disk" << std::endl;
 	      ValPropElementalOperator_t val;
@@ -683,6 +691,10 @@ namespace Chroma
 		  qdp_db.insert(key, val);
 		}
 	      }
+
+	      snarss1.stop();
+	      QDPIO::cout << "Time to compute prop for spin_source= " << spin_source
+			  << "  storage time = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
 	    }
 	  } // for spin_src
 	}   // for tt

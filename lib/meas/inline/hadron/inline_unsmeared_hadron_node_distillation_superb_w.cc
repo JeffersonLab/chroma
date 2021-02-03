@@ -928,6 +928,10 @@ namespace Chroma
 	    *PP, std::move(sink_colorvec), t_sink, first_tslice_active, num_tslices_active,
 	    {0, 1, 2, 3}, max_rhs, "Scnsxyzt");
 
+	  StopWatch snarss1;
+	  snarss1.reset();
+	  snarss1.start();
+
 	  // Contract the spatial components of sink and source together with
 	  // several momenta, gammas and displacements
 	  const char order_out[] = "SgmNndst";
@@ -942,6 +946,12 @@ namespace Chroma
 	  g5_con.contract(SB::Gamma<SB::Complex>(g5, SB::OnDefaultDevice), {}, SB::NotConjugate,
 			  std::move(r.first), {{'S', 'j'}}, SB::NotConjugate, {{'S', 'i'}});
 	  const std::vector<int>& disps_perm = r.second;
+
+	  snarss1.stop();
+	  QDPIO::cout << "Time to compute contractions = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+
+	  snarss1.reset();
+	  snarss1.start();
 
 	  // Store
 	  SerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
@@ -984,6 +994,9 @@ namespace Chroma
 	      }
 	    }
 	  }
+
+	  snarss1.stop();
+	  QDPIO::cout << "Time to store = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
 
 	  swatch.stop();
 	  QDPIO::cout << "SINK-SOURCE: time to compute all source solution vectors and insertions for t_sink= " << t_sink << "  t_source= " << t_source << "  time= " << swatch.getTimeInSeconds() << " secs" <<std::endl;

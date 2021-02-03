@@ -1041,9 +1041,6 @@ namespace Chroma
 
 	  for (int n = n0, col = 0; col < n_step; ++n, ++col)
 	  {
-	    QDPIO::cout << "Do spin_source= " << spin_source << "  colorvec_src= " << n
-			<< std::endl;
-
 	    // Put the colorvec sources for the t_source on chis for spin `spin_source`
 	    // chis[col][s=spin_source] = chi[n=n0]
 	    *chis[col] = zero;
@@ -1062,7 +1059,7 @@ namespace Chroma
 								  chis.begin() + n_step));
 
 	  snarss1.stop();
-	  QDPIO::cout << "Time to compute prop for spin_source= " << spin_source
+	  QDPIO::cout << "Time to compute inversions for spin_source= " << spin_source
 		      << "  colorvec_src= " << n0 << " to " << n0 + n_step - 1
 		      << "  time = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
 
