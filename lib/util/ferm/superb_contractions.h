@@ -359,7 +359,56 @@ namespace Chroma
       struct WordType<std::complex<T>> {
 	using type = T;
       };
-     }
+
+      /// Return a Nan for float, double, and complex variants
+      template <typename T>
+      struct NaN;
+
+      /// Specialization for float
+      template <>
+      struct NaN<float> {
+	static float get()
+	{
+	  return std::nanf("");
+	}
+      };
+
+      /// Specialization for double
+      template <>
+      struct NaN<double> {
+	static double get()
+	{
+	  return std::nan("");
+	}
+      };
+
+      /// Specialization for std::complex
+      template <typename T>
+      struct NaN<std::complex<T>> {
+	static std::complex<T> get()
+	{
+	  return std::complex<T>{NaN<T>::get(), NaN<T>::get()};
+	}
+      };
+
+      /// Return if a float, double, and std::complex is finite
+      template <typename T>
+      struct IsFinite {
+	static bool get(T v)
+	{
+	  return std::isfinite(v);
+	}
+      };
+
+      /// Specialization for std::complex
+      template <typename T>
+      struct IsFinite<std::complex<T>> {
+	static bool get(std::complex<T> v)
+	{
+	  return std::isfinite(v.real()) && std::isfinite(v.imag());
+	}
+      };
+    }
 
     template <std::size_t N, typename T>
     struct Tensor
@@ -495,8 +544,12 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements on tensor not being fully on the master node");
 
-	using superbblas::detail::operator+;
-	return data.get()[detail::coor2index<N>(coor + from, dim, strides)] * scalar;
+	// coor[i] = coor[i] + from[i]
+	for (unsigned int i = 0; i < N; ++i)
+	  coor[i] =
+	    detail::normalize_coor(detail::normalize_coor(coor[i], size[i]) + from[i], dim[i]);
+
+	return data.get()[detail::coor2index<N>(coor, dim, strides)] * scalar;
       }
 
       /// Rename dimensions
@@ -569,6 +622,8 @@ namespace Chroma
 
       Tensor<N, T> reorder(const char *new_order) const
       {
+	if (order == detail::toOrder<N>(new_order))
+	  return *this;
 	Tensor<N, T> r = like_this(new_order);
 	copyTo(r);
 	return r;
@@ -755,6 +810,31 @@ namespace Chroma
 	std::size_t disp = detail::coor2index<N>(from, dim, strides);
 	bin.writeArrayPrimaryNode((char*)&data.get()[disp], sizeof(T), vol);
       }
+
+#if 0
+      /// Get where the tensor is stored
+      void setNan() 
+      {
+#  ifndef QDP_IS_QDPJIT
+	T nan = detail::NaN<T>::get();
+	std::size_t vol = superbblas::detail::volume<N>(dim);
+	T* p = data.get();
+	for (std::size_t i = 0; i < vol; i++)
+	  p[i] = nan;
+#  endif
+    }
+
+    void
+    checkNan() const
+    {
+#  ifndef QDP_IS_QDPJIT
+	std::size_t vol = superbblas::detail::volume<N>(dim);
+	T* p = data.get();
+	for (std::size_t i = 0; i < vol; i++)
+	  assert(detail::IsFinite<T>::get(p[i]));
+#  endif
+      }
+#endif
     };
 
     Tensor<Nd + 2, Complex> asTensorView(const LatticeFermion& v)
@@ -775,7 +855,7 @@ namespace Chroma
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 2, Complex>(
-	"ijxyzt", latticeSize<Nd + 2>("ijxyzt", {{'i', Ns}, {'j', Ns}}), OnDefaultDevice,
+	"ijxyzt", latticeSize<Nd + 2>("ijxyzt", {{'i', Nc}, {'j', Nc}}), OnDefaultDevice,
 	OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
@@ -793,13 +873,22 @@ namespace Chroma
 				std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
+    SpinMatrix SpinMatrixIdentity()
+    {
+      SpinMatrix one;
+      // valgrind complains if all elements of SpinMatrix are not initialized!
+      for (int i = 0; i < Ns; ++i)
+	for (int j = 0; j < Ns; ++j)
+	  pokeSpin(one, cmplx(Real(0), Real(0)), i, j);
+      for (int i = 0; i < Ns; ++i)
+	pokeSpin(one, cmplx(Real(1), Real(0)), i, i);
+      return one;
+    }
+
     template <typename COMPLEX = Complex>
     Tensor<2, COMPLEX> Gamma(int gamma, DeviceHost dev = OnDefaultDevice)
     {
-      SpinMatrix g, one;
-      for (int i = 0; i < Ns; ++i)
-	pokeSpin(one, cmplx(Real(1), Real(0)), i, i);
-      g = QDP::Gamma(gamma) * one;
+      SpinMatrix g = QDP::Gamma(gamma) * SpinMatrixIdentity();
       Tensor<2, COMPLEX> r("ij", {Ns, Ns}, dev, OnEveryoneReplicated);
       asTensorView(g).copyTo(r);
       return r;
@@ -1017,9 +1106,9 @@ namespace Chroma
     ////       when conjUnderAdd is false.
 
     template <typename COMPLEX, std::size_t N>
-    Tensor<N, COMPLEX> displace(const multi1d<LatticeColorMatrix>& u, const Tensor<N, COMPLEX> v,
-				int dir, bool deriv = false, std::vector<Coor<Nd>> moms = {},
-				bool conjUnderAdd = false)
+    Tensor<N, COMPLEX> displace(const std::vector<Tensor<Nd + 2, Complex>>& u,
+				const Tensor<N, COMPLEX> v, int dir, bool deriv = false,
+				std::vector<Coor<Nd - 1>> moms = {}, bool conjUnderAdd = false)
     {
       if (std::abs(dir) > Nd)
 	throw std::runtime_error("Invalid direction");
@@ -1029,24 +1118,26 @@ namespace Chroma
 
       int d = std::abs(dir) - 1, len = (dir > 0 ? 1 : -1);
 
-      Tensor<N, COMPLEX> r = v.like_this();
+      Tensor<N, COMPLEX> r = v.like_this("cnSsxyzt");
       if (!deriv)
       {
+	assert(d < u.size());
+
 	if (conjUnderAdd)
 	  len *= -1;
 
 	if (len > 0)
 	{
 	  // Do u[d] * shift(x,d)
-	  r.contract(asTensorView(u[d]), {{'j', 'c'}}, NotConjugate, shift(v, len, dir), {},
+	  r.contract(u[d], {{'j', 'c'}}, NotConjugate, shift(v, len, d).reorder("cnSsxyzt"), {},
 		     NotConjugate, {{'c', 'i'}});
 	}
 	else
 	{
 	  // Do shift(adj(u[d]) * x,d)
-	  r.contract(asTensorView(u[d]), {{'i', 'c'}}, Conjugate, v, {}, NotConjugate,
+	  r.contract(u[d], {{'i', 'c'}}, Conjugate, v.reorder("cnSsxyzt"), {}, NotConjugate,
 		     {{'c', 'j'}});
-	  r = shift(r, len, dir);
+	  r = shift(r, len, d);
 	}
       }
       else
@@ -1087,17 +1178,20 @@ namespace Chroma
 	int path_index = 0;
 	for (const std::vector<int>& path : paths)
 	{
-	  PathNode& n = r;
+	  PathNode* n = &r;
 	  for (char d : path)
 	  {
-	    auto it = n.p.find(d);
-	    if (it != n.p.end())
-	      n = it->second;
+	    auto it = n->p.find(d);
+	    if (it != n->p.end())
+	      n = &it->second;
 	    else
-	      n = n.p[d] = PathNode{{}, -1};
+	    {
+	      n->p[d] = PathNode{{}, -1};
+	      n = &n->p[d];
+	    }
 	  }
-	  if (n.disp_index < 0)
-	    n.disp_index = path_index++;
+	  if (n->disp_index < 0)
+	    n->disp_index = path_index++;
 	}
 	return r;
       }
@@ -1114,11 +1208,12 @@ namespace Chroma
       /// \param: disp_indices: dictionary that map each `d` index in r displacement index.
 
       template <typename COMPLEX, std::size_t Nleft, std::size_t Nright, std::size_t Nout>
-      void doMomGammaDisp_contractions(const multi1d<LatticeColorMatrix>& u,
+      void doMomGammaDisp_contractions(const std::vector<Tensor<Nd + 2, Complex>> &u,
 				       const Tensor<Nleft, COMPLEX> leftconj,
 				       Tensor<Nright, COMPLEX> right, const PathNode& disps,
-				       bool deriv, const std::vector<Coor<Nd>>& moms, int max_rhs,
-				       Tensor<Nout, COMPLEX> r, std::vector<int>& disp_indices)
+				       bool deriv, const std::vector<Coor<Nd - 1>>& moms,
+				       int max_rhs, Tensor<Nout, COMPLEX> r,
+				       std::vector<int>& disp_indices)
       {
 	max_rhs = std::max(1, max_rhs);
 
@@ -1126,7 +1221,7 @@ namespace Chroma
 	{
 	  // Do the contraction
 	  Tensor<Nout - 1, COMPLEX> aux = r.template like_this<Nout - 1, COMPLEX>("gmNnSst");
-	  aux.contract(leftconj, {}, Conjugate, right, {}, NotConjugate, {});
+	  aux.contract(leftconj, {}, Conjugate, right.reorder("cxyznSst"), {}, NotConjugate, {});
 	  aux.copyTo(r.kvslice_from_size({{'d', disp_indices.size()}}, {{'d', 1}}));
 	  disp_indices.push_back(disps.disp_index);
 	}
@@ -1138,8 +1233,8 @@ namespace Chroma
 	  for (const auto it : disps.p)
 	  {
 	    // Apply displacement
-	    Tensor<Nright, COMPLEX> right_disp = displace(u, right, it.first, deriv);
-            if (node_disp == disps.p.size() - 1) right.release();
+	    Tensor<Nright, COMPLEX> right_disp = displace(u, right, it.first, deriv, moms);
+	    if (node_disp == disps.p.size() - 1) right.release();
 	    doMomGammaDisp_contractions(u, leftconj, right_disp, it.second, deriv, moms,
 					max_rhs - num_vecs, r, disp_indices);
 	    node_disp++;
@@ -1151,8 +1246,7 @@ namespace Chroma
     /// Contract two LatticeFermion with different momenta, gammas, and displacements.
     /// \param leftconj: left lattice fermion tensor, cSxyzN
     /// \param right: right lattice fermion tensor, csxyzn
-    /// \param leftconf_first_tslice: first time-slice in leftconj
-    /// \param right_first_tslice: first time-slice in right
+    /// \param first_tslice: first time-slice in leftconj and right
     /// \param moms: momenta to apply
     /// \param gammas: list of gamma matrices to apply
     /// \param disps: list of displacements/derivatives
@@ -1167,19 +1261,21 @@ namespace Chroma
     template <std::size_t Nout, std::size_t Nleft, std::size_t Nright, typename COMPLEX>
     std::pair<Tensor<Nout, COMPLEX>, std::vector<int>> doMomGammaDisp_contractions(
       const multi1d<LatticeColorMatrix>& u, const Tensor<Nleft, COMPLEX> leftconj,
-      const Tensor<Nright, COMPLEX> right, const SftMom& moms,
+      const Tensor<Nright, COMPLEX> right, int first_tslice, const SftMom& moms,
       const std::vector<Tensor<2, COMPLEX>>& gammas, std::vector<std::vector<int>> disps,
       bool deriv, int max_rhs, const char* order_out = "gmNndSst")
     {
       using namespace ns_doMomGammaDisp_contractions;
 
-      //detail::check_order_contains(order_out, "nNsSmgd");
+      detail::check_order_contains(order_out, "gmNndSst");
+      assert(right.kvdim()['t'] == leftconj.kvdim()['t']);
+      unsigned int Nt = right.kvdim()['t'];
 
       // Form a tree with the displacement paths
       PathNode tree_disps = get_tree(disps);
 
       // Allocate output tensor
-      Tensor<Nout, COMPLEX> r(order_out, kvcoors<Nout>(order_out, {{'t', right.kvdim()['t']},
+      Tensor<Nout, COMPLEX> r(order_out, kvcoors<Nout>(order_out, {{'t', Nt},
 								   {'n', right.kvdim()['n']},
 								   {'s', right.kvdim()['s']},
 								   {'N', leftconj.kvdim()['n']},
@@ -1190,22 +1286,21 @@ namespace Chroma
 
       // Apply momenta and gammas conjugated to the left tensor
       const char gammast_moms_order[] = "jigmxyzt";
-      Tensor<8, COMPLEX> gammast_moms(gammast_moms_order,
-				      latticeSize<8>(gammast_moms_order, {{'t', right.kvdim()['t']},
-									  {'i', Ns},
-									  {'j', Ns},
-									  {'m', moms.numMom()},
-									  {'g', gammas.size()}}));
+      Tensor<8, COMPLEX> gammast_moms(
+	gammast_moms_order,
+	latticeSize<8>(
+	  gammast_moms_order,
+	  {{'t', Nt}, {'i', Ns}, {'j', Ns}, {'m', moms.numMom()}, {'g', gammas.size()}}));
       const char aux_order[] = "ijxyzt";
-      Tensor<6, COMPLEX> aux(
-	aux_order, latticeSize<6>(aux_order, {{'t', right.kvdim()['t']}, {'i', Ns}, {'j', Ns}}));
+      Tensor<6, COMPLEX> aux(aux_order,
+			     latticeSize<6>(aux_order, {{'t', Nt}, {'i', Ns}, {'j', Ns}}));
       for (unsigned int g = 0; g < gammas.size(); ++g)
       {
 	for (unsigned int mom = 0; mom < moms.numMom(); ++mom)
 	{
 	  aux.contract(gammas[g], {}, NotConjugate,
-		       asTensorView(moms[mom]).kvslice_from_size({}, {{'t', right.kvdim()['t']}}),
-		       {}, NotConjugate);
+		       asTensorView(moms[mom]).kvslice_from_size({}, {{'t', Nt}}), {},
+		       NotConjugate);
 	  aux.copyTo(gammast_moms.kvslice_from_size({{'g', g}, {'m', mom}}, {{'g', 1}, {'m', 1}}));
 	}
       }
@@ -1214,7 +1309,7 @@ namespace Chroma
       const char gammast_moms_left_order[] = "SgmcNsxyzt";
       Tensor<10, COMPLEX> gammast_moms_left(
 	gammast_moms_left_order,
-	latticeSize<10>(gammast_moms_left_order, {{'t', right.kvdim()['t']},
+	latticeSize<10>(gammast_moms_left_order, {{'t', Nt},
 						  {'S', Ns},
 						  {'s', Ns},
 						  {'N', leftconj.kvdim()['n']},
@@ -1225,18 +1320,24 @@ namespace Chroma
       gammast_moms_left = gammast_moms_left.reorder("cxyzgmNSst");
 
       // Create mom_list
-      std::vector<Coor<Nd>> mom_list(moms.numMom());
+      std::vector<Coor<Nd - 1>> mom_list(moms.numMom());
       for (unsigned int mom = 0; mom < moms.numMom(); ++mom)
       {
-	for (unsigned int i = 0; i < Nd; ++i)
+	for (unsigned int i = 0; i < Nd - 1; ++i)
 	  mom_list[mom][i] = moms.numToMom(mom)[i];
       }
+
+      // Make a copy of the time-slicing of u[d] also supporting left and right
+      std::vector<Tensor<Nd + 2, Complex>> ut;
+      for (unsigned int d = 0; d < Nd - 1; d++)
+	ut.push_back(
+	  asTensorView(u[d]).kvslice_from_size({{'t', first_tslice}}, {{'t', Nt}}).clone());
 
       // Do the thing
       std::vector<int> disp_indices;
       if (!deriv)
       {
-	doMomGammaDisp_contractions(u, std::move(gammast_moms_left), std::move(right), tree_disps,
+	doMomGammaDisp_contractions(ut, std::move(gammast_moms_left), std::move(right), tree_disps,
 				    deriv, mom_list, max_rhs, r, disp_indices);
       }
       else

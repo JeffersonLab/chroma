@@ -787,12 +787,9 @@ namespace Chroma
       const int g5 = Ns * Ns - 1;
       std::vector<SB::Tensor<2, SB::Complex>> gamma_mats;
       {
-	SpinMatrix one;
-	for (int i = 0; i < Ns; ++i)
-          pokeSpin(one, cmplx(Real(1), Real(0)), i, i);
 	for (const int g : gammas)
 	{
-	  SpinMatrix gmat = Gamma(g5) * (Gamma(g) * one);
+	  SpinMatrix gmat = Gamma(g5) * (Gamma(g) * SB::SpinMatrixIdentity());
 	  gamma_mats.push_back(SB::asTensorView(gmat).cloneOn<SB::Complex>(SB::OnDefaultDevice));
 	}
       }
@@ -935,9 +932,9 @@ namespace Chroma
 	  // several momenta, gammas and displacements
 	  const char order_out[] = "SgmNndst";
 	  std::pair<SB::Tensor<8, SB::Complex>, std::vector<int>> r =
-	    SB::doMomGammaDisp_contractions<8>(u, invSink, invSource, phases, gamma_mats, disps,
-					       params.param.contract.use_derivP, max_rhs,
-					       order_out);
+	    SB::doMomGammaDisp_contractions<8>(u, invSink, invSource, first_tslice_active, phases,
+					       gamma_mats, disps, params.param.contract.use_derivP,
+					       max_rhs, order_out);
 
 	  // Premulitply by g5, again; see above commit about this
 	  SB::Tensor<8, SB::Complex> g5_con =
