@@ -656,7 +656,7 @@ namespace Chroma
 			  << "  contraction time = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
 
 	    // Store them
-	    if (!params.param.contract.zero_colorvecs)
+	    if (!params.param.contract.zero_colorvecs && Layout::nodeNumber() == 0)
 	    {
 	      snarss1.reset();
 	      snarss1.start();

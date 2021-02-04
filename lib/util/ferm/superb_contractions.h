@@ -300,10 +300,6 @@ namespace Chroma
 	  }
 	}
 
-	// TensorPartition(Coor<N> dim, PartitionStored p) : dim(dim), p(p)
-	// {
-	// }
-
 	/// Return the volume of the tensor supported on this node
 	std::size_t localVolume() const
 	{
