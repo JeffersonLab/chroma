@@ -954,32 +954,32 @@ namespace Chroma
 	  snarss1.start();
 
 	  // Store
-	  if (Layout::nodeNumber() == 0)
+	  SerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
+	  SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
+	  val.data().op.resize(num_vecs, Ns, Ns);
+
+	  for (int t = 0; t < num_tslices_active; ++t)
 	  {
-	    SerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
-	    SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
-	    val.data().op.resize(num_vecs, Ns, Ns);
-
-	    for (int t = 0; t < num_tslices_active; ++t)
+	    for (int g = 0; g < gammas.size(); ++g)
 	    {
-	      for (int g = 0; g < gammas.size(); ++g)
+	      for (int mom = 0; mom < phases.numMom(); ++mom)
 	      {
-		for (int mom = 0; mom < phases.numMom(); ++mom)
+		for (int d = 0; d < disps_perm.size(); ++d)
 		{
-		  for (int d = 0; d < disps_perm.size(); ++d)
+		  for (int n = 0; n < num_vecs; ++n)
 		  {
-		    for (int n = 0; n < num_vecs; ++n)
-		    {
-		      key.key().derivP = params.param.contract.use_derivP;
-		      key.key().t_sink = t_sink;
-		      key.key().t_slice = (t + first_tslice_active) % Lt;
-		      key.key().t_source = t_source;
-		      key.key().colorvec_src = n;
-		      key.key().gamma = gammas[g];
-		      key.key().displacement = disps[disps_perm[d]];
-		      key.key().mom = phases.numToMom(mom);
-		      key.key().mass = params.param.contract.mass_label;
+		    key.key().derivP = params.param.contract.use_derivP;
+		    key.key().t_sink = t_sink;
+		    key.key().t_slice = (t + first_tslice_active) % Lt;
+		    key.key().t_source = t_source;
+		    key.key().colorvec_src = n;
+		    key.key().gamma = gammas[g];
+		    key.key().displacement = disps[disps_perm[d]];
+		    key.key().mom = phases.numToMom(mom);
+		    key.key().mass = params.param.contract.mass_label;
 
+		    if (Layout::nodeNumber() == 0)
+		    {
 		      for (int N = 0; N < num_vecs; ++N)
 			for (int spin_snk = 0; spin_snk < Ns; ++spin_snk)
 			  for (int spin_src = 0; spin_src < Ns; ++spin_src)
@@ -989,9 +989,9 @@ namespace Chroma
 			    val.data().op(N, spin_snk, spin_src).elem().elem().elem() =
 			      RComplex<REAL64>(v.real(), v.imag());
 			  }
-
-		      qdp_db.insert(key, val);
 		    }
+
+		    qdp_db.insert(key, val);
 		  }
 		}
 	      }

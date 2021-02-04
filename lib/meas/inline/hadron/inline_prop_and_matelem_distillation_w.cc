@@ -656,7 +656,7 @@ namespace Chroma
 			  << "  contraction time = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
 
 	    // Store them
-	    if (!params.param.contract.zero_colorvecs && Layout::nodeNumber() == 0)
+	    if (!params.param.contract.zero_colorvecs)
 	    {
 	      snarss1.reset();
 	      snarss1.start();
@@ -678,14 +678,17 @@ namespace Chroma
 		  key.spin_src = spin_source;
 		  key.spin_snk = spin_sink;
 		  key.mass_label = params.param.contract.mass_label;
-		  for (int colorvec_sink = 0; colorvec_sink < num_vecs; ++colorvec_sink)
+		  if (Layout::nodeNumber() == 0)
 		  {
-		    for (int colorvec_source = 0; colorvec_source < num_vecs; ++colorvec_source)
+		    for (int colorvec_sink = 0; colorvec_sink < num_vecs; ++colorvec_sink)
 		    {
-		      std::complex<REAL> e =
-			elems.get({colorvec_source, colorvec_sink, spin_sink, i_tslice});
-		      val.mat(colorvec_sink, colorvec_source).elem().elem().elem() =
-			RComplex<REAL64>(e.real(), e.imag());
+		      for (int colorvec_source = 0; colorvec_source < num_vecs; ++colorvec_source)
+		      {
+			std::complex<REAL> e =
+			  elems.get({colorvec_source, colorvec_sink, spin_sink, i_tslice});
+			val.mat(colorvec_sink, colorvec_source).elem().elem().elem() =
+			  RComplex<REAL64>(e.real(), e.imag());
+		      }
 		    }
 		  }
 		  qdp_db.insert(key, val);
