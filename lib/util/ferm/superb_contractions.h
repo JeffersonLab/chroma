@@ -48,8 +48,20 @@ namespace Chroma
     template <std::size_t N>
     using Order = superbblas::Order<N>;
 
-    enum DeviceHost { OnHost, OnDefaultDevice };
-    enum Distribution { OnMaster, OnEveryone, OnEveryoneReplicated };
+    /// Where to store the tensor (see class Tensor)
+    enum DeviceHost {
+      OnHost,	      ///< on cpu memory
+      OnDefaultDevice ///< on GPU memory if possible
+    };
+
+    /// How to distribute the tensor (see class Tensor)
+    enum Distribution {
+      OnMaster,		   ///< Fully supported on node with index zero
+      OnEveryone,	   ///< Distributed the lattice dimensions (x, y, z, t) as chroma does
+      OnEveryoneReplicated ///< All nodes have a copy of the tensor
+    };
+
+    /// Whether complex conjugate the elements before contraction (see Tensor::contract)
     enum Conjugation { NotConjugate, Conjugate };
 
     /// Auxiliary class for initialize Maybe<T> with no value
@@ -264,13 +276,20 @@ namespace Chroma
 	return order;
       }
 
+      /// Stores the subtensor supported on each node (used by class Tensor)
       template <std::size_t N>
       struct TensorPartition
       {
       public:
 	using PartitionStored = std::vector<superbblas::PartitionItem<N>>;
-	Coor<N> dim;
-	PartitionStored p;
+	Coor<N> dim;	   ///< Dimensions of the tensor
+	PartitionStored p; ///< p[i] = {first coordinate, size} of tensor on i-th node
+
+	/// Constructor
+	/// \param order: dimension labels (use x, y, z, t for lattice dimensions)
+	/// \param dim: dimension size for the tensor
+	/// \param dist: how to distribute the tensor among the nodes
+
 	TensorPartition(Order<N> order, Coor<N> dim, Distribution dist) : dim(dim)
 	{
 	  switch (dist)
@@ -281,8 +300,14 @@ namespace Chroma
 	  }
 	}
 
-	TensorPartition(Coor<N> dim, PartitionStored p) : dim(dim), p(p)
+	// TensorPartition(Coor<N> dim, PartitionStored p) : dim(dim), p(p)
+	// {
+	// }
+
+	/// Return the volume of the tensor supported on this node
+	std::size_t localVolume() const
 	{
+	  return superbblas::detail::volume(p[Layout::nodeNumber()][1]);
 	}
 
       private:
@@ -441,10 +466,10 @@ namespace Chroma
 	  scalar{1}
       {
 	superbblas::Context ctx0 = *ctx;
-	data = std::shared_ptr<T>(superbblas::allocate<T>(detail::volume<N>(dim), *ctx),
-				  [=](const T* ptr) { superbblas::deallocate(ptr, ctx0); });
 	p = std::make_shared<detail::TensorPartition<N>>(
 	  detail::TensorPartition<N>(order, dim, dist));
+	data = std::shared_ptr<T>(superbblas::allocate<T>(p->localVolume(), *ctx),
+				  [=](const T* ptr) { superbblas::deallocate(ptr, ctx0); });
       }
 
       // Construct used by Chroma tensors (see `asTensorView`)
@@ -725,6 +750,10 @@ namespace Chroma
       // Return whether the current view is contiguous in memory
       bool isContiguous() const
       {
+	// Meaningless for tensors not been fully supported on a single node
+	if (dist != OnMaster)
+	  return false;
+
 	if (superbblas::detail::volume<N>(size) > 0 && N > 1)
 	{
 	  bool non_full_dim = false; // some dimension is not full
