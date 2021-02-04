@@ -1243,24 +1243,26 @@ namespace Chroma
 	{
 	  // Do the contraction
 	  Tensor<Nout - 1, COMPLEX> aux = r.template like_this<Nout - 1, COMPLEX>("gmNnSst");
-	  aux.contract(leftconj, {}, Conjugate, right.reorder("cxyznSst"), {}, NotConjugate, {});
+	  aux.contract(leftconj, {}, Conjugate, std::move(right.reorder("cxyznSst")), {},
+		       NotConjugate, {});
 	  aux.copyTo(r.kvslice_from_size({{'d', disp_indices.size()}}, {{'d', 1}}));
 	  disp_indices.push_back(disps.disp_index);
 	}
-	else
+
+	// Apply displacements on the right and call recursively
+	const int num_vecs = right.kvdim()['n'];
+	unsigned int node_disp = 0;
+	for (const auto it : disps.p)
 	{
-	  // Apply displacements on the right and call recursively
-	  const int num_vecs = right.kvdim()['n'];
-	  unsigned int node_disp = 0;
-	  for (const auto it : disps.p)
-	  {
-	    // Apply displacement
-	    Tensor<Nright, COMPLEX> right_disp = displace(u, right, it.first, deriv, moms);
-	    if (node_disp == disps.p.size() - 1) right.release();
-	    doMomGammaDisp_contractions(u, leftconj, right_disp, it.second, deriv, moms,
-					max_rhs - num_vecs, r, disp_indices);
-	    node_disp++;
-	  }
+	  // Apply displacement on the right vectors
+	  // NOTE: avoid that the memory requirements grow linearly with the number of displacements
+	  //       by killing the reference to `right` as soon as possible
+	  Tensor<Nright, COMPLEX> right_disp =
+	    (node_disp < disps.p.size() - 1) ? displace(u, right, it.first, deriv, moms)
+					     : displace(u, std::move(right), it.first, deriv, moms);
+	  doMomGammaDisp_contractions(u, leftconj, std::move(right_disp), it.second, deriv, moms,
+				      max_rhs - num_vecs, r, disp_indices);
+	  node_disp++;
 	}
       }
     }
