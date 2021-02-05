@@ -429,6 +429,56 @@ namespace Chroma
 	  return std::isfinite(v.real()) && std::isfinite(v.imag());
 	}
       };
+
+      namespace repr
+      {
+	template <typename Ostream, std::size_t N>
+	Ostream& operator<<(Ostream& s, Order<N> o)
+	{
+	  s << "\"";
+	  for (char c : o)
+	    s << c;
+	  s << "\"";
+	  return s;
+	}
+
+      	template <typename Ostream, std::size_t N>
+	Ostream& operator<<(Ostream& s, Coor<N> o)
+	{
+	  s << "{";
+	  if (N > 0)
+	    s << o[0];
+	  for (unsigned int i = 1; i < N; ++i)
+	    s << "," << o[i];
+	  s << "}";
+	  return s;
+	}
+
+      	template <typename Ostream>
+	Ostream& operator<<(Ostream& s, Distribution dist)
+	{
+	  switch (dist)
+	  {
+	  case OnMaster: s << "OnMaster"; break;
+	  case OnEveryone: s << "OnEveryone"; break;
+	  case OnEveryoneReplicated: s << "OnEveryoneReplicated"; break;
+	  }
+	  return s;
+	}
+      }
+
+      void log(int level, std::string s)
+      {
+	static int log_level = []() {
+	  const char* l = std::getenv("SB_LOG");
+	  if (l)
+	    return std::atoi(l);
+	  return 0;
+	}();
+	if (log_level < level)
+	  return;
+	QDPIO::cout << s << std::endl;
+      }
     }
 
     template <std::size_t N, typename T>
@@ -449,6 +499,16 @@ namespace Chroma
       Coor<N> strides;			///< Displacement for the next element along every direction
       T scalar;				///< Scalar factor of the tensor
 
+      // Return a string describing the tensor
+      std::string repr(T* ptr) const
+      {
+	using namespace detail::repr;
+	std::stringstream ss;
+	ss << "Tensor{data:" << ptr << ", order:" << order << ", dim:" << dim
+	   << ", dist:" << dist << "}";
+	return ss.str();
+      }
+
       // Construct used by non-Chroma tensors
       Tensor(const char* order_, Coor<N> dim, DeviceHost dev = OnDefaultDevice,
 	     Distribution dist = OnEveryone)
@@ -464,8 +524,13 @@ namespace Chroma
 	superbblas::Context ctx0 = *ctx;
 	p = std::make_shared<detail::TensorPartition<N>>(
 	  detail::TensorPartition<N>(order, dim, dist));
-	data = std::shared_ptr<T>(superbblas::allocate<T>(p->localVolume(), *ctx),
-				  [=](const T* ptr) { superbblas::deallocate(ptr, ctx0); });
+	T* ptr = superbblas::allocate<T>(p->localVolume(), *ctx);
+	std::string s = repr(ptr);
+	detail::log(1, std::string("allocated ") + s);
+	data = std::shared_ptr<T>(ptr, [=](const T* ptr) {
+	  superbblas::deallocate(ptr, ctx0);
+	  detail::log(1, std::string("deallocated ") + s);
+	});
       }
 
       // Construct used by Chroma tensors (see `asTensorView`)
@@ -1129,7 +1194,7 @@ namespace Chroma
 
     template <typename COMPLEX, std::size_t N>
     Tensor<N, COMPLEX> displace(const std::vector<Tensor<Nd + 2, Complex>>& u,
-				const Tensor<N, COMPLEX> v, int dir, bool deriv = false,
+				Tensor<N, COMPLEX> v, int dir, bool deriv = false,
 				std::vector<Coor<Nd - 1>> moms = {}, bool conjUnderAdd = false)
     {
       if (std::abs(dir) > Nd)
@@ -1148,18 +1213,19 @@ namespace Chroma
 	if (conjUnderAdd)
 	  len *= -1;
 
+	v = v.reorder("cnSsxyzt");
 	if (len > 0)
 	{
 	  // Do u[d] * shift(x,d)
-	  r.contract(u[d], {{'j', 'c'}}, NotConjugate, shift(v, len, d).reorder("cnSsxyzt"), {},
-		     NotConjugate, {{'c', 'i'}});
+	  v = shift(std::move(v), len, d);
+	  r.contract(u[d], {{'j', 'c'}}, NotConjugate, std::move(v), {}, NotConjugate,
+		     {{'c', 'i'}});
 	}
 	else
 	{
 	  // Do shift(adj(u[d]) * x,d)
-	  r.contract(u[d], {{'i', 'c'}}, Conjugate, v.reorder("cnSsxyzt"), {}, NotConjugate,
-		     {{'c', 'j'}});
-	  r = shift(r, len, d);
+	  r.contract(u[d], {{'i', 'c'}}, Conjugate, std::move(v), {}, NotConjugate, {{'c', 'j'}});
+	  r = shift(std::move(r), len, d);
 	}
       }
       else
@@ -1241,6 +1307,8 @@ namespace Chroma
 
 	if (disps.disp_index >= 0)
 	{
+	  detail::log(1, std::string("contracting for disp_index=") +
+			   std::to_string(disps.disp_index));
 	  // Do the contraction
 	  Tensor<Nout - 1, COMPLEX> aux = r.template like_this<Nout - 1, COMPLEX>("gmNnSst");
 	  aux.contract(leftconj, {}, Conjugate, std::move(right.reorder("cxyznSst")), {},
@@ -1254,6 +1322,7 @@ namespace Chroma
 	unsigned int node_disp = 0;
 	for (const auto it : disps.p)
 	{
+	  detail::log(1, std::string("push on direction ") + std::to_string(it.first));
 	  // Apply displacement on the right vectors
 	  // NOTE: avoid that the memory requirements grow linearly with the number of displacements
 	  //       by killing the reference to `right` as soon as possible
@@ -1263,6 +1332,7 @@ namespace Chroma
 	  doMomGammaDisp_contractions(u, leftconj, std::move(right_disp), it.second, deriv, moms,
 				      max_rhs - num_vecs, r, disp_indices);
 	  node_disp++;
+	  detail::log(1, std::string("pop direction"));
 	}
       }
     }
