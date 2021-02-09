@@ -516,7 +516,7 @@ namespace Chroma
 	  int num_tslices_in_active_colorvec =
 	    std::min(params.param.contract.Nt_backward + params.param.contract.Nt_forward + 1, Lt);
 	  const char order_in_active_colorvec[] = "cxyznt";
-	  SB::Tensor<Nd + 2, SB::ComplexF> active_colorvec =
+	  SB::Tensor<Nd + 3, SB::ComplexF> active_colorvec =
 	    SB::getColorvecs(eigen_source, decay_dir, first_tslice_in_active_colorvec,
 			     num_tslices_in_active_colorvec, num_vecs, order_in_active_colorvec);
 

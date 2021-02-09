@@ -21,12 +21,13 @@
 #include "util/ft/sftmom.h"
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstring>
 #include <map>
 #include <memory>
+#include <set>
 #include <stdexcept>
 #include <string>
-#include <cmath>
 
 #ifndef M_PI
 #  define M_PI                                                                                     \
@@ -117,19 +118,70 @@ namespace Chroma
     /// Initialize Maybe<T> without value
     constexpr None none = None{};
 
+    namespace detail
+    {
+      namespace repr
+      {
+	template <typename Ostream, std::size_t N>
+	Ostream& operator<<(Ostream& s, Order<N> o)
+	{
+	  s << "\"";
+	  for (char c : o)
+	    s << c;
+	  s << "\"";
+	  return s;
+	}
+      }
+
+      /// Throw an error if it is not a valid order, that is, if some label is repeated
+      template <std::size_t N>
+      void check_order(const char* order)
+      {
+	if (std::strlen(order) != N)
+	{
+	  std::stringstream ss;
+	  ss << "The length of the dimension labels `" << order
+	     << "` should match the template argument N `" << N << "`";
+	  throw std::runtime_error(ss.str());
+	}
+
+	std::set<char> s;
+	for (unsigned int i = 0; i < N; ++i)
+	{
+	  if (!s.insert(order[i]).second)
+	  {
+	    std::stringstream ss;
+	    ss << "Invalid order: some label names are repeated `" << order << "`";
+	    throw std::runtime_error(ss.str());
+	  }
+	}
+      }
+
+      /// Throw an error if it is not a valid order, that is, if some label is repeated
+      template <std::size_t N>
+      void check_order(Order<N> order)
+      {
+	std::set<char> s;
+	for (unsigned int i = 0; i < N; ++i)
+	{
+	  if (!s.insert(order[i]).second)
+	  {
+	    using namespace repr;
+	    std::stringstream ss;
+	    ss << "Invalid order: some label names are repeated `" << order << "`";
+	    throw std::runtime_error(ss.str());
+	  }
+	}
+      }
+    }
+
     enum Throw_kvcoors { NoThrow, ThrowOnUnmatchLabel, ThrowOnMissing };
 
     template <std::size_t N>
     Coor<N> kvcoors(const char* order, std::map<char, int> m, Index missing = 0,
 		    Throw_kvcoors t = ThrowOnUnmatchLabel)
     {
-      if (std::strlen(order) != N)
-      {
-	std::stringstream ss;
-	ss << "kvcoors: The length of the dimension labels `" << order
-	   << "` should match the template argument N `" << N << "`";
-	throw std::runtime_error(ss.str());
-      }
+      detail::check_order<N>(order);
 
       Coor<N> r;
       unsigned int found = 0;
@@ -169,16 +221,28 @@ namespace Chroma
     template <std::size_t N>
     Coor<N> latticeSize(const char* order, std::map<char, int> m = {})
     {
-      if (std::strlen(order) != N)
-	throw std::runtime_error(
-	  "The length of the string `order` should match the template argument `N`");
-
+#if QDP_USE_LEXICO_LAYOUT
+      // No red-black ordering
       std::map<char, int> m0 = {{'x', Layout::lattSize()[0]},
 				{'y', Layout::lattSize()[1]},
 				{'z', Layout::lattSize()[2]},
 				{'t', Layout::lattSize()[3]},
+				{'X', 1},
 				{'s', Ns},
 				{'c', Nc}};
+#elif QDP_USE_CB2_LAYOUT
+      // Red-black ordering
+      assert(Layout::lattSize()[0] % 2 == 0);
+      std::map<char, int> m0 = {{'x', Layout::lattSize()[0] / 2},
+				{'y', Layout::lattSize()[1]},
+				{'z', Layout::lattSize()[2]},
+				{'t', Layout::lattSize()[3]},
+				{'X', 2},
+				{'s', Ns},
+				{'c', Nc}};
+#else
+      throw std::runtime_error("Unsupported layout");
+#endif
       for (const auto& it : m)
 	m0[it.first] = it.second;
       return kvcoors<N>(order, m0, 0, NoThrow);
@@ -194,9 +258,7 @@ namespace Chroma
       template <std::size_t N>
       Order<N> toOrder(const char* order)
       {
-	if (std::strlen(order) != N)
-	  throw std::runtime_error(
-	    "The length of the string `order` should match the template argument `N`");
+	check_order<N>(order);
 	Order<N> o;
 	std::copy_n(order, N, o.begin());
 	return o;
@@ -247,6 +309,14 @@ namespace Chroma
 	}
       }
 
+      // Throw an error if `order` does not contain a label in `should_contain`
+      template <std::size_t N>
+      inline void check_order_contains(Order<N> order, const char* should_contain)
+      {
+	Order<N + 1> order_str = toOrderStr(order);
+	return check_order_contains(&order_str[0], should_contain);
+      }
+
       // Return the equivalent value of the coordinate `v` in the interval [0, dim[ for a periodic
       // dimension with length `dim`.
 
@@ -273,6 +343,7 @@ namespace Chroma
 	  if (it != m.end())
 	    order[i] = it->second;
 	}
+	check_order(order);
 	return order;
       }
 
@@ -341,6 +412,23 @@ namespace Chroma
 
 	static PartitionStored partitioning_chroma_compatible(Order<N> order, Coor<N> dim)
 	{
+	  // Find a dimension label in `order` that is going to be distributed
+	  const char dist_labels[] = "xyzt"; // distributed dimensions
+	  int first_dist_label = -1;
+	  for (unsigned int i = 0; i < std::strlen(dist_labels); ++i)
+	  {
+	    const auto &it = std::find(order.begin(), order.end(), dist_labels[i]);
+	    if (it != order.end())
+	    {
+	      first_dist_label = it - order.begin();
+	      break;
+	    }
+	  }
+
+	  // If no dimension is going to be distributed, the whole tensor will have support only on node zero
+	  if (first_dist_label < 0)
+	    return all_tensor_on_master(dim);
+
 	  // Get the number of procs use in each dimension; for know we put as many as chroma
 	  // put onto the lattice dimensions
 	  multi1d<int> procs_ = Layout::logicalSize();
@@ -365,6 +453,18 @@ namespace Chroma
 	      // Number of elements in process with rank 'cproc[i]' on dimension 'i'
 	      fs[rank][1][i] =
 		dim[i] / procs[i] + (dim[i] % procs[i] > cproc[i] ? 1 : 0) % procs[i];
+	    }
+
+	    // Avoid replicating parts of tensor if some of the lattice dimensions does not participate on this tensor
+	    for (unsigned int i = 0; i < std::strlen(dist_labels); ++i)
+	    {
+	      if (std::find(order.begin(), order.end(), dist_labels[i]) != order.end())
+		continue;
+	      if (cproc_[i] > 0)
+	      {
+		fs[rank][1][first_dist_label] = 0;
+		break;
+	      }
 	    }
 	  }
 	  return fs;
@@ -432,25 +532,15 @@ namespace Chroma
 
       namespace repr
       {
-	template <typename Ostream, std::size_t N>
-	Ostream& operator<<(Ostream& s, Order<N> o)
-	{
-	  s << "\"";
-	  for (char c : o)
-	    s << c;
-	  s << "\"";
-	  return s;
-	}
-
       	template <typename Ostream, std::size_t N>
 	Ostream& operator<<(Ostream& s, Coor<N> o)
 	{
-	  s << "{";
+	  s << "[";
 	  if (N > 0)
 	    s << o[0];
 	  for (unsigned int i = 1; i < N; ++i)
 	    s << "," << o[i];
-	  s << "}";
+	  s << "]";
 	  return s;
 	}
 
@@ -463,6 +553,33 @@ namespace Chroma
 	  case OnEveryone: s << "OnEveryone"; break;
 	  case OnEveryoneReplicated: s << "OnEveryoneReplicated"; break;
 	  }
+	  return s;
+	}
+
+	template <typename Ostream, typename T>
+	Ostream& operator<<(Ostream& s, std::complex<T> o)
+	{
+	  s << std::real(o) << "+" << std::imag(o) << "i";
+	  return s;
+	}
+
+	template <typename Ostream, typename T>
+	Ostream& operator<<(Ostream& s, const std::vector<T>& o)
+	{
+	  s << "{";
+	  for (const auto& i : o)
+	    s << i;
+	  s << "}";
+	  return s;
+	}
+
+	template <typename Ostream, typename T, std::size_t N>
+	Ostream& operator<<(Ostream& s, const std::array<T, N>& o)
+	{
+	  s << "{";
+	  for (const auto& i : o)
+	    s << i;
+	  s << "}";
 	  return s;
 	}
       }
@@ -479,6 +596,7 @@ namespace Chroma
 	  return;
 	QDPIO::cout << s << std::endl;
       }
+
     }
 
     template <std::size_t N, typename T>
@@ -901,6 +1019,28 @@ namespace Chroma
 	bin.writeArrayPrimaryNode((char*)&data.get()[disp], sizeof(T), vol);
       }
 
+      void print(std::string name) const
+      {
+	std::stringstream ss;
+	Tensor<N, T> t_host = like_this(none, {}, OnHost, OnMaster);
+	copyTo(t_host);
+	if (Layout::nodeNumber() == 0)
+	{
+	  using namespace detail::repr;
+	  ss << "% " << repr(data.get()) << std::endl;
+	  ss << "% dist=" << p->p << std::endl;
+	  ss << name << "=reshape([";
+	  std::size_t vol = superbblas::detail::volume(size);
+	  for (std::size_t i = 0; i < vol; ++i)
+	  {
+	    //using detail::repr::operator<<;
+	    ss << " ";
+	    detail::repr::operator<<(ss, t_host.data.get()[i]);
+	  }
+	  ss << "], [" << size << "]);" << std::endl;
+	}
+	detail::log(1, ss.str());
+      }
 #if 0
       /// Get where the tensor is stored
       void setNan() 
@@ -927,25 +1067,25 @@ namespace Chroma
 #endif
     };
 
-    Tensor<Nd + 2, Complex> asTensorView(const LatticeFermion& v)
+    Tensor<Nd + 3, Complex> asTensorView(const LatticeFermion& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd + 2, Complex>("csxyzt", latticeSize<Nd + 2>("csxyzt"), OnDefaultDevice,
+      return Tensor<Nd + 3, Complex>("csxyztX", latticeSize<Nd + 3>("csxyztX"), OnDefaultDevice,
 				     OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
-    Tensor<Nd, Complex> asTensorView(const LatticeComplex& v)
+    Tensor<Nd + 1, Complex> asTensorView(const LatticeComplex& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd, Complex>("xyzt", latticeSize<Nd>("xyzt"), OnDefaultDevice, OnEveryone,
-				 std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
+      return Tensor<Nd + 1, Complex>("xyztX", latticeSize<Nd + 1>("xyztX"), OnDefaultDevice,
+				     OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
-    Tensor<Nd + 2, Complex> asTensorView(const LatticeColorMatrix& v)
+    Tensor<Nd + 3, Complex> asTensorView(const LatticeColorMatrix& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd + 2, Complex>(
-	"ijxyzt", latticeSize<Nd + 2>("ijxyzt", {{'i', Nc}, {'j', Nc}}), OnDefaultDevice,
+      return Tensor<Nd + 3, Complex>(
+	"ijxyztX", latticeSize<Nd + 3>("ijxyztX", {{'i', Nc}, {'j', Nc}}), OnDefaultDevice,
 	OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
@@ -1050,34 +1190,137 @@ namespace Chroma
     //   }
     // };
 
-    typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, Tensor<Nd + 1, ComplexF>> MODS_t;
+    namespace ns_getColorvecs
+    {
+      /// Return the permutation from a natural layout to a red-black that is used by `applyPerm`
+      /// \param t: index in the t-direction of the input elements
+      /// NOTE: assuming the input layout is xyz and the output layout is xyzX for the given input
+      ///       time-slice `t`
+
+      std::vector<Index> getPermFromNatToRB(Index t)
+      {
+	if (Layout::nodeNumber() != 0)
+	  return {};
+
+	const Index x1 = Layout::lattSize()[0];
+	const Index y1 = Layout::lattSize()[1];
+	const Index z1 = Layout::lattSize()[2];
+	std::vector<Index> perm(x1 * y1 * z1);
+
+#if QDP_USE_LEXICO_LAYOUT
+	unsigned int n = x1 * y1 * z1;
+#  ifdef _OPENMP
+#    pragma omp parallel for schedule(static)
+#  endif
+	for (unsigned int i = 0; i < n; ++n)
+	  perm[i] = i;
+
+#elif QDP_USE_CB2_LAYOUT
+#  ifdef _OPENMP
+#    pragma omp parallel for collapse(3) schedule(static)
+#  endif
+	for (unsigned int z = 0; z < z1; ++z)
+	{
+	  for (unsigned int y = 0; y < y1; ++y)
+	  {
+	    for (unsigned int x = 0; x < x1; ++x)
+	    {
+	      // index on natural ordering
+	      Index i0 = x + y * x1 + z * x1 * y1;
+	      // index in red-black
+	      Index i1 = x / 2 + y * (x1 / 2) + z * (x1 * y1 / 2) +
+			 ((x + y + z + t) % 2) * (x1 * y1 * z1 / 2);
+	      perm[i1] = i0;
+	    }
+	  }
+	}
+
+#else
+	throw std::runtime_error("Unsupported layout");
+#endif
+
+	return perm;
+      }
+
+      /// Apply a permutation generated by `getPermFromNatToRB`
+      /// \param perm: permutation generated with getPermFromNatToRB
+      /// \param tnat: input tensor with ordering cxyz
+      /// \param trb: output tensor with ordering cxyzX
+
+      template <typename T>
+      void applyPerm(const std::vector<Index>& perm, Tensor<Nd, T> tnat, Tensor<Nd + 1, T> trb)
+      {
+	assert((tnat.order == Order<Nd>{'c', 'x', 'y', 'z'}));
+	assert((trb.order == Order<Nd + 1>{'c', 'x', 'y', 'z', 'X'}));
+	assert(tnat.p->localVolume() == perm.size() * Nc);
+
+	unsigned int i1 = perm.size();
+	const T *x = tnat.data.get();
+	T* y = trb.data.get();
+
+#ifdef _OPENMP
+#  pragma omp parallel for schedule(static)
+#endif
+	for (unsigned int i = 0; i < i1; ++i)
+	  for (unsigned int c = 0; c < Nc; ++c)
+	    y[i * Nc + c] = x[perm[i] * Nc + c];
+      }
+    }
+
+    typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, Tensor<Nd, ComplexF>> MODS_t;
 
     /// Get colorvecs(t,n) for t=from_slice..(from_slice+n_tslices-1) and n=0..(n_colorvecs-1)
 
-    Tensor<Nd + 2, ComplexF> getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice,
+    Tensor<Nd + 3, ComplexF> getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice,
 					  int n_tslices, int n_colorvecs,
-					  const char order[] = "cxyztn")
+					  const char order[] = "cxyztXn")
     {
+      using namespace ns_getColorvecs;
+
       if (decay_dir != 3)
 	throw std::runtime_error("Only support for decay_dir being the temporal dimension");
-      detail::check_order_contains(order, "cxyztn");
+      detail::check_order_contains(order, "cxyztXn");
 
       from_tslice = detail::normalize_coor(from_tslice, Layout::lattSize()[decay_dir]);
 
-      Tensor<Nd + 2, ComplexF> r(
-	order, latticeSize<Nd + 2>(order, {{'t', n_tslices}, {'n', n_colorvecs}}));
-      Tensor<Nd + 1, ComplexF> t("cxyzn", latticeSize<Nd + 1>("cxyzn", {{'n', n_colorvecs}}),
+      // Allocate tensor to return
+      Tensor<Nd + 3, ComplexF> r(
+	order, latticeSize<Nd + 3>(order, {{'t', n_tslices}, {'n', n_colorvecs}}));
+
+      // Allocate a single time slice colorvec in natural ordering, as colorvec are stored
+      Tensor<Nd, ComplexF> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
+				OnHost, OnMaster);
+
+      // Allocate a single time slice colorvec in case of using RB ordering
+      Tensor<Nd + 1, ComplexF> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
+
+      // Allocate all colorvecs for the same time-slice
+      Tensor<Nd + 2, ComplexF> t("cxyzXn", latticeSize<Nd + 2>("cxyzXn", {{'n', n_colorvecs}}),
 				 OnHost, OnMaster);
-      for (int t_slice = from_tslice, i_slice = 0, n_tslices = Layout::lattSize()[decay_dir];
-	   i_slice < n_tslices; ++i_slice, t_slice = (t_slice + 1) % n_tslices)
+
+      const int Nt = Layout::lattSize()[decay_dir];
+      for (int t_slice = from_tslice, i_slice = 0; i_slice < n_tslices;
+	   ++i_slice, t_slice = (t_slice + 1) % Nt)
       {
+	// Compute the permutation from natural ordering to red-black
+	std::vector<Index> perm = getPermFromNatToRB(t_slice);
+
 	for (int colorvec = 0; colorvec < n_colorvecs; ++colorvec)
 	{
+	  // Read a single time-slice and colorvec
 	  KeyTimeSliceColorVec_t key(t_slice, colorvec);
-	  Tensor<Nd + 1, ComplexF> v = t.kvslice_from_size({{'n', colorvec}}, {{'n', 1}});
-	  eigen_source.get(key, v);
+	  eigen_source.get(key, tnat);
+
+	  // Correct ordering
+	  applyPerm(perm, tnat, trb);
+
+	  // t[n=colorvec] = trb
+	  trb.copyTo(t.kvslice_from_size({{'n', colorvec}}, {{'n', 1}}));
 	}
-	t.copyTo(r.kvslice_from_size({{'t', i_slice}})); // r[t=i_slice] = t
+
+	// r[t=i_slice] = t, distribute the tensor from master to the rest of the nodes
+	QDPIO::cerr << "doing dist" << std::endl;
+	t.copyTo(r.kvslice_from_size({{'t', i_slice}}));
       }
 
       return r;
@@ -1085,33 +1328,33 @@ namespace Chroma
 
     /// Apply the inverse to LatticeColorVec tensors for a list of spins
     /// \param PP: invertor
-    /// \param chi: lattice color tensor on a t_slice, cxyzn
+    /// \param chi: lattice color tensor on a t_slice, cxyzXn
     /// \param t_source: time-slice in chi
     /// \param Nt_forward: return the next Nt_forward time-slices after t_source
     /// \param Nt_backward: return the previous Nt_backward time-slices before t_source
     /// \param spin_sources: list of spins
     /// \param max_rhs: maximum number of vectors solved at once
-    /// \param order_out: coordinate order of the output tensor, a permutation of cSxyztns where
+    /// \param order_out: coordinate order of the output tensor, a permutation of cSxyztXns where
     ///        s is the spin source and S is the spin sink
-    /// \return: tensor cSxyztns where the first t_slice is the t_source-Nt_backward time-slice of
+    /// \return: tensor cSxyztXns where the first t_slice is the t_source-Nt_backward time-slice of
     ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
 
     template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-    Tensor<Nd + 4, COMPLEX_OUT>
-    doInversion(const SystemSolver<LatticeFermion>& PP, const Tensor<Nd + 2, COMPLEX_CHI> chi,
+    Tensor<Nd + 5, COMPLEX_OUT>
+    doInversion(const SystemSolver<LatticeFermion>& PP, const Tensor<Nd + 3, COMPLEX_CHI> chi,
 		int t_source, int first_tslice_out, int n_tslice_out, std::vector<int> spin_sources,
-		int max_rhs, const char* order_out = "cSxyztns")
+		int max_rhs, const char* order_out = "cSxyztXns")
     {
-      detail::check_order_contains(order_out, "cSxyztns");
+      detail::check_order_contains(order_out, "cSxyztXns");
       if (chi.kvdim()['t'] != 1)
 	throw std::runtime_error("Expected one time-slice");
       const int num_vecs = chi.kvdim()['n'];
 
-      SB::Tensor<Nd + 4, COMPLEX_OUT> psi(
-	order_out, SB::latticeSize<Nd + 4>(order_out, {{'t', n_tslice_out},
-						       {'S', Ns},
-						       {'s', spin_sources.size()},
-						       {'n', num_vecs}}));
+      Tensor<Nd + 5, COMPLEX_OUT> psi(
+	order_out,
+	latticeSize<Nd + 5>(
+	  order_out,
+	  {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}));
 
       int max_step = std::max(num_vecs, max_rhs);
       std::vector<std::shared_ptr<LatticeFermion>> chis(max_step), quark_solns(max_step);
@@ -1156,7 +1399,7 @@ namespace Chroma
 	  for (int n = n0, col = 0; col < n_step; ++n, ++col)
 	  {
 	    // psi[n=n] = quark_solns[col][t=first_tslice+(0:n_tslice_out-1)]
-	    SB::asTensorView(*quark_solns[col])
+	    asTensorView(*quark_solns[col])
 	      .kvslice_from_size({{'t', first_tslice_out}}, {{'t', n_tslice_out}})
 	      .rename_dims({{'s', 'S'}})
 	      .copyTo(psi.kvslice_from_size({{'n', n}, {'s', spin_source}}));
@@ -1176,10 +1419,27 @@ namespace Chroma
       if (len == 0)
 	return v;
 
-      // Create a view where the tensor is shifted 
-      Tensor<N, COMPLEX> r = v.like_this();
-      const char dir_label[] = "xyz";
-      return v.kvslice_from_size({{dir_label[dir], len}});
+      if (dir != 0 || latticeSize<1>("X")[0] == 1)
+      {
+	// If the shift direction isn't x or we are not using red-black ordering, return a view where
+	// the tensor is shifted
+	const char dir_label[] = "xyz";
+	return v.kvslice_from_size({{dir_label[dir], len}});
+      }
+      else
+      {
+	// Assuming that v has support on all X lattice elements
+	if (v.kvdim()['X'] != 2)
+	  throw std::runtime_error("Unsupported shift");
+	assert(latticeSize<1>("X")[0] == 2); // Assuming the use red-black ordering
+
+	Tensor<N, COMPLEX> r = v.like_this();
+	for (int X = 0; X < 2; ++X)
+	  v.kvslice_from_size({{'X', X}})
+	    .copyTo(r.kvslice_from_size(
+	      {{'X', (X + len) % 2}, {'x', (X + len + (len >= 0 ? 0 : -1)) / 2}}));
+	return r;
+      }
     }
 
     /// Compute displace/derivate of v in the direction dir
@@ -1193,7 +1453,7 @@ namespace Chroma
     ////       when conjUnderAdd is false.
 
     template <typename COMPLEX, std::size_t N>
-    Tensor<N, COMPLEX> displace(const std::vector<Tensor<Nd + 2, Complex>>& u,
+    Tensor<N, COMPLEX> displace(const std::vector<Tensor<Nd + 3, Complex>>& u,
 				Tensor<N, COMPLEX> v, int dir, bool deriv = false,
 				std::vector<Coor<Nd - 1>> moms = {}, bool conjUnderAdd = false)
     {
@@ -1205,7 +1465,7 @@ namespace Chroma
 
       int d = std::abs(dir) - 1, len = (dir > 0 ? 1 : -1);
 
-      Tensor<N, COMPLEX> r = v.like_this("cnSsxyzt");
+      Tensor<N, COMPLEX> r = v.like_this("cnSsxyzXt");
       if (!deriv)
       {
 	assert(d < u.size());
@@ -1213,7 +1473,7 @@ namespace Chroma
 	if (conjUnderAdd)
 	  len *= -1;
 
-	v = v.reorder("cnSsxyzt");
+	v = v.reorder("cnSsxyzXt");
 	if (len > 0)
 	{
 	  // Do u[d] * shift(x,d)
@@ -1285,23 +1545,25 @@ namespace Chroma
       }
 
       /// Contract two LatticeFermion with different momenta, gammas, and displacements.
-      /// \param leftconj: left lattice fermion tensor, cSxyzN
-      /// \param right: right lattice fermion tensor, csxyzn
+      /// \param leftconj: left lattice fermion tensor, cSxyzXN
+      /// \param right: right lattice fermion tensor, csxyzXn
       /// \param disps: tree of displacements/derivatives
       /// \param deriv: whether use derivatives instead of displacements
+      /// \param gammas: tensor with spins, QSg
+      /// \param moms: list of momenta
       /// \param max_rhs: maximum number of vectors hold in memory
-      /// \param r tensor holding the contractions, nNsSfgd where
-      ///        S and N (s and n) are the spin and vector from left (right) vectors, m is the momentum
+      /// \param r tensor holding the contractions, sqnNmgd where
+      ///        q and N (s and n) are the spin and vector from left (right) vectors, m is the momentum
       ///        index, g is the gamma index, and d is the displacement index
       /// \param: disp_indices: dictionary that map each `d` index in r displacement index.
 
       template <typename COMPLEX, std::size_t Nleft, std::size_t Nright, std::size_t Nout>
-      void doMomGammaDisp_contractions(const std::vector<Tensor<Nd + 2, Complex>> &u,
+      void doMomGammaDisp_contractions(const std::vector<Tensor<Nd + 3, Complex>>& u,
 				       const Tensor<Nleft, COMPLEX> leftconj,
 				       Tensor<Nright, COMPLEX> right, const PathNode& disps,
-				       bool deriv, const std::vector<Coor<Nd - 1>>& moms,
-				       int max_rhs, Tensor<Nout, COMPLEX> r,
-				       std::vector<int>& disp_indices)
+				       bool deriv, Tensor<3, COMPLEX> gammas,
+				       const std::vector<Coor<Nd - 1>>& moms, int max_rhs,
+				       Tensor<Nout, COMPLEX> r, std::vector<int>& disp_indices)
       {
 	max_rhs = std::max(1, max_rhs);
 
@@ -1309,11 +1571,18 @@ namespace Chroma
 	{
 	  detail::log(1, std::string("contracting for disp_index=") +
 			   std::to_string(disps.disp_index));
-	  // Do the contraction
-	  Tensor<Nout - 1, COMPLEX> aux = r.template like_this<Nout - 1, COMPLEX>("gmNnSst");
-	  aux.contract(leftconj, {}, Conjugate, std::move(right.reorder("cxyznSst")), {},
-		       NotConjugate, {});
-	  aux.copyTo(r.kvslice_from_size({{'d', disp_indices.size()}}, {{'d', 1}}));
+	  // Contract the spatial components and the color of the leftconj and right tensors
+	  Tensor<Nout, COMPLEX> aux =
+	    r.template like_this<Nout, COMPLEX>("mNQqnSst", {{'S', Ns}, {'Q', Ns}});
+	  aux.contract(leftconj, {}, Conjugate, right.reorder("cxyzXnSst"), {}, NotConjugate, {});
+
+	  // Contract the spin components S and Q with the gammas, and put the result on r[d=disp_indices.size()]
+	  aux = aux.reorder("QSmNqnst");
+	  Tensor<Nout - 1, COMPLEX> aux0 = r.template like_this<Nout - 1, COMPLEX>("gmNqnst");
+	  aux0.contract(gammas, {}, NotConjugate, aux, {}, NotConjugate);
+	  aux0.copyTo(r.kvslice_from_size({{'d', disp_indices.size()}}, {{'d', 1}}));
+
+	  // Annotate on disp_indices the displacement being computed for the current `d`
 	  disp_indices.push_back(disps.disp_index);
 	}
 
@@ -1329,8 +1598,8 @@ namespace Chroma
 	  Tensor<Nright, COMPLEX> right_disp =
 	    (node_disp < disps.p.size() - 1) ? displace(u, right, it.first, deriv, moms)
 					     : displace(u, std::move(right), it.first, deriv, moms);
-	  doMomGammaDisp_contractions(u, leftconj, std::move(right_disp), it.second, deriv, moms,
-				      max_rhs - num_vecs, r, disp_indices);
+	  doMomGammaDisp_contractions(u, leftconj, std::move(right_disp), it.second, deriv, gammas,
+				      moms, max_rhs - num_vecs, r, disp_indices);
 	  node_disp++;
 	  detail::log(1, std::string("pop direction"));
 	}
@@ -1338,30 +1607,33 @@ namespace Chroma
     }
 
     /// Contract two LatticeFermion with different momenta, gammas, and displacements.
-    /// \param leftconj: left lattice fermion tensor, cSxyzN
-    /// \param right: right lattice fermion tensor, csxyzn
+    /// \param leftconj: left lattice fermion tensor, cxyzXNQqt
+    /// \param right: right lattice fermion tensor, cxyzXnSst
     /// \param first_tslice: first time-slice in leftconj and right
     /// \param moms: momenta to apply
     /// \param gammas: list of gamma matrices to apply
     /// \param disps: list of displacements/derivatives
     /// \param deriv: whether use derivatives instead of displacements 
     /// \param max_rhs: maximum number of vectors hold in memory
-    /// \param order_out: coordinate order of the output tensor, a permutation of nNsSfgd where
-    ///        S and N (s and n) are the spin and vector from left (right) vectors, m is the momentum
+    /// \param order_out: coordinate order of the output tensor, a permutation of nNSQmgd where
+    ///        q and N (s and n) are the spin and vector from left (right) vectors, m is the momentum
     ///        index, g is the gamma index, and d is the displacement index
-    /// \return: a pair made of a tensor sSnNmgd and a vector that is a dictionary that map each `d`
+    /// \return: a pair made of a tensor sqnNmgd and a vector that is a dictionary that map each `d`
     ///        index in the tensor with an input displacement index.
 
     template <std::size_t Nout, std::size_t Nleft, std::size_t Nright, typename COMPLEX>
     std::pair<Tensor<Nout, COMPLEX>, std::vector<int>> doMomGammaDisp_contractions(
-      const multi1d<LatticeColorMatrix>& u, const Tensor<Nleft, COMPLEX> leftconj,
+      const multi1d<LatticeColorMatrix>& u, Tensor<Nleft, COMPLEX> leftconj,
       const Tensor<Nright, COMPLEX> right, int first_tslice, const SftMom& moms,
       const std::vector<Tensor<2, COMPLEX>>& gammas, std::vector<std::vector<int>> disps,
-      bool deriv, int max_rhs, const char* order_out = "gmNndSst")
+      bool deriv, int max_rhs, const char* order_out = "gmNndsqt")
     {
       using namespace ns_doMomGammaDisp_contractions;
 
-      detail::check_order_contains(order_out, "gmNndSst");
+      detail::check_order_contains(order_out, "gmNndsqt");
+      detail::check_order_contains(leftconj.order, "cxyzXNQqt");
+      detail::check_order_contains(right.order, "cxyzXnSst");
+
       assert(right.kvdim()['t'] == leftconj.kvdim()['t']);
       unsigned int Nt = right.kvdim()['t'];
 
@@ -1372,46 +1644,30 @@ namespace Chroma
       Tensor<Nout, COMPLEX> r(order_out, kvcoors<Nout>(order_out, {{'t', Nt},
 								   {'n', right.kvdim()['n']},
 								   {'s', right.kvdim()['s']},
-								   {'N', leftconj.kvdim()['n']},
-								   {'S', leftconj.kvdim()['s']},
+								   {'N', leftconj.kvdim()['N']},
+								   {'q', leftconj.kvdim()['q']},
 								   {'m', moms.numMom()},
 								   {'g', gammas.size()},
 								   {'d', disps.size()}}));
 
-      // Apply momenta and gammas conjugated to the left tensor
-      const char gammast_moms_order[] = "jigmxyzt";
-      Tensor<8, COMPLEX> gammast_moms(
-	gammast_moms_order,
-	latticeSize<8>(
-	  gammast_moms_order,
-	  {{'t', Nt}, {'i', Ns}, {'j', Ns}, {'m', moms.numMom()}, {'g', gammas.size()}}));
-      const char aux_order[] = "ijxyzt";
-      Tensor<6, COMPLEX> aux(aux_order,
-			     latticeSize<6>(aux_order, {{'t', Nt}, {'i', Ns}, {'j', Ns}}));
-      for (unsigned int g = 0; g < gammas.size(); ++g)
+      // Copy moms into a single tensor
+      const char momst_order[] = "mxyzXt";
+      Tensor<Nd + 2, COMPLEX> momst(
+	momst_order, latticeSize<Nd + 2>(momst_order, {{'t', Nt}, {'m', moms.numMom()}}));
+      for (unsigned int mom = 0; mom < moms.numMom(); ++mom)
       {
-	for (unsigned int mom = 0; mom < moms.numMom(); ++mom)
-	{
-	  aux.contract(gammas[g], {}, NotConjugate,
-		       asTensorView(moms[mom]).kvslice_from_size({}, {{'t', Nt}}), {},
-		       NotConjugate);
-	  aux.copyTo(gammast_moms.kvslice_from_size({{'g', g}, {'m', mom}}, {{'g', 1}, {'m', 1}}));
-	}
+	asTensorView(moms[mom])
+	  .kvslice_from_size({}, {{'t', Nt}})
+	  .copyTo(momst.kvslice_from_size({{'m', mom}}, {{'m', 1}}));
       }
-      aux.release();
 
-      const char gammast_moms_left_order[] = "SgmcNsxyzt";
-      Tensor<10, COMPLEX> gammast_moms_left(
-	gammast_moms_left_order,
-	latticeSize<10>(gammast_moms_left_order, {{'t', Nt},
-						  {'S', Ns},
-						  {'s', Ns},
-						  {'N', leftconj.kvdim()['n']},
-						  {'m', moms.numMom()},
-						  {'g', gammas.size()}}));
-      gammast_moms_left.contract(std::move(gammast_moms), {}, Conjugate, std::move(leftconj),
-				 {{'S', 'j'}}, NotConjugate, {{'S', 'i'}, {'N', 'n'}});
-      gammast_moms_left = gammast_moms_left.reorder("cxyzgmNSst");
+      // Apply momenta conjugated to the left tensor and rename the spin components s and Q to q and Q,
+      // and the colorvector component n to N
+      Tensor<Nleft + 1, COMPLEX> moms_left =
+	leftconj.template like_this<Nleft + 1>("mQNqcxyzXt", {{'m', moms.numMom()}});
+      leftconj = leftconj.reorder("QNqcxyzXt");
+      moms_left.contract(std::move(momst), {}, Conjugate, std::move(leftconj), {}, NotConjugate);
+      moms_left = moms_left.reorder("cxyzXmNQqt");
 
       // Create mom_list
       std::vector<Coor<Nd - 1>> mom_list(moms.numMom());
@@ -1421,18 +1677,32 @@ namespace Chroma
 	  mom_list[mom][i] = moms.numToMom(mom)[i];
       }
 
+      // Copy all gammas into a single tensor
+      const char gammast_order[] = "gQS";
+      Tensor<3, COMPLEX> gammast(gammast_order, {(Index)gammas.size(), Ns, Ns}, OnDefaultDevice,
+				 OnEveryoneReplicated);
+      for (unsigned int g = 0; g < gammas.size(); g++) {
+	gammas[g]
+	  .rename_dims({{'i', 'Q'}, {'j', 'S'}})
+	  .copyTo(gammast.kvslice_from_size({{'g', g}}, {{'g', 1}}));
+      }
+
       // Make a copy of the time-slicing of u[d] also supporting left and right
-      std::vector<Tensor<Nd + 2, Complex>> ut;
+      std::vector<Tensor<Nd + 3, Complex>> ut;
       for (unsigned int d = 0; d < Nd - 1; d++)
-	ut.push_back(
-	  asTensorView(u[d]).kvslice_from_size({{'t', first_tslice}}, {{'t', Nt}}).clone());
+      {
+	// NOTE: This is going to create a tensor with the same distribution of the t-dimension as leftconj and right
+	ut.push_back(asTensorView(u[d])
+		       .kvslice_from_size({{'t', first_tslice}}, {{'t', Nt}})
+		       .reorder("ijxyzXt"));
+      }
 
       // Do the thing
       std::vector<int> disp_indices;
       if (!deriv)
       {
-	doMomGammaDisp_contractions(ut, std::move(gammast_moms_left), std::move(right), tree_disps,
-				    deriv, mom_list, max_rhs, r, disp_indices);
+	doMomGammaDisp_contractions(ut, std::move(moms_left), std::move(right), tree_disps, deriv,
+				    gammast, mom_list, max_rhs, r, disp_indices);
       }
       else
       {

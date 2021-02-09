@@ -909,24 +909,24 @@ namespace Chroma
 	    std::min(sink_source.Nt_backward + sink_source.Nt_forward + 1, Lt);
 
 	  // Get num_vecs colorvecs on time-slice t_source
-	  SB::Tensor<Nd + 2, SB::ComplexF> source_colorvec =
+	  SB::Tensor<Nd + 3, SB::ComplexF> source_colorvec =
 	    SB::getColorvecs(eigen_source, decay_dir, t_source, 1, num_vecs);
 
 	  // Invert the source for all spins and retrieve num_tslices_active
 	  // time-slices starting from time-slice first_tslice_active
-	  SB::Tensor<Nd + 4, SB::Complex> invSource = SB::doInversion<SB::ComplexF, SB::Complex>(
+	  SB::Tensor<Nd + 5, SB::Complex> invSource = SB::doInversion<SB::ComplexF, SB::Complex>(
 	    *PP, std::move(source_colorvec), t_source, first_tslice_active, num_tslices_active,
-	    {0, 1, 2, 3}, max_rhs, "cxyznSst");
+	    {0, 1, 2, 3}, max_rhs, "cxyzXnSst");
 
 	  // Get num_vecs colorvecs on time-slice t_sink
-	  SB::Tensor<Nd + 2, SB::ComplexF> sink_colorvec =
+	  SB::Tensor<Nd + 3, SB::ComplexF> sink_colorvec =
 	    SB::getColorvecs(eigen_source, decay_dir, t_sink, 1, num_vecs);
 
 	  // Invert the sink for all spins and retrieve num_tslices_active time-slices starting from
 	  // time-slice first_tslice_active
-	  SB::Tensor<Nd + 4, SB::Complex> invSink = SB::doInversion<SB::ComplexF, SB::Complex>(
+	  SB::Tensor<Nd + 5, SB::Complex> invSink = SB::doInversion<SB::ComplexF, SB::Complex>(
 	    *PP, std::move(sink_colorvec), t_sink, first_tslice_active, num_tslices_active,
-	    {0, 1, 2, 3}, max_rhs, "Scnsxyzt");
+	    {0, 1, 2, 3}, max_rhs, "ScnsxyzXt");
 
 	  StopWatch snarss1;
 	  snarss1.reset();
@@ -934,17 +934,18 @@ namespace Chroma
 
 	  // Contract the spatial components of sink and source together with
 	  // several momenta, gammas and displacements
-	  const char order_out[] = "SgmNndst";
+	  invSink = invSink.rename_dims({{'n', 'N'}, {'s', 'q'}, {'S', 'Q'}});
+	  const char order_out[] = "qgmNndst";
 	  std::pair<SB::Tensor<8, SB::Complex>, std::vector<int>> r =
-	    SB::doMomGammaDisp_contractions<8>(u, invSink, invSource, first_tslice_active, phases,
-					       gamma_mats, disps, params.param.contract.use_derivP,
-					       max_rhs, order_out);
+	    SB::doMomGammaDisp_contractions<8>(
+	      u, std::move(invSink), std::move(invSource), first_tslice_active, phases, gamma_mats,
+	      disps, params.param.contract.use_derivP, max_rhs, order_out);
 
 	  // Premulitply by g5, again; see above commit about this
 	  SB::Tensor<8, SB::Complex> g5_con =
-	    r.first.like_this("SgmNndst", {}, SB::OnHost, SB::OnMaster);
+	    r.first.like_this("qgmNndst", {}, SB::OnHost, SB::OnMaster);
 	  g5_con.contract(SB::Gamma<SB::Complex>(g5, SB::OnDefaultDevice), {}, SB::NotConjugate,
-			  std::move(r.first), {{'S', 'j'}}, SB::NotConjugate, {{'S', 'i'}});
+			  std::move(r.first), {{'q', 'j'}}, SB::NotConjugate, {{'q', 'i'}});
 	  const std::vector<int>& disps_perm = r.second;
 
 	  snarss1.stop();
@@ -981,12 +982,12 @@ namespace Chroma
 		    if (Layout::nodeNumber() == 0)
 		    {
 		      for (int N = 0; N < num_vecs; ++N)
-			for (int spin_snk = 0; spin_snk < Ns; ++spin_snk)
-			  for (int spin_src = 0; spin_src < Ns; ++spin_src)
+			for (int q = 0; q < Ns; ++q)
+			  for (int s = 0; s < Ns; ++s)
 			  {
-			    // NOTE: make sure that the order of the coordinates passed to get are the same as g5_con.order, SgmNndst
-			    SB::Complex v = g5_con.get({spin_snk, g, mom, N, n, d, spin_src, t});
-			    val.data().op(N, spin_snk, spin_src).elem().elem().elem() =
+			    // NOTE: make sure that the order of the coordinates passed to get are the same as g5_con.order, qgmNndst
+			    SB::Complex v = g5_con.get({q, g, mom, N, n, d, s, t});
+			    val.data().op(N, q, s).elem().elem().elem() =
 			      RComplex<REAL64>(v.real(), v.imag());
 			  }
 		    }
