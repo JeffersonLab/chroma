@@ -515,17 +515,17 @@ namespace Chroma
 	  int first_tslice_in_active_colorvec = t_source - params.param.contract.Nt_backward;
 	  int num_tslices_in_active_colorvec =
 	    std::min(params.param.contract.Nt_backward + params.param.contract.Nt_forward + 1, Lt);
-	  const char order_in_active_colorvec[] = "cxyznt";
+	  const char order_in_active_colorvec[] = "cxyzXnt";
 	  SB::Tensor<Nd + 3, SB::ComplexF> active_colorvec =
 	    SB::getColorvecs(eigen_source, decay_dir, first_tslice_in_active_colorvec,
 			     num_tslices_in_active_colorvec, num_vecs, order_in_active_colorvec);
 
 	  // The tensor `tensor_quark_solns` will have the active time-slices of the solution vectors;
 	  // the contraction requires `t` and `s` being the slowest indices
-	  const char order_in_tensor_quark_solns[] = "cxyznst";
-	  SB::Tensor<Nd + 3, SB::ComplexF> tensor_quark_solns(
+	  const char order_in_tensor_quark_solns[] = "cxyzXnst";
+	  SB::Tensor<Nd + 4, SB::ComplexF> tensor_quark_solns(
 	    order_in_tensor_quark_solns,
-	    SB::latticeSize<Nd + 3>(order_in_tensor_quark_solns,
+	    SB::latticeSize<Nd + 4>(order_in_tensor_quark_solns,
 				    {{'t', num_tslices_in_active_colorvec}, {'n', num_vecs}}));
 
 	  // Loop over each spin source
@@ -562,7 +562,7 @@ namespace Chroma
 		*chis[col] = zero;
 		active_colorvec
 		  .kvslice_from_size(
-		    {{'t', t_source - first_tslice_in_active_colorvec}, {'n', colorvec_src0}},
+		    {{'t', t_source - first_tslice_in_active_colorvec}, {'n', colorvec_src}},
 		    {{'t', 1}, {'n', 1}})
 		  .copyTo(SB::asTensorView(*chis[col]).kvslice_from_size({{'s', spin_source}}));
 
@@ -644,7 +644,7 @@ namespace Chroma
 
 	    // Contract the distillation elements
 	    const char order_in_elems[] =
-	      "nNst"; // N: colorvec in sink, n: colorvec in source, s: spin in sink
+	      "nNst"; // N: colorvec in source, n: colorvec in sink, s: spin in sink
 	    SB::Tensor<4, SB::ComplexF> elems(
 	      order_in_elems, {num_vecs, num_vecs, Ns, num_tslices_in_active_colorvec}, SB::OnHost,
 	      SB::OnMaster);
@@ -685,7 +685,7 @@ namespace Chroma
 		      for (int colorvec_source = 0; colorvec_source < num_vecs; ++colorvec_source)
 		      {
 			std::complex<REAL> e =
-			  elems.get({colorvec_source, colorvec_sink, spin_sink, i_tslice});
+			  elems.get({colorvec_sink, colorvec_source, spin_sink, i_tslice});
 			val.mat(colorvec_sink, colorvec_source).elem().elem().elem() =
 			  RComplex<REAL64>(e.real(), e.imag());
 		      }

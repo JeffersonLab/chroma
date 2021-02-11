@@ -14,6 +14,9 @@
 #define SUPERBBLAS_USE_MPI
 
 #include "chromabase.h"
+
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "qdp.h"
 #include "qdp_map_obj_disk_multiple.h"
 #include "superbblas.h"
@@ -1067,6 +1070,18 @@ namespace Chroma
 #endif
     };
 
+    template <typename T>
+    using LatticeColorVectorT = OLattice<PScalar<PColorVector<RComplex<T>, Nc>>>;
+
+    template <typename T>
+    Tensor<Nd + 2, std::complex<T>> asTensorView(const LatticeColorVectorT<T>& v)
+    {
+      using Complex = std::complex<T>;
+      Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
+      return Tensor<Nd + 2, Complex>("cxyztX", latticeSize<Nd + 2>("cxyztX"), OnDefaultDevice,
+				     OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
+    }
+
     Tensor<Nd + 3, Complex> asTensorView(const LatticeFermion& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
@@ -1085,7 +1100,15 @@ namespace Chroma
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 3, Complex>(
-	"ijxyztX", latticeSize<Nd + 3>("ijxyztX", {{'i', Nc}, {'j', Nc}}), OnDefaultDevice,
+	"jixyztX", latticeSize<Nd + 3>("jixyztX", {{'i', Nc}, {'j', Nc}}), OnDefaultDevice,
+	OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
+    }
+
+    Tensor<Nd + 4, Complex> asTensorView(const LatticeColorVectorSpinMatrix& v)
+    {
+      Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
+      return Tensor<Nd + 4, Complex>(
+	"cjixyztX", latticeSize<Nd + 4>("cjixyztX", {{'i', Ns}, {'j', Ns}}), OnDefaultDevice,
 	OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
@@ -1099,7 +1122,7 @@ namespace Chroma
     Tensor<2, Complex> asTensorView(SpinMatrix& smat)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(smat.getF());
-      return Tensor<2, Complex>("ij", Coor<2>{Ns, Ns}, OnHost, OnEveryoneReplicated,
+      return Tensor<2, Complex>("ji", Coor<2>{Ns, Ns}, OnHost, OnEveryoneReplicated,
 				std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
@@ -1277,6 +1300,10 @@ namespace Chroma
     {
       using namespace ns_getColorvecs;
 
+      StopWatch sw;
+      sw.reset();
+      sw.start();
+
       if (decay_dir != 3)
 	throw std::runtime_error("Only support for decay_dir being the temporal dimension");
       detail::check_order_contains(order, "cxyztXn");
@@ -1322,6 +1349,10 @@ namespace Chroma
 	QDPIO::cerr << "doing dist" << std::endl;
 	t.copyTo(r.kvslice_from_size({{'t', i_slice}}));
       }
+
+      sw.stop();
+      QDPIO::cout << "Time to read " << n_colorvecs << " colorvecs from " << n_tslices
+		  << " time slices: " << sw.getTimeInSeconds() << " secs" << std::endl;
 
       return r;
     }
@@ -1377,7 +1408,7 @@ namespace Chroma
 	    // Put the colorvec sources for the t_source on chis for spin `spin_source`
 	    // chis[col][s=spin_source] = chi[n=n0]
 	    *chis[col] = zero;
-	    chi.kvslice_from_size({{'n', n0}}, {{'n', 1}})
+	    chi.kvslice_from_size({{'n', n}}, {{'n', 1}})
 	      .copyTo(SB::asTensorView(*chis[col])
 			.kvslice_from_size({{'t', t_source}, {'s', spin_source}}));
 
@@ -1419,27 +1450,33 @@ namespace Chroma
       if (len == 0)
 	return v;
 
-      if (dir != 0 || latticeSize<1>("X")[0] == 1)
+      const char dir_label[] = "xyz";
+#if QDP_USE_LEXICO_LAYOUT
+      // If we are not using red-black ordering, return a view where the tensor is shifted on the given direction
+      return v.kvslice_from_size({{dir_label[dir], -len}});
+
+#elif QDP_USE_CB2_LAYOUT
+      // Assuming that v has support on the origin and destination lattice elements
+      if (v.kvdim()['X'] != 2 && len % 2 != 0)
+	throw std::runtime_error("Unsupported shift");
+
+      Tensor<N, COMPLEX> r = v.like_this();
+      if (dir != 0)
       {
-	// If the shift direction isn't x or we are not using red-black ordering, return a view where
-	// the tensor is shifted
-	const char dir_label[] = "xyz";
-	return v.kvslice_from_size({{dir_label[dir], len}});
+	v.copyTo(r.kvslice_from_size({{'X', len}, {dir_label[dir], -len}}));
       }
       else
       {
-	// Assuming that v has support on all X lattice elements
-	if (v.kvdim()['X'] != 2)
-	  throw std::runtime_error("Unsupported shift");
-	assert(latticeSize<1>("X")[0] == 2); // Assuming the use red-black ordering
-
-	Tensor<N, COMPLEX> r = v.like_this();
-	for (int X = 0; X < 2; ++X)
-	  v.kvslice_from_size({{'X', X}})
-	    .copyTo(r.kvslice_from_size(
-	      {{'X', (X + len) % 2}, {'x', (X + len + (len >= 0 ? 0 : -1)) / 2}}));
-	return r;
+	throw std::runtime_error("Unsupported shift on X direction for this layout");
+	// for (int X = 0; X < 2; ++X)
+	//   v.kvslice_from_size({{'X', X}})
+	//     .copyTo(r.kvslice_from_size(
+	//       {{'X', (X + len) % 2}, {dir_label[dir], (X + len + (len >= 0 ? 0 : -1)) / 2}}));
       }
+      return r;
+#else
+      throw std::runtime_error("Unsupported layout");
+#endif
     }
 
     /// Compute displace/derivate of v in the direction dir
@@ -1463,7 +1500,8 @@ namespace Chroma
       if (dir == 0)
 	return v;
 
-      int d = std::abs(dir) - 1, len = (dir > 0 ? 1 : -1);
+      int d = std::abs(dir) - 1; // space lattice direction, 0: x, 1: y, 2: z
+      int len = (dir > 0 ? 1 : -1); // displacement unit direction
 
       Tensor<N, COMPLEX> r = v.like_this("cnSsxyzXt");
       if (!deriv)
