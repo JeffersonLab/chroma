@@ -29,7 +29,6 @@
 #include "util/info/proginfo.h"
 
 #include "meas/inline/io/named_objmap.h"
-#include <bits/pthreadtypes-arch.h>
 #include <set>
 
 namespace Chroma 

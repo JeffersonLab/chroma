@@ -981,7 +981,7 @@ namespace Chroma
       DeviceHost getDev() const
       {
 #ifdef QDP_IS_QDPJIT
-	return ctx->plat != CPU ? OnDefaultDevice ? OnHost;
+	return (ctx->plat != superbblas::CPU ? OnDefaultDevice : OnHost);
 #else
 	return OnDefaultDevice;
 #endif
@@ -1346,7 +1346,6 @@ namespace Chroma
 	}
 
 	// r[t=i_slice] = t, distribute the tensor from master to the rest of the nodes
-	QDPIO::cerr << "doing dist" << std::endl;
 	t.copyTo(r.kvslice_from_size({{'t', i_slice}}));
       }
 
