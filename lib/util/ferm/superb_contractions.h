@@ -11,6 +11,7 @@
 // Activate the MPI support in Superbblas
 #include <sstream>
 #include <sys/cdefs.h>
+#include <type_traits>
 #define SUPERBBLAS_USE_MPI
 
 #include "chromabase.h"
@@ -49,8 +50,6 @@ namespace Chroma
     using ComplexF = std::complex<REAL32>;
     template <std::size_t N>
     using Coor = superbblas::Coor<N>;
-    template <std::size_t N>
-    using Order = superbblas::Order<N>;
 
     /// Where to store the tensor (see class Tensor)
     enum DeviceHost {
@@ -123,24 +122,11 @@ namespace Chroma
 
     namespace detail
     {
-      namespace repr
-      {
-	template <typename Ostream, std::size_t N>
-	Ostream& operator<<(Ostream& s, Order<N> o)
-	{
-	  s << "\"";
-	  for (char c : o)
-	    s << c;
-	  s << "\"";
-	  return s;
-	}
-      }
-
       /// Throw an error if it is not a valid order, that is, if some label is repeated
       template <std::size_t N>
-      void check_order(const char* order)
+      void check_order(const std::string& order)
       {
-	if (std::strlen(order) != N)
+	if (order.size() != N)
 	{
 	  std::stringstream ss;
 	  ss << "The length of the dimension labels `" << order
@@ -159,29 +145,12 @@ namespace Chroma
 	  }
 	}
       }
-
-      /// Throw an error if it is not a valid order, that is, if some label is repeated
-      template <std::size_t N>
-      void check_order(Order<N> order)
-      {
-	std::set<char> s;
-	for (unsigned int i = 0; i < N; ++i)
-	{
-	  if (!s.insert(order[i]).second)
-	  {
-	    using namespace repr;
-	    std::stringstream ss;
-	    ss << "Invalid order: some label names are repeated `" << order << "`";
-	    throw std::runtime_error(ss.str());
-	  }
-	}
-      }
     }
 
     enum Throw_kvcoors { NoThrow, ThrowOnUnmatchLabel, ThrowOnMissing };
 
     template <std::size_t N>
-    Coor<N> kvcoors(const char* order, std::map<char, int> m, Index missing = 0,
+    Coor<N> kvcoors(const std::string& order, std::map<char, int> m, Index missing = 0,
 		    Throw_kvcoors t = ThrowOnUnmatchLabel)
     {
       detail::check_order<N>(order);
@@ -222,7 +191,7 @@ namespace Chroma
     }
 
     template <std::size_t N>
-    Coor<N> latticeSize(const char* order, std::map<char, int> m = {})
+    Coor<N> latticeSize(const std::string& order, std::map<char, int> m = {})
     {
 #if QDP_USE_LEXICO_LAYOUT
       // No red-black ordering
@@ -232,7 +201,8 @@ namespace Chroma
 				{'t', Layout::lattSize()[3]},
 				{'X', 1},
 				{'s', Ns},
-				{'c', Nc}};
+				{'c', Nc},
+				{'.', 2}};
 #elif QDP_USE_CB2_LAYOUT
       // Red-black ordering
       assert(Layout::lattSize()[0] % 2 == 0);
@@ -242,7 +212,8 @@ namespace Chroma
 				{'t', Layout::lattSize()[3]},
 				{'X', 2},
 				{'s', Ns},
-				{'c', Nc}};
+				{'c', Nc},
+				{'.', 2}};
 #else
       throw std::runtime_error("Unsupported layout");
 #endif
@@ -258,39 +229,13 @@ namespace Chroma
     {
       using namespace superbblas::detail;
 
-      template <std::size_t N>
-      Order<N> toOrder(const char* order)
-      {
-	check_order<N>(order);
-	Order<N> o;
-	std::copy_n(order, N, o.begin());
-	return o;
-      }
-
-      template <std::size_t N>
-      Order<N + 1> toOrderStr(const Order<N>& order)
-      {
-	Order<N + 1> o;
-	std::copy_n(order.begin(), N, o.begin());
-	o[N] = 0;
-	return o;
-      }
-
-      template <std::size_t N>
-      Coor<N> kvcoors(Order<N> order, std::map<char, int> m, Index missing = 0,
-		      Throw_kvcoors t = ThrowOnUnmatchLabel)
-      {
-	Order<N + 1> order_str = toOrderStr(order);
-	return SB::kvcoors<N>(&order_str[0], m, missing, t);
-      }
-
       // Throw an error if `order` does not contain a label in `should_contain`
-      inline void check_order_contains(const char* order, const char* should_contain)
+      inline void check_order_contains(const std::string& order, const std::string& should_contain)
       {
 	bool ok = false;
-	if (std::strlen(order) == std::strlen(should_contain))
+	if (order.size() == should_contain.size())
 	{
-	  int n = std::strlen(order);
+	  int n = order.size();
 	  unsigned int i;
 	  for (i = 0; i < n; ++i)
 	  {
@@ -312,14 +257,6 @@ namespace Chroma
 	}
       }
 
-      // Throw an error if `order` does not contain a label in `should_contain`
-      template <std::size_t N>
-      inline void check_order_contains(Order<N> order, const char* should_contain)
-      {
-	Order<N + 1> order_str = toOrderStr(order);
-	return check_order_contains(&order_str[0], should_contain);
-      }
-
       // Return the equivalent value of the coordinate `v` in the interval [0, dim[ for a periodic
       // dimension with length `dim`.
 
@@ -338,7 +275,7 @@ namespace Chroma
       }
 
       template <std::size_t N>
-      Order<N> update_order(Order<N> order, remap m)
+      std::string update_order(std::string order, remap m)
       {
 	for (std::size_t i = 0; i < N; ++i)
 	{
@@ -346,8 +283,69 @@ namespace Chroma
 	  if (it != m.end())
 	    order[i] = it->second;
 	}
-	check_order(order);
+	check_order<N>(order);
 	return order;
+      }
+
+      template <std::size_t N>
+      Coor<N - 1> remove_coor(Coor<N> v, std::size_t pos)
+      {
+	assert(pos < N);
+	Coor<N - 1> r;
+	for (std::size_t i = 0, j = 0; i < N; ++i)
+	  if (i != pos)
+	    r[j++] = v[i];
+	return r;
+      }
+
+      std::string remove_coor(const std::string &v, std::size_t pos)
+      {
+	std::string r = v;
+	r.erase(pos, 1);
+	return r;
+      }
+
+      template <std::size_t N>
+      Coor<N + 1> insert_coor(Coor<N> v, std::size_t pos, Index value)
+      {
+	assert(pos <= N);
+	Coor<N + 1> r;
+	for (std::size_t i = 0, j = 0; j < N + 1; ++j)
+	{
+	  if (j != pos)
+	    r[j] = v[i++];
+	  else
+	    r[j] = value;
+	}
+	return r;
+      }
+
+      // Return a context on either the host or the device
+      std::shared_ptr<superbblas::Context> getContext(DeviceHost dev)
+      {
+	// Creating GPU context can be expensive; so do it once
+	static std::shared_ptr<superbblas::Context> cudactx;
+	static std::shared_ptr<superbblas::Context> cpuctx;
+	if (!cpuctx)
+	  cpuctx = std::make_shared<superbblas::Context>(superbblas::createCpuContext());
+
+	switch (dev)
+	{
+	case OnHost: return cpuctx;
+	case OnDefaultDevice:
+#ifdef QDP_IS_QDPJIT
+	  if (!cudactx)
+	  {
+	    int dev = -1;
+	    superbblas::detail::cudaCheck(cudaGetDevice(&dev));
+	    cudactx = std::make_shared<superbblas::Context>(superbblas::createCudaContext(dev));
+	  }
+	  return cudactx;
+#else
+	  return cpuctx;
+#endif
+	}
+	throw std::runtime_error("Unsupported `DeviceHost`");
       }
 
       /// Stores the subtensor supported on each node (used by class Tensor)
@@ -364,8 +362,9 @@ namespace Chroma
 	/// \param dim: dimension size for the tensor
 	/// \param dist: how to distribute the tensor among the nodes
 
-	TensorPartition(Order<N> order, Coor<N> dim, Distribution dist) : dim(dim)
+	TensorPartition(const std::string& order, Coor<N> dim, Distribution dist) : dim(dim)
 	{
+	  detail::check_order<N>(order);
 	  switch (dist)
 	  {
 	  case OnMaster: p = all_tensor_on_master(dim); break;
@@ -374,10 +373,41 @@ namespace Chroma
 	  }
 	}
 
+	/// Constructor for `insert_dimension`
+	/// \param order: dimension labels (use x, y, z, t for lattice dimensions)
+	/// \param dim: dimension size for the tensor
+	/// \param dist: how to distribute the tensor among the nodes
+
+	TensorPartition(Coor<N> dim, const PartitionStored& p) : dim(dim), p(p)
+	{
+	}
+
 	/// Return the volume of the tensor supported on this node
 	std::size_t localVolume() const
 	{
 	  return superbblas::detail::volume(p[Layout::nodeNumber()][1]);
+	}
+
+	/// Insert a new non-distributed dimension
+
+	TensorPartition<N + 1> insert_dimension(std::size_t pos, std::size_t dim_size) const
+	{
+	  typename TensorPartition<N + 1>::PartitionStored r;
+	  r.reserve(p.size());
+	  for (const auto& i : p)
+	    r.push_back({insert_coor(i[0], pos, 0), insert_coor(i[1], pos, dim_size)});
+	  return TensorPartition<N + 1>{insert_coor(dim, pos, dim_size), r};
+	}
+
+	/// Remove a non-distributed dimension
+
+	TensorPartition<N - 1> remove_dimension(std::size_t pos) const
+	{
+	  typename TensorPartition<N - 1>::PartitionStored r;
+	  r.reserve(p.size());
+	  for (const auto& i : p)
+	    r.push_back({remove_coor(i[0], pos), remove_coor(i[1], pos)});
+	  return TensorPartition<N - 1>{remove_coor(dim, pos), r};
 	}
 
       private:
@@ -398,7 +428,8 @@ namespace Chroma
 	/// Return a partitioning where all nodes have support for the whole tensor
 	/// \param dim: dimension size for the tensor
 
-	static PartitionStored all_tensor_replicated(Coor<N> dim)
+	static PartitionStored
+	all_tensor_replicated(Coor<N> dim)
 	{
 	  int nprocs = Layout::numNodes();
 	  // Set the first coordinate of the tensor supported on each prop to zero and the size
@@ -413,7 +444,7 @@ namespace Chroma
 	/// \param order: dimension labels (use x, y, z, t for lattice dimensions)
 	/// \param dim: dimension size for the tensor
 
-	static PartitionStored partitioning_chroma_compatible(Order<N> order, Coor<N> dim)
+	static PartitionStored partitioning_chroma_compatible(const std::string& order, Coor<N> dim)
 	{
 	  // Find a dimension label in `order` that is going to be distributed
 	  const char dist_labels[] = "xyzt"; // distributed dimensions
@@ -435,7 +466,7 @@ namespace Chroma
 	  // Get the number of procs use in each dimension; for know we put as many as chroma
 	  // put onto the lattice dimensions
 	  multi1d<int> procs_ = Layout::logicalSize();
-	  Coor<N> procs = detail::kvcoors(
+	  Coor<N> procs = kvcoors<N>(
 	    order, {{'x', procs_[0]}, {'y', procs_[1]}, {'z', procs_[2]}, {'t', procs_[3]}}, 1,
 	    NoThrow);
 
@@ -446,7 +477,7 @@ namespace Chroma
 	  for (int rank = 0; rank < num_procs; ++rank)
 	  {
 	    multi1d<int> cproc_ = Layout::getLogicalCoordFrom(rank);
-	    Coor<N> cproc = detail::kvcoors(
+	    Coor<N> cproc = kvcoors<N>(
 	      order, {{'x', cproc_[0]}, {'y', cproc_[1]}, {'z', cproc_[2]}, {'t', cproc_[3]}}, 0,
 	      NoThrow);
 	    for (unsigned int i = 0; i < N; ++i)
@@ -566,6 +597,14 @@ namespace Chroma
 	  return s;
 	}
 
+	template <typename Ostream, typename T,
+		  typename std::enable_if<std::is_floating_point<T>::value, bool>::type = true>
+	Ostream& operator<<(Ostream& s, T o)
+	{
+	  s.operator<<(o);
+	  return s;
+	}
+
 	template <typename Ostream, typename T>
 	Ostream& operator<<(Ostream& s, const std::vector<T>& o)
 	{
@@ -600,7 +639,33 @@ namespace Chroma
 	QDPIO::cout << s << std::endl;
       }
 
+      /// is_complex<T>::value is true if `T` is complex
+
+      template <typename T>
+      struct is_complex : std::false_type {
+      };
+
+      template <typename T>
+      struct is_complex<std::complex<T>> : std::true_type {
+      };
+
+      template <typename T, typename A, typename B,
+		typename std::enable_if<!is_complex<T>::value, bool>::type = true>
+      T safe_div(A a, B b)
+      {
+	if (std::fabs(std::imag(a)) != 0 || std::fabs(std::imag(b)) != 0)
+	  throw std::runtime_error("Invalid division");
+	return std::real(a) / std::real(b);
+      }
+
+      template <typename T, typename A, typename B,
+		typename std::enable_if<is_complex<T>::value, bool>::type = true>
+      T safe_div(A a, B b)
+      {
+	return (T)a / (T)b;
+      }
     }
+
 
     template <std::size_t N, typename T>
     struct Tensor
@@ -608,7 +673,7 @@ namespace Chroma
       static_assert(superbblas::supported_type<T>::value, "Not supported type");
 
     public:
-      Order<N> order;			///< Labels of the tensor dimensions
+      std::string order;		///< Labels of the tensor dimensions
       Coor<N> dim;		        ///< Length of the tensor dimensions
       std::shared_ptr<superbblas::Context> ctx; ///< Tensor storage information (device/host)
       std::shared_ptr<T> data;		///< Pointer to the tensor storage
@@ -631,17 +696,18 @@ namespace Chroma
       }
 
       // Construct used by non-Chroma tensors
-      Tensor(const char* order_, Coor<N> dim, DeviceHost dev = OnDefaultDevice,
+      Tensor(const std::string& order, Coor<N> dim, DeviceHost dev = OnDefaultDevice,
 	     Distribution dist = OnEveryone)
-	: order(detail::toOrder<N>(order_)),
+	: order(order),
 	  dim(dim),
-	  ctx(getContext(dev)),
+	  ctx(detail::getContext(dev)),
 	  dist(dist),
 	  from{},
 	  size(dim),
 	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
 	  scalar{1}
       {
+	checkOrder();
 	superbblas::Context ctx0 = *ctx;
 	p = std::make_shared<detail::TensorPartition<N>>(
 	  detail::TensorPartition<N>(order, dim, dist));
@@ -655,11 +721,11 @@ namespace Chroma
       }
 
       // Construct used by Chroma tensors (see `asTensorView`)
-      Tensor(const char* order_, Coor<N> dim, DeviceHost dev, Distribution dist,
+      Tensor(const std::string& order, Coor<N> dim, DeviceHost dev, Distribution dist,
 	     std::shared_ptr<T> data)
-	: order(detail::toOrder<N>(order_)),
+	: order(order),
 	  dim(dim),
-	  ctx(getContext(dev)),
+	  ctx(detail::getContext(dev)),
 	  data(data),
 	  dist(dist),
 	  from{},
@@ -667,6 +733,7 @@ namespace Chroma
 	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
 	  scalar{1}
       {
+	checkOrder();
 
 	// For now, TensorPartition creates the same distribution as chroma for tensor with
 	// dimensions divisible by chroma logical dimensions
@@ -674,11 +741,29 @@ namespace Chroma
 	  detail::TensorPartition<N>(order, dim, dist));
       }
 
+      // Construct for toFakeReal
+      Tensor(const std::string& order, Coor<N> dim, std::shared_ptr<superbblas::Context> ctx,
+	     std::shared_ptr<T> data, std::shared_ptr<detail::TensorPartition<N>> p,
+	     Distribution dist, Coor<N> from, Coor<N> size, T scalar)
+	: order(order),
+	  dim(dim),
+	  ctx(ctx),
+	  data(data),
+	  p(p),
+	  dist(dist),
+	  from(detail::normalize_coor(from, dim)),
+	  size(size),
+	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
+	  scalar(scalar)
+      {
+	checkOrder();
+      }
+
     protected:
       Tensor() {}
 
       // Construct a slice of a tensor
-      Tensor(const Tensor& t, Order<N> order, Coor<N> from, Coor<N> size)
+      Tensor(const Tensor& t, const std::string& order, Coor<N> from, Coor<N> size)
 	: order(order),
 	  dim(t.dim),
 	  ctx(t.ctx),
@@ -690,24 +775,7 @@ namespace Chroma
 	  strides(t.strides),
 	  scalar{t.scalar}
       {
-      }
-
-      // Construct for insert_dimension
-      template <std::size_t Nn>
-      Tensor(const Tensor<Nn, T>& t, Order<N> order, Coor<N> dim, std::shared_ptr<T> data,
-	     Coor<N> from, Coor<N> size)
-	: order(order),
-	  dim(dim),
-	  ctx(t.ctx),
-	  data(data),
-	  dist(t.dist),
-	  from(detail::normalize_coor(from, dim)),
-	  size(size),
-	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
-	  scalar(t.scalar)
-      {
-	p = std::make_shared<detail::TensorPartition<N>>(
-	  detail::TensorPartition<N>(order, dim, dist));
+	checkOrder();
       }
 
       // Construct a scaled tensor
@@ -723,6 +791,7 @@ namespace Chroma
 	  strides(t.strides),
 	  scalar{scalar}
       {
+	checkOrder();
       }
 
     public:
@@ -762,7 +831,7 @@ namespace Chroma
       /// Rename dimensions
       Tensor<N, T> rename_dims(SB::remap m) const
       {
-	return Tensor<N, T>(*this, detail::update_order(order, m), this->from, this->size);
+	return Tensor<N, T>(*this, detail::update_order<N>(order, m), this->from, this->size);
       }
 
       // Return a slice of the tensor starting at coordinate `kvfrom` and taking `kvsize` elements in each direction.
@@ -773,7 +842,7 @@ namespace Chroma
 	std::map<char, int> updated_kvsize = this->kvdim();
 	for (const auto& it : kvsize)
 	  updated_kvsize[it.first] = it.second;
-	return slice_from_size(detail::kvcoors(order, kvfrom), detail::kvcoors(order, updated_kvsize));
+	return slice_from_size(kvcoors<N>(order, kvfrom), kvcoors<N>(order, updated_kvsize));
       }
 
       // Return a slice of the tensor starting at coordinate `from` and taking `size` elements in each direction.
@@ -800,15 +869,14 @@ namespace Chroma
       /// \param new_dist: distribution
 
       template <std::size_t Nn = N, typename Tn = T>
-      Tensor<Nn, Tn> like_this(Maybe<const char*> new_order = none, std::map<char, int> kvsize = {},
+      Tensor<Nn, Tn> like_this(Maybe<std::string> new_order = none, std::map<char, int> kvsize = {},
 			       Maybe<DeviceHost> new_dev = none,
 			       Maybe<Distribution> new_dist = none) const
       {
 	std::map<char, int> new_kvdim = kvdim();
 	for (const auto& it : kvsize)
 	  new_kvdim[it.first] = it.second;
-	Order<N + 1> order_ = detail::toOrderStr(order);
-	const char * new_order_ = new_order.getSome(&order_[0]);
+	std::string new_order_ = new_order.getSome(order);
 	return Tensor<Nn, Tn>(new_order_, kvcoors<Nn>(new_order_, new_kvdim, 0, ThrowOnMissing),
 			      new_dev.getSome(getDev()), new_dist.getSome(dist));
       }
@@ -827,39 +895,144 @@ namespace Chroma
 	return r;
       }
 
-      Tensor<N, T> reorder(const char *new_order) const
+      Tensor<N, T> reorder(const std::string& new_order) const
       {
-	if (order == detail::toOrder<N>(new_order))
+	if (order == new_order)
 	  return *this;
 	Tensor<N, T> r = like_this(new_order);
 	copyTo(r);
 	return r;
       }
 
+      /// Return whether the tensor have complex components although being stored with a non-complex type `T`
+
+      bool isFakeReal() const
+      {
+	return order.find('.') != std::string::npos;
+      }
+
+      /// Check that the dimension labels are valid
+
+      void checkOrder() const
+      {
+	// Check that all labels are different there are N
+	detail::check_order<N>(order);
+
+	/// Throw exception if this a fake real tensor but with a complex type `T`
+	if (isFakeReal() && detail::is_complex<T>::value)
+	  throw std::runtime_error("Invalid tensor: it is fake real and complex!");
+      }
+
+      /// Return a fake real view of this tensor
+
+      template <typename U = T,
+		typename std::enable_if<detail::is_complex<U>::value, bool>::type = true>
+      Tensor<N + 1, typename U::value_type> toFakeReal() const
+      {
+	assert(!isFakeReal());
+
+	std::string new_order = "." + order;
+	Coor<N + 1> new_from = {0};
+	std::copy_n(from.begin(), N, new_from.begin() + 1);
+	Coor<N + 1> new_size = {2};
+	std::copy_n(size.begin(), N, new_size.begin() + 1);
+	Coor<N + 1> new_dim = {2};
+	std::copy_n(dim.begin(), N, new_dim.begin() + 1);
+	if (std::fabs(std::imag(scalar)) != 0)
+	  throw std::runtime_error(
+	    "Unsupported conversion to fake real tensors with an implicit complex scale");
+	using new_T = typename T::value_type;
+	new_T new_scalar = std::real(scalar);
+	auto this_data = data;
+	auto new_data =
+	  std::shared_ptr<new_T>((new_T*)data.get(), [=](const new_T* ptr) { (void)this_data; });
+	auto new_p = std::make_shared<detail::TensorPartition<N + 1>>(p->insert_dimension(0, 2));
+
+	return Tensor<N + 1, new_T>(new_order, new_dim, ctx, new_data, new_p, dist, new_from,
+				    new_size, new_scalar);
+      }
+
+      template <typename U = T,
+		typename std::enable_if<!detail::is_complex<U>::value, bool>::type = true>
+      Tensor<N - 1, std::complex<U>> toComplex(bool allow_cloning = true) const
+      {
+	assert(isFakeReal() && kvdim()['.'] == 2);
+
+	std::size_t dot_pos = order.find('.');
+	std::string new_order = detail::remove_coor(order, dot_pos);
+
+	if (dot_pos != 0)
+	{
+	  if (allow_cloning)
+	    return reorder("." + new_order).toComplex(false);
+	  else
+	    throw std::runtime_error("Not allow to create a new tensor in `toComplex`");
+	}
+
+	Coor<N - 1> new_from = detail::remove_coor(from, dot_pos);
+	Coor<N - 1> new_size = detail::remove_coor(size, dot_pos);
+	Coor<N - 1> new_dim = detail::remove_coor(dim, dot_pos);
+	using new_T = std::complex<T>;
+	new_T new_scalar = new_T{scalar};
+	auto this_data = data;
+	auto new_data =
+	  std::shared_ptr<new_T>((new_T*)data.get(), [=](const new_T* ptr) { (void)this_data; });
+	auto new_p = std::make_shared<detail::TensorPartition<N - 1>>(p->remove_dimension(dot_pos));
+
+	return Tensor<N - 1, new_T>(new_order, new_dim, ctx, new_data, new_p, dist, new_from,
+				    new_size, new_scalar);
+      }
+
+      template <typename U = T,
+		typename std::enable_if<!detail::is_complex<U>::value, bool>::type = true>
+      Tensor<N, U> toFakeReal() const
+      {
+	assert(isFakeReal());
+	return *this;
+      }
+
+      template <typename U = T,
+		typename std::enable_if<detail::is_complex<U>::value, bool>::type = true>
+      Tensor<N, U> toComplex(bool allow_cloning = true) const
+      {
+	(void)allow_cloning;
+	assert(!isFakeReal());
+	return *this;
+      }
+
       // Copy `this` tensor into the given one
-      template <std::size_t Nw, typename Tw>
+      template <std::size_t Nw, typename Tw,
+		typename std::enable_if<
+		  detail::is_complex<T>::value != detail::is_complex<Tw>::value, bool>::type = true>
       void copyTo(Tensor<Nw, Tw> w) const
       {
-	Coor<N> wsize = detail::kvcoors(order, w.kvdim(), 1, NoThrow);
+	toFakeReal().copyTo(w.toFakeReal());
+      }
+
+      // Copy `this` tensor into the given one
+      template <std::size_t Nw, typename Tw,
+		typename std::enable_if<
+		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
+      void copyTo(Tensor<Nw, Tw> w) const
+      {
+	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
 	for (unsigned int i = 0; i < N; ++i)
 	  if (size[i] > wsize[i])
 	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
 
 	T* ptr = this->data.get();
 	Tw* w_ptr = w.data.get();
-	Order<N + 1> order_ = detail::toOrderStr(order);
-	Order<Nw + 1> orderw_ = detail::toOrderStr(w.order);
-	superbblas::copy<N, Nw>(scalar / (T)w.scalar, p->p.data(), 1, &order_[0], from, size,
-				(const T**)&ptr, &*ctx, w.p->p.data(), 1, &orderw_[0], w.from,
-				&w_ptr, &*w.ctx, MPI_COMM_WORLD, superbblas::FastToSlow,
-				superbblas::Copy);
+	superbblas::copy<N, Nw>(detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1,
+				order.c_str(), from, size, (const T**)&ptr, &*ctx, w.p->p.data(), 1,
+				w.order.c_str(), w.from, &w_ptr, &*w.ctx, MPI_COMM_WORLD,
+				superbblas::FastToSlow, superbblas::Copy);
       }
 
       // Add `this` tensor into the given one
       template <std::size_t Nw, typename Tw>
       void addTo(Tensor<Nw, Tw> w) const
       {
-	Coor<N> wsize = detail::kvcoors(order, w.kvdim(), 1, NoThrow);
+	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
 	for (unsigned int i = 0; i < N; ++i)
 	  if (size[i] > wsize[i])
 	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
@@ -869,10 +1042,8 @@ namespace Chroma
 
 	T* ptr = this->data.get();
 	Tw* w_ptr = w.data.get();
-	Order<N + 1> order_ = detail::toOrderStr(order);
-	Order<Nw + 1> orderw_ = detail::toOrderStr(w.order);
-	superbblas::copy<N, Nw>(scalar, p->p.data(), 1, &order_[0], from, size, (const T**)&ptr,
-				&*ctx, w.p->p.data(), 1, &orderw_[0], w.from, &w_ptr, &*w.ctx,
+	superbblas::copy<N, Nw>(scalar, p->p.data(), 1, order.c_str(), from, size, (const T**)&ptr,
+				&*ctx, w.p->p.data(), 1, w.order.c_str(), w.from, &w_ptr, &*w.ctx,
 				MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Add);
       }
 
@@ -903,14 +1074,14 @@ namespace Chroma
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
 	T* ptr = this->data.get();
-	Order<Nv + 1> orderv_ = detail::toOrderStr(detail::update_order(v.order, mv));
-	Order<Nw + 1> orderw_ = detail::toOrderStr(detail::update_order(w.order, mw));
-	Order<N + 1> order_ = detail::toOrderStr(detail::update_order(order, mr));
+	std::string orderv_ = detail::update_order<Nv>(v.order, mv);
+	std::string orderw_ = detail::update_order<Nw>(w.order, mw);
+	std::string order_ = detail::update_order<N>(order, mr);
 	superbblas::contraction<Nv, Nw, N>(
-	  v.scalar * w.scalar / scalar, v.p->p.data(), 1, &orderv_[0], conjv == Conjugate,
-	  (const T**)&v_ptr, &*v.ctx, w.p->p.data(), 1, &orderw_[0], conjw == Conjugate,
-	  (const T**)&w_ptr, &*w.ctx, beta, p->p.data(), 1, &order_[0], &ptr, &*ctx, MPI_COMM_WORLD,
-	  superbblas::FastToSlow);
+	  v.scalar * w.scalar / scalar, v.p->p.data(), 1, orderv_.c_str(), conjv == Conjugate,
+	  (const T**)&v_ptr, &*v.ctx, w.p->p.data(), 1, orderw_.c_str(), conjw == Conjugate,
+	  (const T**)&w_ptr, &*w.ctx, beta, p->p.data(), 1, order_.c_str(), &ptr, &*ctx,
+	  MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
       Tensor<N, T> scale(T s) const
@@ -950,30 +1121,6 @@ namespace Chroma
 	  }
 	}
 	return true;
-      }
-
-      // Return a context on either the host or the device
-      static std::shared_ptr<superbblas::Context> getContext(DeviceHost dev)
-      {
-	// Creating GPU context can be expensive; so do it once
-	static std::shared_ptr<superbblas::Context> cudactx;
-	static std::shared_ptr<superbblas::Context> cpuctx;
-	if (!cpuctx)
-	  cpuctx = std::make_shared<superbblas::Context>(superbblas::createCpuContext());
-
-	switch (dev)
-	{
-	case OnHost: return cpuctx;
-	case OnDefaultDevice:
-#ifdef QDP_IS_QDPJIT
-	  if (!cudactx)
-	    cudactx = std::make_shared<superbblas::Context>(superbblas::createCudaContext());
-	  return cudactx;
-#else
-	  return cpuctx;
-#endif
-	}
-	throw std::runtime_error("Unsupported `DeviceHost`");
       }
 
       /// Get where the tensor is stored
@@ -1025,8 +1172,9 @@ namespace Chroma
       void print(std::string name) const
       {
 	std::stringstream ss;
-	Tensor<N, T> t_host = like_this(none, {}, OnHost, OnMaster);
-	copyTo(t_host);
+	auto t = toComplex();
+	auto t_host = t.like_this(none, {}, OnHost, OnMaster);
+	t.copyTo(t_host);
 	if (Layout::nodeNumber() == 0)
 	{
 	  using namespace detail::repr;
@@ -1070,6 +1218,36 @@ namespace Chroma
 #endif
     };
 
+    void* getQDPPtrFromId(int id)
+    {
+#ifdef QDP_IS_QDPJIT
+      std::vector<QDPCache::ArgKey> v(id, 1);
+      return QDP_get_global_cache().get_kernel_args(v, false)[0];
+#else
+      return nullptr;
+#endif
+    }
+
+    cudaPointerAttributes getDevPtrAttr(const void* x)
+    {
+      struct cudaPointerAttributes ptr_attr;
+      assert(cudaPointerGetAttributes(&ptr_attr, x) != cudaSuccess);
+      return ptr_attr;
+    }
+
+    template <typename T>
+    void* getQDPPtr(const T& t)
+    {
+#ifdef QDP_IS_QDPJIT
+      std::vector<QDPCache::ArgKey> v(1, t.getId());
+      void* r = QDP_get_global_cache().get_kernel_args(v, false)[0];
+      assert(superbblas::detail::getPtrDevice(r) == 0);
+      return r;
+#else
+      return t.getF();
+#endif
+    }
+
     template <typename T>
     using LatticeColorVectorT = OLattice<PScalar<PColorVector<RComplex<T>, Nc>>>;
 
@@ -1078,21 +1256,30 @@ namespace Chroma
     {
       using Complex = std::complex<T>;
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd + 2, Complex>("cxyztX", latticeSize<Nd + 2>("cxyztX"), OnDefaultDevice,
+      return Tensor<Nd + 2, Complex>("cxyztX", latticeSize<Nd + 2>("cxyztX"), OnHost,
 				     OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
+#ifndef QDP_IS_QDPJIT
     Tensor<Nd + 3, Complex> asTensorView(const LatticeFermion& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd + 3, Complex>("csxyztX", latticeSize<Nd + 3>("csxyztX"), OnDefaultDevice,
+      return Tensor<Nd + 3, Complex>("csxyztX", latticeSize<Nd + 3>("csxyztX"), OnHost,
 				     OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
+#else
+    Tensor<Nd + 4, REAL> asTensorView(const LatticeFermion& v)
+    {
+      REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
+      return Tensor<Nd + 4, REAL>("xyztXsc.", latticeSize<Nd + 4>("xyztXsc."), OnDefaultDevice,
+				  OnEveryone, std::shared_ptr<REAL>(v_ptr, [](REAL*) {}));
+    }
+#endif
 
     Tensor<Nd + 1, Complex> asTensorView(const LatticeComplex& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd + 1, Complex>("xyztX", latticeSize<Nd + 1>("xyztX"), OnDefaultDevice,
+      return Tensor<Nd + 1, Complex>("xyztX", latticeSize<Nd + 1>("xyztX"), OnHost,
 				     OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
@@ -1100,7 +1287,7 @@ namespace Chroma
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 3, Complex>(
-	"jixyztX", latticeSize<Nd + 3>("jixyztX", {{'i', Nc}, {'j', Nc}}), OnDefaultDevice,
+	"jixyztX", latticeSize<Nd + 3>("jixyztX", {{'i', Nc}, {'j', Nc}}), OnHost,
 	OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
@@ -1108,7 +1295,7 @@ namespace Chroma
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 4, Complex>(
-	"cjixyztX", latticeSize<Nd + 4>("cjixyztX", {{'i', Ns}, {'j', Ns}}), OnDefaultDevice,
+	"cjixyztX", latticeSize<Nd + 4>("cjixyztX", {{'i', Ns}, {'j', Ns}}), OnHost,
 	OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
@@ -1273,8 +1460,8 @@ namespace Chroma
       template <typename T>
       void applyPerm(const std::vector<Index>& perm, Tensor<Nd, T> tnat, Tensor<Nd + 1, T> trb)
       {
-	assert((tnat.order == Order<Nd>{'c', 'x', 'y', 'z'}));
-	assert((trb.order == Order<Nd + 1>{'c', 'x', 'y', 'z', 'X'}));
+	assert(tnat.order == "cxyz");
+	assert(trb.order == "cxyzX");
 	assert(tnat.p->localVolume() == perm.size() * Nc);
 
 	unsigned int i1 = perm.size();
@@ -1296,7 +1483,7 @@ namespace Chroma
 
     Tensor<Nd + 3, ComplexF> getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice,
 					  int n_tslices, int n_colorvecs,
-					  const char order[] = "cxyztXn")
+					  const std::string& order = "cxyztXn")
     {
       using namespace ns_getColorvecs;
 
@@ -1373,7 +1560,7 @@ namespace Chroma
     Tensor<Nd + 5, COMPLEX_OUT>
     doInversion(const SystemSolver<LatticeFermion>& PP, const Tensor<Nd + 3, COMPLEX_CHI> chi,
 		int t_source, int first_tslice_out, int n_tslice_out, std::vector<int> spin_sources,
-		int max_rhs, const char* order_out = "cSxyztXns")
+		int max_rhs, const std::string& order_out = "cSxyztXns")
     {
       detail::check_order_contains(order_out, "cSxyztXns");
       if (chi.kvdim()['t'] != 1)
@@ -1663,7 +1850,7 @@ namespace Chroma
       const multi1d<LatticeColorMatrix>& u, Tensor<Nleft, COMPLEX> leftconj,
       const Tensor<Nright, COMPLEX> right, int first_tslice, const SftMom& moms,
       const std::vector<Tensor<2, COMPLEX>>& gammas, std::vector<std::vector<int>> disps,
-      bool deriv, int max_rhs, const char* order_out = "gmNndsqt")
+      bool deriv, int max_rhs, const std::string& order_out = "gmNndsqt")
     {
       using namespace ns_doMomGammaDisp_contractions;
 
@@ -1688,7 +1875,7 @@ namespace Chroma
 								   {'d', disps.size()}}));
 
       // Copy moms into a single tensor
-      const char momst_order[] = "mxyzXt";
+      std::string momst_order = "mxyzXt";
       Tensor<Nd + 2, COMPLEX> momst(
 	momst_order, latticeSize<Nd + 2>(momst_order, {{'t', Nt}, {'m', moms.numMom()}}));
       for (unsigned int mom = 0; mom < moms.numMom(); ++mom)
@@ -1715,8 +1902,7 @@ namespace Chroma
       }
 
       // Copy all gammas into a single tensor
-      const char gammast_order[] = "gQS";
-      Tensor<3, COMPLEX> gammast(gammast_order, {(Index)gammas.size(), Ns, Ns}, OnDefaultDevice,
+      Tensor<3, COMPLEX> gammast("gQS", {(Index)gammas.size(), Ns, Ns}, OnDefaultDevice,
 				 OnEveryoneReplicated);
       for (unsigned int g = 0; g < gammas.size(); g++) {
 	gammas[g]
@@ -1755,7 +1941,7 @@ namespace Chroma
 
       return {r, disp_indices};
     }
-  }
+    }
 }
 
 namespace QDP
