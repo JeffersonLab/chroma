@@ -1,0 +1,108 @@
+/* lib/chroma_config_internal.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Build optimized Continued Frac. (CFZ) LinOp */
+#cmakedefine BUILD_CFZ_CFZ_LINOP @BUILD_CFZ_CFZ_LINOP@
+
+/* Build CPP Dslash Ops */
+#cmakedefine BUILD_CPP_WILSON_DSLASH @BUILD_CPP_WILSON_DSLASH@
+
+/* Use Generic Kernels */
+#cmakedefine BUILD_GENERIC_SCALARSITE_BICGSTAB @BUILD_GENERIC_SCALARSITE_BICGSTAB@
+
+/* Build GMP Remez code */
+#cmakedefine BUILD_GMP_REMEZ 	@BUILD_GMP_REMEZ@
+
+/* Use JIT Clover Term Apply, requires to build on top of QDP-JIT */
+#cmakedefine BUILD_JIT_CLOVER_TERM   @BUILD_JIT_CLOVER_TERM@
+
+/* Use JIT contraction kernels, requires to build on top of QDP-JIT */
+#cmakedefine BUILD_JIT_CONTRACTION_KERNELS @BUILD_JIT_CONTRACTION_KERNELS@
+
+/* Using Lapack */
+#cmakedefine BUILD_LAPACK	@BUILD_LAPACK@
+
+/* Build with the LLVM wilson library */
+#cmakedefine BUILD_LLVM_WILSON_DSLASH @BUILD_LLVM_WILSON_DSLASH@
+
+/* Build with the MDWF (Moebious DFW) library */
+#cmakedefine BUILD_MDWF    @BUILD_MDWF@
+
+/* Build interface to MGPROTO Library */
+#cmakedefine BUILD_MGPROTO  @BUILD_MGPROTO@
+
+/* Configuring to use optimized eigcg */
+#cmakedefine BUILD_OPT_EIGCG  @BUILD_OPT_EIGCG@
+
+
+/* Build with the QPHIX_LIBRARY */
+#cmakedefine BUILD_QPHIX  @BUILD_QPHIX@
+
+/* Build with the NVIDIA QUDA Library */
+#cmakedefine BUILD_QUDA   @BUILD_QUDA@
+
+/* Use of QUDA device pointer interface CLOVER, requires to build on top of
+   QDP-JIT/PTX */
+#cmakedefine BUILD_QUDA_DEVIFACE_CLOVER   @BUILD_QUDA_DEVIFACE_CLOVER@
+
+/* Use of QUDA device pointer interface GAUGE, requires to build on top of
+   QDP-JIT/PTX */
+#cmakedefine BUILD_QUDA_DEVIFACE_GAUGE	  @BUILD_QUDA_DEVICFACE_GAUGE@
+
+/* Use of QUDA device pointer interface SPINOR, requires to build on top of
+   QDP-JIT/PTX */
+#cmakedefine BUILD_QUDA_DEVIFACE_SPINOR   @BUILD_QUDA_DEVICFACE_SPINOR@
+
+/* Build Scalarsite BICGStab Kernels */
+#cmakedefine BUILD_SCALARSITE_BICGSTAB  @BUILD_SCALARSITE_BICGSTAB@
+
+/* Use SSED Clover Term Apply */
+#cmakedefine BUILD_SSED_CLOVER_TERM    @BUILD_SSED_CLOVER_TERM@
+
+/* Use Generic Kernels */
+#cmakedefine BUILD_SSE_SCALARSITE_BICGSTAB @BUILD_SSE_SCALARSITE_BICGSTAB@
+
+/* Enable Restart in linop syssolvers */
+#cmakedefine CHROMA_DO_ONE_CG_RESTART @CHROMA_DO_ONE_CG_RESTART@
+
+/* Enable use of clover deriv_loops routine contrinuted by J. Bloch of
+   Regensburg University */
+#cmakedefine CHROMA_FUSED_CLOVER_DERIV_LOOPS  @CHROMA_FUSED_CLOVER_DERIV_LOOPS@
+
+/* QPhiX Arch is AVX */
+#cmakedefine CHROMA_QPHIX_ARCH_AVX  @CHROMA_QPHIX_ARCH_AVX@
+
+/* QPhiX Arch is AVX2 */
+#cmakedefine CHROMA_QPHIX_ARCH_AVX2 @CHROMA_QPHIX_ARCH_AVX2@
+
+/* QPhiX Arch is AVX512 */
+#cmakedefine CHROMA_QPHIX_ARCH_AVX512 @CHROMA_QPHIX_ARCH_AVX512@
+
+/* QPhiX Arch is MIC */
+#cmakedefine CHROMA_QPHIX_ARCH_MIC @CHROMA_QPHIX_ARCH_MIC@
+
+/* QPhiX Arch is SSE */
+#cmakedefine CHROMA_QPHIX_ARCH_SSE @CHROMA_QPHIX_ARCH_SSE@
+
+/* Disable Intel Solver Compression */
+#cmakedefine CHROMA_QPHIX_COMPRESS12 @CHROMA_QPHIX_COMPRESS12@
+
+/* Enable QPhiX Dslash */
+#cmakedefine CHROMA_QPHIX_DSLASH_ENABLED @CHROMA_QPHIX_DSLASH_ENABLED@
+
+/* The SOA length for inner solvers for mixed prec QPhiX */
+#cmakedefine CHROMA_QPHIX_INNER_SOALEN @CHROMA_QPHIX_INNER_SOALEN@
+
+/* QPhiX Inner Type is float */
+#cmakedefine CHROMA_QPHIX_INNER_TYPE  @CHROMA_QPHIX_INNER_TYPE@
+
+/* The SOA length for QPhiX */
+#cmakedefine CHROMA_QPHIX_SOALEN     @CHROMA_QPHIX_SOALEN@
+
+/* Define static packed gauges */
+#cmakedefine CHROMA_STATIC_PACKED_GAUGE  @CHROMA_STATIC_PACKED_GAUGE@
+
+/* Enable extra QUDA Debugging */
+#cmakedefine QUDA_DEBUG        @QUDA_DEBUG@
+
+/* Enable QUDA MG Dump */
+#cmakedefine QUDA_MG_DUMP_ENABLED @QUDA_MG_DUMP_ENABLED@
