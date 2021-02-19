@@ -338,7 +338,31 @@ namespace Chroma
 	  {
 	    int dev = -1;
 	    superbblas::detail::cudaCheck(cudaGetDevice(&dev));
-	    cudactx = std::make_shared<superbblas::Context>(superbblas::createCudaContext(dev));
+	    cudactx = std::make_shared<superbblas::Context>(superbblas::createCudaContext(
+	      dev,
+
+	      // Make superbblas use the same memory allocator for gpu as any other qdp-jit lattice object
+	      [](std::size_t size, superbblas::platform plat) -> void* {
+		if (size == 0)
+		  return nullptr;
+		if (plat == superbblas::CPU)
+		  return malloc(size);
+		void* ptr=nullptr;
+		while (!get__cache_pool_allocator().allocate(&ptr, size))
+		  ;
+		assert(superbblas::detail::getPtrDevice(ptr) >= 0);
+		return ptr;
+	      },
+
+	      // The corresponding deallocator
+	      [](void* ptr, superbblas::platform plat) {
+		if (ptr == nullptr)
+		  return;
+		if (plat == superbblas::CPU)
+		  free(ptr);
+		else
+		  get__cache_pool_allocator().free(ptr);
+	      }));
 	  }
 	  return cudactx;
 #else
@@ -1241,7 +1265,7 @@ namespace Chroma
 #ifdef QDP_IS_QDPJIT
       std::vector<QDPCache::ArgKey> v(1, t.getId());
       void* r = QDP_get_global_cache().get_kernel_args(v, false)[0];
-      assert(superbblas::detail::getPtrDevice(r) == 0);
+      assert(superbblas::detail::getPtrDevice(r) >= 0);
       return r;
 #else
       return t.getF();
@@ -1276,13 +1300,23 @@ namespace Chroma
     }
 #endif
 
+#ifndef QDP_IS_QDPJIT
     Tensor<Nd + 1, Complex> asTensorView(const LatticeComplex& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 1, Complex>("xyztX", latticeSize<Nd + 1>("xyztX"), OnHost,
 				     OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
+#else
+    Tensor<Nd + 2, REAL> asTensorView(const LatticeComplex& v)
+    {
+      REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
+      return Tensor<Nd + 2, REAL>("xyztX.", latticeSize<Nd + 2>("xyztX."), OnDefaultDevice,
+				     OnEveryone, std::shared_ptr<REAL>(v_ptr, [](REAL*) {}));
+    }
+#endif
 
+#ifndef QDP_IS_QDPJIT
     Tensor<Nd + 3, Complex> asTensorView(const LatticeColorMatrix& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
@@ -1290,6 +1324,15 @@ namespace Chroma
 	"jixyztX", latticeSize<Nd + 3>("jixyztX", {{'i', Nc}, {'j', Nc}}), OnHost,
 	OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
+#else
+    Tensor<Nd + 4, REAL> asTensorView(const LatticeColorMatrix& v)
+    {
+      REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
+      return Tensor<Nd + 4, REAL>(
+	"xyztXji.", latticeSize<Nd + 4>("xyztXji.", {{'i', Nc}, {'j', Nc}}), OnDefaultDevice,
+	OnEveryone, std::shared_ptr<REAL>(v_ptr, [](REAL*) {}));
+    }
+#endif
 
     Tensor<Nd + 4, Complex> asTensorView(const LatticeColorVectorSpinMatrix& v)
     {
@@ -1917,6 +1960,7 @@ namespace Chroma
 	// NOTE: This is going to create a tensor with the same distribution of the t-dimension as leftconj and right
 	ut.push_back(asTensorView(u[d])
 		       .kvslice_from_size({{'t', first_tslice}}, {{'t', Nt}})
+		       .toComplex()
 		       .reorder("ijxyzXt"));
       }
 
