@@ -369,9 +369,8 @@ namespace Chroma
 		  return nullptr;
 		if (plat == superbblas::CPU)
 		  return malloc(size);
-		void* ptr=nullptr;
-		while (!get__cache_pool_allocator().allocate(&ptr, size))
-		  ;
+		void* ptr = nullptr;
+		QDP_get_global_cache().addDeviceStatic(&ptr, size, true);
 		assert(superbblas::detail::getPtrDevice(ptr) >= 0);
 		return ptr;
 	      },
@@ -383,7 +382,7 @@ namespace Chroma
 		if (plat == superbblas::CPU)
 		  free(ptr);
 		else
-		  get__cache_pool_allocator().free(ptr);
+		  QDP_get_global_cache().signoffViaPtr(ptr);
 	      }));
 	  }
 	  return cudactx;
