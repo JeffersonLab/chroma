@@ -320,6 +320,28 @@ namespace Chroma
 	return r;
       }
 
+      template <std::size_t N>
+      Coor<N> replace_coor(Coor<N> v, std::size_t pos, Index value)
+      {
+	assert(pos <= N);
+	v[pos] = value;
+	return v;
+      }
+
+      std::string insert_coor(std::string v, std::size_t pos, char value)
+      {
+	assert(pos <= v.size());
+	v.insert(pos, 1, value);
+	return v;
+      }
+
+      std::string replace_coor(std::string v, std::size_t pos, char value)
+      {
+	assert(pos <= v.size());
+	v[pos] = value;
+	return v;
+      }
+
       // Return a context on either the host or the device
       std::shared_ptr<superbblas::Context> getContext(DeviceHost dev)
       {
@@ -433,6 +455,28 @@ namespace Chroma
 	    r.push_back({remove_coor(i[0], pos), remove_coor(i[1], pos)});
 	  return TensorPartition<N - 1>{remove_coor(dim, pos), r};
 	}
+
+	/// Split a dimension into a non-distributed dimension and another dimension
+
+	TensorPartition<N + 1> split_dimension(std::size_t pos, Index step) const
+	{
+	  typename TensorPartition<N + 1>::PartitionStored r;
+	  r.reserve(p.size());
+	  for (const auto& i : p)
+	  {
+	    if (i[1][pos] % step != 0 && i[1][pos] > step)
+	      throw std::runtime_error("Unsupported splitting a dimension with an uneven lattice "
+				       "portions in all processes");
+	    r.push_back(
+	      {insert_coor(replace_coor(i[0], pos, i[0][pos] % step), pos + 1, i[0][pos] / step),
+	       insert_coor(replace_coor(i[1], pos, std::min(i[1][pos], step)), pos + 1,
+			   (i[1][pos] + step - 1) / step)});
+	  }
+	  return TensorPartition<N + 1>{
+	    insert_coor(replace_coor(dim, pos, std::min(dim[pos], step)), pos + 1, dim[pos] / step),
+	    r};
+	}
+
 
       private:
 	/// Return a partitioning where the root node has support for the whole tensor
@@ -1023,6 +1067,49 @@ namespace Chroma
 	assert(!isFakeReal());
 	return *this;
       }
+
+      /// Return a fake real view of this tensor
+
+      Tensor<N + 1, T> split_dimension(char dim_label, std::string new_labels, Index step) const
+      {
+	using namespace detail;
+
+	// Find the position of dim_label in order
+	std::string::size_type pos = order.find(dim_label);
+	if (pos == std::string::npos)
+	{
+	  std::stringstream ss;
+	  ss << "Not found label `" << dim_label << "` in this tensor with dimension labels `"
+	     << order;
+	  throw std::runtime_error(ss.str());
+	}
+
+	// Check the other arguments
+	if (new_labels.size() != 2)
+	  throw std::runtime_error("`new_labels` should have two labels!");
+
+	if (step < 1)
+	  throw std::runtime_error("`step` cannot be zero or negative");
+
+	if (size[pos] % step != 0 && size[pos] > step)
+	  throw std::runtime_error("Not supporting `split_dimension` for this lattice dimensions");
+
+	// Set the new characteristics of the tensor
+	std::string new_order =
+	  insert_coor(replace_coor(order, pos, new_labels[0]), pos + 1, new_labels[1]);
+	Coor<N + 1> new_from =
+	  insert_coor(replace_coor(from, pos, from[pos] % step), pos + 1, from[pos] / step);
+	Coor<N + 1> new_size = insert_coor(replace_coor(size, pos, std::min(size[pos], step)),
+					   pos + 1, (size[pos] + step - 1) / step);
+	Coor<N + 1> new_dim = insert_coor(replace_coor(dim, pos, std::min(dim[pos], step)), pos + 1,
+					  (dim[pos] + step - 1) / step);
+
+	auto new_p = std::make_shared<detail::TensorPartition<N + 1>>(p->split_dimension(pos, step));
+
+	return Tensor<N + 1, T>(new_order, new_dim, ctx, data, new_p, dist, new_from, new_size,
+				scalar);
+      }
+
 
       // Copy `this` tensor into the given one
       template <std::size_t Nw, typename Tw,
@@ -1671,13 +1758,16 @@ namespace Chroma
     }
 
     template <typename COMPLEX, std::size_t N>
-    Tensor<N, COMPLEX> shift(const Tensor<N, COMPLEX> v, int len, int dir)
+    Tensor<N, COMPLEX> shift(const Tensor<N, COMPLEX> v, Index first_tslice, int len, int dir)
     {
       if (dir < 0 || dir >= Nd - 1)
 	throw std::runtime_error("Invalid direction");
 
       if (len == 0)
 	return v;
+
+      // NOTE: chroma uses the reverse convention for direction: shifting FORWARD moves the sites on the negative direction
+      len = -len;
 
       const char dir_label[] = "xyz";
 #if QDP_USE_LEXICO_LAYOUT
@@ -1692,15 +1782,28 @@ namespace Chroma
       Tensor<N, COMPLEX> r = v.like_this();
       if (dir != 0)
       {
-	v.copyTo(r.kvslice_from_size({{'X', len}, {dir_label[dir], -len}}));
+	v.copyTo(r.kvslice_from_size({{'X', len}, {dir_label[dir], len}}));
       }
       else
       {
-	throw std::runtime_error("Unsupported shift on X direction for this layout");
-	// for (int X = 0; X < 2; ++X)
-	//   v.kvslice_from_size({{'X', X}})
-	//     .copyTo(r.kvslice_from_size(
-	//       {{'X', (X + len) % 2}, {dir_label[dir], (X + len + (len >= 0 ? 0 : -1)) / 2}}));
+	auto v_eo = v.split_dimension('y', "Yy", 2).split_dimension('z', "Zz", 2).split_dimension('t', "Tt", 2);
+	auto r_eo = r.split_dimension('y', "Yy", 2).split_dimension('z', "Zz", 2).split_dimension('t', "Tt", 2);
+	while (len < 0)
+	  len += v.kvdim()['x'] * 2;
+	for (int T = 0; T < 2; ++T)
+	  for (int Z = 0; Z < 2; ++Z)
+	    for (int Y = 0; Y < 2; ++Y)
+	      for (int X = 0; X < 2; ++X)
+		v_eo
+		  .kvslice_from_size({{'X', X}, {'Y', Y}, {'Z', Z}, {'T', T}},
+				     {{'X', 1}, {'Y', 1}, {'Z', 1}, {'T', 1}})
+		  .copyTo(
+		    r_eo.kvslice_from_size({{'X', X + len},
+					    {'x', (len + ((X + Y + Z + T + first_tslice) % 2)) / 2},
+					    {'Y', Y},
+					    {'Z', Z},
+					    {'T', T}},
+					   {{'Y', 1}, {'Z', 1}, {'T', 1}}));
       }
       return r;
 #else
@@ -1719,8 +1822,8 @@ namespace Chroma
     ////       when conjUnderAdd is false.
 
     template <typename COMPLEX, std::size_t N>
-    Tensor<N, COMPLEX> displace(const std::vector<Tensor<Nd + 3, Complex>>& u,
-				Tensor<N, COMPLEX> v, int dir, bool deriv = false,
+    Tensor<N, COMPLEX> displace(const std::vector<Tensor<Nd + 3, Complex>>& u, Tensor<N, COMPLEX> v,
+				Index first_tslice, int dir, bool deriv = false,
 				std::vector<Coor<Nd - 1>> moms = {}, bool conjUnderAdd = false)
     {
       if (std::abs(dir) > Nd)
@@ -1744,7 +1847,7 @@ namespace Chroma
 	if (len > 0)
 	{
 	  // Do u[d] * shift(x,d)
-	  v = shift(std::move(v), len, d);
+	  v = shift(std::move(v), first_tslice, len, d);
 	  r.contract(u[d], {{'j', 'c'}}, NotConjugate, std::move(v), {}, NotConjugate,
 		     {{'c', 'i'}});
 	}
@@ -1752,7 +1855,7 @@ namespace Chroma
 	{
 	  // Do shift(adj(u[d]) * x,d)
 	  r.contract(u[d], {{'i', 'c'}}, Conjugate, std::move(v), {}, NotConjugate, {{'c', 'j'}});
-	  r = shift(std::move(r), len, d);
+	  r = shift(std::move(r), first_tslice, len, d);
 	}
       }
       else
@@ -1769,11 +1872,11 @@ namespace Chroma
 	}
 
 	// r = conj(phases) * displace(u, v, dir)
-	r.contract(displace(u, v, -dir), {}, NotConjugate, asTensorView(phases), {{'i', 'm'}},
-		   Conjugate);
+	r.contract(displace(u, v, first_tslice, -dir), {}, NotConjugate, asTensorView(phases),
+		   {{'i', 'm'}}, Conjugate);
 	// r = r - phases * displace(u, v, dir) if !ConjUnderAdd else r + phases * displace(u, v, dir)
-	r.contract(displace(u, v, dir, false).scale(conjUnderAdd ? 1 : -1), {}, NotConjugate,
-		   asTensorView(phases), {{'i', 'm'}}, NotConjugate, {}, 1.0);
+	r.contract(displace(u, v, first_tslice, dir, false).scale(conjUnderAdd ? 1 : -1), {},
+		   NotConjugate, asTensorView(phases), {{'i', 'm'}}, NotConjugate, {}, 1.0);
       }
       return r;
     }
@@ -1827,8 +1930,8 @@ namespace Chroma
       template <typename COMPLEX, std::size_t Nleft, std::size_t Nright, std::size_t Nout>
       void doMomGammaDisp_contractions(const std::vector<Tensor<Nd + 3, Complex>>& u,
 				       const Tensor<Nleft, COMPLEX> leftconj,
-				       Tensor<Nright, COMPLEX> right, const PathNode& disps,
-				       bool deriv, Tensor<3, COMPLEX> gammas,
+				       Tensor<Nright, COMPLEX> right, Index first_tslice,
+				       const PathNode& disps, bool deriv, Tensor<3, COMPLEX> gammas,
 				       const std::vector<Coor<Nd - 1>>& moms, int max_rhs,
 				       Tensor<Nout, COMPLEX> r, std::vector<int>& disp_indices)
       {
@@ -1863,10 +1966,11 @@ namespace Chroma
 	  // NOTE: avoid that the memory requirements grow linearly with the number of displacements
 	  //       by killing the reference to `right` as soon as possible
 	  Tensor<Nright, COMPLEX> right_disp =
-	    (node_disp < disps.p.size() - 1) ? displace(u, right, it.first, deriv, moms)
-					     : displace(u, std::move(right), it.first, deriv, moms);
-	  doMomGammaDisp_contractions(u, leftconj, std::move(right_disp), it.second, deriv, gammas,
-				      moms, max_rhs - num_vecs, r, disp_indices);
+	    (node_disp < disps.p.size() - 1)
+	      ? displace(u, right, first_tslice, it.first, deriv, moms)
+	      : displace(u, std::move(right), first_tslice, it.first, deriv, moms);
+	  doMomGammaDisp_contractions(u, leftconj, std::move(right_disp), first_tslice, it.second,
+				      deriv, gammas, moms, max_rhs - num_vecs, r, disp_indices);
 	  node_disp++;
 	  detail::log(1, std::string("pop direction"));
 	}
@@ -1891,7 +1995,7 @@ namespace Chroma
     template <std::size_t Nout, std::size_t Nleft, std::size_t Nright, typename COMPLEX>
     std::pair<Tensor<Nout, COMPLEX>, std::vector<int>> doMomGammaDisp_contractions(
       const multi1d<LatticeColorMatrix>& u, Tensor<Nleft, COMPLEX> leftconj,
-      const Tensor<Nright, COMPLEX> right, int first_tslice, const SftMom& moms,
+      const Tensor<Nright, COMPLEX> right, Index first_tslice, const SftMom& moms,
       const std::vector<Tensor<2, COMPLEX>>& gammas, std::vector<std::vector<int>> disps,
       bool deriv, int max_rhs, const std::string& order_out = "gmNndsqt")
     {
@@ -1903,6 +2007,8 @@ namespace Chroma
 
       assert(right.kvdim()['t'] == leftconj.kvdim()['t']);
       unsigned int Nt = right.kvdim()['t'];
+      if (Nt % 2 != 0)
+	throw std::runtime_error("The number of time-slices should be even");
 
       // Form a tree with the displacement paths
       PathNode tree_disps = get_tree(disps);
@@ -1968,11 +2074,12 @@ namespace Chroma
       std::vector<int> disp_indices;
       if (!deriv)
       {
-	doMomGammaDisp_contractions(ut, std::move(moms_left), std::move(right), tree_disps, deriv,
-				    gammast, mom_list, max_rhs, r, disp_indices);
+	doMomGammaDisp_contractions(ut, std::move(moms_left), std::move(right), first_tslice,
+				    tree_disps, deriv, gammast, mom_list, max_rhs, r, disp_indices);
       }
       else
       {
+	throw std::runtime_error("Derivatives are not implemented! Sorry!");
 	// std::vector<COMPLEX> ones(moms.numMom(), COMPLEX(1));
 	// std::string right_moms_order = std::string(right.order.begin(), right.order.size()) + "m";
 	// Tensor<Nright + 1, COMPLEX> right_moms =
@@ -1985,7 +2092,7 @@ namespace Chroma
 
       return {r, disp_indices};
     }
-    }
+  }
 }
 
 namespace QDP
