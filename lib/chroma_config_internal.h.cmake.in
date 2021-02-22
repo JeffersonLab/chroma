@@ -106,3 +106,7 @@
 
 /* Enable QUDA MG Dump */
 #cmakedefine QUDA_MG_DUMP_ENABLED @QUDA_MG_DUMP_ENABLED@
+
+/* Versioning stuff used in two files */
+#define PACKAGE_STRING  "@PROJECT_NAME@"
+#define PACKAGE_VERSION "@Chroma_VERSION@"
