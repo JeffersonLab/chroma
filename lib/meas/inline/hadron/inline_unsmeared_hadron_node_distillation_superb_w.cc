@@ -29,7 +29,6 @@
 #include "util/info/proginfo.h"
 
 #include "meas/inline/io/named_objmap.h"
-#include <ctime>
 #include <set>
 
 namespace Chroma 
@@ -793,14 +792,14 @@ namespace Chroma
 	// Make the number of time-slices even; required by SB::doMomGammaDisp_contractions
 	num_tslices_active = std::min(num_tslices_active + num_tslices_active % 2, Lt);
 
-	FromSize fs = active_tslices[it.t_source];
+	FromSize fs = active_tslices[it.t_source % Lt];
 	SB::union_interval(fs.from, fs.size, it.t_source - it.Nt_backward, num_tslices_active, Lt,
 			   fs.from, fs.size);
-	active_tslices[it.t_source] = fs;
-	fs = active_tslices[it.t_sink];
+	active_tslices[it.t_source % Lt] = fs;
+	fs = active_tslices[it.t_sink % Lt];
 	SB::union_interval(fs.from, fs.size, it.t_source - it.Nt_backward, num_tslices_active, Lt,
 			   fs.from, fs.size);
-	active_tslices[it.t_sink] = fs;
+	active_tslices[it.t_sink % Lt] = fs;
       }
 
       //
@@ -819,8 +818,8 @@ namespace Chroma
       std::vector<bool> cache_tslice(Lt);
       for (const auto &it : params.param.prop_sources)
       {
-	if (it.cacheP && it.t_source < Lt)
-	  cache_tslice[it.t_source] = true;
+	if (it.cacheP)
+	  cache_tslice[it.t_source % Lt] = true;
       }
 
       //
