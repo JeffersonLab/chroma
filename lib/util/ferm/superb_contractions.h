@@ -787,6 +787,9 @@ namespace Chroma
 	});
       }
 
+      // Empty constructor
+      Tensor() = default;
+
       // Construct used by Chroma tensors (see `asTensorView`)
       Tensor(const std::string& order, Coor<N> dim, DeviceHost dev, Distribution dist,
 	     std::shared_ptr<T> data)
@@ -827,8 +830,6 @@ namespace Chroma
       }
 
     protected:
-      Tensor() {}
-
       // Construct a slice of a tensor
       Tensor(const Tensor& t, const std::string& order, Coor<N> from, Coor<N> size)
 	: order(order),
@@ -862,6 +863,12 @@ namespace Chroma
       }
 
     public:
+      /// Return if the tensor has been allocated
+      explicit operator bool() const noexcept
+      {
+	return bool(data);
+      }
+
       // Return whether from != 0 or size != dim
       bool isSubtensor() const
       {
@@ -920,7 +927,8 @@ namespace Chroma
 	  if (size[i] > this->size[i])
 	    throw std::runtime_error(
 	      "The size of the slice cannot be larger than the original tensor");
-	  if (from[i] + size[i] >= this->size[i] && this->size[i] != this->dim[i])
+	  if (detail::normalize_coor(from[i], this->size[i]) + size[i] > this->size[i] &&
+	      this->size[i] != this->dim[i])
 	    throw std::runtime_error(
 	      "Unsupported to make a view on a non-contiguous range on the tensor");
 	}
@@ -1898,6 +1906,9 @@ namespace Chroma
 	  PathNode* n = &r;
 	  for (char d : path)
 	  {
+	    if (d == 0 || std::abs(d) > Nd)
+	      throw std::runtime_error("Invalid direction: " + std::to_string((int)d));
+
 	    auto it = n->p.find(d);
 	    if (it != n->p.end())
 	      n = &it->second;
@@ -1911,6 +1922,34 @@ namespace Chroma
 	    n->disp_index = path_index++;
 	}
 	return r;
+      }
+
+      /// Return the directions that are going to be use and the maximum number of displacements keep in memory
+      void get_tree_mem_stats(const PathNode& disps, std::array<bool, Nd>& dirs,
+			      unsigned int& max_rhs)
+      {
+	unsigned int max_rhs_sub = 0;
+	for (const auto it : disps.p)
+	{
+	  unsigned int max_rhs_sub_it = 0;
+	  get_tree_mem_stats(it.second, dirs, max_rhs_sub_it);
+	  max_rhs_sub = std::max(max_rhs_sub, max_rhs_sub_it);
+
+	  dirs[std::abs(it.first) - 1] = true;
+	}
+
+	if (disps.p.size() == 0)
+	{
+	  max_rhs = 0;
+	}
+	else if (disps.p.size() == 1)
+	{
+	  max_rhs = std::max(1u, max_rhs_sub);
+	}
+	else
+	{
+	  max_rhs = 1 + max_rhs_sub;
+	}
       }
 
       /// Contract two LatticeFermion with different momenta, gammas, and displacements.
@@ -1994,9 +2033,9 @@ namespace Chroma
     template <std::size_t Nout, std::size_t Nleft, std::size_t Nright, typename COMPLEX>
     std::pair<Tensor<Nout, COMPLEX>, std::vector<int>> doMomGammaDisp_contractions(
       const multi1d<LatticeColorMatrix>& u, Tensor<Nleft, COMPLEX> leftconj,
-      const Tensor<Nright, COMPLEX> right, Index first_tslice, const SftMom& moms,
+      Tensor<Nright, COMPLEX> right, Index first_tslice, const SftMom& moms,
       const std::vector<Tensor<2, COMPLEX>>& gammas, std::vector<std::vector<int>> disps,
-      bool deriv, int max_rhs, const std::string& order_out = "gmNndsqt")
+      bool deriv, const std::string& order_out = "gmNndsqt", Maybe<int> max_active_tslices = none)
     {
       using namespace ns_doMomGammaDisp_contractions;
 
@@ -2005,12 +2044,23 @@ namespace Chroma
       detail::check_order_contains(right.order, "cxyzXnSst");
 
       assert(right.kvdim()['t'] == leftconj.kvdim()['t']);
-      unsigned int Nt = right.kvdim()['t'];
+      int Nt = right.kvdim()['t'];
       if (Nt % 2 != 0)
 	throw std::runtime_error("The number of time-slices should be even");
 
+      int max_t = max_active_tslices.getSome(Nt);
+      if (max_t <= 0)
+	max_t = Nt;
+      max_t = max_t + (max_t % 2);
+      max_t = std::min(Nt, max_t);
+
       // Form a tree with the displacement paths
       PathNode tree_disps = get_tree(disps);
+
+      // Get what directions are going to be used and the maximum number of displacements in memory
+      std::array<bool, Nd> active_dirs;
+      unsigned int max_active_disps = 0;
+      get_tree_mem_stats(tree_disps, active_dirs, max_active_disps);
 
       // Allocate output tensor
       Tensor<Nout, COMPLEX> r(order_out, kvcoors<Nout>(order_out, {{'t', Nt},
@@ -2021,26 +2071,6 @@ namespace Chroma
 								   {'m', moms.numMom()},
 								   {'g', gammas.size()},
 								   {'d', disps.size()}}));
-
-      // Copy moms into a single tensor
-      std::string momst_order = "mxyzXt";
-      Tensor<Nd + 2, COMPLEX> momst(
-	momst_order, latticeSize<Nd + 2>(momst_order, {{'t', Nt}, {'m', moms.numMom()}}));
-      for (unsigned int mom = 0; mom < moms.numMom(); ++mom)
-      {
-	asTensorView(moms[mom])
-	  .kvslice_from_size({}, {{'t', Nt}})
-	  .copyTo(momst.kvslice_from_size({{'m', mom}}, {{'m', 1}}));
-      }
-
-      // Apply momenta conjugated to the left tensor and rename the spin components s and Q to q and Q,
-      // and the colorvector component n to N
-      Tensor<Nleft + 1, COMPLEX> moms_left =
-	leftconj.template like_this<Nleft + 1>("mQNqcxyzXt", {{'m', moms.numMom()}});
-      leftconj = leftconj.reorder("QNqcxyzXt");
-      moms_left.contract(std::move(momst), {}, Conjugate, std::move(leftconj), {}, NotConjugate);
-      moms_left = moms_left.reorder("cxyzXmNQqt");
-
       // Create mom_list
       std::vector<Coor<Nd - 1>> mom_list(moms.numMom());
       for (unsigned int mom = 0; mom < moms.numMom(); ++mom)
@@ -2058,39 +2088,110 @@ namespace Chroma
 	  .copyTo(gammast.kvslice_from_size({{'g', g}}, {{'g', 1}}));
       }
 
-      // Make a copy of the time-slicing of u[d] also supporting left and right
-      std::vector<Tensor<Nd + 3, Complex>> ut;
-      for (unsigned int d = 0; d < Nd - 1; d++)
-      {
-	// NOTE: This is going to create a tensor with the same distribution of the t-dimension as leftconj and right
-	ut.push_back(asTensorView(u[d])
-		       .kvslice_from_size({{'t', first_tslice}}, {{'t', Nt}})
-		       .toComplex()
-		       .reorder("ijxyzXt"));
-      }
-
-      // Do the thing
+      // Iterate over time-slices
       std::vector<int> disp_indices;
-      if (!deriv)
+      leftconj = leftconj.reorder("QNqcxyzXt");
+
+      for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
+	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
       {
-	doMomGammaDisp_contractions(ut, std::move(moms_left), std::move(right), first_tslice,
-				    tree_disps, deriv, gammast, mom_list, max_rhs, r, disp_indices);
-      }
-      else
-      {
-	throw std::runtime_error("Derivatives are not implemented! Sorry!");
-	// std::vector<COMPLEX> ones(moms.numMom(), COMPLEX(1));
-	// std::string right_moms_order = std::string(right.order.begin(), right.order.size()) + "m";
-	// Tensor<Nright + 1, COMPLEX> right_moms =
-	//   right.like_this<Nright + 1>(right_moms_order.c_str());
-	// right_moms.contract(asTensorView(ones), {{'i', 'm'}}, NotConjugate, std::move(right), {},
-	// 		    NotConjugate);
-	// doMomGammaDisp_contractions(u, gammast_moms_left, right_moms, tree_disps, deriv, mom_list,
-	// 			    max_rhs, r, disp_indices);
+	detail::log(1,
+		    std::string("contracting " + std::to_string(tsize) + " tslices from tslice= ") +
+		      std::to_string(tfrom));
+
+	disp_indices.resize(0);
+
+	// Copy moms into a single tensor
+	std::string momst_order = "mxyzXt";
+	Tensor<Nd + 2, COMPLEX> momst(
+	  momst_order, latticeSize<Nd + 2>(momst_order, {{'t', tsize}, {'m', moms.numMom()}}));
+	for (unsigned int mom = 0; mom < moms.numMom(); ++mom)
+	{
+	  asTensorView(moms[mom])
+	    .kvslice_from_size({}, {{'t', tsize}})
+	    .copyTo(momst.kvslice_from_size({{'m', mom}}, {{'m', 1}}));
+	}
+
+	// Apply momenta conjugated to the left tensor and rename the spin components s and Q to q and Q,
+	// and the colorvector component n to N
+	Tensor<Nleft + 1, COMPLEX> moms_left = leftconj.template like_this<Nleft + 1>(
+	  "mQNqcxyzXt", {{'m', moms.numMom()}, {'t', tsize}});
+	moms_left.contract(std::move(momst), {}, Conjugate,
+			   leftconj.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}), {},
+			   NotConjugate);
+	if (tfrom + tsize >= Nt)
+	  leftconj.release();
+	moms_left = moms_left.reorder("cxyzXmNQqt");
+
+	// Make a copy of the time-slicing of u[d] also supporting left and right
+	std::vector<Tensor<Nd + 3, Complex>> ut(Nd);
+	for (unsigned int d = 0; d < Nd - 1; d++)
+	{
+	  if (!active_dirs[d])
+	    continue;
+
+	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as leftconj and right
+	  ut[d] = asTensorView(u[d])
+		    .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
+		    .toComplex()
+		    .reorder("ijxyzXt");
+	}
+
+	// Do the thing
+	auto this_right = right.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
+	if (tfrom + tsize >= Nt)
+	  right.release();
+	auto this_r = r.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
+	if (!deriv)
+	{
+	  doMomGammaDisp_contractions(ut, std::move(moms_left), std::move(this_right),
+				      first_tslice + tfrom, tree_disps, deriv, gammast, mom_list, 0,
+				      this_r, disp_indices);
+	}
+	else
+	{
+	  throw std::runtime_error("Derivatives are not implemented! Sorry!");
+	  // std::vector<COMPLEX> ones(moms.numMom(), COMPLEX(1));
+	  // std::string right_moms_order = std::string(right.order.begin(), right.order.size()) + "m";
+	  // Tensor<Nright + 1, COMPLEX> right_moms =
+	  //   right.like_this<Nright + 1>(right_moms_order.c_str());
+	  // right_moms.contract(asTensorView(ones), {{'i', 'm'}}, NotConjugate, std::move(right), {},
+	  // 		    NotConjugate);
+	  // doMomGammaDisp_contractions(u, gammast_moms_left, right_moms, tree_disps, deriv, mom_list,
+	  // 			    max_rhs, r, disp_indices);
+	}
       }
 
       return {r, disp_indices};
     }
+
+    /// Return the smallest interval containing the union of two intervals
+    /// \param from0: first element of the first interval
+    /// \param size0: length of the first interval
+    /// \param from1: first element of the second interval
+    /// \param size1: length of the second interval
+    /// \param dim: dimension length
+    /// \param fromr: (output) first element of the union of the two intervals
+    /// \param sizer: (output) length of the union of the two intervals
+
+    void union_interval(Index from0, Index size0, Index from1, Index size1, Index dim, Index& fromr,
+			Index& sizer)
+    {
+      from0 = detail::normalize_coor(from0, dim);
+      from1 = detail::normalize_coor(from1, dim);
+      if (from0 > from1)
+      {
+	std::swap(from0, from1);
+	std::swap(size0, size1);
+      }
+      Index fromra = std::min(from0, from1);
+      Index sizera = std::max(from0 + size0, from1 + size1) - fromr;
+      Index fromrb = std::min(from0 + dim, from1);
+      Index sizerb = std::max(from0 + dim + size0, from1 + size1) - fromr;
+      fromr = (fromra <= fromrb ? fromra : fromrb);
+      sizer = (fromra <= fromrb ? sizera : sizerb);
+    }
+
   }
 }
 

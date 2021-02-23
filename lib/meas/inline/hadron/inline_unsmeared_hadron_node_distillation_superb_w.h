@@ -66,6 +66,7 @@ namespace Chroma
 	  std::string               mass_label;             /*!< Some kind of mass label */
 	  int                       num_tries;              /*!< In case of bad things happening in the solution vectors, do retries */
 	  int                       max_rhs;                /*! maximum number of linear systems solved simultaneously */
+	  int                       max_tslices_in_contraction;  /*! maximum number of contracted tslices simultaneously */
 	};
 
 	std::vector<KeySolnProp_t>  prop_sources;           /*!< Sources */
