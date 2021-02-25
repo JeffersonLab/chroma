@@ -805,6 +805,10 @@ namespace Chroma
       std::vector<FromSize> active_tslices(Lt);
       for (const auto& it : params.param.sink_source_pairs)
       {
+	// Check t_source and t_sink
+	if (it.t_source < 0 || it.t_sink < 0)
+	  throw std::runtime_error("Invalid source or sink on SinkSourcePairs");
+
 	int num_tslices_active = it.Nt_backward + it.Nt_forward + 1;
 	// Make the number of time-slices even; required by SB::doMomGammaDisp_contractions
 	num_tslices_active = std::min(num_tslices_active + num_tslices_active % 2, Lt);
@@ -835,6 +839,10 @@ namespace Chroma
       std::vector<bool> cache_tslice(Lt);
       for (const auto &it : params.param.prop_sources)
       {
+	// Check t_source
+	if (it.t_source < 0)
+	  throw std::runtime_error("Invalid source on PropSources");
+
 	if (it.cacheP)
 	  cache_tslice[it.t_source % Lt] = true;
       }

@@ -395,6 +395,15 @@ namespace Chroma
 	throw std::runtime_error("Unsupported `DeviceHost`");
       }
 
+      /// Return an ordering with labels 0, 1, ...
+      std::string getTrivialOrder(std::size_t N)
+      {
+	std::string r(N, 0);
+	for (std::size_t i = 0; i < N; ++i)
+	  r[i] = i % 128;
+	return r;
+      }
+
       /// Stores the subtensor supported on each node (used by class Tensor)
       template <std::size_t N>
       struct TensorPartition
@@ -801,7 +810,19 @@ namespace Chroma
       }
 
       // Empty constructor
-      Tensor() = default;
+      Tensor()
+	: order(detail::getTrivialOrder(N)),
+	  dim{},
+	  ctx(detail::getContext(OnHost)),
+	  p(std::make_shared<detail::TensorPartition<N>>(
+	    detail::TensorPartition<N>(detail::getTrivialOrder(N), {}, OnEveryoneReplicated))),
+	  dist(OnEveryoneReplicated),
+	  from{},
+	  size{},
+	  strides{},
+	  scalar{0}
+      {
+      }
 
       // Construct used by Chroma tensors (see `asTensorView`)
       Tensor(const std::string& order, Coor<N> dim, DeviceHost dev, Distribution dist,
@@ -1009,6 +1030,10 @@ namespace Chroma
 	/// Throw exception if this a fake real tensor but with a complex type `T`
 	if (isFakeReal() && detail::is_complex<T>::value)
 	  throw std::runtime_error("Invalid tensor: it is fake real and complex!");
+
+	for (auto s : size)
+	  if (s < 0)
+	    std::runtime_error("Invalid tensor size: it should be positive");
       }
 
       /// Return a fake real view of this tensor
@@ -1229,6 +1254,7 @@ namespace Chroma
 	dim = {};
 	data.reset();
 	p.reset();
+	ctx.reset();
 	from = {};
 	size = {};
 	strides = {};
@@ -1362,13 +1388,6 @@ namespace Chroma
 #else
       return nullptr;
 #endif
-    }
-
-    cudaPointerAttributes getDevPtrAttr(const void* x)
-    {
-      struct cudaPointerAttributes ptr_attr;
-      assert(cudaPointerGetAttributes(&ptr_attr, x) != cudaSuccess);
-      return ptr_attr;
     }
 
     template <typename T>
