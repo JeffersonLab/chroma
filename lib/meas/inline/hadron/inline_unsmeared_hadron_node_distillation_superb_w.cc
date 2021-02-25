@@ -363,10 +363,13 @@ namespace Chroma
       std::string        mass;         /*!< Some kind of mass label */
     };
 
-    //! Meson operator
-    struct ValUnsmearedMesonElementalOperator_t
+    //! Meson operator: spin source, spin sink, colorvector
+    struct ValUnsmearedMesonElementalOperator_t : public SB::Tensor<3, SB::ComplexD>
     {
-      multi3d<ComplexD>  op;          /*!< Colorvector source and spin sink */
+      ValUnsmearedMesonElementalOperator_t(int num_vecs = 0)
+	: SB::Tensor<3, SB::ComplexD>("Nqs", {num_vecs, Ns, Ns}, SB::OnHost, SB::OnMaster)
+      {
+      }
     };
 
 
@@ -438,13 +441,27 @@ namespace Chroma
     //! UnsmearedMesonElementalOperator reader
     void read(BinaryReader& bin, ValUnsmearedMesonElementalOperator_t& param)
     {
-      read(bin, param.op);    // the size is always written, even if 0
+	int num_vecs, q, s;
+	read(bin, num_vecs);
+	read(bin, q);
+	read(bin, s);
+	assert(s == Ns && q == Ns);
+	param = ValUnsmearedMesonElementalOperator_t(num_vecs);
+	SB::Tensor<3, SB::ComplexD> &t = param;
+	read(bin, t);
     }
 
     //! UnsmearedMesonElementalOperator write
     void write(BinaryWriter& bin, const ValUnsmearedMesonElementalOperator_t& param)
     {
-      write(bin, param.op);
+	auto kvdim = param.kvdim();
+	int num_vecs = kvdim['N'], q = kvdim['q'], s = kvdim['s'];
+	assert(s == Ns && q == Ns);
+	write(bin, num_vecs);
+	write(bin, q);
+	write(bin, s);
+	SB::Tensor<3, SB::ComplexD> t = param.reorder("Nqs");
+	write(bin, t);
     }
 
  
@@ -1035,7 +1052,7 @@ namespace Chroma
 	  // Store
 	  SerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
 	  SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
-	  val.data().op.resize(num_vecs, Ns, Ns);
+	  val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
 
 	  for (int t = 0; t < num_tslices_active; ++t)
 	  {
@@ -1057,18 +1074,10 @@ namespace Chroma
 		    key.key().mom = phases.numToMom(mom);
 		    key.key().mass = params.param.contract.mass_label;
 
-		    if (Layout::nodeNumber() == 0)
-		    {
-		      for (int N = 0; N < num_vecs; ++N)
-			for (int q = 0; q < Ns; ++q)
-			  for (int s = 0; s < Ns; ++s)
-			  {
-			    // NOTE: make sure that the order of the coordinates passed to get are the same as g5_con.order, qgmNndst
-			    SB::Complex v = g5_con.get({q, g, mom, N, n, d, s, t});
-			    val.data().op(N, q, s).elem().elem().elem() =
-			      RComplex<REAL64>(v.real(), v.imag());
-			  }
-		    }
+		    g5_con
+		      .kvslice_from_size({{'g', g}, {'m', mom}, {'n', n}, {'d', d}, {'t', t}},
+					 {{'g', 1}, {'m', 1}, {'n', 1}, {'d', 1}, {'t', 1}})
+		      .copyTo(val.data());
 
 		    qdp_db.insert(key, val);
 		  }
