@@ -27,6 +27,7 @@
 #include <array>
 #include <cmath>
 #include <cstring>
+#include <iomanip>
 #include <map>
 #include <memory>
 #include <set>
@@ -47,6 +48,7 @@ namespace Chroma
 
     using Index = superbblas::IndexType;
     using Complex = std::complex<REAL>;
+    using ComplexD = std::complex<REAL64>;
     using ComplexF = std::complex<REAL32>;
     template <std::size_t N>
     using Coor = superbblas::Coor<N>;
@@ -706,6 +708,15 @@ namespace Chroma
 	QDPIO::cout << s << std::endl;
       }
 
+      void log_mem()
+      {
+	std::stringstream ss;
+	ss << "mem usage, CPU: " << std::fixed << std::setprecision(0)
+	   << superbblas::getCpuMemUsed() / 1024 / 1024
+	   << " MiB   GPU: " << superbblas::getGpuMemUsed() / 1024 / 1024 << " MiB";
+	log(1, ss.str());
+      }
+
       /// is_complex<T>::value is true if `T` is complex
 
       template <typename T>
@@ -781,9 +792,11 @@ namespace Chroma
 	T* ptr = superbblas::allocate<T>(p->localVolume(), *ctx);
 	std::string s = repr(ptr);
 	detail::log(1, std::string("allocated ") + s);
+	detail::log_mem();
 	data = std::shared_ptr<T>(ptr, [=](const T* ptr) {
 	  superbblas::deallocate(ptr, ctx0);
 	  detail::log(1, std::string("deallocated ") + s);
+	  detail::log_mem();
 	});
       }
 
@@ -872,7 +885,7 @@ namespace Chroma
       // Return whether from != 0 or size != dim
       bool isSubtensor() const
       {
-	return from != Coor<N>{} || size != dim;
+	return (from != Coor<N>{} || size != dim);
       }
 
       // Return the dimensions of the tensor
@@ -1140,10 +1153,14 @@ namespace Chroma
 
 	T* ptr = this->data.get();
 	Tw* w_ptr = w.data.get();
-	superbblas::copy<N, Nw>(detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1,
-				order.c_str(), from, size, (const T**)&ptr, &*ctx, w.p->p.data(), 1,
-				w.order.c_str(), w.from, &w_ptr, &*w.ctx, MPI_COMM_WORLD,
-				superbblas::FastToSlow, superbblas::Copy);
+	MPI_Comm comm = (dist == OnMaster && w.dist == OnMaster ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	if (dist != OnMaster || w.dist != OnMaster || Layout::nodeNumber() == 0)
+	{
+	  superbblas::copy<N, Nw>(detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1,
+				  order.c_str(), from, size, (const T**)&ptr, &*ctx, w.p->p.data(),
+				  1, w.order.c_str(), w.from, &w_ptr, &*w.ctx, comm,
+				  superbblas::FastToSlow, superbblas::Copy);
+	}
       }
 
       // Add `this` tensor into the given one
@@ -1275,16 +1292,17 @@ namespace Chroma
 	if (dist != OnMaster)
 	  throw std::runtime_error("Only supported to write from `OnMaster` tensors");
 
-	if (scalar != T{1} || !isContiguous())
+	if (scalar != T{1} || !isContiguous() || ctx->plat != superbblas::CPU)
 	{
-	  clone().binaryWrite(bin);
+	  cloneOn(OnHost).binaryWrite(bin);
 	  return;
 	}
 
 	// Only on primary node write the data
 	std::size_t vol = superbblas::detail::volume<N>(size);
 	std::size_t disp = detail::coor2index<N>(from, dim, strides);
-	bin.writeArrayPrimaryNode((char*)&data.get()[disp], sizeof(T), vol);
+	std::size_t word_size = sizeof(typename detail::WordType<T>::type);
+	bin.writeArrayPrimaryNode((char*)&data.get()[disp], word_size, sizeof(T) / word_size * vol);
       }
 
       void print(std::string name) const
@@ -2058,7 +2076,7 @@ namespace Chroma
       PathNode tree_disps = get_tree(disps);
 
       // Get what directions are going to be used and the maximum number of displacements in memory
-      std::array<bool, Nd> active_dirs;
+      std::array<bool, Nd> active_dirs{};
       unsigned int max_active_disps = 0;
       get_tree_mem_stats(tree_disps, active_dirs, max_active_disps);
 
