@@ -210,47 +210,57 @@ namespace Chroma
 
     }
 
-
+    // Good luck following the flow of the conditional compilation macros
 #if defined QDPJIT_IS_QDPJITPTX || defined QDPJIT_IS_QDPJITNVVM
-#ifdef BUILD_QUDA
-  std::cout << "Setting CUDA device" << std::endl;
-#ifndef QDP_USE_COMM_SPLIT_INIT
-  int cuda_device = QDP_setGPU();
-#endif
-  std::cout << "Initializing QMP part" << std::endl;
-  QDP_initialize_QMP(argc, argv);
-#ifdef QDP_USE_COMM_SPLIT_INIT
-  int cuda_device = QDP_setGPUCommSplit();
-#endif
- setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
+#  ifdef BUILD_QUDA
+    std::cout << "Setting CUDA device" << std::endl;
+#    ifndef QDP_USE_COMM_SPLIT_INIT
+    int cuda_device = QDP_setGPU();
+#    endif
+    std::cout << "Initializing QMP part" << std::endl;
+    QDP_initialize_QMP(argc, argv);
+#    ifdef QDP_USE_COMM_SPLIT_INIT
+    int cuda_device = QDP_setGPUCommSplit();
+#    endif
+    setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
 
- QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")" << std::endl;
+    QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")"
+		<< std::endl;
 
-  initQudaDevice(cuda_device);
-  QDPIO::cout << "Initializing QDP-JIT GPUs" << std::endl;
-  QDP_startGPU();
-  QDPIO::cout << "Initializing QUDA memory" << std::endl;
-  initQudaMemory();
-#else
-  std::cout << "Setting device" << std::endl;
-#ifndef QDP_USE_COMM_SPLIT_INIT
-  QDP_setGPU();
-#endif
-  std::cout << "Initializing QMP part" << std::endl;
-  QDP_initialize_QMP(argc, argv);
-#ifdef QDP_USE_COMM_SPLIT_INIT
-  QDP_setGPUCommSplit();
-#endif
-  QDPIO::cout << "Initializing start GPUs" << std::endl;
-  QDP_startGPU();
-#endif
-#else
-#ifdef BUILD_QUDA
-  std::cout << "Initializing QUDA" << std::endl;
-  initQuda(-1);
-#endif
-#endif
+    initQudaDevice(cuda_device);
+    QDPIO::cout << "Initializing QDP-JIT GPUs" << std::endl;
+#    ifdef QDP_FIX_GPU_SETTING
+    QDP_startGPU(cuda_device);
+#    else
+    QDP_startGPU();
+#    endif
+    QDPIO::cout << "Initializing QUDA memory" << std::endl;
+    initQudaMemory();
 
+#  else // BUILD_QUDA
+    std::cout << "Setting device" << std::endl;
+#    ifndef QDP_USE_COMM_SPLIT_INIT
+    int dev = QDP_setGPU();
+#    endif
+    std::cout << "Initializing QMP part" << std::endl;
+    QDP_initialize_QMP(argc, argv);
+#    ifdef QDP_USE_COMM_SPLIT_INIT
+    QDP_setGPUCommSplit();
+#    endif
+    QDPIO::cout << "Initializing start GPUs" << std::endl;
+#    ifdef QDP_FIX_GPU_SETTING
+    QDP_startGPU(dev);
+#    else
+    QDP_startGPU();
+#    endif
+#  endif // BUILD_CUDA
+
+#else // defined QDPJIT_IS_QDPJITPTX || defined QDPJIT_IS_QDPJITNVVM
+#  ifdef BUILD_QUDA
+    std::cout << "Initializing QUDA" << std::endl;
+    initQuda(-1);
+#  endif
+#endif
 
 #ifdef BUILD_QPHIX
   QDPIO::cout << "Initializing QPhiX CLI Args" << std::endl;
