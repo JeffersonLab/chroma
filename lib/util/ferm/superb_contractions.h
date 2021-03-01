@@ -1697,6 +1697,10 @@ namespace Chroma
 	{
 	  // Read a single time-slice and colorvec
 	  KeyTimeSliceColorVec_t key(t_slice, colorvec);
+	  if (!eigen_source.exist(key))
+	    throw std::runtime_error(
+	      "no colorvec exists with key t_slice= " + std::to_string(t_slice) +
+	      " colorvec= " + std::to_string(colorvec));
 	  eigen_source.get(key, tnat);
 
 	  // Correct ordering
@@ -1754,15 +1758,15 @@ namespace Chroma
       for (int col = 0; col < max_step; col++)
 	quark_solns[col].reset(new LatticeFermion);
 
+      StopWatch snarss1;
+      snarss1.reset();
+      snarss1.start();
+
       for (int spin_source : spin_sources)
       {
 	for (int n0 = 0, n_step = std::min(max_rhs, num_vecs); n0 < num_vecs;
 	     n0 += n_step, n_step = std::min(n_step, num_vecs - n0))
 	{
-	  StopWatch snarss1;
-	  snarss1.reset();
-	  snarss1.start();
-
 	  for (int n = n0, col = 0; col < n_step; ++n, ++col)
 	  {
 	    // Put the colorvec sources for the t_source on chis for spin `spin_source`
@@ -1782,11 +1786,6 @@ namespace Chroma
 	       std::vector<std::shared_ptr<const LatticeFermion>>(chis.begin(),
 								  chis.begin() + n_step));
 
-	  snarss1.stop();
-	  QDPIO::cout << "Time to compute inversions for spin_source= " << spin_source
-		      << "  colorvec_src= " << n0 << " to " << n0 + n_step - 1
-		      << "  time = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
-
 	  for (int n = n0, col = 0; col < n_step; ++n, ++col)
 	  {
 	    // psi[n=n] = quark_solns[col][t=first_tslice+(0:n_tslice_out-1)]
@@ -1797,6 +1796,11 @@ namespace Chroma
 	  }
 	}
       }
+
+      snarss1.stop();
+      QDPIO::cout << "Time to compute inversions for " << spin_sources.size()
+		  << " spin sources and " << num_vecs
+		  << " colorvecs : " << snarss1.getTimeInSeconds() << " secs" << std::endl;
 
       return psi;
     }
