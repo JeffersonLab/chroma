@@ -1084,7 +1084,7 @@ namespace Chroma
 	    SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
 	    val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
 
-	    for (int t = tfrom; t < tfrom + tsize; ++t)
+	    for (int t = 0; t < tsize; ++t)
 	    {
 	      for (int g = 0; g < gammas.size(); ++g)
 	      {
@@ -1096,7 +1096,7 @@ namespace Chroma
 		    {
 		      key.key().derivP = params.param.contract.use_derivP;
 		      key.key().t_sink = t_sink;
-		      key.key().t_slice = (t + first_tslice_active) % Lt;
+		      key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
 		      key.key().t_source = t_source;
 		      key.key().colorvec_src = n;
 		      key.key().gamma = gammas[g];

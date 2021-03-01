@@ -1745,6 +1745,9 @@ namespace Chroma
 	throw std::runtime_error("Expected one time-slice");
       const int num_vecs = chi.kvdim()['n'];
 
+      if (n_tslice_out > Layout::lattSize()[3])
+	throw std::runtime_error("Too many tslices");
+
       Tensor<Nd + 5, COMPLEX_OUT> psi(
 	order_out,
 	latticeSize<Nd + 5>(
@@ -2218,6 +2221,12 @@ namespace Chroma
     void union_interval(Index from0, Index size0, Index from1, Index size1, Index dim, Index& fromr,
 			Index& sizer)
     {
+      // Check inputs
+      if (size0 > dim || size1 > dim)
+	throw std::runtime_error(
+	  "Invalid interval to union! Some of input intervals exceeds the lattice dimension");
+
+      // Normalize from and take as from0 the leftmost interval of the two input intervals
       from0 = detail::normalize_coor(from0, dim);
       from1 = detail::normalize_coor(from1, dim);
       if (from0 > from1)
@@ -2225,14 +2234,26 @@ namespace Chroma
 	std::swap(from0, from1);
 	std::swap(size0, size1);
       }
-      Index fromra = std::min(from0, from1);
-      Index sizera = std::max(from0 + size0, from1 + size1) - fromr;
-      Index fromrb = std::min(from0 + dim, from1);
-      Index sizerb = std::max(from0 + dim + size0, from1 + size1) - fromr;
-      fromr = (fromra <= fromrb ? fromra : fromrb);
-      sizer = (fromra <= fromrb ? sizera : sizerb);
-    }
 
+      // Return the shortest interval resulting from the leftmost point of the
+      // first interval and the rightmost point of both intervals, and the
+      // leftmost point of the second interval and the rightmost point of both
+      // intervals
+
+      Index fromra = from0;
+      Index sizera = std::max(from0 + size0, from1 + size1) - from0;
+      Index fromrb = from1;
+      Index sizerb = std::max(from0 + dim + size0, from1 + size1) - from1;
+      fromr = (sizera <= sizerb ? fromra : fromrb);
+      sizer = (sizera <= sizerb ? sizera : sizerb);
+
+      // Normalize the output if the resulting interval is the whole dimension
+      if (sizer >= dim)
+      {
+	fromr = 0;
+	sizer = dim;
+      }
+    }
   }
 }
 
