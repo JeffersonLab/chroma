@@ -61,7 +61,7 @@
 #include "meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h"
 #include "meas/inline/hadron/inline_prop_and_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_prop_and_matelem_distillation_w.h"
-#include "meas/inline/hadron/inline_prop_and_matelem_distillation_w_old.h"
+#include "meas/inline/hadron/inline_prop_and_matelem_distillation_superb_w.h"
 #include "meas/inline/hadron/inline_matelem_distillation_w.h"
 #include "meas/inline/hadron/inline_prop_and_matelem_distillation2_w.h"
 #include "meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h"
@@ -163,12 +163,14 @@ namespace Chroma
 	success &= InlinePropMatElemColorVecEnv::registerAll();
 	success &= InlinePropMatElemPtColorVecEnv::registerAll();
 	success &= InlinePropAndMatElemColorVecEnv::registerAll();
-	success &= InlinePropAndMatElemDistillationEnv::registerAll();
-        success &= InlineUnsmearedHadronNodeDistillationSuperbEnv::registerAll();
+#ifdef BUILD_SB
+	success &= InlinePropAndMatElemDistillationSuperbEnv::registerAll();
+	success &= InlineUnsmearedHadronNodeDistillationSuperbEnv::registerAll();
+#endif
 #ifndef QDP_IS_QDPJIT_NO_NVPTX
 	success &= InlineMatElemDistillationEnv::registerAll();
-	success &= InlinePropAndMatElemDistillationOldEnv::registerAll();
-        success &= InlineUnsmearedHadronNodeDistillationEnv::registerAll();
+	success &= InlinePropAndMatElemDistillationEnv::registerAll();
+	success &= InlineUnsmearedHadronNodeDistillationEnv::registerAll();
 #endif
 #ifndef QDP_IS_QDPJIT
 	success &= InlinePropAndMatElemDistillation2Env::registerAll();

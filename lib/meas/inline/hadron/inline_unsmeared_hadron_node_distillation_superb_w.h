@@ -12,6 +12,8 @@
 #include "io/qprop_io.h"
 #include "io/xml_group_reader.h"
 
+#ifdef BUILD_SB
+
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
@@ -116,4 +118,6 @@ namespace Chroma
 
   } // namespace InlineUnsmearedHadronNodeDistillationSuperbEnv
 }
+
+#endif // BUILD_SB
 #endif

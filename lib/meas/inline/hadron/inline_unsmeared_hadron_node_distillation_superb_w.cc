@@ -31,6 +31,8 @@
 #include "meas/inline/io/named_objmap.h"
 #include <set>
 
+#ifdef BUILD_SB
+
 namespace Chroma 
 { 
   /*!
@@ -1252,3 +1254,5 @@ namespace Chroma
   /*! @} */  // end of group hadron
 
 } // namespace Chroma
+
+#endif // BUILD_SB

@@ -12,7 +12,7 @@
 #define CHROMABASE_INCLUDE
 
 #include "qdp.h"
-// #include "chroma_config.h"   // turn off by default using config file
+#include "chroma_config.h"
 
 #include <map>
 #include <exception>

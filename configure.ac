@@ -416,6 +416,15 @@ AC_ARG_WITH(mg-proto,
    [ MGPROTO_DIR="not_given" ]
 )
 
+AC_ARG_WITH(superbblas,
+  AC_HELP_STRING(
+    [--with-superbblas=DIR],
+    [Build Chroma SUPERB tasks with superbblas installed in DIR]
+  ),
+  [SB_HOME="$with_superbblas"],
+  [SB_HOME="not_given" ]
+)
+
 if test "X${QDPCVER_HOME}X" = "XX" ; then
   AC_MSG_NOTICE([QDPCVER_HOME variable not set.])
 else
@@ -1240,17 +1249,11 @@ then
      AC_MSG_WARN([xmldiff not found in your PATH. make xcheck may fail])
 fi
 
-
 ###############################################
-# 
-# QUDA upport
-#
+# CUDA support
 ################################################
-if test "X${quda_enabled}X" = "XyesX" ;
+if test "X${with_cuda}X" != "XnoX" ;
 then
-
-   AC_MSG_NOTICE([ Using QUDA Library in ${QUDA_HOME} ])
-
    case "$host" in 
    x86_64*|ppc64*|powerpc64*)
         CUDA_LIBDIR="${CUDA_HOME}/lib64"	
@@ -1259,19 +1262,33 @@ then
    CUDA_LIBDIR="${CUDA_HOME}/lib"
    ;;	
    esac
-	
    AC_MSG_NOTICE([ Linking to CUDA Runtime in ${CUDA_LIBDIR}])
 
-   AC_DEFINE([BUILD_QUDA],[], [Build with the BU QUDA Library])  
-   AC_SUBST(QUDA_CXXFLAGS, ["-I${QUDA_HOME}/include -I${CUDA_HOME}/include"] )
-   AC_SUBST(QUDA_LDFLAGS,  ["-L${CUDA_LIBDIR} -L${QUDA_HOME}/lib -Wl,-rpath,${CUDA_LIBDIR} -Wl,-rpath,${QUDA_HOME}/lib"] )
-   AC_SUBST(QUDA_LIBS,     ["-lquda -lcublas -lcudart -lcuda"])
+   AC_SUBST(CUDA_CXXFLAGS, ["-I${CUDA_HOME}/include"] )
+   AC_SUBST(CUDA_LDFLAGS,  ["-L${CUDA_LIBDIR} -Wl,-rpath,${CUDA_LIBDIR}"] )
+   AC_SUBST(CUDA_LIBS,     ["-lcublas -lcudart -lcuda"])
+fi
 
+###############################################
+# 
+# QUDA support
+#
+################################################
+if test "X${quda_enabled}X" = "XyesX" ;
+then
+   AC_MSG_NOTICE([ Using QUDA Library in ${QUDA_HOME} ])
+
+   AC_DEFINE([BUILD_QUDA],[], [Build with the BU QUDA Library])  
+   AC_SUBST(QUDA_CXXFLAGS, ["-I${QUDA_HOME}/include"] )
+   AC_SUBST(QUDA_LDFLAGS,  ["-L${QUDA_HOME}/lib -Wl,-rpath,${QUDA_HOME}/lib"] )
+   AC_SUBST(QUDA_LIBS,     ["-lquda"])
 fi
 
 AM_CONDITIONAL(BUILD_QUDA,
 	[test "x${quda_enabled}x" = "xyesx" ])
 
+AM_CONDITIONAL(BUILD_WITH_CUDA,
+	[test "x${quda_enabled}x" = "xyesx" -o "x${with_cuda}x" != "xnox" ])
 
 if test "X${MGPROTO_DIR}X" != "Xnot_givenX";
 then 
@@ -1334,6 +1351,26 @@ then
  AC_SUBST(QOP_MG_ENABLED,[yes])	     
  AC_DEFINE([BUILD_QOP_MG],[], [Build with the QDP MG Library])  	
 fi
+
+################################################################################
+# Superbblas 
+################################################################################
+
+if test "X${SB_HOME}X" != "Xnot_givenX";
+then
+  AC_SUBST(SB_CXXFLAGS, "-I${SB_HOME}/include" ) 
+  AC_SUBST(SB_LDFLAGS, "-L${SB_HOME}/lib" )
+  AC_SUBST(SB_LIBS,"-lsuperbblas")
+fi
+
+if test "X${with_superbblas}X" != "XnoX";
+then
+  AC_MSG_NOTICE([ Enabling SUPERB tasks using superbblas installation in ${SB_HOME}])
+  AC_DEFINE([BUILD_SB], [], [Build SUPERB tasks])
+fi
+
+AM_CONDITIONAL(BUILD_SB,
+	[test "x${with_superbblas}x" != "xnox" ])
 
 AM_CONDITIONAL(BUILD_QOP_MG,
 	[test "x${BUILD_QOP_MG}x" = "xyesx" ])

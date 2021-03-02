@@ -5,20 +5,20 @@
  * Propagator calculation in distillation
  */
 
-#ifndef __inline_prop_and_matelem_distillation_w_old_h__
-#define __inline_prop_and_matelem_distillation_w_old_h__
-
-#ifndef QDP_IS_QDPJIT_NO_NVPTX
+#ifndef __inline_prop_and_matelem_distillation_superb_w_h__
+#define __inline_prop_and_matelem_distillation_superb_w_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
 #include "io/xml_group_reader.h"
 
+#ifdef BUILD_SB
+
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlinePropAndMatElemDistillationOldEnv 
+  namespace InlinePropAndMatElemDistillationSuperbEnv 
   {
     bool registerAll();
 
@@ -94,6 +94,6 @@ namespace Chroma
 
 }
 
-#endif // QDPJIT
+#endif // BUILD_SB
 
-#endif // Chroma
+#endif
