@@ -67,6 +67,7 @@ namespace Chroma
 	  int                       num_tries;              /*!< In case of bad things happening in the solution vectors, do retries */
 	  int                       max_rhs;                /*! maximum number of linear systems solved simultaneously */
 	  int                       max_tslices_in_contraction;  /*! maximum number of contracted tslices simultaneously */
+	  bool                      use_genprop4_format;    /*!< Use the efficient genprop4 format instead of the traditional one */
 	};
 
 	std::vector<KeySolnProp_t>  prop_sources;           /*!< Sources */

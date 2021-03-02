@@ -157,6 +157,11 @@ namespace Chroma
       if( inputtop.count("max_tslices_in_contraction") == 1 ) {
         read(inputtop, "max_tslices_in_contraction", input.max_tslices_in_contraction);
       }
+
+      input.use_genprop4_format = false;
+      if( inputtop.count("use_genprop4_format") == 1 ) {
+        read(inputtop, "use_genprop4_format", input.use_genprop4_format);
+      }
     }
 
     //! Propagator output
@@ -171,6 +176,7 @@ namespace Chroma
       write(xml, "num_tries", input.num_tries);
       write(xml, "max_rhs", input.max_rhs);
       write(xml, "max_tslices_in_contraction", input.max_tslices_in_contraction);
+      write(xml, "use_genprop4_format", input.use_genprop4_format);
 
       pop(xml);
     }
@@ -464,70 +470,94 @@ namespace Chroma
 	write(bin, t);
     }
 
- 
-    //----------------------------------------------------------------------------------
     //----------------------------------------------------------------------------
-    //! Map holding expressions. Key is the mom, val is some unique counter
-    typedef MapObjectMemory< multi1d<int>, int >  MapTwoQuarkMom_t;
+    //! Generalized propagator operator (new UnsmearedMesonElementalOperator)
+    struct KeyGenProp4ElementalOperator_t {
+      int t_sink;		     /*!< Source time slice */
+      int t_slice;		     /*!< Propagator time slice */
+      int t_source;		     /*!< Source time slice */
+      int g;			     /*!< DR gamma */
+      std::vector<int> displacement; /*!< Displacement dirs of right colorstd::vector */
+      multi1d<int> mom;		     /*!< D-1 momentum of this operator */
+      std::string mass;		     /*!< A mass label */
+    };
 
-    //----------------------------------------------------------------------------------
-    //----------------------------------------------------------------------------------
-    //! Twoquark field
-    struct KeyTwoQuarkGamma_t
+    //! Generalized propagator operator
+    //! Meson operator: spin source, spin sink, colorvector source, colorvector sink
+    struct ValGenProp4ElementalOperator_t : public SB::Tensor<4, SB::ComplexD>
     {
-      KeyTwoQuarkGamma_t() {}
-      KeyTwoQuarkGamma_t(int g) : gamma(g) {}
-
-      int    gamma;   /*!< The gamma in Gamma(gamma) - a number from [0 ... Ns*Ns) */
+      ValGenProp4ElementalOperator_t(int num_vecs_source = 0, int num_vecs_sink = 0)
+	: SB::Tensor<4, SB::ComplexD>("Nnqs", {num_vecs_sink, num_vecs_source, Ns, Ns}, SB::OnHost,
+				      SB::OnMaster)
+      {
+      }
     };
 
     //----------------------------------------------------------------------------
-    //! Reader
-    void read(BinaryReader& bin, KeyTwoQuarkGamma_t& op)
+    StandardOutputStream& operator<<(StandardOutputStream& os,
+				     const KeyGenProp4ElementalOperator_t& d)
     {
-      read(bin, op.gamma);
-    }
+      os << "GenProp4:"
+	 << " t_sink= " << d.t_sink << " t_slice= " << d.t_slice << " t_source= " << d.t_source
+	 << " g= " << d.g << " displacement= " << d.displacement << " mom= " << d.mom
+	 << " mass= " << d.mass;
 
-    //! Writer
-    void write(BinaryWriter& bin, const KeyTwoQuarkGamma_t& op)
-    {
-      write(bin, op.gamma);
-    }
-
-
-    //----------------------------------------------------------------------------
-    //! Map holding expressions. Key is the two-quark, val is the mom
-    typedef MapObjectMemory< KeyTwoQuarkGamma_t, MapTwoQuarkMom_t >  MapTwoQuarkGammaMom_t;
-
-
-    //----------------------------------------------------------------------------------
-    //----------------------------------------------------------------------------------
-    //! Twoquark field
-    struct KeyTwoQuarkDisp_t
-    {
-      KeyTwoQuarkDisp_t() {}
-      KeyTwoQuarkDisp_t(const std::vector<int>& d) : deriv(d) {}
-
-      std::vector<int>   deriv;   /*!< Left-right derivative path. This is 1-based. */
-    };
-
-    //----------------------------------------------------------------------------
-    //! Reader
-    void read(BinaryReader& bin, KeyTwoQuarkDisp_t& op)
-    {
-      read(bin, op.deriv);
-    }
-  
-    //! Writer
-    void write(BinaryWriter& bin, const KeyTwoQuarkDisp_t& op)
-    {
-      write(bin, op.deriv);
+      return os;
     }
 
     //----------------------------------------------------------------------------
-    //! Map holding expressions. Key is the two-quark, val is the weight.
-    typedef MapObjectMemory<KeyTwoQuarkDisp_t, MapTwoQuarkGammaMom_t>  MapTwoQuarkDispGammaMom_t;
+    //! KeyGenProp4ElementalOperator reader
+    void read(BinaryReader& bin, KeyGenProp4ElementalOperator_t& param)
+    {
+      read(bin, param.t_sink);
+      read(bin, param.t_slice);
+      read(bin, param.t_source);
+      read(bin, param.g);
+      read(bin, param.displacement);
+      read(bin, param.mom);
+      readDesc(bin, param.mass);
+    }
 
+    //! GenProp4ElementalOperator write
+    void write(BinaryWriter& bin, const KeyGenProp4ElementalOperator_t& param)
+    {
+      write(bin, param.t_sink);
+      write(bin, param.t_slice);
+      write(bin, param.t_source);
+      write(bin, param.g);
+      write(bin, param.displacement);
+      write(bin, param.mom);
+      writeDesc(bin, param.mass);
+    }
+
+    //----------------------------------------------------------------------------
+    //! PropElementalOperator reader
+    void read(BinaryReader& bin, ValGenProp4ElementalOperator_t& param)
+    {
+      int num_vecs_source, num_vecs_sink, q, s;
+      read(bin, num_vecs_sink);
+      read(bin, num_vecs_source);
+      read(bin, q);
+      read(bin, s);
+      assert(s == Ns && q == Ns);
+      param = ValGenProp4ElementalOperator_t(num_vecs_source, num_vecs_sink);
+      SB::Tensor<4, SB::ComplexD>& t = param;
+      read(bin, t);
+    }
+
+    //! GenProp4ElementalOperator write
+    void write(BinaryWriter& bin, const ValGenProp4ElementalOperator_t& param)
+    {
+      auto kvdim = param.kvdim();
+      int num_vecs_source = kvdim['n'], num_vecs_sink = kvdim['N'], q = kvdim['q'], s = kvdim['s'];
+      assert(s == Ns && q == Ns);
+      write(bin, num_vecs_sink);
+      write(bin, num_vecs_source);
+      write(bin, q);
+      write(bin, s);
+      SB::Tensor<4, SB::ComplexD> t = param.reorder("Nnqs");
+      write(bin, t);
+    }
 
     //-------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------
@@ -655,6 +685,8 @@ namespace Chroma
 	params.param.contract.num_tries = 1;
       }
 
+      if (params.param.contract.use_derivP && params.param.contract.use_genprop4_format)
+	throw std::runtime_error("`use_genprop4_format` does not support `use_derivP` for now");
 
       //
       // Read in the source along with relevant information.
@@ -901,30 +933,60 @@ namespace Chroma
       // DB storage
       //
       BinaryStoreDB< SerialDBKey<KeyUnsmearedMesonElementalOperator_t>, SerialDBData<ValUnsmearedMesonElementalOperator_t> > qdp_db;
+      BinaryStoreDB< SerialDBKey<KeyGenProp4ElementalOperator_t>, SerialDBData<ValGenProp4ElementalOperator_t> > qdp4_db;
 
       // Open the file, and write the meta-data and the binary for this operator
-      if (! qdp_db.fileExists(params.named_obj.dist_op_file))
+      if (!params.param.contract.use_genprop4_format)
       {
-	XMLBufferWriter file_xml;
+	if (!qdp_db.fileExists(params.named_obj.dist_op_file))
+	{
+	  XMLBufferWriter file_xml;
 
-	push(file_xml, "DBMetaData");
-	write(file_xml, "id", std::string("unsmearedMesonElemOp"));
-	write(file_xml, "lattSize", QDP::Layout::lattSize());
-	write(file_xml, "decay_dir", decay_dir);
-	proginfo(file_xml);    // Print out basic program info
-	write(file_xml, "Config_info", gauge_xml);
-	pop(file_xml);
+	  push(file_xml, "DBMetaData");
+	  write(file_xml, "id", std::string("unsmearedMesonElemOp"));
+	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  write(file_xml, "decay_dir", decay_dir);
+	  proginfo(file_xml); // Print out basic program info
+	  write(file_xml, "Config_info", gauge_xml);
+	  pop(file_xml);
 
-	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size());
+	  std::string file_str(file_xml.str());
+	  qdp_db.setMaxUserInfoLen(file_str.size());
 
-	qdp_db.open(params.named_obj.dist_op_file, O_RDWR | O_CREAT, 0664);
+	  qdp_db.open(params.named_obj.dist_op_file, O_RDWR | O_CREAT, 0664);
 
-	qdp_db.insertUserdata(file_str);
+	  qdp_db.insertUserdata(file_str);
+	}
+	else
+	{
+	  qdp_db.open(params.named_obj.dist_op_file, O_RDWR, 0664);
+	}
       }
       else
       {
-	qdp_db.open(params.named_obj.dist_op_file, O_RDWR, 0664);
+	if (!qdp4_db.fileExists(params.named_obj.dist_op_file))
+	{
+	  XMLBufferWriter file_xml;
+
+	  push(file_xml, "DBMetaData");
+	  write(file_xml, "id", std::string("genprop4ElemOp"));
+	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  write(file_xml, "decay_dir", decay_dir);
+	  proginfo(file_xml); // Print out basic program info
+	  write(file_xml, "Config_info", gauge_xml);
+	  pop(file_xml);
+
+	  std::string file_str(file_xml.str());
+	  qdp4_db.setMaxUserInfoLen(file_str.size());
+
+	  qdp4_db.open(params.named_obj.dist_op_file, O_RDWR | O_CREAT, 0664);
+
+	  qdp4_db.insertUserdata(file_str);
+	}
+	else
+	{
+	  qdp4_db.open(params.named_obj.dist_op_file, O_RDWR, 0664);
+	}
       }
 
       QDPIO::cout << "Finished opening distillation file" << std::endl;
@@ -1079,37 +1141,74 @@ namespace Chroma
 	    snarss1.reset();
 	    snarss1.start();
 
-	    // Store
-	    SerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
-	    SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
-	    val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
-
-	    for (int t = 0; t < tsize; ++t)
+	    if (!params.param.contract.use_genprop4_format)
 	    {
-	      for (int g = 0; g < gammas.size(); ++g)
+	      // Store
+	      SerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
+	      SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
+	      val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
+
+	      for (int t = 0; t < tsize; ++t)
 	      {
-		for (int mom = 0; mom < phases.numMom(); ++mom)
+		for (int g = 0; g < gammas.size(); ++g)
 		{
-		  for (int d = 0; d < disps_perm.size(); ++d)
+		  for (int mom = 0; mom < phases.numMom(); ++mom)
 		  {
-		    for (int n = 0; n < num_vecs; ++n)
+		    for (int d = 0; d < disps_perm.size(); ++d)
 		    {
-		      key.key().derivP = params.param.contract.use_derivP;
+		      for (int n = 0; n < num_vecs; ++n)
+		      {
+			key.key().derivP = params.param.contract.use_derivP;
+			key.key().t_sink = t_sink;
+			key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
+			key.key().t_source = t_source;
+			key.key().colorvec_src = n;
+			key.key().gamma = gammas[g];
+			key.key().displacement = disps[disps_perm[d]];
+			key.key().mom = phases.numToMom(mom);
+			key.key().mass = params.param.contract.mass_label;
+
+			g5_con
+			  .kvslice_from_size({{'g', g}, {'m', mom}, {'n', n}, {'d', d}, {'t', t}},
+					     {{'g', 1}, {'m', 1}, {'n', 1}, {'d', 1}, {'t', 1}})
+			  .copyTo(val.data());
+
+			qdp_db.insert(key, val);
+		      }
+		    }
+		  }
+		}
+	      }
+	    }
+	    else
+	    {
+	      // Store
+	      SerialDBKey<KeyGenProp4ElementalOperator_t> key;
+	      SerialDBData<ValGenProp4ElementalOperator_t> val;
+	      val.data() = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
+
+	      for (int t = 0; t < tsize; ++t)
+	      {
+		for (int g = 0; g < gammas.size(); ++g)
+		{
+		  for (int mom = 0; mom < phases.numMom(); ++mom)
+		  {
+		    for (int d = 0; d < disps_perm.size(); ++d)
+		    {
 		      key.key().t_sink = t_sink;
 		      key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
 		      key.key().t_source = t_source;
-		      key.key().colorvec_src = n;
-		      key.key().gamma = gammas[g];
+		      key.key().g = gammas[g];
 		      key.key().displacement = disps[disps_perm[d]];
 		      key.key().mom = phases.numToMom(mom);
 		      key.key().mass = params.param.contract.mass_label;
 
 		      g5_con
-			.kvslice_from_size({{'g', g}, {'m', mom}, {'n', n}, {'d', d}, {'t', t}},
-					   {{'g', 1}, {'m', 1}, {'n', 1}, {'d', 1}, {'t', 1}})
+			.kvslice_from_size({{'g', g}, {'m', mom}, {'d', d}, {'t', t}},
+					   {{'g', 1}, {'m', 1}, {'d', 1}, {'t', 1}})
 			.copyTo(val.data());
 
-		      qdp_db.insert(key, val);
+		      qdp4_db.insert(key, val);
 		    }
 		  }
 		}
@@ -1131,7 +1230,10 @@ namespace Chroma
       }
 
       // Close db
-      qdp_db.close();
+      if (!params.param.contract.use_genprop4_format)
+	qdp_db.close();
+      else
+	qdp4_db.close();
 
       // Close the xml output file
       pop(xml_out);     // UnsmearedHadronNode
