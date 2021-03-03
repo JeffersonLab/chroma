@@ -1810,7 +1810,7 @@ namespace Chroma
 	for (int colorvec = 0; colorvec < n_colorvecs; ++colorvec)
 	{
 	  // Read a single time-slice and colorvec
-	  KeyTimeSliceColorVec_t key(t_slice, colorvec % 32); // TEMP!!!!
+	  KeyTimeSliceColorVec_t key(t_slice, colorvec);
 	  if (!eigen_source.exist(key))
 	    throw std::runtime_error(
 	      "no colorvec exists with key t_slice= " + std::to_string(t_slice) +
