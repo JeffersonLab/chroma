@@ -421,8 +421,8 @@ AC_ARG_WITH(superbblas,
     [--with-superbblas=DIR],
     [Build Chroma SUPERB tasks with superbblas installed in DIR]
   ),
-  [SB_HOME="$with_superbblas"],
-  [SB_HOME="not_given" ]
+  [ SB_HOME="${with_superbblas}" ],
+  [ with_superbblas="no" ]
 )
 
 if test "X${QDPCVER_HOME}X" = "XX" ; then
@@ -1356,17 +1356,19 @@ fi
 # Superbblas 
 ################################################################################
 
-if test "X${SB_HOME}X" != "Xnot_givenX";
+if test "X${SB_HOME}X" != "XX";
 then
   AC_SUBST(SB_CXXFLAGS, "-I${SB_HOME}/include" ) 
   AC_SUBST(SB_LDFLAGS, "-L${SB_HOME}/lib" )
   AC_SUBST(SB_LIBS,"-lsuperbblas")
-fi
-
-if test "X${with_superbblas}X" != "XnoX";
-then
   AC_MSG_NOTICE([ Enabling SUPERB tasks using superbblas installation in ${SB_HOME}])
   AC_DEFINE([BUILD_SB], [], [Build SUPERB tasks])
+else
+  if test "X${with_superbblas}X" != "XnoX";
+  then
+    AC_MSG_NOTICE([ Enabling SUPERB tasks using superbblas installation given in the CXXFLAGS, LDFLAGS, and LIBS flags ])
+    AC_DEFINE([BUILD_SB], [], [Build SUPERB tasks])
+  fi
 fi
 
 AM_CONDITIONAL(BUILD_SB,
