@@ -274,8 +274,8 @@ AC_ARG_WITH(cuda,
       [--with-cuda=<DIR>],
       [Use CUDA installation in DIR]
    ),
-   [ CUDA_HOME=${with_cuda} ],
-   [ CUDA_HOME="/usr/local/cuda" ]
+   [ ],
+   [ with_cuda="no" ]
 )
 
 
@@ -1254,6 +1254,13 @@ fi
 ################################################
 if test "X${with_cuda}X" != "XnoX" ;
 then
+   if test "X${with_cuda}X" != "XX" ;
+   then
+      CUDA_HOME="${with_cuda}"
+   else
+      CUDA_HOME="/usr/local/cuda"
+   fi
+
    case "$host" in 
    x86_64*|ppc64*|powerpc64*)
         CUDA_LIBDIR="${CUDA_HOME}/lib64"	
