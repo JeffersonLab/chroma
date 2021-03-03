@@ -395,6 +395,18 @@ namespace Chroma
 	throw std::runtime_error("Unsupported `DeviceHost`");
       }
 
+      /// Return if two devices are the same
+
+      bool is_same(DeviceHost a, DeviceHost b) 
+      {
+#  ifdef QDP_IS_QDPJIT
+	return a == b;
+#  else
+	// Without gpus, OnHost and OnDefaultDevice means on cpu.
+	return true;
+#  endif
+      }
+
       /// Return an ordering with labels 0, 1, ...
       std::string getTrivialOrder(std::size_t N)
       {
@@ -441,6 +453,18 @@ namespace Chroma
 	std::size_t localVolume() const
 	{
 	  return superbblas::detail::volume(p[Layout::nodeNumber()][1]);
+	}
+
+	/// Return the first coordinate store locally
+	Coor<N> localFrom() const
+	{
+	  return p[Layout::nodeNumber()][0];
+	}
+
+	/// Return the number of elements store locally in each dimension
+	Coor<N> localSize() const
+	{
+	  return p[Layout::nodeNumber()][1];
 	}
 
 	/// Insert a new non-distributed dimension
@@ -712,10 +736,13 @@ namespace Chroma
 	if (log_level < level)
 	  return;
 	QDPIO::cout << s << std::endl;
+	QDPIO::cout.flush();
       }
 
       void log_mem()
       {
+	if (!superbblas::getTrackingMemory())
+	  return;
 	std::stringstream ss;
 	ss << "mem usage, CPU: " << std::fixed << std::setprecision(0)
 	   << superbblas::getCpuMemUsed() / 1024 / 1024
@@ -768,12 +795,15 @@ namespace Chroma
       T scalar;		 ///< Scalar factor of the tensor
 
       // Return a string describing the tensor
-      std::string repr(T* ptr) const
+      std::string repr(T* ptr = nullptr) const
       {
 	using namespace detail::repr;
 	std::stringstream ss;
-	ss << "Tensor{data:" << ptr << ", order:" << order << ", dim:" << dim << ", dist:" << dist
-	   << "}";
+	ss << "Tensor{";
+	if (ptr)
+	  ss << "data:" << ptr << ", ";
+	std::size_t sizemb = p->localVolume() * sizeof(T) / 1024 / 1024;
+	ss << "order:" << order << ", dim:" << dim << ", dist:" << dist << ", local_storage:" << sizemb << " MiB}";
 	return ss.str();
       }
 
@@ -793,9 +823,9 @@ namespace Chroma
 	superbblas::Context ctx0 = *ctx;
 	p = std::make_shared<detail::TensorPartition<N>>(
 	  detail::TensorPartition<N>(order, dim, dist));
+	std::string s = repr();
+	detail::log(1, std::string("allocating ") + s);
 	T* ptr = superbblas::allocate<T>(p->localVolume(), *ctx);
-	std::string s = repr(ptr);
-	detail::log(1, std::string("allocated ") + s);
 	detail::log_mem();
 	data = std::shared_ptr<T>(ptr, [=](const T* ptr) {
 	  superbblas::deallocate(ptr, ctx0);
@@ -1282,6 +1312,38 @@ namespace Chroma
 	return true;
       }
 
+      /// Return a copy of this tensor if it does not have the same type, the same order, or is not on the given device or distribution
+      /// \param new_order: dimension labels of the new tensor
+      /// \param new_dev: device
+      /// \param new_dist: distribution
+      /// \tparam Tn: new precision
+
+      template <typename Tn = T, typename std::enable_if<std::is_same<T, Tn>::value, bool>::type = true>
+      Tensor<N, Tn> make_sure(Maybe<std::string> new_order = none, Maybe<DeviceHost> new_dev = none,
+			      Maybe<Distribution> new_dist = none) const
+      {
+	if (new_order.getSome(order) != order || !detail::is_same(new_dev, getDev()) ||
+	    new_dist.getSome(dist) != dist)
+	{
+	  Tensor<N, Tn> r = like_this(new_order, new_dev, new_dist);
+	  copyTo(r);
+	  return r;
+	}
+	else
+	{
+	  return *this;
+	}
+      }
+
+      template <typename Tn = T, typename std::enable_if<!std::is_same<T, Tn>::value, bool>::type = true>
+      Tensor<N, Tn> make_sure(Maybe<std::string> new_order = none, Maybe<DeviceHost> new_dev = none,
+			      Maybe<Distribution> new_dist = none) const
+      {
+	Tensor<N, Tn> r = like_this<Tn>(new_order, new_dev, new_dist);
+	copyTo(r);
+	return r;
+      }
+
       /// Get where the tensor is stored
 
       DeviceHost getDev() const
@@ -1506,6 +1568,59 @@ namespace Chroma
       return r;
     }
 
+    /// Return a tensor filled with the value of the function applied to each element
+    /// \param order: dimension labels, they should start with "xyztX"
+    /// \param size: length of each dimension
+    /// \param dev: either OnHost or OnDefaultDevice
+    /// \param func: function (Coor<N-1>) -> COMPLEX
+
+    template <std::size_t N, typename COMPLEX, typename Func>
+    Tensor<N, COMPLEX> fillLatticeField(std::string order, std::map<char, int> size, DeviceHost dev,
+					Func func)
+    {
+      static_assert(N >= Nd + 1, "The minimum number of dimensions should be Nd+1");
+      if (order.size() < Nd + 1 || order.compare(0, 5, "xyztX") != 0)
+	throw std::runtime_error("Wrong `order`, it should start with xyztX");
+
+      // Get final object dimension
+      Coor<N> dim = latticeSize<N>(order, size);
+
+      // Populate the tensor on CPU
+      Tensor<N, COMPLEX> r(order, dim, OnHost);
+      Coor<N> local_latt_size = r.p->localSize(); // local dimensions for xyztX
+      Coor<N> stride =
+	superbblas::detail::get_strides<Nd + 1>(local_latt_size, superbblas::FastToSlow);
+      Coor<N> local_latt_from =
+	r.p->localFrom(); // coordinates of first elements stored locally for xyztX
+      std::size_t vol = superbblas::detail::volume(local_latt_size);
+      Index nX = r.kvdim()['X'];
+      COMPLEX* ptr = r.data();
+
+#ifdef _OPENMP
+#    pragma omp parallel for schedule(static)
+#endif
+      for (std::size_t i = 0; i < vol; ++i)
+      {
+	// Get the global coordinates
+	using superbblas::detail::operator+;
+	Coor<N> c = superbblas::detail::normalize_coor(
+	  superbblas::detail::index2coor(i, local_latt_size, stride) + local_latt_from, dim);
+
+	// Translate even-odd coordinates to natural coordinates
+	Coor<N - 1> coor;
+	coor[0] = c[0] * 2 + (c[1] + c[2] + c[3] + c[4]) % nX; // x
+	coor[1] = c[1];					       // y
+	coor[2] = c[2];					       // z
+	coor[3] = c[3];					       // t
+	std::copy_n(c.begin() + 5, N - (Nd - 1), coor.begin() + 4);
+
+	// Call the function
+	ptr[i] = func(coor);
+      }
+
+      return r.make_sure(none, dev);
+    }
+
     // template <std::size_t N, typename T>
     // class Transform : public Tensor<N,T> {
     // public:
@@ -1653,9 +1768,10 @@ namespace Chroma
 
     /// Get colorvecs(t,n) for t=from_slice..(from_slice+n_tslices-1) and n=0..(n_colorvecs-1)
 
-    Tensor<Nd + 3, ComplexF> getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice,
-					  int n_tslices, int n_colorvecs,
-					  const std::string& order = "cxyztXn")
+    template <typename COMPLEX = ComplexF>
+    Tensor<Nd + 3, COMPLEX> getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice,
+					 int n_tslices, int n_colorvecs,
+					 const std::string& order = "cxyztXn")
     {
       using namespace ns_getColorvecs;
 
@@ -1670,8 +1786,8 @@ namespace Chroma
       from_tslice = detail::normalize_coor(from_tslice, Layout::lattSize()[decay_dir]);
 
       // Allocate tensor to return
-      Tensor<Nd + 3, ComplexF> r(
-	order, latticeSize<Nd + 3>(order, {{'t', n_tslices}, {'n', n_colorvecs}}));
+      Tensor<Nd + 3, COMPLEX> r(order,
+				latticeSize<Nd + 3>(order, {{'t', n_tslices}, {'n', n_colorvecs}}));
 
       // Allocate a single time slice colorvec in natural ordering, as colorvec are stored
       Tensor<Nd, ComplexF> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
@@ -1694,7 +1810,7 @@ namespace Chroma
 	for (int colorvec = 0; colorvec < n_colorvecs; ++colorvec)
 	{
 	  // Read a single time-slice and colorvec
-	  KeyTimeSliceColorVec_t key(t_slice, colorvec);
+	  KeyTimeSliceColorVec_t key(t_slice, colorvec % 32); // TEMP!!!!
 	  if (!eigen_source.exist(key))
 	    throw std::runtime_error(
 	      "no colorvec exists with key t_slice= " + std::to_string(t_slice) +
@@ -2066,6 +2182,8 @@ namespace Chroma
     /// \param right: right lattice fermion tensor, cxyzXnSst
     /// \param first_tslice: first time-slice in leftconj and right
     /// \param moms: momenta to apply
+    /// \param moms_first: index of the first momenta to apply
+    /// \param num_moms: number of momenta to apply (if none, apply all of them)
     /// \param gammas: list of gamma matrices to apply
     /// \param disps: list of displacements/derivatives
     /// \param deriv: whether use derivatives instead of displacements
@@ -2079,9 +2197,10 @@ namespace Chroma
     template <std::size_t Nout, std::size_t Nleft, std::size_t Nright, typename COMPLEX>
     std::pair<Tensor<Nout, COMPLEX>, std::vector<int>> doMomGammaDisp_contractions(
       const multi1d<LatticeColorMatrix>& u, Tensor<Nleft, COMPLEX> leftconj,
-      Tensor<Nright, COMPLEX> right, Index first_tslice, const SftMom& moms,
-      const std::vector<Tensor<2, COMPLEX>>& gammas, std::vector<std::vector<int>> disps,
-      bool deriv, const std::string& order_out = "gmNndsqt", Maybe<int> max_active_tslices = none)
+      Tensor<Nright, COMPLEX> right, Index first_tslice, const SftMom& moms, int first_mom,
+      Maybe<int> num_moms, const std::vector<Tensor<2, COMPLEX>>& gammas,
+      std::vector<std::vector<int>> disps, bool deriv, const std::string& order_out = "gmNndsqt",
+      Maybe<int> max_active_tslices = none)
     {
       using namespace ns_doMomGammaDisp_contractions;
 
@@ -2108,21 +2227,26 @@ namespace Chroma
       unsigned int max_active_disps = 0;
       get_tree_mem_stats(tree_disps, active_dirs, max_active_disps);
 
+      // Number of moments to apply
+      int numMom = num_moms.getSome(moms.numMom());
+      if (first_mom + numMom > moms.numMom())
+	throw std::runtime_error("Invalid range of momenta");
+
       // Allocate output tensor
       Tensor<Nout, COMPLEX> r(order_out, kvcoors<Nout>(order_out, {{'t', Nt},
 								   {'n', right.kvdim()['n']},
 								   {'s', right.kvdim()['s']},
 								   {'N', leftconj.kvdim()['N']},
 								   {'q', leftconj.kvdim()['q']},
-								   {'m', moms.numMom()},
+								   {'m', numMom},
 								   {'g', gammas.size()},
 								   {'d', disps.size()}}));
       // Create mom_list
-      std::vector<Coor<Nd - 1>> mom_list(moms.numMom());
-      for (unsigned int mom = 0; mom < moms.numMom(); ++mom)
+      std::vector<Coor<Nd - 1>> mom_list(numMom);
+      for (unsigned int mom = 0; mom < numMom; ++mom)
       {
 	for (unsigned int i = 0; i < Nd - 1; ++i)
-	  mom_list[mom][i] = moms.numToMom(mom)[i];
+	  mom_list[mom][i] = moms.numToMom(first_mom + mom)[i];
       }
 
       // Copy all gammas into a single tensor
@@ -2151,18 +2275,18 @@ namespace Chroma
 	// Copy moms into a single tensor
 	std::string momst_order = "mxyzXt";
 	Tensor<Nd + 2, COMPLEX> momst(
-	  momst_order, latticeSize<Nd + 2>(momst_order, {{'t', tsize}, {'m', moms.numMom()}}));
-	for (unsigned int mom = 0; mom < moms.numMom(); ++mom)
+	  momst_order, latticeSize<Nd + 2>(momst_order, {{'t', tsize}, {'m', numMom}}));
+	for (unsigned int mom = 0; mom < numMom; ++mom)
 	{
-	  asTensorView(moms[mom])
-	    .kvslice_from_size({}, {{'t', tsize}})
+	  asTensorView(moms[first_mom + mom])
+	    .kvslice_from_size({{'t', tfrom + first_tslice}}, {{'t', tsize}})
 	    .copyTo(momst.kvslice_from_size({{'m', mom}}, {{'m', 1}}));
 	}
 
 	// Apply momenta conjugated to the left tensor and rename the spin components s and Q to q and Q,
 	// and the colorvector component n to N
-	Tensor<Nleft + 1, COMPLEX> moms_left = leftconj.template like_this<Nleft + 1>(
-	  "mQNqcxyzXt", {{'m', moms.numMom()}, {'t', tsize}});
+	Tensor<Nleft + 1, COMPLEX> moms_left =
+	  leftconj.template like_this<Nleft + 1>("mQNqcxyzXt", {{'m', numMom}, {'t', tsize}});
 	moms_left.contract(std::move(momst), {}, Conjugate,
 			   leftconj.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}), {},
 			   NotConjugate);

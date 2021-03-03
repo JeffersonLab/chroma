@@ -160,6 +160,11 @@ namespace Chroma
         read(inputtop, "max_tslices_in_contraction", input.max_tslices_in_contraction);
       }
 
+      input.max_moms_in_contraction = 0;
+      if( inputtop.count("max_moms_in_contraction") == 1 ) {
+        read(inputtop, "max_moms_in_contraction", input.max_moms_in_contraction);
+      }
+
       input.use_genprop4_format = false;
       if( inputtop.count("use_genprop4_format") == 1 ) {
         read(inputtop, "use_genprop4_format", input.use_genprop4_format);
@@ -178,6 +183,7 @@ namespace Chroma
       write(xml, "num_tries", input.num_tries);
       write(xml, "max_rhs", input.max_rhs);
       write(xml, "max_tslices_in_contraction", input.max_tslices_in_contraction);
+      write(xml, "max_tslices_in_contraction", input.max_moms_in_contraction);
       write(xml, "use_genprop4_format", input.use_genprop4_format);
 
       pop(xml);
@@ -1043,6 +1049,11 @@ namespace Chroma
 	max_tslices_in_contraction = max_tslices_in_contraction + (max_tslices_in_contraction % 2);
 	max_tslices_in_contraction = std::min(Lt, max_tslices_in_contraction);
 
+	// Maximum number of momenta contracted at once
+	int max_moms_in_contraction = params.param.contract.max_moms_in_contraction;
+	if (max_moms_in_contraction <= 0)
+	  max_moms_in_contraction = phases.numMom();
+
 	for (const auto& sink_source : params.param.sink_source_pairs)
 	{
 	  int t_sink         = sink_source.t_sink % Lt;
@@ -1060,6 +1071,13 @@ namespace Chroma
 
 	  if (!invCache[t_source])
 	  {
+	    // If this inversion is not going to be cache, just store tslices for this source-sink pair
+	    if (!cache_tslice[t_source])
+	    {
+	      active_tslices[t_source].from = first_tslice_active;
+	      active_tslices[t_source].size = num_tslices_active;
+	    }
+
 	    // Get num_vecs colorvecs on time-slice t_source
 	    SB::Tensor<Nd + 3, SB::ComplexF> source_colorvec =
 	      SB::getColorvecs(eigen_source, decay_dir, t_source, 1, num_vecs);
@@ -1073,6 +1091,13 @@ namespace Chroma
 
 	  if (!invCache[t_sink])
 	  {
+	    // If this inversion is not going to be cache, just store tslices for this source-sink pair
+	    if (!cache_tslice[t_sink])
+	    {
+	      active_tslices[t_sink].from = first_tslice_active;
+	      active_tslices[t_sink].size = num_tslices_active;
+	    }
+
 	    // Get num_vecs colorvecs on time-slice t_sink
 	    SB::Tensor<Nd + 3, SB::ComplexF> sink_colorvec =
 	      SB::getColorvecs(eigen_source, decay_dir, t_sink, 1, num_vecs);
@@ -1109,120 +1134,131 @@ namespace Chroma
 	       tfrom < num_tslices_active; tfrom += tsize,
 		   tsize = std::min(max_tslices_in_contraction, num_tslices_active - tfrom))
 	  {
-	    StopWatch snarss1;
-	    snarss1.reset();
-	    snarss1.start();
-
-	    const char order_out[] = "qgmNndst";
-	    SB::Tensor<Nd + 5, SB::Complex> this_invSource =
-	      invSource.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
-	    SB::Tensor<Nd + 5, SB::Complex> this_invSink =
-	      invSink.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
-	    if (tfrom + tsize >= num_tslices_active)
+	    for (int mfrom = 0, msize = std::min(max_moms_in_contraction, phases.numMom());
+		 mfrom < phases.numMom();
+		 mfrom += msize, msize = std::min(max_moms_in_contraction, phases.numMom() - mfrom))
 	    {
-	      invSource.release();
-	      invSink.release();
-	    }
-	    std::pair<SB::Tensor<8, SB::Complex>, std::vector<int>> r =
-	      SB::doMomGammaDisp_contractions<8>(
-		u, std::move(this_invSink), std::move(this_invSource), first_tslice_active + tfrom,
-		phases, gamma_mats, disps, params.param.contract.use_derivP, order_out);
 
-	    // Premulitply by g5, again; see above commit about this
-	    SB::Tensor<8, SB::Complex> g5_con =
-	      r.first.like_this("qgmNndst", {}, SB::OnHost, SB::OnMaster);
-	    g5_con.contract(SB::Gamma<SB::Complex>(g5, SB::OnDefaultDevice), {}, SB::NotConjugate,
-			    std::move(r.first), {{'q', 'j'}}, SB::NotConjugate, {{'q', 'i'}});
-	    const std::vector<int>& disps_perm = r.second;
+	      StopWatch snarss1;
+	      snarss1.reset();
+	      snarss1.start();
 
-	    snarss1.stop();
-	    QDPIO::cout << "Time to compute contractions for " << tsize
-			<< " tslices from t= " << (first_tslice_active + tfrom) % Lt << " : "
-			<< snarss1.getTimeInSeconds() << " secs" << std::endl;
-
-	    snarss1.reset();
-	    snarss1.start();
-
-	    if (!params.param.contract.use_genprop4_format)
-	    {
-	      // Store
-	      SerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
-	      SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
-	      val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
-
-	      for (int t = 0; t < tsize; ++t)
+	      const char order_out[] = "qgmNndst";
+	      SB::Tensor<Nd + 5, SB::Complex> this_invSource =
+		invSource.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
+	      SB::Tensor<Nd + 5, SB::Complex> this_invSink =
+		invSink.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
+	      if (tfrom + tsize >= num_tslices_active && mfrom + msize >= phases.numMom())
 	      {
-		for (int g = 0; g < gammas.size(); ++g)
+		invSource.release();
+		invSink.release();
+	      }
+	      std::pair<SB::Tensor<8, SB::Complex>, std::vector<int>> r =
+		SB::doMomGammaDisp_contractions<8>(
+		  u, std::move(this_invSink), std::move(this_invSource),
+		  first_tslice_active + tfrom, phases, mfrom, msize, gamma_mats, disps,
+		  params.param.contract.use_derivP, order_out);
+
+	      // Premulitply by g5, again; see above commit about this
+	      SB::Tensor<8, SB::Complex> g5_con =
+		r.first.like_this("qgmNndst", {}, SB::OnHost, SB::OnMaster);
+	      g5_con.contract(SB::Gamma<SB::Complex>(g5, SB::OnDefaultDevice), {}, SB::NotConjugate,
+			      std::move(r.first), {{'q', 'j'}}, SB::NotConjugate, {{'q', 'i'}});
+	      const std::vector<int>& disps_perm = r.second;
+
+	      snarss1.stop();
+	      QDPIO::cout << "Time to compute contractions for " << tsize
+			  << " tslices from t= " << (first_tslice_active + tfrom) % Lt << " and "
+			  << msize << " momenta from momentum " << mfrom << " : "
+			  << snarss1.getTimeInSeconds() << " secs" << std::endl;
+
+	      snarss1.reset();
+	      snarss1.start();
+
+	      if (!params.param.contract.use_genprop4_format)
+	      {
+		// Store
+		SerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
+		SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
+		val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
+
+		for (int t = 0; t < tsize; ++t)
 		{
-		  for (int mom = 0; mom < phases.numMom(); ++mom)
+		  for (int g = 0; g < gammas.size(); ++g)
 		  {
-		    for (int d = 0; d < disps_perm.size(); ++d)
+		    for (int mom = 0; mom < msize; ++mom)
 		    {
-		      for (int n = 0; n < num_vecs; ++n)
+		      for (int d = 0; d < disps_perm.size(); ++d)
 		      {
-			key.key().derivP = params.param.contract.use_derivP;
-			key.key().t_sink = t_sink;
-			key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
-			key.key().t_source = t_source;
-			key.key().colorvec_src = n;
-			key.key().gamma = gammas[g];
-			key.key().displacement = disps[disps_perm[d]];
-			key.key().mom = phases.numToMom(mom);
-			key.key().mass = params.param.contract.mass_label;
+			for (int n = 0; n < num_vecs; ++n)
+			{
+			  key.key().derivP = params.param.contract.use_derivP;
+			  key.key().t_sink = t_sink;
+			  key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
+			  key.key().t_source = t_source;
+			  key.key().colorvec_src = n;
+			  key.key().gamma = gammas[g];
+			  key.key().displacement = disps[disps_perm[d]];
+			  key.key().mom = phases.numToMom(mfrom + mom);
+			  key.key().mass = params.param.contract.mass_label;
 
-			g5_con
-			  .kvslice_from_size({{'g', g}, {'m', mom}, {'n', n}, {'d', d}, {'t', t}},
-					     {{'g', 1}, {'m', 1}, {'n', 1}, {'d', 1}, {'t', 1}})
-			  .copyTo(val.data());
+			  g5_con
+			    .kvslice_from_size({{'g', g}, {'m', mom}, {'n', n}, {'d', d}, {'t', t}},
+					       {{'g', 1}, {'m', 1}, {'n', 1}, {'d', 1}, {'t', 1}})
+			    .copyTo(val.data());
 
-			qdp_db.insert(key, val);
+			  qdp_db.insert(key, val);
+			}
 		      }
 		    }
 		  }
 		}
 	      }
-	    }
-	    else
-	    {
-	      // Store
-	      SerialDBKey<KeyGenProp4ElementalOperator_t> key;
-	      SerialDBData<ValGenProp4ElementalOperator_t> val;
-	      val.data() = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
-
-	      for (int t = 0; t < tsize; ++t)
+	      else
 	      {
-		for (int g = 0; g < gammas.size(); ++g)
+		// Store
+		SerialDBKey<KeyGenProp4ElementalOperator_t> key;
+		SerialDBData<ValGenProp4ElementalOperator_t> val;
+		val.data() = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
+
+		for (int t = 0; t < tsize; ++t)
 		{
-		  for (int mom = 0; mom < phases.numMom(); ++mom)
+		  for (int g = 0; g < gammas.size(); ++g)
 		  {
-		    for (int d = 0; d < disps_perm.size(); ++d)
+		    for (int mom = 0; mom < msize; ++mom)
 		    {
-		      key.key().t_sink = t_sink;
-		      key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
-		      key.key().t_source = t_source;
-		      key.key().g = gammas[g];
-		      key.key().displacement = disps[disps_perm[d]];
-		      key.key().mom = phases.numToMom(mom);
-		      key.key().mass = params.param.contract.mass_label;
+		      for (int d = 0; d < disps_perm.size(); ++d)
+		      {
+			key.key().t_sink = t_sink;
+			key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
+			key.key().t_source = t_source;
+			key.key().g = gammas[g];
+			key.key().displacement = disps[disps_perm[d]];
+			key.key().mom = phases.numToMom(mfrom + mom);
+			key.key().mass = params.param.contract.mass_label;
 
-		      g5_con
-			.kvslice_from_size({{'g', g}, {'m', mom}, {'d', d}, {'t', t}},
-					   {{'g', 1}, {'m', 1}, {'d', 1}, {'t', 1}})
-			.copyTo(val.data());
+			g5_con
+			  .kvslice_from_size({{'g', g}, {'m', mom}, {'d', d}, {'t', t}},
+					     {{'g', 1}, {'m', 1}, {'d', 1}, {'t', 1}})
+			  .copyTo(val.data());
 
-		      qdp4_db.insert(key, val);
+			qdp4_db.insert(key, val);
+		      }
 		    }
 		  }
 		}
 	      }
-	    }
 
-	    snarss1.stop();
-	    QDPIO::cout << "Time to store " << tsize << " tslices : " << snarss1.getTimeInSeconds()
-			<< " secs" << std::endl;
+	      snarss1.stop();
+	      QDPIO::cout << "Time to store " << tsize
+			  << " tslices : " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+	    }
 	  }
 	  swatch.stop();
-	  QDPIO::cout << "SINK-SOURCE: time to compute all source solution vectors and insertions for t_sink= " << t_sink << "  t_source= " << t_source << "  time= " << swatch.getTimeInSeconds() << " secs" <<std::endl;
+	  QDPIO::cout << "SINK-SOURCE: time to compute all source solution vectors and insertions "
+			 "for t_sink= "
+		      << t_sink << "  t_source= " << t_source
+		      << "  time= " << swatch.getTimeInSeconds() << " secs" << std::endl;
 	} // for sink_source
       }
       catch (const std::string& e) 
