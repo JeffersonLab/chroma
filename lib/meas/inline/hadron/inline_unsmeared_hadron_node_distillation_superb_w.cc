@@ -169,6 +169,11 @@ namespace Chroma
       if( inputtop.count("use_genprop4_format") == 1 ) {
         read(inputtop, "use_genprop4_format", input.use_genprop4_format);
       }
+
+      input.use_multiple_writers = false;
+      if( inputtop.count("use_multiple_writers") == 1 ) {
+        read(inputtop, "use_multiple_writers", input.use_multiple_writers);
+      }
     }
 
     //! Propagator output
@@ -185,6 +190,7 @@ namespace Chroma
       write(xml, "max_tslices_in_contraction", input.max_tslices_in_contraction);
       write(xml, "max_tslices_in_contraction", input.max_moms_in_contraction);
       write(xml, "use_genprop4_format", input.use_genprop4_format);
+      write(xml, "use_multiple_writers", input.use_multiple_writers);
 
       pop(xml);
     }
@@ -936,69 +942,98 @@ namespace Chroma
       // Record the smeared observables
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
+      // Set how many processes are going to write elementals; each process is going to write in a
+      // independent file
+      bool use_multiple_writers = params.param.contract.use_multiple_writers;
 
       //
       // DB storage
       //
-      BinaryStoreDB< SerialDBKey<KeyUnsmearedMesonElementalOperator_t>, SerialDBData<ValUnsmearedMesonElementalOperator_t> > qdp_db;
-      BinaryStoreDB< SerialDBKey<KeyGenProp4ElementalOperator_t>, SerialDBData<ValGenProp4ElementalOperator_t> > qdp4_db;
+      LocalBinaryStoreDB< SerialDBKey<KeyUnsmearedMesonElementalOperator_t>, SerialDBData<ValUnsmearedMesonElementalOperator_t> > qdp_db;
+      LocalBinaryStoreDB< SerialDBKey<KeyGenProp4ElementalOperator_t>, SerialDBData<ValGenProp4ElementalOperator_t> > qdp4_db;
 
-      // Open the file, and write the meta-data and the binary for this operator
-      if (!params.param.contract.use_genprop4_format)
-      {
-	if (!qdp_db.fileExists(params.named_obj.dist_op_file))
+      // The final elementals are going to be distributed along the lattice `t`
+      // dimension, with no support on the lattice spatial dimension.  Because
+      // of this, not all processes are going to have support on the final
+      // elementals. The processes that have are going to write them on disk
+
+      bool db_is_open = false;  //< whether qdp_db/qdp4_db has been opened
+      int this_proc_id_t = -1;	//< the process id on the tensor holding the elementals
+      // This function open the output file, after changing the name with the process id if multiple writers is used
+      // \param proc_id_t: process rank on the tensor
+      // \param numprocs_t: number of processes with support on the tensor
+      std::function<void(int, int)> open_db = [&](int proc_id_t, int numprocs_t) {
+	if (db_is_open)
 	{
-	  XMLBufferWriter file_xml;
+	  assert(proc_id_t == this_proc_id_t);
+	  return;
+	}
+	db_is_open = true;
+	this_proc_id_t = proc_id_t;
 
-	  push(file_xml, "DBMetaData");
-	  write(file_xml, "id", std::string("unsmearedMesonElemOp"));
-	  write(file_xml, "lattSize", QDP::Layout::lattSize());
-	  write(file_xml, "decay_dir", decay_dir);
-	  proginfo(file_xml); // Print out basic program info
-	  write(file_xml, "Config_info", gauge_xml);
-	  pop(file_xml);
+	assert(use_multiple_writers || proc_id_t == 0);
 
-	  std::string file_str(file_xml.str());
-	  qdp_db.setMaxUserInfoLen(file_str.size());
+	// If the final elementals are going to be spread among several processes, append the index
+	// of the current process on the `t` dimension to the filename
+	std::string filename = params.named_obj.dist_op_file;
+	if (use_multiple_writers)
+	  filename += "." + std::to_string(proc_id_t + 1) + "_outof_" + std::to_string(numprocs_t);
 
-	  qdp_db.open(params.named_obj.dist_op_file, O_RDWR | O_CREAT, 0664);
+	// Open the file, and write the meta-data and the binary for this operator
+	if (!params.param.contract.use_genprop4_format)
+	{
+	  if (!qdp_db.fileExists(filename))
+	  {
+	    XMLBufferWriter file_xml;
 
-	  qdp_db.insertUserdata(file_str);
+	    push(file_xml, "DBMetaData");
+	    write(file_xml, "id", std::string("unsmearedMesonElemOp"));
+	    write(file_xml, "lattSize", QDP::Layout::lattSize());
+	    write(file_xml, "decay_dir", decay_dir);
+	    proginfo(file_xml); // Print out basic program info
+	    write(file_xml, "Config_info", gauge_xml);
+	    pop(file_xml);
+
+	    std::string file_str(file_xml.str());
+	    qdp_db.setMaxUserInfoLen(file_str.size());
+
+	    qdp_db.open(filename, O_RDWR | O_CREAT, 0664);
+
+	    qdp_db.insertUserdata(file_str);
+	  }
+	  else
+	  {
+	    qdp_db.open(filename, O_RDWR, 0664);
+	  }
 	}
 	else
 	{
-	  qdp_db.open(params.named_obj.dist_op_file, O_RDWR, 0664);
+	  if (!qdp4_db.fileExists(filename))
+	  {
+	    XMLBufferWriter file_xml;
+
+	    push(file_xml, "DBMetaData");
+	    write(file_xml, "id", std::string("genprop4ElemOp"));
+	    write(file_xml, "lattSize", QDP::Layout::lattSize());
+	    write(file_xml, "decay_dir", decay_dir);
+	    proginfo(file_xml); // Print out basic program info
+	    write(file_xml, "Config_info", gauge_xml);
+	    pop(file_xml);
+
+	    std::string file_str(file_xml.str());
+	    qdp4_db.setMaxUserInfoLen(file_str.size());
+
+	    qdp4_db.open(filename, O_RDWR | O_CREAT, 0664);
+
+	    qdp4_db.insertUserdata(file_str);
+	  }
+	  else
+	  {
+	    qdp4_db.open(filename, O_RDWR, 0664);
+	  }
 	}
-      }
-      else
-      {
-	if (!qdp4_db.fileExists(params.named_obj.dist_op_file))
-	{
-	  XMLBufferWriter file_xml;
-
-	  push(file_xml, "DBMetaData");
-	  write(file_xml, "id", std::string("genprop4ElemOp"));
-	  write(file_xml, "lattSize", QDP::Layout::lattSize());
-	  write(file_xml, "decay_dir", decay_dir);
-	  proginfo(file_xml); // Print out basic program info
-	  write(file_xml, "Config_info", gauge_xml);
-	  pop(file_xml);
-
-	  std::string file_str(file_xml.str());
-	  qdp4_db.setMaxUserInfoLen(file_str.size());
-
-	  qdp4_db.open(params.named_obj.dist_op_file, O_RDWR | O_CREAT, 0664);
-
-	  qdp4_db.insertUserdata(file_str);
-	}
-	else
-	{
-	  qdp4_db.open(params.named_obj.dist_op_file, O_RDWR, 0664);
-	}
-      }
-
-      QDPIO::cout << "Finished opening distillation file" << std::endl;
-
+	QDPIO::cout << "Distillation file(s) opened" << std::endl;
+      };
 
       //
       // Try the factories
@@ -1160,8 +1195,8 @@ namespace Chroma
 		  params.param.contract.use_derivP, order_out);
 
 	      // Premulitply by g5, again; see above commit about this
-	      SB::Tensor<8, SB::Complex> g5_con =
-		r.first.like_this("qgmNndst", {}, SB::OnHost, SB::OnMaster);
+	      SB::Tensor<8, SB::Complex> g5_con = r.first.like_this(
+		"qgmNndst", {}, SB::OnHost, use_multiple_writers ? SB::OnEveryone : SB::OnMaster);
 	      g5_con.contract(SB::Gamma<SB::Complex>(g5, SB::OnDefaultDevice), {}, SB::NotConjugate,
 			      std::move(r.first), {{'q', 'j'}}, SB::NotConjugate, {{'q', 'i'}});
 	      const std::vector<int>& disps_perm = r.second;
@@ -1175,74 +1210,82 @@ namespace Chroma
 	      snarss1.reset();
 	      snarss1.start();
 
-	      if (!params.param.contract.use_genprop4_format)
+	      // If this process has support on the resulting elementals, write them out
+	      if (g5_con.p->procRank() >= 0)
 	      {
-		// Store
-		SerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
-		SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
-		val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
+		// Open DB if they are not opened already
+		open_db(g5_con.p->procRank(), g5_con.p->numProcs());
 
-		for (int t = 0; t < tsize; ++t)
+		if (!params.param.contract.use_genprop4_format)
 		{
-		  for (int g = 0; g < gammas.size(); ++g)
+		  // Store
+		  SerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
+		  SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
+		  val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
+
+		  for (int t = 0; t < tsize; ++t)
 		  {
-		    for (int mom = 0; mom < msize; ++mom)
+		    for (int g = 0; g < gammas.size(); ++g)
 		    {
-		      for (int d = 0; d < disps_perm.size(); ++d)
+		      for (int mom = 0; mom < msize; ++mom)
 		      {
-			for (int n = 0; n < num_vecs; ++n)
+			for (int d = 0; d < disps_perm.size(); ++d)
 			{
-			  key.key().derivP = params.param.contract.use_derivP;
-			  key.key().t_sink = t_sink;
-			  key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
-			  key.key().t_source = t_source;
-			  key.key().colorvec_src = n;
-			  key.key().gamma = gammas[g];
-			  key.key().displacement = disps[disps_perm[d]];
-			  key.key().mom = phases.numToMom(mfrom + mom);
-			  key.key().mass = params.param.contract.mass_label;
+			  for (int n = 0; n < num_vecs; ++n)
+			  {
+			    key.key().derivP = params.param.contract.use_derivP;
+			    key.key().t_sink = t_sink;
+			    key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
+			    key.key().t_source = t_source;
+			    key.key().colorvec_src = n;
+			    key.key().gamma = gammas[g];
+			    key.key().displacement = disps[disps_perm[d]];
+			    key.key().mom = phases.numToMom(mfrom + mom);
+			    key.key().mass = params.param.contract.mass_label;
 
-			  g5_con
-			    .kvslice_from_size({{'g', g}, {'m', mom}, {'n', n}, {'d', d}, {'t', t}},
-					       {{'g', 1}, {'m', 1}, {'n', 1}, {'d', 1}, {'t', 1}})
-			    .copyTo(val.data());
+			    g5_con
+			      .kvslice_from_size(
+				{{'g', g}, {'m', mom}, {'n', n}, {'d', d}, {'t', t}},
+				{{'g', 1}, {'m', 1}, {'n', 1}, {'d', 1}, {'t', 1}})
+			      .copyTo(val.data());
 
-			  qdp_db.insert(key, val);
+			    qdp_db.insert(key, val);
+			  }
 			}
 		      }
 		    }
 		  }
 		}
-	      }
-	      else
-	      {
-		// Store
-		SerialDBKey<KeyGenProp4ElementalOperator_t> key;
-		SerialDBData<ValGenProp4ElementalOperator_t> val;
-		val.data() = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
-
-		for (int t = 0; t < tsize; ++t)
+		else
 		{
-		  for (int g = 0; g < gammas.size(); ++g)
+		  // Store
+		  SerialDBKey<KeyGenProp4ElementalOperator_t> key;
+		  SerialDBData<ValGenProp4ElementalOperator_t> val;
+		  val.data() = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
+
+		  for (int t = 0; t < tsize; ++t)
 		  {
-		    for (int mom = 0; mom < msize; ++mom)
+		    for (int g = 0; g < gammas.size(); ++g)
 		    {
-		      for (int d = 0; d < disps_perm.size(); ++d)
+		      for (int mom = 0; mom < msize; ++mom)
 		      {
-			key.key().t_sink = t_sink;
-			key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
-			key.key().t_source = t_source;
-			key.key().g = gammas[g];
-			key.key().displacement = disps[disps_perm[d]];
-			key.key().mom = phases.numToMom(mfrom + mom);
-			key.key().mass = params.param.contract.mass_label;
+			for (int d = 0; d < disps_perm.size(); ++d)
+			{
+			  key.key().t_sink = t_sink;
+			  key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
+			  key.key().t_source = t_source;
+			  key.key().g = gammas[g];
+			  key.key().displacement = disps[disps_perm[d]];
+			  key.key().mom = phases.numToMom(mfrom + mom);
+			  key.key().mass = params.param.contract.mass_label;
 
-			g5_con
-			  .kvslice_from_size({{'g', g}, {'m', mom}, {'d', d}, {'t', t}},
-					     {{'g', 1}, {'m', 1}, {'d', 1}, {'t', 1}})
-			  .copyTo(val.data());
+			  g5_con
+			    .kvslice_from_size({{'g', g}, {'m', mom}, {'d', d}, {'t', t}},
+					       {{'g', 1}, {'m', 1}, {'d', 1}, {'t', 1}})
+			    .copyTo(val.data());
 
-			qdp4_db.insert(key, val);
+			  qdp4_db.insert(key, val);
+			}
 		      }
 		    }
 		  }
@@ -1268,10 +1311,13 @@ namespace Chroma
       }
 
       // Close db
-      if (!params.param.contract.use_genprop4_format)
-	qdp_db.close();
-      else
-	qdp4_db.close();
+      if (db_is_open)
+      {
+	if (!params.param.contract.use_genprop4_format)
+	  qdp_db.close();
+	else
+	  qdp4_db.close();
+      }
 
       // Close the xml output file
       pop(xml_out);     // UnsmearedHadronNode

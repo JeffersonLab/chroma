@@ -467,6 +467,36 @@ namespace Chroma
 	  return p[Layout::nodeNumber()][1];
 	}
 
+	/// Return how many processes have support on this tensor
+	/// Note that it may differ from MPI's numProcs if the tensor does not have support on all processes.
+
+	unsigned int numProcs() const
+	{
+	  unsigned int numprocs = 0;
+	  for (const auto& i : p)
+	    if (superbblas::detail::volume(i[1]) > 0)
+	      numprocs++;
+	  return numprocs;
+	}
+
+	/// Return the process rank on this tensor or -1 if this process does not have support on the tensor
+	/// Note that it may differ from MPI's rank if the tensor does not have support on all processes.
+
+	int procRank() const
+	{
+	  // Return -1 if this process does not have support on the tensor
+	  int mpi_rank = Layout::nodeNumber();
+	  if (superbblas::detail::volume(p[mpi_rank][1]) == 0)
+	    return -1;
+
+	  // Return as rank how many processes with MPI rank smaller than this process have support
+	  int this_rank = 0;
+	  for (int i = 0; i < mpi_rank; ++i)
+	    if (superbblas::detail::volume(p[i][1]) > 0)
+	      this_rank++;
+	  return this_rank;
+	}
+
 	/// Insert a new non-distributed dimension
 
 	TensorPartition<N + 1> insert_dimension(std::size_t pos, std::size_t dim_size) const
@@ -1322,10 +1352,10 @@ namespace Chroma
       Tensor<N, Tn> make_sure(Maybe<std::string> new_order = none, Maybe<DeviceHost> new_dev = none,
 			      Maybe<Distribution> new_dist = none) const
       {
-	if (new_order.getSome(order) != order || !detail::is_same(new_dev, getDev()) ||
-	    new_dist.getSome(dist) != dist)
+	if (new_order.getSome(order) != order ||
+	    !detail::is_same(new_dev.getSome(getDev()), getDev()) || new_dist.getSome(dist) != dist)
 	{
-	  Tensor<N, Tn> r = like_this(new_order, new_dev, new_dist);
+	  Tensor<N, Tn> r = like_this(new_order, {}, new_dev, new_dist);
 	  copyTo(r);
 	  return r;
 	}
@@ -1339,7 +1369,7 @@ namespace Chroma
       Tensor<N, Tn> make_sure(Maybe<std::string> new_order = none, Maybe<DeviceHost> new_dev = none,
 			      Maybe<Distribution> new_dist = none) const
       {
-	Tensor<N, Tn> r = like_this<Tn>(new_order, new_dev, new_dist);
+	Tensor<N, Tn> r = like_this<Tn>(new_order, {}, new_dev, new_dist);
 	copyTo(r);
 	return r;
       }
@@ -1594,7 +1624,7 @@ namespace Chroma
 	r.p->localFrom(); // coordinates of first elements stored locally for xyztX
       std::size_t vol = superbblas::detail::volume(local_latt_size);
       Index nX = r.kvdim()['X'];
-      COMPLEX* ptr = r.data();
+      COMPLEX* ptr = r.data.get();
 
 #ifdef _OPENMP
 #    pragma omp parallel for schedule(static)
@@ -1762,6 +1792,21 @@ namespace Chroma
 	  for (unsigned int c = 0; c < Nc; ++c)
 	    y[i * Nc + c] = x[perm[i] * Nc + c];
       }
+
+      template <typename T>
+      Tensor<Nd + 1, T> getPhase(Coor<Nd - 1> phase, DeviceHost dev = OnDefaultDevice)
+      {
+	// Get spatial dimensions of the current lattice
+	Coor<Nd> dim = latticeSize<Nd>("xyzX", {});
+	dim[0] *= dim[3];
+	return fillLatticeField<5, T>("xyztX", {}, dev, [=](Coor<Nd> c) {
+	  typename T::value_type phase_dot_coor = 0;
+	  for (int i = 0; i < Nd - 1; ++i)
+	    phase_dot_coor += c[i] * 2 * M_PI * phase[i] / dim[i];
+
+	  return T{cos(phase_dot_coor), sin(phase_dot_coor)};
+	});
+      }
     }
 
     typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, Tensor<Nd, ComplexF>> MODS_t;
@@ -1769,9 +1814,9 @@ namespace Chroma
     /// Get colorvecs(t,n) for t=from_slice..(from_slice+n_tslices-1) and n=0..(n_colorvecs-1)
 
     template <typename COMPLEX = ComplexF>
-    Tensor<Nd + 3, COMPLEX> getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice,
-					 int n_tslices, int n_colorvecs,
-					 const std::string& order = "cxyztXn")
+    Tensor<Nd + 3, COMPLEX>
+    getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice, int n_tslices,
+		 int n_colorvecs, const std::string& order = "cxyztXn", Coor<Nd - 1> phase = {})
     {
       using namespace ns_getColorvecs;
 
@@ -1783,10 +1828,13 @@ namespace Chroma
 	throw std::runtime_error("Only support for decay_dir being the temporal dimension");
       detail::check_order_contains(order, "cxyztXn");
 
+      // Phase colorvecs if phase != (0,0,0)
+      bool phasing = (phase != Coor<Nd - 1>{});
+
       from_tslice = detail::normalize_coor(from_tslice, Layout::lattSize()[decay_dir]);
 
       // Allocate tensor to return
-      Tensor<Nd + 3, COMPLEX> r(order,
+      Tensor<Nd + 3, COMPLEX> r(phasing ? "xyztXcn" : order,
 				latticeSize<Nd + 3>(order, {{'t', n_tslices}, {'n', n_colorvecs}}));
 
       // Allocate a single time slice colorvec in natural ordering, as colorvec are stored
@@ -1826,6 +1874,15 @@ namespace Chroma
 
 	// r[t=i_slice] = t, distribute the tensor from master to the rest of the nodes
 	t.copyTo(r.kvslice_from_size({{'t', i_slice}}));
+      }
+
+      // Apply phase
+      if (phasing)
+      {
+	Tensor<Nd + 1, COMPLEX> tphase = getPhase<COMPLEX>(phase).reorder("xyztX");
+	Tensor<Nd + 3, COMPLEX> rp = r.like_this("xyzXtcn");
+	rp.contract(r, {}, NotConjugate, tphase, {}, NotConjugate);
+	r = rp.reorder(order);
       }
 
       sw.stop();
