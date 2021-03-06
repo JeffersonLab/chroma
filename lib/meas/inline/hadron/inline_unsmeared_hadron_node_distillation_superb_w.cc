@@ -980,6 +980,12 @@ namespace Chroma
 
 	db_is_open = true;
 
+	// If this process has not support on the tensor, do nothing
+	if (proc_id_t < 0)
+	  return;
+
+	db_is_open = true;
+
 	// If the final elementals are going to be spread among several processes, append the index
 	// of the current process on the `t` dimension to the filename
 	std::string filename = params.named_obj.dist_op_file;
