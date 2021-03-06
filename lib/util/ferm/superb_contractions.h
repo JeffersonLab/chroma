@@ -61,9 +61,10 @@ namespace Chroma
 
     /// How to distribute the tensor (see class Tensor)
     enum Distribution {
-      OnMaster,		   ///< Fully supported on node with index zero
-      OnEveryone,	   ///< Distributed the lattice dimensions (x, y, z, t) as chroma does
-      OnEveryoneReplicated ///< All nodes have a copy of the tensor
+      OnMaster,		    ///< Fully supported on node with index zero
+      OnEveryone,	    ///< Distributed the lattice dimensions (x, y, z, t) as chroma does
+      OnEveryoneReplicated, ///< All nodes have a copy of the tensor
+      Local                 ///< Non-collective
     };
 
     /// Whether complex conjugate the elements before contraction (see Tensor::contract)
@@ -423,6 +424,7 @@ namespace Chroma
 	using PartitionStored = std::vector<superbblas::PartitionItem<N>>;
 	Coor<N> dim;	   ///< Dimensions of the tensor
 	PartitionStored p; ///< p[i] = {first coordinate, size} of tensor on i-th node
+	bool isLocal;      ///< Whether the partition is non-collective
 
 	/// Constructor
 	/// \param order: dimension labels (use x, y, z, t for lattice dimensions)
@@ -432,39 +434,45 @@ namespace Chroma
 	TensorPartition(const std::string& order, Coor<N> dim, Distribution dist) : dim(dim)
 	{
 	  detail::check_order<N>(order);
+	  isLocal = false;
 	  switch (dist)
 	  {
 	  case OnMaster: p = all_tensor_on_master(dim); break;
 	  case OnEveryone: p = partitioning_chroma_compatible(order, dim); break;
 	  case OnEveryoneReplicated: p = all_tensor_replicated(dim); break;
+	  case Local:
+	    p = local(dim);
+	    isLocal = true;
+	    break;
 	  }
 	}
 
 	/// Constructor for `insert_dimension`
-	/// \param order: dimension labels (use x, y, z, t for lattice dimensions)
 	/// \param dim: dimension size for the tensor
-	/// \param dist: how to distribute the tensor among the nodes
+	/// \param p: partition
+	/// \praam isLocal: whether the tensor is local
 
-	TensorPartition(Coor<N> dim, const PartitionStored& p) : dim(dim), p(p)
+	TensorPartition(Coor<N> dim, const PartitionStored& p, bool isLocal = false)
+	  : dim(dim), p(p), isLocal(isLocal)
 	{
 	}
 
 	/// Return the volume of the tensor supported on this node
 	std::size_t localVolume() const
 	{
-	  return superbblas::detail::volume(p[Layout::nodeNumber()][1]);
+	  return superbblas::detail::volume(p[MpiProcRank()][1]);
 	}
 
 	/// Return the first coordinate store locally
 	Coor<N> localFrom() const
 	{
-	  return p[Layout::nodeNumber()][0];
+	  return p[MpiProcRank()][0];
 	}
 
 	/// Return the number of elements store locally in each dimension
 	Coor<N> localSize() const
 	{
-	  return p[Layout::nodeNumber()][1];
+	  return p[MpiProcRank()][1];
 	}
 
 	/// Return how many processes have support on this tensor
@@ -485,7 +493,7 @@ namespace Chroma
 	int procRank() const
 	{
 	  // Return -1 if this process does not have support on the tensor
-	  int mpi_rank = Layout::nodeNumber();
+	  int mpi_rank = MpiProcRank();
 	  if (superbblas::detail::volume(p[mpi_rank][1]) == 0)
 	    return -1;
 
@@ -495,6 +503,11 @@ namespace Chroma
 	    if (superbblas::detail::volume(p[i][1]) > 0)
 	      this_rank++;
 	  return this_rank;
+	}
+
+	/// Return the MPI process rank
+	int MpiProcRank() const {
+	  return (isLocal ? 0 : Layout::nodeNumber());
 	}
 
 	/// Insert a new non-distributed dimension
@@ -540,7 +553,23 @@ namespace Chroma
 	    r};
 	}
 
+	/// Return a partition with the local portion of the tensor
+
+	TensorPartition<N> get_local_partition() const
+	{
+	  return TensorPartition<N>{
+	    localSize(), PartitionStored(1, superbblas::PartitionItem<N>{{{}, localSize()}}), true};
+	}
+
       private:
+	/// Return a partitioning for a non-collective tensor
+	/// \param dim: dimension size for the tensor
+
+	static PartitionStored local(Coor<N> dim)
+	{
+	  return PartitionStored(1, superbblas::PartitionItem<N>{{{}, dim}});
+	}
+
 	/// Return a partitioning where the root node has support for the whole tensor
 	/// \param dim: dimension size for the tensor
 
@@ -952,10 +981,10 @@ namespace Chroma
       }
 
     public:
-      /// Return if the tensor has been allocated
+      /// Return whether the tensor is not empty
       explicit operator bool() const noexcept
       {
-	return bool(data);
+	return superbblas::detail::volume(size) > 0;
       }
 
       // Return whether from != 0 or size != dim
@@ -1045,11 +1074,16 @@ namespace Chroma
 			      new_dev.getSome(getDev()), new_dist.getSome(dist));
       }
 
+      /// Return a copy of this tensor, possible with a new precision `nT`
+
       template <typename Tn = T>
       Tensor<N, Tn> clone() const
       {
 	return cloneOn<Tn>(getDev());
       }
+
+      /// Return a copy of this tensor on device `new_dev`, possible with a new precision `nT`
+      /// \param new_dev: device that will hold the new tensor
 
       template <typename Tn = T>
       Tensor<N, Tn> cloneOn(DeviceHost new_dev) const
@@ -1058,6 +1092,9 @@ namespace Chroma
 	copyTo(r);
 	return r;
       }
+
+      /// If the dimension labels order does not match the current order, return a copy of this tensor with that ordering
+      /// \param new_order: new dimension labels order
 
       Tensor<N, T> reorder(const std::string& new_order) const
       {
@@ -1211,7 +1248,7 @@ namespace Chroma
 				scalar);
       }
 
-      // Copy `this` tensor into the given one
+      /// Copy this tensor into the given one
       template <std::size_t Nw, typename Tw,
 		typename std::enable_if<
 		  detail::is_complex<T>::value != detail::is_complex<Tw>::value, bool>::type = true>
@@ -1220,7 +1257,25 @@ namespace Chroma
 	toFakeReal().copyTo(w.toFakeReal());
       }
 
-      // Copy `this` tensor into the given one
+      /// Return the local support of this tensor
+      Tensor<N, T> getLocal() const
+      {
+	// Compute the intersection of the current view and the local support
+	Coor<N> lfrom, lsize;
+	superbblas::detail::intersection(from, size, p->localFrom(), p->localSize(), dim, lfrom,
+					 lsize);
+
+	// If the current process has no support, return the empty tensor
+	if (superbblas::detail::volume(lsize) == 0)
+	  return Tensor<N, T>{};
+
+	using superbblas::detail::operator-;
+	return Tensor<N, T>(order, p->localSize(), ctx, data,
+			    std::make_shared<detail::TensorPartition<N>>(p->get_local_partition()),
+			    Local, from - lfrom, lsize, scalar);
+      }
+
+      /// Copy this tensor into the given one
       template <std::size_t Nw, typename Tw,
 		typename std::enable_if<
 		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
@@ -1231,9 +1286,17 @@ namespace Chroma
 	  if (size[i] > wsize[i])
 	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
 
+	if ((dist == Local && w.dist != Local) || (dist != Local && w.dist == Local))
+	{
+	  getLocal().copyTo(w.getLocal());
+	  return;
+	}
+
 	T* ptr = this->data.get();
 	Tw* w_ptr = w.data.get();
-	MPI_Comm comm = (dist == OnMaster && w.dist == OnMaster ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm =
+	  ((dist == OnMaster && w.dist == OnMaster) || dist == Local ? MPI_COMM_SELF
+								     : MPI_COMM_WORLD);
 	if (dist != OnMaster || w.dist != OnMaster || Layout::nodeNumber() == 0)
 	{
 	  superbblas::copy<N, Nw>(detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1,
@@ -1326,7 +1389,7 @@ namespace Chroma
 	if (dist != OnMaster)
 	  return false;
 
-	if (superbblas::detail::volume<N>(size) > 0 && N > 1)
+	if (superbblas::detail::volume(size) > 0 && N > 1)
 	{
 	  bool non_full_dim = false; // some dimension is not full
 	  for (unsigned int i = 0; i < N - 1; ++i)
@@ -1397,7 +1460,7 @@ namespace Chroma
 	  throw std::runtime_error("Not allowed for tensor with a scale not being one");
 
 	// Only on primary node read the data
-	std::size_t vol = superbblas::detail::volume<N>(size);
+	std::size_t vol = superbblas::detail::volume(size);
 	std::size_t disp = detail::coor2index<N>(from, dim, strides);
 	std::size_t word_size = sizeof(typename detail::WordType<T>::type);
 	bin.readArrayPrimaryNode((char*)&data.get()[disp], word_size, sizeof(T) / word_size * vol);
@@ -1405,20 +1468,25 @@ namespace Chroma
 
       void binaryWrite(BinaryWriter& bin) const
       {
-	if (dist != OnMaster)
-	  throw std::runtime_error("Only supported to write from `OnMaster` tensors");
+	// If the writing is collective, the root process needs to hold the whole tensor
+	if (!bin.isLocal() && dist != OnMaster)
+	  throw std::runtime_error("For non-collective writing, the tensor should be `OnMaster`");
 
-	if (scalar != T{1} || !isContiguous() || ctx->plat != superbblas::CPU)
+	// If the writing is non-collective, the tensor should be local
+	if (bin.isLocal() && dist != Local)
+	  throw std::runtime_error("For collective writing, the tensor should be `Local`");
+
+	// If the tensor has an implicit scale, view, or is not on host, make a copy
+	if (scalar != T{1} || !isSubtensor() || ctx->plat != superbblas::CPU)
 	{
 	  cloneOn(OnHost).binaryWrite(bin);
 	  return;
 	}
 
-	// Only on primary node write the data
-	std::size_t vol = superbblas::detail::volume<N>(size);
-	std::size_t disp = detail::coor2index<N>(from, dim, strides);
+	// Write the local data
+	std::size_t vol = p->localVolume();
 	std::size_t word_size = sizeof(typename detail::WordType<T>::type);
-	bin.writeArrayPrimaryNode((char*)&data.get()[disp], word_size, sizeof(T) / word_size * vol);
+	bin.writeArrayPrimaryNode((char*)data.get(), word_size, sizeof(T) / word_size * vol);
       }
 
       void print(std::string name) const

@@ -387,7 +387,7 @@ namespace Chroma
     struct ValUnsmearedMesonElementalOperator_t : public SB::Tensor<3, SB::ComplexD>
     {
       ValUnsmearedMesonElementalOperator_t(int num_vecs = 0)
-	: SB::Tensor<3, SB::ComplexD>("Nqs", {num_vecs, Ns, Ns}, SB::OnHost, SB::OnMaster)
+	: SB::Tensor<3, SB::ComplexD>("Nqs", {num_vecs, Ns, Ns}, SB::OnHost, SB::Local)
       {
       }
     };
@@ -949,8 +949,12 @@ namespace Chroma
       //
       // DB storage
       //
-      LocalBinaryStoreDB< SerialDBKey<KeyUnsmearedMesonElementalOperator_t>, SerialDBData<ValUnsmearedMesonElementalOperator_t> > qdp_db;
-      LocalBinaryStoreDB< SerialDBKey<KeyGenProp4ElementalOperator_t>, SerialDBData<ValGenProp4ElementalOperator_t> > qdp4_db;
+      LocalBinaryStoreDB<LocalSerialDBKey<KeyUnsmearedMesonElementalOperator_t>,
+			 LocalSerialDBData<ValUnsmearedMesonElementalOperator_t>>
+	qdp_db;
+      LocalBinaryStoreDB<LocalSerialDBKey<KeyGenProp4ElementalOperator_t>,
+			 LocalSerialDBData<ValGenProp4ElementalOperator_t>>
+	qdp4_db;
 
       // The final elementals are going to be distributed along the lattice `t`
       // dimension, with no support on the lattice spatial dimension.  Because
@@ -968,10 +972,15 @@ namespace Chroma
 	  assert(proc_id_t == this_proc_id_t);
 	  return;
 	}
-	db_is_open = true;
 	this_proc_id_t = proc_id_t;
 
 	assert(use_multiple_writers || proc_id_t == 0);
+
+	// If this process has not support on the tensor, do nothing
+	if (proc_id_t < 0)
+	  return;
+
+	db_is_open = true;
 
 	// If the final elementals are going to be spread among several processes, append the index
 	// of the current process on the `t` dimension to the filename
@@ -1210,29 +1219,35 @@ namespace Chroma
 	      snarss1.reset();
 	      snarss1.start();
 
-	      // If this process has support on the resulting elementals, write them out
-	      if (g5_con.p->procRank() >= 0)
+	      // Open DB if they are not opened already
+	      open_db(g5_con.p->procRank(), g5_con.p->numProcs());
+
+	      if (!params.param.contract.use_genprop4_format)
 	      {
-		// Open DB if they are not opened already
-		open_db(g5_con.p->procRank(), g5_con.p->numProcs());
+		// Store
+		LocalSerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
+		LocalSerialDBData<ValUnsmearedMesonElementalOperator_t> val;
+		val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
 
-		if (!params.param.contract.use_genprop4_format)
+		for (int t = 0; t < tsize; ++t)
 		{
-		  // Store
-		  SerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
-		  SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
-		  val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
-
-		  for (int t = 0; t < tsize; ++t)
+		  for (int g = 0; g < gammas.size(); ++g)
 		  {
-		    for (int g = 0; g < gammas.size(); ++g)
+		    for (int mom = 0; mom < msize; ++mom)
 		    {
-		      for (int mom = 0; mom < msize; ++mom)
+		      for (int d = 0; d < disps_perm.size(); ++d)
 		      {
-			for (int d = 0; d < disps_perm.size(); ++d)
+			for (int n = 0; n < num_vecs; ++n)
 			{
-			  for (int n = 0; n < num_vecs; ++n)
+			  auto g5_con_t = g5_con
+					    .kvslice_from_size(
+					      {{'g', g}, {'m', mom}, {'n', n}, {'d', d}, {'t', t}},
+					      {{'g', 1}, {'m', 1}, {'n', 1}, {'d', 1}, {'t', 1}})
+					    .getLocal();
+			  if (g5_con_t)
 			  {
+			    g5_con_t.copyTo(val.data());
+
 			    key.key().derivP = params.param.contract.use_derivP;
 			    key.key().t_sink = t_sink;
 			    key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
@@ -1243,12 +1258,6 @@ namespace Chroma
 			    key.key().mom = phases.numToMom(mfrom + mom);
 			    key.key().mass = params.param.contract.mass_label;
 
-			    g5_con
-			      .kvslice_from_size(
-				{{'g', g}, {'m', mom}, {'n', n}, {'d', d}, {'t', t}},
-				{{'g', 1}, {'m', 1}, {'n', 1}, {'d', 1}, {'t', 1}})
-			      .copyTo(val.data());
-
 			    qdp_db.insert(key, val);
 			  }
 			}
@@ -1256,21 +1265,30 @@ namespace Chroma
 		    }
 		  }
 		}
-		else
-		{
-		  // Store
-		  SerialDBKey<KeyGenProp4ElementalOperator_t> key;
-		  SerialDBData<ValGenProp4ElementalOperator_t> val;
-		  val.data() = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
+	      }
+	      else
+	      {
+		// Store
+		LocalSerialDBKey<KeyGenProp4ElementalOperator_t> key;
+		LocalSerialDBData<ValGenProp4ElementalOperator_t> val;
+		val.data() = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
 
-		  for (int t = 0; t < tsize; ++t)
+		for (int t = 0; t < tsize; ++t)
+		{
+		  for (int g = 0; g < gammas.size(); ++g)
 		  {
-		    for (int g = 0; g < gammas.size(); ++g)
+		    for (int mom = 0; mom < msize; ++mom)
 		    {
-		      for (int mom = 0; mom < msize; ++mom)
+		      for (int d = 0; d < disps_perm.size(); ++d)
 		      {
-			for (int d = 0; d < disps_perm.size(); ++d)
+			auto g5_con_t =
+			  g5_con.kvslice_from_size({{'g', g}, {'m', mom}, {'d', d}, {'t', t}},
+						   {{'g', 1}, {'m', 1}, {'d', 1}, {'t', 1}});
+
+			if (g5_con_t)
 			{
+			  g5_con_t.copyTo(val.data());
+
 			  key.key().t_sink = t_sink;
 			  key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
 			  key.key().t_source = t_source;
@@ -1278,11 +1296,6 @@ namespace Chroma
 			  key.key().displacement = disps[disps_perm[d]];
 			  key.key().mom = phases.numToMom(mfrom + mom);
 			  key.key().mass = params.param.contract.mass_label;
-
-			  g5_con
-			    .kvslice_from_size({{'g', g}, {'m', mom}, {'d', d}, {'t', t}},
-					       {{'g', 1}, {'m', 1}, {'d', 1}, {'t', 1}})
-			    .copyTo(val.data());
 
 			  qdp4_db.insert(key, val);
 			}
