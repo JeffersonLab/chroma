@@ -502,7 +502,7 @@ namespace Chroma
     {
       ValGenProp4ElementalOperator_t(int num_vecs_source = 0, int num_vecs_sink = 0)
 	: SB::Tensor<4, SB::ComplexD>("Nnqs", {num_vecs_sink, num_vecs_source, Ns, Ns}, SB::OnHost,
-				      SB::OnMaster)
+				      SB::Local)
       {
       }
     };
@@ -1286,8 +1286,10 @@ namespace Chroma
 		      for (int d = 0; d < disps_perm.size(); ++d)
 		      {
 			auto g5_con_t =
-			  g5_con.kvslice_from_size({{'g', g}, {'m', mom}, {'d', d}, {'t', t}},
-						   {{'g', 1}, {'m', 1}, {'d', 1}, {'t', 1}});
+			  g5_con
+			    .kvslice_from_size({{'g', g}, {'m', mom}, {'d', d}, {'t', t}},
+					       {{'g', 1}, {'m', 1}, {'d', 1}, {'t', 1}})
+			    .getLocal();
 
 			if (g5_con_t)
 			{
