@@ -23,4 +23,9 @@ if(CPPWilsonDslashDependency)
   find_dependency(CPPWilsonDslash)
 endif()
 
+set(QUDADependency @Chroma_ENABLE_QUDA@)
+if(QUDADependency)
+  find_dependency(QUDA)
+endif()
+
 include(${CMAKE_CURRENT_LIST_DIR}/ChromaTargets.cmake)

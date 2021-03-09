@@ -21,7 +21,7 @@ set(ChromaLIB_HEADERS
     boundcond.h
     create_state.h
     fermact.h
-	fermbc.h
+   	fermbc.h
 	funcmap.h
 	syssolver.h
 	gaugeact.h
@@ -1066,6 +1066,7 @@ list(APPEND ChromaLIB_HEADERS
 	meas/inline/io/inline_write_timeslice_map_obj_disk.h
 )
 
+
 ### Commented out for now
 #	meas/inline/hadron/inline_spectrum_w.h
 #	meas/hadron/multipole_w.h
@@ -1906,6 +1907,64 @@ if( Chroma_ENABLE_CPP_WILSON_DSLASH )
   		actions/ferm/linop/lwldslash_w_cppd.cc
   )
   target_link_libraries(chromalib PUBLIC CPPWilsonDslash::dslash )
+endif()
+
+########################################################
+#  QUDA
+########################################################
+if( Chroma_ENABLE_QUDA ) 
+    list(APPEND ChromaLIB_HEADERS 
+        actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h
+	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_wilson_params.h
+	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h
+	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.h
+	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.h
+	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.h
+	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h
+	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h
+	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_multigrid_w.h
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h
+	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.h
+	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h
+	actions/ferm/invert/quda_solvers/enum_quda_io.h
+	actions/ferm/invert/quda_solvers/quda_mg_utils.h
+	actions/ferm/invert/quda_solvers/quda_gcr_params.h
+	actions/ferm/invert/quda_solvers/quda_multigrid_params.h
+	actions/ferm/invert/quda_solvers/qdpjit_memory_wrapper.h
+	meas/inline/io/inline_erase_quda_multigrid_space.h
+	update/molecdyn/predictor/quda_predictor.h
+)
+
+
+target_sources(chromalib PRIVATE 
+	actions/ferm/invert/quda_solvers/enum_quda_io.cc
+	actions/ferm/invert/quda_solvers/quda_gcr_params.cc
+	actions/ferm/invert/quda_solvers/quda_multigrid_params.cc
+	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc
+	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.cc
+	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.cc
+	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc
+	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc
+	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_wilson_params.cc
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.cc
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.cc
+	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.cc
+	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc
+	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.cc
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.cc
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_multigrid_w.cc
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc
+	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc
+	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc
+	meas/inline/io/inline_erase_quda_multigrid_space.cc
+	update/molecdyn/predictor/quda_predictor.cc
+)
+
+target_link_libraries(chromalib PUBLIC QUDA::quda)
 endif()
 
 ################################################
