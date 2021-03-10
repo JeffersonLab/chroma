@@ -1966,7 +1966,10 @@ target_sources(chromalib PRIVATE
 
 target_link_libraries(chromalib PUBLIC QUDA::quda)
 endif()
-
+if( Chroma_SANITIZER_OPTS )
+   target_compile_options(chromalib PUBLIC ${Chroma_SANITIZER_OPTS})
+   target_link_options(chromalib PUBLIC ${Chroma_SANITIZER_OPTS})
+endif()
 ################################################
 # A yucky way to install because the install
 # only supports directories as a destination

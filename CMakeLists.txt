@@ -5,6 +5,7 @@ include(FindOpenMP)
 option(Chroma_ENABLE_CPP_WILSON_DSLASH "Use CPP Dslash for efficiecy" OFF)
 option(Chroma_ENABLE_SSE2 "Use SSE2 Optimizations" OFF)
 option(Chroma_ENABLE_SSE3 "Use SSE3 Optimizations" OFF)
+option(Chroma_ENABLE_SANITIZERS "Enable memory and address sanitizers" OFF)
 #option(Chroma_ENABLE_CG_SOLVER_RESTART "Enable A single Restart in the CG Solvers" OFF)
 #option(Chroma_ENABLE_MDWF "Use MDWF Solver From MIT" OFF)
 #koption(Chroma_ENABLE_LLVM_WILSON_DSLASH "Use LLVM Based Wilson Dslash (QDP-JIT builds only)" OFF)
@@ -91,6 +92,19 @@ endif()
 ###################
 find_package(QDPXX REQUIRED)
 
+if( Chroma_ENABLE_SANITIZERS )
+   if( ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 3.1)
+       OR ( CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 4.8) )
+
+       message(STATUS "Chroma: Setting Sanitizer options")
+       set(Chroma_SANITIZER_OPTS "-fsanitize=address,undefined")
+       set(CPPWilsonDslash_ENABLE_SANITIZERS ON)
+       set(QDPLapack_ENABLE_SANITIZERS ON)
+   else()
+       message(STATUS "Don't know how to enable sanitizers for ${CMAKE_CXX_COMPILER_ID}... Ignoring")
+   endif()
+endif()
+
 ##########################
 # 2nd: Deal with QPhiX
 ##########################
@@ -158,8 +172,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lib/chroma_config_internal.h.cmake.in
 			
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib/chroma_config_internal.h DESTINATION include)
 
-
-			   
 # Now we are ready to build in lib
 # Heaven help us. 
 
