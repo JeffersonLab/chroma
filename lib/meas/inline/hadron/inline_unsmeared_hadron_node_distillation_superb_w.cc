@@ -967,23 +967,16 @@ namespace Chroma
       // \param proc_id_t: process rank on the tensor
       // \param numprocs_t: number of processes with support on the tensor
       std::function<void(int, int)> open_db = [&](int proc_id_t, int numprocs_t) {
+	// If this process has not support on the tensor, do nothing
+	if (proc_id_t < 0)
+	  return;
+
 	if (db_is_open)
 	{
 	  assert(proc_id_t == this_proc_id_t);
 	  return;
 	}
 	this_proc_id_t = proc_id_t;
-
-	// If this process has not support on the tensor, do nothing
-	if (proc_id_t < 0)
-	  return;
-
-	db_is_open = true;
-
-	// If this process has not support on the tensor, do nothing
-	if (proc_id_t < 0)
-	  return;
-
 	db_is_open = true;
 
 	// If the final elementals are going to be spread among several processes, append the index
