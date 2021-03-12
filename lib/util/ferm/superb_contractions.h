@@ -1260,9 +1260,9 @@ namespace Chroma
       /// Return the local support of this tensor
       Tensor<N, T> getLocal() const
       {
-	// Compute the intersection of the current view and the local support
+	// Compute the size of the intersection of the current view and the local support
 	Coor<N> lfrom, lsize;
-	superbblas::detail::intersection(from, size, p->localFrom(), p->localSize(), dim, lfrom,
+	superbblas::detail::intersection(p->localFrom(), p->localSize(), from, size, dim, lfrom,
 					 lsize);
 
 	// If the current process has no support, return the empty tensor
@@ -1272,7 +1272,8 @@ namespace Chroma
 	using superbblas::detail::operator-;
 	return Tensor<N, T>(order, p->localSize(), ctx, data,
 			    std::make_shared<detail::TensorPartition<N>>(p->get_local_partition()),
-			    Local, from - lfrom, lsize, scalar);
+			    Local, detail::normalize_coor(from - p->localFrom(), dim), lsize,
+			    scalar);
       }
 
       /// Copy this tensor into the given one
