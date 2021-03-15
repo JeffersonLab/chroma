@@ -34,8 +34,8 @@ namespace Chroma
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<QudaSolverType> > theQudaSolverTypeMap;
-  typedef SingletonHolder<std::map<QudaSolverType,QudaInverterType> > theChromaToQudaSolverTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<QudaSolverType> > theQudaSolverTypeMap;
+  typedef Chroma::SingletonHolder<std::map<QudaSolverType,QudaInverterType> > theChromaToQudaSolverTypeMap;
 
   // Reader and writer
 
@@ -62,8 +62,8 @@ namespace Chroma
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<QudaPrecisionType> > theQudaPrecisionTypeMap;
-  typedef SingletonHolder<std::map<QudaPrecisionType,QudaPrecision> > theChromaToQudaPrecisionTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<QudaPrecisionType> > theQudaPrecisionTypeMap;
+  typedef Chroma::SingletonHolder<std::map<QudaPrecisionType,QudaPrecision> > theChromaToQudaPrecisionTypeMap;
   // Reader and writer
 
   //! Read an QudaSolverType enum
@@ -87,8 +87,8 @@ namespace Chroma
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<QudaReconsType> > theQudaReconsTypeMap;
-  typedef SingletonHolder<std::map<QudaReconsType,QudaReconstructType> > theChromaToQudaReconsTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<QudaReconsType> > theQudaReconsTypeMap;
+  typedef Chroma::SingletonHolder<std::map<QudaReconsType,QudaReconstructType> > theChromaToQudaReconsTypeMap;
   // Reader and writer
 
   //! Read an QudaReconsType enum
@@ -111,8 +111,8 @@ namespace Chroma
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<QudaSchwarzMethod> > theQudaSchwarzMethodMap;
-  typedef SingletonHolder<std::map<QudaSchwarzMethod,QudaSchwarzType> > theChromaToQudaSchwarzTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<QudaSchwarzMethod> > theQudaSchwarzMethodMap;
+  typedef Chroma::SingletonHolder<std::map<QudaSchwarzMethod,QudaSchwarzType> > theChromaToQudaSchwarzTypeMap;
   // Reader and writer
 
   //! Read an QudaSchwarzMethod enum

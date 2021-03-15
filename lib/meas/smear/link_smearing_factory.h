@@ -15,7 +15,7 @@ namespace Chroma
 {
   //! Link smearing factory (foundry)
   /*! @ingroup smear */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<LinkSmearing,
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),

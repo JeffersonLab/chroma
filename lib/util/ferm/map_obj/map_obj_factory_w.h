@@ -19,7 +19,7 @@ namespace Chroma
 {
   //! MapObj factory (foundry)
   /*! @ingroup ferm */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<QDP::MapObject<int,EVPair<LatticeColorVector> >, 
 		  std::string,
 		  TYPELIST_3(XMLReader&, const std::string&, const std::string&),
@@ -31,7 +31,7 @@ namespace Chroma
 
   //! MapObj factory (foundry)
   /*! @ingroup ferm */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<QDP::MapObject<KeyPropColorVec_t,LatticeFermion>, 
 		  std::string,
 		  TYPELIST_3(XMLReader&, const std::string&, const std::string&),

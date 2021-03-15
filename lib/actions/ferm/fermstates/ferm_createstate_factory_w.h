@@ -17,7 +17,7 @@ namespace Chroma
 
   //! CreateFermState Factory 
   /*! @ingroup fermstates */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory<CreateFermState<LatticeFermion,
 				multi1d<LatticeColorMatrix>, 
 				multi1d<LatticeColorMatrix> >, 

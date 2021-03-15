@@ -35,7 +35,7 @@ namespace Chroma {
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<MDIntegratorType> > theMDIntegratorTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<MDIntegratorType> > theMDIntegratorTypeMap;
 
   // Reader and writer
 

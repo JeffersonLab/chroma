@@ -51,7 +51,7 @@ namespace Chroma
       multi1d<Real> step_factors;
     };
 
-    typedef SingletonHolder<  AnisoStepSizeArray > theAnisoStepSizeArray;
+    typedef Chroma::SingletonHolder<  AnisoStepSizeArray > theAnisoStepSizeArray;
 
     //! Leap with Q (with all monomials)
     /*! @ingroup integrator */

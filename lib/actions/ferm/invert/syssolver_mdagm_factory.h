@@ -27,7 +27,7 @@ namespace Chroma
 
   //! MdagM system solver factory (foundry)
   /*! @ingroup invert */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<MdagMSystemSolver<LatticeFermion>, 
 		  std::string,
 		  TYPELIST_4(XMLReader&, const std::string&, FactoryEnv::FSHandle, Handle< LinearOperator<LatticeFermion> >),
@@ -38,7 +38,7 @@ namespace Chroma
 		  StringFactoryError> >
   TheMdagMFermSystemSolverFactory;
 
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<MdagMSystemSolver<LatticeFermionF>, 
 		  std::string,
 		  TYPELIST_4(XMLReader&, const std::string&, FactoryEnv::FSHandleF, Handle< LinearOperator<LatticeFermionF > >),
@@ -49,7 +49,7 @@ namespace Chroma
 		  StringFactoryError> >
   TheMdagMFermFSystemSolverFactory;
 
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<MdagMSystemSolver<LatticeFermionD>, 
 		  std::string,
 		  TYPELIST_4(XMLReader&, const std::string&, FactoryEnv::FSHandleD, Handle< LinearOperator<LatticeFermionD> >),
@@ -63,7 +63,7 @@ namespace Chroma
 
   //! MdagM system solver factory (foundry)
   /*! @ingroup invert */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<MdagMSystemSolverArray<LatticeFermion>, 
 		  std::string,
 		  TYPELIST_4(XMLReader&, const std::string&, FactoryEnv::FSHandle, Handle< LinearOperatorArray<LatticeFermion> >),
@@ -77,7 +77,7 @@ namespace Chroma
 
   //! MdagM system solver factory (foundry)
   /*! @ingroup invert */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<MdagMSystemSolver<LatticeStaggeredFermion>, 
 		  std::string,
 		  TYPELIST_3(XMLReader&, const std::string&, Handle< LinearOperator<LatticeStaggeredFermion> >),

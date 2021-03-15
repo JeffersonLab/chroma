@@ -34,7 +34,7 @@ namespace Chroma {
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<OverlapInnerSolverType> > theOverlapInnerSolverTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<OverlapInnerSolverType> > theOverlapInnerSolverTypeMap;
 
   // Reader and writer
 

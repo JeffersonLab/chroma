@@ -16,7 +16,7 @@ namespace Chroma
 {
   //! A factory for creating rational approximation
   /*! @ingroup monomial */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<RationalApprox,
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),

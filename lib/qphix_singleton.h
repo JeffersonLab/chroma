@@ -15,7 +15,7 @@
 #include "qphix/qphix_cli_args.h"
 namespace Chroma {
 // A Singleton to hold the command line args.
-typedef SingletonHolder<QPhiX::QPhiXCLIArgs> TheQPhiXParams;
+typedef Chroma::SingletonHolder<QPhiX::QPhiXCLIArgs> TheQPhiXParams;
 }
 
 

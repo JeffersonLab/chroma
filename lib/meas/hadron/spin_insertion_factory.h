@@ -15,7 +15,7 @@ namespace Chroma
 {
   //! Spin insertion factory (foundry)
   /*! @ingroup hadron */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<SpinInsertion<LatticePropagator>, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),
@@ -26,7 +26,7 @@ namespace Chroma
 
   //! Spin insertion factory (foundry)
   /*! @ingroup hadron */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<SpinInsertion<LatticeFermion>, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),

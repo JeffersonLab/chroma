@@ -16,7 +16,7 @@ namespace Chroma
 {
   //! FermBC factory
   /*! \ingroup fermbcs */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<FermBC<LatticeStaggeredFermion,
 			 multi1d<LatticeColorMatrix>, 
 			 multi1d<LatticeColorMatrix> >, 

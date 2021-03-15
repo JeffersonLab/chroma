@@ -17,7 +17,7 @@ namespace Chroma
 
   //! GaugeAct Factory 
   /*! @ingroup gaugeacts */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory<GaugeAction<multi1d<LatticeColorMatrix>, 
 			    multi1d<LatticeColorMatrix> >, 
     std::string,

@@ -13,7 +13,7 @@
 namespace Chroma
 {
   //! External field factory
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<ExternalField,
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),

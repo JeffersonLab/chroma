@@ -41,7 +41,7 @@ namespace Chroma
       {
 	//! QIO read factory (foundry)
 	/*! \ingroup inlineio */
-	typedef SingletonHolder< 
+	typedef Chroma::SingletonHolder< 
 	  ObjectFactory<QIOReadObject, 
 			std::string,
 			TYPELIST_1(const Params&),

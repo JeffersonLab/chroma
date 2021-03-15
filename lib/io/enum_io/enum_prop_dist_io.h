@@ -34,7 +34,7 @@ namespace Chroma
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder< EnumTypeMap<PropDistType> > thePropDistTypeMap;
+  typedef Chroma::SingletonHolder< EnumTypeMap<PropDistType> > thePropDistTypeMap;
 
   //! Reader
   void read(XMLReader& r, const std::string& path, PropDistType& t);
