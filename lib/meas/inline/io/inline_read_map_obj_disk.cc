@@ -22,7 +22,7 @@ namespace Chroma
     { 
       struct DumbDisambiguator {};
 
-      typedef SingletonHolder< 
+      typedef Chroma::SingletonHolder< 
 	FunctionMap<DumbDisambiguator,
 		    std::string,
 		    std::string,

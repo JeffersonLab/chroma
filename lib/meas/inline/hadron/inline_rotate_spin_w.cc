@@ -50,7 +50,7 @@ namespace Chroma
 
       //! RotateSpin function std::map
       /*! \ingroup inlinehadron */
-      typedef SingletonHolder< 
+      typedef Chroma::SingletonHolder< 
 	FunctionMap<DumbDisambiguator,
 		    void,
 		    std::string,

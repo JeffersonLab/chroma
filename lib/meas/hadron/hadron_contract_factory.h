@@ -15,7 +15,7 @@ namespace Chroma
 {
   //! Hadron 2pt factory (foundry)
   /*! @ingroup hadron */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<HadronContract, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),

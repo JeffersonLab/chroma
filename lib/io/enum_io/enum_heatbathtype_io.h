@@ -30,7 +30,7 @@ namespace Chroma {
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<HeatbathType> > theHeatbathTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<HeatbathType> > theHeatbathTypeMap;
 
   // Reader and writer
 

@@ -35,7 +35,7 @@ namespace Chroma
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<CoeffType> > theCoeffTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<CoeffType> > theCoeffTypeMap;
 
   // Reader and writer
   //! Read an approximation coefficient type enum

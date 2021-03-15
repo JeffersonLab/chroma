@@ -79,7 +79,7 @@ namespace Chroma
 
   //----------------------------------------------------------------------------
   //! Quark line factory (foundry)
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<AbsQuarkLine,
 		  std::string,
 		  TYPELIST_7(XMLReader&, const std::string&,

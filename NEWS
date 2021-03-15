@@ -1,5 +1,9 @@
+Nov 7,  2020 - Robert Edwards
+        Numerous updates for JIT and GPU support, including gauge gen and solvers. 
+
 Nov 7,  2017 - Balint Joo
         Fixed issue of CERN IO
+
 Nov 4,  2017 - Balint Joo
         Added extra interfacing options for current quda feature/multigrid 
         Added Interface for MG-Proto code with QPhiX outer layers.

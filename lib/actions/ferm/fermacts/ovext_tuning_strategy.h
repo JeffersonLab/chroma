@@ -35,7 +35,7 @@ namespace Chroma
 
 
   /*! @ingroup fermacts */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory< AbsOvExtTuningStrategy,
 		   std::string,
 		   TYPELIST_2(XMLReader&, const std::string&),

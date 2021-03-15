@@ -14,7 +14,7 @@
       <Param>
         <version>4</version>
         <mom2_min>0</mom2_min>
-        <mom2_max>2</mom2_max>
+        <mom2_max>4</mom2_max>
         <mom_list></mom_list>
         <num_vecs>10</num_vecs>
         <displacement_length>1</displacement_length>
@@ -162,7 +162,7 @@
       </Param>
       <NamedObject>
         <gauge_file>./gauge.mod</gauge_file>
-        <colorvec_file>./colorvec.mod</colorvec_file>
+        <colorvec_files><elem>./colorvec.mod</elem></colorvec_files>
         <meson_op_file>meson.deriv.sdb</meson_op_file>
       </NamedObject>
     </elem>

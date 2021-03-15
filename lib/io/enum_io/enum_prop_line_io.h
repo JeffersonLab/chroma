@@ -34,7 +34,7 @@ namespace Chroma
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder< EnumTypeMap<PropLineType> > thePropLineTypeMap;
+  typedef Chroma::SingletonHolder< EnumTypeMap<PropLineType> > thePropLineTypeMap;
 
   //! Reader
   void read(XMLReader& r, const std::string& path, PropLineType& t);

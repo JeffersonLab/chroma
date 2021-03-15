@@ -13,19 +13,9 @@
 namespace Chroma
 {
 
-  // Turn into a Singleton. Create with CreateUsingNew
-  // Has NoDestroy lifetime, as it may be needed for 
-  // the destruction policy is No Destroy, so the 
-  // Singleton is not cleaned up on exit. This is so 
-  // that static objects can refer to it with confidence
-  // in their own destruction, not having to worry that
-  // atexit() may have destroyed the allocator before
-  // the static objects need to feed memory. 
+  // Turn into a Singleton that it not going to be destroy, never!
   /*! \ingroup inlineio */
-  typedef SingletonHolder<NamedObjectMap,
-			  QDP::CreateUsingNew,
-			  QDP::NoDestroy,
-			  QDP::SingleThreaded> TheNamedObjMap;
+  typedef Chroma::SingletonHolder<NamedObjectMap> TheNamedObjMap;
   
 } // end namespace Chroma
 

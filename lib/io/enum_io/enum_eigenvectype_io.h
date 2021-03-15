@@ -35,7 +35,7 @@ namespace Chroma {
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<EigenVecType> > theEigenVecTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<EigenVecType> > theEigenVecTypeMap;
 
   // Reader and writer
 

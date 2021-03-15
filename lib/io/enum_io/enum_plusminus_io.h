@@ -30,7 +30,7 @@ namespace Chroma
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<PlusMinus> > thePlusMinusMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<PlusMinus> > thePlusMinusMap;
 
   // Reader and writer
 

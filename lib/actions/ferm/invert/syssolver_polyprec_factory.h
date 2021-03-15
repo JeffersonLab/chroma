@@ -15,7 +15,7 @@ namespace Chroma
 
   //! PolyPrec system solver factory (foundry)
   /*! @ingroup invert */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<PolyPrecSystemSolver<LatticeFermion>, 
 		  std::string,
 		  TYPELIST_3(XMLReader&, const std::string&, Handle< LinearOperator<LatticeFermion> >),

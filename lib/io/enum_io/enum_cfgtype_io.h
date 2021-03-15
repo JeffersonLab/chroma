@@ -46,7 +46,7 @@ namespace Chroma {
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<CfgType> > theCfgTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<CfgType> > theCfgTypeMap;
 
   //! read a configuration type enum
   void read(XMLReader& xml_in, const std::string& path, CfgType& t);
