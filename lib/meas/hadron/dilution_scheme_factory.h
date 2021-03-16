@@ -15,7 +15,7 @@ namespace Chroma
 {
   //! Dilution operator factory (foundry)
   /*! @ingroup hadron */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<DilutionScheme<LatticeFermion>, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),

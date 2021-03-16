@@ -18,7 +18,7 @@ namespace Chroma
 {
   //! A factory for exact non-fermionic monomials
   /*! @ingroup predictor */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory< AbsChronologicalPredictor4D< LatticeFermion >,
     std::string,
     TYPELIST_2(XMLReader&, const std::string&),
@@ -30,7 +30,7 @@ namespace Chroma
 
   //! A factory for exact non-fermionic monomials
   /*! @ingroup predictor */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory< AbsChronologicalPredictor5D< LatticeFermion >,
     std::string,
     TYPELIST_3(const int, XMLReader&, const std::string&),

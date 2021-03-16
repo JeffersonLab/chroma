@@ -49,7 +49,7 @@ namespace Chroma {
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<GaugeActType> > theGaugeActTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<GaugeActType> > theGaugeActTypeMap;
 
   // Reader and writer
 

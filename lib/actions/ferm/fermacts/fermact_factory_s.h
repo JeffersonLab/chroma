@@ -13,7 +13,7 @@
 namespace Chroma
 {
   //! Staggered-like fermion factory (foundry)
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory<FermionAction<LatticeStaggeredFermion,
 			      multi1d<LatticeColorMatrix>,
 			      multi1d<LatticeColorMatrix> >,
@@ -27,7 +27,7 @@ namespace Chroma
 
 
   //! Staggered-like fermion 4D factory (foundry)
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory<StaggeredTypeFermAct<LatticeStaggeredFermion, 
 				     multi1d<LatticeColorMatrix>,
 				     multi1d<LatticeColorMatrix> >, 

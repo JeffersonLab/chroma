@@ -30,7 +30,7 @@ namespace Chroma
   
   //! A factory for component integrators
   /*! @ingroup integrator */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory<
     AbsComponentIntegrator< multi1d<LatticeColorMatrix>, 
 			    multi1d<LatticeColorMatrix> >,

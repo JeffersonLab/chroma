@@ -15,7 +15,7 @@ namespace Chroma
 {
   //! Sequential source factory (foundry)
   /*! @ingroup hadron */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<BaryonOperator<LatticeFermion>, 
 		  std::string,
 		  TYPELIST_3(XMLReader&, const std::string&, const multi1d<LatticeColorMatrix>&),

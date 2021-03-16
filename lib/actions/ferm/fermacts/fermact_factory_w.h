@@ -13,7 +13,7 @@
 namespace Chroma
 {
   //! Wilson-like fermion factory (foundry)
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory<FermionAction<LatticeFermion,
 			      multi1d<LatticeColorMatrix>,
 			      multi1d<LatticeColorMatrix> >,
@@ -27,7 +27,7 @@ namespace Chroma
 
 
   //! Wilson-like fermion 4D factory (foundry)
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory<WilsonTypeFermAct<LatticeFermion, 
 				  multi1d<LatticeColorMatrix>,
 				  multi1d<LatticeColorMatrix> >, 
@@ -42,7 +42,7 @@ namespace Chroma
 
 
   //! Wilson-like fermion array factory (foundry)
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory<WilsonTypeFermAct5D<LatticeFermion, 
 				    multi1d<LatticeColorMatrix>, 
 				    multi1d<LatticeColorMatrix> >, 

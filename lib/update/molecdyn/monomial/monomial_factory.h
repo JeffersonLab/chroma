@@ -18,7 +18,7 @@ namespace Chroma
 {
   //! A factory for exact non-fermionic monomials
   /*! @ingroup monomial */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory<
     Monomial< multi1d<LatticeColorMatrix>, 
 	      multi1d<LatticeColorMatrix> >,
@@ -34,7 +34,7 @@ namespace Chroma
 
   /*
   //! A factory for exact fermionic monomials
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory<
     ExactFermMonomial< multi1d<LatticeColorMatrix>, 
 		       multi1d<LatticeColorMatrix>,

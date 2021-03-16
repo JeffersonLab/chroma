@@ -29,7 +29,7 @@ namespace Chroma {
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<VolSrc> > theStochSrc ;
+  typedef Chroma::SingletonHolder<EnumTypeMap<VolSrc> > theStochSrc ;
 
   // Reader and writer
 

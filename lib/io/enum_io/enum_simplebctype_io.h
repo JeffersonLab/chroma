@@ -36,7 +36,7 @@ namespace Chroma {
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<SimpleBCType> > theSimpleBCTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<SimpleBCType> > theSimpleBCTypeMap;
 
   // Reader and writer
 

@@ -37,7 +37,7 @@ namespace Chroma
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<FermType> > theFermTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<FermType> > theFermTypeMap;
 
   // Reader and writer
 

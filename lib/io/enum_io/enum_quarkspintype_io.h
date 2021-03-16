@@ -46,7 +46,7 @@ namespace Chroma
 
   //! A singleton to hold the typemap
   /*! \ingroup io */
-  typedef SingletonHolder<EnumTypeMap<QuarkSpinType> > theQuarkSpinTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<QuarkSpinType> > theQuarkSpinTypeMap;
 
   // Reader and writer
   //! Read a quark spin type enum

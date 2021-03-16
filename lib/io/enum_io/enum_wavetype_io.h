@@ -37,7 +37,7 @@ namespace Chroma {
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<WaveStateType> > theWaveStateTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<WaveStateType> > theWaveStateTypeMap;
 
   //! Read an WaveStateType enum
   void read(XMLReader& r, const std::string& path, WaveStateType& t);

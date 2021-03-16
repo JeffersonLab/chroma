@@ -2,6 +2,7 @@
 #define __SYSSOLVER_QPHIX_CLOVER_PARAMS_H__
 
 #include "chromabase.h"
+#include "singleton.h"
 #include "io/xml_group_reader.h"
 #include "io/enum_io/enum_type_map.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
@@ -24,7 +25,7 @@ namespace Chroma
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<QPhiXSolverType> > theQPhiXSolverTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<QPhiXSolverType> > theQPhiXSolverTypeMap;
 
   //! Read an WaveStateType enum
   void read(XMLReader& r, const std::string& path, QPhiXSolverType& t);

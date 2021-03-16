@@ -18,7 +18,7 @@ namespace Chroma
 {
   //! FermBC factory
   /*! \ingroup fermbcs */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<FermBC<LatticeFermion, 
 			 multi1d<LatticeColorMatrix>, 
 			 multi1d<LatticeColorMatrix> >, 
@@ -31,7 +31,7 @@ namespace Chroma
 		  StringFactoryError> >
   TheWilsonTypeFermBCFactory;
 
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<FermBC<LatticeFermionF, 
 			 multi1d<LatticeColorMatrixF>, 
 			 multi1d<LatticeColorMatrixF> >, 
@@ -44,7 +44,7 @@ namespace Chroma
 		  StringFactoryError> >
   TheWilsonTypeFermBCFFactory;
 
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<FermBC<LatticeFermionD, 
 			 multi1d<LatticeColorMatrixD>, 
 			 multi1d<LatticeColorMatrixD> >, 
