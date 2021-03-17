@@ -81,15 +81,15 @@ namespace Chroma
     const K& key() const {return key_;}
 
     // Part of Serializable
-    const unsigned short serialID (void) const {return 456;}
+    unsigned short serialID (void) const {return 456;}
 
-    void writeObject (std::string& output) const throw (SerializeException) {
+    void writeObject (std::string& output) const {
       LocalBinaryBufferWriter bin;
       write(bin, key());
       output = bin.strPrimaryNode();
     }
 
-    void readObject (const std::string& input) throw (SerializeException) {
+    void readObject (const std::string& input) {
       BinaryBufferReader bin(input);
       read(bin, key());
     }
@@ -165,15 +165,15 @@ namespace Chroma
     const D& data() const {return data_;}
 
     // Part of Serializable
-    const unsigned short serialID (void) const {return 123;}
+    unsigned short serialID (void) const {return 123;}
 
-    void writeObject (std::string& output) const throw (SerializeException) {
+    void writeObject (std::string& output) const {
       LocalBinaryBufferWriter bin;
       write(bin, data());
       output = bin.strPrimaryNode();
     }
 
-    void readObject (const std::string& input) throw (SerializeException) {
+    void readObject (const std::string& input) {
       BinaryBufferReader bin(input);
       read(bin, data());
     }
