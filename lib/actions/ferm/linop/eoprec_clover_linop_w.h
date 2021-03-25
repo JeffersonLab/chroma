@@ -122,6 +122,8 @@ namespace Chroma
     Double logDetEvenEvenLinOp(void) const; 
 
   private:
+    mutable LatticeFermion tmp1;
+    mutable LatticeFermion tmp2;
     CloverFermActParams param;
     WilsonDslash D;
     CloverTerm   clov;

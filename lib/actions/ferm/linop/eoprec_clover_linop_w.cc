@@ -34,6 +34,9 @@ namespace Chroma
     clov_deriv_time = 0;
     clov_apply_time = 0;
 
+    moveToFastMemoryHint(tmp1);
+    moveToFastMemoryHint(tmp2);
+     
     // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << std::endl;
     END_CODE();
   }
@@ -145,12 +148,7 @@ namespace Chroma
   {
     START_CODE();
 
-    LatticeFermion tmp1; moveToFastMemoryHint(tmp1);
-    LatticeFermion tmp2; moveToFastMemoryHint(tmp2);
     Real mquarter = -0.25;
-
-
-    
   
     //  tmp1_o  =  D_oe   A^(-1)_ee  D_eo  psi_o
     D.apply(tmp1, psi, isign, 0);
