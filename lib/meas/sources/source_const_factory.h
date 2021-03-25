@@ -15,7 +15,7 @@ namespace Chroma
 {
   //! Propagator source factory (foundry)
   /*! @ingroup sources */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<QuarkSourceConstruction<LatticePropagator>, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),
@@ -26,7 +26,7 @@ namespace Chroma
 
   //! Propagator source factory (foundry)
   /*! @ingroup sources */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<QuarkSourceConstruction<LatticeStaggeredPropagator>, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),
@@ -37,7 +37,7 @@ namespace Chroma
 
   //! Propagator source factory (foundry)
   /*! @ingroup sources */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<QuarkSourceConstruction<LatticeFermion>, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),

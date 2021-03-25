@@ -38,7 +38,7 @@ namespace Chroma
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<MesonOpType> > theMesonOpTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<MesonOpType> > theMesonOpTypeMap;
 
   // Reader and writer
   //! Read an approximation coefficient type enum

@@ -21,7 +21,7 @@ namespace Chroma
 
     //! Write object function std::map
     /*! \ingroup inlineio */
-    typedef SingletonHolder< 
+    typedef Chroma::SingletonHolder< 
       FunctionMap<DumbDisambiguator,
 		  void,
 		  std::string,

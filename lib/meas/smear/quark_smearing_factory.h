@@ -15,7 +15,7 @@ namespace Chroma
 {
   //! Quark smearing factory (foundry)
   /*! \ingroup smear */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<QuarkSmearing<LatticePropagator>, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),
@@ -26,7 +26,7 @@ namespace Chroma
 
   //! Quark smearing factory (foundry)
   /*! \ingroup smear */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<QuarkSmearing<LatticeStaggeredPropagator>, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),
@@ -37,7 +37,7 @@ namespace Chroma
 
   //! Quark smearing factory (foundry)
   /*! \ingroup smear */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<QuarkSmearing<LatticeFermion>, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),
@@ -48,7 +48,7 @@ namespace Chroma
 
   //! Quark smearing factory (foundry)
   /*! \ingroup smear */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<QuarkSmearing<LatticeColorVector>, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),

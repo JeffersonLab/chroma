@@ -13,22 +13,13 @@
 namespace Chroma 
 {
 
-  /* typedef SingletonHolder< XMLReader > TheXMLInputReader; */
-
-  // Create each singleton with a slightly different lifetime policy
-  // This trick is used to disambiguate only
-
   //! XML output holder
   /*! \ingroup io */
-  typedef SingletonHolder<XMLFileWriter, CreateUsingNew,
-			  DefaultLifetime1,
-			  SingleThreaded> TheXMLOutputWriter;
+  typedef Chroma::SingletonHolder<XMLFileWriter> TheXMLOutputWriter;
 
   //! XML log holder
   /*! \ingroup io */
-  typedef SingletonHolder<XMLFileWriter, CreateUsingNew,
-			  DefaultLifetime2,
-			  SingleThreaded> TheXMLLogWriter;
+  typedef Chroma::SingletonHolder<XMLFileWriter> TheXMLLogWriter;
 
 } // End namespace Chroma
 

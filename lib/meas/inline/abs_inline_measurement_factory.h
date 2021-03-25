@@ -17,7 +17,7 @@ namespace Chroma
 { 
 
   /*! \ingroup inline */
-  typedef SingletonHolder <
+  typedef Chroma::SingletonHolder <
     ObjectFactory<
     AbsInlineMeasurement ,
     std::string,

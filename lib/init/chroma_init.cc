@@ -4,6 +4,7 @@
 
 #include "chroma_config.h"
 
+#include "singleton.h"
 #include "init/chroma_init.h"
 #include "io/xmllog_io.h"
 
@@ -341,6 +342,9 @@ namespace Chroma
     if( xmlLogP ) {
       Chroma::getXMLLogInstance().close();
     }
+
+    // Destroy singletons
+    destroySingletons();
 
     QDP_finalize();
 

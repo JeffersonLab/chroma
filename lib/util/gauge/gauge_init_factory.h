@@ -15,7 +15,7 @@ namespace Chroma
 {
   //! Gauge initialization factory (foundry)
   /*! @ingroup gauge */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<GaugeInit,
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),

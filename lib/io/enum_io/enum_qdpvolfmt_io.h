@@ -30,7 +30,7 @@ namespace Chroma {
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<QDP_volfmt_t> > theQDPVolfmtMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<QDP_volfmt_t> > theQDPVolfmtMap;
 
   // Reader and writer
 

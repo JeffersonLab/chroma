@@ -36,7 +36,7 @@ namespace Chroma {
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder<EnumTypeMap<PropType> > thePropTypeMap;
+  typedef Chroma::SingletonHolder<EnumTypeMap<PropType> > thePropTypeMap;
 
   // Reader and writer
 

@@ -24,7 +24,7 @@ namespace Chroma
 
       //! Write object function std::map
       /*! \ingroup inlineio */
-      typedef SingletonHolder< 
+      typedef Chroma::SingletonHolder< 
 	FunctionMap<DumbDisambiguator,
 		    void,
 		    std::string,
@@ -52,7 +52,7 @@ namespace Chroma
 	
 	  // Create the entry
 	  Handle< QDP::MapObject<K,V> > output_obj(
-	    SingletonHolder< ObjectFactory<QDP::MapObject<K,V>, 
+	    Chroma::SingletonHolder< ObjectFactory<QDP::MapObject<K,V>, 
 	    std::string,
 	    TYPELIST_3(XMLReader&, const std::string&, const std::string&),
 	    QDP::MapObject<K,V>* (*)(XMLReader&, const std::string&, const std::string&), 

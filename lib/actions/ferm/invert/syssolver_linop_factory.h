@@ -26,7 +26,7 @@ namespace Chroma
   }
   //! LinOp system solver factory (foundry)
   /*! @ingroup invert */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<LinOpSystemSolver<LatticeFermion>, 
 		  std::string,
 		  TYPELIST_4(XMLReader&, const std::string&, FSHandle,  Handle< LinearOperator<LatticeFermion> >),
@@ -38,7 +38,7 @@ namespace Chroma
 		  StringFactoryError> >
   TheLinOpFermSystemSolverFactory;
 
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<LinOpSystemSolver<LatticeFermionF>, 
 		  std::string,
 		  TYPELIST_4(XMLReader&, const std::string&, FSHandleF,  Handle< LinearOperator<LatticeFermionF> >),
@@ -50,7 +50,7 @@ namespace Chroma
 		  StringFactoryError> >
   TheLinOpFFermSystemSolverFactory;
 
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<LinOpSystemSolver<LatticeFermionD>, 
 		  std::string,
 		  TYPELIST_4(XMLReader&, const std::string&, FSHandleD,  Handle< LinearOperator<LatticeFermionD> >),
@@ -65,7 +65,7 @@ namespace Chroma
 
   //! LinOp system solver factory (foundry)
   /*! @ingroup invert */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<LinOpSystemSolverArray<LatticeFermion>, 
 		  std::string,
 		  TYPELIST_4(XMLReader&, const std::string&, FSHandle, Handle< LinearOperatorArray<LatticeFermion> >),
@@ -80,7 +80,7 @@ namespace Chroma
 
   //! LinOp system solver factory (foundry)
   /*! @ingroup invert */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
     ObjectFactory<LinOpSystemSolver<LatticeStaggeredFermion>, 
 		  std::string,
 		  TYPELIST_3(XMLReader&, const std::string&, Handle< LinearOperator<LatticeStaggeredFermion> >),

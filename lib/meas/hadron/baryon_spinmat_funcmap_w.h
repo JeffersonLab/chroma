@@ -20,7 +20,7 @@ namespace Chroma
 
     //! Spin matrix factory
     /*! @ingroup hadron */
-    typedef SingletonHolder< 
+    typedef Chroma::SingletonHolder< 
       FunctionMap<DumbDisambiguator,
 		  SpinMatrix, 
 		  std::string,
