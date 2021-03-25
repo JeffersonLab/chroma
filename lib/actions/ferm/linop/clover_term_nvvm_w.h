@@ -111,6 +111,8 @@ namespace QDP
     T diag[2*Nc];
   };
 
+
+
   template<class T> struct PTriDiaREG;
 
   template<typename T>
@@ -243,38 +245,45 @@ namespace QDP
   };
 
 
-#if defined(QDP_USE_PROFILING)   
-template<class T>
-struct LeafFunctor<PComp<T>, PrintTag>
-{
-  typedef int Type_t;
-  static int apply(const PComp<T> &s, const PrintTag &f)
+
+  template<class T>
+  struct LeafFunctor<PComp<T>, PrintTag>
+  {
+    typedef int Type_t;
+    static int apply(const PComp<T> &s, const PrintTag &f)
     { 
-      //LeafFunctor<T,PrintTag>::apply(s.elem(),f);
+      f.os_m << "PComp<";
+      LeafFunctor<T,PrintTag>::apply(s.comp[0],f);
+      f.os_m << ">"; 
       return 0;
     }
-};
-template<class T>
-struct LeafFunctor<PTriDia<T>, PrintTag>
-{
-  typedef int Type_t;
-  static int apply(const PTriDia<T> &s, const PrintTag &f)
+  };
+
+  template<class T>
+  struct LeafFunctor<PTriDia<T>, PrintTag>
+  {
+    typedef int Type_t;
+    static int apply(const PTriDia<T> &s, const PrintTag &f)
     { 
-      //LeafFunctor<T,PrintTag>::apply(s.elem(),f);
+      f.os_m << "PTriDia<";
+      LeafFunctor<T,PrintTag>::apply(s.diag[0],f);
+      f.os_m << ">"; 
       return 0;
     }
-};
-template<class T>
-struct LeafFunctor<PTriOff<T>, PrintTag>
-{
-  typedef int Type_t;
-  static int apply(const PTriOff<T> &s, const PrintTag &f)
+  };
+
+  template<class T>
+  struct LeafFunctor<PTriOff<T>, PrintTag>
+  {
+    typedef int Type_t;
+    static int apply(const PTriOff<T> &s, const PrintTag &f)
     { 
-      //LeafFunctor<T,PrintTag>::apply(s.elem(),f);
+      f.os_m << "PTriOff<";
+      LeafFunctor<T,PrintTag>::apply(s.offd[0],f);
+      f.os_m << ">"; 
       return 0;
     }
-};
-#endif
+  };
 
 
 
@@ -702,7 +711,8 @@ namespace Chroma
     auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , r_idx );
 
     typename REGType< typename RealTJIT::Subtype_t >::Type_t diag_mass_reg;
-    diag_mass_reg.setup( diag_mass_jit.elem() );
+    //diag_mass_reg.setup( diag_mass_jit.elem() );
+    diag_mass_reg.setup_value( diag_mass_jit.elem() );
 
       
 
