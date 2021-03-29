@@ -119,6 +119,13 @@ namespace Chroma
         read(inputtop, "max_rhs", input.max_rhs);
       }
 
+      input.phase.resize(Nd - 1);
+      for (int i = 0; i < Nd - 1; ++i)
+	input.phase[i] = 0;
+      if( inputtop.count("phase") == 1 ) {
+        read(inputtop, "phase", input.phase);
+      }
+
       input.zero_colorvecs = false;
       if( inputtop.count("zero_colorvecs") == 1 ) {
 	read(inputtop, "zero_colorvecs", input.zero_colorvecs );
@@ -152,6 +159,7 @@ namespace Chroma
       write(xml, "mass_label", input.mass_label);
       write(xml, "num_tries", input.num_tries);
       write(xml, "max_rhs", input.max_rhs);
+      write(xml, "phase", input.phase);
 
       pop(xml);
     }
@@ -459,6 +467,19 @@ namespace Chroma
 	  QDPIO::cout << "Finished opening peram file" << std::endl;
 	}
 
+      //
+      // Parse the phase
+      //
+      if (params.param.contract.phase.size() != Nd - 1)
+      {
+	QDPIO::cerr << "phase tag should have " << Nd - 1 << " components" << std::endl;
+	QDP_abort(1);
+      }
+      SB::Coor<Nd - 1> phase;
+      for (int i = 0; i < Nd - 1; ++i)
+	phase[i] = params.param.contract.phase[i];
+
+
       // Total number of iterations
       int ncg_had = 0;
 
@@ -520,7 +541,7 @@ namespace Chroma
 	  const char order_in_active_colorvec[] = "cxyzXnt";
 	  SB::Tensor<Nd + 3, SB::ComplexF> active_colorvec =
 	    SB::getColorvecs(eigen_source, decay_dir, first_tslice_in_active_colorvec,
-			     num_tslices_in_active_colorvec, num_vecs, order_in_active_colorvec);
+			     num_tslices_in_active_colorvec, num_vecs, order_in_active_colorvec, phase);
 
 	  // The tensor `tensor_quark_solns` will have the active time-slices of the solution vectors;
 	  // the contraction requires `t` and `s` being the slowest indices

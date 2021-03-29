@@ -174,7 +174,14 @@ namespace Chroma
       if( inputtop.count("use_multiple_writers") == 1 ) {
         read(inputtop, "use_multiple_writers", input.use_multiple_writers);
       }
-    }
+
+      input.phase.resize(Nd - 1);
+      for (int i = 0; i < Nd - 1; ++i)
+	input.phase[i] = 0;
+      if( inputtop.count("phase") == 1 ) {
+        read(inputtop, "phase", input.phase);
+      }
+     }
 
     //! Propagator output
     void write(XMLWriter& xml, const std::string& path, const Params::Param_t::Contract_t& input)
@@ -191,6 +198,7 @@ namespace Chroma
       write(xml, "max_tslices_in_contraction", input.max_moms_in_contraction);
       write(xml, "use_genprop4_format", input.use_genprop4_format);
       write(xml, "use_multiple_writers", input.use_multiple_writers);
+      write(xml, "phase", input.phase);
 
       pop(xml);
     }
@@ -829,16 +837,27 @@ namespace Chroma
       }
 
       //
+      // Parse the phase
+      //
+      if (params.param.contract.phase.size() != Nd - 1)
+      {
+	QDPIO::cerr << "phase tag should have " << Nd - 1 << " components" << std::endl;
+	QDP_abort(1);
+      }
+      SB::Coor<Nd - 1> phase;
+      for (int i = 0; i < Nd - 1; ++i)
+	phase[i] = params.param.contract.phase[i];
+
+      //
       // Initialize the slow Fourier transform phases
       //
       SftMom phases(moms, params.param.contract.decay_dir);
 
-   
       //
       // Capture maximum number of vecs
       //
       int num_vecs = 0;
-      for (const auto &it : params.param.prop_sources)
+      for (const auto& it : params.param.prop_sources)
 	num_vecs = std::max(num_vecs, it.num_vecs);
 
       //
@@ -1121,7 +1140,7 @@ namespace Chroma
 
 	    // Get num_vecs colorvecs on time-slice t_source
 	    SB::Tensor<Nd + 3, SB::ComplexF> source_colorvec =
-	      SB::getColorvecs(eigen_source, decay_dir, t_source, 1, num_vecs);
+	      SB::getColorvecs(eigen_source, decay_dir, t_source, 1, num_vecs, SB::none, phase);
 
 	    // Invert the source for all spins and retrieve num_tslices_active
 	    // time-slices starting from time-slice first_tslice_active
@@ -1141,7 +1160,7 @@ namespace Chroma
 
 	    // Get num_vecs colorvecs on time-slice t_sink
 	    SB::Tensor<Nd + 3, SB::ComplexF> sink_colorvec =
-	      SB::getColorvecs(eigen_source, decay_dir, t_sink, 1, num_vecs);
+	      SB::getColorvecs(eigen_source, decay_dir, t_sink, 1, num_vecs, SB::none, phase);
 
 	    // Invert the sink for all spins and retrieve num_tslices_active time-slices starting from
 	    // time-slice first_tslice_active

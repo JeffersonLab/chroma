@@ -1885,7 +1885,7 @@ namespace Chroma
     template <typename COMPLEX = ComplexF>
     Tensor<Nd + 3, COMPLEX>
     getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice, int n_tslices,
-		 int n_colorvecs, const std::string& order = "cxyztXn", Coor<Nd - 1> phase = {})
+		 int n_colorvecs, Maybe<const std::string> order_ = none, Coor<Nd - 1> phase = {})
     {
       using namespace ns_getColorvecs;
 
@@ -1895,6 +1895,7 @@ namespace Chroma
 
       if (decay_dir != 3)
 	throw std::runtime_error("Only support for decay_dir being the temporal dimension");
+      const std::string order = order_.getSome("cxyztXn");
       detail::check_order_contains(order, "cxyztXn");
 
       // Phase colorvecs if phase != (0,0,0)
@@ -1903,8 +1904,9 @@ namespace Chroma
       from_tslice = detail::normalize_coor(from_tslice, Layout::lattSize()[decay_dir]);
 
       // Allocate tensor to return
-      Tensor<Nd + 3, COMPLEX> r(phasing ? "xyztXcn" : order,
-				latticeSize<Nd + 3>(order, {{'t', n_tslices}, {'n', n_colorvecs}}));
+      std::string r_order = phasing ? "cnxyztX" : order;
+      Tensor<Nd + 3, COMPLEX> r(
+	r_order, latticeSize<Nd + 3>(r_order, {{'t', n_tslices}, {'n', n_colorvecs}}));
 
       // Allocate a single time slice colorvec in natural ordering, as colorvec are stored
       Tensor<Nd, ComplexF> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
@@ -1948,8 +1950,11 @@ namespace Chroma
       // Apply phase
       if (phasing)
       {
-	Tensor<Nd + 1, COMPLEX> tphase = getPhase<COMPLEX>(phase).reorder("xyztX");
-	Tensor<Nd + 3, COMPLEX> rp = r.like_this("xyzXtcn");
+	Tensor<Nd + 1, COMPLEX> tphase =
+	  getPhase<COMPLEX>(phase)
+	    .kvslice_from_size({{'t', from_tslice}}, {{'t', n_tslices}})
+	    .reorder("xyztX");
+	Tensor<Nd + 3, COMPLEX> rp = r.like_this("cnxyztX");
 	rp.contract(r, {}, NotConjugate, tphase, {}, NotConjugate);
 	r = rp.reorder(order);
       }
