@@ -48,8 +48,6 @@ namespace Chroma
 	  bool                      cacheP;
 	  int                       num_vecs;               /*!< Number of color vectors to use */
 	  int                       t_source;               /*!< Time slice source for props */
-	  int                       Nt_forward;             /*!< Forward */
-	  int                       Nt_backward;            /*!< Backward */
 	};
 
 	struct SinkSource_t
@@ -72,7 +70,7 @@ namespace Chroma
 	  int                       max_moms_in_contraction;/*! maximum number of contracted momenta simultaneously */
 	  bool                      use_genprop4_format;    /*!< Use the efficient genprop4 format instead of the traditional one */
 	  bool                      use_multiple_writers;   /*!< Whether several processes are going to write down the elementals on separate files */
-	  multi1d<int>              phase;                   /*!< Phase to apply to colorvecs */
+	  multi1d<float>            phase;                   /*!< Phase to apply to colorvecs */
 	};
 
 	std::vector<KeySolnProp_t>  prop_sources;           /*!< Sources */

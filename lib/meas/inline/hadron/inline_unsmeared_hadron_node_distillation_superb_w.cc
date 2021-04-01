@@ -96,8 +96,6 @@ namespace Chroma
       read(inputtop, "cacheP", input.cacheP);
       read(inputtop, "num_vecs", input.num_vecs);
       read(inputtop, "t_source", input.t_source);
-      read(inputtop, "Nt_forward", input.Nt_forward);
-      read(inputtop, "Nt_backward", input.Nt_backward);
     }
 
     //! Propagator output
@@ -108,8 +106,6 @@ namespace Chroma
       write(xml, "cacheP", input.cacheP);
       write(xml, "num_vecs", input.num_vecs);
       write(xml, "t_source", input.t_source);
-      write(xml, "Nt_forward", input.Nt_forward);
-      write(xml, "Nt_backward", input.Nt_backward);
 
       pop(xml);
     }
@@ -362,8 +358,6 @@ namespace Chroma
       read(bin, param.cacheP);
       read(bin, param.num_vecs);
       read(bin, param.t_source);
-      read(bin, param.Nt_forward);
-      read(bin, param.Nt_backward);
     }
 
     //! KeySolnProp write
@@ -372,8 +366,6 @@ namespace Chroma
       write(bin, param.cacheP);
       write(bin, param.num_vecs);
       write(bin, param.t_source);
-      write(bin, param.Nt_forward);
-      write(bin, param.Nt_backward);
     }
 
     //----------------------------------------------------------------------------
@@ -846,7 +838,11 @@ namespace Chroma
       }
       SB::Coor<Nd - 1> phase;
       for (int i = 0; i < Nd - 1; ++i)
+      {
 	phase[i] = params.param.contract.phase[i];
+	if (std::fabs(phase[i] - params.param.contract.phase[i]) > 0)
+	  std::runtime_error("phase should be integer");
+      }
 
       //
       // Initialize the slow Fourier transform phases
