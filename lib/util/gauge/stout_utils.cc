@@ -12,33 +12,20 @@
 //#endif
 
 #if defined(BUILD_JIT_CLOVER_TERM)
-#ifdef QDPJIT_IS_QDPJITPTX
-CUfunction function_get_fs_bs_exec(CUfunction function, 
-				   const LatticeColorMatrix& Q,
-				   const LatticeColorMatrix& QQ,
-				   multi1d<LatticeComplex>& f,
-				   multi1d<LatticeComplex>& b1,
-				   multi1d<LatticeComplex>& b2,
-				   bool dobs);
-CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
-				    const LatticeColorMatrix& QQ,
-				    multi1d<LatticeComplex>& f,
-				    multi1d<LatticeComplex>& b1,
-				    multi1d<LatticeComplex>& b2,
-				    bool dobs);
-#elif defined(QDPJIT_IS_QDPJITNVVM)
-CUfunction function_get_fs_bs_exec(CUfunction function, 
-				   const LatticeColorMatrix& Q,
-				   const LatticeColorMatrix& QQ,
-				   multi1d<LatticeComplex>& f,
-				   multi1d<LatticeComplex>& b1,
-				   multi1d<LatticeComplex>& b2,
-				   bool dobs);
-CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
-				    const LatticeColorMatrix& QQ,
-				    multi1d<LatticeComplex>& f,
-				    multi1d<LatticeComplex>& b1,
-				    multi1d<LatticeComplex>& b2);
+#ifdef QDPJIT_IS_QDPJITNVVM
+void function_get_fs_bs_exec(JitFunction& function, 
+			     const LatticeColorMatrix& Q,
+			     const LatticeColorMatrix& QQ,
+			     multi1d<LatticeComplex>& f,
+			     multi1d<LatticeComplex>& b1,
+			     multi1d<LatticeComplex>& b2,
+			     bool dobs);
+void function_get_fs_bs_build(JitFunction& function,
+			      const LatticeColorMatrix& Q,
+			      const LatticeColorMatrix& QQ,
+			      multi1d<LatticeComplex>& f,
+			      multi1d<LatticeComplex>& b1,
+			      multi1d<LatticeComplex>& b2);
 #else
 void function_get_fs_bs_exec(const JitFunction& func,
 			     const LatticeColorMatrix& Q,
@@ -897,21 +884,11 @@ namespace Chroma
 #warning "Using QDP++ stouting"
       dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
 #else
-#if defined(QDPJIT_IS_QDPJITPTX)
-      #warning "Using QDP-JIT/PTX stouting"
-      //QDPIO::cout << "PTX getFsAndBs dobs = " << dobs << "\n";
-      static CUfunction function;
-      
-      if (function == NULL)
-	function = function_get_fs_bs_build( Q,QQ,f,b1,b2,dobs );
-      
-      // Execute the function
-      function_get_fs_bs_exec(function, Q,QQ,f,b1,b2,dobs );
-#elif defined(QDPJIT_IS_QDPJITNVVM)
+#if defined(QDPJIT_IS_QDPJITNVVM)
       #warning "Using QDP-JIT/NVVM stouting"
-      static CUfunction function;
-      if (function == NULL)
-	function = function_get_fs_bs_build( Q,QQ,f,b1,b2 );
+      static JitFunction function;
+      if (function.empty())
+	function_get_fs_bs_build( function, Q,QQ,f,b1,b2 );
       function_get_fs_bs_exec(function, Q,QQ,f,b1,b2,dobs );
 #else
       #warning "Using QDP-JIT/LLVM stouting"

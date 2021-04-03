@@ -1,0 +1,31 @@
+@PACKAGE_INIT@
+include(CMakeFindDependencyMacro)
+
+# GMP Dependency should be using the Find module
+set(GMP_DEPENDENCY @GMP_FOUND@)
+if( GMP_DEPENDENCY )
+  list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
+  find_dependency(GMP) 
+endif()
+
+# User set QDPXX_DIR etc or 
+# the PREFIX_PATH
+find_dependency(QDPXX)  
+
+# QDP Lapack install should be parallel to mine
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_LIST_DIR}/../QDPLapack)
+find_dependency(QDPLapack)
+
+# CPP Wilson Dslash should be parallel to mine
+set(CPPWilsonDslashDependency @Chroma_ENABLE_CPP_WILSON_DSLASH@)
+if(CPPWilsonDslashDependency)
+  list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_LIST_DIR}/../CPPWilsonDslash)
+  find_dependency(CPPWilsonDslash)
+endif()
+
+set(QUDADependency @Chroma_ENABLE_QUDA@)
+if(QUDADependency)
+  find_dependency(QUDA)
+endif()
+
+include(${CMAKE_CURRENT_LIST_DIR}/ChromaTargets.cmake)
