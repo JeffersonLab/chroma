@@ -64,7 +64,7 @@ namespace Chroma
       OnMaster,		    ///< Fully supported on node with index zero
       OnEveryone,	    ///< Distributed the lattice dimensions (x, y, z, t) as chroma does
       OnEveryoneReplicated, ///< All nodes have a copy of the tensor
-      Local                 ///< Non-collective
+      Local		    ///< Non-collective
     };
 
     /// Whether complex conjugate the elements before contraction (see Tensor::contract)
@@ -263,7 +263,7 @@ namespace Chroma
       // Return the equivalent value of the coordinate `v` in the interval [0, dim[ for a periodic
       // dimension with length `dim`.
 
-      int normalize_coor(int v, int dim)
+      inline int normalize_coor(int v, int dim)
       {
 	return (v + dim * (v < 0 ? -v / dim + 1 : 0)) % dim;
       }
@@ -301,7 +301,7 @@ namespace Chroma
 	return r;
       }
 
-      std::string remove_coor(const std::string& v, std::size_t pos)
+      inline std::string remove_coor(const std::string& v, std::size_t pos)
       {
 	std::string r = v;
 	r.erase(pos, 1);
@@ -331,14 +331,14 @@ namespace Chroma
 	return v;
       }
 
-      std::string insert_coor(std::string v, std::size_t pos, char value)
+      inline std::string insert_coor(std::string v, std::size_t pos, char value)
       {
 	assert(pos <= v.size());
 	v.insert(pos, 1, value);
 	return v;
       }
 
-      std::string replace_coor(std::string v, std::size_t pos, char value)
+      inline std::string replace_coor(std::string v, std::size_t pos, char value)
       {
 	assert(pos <= v.size());
 	v[pos] = value;
@@ -346,7 +346,7 @@ namespace Chroma
       }
 
       // Return a context on either the host or the device
-      std::shared_ptr<superbblas::Context> getContext(DeviceHost dev)
+      inline std::shared_ptr<superbblas::Context> getContext(DeviceHost dev)
       {
 	// Creating GPU context can be expensive; so do it once
 	static std::shared_ptr<superbblas::Context> cudactx;
@@ -398,7 +398,7 @@ namespace Chroma
 
       /// Return if two devices are the same
 
-      bool is_same(DeviceHost a, DeviceHost b) 
+      inline bool is_same(DeviceHost a, DeviceHost b)
       {
 #  ifdef QDP_IS_QDPJIT
 	return a == b;
@@ -409,7 +409,7 @@ namespace Chroma
       }
 
       /// Return an ordering with labels 0, 1, ...
-      std::string getTrivialOrder(std::size_t N)
+      inline std::string getTrivialOrder(std::size_t N)
       {
 	std::string r(N, 0);
 	for (std::size_t i = 0; i < N; ++i)
@@ -424,7 +424,7 @@ namespace Chroma
 	using PartitionStored = std::vector<superbblas::PartitionItem<N>>;
 	Coor<N> dim;	   ///< Dimensions of the tensor
 	PartitionStored p; ///< p[i] = {first coordinate, size} of tensor on i-th node
-	bool isLocal;      ///< Whether the partition is non-collective
+	bool isLocal;	   ///< Whether the partition is non-collective
 
 	/// Constructor
 	/// \param order: dimension labels (use x, y, z, t for lattice dimensions)
@@ -506,7 +506,8 @@ namespace Chroma
 	}
 
 	/// Return the MPI process rank
-	int MpiProcRank() const {
+	int MpiProcRank() const
+	{
 	  return (isLocal ? 0 : Layout::nodeNumber());
 	}
 
@@ -784,7 +785,7 @@ namespace Chroma
 	}
       }
 
-      void log(int level, std::string s)
+      inline void log(int level, std::string s)
       {
 	static int log_level = []() {
 	  const char* l = std::getenv("SB_LOG");
@@ -798,7 +799,7 @@ namespace Chroma
 	QDPIO::cout.flush();
       }
 
-      void log_mem()
+      inline void log_mem()
       {
 	if (!superbblas::getTrackingMemory())
 	  return;
@@ -862,7 +863,8 @@ namespace Chroma
 	if (ptr)
 	  ss << "data:" << ptr << ", ";
 	std::size_t sizemb = p->localVolume() * sizeof(T) / 1024 / 1024;
-	ss << "order:" << order << ", dim:" << dim << ", dist:" << dist << ", local_storage:" << sizemb << " MiB}";
+	ss << "order:" << order << ", dim:" << dim << ", dist:" << dist
+	   << ", local_storage:" << sizemb << " MiB}";
 	return ss.str();
       }
 
@@ -1412,7 +1414,8 @@ namespace Chroma
       /// \param new_dist: distribution
       /// \tparam Tn: new precision
 
-      template <typename Tn = T, typename std::enable_if<std::is_same<T, Tn>::value, bool>::type = true>
+      template <typename Tn = T,
+		typename std::enable_if<std::is_same<T, Tn>::value, bool>::type = true>
       Tensor<N, Tn> make_sure(Maybe<std::string> new_order = none, Maybe<DeviceHost> new_dev = none,
 			      Maybe<Distribution> new_dist = none) const
       {
@@ -1429,7 +1432,8 @@ namespace Chroma
 	}
       }
 
-      template <typename Tn = T, typename std::enable_if<!std::is_same<T, Tn>::value, bool>::type = true>
+      template <typename Tn = T,
+		typename std::enable_if<!std::is_same<T, Tn>::value, bool>::type = true>
       Tensor<N, Tn> make_sure(Maybe<std::string> new_order = none, Maybe<DeviceHost> new_dev = none,
 			      Maybe<Distribution> new_dist = none) const
       {
@@ -1539,7 +1543,7 @@ namespace Chroma
 #  endif
     };
 
-    void* getQDPPtrFromId(int id)
+    inline void* getQDPPtrFromId(int id)
     {
 #  ifdef QDP_IS_QDPJIT
       std::vector<QDPCache::ArgKey> v(id, 1);
@@ -1575,14 +1579,14 @@ namespace Chroma
     }
 
 #  ifndef QDP_IS_QDPJIT
-    Tensor<Nd + 3, Complex> asTensorView(const LatticeFermion& v)
+    inline Tensor<Nd + 3, Complex> asTensorView(const LatticeFermion& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 3, Complex>("csxyztX", latticeSize<Nd + 3>("csxyztX"), OnHost, OnEveryone,
 				     std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 #  else
-    Tensor<Nd + 4, REAL> asTensorView(const LatticeFermion& v)
+    inline Tensor<Nd + 4, REAL> asTensorView(const LatticeFermion& v)
     {
       REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
       return Tensor<Nd + 4, REAL>("xyztXsc.", latticeSize<Nd + 4>("xyztXsc."), OnDefaultDevice,
@@ -1591,14 +1595,14 @@ namespace Chroma
 #  endif
 
 #  ifndef QDP_IS_QDPJIT
-    Tensor<Nd + 1, Complex> asTensorView(const LatticeComplex& v)
+    inline Tensor<Nd + 1, Complex> asTensorView(const LatticeComplex& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 1, Complex>("xyztX", latticeSize<Nd + 1>("xyztX"), OnHost, OnEveryone,
 				     std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 #  else
-    Tensor<Nd + 2, REAL> asTensorView(const LatticeComplex& v)
+    inline Tensor<Nd + 2, REAL> asTensorView(const LatticeComplex& v)
     {
       REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
       return Tensor<Nd + 2, REAL>("xyztX.", latticeSize<Nd + 2>("xyztX."), OnDefaultDevice,
@@ -1607,7 +1611,7 @@ namespace Chroma
 #  endif
 
 #  ifndef QDP_IS_QDPJIT
-    Tensor<Nd + 3, Complex> asTensorView(const LatticeColorMatrix& v)
+    inline Tensor<Nd + 3, Complex> asTensorView(const LatticeColorMatrix& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 3, Complex>("jixyztX",
@@ -1615,7 +1619,7 @@ namespace Chroma
 				     OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 #  else
-    Tensor<Nd + 4, REAL> asTensorView(const LatticeColorMatrix& v)
+    inline Tensor<Nd + 4, REAL> asTensorView(const LatticeColorMatrix& v)
     {
       REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
       return Tensor<Nd + 4, REAL>(
@@ -1624,7 +1628,7 @@ namespace Chroma
     }
 #  endif
 
-    Tensor<Nd + 4, Complex> asTensorView(const LatticeColorVectorSpinMatrix& v)
+    inline Tensor<Nd + 4, Complex> asTensorView(const LatticeColorVectorSpinMatrix& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 4, Complex>(
@@ -1639,14 +1643,14 @@ namespace Chroma
 				std::shared_ptr<COMPLEX>(v.data(), [](COMPLEX*) {}));
     }
 
-    Tensor<2, Complex> asTensorView(SpinMatrix& smat)
+    inline Tensor<2, Complex> asTensorView(SpinMatrix& smat)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(smat.getF());
       return Tensor<2, Complex>("ji", Coor<2>{Ns, Ns}, OnHost, OnEveryoneReplicated,
 				std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
-    SpinMatrix SpinMatrixIdentity()
+    inline SpinMatrix SpinMatrixIdentity()
     {
       SpinMatrix one;
       // valgrind complains if all elements of SpinMatrix are not initialized!
@@ -1695,9 +1699,9 @@ namespace Chroma
       Index nX = r.kvdim()['X'];
       COMPLEX* ptr = r.data.get();
 
-#ifdef _OPENMP
+#  ifdef _OPENMP
 #    pragma omp parallel for schedule(static)
-#endif
+#  endif
       for (std::size_t i = 0; i < vol; ++i)
       {
 	// Get the global coordinates
@@ -1793,7 +1797,7 @@ namespace Chroma
       /// NOTE: assuming the input layout is xyz and the output layout is xyzX for the given input
       ///       time-slice `t`
 
-      std::vector<Index> getPermFromNatToRB(Index t)
+      inline std::vector<Index> getPermFromNatToRB(Index t)
       {
 	if (Layout::nodeNumber() != 0)
 	  return {};
@@ -2190,7 +2194,7 @@ namespace Chroma
       };
 
       /// Return the tree representing all paths
-      PathNode get_tree(const std::vector<std::vector<int>>& paths)
+      inline PathNode get_tree(const std::vector<std::vector<int>>& paths)
       {
 	PathNode r{{}, -1};
 	int path_index = 0;
@@ -2218,8 +2222,8 @@ namespace Chroma
       }
 
       /// Return the directions that are going to be use and the maximum number of displacements keep in memory
-      void get_tree_mem_stats(const PathNode& disps, std::array<bool, Nd>& dirs,
-			      unsigned int& max_rhs)
+      inline void get_tree_mem_stats(const PathNode& disps, std::array<bool, Nd>& dirs,
+				     unsigned int& max_rhs)
       {
 	unsigned int max_rhs_sub = 0;
 	for (const auto it : disps.p)
@@ -2476,8 +2480,8 @@ namespace Chroma
     /// \param fromr: (output) first element of the union of the two intervals
     /// \param sizer: (output) length of the union of the two intervals
 
-    void union_interval(Index from0, Index size0, Index from1, Index size1, Index dim, Index& fromr,
-			Index& sizer)
+    inline void union_interval(Index from0, Index size0, Index from1, Index size1, Index dim,
+			       Index& fromr, Index& sizer)
     {
       // Check inputs
       if (size0 > dim || size1 > dim)
