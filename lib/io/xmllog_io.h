@@ -15,11 +15,13 @@ namespace Chroma
 
   //! XML output holder
   /*! \ingroup io */
-  typedef Chroma::SingletonHolder<XMLFileWriter> TheXMLOutputWriter;
+  struct TheXMLOutputWriterInstance {};
+  typedef Chroma::SingletonHolder<XMLFileWriter, TheXMLOutputWriterInstance> TheXMLOutputWriter;
 
   //! XML log holder
   /*! \ingroup io */
-  typedef Chroma::SingletonHolder<XMLFileWriter> TheXMLLogWriter;
+  struct TheXMLLogWriterInstance {};
+  typedef Chroma::SingletonHolder<XMLFileWriter, TheXMLLogWriterInstance> TheXMLLogWriter;
 
 } // End namespace Chroma
 

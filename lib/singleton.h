@@ -30,10 +30,11 @@ inline void destroySingletons() {
 ////////////////////////////////////////////////////////////////////////////////
 // class template SingletonHolder
 // Provides Singleton amenities for a type T; instances are destroy at
-// function finalize.
+// function finalize. Create several singletons of the same type T by setting
+// different types for InstanceT.
 ////////////////////////////////////////////////////////////////////////////////
 
-template <typename T> class SingletonHolder {
+template <typename T, typename InstanceT=void> class SingletonHolder {
 public:
   static T &Instance() {
     static T *instance = nullptr;
