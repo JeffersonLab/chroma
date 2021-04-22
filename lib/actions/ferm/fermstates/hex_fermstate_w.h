@@ -76,7 +76,7 @@ namespace Chroma
     {
       START_CODE();
       
-      throw std::domain_error("HEX smearing is currently not supported in the Hybrid Monte Carlo algorithm.")
+      throw std::domain_error("HEX smearing is currently not supported in the Hybrid Monte Carlo algorithm.");
       
       END_CODE();
     }
@@ -87,7 +87,7 @@ namespace Chroma
     {
       START_CODE();
       
-      throw std::domain_error("HEX smearing is currently not supported in the Hybrid Monte Carlo algorithm.")
+      throw std::domain_error("HEX smearing is currently not supported in the Hybrid Monte Carlo algorithm.");
 
       END_CODE();
     }
