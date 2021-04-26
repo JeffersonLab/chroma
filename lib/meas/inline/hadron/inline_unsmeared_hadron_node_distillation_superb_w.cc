@@ -140,6 +140,21 @@ namespace Chroma
     {
       XMLReader inputtop(xml, path);
 
+      input.alt_t_start = std::numeric_limits<int>::max();
+      if (inputtop.count("t_start") == 1) {
+        read(inputtop, "t_start", input.alt_t_start);
+      }
+
+      input.alt_Nt_forward = std::numeric_limits<int>::max();
+      if (inputtop.count("Nt_forward") == 1) {
+        read(inputtop, "Nt_forward", input.alt_Nt_forward);
+      }
+
+      input.alt_num_vecs = 0;
+      if (inputtop.count("num_vecs") == 1) {
+        read(inputtop, "num_vecs", input.alt_num_vecs);
+      }
+
       read(inputtop, "use_derivP", input.use_derivP);
       read(inputtop, "decay_dir", input.decay_dir);
       read(inputtop, "displacement_length", input.displacement_length);
@@ -184,6 +199,9 @@ namespace Chroma
     {
       push(xml, path);
 
+      write(xml, "t_start", input.alt_t_start);
+      write(xml, "Nt_forward", input.alt_Nt_forward);
+      write(xml, "num_vecs", input.alt_num_vecs);
       write(xml, "use_derivP", input.use_derivP);
       write(xml, "decay_dir", input.decay_dir);
       write(xml, "displacement_length", input.displacement_length);
@@ -205,10 +223,22 @@ namespace Chroma
     {
       XMLReader inputtop(xml, path);
 
-      read(inputtop, "DispGammaMomList", input.disp_gamma_mom_list);
-      read(inputtop, "Propagator", input.prop);
-      read(inputtop, "PropSources", input.prop_sources);
-      read(inputtop, "SinkSourcePairs", input.sink_source_pairs);
+      if (inputtop.count("DispGammaMomList") == 1)
+        read(inputtop, "DispGammaMomList", input.disp_gamma_mom_list);
+      if (inputtop.count("Propagator") == 1)
+        read(inputtop, "Propagator", input.prop);
+      if (inputtop.count("PropSources") == 1)
+        read(inputtop, "PropSources", input.prop_sources);
+      if (inputtop.count("SinkSourcePairs") == 1)
+        read(inputtop, "SinkSourcePairs", input.sink_source_pairs);
+
+      if (inputtop.count("Displacements") == 1)
+        read(inputtop, "Displacements", input.alt_displacements);
+      if (inputtop.count("Moms") == 1)
+        read(inputtop, "Moms", input.alt_moms);
+      if (inputtop.count("SinkSources") == 1)
+        read(inputtop, "SinkSources", input.alt_sink_sources);
+
       read(inputtop, "Contractions", input.contract);
 
       input.link_smearing  = readXMLGroup(inputtop, "LinkSmearing", "LinkSmearingType");
@@ -224,6 +254,10 @@ namespace Chroma
       write(xml, "PropSources", input.prop_sources);
       write(xml, "SinkSourcePairs", input.sink_source_pairs);
       write(xml, "Contractions", input.contract);
+
+      write(xml, "Displacements", input.alt_displacements);
+      write(xml, "Moms", input.alt_moms);
+      write(xml, "SinkSources", input.alt_sink_sources);
       xml << input.link_smearing.xml;
 
       pop(xml);
@@ -758,7 +792,7 @@ namespace Chroma
       //
       // Setup the gauge smearing
       //
-      QDPIO::cout << "Initalize link smearing" << std::endl;
+      QDPIO::cout << "Initialize link smearing" << std::endl;
       Handle< LinkSmearing > linkSmearing;
 
       try
@@ -790,42 +824,59 @@ namespace Chroma
       std::vector<int> gammas;
       std::vector<std::vector<int>> disps;
 
-      if (params.param.disp_gamma_mom_list.size() >= 0)
       {
-	std::set<SB::Coor<Nd - 1>> moms_set;
-	std::set<std::vector<int>> disps_set;
-	std::set<int> gammas_set;
+        std::set<SB::Coor<Nd - 1>> moms_set;
+        std::set<std::vector<int>> disps_set;
+        std::set<int> gammas_set;
 
-	for (const auto& ins : params.param.disp_gamma_mom_list)
-	{
-	  SB::Coor<Nd - 1> c;
-	  for (unsigned int i = 0; i < ins.mom.size() && i < Nd - 1; ++i)
-	    c[i] = ins.mom[i];
-	  moms_set.insert(c);
+        for (const auto &ins : params.param.disp_gamma_mom_list) {
+          SB::Coor<Nd - 1> c;
+          for (unsigned int i = 0; i < ins.mom.size() && i < Nd - 1; ++i)
+            c[i] = ins.mom[i];
+          moms_set.insert(c);
           disps_set.insert(normDisp(ins.displacement));
-	  gammas_set.insert(ins.gamma);
-	}
+          gammas_set.insert(ins.gamma);
+        }
 
-	int num_mom = moms_set.size();
-	int mom_size = Nd - 1;
-	QDPIO::cout << name << ": num_mom= " << num_mom << "  mom_size= " << mom_size << std::endl;
-	moms.resize(num_mom,mom_size);
-	int i = 0;
-	for (const auto& it : moms_set) {
-	  for (unsigned int j = 0; j < Nd - 1; ++j)
-	    moms[i][j] = it[j];
-	  i++;
-	}
+        if (params.param.disp_gamma_mom_list.size() == 0) {
+          for (int g = 0; g < Nd * Nd; g++)
+            gammas_set.insert(g);
+        }
 
-	disps.resize(disps_set.size());
-	std::copy(disps_set.begin(), disps_set.end(), disps.begin());
-	gammas.resize(gammas_set.size());
-	std::copy(gammas_set.begin(), gammas_set.end(), gammas.begin());
-      }
-      else
-      {
-	QDPIO::cerr << name << ": warning - you have an empty disp_gamma_mom_list" << std::endl;
-	QDP_abort(1);
+        for (const auto &it : params.param.alt_displacements)
+          disps_set.insert(it);
+
+        for (const auto &it : params.param.alt_moms)
+        {
+          SB::Coor<Nd - 1> c;
+          for (unsigned int i = 0; i < it.size() && i < Nd - 1; ++i)
+            c[i] = it[i];
+          moms_set.insert(c);
+        }
+
+        if (moms_set.size() == 0 || disps_set.size() == 0 || gammas_set.size() == 0) {
+          QDPIO::cerr << name
+                      << ": warning - no moms nor displacement nor gammas; nothing to do"
+                      << std::endl;
+          QDP_abort(1);
+        }
+
+        int num_mom = moms_set.size();
+        int mom_size = Nd - 1;
+        QDPIO::cout << name << ": num_mom= " << num_mom
+                    << "  mom_size= " << mom_size << std::endl;
+        moms.resize(num_mom, mom_size);
+        int i = 0;
+        for (const auto &it : moms_set) {
+          for (unsigned int j = 0; j < Nd - 1; ++j)
+            moms[i][j] = it[j];
+          i++;
+        }
+
+        disps.resize(disps_set.size());
+        std::copy(disps_set.begin(), disps_set.end(), disps.begin());
+        gammas.resize(gammas_set.size());
+        std::copy(gammas_set.begin(), gammas_set.end(), gammas.begin());
       }
 
       //
@@ -852,13 +903,28 @@ namespace Chroma
       //
       // Capture maximum number of vecs
       //
-      int num_vecs = 0;
+      int num_vecs = params.param.contract.alt_num_vecs;
       for (const auto& it : params.param.prop_sources)
 	num_vecs = std::max(num_vecs, it.num_vecs);
 
       //
       // Stores the range of time-slices used for each sink/source
       //
+
+      for (const auto& it : params.param.alt_sink_sources)
+      {
+	for (const auto& snk : it.second)
+	{
+	  Params::Param_t::SinkSource_t ss;
+	  ss.t_sink = snk;
+	  ss.t_source = it.first;
+	  int tdisp = it.first - params.param.contract.alt_t_start;
+	  ss.Nt_backward = -tdisp;
+	  ss.Nt_forward = tdisp + params.param.contract.alt_Nt_forward;
+	  params.param.sink_source_pairs.push_back(ss);
+	}
+      }
+
       struct FromSize {
 	int from;
 	int size;
