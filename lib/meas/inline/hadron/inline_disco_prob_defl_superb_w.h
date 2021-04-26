@@ -6,8 +6,8 @@
  * Propagator calculation on a colorvector
  */
 
-#ifndef __inline_hada_disco_4d_w_h__
-#define __inline_hada_disco_4d_w_h__
+#ifndef __inline_disco_prob_defl_superb_w_h__
+#define __inline_disco_prob_defl_superb_w_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -17,7 +17,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineDiscoProbDefl 
+  namespace InlineDiscoProbDeflSuperb 
   {
     bool registerAll();
 

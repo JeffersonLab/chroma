@@ -60,6 +60,9 @@ namespace Chroma
 	
 	struct Contract_t
 	{
+	  int                       alt_t_start;            /*!< Alternative Starting time-slice for genprops */
+ 	  int                       alt_Nt_forward;         /*!< Alternative Forward relative to t_start */
+ 	  int                       alt_num_vecs;           /*!< Number of color vectors to use */
 	  bool                      use_derivP;             /*!< Use derivatives */
 	  int                       decay_dir;              /*!< Decay direction */
 	  int                       displacement_length;    /*!< Displacement length for insertions */
@@ -69,6 +72,7 @@ namespace Chroma
 	  int                       max_tslices_in_contraction;  /*! maximum number of contracted tslices simultaneously */
 	  int                       max_moms_in_contraction;/*! maximum number of contracted momenta simultaneously */
 	  bool                      use_genprop4_format;    /*!< Use the efficient genprop4 format instead of the traditional one */
+	  bool                      use_genprop5_format;    /*!< Use the superb format instead of the traditional one */
 	  bool                      use_multiple_writers;   /*!< Whether several processes are going to write down the elementals on separate files */
 	  multi1d<float>            phase;                   /*!< Phase to apply to colorvecs */
 	};
@@ -76,6 +80,9 @@ namespace Chroma
 	std::vector<KeySolnProp_t>  prop_sources;           /*!< Sources */
 	std::vector<SinkSource_t>   sink_source_pairs;      /*!< Combos */
 	std::vector<DispGammaMom_t> disp_gamma_mom_list;    /*!< Array of displacements, gammas, and moms to generate */	
+	std::map<int, std::list<int>> alt_sink_sources;     /*!< Alternative source-sink list {t_source -> list[t_sinks]} */
+	std::vector< std::vector<int>> alt_displacements;   /*!< Alternative displacement paths */
+	std::vector< multi1d<int>>  alt_moms;               /*!< Alternative array of momenta to generate */
 	ChromaProp_t                prop;                   /*!< Propagator input */
 	Contract_t                  contract;               /*!< Backward propagator and contraction pieces */
       };

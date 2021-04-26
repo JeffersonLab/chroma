@@ -24,6 +24,7 @@
 #  include "util/ft/sftmom.h"
 #  include <algorithm>
 #  include <array>
+#  include <chrono>
 #  include <cmath>
 #  include <cstring>
 #  include <iomanip>
@@ -52,6 +53,7 @@ namespace Chroma
     using ComplexF = std::complex<REAL32>;
     template <std::size_t N>
     using Coor = superbblas::Coor<N>;
+    using checksum_type = superbblas::checksum_type;
 
     /// Where to store the tensor (see class Tensor)
     enum DeviceHost {
@@ -69,6 +71,9 @@ namespace Chroma
 
     /// Whether complex conjugate the elements before contraction (see Tensor::contract)
     enum Conjugation { NotConjugate, Conjugate };
+
+    /// Whether the tensor is dense or sparse
+    enum Sparsity { Dense, Sparse };
 
     /// Auxiliary class for initialize Maybe<T> with no value
     struct None {
@@ -122,6 +127,13 @@ namespace Chroma
 
     /// Initialize Maybe<T> without value
     constexpr None none = None{};
+
+    /// Return the number of seconds from some start
+    inline double w_time()
+    {
+      return std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch())
+	.count();
+    }
 
     namespace detail
     {
@@ -228,6 +240,26 @@ namespace Chroma
     // Replace a label by another label
     using remap = std::map<char, char>;
 
+    // Return the equivalent value of the coordinate `v` in the interval [0, dim[ for a periodic
+    // dimension with length `dim`.
+
+    inline int normalize_coor(int v, int dim)
+    {
+      return (v + dim * (v < 0 ? -v / dim + 1 : 0)) % dim;
+    }
+
+    // Return the equivalent value of the coordinate `v` in the interval [0, dim[ for a periodic
+    // dimension with length `dim`.
+
+    template <std::size_t N>
+    Coor<N> normalize_coor(Coor<N> v, Coor<N> dim)
+    {
+      Coor<N> r;
+      for (std::size_t i = 0; i < N; ++i)
+	r[i] = normalize_coor(v[i], dim[i]);
+      return r;
+    }
+
     namespace detail
     {
       using namespace superbblas::detail;
@@ -235,46 +267,26 @@ namespace Chroma
       // Throw an error if `order` does not contain a label in `should_contain`
       inline void check_order_contains(const std::string& order, const std::string& should_contain)
       {
-	bool ok = false;
-	if (order.size() == should_contain.size())
+	for (char c : should_contain)
 	{
-	  int n = order.size();
-	  unsigned int i;
-	  for (i = 0; i < n; ++i)
+	  if (order.find(c) == std::string::npos)
 	  {
-	    unsigned int j;
-	    for (j = 0; j < n && order[i] != should_contain[j]; ++j)
-	      ;
-	    if (j >= n)
-	      break;
+	    std::stringstream ss;
+	    ss << "The input order `" << order << "` is missing the label `" << c << "`";
+	    throw std::runtime_error(ss.str());
 	  }
-	  if (i >= n)
-	    ok = true;
-	}
-	if (!ok)
-	{
-	  std::stringstream ss;
-	  ss << "The input order `" << order
-	     << "` is missing one of this labels: " << should_contain;
-	  throw std::runtime_error(ss.str());
 	}
       }
 
-      // Return the equivalent value of the coordinate `v` in the interval [0, dim[ for a periodic
-      // dimension with length `dim`.
-
-      inline int normalize_coor(int v, int dim)
+      // Throw an error if `order` does not contain a label in `should_contain`
+      inline std::string remove_dimensions(const std::string& order, const std::string& remove_dims)
       {
-	return (v + dim * (v < 0 ? -v / dim + 1 : 0)) % dim;
-      }
-
-      template <std::size_t N>
-      Coor<N> normalize_coor(Coor<N> v, Coor<N> dim)
-      {
-	Coor<N> r;
-	for (std::size_t i = 0; i < N; ++i)
-	  r[i] = normalize_coor(v[i], dim[i]);
-	return r;
+	std::string out;
+	out.reserve(order.size());
+	for (char c : order)
+	  if (remove_dims.find(c) == std::string::npos)
+	    out.push_back(c);
+	return out;
       }
 
       template <std::size_t N>
@@ -362,31 +374,45 @@ namespace Chroma
 	  if (!cudactx)
 	  {
 	    int dev = -1;
+#ifdef SUPERBBLAS_USE_CUDA
 	    superbblas::detail::cudaCheck(cudaGetDevice(&dev));
-	    cudactx = std::make_shared<superbblas::Context>(superbblas::createCudaContext(
-	      dev,
+#elif defined(SUPERBBLAS_USE_HIP)
+	    superbblas::detail::hipCheck(hipGetDevice(&dev));
+#else
+#error superbblas was not build with support for GPUs
+#endif
+	    // Workaround on a potential issue in qdp-jit: avoid passing through the pool allocator
+	    if (jit_config_get_max_allocation() == 0)
+	    {
+	      cudactx = std::make_shared<superbblas::Context>(superbblas::createGpuContext(dev));
+	    }
+	    else
+	    {
+	      cudactx = std::make_shared<superbblas::Context>(superbblas::createGpuContext(
+		dev,
 
-	      // Make superbblas use the same memory allocator for gpu as any other qdp-jit lattice object
-	      [](std::size_t size, superbblas::platform plat) -> void* {
-		if (size == 0)
-		  return nullptr;
-		if (plat == superbblas::CPU)
-		  return malloc(size);
-		void* ptr = nullptr;
-		QDP_get_global_cache().addDeviceStatic(&ptr, size, true);
-		assert(superbblas::detail::getPtrDevice(ptr) >= 0);
-		return ptr;
-	      },
+		// Make superbblas use the same memory allocator for gpu as any other qdp-jit lattice object
+		[](std::size_t size, superbblas::platform plat) -> void* {
+		  if (size == 0)
+		    return nullptr;
+		  if (plat == superbblas::CPU)
+		    return malloc(size);
+		  void* ptr = nullptr;
+		  QDP_get_global_cache().addDeviceStatic(&ptr, size, true);
+		  assert(superbblas::detail::getPtrDevice(ptr) >= 0);
+		  return ptr;
+		},
 
-	      // The corresponding deallocator
-	      [](void* ptr, superbblas::platform plat) {
-		if (ptr == nullptr)
-		  return;
-		if (plat == superbblas::CPU)
-		  free(ptr);
-		else
-		  QDP_get_global_cache().signoffViaPtr(ptr);
-	      }));
+		// The corresponding deallocator
+		[](void* ptr, superbblas::platform plat) {
+		  if (ptr == nullptr)
+		    return;
+		  if (plat == superbblas::CPU)
+		    free(ptr);
+		  else
+		    QDP_get_global_cache().signoffViaPtr(ptr);
+		}));
+	    }
 	  }
 	  return cudactx;
 #  else
@@ -805,8 +831,8 @@ namespace Chroma
 	  return;
 	std::stringstream ss;
 	ss << "mem usage, CPU: " << std::fixed << std::setprecision(0)
-	   << superbblas::getCpuMemUsed() / 1024 / 1024
-	   << " MiB   GPU: " << superbblas::getGpuMemUsed() / 1024 / 1024 << " MiB";
+	   << superbblas::getCpuMemUsed(0) / 1024 / 1024
+	   << " MiB   GPU: " << superbblas::getGpuMemUsed(0) / 1024 / 1024 << " MiB";
 	log(1, ss.str());
       }
 
@@ -941,7 +967,7 @@ namespace Chroma
 	  data(data),
 	  p(p),
 	  dist(dist),
-	  from(detail::normalize_coor(from, dim)),
+	  from(normalize_coor(from, dim)),
 	  size(size),
 	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
 	  scalar(scalar)
@@ -958,7 +984,7 @@ namespace Chroma
 	  data(t.data),
 	  p(t.p),
 	  dist(t.dist),
-	  from(detail::normalize_coor(from, t.dim)),
+	  from(normalize_coor(from, t.dim)),
 	  size(size),
 	  strides(t.strides),
 	  scalar{t.scalar}
@@ -995,6 +1021,15 @@ namespace Chroma
 	return (from != Coor<N>{} || size != dim);
       }
 
+      // Return the first coordinate supported by the tensor
+      std::map<char, int> kvfrom() const
+      {
+	std::map<char, int> d;
+	for (unsigned int i = 0; i < N; ++i)
+	  d[order[i]] = from[i];
+	return d;
+      }
+
       // Return the dimensions of the tensor
       std::map<char, int> kvdim() const
       {
@@ -1010,14 +1045,13 @@ namespace Chroma
 	if (ctx->plat != superbblas::CPU)
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements from tensors not stored on the host");
-	if (dist != OnMaster)
-	  throw std::runtime_error(
-	    "Unsupported to `get` elements on tensor not being fully on the master node");
+	if (dist != OnMaster && dist != Local)
+	  throw std::runtime_error("Unsupported to `get` elements on tensor that are not local or "
+				   "not being fully supported on the master node");
 
 	// coor[i] = coor[i] + from[i]
 	for (unsigned int i = 0; i < N; ++i)
-	  coor[i] =
-	    detail::normalize_coor(detail::normalize_coor(coor[i], size[i]) + from[i], dim[i]);
+	  coor[i] = normalize_coor(normalize_coor(coor[i], size[i]) + from[i], dim[i]);
 
 	return data.get()[detail::coor2index<N>(coor, dim, strides)] * scalar;
       }
@@ -1047,7 +1081,7 @@ namespace Chroma
 	  if (size[i] > this->size[i])
 	    throw std::runtime_error(
 	      "The size of the slice cannot be larger than the original tensor");
-	  if (detail::normalize_coor(from[i], this->size[i]) + size[i] > this->size[i] &&
+	  if (normalize_coor(from[i], this->size[i]) + size[i] > this->size[i] &&
 	      this->size[i] != this->dim[i])
 	    throw std::runtime_error(
 	      "Unsupported to make a view on a non-contiguous range on the tensor");
@@ -1076,6 +1110,28 @@ namespace Chroma
 			      new_dev.getSome(getDev()), new_dist.getSome(dist));
       }
 
+      /// Return a tensor on the same device and following the same distribution
+      /// \param new_order: dimension labels of the new tensor
+      /// \param remaining_char: placeholder for the remaining dimensions
+      /// \param kvsize: override the length of the given dimensions
+      /// \param new_dev: device
+      /// \param new_dist: distribution
+
+      template <std::size_t Nn = N, typename Tn = T>
+      Tensor<Nn, Tn> like_this(std::string new_order, char remaining_char,
+			       std::string remove_dims = "", std::map<char, int> kvsize = {},
+			       Maybe<DeviceHost> new_dev = none,
+			       Maybe<Distribution> new_dist = none) const
+      {
+	std::map<char, int> new_kvdim = kvdim();
+	for (const auto& it : kvsize)
+	  new_kvdim[it.first] = it.second;
+	std::string new_order_ =
+	  detail::remove_dimensions(get_order_for_reorder(new_order, remaining_char), remove_dims);
+	return Tensor<Nn, Tn>(new_order_, kvcoors<Nn>(new_order_, new_kvdim, 0, ThrowOnMissing),
+			      new_dev.getSome(getDev()), new_dist.getSome(dist));
+      }
+
       /// Return a copy of this tensor, possible with a new precision `nT`
 
       template <typename Tn = T>
@@ -1095,19 +1151,66 @@ namespace Chroma
 	return r;
       }
 
-      /// If the dimension labels order does not match the current order, return a copy of this tensor with that ordering
+    private:
+      /// Return the new ordering based on a partial reordering
       /// \param new_order: new dimension labels order
+      /// \param remaining_char: if it isn't the null char, placeholder for the dimensions not given
+      ///
+      /// If the dimension labels order does not match the current order, return a copy of this
+      /// tensor with that ordering. If the given order does not contain all dimensions, only the
+      /// involved dimensions are permuted.
 
-      Tensor<N, T> reorder(const std::string& new_order) const
+      std::string get_order_for_reorder(const std::string& new_order, char remaining_char = 0) const
       {
-	if (order == new_order)
+	std::string new_order1;
+	if (remaining_char != 0)
+	{
+	  std::string::size_type rem_pos = new_order.find(remaining_char);
+	  if (rem_pos == std::string::npos)
+	  {
+	    new_order1 = new_order;
+	  }
+	  else
+	  {
+	    new_order1 = new_order.substr(0, rem_pos) +
+			 detail::remove_dimensions(order, new_order) +
+			 new_order.substr(rem_pos + 1, new_order.size() - rem_pos - 1);
+	  }
+	}
+	else
+	{
+	  new_order1 = order;
+	  unsigned int j = 0;
+	  for (unsigned int i = 0; i < N; ++i)
+	    if (new_order.find(order[i]) != std::string::npos)
+	      new_order1[i] = new_order[j++];
+	  if (j < new_order.size())
+	    throw std::runtime_error("Unknown labels in the given order");
+	}
+
+	return new_order1;
+      }
+
+    public:
+      /// Return a copy of this tensor with the given ordering
+      /// \param new_order: new dimension labels order
+      /// \param remaining_char: if it isn't the null char, placeholder for the dimensions not given
+      ///
+      /// If the dimension labels order does not match the current order, return a copy of this
+      /// tensor with that ordering. If the given order does not contain all dimensions, only the
+      /// involved dimensions are permuted.
+
+      Tensor<N, T> reorder(const std::string& new_order, char remaining_char = 0) const
+      {
+	std::string new_order1 = get_order_for_reorder(new_order, remaining_char);
+	if (order == new_order1)
 	  return *this;
-	Tensor<N, T> r = like_this(new_order);
+	Tensor<N, T> r = like_this(new_order1);
 	copyTo(r);
 	return r;
       }
 
-      /// Return whether the tensor have complex components although being stored with a non-complex type `T`
+      /// Return whether the tensor has complex components although being stored with a non-complex type `T`
 
       bool isFakeReal() const
       {
@@ -1274,8 +1377,7 @@ namespace Chroma
 	using superbblas::detail::operator-;
 	return Tensor<N, T>(order, p->localSize(), ctx, data,
 			    std::make_shared<detail::TensorPartition<N>>(p->get_local_partition()),
-			    Local, detail::normalize_coor(from - p->localFrom(), dim), lsize,
-			    scalar);
+			    Local, normalize_coor(from - p->localFrom(), dim), lsize, scalar);
       }
 
       /// Copy this tensor into the given one
@@ -1389,7 +1491,7 @@ namespace Chroma
       bool isContiguous() const
       {
 	// Meaningless for tensors not been fully supported on a single node
-	if (dist != OnMaster)
+	if (dist != OnMaster && dist != Local)
 	  return false;
 
 	if (superbblas::detail::volume(size) > 0 && N > 1)
@@ -1543,22 +1645,22 @@ namespace Chroma
 #  endif
     };
 
-    inline void* getQDPPtrFromId(int id)
-    {
-#  ifdef QDP_IS_QDPJIT
-      std::vector<QDPCache::ArgKey> v(id, 1);
-      return QDP_get_global_cache().get_kernel_args(v, false)[0];
-#  else
-      return nullptr;
-#  endif
-    }
+//     inline void* getQDPPtrFromId(int id)
+//     {
+// #  ifdef QDP_IS_QDPJIT
+//       std::vector<QDPCache::ArgKey> v(id, 1);
+//       return QDP_get_global_cache().get_kernel_args(v, false)[0];
+// #  else
+//       return nullptr;
+// #  endif
+//     }
 
     template <typename T>
     void* getQDPPtr(const T& t)
     {
 #  ifdef QDP_IS_QDPJIT
       std::vector<QDPCache::ArgKey> v(1, t.getId());
-      void* r = QDP_get_global_cache().get_kernel_args(v, false)[0];
+      void* r = QDP_get_global_cache().get_dev_ptrs(v)[0];
       assert(superbblas::detail::getPtrDevice(r) >= 0);
       return r;
 #  else
@@ -1671,6 +1773,251 @@ namespace Chroma
       return r;
     }
 
+    template <std::size_t N, typename T>
+    struct StorageTensor {
+      static_assert(superbblas::supported_type<T>::value, "Not supported type");
+
+    public:
+      std::string filename; ///< Storage file
+      std::string metadata; ///< metadata
+      std::string order;    ///< Labels of the tensor dimensions
+      Coor<N> dim;	    ///< Length of the tensor dimensions
+      Sparsity sparsity;    ///< Sparsity of the storage
+      std::shared_ptr<superbblas::detail::Storage_context_abstract>
+	ctx;	    ///< Superbblas storage handler
+      Coor<N> from; ///< First active coordinate in the tensor
+      Coor<N> size; ///< Number of active coordinates on each dimension
+      T scalar;	    ///< Scalar factor of the tensor
+
+      // Empty constructor
+      StorageTensor()
+	: filename{},
+	  metadata{},
+	  order(detail::getTrivialOrder(N)),
+	  dim{},
+	  sparsity(Dense),
+	  ctx{},
+	  from{},
+	  size{},
+	  scalar{0}
+      {
+      }
+
+      // Create storage construct
+      StorageTensor(std::string filename, std::string metadata, const std::string& order,
+		    Coor<N> dim, Sparsity sparsity = Dense,
+		    checksum_type checksum = checksum_type::NoChecksum)
+	: filename(filename),
+	  metadata(metadata),
+	  order(order),
+	  dim(dim),
+	  sparsity(sparsity),
+	  from{},
+	  size{dim},
+	  scalar{1}
+      {
+	checkOrder();
+	superbblas::Storage_handle stoh;
+	superbblas::create_storage<N, T>(dim, superbblas::FastToSlow, filename.c_str(),
+					 metadata.c_str(), metadata.size(), checksum,
+					 MPI_COMM_WORLD, &stoh);
+	ctx = std::shared_ptr<superbblas::detail::Storage_context_abstract>(
+	  stoh, [=](superbblas::detail::Storage_context_abstract* ptr) {
+	    superbblas::close_storage<N, T>(ptr, MPI_COMM_WORLD);
+	  });
+
+	// If the tensor to store is dense, create the block here; otherwise, create the block on copy
+	if (sparsity == Dense)
+	{
+	  superbblas::PartitionItem<N> p{Coor<N>{}, dim};
+	  superbblas::append_blocks<N, T>(&p, 1, stoh, MPI_COMM_WORLD, superbblas::FastToSlow);
+	}
+      }
+
+      // Open storage construct
+      StorageTensor(std::string filename, std::string metadata, const std::string& order)
+	: filename(filename), order(order), sparsity(Sparse), from{}, scalar{1}
+      {
+	checkOrder();
+
+	// Read information from the storage
+	superbblas::values_datatype values_dtype;
+	std::vector<char> metadatav;
+	std::vector<superbblas::IndexType> dimv;
+	superbblas::read_storage_header(filename.c_str(), superbblas::FastToSlow, values_dtype,
+					metadatav, dimv, MPI_COMM_WORLD);
+
+	// Check that storage tensor dimension and value type match template arguments
+	if (dimv.size() != N)
+	  throw std::runtime_error(
+	    "The storage tensor dimension does not match the template parameter N");
+	if (superbblas::detail::get_values_datatype<T>() != values_dtype)
+	  throw std::runtime_error("Storage type does not match template argument T");
+
+	// Fill out the information of this class with storage header information
+	std::copy(dimv.begin(), dimv.end(), dim.begin());
+	metadata = std::string(metadatav.begin(), metadatav.end());
+
+	superbblas::Storage_handle stoh;
+	superbblas::open_storage<N, T>(filename.c_str(), MPI_COMM_WORLD, &stoh);
+	ctx = std::shared_ptr<superbblas::detail::Storage_context_abstract>(
+	  stoh, [=](const superbblas::detail::Storage_context_abstract* ptr) {
+	    superbblas::close_storage<N, T>(ptr, MPI_COMM_WORLD);
+	  });
+      }
+
+    protected:
+      // Construct a slice/scale storage
+      StorageTensor(const StorageTensor& t, const std::string& order, Coor<N> from, Coor<N> size,
+		    T scalar)
+	: filename(t.filename),
+	  metadata(t.metadata),
+	  order(order),
+	  dim(t.dim),
+	  ctx(t.ctx),
+	  sparsity(t.sparsity),
+	  from(normalize_coor(from, t.dim)),
+	  size(size),
+	  scalar{t.scalar}
+      {
+	checkOrder();
+      }
+
+    public:
+      /// Return whether the tensor is not empty
+      explicit operator bool() const noexcept
+      {
+	return superbblas::detail::volume(size) > 0;
+      }
+
+      // Return the dimensions of the tensor
+      std::map<char, int> kvdim() const
+      {
+	std::map<char, int> d;
+	for (unsigned int i = 0; i < N; ++i)
+	  d[order[i]] = size[i];
+	return d;
+      }
+
+      /// Rename dimensions
+      StorageTensor<N, T> rename_dims(SB::remap m) const
+      {
+	return StorageTensor<N, T>(*this, detail::update_order<N>(order, m), this->from,
+				   this->size);
+      }
+
+      // Return a slice of the tensor starting at coordinate `kvfrom` and taking `kvsize` elements in each direction.
+      // The missing dimension in `kvfrom` are set to zero and the missing direction in `kvsize` are set to the active size of the tensor.
+      StorageTensor<N, T> kvslice_from_size(std::map<char, int> kvfrom = {},
+					    std::map<char, int> kvsize = {}) const
+      {
+	std::map<char, int> updated_kvsize = this->kvdim();
+	for (const auto& it : kvsize)
+	  updated_kvsize[it.first] = it.second;
+	return slice_from_size(kvcoors<N>(order, kvfrom), kvcoors<N>(order, updated_kvsize));
+      }
+
+      // Return a slice of the tensor starting at coordinate `from` and taking `size` elements in each direction.
+      StorageTensor<N, T> slice_from_size(Coor<N> from, Coor<N> size) const
+      {
+	for (unsigned int i = 0; i < N; ++i)
+	{
+	  if (size[i] > this->size[i])
+	    throw std::runtime_error(
+	      "The size of the slice cannot be larger than the original tensor");
+	  if (normalize_coor(from[i], this->size[i]) + size[i] > this->size[i] &&
+	      this->size[i] != this->dim[i])
+	    throw std::runtime_error(
+	      "Unsupported to make a view on a non-contiguous range on the tensor");
+	}
+
+	using superbblas::detail::operator+;
+	return StorageTensor<N, T>(*this, order, this->from + from, size, scalar);
+      }
+
+      StorageTensor<N, T> scale(T s) const
+      {
+	return StorageTensor<N, T>(*this, order, from, scalar * s);
+      }
+
+      void release()
+      {
+	dim = {};
+	ctx.reset();
+	from = {};
+	size = {};
+	scalar = T{0};
+	filename = "";
+	metadata = "";
+      }
+
+      /// Check that the dimension labels are valid
+
+      void checkOrder() const
+      {
+	// Check that all labels are different there are N
+	detail::check_order<N>(order);
+
+	for (auto s : size)
+	  if (s < 0)
+	    std::runtime_error("Invalid tensor size: it should be positive");
+      }
+
+      /// Preallocate space for the storage file
+      /// \param size: expected final file size in bytes
+
+      void preallocate(std::size_t size)
+      {
+	superbblas::preallocate_storage(ctx.get(), size);
+      }
+
+      /// Save content from the storage into the given tensor
+      template <std::size_t Nw, typename Tw,
+		typename std::enable_if<
+		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
+      void copyFrom(Tensor<Nw, Tw> w) const
+      {
+	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
+	for (unsigned int i = 0; i < N; ++i)
+	  if (wsize[i] > size[i])
+	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
+
+	MPI_Comm comm = (w.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
+
+	// If the storage is sparse, add blocks for the new content
+	if (sparsity == Sparse)
+	{
+	  superbblas::append_blocks<Nw, N, T>(w.p->p.data(), w.p->p.size(), w.order.c_str(), w.from,
+					      w.size, order.c_str(), from, ctx.get(), comm,
+					      superbblas::FastToSlow);
+	}
+
+	Tw* w_ptr = w.data.get();
+	superbblas::save<Nw, N, Tw, T>(detail::safe_div<T>(w.scalar, scalar), w.p->p.data(), 1,
+				       w.order.c_str(), w.from, w.size, (const Tw**)&w_ptr, &*w.ctx,
+				       order.c_str(), from, ctx.get(), comm,
+				       superbblas::FastToSlow);
+      }
+
+      /// Load content from the storage into the given tensor
+      template <std::size_t Nw, typename Tw,
+		typename std::enable_if<
+		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
+      void copyTo(Tensor<Nw, Tw> w) const
+      {
+	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
+	for (unsigned int i = 0; i < N; ++i)
+	  if (size[i] > wsize[i])
+	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
+
+	Tw* w_ptr = w.data.get();
+	MPI_Comm comm = (w.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	superbblas::load<N, Nw>(detail::safe_div<T>(scalar, w.scalar), ctx.get(), order.c_str(),
+				from, size, w.p->p.data(), 1, w.order.c_str(), w.from, &w_ptr,
+				&*w.ctx, comm, superbblas::FastToSlow, superbblas::Copy);
+      }
+    };
+
     /// Return a tensor filled with the value of the function applied to each element
     /// \param order: dimension labels, they should start with "xyztX"
     /// \param size: length of each dimension
@@ -1706,7 +2053,7 @@ namespace Chroma
       {
 	// Get the global coordinates
 	using superbblas::detail::operator+;
-	Coor<N> c = superbblas::detail::normalize_coor(
+	Coor<N> c = normalize_coor(
 	  superbblas::detail::index2coor(i, local_latt_size, stride) + local_latt_from, dim);
 
 	// Translate even-odd coordinates to natural coordinates
@@ -1905,7 +2252,7 @@ namespace Chroma
       // Phase colorvecs if phase != (0,0,0)
       bool phasing = (phase != Coor<Nd - 1>{});
 
-      from_tslice = detail::normalize_coor(from_tslice, Layout::lattSize()[decay_dir]);
+      from_tslice = normalize_coor(from_tslice, Layout::lattSize()[decay_dir]);
 
       // Allocate tensor to return
       std::string r_order = phasing ? "cnxyztX" : order;
@@ -2139,7 +2486,7 @@ namespace Chroma
       int d = std::abs(dir) - 1;    // space lattice direction, 0: x, 1: y, 2: z
       int len = (dir > 0 ? 1 : -1); // displacement unit direction
 
-      Tensor<N, COMPLEX> r = v.like_this("cnSsxyzXt");
+      Tensor<N, COMPLEX> r = v.like_this("cnSs%xyzXt", '%');
       if (!deriv)
       {
 	assert(d < u.size());
@@ -2147,7 +2494,7 @@ namespace Chroma
 	if (conjUnderAdd)
 	  len *= -1;
 
-	v = v.reorder("cnSsxyzXt");
+	v = v.reorder("cnSs%xyzXt", '%');
 	if (len > 0)
 	{
 	  // Do u[d] * shift(x,d)
@@ -2189,7 +2536,7 @@ namespace Chroma
     {
       /// Path Node
       struct PathNode {
-	std::map<char, PathNode> p; ///< following nodes
+	std::map<int, PathNode> p; ///< following nodes
 	int disp_index;		    ///< if >= 0, the index in the displacement list
       };
 
@@ -2201,10 +2548,10 @@ namespace Chroma
 	for (const std::vector<int>& path : paths)
 	{
 	  PathNode* n = &r;
-	  for (char d : path)
+	  for (int d : path)
 	  {
 	    if (d == 0 || std::abs(d) > Nd)
-	      throw std::runtime_error("Invalid direction: " + std::to_string((int)d));
+	      throw std::runtime_error("Invalid direction: " + std::to_string(d));
 
 	    auto it = n->p.find(d);
 	    if (it != n->p.end())
@@ -2278,12 +2625,14 @@ namespace Chroma
 			   std::to_string(disps.disp_index));
 	  // Contract the spatial components and the color of the leftconj and right tensors
 	  Tensor<Nout, COMPLEX> aux =
-	    r.template like_this<Nout, COMPLEX>("mNQqnSst", {{'S', Ns}, {'Q', Ns}});
-	  aux.contract(leftconj, {}, Conjugate, right.reorder("cxyzXnSst"), {}, NotConjugate, {});
+	    r.template like_this<Nout, COMPLEX>("mNQqnSst%", '%', "gd", {{'S', Ns}, {'Q', Ns}});
+	  aux.contract(leftconj, {}, Conjugate, right.reorder("cxyzXnSst%", '%'), {}, NotConjugate,
+		       {});
 
 	  // Contract the spin components S and Q with the gammas, and put the result on r[d=disp_indices.size()]
 	  aux = aux.reorder("QSmNqnst");
-	  Tensor<Nout - 1, COMPLEX> aux0 = r.template like_this<Nout - 1, COMPLEX>("gmNqnst");
+	  Tensor<Nout - 1, COMPLEX> aux0 =
+	    r.template like_this<Nout - 1, COMPLEX>("gmNqnst%", '%', "d");
 	  aux0.contract(gammas, {}, NotConjugate, aux, {}, NotConjugate);
 	  aux0.copyTo(r.kvslice_from_size({{'d', disp_indices.size()}}, {{'d', 1}}));
 
@@ -2368,14 +2717,18 @@ namespace Chroma
 	throw std::runtime_error("Invalid range of momenta");
 
       // Allocate output tensor
-      Tensor<Nout, COMPLEX> r(order_out, kvcoors<Nout>(order_out, {{'t', Nt},
-								   {'n', right.kvdim()['n']},
-								   {'s', right.kvdim()['s']},
-								   {'N', leftconj.kvdim()['N']},
-								   {'q', leftconj.kvdim()['q']},
-								   {'m', numMom},
-								   {'g', gammas.size()},
-								   {'d', disps.size()}}));
+      std::map<char, int> r_size = {{'t', Nt},
+				    {'n', right.kvdim()['n']},
+				    {'s', right.kvdim()['s']},
+				    {'N', leftconj.kvdim()['N']},
+				    {'q', leftconj.kvdim()['q']},
+				    {'m', numMom},
+				    {'g', gammas.size()},
+				    {'d', disps.size()}};
+      for (char c : detail::remove_dimensions(order_out, "gmNndsqt"))
+	r_size[c] = leftconj.kvdim()[c];
+      Tensor<Nout, COMPLEX> r(order_out, kvcoors<Nout>(order_out, r_size));
+
       // Create mom_list
       std::vector<Coor<Nd - 1>> mom_list(numMom);
       for (unsigned int mom = 0; mom < numMom; ++mom)
@@ -2396,7 +2749,7 @@ namespace Chroma
 
       // Iterate over time-slices
       std::vector<int> disp_indices;
-      leftconj = leftconj.reorder("QNqcxyzXt");
+      leftconj = leftconj.reorder("QNqc%xyzXt", '%');
 
       for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
@@ -2420,14 +2773,14 @@ namespace Chroma
 
 	// Apply momenta conjugated to the left tensor and rename the spin components s and Q to q and Q,
 	// and the colorvector component n to N
-	Tensor<Nleft + 1, COMPLEX> moms_left =
-	  leftconj.template like_this<Nleft + 1>("mQNqcxyzXt", {{'m', numMom}, {'t', tsize}});
+	Tensor<Nleft + 1, COMPLEX> moms_left = leftconj.template like_this<Nleft + 1>(
+	  "mQNqc%xyzXt", '%', "", {{'m', numMom}, {'t', tsize}});
 	moms_left.contract(std::move(momst), {}, Conjugate,
 			   leftconj.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}), {},
 			   NotConjugate);
 	if (tfrom + tsize >= Nt)
 	  leftconj.release();
-	moms_left = moms_left.reorder("cxyzXmNQqt");
+	moms_left = moms_left.reorder("cxyzXmNQqt%", '%');
 
 	// Make a copy of the time-slicing of u[d] also supporting left and right
 	std::vector<Tensor<Nd + 3, Complex>> ut(Nd);
@@ -2489,25 +2842,39 @@ namespace Chroma
 	  "Invalid interval to union! Some of input intervals exceeds the lattice dimension");
 
       // Normalize from and take as from0 the leftmost interval of the two input intervals
-      from0 = detail::normalize_coor(from0, dim);
-      from1 = detail::normalize_coor(from1, dim);
+      from0 = normalize_coor(from0, dim);
+      from1 = normalize_coor(from1, dim);
       if (from0 > from1)
       {
 	std::swap(from0, from1);
 	std::swap(size0, size1);
       }
 
-      // Return the shortest interval resulting from the leftmost point of the
-      // first interval and the rightmost point of both intervals, and the
-      // leftmost point of the second interval and the rightmost point of both
-      // intervals
+      // If some interval is empty, return the other
+      if (size0 == 0)
+      {
+	fromr = from1;
+	sizer = size1;
+      }
+      else if (size1 == 0)
+      {
+	fromr = from0;
+	sizer = size0;
+      }
+      else
+      {
+	// Return the shortest interval resulting from the leftmost point of the
+	// first interval and the rightmost point of both intervals, and the
+	// leftmost point of the second interval and the rightmost point of both
+	// intervals
 
-      Index fromra = from0;
-      Index sizera = std::max(from0 + size0, from1 + size1) - from0;
-      Index fromrb = from1;
-      Index sizerb = std::max(from0 + dim + size0, from1 + size1) - from1;
-      fromr = (sizera <= sizerb ? fromra : fromrb);
-      sizer = (sizera <= sizerb ? sizera : sizerb);
+	Index fromra = from0;
+	Index sizera = std::max(from0 + size0, from1 + size1) - from0;
+	Index fromrb = from1;
+	Index sizerb = std::max(from0 + dim + size0, from1 + size1) - from1;
+	fromr = (sizera <= sizerb ? fromra : fromrb);
+	sizer = (sizera <= sizerb ? sizera : sizerb);
+      }
 
       // Normalize the output if the resulting interval is the whole dimension
       if (sizer >= dim)

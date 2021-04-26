@@ -52,6 +52,9 @@
    QDP-JIT/PTX */
 #cmakedefine BUILD_QUDA_DEVIFACE_SPINOR   @BUILD_QUDA_DEVIFACE_SPINOR@
 
+/* Build SUPERB tasks */
+#cmakedefine BUILD_SB   @BUILD_SB@
+
 /* Build Scalarsite BICGStab Kernels */
 #cmakedefine BUILD_SCALARSITE_BICGSTAB  @BUILD_SCALARSITE_BICGSTAB@
 

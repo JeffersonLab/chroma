@@ -26,6 +26,7 @@ option(Chroma_ENABLE_QPHIX  "Enable QPhiX Solvers" OFF)
 option(Chroma_ENABLE_MGPROTO "Enable MG-Proto" OFF)
 option(Chroma_ENABLE_LAPACK "Enable Lapack Binding in QDPLapack" OFF)
 option(Chroma_ENABLE_OPENMP "Enable OpenMP" OFF)
+option(Chroma_ENABLE_SUPERBBLAS  "Enable tasks using Superbblas" OFF)
 
 set(Chroma_QPHIX_SOLVER_ARCH "avx" CACHE STRING "Architecture of QPhiX Architecture")
 set_property(CACHE Chroma_QPHIX_SOLVER_ARCH PROPERTY
@@ -45,6 +46,7 @@ option(Chroma_QPHIX_COMPRESS12 "Set to ON to enable 12-compression" OFF)
 option(Chroma_QPHIX_DSLASH "Set to ON to enable QPhiX Dslash. QDP-JIT builds with matchin SOALENs only" OFF)
 option(Chroma_USE_MGPROTO "Use the MGProto Multigrid solver" OFF)
 
+set(SUPERBBLAS_DIR "" CACHE PATH "path to superbblas installation")
 
 ##################
 # End of Options
@@ -179,6 +181,34 @@ if( Chroma_ENABLE_LAPACK )
 endif()
 add_subdirectory(other_libs/qdp-lapack)
  
+###########################
+# 6th: Deal with superbblas
+###########################
+if( Chroma_ENABLE_SUPERBBLAS )
+  message(STATUS "Enabling superbblas")
+
+  include(FindBLAS)
+  find_package(BLAS REQUIRED)
+  
+  if( QDP_BACKEND_ROCM AND NOT HIP_CPP_CONFIG )
+     find_package(HIP REQUIRED)
+     execute_process(
+                 COMMAND ${HIP_HIPCONFIG_EXECUTABLE} -C
+                 OUTPUT_VARIABLE _hip_cpp_config_raw
+                 OUTPUT_STRIP_TRAILING_WHITESPACE
+                 )
+     separate_arguments(_hip_cpp_config UNIX_COMMAND ${_hip_cpp_config_raw})
+     message(STATUS "HIP cpp_config ${_hip_cpp_config}")
+     set(HIP_CPP_CONFIG ${_hip_cpp_config} CACHE STRING "HIP cpp_config as computed by hipconfig")
+     mark_as_advanced(HIP_CPP_CONFIG)
+  endif()
+
+  if( QDP_BACKEND_ROCM )
+     find_package(hipBLAS REQUIRED)
+  endif()
+  set(BUILD_SB 1)
+endif()
+
 
 #####################################
 # Configure chroma_config_internal.h

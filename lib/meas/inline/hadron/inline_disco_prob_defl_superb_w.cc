@@ -4,24 +4,25 @@
  * Propagator calculation on a colorstd::vector
  */
 
+#include "inline_disco_prob_defl_superb_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "fermact.h"
-#include "inline_disco_prob_defl_w.h"
-#include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
+#include "meas/hadron/greedy_coloring.h"
+#include "meas/inline/abs_inline_measurement_factory.h"
+#include "meas/inline/io/named_objmap.h"
+#include "meas/inline/make_xml_file.h"
 #include "qdp_stdio.h"
-#include "util/ferm/subset_vectors.h"
+#include "util/ferm/key_prop_colorvec.h"
+#include "util/ferm/key_val_db.h"
 #include "util/ferm/map_obj/map_obj_aggregate_w.h"
 #include "util/ferm/map_obj/map_obj_factory_w.h"
-#include "util/ferm/key_prop_colorvec.h"
+#include "util/ferm/subset_vectors.h"
+#include "util/ferm/superb_contractions.h"
 #include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
-#include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/fermacts_aggregate_w.h"
-#include "meas/inline/make_xml_file.h"
-#include "util/ferm/key_val_db.h"
-#include "meas/inline/io/named_objmap.h"
-#include "meas/hadron/greedy_coloring.h"
 
 #include <cassert>
 #include <string>
@@ -29,12 +30,12 @@
 
 namespace Chroma 
 { 
-  namespace InlineDiscoProbDefl 
+  namespace InlineDiscoProbDeflSuperb 
   {
     
 
     //! Propagator input
-    void read(XMLReader& xml, const std::string& path, InlineDiscoProbDefl::Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineDiscoProbDeflSuperb::Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -43,7 +44,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const std::string& path, const InlineDiscoProbDefl::Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineDiscoProbDeflSuperb::Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -54,7 +55,7 @@ namespace Chroma
     }
 
     //! Propagator input
-    void read(XMLReader& xml, const std::string& path, InlineDiscoProbDefl::Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, InlineDiscoProbDeflSuperb::Params::Param_t& param)
     {
       XMLReader inputtop(xml, path);
       
@@ -137,7 +138,7 @@ namespace Chroma
      }
 
     //! Propagator output
-    void write(XMLWriter& xml, const std::string& path, const InlineDiscoProbDefl::Params::Param_t& param)
+    void write(XMLWriter& xml, const std::string& path, const InlineDiscoProbDeflSuperb::Params::Param_t& param)
     {
       push(xml, path);
 
@@ -158,14 +159,14 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const std::string& path, InlineDiscoProbDefl::Params& input)
+    void read(XMLReader& xml, const std::string& path, InlineDiscoProbDeflSuperb::Params& input)
     {
-      InlineDiscoProbDefl::Params tmp(xml, path);
+      InlineDiscoProbDeflSuperb::Params tmp(xml, path);
       input = tmp;
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const std::string& path, const InlineDiscoProbDefl::Params& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineDiscoProbDeflSuperb::Params& input)
     {
       push(xml, path);
     
@@ -289,82 +290,140 @@ namespace Chroma
           q_mu = shift(adj(u[mu]) * q, BACKWARD, mu);
     }
 
-    void do_disco(std::map< KeyOperator_t, ValOperator_t >& db,
-		  const LatticeFermion& qbar,
-		  const LatticeFermion& q,
-		  const SftMom& p,
-		  const multi1d<LatticeColorMatrix>& u,
-		  const multi1d<int>& path,
-	 	  const int& max_path_length ){
-      
-      const int Nt = Layout::lattSize()[3];
-
-      ValOperator_t val ;
-      KeyOperator_t key ;
-      std::pair<KeyOperator_t, ValOperator_t> kv ; 
-      if(path.size()==0){
-	kv.first.disp.resize(1);
-	kv.first.disp[0] = 0 ;
+    template <typename T>
+    struct detox_aux {
+      using rtype = T;
+      static T get(const T& e)
+      {
+	return e;
       }
-      else
-	kv.first.disp = path ;
+    };
 
-      multi2d< multi1d<ComplexD> > foo(p.numMom(), Nt) ;
-      for (int t(0); t < Nt; t++)
-        for (int m(0); m < p.numMom(); m++)
-	  foo(m,t).resize(Ns*Ns);
-      for(int g(0);g<Ns*Ns;g++){
-	LatticeComplex cc = localInnerProduct(qbar,Gamma(g)*q);
-	for (int m(0); m < p.numMom(); m++){
-          LatticeComplex pcc = p[m]*cc;
-          for (int t(0); t < Nt; t++) {
-	      foo(m,t)[g] = sum(pcc,p.getSet()[t]);
-	      if (g == 0) QDPIO::cout<<"Trace t="<< t << " path=" << path << " val= " << foo(m,t)[g] << std::endl;
-          }
+#ifdef QDP_IS_QDPJIT
+    template <typename T>
+    struct detox_aux<QDP::Word<T>> {
+      using rtype = T;
+      static T get(const QDP::Word<T>& w)
+      {
+	return w.elem();
+      }
+    };
+#endif
+
+    // Return the same value but with the most elemental type
+    template <typename T>
+    typename detox_aux<T>::rtype detox(const T& e)
+    {
+      return detox_aux<T>::get(e);
+    }
+
+    void do_disco(std::map<KeyOperator_t, ValOperator_t>& db,
+		  const std::vector<std::shared_ptr<LatticeFermion>>& qbar,
+		  const std::vector<std::shared_ptr<LatticeFermion>>& q, const SftMom& p,
+		  const multi1d<LatticeColorMatrix>& u, const int& max_path_length)
+    {
+
+      const int Nt = Layout::lattSize()[3];
+      const int a = qbar.size();
+      assert(qbar.size() == q.size());
+
+      // Copy q and qbar to tensor forms
+      std::string q_order = "cxyzXnSst*";
+      SB::Tensor<Nd + 6, SB::Complex> qt(
+	q_order, SB::latticeSize<Nd + 6>(q_order, {{'n', 1}, {'S', Ns}, {'s', 1}, {'*', a}}));
+      for (int i = 0; i < a; ++i)
+	SB::asTensorView(*q[i])
+	  .rename_dims({{'s', 'S'}})
+	  .copyTo(qt.kvslice_from_size({{'*', i}}, {{'*', 1}}));
+      std::string qbar_order = "cxyzXNQqt*";
+      SB::Tensor<Nd + 6, SB::Complex> qbart(
+	qbar_order, SB::latticeSize<Nd + 6>(qbar_order, {{'N', 1}, {'Q', Ns}, {'q', 1}, {'*', a}}));
+      for (int i = 0; i < a; ++i)
+	SB::asTensorView(*qbar[i])
+	  .rename_dims({{'s', 'Q'}})
+	  .copyTo(qbart.kvslice_from_size({{'*', i}}, {{'*', 1}}));
+
+      // Construct a vector with the desired contractions
+      std::vector<std::vector<int>> disps;
+      disps.push_back(std::vector<int>()); // no displacement
+      for (int i = 1; i <= max_path_length; ++i)
+	disps.push_back(std::vector<int>(i, 3)); // displacements on positive z-dir
+      for (int i = 1; i <= max_path_length; ++i)
+	disps.push_back(std::vector<int>(i, -3)); // displacements on negative z-dir
+
+      // Put all gamma matrices in a single tensor
+      std::vector<SB::Tensor<2, SB::Complex>> gamma_mats;
+      {
+	for (int g = 0; g < Ns * Ns; ++g)
+	{
+	  SpinMatrix gmat = Gamma(g) * SB::SpinMatrixIdentity();
+	  gamma_mats.push_back(SB::asTensorView(gmat).cloneOn<SB::Complex>(SB::OnDefaultDevice));
 	}
       }
 
-      for (int t(0); t < Nt; t++) {
-        kv.first.t_slice = t ;
-        for (int m(0); m < p.numMom(); m++){
-          for(int i(0);i<(Nd-1);i++)
-            kv.first.mom[i] = p.numToMom(m)[i] ;
-          
-          kv.second.op = foo(m,t);
-          std::pair<std::map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
+      // Contract S and Q with all the gammas, and apply the displacements
+      std::string order_out = "gmNndsqt*";
+      std::pair<SB::Tensor<9, SB::Complex>, std::vector<int>> r =
+	SB::doMomGammaDisp_contractions<9>(u, std::move(qbart), std::move(qt), 0, p, 0, SB::none,
+					   gamma_mats, disps, false, order_out);
 
-          itbo = db.insert(kv);
-          if(!itbo.second ){
-            // if insert fails, key already exists, so add result
-            for(int i(0);i<kv.second.op.size();i++){
-              itbo.first->second.op[i] += kv.second.op[i] ;
-            }
-          }
-        }
-      }
+      // Gather all traces at the master node
+      SB::Tensor<9, SB::Complex> con =
+	r.first.make_sure(SB::none, SB::OnHost, SB::OnMaster).getLocal();
 
-      if(path.size()<max_path_length){
-	multi1d<int> new_path(path.size()+1);
-	for(int i(0);i<path.size();i++)
-	  new_path[i] = path[i] ;
-	for(int sign(-1);sign<2;sign+=2)
-          // NOTE: restrict displacement to the z direction
-	  for(int mu(2);mu<3;mu++){
-	    new_path[path.size()]= sign*(mu+1) ;
-	    //skip back tracking 
-	    bool back_track=false ;
-	    if(path.size()>0)
-	      if(path[path.size()-1] == -new_path[path.size()])
-		back_track=true;
-	    if(!back_track){
-	      LatticeFermion q_mu ;
-              do_shift(q_mu, q, u, mu, sign);
-	      do_disco(db, qbar, q_mu, p, u, new_path, max_path_length);
-	    } // skip backtracking
-	  } // mu
+      const std::vector<int>& disps_perm = r.second;
+
+      // Do the update only on the master node
+      if (con)
+      {
+	std::pair<KeyOperator_t, ValOperator_t> kv;
+	kv.first.mom.resize(Nd - 1);
+	kv.second.op.resize(Ns * Ns);
+	for (int i = 0; i < Ns * Ns; ++i)
+	  kv.second.op[i] = 0.0;
+
+	for (int d = 0; d < disps_perm.size(); ++d)
+	{
+	  // Normalize paths
+	  int disp_d_len = disps[disps_perm[d]].size();
+	  kv.first.disp.resize(std::max(disp_d_len, 1));
+	  for (int i = 0; i < disp_d_len; ++i)
+	    kv.first.disp[i] = disps[disps_perm[d]][i];
+	  if (disp_d_len == 0)
+	    kv.first.disp[0] = 0;
+
+	  for (int mom = 0; mom < p.numMom(); ++mom)
+	  {
+	    for (int i = 0; i < Nd - 1; ++i)
+	      kv.first.mom[i] = p.numToMom(mom)[i];
+
+	    for (int t = 0; t < Nt; ++t)
+	    {
+	      kv.first.t_slice = t;
+
+	      auto it = db.find(kv.first);
+	      if (it == db.end())
+		it = db.insert(kv).first;
+
+	      for (int ai = 0; ai < a; ++ai)
+	      {
+		for (int g = 0; g < Ns * Ns; ++g)
+		{
+		  std::complex<double> a = con.get({g, mom, 1, 1, d, 1, 1, t, ai});
+#ifdef QDP_IS_QDPJIT
+		  it->second.op[g].elem().elem().elem().real().elem() += a.real();
+		  it->second.op[g].elem().elem().elem().imag().elem() += a.imag();
+#else
+		  it->second.op[g].elem().elem().elem().real() += a.real();
+		  it->second.op[g].elem().elem().elem().imag() += a.imag();
+#endif
+		}
+	      }
+	    }
+	  }
+	}
       }
     }
-
 
     // Update the mean and var for each observable in db
     void do_update(std::map< KeyOperator_t, ValOperator_t >& dbmean,
@@ -394,33 +453,6 @@ namespace Chroma
           itbo.first->second.op += kv.second.op;
         }
       }
-    }
-
-    template <typename T>
-    struct detox_aux {
-      using rtype = T;
-      static T get(const T& e)
-      {
-	return e;
-      }
-    };
-
-#ifdef QDP_IS_QDPJIT
-    template <typename T>
-    struct detox_aux<QDP::Word<T>> {
-      using rtype = T;
-      static T get(const QDP::Word<T>& w)
-      {
-	return w.elem();
-      }
-    };
-#endif
-
-    // Return the same value but with the most elemental type
-    template <typename T>
-    typename detox_aux<T>::rtype detox(const T& e)
-    {
-      return detox_aux<T>::get(e);
     }
 
     void show_stats(const std::map< KeyOperator_t, ValOperator_t >& dbmean,
@@ -496,7 +528,7 @@ namespace Chroma
       bool registered = false;
     }
       
-    const std::string name = "DISCO_PROBING_DEFLATION";
+    const std::string name = "DISCO_PROBING_DEFLATION_SUPERB";
 
     //! Register all the factories
     bool registerAll() 
@@ -686,13 +718,13 @@ namespace Chroma
         vi_lambda = vi / lambda;
 	proj->U(k,ui);
 
-        multi1d<int> d;
-        if (params.param.use_ferm_state_links)
-          do_disco(dbdet, vi_lambda, ui, ft, state->getLinks(),
-                   d, params.param.max_path_length);
-        else
-          do_disco(dbdet, vi_lambda, ui, ft, u, 
-                   d, params.param.max_path_length);
+	std::vector<std::shared_ptr<LatticeFermion>> vi_lambda_sh(
+	  1, std::shared_ptr<LatticeFermion>(&vi_lambda, [](LatticeFermion*) {}));
+	std::vector<std::shared_ptr<LatticeFermion>> ui_sh(
+	  1, std::shared_ptr<LatticeFermion>(&ui, [](LatticeFermion*) {}));
+	do_disco(dbdet, vi_lambda_sh, ui_sh, ft,
+		 params.param.use_ferm_state_links ? state->getLinks() : u,
+		 params.param.max_path_length);
       }
       swatch_det.stop();
       QDPIO::cout << "Projector contribution computed in time= " << swatch_det.getTimeInSeconds() << " secs" << std::endl;
@@ -750,17 +782,11 @@ namespace Chroma
           // result is ADDED to db
           StopWatch swatch_dots;
           swatch_dots.start();
-          for (int i = 0 ; i < v_chi.size() ; i++) {
-            multi1d<int> d ;
-            if (params.param.use_ferm_state_links)
-              do_disco(db, *v_chi[i], *v_q[i], ft, state->getLinks(),
-                       d, params.param.max_path_length);
-            else
-              do_disco(db, *v_chi[i], *v_q[i], ft, u, 
-                       d, params.param.max_path_length);
-           }
-           swatch_dots.stop();
-           QDPIO::cout << "Computing inner products " << swatch_dots.getTimeInSeconds() << " secs" << std::endl;
+	  do_disco(db, v_chi, v_q, ft, params.param.use_ferm_state_links ? state->getLinks() : u,
+		   params.param.max_path_length);
+	  swatch_dots.stop();
+	  QDPIO::cout << "Computing inner products " << swatch_dots.getTimeInSeconds() << " secs"
+		      << std::endl;
         } // for k1
 
         // Update dbmean, dbvar

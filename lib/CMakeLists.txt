@@ -1982,6 +1982,33 @@ target_sources(chromalib PRIVATE
 
 target_link_libraries(chromalib PUBLIC QUDA::quda)
 endif()
+
+################################################
+# Superbblas
+################################################
+if( Chroma_ENABLE_SUPERBBLAS )
+  list(APPEND ChromaLIB_HEADERS 
+     meas/inline/hadron/inline_disco_prob_defl_superb_w.h
+     meas/inline/hadron/inline_prop_and_matelem_distillation_superb_w.h
+     meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.h
+  )
+  target_sources(chromalib PRIVATE 
+     meas/inline/hadron/inline_disco_prob_defl_superb_w.cc
+     meas/inline/hadron/inline_prop_and_matelem_distillation_superb_w.cc
+     meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.cc
+  )
+  target_include_directories(chromalib PUBLIC ${SUPERBBLAS_DIR}/include)
+  add_library(superbblas STATIC IMPORTED )
+  set_target_properties( superbblas PROPERTIES IMPORTED_LOCATION ${SUPERBBLAS_DIR}/lib/libsuperbblas.a )
+  target_link_libraries(chromalib PUBLIC superbblas )
+  if( QDP_BACKEND_ROCM )
+     target_compile_options(chromalib PUBLIC ${HIP_CPP_CONFIG})
+     target_link_libraries(superbblas INTERFACE roc::hipblas)
+  endif()
+  target_link_libraries(superbblas INTERFACE BLAS::BLAS)
+endif()
+
+
 if( Chroma_SANITIZER_OPTS )
    target_compile_options(chromalib PUBLIC ${Chroma_SANITIZER_OPTS})
    target_link_options(chromalib PUBLIC ${Chroma_SANITIZER_OPTS})
