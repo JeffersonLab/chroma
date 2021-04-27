@@ -250,10 +250,10 @@ namespace QDP
   struct LeafFunctor<PComp<T>, PrintTag>
   {
     typedef int Type_t;
-    static int apply(const PComp<T> &s, const PrintTag &f)
+    static int apply(const PrintTag &f)
     { 
       f.os_m << "PComp<";
-      LeafFunctor<T,PrintTag>::apply(s.comp[0],f);
+      LeafFunctor<T,PrintTag>::apply(f);
       f.os_m << ">"; 
       return 0;
     }
@@ -263,10 +263,10 @@ namespace QDP
   struct LeafFunctor<PTriDia<T>, PrintTag>
   {
     typedef int Type_t;
-    static int apply(const PTriDia<T> &s, const PrintTag &f)
+    static int apply(const PrintTag &f)
     { 
       f.os_m << "PTriDia<";
-      LeafFunctor<T,PrintTag>::apply(s.diag[0],f);
+      LeafFunctor<T,PrintTag>::apply(f);
       f.os_m << ">"; 
       return 0;
     }
@@ -276,10 +276,10 @@ namespace QDP
   struct LeafFunctor<PTriOff<T>, PrintTag>
   {
     typedef int Type_t;
-    static int apply(const PTriOff<T> &s, const PrintTag &f)
+    static int apply(const PrintTag &f)
     { 
       f.os_m << "PTriOff<";
-      LeafFunctor<T,PrintTag>::apply(s.offd[0],f);
+      LeafFunctor<T,PrintTag>::apply(f);
       f.os_m << ">"; 
       return 0;
     }
