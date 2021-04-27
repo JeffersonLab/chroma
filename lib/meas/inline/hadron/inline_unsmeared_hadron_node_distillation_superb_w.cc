@@ -30,6 +30,7 @@
 
 #include "meas/inline/io/named_objmap.h"
 #include <set>
+#include <thread>
 
 #ifdef BUILD_SB
 
@@ -1122,6 +1123,8 @@ namespace Chroma
 	QDPIO::cout << "Distillation file(s) opened" << std::endl;
       };
 
+      std::thread store_db_th; // background thread writing elementals
+
       //
       // Try the factories
       //
@@ -1286,7 +1289,7 @@ namespace Chroma
 		"qgmNndst", {}, SB::OnHost, use_multiple_writers ? SB::OnEveryone : SB::OnMaster);
 	      g5_con.contract(SB::Gamma<SB::Complex>(g5, SB::OnDefaultDevice), {}, SB::NotConjugate,
 			      std::move(r.first), {{'q', 'j'}}, SB::NotConjugate, {{'q', 'i'}});
-	      const std::vector<int>& disps_perm = r.second;
+	      const std::vector<int> disps_perm = r.second;
 
 	      snarss1.stop();
 	      QDPIO::cout << "Time to compute contractions for " << tsize
@@ -1294,100 +1297,113 @@ namespace Chroma
 			  << msize << " momenta from momentum " << mfrom << " : "
 			  << snarss1.getTimeInSeconds() << " secs" << std::endl;
 
-	      snarss1.reset();
-	      snarss1.start();
+	      //
+	      // Write the elementals
+	      //
+
+	      // Wait until the previous tensor has finished
+	      if (store_db_th.joinable())
+		store_db_th.join();
 
 	      // Open DB if they are not opened already
 	      open_db(g5_con.p->procRank(), g5_con.p->numProcs());
 
-	      if (!params.param.contract.use_genprop4_format)
-	      {
-		// Store
-		LocalSerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
-		LocalSerialDBData<ValUnsmearedMesonElementalOperator_t> val;
-		val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
+	      // Create a thread to store the tensor while doing other things
+	      store_db_th = std::thread([=, &qdp_db, &qdp4_db, &gammas, &disps, &phases]() {
+		StopWatch snarss1;
+		snarss1.reset();
+		snarss1.start();
 
-		for (int t = 0; t < tsize; ++t)
+		if (!params.param.contract.use_genprop4_format)
 		{
-		  for (int g = 0; g < gammas.size(); ++g)
+		  // Store
+		  LocalSerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
+		  LocalSerialDBData<ValUnsmearedMesonElementalOperator_t> val;
+		  val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
+
+		  for (int t = 0; t < tsize; ++t)
 		  {
-		    for (int mom = 0; mom < msize; ++mom)
+		    for (int g = 0; g < gammas.size(); ++g)
 		    {
-		      for (int d = 0; d < disps_perm.size(); ++d)
+		      for (int mom = 0; mom < msize; ++mom)
 		      {
-			for (int n = 0; n < num_vecs; ++n)
+			for (int d = 0; d < disps_perm.size(); ++d)
 			{
-			  auto g5_con_t = g5_con
-					    .kvslice_from_size(
-					      {{'g', g}, {'m', mom}, {'n', n}, {'d', d}, {'t', t}},
-					      {{'g', 1}, {'m', 1}, {'n', 1}, {'d', 1}, {'t', 1}})
-					    .getLocal();
-			  if (g5_con_t)
+			  for (int n = 0; n < num_vecs; ++n)
 			  {
-			    g5_con_t.copyTo(val.data());
+			    auto g5_con_t =
+			      g5_con
+				.kvslice_from_size(
+				  {{'g', g}, {'m', mom}, {'n', n}, {'d', d}, {'t', t}},
+				  {{'g', 1}, {'m', 1}, {'n', 1}, {'d', 1}, {'t', 1}})
+				.getLocal();
+			    if (g5_con_t)
+			    {
+			      g5_con_t.copyTo(val.data());
 
-			    key.key().derivP = params.param.contract.use_derivP;
-			    key.key().t_sink = t_sink;
-			    key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
-			    key.key().t_source = t_source;
-			    key.key().colorvec_src = n;
-			    key.key().gamma = gammas[g];
-			    key.key().displacement = disps[disps_perm[d]];
-			    key.key().mom = phases.numToMom(mfrom + mom);
-			    key.key().mass = params.param.contract.mass_label;
+			      key.key().derivP = params.param.contract.use_derivP;
+			      key.key().t_sink = t_sink;
+			      key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
+			      key.key().t_source = t_source;
+			      key.key().colorvec_src = n;
+			      key.key().gamma = gammas[g];
+			      key.key().displacement = disps[disps_perm[d]];
+			      key.key().mom = phases.numToMom(mfrom + mom);
+			      key.key().mass = params.param.contract.mass_label;
 
-			    qdp_db.insert(key, val);
+			      qdp_db.insert(key, val);
+			    }
 			  }
 			}
 		      }
 		    }
 		  }
 		}
-	      }
-	      else
-	      {
-		// Store
-		LocalSerialDBKey<KeyGenProp4ElementalOperator_t> key;
-		LocalSerialDBData<ValGenProp4ElementalOperator_t> val;
-		val.data() = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
-
-		for (int t = 0; t < tsize; ++t)
+		else
 		{
-		  for (int g = 0; g < gammas.size(); ++g)
+		  // Store
+		  LocalSerialDBKey<KeyGenProp4ElementalOperator_t> key;
+		  LocalSerialDBData<ValGenProp4ElementalOperator_t> val;
+		  val.data() = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
+
+		  for (int t = 0; t < tsize; ++t)
 		  {
-		    for (int mom = 0; mom < msize; ++mom)
+		    for (int g = 0; g < gammas.size(); ++g)
 		    {
-		      for (int d = 0; d < disps_perm.size(); ++d)
+		      for (int mom = 0; mom < msize; ++mom)
 		      {
-			auto g5_con_t =
-			  g5_con
-			    .kvslice_from_size({{'g', g}, {'m', mom}, {'d', d}, {'t', t}},
-					       {{'g', 1}, {'m', 1}, {'d', 1}, {'t', 1}})
-			    .getLocal();
-
-			if (g5_con_t)
+			for (int d = 0; d < disps_perm.size(); ++d)
 			{
-			  g5_con_t.copyTo(val.data());
+			  auto g5_con_t =
+			    g5_con
+			      .kvslice_from_size({{'g', g}, {'m', mom}, {'d', d}, {'t', t}},
+						 {{'g', 1}, {'m', 1}, {'d', 1}, {'t', 1}})
+			      .getLocal();
 
-			  key.key().t_sink = t_sink;
-			  key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
-			  key.key().t_source = t_source;
-			  key.key().g = gammas[g];
-			  key.key().displacement = disps[disps_perm[d]];
-			  key.key().mom = phases.numToMom(mfrom + mom);
-			  key.key().mass = params.param.contract.mass_label;
+			  if (g5_con_t)
+			  {
+			    g5_con_t.copyTo(val.data());
 
-			  qdp4_db.insert(key, val);
+			    key.key().t_sink = t_sink;
+			    key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
+			    key.key().t_source = t_source;
+			    key.key().g = gammas[g];
+			    key.key().displacement = disps[disps_perm[d]];
+			    key.key().mom = phases.numToMom(mfrom + mom);
+			    key.key().mass = params.param.contract.mass_label;
+
+			    qdp4_db.insert(key, val);
+			  }
 			}
 		      }
 		    }
 		  }
 		}
-	      }
 
-	      snarss1.stop();
-	      QDPIO::cout << "Time to store " << tsize
-			  << " tslices : " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+		snarss1.stop();
+		QDPIO::cout << "Time to store " << tsize
+			    << " tslices : " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+	      });
 	    }
 	  }
 	  swatch.stop();
@@ -1402,6 +1418,10 @@ namespace Chroma
 	QDPIO::cout << name << ": caught exception around qprop: " << e << std::endl;
 	QDP_abort(1);
       }
+
+      // Wait until all pending tasks are finished before closing qdp_db and qdp4_db
+      if (store_db_th.joinable())
+	store_db_th.join();
 
       // Close db
       if (db_is_open)
