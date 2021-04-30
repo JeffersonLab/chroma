@@ -228,6 +228,26 @@ namespace Chroma
     // Replace a label by another label
     using remap = std::map<char, char>;
 
+    // Return the equivalent value of the coordinate `v` in the interval [0, dim[ for a periodic
+    // dimension with length `dim`.
+
+    inline int normalize_coor(int v, int dim)
+    {
+      return (v + dim * (v < 0 ? -v / dim + 1 : 0)) % dim;
+    }
+
+    // Return the equivalent value of the coordinate `v` in the interval [0, dim[ for a periodic
+    // dimension with length `dim`.
+
+    template <std::size_t N>
+    Coor<N> normalize_coor(Coor<N> v, Coor<N> dim)
+    {
+      Coor<N> r;
+      for (std::size_t i = 0; i < N; ++i)
+	r[i] = normalize_coor(v[i], dim[i]);
+      return r;
+    }
+
     namespace detail
     {
       using namespace superbblas::detail;
@@ -258,23 +278,6 @@ namespace Chroma
 	     << "` is missing one of this labels: " << should_contain;
 	  throw std::runtime_error(ss.str());
 	}
-      }
-
-      // Return the equivalent value of the coordinate `v` in the interval [0, dim[ for a periodic
-      // dimension with length `dim`.
-
-      inline int normalize_coor(int v, int dim)
-      {
-	return (v + dim * (v < 0 ? -v / dim + 1 : 0)) % dim;
-      }
-
-      template <std::size_t N>
-      Coor<N> normalize_coor(Coor<N> v, Coor<N> dim)
-      {
-	Coor<N> r;
-	for (std::size_t i = 0; i < N; ++i)
-	  r[i] = normalize_coor(v[i], dim[i]);
-	return r;
       }
 
       template <std::size_t N>
@@ -941,7 +944,7 @@ namespace Chroma
 	  data(data),
 	  p(p),
 	  dist(dist),
-	  from(detail::normalize_coor(from, dim)),
+	  from(normalize_coor(from, dim)),
 	  size(size),
 	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
 	  scalar(scalar)
@@ -958,7 +961,7 @@ namespace Chroma
 	  data(t.data),
 	  p(t.p),
 	  dist(t.dist),
-	  from(detail::normalize_coor(from, t.dim)),
+	  from(normalize_coor(from, t.dim)),
 	  size(size),
 	  strides(t.strides),
 	  scalar{t.scalar}
@@ -1016,8 +1019,7 @@ namespace Chroma
 
 	// coor[i] = coor[i] + from[i]
 	for (unsigned int i = 0; i < N; ++i)
-	  coor[i] =
-	    detail::normalize_coor(detail::normalize_coor(coor[i], size[i]) + from[i], dim[i]);
+	  coor[i] = normalize_coor(normalize_coor(coor[i], size[i]) + from[i], dim[i]);
 
 	return data.get()[detail::coor2index<N>(coor, dim, strides)] * scalar;
       }
@@ -1047,7 +1049,7 @@ namespace Chroma
 	  if (size[i] > this->size[i])
 	    throw std::runtime_error(
 	      "The size of the slice cannot be larger than the original tensor");
-	  if (detail::normalize_coor(from[i], this->size[i]) + size[i] > this->size[i] &&
+	  if (normalize_coor(from[i], this->size[i]) + size[i] > this->size[i] &&
 	      this->size[i] != this->dim[i])
 	    throw std::runtime_error(
 	      "Unsupported to make a view on a non-contiguous range on the tensor");
@@ -1274,8 +1276,7 @@ namespace Chroma
 	using superbblas::detail::operator-;
 	return Tensor<N, T>(order, p->localSize(), ctx, data,
 			    std::make_shared<detail::TensorPartition<N>>(p->get_local_partition()),
-			    Local, detail::normalize_coor(from - p->localFrom(), dim), lsize,
-			    scalar);
+			    Local, normalize_coor(from - p->localFrom(), dim), lsize, scalar);
       }
 
       /// Copy this tensor into the given one
@@ -1706,7 +1707,7 @@ namespace Chroma
       {
 	// Get the global coordinates
 	using superbblas::detail::operator+;
-	Coor<N> c = superbblas::detail::normalize_coor(
+	Coor<N> c = normalize_coor(
 	  superbblas::detail::index2coor(i, local_latt_size, stride) + local_latt_from, dim);
 
 	// Translate even-odd coordinates to natural coordinates
@@ -1905,7 +1906,7 @@ namespace Chroma
       // Phase colorvecs if phase != (0,0,0)
       bool phasing = (phase != Coor<Nd - 1>{});
 
-      from_tslice = detail::normalize_coor(from_tslice, Layout::lattSize()[decay_dir]);
+      from_tslice = normalize_coor(from_tslice, Layout::lattSize()[decay_dir]);
 
       // Allocate tensor to return
       std::string r_order = phasing ? "cnxyztX" : order;
@@ -2489,8 +2490,8 @@ namespace Chroma
 	  "Invalid interval to union! Some of input intervals exceeds the lattice dimension");
 
       // Normalize from and take as from0 the leftmost interval of the two input intervals
-      from0 = detail::normalize_coor(from0, dim);
-      from1 = detail::normalize_coor(from1, dim);
+      from0 = normalize_coor(from0, dim);
+      from1 = normalize_coor(from1, dim);
       if (from0 > from1)
       {
 	std::swap(from0, from1);
