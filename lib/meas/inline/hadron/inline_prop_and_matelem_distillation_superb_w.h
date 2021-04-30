@@ -46,7 +46,7 @@ namespace Chroma
 	  bool          zero_colorvecs;
 	  bool          fuse_timeloop;  
           int           max_rhs;        /*! maximum number of linear systems solved simultaneously */
-	  multi1d<int>  phase;          /*!< Phase to apply to colorvecs */
+	  multi1d<float> phase;         /*!< Phase to apply to colorvecs */
 	};
 
 	ChromaProp_t    prop;
