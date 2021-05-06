@@ -1310,9 +1310,7 @@ namespace Chroma
 
 	      // Create a thread to store the tensor while doing other things
 	      store_db_th = std::thread([=, &qdp_db, &qdp4_db, &gammas, &disps, &phases]() {
-		StopWatch snarss1;
-		snarss1.reset();
-		snarss1.start();
+		double t0 = -SB::w_time();
 
 		if (!params.param.contract.use_genprop4_format)
 		{
@@ -1400,9 +1398,9 @@ namespace Chroma
 		  }
 		}
 
-		snarss1.stop();
-		QDPIO::cout << "Time to store " << tsize
-			    << " tslices : " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+		t0 += SB::w_time();
+		QDPIO::cout << "Time to store " << tsize << " tslices : " << t0 << " secs"
+			    << std::endl;
 	      });
 	    }
 	  }

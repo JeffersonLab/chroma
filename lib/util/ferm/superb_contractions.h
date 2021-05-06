@@ -24,6 +24,7 @@
 #  include "util/ft/sftmom.h"
 #  include <algorithm>
 #  include <array>
+#  include <chrono>
 #  include <cmath>
 #  include <cstring>
 #  include <iomanip>
@@ -122,6 +123,13 @@ namespace Chroma
 
     /// Initialize Maybe<T> without value
     constexpr None none = None{};
+
+    /// Return the number of seconds from some start
+    inline double w_time()
+    {
+      return std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch())
+	.count();
+    }
 
     namespace detail
     {
