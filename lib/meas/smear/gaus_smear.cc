@@ -40,6 +40,31 @@ namespace Chroma
   }
 
 
+  template<>
+  void gausSmear(const multi1d<LatticeColorMatrix>& u,
+                 LatticePropagator& chi,
+                 const Real& width, int ItrGaus, int j_decay)
+  {
+    Real ftmp = - (width*width) / Real(4*ItrGaus);
+    Real ftmpi = Real(1) / ftmp;
+
+    for (int sa = 0 ; sa < Ns ; sa++ )
+      for (int sb = 0 ; sb < Ns ; sb++ )
+	{
+          LatticeColorMatrix psi_a;
+          LatticeColorMatrix chi_a = peekSpin( chi , sa , sb );
+
+          for(int n = 0; n < ItrGaus; ++n)
+            {
+              psi_a = chi_a * ftmp;
+              klein_gord(u, psi_a, chi_a, ftmpi, j_decay);
+            }
+
+          pokeSpin( chi , chi_a , sa , sb );
+        }
+  }
+  
+
   //! Do a covariant Gaussian smearing of a lattice color std::vector field
   /*! This is a wrapper over the template definition
    *
