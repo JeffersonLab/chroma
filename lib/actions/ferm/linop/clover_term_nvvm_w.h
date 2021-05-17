@@ -700,15 +700,15 @@ namespace Chroma
     
     llvm_cond_exit( llvm_ge( r_idx , r_hi ) );
 
-    auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f3_j = f3_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f4_j = f4_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f5_j = f5_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f0_j = f0_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f1_j = f1_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f2_j = f2_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f3_j = f3_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f4_j = f4_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f5_j = f5_jit.elem(JitDeviceLayout::Coalesced , r_idx );
 
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , r_idx );
 
     typename REGType< typename RealTJIT::Subtype_t >::Type_t diag_mass_reg;
     //diag_mass_reg.setup( diag_mass_jit.elem() );
@@ -963,9 +963,9 @@ namespace Chroma
 
     llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
 
-    auto& tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_off_j     = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_off_j     = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
@@ -1292,9 +1292,9 @@ namespace Chroma
 
     llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
 
-    auto& B_j = B_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto B_j = B_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
@@ -1734,7 +1734,7 @@ namespace Chroma
 
     llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
 
-    auto& chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
     psi_r.setup( psi_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
     tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
     tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
