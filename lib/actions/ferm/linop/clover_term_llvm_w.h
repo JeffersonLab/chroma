@@ -1640,10 +1640,10 @@ namespace Chroma
 
     for(int i = 0; i < n; ++i)
       {
-	chi_r.elem((0*n+i)/3).elem((0*n+i)%3) = tri_dia_r.elem(0).elem(i) * psi_r.elem((0*n+i)/3).elem((0*n+i)%3);
+	chi_r.elem((0*n+i)/Nc).elem((0*n+i)%Nc) = tri_dia_r.elem(0).elem(i) * psi_r.elem((0*n+i)/Nc).elem((0*n+i)%Nc);
 	// cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
 
-	chi_r.elem((1*n+i)/3).elem((1*n+i)%3) = tri_dia_r.elem(1).elem(i) * psi_r.elem((1*n+i)/3).elem((1*n+i)%3);
+	chi_r.elem((1*n+i)/Nc).elem((1*n+i)%Nc) = tri_dia_r.elem(1).elem(i) * psi_r.elem((1*n+i)/Nc).elem((1*n+i)%Nc);
 	// cchi[1*n+i] = tri[site].diag[1][i] * ppsi[1*n+i];
       }
 
@@ -1652,16 +1652,16 @@ namespace Chroma
       {
 	for(int j = 0; j < i; j++)
 	  {
-	    chi_r.elem((0*n+i)/3).elem((0*n+i)%3) += tri_off_r.elem(0).elem(kij) * psi_r.elem((0*n+j)/3).elem((0*n+j)%3);
+	    chi_r.elem((0*n+i)/Nc).elem((0*n+i)%Nc) += tri_off_r.elem(0).elem(kij) * psi_r.elem((0*n+j)/Nc).elem((0*n+j)%Nc);
 	    // cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
 
-	    chi_r.elem((0*n+j)/3).elem((0*n+j)%3) += conj(tri_off_r.elem(0).elem(kij)) * psi_r.elem((0*n+i)/3).elem((0*n+i)%3);
+	    chi_r.elem((0*n+j)/Nc).elem((0*n+j)%Nc) += conj(tri_off_r.elem(0).elem(kij)) * psi_r.elem((0*n+i)/Nc).elem((0*n+i)%Nc);
 	    // cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
 
-	    chi_r.elem((1*n+i)/3).elem((1*n+i)%3) += tri_off_r.elem(1).elem(kij) * psi_r.elem((1*n+j)/3).elem((1*n+j)%3);
+	    chi_r.elem((1*n+i)/Nc).elem((1*n+i)%Nc) += tri_off_r.elem(1).elem(kij) * psi_r.elem((1*n+j)/Nc).elem((1*n+j)%Nc);
 	    // cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
 
-	    chi_r.elem((1*n+j)/3).elem((1*n+j)%3) += conj(tri_off_r.elem(1).elem(kij)) * psi_r.elem((1*n+i)/3).elem((1*n+i)%3);
+	    chi_r.elem((1*n+j)/Nc).elem((1*n+j)%Nc) += conj(tri_off_r.elem(1).elem(kij)) * psi_r.elem((1*n+i)/Nc).elem((1*n+i)%Nc);
 	    // cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
 
 	    kij++;
