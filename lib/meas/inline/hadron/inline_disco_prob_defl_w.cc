@@ -290,8 +290,7 @@ namespace Chroma
 		  const multi1d<int>& path,
 	 	  const int& max_path_length ){
       
-      //const int Nt = Layout::lattSize()[3];
-      const int Nt = 1;
+      const int Nt = Layout::lattSize()[3];
 
       ValOperator_t val ;
       KeyOperator_t key ;
