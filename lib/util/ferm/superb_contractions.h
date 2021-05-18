@@ -263,29 +263,26 @@ namespace Chroma
       // Throw an error if `order` does not contain a label in `should_contain`
       inline void check_order_contains(const std::string& order, const std::string& should_contain)
       {
-	bool ok = false;
-	if (order.size() == should_contain.size())
+	for (char c : should_contain)
 	{
-	  int n = order.size();
-	  unsigned int i;
-	  for (i = 0; i < n; ++i)
+	  if (order.find(c) == std::string::npos)
 	  {
-	    unsigned int j;
-	    for (j = 0; j < n && order[i] != should_contain[j]; ++j)
-	      ;
-	    if (j >= n)
-	      break;
+	    std::stringstream ss;
+	    ss << "The input order `" << order << "` is missing the label `" << c << "`";
+	    throw std::runtime_error(ss.str());
 	  }
-	  if (i >= n)
-	    ok = true;
 	}
-	if (!ok)
-	{
-	  std::stringstream ss;
-	  ss << "The input order `" << order
-	     << "` is missing one of this labels: " << should_contain;
-	  throw std::runtime_error(ss.str());
-	}
+      }
+
+      // Throw an error if `order` does not contain a label in `should_contain`
+      inline std::string remove_dimensions(const std::string& order, const std::string& remove_dims)
+      {
+	std::string out;
+	out.reserve(order.size());
+	for (char c : order)
+	  if (remove_dims.find(c) == std::string::npos)
+	    out.push_back(c);
+	return out;
       }
 
       template <std::size_t N>
@@ -1021,9 +1018,9 @@ namespace Chroma
 	if (ctx->plat != superbblas::CPU)
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements from tensors not stored on the host");
-	if (dist != OnMaster)
-	  throw std::runtime_error(
-	    "Unsupported to `get` elements on tensor not being fully on the master node");
+	if (dist != OnMaster && dist != Local)
+	  throw std::runtime_error("Unsupported to `get` elements on tensor that are not local or "
+				   "not being fully supported on the master node");
 
 	// coor[i] = coor[i] + from[i]
 	for (unsigned int i = 0; i < N; ++i)
@@ -1086,6 +1083,28 @@ namespace Chroma
 			      new_dev.getSome(getDev()), new_dist.getSome(dist));
       }
 
+      /// Return a tensor on the same device and following the same distribution
+      /// \param new_order: dimension labels of the new tensor
+      /// \param remaining_char: placeholder for the remaining dimensions
+      /// \param kvsize: override the length of the given dimensions
+      /// \param new_dev: device
+      /// \param new_dist: distribution
+
+      template <std::size_t Nn = N, typename Tn = T>
+      Tensor<Nn, Tn> like_this(std::string new_order, char remaining_char,
+			       std::string remove_dims = "", std::map<char, int> kvsize = {},
+			       Maybe<DeviceHost> new_dev = none,
+			       Maybe<Distribution> new_dist = none) const
+      {
+	std::map<char, int> new_kvdim = kvdim();
+	for (const auto& it : kvsize)
+	  new_kvdim[it.first] = it.second;
+	std::string new_order_ =
+	  detail::remove_dimensions(get_order_for_reorder(new_order, remaining_char), remove_dims);
+	return Tensor<Nn, Tn>(new_order_, kvcoors<Nn>(new_order_, new_kvdim, 0, ThrowOnMissing),
+			      new_dev.getSome(getDev()), new_dist.getSome(dist));
+      }
+
       /// Return a copy of this tensor, possible with a new precision `nT`
 
       template <typename Tn = T>
@@ -1105,19 +1124,66 @@ namespace Chroma
 	return r;
       }
 
-      /// If the dimension labels order does not match the current order, return a copy of this tensor with that ordering
+    private:
+      /// Return the new ordering based on a partial reordering
       /// \param new_order: new dimension labels order
+      /// \param remaining_char: if it isn't the null char, placeholder for the dimensions not given
+      ///
+      /// If the dimension labels order does not match the current order, return a copy of this
+      /// tensor with that ordering. If the given order does not contain all dimensions, only the
+      /// involved dimensions are permuted.
 
-      Tensor<N, T> reorder(const std::string& new_order) const
+      std::string get_order_for_reorder(const std::string& new_order, char remaining_char = 0) const
       {
-	if (order == new_order)
+	std::string new_order1;
+	if (remaining_char != 0)
+	{
+	  std::string::size_type rem_pos = new_order.find(remaining_char);
+	  if (rem_pos == std::string::npos)
+	  {
+	    new_order1 = new_order;
+	  }
+	  else
+	  {
+	    new_order1 = new_order.substr(0, rem_pos) +
+			 detail::remove_dimensions(order, new_order) +
+			 new_order.substr(rem_pos + 1, new_order.size() - rem_pos - 1);
+	  }
+	}
+	else
+	{
+	  new_order1 = order;
+	  unsigned int j = 0;
+	  for (unsigned int i = 0; i < N; ++i)
+	    if (new_order.find(order[i]) != std::string::npos)
+	      new_order1[i] = new_order[j++];
+	  if (j < new_order.size())
+	    throw std::runtime_error("Unknown labels in the given order");
+	}
+
+	return new_order1;
+      }
+
+    public:
+      /// Return a copy of this tensor with the given ordering
+      /// \param new_order: new dimension labels order
+      /// \param remaining_char: if it isn't the null char, placeholder for the dimensions not given
+      ///
+      /// If the dimension labels order does not match the current order, return a copy of this
+      /// tensor with that ordering. If the given order does not contain all dimensions, only the
+      /// involved dimensions are permuted.
+
+      Tensor<N, T> reorder(const std::string& new_order, char remaining_char = 0) const
+      {
+	std::string new_order1 = get_order_for_reorder(new_order, remaining_char);
+	if (order == new_order1)
 	  return *this;
-	Tensor<N, T> r = like_this(new_order);
+	Tensor<N, T> r = like_this(new_order1);
 	copyTo(r);
 	return r;
       }
 
-      /// Return whether the tensor have complex components although being stored with a non-complex type `T`
+      /// Return whether the tensor has complex components although being stored with a non-complex type `T`
 
       bool isFakeReal() const
       {
@@ -1398,7 +1464,7 @@ namespace Chroma
       bool isContiguous() const
       {
 	// Meaningless for tensors not been fully supported on a single node
-	if (dist != OnMaster)
+	if (dist != OnMaster && dist != Local)
 	  return false;
 
 	if (superbblas::detail::volume(size) > 0 && N > 1)
@@ -2148,7 +2214,7 @@ namespace Chroma
       int d = std::abs(dir) - 1;    // space lattice direction, 0: x, 1: y, 2: z
       int len = (dir > 0 ? 1 : -1); // displacement unit direction
 
-      Tensor<N, COMPLEX> r = v.like_this("cnSsxyzXt");
+      Tensor<N, COMPLEX> r = v.like_this("cnSs%xyzXt", '%');
       if (!deriv)
       {
 	assert(d < u.size());
@@ -2156,7 +2222,7 @@ namespace Chroma
 	if (conjUnderAdd)
 	  len *= -1;
 
-	v = v.reorder("cnSsxyzXt");
+	v = v.reorder("cnSs%xyzXt", '%');
 	if (len > 0)
 	{
 	  // Do u[d] * shift(x,d)
@@ -2287,12 +2353,14 @@ namespace Chroma
 			   std::to_string(disps.disp_index));
 	  // Contract the spatial components and the color of the leftconj and right tensors
 	  Tensor<Nout, COMPLEX> aux =
-	    r.template like_this<Nout, COMPLEX>("mNQqnSst", {{'S', Ns}, {'Q', Ns}});
-	  aux.contract(leftconj, {}, Conjugate, right.reorder("cxyzXnSst"), {}, NotConjugate, {});
+	    r.template like_this<Nout, COMPLEX>("mNQqnSst%", '%', "gd", {{'S', Ns}, {'Q', Ns}});
+	  aux.contract(leftconj, {}, Conjugate, right.reorder("cxyzXnSst%", '%'), {}, NotConjugate,
+		       {});
 
 	  // Contract the spin components S and Q with the gammas, and put the result on r[d=disp_indices.size()]
 	  aux = aux.reorder("QSmNqnst");
-	  Tensor<Nout - 1, COMPLEX> aux0 = r.template like_this<Nout - 1, COMPLEX>("gmNqnst");
+	  Tensor<Nout - 1, COMPLEX> aux0 =
+	    r.template like_this<Nout - 1, COMPLEX>("gmNqnst%", '%', "d");
 	  aux0.contract(gammas, {}, NotConjugate, aux, {}, NotConjugate);
 	  aux0.copyTo(r.kvslice_from_size({{'d', disp_indices.size()}}, {{'d', 1}}));
 
@@ -2377,14 +2445,18 @@ namespace Chroma
 	throw std::runtime_error("Invalid range of momenta");
 
       // Allocate output tensor
-      Tensor<Nout, COMPLEX> r(order_out, kvcoors<Nout>(order_out, {{'t', Nt},
-								   {'n', right.kvdim()['n']},
-								   {'s', right.kvdim()['s']},
-								   {'N', leftconj.kvdim()['N']},
-								   {'q', leftconj.kvdim()['q']},
-								   {'m', numMom},
-								   {'g', gammas.size()},
-								   {'d', disps.size()}}));
+      std::map<char, int> r_size = {{'t', Nt},
+				    {'n', right.kvdim()['n']},
+				    {'s', right.kvdim()['s']},
+				    {'N', leftconj.kvdim()['N']},
+				    {'q', leftconj.kvdim()['q']},
+				    {'m', numMom},
+				    {'g', gammas.size()},
+				    {'d', disps.size()}};
+      for (char c : detail::remove_dimensions(order_out, "gmNndsqt"))
+	r_size[c] = leftconj.kvdim()[c];
+      Tensor<Nout, COMPLEX> r(order_out, kvcoors<Nout>(order_out, r_size));
+
       // Create mom_list
       std::vector<Coor<Nd - 1>> mom_list(numMom);
       for (unsigned int mom = 0; mom < numMom; ++mom)
@@ -2405,7 +2477,7 @@ namespace Chroma
 
       // Iterate over time-slices
       std::vector<int> disp_indices;
-      leftconj = leftconj.reorder("QNqcxyzXt");
+      leftconj = leftconj.reorder("QNqc%xyzXt", '%');
 
       for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
@@ -2429,14 +2501,14 @@ namespace Chroma
 
 	// Apply momenta conjugated to the left tensor and rename the spin components s and Q to q and Q,
 	// and the colorvector component n to N
-	Tensor<Nleft + 1, COMPLEX> moms_left =
-	  leftconj.template like_this<Nleft + 1>("mQNqcxyzXt", {{'m', numMom}, {'t', tsize}});
+	Tensor<Nleft + 1, COMPLEX> moms_left = leftconj.template like_this<Nleft + 1>(
+	  "mQNqc%xyzXt", '%', "", {{'m', numMom}, {'t', tsize}});
 	moms_left.contract(std::move(momst), {}, Conjugate,
 			   leftconj.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}), {},
 			   NotConjugate);
 	if (tfrom + tsize >= Nt)
 	  leftconj.release();
-	moms_left = moms_left.reorder("cxyzXmNQqt");
+	moms_left = moms_left.reorder("cxyzXmNQqt%", '%');
 
 	// Make a copy of the time-slicing of u[d] also supporting left and right
 	std::vector<Tensor<Nd + 3, Complex>> ut(Nd);
