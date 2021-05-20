@@ -1312,6 +1312,9 @@ namespace Chroma
 	      store_db_th = std::thread([=, &qdp_db, &qdp4_db, &gammas, &disps, &phases]() {
 		double t0 = -SB::w_time();
 
+		// Avoid race conditions between this thread and the main thread
+		SB::AuxiliarySession aux_seasson;
+
 		if (!params.param.contract.use_genprop4_format)
 		{
 		  // Store

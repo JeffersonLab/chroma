@@ -30,6 +30,8 @@
 #  include <iomanip>
 #  include <map>
 #  include <memory>
+#  include <mutex>
+#  include <thread>
 #  include <set>
 #  include <sstream>
 #  include <stdexcept>
@@ -672,6 +674,39 @@ namespace Chroma
 	}
       };
 
+      using Sessions = std::unordered_map<std::thread::id, superbblas::Session>;
+
+      inline Sessions& getSessions()
+      {
+	static Sessions sessions(16);
+	return sessions;
+      }
+
+      inline std::mutex& getSessionsMutex()
+      {
+	static std::mutex m;
+	return m;
+      }
+
+      inline superbblas::Session getSession()
+      {
+	std::lock_guard<std::mutex> g(getSessionsMutex());
+	auto it = getSessions().find(std::this_thread::get_id());
+	return (it != getSessions().end() ? it->second : 0);
+      }
+
+      inline void setSession(superbblas::Session session)
+      {
+	std::lock_guard<std::mutex> g(getSessionsMutex());
+	getSessions()[std::this_thread::get_id()] = session;
+      }
+
+      inline void finishSession()
+      {
+	std::lock_guard<std::mutex> g(getSessionsMutex());
+	getSessions().erase(std::this_thread::get_id());
+      }
+
       template <typename T>
       struct WordType {
 	using type = T;
@@ -844,6 +879,23 @@ namespace Chroma
 	return (T)a / (T)b;
       }
     }
+
+    /// RAII class for setting a secondary session for doing works in the background.
+    /// NOTE: only one thread should be using the secondary session at the same time
+
+    class AuxiliarySession
+    {
+    public:
+      AuxiliarySession()
+      {
+	detail::setSession(1);
+      }
+
+      ~AuxiliarySession()
+      {
+	detail::finishSession();
+      }
+    };
 
     template <std::size_t N, typename T>
     struct Tensor {
@@ -1380,7 +1432,7 @@ namespace Chroma
 	  superbblas::copy<N, Nw>(detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1,
 				  order.c_str(), from, size, (const T**)&ptr, &*ctx, w.p->p.data(),
 				  1, w.order.c_str(), w.from, &w_ptr, &*w.ctx, comm,
-				  superbblas::FastToSlow, superbblas::Copy);
+				  superbblas::FastToSlow, superbblas::Copy, detail::getSession());
 	}
       }
 
@@ -1400,7 +1452,8 @@ namespace Chroma
 	Tw* w_ptr = w.data.get();
 	superbblas::copy<N, Nw>(scalar, p->p.data(), 1, order.c_str(), from, size, (const T**)&ptr,
 				&*ctx, w.p->p.data(), 1, w.order.c_str(), w.from, &w_ptr, &*w.ctx,
-				MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Add);
+				MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Add,
+				detail::getSession());
       }
 
       // Contract the dimensions with the same label in `v` and `w` than do not appear on `this` tensor.
@@ -1440,7 +1493,7 @@ namespace Chroma
 	  v.scalar * w.scalar / scalar, v.p->p.data(), 1, orderv_.c_str(), conjv == Conjugate,
 	  (const T**)&v_ptr, &*v.ctx, w.p->p.data(), 1, orderw_.c_str(), conjw == Conjugate,
 	  (const T**)&w_ptr, &*w.ctx, beta, p->p.data(), 1, order_.c_str(), &ptr, &*ctx,
-	  MPI_COMM_WORLD, superbblas::FastToSlow);
+	  MPI_COMM_WORLD, superbblas::FastToSlow, detail::getSession());
       }
 
       Tensor<N, T> scale(T s) const
