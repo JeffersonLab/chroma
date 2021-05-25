@@ -909,6 +909,20 @@ namespace Chroma
 	num_vecs = std::max(num_vecs, it.num_vecs);
 
       //
+      // Store what tslices the user suggest to cache
+      //
+      std::vector<bool> cache_tslice(Lt);
+      for (const auto &it : params.param.prop_sources)
+      {
+	// Check t_source
+	if (it.t_source < 0)
+	  throw std::runtime_error("Invalid source on PropSources");
+
+	if (it.cacheP)
+	  cache_tslice[it.t_source % Lt] = true;
+      }
+
+      //
       // Stores the range of time-slices used for each sink/source
       //
 
@@ -923,6 +937,8 @@ namespace Chroma
 	  ss.Nt_backward = -tdisp;
 	  ss.Nt_forward = tdisp + params.param.contract.alt_Nt_forward;
 	  params.param.sink_source_pairs.push_back(ss);
+	  // Cache all sink and sources given in this way
+	  cache_tslice[it.first % Lt] = cache_tslice[snk % Lt] = true;
 	}
       }
 
@@ -959,20 +975,6 @@ namespace Chroma
       {
 	edges_on_tslice[it.t_source % Lt]++;
 	edges_on_tslice[it.t_sink % Lt]++;
-      }
-
-      //
-      // Store what tslices the user suggest to cache
-      //
-      std::vector<bool> cache_tslice(Lt);
-      for (const auto &it : params.param.prop_sources)
-      {
-	// Check t_source
-	if (it.t_source < 0)
-	  throw std::runtime_error("Invalid source on PropSources");
-
-	if (it.cacheP)
-	  cache_tslice[it.t_source % Lt] = true;
       }
 
       //
