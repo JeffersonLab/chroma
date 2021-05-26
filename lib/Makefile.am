@@ -1062,6 +1062,10 @@ if BUILD_SB
 AM_CXXFLAGS += @SB_CXXFLAGS@
 endif
 
+if BUILD_MUGIQ
+AM_CXXFLAGS += @MUGIQ_CXXFLAGS@
+endif
+
 
 lib_LIBRARIES = libchroma.a
 
@@ -1427,6 +1431,7 @@ nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_wilso
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h \
+	actions/ferm/invert/quda_solvers/projector_clover_quda_multigrid_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
@@ -1463,6 +1468,10 @@ libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc \
 	meas/inline/io/inline_erase_quda_multigrid_space.cc \
 	update/molecdyn/predictor/quda_predictor.cc
+if BUILD_MUGIQ
+libchroma_a_SOURCES    +=  \
+	actions/ferm/invert/quda_solvers/projector_clover_quda_multigrid_w.cc
+endif
 endif
 
 if BUILD_QPHIX

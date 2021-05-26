@@ -9,8 +9,21 @@ using namespace QDP;
 
 namespace Chroma {
 
-  SysSolverQUDAMULTIGRIDCloverParams::SysSolverQUDAMULTIGRIDCloverParams(XMLReader& xml, 
-						       const std::string& path)
+  template <typename T>
+  void read(XMLReader& xml, const std::string& path, T& result, T default_value)
+  {
+    if (xml.count(path) > 0)
+    {
+      read(xml, path, result);
+    }
+    else
+    {
+      result = default_value;
+    }
+  }
+
+  SysSolverQUDAMULTIGRIDCloverParams::SysSolverQUDAMULTIGRIDCloverParams(XMLReader& xml,
+									 const std::string& path)
   {
     XMLReader paramtop(xml, path);
 
@@ -20,140 +33,62 @@ namespace Chroma {
     read(paramtop, "AntiPeriodicT", AntiPeriodicT);
 
     read(paramtop, "Delta", Delta);
-  
 
     read(paramtop, "SolverType", solverType);
 
-    if ( paramtop.count("Verbose") > 0 ) { 
-      read(paramtop, "Verbose", verboseP);
-    }
-    else { 
-      verboseP = false;
-    }
-    if ( paramtop.count("AsymmetricLinop") > 0 ) { 
-      read(paramtop, "AsymmetricLinop", asymmetricP);
-    }
-    else { 
-      asymmetricP = false; // Symmetric is default 
-    }
-
-    if( paramtop.count("CudaPrecision") > 0 ) {
-      read(paramtop, "CudaPrecision", cudaPrecision);
-    }
-    else { 
-      cudaPrecision = DEFAULT;
-    }
-
-    if( paramtop.count("CudaSloppyPrecision") > 0 ) {
-      read(paramtop, "CudaSloppyPrecision", cudaSloppyPrecision);
-    }
-    else { 
-      cudaSloppyPrecision = DEFAULT;
-    }
-
-    if( paramtop.count("CudaReconstruct") > 0 ) {
-      read(paramtop, "CudaReconstruct", cudaReconstruct);
-    }
-    else { 
-      cudaReconstruct = RECONS_12;
-    }
-
-    if( paramtop.count("CudaSloppyReconstruct") > 0 ) {
-      read(paramtop, "CudaSloppyReconstruct", cudaSloppyReconstruct);
-    }
-    else { 
-      cudaSloppyReconstruct = RECONS_12;
-    }
-
-    if( paramtop.count("AxialGaugeFix") > 0 ) {
-      read(paramtop, "AxialGaugeFix", axialGaugeP);
-    }
-    else { 
-      axialGaugeP = false;
-    }
-
-    if( paramtop.count("SilentFail") > 0) {
-      read(paramtop, "SilentFail", SilentFailP);
-    }
-    else { 
-      SilentFailP = false;
-    }
-
-    if( paramtop.count("RsdToleranceFactor") > 0 ) { 
-       read(paramtop, "RsdToleranceFactor", RsdToleranceFactor);
-    }
-    else { 
-       RsdToleranceFactor = Real(10); // Tolerate an order of magnitude difference by default.
-    }
-
-    if( paramtop.count("AutotuneDslash") > 0 ) { 
-      read(paramtop, "AutotuneDslash", tuneDslashP);
-    }
-    else { 
-      tuneDslashP = false;
-    }
-    QDPIO::cout << "tuneDslasP = " << tuneDslashP << std::endl;
+    read(paramtop, "Verbose", verboseP, false);
+    read(paramtop, "AsymmetricLinop", asymmetricP, false);
+    read(paramtop, "CudaPrecision", cudaPrecision, DEFAULT);
+    read(paramtop, "CudaSloppyPrecision", cudaSloppyPrecision, DEFAULT);
+    read(paramtop, "CudaReconstruct", cudaReconstruct, RECONS_12);
+    read(paramtop, "CudaSloppyReconstruct", cudaSloppyReconstruct, RECONS_12);
+    read(paramtop, "AxialGaugeFix", axialGaugeP, false);
+    read(paramtop, "SilentFail", SilentFailP, false);
+    read(paramtop, "RsdToleranceFactor", RsdToleranceFactor, Real(10));
+    read(paramtop, "AutotuneDslash", tuneDslashP, false);
 
     read(paramtop, "SubspaceID", SaveSubspaceID);
 
-    if( paramtop.count("ThresholdCount") == 1 ) {
-    	read(paramtop, "ThresholdCount", ThresholdCount);
-    }
-    else {
-    	ThresholdCount = 2*MaxIter + 1;
-    }
+    read(paramtop, "ThresholdCount", ThresholdCount, 2 * MaxIter + 1);
 
-    if( paramtop.count("Pipeline") > 0 ) {
-      read(paramtop, "Pipeline", Pipeline);
-    }
-    else {
-      Pipeline=1;
-    }
+    read(paramtop, "Pipeline", Pipeline, 1);
 
-    if( paramtop.count("MULTIGRIDParams") > 0 ) {
+    if (paramtop.count("MULTIGRIDParams") > 0)
+    {
       MULTIGRIDParams = new MULTIGRIDSolverParams(paramtop, "./MULTIGRIDParams");
       MULTIGRIDParamsP = true;
     }
-    else { 
+    else
+    {
       MULTIGRIDParamsP = false;
     }
 
-    if ( paramtop.count("BackupSolverParam") > 0 ) { 
+    if (paramtop.count("BackupSolverParam") > 0)
+    {
       // If user specified a backup solver, let's read it
       backup_invP = true;
       backup_inv_param = readXMLGroup(paramtop, "./BackupSolverParam", "invType");
     }
-    else { 
+    else
+    {
       // No backup
       backup_invP = false;
       backup_inv_param.xml = "";
     }
 
-    if ( paramtop.count("DumpOnFail") > 0 ) { 
-      read(paramtop, "DumpOnFail", dump_on_failP);
-    }
-    else { 
-      dump_on_failP  = false;
-    }
+    read(paramtop, "DumpOnFail", dump_on_failP, false);
 
-    if ( paramtop.count("SolutionCheckP") > 0 ) { 
-      read(paramtop, "SolutionCheckP", SolutionCheckP);
-    }
-    else {
-      SolutionCheckP = true; // default solution check is on
-    }
-
+    read(paramtop, "SolutionCheckP", SolutionCheckP, true);
   }
 
-  void read(XMLReader& xml, const std::string& path, 
-	    SysSolverQUDAMULTIGRIDCloverParams& p)
+  void read(XMLReader& xml, const std::string& path, SysSolverQUDAMULTIGRIDCloverParams& p)
   {
     SysSolverQUDAMULTIGRIDCloverParams tmp(xml, path);
     p = tmp;
   }
 
-  void write(XMLWriter& xml, const std::string& path, 
-	     const SysSolverQUDAMULTIGRIDCloverParams& p) {
+  void write(XMLWriter& xml, const std::string& path, const SysSolverQUDAMULTIGRIDCloverParams& p)
+  {
     push(xml, path);
     write(xml, "MaxIter", p.MaxIter);
     write(xml, "RsdTarget", p.RsdTarget);
@@ -194,9 +129,69 @@ namespace Chroma {
       write(xml, "BackupSolverParam", tmp_reader);
     }
     pop(xml);
-
   }
 
+  MugiqMGDeflationCloverParams::MugiqMGDeflationCloverParams(XMLReader& xml,
+							     const std::string& path)
+    : SysSolverQUDAMULTIGRIDCloverParams(xml, path)
+  {
+    XMLReader paramtop(xml, path);
 
+    read(paramtop, "EigenSolverMaxRestartSize", EigenSolverMaxRestartSize);
+    read(paramtop, "EigenSolverMaxRank", EigenSolverMaxRank);
+  }
 
+  void read(XMLReader& xml, const std::string& path, MugiqMGDeflationCloverParams& p)
+  {
+    MugiqMGDeflationCloverParams tmp(xml, path);
+    p = tmp;
+  }
+
+  void write(XMLWriter& xml, const std::string& path, const MugiqMGDeflationCloverParams& p)
+  {
+    push(xml, path);
+    write(xml, "MaxIter", p.MaxIter);
+    write(xml, "RsdTarget", p.RsdTarget);
+    write(xml, "CloverParams", p.CloverParams);
+    write(xml, "AntiPeriodicT", p.AntiPeriodicT);
+    write(xml, "Delta", p.Delta);
+    write(xml, "SolverType", p.solverType);
+    write(xml, "Verbose", p.verboseP);
+
+    write(xml, "EigenSolverMaxRestartSize", p.EigenSolverMaxRestartSize);
+    write(xml, "EigenSolverMaxRank", p.EigenSolverMaxRank);
+
+    write(xml, "AsymmetricLinop", p.asymmetricP);
+    write(xml, "CudaPrecision", p.cudaPrecision);
+    write(xml, "CudaReconstruct", p.cudaReconstruct);
+    write(xml, "CudaSloppyPrecision", p.cudaSloppyPrecision);
+    write(xml, "CudaSloppyReconstruct", p.cudaSloppyReconstruct);
+    write(xml, "AxialGaugeFix", p.axialGaugeP);
+    write(xml, "SilentFail", p.SilentFailP);
+    write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
+
+    write(xml, "AutotuneDslash", p.tuneDslashP);
+
+    //Write the MG persistence params.
+    write(xml, "SubspaceID", p.SaveSubspaceID);
+    write(xml, "ThresholdCount", p.ThresholdCount);
+    write(xml, "Pipeline", p.Pipeline);
+ 
+    if( p.MULTIGRIDParamsP ) { 
+      write(xml, "MULTIGRIDParams", *(p.MULTIGRIDParams));
+    }
+
+    write(xml, "DumpOnFail", p.dump_on_failP);
+    write(xml, "SolutionCheckP", p.SolutionCheckP);
+
+    if( p.backup_invP ) { 
+      // Need to dump out the XML for the back up solver here...
+      // Turn XML into an std::istringstream
+      std::istringstream is( p.backup_inv_param.xml);
+      XMLReader tmp_reader(is);
+      // I wonder if this method works....
+      write(xml, "BackupSolverParam", tmp_reader);
+    }
+    pop(xml);
+  }
 }

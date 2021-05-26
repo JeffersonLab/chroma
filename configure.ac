@@ -425,6 +425,15 @@ AC_ARG_WITH(superbblas,
   [ with_superbblas="no" ]
 )
 
+AC_ARG_WITH(mugiq,
+  AC_HELP_STRING(
+    [--with-mugiq=DIR],
+    [Build with MuGiq installed in DIR]
+  ),
+  [ MUGIQ_HOME="${with_mugiq}" ],
+  [ with_mugiq="no" ]
+)
+
 if test "X${QDPCVER_HOME}X" = "XX" ; then
   AC_MSG_NOTICE([QDPCVER_HOME variable not set.])
 else
@@ -1380,6 +1389,28 @@ fi
 
 AM_CONDITIONAL(BUILD_SB,
 	[test "x${with_superbblas}x" != "xnox" ])
+
+################################################################################
+# MuGiq 
+################################################################################
+
+if test "X${MUGIQ_HOME}X" != "XX";
+then
+  AC_SUBST(MUGIQ_CXXFLAGS, "-I${MUGIQ_HOME}/include" ) 
+  AC_SUBST(MUGIQ_LDFLAGS, "-L${MUGIQ_HOME}/lib" )
+  AC_SUBST(MUGIQ_LIBS,"-lmugiq")
+  AC_MSG_NOTICE([ Enabling MuGiq projectors installed in ${MUGIQ_HOME}])
+  AC_DEFINE([BUILD_MUGIQ], [], [Build MuGiq projectors])
+else
+  if test "X${with_superbblas}X" != "XnoX";
+  then
+    AC_MSG_NOTICE([ Enabling MuGiq projectors using installation given in the CXXFLAGS, LDFLAGS, and LIBS flags ])
+    AC_DEFINE([BUILD_MUGIQ], [], [Build MuGiq projectors])
+  fi
+fi
+
+AM_CONDITIONAL(BUILD_MUGIQ,
+	[test "x${with_mugiq}x" != "xnox" ])
 
 AM_CONDITIONAL(BUILD_QOP_MG,
 	[test "x${BUILD_QOP_MG}x" = "xyesx" ])

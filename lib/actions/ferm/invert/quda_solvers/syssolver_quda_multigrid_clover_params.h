@@ -33,35 +33,6 @@ namespace Chroma
       SolutionCheckP = true;
     };
 
-    SysSolverQUDAMULTIGRIDCloverParams( const SysSolverQUDAMULTIGRIDCloverParams& p) {
-      CloverParams = p.CloverParams;
-      AntiPeriodicT = p.AntiPeriodicT;
-      MaxIter = p.MaxIter;
-      RsdTarget = p.RsdTarget;
-      Delta = p.Delta;
-      solverType = p.solverType;
-      verboseP = p.verboseP;
-      asymmetricP = p.asymmetricP;
-      cudaPrecision = p.cudaPrecision;
-      cudaReconstruct = p.cudaReconstruct;
-      cudaSloppyPrecision = p.cudaSloppyPrecision;
-      cudaSloppyReconstruct = p.cudaSloppyReconstruct;
-      axialGaugeP = p.axialGaugeP;
-      SilentFailP = p.SilentFailP;
-      RsdToleranceFactor = p.RsdToleranceFactor;
-      tuneDslashP = p.tuneDslashP;
-      MULTIGRIDParamsP = p.MULTIGRIDParamsP;
-      MULTIGRIDParams = p.MULTIGRIDParams;
-      backup_invP = p.backup_invP;
-      backup_inv_param = p.backup_inv_param;
-      dump_on_failP = p.dump_on_failP;
-      SaveSubspaceID = p.SaveSubspaceID;
-      ThresholdCount = p.ThresholdCount;
-      Pipeline = p.Pipeline;
-      SolutionCheckP = p.SolutionCheckP;
-    }
-
-   
     CloverFermActParams CloverParams;
     bool AntiPeriodicT;
     int MaxIter;
@@ -102,9 +73,16 @@ namespace Chroma
 	     const SysSolverQUDAMULTIGRIDCloverParams& param);
 
 
+  struct MugiqMGDeflationCloverParams : public SysSolverQUDAMULTIGRIDCloverParams { 
+    MugiqMGDeflationCloverParams(XMLReader& xml, const std::string& path);
 
+    int EigenSolverMaxRestartSize;
+    int EigenSolverMaxRank;
+  };
+
+  void read(XMLReader& xml, const std::string& path, MugiqMGDeflationCloverParams& p);
+
+  void write(XMLWriter& xml, const std::string& path, const MugiqMGDeflationCloverParams& param);
 }
 
 #endif
-
-
