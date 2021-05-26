@@ -296,6 +296,7 @@ public:
 		// FIXME: If we ever use QUDA to compute our clover term we have to sort out anisotropy
 		// RIght now this won't do anything since we pass in the clover term
 		quda_inv_param.clover_coeff = 1.0;
+                quda_inv_param.clover_csw = 0.0;   // Use zero and QUDA will ignore it 
 		quda_inv_param.tol = toDouble(invParam.RsdTarget);
 		quda_inv_param.maxiter = invParam.MaxIter;
 		quda_inv_param.reliable_delta = toDouble(invParam.Delta);

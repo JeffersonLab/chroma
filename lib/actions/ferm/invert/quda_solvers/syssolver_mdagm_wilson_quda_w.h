@@ -262,6 +262,7 @@ namespace Chroma
       // FIXME: If QUDA ever starts to compute our clover term we will need to fix this
       // Right now it is a dummy value, since we pass in the clover term
       quda_inv_param.clover_coeff = 1.0;
+      quda_inv_param.clover_csw = 0.0;   // Use zero and QUDA will ignore it 
 
       quda_inv_param.mass_normalization = QUDA_ASYMMETRIC_MASS_NORMALIZATION;
       

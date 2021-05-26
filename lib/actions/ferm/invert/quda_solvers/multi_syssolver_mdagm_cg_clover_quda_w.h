@@ -314,6 +314,7 @@ namespace Chroma
       // and QUDA will have to deal with anisotropy. Right now this is a hack to make
       // the check_param pass. We pass in our clover term so this outghtnt matter
       quda_inv_param.clover_coeff = 1.0; // dummy vaue
+      quda_inv_param.clover_csw = 0.0;   // Use zero and QUDA will ignore it
 
       quda_inv_param.tol = toDouble(invParam.RsdTarget[0]);
       quda_inv_param.maxiter = invParam.MaxIter;

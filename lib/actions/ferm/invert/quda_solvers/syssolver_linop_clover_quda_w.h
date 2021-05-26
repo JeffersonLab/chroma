@@ -282,6 +282,7 @@ public:
 		// with awfuless of anisotropy
 		// The value below is a dummy one.
 		quda_inv_param.clover_coeff = 1.0; // Dummy tree level value. Not used
+                quda_inv_param.clover_csw = 0.0;   // Use zero and QUDA will ignore it 
 		quda_inv_param.tol = toDouble(invParam.RsdTarget);
 		quda_inv_param.maxiter = invParam.MaxIter;
 		quda_inv_param.reliable_delta = toDouble(invParam.Delta);
