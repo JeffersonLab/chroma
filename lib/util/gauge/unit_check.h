@@ -11,8 +11,8 @@ namespace Chroma
    *
    * \param  u  The multi1d<LatticeColorMatrix> to be tested
    */
-  void unitarityCheck(const multi1d<LatticeColorMatrixF3>& u);
-  void unitarityCheck(const multi1d<LatticeColorMatrixD3>& u);
+  template <typename Q>
+    void unitarityCheck(const multi1d<Q>& u);
 
 }
 

@@ -17,7 +17,8 @@ namespace Chroma
    *
    * \param  u  The LatticeColorMatrix to be tested
    */
-  void unitarityCheck(const multi1d<LatticeColorMatrixF3>& u)
+  template<typename Q>
+  void unitarityCheck(const multi1d<Q>& u)
   {
     START_CODE();
 
@@ -25,27 +26,18 @@ namespace Chroma
 
     for (int mu=0; mu < Nd; ++mu)
     {
-      LatticeColorMatrixF3 u_tmp = u[mu];
+      Q u_tmp = u[mu];
       reunit(u_tmp, numbad, REUNITARIZE_ERROR);
     }
     
     END_CODE();
   }
 
- void unitarityCheck(const multi1d<LatticeColorMatrixD3>& u)
-  {
-    START_CODE();
-
-    int numbad;
-
-    for (int mu=0; mu < Nd; ++mu)
-    {
-      LatticeColorMatrixD3 u_tmp = u[mu];
-      reunit(u_tmp, numbad, REUNITARIZE_ERROR);
-    }
-    
-    END_CODE();
-  }
+  // Instantiate template for needed types.
+  template void unitarityCheck(const multi1d<LatticeColorMatrix>& u);
+#if DEFAULT_PRECISION!=64 && QDP_NC==3
+  template void unitarityCheck(const multi1d<LatticeColorMatrixD3>& u);
+#endif
 
 }
 

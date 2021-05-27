@@ -17,16 +17,16 @@ namespace Chroma
    * \param mu         direction of Polyakov loop (Read)
    */
   template<typename Q> 
-  void polylp_t(const multi1d<Q>& u, DComplex& poly_loop, int mu)
+  void polylp(const multi1d<Q>& u, DComplex& poly_loop, int mu)
   {
     START_CODE();
         
     // Initial Polyakov loop
-    LatticeColorMatrix poly = u[mu];
+    Q poly = u[mu];
 
     for(int n = 1; n < Layout::lattSize()[mu]; ++n)  // run over all links in mu dir
     {    
-      LatticeColorMatrix tmp = shift(poly, FORWARD, mu);
+      Q tmp = shift(poly, FORWARD, mu);
       poly = u[mu] * tmp;
     }
 
@@ -34,17 +34,6 @@ namespace Chroma
     poly_loop = sum(trace(poly)) / Double(Nc*Layout::vol());
 
     END_CODE();
-  }
-
-
-  void polylp(const multi1d<LatticeColorMatrixF3>& u, DComplex& poly_loop, int mu) 
-  {
-     polylp_t( u, poly_loop, mu);
-  }
-
-  void polylp(const multi1d<LatticeColorMatrixD3>& u, DComplex& poly_loop, int mu)
-  {
-     polylp_t(u, poly_loop, mu);
   }
 
   //! Compute Polyakov loop
@@ -55,7 +44,7 @@ namespace Chroma
    * \param poly_loop  Polyakov loop average (Write) 
    */
   template<typename Q>
-  void polylp_t(const multi1d<Q>& u, multi1d<DComplex>& poly_loop)
+  void polylp(const multi1d<Q>& u, multi1d<DComplex>& poly_loop)
   {
     START_CODE();
  
@@ -68,13 +57,16 @@ namespace Chroma
   }
 
 
-  void polylp(const multi1d<LatticeColorMatrixF3>& u, multi1d<DComplex>& poly_loop)
-  { 
-      polylp_t(u,poly_loop);
-  }
+  // ***** Instantiate templates for needed types *******
 
-  void polylp(const multi1d<LatticeColorMatrixD3>& u, multi1d<DComplex>& poly_loop)
-  {
-      polylp_t(u,poly_loop);
-  }
+  template void polylp(const multi1d<LatticeColorMatrix>& u, DComplex& poly_loop, int mu);
+#if DEFAULT_PRECISION!=64 && QDP_NC==3
+  template void polylp(const multi1d<LatticeColorMatrixD3>& u, DComplex& poly_loop, int mu);
+#endif
+
+  template void polylp(const multi1d<LatticeColorMatrix>& u, multi1d<DComplex>& poly_loop);
+#if DEFAULT_PRECISION!=64 && QDP_NC==3
+  template void polylp(const multi1d<LatticeColorMatrixD3>& u, multi1d<DComplex>& poly_loop);
+#endif
+
 }  // end namespace Chroma
