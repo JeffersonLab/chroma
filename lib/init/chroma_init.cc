@@ -114,7 +114,7 @@ namespace Chroma
   //! Chroma initialisation routine
   void initialize(int* argc, char ***argv) 
   {
-#if defined QDPJIT_IS_QDPJITPTX || defined QDPJIT_IS_QDPJITNVVM
+#if defined QDP_IS_QDPJIT
     if (! QDP_isInitialized())
       QDP_initialize_CUDA(argc, argv);
 #else
@@ -212,7 +212,7 @@ namespace Chroma
     }
 
     // Good luck following the flow of the conditional compilation macros
-#if defined QDPJIT_IS_QDPJITPTX || defined QDPJIT_IS_QDPJITNVVM
+#if defined QDP_IS_QDPJIT
 #  ifdef BUILD_QUDA
     std::cout << "Setting CUDA device" << std::endl;
 #    ifndef QDP_USE_COMM_SPLIT_INIT
@@ -256,7 +256,7 @@ namespace Chroma
 #    endif
 #  endif // BUILD_CUDA
 
-#else // defined QDPJIT_IS_QDPJITPTX || defined QDPJIT_IS_QDPJITNVVM
+#else // defined QDP_IS_QDPJIT
 #  ifdef BUILD_QUDA
     std::cout << "Initializing QUDA" << std::endl;
     initQuda(-1);

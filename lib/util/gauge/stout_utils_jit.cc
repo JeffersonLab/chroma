@@ -1,11 +1,9 @@
 #include "qdp.h"
 
 #ifdef QDP_IS_QDPJIT
-#ifdef QDPJIT_IS_QDPJITNVVM
 
 using namespace QDP;
 
-//#define QDP_JIT_NVVM_USE_LEGACY_LAUNCH
 
 void function_get_fs_bs_exec(JitFunction& function, 
 			     const LatticeColorMatrix& Q,
@@ -561,5 +559,5 @@ void function_get_fs_bs_build(JitFunction& function,
 
 
 
-#endif
+
 #endif

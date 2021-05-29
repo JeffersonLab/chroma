@@ -47,41 +47,16 @@ namespace Chroma {
 }
 #elif defined(BUILD_JIT_CLOVER_TERM)
 
-#if defined(QDPJIT_IS_QDPJITPTX)
-#include "clover_term_ptx_w.h"
+#include "clover_term_jit_w.h"
 namespace Chroma {
-  using CloverTerm = PTXCloverTerm;
-  using CloverTermF = PTXCloverTermF;
-  using CloverTermD = PTXCloverTermD;
+  using CloverTerm  = JITCloverTerm;
+  using CloverTermF = JITCloverTermF;
+  using CloverTermD = JITCloverTermD;
 
   template<typename T, typename U>
-  using CloverTermT = PTXCloverTermT<T,U>;
+  using CloverTermT = JITCloverTermT<T,U>;
 
 }
-#elif defined(QDPJIT_IS_QDPJITNVVM)
-#include "clover_term_nvvm_w.h"
-namespace Chroma {
-  using CloverTerm  = NVVMCloverTerm;
-  using CloverTermF = NVVMCloverTermF;
-  using CloverTermD = NVVMCloverTermD;
-
-  template<typename T, typename U>
-  using CloverTermT = NVVMCloverTermT<T,U>;
-
-}
-#else
-#include "clover_term_llvm_w.h"
-namespace Chroma {
-  using CloverTerm  = LLVMCloverTerm;
-  using CloverTermF = LLVMCloverTermF;
-  using CloverTermD = LLVMCloverTermD;
-
-  template<typename T,typename U>
-  using CloverTermT = LLVMCloverTermT<T,U>;
-
-}
-#endif
-
 #else 
 
 // Bottom line, if no optimised Dslash-s exist then the naive QDP Dslash

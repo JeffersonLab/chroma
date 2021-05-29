@@ -7,12 +7,8 @@
 #include "chromabase.h"
 #include "util/gauge/stout_utils.h"
 
-//#if defined(BUILD_JIT_CLOVER_TERM)
-//#include "util/gauge/stout_utils_ptx.h"
-//#endif
 
 #if defined(BUILD_JIT_CLOVER_TERM)
-#ifdef QDPJIT_IS_QDPJITNVVM
 void function_get_fs_bs_exec(JitFunction& function, 
 			     const LatticeColorMatrix& Q,
 			     const LatticeColorMatrix& QQ,
@@ -26,21 +22,6 @@ void function_get_fs_bs_build(JitFunction& function,
 			      multi1d<LatticeComplex>& f,
 			      multi1d<LatticeComplex>& b1,
 			      multi1d<LatticeComplex>& b2);
-#else
-void function_get_fs_bs_exec(const JitFunction& func,
-			     const LatticeColorMatrix& Q,
-			     const LatticeColorMatrix& QQ,
-			     multi1d<LatticeComplex>& f,
-			     multi1d<LatticeComplex>& b1,
-			     multi1d<LatticeComplex>& b2,
-			     bool dobs);
-void *function_get_fs_bs_build(JitFunction& function,
-			       const LatticeColorMatrix& Q,
-			       const LatticeColorMatrix& QQ,
-			       multi1d<LatticeComplex>& f,
-			       multi1d<LatticeComplex>& b1,
-			       multi1d<LatticeComplex>& b2);
-#endif
 #endif
 
 
@@ -884,24 +865,11 @@ namespace Chroma
 #warning "Using QDP++ stouting"
       dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
 #else
-#if defined(QDPJIT_IS_QDPJITNVVM)
-      #warning "Using QDP-JIT/NVVM stouting"
+      #warning "Using QDP-JIT stouting"
       static JitFunction function;
       if (function.empty())
 	function_get_fs_bs_build( function, Q,QQ,f,b1,b2 );
       function_get_fs_bs_exec(function, Q,QQ,f,b1,b2,dobs );
-#else
-      #warning "Using QDP-JIT/LLVM stouting"
-      static JitFunction function;
-
-      if (!function.built()) {
-	QDPIO::cout << "Building JIT stouting function\n";
-	function_get_fs_bs_build( function,Q,QQ,f,b1,b2 );
-      }
-      
-      // Execute the function
-      function_get_fs_bs_exec(function, Q,QQ,f,b1,b2,dobs );
-#endif
 #endif
 
       swatch.stop();
