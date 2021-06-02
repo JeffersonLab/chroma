@@ -323,6 +323,7 @@ set(ChromaLIB_HEADERS
 	meas/hadron/barQll_w.h
     meas/hadron/heavy_hadrons_su3_w.h
 	meas/hadron/heavy_hadron_potentials_w.h
+	meas/hadron/greedy_coloring.h
 	meas/hadron/spin_insertion.h
 	meas/hadron/spin_insertion_factory.h
     meas/hadron/spin_insertion_aggregate.h
@@ -969,6 +970,7 @@ list(APPEND ChromaLIB_HEADERS
 	meas/inline/hadron/inline_prop_3pt_w.h
 	meas/inline/hadron/inline_create_colorvecs.h
 	meas/inline/hadron/inline_disco_w.h
+	meas/inline/hadron/inline_disco_prob_defl_w.h
 	meas/inline/hadron/inline_disco_eoprec_w.h
 	meas/inline/hadron/inline_disco_eigcg_w.h
 	meas/inline/hadron/inline_disco_eo_eigcg_w.h
@@ -1299,6 +1301,7 @@ target_sources(chromalib PRIVATE
 	meas/hadron/barQll_w.cc 
 	meas/hadron/heavy_hadron_potentials_w.cc
 	meas/hadron/heavy_hadrons_su3_w.cc
+	meas/hadron/greedy_coloring.cc
     meas/hadron/spin_insertion_aggregate.cc 
     meas/hadron/no_spin_insertion.cc 
 	meas/hadron/stoch_var.cc 
@@ -1732,6 +1735,7 @@ target_sources(chromalib PRIVATE
 	meas/inline/hadron/inline_prop_3pt_w.cc 
 	meas/inline/hadron/inline_create_colorvecs.cc 
 	meas/inline/hadron/inline_disco_w.cc 
+	meas/inline/hadron/inline_disco_prob_defl_w.cc
 	meas/inline/hadron/inline_disco_eoprec_w.cc 
 	meas/inline/hadron/inline_disco_eigcg_w.cc 
 	meas/inline/hadron/inline_disco_eo_eigcg_w.cc 
