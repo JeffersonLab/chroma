@@ -84,7 +84,13 @@ namespace Chroma
   {
 
     QudaEigParam eig_param = newQudaEigParam();
-    eig_param.invert_param = &quda_inv_param;
+    QudaInvertParam eig_inv_param = newQudaInvertParam();
+    eig_inv_param = quda_inv_param;
+    eig_inv_param.input_location = QUDA_CUDA_FIELD_LOCATION;
+    eig_inv_param.output_location = QUDA_CUDA_FIELD_LOCATION;
+    eig_inv_param.cuda_prec = QUDA_SINGLE_PRECISION;
+    
+    eig_param.invert_param = &eig_inv_param;
 
     eig_param.eig_type = QUDA_EIG_TR_LANCZOS;
     eig_param.spectrum = QUDA_SPECTRUM_SR_EIG;

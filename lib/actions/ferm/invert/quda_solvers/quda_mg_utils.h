@@ -233,6 +233,8 @@ namespace Chroma
 	mg_param.invert_param = &mg_inv_param;
 	mg_inv_param.Ls = 1;
 	mg_param.n_level = ip.mg_levels;
+	mg_param.run_low_mode_check = QUDA_BOOLEAN_NO;
+	mg_param.run_oblique_proj_check = QUDA_BOOLEAN_NO;
 
 	if (ip.check_multigrid_setup == true)
 	{
@@ -517,7 +519,13 @@ namespace Chroma
       Handle<FermState<T, Q, Q>> state, fstate;
 
       U GFixMat;
-      static QudaGaugeParam q_gauge_param;
+
+      QudaGaugeParam& gauge_param()
+      {
+	static QudaGaugeParam params;
+	return params;
+      }
+
       QudaInvertParam quda_inv_param;
 
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
@@ -534,6 +542,7 @@ namespace Chroma
 			 const SysSolverQUDAMULTIGRIDCloverParams& invParam)
 	: state(state), invParam(invParam), subspace_pointers(nullptr)
       {
+	load();
       }
 
       void load()
@@ -602,6 +611,7 @@ namespace Chroma
 	     (lastLoadedPrec != invParam.MULTIGRIDParams->prec ||
 	      lastLoadedReconstruct != invParam.MULTIGRIDParams->reconstruct)))
 	{
+	  QudaGaugeParam& q_gauge_param = gauge_param();
 	  q_gauge_param = newQudaGaugeParam();
 	  q_gauge_param.X[0] = latdims[0];
 	  q_gauge_param.X[1] = latdims[1];
