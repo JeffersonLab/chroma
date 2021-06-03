@@ -1115,6 +1115,7 @@ target_sources(chromalib PRIVATE
     actions/ferm/invert/minvsumr.cc 
 	actions/ferm/invert/minv_rel_cg.cc 
 	actions/ferm/invert/minv_rel_sumr.cc 
+	actions/ferm/invert/minvmr.cc
 	actions/ferm/invert/reliable_bicgstab.cc 
 	actions/ferm/invert/reliable_ibicgstab.cc 
 	actions/ferm/invert/reliable_cg.cc 

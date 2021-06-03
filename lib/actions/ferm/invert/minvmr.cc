@@ -2,7 +2,6 @@
  *  \brief Multishift Minimal-residual algorithm for a Linear Operator
  */
 
-#error "THIS ROUTINE IS NOT FULLY CONVERTED"
 
 #include "linearop.h"
 #include "actions/ferm/invert/minvmr.h"
@@ -70,6 +69,7 @@ namespace Chroma
    * @{
    */
 
+#if 0
   template<typename T>
   void MInvMR_a(const LinearOperator<T>& A, 
 		const T& chi, 
@@ -250,8 +250,21 @@ namespace Chroma
     END_CODE();
     return;
   }
+#else
 
-
+  template<typename T>
+  void MInvMR_a(const LinearOperator<T>& A, 
+		const T& chi, 
+		multi1d<T>& psi,
+		const multi1d<Real>& shifts, 
+		const multi1d<Real>& RsdMR, 
+		int MaxMR,
+		int& n_count)
+  {
+	  QDPIO::cerr << "This function is not implemented" << std::endl;
+	  QDP_abort(1);
+  }
+ #endif
 
   /*! \ingroup invert */
   template<>
