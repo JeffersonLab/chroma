@@ -44,6 +44,7 @@ namespace Chroma {
 
   }
 
+  // typically: LatticeColorMatrix, LatticeComplex, LatticeReal, Subset
   template<typename Q, typename C, typename R, typename S>
   inline
   void reunit_t(Q& xa, 
@@ -66,6 +67,9 @@ namespace Chroma {
     R t4;
     R sigmasq = 0;
     multi1d<C> row(Nc);
+    LatticeInteger swapCount;
+    LatticeInteger maxRow;
+    LatticeBoolean theRow;
     
     // The initial number of matrices violating unitarity.
     numbad = 0;
@@ -299,7 +303,7 @@ namespace Chroma {
       default:
 	if ( Nc > 3 )
 	  {
-	    /* If you want to check unitarity, I have to save the third row somewhere */
+	    /* If you want to check unitarity, I have to save the last row somewhere */
 	    if ( ruflag == REUNITARIZE_ERROR  ||
 		 ruflag == REUNITARIZE_LABEL )
 	      {
@@ -328,7 +332,7 @@ namespace Chroma {
 	    for(int c = 0; c < Nc; ++c)
 	      (a[c][0])[mstag] *= t3;
 	    
-	    /* Do Gramm-Schmidt on the remaining rows */
+	    /* Apply Gram-Schmidt to the remaining rows */
 	    for(int j = 1; j < Nc; j++ )
 	      {
 		for(int i = 0; i < j; i++ )
@@ -373,16 +377,45 @@ namespace Chroma {
 		    sigmasq[mstag] += pow(1-t1,2);
 		  }
 	      }
-	    
+
 	    /* Now we have a unitary matrix. We need to multiply the last
 	       row with a phase to make the determinant 1. */
 	    /* We compute the determinant by LU decomposition */
 	    for(int j = 0; j < Nc; j++)
 	      for(int i = 0; i < Nc; i++)
 		(b[j][i])[mstag] = a[j][i];
-	    
+
+	    swapCount = 0;
 	    for(int j = 0; j < Nc; j++)
 	      {
+		// Pivot current row
+		// First find a possible row to swap
+		t1[mstag] = localNorm2(b[j][j]);
+		maxRow[mstag] = j;
+		for(int i = j+1; i < Nc; i++)
+		  {
+		    t3[mstag] = localNorm2(b[j][i]);
+		    theRow[mstag] = t1 < t3;
+		    /* This would be better done with copymask,
+		     * but it seems to be broken for sublattices */
+		    maxRow[mstag] = where(theRow, LatticeInteger(i), maxRow);
+		    t1[mstag] = where(theRow, t3, t1);
+		  }
+		swapCount[mstag] += where(maxRow != j, 1, 0);
+                // Do the swap
+		/* This method used here is pretty awkward, 
+                 * but there seems to be no way to parallelize array access. */
+		for(int i = j+1; i < Nc; i++)
+		  {
+		    theRow[mstag] = maxRow==i;
+		    for(int c = 0; c < Nc; c++)
+		      {
+			t2[mstag] = where(theRow, b[c][j], t2);
+			(b[c][j])[mstag] = where(theRow, b[c][i], b[c][j]);
+			(b[c][i])[mstag] = where(theRow, t2, b[c][i]);
+		      }
+		  }
+
 		for(int i = 0; i <= j; i++)
 		  {
 		    t2[mstag] = b[j][i];
@@ -391,7 +424,7 @@ namespace Chroma {
 		    
 		    (b[j][i])[mstag] = t2;
 		  }
-		
+
 		for(int i = (j+1); i < Nc; i++)
 		  {
 		    t2[mstag] = b[j][i];
@@ -401,19 +434,21 @@ namespace Chroma {
 		    (b[j][i])[mstag] = adj(b[j][j]) * t2 / localNorm2(b[j][j]);
 		  }
 	      }
-	    
+
 	    /* The determinant */
 	    t2[mstag] = b[0][0] * b[1][1];
 	    for(int c = 2; c < Nc; c++)
 	      t2[mstag] *= b[c][c];
-	    
-	    /* The phase of the determinant */
-	    t4[mstag] = atan2(imag(t2), real(t1));
-	    t2[mstag] = cmplx(cos(t4), -sin(t4));
+
+	    /* Apply the phase correction to the last row.
+	     * Normalize the correction, since the matrix
+	     * rows are already normalized. */
+	    t2[mstag] = adj(t2)/sqrt(localNorm2(t2));
+	    t2[mstag] *= 1-2*(swapCount%2);
 	    for(int c = 0; c < Nc; ++c)
 	      (a[c][Nc-1])[mstag] *= t2;
-	    
-            
+
+
 	    /* Now, do various things depending on the input flag. */
 	    /* For use later, finish calculating the mean squared deviation */
 	    if ( ruflag == REUNITARIZE_ERROR ||
