@@ -107,6 +107,10 @@
 /* Enable QUDA MG Dump */
 #cmakedefine QUDA_MG_DUMP_ENABLED @QUDA_MG_DUMP_ENABLED@
 
+/* QUDA Target */
+#cmakedefine CHROMA_TARGET_CUDA	@CHROMA_TARGET_CUDA@
+#cmakedefine CHROMA_TARGET_HIP @CHROMA_TARGET_HIP@
+
 /* Versioning stuff used in two files */
 #define PACKAGE_STRING  "@PROJECT_NAME@"
 #define PACKAGE_VERSION "@Chroma_VERSION@"
