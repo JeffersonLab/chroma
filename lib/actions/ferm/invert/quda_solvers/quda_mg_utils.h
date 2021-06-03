@@ -14,7 +14,9 @@
 #include "meas/inline/io/named_objmap.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.h"
 
+#if 0
 #include <cuda_runtime_api.h>
+#endif
 
 namespace Chroma {
 
@@ -448,6 +450,7 @@ namespace Chroma {
 
 		}
 
+#if 0
 		inline	
 		size_t getCUDAFreeMem(void) 
 	        {
@@ -460,7 +463,7 @@ namespace Chroma {
                    }
 	           return free;
                 }
-
+#endif
 
 	   
 	} // MG Utils

@@ -132,6 +132,11 @@ if( Chroma_ENABLE_QUDA )
   message(STATUS "Enabling QUDA")
   set(BUILD_QUDA 1)
   find_package(QUDA REQUIRED)
+  if( QUDA_TARGET_CUDA )
+    set(CHROMA_TARGET_CUDA 1)
+  elseif( QUDA_TARGET_HIP )
+    set(CHROMA_TARGET_HIP 1)
+  endif()
 endif()
 
 ###########################
