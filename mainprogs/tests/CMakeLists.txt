@@ -94,9 +94,9 @@ foreach( EXEC ${ChromaSingleExecs})
 endforeach()
 
 # The GTest ones
-add_library(GTest OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/gtest/gtest-all.cc)
+add_library(GTest ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/gtest/gtest-all.cc)
 target_include_directories(GTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../lib)
-
+set_target_properties(GTest PROPERTIES CXX_STANDARD 11 CXX_EXTENSIONS OFF)
 
 add_executable(t_symm_prec 
 	t_symm_prec.cc 
