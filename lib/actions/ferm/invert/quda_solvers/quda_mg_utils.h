@@ -210,6 +210,7 @@ namespace Chroma {
 				mg_inv_param.kappa = 0.5;
 				mg_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
 				mg_inv_param.clover_coeff = 1.0; // Dummy not used
+                                mg_inv_param.clover_csw = 0.0;   // Use zero and QUDA will ignore it 
 				mg_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
 				mg_inv_param.solution_type = QUDA_MAT_SOLUTION;
 				mg_inv_param.solve_type = QUDA_DIRECT_SOLVE;
