@@ -11,7 +11,7 @@ option(Chroma_ENABLE_SANITIZERS "Enable memory and address sanitizers" OFF)
 #koption(Chroma_ENABLE_LLVM_WILSON_DSLASH "Use LLVM Based Wilson Dslash (QDP-JIT builds only)" OFF)
 #option(Chroma_ENABLE_STATIC_PACKED_GAUGE "Use static space for packed gauges" OFF)
 #option(Chroma_ENABLE_SSED_CLOVER "Use SSE Double Prec for Clover Op" OFF)
-#option(Chroma_ENABLE_JIT_CLOVER "Use JIT-ed Clover Operator (QDP-JIT builds only" OFF)
+option(Chroma_ENABLE_JIT_CLOVER "Use JIT-ed Clover Operator (QDP-JIT builds only" OFF)
 #option(Chroma_ENABLE_QUDA_DEVICE_INTERFACE "Use Device Interfae with QUDA (QDP-JIT Builds only)" OFF)
 #option(Chroma_ENABLE_JIT_CONTRACTION_KERNELS "Enable JIT-ed Contraction kernels (QDP-JIT Builds only)" OFF)
 #option(Chroma_ENABLE_OPT_EIGCG "Enable EigCG Solver" OFF)
@@ -53,6 +53,12 @@ option(Chroma_USE_MGPROTO "Use the MGProto Multigrid solver" OFF)
 ##################
 # Configuration
 ##################
+
+if( Chroma_ENABLE_JIT_CLOVER )
+#  set( DEBUG 1 )
+  add_definitions(-DBUILD_JIT_CLOVER_TERM)
+endif()
+
 
 # SSE3 automatically sets SSE2
 if( Chroma_ENABLE_SSE3 )

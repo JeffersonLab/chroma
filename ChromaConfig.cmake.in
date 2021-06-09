@@ -28,4 +28,11 @@ if(QUDADependency)
   find_dependency(QUDA)
 endif()
 
+set(Chroma_ENABLE_JIT_CLOVER @Chroma_ENABLE_JIT_CLOVER@)
+if( Chroma_ENABLE_JIT_CLOVER )
+  set( BUILD_JIT_CLOVER_TERM 1 )
+endif()
+
+
+
 include(${CMAKE_CURRENT_LIST_DIR}/ChromaTargets.cmake)

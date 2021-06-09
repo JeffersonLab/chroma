@@ -1914,6 +1914,15 @@ if( Chroma_ENABLE_CPP_WILSON_DSLASH )
   target_link_libraries(chromalib PUBLIC CPPWilsonDslash::dslash )
 endif()
 
+#######################################################
+# JIT CLOVER/STOUTING
+#######################################################
+if( Chroma_ENABLE_JIT_CLOVER )
+  list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit_w.h)
+  target_sources(chromalib PRIVATE util/gauge/stout_utils_jit.cc)
+endif()
+
+
 ########################################################
 #  QUDA
 ########################################################
