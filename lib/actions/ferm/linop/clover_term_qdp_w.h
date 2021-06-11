@@ -11,6 +11,7 @@
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/clover_term_base_w.h"
 #include "meas/glue/mesfield.h"
+#include "actions/ferm/linop/clover_term_qdp_stabilized_helpers.h"
 #include <complex>
 namespace Chroma 
 { 
@@ -132,7 +133,7 @@ namespace Chroma
      *  \param f         field strength tensor F(mu,nu)        (Read)
      *  \param cb        checkerboard                          (Read)
      */
-    void makeClov(const multi1d<U>& f, const RealT& diag_mass);
+    void makeClov(const multi1d<U>& f, const RealT& diag_mass, const bool stabilized);
 
     //! Invert the clover term on cb
     void chlclovms(LatticeREAL& log_diag, int cb);
@@ -280,7 +281,7 @@ namespace Chroma
     /* Calculate F(mu,nu) */
     multi1d<U> f;
     mesField(f, u);
-    makeClov(f, diag_mass);
+    makeClov(f, diag_mass, param.stabilized_wilson);
     
 
     choles_done.resize(rb.numSubsets());
@@ -390,6 +391,7 @@ namespace Chroma
       const U& f3;
       const U& f4;
       const U& f5;
+      const bool stabilized;
       PrimitiveClovTriang < REALT >* tri;
     };
     
@@ -410,19 +412,32 @@ namespace Chroma
       const U& f3=a->f3;
       const U& f4=a->f4;
       const U& f5=a->f5;
+      const bool stabilized=a->stabilized;
       PrimitiveClovTriang < REALT >* tri=a->tri;
 
       // SITE LOOP STARTS HERE
       for(int site = lo; site < hi; ++site)  {
 	/*# Construct diagonal */
 	
-	for(int jj = 0; jj < 2; jj++) {
-	  
-	  for(int ii = 0; ii < 2*Nc; ii++) {
-	    
-	    tri[site].diag[jj][ii] = diag_mass.elem().elem().elem();
-	  }
-	}
+  if(stabilized == true){
+    for(int jj = 0; jj < 2; jj++) {
+      
+      for(int ii = 0; ii < 2*Nc; ii++) {
+        
+        tri[site].diag[jj][ii] = 0;
+      }
+    }
+  }
+  else{
+    for(int jj = 0; jj < 2; jj++) {
+      
+      for(int ii = 0; ii < 2*Nc; ii++) {
+        
+        tri[site].diag[jj][ii] = diag_mass.elem().elem().elem();
+      }
+    }
+  }
+
 	
        
 
@@ -516,6 +531,24 @@ namespace Chroma
 	    tri[site].offd[1][elem_ij] = E_minus + B_minus;
 	  }
 	}
+
+
+  // Apply exponential
+  if(stabilized == true){
+   exponentiate(tri[site], 0);
+   // fix constants here 
+   for(int jj = 0; jj < 2; jj++) {
+     for(int ii = 0; ii < 6; ii++) {
+       tri[site].diag[jj][ii] *= diag_mass.elem().elem().elem();
+     }
+   }
+   for(int jj = 0; jj < 2; jj++) {
+     for(int ii = 0; ii < 15; ii++) {
+       tri[site].offd[jj][ii] *= diag_mass.elem().elem().elem();
+     }
+   }
+  }
+
       } /* End Site loop */
 #endif
     } /* Function */
@@ -523,7 +556,7 @@ namespace Chroma
   
   /* This now just sets up and dispatches... */
   template<typename T, typename U>
-  void QDPCloverTermT<T,U>::makeClov(const multi1d<U>& f, const RealT& diag_mass)
+  void QDPCloverTermT<T,U>::makeClov(const multi1d<U>& f, const RealT& diag_mass, const bool stabilized)
   {
     START_CODE();
     
@@ -544,8 +577,17 @@ namespace Chroma
     U f4 = f[4] * getCloverCoeff(1,3);
     U f5 = f[5] * getCloverCoeff(2,3);    
 
+    if (stabilized == true){
+      f0 /= diag_mass;
+      f1 /= diag_mass;
+      f2 /= diag_mass;
+      f3 /= diag_mass;
+      f4 /= diag_mass;
+      f5 /= diag_mass;    
+    }
+
     const int nodeSites = QDP::Layout::sitesOnNode();
-    QDPCloverEnv::QDPCloverMakeClovArg<U> arg = {diag_mass, f0,f1,f2,f3,f4,f5,tri };
+    QDPCloverEnv::QDPCloverMakeClovArg<U> arg = {diag_mass, f0,f1,f2,f3,f4,f5,stabilized,tri };
     dispatch_to_threads(nodeSites, arg, QDPCloverEnv::makeClovSiteLoop<U>);
               
 
