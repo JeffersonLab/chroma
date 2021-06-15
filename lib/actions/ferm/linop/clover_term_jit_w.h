@@ -1830,8 +1830,7 @@ namespace Chroma
 
 
 
-
-
+#ifndef  BUILD_QUDA_DEVIFACE_CLOVER
   namespace QDPCloverEnv {
     template<typename R,typename TD,typename TO> 
     struct QUDAPackArgs { 
@@ -1912,17 +1911,14 @@ namespace Chroma
       PackForQUDATimer::Instance().get() += watch.getTimeInMicroseconds();
     }
 
-
+#endif
 
   template<typename T, typename U>
   void JITCloverTermT<T,U>::applySite(T& chi, const T& psi, 
 				      enum PlusMinus isign, int site) const
   {
     QDP_error_exit("JITCloverTermT<T,U>::applySite(T& chi, const T& psi,..) not implemented ");
-#if 0
-#endif
   }
-
 
   typedef JITCloverTermT<LatticeFermion, LatticeColorMatrix> JITCloverTerm;
   typedef JITCloverTermT<LatticeFermionF, LatticeColorMatrixF> JITCloverTermF;

@@ -55,8 +55,7 @@ option(Chroma_USE_MGPROTO "Use the MGProto Multigrid solver" OFF)
 ##################
 
 if( Chroma_ENABLE_JIT_CLOVER )
-#  set( DEBUG 1 )
-  add_definitions(-DBUILD_JIT_CLOVER_TERM)
+ set(BUILD_JIT_CLOVER_TERM 1)
 endif()
 
 
@@ -143,6 +142,12 @@ if( Chroma_ENABLE_QUDA )
   elseif( QUDA_TARGET_HIP )
     set(CHROMA_TARGET_HIP 1)
   endif()
+  if (QDP_IS_QDPJIT)
+     message(STATUS "QDP is QDPJIT so enabling QDPJIT Interfaces")
+     set(BUILD_QUDA_DEVIFACE_CLOVER 1)
+     set(BUILD_QUDA_DEVIFACE_GAUGE 1)
+     set(BUILD_QUDA_DEVIFACE_SPINOR 1)
+  endif()
 endif()
 
 ###########################
@@ -207,11 +212,11 @@ configure_package_config_file(ChromaConfig.cmake.in ChromaConfig.cmake
                               INSTALL_DESTINATION lib/cmake/Chroma)
 
 write_basic_package_version_file(
-    ChromaVersion.cmake
+	ChromaConfigVersion.cmake
     VERSION ${PACKAGE_VERSION}
     COMPATIBILITY AnyNewerVersion
     )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ChromaVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ChromaConfigVersion.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/ChromaConfig.cmake
               DESTINATION lib/cmake/Chroma)
