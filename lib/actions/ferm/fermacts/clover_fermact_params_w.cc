@@ -20,7 +20,7 @@ namespace Chroma
     max_norm_usedP=false;
     twisted_m_usedP = false;
     twisted_m = Real(0);
-
+    stabilized_wilson = false;
   }
 
   //! Read parameters
@@ -96,6 +96,14 @@ namespace Chroma
       twisted_m_usedP = false;
     }
 
+    if( paramtop.count("Stabilized") != 0 ) { 
+      stabilized_wilson = true;
+      read(paramtop, "Stabilized", stabilized_wilson);
+    }
+    else {				       
+      stabilized_wilson = false;
+    }
+
   }
 
   //! Read parameters
@@ -131,6 +139,10 @@ namespace Chroma
 
     if (param.twisted_m_usedP == true ) { 
       write(xml, "TwistedM", param.twisted_m);
+    }
+
+    if (param.stabilized_wilson == true ) { 
+      write(xml, "Stabilized", param.stabilized_wilson);
     }
 
     pop(xml);
