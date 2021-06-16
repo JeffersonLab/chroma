@@ -259,7 +259,11 @@ namespace Chroma
 #else // defined QDP_IS_QDPJIT
 #  ifdef BUILD_QUDA
     std::cout << "Initializing QUDA" << std::endl;
+#  ifdef ARCH_PARSCALAR
     initQuda(-1);
+#  else 
+    initQuda(0);
+#  endif
 #  endif
 #endif
 
