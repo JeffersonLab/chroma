@@ -1997,6 +1997,8 @@ foreach( file ${ChromaLIB_HEADERS})
 endforeach()
 
 
+set_target_properties( chromalib PROPERTIES CXX_STANDARD 20 )
+
  
 ##############################################
 # Install the library and the targets
