@@ -152,10 +152,11 @@ namespace Chroma
 						enum PlusMinus isign,
 						int z, int cb) const
   {
+#ifndef QDP_IS_QDPJIT
     LatticeFermion tmp;
     GammaConst<4,8> g4; // gamma_4
     GammaConst<4,4> g3; // gamma_3
-
+    
     for(int tt=0; tt < QDP::Layout::subgridLattSize()[3]; ++tt)
     {
       int t = tt + QDP::Layout::nodeCoord()[3]*QDP::Layout::subgridLattSize()[3];
@@ -191,6 +192,9 @@ namespace Chroma
 	}
       }
     }
+#else
+    QDPIO::cout << __func__ << " not implemented for QDP-JIT" << std::endl;
+#endif
   }
 
 
