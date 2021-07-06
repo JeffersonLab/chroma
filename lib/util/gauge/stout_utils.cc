@@ -862,8 +862,14 @@ namespace Chroma
 
 
 #if !defined(BUILD_JIT_CLOVER_TERM)
+
+#ifdef QDP_IS_QDPJIT
+#warning "Stouting disabled, as building with QDP-JIT but the JIT Clover term is disabled."
+#else
 #warning "Using QDP++ stouting"
       dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
+#endif
+      
 #else
       #warning "Using QDP-JIT stouting"
       static JitFunction function;
