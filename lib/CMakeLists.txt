@@ -233,6 +233,7 @@ set(ChromaLIB_HEADERS
 	actions/gauge/gaugestates/simple_gaugestate.h
 	actions/gauge/gaugestates/stout_gaugestate.h
 	init/chroma_init.h
+	init/local_rank.h
 	io/io.h
 	io/xmllog_io.h
 	io/enum_io/enum_io.h
@@ -1226,6 +1227,7 @@ target_sources(chromalib PRIVATE
 	actions/gauge/gaugestates/simple_gaugestate.cc 
 	actions/gauge/gaugestates/stout_gaugestate.cc 
 	init/chroma_init.cc 
+	init/local_rank.cc
 	io/eigen_io.cc 
 	io/monomial_io.cc 
     io/enum_io/enum_cfgtype_io.cc 
