@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
-project(Chroma VERSION 3.44.1 LANGUAGES CXX C Fortran)
+project(Chroma VERSION 3.44.1 LANGUAGES CXX C)
 include(FindOpenMP)
 
 option(Chroma_ENABLE_CPP_WILSON_DSLASH "Use CPP Dslash for efficiecy" OFF)
