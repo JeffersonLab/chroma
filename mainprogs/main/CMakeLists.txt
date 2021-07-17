@@ -30,7 +30,11 @@ set( ChromaMain_EXECUTABLES
 #
 foreach( EXEC ${ChromaMain_EXECUTABLES})
   add_executable( ${EXEC} ${EXEC}.cc )
-  set_target_properties( ${EXEC} PROPERTIES CXX_STANDARD 20 )
+
+  if (QDP_IS_QDPJIT)
+    set_target_properties( ${EXEC} PROPERTIES CXX_STANDARD 20 )
+  endif()
+  
   target_link_libraries( ${EXEC} PUBLIC Chroma::chromalib )
 endforeach()
 

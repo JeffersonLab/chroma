@@ -1998,9 +1998,9 @@ foreach( file ${ChromaLIB_HEADERS})
   install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/${file} DESTINATION include/${basedir} )
 endforeach()
 
-
-set_target_properties( chromalib PROPERTIES CXX_STANDARD 20 )
-
+if (QDP_IS_QDPJIT)
+  set_target_properties( chromalib PROPERTIES CXX_STANDARD 20 )
+endif()
  
 ##############################################
 # Install the library and the targets
