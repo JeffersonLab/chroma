@@ -1,11 +1,11 @@
 #include <chromabase.h>
-#ifdef ARCH_PARSCALAR 
+#if defined(ARCH_PARSCALAR) && defined(MPI_VERSION)
 #include <mpi.h>
 #endif
 
-namespace Chroma { 
+namespace Chroma {
 
-#ifdef ARCH_PARSCALAR
+#if defined(ARCH_PARSCALAR) && defined(MPI_VERSION)
   int localRankCommSplit()
   {
     char hostname[256];
