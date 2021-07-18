@@ -89,6 +89,11 @@ endif()
 # Single source guys
 foreach( EXEC ${ChromaSingleExecs})
   add_executable( ${EXEC} ${EXEC}.cc )
+
+  if (QDP_IS_QDPJIT)
+    set_target_properties( ${EXEC} PROPERTIES CXX_STANDARD 14 )
+  endif()
+
   target_link_libraries( ${EXEC} Chroma::chromalib )
   target_include_directories( ${EXEC} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endforeach()
@@ -104,6 +109,11 @@ add_executable(t_symm_prec
 	symm_prec_xml.h 
 	symm_prec_tests.cc
 )
+
+if (QDP_IS_QDPJIT)
+  set_target_properties( t_symm_prec PROPERTIES CXX_STANDARD 14 )
+endif()
+
 target_link_libraries( t_symm_prec PRIVATE Chroma::chromalib GTest)
 target_include_directories(t_symm_prec PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 

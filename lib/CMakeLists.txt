@@ -1999,6 +1999,10 @@ foreach( file ${ChromaLIB_HEADERS})
 endforeach()
 
 
+if (QDP_IS_QDPJIT)
+  set_target_properties( chromalib PROPERTIES CXX_STANDARD 14 )
+endif()
+
  
 ##############################################
 # Install the library and the targets
