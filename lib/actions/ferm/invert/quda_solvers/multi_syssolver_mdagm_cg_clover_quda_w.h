@@ -485,7 +485,6 @@ namespace Chroma
 
       loadCloverQuda( (void*)(clover) , (void*)(cloverInv) ,&quda_inv_param);
 #endif
-      printQudaInvertParam(&quda_inv_param);
     }
 
       //! Destructor is automatic

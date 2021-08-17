@@ -17,18 +17,19 @@ set(ChromaSingleExecs
 	t_io t_mesons_w
 	t_conslinop
 	t_hypsmear
-    t_ape_smear
-    t_dwf4d 
-    t_propagator_s 
-    t_disc_loop_s
-    t_ritz
-    t_dwflocality
-    t_precact_4d
-    t_precact_5d
-    t_gauge_force
-    t_stout_state
-    t_aniso_gaugeact
-    t_temp_prec 
+  t_ape_smear
+  t_dwf4d 
+  t_propagator_s 
+  t_disc_loop_s
+  t_ritz
+  t_dwflocality
+  t_precact_4d
+  t_precact_5d
+  t_gauge_force
+  t_stout_state
+  t_aniso_gaugeact
+  t_temp_prec
+  t_multishift_quda # Not really QUDA Specific. Can call syssolvers
 )
 
 if( GMP_FOUND )
@@ -131,10 +132,4 @@ endif()
 
 target_link_libraries( t_inv_fgmres_dr PRIVATE Chroma::chromalib GTest)
 target_include_directories(t_inv_fgmres_dr PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-endif()
-
-if( Chroma_ENABLE_QUDA )
-  add_executable(t_multishift_quda t_multishift_quda.cc)
-  target_link_libraries( t_multishift_quda PRIVATE Chroma::chromalib GTest)
-  target_include_directories(t_multishift_quda PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 endif()

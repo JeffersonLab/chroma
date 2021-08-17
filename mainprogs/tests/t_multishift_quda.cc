@@ -25,6 +25,7 @@ struct InputParam {
   GroupXML_t fermact;
   GroupXML_t inv_param;
   multi1d<Real> shifts;
+  int iters;
   QDP::Seed rng_seed;
 };
 
@@ -36,6 +37,16 @@ void read(XMLReader& xml, const std::string& path, InputParam& p)
   p.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
   p.inv_param = readXMLGroup(paramtop, "InvertParam", "invType");
   read(paramtop, "shifts", p.shifts);
+  if( paramtop.count("iters") == 0 ) { 
+    p.iters = 5;
+  }
+  else { 
+    read(paramtop, "iters", p.iters);
+  }
+  if (paramtop.count("RNG") > 0)
+    read(paramtop, "RNG", p.rng_seed);
+  else
+    p.rng_seed = 11;     // default seed
 }
 
 
@@ -67,7 +78,6 @@ int main(int argc, char *argv[])
   Handle<FermState<T,P,Q> > state; 
   InputParam p;
   Handle<LinOpAsymm_T> M_asymm;
-  Handle<MdagMMultiSystemSolver<T>> solver;
 
   Chroma::initialize(&argc, &argv);
   QDPIO::cout << "Linkage = " << linkageHack() << std::endl;
@@ -142,50 +152,53 @@ int main(int argc, char *argv[])
   QDPIO::cout << "Creating State" << std::endl;
   state = S_asymm->createState(u);
   M_asymm =dynamic_cast<LinOpAsymm_T *>(S_asymm->linOp(state));
-  solver = dynamic_cast<MdagMMultiSystemSolver<T>*>(S_asymm->mInvMdagM(state,p.inv_param));
 
 
   // Do tests here
 
   T rhs= zero;
   gaussian(rhs,rb[1]);
-
-  // Zero the initial guesses
-  auto n_shift = p.shifts.size();
-  multi1d<T> solns(n_shift);
-  for(int shift=0; shift < n_shift; ++shift) {
-    solns[shift] = zero; // Zero all lattice
-    //(solns[shift])[rb[1]]=zero;
-  }
-
-  (*solver)(solns,p.shifts,rhs);
-
   int success = 0;
-  for(int shift = 0; shift < n_shift; ++shift) {
-    T r;
-    r[rb[1]] = zero;
-    T tmp;
-    tmp[rb[1]] = zero;
 
-    (*M_asymm)(tmp,solns[shift],PLUS);
-    (*M_asymm)(r, tmp, MINUS);
+  for(int i=0 ; i < p.iters; i++) {
+    QDPIO::cout << "Doing test " << i+1 << " of " << p.iters << std::endl;
+    // Zero the initial guesses
+    Handle<MdagMMultiSystemSolver<T>> solver = dynamic_cast<MdagMMultiSystemSolver<T>*>(S_asymm->mInvMdagM(state,p.inv_param));
 
-    r[rb[1]] += p.shifts[shift]*solns[shift];
-
-    // -residudum
-    r[rb[1]] -= rhs;
-
-    Double resid_rel = sqrt(norm2(r,rb[1])/norm2(rhs,rb[1]));
-    QDPIO::cout << "shift="<<shift << " || r || / || b ||=" << resid_rel << "   ";
-    if ( toDouble(resid_rel) >= 1.0e-8 ) { 
-      QDPIO::cout << "FAILED " << std::endl;
-      success--; 
+    auto n_shift = p.shifts.size();
+    multi1d<T> solns(n_shift);
+    for(int shift=0; shift < n_shift; ++shift) {
+      solns[shift] = zero; // Zero all lattice
+      //(solns[shift])[rb[1]]=zero;
     }
-    else { 
-      QDPIO::cout << "PASSED " << std::endl;
+
+    (*solver)(solns,p.shifts,rhs);
+
+    for(int shift = 0; shift < n_shift; ++shift) {
+      T r;
+      r[rb[1]] = zero;
+      T tmp;
+      tmp[rb[1]] = zero;
+
+      (*M_asymm)(tmp,solns[shift],PLUS);
+      (*M_asymm)(r, tmp, MINUS);
+
+      r[rb[1]] += p.shifts[shift]*solns[shift];
+
+      // -residudum
+      r[rb[1]] -= rhs;
+
+      Double resid_rel = sqrt(norm2(r,rb[1])/norm2(rhs,rb[1]));
+      QDPIO::cout << "shift="<<shift << " || r || / || b ||=" << resid_rel << "   ";
+      if ( toDouble(resid_rel) >= 1.0e-8 ) { 
+        QDPIO::cout << "FAILED " << std::endl;
+        success--; 
+      }
+      else { 
+        QDPIO::cout << "PASSED " << std::endl;
+      }
     }
   }
-
 
   // Done with tests
   Chroma::finalize();
