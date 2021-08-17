@@ -17,18 +17,20 @@ set(ChromaSingleExecs
 	t_io t_mesons_w
 	t_conslinop
 	t_hypsmear
-    t_ape_smear
-    t_dwf4d 
-    t_propagator_s 
-    t_disc_loop_s
-    t_ritz
-    t_dwflocality
-    t_precact_4d
-    t_precact_5d
-    t_gauge_force
-    t_stout_state
-    t_aniso_gaugeact
-    t_temp_prec 
+  t_ape_smear
+  t_dwf4d 
+  t_propagator_s 
+  t_disc_loop_s
+  t_ritz
+  t_dwflocality
+  t_precact_4d
+  t_precact_5d
+  t_gauge_force
+  t_stout_state
+  t_aniso_gaugeact
+  t_temp_prec 
+  t_multishift_quda
+  t_invmdagm_quda
 )
 
 if( GMP_FOUND )
@@ -119,15 +121,15 @@ target_include_directories(t_symm_prec PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 if ( Chroma_ENABLE_LAPACK )
-add_executable(t_inv_fgmres_dr 
-	t_inv_fgmres_dr.cc 
-	chroma_gtest_env.h
-	fgmres_dr_tests.cc
-)
-target_link_libraries( t_inv_fgmres_dr PRIVATE Chroma::chromalib GTest)
-target_include_directories(t_inv_fgmres_dr PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  add_executable(t_inv_fgmres_dr 
+      t_inv_fgmres_dr.cc 
+      chroma_gtest_env.h
+      fgmres_dr_tests.cc
+  )
+  target_link_libraries( t_inv_fgmres_dr PRIVATE Chroma::chromalib GTest)
+  target_include_directories(t_inv_fgmres_dr PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  if (QDP_IS_QDPJIT)
+    set_target_properties( t_inv_fgmres_dr PROPERTIES CXX_STANDARD 14 )
+  endif()
 endif()
 
-add_executable(t_multishift_quda t_multishift_quda.cc)
-target_link_libraries( t_multishift_quda PRIVATE Chroma::chromalib GTest)
-target_include_directories(t_multishift_quda PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
