@@ -15,6 +15,9 @@
 #include "eoprec_wilstype_fermact_w.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 
+#ifdef BUILD_QUDA
+#include "actions/ferm/invert/quda_solvers/quda_mg_utils.h"
+#endif
 
 using namespace Chroma;
 
@@ -93,6 +96,7 @@ int main(int argc, char *argv[])
   // Initialise the RNG
   QDP::RNG::setrn(p.rng_seed);
 
+  // Some basic analysis of the Solver parameters
 
   // Print back some info
   u.resize(Nd); 
@@ -135,6 +139,26 @@ int main(int argc, char *argv[])
   QDPIO::cout << "MdagM Inverter Test" << std::endl;
 
   QDPIO::cout << "Inverter XML: " << p.inv_param.xml << std::endl;
+
+  QDPIO::cout << "Solver Type is " << p.inv_param.id << std::endl;
+
+  bool cleanup_quda_subspace = false;
+  std::string subspace_id = "";
+#ifdef BUILD_QUDA
+  { 
+    if( p.inv_param.id.compare("QUDA_MULTIGRID_CLOVER_INVERTER") == 0 
+      ||  p.inv_param.id.compare("QUDA_MULTIGRID_WILSON_INVERTER") == 0 ) {
+
+       QDPIO::cout << "Solver is a QUDA Multigrid solver... ";
+        std::istringstream is( p.inv_param.xml );
+        XMLReader ip(is);
+        read( ip, "SubspaceID", subspace_id);
+        cleanup_quda_subspace = true;
+
+        QDPIO::cout << "At the end I need to cleanup QUDA subspace: " << subspace_id << std::endl;
+    }
+  }
+#endif 
   QDPIO::cout << "Creating Fermion Action" << std::endl;
   {
     std::istringstream fermact_xml( p.fermact.xml );
@@ -182,6 +206,12 @@ int main(int argc, char *argv[])
     }
   }
 
+#ifdef BUILD_QUDA
+  if ( cleanup_quda_subspace ) { 
+      QDPIO::cout << "Cleaning up subspace: " << subspace_id << std::endl;
+      QUDAMGUtils::delete_subspace(subspace_id);
+  }
+#endif
   // Done with tests
   Chroma::finalize();
   exit(success);
