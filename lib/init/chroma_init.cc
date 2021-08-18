@@ -20,7 +20,6 @@
 #include <quda.h>
 #include <unistd.h>
 #ifndef QDP_IS_QDPJIT
-#include "init/local_rank.h"
 #include <quda_api.h>
 #include <device.h>
 #endif
@@ -267,7 +266,7 @@ namespace Chroma
    {
      char hostname[128];
      ::gethostname(hostname, sizeof(hostname)); 
-     std::cout << "Initializing QUDA on local rank: " << localRank() << " on host: " << hostname <<  " with initQuda(-1)" <<  std::endl;
+     std::cout << "Initializing QUDA" << std::endl;
      initQuda(-1);
    }
 #  endif
