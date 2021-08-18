@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
   // Read Params
   XMLReader xml_in;
   xml_in.open(Chroma::getXMLInputFileName());
-  read(xml_in, "/ShiftedSolverTest", p);
+  read(xml_in, "/SolverTest", p);
   xml_in.close();
 
   // Setup the layout and stuff
