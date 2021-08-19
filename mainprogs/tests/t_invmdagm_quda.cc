@@ -15,6 +15,9 @@
 #include "eoprec_wilstype_fermact_w.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 
+#ifdef BUILD_QUDA
+#include "actions/ferm/invert/quda_solvers/quda_mg_utils.h"
+#endif
 
 using namespace Chroma;
 
@@ -24,7 +27,6 @@ struct InputParam {
   GroupXML_t cfg;
   GroupXML_t fermact;
   GroupXML_t inv_param;
-  multi1d<Real> shifts;
   int iters;
   QDP::Seed rng_seed;
 };
@@ -36,7 +38,6 @@ void read(XMLReader& xml, const std::string& path, InputParam& p)
   p.cfg = readXMLGroup(paramtop, "Cfg", "cfg_type");
   p.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
   p.inv_param = readXMLGroup(paramtop, "InvertParam", "invType");
-  read(paramtop, "shifts", p.shifts);
   if( paramtop.count("iters") == 0 ) { 
     p.iters = 5;
   }
@@ -85,7 +86,7 @@ int main(int argc, char *argv[])
   // Read Params
   XMLReader xml_in;
   xml_in.open(Chroma::getXMLInputFileName());
-  read(xml_in, "/ShiftedSolverTest", p);
+  read(xml_in, "/SolverTest", p);
   xml_in.close();
 
   // Setup the layout and stuff
@@ -95,6 +96,7 @@ int main(int argc, char *argv[])
   // Initialise the RNG
   QDP::RNG::setrn(p.rng_seed);
 
+  // Some basic analysis of the Solver parameters
 
   // Print back some info
   u.resize(Nd); 
@@ -134,14 +136,29 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Plaquette = " << w_plaq <<  "( spatial =  " << s_plaq << " , temporal = " << t_plaq << " )   Link Trace = " << link << std::endl;
   }
 
-  QDPIO::cout << "Shifted Inverter Test" << std::endl;
-  QDPIO::cout << "Shifts: { " << std::endl;
-  for(unsigned int j=0; j < p.shifts.size(); ++j) {
-    QDPIO::cout << "\t " << p.shifts[j] << std::endl;
-  }
-  QDPIO::cout << "}" << std::endl;
+  QDPIO::cout << "MdagM Inverter Test" << std::endl;
 
   QDPIO::cout << "Inverter XML: " << p.inv_param.xml << std::endl;
+
+  QDPIO::cout << "Solver Type is " << p.inv_param.id << std::endl;
+
+  bool cleanup_quda_subspace = false;
+  std::string subspace_id = "";
+#ifdef BUILD_QUDA
+  { 
+    if( p.inv_param.id.compare("QUDA_MULTIGRID_CLOVER_INVERTER") == 0 
+      ||  p.inv_param.id.compare("QUDA_MULTIGRID_WILSON_INVERTER") == 0 ) {
+
+       QDPIO::cout << "Solver is a QUDA Multigrid solver... ";
+        std::istringstream is( p.inv_param.xml );
+        XMLReader ip(is);
+        read( ip, "SubspaceID", subspace_id);
+        cleanup_quda_subspace = true;
+
+        QDPIO::cout << "At the end I need to cleanup QUDA subspace: " << subspace_id << std::endl;
+    }
+  }
+#endif 
   QDPIO::cout << "Creating Fermion Action" << std::endl;
   {
     std::istringstream fermact_xml( p.fermact.xml );
@@ -155,7 +172,6 @@ int main(int argc, char *argv[])
 
 
   // Do tests here
-
   T rhs= zero;
   gaussian(rhs,rb[1]);
   int success = 0;
@@ -163,43 +179,39 @@ int main(int argc, char *argv[])
   for(int i=0 ; i < p.iters; i++) {
     QDPIO::cout << "Doing test " << i+1 << " of " << p.iters << std::endl;
     // Zero the initial guesses
-    Handle<MdagMMultiSystemSolver<T>> solver = dynamic_cast<MdagMMultiSystemSolver<T>*>(S_asymm->mInvMdagM(state,p.inv_param));
+    Handle<MdagMSystemSolver<T>> solver = dynamic_cast<MdagMSystemSolver<T>*>(S_asymm->invMdagM(state,p.inv_param));
 
-    auto n_shift = p.shifts.size();
-    multi1d<T> solns(n_shift);
-    for(int shift=0; shift < n_shift; ++shift) {
-      solns[shift] = zero; // Zero all lattice
-      //(solns[shift])[rb[1]]=zero;
+    T soln = zero;
+
+    (*solver)(soln,rhs);
+
+    T r;
+    r[rb[1]] = zero;
+    T tmp;
+    tmp[rb[1]] = zero;
+
+    (*M_asymm)(tmp,soln,PLUS);
+    (*M_asymm)(r, tmp, MINUS);
+    // -residudum
+    r[rb[1]] -= rhs;
+
+    Double resid_rel = sqrt(norm2(r,rb[1])/norm2(rhs,rb[1]));
+    QDPIO::cout << " || r || / || b ||=" << resid_rel << "   ";
+    if ( toDouble(resid_rel) >= 1.0e-8 ) { 
+      QDPIO::cout << "FAILED " << std::endl;
+      success--; 
     }
-
-    (*solver)(solns,p.shifts,rhs);
-
-    for(int shift = 0; shift < n_shift; ++shift) {
-      T r;
-      r[rb[1]] = zero;
-      T tmp;
-      tmp[rb[1]] = zero;
-
-      (*M_asymm)(tmp,solns[shift],PLUS);
-      (*M_asymm)(r, tmp, MINUS);
-
-      r[rb[1]] += p.shifts[shift]*solns[shift];
-
-      // -residudum
-      r[rb[1]] -= rhs;
-
-      Double resid_rel = sqrt(norm2(r,rb[1])/norm2(rhs,rb[1]));
-      QDPIO::cout << "shift="<<shift << " || r || / || b ||=" << resid_rel << "   ";
-      if ( toDouble(resid_rel) >= 1.0e-8 ) { 
-        QDPIO::cout << "FAILED " << std::endl;
-        success--; 
-      }
-      else { 
-        QDPIO::cout << "PASSED " << std::endl;
-      }
+    else { 
+      QDPIO::cout << "PASSED " << std::endl;
     }
   }
 
+#ifdef BUILD_QUDA
+  if ( cleanup_quda_subspace ) { 
+      QDPIO::cout << "Cleaning up subspace: " << subspace_id << std::endl;
+      QUDAMGUtils::delete_subspace(subspace_id);
+  }
+#endif
   // Done with tests
   Chroma::finalize();
   exit(success);
