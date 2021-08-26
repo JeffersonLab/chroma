@@ -17,20 +17,20 @@ set(ChromaSingleExecs
 	t_io t_mesons_w
 	t_conslinop
 	t_hypsmear
-  t_ape_smear
-  t_dwf4d 
-  t_propagator_s 
-  t_disc_loop_s
-  t_ritz
-  t_dwflocality
-  t_precact_4d
-  t_precact_5d
-  t_gauge_force
-  t_stout_state
-  t_aniso_gaugeact
-  t_temp_prec 
-  t_multishift_quda
-  t_invmdagm_quda
+    t_ape_smear
+    t_dwf4d 
+    t_propagator_s 
+    t_disc_loop_s
+    t_ritz
+    t_dwflocality
+    t_precact_4d
+    t_precact_5d
+    t_gauge_force
+    t_stout_state
+    t_aniso_gaugeact
+    t_temp_prec
+    t_multishift_quda
+    t_invmdagm_quda
 )
 
 if( GMP_FOUND )
@@ -93,9 +93,9 @@ foreach( EXEC ${ChromaSingleExecs})
   add_executable( ${EXEC} ${EXEC}.cc )
 
   if (QDP_IS_QDPJIT)
-    set_target_properties( ${EXEC} PROPERTIES CXX_STANDARD 14 )
+    set_target_properties( ${EXEC} PROPERTIES CXX_STANDARD 20 )
   endif()
-
+  
   target_link_libraries( ${EXEC} Chroma::chromalib )
   target_include_directories( ${EXEC} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endforeach()
@@ -110,10 +110,10 @@ add_executable(t_symm_prec
 	chroma_gtest_env.h 
 	symm_prec_xml.h 
 	symm_prec_tests.cc
-)
+	)
 
 if (QDP_IS_QDPJIT)
-  set_target_properties( t_symm_prec PROPERTIES CXX_STANDARD 14 )
+  set_target_properties( t_symm_prec PROPERTIES CXX_STANDARD 20 )
 endif()
 
 target_link_libraries( t_symm_prec PRIVATE Chroma::chromalib GTest)
@@ -121,15 +121,16 @@ target_include_directories(t_symm_prec PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 if ( Chroma_ENABLE_LAPACK )
-  add_executable(t_inv_fgmres_dr 
-      t_inv_fgmres_dr.cc 
-      chroma_gtest_env.h
-      fgmres_dr_tests.cc
-  )
-  target_link_libraries( t_inv_fgmres_dr PRIVATE Chroma::chromalib GTest)
-  target_include_directories(t_inv_fgmres_dr PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-  if (QDP_IS_QDPJIT)
-    set_target_properties( t_inv_fgmres_dr PROPERTIES CXX_STANDARD 14 )
-  endif()
+add_executable(t_inv_fgmres_dr 
+	t_inv_fgmres_dr.cc 
+	chroma_gtest_env.h
+	fgmres_dr_tests.cc
+	)
+
+if (QDP_IS_QDPJIT)
+  set_target_properties( t_inv_fgmres_dr PROPERTIES CXX_STANDARD 20 )
 endif()
 
+target_link_libraries( t_inv_fgmres_dr PRIVATE Chroma::chromalib GTest)
+target_include_directories(t_inv_fgmres_dr PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+endif()

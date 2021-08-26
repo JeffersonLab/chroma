@@ -52,15 +52,14 @@ namespace QDP
     }
 
 
-    inline       T& elem(int i)       { return this->arrayF(i); }
-    inline const T& elem(int i) const { return this->arrayF(i); }
+    inline       T elem(int i)       { return this->arrayF(i); }
   };
 
   template<class T>
   struct PCompREG 
   {
     T F[2];
-    void setup(const PCompJIT< typename JITType<T>::Type_t >& rhs ) {
+    void setup(PCompJIT< typename JITType<T>::Type_t > rhs ) {
       F[0].setup( rhs.elem(0) );
       F[1].setup( rhs.elem(1) );
     }
@@ -126,15 +125,14 @@ namespace QDP
       return *this;
     }
 
-    inline       T& elem(int i)       { return this->arrayF(i); }
-    inline const T& elem(int i) const { return this->arrayF(i); }
+    inline       T elem(int i)       { return this->arrayF(i); }
   };
 
   template<class T>
   struct PTriDiaREG 
   {
     T F[2*Nc];
-    void setup(const PTriDiaJIT< typename JITType<T>::Type_t >& rhs ) {
+    void setup( PTriDiaJIT< typename JITType<T>::Type_t > rhs ) {
       for (int i=0;i<2*Nc;++i)
 	F[i].setup( rhs.elem(i) );
     }
@@ -198,15 +196,14 @@ namespace QDP
       return *this;
     }
 
-    inline       T& elem(int i)       { return this->arrayF(i); }
-    inline const T& elem(int i) const { return this->arrayF(i); }
+    inline       T elem(int i)       { return this->arrayF(i); }
   };
 
   template<class T>
   struct PTriOffREG 
   {
     T F[2*Nc*Nc-Nc];
-    void setup(const PTriOffJIT< typename JITType<T>::Type_t >& rhs ) {
+    void setup( PTriOffJIT< typename JITType<T>::Type_t > rhs ) {
       for (int i=0;i<2*Nc*Nc-Nc;++i)
 	F[i].setup( rhs.elem(i) );
     }
@@ -700,15 +697,15 @@ namespace Chroma
     
     llvm_cond_exit( llvm_ge( r_idx , r_hi ) );
 
-    auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f3_j = f3_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f4_j = f4_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f5_j = f5_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f0_j = f0_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f1_j = f1_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f2_j = f2_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f3_j = f3_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f4_j = f4_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f5_j = f5_jit.elem(JitDeviceLayout::Coalesced , r_idx );
 
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , r_idx );
 
     typename REGType< typename RealTJIT::Subtype_t >::Type_t diag_mass_reg;
     //diag_mass_reg.setup( diag_mass_jit.elem() );
@@ -963,9 +960,9 @@ namespace Chroma
 
     llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
 
-    auto& tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_off_j     = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_off_j     = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
@@ -1292,9 +1289,9 @@ namespace Chroma
 
     llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
 
-    auto& B_j = B_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto B_j = B_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
@@ -1302,295 +1299,271 @@ namespace Chroma
     tri_dia_r.setup( tri_dia_j );
     tri_off_r.setup( tri_off_j );
 
-
-    llvm::BasicBlock * case_0 = llvm_new_basic_block();
-    llvm::BasicBlock * case_3 = llvm_new_basic_block();
-    llvm::BasicBlock * case_5 = llvm_new_basic_block();
-    llvm::BasicBlock * case_6 = llvm_new_basic_block();
-    llvm::BasicBlock * case_9 = llvm_new_basic_block();
-    llvm::BasicBlock * case_10 = llvm_new_basic_block();
-    llvm::BasicBlock * case_12 = llvm_new_basic_block();
-    llvm::BasicBlock * case_default = llvm_new_basic_block();
-
-    llvm::SwitchInst * mat_sw = llvm_switch( r_mat , case_default );
-
-    mat_sw->addCase( llvm_create_const_int(0) , case_0 );
-    mat_sw->addCase( llvm_create_const_int(3) , case_3 );
-    mat_sw->addCase( llvm_create_const_int(5) , case_5 );
-    mat_sw->addCase( llvm_create_const_int(6) , case_6 );
-    mat_sw->addCase( llvm_create_const_int(9) , case_9 );
-    mat_sw->addCase( llvm_create_const_int(10) , case_10 );
-    mat_sw->addCase( llvm_create_const_int(12) , case_12 );
-
-    /*# gamma(   0)   1  0  0  0            # ( 0000 )  --> 0 */
-    /*#               0  1  0  0 */
-    /*#               0  0  1  0 */
-    /*#               0  0  0  1 */
-    /*# From diagonal part */
-    llvm_set_insert_point(  case_0 );
+    JitSwitch sw(r_mat);
     {
-      RComplexREG<WordREG<REALT> > lctmp0;
-      RScalarREG< WordREG<REALT> > lr_zero0;
-      RScalarREG< WordREG<REALT> > lrtmp0;
+      /*# gamma(   0)   1  0  0  0            # ( 0000 )  --> 0 */
+      /*#               0  1  0  0 */
+      /*#               0  0  1  0 */
+      /*#               0  0  0  1 */
+      /*# From diagonal part */
+      sw.case_begin(0);
+      {
+	RComplexREG<WordREG<REALT> > lctmp0;
+	RScalarREG< WordREG<REALT> > lr_zero0;
+	RScalarREG< WordREG<REALT> > lrtmp0;
     
-      zero_rep(lr_zero0);
+	zero_rep(lr_zero0);
 	    
-      for(int i0 = 0; i0 < Nc; ++i0) {
-	      
-	lrtmp0 = tri_dia_r.elem(0).elem(i0);
-	lrtmp0 += tri_dia_r.elem(0).elem(i0+Nc);
-	lrtmp0 += tri_dia_r.elem(1).elem(i0);
-	lrtmp0 += tri_dia_r.elem(1).elem(i0+Nc);
-	B_j.elem().elem(i0,i0) = cmplx(lrtmp0,lr_zero0);
-      }
+	for(int i0 = 0; i0 < Nc; ++i0)
+	  {
+	    lrtmp0 = tri_dia_r.elem(0).elem(i0);
+	    lrtmp0 += tri_dia_r.elem(0).elem(i0+Nc);
+	    lrtmp0 += tri_dia_r.elem(1).elem(i0);
+	    lrtmp0 += tri_dia_r.elem(1).elem(i0+Nc);
+	    B_j.elem().elem(i0,i0) = cmplx(lrtmp0,lr_zero0);
+	  }
 	    
-      /*# From lower triangular portion */
-      int elem_ij0 = 0;
-      for(int i0 = 1; i0 < Nc; ++i0) {
+	/*# From lower triangular portion */
+	int elem_ij0 = 0;
+	for(int i0 = 1; i0 < Nc; ++i0) {
 	      
-	int elem_ijb0 = (i0+Nc)*(i0+Nc-1)/2 + Nc;
+	  int elem_ijb0 = (i0+Nc)*(i0+Nc-1)/2 + Nc;
 	      
-	for(int j0 = 0; j0 < i0; ++j0) {
+	  for(int j0 = 0; j0 < i0; ++j0) {
 		
-	  lctmp0 = tri_off_r.elem(0).elem(elem_ij0);
-	  lctmp0 += tri_off_r.elem(0).elem(elem_ijb0);
-	  lctmp0 += tri_off_r.elem(1).elem(elem_ij0);
-	  lctmp0 += tri_off_r.elem(1).elem(elem_ijb0);
+	    lctmp0 = tri_off_r.elem(0).elem(elem_ij0);
+	    lctmp0 += tri_off_r.elem(0).elem(elem_ijb0);
+	    lctmp0 += tri_off_r.elem(1).elem(elem_ij0);
+	    lctmp0 += tri_off_r.elem(1).elem(elem_ijb0);
 		
-	  B_j.elem().elem(j0,i0) = lctmp0;
-	  B_j.elem().elem(i0,j0) = adj(lctmp0);
+	    B_j.elem().elem(j0,i0) = lctmp0;
+	    B_j.elem().elem(i0,j0) = adj(lctmp0);
 		
-	  elem_ij0++;
-	  elem_ijb0++;
+	    elem_ij0++;
+	    elem_ijb0++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
 
-    llvm_set_insert_point(  case_3 );
-    {
       /*# gamma(  12)  -i  0  0  0            # ( 0011 )  --> 3 */
       /*#               0  i  0  0 */
       /*#               0  0 -i  0 */
       /*#               0  0  0  i */
       /*# From diagonal part */
-	  
-      RComplexREG<WordREG<REALT> > lctmp3;
-      RScalarREG<WordREG<REALT> > lr_zero3;
-      RScalarREG<WordREG<REALT> > lrtmp3;
+      sw.case_begin( 3 );
+      {
+	RComplexREG<WordREG<REALT> > lctmp3;
+	RScalarREG<WordREG<REALT> > lr_zero3;
+	RScalarREG<WordREG<REALT> > lrtmp3;
 	    
-      lr_zero3 = 0;
+	lr_zero3 = 0;
 	    
-      for(int i3 = 0; i3 < Nc; ++i3) {
+	for(int i3 = 0; i3 < Nc; ++i3) {
 	      
-	lrtmp3 = tri_dia_r.elem(0).elem(i3+Nc);
-	lrtmp3 -= tri_dia_r.elem(0).elem(i3);
-	lrtmp3 -= tri_dia_r.elem(1).elem(i3);
-	lrtmp3 += tri_dia_r.elem(1).elem(i3+Nc);
-	B_j.elem().elem(i3,i3) = cmplx(lr_zero3,lrtmp3);
-      }
+	  lrtmp3 = tri_dia_r.elem(0).elem(i3+Nc);
+	  lrtmp3 -= tri_dia_r.elem(0).elem(i3);
+	  lrtmp3 -= tri_dia_r.elem(1).elem(i3);
+	  lrtmp3 += tri_dia_r.elem(1).elem(i3+Nc);
+	  B_j.elem().elem(i3,i3) = cmplx(lr_zero3,lrtmp3);
+	}
 	    
-      /*# From lower triangular portion */
-      int elem_ij3 = 0;
-      for(int i3 = 1; i3 < Nc; ++i3) {
+	/*# From lower triangular portion */
+	int elem_ij3 = 0;
+	for(int i3 = 1; i3 < Nc; ++i3) {
 	      
-	int elem_ijb3 = (i3+Nc)*(i3+Nc-1)/2 + Nc;
+	  int elem_ijb3 = (i3+Nc)*(i3+Nc-1)/2 + Nc;
 	      
-	for(int j3 = 0; j3 < i3; ++j3) {
+	  for(int j3 = 0; j3 < i3; ++j3) {
 		
-	  lctmp3 = tri_off_r.elem(0).elem(elem_ijb3);
-	  lctmp3 -= tri_off_r.elem(0).elem(elem_ij3);
-	  lctmp3 -= tri_off_r.elem(1).elem(elem_ij3);
-	  lctmp3 += tri_off_r.elem(1).elem(elem_ijb3);
+	    lctmp3 = tri_off_r.elem(0).elem(elem_ijb3);
+	    lctmp3 -= tri_off_r.elem(0).elem(elem_ij3);
+	    lctmp3 -= tri_off_r.elem(1).elem(elem_ij3);
+	    lctmp3 += tri_off_r.elem(1).elem(elem_ijb3);
 		
-	  B_j.elem().elem(j3,i3) = timesI(adj(lctmp3));
-	  B_j.elem().elem(i3,j3) = timesI(lctmp3);
+	    B_j.elem().elem(j3,i3) = timesI(adj(lctmp3));
+	    B_j.elem().elem(i3,j3) = timesI(lctmp3);
 		
-	  elem_ij3++;
-	  elem_ijb3++;
+	    elem_ij3++;
+	    elem_ijb3++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
-
-    llvm_set_insert_point(  case_5 );
-    {
       /*# gamma(  13)   0 -1  0  0            # ( 0101 )  --> 5 */
       /*#               1  0  0  0 */
       /*#               0  0  0 -1 */
       /*#               0  0  1  0 */
-	  
-      RComplexREG<WordREG<REALT> > lctmp5;
-      RScalarREG<WordREG<REALT> > lrtmp5;
+      sw.case_begin( 5 );
+      {
+	RComplexREG<WordREG<REALT> > lctmp5;
+	RScalarREG<WordREG<REALT> > lrtmp5;
 	    
-      for(int i5 = 0; i5 < Nc; ++i5) {
+	for(int i5 = 0; i5 < Nc; ++i5) {
 	      
-	int elem_ij5 = (i5+Nc)*(i5+Nc-1)/2;
+	  int elem_ij5 = (i5+Nc)*(i5+Nc-1)/2;
 	      
-	for(int j5 = 0; j5 < Nc; ++j5) {
+	  for(int j5 = 0; j5 < Nc; ++j5) {
 		
-	  int elem_ji5 = (j5+Nc)*(j5+Nc-1)/2 + i5;
+	    int elem_ji5 = (j5+Nc)*(j5+Nc-1)/2 + i5;
 		
+	    lctmp5 = adj(tri_off_r.elem(0).elem(elem_ji5));
+	    lctmp5 -= tri_off_r.elem(0).elem(elem_ij5);
+	    lctmp5 += adj(tri_off_r.elem(1).elem(elem_ji5));
+	    lctmp5 -= tri_off_r.elem(1).elem(elem_ij5);
 		
-	  lctmp5 = adj(tri_off_r.elem(0).elem(elem_ji5));
-	  lctmp5 -= tri_off_r.elem(0).elem(elem_ij5);
-	  lctmp5 += adj(tri_off_r.elem(1).elem(elem_ji5));
-	  lctmp5 -= tri_off_r.elem(1).elem(elem_ij5);
+	    B_j.elem().elem(i5,j5) = lctmp5;
 		
-	  B_j.elem().elem(i5,j5) = lctmp5;
-		
-	  elem_ij5++;
+	    elem_ij5++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
-
-    llvm_set_insert_point(  case_6 );
-    {
       /*# gamma(  23)   0 -i  0  0            # ( 0110 )  --> 6 */
       /*#              -i  0  0  0 */
       /*#               0  0  0 -i */
       /*#               0  0 -i  0 */
-
-      RComplexREG<WordREG<REALT> > lctmp6;
-      RScalarREG<WordREG<REALT> > lrtmp6;
+      sw.case_begin( 6 );
+      {
+	RComplexREG<WordREG<REALT> > lctmp6;
+	RScalarREG<WordREG<REALT> > lrtmp6;
 	    
-      for(int i6 = 0; i6 < Nc; ++i6) {
+	for(int i6 = 0; i6 < Nc; ++i6) {
 	      
-	int elem_ij6 = (i6+Nc)*(i6+Nc-1)/2;
+	  int elem_ij6 = (i6+Nc)*(i6+Nc-1)/2;
 	      
-	for(int j6 = 0; j6 < Nc; ++j6) {
+	  for(int j6 = 0; j6 < Nc; ++j6) {
 		
-	  int elem_ji6 = (j6+Nc)*(j6+Nc-1)/2 + i6;
+	    int elem_ji6 = (j6+Nc)*(j6+Nc-1)/2 + i6;
 	
-	  lctmp6 = adj(tri_off_r.elem(0).elem(elem_ji6));
-	  lctmp6 += tri_off_r.elem(0).elem(elem_ij6);
-	  lctmp6 += adj(tri_off_r.elem(1).elem(elem_ji6));
-	  lctmp6 += tri_off_r.elem(1).elem(elem_ij6);
+	    lctmp6 = adj(tri_off_r.elem(0).elem(elem_ji6));
+	    lctmp6 += tri_off_r.elem(0).elem(elem_ij6);
+	    lctmp6 += adj(tri_off_r.elem(1).elem(elem_ji6));
+	    lctmp6 += tri_off_r.elem(1).elem(elem_ij6);
 		
-	  B_j.elem().elem(i6,j6) = timesMinusI(lctmp6);
+	    B_j.elem().elem(i6,j6) = timesMinusI(lctmp6);
 		
-	  elem_ij6++;
+	    elem_ij6++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
-
-    llvm_set_insert_point(  case_9 );
-    {
       /*# gamma(  14)   0  i  0  0            # ( 1001 )  --> 9 */
       /*#               i  0  0  0 */
       /*#               0  0  0 -i */
       /*#               0  0 -i  0 */
-	  
-      RComplexREG<WordREG<REALT> > lctmp9;
-      RScalarREG<WordREG<REALT> > lrtmp9;
+      sw.case_begin( 9 );
+      {
+	RComplexREG<WordREG<REALT> > lctmp9;
+	RScalarREG<WordREG<REALT> > lrtmp9;
 	    
-      for(int i9 = 0; i9 < Nc; ++i9) {
+	for(int i9 = 0; i9 < Nc; ++i9) {
 	      
-	int elem_ij9 = (i9+Nc)*(i9+Nc-1)/2;
+	  int elem_ij9 = (i9+Nc)*(i9+Nc-1)/2;
 	      
-	for(int j9 = 0; j9 < Nc; ++j9) {
+	  for(int j9 = 0; j9 < Nc; ++j9) {
 		
-	  int elem_ji9 = (j9+Nc)*(j9+Nc-1)/2 + i9;
+	    int elem_ji9 = (j9+Nc)*(j9+Nc-1)/2 + i9;
 	
-	  lctmp9 = adj(tri_off_r.elem(0).elem(elem_ji9));
-	  lctmp9 += tri_off_r.elem(0).elem(elem_ij9);
-	  lctmp9 -= adj(tri_off_r.elem(1).elem(elem_ji9));
-	  lctmp9 -= tri_off_r.elem(1).elem(elem_ij9);
+	    lctmp9 = adj(tri_off_r.elem(0).elem(elem_ji9));
+	    lctmp9 += tri_off_r.elem(0).elem(elem_ij9);
+	    lctmp9 -= adj(tri_off_r.elem(1).elem(elem_ji9));
+	    lctmp9 -= tri_off_r.elem(1).elem(elem_ij9);
 		
-	  B_j.elem().elem(i9,j9) = timesI(lctmp9);
+	    B_j.elem().elem(i9,j9) = timesI(lctmp9);
 		
-	  elem_ij9++;
+	    elem_ij9++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
 
-    llvm_set_insert_point(  case_10 );
-    {
       /*# gamma(  24)   0 -1  0  0            # ( 1010 )  --> 10 */
       /*#               1  0  0  0 */
       /*#               0  0  0  1 */
       /*#               0  0 -1  0 */
-
-      RComplexREG<WordREG<REALT> > lctmp10;
-      RScalarREG<WordREG<REALT> > lrtmp10;
+      sw.case_begin( 10 );
+      {
+	RComplexREG<WordREG<REALT> > lctmp10;
+	RScalarREG<WordREG<REALT> > lrtmp10;
 	    
-      for(int i10 = 0; i10 < Nc; ++i10) {
+	for(int i10 = 0; i10 < Nc; ++i10) {
 	      
-	int elem_ij10 = (i10+Nc)*(i10+Nc-1)/2;
+	  int elem_ij10 = (i10+Nc)*(i10+Nc-1)/2;
 	      
-	for(int j10 = 0; j10 < Nc; ++j10) {
+	  for(int j10 = 0; j10 < Nc; ++j10) {
 		
-	  int elem_ji10 = (j10+Nc)*(j10+Nc-1)/2 + i10;
+	    int elem_ji10 = (j10+Nc)*(j10+Nc-1)/2 + i10;
 	
-	  lctmp10 = adj(tri_off_r.elem(0).elem(elem_ji10));
-	  lctmp10 -= tri_off_r.elem(0).elem(elem_ij10);
-	  lctmp10 -= adj(tri_off_r.elem(1).elem(elem_ji10));
-	  lctmp10 += tri_off_r.elem(1).elem(elem_ij10);
+	    lctmp10 = adj(tri_off_r.elem(0).elem(elem_ji10));
+	    lctmp10 -= tri_off_r.elem(0).elem(elem_ij10);
+	    lctmp10 -= adj(tri_off_r.elem(1).elem(elem_ji10));
+	    lctmp10 += tri_off_r.elem(1).elem(elem_ij10);
 		
-	  B_j.elem().elem(i10,j10) = lctmp10;
+	    B_j.elem().elem(i10,j10) = lctmp10;
 		
-	  elem_ij10++;
+	    elem_ij10++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
 
-    llvm_set_insert_point(  case_12 );
-    {
       /*# gamma(  34)   i  0  0  0            # ( 1100 )  --> 12 */
       /*#               0 -i  0  0 */
       /*#               0  0 -i  0 */
       /*#               0  0  0  i */
       /*# From diagonal part */
+      sw.case_begin( 12 );
+      {
+	RComplexREG<WordREG<REALT> > lctmp12;
+	RScalarREG<WordREG<REALT> > lr_zero12;
+	RScalarREG<WordREG<REALT> > lrtmp12;
 	    
-      RComplexREG<WordREG<REALT> > lctmp12;
-      RScalarREG<WordREG<REALT> > lr_zero12;
-      RScalarREG<WordREG<REALT> > lrtmp12;
+	lr_zero12 = 0;
 	    
-      lr_zero12 = 0;
-	    
-      for(int i12 = 0; i12 < Nc; ++i12) {
+	for(int i12 = 0; i12 < Nc; ++i12) {
       
-	lrtmp12 = tri_dia_r.elem(0).elem(i12);
-	lrtmp12 -= tri_dia_r.elem(0).elem(i12+Nc);
-	lrtmp12 -= tri_dia_r.elem(1).elem(i12);
-	lrtmp12 += tri_dia_r.elem(1).elem(i12+Nc);
-	B_j.elem().elem(i12,i12) = cmplx(lr_zero12,lrtmp12);
-      }
+	  lrtmp12 = tri_dia_r.elem(0).elem(i12);
+	  lrtmp12 -= tri_dia_r.elem(0).elem(i12+Nc);
+	  lrtmp12 -= tri_dia_r.elem(1).elem(i12);
+	  lrtmp12 += tri_dia_r.elem(1).elem(i12+Nc);
+	  B_j.elem().elem(i12,i12) = cmplx(lr_zero12,lrtmp12);
+	}
 	    
-      /*# From lower triangular portion */
-      int elem_ij12 = 0;
-      for(int i12 = 1; i12 < Nc; ++i12) {
+	/*# From lower triangular portion */
+	int elem_ij12 = 0;
+	for(int i12 = 1; i12 < Nc; ++i12) {
 	      
-	int elem_ijb12 = (i12+Nc)*(i12+Nc-1)/2 + Nc;
+	  int elem_ijb12 = (i12+Nc)*(i12+Nc-1)/2 + Nc;
 	      
-	for(int j12 = 0; j12 < i12; ++j12) {
+	  for(int j12 = 0; j12 < i12; ++j12) {
 	
-	  lctmp12 = tri_off_r.elem(0).elem(elem_ij12);
-	  lctmp12 -= tri_off_r.elem(0).elem(elem_ijb12);
-	  lctmp12 -= tri_off_r.elem(1).elem(elem_ij12);
-	  lctmp12 += tri_off_r.elem(1).elem(elem_ijb12);
+	    lctmp12 = tri_off_r.elem(0).elem(elem_ij12);
+	    lctmp12 -= tri_off_r.elem(0).elem(elem_ijb12);
+	    lctmp12 -= tri_off_r.elem(1).elem(elem_ij12);
+	    lctmp12 += tri_off_r.elem(1).elem(elem_ijb12);
 		
-	  B_j.elem().elem(i12,j12) = timesI(lctmp12);
-	  B_j.elem().elem(j12,i12) = timesI(adj(lctmp12));
+	    B_j.elem().elem(i12,j12) = timesI(lctmp12);
+	    B_j.elem().elem(j12,i12) = timesI(adj(lctmp12));
 		
-	  elem_ij12++;
-	  elem_ijb12++;
+	    elem_ij12++;
+	    elem_ijb12++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
-    llvm_set_insert_point( case_default );
+      sw.case_default();
+      {
+      }
+      sw.case_end();
+    }
 
     jit_get_function(function);
   }
@@ -1734,7 +1707,7 @@ namespace Chroma
 
     llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
 
-    auto& chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
     psi_r.setup( psi_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
     tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
     tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx) );

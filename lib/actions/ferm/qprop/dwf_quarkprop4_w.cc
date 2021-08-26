@@ -226,6 +226,7 @@ namespace Chroma
 		      const Real& m_q,
 		      int& ncg_had)
   {
+#ifndef QDP_IS_QDPJIT
     START_CODE();
 
     QDPIO::cout << "entering DWF_QuarkProp4" << std::endl;
@@ -399,6 +400,10 @@ namespace Chroma
     QDPIO::cout << "exiting DWF_QuarkProp4" << std::endl;
 
     END_CODE();
+#else
+    QDPIO::cout << __func__ << " not implemented for QDP-JIT" << std::endl;
+#endif
+
   }
 
 
