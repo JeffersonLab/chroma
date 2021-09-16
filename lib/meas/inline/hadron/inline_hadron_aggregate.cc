@@ -141,7 +141,9 @@ namespace Chroma
 	success &= InlineDiscoEoEigCGEnv::registerAll();
 	success &= InlineDiscoEigCGEnv::registerAll();
 	success &= InlineDiscoProbDefl::registerAll();
+#ifdef BUILD_SB
 	success &= InlineDiscoProbDeflSuperb::registerAll();
+#endif
 
 	success &= InlineStagToWilsEnv::registerAll();
 	success &= InlineSinkSmearEnv::registerAll();
