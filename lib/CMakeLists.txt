@@ -1984,8 +1984,10 @@ target_sources(chromalib PRIVATE
 # The inclusion of hip::device adds flags for hipcc, forcing chroma to use hipcc.
 # Being not sure how to avoid QUDA injecting the hip::device depenency, the easiest
 # solution (hack) is to empty of content hip::device.
-set_target_properties(hip::device PROPERTIES INTERFACE_COMPILE_OPTIONS ""
-                                             INTERFACE_LINK_LIBRARIES "")
+if( QDP_BACKEND_ROCM )
+  set_target_properties(hip::device PROPERTIES INTERFACE_COMPILE_OPTIONS ""
+                                               INTERFACE_LINK_LIBRARIES "")
+endif()
 
 target_link_libraries(chromalib PUBLIC QUDA::quda)
 endif()
@@ -2033,7 +2035,9 @@ foreach( file ${ChromaLIB_HEADERS})
 endforeach()
 
 if (QDP_IS_QDPJIT)
-  set_target_properties( chromalib PROPERTIES CXX_STANDARD 20 )
+  if(QDP_PROP_OPT)
+    set_target_properties( chromalib PROPERTIES CXX_STANDARD 20 )
+  endif()
 endif()
  
 ##############################################
