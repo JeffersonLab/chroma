@@ -917,17 +917,21 @@ namespace Chroma
       // Stores the range of time-slices used for each sink/source
       //
 
+      std::vector<bool> cache_tslice(Lt);
       for (const auto& it : params.param.alt_sink_sources)
       {
 	for (const auto& snk : it.second)
 	{
+	  if (it.first < 0 || snk < 0)
+	    throw std::runtime_error("Invalid source or sink on SinkSources");
 	  Params::Param_t::SinkSource_t ss;
-	  ss.t_sink = snk;
-	  ss.t_source = it.first;
+	  ss.t_sink = snk % Lt;
+	  ss.t_source = it.first % Lt;
 	  int tdisp = it.first - params.param.contract.alt_t_start;
 	  ss.Nt_backward = -tdisp;
 	  ss.Nt_forward = tdisp + params.param.contract.alt_Nt_forward;
 	  params.param.sink_source_pairs.push_back(ss);
+	  cache_tslice[ss.t_source] = cache_tslice[ss.t_sink] = true;
 	}
       }
 
@@ -969,7 +973,6 @@ namespace Chroma
       //
       // Store what tslices the user suggest to cache
       //
-      std::vector<bool> cache_tslice(Lt);
       for (const auto &it : params.param.prop_sources)
       {
 	// Check t_source
