@@ -75,16 +75,16 @@ namespace Chroma
     for(int mu=1; mu < Nd; ++mu)
       for(int nu=0; nu < mu; ++nu)
       {
-	plane_plaq_11[mu][nu] /= Double(Layout::vol()*Nc);
+	plane_plaq_11[mu][nu] /= ( Double(Layout::vol())*Double(Nc) );
 	plane_plaq_11[nu][mu] = plane_plaq_11[mu][nu];
 
-	plane_plaq_12[mu][nu] /= Double(Layout::vol()*Nc);
+	plane_plaq_12[mu][nu] /= ( Double(Layout::vol())*Double(Nc) );
 	plane_plaq_12[nu][mu] = plane_plaq_12[mu][nu];
 
-	plane_plaq_13[mu][nu] /= Double(Layout::vol()*Nc);
+	plane_plaq_13[mu][nu] /= ( Double(Layout::vol())*Double(Nc) );
 	plane_plaq_13[nu][mu] = plane_plaq_13[mu][nu];
 
-	plane_plaq_14[mu][nu] /= Double(Layout::vol()*Nc);
+	plane_plaq_14[mu][nu] /= ( Double(Layout::vol())*Double(Nc) );
 	plane_plaq_14[nu][mu] = plane_plaq_14[mu][nu];
 
       }
@@ -138,7 +138,7 @@ namespace Chroma
     ans += sum(real(trace(staple_0 * adj(staple_1) )));
 
     // Normalize the planes 
-    ans /= Double(Layout::vol()*Nc);
+    ans /= ( Double(Layout::vol()) * Double(Nc) );
     ans /= 4.0 ; 
 
     END_CODE();
@@ -176,7 +176,7 @@ namespace Chroma
 
     ans = sum(real(trace(u[mu1] * shift(u[mu2],FORWARD,mu1)*third*adj(fourth)*adj(fifth)*adj(u[mu3] ))));
 
-    ans /= Double(Layout::vol()*Nc);
+    ans /= ( Double(Layout::vol())*Double(Nc) );
 
     END_CODE();
 }
@@ -311,10 +311,10 @@ namespace Chroma
     for(int mu=1; mu < Nd; ++mu)
       for(int nu=0; nu < mu; ++nu)
       {
-	plane_plaq_22[mu][nu] /= Double(Layout::vol()*Nc);
+	plane_plaq_22[mu][nu] /= ( Double(Layout::vol())*Double(Nc) );
 	plane_plaq_22[nu][mu] = plane_plaq_22[mu][nu];
 
-	plane_plaq_23[mu][nu] /= Double(Layout::vol()*Nc);
+	plane_plaq_23[mu][nu] /= ( Double(Layout::vol())*Double(Nc) );
 	plane_plaq_23[nu][mu] = plane_plaq_23[mu][nu];
 
       }

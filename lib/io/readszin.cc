@@ -266,7 +266,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const std::st
     LatticeColorMatrixF u_old;
   
     for(int cb=0; cb < 2; ++cb) { 
-      for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
+      for(size_t sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
       {
 	multi1d<int> coord = crtesn(sitecb, lattsize_cb); // The coordinate
       

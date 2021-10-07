@@ -77,7 +77,7 @@ namespace Chroma
       copymask(u, btmp, g_unit); // Replace last timeslice with units...
 
       // U should now be indistinguishable from unit gauge
-      QDPIO::cout << "Norm of Unit-Gauge violation / link = " << sqrt( norm2(u-g_unit) )/ Layout::vol() << std::endl;
+      QDPIO::cout << "Norm of Unit-Gauge violation / link = " << sqrt( norm2(u-g_unit) )/ Double( Layout::vol() ) << std::endl;
 
     }
 

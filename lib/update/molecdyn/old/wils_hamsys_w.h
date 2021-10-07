@@ -97,7 +97,7 @@ public:
       KE += norm2(p[mu]);
     }
 
-    KE /= Double(Layout::vol()*Nd); // Per DOF
+    KE /= ( Double(Layout::vol()) * Double(Nd) ); // Per DOF
     // NB this will have to be scaled up for total energy contributions
 
     return KE;
@@ -120,7 +120,7 @@ public:
     // this is equal to <pf | psi>
 
     FE =innerProductReal(pf[0], psi[0], s);
-    FE /= Double(Layout::vol()*Nc*Ns);
+    FE /= ( Double(Layout::vol()) Double(Nc*Ns) );
     return FE;
   }
 

@@ -95,7 +95,7 @@ void readCPPACS(CPPACSGauge_t& header, multi1d<LatticeColorMatrix>& u, const std
   ColorMatrixD  uuuD ; 
   ColorMatrix  uuu ; 
 
-  for(int site=0; site < Layout::vol(); ++site)
+  for(size_t site=0; site < Layout::vol(); ++site)
   {
     multi1d<int> coord = crtesn(site, Layout::lattSize()); // The coordinate
     // read in a single site

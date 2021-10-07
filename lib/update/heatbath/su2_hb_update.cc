@@ -107,8 +107,8 @@ namespace Chroma
 	       LatticeBoolean& lAccept) 
   {
     // received weight=SqDet*BetaMC
-    int vol_cb = Layout::vol() >> 1; //volume of cb sublattice
-    int vol_accept;
+    size_t vol_cb = Layout::vol() >> 1; //volume of cb sublattice
+    size_t vol_accept;
     LatticeInt ilbtmp=0;
     lAccept = (1 < 0);
     LatticeReal w_exp;
@@ -145,10 +145,10 @@ namespace Chroma
 		  LatticeBoolean& lAccept) 
   {
     // received weight=SqDet*BetaMC
-    int vol_cb = Layout::vol() >> 1; //volume of cb sublattice
+    size_t vol_cb = Layout::vol() >> 1; //volume of cb sublattice
     lAccept = (1 < 0);
     LatticeInt ilbtmp=0;
-    int vol_accept;
+    size_t vol_accept;
     LatticeReal xr1,xr2,xr3,xr4;
     int n_runs=0;
     do {

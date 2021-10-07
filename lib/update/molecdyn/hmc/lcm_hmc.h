@@ -111,8 +111,8 @@ namespace Chroma
 	deltaP += sqrt(norm2(DelP[mu]));
       }
 
-      deltaQ /= Double(Nd*Layout::vol());
-      deltaP /= Double(Nd*Layout::vol());
+      deltaQ /= ( Double(Nd) * Double(Layout::vol()) );
+      deltaP /= ( Double(Nd) * Double(Layout::vol()) );
 
       
     }

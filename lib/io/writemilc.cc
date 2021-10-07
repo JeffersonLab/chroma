@@ -55,7 +55,7 @@ void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u,
    */
   
   // MILC format has the directions inside the sites
-  for(int site=0; site < Layout::vol(); ++site)
+  for(size_t site=0; site < Layout::vol(); ++site)
   {
     multi1d<int> coord = crtesn(site, Layout::lattSize()); // The coordinate
       

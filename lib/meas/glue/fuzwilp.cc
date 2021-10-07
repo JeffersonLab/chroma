@@ -1,4 +1,4 @@
-
+ 
 // // version with added tmax (ACI)
 /*! \file
  *  \brief Calculate ape-fuzzed Wilson loops
@@ -121,7 +121,7 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
   for(int mu=0; mu < Nd; ++mu)
     link += sum(real(trace(u_smear[mu])));
 
-  link /= double(Layout::vol()*Nd*Nc);
+  link /= ( Double(Layout::vol()) * Double(Nd) * Double(Nc) );
   QDPIO::cout << "Average link after smearing: " << link << std::endl;
 
   
@@ -261,7 +261,7 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
 
 //  QDPIO::cout << "t= " << t << "   r= " << r << std::endl;
 //  QDPIO::cout << "fuz_wlp1= "  << 2*fuz_wlp1[r][t]/ 
-//		double((Layout::vol())*(Nd-1)*(Nd-2)*Nc) << std::endl;
+//		( Double(Layout::vol()) * Double(Nd-1)* Double(Nd-2)* Double(Nc) ) << std::endl;
 
 	  /* Now do non-planar loops */
 
@@ -522,7 +522,7 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
     }              /* end mu loop */
   }                /* end t loop */
 
-  ddummy = 1.0 / double (Layout::vol()*Nc*(Nd-1)) ;
+  ddummy = 1.0 / ( Double(Layout::vol()) * Double(Nc) * Double(Nd-1) ) ;
 
   push(xml,"fuz_wlp1");			// XML tag for fuz_wlp1
   write(xml, "lengthr", lengthr);
@@ -540,7 +540,8 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
   } // end for r 
   pop(xml);				// XML end tag for fuz_wlp1
 
-   ddummy = 1.0 / double(Layout::vol()*8*Nc*(Nd-1)*(Nd-2) ) ;
+   ddummy = 1.0 / ( Double(Layout::vol()) * Double(8) 
+											* Double(Nc) *Double(Nd-1) * Double(Nd-2) ) ;
 
   for(t = 0;t  < ( lengtht); ++t )
   {
