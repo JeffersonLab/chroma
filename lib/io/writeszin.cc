@@ -134,7 +134,7 @@ void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
     LatticeColorMatrixF u_old_prec(u_old);      // Cast to fixed 32 bit prec
 
     for(int cb=0; cb < 2; ++cb)
-      for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
+      for(size_t sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
       {
 	multi1d<int> coord = crtesn(sitecb, lattsize_cb); // The coordinate
       
@@ -250,7 +250,7 @@ void writeSzinTrunc(const SzinGauge_t& header0, const multi1d<LatticeColorMatrix
   lattsize_cb[0] /= 2;		// Evaluate the coords on the checkerboard lattice
 
   // Construct the volume of this truncated problem
-  int vol_cb = 1;
+  size_t vol_cb = 1;
   for(int j = 0; j < Nd; j++)
     vol_cb *= lattsize_cb[j];
 
@@ -261,7 +261,7 @@ void writeSzinTrunc(const SzinGauge_t& header0, const multi1d<LatticeColorMatrix
     LatticeColorMatrixF u_old(u_tt);      // Cast to fixed 32 bit prec
 
     for(int cb=0; cb < 2; ++cb)
-      for(int sitecb=0; sitecb < vol_cb; ++sitecb)
+      for(size_t sitecb=0; sitecb < vol_cb; ++sitecb)
       {
 	multi1d<int> coord = crtesn(sitecb, lattsize_cb); // The coordinate
       
@@ -328,7 +328,7 @@ void writeSzinReplica(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
   lattsize_cb[0] /= 2;		// Evaluate the coords on the checkerboard lattice
 
   // Construct the volume of this replicated problem
-  int vol_cb = 1;
+  size_t vol_cb = 1;
   for(int j = 0; j < Nd; j++)
     vol_cb *= lattsize_cb[j];
 
@@ -338,7 +338,7 @@ void writeSzinReplica(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
     LatticeColorMatrix  u_old = transpose(u[j]); // Take the transpose
   
     for(int cb=0; cb < 2; ++cb)
-      for(int sitecb=0; sitecb < vol_cb; ++sitecb)
+      for(size_t sitecb=0; sitecb < vol_cb; ++sitecb)
       {
 	multi1d<int> coord = crtesn(sitecb, lattsize_cb); // The coordinate
       

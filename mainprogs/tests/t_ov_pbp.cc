@@ -562,8 +562,6 @@ int main(int argc, char **argv)
 
 
 
-    Real vol = Real(Layout::vol());
-
     for(int m=0;  m < params.quark_mass.size(); m++) {
 
       // Construct < source , solution > inner products for the trace

@@ -88,13 +88,13 @@ void coulGauge(multi1d<LatticeColorMatrix>& u,
     {
       num_sdir = Nd - 2;
       tdirp = true;
-      norm = Double(Layout::vol()*Nc) * (Double(num_sdir)+Double(xi_sq));
+      norm = Double(Layout::vol())*Double(Nc) * (Double(num_sdir)+Double(xi_sq));
     }
     else
     {
       num_sdir = Nd - 1;
       tdirp = false;
-      norm = Double(Layout::vol()*Nc*num_sdir);
+      norm = Double(Layout::vol())*Double(Nc)*Double(num_sdir);
     }
   }
   else
@@ -103,13 +103,13 @@ void coulGauge(multi1d<LatticeColorMatrix>& u,
     {
       num_sdir = Nd - 1;
       tdirp = true;
-      norm = Double(Layout::vol()*Nc) * (Double(num_sdir)+Double(xi_sq));
+      norm = Double(Layout::vol())*Double(Nc) * (Double(num_sdir)+Double(xi_sq));
     }
     else
     {
       num_sdir = Nd;
       tdirp = false;
-      norm = Double(Layout::vol()*Nc*num_sdir);
+      norm = Double(Layout::vol())*Double(Nc)*Double(num_sdir);
     }
   }
 
@@ -131,12 +131,12 @@ void coulGauge(multi1d<LatticeColorMatrix>& u,
   if( tdirp )
   {
     tgfold = (xi_sq*tgf_t+tgf_s)/norm;
-    tgf_s = tgf_s/(Double(Layout::vol()*Nc*num_sdir));
-    tgf_t = tgf_t/(Double(Layout::vol()*Nc));
+    tgf_s = tgf_s/(Double(Layout::vol())*Double(Nc)*Double(num_sdir));
+    tgf_t = tgf_t/(Double(Layout::vol())*Double(Nc));
   }
   else
   {
-    tgf_s = tgf_s/(Double(Layout::vol()*Nc*num_sdir));
+    tgf_s = tgf_s/( Double(Layout::vol())* Double(Nc)* Double(num_sdir) );
     tgfold = tgf_s;
   }
   
@@ -194,12 +194,12 @@ void coulGauge(multi1d<LatticeColorMatrix>& u,
     if( tdirp )
     {
       tgfnew = (xi_sq*tgf_t+tgf_s)/norm;
-      tgf_s = tgf_s/(Double(Layout::vol()*Nc*num_sdir));
-      tgf_t = tgf_t/(Double(Layout::vol()*Nc));
+      tgf_s = tgf_s/(Double(Layout::vol())*Double(Nc)*Double(num_sdir));
+      tgf_t = tgf_t/(Double(Layout::vol())*Double(Nc));
     }
     else
     {
-      tgf_s = tgf_s/(Double(Layout::vol()*Nc*num_sdir));
+      tgf_s = tgf_s/(Double(Layout::vol())*Double(Nc)*Double(num_sdir));
       tgfnew = tgf_s;
     }
 

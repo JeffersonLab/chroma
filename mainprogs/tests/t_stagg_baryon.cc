@@ -212,7 +212,7 @@ void dump_text_src(LatticeStaggeredFermion psi, multi1d<int> nrow)
   multi1d<int> coords ;
   Complex z ; 
 
-  for(int site=0; site < Layout::vol(); ++site)
+  for(size_t site=0; site < Layout::vol(); ++site)
     {
       multi1d<int> coord = crtesn(site, Layout::lattSize());
       printf("[%d,%d,%d,%d] \n",

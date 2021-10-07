@@ -104,7 +104,7 @@ if( Chroma_ENABLE_SANITIZERS )
        OR ( CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 4.8) )
 
        message(STATUS "Chroma: Setting Sanitizer options")
-       set(Chroma_SANITIZER_OPTS "-fsanitize=address,undefined")
+       set(Chroma_SANITIZER_OPTS "-fsanitize=undefined")
        set(CPPWilsonDslash_ENABLE_SANITIZERS ON)
        set(QDPLapack_ENABLE_SANITIZERS ON)
    else()

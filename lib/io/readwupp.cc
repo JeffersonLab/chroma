@@ -88,7 +88,7 @@ namespace Chroma {
   ColorMatrixF  uuF ; 
 
   QDPIO::cout<<"Reading the gauge fields...\n" ;
-  for(int site=0; site < Layout::vol(); ++site)
+  for(size_t site=0; site < Layout::vol(); ++site)
   {
      multi1d<int> coord = crtesn(site, Layout::lattSize()); // The coordinate
     // read in a single site

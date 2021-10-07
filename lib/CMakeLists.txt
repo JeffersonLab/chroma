@@ -1980,13 +1980,13 @@ target_sources(chromalib PRIVATE
 	update/molecdyn/predictor/quda_predictor.cc
 )
 
-# QUDA injects an unnecessary dependency to hip::device through roc::rocprim_hip.
-# The inclusion of hip::device adds flags for hipcc, forcing chroma to use hipcc.
-# Being not sure how to avoid QUDA injecting the hip::device depenency, the easiest
-# solution (hack) is to empty of content hip::device.
-if( QDP_BACKEND_ROCM )
+if( QUDA_TARGET_HIP )
+  # QUDA injects an unnecessary dependency to hip::device through roc::rocprim_hip.
+  # The inclusion of hip::device adds flags for hipcc, forcing chroma to use hipcc.
+  # Being not sure how to avoid QUDA injecting the hip::device depenency, the easiest
+  # solution (hack) is to empty of content hip::device.
   set_target_properties(hip::device PROPERTIES INTERFACE_COMPILE_OPTIONS ""
-                                               INTERFACE_LINK_LIBRARIES "")
+                                             INTERFACE_LINK_LIBRARIES "")
 endif()
 
 target_link_libraries(chromalib PUBLIC QUDA::quda)
@@ -2019,7 +2019,7 @@ endif()
 
 
 if( Chroma_SANITIZER_OPTS )
-   target_compile_options(chromalib PUBLIC ${Chroma_SANITIZER_OPTS})
+   target_compile_options(chromalib PRIVATE ${Chroma_SANITIZER_OPTS})
    target_link_options(chromalib PUBLIC ${Chroma_SANITIZER_OPTS})
 endif()
 ################################################

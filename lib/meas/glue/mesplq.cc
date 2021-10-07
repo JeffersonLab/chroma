@@ -67,7 +67,7 @@ namespace Chroma
     for(int mu=1; mu < Nd; ++mu)
       for(int nu=0; nu < mu; ++nu)
       {
-	plane_plaq[mu][nu] /= Double(Layout::vol()*Nc);
+	plane_plaq[mu][nu] /= ( Double(Layout::vol()) * Double(Nc) );
 	plane_plaq[nu][mu] = plane_plaq[mu][nu];
       }
 
@@ -75,7 +75,8 @@ namespace Chroma
     for(int mu=0; mu < Nd; ++mu)
       link += sum(real(trace(u[mu])));
 
-    link /= Double(Layout::vol()*Nd*Nc);
+		// avoid overflows
+    link /= ( Double(Layout::vol()) * Double(Nd*Nc) );
 
     END_CODE();
   }

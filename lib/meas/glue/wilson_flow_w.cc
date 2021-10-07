@@ -89,8 +89,8 @@ namespace Chroma
       }
     }
 
-    gspace /= -2.0*Layout::vol() ;
-    gtime /= -2.0*Layout::vol() ;
+    gspace /= -2.0*Real(Layout::vol()) ;
+    gtime /= -2.0*Real(Layout::vol()) ;
 
   }
 

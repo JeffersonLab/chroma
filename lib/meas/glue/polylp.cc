@@ -31,7 +31,7 @@ namespace Chroma
     }
 
     /* Take the trace and sum up */
-    poly_loop = sum(trace(poly)) / Double(Nc*Layout::vol());
+    poly_loop = sum(trace(poly)) / ( Double(Nc)*Double(Layout::vol()) );
 
     END_CODE();
   }

@@ -59,7 +59,7 @@ int main(int argc, char **argv)
       myt2=clock();
       
       mydt=(double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
-      mydt=1.0e6*mydt/((double)(iter*(Layout::vol()/2)));
+      mydt=1.0e6*mydt/((double)(iter*((double)Layout::vol()/2)));
       
       QDPIO::cout << "cb = " << cb << " isign = " << isign << std::endl;
       QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 

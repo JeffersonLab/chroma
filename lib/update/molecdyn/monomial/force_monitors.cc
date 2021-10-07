@@ -50,7 +50,7 @@ namespace Chroma
     // Precompute these
     multi1d<LatticeReal> f2(F.size());
     multi1d<LatticeReal> f1(F.size());
-    Real num_sites = QDP::Layout::vol();
+    Real num_sites = Real(QDP::Layout::vol());
 
     for(int mu=0; mu < F.size(); ++mu)
     {

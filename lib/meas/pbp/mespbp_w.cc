@@ -90,8 +90,8 @@ void MesPbp(
 	  psi_bar_psi = sum(trace_aux0);
 	
 	// Normalization
-	Real norm = 1.0 / Real(2 * QDP::Layout::vol());
-	norm /= (Ns * Nc);
+	Real norm = 1.0 / ( Real(2) * Real(QDP::Layout::vol()) );
+	norm /= Real(Ns * Nc);
         
     psi_bar_psi = psi_bar_psi * norm;
 	

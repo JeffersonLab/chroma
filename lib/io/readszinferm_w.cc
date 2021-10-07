@@ -33,7 +33,7 @@ void readSzinFerm(LatticeFermion& q, const std::string& file)
   /* However, since I am not doing any site peeking, perhaps this will
      be OK */
 
-  for(int site=0; site < Layout::vol(); site++) { 
+  for(size_t site=0; site < Layout::vol(); site++) { 
 	DFermion site_tmp_d = sitebuf_prec[site];
 	Fermion site_tmp_r;
 
@@ -64,7 +64,7 @@ void readSzinFerm(LatticeFermion& q, const std::string& file)
   int index = 0; 
   for(int cb=0; cb < 2; ++cb)
   {
-    for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
+    for(size_t sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
     {
       multi1d<int> coord = crtesn(sitecb, lattsize_cb);
 

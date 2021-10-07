@@ -411,9 +411,10 @@ namespace Chroma
 #endif
       }  
 
-      int num_cb_sites = Layout::vol()/2;
-      unsigned long total_flops = (site_flops + (1320+504+1320+504+48)*mv_apps)*num_cb_sites;
-      double gflops = (double)(total_flops)/(1.0e9);
+      size_t num_cb_sites = Layout::vol()/2;
+      double total_flops = (static_cast<double>(site_flops) + static_cast<double>(1320+504+1320+504+48)
+								*static_cast<double>(mv_apps))*static_cast<double>(num_cb_sites);
+      double gflops = total_flops/1.0e9;
 
       double total_time = end - start;
       QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
@@ -468,7 +469,7 @@ namespace Chroma
 #endif
       QDPIO::cout << "Done" << std::endl << std::flush;
       double rsd_final;
-      int num_cb_sites = Layout::vol()/2;
+      size_t num_cb_sites = Layout::vol()/2;
 
       unsigned long site_flops1=0;
       unsigned long mv_apps1=0;
@@ -484,8 +485,9 @@ namespace Chroma
       double end = omp_get_wtime();
 
 
-      unsigned long total_flops = (site_flops1 + (1320+504+1320+504+48)*mv_apps1)*num_cb_sites;
-      double gflops = (double)(total_flops)/(1.0e9);
+      double total_flops = (static_cast<double>(site_flops1) + static_cast<double>(1320+504+1320+504+48)*
+							static_cast<double>(mv_apps1))*static_cast<double(num_cb_sites);
+      double gflops = total_flops/1.0e9;
       double total_time = end - start;
 
       Double r_final = sqrt(toDouble(rsd_final)/norm2(chi,A->subset()));
@@ -496,8 +498,9 @@ namespace Chroma
       start = omp_get_wtime();
       (*bicgstab_solver)(psi_qphix,tmp_qphix, toDouble(invParam.RsdTarget), n_count2, rsd_final, site_flops2, mv_apps2, +1, invParam.VerboseP);
       end = omp_get_wtime();
-      total_flops = (site_flops2 + (1320+504+1320+504+48)*mv_apps2)*num_cb_sites;
-      gflops = (double)(total_flops)/(1.0e9);
+      total_flops = (static_cast<double>(site_flops2) + static_cast<double>(1320+504+1320+504+48)
+										*static_cast<double>(mv_apps2))*static_cast<double>(num_cb_sites);
+      gflops = total_flops/1.0e9;
       total_time = end - start;
 
 #ifndef QDP_IS_QDPJIT

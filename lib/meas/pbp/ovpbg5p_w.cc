@@ -155,7 +155,7 @@ void OvPbg5p(XMLWriter& xml_out,
 
     
   /* Normalize */
-  ddummy1 = Double(1) / Double(nhit * Layout::vol());
+  ddummy1 = Double(1) / ( Double(nhit) * Double(Layout::vol()) );
   TrBdag_B_avg *= TrBdag_B_avg;
   for(int i=0; i < numMass; ++i)
   {

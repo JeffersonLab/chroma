@@ -97,7 +97,7 @@ namespace Chroma
 #endif
 
     /* The initial trace */
-    Double old_tr = sum(real(trace(u_smear * u_unproj))) / toDouble(Layout::vol()*Nc);
+    Double old_tr = sum(real(trace(u_smear * u_unproj))) / ( Double(Layout::vol())*Double(Nc) );
     Double new_tr;
 
     int n_smr = 0;
@@ -116,7 +116,7 @@ namespace Chroma
       reunit(u_smear);
     
       /* Calculate the trace */
-      new_tr = sum(real(trace(u_smear * u_unproj))) / toDouble(Layout::vol()*Nc);
+      new_tr = sum(real(trace(u_smear * u_unproj))) / ( Double(Layout::vol())*Double(Nc));
 
       if( wrswitch )
 	QDPIO::cout << " BLOCK: " << n_smr << " old_tr= " << old_tr << " new_tr= " << new_tr;
