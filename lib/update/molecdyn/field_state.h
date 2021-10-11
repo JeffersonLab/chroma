@@ -28,7 +28,7 @@ namespace Chroma
   public:
 
     //! Virtual destructor
-    virtual ~AbsFieldState<P,Q>() {}
+    virtual ~AbsFieldState() {}
 
     //! Clone the state -- this will be needed for the virtual 
     // copy ideas for derived classes
