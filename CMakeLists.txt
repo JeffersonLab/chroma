@@ -100,16 +100,11 @@ endif()
 find_package(QDPXX REQUIRED)
 
 if( Chroma_ENABLE_SANITIZERS )
-   if( ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 3.1)
-       OR ( CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 4.8) )
-
-       message(STATUS "Chroma: Setting Sanitizer options")
-       set(Chroma_SANITIZER_OPTS "-fsanitize=undefined")
-       set(CPPWilsonDslash_ENABLE_SANITIZERS ON)
-       set(QDPLapack_ENABLE_SANITIZERS ON)
-   else()
-       message(STATUS "Don't know how to enable sanitizers for ${CMAKE_CXX_COMPILER_ID}... Ignoring")
-   endif()
+       include(cmake/CheckSanitizeOpts.cmake)
+       check_sanitizer_options( "${Chroma_ENABLE_SANITIZERS}" Chroma_SANITIZER_OPTS )
+       message(STATUS "Chroma: Setting Sanitizer options: ${Chroma_SANITIZER_OPTS}")
+       set(CPPWilsonDslash_ENABLE_SANITIZERS ${Chroma_ENABLE_SANITIZERS} )
+       set(QDPLapack_ENABLE_SANITIZERS ${Chroma_ENABLE_SANITIZERS} )
 endif()
 
 ##########################
