@@ -269,6 +269,7 @@ public:
 
 		quda_inv_param.kappa = 0.5;
 		quda_inv_param.clover_coeff = 1.0; // Dummy, not used
+                quda_inv_param.clover_csw = 0.0;   // Use zero and QUDA will ignore it 
 		quda_inv_param.Ls=1;
 		quda_inv_param.tol = toDouble(invParam.RsdTarget);
 		quda_inv_param.maxiter = invParam.MaxIter;

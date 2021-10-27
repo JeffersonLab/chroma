@@ -368,6 +368,7 @@ nobase_include_HEADERS = \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h util/gauge/weak_field.h \
 	util/gauge/conjgauge.h util/gauge/constgauge.h \
+	util/gauge/instanton.h \
 	util/gauge/stout_utils.h \
 	util/gauge/key_glue_matelem.h \
 	util/gauge/key_timeslice_gauge.h \
@@ -1361,6 +1362,7 @@ libchroma_a_SOURCES = \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/gauge/conjgauge.cc util/gauge/constgauge.cc \
+	util/gauge/instanton.cc \
 	util/gauge/weak_field.cc \
 	util/gauge/stout_utils.cc \
 	util/gauge/key_glue_matelem.cc \

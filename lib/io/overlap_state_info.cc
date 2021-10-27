@@ -33,7 +33,10 @@ OverlapStateInfo::OverlapStateInfo(void)
 
 void read(XMLReader& xml_in, const std::string& path, OverlapStateInfo& info)
 {
-  bool initedP;
+  // Unused variable
+  //bool initedP;
+  //initedP = false;
+
   Real ApproxMin;
   Real ApproxMax;
   int  NWilsVec;
@@ -41,7 +44,7 @@ void read(XMLReader& xml_in, const std::string& path, OverlapStateInfo& info)
   EigenIO_t eigen_io;
   RitzParams_t ritzery;
 
-  initedP = false;
+
   ApproxMin = 0;
   ApproxMax = 0; 
   NWilsVec = 0;

@@ -3,6 +3,7 @@
  */
 
 #include "chroma.h"
+#include "util/gauge/instanton.h"
 
 using namespace Chroma;
 
@@ -380,7 +381,8 @@ int main(int argc, char **argv)
     break;
 #endif
 
-#if 0
+#if 1
+    // Hurray!
   case 14:
   {
     multi1d<Real> center(Nd);
@@ -403,7 +405,7 @@ int main(int argc, char **argv)
     if (Nc > 2)
     {
       int j = Nc*(Nc-1)/2 - 1;
-      QDPIO::cout << "Enter SU(2) subgroup index, 0 .. %d\n",j;
+      QDPIO::cout << "Enter SU(2) subgroup index, 0 .. " << j << "\n";
       QDPIO::cin >> su2_index;
     }
     else
@@ -418,7 +420,7 @@ int main(int argc, char **argv)
     pop(xml_out);
     QDPIO::cout << "Create instanton configuration\n";
     instanton (u, center, rho, su2_index, sign);
-
+  }
   break;
 #endif
 

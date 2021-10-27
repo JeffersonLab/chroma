@@ -134,8 +134,8 @@ namespace Chroma
     namespace
     {
       // Convenience type
-      //typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MOD_t;
-      typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MODS_t;
+      //typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVector> > MOD_t;
+      typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVector> > MODS_t;
 
       //----------------------------------------------------------------------------
       //! Get source key
@@ -158,9 +158,9 @@ namespace Chroma
 
 	// Get the source std::vector
 	KeyTimeSliceColorVec_t src_key = getSrcKey(t_source, colorvec_src);
-	LatticeColorVectorF vec_srce = zero;
+	LatticeColorVector vec_srce = zero;
 
-	TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source);
+	TimeSliceIO<LatticeColorVector> time_slice_io(vec_srce, t_source);
 	source_obj.get(src_key, time_slice_io);
 
 	return vec_srce;
@@ -257,7 +257,7 @@ namespace Chroma
     namespace
     {
       // Convenience type
-      typedef QDP::MapObjectDisk<KeyPropDistillation_t, TimeSliceIO<LatticeColorVectorF> > MOD_t;
+      typedef QDP::MapObjectDisk<KeyPropDistillation_t, TimeSliceIO<LatticeColorVector> > MOD_t;
 
       //----------------------------------------------------------------------------
       //! Get source key
@@ -284,9 +284,9 @@ namespace Chroma
 
 	// Get the source std::vector
 	KeyPropDistillation_t src_key = getSrcKey(t_source, colorvec_src);
-	LatticeColorVectorF vec_srce = zero;
+	LatticeColorVector vec_srce = zero;
 
-	TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source);
+	TimeSliceIO<LatticeColorVector> time_slice_io(vec_srce, t_source);
 	source_obj.get(src_key, time_slice_io);
 
 	return vec_srce;
@@ -544,7 +544,7 @@ namespace Chroma
       //
       // Map-object-disk storage of the source file
       //
-      //QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > source_obj;
+      //QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVector> > source_obj;
       MODS_t source_obj;
       source_obj.setDebug(0);
 
@@ -580,7 +580,7 @@ namespace Chroma
       //
       // Map-object-disk storage
       //
-      QDP::MapObjectDisk<KeyPropDistillation_t, TimeSliceIO<LatticeColorVectorF> > prop_obj;
+      QDP::MapObjectDisk<KeyPropDistillation_t, TimeSliceIO<LatticeColorVector> > prop_obj;
       prop_obj.setDebug(0);
 
       QDPIO::cout << "Open solution file" << std::endl;
@@ -754,9 +754,9 @@ namespace Chroma
 		key != snk_keys.end();
 		++key)
 	    {
-	      LatticeColorVectorF tmptmp = ferm_out(key->spin_snk,key->spin_src);
+	      LatticeColorVector tmptmp = ferm_out(key->spin_snk,key->spin_src);
 
-	      prop_obj.insert(*key, TimeSliceIO<LatticeColorVectorF>(tmptmp, key->t_slice));
+	      prop_obj.insert(*key, TimeSliceIO<LatticeColorVector>(tmptmp, key->t_slice));
 	    } // for key
 
 	    sniss2.stop();

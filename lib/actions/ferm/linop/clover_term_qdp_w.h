@@ -25,10 +25,10 @@ namespace Chroma
 
   template<typename R>
   struct QUDAPackedClovSite {
-    R diag1[6];
-    R offDiag1[15][2];
-    R diag2[6];
-    R offDiag2[15][2];
+    R diag1[2*Nc];
+    R offDiag1[2*Nc*Nc-Nc][2];
+    R diag2[2*Nc];
+    R offDiag2[2*Nc*Nc-Nc][2];
   };
 
   // Reader/writers
@@ -224,16 +224,16 @@ namespace Chroma
     // Deep copy.
 #pragma omp parallel for
     for(int site=0; site < nodeSites;++site) {
-    	for(int block=0; block < 2; ++block) {
-    		for(int d=0; d < 6; ++d) {
-    			tri[site].diag[block][d] = from.tri[site].diag[block][d];
-    		}
-    		for(int od=0; od < 15; ++od) {
-    			tri[site].offd[block][od] = from.tri[site].offd[block][od];
-    		}
-    	}
+      for(int block=0; block < 2; ++block) {
+	for(int d=0; d < 2*Nc; ++d) {
+	  tri[site].diag[block][d] = from.tri[site].diag[block][d];
+	}
+	for(int od=0; od < 2*Nc*Nc-Nc; ++od) {
+	  tri[site].offd[block][od] = from.tri[site].offd[block][od];
+	}
+      }
     }
-
+    
 
     END_CODE();  
 #endif
@@ -642,17 +642,17 @@ namespace Chroma
 	for(int block=0; block < 2; block++) { 
 	  
 	  // Triangular storage 
-	  RScalar<REALT> inv_d[6] QDP_ALIGN16;
-	  RComplex<REALT> inv_offd[15] QDP_ALIGN16;
-	  RComplex<REALT> v[6] QDP_ALIGN16;
-	  RScalar<REALT>  diag_g[6] QDP_ALIGN16;
+	  RScalar<REALT> inv_d[N] QDP_ALIGN16;
+	  RComplex<REALT> inv_offd[2*Nc*Nc-Nc] QDP_ALIGN16;
+	  RComplex<REALT> v[N] QDP_ALIGN16;
+	  RScalar<REALT>  diag_g[N] QDP_ALIGN16;
 	  // Algorithm 4.1.2 LDL^\dagger Decomposition
 	  // From Golub, van Loan 3rd ed, page 139
 	  for(int i=0; i < N; i++) { 
 	    inv_d[i] = tri[site].diag[block][i];
 	  }
 	  
-	  for(int i=0; i < 15; i++) { 
+	  for(int i=0; i < 2*Nc*Nc-Nc; i++) { 
 	    inv_offd[i]  =tri[site].offd[block][i];
 	  }
 	  
@@ -802,7 +802,7 @@ namespace Chroma
 	  for(int i=0; i < N; i++) { 
 	    tri[site].diag[block][i] = inv_d[i];
 	  }
-	  for(int i=0; i < 15; i++) { 
+	  for(int i=0; i < 2*Nc*Nc-Nc; i++) { 
 	    tri[site].offd[block][i] = inv_offd[i];
 	  }
 	}
@@ -1051,27 +1051,27 @@ namespace Chroma
    * \param chi     result                                      (Write)
    * \param psi     source                                      (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
+   * \param cb      Checkerboard of OUTPUT std::vector          (Read) 
    */
   template<typename T, typename U>
   void QDPCloverTermT<T,U>::applySite(T& chi, const T& psi, 
-			    enum PlusMinus isign, int site) const
+				      enum PlusMinus isign, int site) const
   {
 #ifndef QDP_IS_QDPJIT
     START_CODE();
-
+    
     if ( Ns != 4 )
-    {
-      QDPIO::cerr << __func__ << ": CloverTerm::applySite requires Ns==4" << std::endl;
-      QDP_abort(1);
-    }
-
+      {
+	QDPIO::cerr << __func__ << ": CloverTerm::applySite requires Ns==4" << std::endl;
+	QDP_abort(1);
+      }
+    
     int n = 2*Nc;
-
+    
     RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
     const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));
-
-
+    
+    
     cchi[ 0] = tri[site].diag[0][ 0]  * ppsi[ 0]
       +   conj(tri[site].offd[0][ 0]) * ppsi[ 1]
       +   conj(tri[site].offd[0][ 1]) * ppsi[ 2]
@@ -1602,38 +1602,36 @@ namespace Chroma
 
 #endif
 #if 1
-#warning "Using unrolled clover term"
-      // Rolled version
-      for(int i = 0; i < n; ++i) {
+	  // Rolled version
+	  for(int i = 0; i < n; ++i) {
 #ifndef NEW
-    	  cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
-    	  cchi[1*n+i] = tri[site].diag[1][i] * ppsi[1*n+i];
+	    cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
+	    cchi[1*n+i] = tri[site].diag[1][i] * ppsi[1*n+i];
 #else
-    	  cchi[0*n+i] = diag0[i] * ppsi[0*n+i];
-    	  cchi[1*n+i] = diag1[i] * ppsi[1*n+i];
-
+	    cchi[0*n+i] = diag0[i] * ppsi[0*n+i];
+	    cchi[1*n+i] = diag1[i] * ppsi[1*n+i];	
 #endif
-      }
-
-      int kij = 0;  
-      for(int i = 0; i < n; ++i) {
-
-    	  for(int j = 0; j < i; j++) {
+	  }
+	  
+	  int kij = 0;  
+	  for(int i = 0; i < n; ++i) {
+	    
+	    for(int j = 0; j < i; j++) {
 #ifndef NEW
-    		  cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
-    		  cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
-    		  cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
-    		  cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
+	      cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
+	      cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
+	      cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
+	      cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
 #else
-    		  cchi[0*n+i] += offdiag0[kij] * ppsi[0*n+j];
-    		      		  cchi[0*n+j] += conj(offdiag0[kij]) * ppsi[0*n+i];
-    		      		  cchi[1*n+i] += offdiag1[kij] * ppsi[1*n+j];
-    		      		  cchi[1*n+j] += conj(offdiag1[kij]) * ppsi[1*n+i];
+	      cchi[0*n+i] += offdiag0[kij] * ppsi[0*n+j];
+	      cchi[0*n+j] += conj(offdiag0[kij]) * ppsi[0*n+i];
+	      cchi[1*n+i] += offdiag1[kij] * ppsi[1*n+j];
+	      cchi[1*n+j] += conj(offdiag1[kij]) * ppsi[1*n+i];
 #endif
-    		  kij++;
-    	  }
-
-      }
+	      kij++;
+	    }
+	    
+	  }
 #elif 0
 #warning "Using unrolled clover term - version 1"
       // Unrolled version - basically copying the loop structure
@@ -2160,7 +2158,7 @@ namespace Chroma
     END_CODE();
 #endif
   }
-
+  
 
   namespace QDPCloverEnv {
     template<typename R> 
@@ -2174,40 +2172,41 @@ namespace Chroma
     void qudaPackSiteLoop(int lo, int hi, int myId, QUDAPackArgs<R>* a) {
       int cb = a->cb;
       int Ns2 = Ns/2;
-
+      
       multi1d< QUDAPackedClovSite<R> >& quda_array = a->quda_array;
       const PrimitiveClovTriang< R >* tri=a->tri;
-
-      const int idtab[15]={0,1,3,6,10,2,4,7,11,5,8,12,9,13,14};
-
+      
+      // CRUFT
+      //const int idtab[15]={0,1,3,6,10,2,4,7,11,5,8,12,9,13,14};
+      
       for(int ssite=lo; ssite < hi; ++ssite) {
 	int site = rb[cb].siteTable()[ssite];
 	// First Chiral Block
-	for(int i=0; i < 6; i++) { 
+	for(int i=0; i < 2*Nc; i++) { 
 	  quda_array[site].diag1[i] = tri[site].diag[0][i].elem();
 	}
-
+	
 	int target_index=0;
 	
 	for(int col=0; col < Nc*Ns2-1; col++) { 
 	  for(int row=col+1; row < Nc*Ns2; row++) {
-
+	    
 	    int source_index = row*(row-1)/2 + col;
-
+	    
 	    quda_array[site].offDiag1[target_index][0] = tri[site].offd[0][source_index].real();
 	    quda_array[site].offDiag1[target_index][1] = tri[site].offd[0][source_index].imag();
 	    target_index++;
 	  }
 	}
 	// Second Chiral Block
-	for(int i=0; i < 6; i++) { 
+	for(int i=0; i < 2*Nc; i++) { 
 	  quda_array[site].diag2[i] = tri[site].diag[1][i].elem();
 	}
-
+	
 	target_index=0;
 	for(int col=0; col < Nc*Ns2-1; col++) { 
 	  for(int row=col+1; row < Nc*Ns2; row++) {
-
+	    
 	    int source_index = row*(row-1)/2 + col;
 	    quda_array[site].offDiag2[target_index][0] = tri[site].offd[1][source_index].real();
 	    quda_array[site].offDiag2[target_index][1] = tri[site].offd[1][source_index].imag();
@@ -2226,12 +2225,7 @@ namespace Chroma
 
       QDPCloverEnv::QUDAPackArgs<REALT> args = { cb, quda_array,tri };
       dispatch_to_threads(num_sites, args, QDPCloverEnv::qudaPackSiteLoop<REALT>);
-
-
-      
     }  
-
-
 
   typedef QDPCloverTermT<LatticeFermion, LatticeColorMatrix> QDPCloverTerm;
   typedef QDPCloverTermT<LatticeFermionF, LatticeColorMatrixF> QDPCloverTermF;

@@ -609,8 +609,6 @@ namespace Chroma
     // Construct operator A
     try
     {
-      int G5 = Ns*Ns-1;
-
       std::istringstream  xml_s(params.source_smearing.source.xml);
       XMLReader  sourcetop(xml_s);
       QDPIO::cout << "Source = " << params.source_smearing.source.id << std::endl;
@@ -699,8 +697,6 @@ namespace Chroma
 
     // Construct operator B
     {
-      int G5 = Ns*Ns-1;
-
       std::istringstream  xml_s(params.sink_smearing.sink.xml);
       XMLReader  sinktop(xml_s);
       QDPIO::cout << "Sink = " << params.sink_smearing.sink.id << std::endl;

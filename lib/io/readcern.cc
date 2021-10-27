@@ -1,4 +1,3 @@
-
 /*! \file
  *  \brief Read a CERN gauge configuration 
  */
@@ -27,8 +26,6 @@ namespace Chroma
   //                   ix=x3+N3*x2+N2*N3*x1+N1*N2*N3*x0,
   //               where N0,N1,N2,N3 are the global lattice sizes
 
-
-  
   
 void localPokeCernLink(const multi1d<int>& coord, const double *buf,
                        LatticeColorMatrix& Umufield)
@@ -222,6 +219,7 @@ void pokeCernLinks(const double *rdbuf, int lcbz, int linkdbles, multi1d<int>& c
 
 void readCERN(multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 {
+#if (QDP_NC == 3)
  if ((sizeof(int)!=4)||(sizeof(double)!=8)){
    QDPIO::cout << "CERN files contain 4-byte ints, 8-byte doubles"<<std::endl;
    QDP_abort(1);}
@@ -310,8 +308,9 @@ void readCERN(multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 #if  defined(ARCH_PARSCALAR) || defined(ARCH_PARSCALARVEC)
  QMP_barrier();
 #endif
+#else
+#warning "Not building readCERN"
+#endif
 }
-
-
+  
 }  // end namespace Chroma
-

@@ -18,9 +18,9 @@ namespace Chroma
    * \param mu         direction of Polyakov loop (Read)
    */
 
-  void polylp(const multi1d<LatticeColorMatrixF3>& u, DComplex& poly_loop, int mu);
+  void polylp(const multi1d<LatticeColorMatrixFNC>& u, DComplex& poly_loop, int mu);
 
-  void polylp(const multi1d<LatticeColorMatrixD3>& u, DComplex& poly_loop, int mu);
+  void polylp(const multi1d<LatticeColorMatrixDNC>& u, DComplex& poly_loop, int mu);
 
   //! Compute Polyakov loop
   /*!
@@ -30,8 +30,8 @@ namespace Chroma
    * \param poly_loop  Polyakov loop average (Write) 
    */
 
-  void polylp(const multi1d<LatticeColorMatrixF3>& u, multi1d<DComplex>& poly_loop);
-  void polylp(const multi1d<LatticeColorMatrixD3>& u, multi1d<DComplex>& poly_loop);
+  void polylp(const multi1d<LatticeColorMatrixFNC>& u, multi1d<DComplex>& poly_loop);
+  void polylp(const multi1d<LatticeColorMatrixDNC>& u, multi1d<DComplex>& poly_loop);
 
 }  // end namespace Chroma
 

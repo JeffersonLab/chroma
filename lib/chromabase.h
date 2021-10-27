@@ -11,6 +11,15 @@
 #ifndef CHROMABASE_INCLUDE
 #define CHROMABASE_INCLUDE
 
+// Preserve Nc=3 template specialisation
+#if (QDP_NC == 3)
+#define LatticeColorMatrixDNC LatticeColorMatrixD3
+#define LatticeColorMatrixFNC LatticeColorMatrixF3
+#else
+#define LatticeColorMatrixDNC LatticeColorMatrixD
+#define LatticeColorMatrixFNC LatticeColorMatrixF
+#endif
+
 #include "qdp.h"
 #include "chroma_config.h"
 
