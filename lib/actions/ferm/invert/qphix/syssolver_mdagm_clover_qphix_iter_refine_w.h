@@ -431,7 +431,7 @@ namespace Chroma
     	double end = omp_get_wtime();
 
 
-    	double total_flops = ( stati_cast<double>(site_flops1) + static_cast<double>(1320+504+1320+504+48)
+    	double total_flops = ( static_cast<double>(site_flops1) + static_cast<double>(1320+504+1320+504+48)
 														*static_cast<double>(mv_apps1))*static_cast<double>(num_cb_sites);
     	double gflops = total_flops/1.0e9;
     	double total_time = end - start;
