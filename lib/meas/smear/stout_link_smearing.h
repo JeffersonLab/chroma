@@ -55,7 +55,7 @@ namespace Chroma
       LinkSmear() {}
 
     private:
-      Params  params;   /*!< smearing params */
+      Params params;   /*!< smearing params */
     };
 
   }  // end namespace

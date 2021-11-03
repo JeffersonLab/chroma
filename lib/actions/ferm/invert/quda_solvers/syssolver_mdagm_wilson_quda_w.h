@@ -524,7 +524,7 @@ namespace Chroma
 
       Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
 
-      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
+      QDPIO::cout << "QUDA_"<< solver_string <<"_WILSON_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
    
       // Convergence Check/Blow Up
       if ( ! invParam.SilentFailP ) { 
@@ -554,7 +554,7 @@ namespace Chroma
       predictor.newVector(psi);
       swatch.stop();
       double time = swatch.getTimeInSeconds();
-      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Total time (with prediction)=" << time << std::endl;
+      QDPIO::cout << "QUDA_"<< solver_string <<"_WILSON_SOLVER: Total time (with prediction)=" << time << std::endl;
       END_CODE();
       return res;
     }

@@ -6,7 +6,9 @@
 #include "chroma_config.h"
 #include "chromabase.h"
 #include "util/gauge/stout_utils.h"
-
+#if QDP_NC != 3
+#include "util/gauge/expm12.h"
+#endif
 
 #if defined(BUILD_JIT_CLOVER_TERM)
 void function_get_fs_bs_exec(JitFunction& function, 
@@ -190,11 +192,9 @@ namespace Chroma
 	  // Get the fs and bs  -- does internal resize to make them arrays of length 3
 	  //	QDPIO::cout << __func__ << ": mu=" << mu << std::endl;
 	  getFsAndBs(Q,QQ, f, b_1, b_2, true);
-	  
-	  
+	  	  
 	  LatticeColorMatrix B_1 = b_1[0] + b_1[1]*Q + b_1[2]*QQ;
-	  LatticeColorMatrix B_2 = b_2[0] + b_2[1]*Q + b_2[2]*QQ;
-	  
+	  LatticeColorMatrix B_2 = b_2[0] + b_2[1]*Q + b_2[2]*QQ;	  
 	  
 	  // Construct the Gamma ( eq 74 and 73 )
 	  LatticeColorMatrix USigma = u[mu]*F_plus[mu];
@@ -210,8 +210,16 @@ namespace Chroma
 	  
 	  // The first 3 terms of eq 75
 	  // Now the Fat force * the exp(iQ)
+#if QDP_NC == 3
 	  F[mu]  = F_plus[mu]*(f[0] + f[1]*Q + f[2]*QQ);
-	  
+#else
+          // Q is in hermitian form. We can simply exponentiate with a 
+          // Taylor series for Nc != 3 builds          
+          expim20(Q);
+          F[mu] = F_plus[mu] * Q;
+#endif
+
+          // Debugging
 #if 0
 	  QDPIO::cout << __func__ << ": F[" << mu << "]= " << norm2(F[mu]) 
 		      << "  F_plus[mu]=" << norm2(F_plus[mu])
@@ -871,7 +879,7 @@ namespace Chroma
 #endif
       
 #else
-      #warning "Using QDP-JIT stouting"
+#warning "Using QDP-JIT stouting"
       static JitFunction function;
       if (function.empty())
 	function_get_fs_bs_build( function, Q,QQ,f,b1,b2 );
@@ -899,13 +907,19 @@ namespace Chroma
 	  
 	  // Q contains the staple term. C is a throwaway
 	  getQs(current, Q, QQ, mu, smear_in_this_dirP, rho);
-	  
+#if QDP_NC == 3
 	  // Now compute the f's
 	  multi1d<LatticeComplex> f;   // routine will resize these
 	  getFs(Q,QQ,f);   // This routine computes the f-s
 	  
 	  // Assemble the stout links exp(iQ)U_{mu} 
 	  next[mu]=(f[0] + f[1]*Q + f[2]*QQ)*current[mu];      
+#else 
+          // Q is in hermitian form. We can simply exponentiate with a 
+          // Taylor series for Nc != 3 builds
+          expim20(Q);
+          next = Q * current[mu];
+#endif
 	}
 	else { 
 	  next[mu]=current[mu];  // Unsmeared
@@ -925,19 +939,24 @@ namespace Chroma
 		     const multi2d<Real>& rho)
     {
       START_CODE();
-      
+
       LatticeColorMatrix Q, QQ;
 	  
       // Q contains the staple term. C is a throwaway
       getQs(current, Q, QQ, mu, smear_in_this_dirP, rho);
-	  
+#if QDP_NC == 3	  
       // Now compute the f's
       multi1d<LatticeComplex> f;   // routine will resize these
       getFs(Q,QQ,f);   // This routine computes the f-s
 	  
       // Assemble the stout links exp(iQ)U_{mu} 
       next = (f[0] + f[1]*Q + f[2]*QQ)*current[mu];      
-      
+#else
+      // Q is in hermitian form. We can simply exponentiate with a 
+      // Taylor series for Nc != 3 builds
+      expim20(Q);
+      next = Q * current[mu];
+#endif
       END_CODE();
     }
     

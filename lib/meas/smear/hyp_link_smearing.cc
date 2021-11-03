@@ -6,8 +6,7 @@
 
 #include "meas/smear/link_smearing_factory.h"
 #include "meas/smear/hyp_link_smearing.h"
-#include "meas/smear/hyp_smear.h"
-#include "meas/smear/hyp_smear3d.h"
+#include "util/gauge/hyp_utils.h"
 
 namespace Chroma
 {
@@ -66,32 +65,18 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
 
-      int version;
-      read(paramtop, "version", version);
-      num_smear = 1;
-      no_smear_dir = -1;
-      BlkMax = 100;
-      BlkAccu = 1.0e-5;
+      int version = 1;
+      if (paramtop.count("version") > 0)
+	read(paramtop, "version", version);
 
       switch (version) 
       {
-      case 2:
-	break;
-
-      case 3:
-	read(paramtop, "num_smear", num_smear);
-	break;
-
-      case 4:
-	read(paramtop, "num_smear", num_smear);
+      case 1:
+	int no_smear_dir;
 	read(paramtop, "no_smear_dir", no_smear_dir);
-	break;
-
-      case 5:
-	read(paramtop, "num_smear", num_smear);
-	read(paramtop, "no_smear_dir", no_smear_dir);
-	read(paramtop, "BlkMax", BlkMax);
-	read(paramtop, "BlkAccu", BlkAccu);
+	smear_dirs.resize(Nd);
+	smear_dirs = true;
+	smear_dirs[no_smear_dir] = false;
 	break;
 
       default :
@@ -99,9 +84,14 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+      read(paramtop, "link_smear_num", link_smear_num);
+      read(paramtop, "link_smear_fact", link_smear_fact);
+
       read(paramtop, "alpha1", alpha1);
       read(paramtop, "alpha2", alpha2);
       read(paramtop, "alpha3", alpha3);
+      read(paramtop, "BlkMax", BlkMax);
+      read(paramtop, "BlkAccu", BlkAccu);
     }
 
 
@@ -110,19 +100,22 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 5;
+      int version = 1;
       write(xml, "version", version);
-      write(xml, "LinkSmearingType", name);
+      write(xml, "LinkSmearingType", HypLinkSmearingEnv::name);
 
-      /* this version allows a variable num_smear */
+      // Structure
+      write(xml, "link_smear_num", link_smear_num);
+      write(xml, "link_smear_fact", link_smear_fact);
+      write(xml, "smear_dirs", smear_dirs);
+
+      // Parameters
       write(xml, "alpha1", alpha1);
       write(xml, "alpha2", alpha2);
       write(xml, "alpha3", alpha3);
-      write(xml, "num_smear", num_smear);
-      write(xml, "no_smear_dir", num_smear);
       write(xml, "BlkMax", BlkMax);
       write(xml, "BlkAccu", BlkAccu);
-
+      
       pop(xml);
     }
 
@@ -131,6 +124,29 @@ namespace Chroma
     void
     LinkSmear::operator()(multi1d<LatticeColorMatrix>& u) const
     {
+
+      // Now hyp smear
+      multi1d<LatticeColorMatrix> u_hyp = u;
+      multi1d<LatticeColorMatrix> u_tmp(Nd);
+
+      if (params.link_smear_num > 0)
+      {
+	QDPIO::cout << "Hyp Smear gauge field" << std::endl;
+
+	for(int i=0; i < params.link_smear_num; ++i)
+	{
+          Hyping::smear_links(u_hyp, u_tmp,
+                              params.smear_dirs,
+                              params.alpha1, params.alpha2, params.alpha3, 
+                              params.BlkMax, params.BlkAccu);
+	  u_hyp = u_tmp;
+	}
+	QDPIO::cout << "Gauge field Hyp-smeared!" << std::endl;
+      }
+      
+      u = u_hyp;
+
+#if 0
       // Now hyp smear
       if (params.num_smear > 0)
       {
@@ -154,7 +170,8 @@ namespace Chroma
 
 	QDPIO::cout << "Gauge field Hyp-smeared!" << std::endl;
       }
-    }
+#endif
 
+    }
   }
 }

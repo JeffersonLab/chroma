@@ -73,7 +73,7 @@ namespace Chroma
     // Grok the fermact out of the XML
     std::istringstream is(p.fermact.xml);
     XMLReader fermact_reader(is);
-    QDPIO::cout << "EvanOddPrecLogDetTwoFlavorWilsonTypeFermMonomial: construct " << p.fermact.id << std::endl;
+    QDPIO::cout << "EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomial: construct " << p.fermact.id << std::endl;
 
     WilsonTypeFermAct<T,P,Q>* tmp_act = 
       TheWilsonTypeFermActFactory::Instance().createObject(p.fermact.id, fermact_reader, p.fermact.path);

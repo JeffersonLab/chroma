@@ -141,7 +141,7 @@ namespace Chroma {
 // These guards make sure 3D is only ever considered in the right situations
 #include "qdp_config.h"
 #if QDP_NS==4
-#if QDP_NC==3
+#if QDP_NC==3 
 #if QDP_ND==4
 
 #include "lwldslash_3d_qdp_w.h"

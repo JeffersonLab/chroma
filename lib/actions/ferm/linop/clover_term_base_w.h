@@ -206,19 +206,19 @@ namespace Chroma
 	  LCM u_mu_for_nu;
 	  u_mu_for_nu = shift(u[mu],FORWARD, nu);
 
-	  using MatSU3 =  PColorMatrix< RComplex< typename WordType<LCM>::Type_t>, 3>;
+	  using MatSUN =  PColorMatrix< RComplex< typename WordType<LCM>::Type_t>, QDP_NC>;
 #define _elem(x,i) (x.elem(i).elem())
 
-	  MatSU3 staple_for;
-	  MatSU3 staple_back;
-	  MatSU3 staple_left;
-	  MatSU3 staple_right;
+	  MatSUN staple_for;
+	  MatSUN staple_back;
+	  MatSUN staple_left;
+	  MatSUN staple_right;
 
-	  MatSU3 u_tmp3;
-	  MatSU3 up_left_corner;
-	  MatSU3 up_right_corner;
-	  MatSU3 low_right_corner;
-	  MatSU3 low_left_corner;
+	  MatSUN u_tmp3;
+	  MatSUN up_left_corner;
+	  MatSUN up_right_corner;
+	  MatSUN low_right_corner;
+	  MatSUN low_left_corner;
 
 	  // EVEN
 	  {

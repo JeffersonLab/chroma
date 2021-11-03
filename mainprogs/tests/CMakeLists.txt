@@ -93,6 +93,7 @@ foreach( EXEC ${ChromaSingleExecs})
   add_executable( ${EXEC} ${EXEC}.cc )
 
   if (QDP_IS_QDPJIT)
+    target_link_libraries( ${EXEC} QDPXX::jit)
     if(QDP_PROP_OPT)
       set_target_properties( ${EXEC} PROPERTIES CXX_STANDARD 20 )
     endif()

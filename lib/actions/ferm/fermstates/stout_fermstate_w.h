@@ -149,7 +149,6 @@ namespace Chroma
 	smeared_links[i].resize(Nd);
       }
       
-      
       // Copy thin links into smeared_links[0]
       for(int mu=0; mu < Nd; mu++) { 
 	(smeared_links[0])[mu] = u_[mu];

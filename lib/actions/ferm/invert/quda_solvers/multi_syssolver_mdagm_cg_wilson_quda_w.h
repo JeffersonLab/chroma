@@ -411,8 +411,8 @@ namespace Chroma
   	  QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << std::endl;
         }
       }
-      QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << std::endl;
- QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: "<<time<< " sec" << std::endl;
+      QDPIO::cout << "MULTI_CG_QUDA_WILSON_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << std::endl;
+ QDPIO::cout << "MULTI_CG_QUDA_WILSON_SOLVER: "<<time<< " sec" << std::endl;
       END_CODE();
       
       return res;

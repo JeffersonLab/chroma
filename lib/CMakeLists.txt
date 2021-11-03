@@ -4,7 +4,10 @@ target_include_directories(chromalib PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SO
 										    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 										    $<INSTALL_INTERFACE:include> )
 										 
-target_link_libraries(chromalib PUBLIC QDPXX::qdp)										 
+target_link_libraries(chromalib PUBLIC QDPXX::qdp)	 
+if (QDP_IS_QDPJIT) 
+  target_link_libraries(chromalib PUBLIC QDPXX::jit)
+endif()
 target_link_libraries(chromalib PUBLIC QDPLapack::qdp_lapack)
 
 if( Chroma_ENABLE_CPP_WILSON_DSLASH)
@@ -72,6 +75,7 @@ set(ChromaLIB_HEADERS
 	actions/ferm/fermstates/extfield.h
 	actions/ferm/fermstates/stout_fermstate_params.h
 	actions/ferm/fermstates/hex_fermstate_params.h
+        actions/ferm/fermstates/hyp_fermstate_params.h
 	actions/ferm/invert/mg_solver_exception.h
 	actions/ferm/invert/invcg1.h
 	actions/ferm/invert/invcg2.h
@@ -349,7 +353,7 @@ set(ChromaLIB_HEADERS
 	meas/smear/gaus_smear.h
 	meas/smear/hyp_smear.h
 	meas/smear/hyp_smear3d.h
-    meas/smear/hex_smear.h
+    meas/smear/hex_smear.h    
 	meas/smear/laplacian.h
 	meas/smear/smear.h
 	meas/smear/link_smearing.h
@@ -452,6 +456,7 @@ set(ChromaLIB_HEADERS
 	util/gauge/conjgauge.h
 	util/gauge/constgauge.h
 	util/gauge/stout_utils.h
+        util/gauge/hyp_utils.h
 	util/gauge/key_glue_matelem.h
 	util/gauge/key_timeslice_gauge.h
   	util/info/info.h
@@ -624,6 +629,7 @@ list(APPEND ChromaLIB_HEADERS
 	actions/ferm/fermstates/ferm_createstate_reader_w.h
 	actions/ferm/fermstates/stout_fermstate_w.h
 	actions/ferm/fermstates/hex_fermstate_w.h
+        actions/ferm/fermstates/hyp_fermstate_w.h
 	actions/ferm/invert/inv_borici_w.h
 	actions/ferm/linop/lgherm_w.h
 	actions/ferm/linop/lg5Rherm_w.h
@@ -1080,6 +1086,7 @@ target_sources(chromalib PRIVATE
 	actions/boson/operator/klein_gord.cc 
 	actions/ferm/fermacts/zolotarev_coeffs.cc 
     actions/ferm/fermstates/hex_fermstate_params.cc 
+    actions/ferm/fermstates/hyp_fermstate_params.cc 
 	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc 
 	actions/ferm/fermacts/ovext_constant_strategy.cc 
 	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc 
@@ -1393,6 +1400,7 @@ target_sources(chromalib PRIVATE
 	util/gauge/conjgauge.cc util/gauge/constgauge.cc 
 	util/gauge/weak_field.cc 
 	util/gauge/stout_utils.cc 
+        util/gauge/hyp_utils.cc 
 	util/gauge/key_glue_matelem.cc 
 	util/gauge/key_timeslice_gauge.cc 
 	util/info/printgeom.cc 
@@ -1511,6 +1519,7 @@ target_sources(chromalib PRIVATE
 	actions/ferm/fermstates/extfield_aggregate_w.cc 
 	actions/ferm/fermstates/extfield_fermstate_w.cc 
     actions/ferm/fermstates/hex_fermstate_w.cc 
+    actions/ferm/fermstates/hyp_fermstate_w.cc 
 	actions/ferm/fermstates/extfield_aggregate_w.cc 
     actions/ferm/fermstates/periodic_fermstate_w.cc 
     actions/ferm/fermstates/simple_fermstate_w.cc 

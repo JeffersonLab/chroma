@@ -41,4 +41,30 @@ void expm12(LatticeColorMatrix& a)
   END_CODE();
 }
 
+void expim20(LatticeColorMatrix& a)
+{
+  START_CODE();
+        
+  // aux1 = aux2 = a;  a = ONE + a 
+  LatticeColorMatrix aux1 = a;
+  LatticeColorMatrix aux2 = a;
+  LatticeColorMatrix aux3;
+
+  a = timesI(a);
+  a += 1;
+  
+  // Do a 20th order exponentiation
+  for(int i= 2; i <= 20; ++i)
+  {
+    Real dummy = Real(1)/Real(i);
+
+    aux3 = aux2 * aux1;
+    aux2 = aux3 * dummy;
+    a += aux2;
+  }
+  
+  END_CODE();
+}
+
+
 }  // end namespace Chroma
