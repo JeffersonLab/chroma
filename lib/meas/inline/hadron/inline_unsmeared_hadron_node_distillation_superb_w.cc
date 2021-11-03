@@ -1004,34 +1004,6 @@ namespace Chroma
 	}
       }
 
-      //
-      // Smear the gauge field if needed
-      //
-      multi1d<LatticeColorMatrix> u_smr = u;
-
-      try
-      {
-	std::istringstream  xml_l(params.param.link_smearing.xml);
-	XMLReader  linktop(xml_l);
-	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << std::endl;
-	
-	
-	Handle< LinkSmearing >
-	  linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.param.link_smearing.id,
-								       linktop, 
-								       params.param.link_smearing.path));
-
-	(*linkSmearing)(u_smr);
-      }
-      catch(const std::string& e) 
-      {
-	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << std::endl;
-	QDP_abort(1);
-      }
-
-      // Record the smeared observables
-      MesPlq(xml_out, "Smeared_Observables", u_smr);
-
       // Set how many processes are going to write elementals; each process is going to write in a
       // independent file
       bool use_multiple_writers = params.param.contract.use_multiple_writers;
