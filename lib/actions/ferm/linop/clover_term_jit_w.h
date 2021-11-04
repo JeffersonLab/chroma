@@ -417,8 +417,6 @@ namespace Chroma
   {
     START_CODE();
 
-    //std::cout << "PTX Clover create from other "  << (void*)this << "\n";
-
     u.resize(Nd);
 
     u = fs->getLinks();
@@ -656,13 +654,6 @@ namespace Chroma
 				const Y& tri_off)
   {
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
-
-    if (ptx_db::db_enabled)
-      {
-	llvm_ptx_db( function , __PRETTY_FUNCTION__ );
-	if (!function.empty())
-	  return;
-      }
 
     typedef typename WordType<RealT>::Type_t REALT;
 
@@ -926,13 +917,6 @@ namespace Chroma
 				const Subset& s)
   {
     typedef typename WordType<U>::Type_t REALT;
-    if (ptx_db::db_enabled)
-      {
-	llvm_ptx_db( function , __PRETTY_FUNCTION__ );
-	if (!function.empty())
-	  return;
-      }
-
 
     //std::cout << __PRETTY_FUNCTION__ << " entering\n";
 
@@ -1249,16 +1233,6 @@ namespace Chroma
 				int mat,
 				const Subset& s)
   {
-    if (ptx_db::db_enabled)
-      {
-	llvm_ptx_db( function , __PRETTY_FUNCTION__ );
-	if (!function.empty())
-	  return;
-      }
-
-
-    //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
-
     typedef typename WordType<U>::Type_t REALT;
 
     llvm_start_new_function( "triacntr" , __PRETTY_FUNCTION__ );
@@ -1669,13 +1643,6 @@ namespace Chroma
 				  const Y& tri_off,
 				  const Subset& s)
   {
-    if (ptx_db::db_enabled)
-      {
-	llvm_ptx_db( function , __PRETTY_FUNCTION__ );
-	if (!function.empty())
-	  return;
-      }
-
     llvm_start_new_function("apply_clov",__PRETTY_FUNCTION__);
 
     ParamRef  p_lo     = llvm_add_param<int>();
