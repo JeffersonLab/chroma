@@ -18,7 +18,14 @@ namespace Chroma
     HypFermStateParams();
     HypFermStateParams(XMLReader& in, const std::string& path);
 
-    int            n_smear;
+    int n_smear;
+    multi1d<bool> smear_in_this_dirP;
+    Real alpha1;
+    Real alpha2;
+    Real alpha3;
+    int BlkMax;
+    Real BlkAccu;
+
   };
 
   void read(XMLReader& xml, const std::string& path, HypFermStateParams& p);

@@ -34,11 +34,21 @@ namespace Chroma
     void smear_links(const multi1d<LatticeColorMatrix>& current, 
                      multi1d<LatticeColorMatrix>& next,
                      const multi1d<bool>& smear_in_this_dirP,
-                     const multi1d<Real>& alpha1,
-                     const multi1d<Real>& alpha2,
-                     const multi1d<Real>& alpha3,
+                     const Real alpha1,
+                     const Real alpha2,
+                     const Real alpha3,
                      const int BlkMax,
                      const Real BlkAccu);
+    
+    //! Do the force recursion from level i+1, to level i
+    void deriv_recurse(multi1d<LatticeColorMatrix>&  F,
+		       const multi1d<bool>& smear_in_this_dirP,
+                       const Real alpha1,
+                       const Real alpha2,
+                       const Real alpha3,
+                       const int BlkMax,
+                       const Real BlkAccu,
+                       const multi1d<LatticeColorMatrix>& u);
     
   }
 

@@ -27,12 +27,12 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
     
-      multi1d<Real> alpha1;	                /*!< staple coefficient "1" */
-      multi1d<Real> alpha2;	                /*!< staple coefficient "2" */
-      multi1d<Real> alpha3;	                /*!< staple coefficient "3" */
-      Real           link_smear_fact;           /*!< Smearing parameters */
-      int link_smear_num;			/*!< Number of smearing hits */
-      multi1d<bool>  smear_dirs;                /*!< Only allow smearing and staples in these directions */
+      Real alpha1;	                /*!< staple coefficient "1" */
+      Real alpha2;	                /*!< staple coefficient "2" */
+      Real alpha3;	                /*!< staple coefficient "3" */
+      Real link_smear_fact;             /*!< Smearing parameters */
+      int link_smear_num;		/*!< Number of smearing hits */
+      multi1d<bool>  smear_dirs;        /*!< Only allow smearing and staples in these directions */
 
       int BlkMax;                       /*!< Max number of iterations */
       Real BlkAccu;                     /*!< Relative error to maximize trace */

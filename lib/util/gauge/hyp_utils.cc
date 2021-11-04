@@ -37,13 +37,29 @@ namespace Chroma
   /*! \ingroup gauge */
   namespace Hyping 
   {
+
+    //! Do the force recursion from level i+1, to level i
+    void deriv_recurse(multi1d<LatticeColorMatrix>&  F,
+		       const multi1d<bool>& smear_in_this_dirP,
+                       const Real alpha1,
+                       const Real alpha2,
+                       const Real alpha3,
+                       const int BlkMax,
+                       const Real BlkAccu,
+                       const multi1d<LatticeColorMatrix>& u)
+    {
+      START_CODE();
+
+      END_CODE();
+    }
+
     /*! \ingroup gauge */
     void smear_links(const multi1d<LatticeColorMatrix>& current, 
                      multi1d<LatticeColorMatrix>& next,
                      const multi1d<bool>& smear_in_this_dirP,
-                     const multi1d<Real>& alpha1,
-                     const multi1d<Real>& alpha2,
-                     const multi1d<Real>& alpha3,
+                     const Real alpha1,
+                     const Real alpha2,
+                     const Real alpha3,
                      const int BlkMax,
                      const Real BlkAccu)
     {
@@ -51,17 +67,15 @@ namespace Chroma
       
       for(int mu = 0; mu < Nd; mu++) {
         if( smear_in_this_dirP[mu] ) {
-          LatticeColorMatrix Q, QQ;
+          LatticeColorMatrix Q;
           
-          // Now compute the f's
-          multi1d<LatticeComplex> f;   // routine will resize these
 #if QDP_NC == 3
-	  
+          next = current[mu];
 #else 
           // Q is in hermitian form. We can simply exponentiate with a 
           // Taylor series for Nc != 3 builds
-          expim20(Q);
-          next = Q * current[mu];
+          //expim20(Q);
+          next = current[mu];
 #endif
         }
         else { 

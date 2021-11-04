@@ -88,7 +88,11 @@ namespace Chroma
       // Now if the state is smeared recurse down.      
       for(int level=params.n_smear; level > 0; level--) {
 	
-	//Hyping::deriv_recurse(F_thin, params.smear_in_this_dirP, params.rho, smeared_links[level-1]);
+	Hyping::deriv_recurse(F_thin, params.smear_in_this_dirP, 
+                              params.alpha1, params.alpha2, params.alpha3, 
+                              params.BlkMax,
+                              params.BlkAccu,
+                              smeared_links[level-1]);
 	
 	fbc->zero(F_thin);
 	
@@ -153,7 +157,14 @@ namespace Chroma
       // Iterate up the smearings
       for(int i=1; i <= params.n_smear; i++) {
 	
-	//Hyping::smear_links(smeared_links[i-1], smeared_links[i], params.smear_in_this_dirP, params.rho);
+	Hyping::smear_links(smeared_links[i-1], smeared_links[i], 
+                            params.smear_in_this_dirP, 
+                            params.alpha1,
+                            params.alpha2,
+                            params.alpha3,
+                            params.BlkMax,
+                            params.BlkAccu);
+        
 	if( fbc->nontrivialP() ) {
 	  fbc->modify( smeared_links[i] );    
 	}	
