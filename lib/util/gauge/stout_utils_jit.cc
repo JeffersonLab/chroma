@@ -77,16 +77,6 @@ void function_get_fs_bs_build(JitFunction& function,
 			      multi1d<LatticeComplex>& b1,
 			      multi1d<LatticeComplex>& b2)
 {
-  if (ptx_db::db_enabled)
-    {
-      llvm_ptx_db( function , __PRETTY_FUNCTION__ );
-      if (!function.empty())
-	return;
-    }
-
-  //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
-
-
   llvm_start_new_function("get_fs_bs",__PRETTY_FUNCTION__);
 
   ParamRef  p_lo     = llvm_add_param<int>();
