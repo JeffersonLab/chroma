@@ -246,6 +246,9 @@ namespace Chroma
 				   const CloverFermActParams& param_)
   {
 #ifndef QDP_IS_QDPJIT
+    
+    QDPIO::cout << "Using QDPCloverTerm" << std::endl;
+
     START_CODE();
    
     u.resize(Nd);
@@ -1627,6 +1630,22 @@ namespace Chroma
 	      cchi[0*n+j] += conj(offdiag0[kij]) * ppsi[0*n+i];
 	      cchi[1*n+i] += offdiag1[kij] * ppsi[1*n+j];
 	      cchi[1*n+j] += conj(offdiag1[kij]) * ppsi[1*n+i];
+
+              //QDPIO::cout << "QDP Clover apply loop 1: i = "  << i << " j = " << j << " kij = " << kij << std::endl;
+              
+              //QDPIO::cout << "QDP Clover apply loop 1: (0*n+i) = "  << (0*n+i) << std::endl;
+              //QDPIO::cout << "QDP Clover apply loop 1: (0*n+i) = "  << (0*n+i) << std::endl;
+              
+              //QDPIO::cout << "QDP Clover apply loop 1: (1*n+i) = "  << (1*n+i) << std::endl;
+              //QDPIO::cout << "QDP Clover apply loop 1: (1*n+i) = "  << (1*n+i) << std::endl;
+              
+              //QDPIO::cout << "QDP Clover apply loop 1: (0*n+j) = "  << (0*n+j) << std::endl;
+              //QDPIO::cout << "QDP Clover apply loop 1: (0*n+j) = "  << (0*n+j) << std::endl;
+              
+              //QDPIO::cout << "QDP Clover apply loop 1: (1*n+j) = "  << (1*n+j) << std::endl;
+              //QDPIO::cout << "QDP Clover apply loop 1: (1*n+j) = "  << (1*n+j) << std::endl;
+              
+              
 #endif
 	      kij++;
 	    }

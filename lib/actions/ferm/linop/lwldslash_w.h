@@ -229,7 +229,7 @@ namespace Chroma
 			  enum PlusMinus isign, int cb) const
   {
     START_CODE();
-#if (QDP_NC == 2) || (QDP_NC == 3) || (QDP_NC == 4)
+#if (QDP_NC == 2) || (QDP_NC == 3) || (QDP_NC == 4) || (QDP_NC == 5)
     /*     F 
      *   a2  (x)  :=  U  (x) (1 - isign gamma  ) psi(x)
      *     mu          mu                    mu

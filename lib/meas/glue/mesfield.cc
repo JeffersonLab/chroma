@@ -77,14 +77,14 @@ namespace Chroma
     END_CODE();
   }
 
-  void mesField(multi1d<LatticeColorMatrixF>& f,
-		const multi1d<LatticeColorMatrixF>& u) 
+  void mesField(multi1d<LatticeColorMatrixFNC>& f,
+		const multi1d<LatticeColorMatrixFNC>& u) 
   {
     mesFieldT(f,u);
   }
 
-  void mesField(multi1d<LatticeColorMatrixD>& f,
-		const multi1d<LatticeColorMatrixD>& u) 
+  void mesField(multi1d<LatticeColorMatrixDNC>& f,
+		const multi1d<LatticeColorMatrixDNC>& u) 
   {
     mesFieldT(f,u);
   }

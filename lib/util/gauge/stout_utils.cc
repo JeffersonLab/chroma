@@ -375,6 +375,7 @@ namespace Chroma
 
     /* A namespace to hide the thread dispatcher in */
     namespace StoutUtils { 
+
       struct GetFsAndBsArgs { 
 	const LatticeColorMatrix& Q;
 	const LatticeColorMatrix& QQ;
@@ -383,14 +384,14 @@ namespace Chroma
 	multi1d<LatticeComplex>& b2;
 	bool dobs;
       };
-
+      
 
 
       
-    inline 
-    void getFsAndBsSiteLoop(int lo, int hi, int myId, 
+      inline 
+      void getFsAndBsSiteLoop(int lo, int hi, int myId, 
 			      GetFsAndBsArgs* arg)
-    {
+      {
 #ifndef QDP_IS_QDPJIT
       const LatticeColorMatrix& Q = arg->Q;
       const LatticeColorMatrix& QQ = arg->QQ;
@@ -842,7 +843,7 @@ namespace Chroma
 	} // End of if( corner_caseP ) else {}
       } // End site loop
 #endif
-    } // End Function
+      } // End Function
 
     } // End Namespace
 	

@@ -1,14 +1,35 @@
 // -*- C++ -*-
 /*! \file
- *  \brief Stout utilities
+ *  \brief Hyp utilities
  */
 
 #include "chroma_config.h"
 #include "chromabase.h"
 #include "util/gauge/hyp_utils.h"
+#include "util/gauge/sun_proj.h"
 #if QDP_NC != 3
 #include "util/gauge/expm12.h"
-#include "util/gauge/sun_proj.h"
+#endif
+
+#if defined(BUILD_JIT_CLOVER_TERM)
+void function_hyp_smear_link_exec(JitFunction& function, 
+                                  const LatticeColorMatrix& u, 
+                                  LatticeColorMatrix& u_hyp,
+                                  const Real alpha1,
+                                  const Real alpha2,
+                                  const Real alpha3,
+                                  const int BlkMax,
+                                  const Real BlkAccu);
+
+void function_hyp_smear_link_build(JitFunction& function,
+                                   const LatticeColorMatrix& u, 
+                                   LatticeColorMatrix& u_hyp,
+                                   const Real alpha1,
+                                   const Real alpha2,
+                                   const Real alpha3,
+                                   const int BlkMax,
+                                   const Real BlkAccu);
+
 #endif
 
 
@@ -56,6 +77,70 @@ namespace Chroma
       END_CODE();
     }
 
+    /* A namespace to hide the thread dispatcher in */
+    namespace HypUtils { 
+      
+      struct HypSmearLinkArgs { 
+        const multi1d<LatticeColorMatrix>& u;
+        multi1d<LatticeColorMatrix>& u_hyp;
+        const Real alpha1;
+        const Real alpha2;
+        const Real alpha3;
+        const int BlkMax;
+        const Real BlkAccu;
+      };
+      
+      inline void hypSmearLinkSiteLoop(int lo, int hi, int myId, 
+                                       HypSmearLinkArgs* arg)
+      {
+#ifndef QDP_IS_QDPJIT
+
+#endif
+      } // End Function
+        
+    }// End Namespace
+        
+    void hyp_smear_link(const multi1d<LatticeColorMatrix>& u, 
+                        multi1d<LatticeColorMatrix>& u_hyp,
+                        const Real alpha1,
+                        const Real alpha2,
+                        const Real alpha3,
+                        const int BlkMax,
+                        const Real BlkAccu)
+      
+    {
+      START_CODE();
+      QDP::StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+      
+      int num_sites = Layout::sitesOnNode();
+      HypUtils::HypSmearLinkArgs args={u, u_hyp, alpha1, alpha2, alpha3, BlkMax, BlkAccu};
+      
+      
+#if !defined(BUILD_JIT_CLOVER_TERM)
+
+#ifdef QDP_IS_QDPJIT
+#warning "Hyping disabled, as building with QDP-JIT but the JIT Clover term is disabled."
+#else
+#warning "Using QDP++ hyping"
+      dispatch_to_threads(num_sites, args, HypUtils::hypSmearLinkSiteLoop);
+#endif
+      
+#else
+#warning "Using QDP-JIT hyping"
+      static JitFunction function;
+      if (function.empty()) {
+        //function_hyp_smear_link_build(function, u, u_hyp, alpha1, alpha2, alpha3, BlkMax, BlkAccu);
+        //function_hyp_smear_link_exec(function, u, u_hyp, alpha1, alpha2, alpha3, BlkMax, BlkAccu );
+      }
+#endif
+
+      swatch.stop();
+      HypLinkTimings::functions_secs += swatch.getTimeInSeconds();
+      END_CODE();
+    }
+
     /*! \ingroup gauge */
     void smear_links(const multi1d<LatticeColorMatrix>& u, 
                      multi1d<LatticeColorMatrix>& u_hyp,
@@ -66,6 +151,9 @@ namespace Chroma
                      const int BlkMax,
                      const Real BlkAccu)
     {
+#if 0
+      hyp_smear_link(u, u_hyp, alpha1, alpha2, alpha3, BlkMax, BlkAccu);
+#else
       multi1d<LatticeColorMatrix> u_lv1(Nd*(Nd-1));
       multi1d<LatticeColorMatrix> u_lv2(Nd*(Nd-1));
       LatticeColorMatrix u_tmp;
@@ -233,6 +321,7 @@ namespace Chroma
       }
       //QDPIO::cout << "HYP start lvl3 done" << std::endl;      
       END_CODE();
+#endif
     }
   } // End Namespace Hyping
 } // End Namespace Chroma
