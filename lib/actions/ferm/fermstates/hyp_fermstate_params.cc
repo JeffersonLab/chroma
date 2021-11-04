@@ -12,7 +12,7 @@ namespace Chroma
   {
     n_smear = 0;
     smear_in_this_dirP.resize(Nd);
-    smear_in_this_dirP = true;
+    for(int i=0; i<Nd; i++) smear_in_this_dirP[i] = true;
     alpha1;
     alpha2;
     alpha3;

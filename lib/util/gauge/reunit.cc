@@ -325,13 +325,13 @@ namespace Chroma {
 		/* sigmasq = (1 - t1)**2 */
 		sigmasq[mstag] = pow(1-t1,2);
 	      }
-	    
+
 	    /* overwrite the first row with the rescaled value */
 	    /* u <- u/t1 */
 	    t3[mstag] = 1 / t1;
 	    for(int c = 0; c < Nc; ++c)
 	      (a[c][0])[mstag] *= t3;
-	    
+
 	    /* Apply Gram-Schmidt to the remaining rows */
 	    for(int j = 1; j < Nc; j++ )
 	      {
@@ -377,7 +377,6 @@ namespace Chroma {
 		    sigmasq[mstag] += pow(1-t1,2);
 		  }
 	      }
-
 	    /* Now we have a unitary matrix. We need to multiply the last
 	       row with a phase to make the determinant 1. */
 	    /* We compute the determinant by LU decomposition */
@@ -434,7 +433,6 @@ namespace Chroma {
 		    (b[j][i])[mstag] = adj(b[j][j]) * t2 / localNorm2(b[j][j]);
 		  }
 	      }
-
 	    /* The determinant */
 	    t2[mstag] = b[0][0] * b[1][1];
 	    for(int c = 2; c < Nc; c++)
@@ -447,8 +445,7 @@ namespace Chroma {
 	    t2[mstag] *= 1-2*(swapCount%2);
 	    for(int c = 0; c < Nc; ++c)
 	      (a[c][Nc-1])[mstag] *= t2;
-
-
+#if 0
 	    /* Now, do various things depending on the input flag. */
 	    /* For use later, finish calculating the mean squared deviation */
 	    if ( ruflag == REUNITARIZE_ERROR ||
@@ -482,6 +479,7 @@ namespace Chroma {
 	      default:
 		break;
 	      }
+#endif       
 	  }
 	else
 	  QDP_error_exit("Invalid Nc for reunit, Nc=%d", Nc);
