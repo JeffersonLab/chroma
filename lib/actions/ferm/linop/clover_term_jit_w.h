@@ -1790,7 +1790,8 @@ namespace Chroma
       const TD& tri_dia = a->tri_dia;
       const TO& tri_off = a->tri_off;
 
-      const int idtab[15]={0,1,3,6,10,2,4,7,11,5,8,12,9,13,14};
+      // DMH: CRUFT
+      //const int idtab[15]={0,1,3,6,10,2,4,7,11,5,8,12,9,13,14};
 
       for(int ssite=lo; ssite < hi; ++ssite) {
 	int site = rb[cb].siteTable()[ssite];
