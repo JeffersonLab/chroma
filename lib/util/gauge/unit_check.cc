@@ -17,7 +17,7 @@ namespace Chroma
    *
    * \param  u  The LatticeColorMatrix to be tested
    */
-  void unitarityCheck(const multi1d<LatticeColorMatrixFNC>& u)
+  void unitarityCheck(const multi1d<LatticeColorMatrixF>& u)
   {
     START_CODE();
 
@@ -25,14 +25,14 @@ namespace Chroma
 
     for (int mu=0; mu < Nd; ++mu)
     {
-      LatticeColorMatrixFNC u_tmp = u[mu];
+      LatticeColorMatrixF u_tmp = u[mu];
       reunit(u_tmp, numbad, REUNITARIZE_ERROR);
     }
     
     END_CODE();
   }
 
- void unitarityCheck(const multi1d<LatticeColorMatrixDNC>& u)
+ void unitarityCheck(const multi1d<LatticeColorMatrixD>& u)
   {
     START_CODE();
 
@@ -40,7 +40,7 @@ namespace Chroma
 
     for (int mu=0; mu < Nd; ++mu)
     {
-      LatticeColorMatrixDNC u_tmp = u[mu];
+      LatticeColorMatrixD u_tmp = u[mu];
       reunit(u_tmp, numbad, REUNITARIZE_ERROR);
     }
     

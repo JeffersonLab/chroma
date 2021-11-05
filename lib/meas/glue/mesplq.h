@@ -16,10 +16,10 @@ namespace Chroma
    * \param t_plaq    time-like plaquette average (Write)
    * \param link      space-time average link (Write)
    */
-  void MesPlq(const multi1d<LatticeColorMatrixFNC>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixF>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link);
 
-  void MesPlq(const multi1d<LatticeColorMatrixDNC>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixD>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link);
 
   //! Return the value of the average plaquette normalized to 1
@@ -34,12 +34,12 @@ namespace Chroma
    * \param link        space-time average link (Write)
    */
 
-  void MesPlq(const multi1d<LatticeColorMatrixFNC>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixF>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, 
 	      multi2d<Double>& plane_plaq,
 	      Double& link);
 
-  void MesPlq(const multi1d<LatticeColorMatrixDNC>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixD>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, 
 	      multi2d<Double>& plane_plaq,
 	      Double& link);
@@ -53,11 +53,11 @@ namespace Chroma
    */
   void MesPlq(XMLWriter& xml,
 	      const std::string& xml_group,
-	      const multi1d<LatticeColorMatrixFNC>& u);
+	      const multi1d<LatticeColorMatrixF>& u);
 
   void MesPlq(XMLWriter& xml,
 	      const std::string& xml_group,
-	      const multi1d<LatticeColorMatrixDNC>& u);
+	      const multi1d<LatticeColorMatrixD>& u);
 
 }  // end namespace Chroma
 

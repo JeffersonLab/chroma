@@ -80,13 +80,13 @@ namespace Chroma
     END_CODE();
   }
 
-  void MesPlq(const multi1d<LatticeColorMatrixFNC>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixF>& u, 
 	      multi2d<Double>& plane_plaq, Double& link) 
   {
       MesPlq_t(u,plane_plaq, link);
   }
 
-  void MesPlq(const multi1d<LatticeColorMatrixDNC>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixD>& u, 
 	      multi2d<Double>& plane_plaq, Double& link)
   {
       MesPlq_t(u,plane_plaq, link);
@@ -143,7 +143,7 @@ namespace Chroma
     END_CODE();
   }
 
-  void MesPlq(const multi1d<LatticeColorMatrixFNC>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixF>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, 
 	      multi2d<Double>& plane_plaq,
 	      Double& link) 
@@ -151,7 +151,7 @@ namespace Chroma
      MesPlq_t(u,w_plaq,s_plaq,t_plaq, plane_plaq, link);
   }
 
-  void MesPlq(const multi1d<LatticeColorMatrixDNC>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixD>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, 
 	      multi2d<Double>& plane_plaq,
 	      Double& link)
@@ -170,7 +170,7 @@ namespace Chroma
    * \param link        space-time average link (Write)
    */
 
-  void MesPlq(const multi1d<LatticeColorMatrixFNC>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixF>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link)
   {
     START_CODE();
@@ -182,7 +182,7 @@ namespace Chroma
     END_CODE();
   }
  
-  void MesPlq(const multi1d<LatticeColorMatrixDNC>& u, 
+  void MesPlq(const multi1d<LatticeColorMatrixD>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link)
   {
     START_CODE();
@@ -266,14 +266,14 @@ namespace Chroma
 
  void MesPlq(XMLWriter& xml, 
 	     const std::string& xml_group,
-	     const multi1d<LatticeColorMatrixFNC>& u)
+	     const multi1d<LatticeColorMatrixF>& u)
  {
    MesPlq_t(xml, xml_group, u);
  }
 
  void MesPlq(XMLWriter& xml, 
 	        const std::string& xml_group,
-	        const multi1d<LatticeColorMatrixDNC>& u)
+	        const multi1d<LatticeColorMatrixD>& u)
  {
    MesPlq_t(xml, xml_group, u);
  }
