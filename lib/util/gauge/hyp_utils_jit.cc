@@ -75,12 +75,6 @@ void function_hyp_smear_link_build(JitFunction& function,
                                    const int BlkMax,
                                    const Real BlkAccu)
 {
-  if (ptx_db::db_enabled)
-    {
-      llvm_ptx_db( function , __PRETTY_FUNCTION__ );
-      if (!function.empty())
-	return;
-    }
 
   llvm_start_new_function("hyp_smear_link",__PRETTY_FUNCTION__);
 
