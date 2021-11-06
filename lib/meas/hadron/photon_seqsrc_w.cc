@@ -209,7 +209,7 @@ namespace Chroma
 	// Zap any regions in time outside integration region
 	mask = where((Layout::latticeCoordinate(params.j_decay) >= params.t_sink_start) &&
 		     (Layout::latticeCoordinate(params.j_decay) <= params.t_sink_end),
-		     true, false);
+		     Boolean(true), Boolean(false));
       }
       
       
