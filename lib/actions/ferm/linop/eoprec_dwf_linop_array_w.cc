@@ -33,7 +33,7 @@ namespace Chroma
 
     D.create(fs,N5,aniso);   // construct using possibly aniso glue
 
-    Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
+    Real ff = aniso.anisoP ? (aniso.nu / aniso.xi_0) : Real(1);
     InvTwoKappa = 1 + a5*(1 + (Nd-1)*ff - WilsonMass); 
     //InvTwoKappa =  WilsonMass - 5.0;
     TwoKappa = 1.0 / InvTwoKappa;

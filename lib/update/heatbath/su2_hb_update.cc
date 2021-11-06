@@ -65,12 +65,12 @@ namespace Chroma
     a_abs[sub] = 1.0-a[0]*a[0];
     lbtmp = (1>0);
     lbtmp[sub] = (a_abs >= 0);
-    lWarning=where(lbtmp,0,1);
+    lWarning=where(lbtmp,Integer(0),Integer(1));
     iWarning=toInt(sum(lWarning));
     if(iWarning>0) QDPIO::cerr <<"wrong a_0!!!"<<std::endl;
     lbtmp = (1>0);
     lbtmp[sub] = (a_abs > fuzz);
-    lWarning=where(lbtmp,0,1);
+    lWarning=where(lbtmp,Integer(0),Integer(1));
     iWarning=toInt(sum(lWarning));
     if(iWarning>0) QDPIO::cerr <<"large a_0!!!"<<std::endl;
     LatticeReal a_r;
@@ -133,9 +133,9 @@ namespace Chroma
       LatticeReal a_0trial;
       a_0trial=a_0*a_0;
       a_0trial=1-a_0trial;
-      lAccept[sub] = where(lAccept,(1 > 0),(x < a_0trial));
+      lAccept[sub] = where(lAccept,Boolean(1 > 0),x < a_0trial);
       //lAccept[sub] = where(lAccept,(1 > 0),(x > (1.0-sqrt(1.0-a_0*a_0))));
-      ilbtmp[sub]=where(lAccept,1,0); //convert to 1/0
+      ilbtmp[sub]=where(lAccept,Integer(1),Integer(0)); //convert to 1/0
       vol_accept = toInt(sum(ilbtmp));
     } while ((vol_accept < vol_cb) && ((NmaxHB <= 0) || (n_runs<NmaxHB)));
   }
@@ -163,8 +163,8 @@ namespace Chroma
       xr2=-(log(xr2)/weight);
       //a_0=xr2+xr1*xr3;
       a_0[sub]=where(lAccept,a_0,xr2+xr1*xr3);
-      lAccept[sub] = where(lAccept,(1 > 0),(xr4*xr4) < (1.0l-a_0/2.0l));
-      ilbtmp[sub]=where(lAccept,1,0); //convert to 1/0
+      lAccept[sub] = where(lAccept,Boolean(true),(xr4*xr4) < (1.0l-a_0/2.0l));
+      ilbtmp[sub]=where(lAccept,Integer(1),Integer(0)); //convert to 1/0
       vol_accept = toInt(sum(ilbtmp));
       //QDPIO::cout<<vol_accept<<std::endl;
 
