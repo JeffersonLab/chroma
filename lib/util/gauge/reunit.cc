@@ -400,7 +400,7 @@ namespace Chroma {
 		    maxRow[mstag] = where(theRow, LatticeInteger(i), maxRow);
 		    t1[mstag] = where(theRow, t3, t1);
 		  }
-		swapCount[mstag] += where(maxRow != j, 1, 0);
+		swapCount[mstag] += where(maxRow != j, Integer(1), Integer(0));
                 // Do the swap
 		/* This method used here is pretty awkward, 
                  * but there seems to be no way to parallelize array access. */
