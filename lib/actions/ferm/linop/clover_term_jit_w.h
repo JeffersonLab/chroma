@@ -292,10 +292,10 @@ namespace Chroma
 { 
   template<typename R>
   struct QUDAPackedClovSite {
-    R diag1[6];
-    R offDiag1[15][2];
-    R diag2[6];
-    R offDiag2[15][2];
+    R diag1[2*Nc];
+    R offDiag1[2*Nc*Nc-Nc][2];
+    R diag2[2*Nc];
+    R offDiag2[2*Nc*Nc-Nc][2];
   };
 
 
@@ -430,7 +430,7 @@ namespace Chroma
     }
     
     {
-      RealT ff = where(param.anisoParam.anisoP, Real(1) / param.anisoParam.xi_0, Real(1));
+      RealT ff = param.anisoParam.anisoP ? (Real(1) / param.anisoParam.xi_0) : Real(1);
       param.clovCoeffR *= Real(0.5) * ff;
       param.clovCoeffT *= Real(0.5);
     }
@@ -442,7 +442,7 @@ namespace Chroma
     //
     RealT diag_mass;
     {
-      RealT ff = where(param.anisoParam.anisoP, param.anisoParam.nu / param.anisoParam.xi_0, Real(1));
+      RealT ff = param.anisoParam.anisoP ? (param.anisoParam.nu / param.anisoParam.xi_0) : Real(1);
       diag_mass = 1 + (Nd-1)*ff + param.Mass;
     }
     
@@ -488,7 +488,7 @@ namespace Chroma
     }
 
     {
-      RealT ff = where(param.anisoParam.anisoP, Real(1) / param.anisoParam.xi_0, Real(1));
+      RealT ff = param.anisoParam.anisoP ? (Real(1) / param.anisoParam.xi_0) : Real(1);
       param.clovCoeffR *= RealT(0.5) * ff;
       param.clovCoeffT *= RealT(0.5);
     }
@@ -500,7 +500,7 @@ namespace Chroma
     //
     RealT diag_mass;
     {
-      RealT ff = where(param.anisoParam.anisoP, param.anisoParam.nu / param.anisoParam.xi_0, Real(1));
+      RealT ff = param.anisoParam.anisoP ? (param.anisoParam.nu / param.anisoParam.xi_0) : Real(1);
       diag_mass = 1 + (Nd-1)*ff + param.Mass;
     }
     
@@ -963,16 +963,16 @@ namespace Chroma
   
     for(int block=0; block < 2; block++) {
 	  
-      RScalarREG<WordREG<REALT> >   inv_d[6] ;
-      RComplexREG<WordREG<REALT> >  inv_offd[15] ;
-      RComplexREG<WordREG<REALT> >  v[6] ;
-      RScalarREG<WordREG<REALT> >   diag_g[6] ;
+      RScalarREG<WordREG<REALT> >   inv_d[2*Nc] ;
+      RComplexREG<WordREG<REALT> >  inv_offd[2*Nc*Nc-Nc] ;
+      RComplexREG<WordREG<REALT> >  v[2*Nc] ;
+      RScalarREG<WordREG<REALT> >   diag_g[2*Nc] ;
 
       for(int i=0; i < N; i++) {
 	inv_d[i] = tri_dia_r.elem(block).elem(i);
       }
 
-      for(int i=0; i < 15; i++) { 
+      for(int i=0; i < 2*Nc*Nc-Nc; i++) { 
 	inv_offd[i] = tri_off_r.elem(block).elem(i);
       }
 
@@ -1094,7 +1094,7 @@ namespace Chroma
       for(int i=0; i < N; i++) { 
 	tri_dia_j.elem(block).elem(i) = inv_d[i];
       }
-      for(int i=0; i < 15; i++) { 
+      for(int i=0; i < 2*Nc*Nc-Nc; i++) { 
 	tri_off_j.elem(block).elem(i) = inv_offd[i];
       }
     }
@@ -1682,14 +1682,14 @@ namespace Chroma
     // RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
     // const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));
 
-    int n = 2*Nc;
+    const int n = 2*Nc;
 
     for(int i = 0; i < n; ++i)
       {
-	chi_r.elem((0*n+i)/3).elem((0*n+i)%3) = tri_dia_r.elem(0).elem(i) * psi_r.elem((0*n+i)/3).elem((0*n+i)%3);
+	chi_r.elem((0*n+i)/Nc).elem((0*n+i)%Nc) = tri_dia_r.elem(0).elem(i) * psi_r.elem((0*n+i)/Nc).elem((0*n+i)%Nc);
 	// cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
 
-	chi_r.elem((1*n+i)/3).elem((1*n+i)%3) = tri_dia_r.elem(1).elem(i) * psi_r.elem((1*n+i)/3).elem((1*n+i)%3);
+	chi_r.elem((1*n+i)/Nc).elem((1*n+i)%Nc) = tri_dia_r.elem(1).elem(i) * psi_r.elem((1*n+i)/Nc).elem((1*n+i)%Nc);
 	// cchi[1*n+i] = tri[site].diag[1][i] * ppsi[1*n+i];
       }
 
@@ -1698,16 +1698,16 @@ namespace Chroma
       {
 	for(int j = 0; j < i; j++)
 	  {
-	    chi_r.elem((0*n+i)/3).elem((0*n+i)%3) += tri_off_r.elem(0).elem(kij) * psi_r.elem((0*n+j)/3).elem((0*n+j)%3);
+	    chi_r.elem((0*n+i)/Nc).elem((0*n+i)%Nc) += tri_off_r.elem(0).elem(kij) * psi_r.elem((0*n+j)/Nc).elem((0*n+j)%Nc);
 	    // cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
 
-	    chi_r.elem((0*n+j)/3).elem((0*n+j)%3) += conj(tri_off_r.elem(0).elem(kij)) * psi_r.elem((0*n+i)/3).elem((0*n+i)%3);
+	    chi_r.elem((0*n+j)/Nc).elem((0*n+j)%Nc) += conj(tri_off_r.elem(0).elem(kij)) * psi_r.elem((0*n+i)/Nc).elem((0*n+i)%Nc);
 	    // cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
 
-	    chi_r.elem((1*n+i)/3).elem((1*n+i)%3) += tri_off_r.elem(1).elem(kij) * psi_r.elem((1*n+j)/3).elem((1*n+j)%3);
+	    chi_r.elem((1*n+i)/Nc).elem((1*n+i)%Nc) += tri_off_r.elem(1).elem(kij) * psi_r.elem((1*n+j)/Nc).elem((1*n+j)%Nc);
 	    // cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
 
-	    chi_r.elem((1*n+j)/3).elem((1*n+j)%3) += conj(tri_off_r.elem(1).elem(kij)) * psi_r.elem((1*n+i)/3).elem((1*n+i)%3);
+	    chi_r.elem((1*n+j)/Nc).elem((1*n+j)%Nc) += conj(tri_off_r.elem(1).elem(kij)) * psi_r.elem((1*n+i)/Nc).elem((1*n+i)%Nc);
 	    // cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
 
 	    kij++;
@@ -1790,12 +1790,13 @@ namespace Chroma
       const TD& tri_dia = a->tri_dia;
       const TO& tri_off = a->tri_off;
 
-      const int idtab[15]={0,1,3,6,10,2,4,7,11,5,8,12,9,13,14};
+      // DMH: CRUFT
+      //const int idtab[15]={0,1,3,6,10,2,4,7,11,5,8,12,9,13,14};
 
       for(int ssite=lo; ssite < hi; ++ssite) {
 	int site = rb[cb].siteTable()[ssite];
 	// First Chiral Block
-	for(int i=0; i < 6; i++) { 
+	for(int i=0; i < 2*Nc; i++) { 
 	  quda_array[site].diag1[i] = tri_dia.elem(site).comp[0].diag[i].elem().elem();
 	}
 
@@ -1812,7 +1813,7 @@ namespace Chroma
 	  }
 	}
 	// Second Chiral Block
-	for(int i=0; i < 6; i++) { 
+	for(int i=0; i < 2*Nc; i++) { 
 	  quda_array[site].diag2[i] = tri_dia.elem(site).comp[1].diag[i].elem().elem();
 	}
 
