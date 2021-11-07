@@ -113,8 +113,15 @@ namespace Chroma
 	tmp_1 = real_step_size[mu]*(s.getP())[mu];
 	
 	// tmp_1 = exp(dt*p[mu])  
-	if(QDP_NC != 3) expmat(tmp_1, EXP_TWELFTH_ORDER);
+	if(QDP_NC != 3) {
+          // For QDPJIT a 20th order expansion is used, not 12th
+          expmat(tmp_1, EXP_TWELFTH_ORDER);
+        }
+
 	else expmat(tmp_1, EXP_EXACT);
+	int numbad;
+        // Reunitarize exp(dt*p[mu]) prior to multiplication
+	reunit(tmp_1, numbad, REUNITARIZE_ERROR);
 	
 	// tmp_2 = exp(dt*p[mu]) u[mu] = tmp_1 * u[mu]
 	tmp_2 = tmp_1*(s.getQ())[mu];
@@ -122,8 +129,7 @@ namespace Chroma
 	// u[mu] =  tmp_1 * u[mu] =  tmp_2 
 	(s.getQ())[mu] = tmp_2;
 	
-	// Reunitarize u[mu]
-	int numbad;
+	// Reunitarize u[mu] for good measure
 	reunit((s.getQ())[mu], numbad, REUNITARIZE_ERROR);
       }
 

@@ -20,7 +20,7 @@ namespace Chroma {
  */
 
 void expm12(LatticeColorMatrix& a);
-void expim20(LatticeColorMatrix& a);
+void expm20(LatticeColorMatrix& a);
 
 }  // end namespace Chroma
 

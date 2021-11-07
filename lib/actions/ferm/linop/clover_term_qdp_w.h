@@ -176,6 +176,9 @@ namespace Chroma
   {
 #ifndef QDP_IS_QDPJIT
     START_CODE();
+
+    QDPIO::cout << "Using QDPCloverTerm copy" << std::endl;
+
     u.resize(Nd);
 
     u = fs->getLinks();

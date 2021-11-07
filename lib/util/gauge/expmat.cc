@@ -65,7 +65,11 @@ void expmat(LatticeColorMatrix& a,
 	break;
 	
       default:
-	expm12(a);
+#if QDP_IS_QDPJIT
+	expm20(a);
+#else
+        expm12(a);
+#endif
 	break;
       }
       break;

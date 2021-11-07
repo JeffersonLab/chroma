@@ -417,6 +417,8 @@ namespace Chroma
   {
     START_CODE();
 
+    QDPIO::cout << "Using JITCloverTerm copy" << std::endl;
+
     u.resize(Nd);
 
     u = fs->getLinks();
@@ -473,7 +475,7 @@ namespace Chroma
   {
     START_CODE();
 
-    //std::cout << "PTX Clover create "  << (void*)this << "\n";
+    QDPIO::cout << "Using JITCloverTerm" << std::endl;
    
     u.resize(Nd);
     

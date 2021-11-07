@@ -215,7 +215,7 @@ namespace Chroma
 #else
           // Q is in hermitian form. We can simply exponentiate with a 
           // Taylor series for Nc != 3 builds          
-          expim20(Q);
+          expm20(Q);
           F[mu] = F_plus[mu] * Q;
 #endif
 
@@ -918,7 +918,7 @@ namespace Chroma
 #else 
           // Q is in hermitian form. We can simply exponentiate with a 
           // Taylor series for Nc != 3 builds
-          expim20(Q);
+          expm20(Q);
           next = Q * current[mu];
 #endif
 	}
@@ -955,7 +955,7 @@ namespace Chroma
 #else
       // Q is in hermitian form. We can simply exponentiate with a 
       // Taylor series for Nc != 3 builds
-      expim20(Q);
+      expm20(Q);
       next = Q * current[mu];
 #endif
       END_CODE();
