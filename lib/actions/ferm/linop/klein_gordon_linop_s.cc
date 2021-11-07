@@ -39,7 +39,7 @@ namespace Chroma
 
     // Fold in anisotropy
     u = state->getLinks();
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+    Real ff = anisoParam.anisoP ? (anisoParam.nu / anisoParam.xi_0) : Real(1);
     fact = 1 + (Nd-1)*ff + Mass;
   
     if (anisoParam.anisoP)
@@ -96,7 +96,7 @@ namespace Chroma
     anisoWeights = 1;
     Real mhalf = -0.5;
 
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+    Real ff = anisoParam.anisoP ? (anisoParam.nu / anisoParam.xi_0) : Real(1);
 
     if (anisoParam.anisoP)
     {

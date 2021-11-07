@@ -221,7 +221,7 @@ namespace Chroma
     multi1d<Real> anisoWeights(Nd);
     anisoWeights = 0.5;
 
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+    Real ff = anisoParam.anisoP ? (anisoParam.nu / anisoParam.xi_0) : Real(1);
 
     if (anisoParam.anisoP)
     {

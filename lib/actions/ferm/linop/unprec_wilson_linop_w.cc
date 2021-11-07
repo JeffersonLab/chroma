@@ -38,7 +38,7 @@ namespace Chroma
     D.create(fs,anisoParam);
 
     Mass = Mass_;
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+    Real ff = anisoParam.anisoP ? (anisoParam.nu / anisoParam.xi_0) : Real(1);
     fact = 1 + (Nd-1)*ff + Mass;
     
     END_CODE();
