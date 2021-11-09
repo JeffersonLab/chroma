@@ -2001,12 +2001,14 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_prop_and_matelem_distillation_superb_w.h
      meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.h
      meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.h
+     meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h
   )
   target_sources(chromalib PRIVATE 
      meas/inline/hadron/inline_disco_prob_defl_superb_w.cc
      meas/inline/hadron/inline_prop_and_matelem_distillation_superb_w.cc
      meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.cc
      meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.cc 
+     meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.cc 
   )
   target_include_directories(chromalib PUBLIC ${SUPERBBLAS_DIR}/include)
   add_library(superbblas STATIC IMPORTED )

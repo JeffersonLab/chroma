@@ -2552,7 +2552,7 @@ namespace Chroma
 
       int d = std::abs(dir) - 1;    // space lattice direction, 0: x, 1: y, 2: z
 
-      // conj(phase)*displace(u, v, -length, d) - phase*displace(u, v, length, d)
+      // conj(phase)*displace(u, v, -dir) - phase*displace(u, v, dir)
       std::vector<COMPLEX> phases(moms.size());
       for (unsigned int i = 0; i < moms.size(); ++i)
       {
@@ -2656,7 +2656,7 @@ namespace Chroma
       /// \param leftconj: left lattice fermion tensor, cSxyzXN
       /// \param right: right lattice fermion tensor, csxyzXn
       /// \param disps: tree of displacements/derivatives
-      /// \param deriv: whether use derivatives instead of displacements
+      /// \param deriv: if true, do left-right nabla derivatives
       /// \param gammas: tensor with spins, QSg
       /// \param moms: list of momenta
       /// \param max_rhs: maximum number of vectors hold in memory
@@ -2772,7 +2772,7 @@ namespace Chroma
     /// \param num_moms: number of momenta to apply (if none, apply all of them)
     /// \param gammas: list of gamma matrices to apply
     /// \param disps: list of displacements/derivatives
-    /// \param deriv: whether use derivatives instead of displacements
+    /// \param deriv: if true, do left-right nabla derivatives
     /// \param max_rhs: maximum number of vectors hold in memory
     /// \param order_out: coordinate order of the output tensor, a permutation of nNSQmgd where
     ///        q and N (s and n) are the spin and vector from left (right) vectors, m is the momentum
@@ -2962,6 +2962,7 @@ namespace Chroma
       /// Auxiliary function traversing the tree for disps2.
       /// \param colorvecs: lattice color tensor on several t_slices, ctxyzXn
       /// \param disps: tree of displacements/derivatives for colorvecs
+      /// \param deriv: if true, do right nabla derivatives
       /// \param moms: momenta tensor on several t_slices, mtxyzX
       /// \param first_mom: index of the first momentum being computed
       /// \param order_out: coordinate order of the output tensor, a permutation of ijkmt
@@ -3054,11 +3055,10 @@ namespace Chroma
     /// \param colorvecs: lattice color tensor on several t_slices, ctxyzXn
     /// \param moms: momenta tensor on several t_slices, mtxyzX
     /// \param disps: list of displacements/derivatives
+    /// \param deriv: if true, do right nabla derivatives
     /// \param call: function to call for each combination of disps0, disps1, and disps2
     /// \param order_out: coordinate order of the output tensor, a permutation of ijkmt where
-    ///        i, j, and k are the n index in colorvecs0, 1, 2 respectively; and m is the momentum
-    ///        index
-    /// \return: tensor with the contractions
+    ///        i, j, and k are the n index in colorvecs; and m is the momentum index
 
     template <std::size_t Nin, typename COMPLEX>
     void doMomDisp_colorContractions(
@@ -3157,6 +3157,177 @@ namespace Chroma
 	      tree_disps, deriv, 0, {this_moms, moms_list}, mfrom, order_out_str,
 	      dev.getSome(OnDefaultDevice), dist.getSome(OnEveryoneReplicated), call);
 	  }
+	}
+      }
+    }
+
+    /// Callback function for each displacement/derivate, and chunk of time-slices and momenta
+    /// Arguments of the callback:
+    /// \param tensor: output tensor with order ijmt, where i and j are the right and left colorvec indices,
+    ///        m is the momentum index, and t is the t-slice
+    /// \param disp: index of the displacement/derivative
+    /// \param first_timeslice: index of the first time-slice in the tensor
+    /// \param first_mom: index of the first momentum in the tensor
+
+    template <typename COMPLEX = Complex>
+    using ContractionFn = std::function<void(Tensor<4, COMPLEX>, int, int, int)>;
+
+    namespace ns_doMomDisp_contractions
+    {
+      using namespace detail;
+
+      /// Contract two LatticeColorvec with different momenta and displacements.
+      /// Auxiliary function traversing the tree for disps2.
+      /// \param colorvecs: lattice color tensor on several t_slices, ctxyzXn
+      /// \param disps: tree of displacements/derivatives for colorvecs
+      /// \param moms: momenta tensor on several t_slices, mtxyzX
+      /// \param first_mom: index of the first momentum being computed
+      /// \param order_out: coordinate order of the output tensor, a permutation of ijkmt
+      /// \param call: function to call for each combination of displacement, t-slice, and momentum
+
+      template <typename COMPLEX, std::size_t Nleft, std::size_t Nright>
+      void doMomDisp_contractions(const std::vector<Tensor<Nd + 3, COMPLEX>>& u,
+				  Tensor<Nleft, COMPLEX> left, Tensor<Nright, COMPLEX> right,
+				  Index first_tslice, const PathNode& disps, bool deriv,
+				  const std::vector<Coor<Nd - 1>>& moms, int first_mom,
+				  const std::string& order_out, DeviceHost dev, Distribution dist,
+				  const ContractionFn<COMPLEX>& call)
+      {
+	if (disps.disp_index >= 0)
+	{
+	  detail::log(1, std::string("contracting for disp_index=") +
+			   std::to_string(disps.disp_index));
+
+	  // Contract left and right
+	  auto this_right = right.reorder("ncxyzX%t", '%').rename_dims({{'n', 'i'}});
+	  auto this_left = left.reorder("cxyzXn%t", '%').rename_dims({{'n', 'j'}});
+	  Tensor<4, COMPLEX> r =
+	    this_left.template like_this<4, COMPLEX>("jimt", {{'i', this_right.kvdim()['i']}}, dev, dist);
+	  r.contract(std::move(this_left), {}, Conjugate, std::move(this_right), {}, NotConjugate);
+
+	  // Do whatever
+	  call(std::move(r), disps.disp_index, first_tslice, first_mom);
+	}
+
+	// Apply displacements on right and call recursively
+	unsigned int node_disp = 0;
+	for (const auto it : disps.p)
+	{
+	  detail::log(1, std::string("for disps, push on direction ") + std::to_string(it.first));
+	  // Apply displacement on the right colorvec
+	  // NOTE: avoid that the memory requirements grow linearly with the number of displacements
+	  //       by killing the reference to `right` as soon as possible
+	  Tensor<Nright, COMPLEX> right_disp =
+	    !deriv ? displace(u, right, first_tslice, it.first)
+		   : leftRightNabla(u, right, first_tslice, it.first, moms);
+	  if (node_disp == disps.p.size() - 1)
+	    right.release();
+	  doMomDisp_contractions(u, left, std::move(right_disp), first_tslice, it.second, deriv,
+				 moms, first_mom, order_out, dev, dist, call);
+	  node_disp++;
+	  detail::log(1, std::string("for disps, pop direction"));
+	}
+      }
+    }
+
+    /// Contract three LatticeColorvec with different momenta and displacements.
+    /// \param colorvecs: lattice color tensor on several t_slices, ctxyzXn
+    /// \param moms: momenta tensor on several t_slices, mtxyzX
+    /// \param disps: list of displacements/derivatives
+    /// \param deriv: if true, do left-right nabla derivatives
+    /// \param call: function to call for each combination of disps0, disps1, and disps2
+    /// \param order_out: coordinate order of the output tensor, a permutation of ijmt where
+    ///        i and j are the n index in the right and left colorvec respectively; and 
+    ///        m is the momentum index
+
+    template <std::size_t Nin, typename COMPLEX>
+    void doMomDisp_contractions(const multi1d<LatticeColorMatrix>& u, Tensor<Nin, COMPLEX> colorvec,
+				Moms<COMPLEX> moms, Index first_tslice,
+				std::vector<std::vector<int>> disps, bool deriv,
+				const ContractionFn<COMPLEX>& call,
+				Maybe<std::string> order_out = none, Maybe<DeviceHost> dev = none,
+				Maybe<Distribution> dist = none)
+    {
+      const std::string order_out_str = order_out.getSome("ijmt");
+      detail::check_order_contains(order_out_str, "ijmt");
+      detail::check_order_contains(colorvec.order, "cxyzXtn");
+      detail::check_order_contains(moms.first.order, "xyzXtm");
+
+      // Form a tree with the displacement paths
+      detail::PathNode tree_disps = detail::get_tree(disps);
+
+      // Get what directions are going to be used and the maximum number of displacements in memory
+      std::array<bool, Nd> active_dirs{};
+      unsigned int max_active_disps = 0;
+      detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps);
+
+      // Check that all tensors have the same number of time
+      int Nt = colorvec.kvdim()['t'];
+      if (Nt != moms.first.kvdim()['t'])
+	throw std::runtime_error("The t component of `colorvec' and `moms' does not match");
+
+      // Iterate over time-slices
+      for (int tfrom = 0, tsize = Nt; tfrom < Nt; tfrom += tsize, tsize = Nt - tfrom)
+      {
+	// Make tsize one or even
+	if (tsize > 1 && tsize % 2 != 0)
+	  --tsize;
+
+	detail::log(1,
+		    std::string("contracting " + std::to_string(tsize) + " tslices from tslice= ") +
+		      std::to_string(tfrom));
+
+	// Make a copy of the time-slicing of u[d] also supporting left and right
+	std::vector<Tensor<Nd + 3, COMPLEX>> ut(Nd);
+	for (unsigned int d = 0; d < Nd - 1; d++)
+	{
+	  if (!active_dirs[d])
+	    continue;
+
+	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as colorvec and moms
+	  ut[d] = asTensorView(u[d])
+		    .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
+		    .toComplex()
+		    .reorder("ijxyzXt");
+	}
+
+	// Get the time-slice for colorvec
+	auto this_colorvec = colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
+	auto this_moms = moms.first.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
+
+	// Apply momenta conjugated to the left tensor
+	int Nmom = moms.first.kvdim()['m'];
+	Tensor<Nin + 1, COMPLEX> moms_left =
+	  colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', Nmom}});
+	this_moms = this_moms.reorder("mxyzXt");
+	this_colorvec = this_colorvec.reorder("c%xyzXt", '%');
+	moms_left.contract(std::move(this_moms), {}, Conjugate, this_colorvec, {}, NotConjugate);
+
+	if (tfrom + tsize >= Nt)
+	{
+	  colorvec.release();
+	  moms.first.release();
+	}
+
+	if (!deriv)
+	{
+	  ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
+	    ut, std::move(moms_left), this_colorvec, first_tslice + tfrom, tree_disps,
+	    deriv, moms.second, 0, order_out_str, dev.getSome(OnDefaultDevice),
+	    dist.getSome(OnEveryoneReplicated), call);
+	}
+	else
+	{
+	  // When using derivatives, each momenta has a different effect
+	  std::vector<COMPLEX> ones(Nmom, COMPLEX(1));
+	  Tensor<Nin + 1, COMPLEX> this_colorvec_m =
+	    this_colorvec.template like_this<Nin + 1>("%m", '%', "", {{'m', Nmom}});
+	  this_colorvec_m.contract(std::move(this_colorvec), {}, NotConjugate, asTensorView(ones),
+				   {{'i', 'm'}}, NotConjugate);
+	  ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
+	    ut, std::move(moms_left), this_colorvec_m, first_tslice + tfrom, tree_disps, deriv,
+	    moms.second, 0, order_out_str, dev.getSome(OnDefaultDevice),
+	    dist.getSome(OnEveryoneReplicated), call);
 	}
       }
     }

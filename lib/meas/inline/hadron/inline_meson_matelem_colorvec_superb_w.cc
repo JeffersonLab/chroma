@@ -1,13 +1,13 @@
 /*! \file
- * \brief Inline measurement of baryon operators via colorstd::vector matrix elements
+ * \brief Inline measurement of meson operators via colorstd::vector matrix elements
  */
 
-#include "meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.h"
+#include "meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h"
 #include "handle.h"
 #include "meas/glue/mesplq.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/make_xml_file.h"
-#include "meas/smear/disp_colvec_map.h"
+#include "meas/smear/displace.h"
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
 #include "util/ferm/key_val_db.h"
@@ -22,6 +22,7 @@
 #define COLORVEC_MATELEM_TYPE_ONE 1
 #define COLORVEC_MATELEM_TYPE_MONE -1
 #define COLORVEC_MATELEM_TYPE_GENERIC 10
+#define COLORVEC_MATELEM_TYPE_DERIV 11
 
 #ifdef BUILD_SB
 namespace Chroma
@@ -31,35 +32,11 @@ namespace Chroma
    *
    * @{
    */
-  namespace InlineBaryonMatElemColorVecSuperbEnv
+  namespace InlineMesonMatElemColorVecSuperbEnv
   {
     // Reader for input parameters
     void read(XMLReader& xml, const std::string& path,
-	      InlineBaryonMatElemColorVecSuperbEnv::Params::Param_t::Displacement_t& param)
-    {
-      XMLReader paramtop(xml, path);
-
-      read(paramtop, "left", param.left);
-      read(paramtop, "middle", param.middle);
-      read(paramtop, "right", param.right);
-    }
-
-    // Writer for input parameters
-    void write(XMLWriter& xml, const std::string& path,
-	       const InlineBaryonMatElemColorVecSuperbEnv::Params::Param_t::Displacement_t& param)
-    {
-      push(xml, path);
-
-      write(xml, "left", param.left);
-      write(xml, "middle", param.middle);
-      write(xml, "right", param.right);
-
-      pop(xml);
-    }
-
-    // Reader for input parameters
-    void read(XMLReader& xml, const std::string& path,
-	      InlineBaryonMatElemColorVecSuperbEnv::Params::Param_t& param)
+	      InlineMesonMatElemColorVecSuperbEnv::Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
 
@@ -68,41 +45,48 @@ namespace Chroma
 
       switch (version)
       {
-      case 1: param.use_derivP = false; break;
+      case 1:
+	/**************************************************************************/
+	param.mom2_min = 0;
+	param.mom_list.resize(0);
+	break;
 
-      case 2: read(paramtop, "use_derivP", param.use_derivP); break;
+      case 2:
+	/**************************************************************************/
+	read(paramtop, "mom2_min", param.mom2_min);
+	param.mom_list.resize(0);
+	break;
+
+      case 3:
+      case 4: // For compatibility with harom's task
+	/**************************************************************************/
+	read(paramtop, "mom2_min", param.mom2_min);
+	read(paramtop, "mom_list", param.mom_list);
+	break;
 
       default:
+	/**************************************************************************/
+
 	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
+      param.use_derivP = false;
+      if (paramtop.count("use_derivP") > 0)
+	read(paramtop, "use_derivP", param.use_derivP);
       read(paramtop, "mom2_max", param.mom2_max);
       read(paramtop, "displacement_length", param.displacement_length);
       read(paramtop, "displacement_list", param.displacement_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
-      if (paramtop.count("t_source") > 0)
-      {
-	read(paramtop, "t_source", param.t_source);
-      }
-      else
-      {
-	param.t_source = 0;
-      }
 
+      param.t_source = 0;
+      if (paramtop.count("t_source") > 0)
+	read(paramtop, "t_source", param.t_source);
+
+      param.Nt_forward = Layout::lattSize()[param.decay_dir];
       if (paramtop.count("Nt_forward") > 0)
-      {
 	read(paramtop, "Nt_forward", param.Nt_forward);
-      }
-      else
-      {
-	param.Nt_forward = Layout::lattSize()[param.decay_dir];
-      }
-      if (paramtop.count("t_slices") > 0)
-      {
-	read(paramtop, "t_slices", param.t_slices);
-      }
 
       if (paramtop.count("phase") == 1)
       {
@@ -114,42 +98,30 @@ namespace Chroma
 	for (int i = 0; i < Nd - 1; ++i)
 	  param.phase[i] = 0;
       }
-      param.max_tslices_in_contraction = 0;
-      if (paramtop.count("max_tslices_in_contraction") == 1)
-      {
-	read(paramtop, "max_tslices_in_contraction", param.max_tslices_in_contraction);
-      }
-
-      param.max_moms_in_contraction = 0;
-      if (paramtop.count("max_moms_in_contraction") == 1)
-      {
-	read(paramtop, "max_moms_in_contraction", param.max_moms_in_contraction);
-      }
 
       param.link_smearing = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
 
     // Writer for input parameters
     void write(XMLWriter& xml, const std::string& path,
-	       const InlineBaryonMatElemColorVecSuperbEnv::Params::Param_t& param)
+	       const InlineMesonMatElemColorVecSuperbEnv::Params::Param_t& param)
     {
       push(xml, path);
 
-      int version = 2;
+      int version = 3;
 
       write(xml, "version", version);
-      write(xml, "mom2_max", param.mom2_max);
       write(xml, "use_derivP", param.use_derivP);
+      write(xml, "mom2_min", param.mom2_min);
+      write(xml, "mom2_max", param.mom2_max);
+      write(xml, "mom_list", param.mom_list);
       write(xml, "displacement_length", param.displacement_length);
       write(xml, "displacement_list", param.displacement_list);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);
       write(xml, "t_source", param.t_source);
       write(xml, "Nt_forward", param.Nt_forward);
-      write(xml, "t_slices", param.t_slices);
       write(xml, "phase", param.phase);
-      write(xml, "max_tslices_in_contraction", param.max_tslices_in_contraction);
-      write(xml, "max_moms_in_contraction", param.max_moms_in_contraction);
       xml << param.link_smearing.xml;
 
       pop(xml);
@@ -157,37 +129,37 @@ namespace Chroma
 
     //! Read named objects
     void read(XMLReader& xml, const std::string& path,
-	      InlineBaryonMatElemColorVecSuperbEnv::Params::NamedObject_t& input)
+	      InlineMesonMatElemColorVecSuperbEnv::Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "colorvec_files", input.colorvec_files);
-      read(inputtop, "baryon_op_file", input.baryon_op_file);
+      read(inputtop, "meson_op_file", input.meson_op_file);
     }
 
     //! Write named objects
     void write(XMLWriter& xml, const std::string& path,
-	       const InlineBaryonMatElemColorVecSuperbEnv::Params::NamedObject_t& input)
+	       const InlineMesonMatElemColorVecSuperbEnv::Params::NamedObject_t& input)
     {
       push(xml, path);
 
       write(xml, "gauge_id", input.gauge_id);
       write(xml, "colorvec_files", input.colorvec_files);
-      write(xml, "baryon_op_file", input.baryon_op_file);
+      write(xml, "meson_op_file", input.meson_op_file);
 
       pop(xml);
     }
 
     // Writer for input parameters
     void write(XMLWriter& xml, const std::string& path,
-	       const InlineBaryonMatElemColorVecSuperbEnv::Params& param)
+	       const InlineMesonMatElemColorVecSuperbEnv::Params& param)
     {
       param.writeXML(xml, path);
     }
   }
 
-  namespace InlineBaryonMatElemColorVecSuperbEnv
+  namespace InlineMesonMatElemColorVecSuperbEnv
   {
     // Anonymous namespace for registration
     namespace
@@ -201,7 +173,7 @@ namespace Chroma
       bool registered = false;
     }
 
-    const std::string name = "BARYON_MATELEM_COLORVEC_SUPERB";
+    const std::string name = "MESON_MATELEM_COLORVEC_SUPERB";
 
     //! Register all the factories
     bool registerAll()
@@ -232,14 +204,6 @@ namespace Chroma
 
 	return os;
       }
-
-      StandardOutputStream& operator<<(StandardOutputStream& os,
-				       const Params::Param_t::Displacement_t& d)
-      {
-	os << "left= " << d.left << " middle= " << d.middle << " right= " << d.right;
-
-	return os;
-      }
     }
 
     //----------------------------------------------------------------------------
@@ -247,7 +211,9 @@ namespace Chroma
     Params::Params()
     {
       frequency = 0;
+      param.mom2_min = 0;
       param.mom2_max = 0;
+      param.mom_list.resize(0);
     }
 
     Params::Params(XMLReader& xml_in, const std::string& path)
@@ -293,98 +259,87 @@ namespace Chroma
     }
 
     //----------------------------------------------------------------------------
-    //! Baryon operator
-    struct KeyBaryonElementalOperator_t {
-      int t_slice;	   /*!< Baryon operator time slice */
-      multi1d<int> left;   /*!< Displacement dirs of left colorstd::vector */
-      multi1d<int> middle; /*!< Displacement dirs of middle colorstd::vector */
-      multi1d<int> right;  /*!< Displacement dirs of right colorstd::vector */
-      multi1d<int> mom;	   /*!< D-1 momentum of this operator */
+    //! Meson operator
+    struct KeyMesonElementalOperator_t {
+      int t_slice;		 /*!< Meson operator time slice */
+      multi1d<int> displacement; /*!< Displacement dirs of right colorstd::vector */
+      multi1d<int> mom;		 /*!< D-1 momentum of this operator */
     };
 
-    //! Baryon operator
-    /*!< Momentum projected operator */
-    struct ValBaryonElementalOperator_t : public SB::Tensor<3, SB::ComplexD> {
+    //! Meson operator, colorstd::vector source and sink with momentum projection
+    struct ValMesonElementalOperator_t : public SB::Tensor<2, SB::ComplexD> {
       int type_of_data; /*!< Flag indicating type of data (maybe trivial) */
-      ValBaryonElementalOperator_t(int n = 0, int type_of_data = COLORVEC_MATELEM_TYPE_GENERIC)
-	: SB::Tensor<3, SB::ComplexD>("kji", {n, n, n}, SB::OnHost, SB::Local),
+      ValMesonElementalOperator_t(int n = 0, int type_of_data = COLORVEC_MATELEM_TYPE_GENERIC)
+	: SB::Tensor<2, SB::ComplexD>("ij", {n, n}, SB::OnHost, SB::Local),
 	  type_of_data(type_of_data)
       {
       }
     };
 
     //----------------------------------------------------------------------------
-    //! BaryonElementalOperator reader
-    void read(BinaryReader& bin, KeyBaryonElementalOperator_t& param)
+    //! KeyMesonElementalOperator reader
+    void read(BinaryReader& bin, KeyMesonElementalOperator_t& param)
     {
       read(bin, param.t_slice);
-      read(bin, param.left);
-      read(bin, param.middle);
-      read(bin, param.right);
+      read(bin, param.displacement);
       read(bin, param.mom);
     }
 
-    //! BaryonElementalOperator write
-    void write(BinaryWriter& bin, const KeyBaryonElementalOperator_t& param)
+    //! MesonElementalOperator write
+    void write(BinaryWriter& bin, const KeyMesonElementalOperator_t& param)
     {
       write(bin, param.t_slice);
-      write(bin, param.left);
-      write(bin, param.middle);
-      write(bin, param.right);
+      write(bin, param.displacement);
       write(bin, param.mom);
     }
 
-    //! BaryonElementalOperator reader
-    void read(XMLReader& xml, const std::string& path, KeyBaryonElementalOperator_t& param)
+    //! MesonElementalOperator reader
+    void read(XMLReader& xml, const std::string& path, KeyMesonElementalOperator_t& param)
     {
       XMLReader paramtop(xml, path);
 
       read(paramtop, "t_slice", param.t_slice);
-      read(paramtop, "left", param.left);
-      read(paramtop, "middle", param.middle);
-      read(paramtop, "right", param.right);
+      read(paramtop, "displacement", param.displacement);
       read(paramtop, "mom", param.mom);
     }
 
-    //! BaryonElementalOperator writer
-    void write(XMLWriter& xml, const std::string& path, const KeyBaryonElementalOperator_t& param)
+    //! MesonElementalOperator writer
+    void write(XMLWriter& xml, const std::string& path, const KeyMesonElementalOperator_t& param)
     {
       push(xml, path);
 
       write(xml, "t_slice", param.t_slice);
-      write(xml, "left", param.left);
-      write(xml, "middle", param.middle);
-      write(xml, "right", param.right);
+      write(xml, "displacement", param.displacement);
       write(xml, "mom", param.mom);
 
       pop(xml);
     }
 
     //----------------------------------------------------------------------------
-    //! BaryonElementalOperator reader
-    void read(BinaryReader& bin, ValBaryonElementalOperator_t& param)
+    //! MesonElementalOperator reader
+    void read(BinaryReader& bin, ValMesonElementalOperator_t& param)
     {
       int type_of_data;
       read(bin, type_of_data);
 
       int n;
       read(bin, n); // the size is always written, even if 0
-      param = ValBaryonElementalOperator_t(n, type_of_data);
-      SB::Tensor<3, SB::ComplexD>& t = param;
+      param = ValMesonElementalOperator_t(n, type_of_data);
+      SB::Tensor<2, SB::ComplexD>& t = param;
       read(bin, t);
     }
 
-    //! BaryonElementalOperator write
-    void write(BinaryWriter& bin, const ValBaryonElementalOperator_t& param)
+    //! MesonElementalOperator write
+    void write(BinaryWriter& bin, const ValMesonElementalOperator_t& param)
     {
       int type_of_data = param.type_of_data;
-      write(bin, type_of_data);
+      write(bin, param.type_of_data);
 
       auto kvdim = param.kvdim();
-      assert(kvdim['i'] == kvdim['j'] && kvdim['j'] == kvdim['k']);
+      assert(kvdim['i'] == kvdim['j']);
       int n = kvdim['i']; // all sizes the same
       write(bin, n);
-      SB::Tensor<3, SB::ComplexD> t = param.reorder("kji");
+      SB::Tensor<2, SB::ComplexD> t = param.reorder("ij");
       write(bin, t);
     }
 
@@ -418,16 +373,12 @@ namespace Chroma
 
     //----------------------------------------------------------------------------
     //! Make sure displacements are something sensible and return std structures
-    std::vector<std::array<std::vector<int>, 3>>
-    normalizeDisplacements(const multi1d<Params::Param_t::Displacement_t>& displacement_list)
+    std::vector<std::vector<int>>
+    normalizeDisplacements(const multi1d<multi1d<int>>& displacement_list)
     {
-      std::vector<std::array<std::vector<int>, 3>> r(displacement_list.size());
+      std::vector<std::vector<int>> r(displacement_list.size());
       for (int i = 0; i < displacement_list.size(); ++i)
-      {
-	r[i][0] = normDisp(displacement_list[i].left);
-	r[i][1] = normDisp(displacement_list[i].middle);
-	r[i][2] = normDisp(displacement_list[i].right);
-      }
+	r[i] = normDisp(displacement_list[i]);
       return r;
     }
 
@@ -440,7 +391,7 @@ namespace Chroma
       {
 	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
-	push(xml_out, "BaryonMatElemColorSuperbVec");
+	push(xml_out, "MesonMatElemColorVec");
 	write(xml_out, "update_no", update_no);
 	write(xml_out, "xml_file", xml_file);
 	pop(xml_out);
@@ -458,16 +409,12 @@ namespace Chroma
     void InlineMeas::func(unsigned long update_no, XMLWriter& xml_out)
     {
       START_CODE();
-      if (Nc != 3)
-      { /* Code is specific to Ns=4 and Nc=3. */
-	QDPIO::cerr << " code only works for Nc=3 and Ns=4\n";
-	QDP_abort(111);
-      }
-#  if QDP_NC == 3
 
       StopWatch snoop;
       snoop.reset();
       snoop.start();
+
+      StopWatch swiss;
 
       // Test and grab a reference to the gauge field
       XMLBufferWriter gauge_xml;
@@ -526,10 +473,10 @@ namespace Chroma
 
       QDPIO::cout << "Source successfully read and parsed" << std::endl;
 
-      push(xml_out, "BaryonMatElemColorVecSuperb");
+      push(xml_out, "MesonMatElemColorVec");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": Baryon color-std::vector matrix element" << std::endl;
+      QDPIO::cout << name << ": Meson color-std::vector matrix element" << std::endl;
 
       proginfo(xml_out); // Print out basic program info
 
@@ -553,9 +500,27 @@ namespace Chroma
       SftMom phases(params.param.mom2_max, false, params.param.decay_dir);
 
       //
+      // If a list of momenta has been specified only need phases corresponding to these
+      //
+      if (params.param.mom_list.size() > 0)
+      {
+	int num_mom = params.param.mom_list.size();
+	int mom_size = params.param.mom_list[0].size();
+	multi2d<int> moms(num_mom, mom_size);
+	for (int i = 0; i < num_mom; i++)
+	{
+	  moms[i] = params.param.mom_list[i];
+	}
+	SftMom temp_phases(moms, params.param.decay_dir);
+	phases = temp_phases;
+	params.param.mom2_min = 0;
+      }
+
+      //
       // Smear the gauge field if needed
       //
       multi1d<LatticeColorMatrix> u_smr = u;
+
       try
       {
 	std::istringstream xml_l(params.param.link_smearing.xml);
@@ -572,6 +537,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+      // Record the smeared observables
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
       //
@@ -594,9 +560,9 @@ namespace Chroma
       // DB storage
       // NOTE: Only the master node opens the storage and writes on it
       //
-      std::vector<BinaryStoreDB<LocalSerialDBKey<KeyBaryonElementalOperator_t>,
-				LocalSerialDBData<ValBaryonElementalOperator_t>>>
-	qdp_db{};
+      std::vector<BinaryStoreDB<LocalSerialDBKey<KeyMesonElementalOperator_t>,
+				LocalSerialDBData<ValMesonElementalOperator_t>>>
+	qdp_db;
 
       // This function opens the output file
       // NOTE: Only called by the master node
@@ -607,17 +573,18 @@ namespace Chroma
 	qdp_db.resize(1);
 
 	// Open the file, and write the meta-data and the binary for this operator
-	if (!qdp_db[0].fileExists(params.named_obj.baryon_op_file))
+	if (!qdp_db[0].fileExists(params.named_obj.meson_op_file))
 	{
 	  XMLBufferWriter file_xml;
 
 	  push(file_xml, "DBMetaData");
-	  write(file_xml, "id", std::string("baryonElemOp"));
+	  write(file_xml, "id", std::string("mesonElemOp"));
 	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  //	write(file_xml, "blockSize", params.param.block_size);
 	  write(file_xml, "decay_dir", params.param.decay_dir);
 	  proginfo(file_xml); // Print out basic program info
 	  write(file_xml, "Params", params.param);
-	  //write(file_xml, "Op_Info", displacement_list);
+	  write(file_xml, "Op_Info", params.param.displacement_list);
 	  write(file_xml, "Config_info", gauge_xml);
 	  //write(file_xml, "Weights", getEigenValues(eigen_source, params.param.num_vecs));
 	  pop(file_xml);
@@ -625,66 +592,39 @@ namespace Chroma
 	  std::string file_str(file_xml.str());
 	  qdp_db[0].setMaxUserInfoLen(file_str.size());
 
-	  qdp_db[0].open(params.named_obj.baryon_op_file, O_RDWR | O_CREAT, 0664);
+	  qdp_db[0].open(params.named_obj.meson_op_file, O_RDWR | O_CREAT, 0664);
 
 	  qdp_db[0].insertUserdata(file_str);
 	}
 	else
 	{
-	  qdp_db[0].open(params.named_obj.baryon_op_file, O_RDWR, 0664);
+	  qdp_db[0].open(params.named_obj.meson_op_file, O_RDWR, 0664);
 	}
       };
 
       // Compute the interval of t points to compute
-      int tfrom = 0; // First t-slice to compute
-      int tsize = 0; // Number of t-slices to compute
-      std::set<int> t_slices_to_write{};
+      int tfrom = params.param.t_source;   // First t-slice to compute
+      int tsize = params.param.Nt_forward; // Number of t-slices to compute
       const int Nt = Layout::lattSize()[params.param.decay_dir];
-      if (params.param.t_slices.size() == 0)
-      {
-	tfrom = params.param.t_source;
-	tsize = params.param.Nt_forward;
-	params.param.t_slices.resize(tsize);
-	for (int i = 0; i < tsize; ++i)
-	  t_slices_to_write.insert((tfrom + i) % Nt);
-      }
-      else
-      {
-	for (int i = 0; i < params.param.t_slices.size(); ++i)
-	{
-	  // Check the values
-	  int t0 = params.param.t_slices[i];
-	  if (t0 < 0 || t0 >= Nt)
-	    throw std::runtime_error("Invalid source at tag `t_slices'");
 
-	  SB::union_interval(tfrom, tsize, t0, 1, Nt, tfrom, tsize);
-	  t_slices_to_write.insert(t0);
-	}
-      }
-
-      // The function SB::doMomDisp_colorContractions constrains that the number of t points to compute
+      // The function SB::doMomDisp_contractions constrains that the number of t points to compute
       // should be zero, one, or even
       if (tsize > 1 && tsize % 2 == 1)
 	tsize++;
 
+      // Make sure displacements are something sensible and transform to std objects
+      std::vector<std::vector<int>> displacement_list =
+	normalizeDisplacements(params.param.displacement_list);
+
       //
-      // Baryon operators
+      // Meson operators
       //
       // The creation and annihilation operators are the same without the
       // spin matrices.
       //
-      QDPIO::cout << "Building baryon operators" << std::endl;
+      QDPIO::cout << "Building meson operators" << std::endl;
 
       push(xml_out, "ElementalOps");
-
-      // Build the operator
-      StopWatch swiss;
-      swiss.reset();
-      swiss.start();
-
-      // Make sure displacements are something sensible and transform to std objects
-      std::vector<std::array<std::vector<int>, 3>> displacement_list =
-	normalizeDisplacements(params.param.displacement_list);
 
       // Get num_vecs colorvecs on time-slice t_source
       SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
@@ -692,51 +632,48 @@ namespace Chroma
 
       // Call for storing the baryons
       double time_storing = 0; // total time in writing elementals
-      SB::ColorContractionFn<SB::Complex> call(
-	[&](SB::Tensor<5, SB::Complex> tensor, int disp, int first_tslice, int first_mom) {
-	  // Only the master node writes the elementals and we assume that tensor is only supported on master
-	  assert(tensor.dist == SB::OnMaster);
-	  tensor = tensor.getLocal();
-	  if (tensor) // if the local tensor isn't empty, ie this node holds the tensor
+      SB::ContractionFn<SB::Complex> call([&](SB::Tensor<4, SB::Complex> tensor, int disp,
+					      int first_tslice, int first_mom) {
+	// Only the master node writes the elementals and we assume that tensor is only supported on master
+	assert(tensor.dist == SB::OnMaster);
+	tensor = tensor.getLocal();
+	if (tensor) // if the local tensor isn't empty, ie this node holds the tensor
+	{
+	  // Open the database
+	  open_db();
+
+	  StopWatch tstoring;
+	  tstoring.reset();
+	  tstoring.start();
+
+	  KeyMesonElementalOperator_t key;
+	  ValMesonElementalOperator_t val(params.param.num_vecs, params.param.use_derivP
+								   ? COLORVEC_MATELEM_TYPE_DERIV
+								   : COLORVEC_MATELEM_TYPE_GENERIC);
+
+	  // The keys for the displacements for this particular elemental operator
+	  // Invert the time - make it an independent key
+	  for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
 	  {
-	    // Open the database
-	    open_db();
-
-	    StopWatch tstoring;
-	    tstoring.reset();
-	    tstoring.start();
-
-	    KeyBaryonElementalOperator_t key;
-	    ValBaryonElementalOperator_t val(params.param.num_vecs);
-
-	    // The keys for the displacements for this particular elemental operator
-	    // Invert the time - make it an independent key
-	    for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
+	    for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
 	    {
-	      if (t_slices_to_write.count(first_tslice + t) == 0)
-		continue;
-	      for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
-	      {
-		key.t_slice = first_tslice + t;
-		key.left = tomulti1d(displacement_list[disp][0]);
-		key.middle = tomulti1d(displacement_list[disp][1]);
-		key.right = tomulti1d(displacement_list[disp][2]);
-		key.mom = phases.numToMom(first_mom + m);
-		tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}}).copyTo(val);
-		qdp_db[0].insert(key, val);
-	      }
+	      key.t_slice = first_tslice + t;
+	      key.mom = phases.numToMom(first_mom + m);
+	      key.displacement = tomulti1d(displacement_list[disp]); // only right colorstd::vector
+	      tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}}).copyTo(val);
+	      qdp_db[0].insert(key, val);
 	    }
-
-	    time_storing += tstoring.getTimeInSeconds();
 	  }
-	});
 
-      // Do the color-contraction
+	  time_storing += tstoring.getTimeInSeconds();
+	}
+      });
+
+      // Do the contractions
       auto moms = SB::getMoms(params.param.decay_dir, phases, SB::none, SB::none, tfrom, tsize);
-      SB::doMomDisp_colorContractions(
-	u_smr, source_colorvec, moms, tfrom, displacement_list, params.param.use_derivP, call,
-	params.param.max_tslices_in_contraction, params.param.max_moms_in_contraction, SB::none,
-	SB::OnDefaultDevice, SB::OnMaster);
+      SB::doMomDisp_contractions(u_smr, source_colorvec, moms, tfrom, displacement_list,
+				 params.param.use_derivP, call, SB::none, SB::OnDefaultDevice,
+				 SB::OnMaster);
 
       // Close db
       for (auto& db : qdp_db)
@@ -744,24 +681,23 @@ namespace Chroma
 
       swiss.stop();
 
-      QDPIO::cout << "All baryon operators computed in time= "
+      QDPIO::cout << "All meson operators computed in time= "
 		  << swiss.getTimeInSeconds() - time_storing << " secs, writing time "
 		  << time_storing << " secs " << std::endl;
+
       pop(xml_out); // ElementalOps
 
       // Close the namelist output file XMLDAT
-      pop(xml_out); // BaryonMatElemColorVector
+      pop(xml_out); // MesonMatElemColorVector
 
       snoop.stop();
       QDPIO::cout << name << ": total time = " << snoop.getTimeInSeconds() << " secs" << std::endl;
 
       QDPIO::cout << name << ": ran successfully" << std::endl;
 
-#  endif
-
       END_CODE();
     } // func
-  }   // namespace InlineBaryonMatElemColorVecSuperbEnv
+  }   // namespace InlineMesonMatElemColorVecSuperbEnv
 
   /*! @} */ // end of group hadron
 
