@@ -62,7 +62,7 @@ namespace Chroma
     if (aniso.anisoP)
     {
       // Work out aniso factors
-      Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
+      Real ff = aniso.anisoP ? aniso.nu / aniso.xi_0 : Real(1);
       fact = 1 + (Nd-1)*ff + Mass;
 
       // Rescale the u fields by the anisotropy

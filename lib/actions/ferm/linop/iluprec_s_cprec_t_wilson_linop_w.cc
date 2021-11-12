@@ -56,7 +56,7 @@ namespace Chroma
     Mass = Mass_;
 
     // Work out aniso factors
-    Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
+    Real ff = aniso.anisoP ? aniso.nu / aniso.xi_0 : Real(1);
     fact = 1 + (Nd-1)*ff + Mass;
     invfact = Real(1)/fact;
     u = fs->getLinks();
