@@ -89,7 +89,6 @@ namespace Chroma
       for(int level=params.n_smear; level > 0; level--) {
 	
 	Hyping::deriv_recurse(F_thin, params.smear_in_this_dirP, 
-                              params.alpha1, params.alpha2, params.alpha3, 
                               params.BlkMax,
                               params.BlkAccu,
                               smeared_links[level-1]);

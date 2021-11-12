@@ -43,12 +43,14 @@ namespace Chroma
     //! Do the force recursion from level i+1, to level i
     void deriv_recurse(multi1d<LatticeColorMatrix>&  F,
 		       const multi1d<bool>& smear_in_this_dirP,
-                       const Real alpha1,
-                       const Real alpha2,
-                       const Real alpha3,
-                       const int BlkMax,
-                       const Real BlkAccu,
+                       const int hyp_qr_max_iter,
+                       const Real hyp_qr_tol,
                        const multi1d<LatticeColorMatrix>& u);
+    
+    //! Compute Upper Hessenberg reduction
+    void upper_hessenberg_link(const LatticeColorMatrix &U, 
+                               LatticeColorMatrix &UH,
+                               LatticeColorMatrix &P);
     
   }
 

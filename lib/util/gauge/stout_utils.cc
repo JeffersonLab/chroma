@@ -261,7 +261,7 @@ namespace Chroma
 	      LatticeColorMatrix tmp_mat2;
 	      
 	      
-	      //  THe three upward staples
+	      //  The three upward staples
 	      //  Staples 1 5 and 6 in the paper
 	      // 
 	      //  Staple 1
@@ -406,12 +406,15 @@ namespace Chroma
 	PColorMatrix<QDP::RComplex<REAL>, Nc>  Q_site = Q.elem(site).elem();
 	PColorMatrix<QDP::RComplex<REAL>, Nc>  QQ_site = QQ.elem(site).elem();
 	PColorMatrix<QDP::RComplex<REAL>, Nc>  QQQ = QQ_site*Q_site;
-	
+
+        // Real is a CHROMA type, needed to use a CHROMA function realTrace
 	Real trQQQ; 
 	trQQQ.elem()  = realTrace(QQQ);
 	Real trQQ;
 	trQQ.elem()   = realTrace(QQ_site);
 	
+        // REAL is a QDP type, needed for QDP site execution, hence the
+        // conversion.
 	REAL c0    = ((REAL)1/(REAL)3) * trQQQ.elem().elem().elem().elem();  // eq 13
 	REAL c1    = ((REAL)1/(REAL)2) * trQQ.elem().elem().elem().elem();	 // eq 15 
 	
