@@ -281,12 +281,12 @@ public:
 		Real diag_mass;
 		{
 			// auto is C++11 so I don't have to remember all the silly typenames
-			auto wlparams = invParam.WilsonParams;
+			//:auto wlparams = invParam.WilsonParams;
 
-			auto aniso = wlparams.anisoParam;
-
-			Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
-			diag_mass = 1 + (Nd-1)*ff + wlparams.Mass;
+			AnisoParam_t aniso = invParam.WilsonParams.anisoParam;
+			// Real ff = where(toBool(aniso.anisoP), aniso.nu / aniso.xi_0, Real(1));
+			Real ff = toBool(aniso.anisoP) ? aniso.nu / aniso.xi_0 : Real(1);
+			diag_mass = 1 + (Nd-1)*ff + invParam.WilsonParams.Mass;
 		}
 
 
