@@ -72,12 +72,6 @@ namespace Chroma
                        const int BlkMax,
                        const Real BlkAccu);
 
-    //! Get the Q matrices
-    void getQ(const multi1d<LatticeColorMatrix>& u, 
-              LatticeColorMatrix& Q, 
-              int mu,
-              const multi1d<bool>& smear_in_this_dirP);
-    
     //! Do the force recursion from level i+1, to level i
     void deriv_recurse(multi1d<LatticeColorMatrix>&  F,
 		       const multi1d<bool>& smear_in_this_dirP,
