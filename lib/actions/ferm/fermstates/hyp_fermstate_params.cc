@@ -12,12 +12,12 @@ namespace Chroma
   {
     n_smear = 0;
     smear_in_this_dirP.resize(Nd);
-    for(int i=0; i<Nd; i++) smear_in_this_dirP[i] = true;
-    alpha1;
-    alpha2;
-    alpha3;
-    BlkMax;
-    BlkAccu;
+    smear_in_this_dirP = true;
+    alpha1 = 0;
+    alpha2 = 0;
+    alpha3 = 0;
+    BlkMax = 0;
+    BlkAccu = 0;
   }
 
 
@@ -38,9 +38,24 @@ namespace Chroma
       read(paramtop, "BlkMax", BlkMax);
       read(paramtop, "BlkAccu", BlkAccu);
       int orthog_dir = -1;
-      read(paramtop, "orthog_dir", orthog_dir);
-      for(int i=0; i<Nd; i++) 
-        if(i == orthog_dir) smear_in_this_dirP[i] = false;
+      if( paramtop.count("orthog_dir") == 1 ) { 
+        read(paramtop, "orthog_dir", orthog_dir);
+      }
+      else { 
+        // default value for orthog dir is -1 -- smear in all dims
+        QDPIO::cout << "Using Default value: orthog_dir = -1, smearing in all dims" << std::endl;
+      }
+
+      if (paramtop.count("smear_in_this_dirP") > 0)
+	{
+	  QDPIO::cerr << __func__ << ": found a smear_in_this_dirP in version 1." << std::endl;
+	  QDP_abort(1);
+	}
+      
+      smear_in_this_dirP.resize(Nd);
+      smear_in_this_dirP = true;
+      
+      if (orthog_dir >= 0 && orthog_dir < Nd) smear_in_this_dirP[orthog_dir] = false;
     }
     
     catch(const std::string& e) 

@@ -46,15 +46,15 @@ namespace Chroma
 
     LatticeInt count;
     count = 1;
-    Int numSites = sum(count,mstag);
+    Real numSites = Real(QDP::Layout::vol());
     Double norm = Double(1)/(Nc*numSites);
 
     /* The initial trace */
     Double old_tr = sum(real(trace(v * w)),mstag) * norm;
-
+    
     int iter = 0;
     int wrswitch = 0;			// Write out iterations?
-//  Double conver = 1.0;
+    //  Double conver = 1.0;
     Real conver = 1.0;
 
     while ( toBool(conver > BlkAccu)  &&  iter < BlkMax )
@@ -62,8 +62,7 @@ namespace Chroma
       ++iter;
 
       // Loop over SU(2) subgroup index
-      for(int su2_index = 0; su2_index < Nc*(Nc-1)/2; ++su2_index)
-	su3proj(v, w, su2_index, mstag);
+      for(int su2_index = 0; su2_index < Nc*(Nc-1)/2; ++su2_index) su3proj(v, w, su2_index, mstag);
 
       // Reunitarize: this is the slow bit of the code...
       reunit(v,mstag);
@@ -114,5 +113,4 @@ namespace Chroma
   {
     sun_proj_t(w, v, BlkAccu, BlkMax, mstag);
   }
-
 }

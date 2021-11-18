@@ -416,7 +416,7 @@ namespace Chroma
         // REAL is a QDP type, needed for QDP site execution, hence the
         // conversion.
 	REAL c0    = ((REAL)1/(REAL)3) * trQQQ.elem().elem().elem().elem();  // eq 13
-	REAL c1    = ((REAL)1/(REAL)2) * trQQ.elem().elem().elem().elem();	 // eq 15 
+	REAL c1    = ((REAL)1/(REAL)2) * trQQ.elem().elem().elem().elem();   // eq 15 
 	
 	
 	if( c1 < 4.0e-3  ) 
