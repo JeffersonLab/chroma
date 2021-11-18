@@ -162,14 +162,14 @@ namespace Chroma
           
           // Reduce Q to upper Hessenberg form
           QDPIO::cout << "HYP UH dir " << mu << std::endl;      
-          upper_hessenberg_link(U[mu], UH[mu]); 
+          upper_hessenberg(U[mu], UH[mu]); 
           QDPIO::cout << "HYP UH dir " << mu << " done " << std::endl;      
 
           // QR the upper Hessenberg matrix into untitary Q 
           // and upper triangular form R. Evals of the link
           // lie on the diagonal of UH.
           QDPIO::cout << "HYP QR dir " << mu << std::endl;
-          qr_from_upper_hess_link(UH[mu], hyp_qr_tol, hyp_qr_max_iter);          
+          qr_from_upper_hess(UH[mu], hyp_qr_tol, hyp_qr_max_iter);          
           QDPIO::cout << "HYP QR dir " << mu << std::endl;      
 
           // Construct and solve the Vandermonde matrix W from the eigenvalues 
@@ -181,8 +181,10 @@ namespace Chroma
 
           QDPIO::cout << "HYP V dir " << mu << std::endl;
           multi1d<LatticeComplex> f(Nc);
-          solve_vandermonde_link(UH[mu], f);          
+          solve_vandermonde(UH[mu], f);          
           QDPIO::cout << "HYP V dir " << mu << std::endl;      
+
+          
           
         }
       }
@@ -193,7 +195,7 @@ namespace Chroma
     /* A namespace to hide the thread dispatcher in */
     namespace HypUtils { 
       
-      struct HypUpperHessLinkArgs { 
+      struct HypUpperHessArgs { 
 
         // Site link
         const LatticeColorMatrix &U;
@@ -202,7 +204,7 @@ namespace Chroma
         LatticeColorMatrix &UH;
       };
       
-      struct HypQRLinkArgs { 
+      struct HypQRArgs { 
 
         // The Upper Hessenberg matrix to QR
         LatticeColorMatrix &UH;
@@ -223,7 +225,7 @@ namespace Chroma
 
       
       inline void hypUpperHessSiteLoop(int lo, int hi, int myId, 
-                                       HypUpperHessLinkArgs* arg)
+                                       HypUpperHessArgs* arg)
       {
 #ifndef QDP_IS_QDPJIT
         // We follow the computation described in arxiv:1606.01277
@@ -326,7 +328,7 @@ namespace Chroma
       } // End Function      
 
       inline void hypQRSiteLoop(int lo, int hi, int myId, 
-                                HypQRLinkArgs* arg)
+                                HypQRArgs* arg)
       {
 #ifndef QDP_IS_QDPJIT
       
@@ -527,6 +529,7 @@ namespace Chroma
 
           // Populate Vandermonde matrix and G vector
           for(int i=0; i < Nc; i++) {
+
             // Compute polar decomposition of eigenvalue to take the
             // inverse square root of a complex number.
             REAL arg_Gi = atan2(V.elem(i,i).imag(), V.elem(i,i).real());
@@ -543,9 +546,12 @@ namespace Chroma
           }
           
           // Invert Vandermonde via LU decomposition
+          // DMH: There are more direct method for doing this,
+          //      that may also be more stable. Stability
+          //      of this step is paramount.
           PColorMatrix<QDP::RComplex<REAL>, Nc> Vinv;
 
-          double tol = 1e-15;
+          double tol = 1e-18;
           int i = 0, j = 0, k = 0, i_max = 0;
           int pivots[Nc+1];
           Real max_u = 0.0, abs_u = 0.0;
@@ -634,8 +640,8 @@ namespace Chroma
 
     }// End Namespace
     
-    void upper_hessenberg_link(const LatticeColorMatrix &U, 
-                               LatticeColorMatrix &UH)
+    void upper_hessenberg(const LatticeColorMatrix &U, 
+                          LatticeColorMatrix &UH)
       
     {
       START_CODE();
@@ -644,7 +650,7 @@ namespace Chroma
       swatch.start();
       
       int num_sites = Layout::sitesOnNode();
-      HypUtils::HypUpperHessLinkArgs args={U, UH};
+      HypUtils::HypUpperHessArgs args={U, UH};
       
       
 #if !defined(BUILD_JIT_CLOVER_TERM)
@@ -660,8 +666,8 @@ namespace Chroma
 #warning "Using QDP-JIT hyping"
       static JitFunction function;
       if (function.empty()) {
-        //function_upper_hess_link_build(function, U, UH, P);
-        //function_upper_hess_link_exec(function, U, UH, P);
+        //function_upper_hess_build(function, U, UH, P);
+        //function_upper_hess_exec(function, U, UH, P);
       }
 #endif
 
@@ -671,9 +677,9 @@ namespace Chroma
     }
     
   
-    void qr_from_upper_hess_link(LatticeColorMatrix &UH,
-                                 const Real tol,
-                                 const int max_iter)
+    void qr_from_upper_hess(LatticeColorMatrix &UH,
+                            const Real tol,
+                            const int max_iter)
       
     {
       START_CODE();
@@ -682,7 +688,7 @@ namespace Chroma
       swatch.start();
       
       int num_sites = Layout::sitesOnNode();
-      HypUtils::HypQRLinkArgs args={UH, tol, max_iter};
+      HypUtils::HypQRArgs args={UH, tol, max_iter};
       
     
 #if !defined(BUILD_JIT_CLOVER_TERM)
@@ -698,8 +704,8 @@ namespace Chroma
 #warning "Using QDP-JIT hyping"
       static JitFunction function;
       if (function.empty()) {
-        //function_upper_hess_link_build(function, U, UH, P);
-        //function_upper_hess_link_exec(function, U, UH, P);
+        //function_upper_hess_build(function, U, UH, P);
+        //function_upper_hess_exec(function, U, UH, P);
       }
 #endif
       
@@ -708,8 +714,8 @@ namespace Chroma
       END_CODE();
     }
 
-    void solve_vandermonde_link(LatticeColorMatrix &UT,
-                                multi1d<LatticeComplex>& f)
+    void solve_vandermonde(LatticeColorMatrix &UT,
+                           multi1d<LatticeComplex>& f)
       
     {
       START_CODE();
@@ -734,8 +740,8 @@ namespace Chroma
 #warning "Using QDP-JIT hyping"
       static JitFunction function;
       if (function.empty()) {
-        //function_upper_hess_link_build(function, U, UH, P);
-        //function_upper_hess_link_exec(function, U, UH, P);
+        //function_upper_hess_build(function, U, UH, P);
+        //function_upper_hess_exec(function, U, UH, P);
       }
 #endif
       
@@ -744,96 +750,79 @@ namespace Chroma
       END_CODE();
     }
 
-  
+
     /*! \ingroup gauge */
-    void smear_links(const multi1d<LatticeColorMatrix>& u, 
-                     multi1d<LatticeColorMatrix>& u_hyp,
-                     const multi1d<bool>& smear_in_this_dirP,
-                     const Real alpha1,
-                     const Real alpha2,
-                     const Real alpha3,
-                     const int BlkMax,
-                     const Real BlkAccu)
+    void hyp_lv1_links(const multi1d<LatticeColorMatrix>& u, 
+                       multi1d<LatticeColorMatrix>& u_lv1,
+                       const multi1d<bool>& smear_in_this_dirP,
+                       const Real alpha1,
+                       const Real alpha2,
+                       const Real alpha3,
+                       const int BlkMax,
+                       const Real BlkAccu)
     {
-      multi1d<LatticeColorMatrix> u_lv1(Nd*(Nd-1));
-      multi1d<LatticeColorMatrix> u_lv2(Nd*(Nd-1));
-      LatticeColorMatrix u_tmp;
-      LatticeColorMatrix tmp_1;
-      Real ftmp1;
-      Real ftmp2;
-      int rho;
-      int sigma;
-      int ii;
-      int jj;
-      int kk;
-
       START_CODE();
-  
-      if (Nd > 4) QDP_error_exit("Hyp-smearing only implemented for Nd<=4",Nd);
-      
-      //QDPIO::cout << "HYP alpha1 " << alpha1 << std::endl;      
-      //QDPIO::cout << "HYP alpha2 " << alpha2 << std::endl;      
-      //QDPIO::cout << "HYP alpha3 " << alpha3 << std::endl;      
-      //QDPIO::cout << "HYP BlkMax " << BlkMax << std::endl;      
-      //QDPIO::cout << "HYP BlkAccu " << BlkAccu << std::endl;
-      for(int mu = 0; mu < Nd; ++mu) {
-        //QDPIO::cout << "HYP smear_dir " << (smear_in_this_dirP[mu] ? "true" : "false") << std::endl;
-      }
-      
-      //QDPIO::cout << "HYP start " << std::endl;      
-      
-      // Construct "level 1" smeared links in mu-direction with
-      //staples only in one orthogonal direction, nu
-      ftmp1 = 1.0 - alpha3;
-      ftmp2 = alpha3 / 2;
-      ii = -1;
-      for(int mu = 0; mu < Nd; ++mu) {
+      LatticeColorMatrix u_nu_tmp;
+      LatticeColorMatrix tmp_1;
+      LatticeColorMatrix u_tmp;
 
+      Real ftmp1 = 1.0 - alpha3;
+      Real ftmp2 = alpha3 / 2;
+      int ii = -1;
+      for(int mu = 0; mu < Nd; ++mu) {
+        
         if( smear_in_this_dirP[mu] ) { 
           
-          //QDPIO::cout << "HYP start mu " << mu << std::endl;      
-
           for(int nu = 0; nu < Nd; ++nu) {
 
             if(nu != mu && smear_in_this_dirP[nu]) {
 
-              //QDPIO::cout << "HYP start nu " << nu << std::endl;      
               ii++;
               
               // Forward staple
               // u_tmp(x) = u(x,nu)*u(x+nu,mu)*u_dag(x+mu,nu)
               u_tmp = u[nu] * shift(u[mu],FORWARD,nu) * adj(shift(u[nu],FORWARD,mu));
               
-              //QDPIO::cout << "HYP 1 " << std::endl;      
               // Backward staple
               // u_tmp(x) += u_dag(x-nu,nu)*u(x-nu,mu)*u(x-nu+mu,nu)
-              LatticeColorMatrix u_nu_tmp = shift(u[nu],FORWARD,mu);
+              u_nu_tmp = shift(u[nu],FORWARD,mu);
               u_tmp += shift(adj(u[nu]) * u[mu] * u_nu_tmp,BACKWARD,nu);
-              //QDPIO::cout << "HYP 2 " << std::endl;                
               
               // Unprojected level 1 link
               tmp_1 = ftmp1*u[mu] + ftmp2*u_tmp;
               u_tmp = adj(tmp_1);
-              //QDPIO::cout << "HYP 3 " << std::endl;      
               
               // Project onto SU(Nc)
               u_lv1[ii] = u[mu];
-              //QDPIO::cout << "HYP 4: " << BlkAccu << " " << BlkMax << std::endl;
               sun_proj(u_tmp, u_lv1[ii], BlkAccu, BlkMax);
-              //QDPIO::cout << "HYP sun " << std::endl;      
             }
           }
         }
       }
 
-      //QDPIO::cout << "HYP start lvl1 done" << std::endl;      
-      
-      // Construct "level 2" smeared links in mu-direction with
-      // "level 1" staples not in the orthogonal direction, nu,
-      // and the "level 1" links decorated in the 4-th orthogonal direction
-      ftmp1 = 1.0 - alpha2;
-      ftmp2 = alpha2 / 4;
-      ii = -1;
+      END_CODE();
+    }
+
+    /*! \ingroup gauge */
+    void hyp_lv2_links(const multi1d<LatticeColorMatrix>& u, 
+                       multi1d<LatticeColorMatrix>& u_lv1,
+                       multi1d<LatticeColorMatrix>& u_lv2,
+                       const multi1d<bool>& smear_in_this_dirP,
+                       const Real alpha1,
+                       const Real alpha2,
+                       const Real alpha3,
+                       const int BlkMax,
+                       const Real BlkAccu)
+    {
+      START_CODE();
+      LatticeColorMatrix tmp_1;
+      LatticeColorMatrix u_tmp;
+      LatticeColorMatrix u_lv1_tmp;
+
+      Real ftmp1 = 1.0 - alpha2;
+      Real ftmp2 = alpha2 / 4;
+      int ii = -1;
+      int rho, sigma, jj, kk;
       for(int mu = 0; mu < Nd; ++mu) {
         if( smear_in_this_dirP[mu] ) { 
           for(int nu = 0; nu < Nd; ++nu) {
@@ -859,7 +848,7 @@ namespace Chroma
             
               // Backward staple
               // u_tmp(x) += u_lv1_dag(x-rho,kk)*u_lv1(x-rho,jj)*u_lv1(x-rho+mu,kk)
-              LatticeColorMatrix u_lv1_tmp = shift(u_lv1[kk],FORWARD,mu);
+              u_lv1_tmp = shift(u_lv1[kk],FORWARD,mu);
               u_tmp += shift(adj(u_lv1[kk]) * u_lv1[jj] * u_lv1_tmp , BACKWARD,rho);
             }
           
@@ -870,17 +859,33 @@ namespace Chroma
             // Project onto SU(Nc)
             u_lv2[ii] = u[mu];
             sun_proj(u_tmp, u_lv2[ii], BlkAccu, BlkMax);
-            //QDPIO::cout << "HYP start lvl1 sun done" << std::endl;      
           }
         }
       }
-      //QDPIO::cout << "HYP start lvl2 done" << std::endl;      
+      END_CODE();
+    }
+
+
+    /*! \ingroup gauge */
+    void hyp_lv3_links(const multi1d<LatticeColorMatrix>& u, 
+                       multi1d<LatticeColorMatrix>& u_lv2,
+                       multi1d<LatticeColorMatrix>& u_hyp,
+                       const multi1d<bool>& smear_in_this_dirP,
+                       const Real alpha1,
+                       const Real alpha2,
+                       const Real alpha3,
+                       const int BlkMax,
+                       const Real BlkAccu)
+    {
+      START_CODE();
+
+      LatticeColorMatrix tmp_1;
+      LatticeColorMatrix u_tmp;
+      LatticeColorMatrix u_lv2_tmp;
+      int jj, kk;
       
-      // Construct hyp-smeared links in mu-direction with
-      // "level 2" staples in the orthogonal direction, nu,
-      // and the "level 2" links not decorated in the mu and nu directions
-      ftmp1 = 1.0 - alpha1;
-      ftmp2 = alpha1 / 6;
+      Real ftmp1 = 1.0 - alpha1;
+      Real ftmp2 = alpha1 / 6;
       for(int mu = 0; mu < Nd; ++mu) {
         if( smear_in_this_dirP[mu] ) { 
           u_tmp = 0;
@@ -896,10 +901,10 @@ namespace Chroma
             // Forward staple
             // u_tmp(x) += u_lv2(x,kk)*u_lv2(x+nu,jj)*u_lv2_dag(x+mu,kk)
             u_tmp += u_lv2[kk] * shift(u_lv2[jj],FORWARD,nu) * adj(shift(u_lv2[kk],FORWARD,mu));
-          
+            
             // Backward staple
             // u_tmp(x) += u_lv2_dag(x-nu,kk)*u_lv2(x-nu,jj)*u_lv2(x-nu+mu,kk)
-            LatticeColorMatrix u_lv2_tmp = shift(u_lv2[kk],FORWARD,mu);
+            u_lv2_tmp = shift(u_lv2[kk],FORWARD,mu);
             u_tmp += shift(adj(u_lv2[kk]) * u_lv2[jj] * u_lv2_tmp , BACKWARD,nu);
           }
           
@@ -913,6 +918,44 @@ namespace Chroma
         }
       }
       //QDPIO::cout << "HYP start lvl3 done" << std::endl;      
+      END_CODE();
+    }
+
+    
+    /*! \ingroup gauge */
+    void smear_links(const multi1d<LatticeColorMatrix>& u, 
+                     multi1d<LatticeColorMatrix>& u_hyp,
+                     const multi1d<bool>& smear_in_this_dirP,
+                     const Real alpha1,
+                     const Real alpha2,
+                     const Real alpha3,
+                     const int BlkMax,
+                     const Real BlkAccu)
+    {
+      multi1d<LatticeColorMatrix> u_lv1(Nd*(Nd-1));
+      multi1d<LatticeColorMatrix> u_lv2(Nd*(Nd-1));
+      
+      
+      
+      if (Nd > 4) QDP_error_exit("Hyp-smearing only implemented for Nd<=4",Nd);
+      
+      /*
+      QDPIO::cout << "HYP alpha1 " << alpha1 << std::endl;      
+      QDPIO::cout << "HYP alpha2 " << alpha2 << std::endl;      
+      QDPIO::cout << "HYP alpha3 " << alpha3 << std::endl;      
+      QDPIO::cout << "HYP BlkMax " << BlkMax << std::endl;      
+      QDPIO::cout << "HYP BlkAccu " << BlkAccu << std::endl;
+      for(int mu = 0; mu < Nd; ++mu) {
+      QDPIO::cout << "HYP smear_dir " << (smear_in_this_dirP[mu] ? "true" : "false") << std::endl;
+      }
+      */
+
+      START_CODE();
+
+      hyp_lv1_links(u, u_lv1,        smear_in_this_dirP, alpha1, alpha2, alpha3, BlkMax, BlkAccu);
+      hyp_lv2_links(u, u_lv1, u_lv2, smear_in_this_dirP, alpha1, alpha2, alpha3, BlkMax, BlkAccu);
+      hyp_lv3_links(u, u_lv2, u_hyp, smear_in_this_dirP, alpha1, alpha2, alpha3, BlkMax, BlkAccu);  
+      
       END_CODE();
     }
   } // End Namespace Hyping

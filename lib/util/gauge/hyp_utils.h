@@ -40,6 +40,38 @@ namespace Chroma
                      const int BlkMax,
                      const Real BlkAccu);
 
+    /*! \ingroup gauge */
+    void hyp_lv1_links(const multi1d<LatticeColorMatrix>& u, 
+                       multi1d<LatticeColorMatrix>& u_lv1,
+                       const multi1d<bool>& smear_in_this_dirP,
+                       const Real alpha1,
+                       const Real alpha2,
+                       const Real alpha3,
+                       const int BlkMax,
+                       const Real BlkAccu);
+
+    /*! \ingroup gauge */
+    void hyp_lv2_links(const multi1d<LatticeColorMatrix>& u, 
+                       multi1d<LatticeColorMatrix>& u_lv1,
+                       multi1d<LatticeColorMatrix>& u_lv2,
+                       const multi1d<bool>& smear_in_this_dirP,
+                       const Real alpha1,
+                       const Real alpha2,
+                       const Real alpha3,
+                       const int BlkMax,
+                       const Real BlkAccu);
+
+    /*! \ingroup gauge */
+    void hyp_lv3_links(const multi1d<LatticeColorMatrix>& u, 
+                       multi1d<LatticeColorMatrix>& u_lv3,
+                       multi1d<LatticeColorMatrix>& u_hyp,
+                       const multi1d<bool>& smear_in_this_dirP,
+                       const Real alpha1,
+                       const Real alpha2,
+                       const Real alpha3,
+                       const int BlkMax,
+                       const Real BlkAccu);
+
     //! Get the Q matrices
     void getQ(const multi1d<LatticeColorMatrix>& u, 
               LatticeColorMatrix& Q, 
@@ -54,17 +86,17 @@ namespace Chroma
                        const multi1d<LatticeColorMatrix>& u);
     
     //! Compute Upper Hessenberg reduction
-    void upper_hessenberg_link(const LatticeColorMatrix &U, 
-                               LatticeColorMatrix &UH);
+    void upper_hessenberg(const LatticeColorMatrix &U, 
+                          LatticeColorMatrix &UH);
+    
+    //! Compute QR reduction from Upper Hessenberg reduction
+    void qr_from_upper_hess(LatticeColorMatrix &UH,
+                            const Real hyp_qr_tol,
+                            const int hyp_qr_max_iter);
 
     //! Compute QR reduction from Upper Hessenberg reduction
-    void qr_from_upper_hess_link(LatticeColorMatrix &UH,
-                                 const Real hyp_qr_tol,
-                                 const int hyp_qr_max_iter);
-
-    //! Compute QR reduction from Upper Hessenberg reduction
-    void solve_vandermonde_link(LatticeColorMatrix &UT,
-                                multi1d<LatticeComplex>& f);
+    void solve_vandermonde(LatticeColorMatrix &UT,
+                           multi1d<LatticeComplex>& f);
     
   }
   
