@@ -88,7 +88,10 @@ namespace Chroma
       // Now if the state is smeared recurse down.      
       for(int level=params.n_smear; level > 0; level--) {
 	
-	Hyping::deriv_recurse(F_thin, params.smear_in_this_dirP, 
+	Hyping::deriv_recurse(F_thin, params.smear_in_this_dirP,
+                              params.alpha1,
+                              params.alpha2,
+                              params.alpha3,
                               params.BlkMax,
                               params.BlkAccu,
                               smeared_links[level-1]);
@@ -152,12 +155,32 @@ namespace Chroma
 
       // Apply BC
       if( fbc->nontrivialP() ) fbc->modify( smeared_links[0] );    
-
-      // Iterate up the smearings
+      
+      // Allocate Omega and Q^{1/2} matrices
+      Omega1.resize(params.n_smear);
+      Omega2.resize(params.n_smear);
+      Omega3.resize(params.n_smear);
+      QPowHalf1.resize(params.n_smear);
+      QPowHalf2.resize(params.n_smear);
+      QPowHalf3.resize(params.n_smear);
+      for(int i=0; i < params.n_smear; i++) {
+        QPowHalf1[i].resize(Nd*(Nd-1));
+        QPowHalf2[i].resize(Nd*(Nd-1));
+        QPowHalf3[i].resize(Nd*(Nd-1));
+        Omega1[i].resize(Nd*(Nd-1));
+        Omega2[i].resize(Nd*(Nd-1));
+        Omega3[i].resize(Nd*(Nd-1));
+      }
+      
+      // Iterate up the smearings, computing the corresponding 
+      // Omega and Q^{1/2} matrices. We will need these later
+      // for the derivatives.
       for(int i=1; i <= params.n_smear; i++) {
 	
 	Hyping::smear_links(smeared_links[i-1], smeared_links[i], 
-                            params.smear_in_this_dirP, 
+                            Omega1[i-1], Omega2[i-1], Omega3[i-1], 
+                            QPowHalf1[i-1], QPowHalf2[i-1], QPowHalf3[i-1],
+                            params.smear_in_this_dirP,
                             params.alpha1,
                             params.alpha2,
                             params.alpha3,
@@ -184,6 +207,20 @@ namespace Chroma
     // smeared_links[0] are the thin links smeared_links[params.n_smear] 
     // are the smeared links.
     multi1d< Q > smeared_links;
+
+    // The unprojected \Omega(x)_mu = (1-alpha)U(x)_mu + alpha` * Gamma(x)_mu 
+    // The first index is the "stage" of the smear, the second is (Nd*(Nd-1))
+    multi1d< Q > Omega1, Omega2, Omega3;
+
+    // This is (Omega^dag * Omega)^(1/2), done via eigendecomposition and 
+    // of the Vandermonde marix.
+    // The first index is the "stage" of the smear, the second is (Nd*(Nd-1))
+    multi1d< Q > QPowHalf1, QPowHalf2, QPowHalf3;
+    
+    // These are the f coefficients derived from the 
+    // Cayley Hamilton coefficients.
+    multi1d< LatticeComplex > f_coeffs;
+    
     Q fat_links_with_bc;
     
     HypFermStateParams  params;

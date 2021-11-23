@@ -192,7 +192,7 @@ namespace Chroma
 	  // Get the fs and bs  -- does internal resize to make them arrays of length 3
 	  //	QDPIO::cout << __func__ << ": mu=" << mu << std::endl;
 	  getFsAndBs(Q,QQ, f, b_1, b_2, true);
-	  	  
+          
 	  LatticeColorMatrix B_1 = b_1[0] + b_1[1]*Q + b_1[2]*QQ;
 	  LatticeColorMatrix B_2 = b_2[0] + b_2[1]*Q + b_2[2]*QQ;	  
 	  

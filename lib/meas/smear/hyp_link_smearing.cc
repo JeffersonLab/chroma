@@ -124,7 +124,7 @@ namespace Chroma
     void
     LinkSmear::operator()(multi1d<LatticeColorMatrix>& u) const
     {
-
+#if 0
       // Now hyp smear
       multi1d<LatticeColorMatrix> u_hyp = u;
       multi1d<LatticeColorMatrix> u_tmp(Nd);
@@ -145,8 +145,7 @@ namespace Chroma
       }
       
       u = u_hyp;
-
-#if 0
+      
       // Now hyp smear
       if (params.num_smear > 0)
       {

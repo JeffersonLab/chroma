@@ -44,8 +44,6 @@ namespace Chroma
      * of sites it contains, nor of the number of subsets.
      */
 
-    LatticeInt count;
-    count = 1;
     Real numSites = Real(QDP::Layout::vol());
     Double norm = Double(1)/(Nc*numSites);
 
