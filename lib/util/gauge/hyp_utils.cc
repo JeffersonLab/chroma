@@ -145,24 +145,6 @@ namespace Chroma
           // Reflector at iteration `site`
           PColorMatrix<QDP::RComplex<REAL>, Nc> Pi;
           
-          // Dump matrix to UH
-#if 0
-          {
-            multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-            if(coord[0] == 0 && coord[1] == 0 && coord[2] == 0 && coord[3] == 0) {
-              QMP_fprintf(stdout, "%s: site=%d coord=[%d,%d,%d,%d] Matrix to UH\n",
-                          __func__, site, coord[0], coord[1], coord[2], coord[3]);
-              
-              for(int j = 0; j < Nc; j++ ) {
-                for(int k = 0; k < Nc; k++ ) {
-                  QDPIO::cout << "(" << UH_site.elem(j,k).real() << "," << UH_site.elem(j,k).imag() << ") ";
-                }              
-                QDPIO::cout << std::endl;
-              }
-            }
-          }
-#endif
-
           for(int i = 0; i < Nc - 2; i++) {
             
             REAL col_norm, col_norm_inv;
@@ -264,25 +246,7 @@ namespace Chroma
               Q.elem(j,k).imag() = 0.0;
             }
           }
-        
-          // Dump matrix to QR
-#if 0
-          {
-            multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-            if(coord[0] == 0 && coord[1] == 0 && coord[2] == 0 && coord[3] == 0) {
-              QMP_fprintf(stdout, "%s: site=%d coord=[%d,%d,%d,%d] Matrix to QR\n",
-                          __func__, site, coord[0], coord[1], coord[2], coord[3]);
-              
-              for(int j = 0; j < Nc; j++ ) {
-                for(int k = 0; k < Nc; k++ ) {
-                  QDPIO::cout << "(" << UH_site.elem(j,k).real() << "," << UH_site.elem(j,k).imag() << ") ";
-                }              
-                QDPIO::cout << std::endl;
-              }
-            }
-          }
-#endif
-          
+
           int iter = 0;
         
           QDP::RComplex<REAL> temp, discriminant, sol1, sol2, eval;
@@ -415,23 +379,6 @@ namespace Chroma
             }
           }
           
-#if 0
-          {
-            multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-            if(coord[0] == 0 && coord[1] == 0 && coord[2] == 0 && coord[3] == 0) {
-              QMP_fprintf(stdout, "%s: site=%d coord=[%d,%d,%d,%d] UH post\n",
-                          __func__, site, coord[0], coord[1], coord[2], coord[3]);
-              
-              QDP::RComplex<REAL> sum(1.0,0.0);
-              for(int j = 0; j < Nc; j++ ) {
-                QDPIO::cout << "eval norm " << j << " = " << toDouble(localNorm2(UH_site.elem(j,j))) << std::endl;
-                sum *= UH_site.elem(j,j);
-              }
-              QDPIO::cout << "eval prod = ("<< sum.real() << "," << sum.imag() << ")" << std::endl; 
-              QDPIO::cout << std::endl;
-            }
-          }
-#endif
           // Load back into the lattice sized objects
           for(int j=0; j < Nc; j++) { 
             for(int k=0; k < Nc; k++) { 
@@ -476,36 +423,8 @@ namespace Chroma
             G.elem(i).real() =  (1.0/sqrt(mod_Gi)) * cos(arg_Gi/2.0);
             G.elem(i).imag() = -(1.0/sqrt(mod_Gi)) * sin(arg_Gi/2.0);            
 
-#if 0
-            // Dump G
-            multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-            if(coord[0] == 0 && coord[1] == 0 && coord[2] == 0 && coord[3] == 0) {
-              QMP_fprintf(stdout, "%s: site=%d coord=[%d,%d,%d,%d] G\n",
-                          __func__, site, coord[0], coord[1], coord[2], coord[3]);
-              
-              for(int j = 0; j < Nc; j++ ) {
-                QDPIO::cout << " G["<<j<<"] = (" << G.elem(j).real() << ","<< G.elem(j).imag() <<")"<<std::endl;
-              }    
-            }
-#endif
           }      
             
-#if 0
-          // Dump Vandermonde          
-          multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-          if(coord[0] == 0 && coord[1] == 0 && coord[2] == 0 && coord[3] == 0) {
-            QMP_fprintf(stdout, "%s: site=%d coord=[%d,%d,%d,%d] VM\n",
-                        __func__, site, coord[0], coord[1], coord[2], coord[3]);
-            
-            for(int j = 0; j < Nc; j++ ) {
-              for(int k = 0; k < Nc; k++ ) {
-                QDPIO::cout << "(" << V.elem(j,k).real() << "," << V.elem(j,k).imag() << ") ";
-              }              
-              QDPIO::cout << std::endl;
-            }    
-          }      
-#endif
-          
           // Invert Vandermonde via LU decomposition
           // DMH: There are more direct methods for doing this,
           //      that may also be more stable. Stability
@@ -600,26 +519,6 @@ namespace Chroma
                            "abs(toDouble(real(trace(Vcpy * Vinv))) - 4.0) = %e > 1e-6", abs(toDouble(real(trace(Vcpy * Vinv))) - 4.0));
           }
 #endif          
-
-#if 0
-          {
-            // Dump Vandermonde          
-            multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-            if(coord[0] == 0 && coord[1] == 0 && coord[2] == 0 && coord[3] == 0) {
-              QMP_fprintf(stdout, "%s: site=%d coord=[%d,%d,%d,%d] VM_inv\n",
-                          __func__, site, coord[0], coord[1], coord[2], coord[3]);
-            
-              for(int j = 0; j < Nc; j++ ) {
-                for(int k = 0; k < Nc; k++ ) {
-                  QDPIO::cout << "(" << Vinv.elem(j,k).real() << "," << Vinv.elem(j,k).imag() << ") ";
-                }              
-                QDPIO::cout << " G["<<j<<"] = (" << G.elem(j).real() << ","<< G.elem(j).imag() <<")"<<std::endl;
-              }    
-            }
-          }      
-#endif
-          
-
           
           // Compute f_i
           G = Vinv * G;
@@ -632,7 +531,7 @@ namespace Chroma
         }
 #endif
       } // End Function      
-
+      
     }// End Namespace
     
     void upper_hessenberg(const LatticeColorMatrix &U, 
@@ -804,46 +703,8 @@ namespace Chroma
             if(n < Nc-1) u_tmp = u_tmp * Q;
           }
           
-          // Dump matrix
-#if 0
-          {
-            int site;
-            multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-            if(coord[0] == 0 && coord[1] == 0 && coord[2] == 0 && coord[3] == 0) {
-              QMP_fprintf(stdout, "%s: site=%d coord=[%d,%d,%d,%d] Matrix QPowHalf[ii], lvl1\n",
-                          __func__, site, coord[0], coord[1], coord[2], coord[3]);
-              
-              for(int j = 0; j < Nc; j++ ) {
-                for(int k = 0; k < Nc; k++ ) {
-                  QDPIO::cout << "(" << QPowHalf[ii].elem(site).elem().elem(j,k).real() << "," << QPowHalf[ii].elem(site).elem().elem(j,k).imag() << ") ";
-                }              
-                QDPIO::cout << " f["<<j<<"] = ("<<f[j].elem(site).elem().elem().real()<<","<<f[j].elem(site).elem().elem().imag() << ")" << std::endl;
-              }
-            }
-          }
-#endif
-          
           // Constuct V = Omega * Q^{1/2} = Omega * (Omega^dag * Omega)^{1/2}
           u_lv1[ii] = Omega[ii] * QPowHalf[ii];
-
-#if 0
-          {
-            int site;
-            multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-            if(coord[0] == 0 && coord[1] == 0 && coord[2] == 0 && coord[3] == 0) {
-              QMP_fprintf(stdout, "%s: site=%d coord=[%d,%d,%d,%d] Matrix u_lv1[%d], lvl1\n",
-                          __func__, site, coord[0], coord[1], coord[2], coord[3], ii);
-              
-              for(int j = 0; j < Nc; j++ ) {
-                for(int k = 0; k < Nc; k++ ) {
-                  QDPIO::cout << "(" << u_lv1[ii].elem(site).elem().elem(j,k).real() << "," << u_lv1[ii].elem(site).elem().elem(j,k).imag() << ") ";
-                }              
-                QDPIO::cout << std::endl;
-              }
-            }
-          }
-#endif
-          
           ii++;
         }
       }
@@ -899,65 +760,13 @@ namespace Chroma
             // Forward staple
             // u_tmp(x) += u_lv1(x,kk)*u_lv1(x+rho,jj)*u_lv1_dag(x+mu,kk)
 
-#if 0
-            {
-              int site;
-              multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-              if(coord[0] == 0 && coord[1] == 0 && coord[2] == 0 && coord[3] == 0) {
-                QMP_fprintf(stdout, "%s: site=%d coord=[%d,%d,%d,%d] Matrix u_lv1[kk], lvl2\n",
-                            __func__, site, coord[0], coord[1], coord[2], coord[3]);
-                
-                for(int j = 0; j < Nc; j++ ) {
-                  for(int k = 0; k < Nc; k++ ) {
-                    QDPIO::cout << "(" << u_lv1[kk].elem(site).elem().elem(j,k).real() << "," << u_lv1[kk].elem(site).elem().elem(j,k).imag() << ") ";
-                  }              
-                  QDPIO::cout << std::endl;
-                }
-              }
-            }
-#endif
-
             u_tmp += u_lv1[kk] * shift(u_lv1[jj],FORWARD, rho) * adj(shift(u_lv1[kk], FORWARD, mu));
-#if 0
-            {
-              int site;
-              multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-              if(coord[0] == 0 && coord[1] == 0 && coord[2] == 0 && coord[3] == 0) {
-                QMP_fprintf(stdout, "%s: site=%d coord=[%d,%d,%d,%d] Matrix u_tmp_1, lvl2\n",
-                            __func__, site, coord[0], coord[1], coord[2], coord[3]);
-                
-                for(int j = 0; j < Nc; j++ ) {
-                  for(int k = 0; k < Nc; k++ ) {
-                    QDPIO::cout << "(" << u_tmp.elem(site).elem().elem(j,k).real() << "," << u_tmp.elem(site).elem().elem(j,k).imag() << ") ";
-                  }              
-                  QDPIO::cout << std::endl;
-                }
-              }
-            }
-#endif
-                 
+
             // Backward staple
             // u_tmp(x) += u_lv1_dag(x-rho,kk)*u_lv1(x-rho,jj)*u_lv1(x-rho+mu,kk)
             u_lv1_tmp = shift(u_lv1[kk],FORWARD,mu);
             u_tmp += shift(adj(u_lv1[kk]) * u_lv1[jj] * u_lv1_tmp , BACKWARD,rho);
 
-#if 0
-            {
-              int site;
-              multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-              if(coord[0] == 0 && coord[1] == 0 && coord[2] == 0 && coord[3] == 0) {
-                QMP_fprintf(stdout, "%s: site=%d coord=[%d,%d,%d,%d] Matrix u_tmp_2, lvl2\n",
-                            __func__, site, coord[0], coord[1], coord[2], coord[3]);
-                
-                for(int j = 0; j < Nc; j++ ) {
-                  for(int k = 0; k < Nc; k++ ) {
-                    QDPIO::cout << "(" << u_tmp.elem(site).elem().elem(j,k).real() << "," << u_tmp.elem(site).elem().elem(j,k).imag() << ") ";
-                  }              
-                  QDPIO::cout << std::endl;
-                }
-              }
-            }
-#endif
           }          
 
 
@@ -1090,15 +899,15 @@ namespace Chroma
       START_CODE();
 
       hyp_lv1_links(u, u_lv1,        Omega1, QPowHalf1, smear_in_this_dirP, alpha1, alpha2, alpha3, BlkMax, BlkAccu);
-      QDPIO::cout << " Level 1 complete " << std::endl;
+      QDPIO::cout << "HYP Level 1 complete " << std::endl;
       
       hyp_lv2_links(u, u_lv1, u_lv2, Omega2, QPowHalf2, smear_in_this_dirP, alpha1, alpha2, alpha3, BlkMax, BlkAccu);
-      QDPIO::cout << " Level 2 complete " << std::endl;
+      QDPIO::cout << "HYP Level 2 complete " << std::endl;
 
       hyp_lv3_links(u, u_lv2, u_hyp, Omega3, QPowHalf3, smear_in_this_dirP, alpha1, alpha2, alpha3, BlkMax, BlkAccu);      
-      QDPIO::cout << " Level 3 complete " << std::endl;
+      QDPIO::cout << "HYP Level 3 complete " << std::endl;
       
-      // Dump Hyp smeared link / check it is in SU(Nc) manifold
+      // Dump Hyp smeared link / check it is on SU(Nc) manifold
 #if 0
       int site;
       multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
@@ -1113,14 +922,14 @@ namespace Chroma
           QDPIO::cout << std::endl;
         }    
       }            
-#endif
+
       
       Real numSites = Real(QDP::Layout::vol());
       Double norm = Double(1)/(Nc*numSites*Nd);
       Double tr;
-      for(int j = 0; j < Nd; j++ ) tr += sum(real(trace(adj(u_hyp[j]) * u_hyp[j])), all) * norm;
-      
+      for(int j = 0; j < Nd; j++ ) tr += sum(real(trace(adj(u_hyp[j]) * u_hyp[j])), all) * norm;      
       QDPIO::cout << "Real Trace = " << tr <<std::endl;
+#endif
       
       END_CODE();
     }
