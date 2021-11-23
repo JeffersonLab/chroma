@@ -1089,7 +1089,7 @@ namespace Chroma
       
       START_CODE();
 
-      hyp_lv1_links(u, u_lv1, Omega1, QPowHalf1,        smear_in_this_dirP, alpha1, alpha2, alpha3, BlkMax, BlkAccu);
+      hyp_lv1_links(u, u_lv1,        Omega1, QPowHalf1, smear_in_this_dirP, alpha1, alpha2, alpha3, BlkMax, BlkAccu);
       QDPIO::cout << " Level 1 complete " << std::endl;
       
       hyp_lv2_links(u, u_lv1, u_lv2, Omega2, QPowHalf2, smear_in_this_dirP, alpha1, alpha2, alpha3, BlkMax, BlkAccu);
@@ -1114,15 +1114,15 @@ namespace Chroma
         }    
       }            
 #endif
-
-    Real numSites = Real(QDP::Layout::vol());
-    Double norm = Double(1)/(Nc*numSites*Nd);
-    Double tr;
-    for(int j = 0; j < Nd; j++ ) tr += sum(real(trace(adj(u_hyp[j]) * u_hyp[j])), all) * norm;
-    
-    QDPIO::cout << "Real Trace = " << tr <<std::endl;
-    
-    END_CODE();
+      
+      Real numSites = Real(QDP::Layout::vol());
+      Double norm = Double(1)/(Nc*numSites*Nd);
+      Double tr;
+      for(int j = 0; j < Nd; j++ ) tr += sum(real(trace(adj(u_hyp[j]) * u_hyp[j])), all) * norm;
+      
+      QDPIO::cout << "Real Trace = " << tr <<std::endl;
+      
+      END_CODE();
     }
   } // End Namespace Hyping
 } // End Namespace Chroma
