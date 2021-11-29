@@ -884,6 +884,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_seqprop_test_w.h \
 	meas/inline/hadron/inline_prop_3pt_w.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
+	meas/inline/hadron/inline_create_colorvecs_superb.h \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_prob_defl_w.h \
 	meas/inline/hadron/inline_disco_prob_defl_superb_w.h \
@@ -1062,6 +1063,14 @@ endif
 
 if BUILD_SB
 AM_CXXFLAGS += @SB_CXXFLAGS@
+endif
+
+if BUILD_MAGMA
+AM_CXXFLAGS += @MAGMA_CXXFLAGS@
+endif
+
+if BUILD_PRIMME
+AM_CXXFLAGS += @PRIMME_CXXFLAGS@
 endif
 
 
@@ -1801,6 +1810,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_seqprop_test_w.cc \
 	meas/inline/hadron/inline_prop_3pt_w.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
+	meas/inline/hadron/inline_create_colorvecs_superb.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_prob_defl_w.cc \
 	meas/inline/hadron/inline_disco_prob_defl_superb_w.cc \

@@ -745,81 +745,9 @@ namespace Chroma
       //
       // Read in the source along with relevant information.
       // 
-      QDPIO::cout << "Snarf the source from a std::map object disk file" << std::endl;
 
-      SB::MODS_t eigen_source;
-      eigen_source.setDebug(0);
+      SB::ColorvecsStorage colorvecsSto = SB::openColorvecStorage(params.named_obj.colorvec_files);
 
-      std::string eigen_meta_data;   // holds the eigenvalues
-
-      try
-      {
-	// Open
-	QDPIO::cout << "Open file= " << params.named_obj.colorvec_files[0] << std::endl;
-	eigen_source.open(params.named_obj.colorvec_files);
-
-	// Snarf the source info. 
-	QDPIO::cout << "Get user data" << std::endl;
-	eigen_source.getUserdata(eigen_meta_data);
-	//	QDPIO::cout << "User data= " << eigen_meta_data << std::endl;
-
-	// Write it
-	//	QDPIO::cout << "Write to an xml file" << std::endl;
-	//	XMLBufferWriter xml_buf(eigen_meta_data);
-	//	write(xml_out, "Source_info", xml_buf);
-      }    
-      catch (std::bad_cast) {
-	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
-	QDP_abort(1);
-      }
-      catch (const std::string& e) {
-	QDPIO::cerr << name << ": error extracting source_header: " << e << std::endl;
-	QDP_abort(1);
-      }
-      catch( const char* e) {
-	QDPIO::cerr << name <<": Caught some char* exception:" << std::endl;
-	QDPIO::cerr << e << std::endl;
-	QDPIO::cerr << "Rethrowing" << std::endl;
-	throw;
-      }
-
-      QDPIO::cout << "Source successfully read and parsed" << std::endl;
-
-#if 0
-      // Sanity check
-      if (params.param.contract.num_vecs > eigen_source.size())
-      {
-	QDPIO::cerr << name << ": number of available eigenvectors is too small\n";
-	QDP_abort(1);
-      }
-      QDPIO::cout << "Number of vecs available is large enough" << std::endl;
-#endif
-
-      //
-      // Setup the gauge smearing
-      //
-      QDPIO::cout << "Initialize link smearing" << std::endl;
-      Handle< LinkSmearing > linkSmearing;
-
-      try
-      {
-	std::istringstream  xml_l(params.param.link_smearing.xml);
-	XMLReader  linktop(xml_l);
-	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << std::endl;
-	
-	linkSmearing = TheLinkSmearingFactory::Instance().createObject(params.param.link_smearing.id,
-								       linktop, 
-								       params.param.link_smearing.path);
-      }
-      catch(const std::string& e) 
-      {
-	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << std::endl;
-	QDP_abort(1);
-      }
-
-      QDPIO::cout << "Link smearing successfully initialized" << std::endl;
-
-    
       //
       // Read through the momentum list and find all the unique phases
       //
@@ -1248,7 +1176,7 @@ namespace Chroma
 
 	    // Get num_vecs colorvecs on time-slice t_source
 	    SB::Tensor<Nd + 3, SB::ComplexF> source_colorvec =
-	      SB::getColorvecs(eigen_source, decay_dir, t_source, 1, num_vecs, SB::none, phase);
+	      SB::getColorvecs(colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none, phase);
 
 	    // Invert the source for all spins and retrieve num_tslices_active
 	    // time-slices starting from time-slice first_tslice_active
@@ -1268,7 +1196,7 @@ namespace Chroma
 
 	    // Get num_vecs colorvecs on time-slice t_sink
 	    SB::Tensor<Nd + 3, SB::ComplexF> sink_colorvec =
-	      SB::getColorvecs(eigen_source, decay_dir, t_sink, 1, num_vecs, SB::none, phase);
+	      SB::getColorvecs(colorvecsSto, u, decay_dir, t_sink, 1, num_vecs, SB::none, phase);
 
 	    // Invert the sink for all spins and retrieve num_tslices_active time-slices starting from
 	    // time-slice first_tslice_active

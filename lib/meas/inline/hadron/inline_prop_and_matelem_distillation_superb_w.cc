@@ -368,66 +368,9 @@ namespace Chroma
       //
       // Read in the source along with relevant information.
       // 
-      QDPIO::cout << "Snarf the source from a std::map object disk file" << std::endl;
 
-      SB::MODS_t eigen_source;
-      eigen_source.setDebug(0);
-
-      std::string eigen_meta_data;   // holds the eigenvalues
-
-      if (!params.param.contract.zero_colorvecs)
-	{
-	  try
-	    {
-	      // Open
-	      QDPIO::cout << "Open file= " << params.named_obj.colorvec_files[0] << std::endl;
-	      eigen_source.open(params.named_obj.colorvec_files);
-
-	      // Snarf the source info. 
-	      QDPIO::cout << "Get user data" << std::endl;
-	      eigen_source.getUserdata(eigen_meta_data);
-	      //	QDPIO::cout << "User data= " << eigen_meta_data << std::endl;
-
-	      // Write it
-	      //	QDPIO::cout << "Write to an xml file" << std::endl;
-	      //	XMLBufferWriter xml_buf(eigen_meta_data);
-	      //	write(xml_out, "Source_info", xml_buf);
-	    }    
-	  catch (std::bad_cast) {
-	    QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
-	    QDP_abort(1);
-	  }
-	  catch (const std::string& e) {
-	    QDPIO::cerr << name << ": error extracting source_header: " << e << std::endl;
-	    QDP_abort(1);
-	  }
-	  catch( const char* e) {
-	    QDPIO::cerr << name <<": Caught some char* exception:" << std::endl;
-	    QDPIO::cerr << e << std::endl;
-	    QDPIO::cerr << "Rethrowing" << std::endl;
-	    throw;
-	  }
-
-	  QDPIO::cout << "Source successfully read and parsed" << std::endl;
-	}
-      
-#if 0
-      // Sanity check
-      if (params.param.contract.num_vecs > eigen_source.size())
-      {
-	QDPIO::cerr << name << ": number of available eigenvectors is too small\n";
-	QDP_abort(1);
-      }
-#endif
-
-      QDPIO::cout << "Number of vecs available is large enough" << std::endl;
-
-      // The sub-lattice eigenstd::vector std::map
-      // QDPIO::cout << "Initialize sub-lattice std::map" << std::endl;
-      // SubEigenMap sub_eigen_map(eigen_source, decay_dir, params.param.contract.zero_colorvecs);
-      // QDPIO::cout << "Finished initializing sub-lattice std::map" << std::endl;
-
-
+      SB::ColorvecsStorage colorvecsSto = SB::openColorvecStorage(params.named_obj.colorvec_files);
+     
       //
       // DB storage
       //
@@ -446,8 +389,6 @@ namespace Chroma
 	      proginfo(file_xml);    // Print out basic program info
 	      write(file_xml, "Params", params.param);
 	      write(file_xml, "Config_info", gauge_xml);
-	      if (!params.param.contract.zero_colorvecs)
-		write(file_xml, "Weights", readEigVals(eigen_meta_data));
 	      pop(file_xml);
 
 	      std::string file_str(file_xml.str());
@@ -540,8 +481,7 @@ namespace Chroma
 
 	  // Get `num_vecs` colorvecs, and `num_tslices` tslices starting from time-slice `first_tslice`
 	  SB::Tensor<Nd + 3, SB::Complex> colorvec = SB::getColorvecs<SB::Complex>(
-	    eigen_source, decay_dir, first_tslice, num_tslices, num_vecs,
-	    "cxyzXnt" /* contractions requires t being the last */, phase);
+	    colorvecsSto, u, decay_dir, first_tslice, num_tslices, num_vecs, "cxyzXnt", phase);
 
 	  // Get all eigenvectors for `t_source`
 	  auto source_colorvec =
@@ -553,7 +493,7 @@ namespace Chroma
 	    // NOTE: s is spin source, and S is spin sink
 	    SB::Tensor<Nd + 5, SB::Complex> quark_solns = SB::doInversion<SB::Complex, SB::Complex>(
 	      *PP, source_colorvec, t_source, first_tslice, num_tslices, {spin_source}, max_rhs,
-	      "cxyzXnSst" /*< contractions requires t, S, s being the slowest indices */);
+	      "cxyzXnSst");
 
 	    StopWatch snarss1;
 	    snarss1.reset();

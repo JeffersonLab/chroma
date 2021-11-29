@@ -17,6 +17,7 @@
 
 #  include "actions/ferm/fermacts/fermact_factory_w.h"
 #  include "actions/ferm/fermacts/fermacts_aggregate_w.h"
+#  include "meas/smear/link_smearing_factory.h"
 #  include "qdp.h"
 #  include "qdp_map_obj_disk_multiple.h"
 #  include "superbblas.h"
@@ -39,6 +40,14 @@
 #  ifndef M_PI
 #    define M_PI                                                                                   \
       3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068L
+#  endif
+
+#  ifdef BUILD_PRIMME
+#    include <primme.h>
+#  endif
+
+#  if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
+#    include "magma_v2.h"
 #  endif
 
 namespace Chroma
@@ -357,6 +366,31 @@ namespace Chroma
 	return v;
       }
 
+#  if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
+      // Return a MAGMA context
+      inline std::shared_ptr<magma_queue_t> getMagmaContext()
+      {
+	static std::shared_ptr<magma_queue_t> queue;
+	if (!queue)
+	{
+	  // Start MAGMA and create a queue
+	  int dev = -1;
+#    ifdef SUPERBBLAS_USE_CUDA
+	  superbblas::detail::cudaCheck(cudaGetDevice(&dev));
+#    elif defined(SUPERBBLAS_USE_HIP)
+	  superbblas::detail::hipCheck(hipGetDevice(&dev));
+#    else
+#      error superbblas was not build with support for GPUs
+#    endif
+	  magma_init();
+	  magma_queue_t q;
+	  magma_queue_create(dev, &q);
+	  queue = std::make_shared<magma_queue_t>(q);
+	}
+	return queue;
+      }
+#  endif
+
       // Return a context on either the host or the device
       inline std::shared_ptr<superbblas::Context> getContext(DeviceHost dev)
       {
@@ -373,14 +407,21 @@ namespace Chroma
 #  ifdef QDP_IS_QDPJIT
 	  if (!cudactx)
 	  {
+
 	    int dev = -1;
-#ifdef SUPERBBLAS_USE_CUDA
+#    ifdef SUPERBBLAS_USE_CUDA
 	    superbblas::detail::cudaCheck(cudaGetDevice(&dev));
-#elif defined(SUPERBBLAS_USE_HIP)
+#    elif defined(SUPERBBLAS_USE_HIP)
 	    superbblas::detail::hipCheck(hipGetDevice(&dev));
-#else
-#error superbblas was not build with support for GPUs
-#endif
+#    else
+#      error superbblas was not build with support for GPUs
+#    endif
+
+#    if defined(BUILD_MAGMA)
+	    // Force the creation of the queue before creating a superbblas context (otherwise cublas complains)
+	    getMagmaContext();
+#    endif
+
 	    // Workaround on a potential issue in qdp-jit: avoid passing through the pool allocator
 	    if (jit_config_get_max_allocation() == 0)
 	    {
@@ -872,7 +913,7 @@ namespace Chroma
 	}();
 	return v;
       }
-    }
+   }
 
     template <std::size_t N, typename T>
     struct Tensor {
@@ -1050,21 +1091,46 @@ namespace Chroma
 	return d;
       }
 
+      // Return the volume of the tensor
+      std::size_t volume() const
+      {
+	return superbblas::detail::volume(size);
+      }
+
       // Get an element of the tensor
       T get(Coor<N> coor) const
       {
 	if (ctx->plat != superbblas::CPU)
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements from tensors not stored on the host");
-	if (dist != OnMaster && dist != Local)
-	  throw std::runtime_error("Unsupported to `get` elements on tensor that are not local or "
-				   "not being fully supported on the master node");
+	if (dist == OnEveryone)
+	  throw std::runtime_error(
+	    "Unsupported to `get` elements on a distributed tensor; change the distribution to "
+	    "be supported on master, replicated among all nodes, or local");
 
 	// coor[i] = coor[i] + from[i]
 	for (unsigned int i = 0; i < N; ++i)
 	  coor[i] = normalize_coor(normalize_coor(coor[i], size[i]) + from[i], dim[i]);
 
 	return data.get()[detail::coor2index<N>(coor, dim, strides)] * scalar;
+      }
+
+      // Set an element of the tensor
+      void set(Coor<N> coor, T v)
+      {
+	if (ctx->plat != superbblas::CPU)
+	  throw std::runtime_error(
+	    "Unsupported to `get` elements from tensors not stored on the host");
+	if (dist == OnEveryone)
+	  throw std::runtime_error(
+	    "Unsupported to `set` elements on a distributed tensor; change the distribution to "
+	    "be supported on master, replicated among all nodes, or local");
+
+	// coor[i] = coor[i] + from[i]
+	for (unsigned int i = 0; i < N; ++i)
+	  coor[i] = normalize_coor(normalize_coor(coor[i], size[i]) + from[i], dim[i]);
+
+	data.get()[detail::coor2index<N>(coor, dim, strides)] = v / scalar;
       }
 
       /// Rename dimensions
@@ -1391,6 +1457,16 @@ namespace Chroma
 			    Local, normalize_coor(from - p->localFrom(), dim), lsize, scalar);
       }
 
+      /// Set zero
+      void set_zero()
+      {
+	T* ptr = this->data.get();
+	MPI_Comm comm = (dist == OnMaster || dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	superbblas::copy<N, N>(T{0}, p->p.data(), 1, order.c_str(), from, size, (const T**)&ptr,
+			       &*ctx, p->p.data(), 1, order.c_str(), from, &ptr, &*ctx, comm,
+			       superbblas::FastToSlow, superbblas::Copy);
+      }
+
       /// Copy this tensor into the given one
       template <std::size_t Nw, typename Tw,
 		typename std::enable_if<
@@ -1455,15 +1531,17 @@ namespace Chroma
 	    w = w.cloneOn(OnDefaultDevice);
 	}
 
-	// Superbblas tensor contraction is shit and those not deal with subtensors (for now)
+	// Superbblas tensor contraction is shit and those not deal with subtensors or contracting a host and
+	// device tensor (for now)
 	if (v.isSubtensor())
 	  v = v.clone();
 	if (w.isSubtensor())
 	  w = w.clone();
-	if (isSubtensor())
+	if (isSubtensor() || getDev() != v.getDev())
 	{
-	  Tensor<N, T> aux = like_this();
-	  aux.contract(v, mv, conjv, w, mw, conjw, mr);
+	  Tensor<N, T> aux =
+	    std::norm(beta) == 0 ? like_this(none, {}, v.getDev()) : cloneOn(v.getDev());
+	  aux.contract(v, mv, conjv, w, mw, conjw, mr, beta);
 	  aux.copyTo(*this);
 	  return;
 	}
@@ -1474,8 +1552,10 @@ namespace Chroma
 	std::string orderv_ = detail::update_order<Nv>(v.order, mv);
 	std::string orderw_ = detail::update_order<Nw>(w.order, mw);
 	std::string order_ = detail::update_order<N>(order, mr);
+	T vscalar = conjv == NotConjugate ? v.scalar : std::conj(v.scalar);
+	T wscalar = conjw == NotConjugate ? w.scalar : std::conj(w.scalar);
 	superbblas::contraction<Nv, Nw, N>(
-	  v.scalar * w.scalar / scalar, v.p->p.data(), 1, orderv_.c_str(), conjv == Conjugate,
+	  vscalar * wscalar / scalar, v.p->p.data(), 1, orderv_.c_str(), conjv == Conjugate,
 	  (const T**)&v_ptr, &*v.ctx, w.p->p.data(), 1, orderw_.c_str(), conjw == Conjugate,
 	  (const T**)&w_ptr, &*w.ctx, beta, p->p.data(), 1, order_.c_str(), &ptr, &*ctx,
 	  MPI_COMM_WORLD, superbblas::FastToSlow);
@@ -1550,7 +1630,7 @@ namespace Chroma
       Tensor<N, Tn> make_sure(Maybe<std::string> new_order = none, Maybe<DeviceHost> new_dev = none,
 			      Maybe<Distribution> new_dist = none) const
       {
-	Tensor<N, Tn> r = like_this<Tn>(new_order, {}, new_dev, new_dist);
+	Tensor<N, Tn> r = like_this<N, Tn>(new_order, {}, new_dev, new_dist);
 	copyTo(r);
 	return r;
       }
@@ -1656,15 +1736,15 @@ namespace Chroma
 #  endif
     };
 
-//     inline void* getQDPPtrFromId(int id)
-//     {
-// #  ifdef QDP_IS_QDPJIT
-//       std::vector<QDPCache::ArgKey> v(id, 1);
-//       return QDP_get_global_cache().get_kernel_args(v, false)[0];
-// #  else
-//       return nullptr;
-// #  endif
-//     }
+    //     inline void* getQDPPtrFromId(int id)
+    //     {
+    // #  ifdef QDP_IS_QDPJIT
+    //       std::vector<QDPCache::ArgKey> v(id, 1);
+    //       return QDP_get_global_cache().get_kernel_args(v, false)[0];
+    // #  else
+    //       return nullptr;
+    // #  endif
+    //     }
 
     template <typename T>
     void* getQDPPtr(const T& t)
@@ -1846,11 +1926,10 @@ namespace Chroma
       }
 
       // Open storage construct
-      StorageTensor(std::string filename, std::string metadata, const std::string& order)
-	: filename(filename), order(order), sparsity(Sparse), from{}, scalar{1}
+      StorageTensor(std::string filename, bool read_order = true,
+		    Maybe<std::string> order_tag = none)
+	: filename(filename), sparsity(Sparse), from{}, scalar{1}
       {
-	checkOrder();
-
 	// Read information from the storage
 	superbblas::values_datatype values_dtype;
 	std::vector<char> metadatav;
@@ -1867,12 +1946,21 @@ namespace Chroma
 
 	// Fill out the information of this class with storage header information
 	std::copy(dimv.begin(), dimv.end(), dim.begin());
+	size = dim;
 	metadata = std::string(metadatav.begin(), metadatav.end());
+
+	// Read the order
+	if (read_order) {
+	  std::istringstream is(metadata);
+	  XMLReader xml_buf(is);
+	  read(xml_buf, order_tag.getSome("order"), order);
+	  checkOrder();
+	}
 
 	superbblas::Storage_handle stoh;
 	superbblas::open_storage<N, T>(filename.c_str(), MPI_COMM_WORLD, &stoh);
 	ctx = std::shared_ptr<superbblas::detail::Storage_context_abstract>(
-	  stoh, [=](const superbblas::detail::Storage_context_abstract* ptr) {
+	  stoh, [=](superbblas::detail::Storage_context_abstract* ptr) {
 	    superbblas::close_storage<N, T>(ptr, MPI_COMM_WORLD);
 	  });
       }
@@ -2023,9 +2111,10 @@ namespace Chroma
 
 	Tw* w_ptr = w.data.get();
 	MPI_Comm comm = (w.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
-	superbblas::load<N, Nw>(detail::safe_div<T>(scalar, w.scalar), ctx.get(), order.c_str(),
-				from, size, w.p->p.data(), 1, w.order.c_str(), w.from, &w_ptr,
-				&*w.ctx, comm, superbblas::FastToSlow, superbblas::Copy);
+	superbblas::load<N, Nw, T, Tw>(detail::safe_div<T>(scalar, w.scalar), ctx.get(),
+				       order.c_str(), from, size, w.p->p.data(), 1, w.order.c_str(),
+				       w.from, &w_ptr, &*w.ctx, comm, superbblas::FastToSlow,
+				       superbblas::Copy);
       }
     };
 
@@ -2081,6 +2170,173 @@ namespace Chroma
 
       return r.make_sure(none, dev);
     }
+
+    /// Compute a shift of v onto the direction dir
+    /// \param v: tensor to apply the displacement
+    /// \param first_tslice: global index in the t direction of the first element
+    /// \param len: step of the displacement
+    /// \param dir: 0 is x; 1 is y...
+
+    template <typename COMPLEX, std::size_t N>
+    Tensor<N, COMPLEX> shift(const Tensor<N, COMPLEX> v, Index first_tslice, int len, int dir)
+    {
+      if (dir < 0 || dir >= Nd - 1)
+	throw std::runtime_error("Invalid direction");
+
+      if (len == 0)
+	return v;
+
+      // NOTE: chroma uses the reverse convention for direction: shifting FORWARD moves the sites on the negative direction
+      len = -len;
+
+      const char dir_label[] = "xyz";
+#  if QDP_USE_LEXICO_LAYOUT
+      // If we are not using red-black ordering, return a view where the tensor is shifted on the given direction
+      return v.kvslice_from_size({{dir_label[dir], -len}});
+
+#  elif QDP_USE_CB2_LAYOUT
+      // Assuming that v has support on the origin and destination lattice elements
+      if (v.kvdim()['X'] != 2 && len % 2 != 0)
+	throw std::runtime_error("Unsupported shift");
+
+      Tensor<N, COMPLEX> r = v.like_this();
+      if (dir != 0)
+      {
+	v.copyTo(r.kvslice_from_size({{'X', len}, {dir_label[dir], len}}));
+      }
+      else
+      {
+	int t = v.kvdim()['t'];
+	if (t > 1 && t % 2 == 1)
+	  throw std::runtime_error(
+	    "The t dimension should be zero, one, or even when doing shifting on the X dimension");
+	int maxT = std::min(2, t);
+	auto v_eo = v.split_dimension('y', "Yy", 2)
+		      .split_dimension('z', "Zz", 2)
+		      .split_dimension('t', "Tt", 2);
+	auto r_eo = r.split_dimension('y', "Yy", 2)
+		      .split_dimension('z', "Zz", 2)
+		      .split_dimension('t', "Tt", maxT);
+	while (len < 0)
+	  len += v.kvdim()['x'] * 2;
+	for (int T = 0; T < maxT; ++T)
+	  for (int Z = 0; Z < 2; ++Z)
+	    for (int Y = 0; Y < 2; ++Y)
+	      for (int X = 0; X < 2; ++X)
+		v_eo
+		  .kvslice_from_size({{'X', X}, {'Y', Y}, {'Z', Z}, {'T', T}},
+				     {{'X', 1}, {'Y', 1}, {'Z', 1}, {'T', 1}})
+		  .copyTo(
+		    r_eo.kvslice_from_size({{'X', X + len},
+					    {'x', (len + ((X + Y + Z + T + first_tslice) % 2)) / 2},
+					    {'Y', Y},
+					    {'Z', Z},
+					    {'T', T}},
+					   {{'Y', 1}, {'Z', 1}, {'T', 1}}));
+      }
+      return r;
+#  else
+      throw std::runtime_error("Unsupported layout");
+#  endif
+    }
+
+    /// Compute a displacement of v onto the direction dir
+    /// \param u: Gauge field
+    /// \param v: tensor to apply the displacement
+    /// \param first_tslice: global index in the t direction of the first element
+    /// \param dir: 0: nothing; 1: forward x; -1: backward x; 2: forward y...
+
+    template <typename COMPLEX, std::size_t N>
+    Tensor<N, COMPLEX> displace(const std::vector<Tensor<Nd + 3, COMPLEX>>& u, Tensor<N, COMPLEX> v,
+				Index first_tslice, int dir)
+    {
+      if (std::abs(dir) > Nd)
+	throw std::runtime_error("Invalid direction");
+
+      if (dir == 0)
+	return v;
+
+      int d = std::abs(dir) - 1;    // space lattice direction, 0: x, 1: y, 2: z
+      int len = (dir > 0 ? 1 : -1); // displacement unit direction
+      assert(d < u.size());
+
+      Tensor<N, COMPLEX> r = v.like_this("c%xyzXt", '%');
+      v = v.reorder("c%xyzXt", '%');
+      if (len > 0)
+      {
+	// Do u[d] * shift(x,d)
+	v = shift(std::move(v), first_tslice, len, d);
+	r.contract(u[d], {{'j', 'c'}}, NotConjugate, std::move(v), {}, NotConjugate, {{'c', 'i'}});
+      }
+      else
+      {
+	// Do shift(adj(u[d]) * x,d)
+	r.contract(u[d], {{'i', 'c'}}, Conjugate, std::move(v), {}, NotConjugate, {{'c', 'j'}});
+	r = shift(std::move(r), first_tslice, len, d);
+      }
+      return r;
+    }
+
+    /// Apply right nabla onto v on the direction dir
+    /// \param u: Gauge field
+    /// \param v: tensor to apply the derivative
+    /// \param first_tslice: global index in the t direction of the first element
+    /// \param dir: 0: nothing; 1: forward x; -1: backward x; 2: forward y...
+    ///
+    /// NOTE: the code returns U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)
+
+    template <typename COMPLEX, std::size_t N>
+    Tensor<N, COMPLEX> rightNabla(const std::vector<Tensor<Nd + 3, COMPLEX>>& u,
+				  Tensor<N, COMPLEX> v, Index first_tslice, int dir)
+    {
+      auto r = displace(u, v, first_tslice, dir);
+      displace(u, v, first_tslice, -dir).scale(-1).addTo(r);
+      return r;
+    }
+
+    /// Compute a displacement of v onto the direction dir
+    /// \param u: Gauge field
+    /// \param v: tensor to apply the derivative
+    /// \param first_tslice: global index in the t direction of the first element
+    /// \param dir: 0: nothing; 1: forward x; -1: backward x; 2: forward y...
+    /// \param moms: list of input momenta
+    /// \param conjUnderAdd: if true, return a version, R(dir), so that
+    ////       adj(R(dir)) * D(dir') == D(dir+dir'), where D(dir') is what this function returns
+    ////       when conjUnderAdd is false.
+
+    template <typename COMPLEX, std::size_t N>
+    Tensor<N, COMPLEX> leftRightNabla(const std::vector<Tensor<Nd + 3, COMPLEX>>& u,
+				      Tensor<N, COMPLEX> v, Index first_tslice, int dir,
+				      std::vector<Coor<3>> moms = {}, bool conjUnderAdd = false)
+    {
+      if (std::abs(dir) > Nd)
+	throw std::runtime_error("Invalid direction");
+
+      int d = std::abs(dir) - 1; // space lattice direction, 0: x, 1: y, 2: z
+
+      // conj(phase)*displace(u, v, -dir) - phase*displace(u, v, dir)
+      std::vector<COMPLEX> phases(moms.size());
+      for (unsigned int i = 0; i < moms.size(); ++i)
+      {
+
+	typename COMPLEX::value_type angle = 2 * M_PI * moms[i][d] / Layout::lattSize()[d];
+	phases[i] = COMPLEX{1} + COMPLEX{cos(angle), sin(angle)};
+	if (conjUnderAdd)
+	  phases[i] = std::sqrt(phases[i]);
+      }
+
+      // r = conj(phases) * displace(u, v, dir)
+      Tensor<N, COMPLEX> r = v.like_this("c%xyzXtm", '%');
+      r.contract(displace(u, v, first_tslice, -dir).reorder("%m", '%'), {}, NotConjugate,
+		 asTensorView(phases), {{'i', 'm'}}, Conjugate);
+
+      // r = r - phases * displace(u, v, dir) if !ConjUnderAdd else r + phases * displace(u, v, dir)
+      r.contract(displace(u, v, first_tslice, dir).scale(conjUnderAdd ? 1 : -1).reorder("%m", '%'),
+		 {}, NotConjugate, asTensorView(phases), {{'i', 'm'}}, NotConjugate, {}, 1.0);
+
+      return r;
+    }
+
 
     // template <std::size_t N, typename T>
     // class Transform : public Tensor<N,T> {
@@ -2148,6 +2404,18 @@ namespace Chroma
     //   }
     // };
 
+    //
+    // Get colorvecs
+    //
+
+    typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, Tensor<Nd, ComplexF>> MODS_t;
+    typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, Tensor<Nd, ComplexF>> MOD_t;
+
+    struct ColorvecsStorage {
+      std::shared_ptr<MODS_t> mod;	   // old storage
+      StorageTensor<Nd + 2, ComplexD> s3t; // cxyztn
+    };
+
     namespace ns_getColorvecs
     {
       /// Return the permutation from a natural layout to a red-black that is used by `applyPerm`
@@ -2206,7 +2474,7 @@ namespace Chroma
       /// \param trb: output tensor with ordering cxyzX
 
       template <typename T>
-      void applyPerm(const std::vector<Index>& perm, Tensor<Nd, T> tnat, Tensor<Nd + 1, T> trb)
+      void toRB(const std::vector<Index>& perm, Tensor<Nd, T> tnat, Tensor<Nd + 1, T> trb)
       {
 	assert(tnat.order == "cxyz");
 	assert(trb.order == "cxyzX");
@@ -2224,6 +2492,30 @@ namespace Chroma
 	    y[i * Nc + c] = x[perm[i] * Nc + c];
       }
 
+      /// Apply a permutation generated by `getPermFromNatToRB`
+      /// \param perm: permutation generated with getPermFromNatToRB
+      /// \param tnat: input tensor with ordering cxyz
+      /// \param trb: output tensor with ordering cxyzX
+
+      template <typename T>
+      void toNat(const std::vector<Index>& perm, Tensor<Nd + 1, T> trb, Tensor<Nd, T> tnat)
+      {
+	assert(tnat.order == "cxyz");
+	assert(trb.order == "cxyzX");
+	assert(tnat.p->localVolume() == perm.size() * Nc);
+
+	unsigned int i1 = perm.size();
+	T* x = tnat.data.get();
+	const T* y = trb.data.get();
+
+#  ifdef _OPENMP
+#    pragma omp parallel for schedule(static)
+#  endif
+	for (unsigned int i = 0; i < i1; ++i)
+	  for (unsigned int c = 0; c < Nc; ++c)
+	    x[perm[i] * Nc + c] = y[i * Nc + c];
+      }
+
       template <typename T>
       Tensor<Nd + 1, T> getPhase(Coor<Nd - 1> phase, DeviceHost dev = OnDefaultDevice)
       {
@@ -2238,16 +2530,647 @@ namespace Chroma
 	  return T{cos(phase_dot_coor), sin(phase_dot_coor)};
 	});
       }
+
+      // NOTE: for now, the GPU version requires MAGMA
+#  if defined(BUILD_PRIMME) && (!defined(QDP_IS_QDPJIT) || defined(BUILD_MAGMA))
+
+      // Laplacian operator on the spatial dimensions
+
+      inline void LaplacianOperator(const std::vector<Tensor<Nd + 3, ComplexD>> u,
+				    Index first_tslice, Tensor<Nd + 3, ComplexD> chi,
+				    const Tensor<Nd + 3, ComplexD> psi)
+      {
+	int N = Nd - 1; // Only the spatial dimensions
+
+	// chi = -2*N*psi
+	psi.scale(-2 * N).copyTo(chi);
+
+	for (int mu = 0; mu < N; ++mu)
+	{
+	  displace(u, psi, first_tslice, mu + 1).addTo(chi);
+	  displace(u, psi, first_tslice, -(mu + 1)).addTo(chi);
+	}
+      }
+
+      struct OperatorAux {
+	const std::vector<Tensor<Nd + 3, ComplexD>> u;
+	const Index first_tslice;
+	const std::string order;
+      };
+
+      extern "C" inline void primmeMatvec(void* x, PRIMME_INT* ldx, void* y, PRIMME_INT* ldy,
+					  int* blockSize, primme_params* primme, int* ierr)
+      {
+	*ierr = -1;
+	try
+	{
+	  // The implementation assumes that ldx and ldy is nLocal
+	  if (*blockSize > 1 && (*ldx != primme->nLocal || *ldy != primme->nLocal))
+	    throw std::runtime_error("We cannot play with the leading dimensions");
+
+	  OperatorAux& opaux = *(OperatorAux*)primme->matrix;
+	  Coor<Nd + 3> size = latticeSize<Nd + 3>(opaux.order, {{'n', *blockSize}, {'t', 1}});
+	  Tensor<Nd + 3, ComplexD> tx(opaux.order, size, OnDefaultDevice, OnEveryone,
+				      std::shared_ptr<ComplexD>((ComplexD*)x, [](ComplexD*) {}));
+	  Tensor<Nd + 3, ComplexD> ty(opaux.order, size, OnDefaultDevice, OnEveryone,
+				      std::shared_ptr<ComplexD>((ComplexD*)y, [](ComplexD*) {}));
+	  LaplacianOperator(opaux.u, opaux.first_tslice, ty, tx);
+	  *ierr = 0;
+	} catch (...)
+	{
+	}
+      }
+
+      extern "C" inline void primmeGlobalSum(void* sendBuf, void* recvBuf, int* count,
+					     primme_params* primme, int* ierr)
+      {
+	if (sendBuf == recvBuf)
+	{
+	  *ierr = MPI_Allreduce(MPI_IN_PLACE, recvBuf, *count, MPI_FLOAT, MPI_SUM,
+				MPI_COMM_WORLD) != MPI_SUCCESS;
+	}
+	else
+	{
+	  *ierr = MPI_Allreduce(sendBuf, recvBuf, *count, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD) !=
+		  MPI_SUCCESS;
+	}
+      }
+
+      inline std::pair<Tensor<Nd + 3, ComplexD>, std::vector<std::vector<double>>>
+      computeColorvecs(const multi1d<LatticeColorMatrix>& u, int from_tslice, int n_tslices,
+		       int n_colorvecs, Maybe<const std::string> order_ = none)
+      {
+	const std::string order = order_.getSome("cxyztXn");
+	detail::check_order_contains(order, "cxyztXn");
+	Tensor<Nd + 3, ComplexD> all_evecs(
+	  order, latticeSize<Nd + 3>(order, {{'n', n_colorvecs}, {'t', n_tslices}}),
+	  OnDefaultDevice, OnEveryone);
+	std::vector<std::vector<double>> all_evals;
+
+	for (Index t = 0; t < n_tslices; ++t)
+	{
+	  // Make a copy of the time-slicing of u[d] also supporting left and right
+	  std::vector<Tensor<Nd + 3, ComplexD>> ut(Nd);
+	  for (unsigned int d = 0; d < Nd - 1; d++)
+	  {
+	    ut[d] = asTensorView(u[d])
+		      .kvslice_from_size({{'t', from_tslice + t}}, {{'t', 1}})
+		      .toComplex()
+		      .template make_sure<ComplexD>("ijxyzXt");
+	  }
+
+	  // Create an auxiliary struct for the PRIMME's matvec
+	  OperatorAux opaux{ut, from_tslice + t, "cxyzXnt"};
+
+	  // Make a bigger structure holding
+	  primme_params primme;
+	  primme_initialize(&primme);
+
+	  // Get the global and local size of evec
+	  std::size_t n, nLocal;
+	  {
+	    Tensor<Nd + 3, Complex> aux_tensor(
+	      opaux.order, latticeSize<Nd + 3>(opaux.order, {{'n', 1}, {'t', 1}}), OnDefaultDevice,
+	      OnEveryone);
+	    n = aux_tensor.volume();
+	    nLocal = aux_tensor.getLocal().volume();
+	  }
+
+	  if (n_colorvecs > n)
+	  {
+	    std::cerr << "ERROR: the rank of the distillation basis shouldn't be larger than the "
+			 "spatial dimensions"
+		      << std::endl;
+	    exit(1);
+	  }
+
+	  // Primme solver setup
+	  primme.numEvals = n_colorvecs;
+	  primme.printLevel = 0;
+	  primme.n = n;
+	  primme.eps = 1e-8;
+	  primme.target = primme_largest;
+
+	  // Set parallel settings
+	  primme.nLocal = nLocal;
+	  primme.numProcs = QDP::Layout::numNodes();
+	  primme.procID = QDP::Layout::nodeNumber();
+	  primme.globalSumReal = primmeGlobalSum;
+
+	  // No preconditioner for my matrix
+	  primme.matrixMatvec = primmeMatvec;
+	  primme.matrix = &opaux;
+
+	  // Should set lots of defaults
+	  if (primme_set_method(PRIMME_DEFAULT_MIN_TIME, &primme) < 0)
+	  {
+	    QDPIO::cerr << __func__ << ": invalid preset method\n";
+	    QDP_abort(1);
+	  }
+
+	  // Allocate space for converged Ritz values and residual norms
+	  std::vector<double> evals(primme.numEvals);
+	  std::vector<double> rnorms(primme.numEvals);
+	  Tensor<Nd + 3, ComplexD> evecs(
+	    opaux.order, latticeSize<Nd + 3>(opaux.order, {{'n', primme.numEvals}, {'t', 1}}),
+	    OnDefaultDevice, OnEveryone);
+#    if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
+	  primme.queue = &*detail::getMagmaContext();
+#    endif
+
+	  // Call primme
+#    if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
+	  int ret = magma_zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
+#    else
+	  int ret = zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
+#    endif
+
+	  if (primme.procID == 0)
+	  {
+	    fprintf(stdout, " %d eigenpairs converged for tslice %d\n", primme.initSize,
+		    from_tslice + t);
+	    fprintf(stdout, "Tolerance : %-22.15E\n", primme.aNorm * primme.eps);
+	    fprintf(stdout, "Iterations: %-d\n", (int)primme.stats.numOuterIterations);
+	    fprintf(stdout, "Restarts  : %-d\n", (int)primme.stats.numRestarts);
+	    fprintf(stdout, "Matvecs   : %-d\n", (int)primme.stats.numMatvecs);
+	    fprintf(stdout, "Preconds  : %-d\n", (int)primme.stats.numPreconds);
+	    fprintf(stdout, "T. ortho  : %g\n", primme.stats.timeOrtho);
+	    fprintf(stdout, "T. matvec : %g\n", primme.stats.timeMatvec);
+	    fprintf(stdout, "Total time: %g\n", primme.stats.elapsedTime);
+	  }
+
+	  if (ret != 0)
+	  {
+	    QDPIO::cerr << "Error: primme returned with nonzero exit status\n";
+	    QDP_abort(1);
+	  }
+
+	  // Cleanup
+	  primme_free(&primme);
+
+	  // Check the residuals, |laplacian*v-lambda*v|_2<=|laplacian|*tol
+	  if (evals.size() > 0)
+	  {
+	    auto r = evecs.like_this();
+	    LaplacianOperator(opaux.u, opaux.first_tslice, r, evecs);
+	    std::vector<std::complex<double>> evals_cmpl(evals.begin(), evals.end());
+	    r.contract(evecs, {}, NotConjugate,
+		       asTensorView(evals_cmpl).rename_dims({{'i', 'n'}}).scale(-1), {},
+		       NotConjugate, {}, 1);
+	    std::vector<std::complex<double>> norm2_r(evals.size());
+	    asTensorView(norm2_r)
+	      .rename_dims({{'i', 'n'}})
+	      .contract(r, {}, Conjugate, r, {}, NotConjugate);
+	    for (const auto& i : norm2_r)
+	    {
+	      if (std::sqrt(std::real(i)) > primme.stats.estimateLargestSVal * primme.eps * 10)
+	      {
+		QDPIO::cerr << "Error: primme returned eigenpairs with too much error\n";
+		QDP_abort(1);
+	      }
+	    }
+	  }
+
+	  // Copy evecs into all_evecs
+	  evecs.copyTo(all_evecs.kvslice_from_size({{'t', from_tslice + t}}, {{'t', 1}}));
+	  all_evals.push_back(evals);
+	}
+
+	return {all_evecs, all_evals};
+      }
+#  else // BUILD_PRIMME
+      inline Tensor<Nd + 3, ComplexD> computeColorvecs(const multi1d<LatticeColorMatrix>& u,
+						       int from_tslice, int n_tslices,
+						       int n_colorvecs,
+						       Maybe<const std::string> order_ = none)
+      {
+	(void)u;
+	(void)from_tslice;
+	(void)n_tslices;
+	(void)n_colorvecs;
+	(void)order_;
+	throw std::runtime_error("Functionality isn't available without compiling with PRIMME");
+      }
+#  endif // BUILD_PRIMME
+
+      template <typename COMPLEX = ComplexF>
+      Tensor<Nd + 3, COMPLEX> getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice,
+					   int n_tslices, int n_colorvecs,
+					   Maybe<const std::string> order_ = none)
+      {
+	const std::string order = order_.getSome("cxyztXn");
+	detail::check_order_contains(order, "cxyztXn");
+
+	from_tslice = normalize_coor(from_tslice, Layout::lattSize()[decay_dir]);
+
+	// Allocate tensor to return
+	Tensor<Nd + 3, COMPLEX> r(
+	  order, latticeSize<Nd + 3>(order, {{'t', n_tslices}, {'n', n_colorvecs}}));
+
+	// Allocate a single time slice colorvec in natural ordering, as colorvec are stored
+	Tensor<Nd, ComplexF> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
+				  OnHost, OnMaster);
+
+	// Allocate a single time slice colorvec in case of using RB ordering
+	Tensor<Nd + 1, ComplexF> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
+
+	// Allocate all colorvecs for the same time-slice
+	Tensor<Nd + 2, ComplexF> t("cxyzXn", latticeSize<Nd + 2>("cxyzXn", {{'n', n_colorvecs}}),
+				   OnHost, OnMaster);
+
+	const int Nt = Layout::lattSize()[decay_dir];
+	for (int t_slice = from_tslice, i_slice = 0; i_slice < n_tslices;
+	     ++i_slice, t_slice = (t_slice + 1) % Nt)
+	{
+	  // Compute the permutation from natural ordering to red-black
+	  std::vector<Index> perm = ns_getColorvecs::getPermFromNatToRB(t_slice);
+
+	  for (int colorvec = 0; colorvec < n_colorvecs; ++colorvec)
+	  {
+	    // Read a single time-slice and colorvec
+	    KeyTimeSliceColorVec_t key(t_slice, colorvec);
+	    if (!eigen_source.exist(key))
+	      throw std::runtime_error(
+		"no colorvec exists with key t_slice= " + std::to_string(t_slice) +
+		" colorvec= " + std::to_string(colorvec));
+	    eigen_source.get(key, tnat);
+
+	    // Correct ordering
+	    ns_getColorvecs::toRB(perm, tnat, trb);
+
+	    // t[n=colorvec] = trb
+	    trb.copyTo(t.kvslice_from_size({{'n', colorvec}}, {{'n', 1}}));
+	  }
+
+	  // r[t=i_slice] = t, distribute the tensor from master to the rest of the nodes
+	  t.copyTo(r.kvslice_from_size({{'t', i_slice}}));
+	}
+
+	return r;
+      }
+
+      template <typename COMPLEX = ComplexF>
+      Tensor<Nd + 3, COMPLEX> getColorvecs(StorageTensor<Nd + 2, ComplexD> s3t,
+					   const multi1d<LatticeColorMatrix>& u, int decay_dir,
+					   int from_tslice, int n_tslices, int n_colorvecs,
+					   Maybe<const std::string> order_ = none)
+      {
+	const std::string order = order_.getSome("cxyztXn");
+	detail::check_order_contains(order, "cxyztXn");
+
+	from_tslice = normalize_coor(from_tslice, Layout::lattSize()[decay_dir]);
+
+	// Read the metadata and check that the file stores colorvecs and from a lattice of the same size
+	std::istringstream is(s3t.metadata);
+	XMLReader xml_buf(is);
+	bool write_fingerprint = false;
+	read(xml_buf, "/MODMetaData/fingerprint", write_fingerprint);
+	GroupXML_t link_smear = readXMLGroup(xml_buf, "/MODMetaData/LinkSmearing", "LinkSmearingType");
+
+	// Smear the gauge field if needed
+	multi1d<LatticeColorMatrix> u_smr = u;
+	try
+	{
+	  std::istringstream xml_l(link_smear.xml);
+	  XMLReader linktop(xml_l);
+	  Handle<LinkSmearing> linkSmearing(TheLinkSmearingFactory::Instance().createObject(
+	    link_smear.id, linktop, link_smear.path));
+	  (*linkSmearing)(u_smr);
+	} catch (const std::string& e)
+	{
+	  QDPIO::cerr << ": Caught Exception link smearing: " << e << std::endl;
+	  QDP_abort(1);
+	} catch (...)
+	{
+	  QDPIO::cerr << ": Caught unexpected exception" << std::endl;
+	  QDP_abort(1);
+	}
+
+	// Allocate tensor with the content of s3t
+	Tensor<Nd + 3, ComplexD> colorvecs_s3t(
+	  order, latticeSize<Nd + 3>(order, {{'t', n_tslices}, {'n', n_colorvecs}}));
+
+	// Allocate a single time slice colorvec in natural ordering, as colorvec are stored
+	Tensor<Nd, ComplexD> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
+				  OnHost, OnMaster);
+
+	// Allocate a single time slice colorvec in case of using RB ordering
+	Tensor<Nd + 1, ComplexD> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
+
+	const int Nt = Layout::lattSize()[decay_dir];
+	for (int t_slice = from_tslice, i_slice = 0; i_slice < n_tslices;
+	     ++i_slice, t_slice = (t_slice + 1) % Nt)
+	{
+	  // Compute the permutation from natural ordering to red-black
+	  std::vector<Index> perm = ns_getColorvecs::getPermFromNatToRB(t_slice);
+
+	  for (int colorvec = 0; colorvec < n_colorvecs; ++colorvec)
+	  {
+	    // Read a single time-slice and colorvec
+	    tnat.set_zero();
+	    s3t.kvslice_from_size({{'t', t_slice}, {'n', colorvec}}, {{'t', 1}, {'n', 1}})
+	      .copyTo(tnat);
+
+	    // Correct ordering
+	    ns_getColorvecs::toRB(perm, tnat, trb);
+
+	    // colorvecs_s3t[t=i_slice,n=colorvec] = trb
+	    trb.copyTo(colorvecs_s3t.kvslice_from_size({{'t', i_slice}, {'n', colorvec}}));
+	  }
+	}
+
+	// Compute the 2-norm of colorvecs_s3t and check that no vector is null
+
+	Tensor<2, ComplexD> colorvecs_s3t_norms2("nt", Coor<2>{n_colorvecs, n_tslices}, OnHost,
+						 OnEveryoneReplicated);
+	colorvecs_s3t_norms2.contract(colorvecs_s3t, {}, Conjugate, colorvecs_s3t, {},
+				      NotConjugate);
+
+	for (int t = 0; t < n_tslices; ++t)
+	  for (int n = 0; n < n_colorvecs; ++n)
+	    if (std::norm(colorvecs_s3t_norms2.get({n, t})) == 0)
+	      throw std::runtime_error(
+		"no colorvec exists with key t_slice= " + std::to_string(t + from_tslice) +
+		" colorvec= " + std::to_string(n));
+
+	if (write_fingerprint)
+	{
+	  // Compute the colorvecs
+	  auto colorvecs =
+	    ns_getColorvecs::computeColorvecs(u_smr, from_tslice, n_tslices, n_colorvecs, order_)
+	      .first;
+
+	  // We need to phase the individual eigenvectors so that the have the same phase as the
+	  // s3t's colorvecs. That is, we need to apply a phase phi[i] to each eigenvector so that
+	  //
+	  //    colorvecs_s3t[i]^\dagger * colorvecs[i] * phi[i] = 1.
+	  //
+	  // Then, phi[i] = 1 / (colorvecs_s3t[i]^\dagger * colorvecs[i])
+
+	  auto ip = colorvecs_s3t_norms2.like_this();
+	  ip.contract(colorvecs_s3t, {}, Conjugate, colorvecs, {}, NotConjugate);
+
+	  auto phi = ip.like_this();
+	  for (int t = 0; t < n_tslices; ++t)
+	  {
+	    for (int n = 0; n < n_colorvecs; ++n)
+	    {
+	      auto phi_i = std::sqrt(colorvecs_s3t_norms2.get({n, t})) / ip.get({n, t});
+	      if (std::fabs(std::fabs(phi_i) - 1) > 1e-4)
+		throw std::runtime_error(
+		  "The colorvec fingerprint does not correspond to current gates field");
+	      phi.set({n, t}, phi_i);
+	    }
+	  }
+
+	  // Apply the phase of the colorvecs in s3t to the computed colorvecs
+	  colorvecs_s3t.contract(colorvecs, {}, NotConjugate, ip, {}, NotConjugate);
+	}
+
+	return colorvecs_s3t.make_sure<COMPLEX>();
+      }
     }
 
-    typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, Tensor<Nd, ComplexF>> MODS_t;
+    inline void storeColorvecStorage(std::string colorvec_file, GroupXML_t link_smear,
+				     const multi1d<LatticeColorMatrix>& u, int from_tslice,
+				     int n_tslices, int n_colorvecs, bool use_s3t_storage = false,
+				     bool fingerprint = false)
+    {
+
+      // Smear the gauge field if needed
+      multi1d<LatticeColorMatrix> u_smr = u;
+      try
+      {
+	std::istringstream xml_l(link_smear.xml);
+	XMLReader linktop(xml_l);
+	Handle<LinkSmearing> linkSmearing(TheLinkSmearingFactory::Instance().createObject(
+	  link_smear.id, linktop, link_smear.path));
+	(*linkSmearing)(u_smr);
+      } catch (const std::string& e)
+      {
+	QDPIO::cerr << ": Caught Exception link smearing: " << e << std::endl;
+	QDP_abort(1);
+      } catch (...)
+      {
+	QDPIO::cerr << ": Caught unexpected exception" << std::endl;
+	QDP_abort(1);
+      }
+
+      // Compute colorvecs
+      std::string order = "cxyzXtn";
+      auto colorvecs_and_evals =
+	ns_getColorvecs::computeColorvecs(u_smr, from_tslice, n_tslices, n_colorvecs, order);
+      auto colorvecs = colorvecs_and_evals.first;
+
+      // Reorder evals for the metadata and change the sign (laplace_eigs reports the eigenvalues in this way)
+      multi1d<multi1d<double>> evals(n_colorvecs);
+      for (int i = 0; i < n_colorvecs; ++i)
+      {
+	evals[i].resize(n_tslices);
+	for (int t = 0; t < n_tslices; ++t)
+	  evals[i][t] = -colorvecs_and_evals.second[t][i];
+      }
+
+      if (!use_s3t_storage)
+      {
+	XMLBufferWriter file_xml;
+
+	push(file_xml, "MODMetaData");
+	write(file_xml, "id", std::string("eigenVecsTimeSlice"));
+	multi1d<int> spatialLayout(3);
+	spatialLayout[0] = Layout::lattSize()[0];
+	spatialLayout[1] = Layout::lattSize()[1];
+	spatialLayout[2] = Layout::lattSize()[2];
+	write(file_xml, "lattSize", spatialLayout);
+	write(file_xml, "decay_dir", 3);
+	write(file_xml, "num_vecs", n_colorvecs);
+	write(file_xml, "Weights", evals);
+	file_xml << link_smear.xml;
+	pop(file_xml);
+
+	MOD_t mod;
+	mod.setDebug(0);
+
+	mod.insertUserdata(file_xml.str());
+	mod.open(colorvec_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+
+	// Allocate a single time slice colorvec in natural ordering, as colorvec are stored
+	Tensor<Nd, ComplexF> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
+				  OnHost, OnMaster);
+
+	// Allocate a single time slice colorvec in case of using RB ordering
+	Tensor<Nd + 1, ComplexF> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
+
+	// Store the colorvecs in natural order (not in red-black ordering) 
+	const int Nt = Layout::lattSize()[3];
+	for (int t = 0; t < n_tslices; ++t)
+	{
+	  int tslice = (from_tslice + t) % Nt;
+
+	  // Compute the permutation from natural ordering to red-black
+	  std::vector<Index> perm = ns_getColorvecs::getPermFromNatToRB(tslice);
+
+	  for (int n = 0; n < n_colorvecs; ++n)
+	  {
+	    KeyTimeSliceColorVec_t time_key;
+	    time_key.t_slice = tslice;
+	    time_key.colorvec = n;
+	    colorvecs.kvslice_from_size({{'t', t}, {'n', n}}, {{'t', 1}, {'n', 1}}).copyTo(trb);
+	    ns_getColorvecs::toNat(perm, trb, tnat);
+	    mod.insert(time_key, tnat);
+	  }
+	}
+
+	mod.close();
+      }
+      else
+      {
+	std::string sto_order = "cxyztn"; // order for storing the colorvecs
+
+	// If fingerprint, we store only the support of the colorvecs on a subset of the lattice;
+	// compute the size of that subset
+	Coor<3> fingerprint_dim{};
+	for (int i = 0; i < 3; ++i)
+	  fingerprint_dim[i] = std::min(4, Layout::lattSize()[i]);
+
+	// Prepare metadata
+	XMLBufferWriter file_xml;
+
+	push(file_xml, "MODMetaData");
+	write(file_xml, "id", std::string("eigenVecsTimeSlice"));
+	multi1d<int> spatialLayout(3);
+	spatialLayout[0] = Layout::lattSize()[0];
+	spatialLayout[1] = Layout::lattSize()[2];
+	spatialLayout[2] = Layout::lattSize()[2];
+	write(file_xml, "lattSize", spatialLayout);
+	write(file_xml, "decay_dir", 3);
+	write(file_xml, "num_vecs", n_colorvecs);
+	write(file_xml, "Weights", evals);
+	write(file_xml, "order", sto_order);
+	write(file_xml, "fingerprint", fingerprint);
+	if (fingerprint)
+	{
+	  spatialLayout[0] = fingerprint_dim[0];
+	  spatialLayout[1] = fingerprint_dim[2];
+	  spatialLayout[2] = fingerprint_dim[2];
+	  write(file_xml, "fingerprint_lattice", spatialLayout);
+	}
+	file_xml << link_smear.xml;
+	pop(file_xml);
+
+	StorageTensor<Nd + 2, ComplexD> sto(
+	  colorvec_file, file_xml.str(), sto_order,
+	  latticeSize<Nd + 2>(sto_order, {{'n', n_colorvecs}, {'x', Layout::lattSize()[0]}}),
+	  Sparse, superbblas::BlockChecksum);
+
+	// Allocate a single time slice colorvec in natural ordering, as colorvec are stored
+	Tensor<Nd, ComplexD> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
+				  OnHost, OnMaster);
+
+	// Allocate a single time slice colorvec in case of using RB ordering
+	Tensor<Nd + 1, ComplexD> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
+
+	// Store the colorvecs in natural order (not in red-black ordering) 
+	const int Nt = Layout::lattSize()[3];
+	std::map<char, int> colorvec_size{};
+	if (fingerprint)
+	  colorvec_size = std::map<char, int>{
+	    {'x', fingerprint_dim[0]}, {'y', fingerprint_dim[1]}, {'z', fingerprint_dim[2]}};
+	for (int t = 0; t < n_tslices; ++t)
+	{
+	  int tslice = (from_tslice + t) % Nt;
+
+	  // Compute the permutation from natural ordering to red-black
+	  std::vector<Index> perm = ns_getColorvecs::getPermFromNatToRB(tslice);
+
+	  for (int n = 0; n < n_colorvecs; ++n)
+	  {
+	    colorvecs.kvslice_from_size({{'t', t}, {'n', n}}, {{'t', 1}, {'n', 1}}).copyTo(trb);
+	    ns_getColorvecs::toNat(perm, trb, tnat);
+	    sto.kvslice_from_size({{'t', tslice}, {'n', n}}, {{'t', 1}, {'n', 1}})
+	      .copyFrom(tnat.kvslice_from_size({}, colorvec_size));
+	  }
+	}
+      }
+    }
+
+    inline ColorvecsStorage openColorvecStorage(std::vector<std::string> colorvec_files)
+    {
+      ColorvecsStorage sto{}; // returned object
+
+      std::string metadata; // the metadata content of the file
+
+      // Try to open the file as a s3t database
+      try
+      {
+	if (colorvec_files.size() == 1)
+	  sto.s3t = StorageTensor<Nd + 2, ComplexD>(colorvec_files[0], true, "/MODMetaData/order");
+	metadata = sto.s3t.metadata;
+      } catch (...)
+      {
+      }
+
+      // Try to open the files as a MOD database
+      if (!sto.s3t)
+      {
+	sto.mod = std::make_shared<MODS_t>();
+	sto.mod->setDebug(0);
+
+	try
+	{
+	  // Open
+	  sto.mod->open(colorvec_files);
+	  sto.mod->getUserdata(metadata);
+	} catch (std::bad_cast)
+	{
+	  QDPIO::cerr << ": caught dynamic cast error" << std::endl;
+	  QDP_abort(1);
+	} catch (const std::string& e)
+	{
+	  QDPIO::cerr << ": error extracting source_header: " << e << std::endl;
+	  QDP_abort(1);
+	} catch (const char* e)
+	{
+	  QDPIO::cerr << ": Caught some char* exception:" << std::endl;
+	  QDPIO::cerr << e << std::endl;
+	  QDP_abort(1);
+	}
+      }
+
+      // Check that the file stores colorvecs and is from a lattice of the same size
+
+      std::istringstream is(metadata);
+      XMLReader xml_buf(is);
+
+      std::string id;
+      read(xml_buf, "/MODMetaData/id", id);
+      if (id != "eigenVecsTimeSlice") {
+	  std::stringstream ss;
+	  ss << "The file `" << colorvec_files[0] << "' does not contain colorvecs";
+	  throw std::runtime_error(ss.str());
+      }
+
+      multi1d<int> spatialLayout(3);
+      read(xml_buf, "/MODMetaData/lattSize", spatialLayout);
+      if (spatialLayout[0] != Layout::lattSize()[0] || spatialLayout[1] != Layout::lattSize()[1] ||
+	  spatialLayout[2] != Layout::lattSize()[2])
+      {
+	std::stringstream ss;
+	ss << "The spatial dimensions of the colorvecs in `" << colorvec_files[0]
+	   << "' do not much the current lattice";
+	throw std::runtime_error(ss.str());
+      }
+
+      return sto;
+    }
 
     /// Get colorvecs(t,n) for t=from_slice..(from_slice+n_tslices-1) and n=0..(n_colorvecs-1)
 
     template <typename COMPLEX = ComplexF>
     Tensor<Nd + 3, COMPLEX>
-    getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice, int n_tslices,
-		 int n_colorvecs, Maybe<const std::string> order_ = none, Coor<Nd - 1> phase = {})
+    getColorvecs(const ColorvecsStorage& sto, const multi1d<LatticeColorMatrix>& u, int decay_dir,
+		 int from_tslice, int n_tslices, int n_colorvecs,
+		 Maybe<const std::string> order = none, Coor<Nd - 1> phase = {})
     {
       using namespace ns_getColorvecs;
 
@@ -2257,60 +3180,18 @@ namespace Chroma
 
       if (decay_dir != 3)
 	throw std::runtime_error("Only support for decay_dir being the temporal dimension");
-      const std::string order = order_.getSome("cxyztXn");
-      detail::check_order_contains(order, "cxyztXn");
+
+      // Read the colorvecs with the proper function
+      Tensor<Nd + 3, COMPLEX> r;
+      if (sto.s3t)
+	r = ns_getColorvecs::getColorvecs<COMPLEX>(sto.s3t, u, decay_dir, from_tslice, n_tslices, n_colorvecs,
+						   order);
+      else if (sto.mod)
+	r = ns_getColorvecs::getColorvecs<COMPLEX>(*sto.mod, decay_dir, from_tslice, n_tslices, n_colorvecs,
+						order);
 
       // Phase colorvecs if phase != (0,0,0)
-      bool phasing = (phase != Coor<Nd - 1>{});
-
-      from_tslice = normalize_coor(from_tslice, Layout::lattSize()[decay_dir]);
-
-      // Allocate tensor to return
-      std::string r_order = phasing ? "cnxyztX" : order;
-      Tensor<Nd + 3, COMPLEX> r(
-	r_order, latticeSize<Nd + 3>(r_order, {{'t', n_tslices}, {'n', n_colorvecs}}));
-
-      // Allocate a single time slice colorvec in natural ordering, as colorvec are stored
-      Tensor<Nd, ComplexF> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
-				OnHost, OnMaster);
-
-      // Allocate a single time slice colorvec in case of using RB ordering
-      Tensor<Nd + 1, ComplexF> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
-
-      // Allocate all colorvecs for the same time-slice
-      Tensor<Nd + 2, ComplexF> t("cxyzXn", latticeSize<Nd + 2>("cxyzXn", {{'n', n_colorvecs}}),
-				 OnHost, OnMaster);
-
-      const int Nt = Layout::lattSize()[decay_dir];
-      for (int t_slice = from_tslice, i_slice = 0; i_slice < n_tslices;
-	   ++i_slice, t_slice = (t_slice + 1) % Nt)
-      {
-	// Compute the permutation from natural ordering to red-black
-	std::vector<Index> perm = getPermFromNatToRB(t_slice);
-
-	for (int colorvec = 0; colorvec < n_colorvecs; ++colorvec)
-	{
-	  // Read a single time-slice and colorvec
-	  KeyTimeSliceColorVec_t key(t_slice, colorvec);
-	  if (!eigen_source.exist(key))
-	    throw std::runtime_error(
-	      "no colorvec exists with key t_slice= " + std::to_string(t_slice) +
-	      " colorvec= " + std::to_string(colorvec));
-	  eigen_source.get(key, tnat);
-
-	  // Correct ordering
-	  applyPerm(perm, tnat, trb);
-
-	  // t[n=colorvec] = trb
-	  trb.copyTo(t.kvslice_from_size({{'n', colorvec}}, {{'n', 1}}));
-	}
-
-	// r[t=i_slice] = t, distribute the tensor from master to the rest of the nodes
-	t.copyTo(r.kvslice_from_size({{'t', i_slice}}));
-      }
-
-      // Apply phase
-      if (phasing)
+      if (phase != Coor<Nd - 1>{})
       {
 	Tensor<Nd + 1, COMPLEX> tphase =
 	  getPhase<COMPLEX>(phase)
@@ -2318,7 +3199,7 @@ namespace Chroma
 	    .reorder("xyztX");
 	Tensor<Nd + 3, COMPLEX> rp = r.like_this("cnxyztX");
 	rp.contract(r, {}, NotConjugate, tphase, {}, NotConjugate);
-	r = rp.reorder(order);
+	r = rp.reorder(order.getSome(rp.order));
       }
 
       sw.stop();
@@ -2327,6 +3208,10 @@ namespace Chroma
 
       return r;
     }
+
+    //
+    // High-level chroma operations
+    //
 
     /// Apply the inverse to LatticeColorVec tensors for a list of spins
     /// \param PP: invertor
@@ -2415,172 +3300,12 @@ namespace Chroma
       return psi;
     }
 
-    template <typename COMPLEX, std::size_t N>
-    Tensor<N, COMPLEX> shift(const Tensor<N, COMPLEX> v, Index first_tslice, int len, int dir)
-    {
-      if (dir < 0 || dir >= Nd - 1)
-	throw std::runtime_error("Invalid direction");
-
-      if (len == 0)
-	return v;
-
-      // NOTE: chroma uses the reverse convention for direction: shifting FORWARD moves the sites on the negative direction
-      len = -len;
-
-      const char dir_label[] = "xyz";
-#  if QDP_USE_LEXICO_LAYOUT
-      // If we are not using red-black ordering, return a view where the tensor is shifted on the given direction
-      return v.kvslice_from_size({{dir_label[dir], -len}});
-
-#  elif QDP_USE_CB2_LAYOUT
-      // Assuming that v has support on the origin and destination lattice elements
-      if (v.kvdim()['X'] != 2 && len % 2 != 0)
-	throw std::runtime_error("Unsupported shift");
-
-      Tensor<N, COMPLEX> r = v.like_this();
-      if (dir != 0)
-      {
-	v.copyTo(r.kvslice_from_size({{'X', len}, {dir_label[dir], len}}));
-      }
-      else
-      {
-	int t = v.kvdim()['t'];
-	if (t > 1 && t % 2 == 1)
-	  throw std::runtime_error(
-	    "The t dimension should be zero, one, or even when doing shifting on the X dimension");
-	int maxT = std::min(2, t);
-	auto v_eo = v.split_dimension('y', "Yy", 2)
-		      .split_dimension('z', "Zz", 2)
-		      .split_dimension('t', "Tt", 2);
-	auto r_eo = r.split_dimension('y', "Yy", 2)
-		      .split_dimension('z', "Zz", 2)
-		      .split_dimension('t', "Tt", maxT);
-	while (len < 0)
-	  len += v.kvdim()['x'] * 2;
-	for (int T = 0; T < maxT; ++T)
-	  for (int Z = 0; Z < 2; ++Z)
-	    for (int Y = 0; Y < 2; ++Y)
-	      for (int X = 0; X < 2; ++X)
-		v_eo
-		  .kvslice_from_size({{'X', X}, {'Y', Y}, {'Z', Z}, {'T', T}},
-				     {{'X', 1}, {'Y', 1}, {'Z', 1}, {'T', 1}})
-		  .copyTo(
-		    r_eo.kvslice_from_size({{'X', X + len},
-					    {'x', (len + ((X + Y + Z + T + first_tslice) % 2)) / 2},
-					    {'Y', Y},
-					    {'Z', Z},
-					    {'T', T}},
-					   {{'Y', 1}, {'Z', 1}, {'T', 1}}));
-      }
-      return r;
-#  else
-      throw std::runtime_error("Unsupported layout");
-#  endif
-    }
-
-    /// Compute a displacement of v onto the direction dir
-    /// \param u: Gauge field
-    /// \param v: tensor to apply the displacement
-    /// \param first_tslice: global index in the t direction of the first element
-    /// \param dir: 0: nothing; 1: forward x; -1: backward x; 2: forward y...
-
-    template <typename COMPLEX, std::size_t N>
-    Tensor<N, COMPLEX> displace(const std::vector<Tensor<Nd + 3, Complex>>& u, Tensor<N, COMPLEX> v,
-				Index first_tslice, int dir)
-    {
-      if (std::abs(dir) > Nd)
-	throw std::runtime_error("Invalid direction");
-
-      if (dir == 0)
-	return v;
-
-      int d = std::abs(dir) - 1;    // space lattice direction, 0: x, 1: y, 2: z
-      int len = (dir > 0 ? 1 : -1); // displacement unit direction
-      assert(d < u.size());
-
-      Tensor<N, COMPLEX> r = v.like_this("c%xyzXt", '%');
-      v = v.reorder("c%xyzXt", '%');
-      if (len > 0)
-      {
-	// Do u[d] * shift(x,d)
-	v = shift(std::move(v), first_tslice, len, d);
-	r.contract(u[d], {{'j', 'c'}}, NotConjugate, std::move(v), {}, NotConjugate, {{'c', 'i'}});
-      }
-      else
-      {
-	// Do shift(adj(u[d]) * x,d)
-	r.contract(u[d], {{'i', 'c'}}, Conjugate, std::move(v), {}, NotConjugate, {{'c', 'j'}});
-	r = shift(std::move(r), first_tslice, len, d);
-      }
-      return r;
-    }
-
-    /// Apply right nabla onto v on the direction dir
-    /// \param u: Gauge field
-    /// \param v: tensor to apply the derivative
-    /// \param first_tslice: global index in the t direction of the first element
-    /// \param dir: 0: nothing; 1: forward x; -1: backward x; 2: forward y...
-    ///
-    /// NOTE: the code returns U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)
-
-    template <typename COMPLEX, std::size_t N>
-    Tensor<N, COMPLEX> rightNabla(const std::vector<Tensor<Nd + 3, Complex>>& u,
-				  Tensor<N, COMPLEX> v, Index first_tslice, int dir)
-    {
-    	auto r = displace(u, v, first_tslice, dir);
-	displace(u, v, first_tslice, -dir).scale(-1).addTo(r);
-	return r;
-    }
-
-    /// Compute a displacement of v onto the direction dir
-    /// \param u: Gauge field
-    /// \param v: tensor to apply the derivative
-    /// \param first_tslice: global index in the t direction of the first element
-    /// \param dir: 0: nothing; 1: forward x; -1: backward x; 2: forward y...
-    /// \param moms: list of input momenta
-    /// \param conjUnderAdd: if true, return a version, R(dir), so that
-    ////       adj(R(dir)) * D(dir') == D(dir+dir'), where D(dir') is what this function returns
-    ////       when conjUnderAdd is false.
-
-    template <typename COMPLEX, std::size_t N>
-    Tensor<N, COMPLEX> leftRightNabla(const std::vector<Tensor<Nd + 3, Complex>>& u,
-				      Tensor<N, COMPLEX> v, Index first_tslice, int dir,
-				      std::vector<Coor<3>> moms = {}, bool conjUnderAdd = false)
-    {
-      if (std::abs(dir) > Nd)
-	throw std::runtime_error("Invalid direction");
-
-      int d = std::abs(dir) - 1;    // space lattice direction, 0: x, 1: y, 2: z
-
-      // conj(phase)*displace(u, v, -dir) - phase*displace(u, v, dir)
-      std::vector<COMPLEX> phases(moms.size());
-      for (unsigned int i = 0; i < moms.size(); ++i)
-      {
-
-	typename COMPLEX::value_type angle = 2 * M_PI * moms[i][d] / Layout::lattSize()[d];
-	phases[i] = COMPLEX{1} + COMPLEX{cos(angle), sin(angle)};
-	if (conjUnderAdd)
-	  phases[i] = std::sqrt(phases[i]);
-      }
-
-      // r = conj(phases) * displace(u, v, dir)
-      Tensor<N, COMPLEX> r = v.like_this("c%xyzXtm", '%');
-      r.contract(displace(u, v, first_tslice, -dir).reorder("%m", '%'), {}, NotConjugate,
-		 asTensorView(phases), {{'i', 'm'}}, Conjugate);
-
-      // r = r - phases * displace(u, v, dir) if !ConjUnderAdd else r + phases * displace(u, v, dir)
-      r.contract(displace(u, v, first_tslice, dir).scale(conjUnderAdd ? 1 : -1).reorder("%m", '%'),
-		 {}, NotConjugate, asTensorView(phases), {{'i', 'm'}}, NotConjugate, {}, 1.0);
-
-      return r;
-    }
-
     namespace detail
     {
       /// Path Node
       struct PathNode {
 	std::map<int, PathNode> p; ///< following nodes
-	int disp_index;		    ///< if >= 0, the index in the displacement list
+	int disp_index;		   ///< if >= 0, the index in the displacement list
       };
 
       /// Return the directions that are going to be use and the maximum number of displacements keep in memory
@@ -2738,13 +3463,13 @@ namespace Chroma
     {
       // Copy moms into a single tensor
       const int Nt = Layout::lattSize()[decay_dir];
-      int tfrom = first_tslice.getSome(0); // first tslice to extract
-      int tsize = num_tslices.getSome(Nt); // number of tslices to extract
-      int mfrom = first_mom.getSome(0);	   // first momentum to extract
+      int tfrom = first_tslice.getSome(0);	   // first tslice to extract
+      int tsize = num_tslices.getSome(Nt);	   // number of tslices to extract
+      int mfrom = first_mom.getSome(0);		   // first momentum to extract
       int msize = num_moms.getSome(moms.numMom()); // number of momenta to extract
 
-      Tensor<Nd + 2, COMPLEX> momst(
-	order_out, latticeSize<Nd + 2>(order_out, {{'t', tsize}, {'m', msize}}));
+      Tensor<Nd + 2, COMPLEX> momst(order_out,
+				    latticeSize<Nd + 2>(order_out, {{'t', tsize}, {'m', msize}}));
       for (unsigned int mom = 0; mom < msize; ++mom)
       {
 	asTensorView(moms[mfrom + mom])
@@ -2792,8 +3517,9 @@ namespace Chroma
       detail::check_order_contains(leftconj.order, "cxyzXNQqt");
       detail::check_order_contains(right.order, "cxyzXnSst");
 
-      if (right.kvdim()['t'] != leftconj.kvdim()['t']);
-	throw std::runtime_error("The t component of `right' and `left' does not match");
+      if (right.kvdim()['t'] != leftconj.kvdim()['t'])
+	;
+      throw std::runtime_error("The t component of `right' and `left' does not match");
       int Nt = right.kvdim()['t'];
 
       int max_t = max_active_tslices.getSome(Nt);
@@ -2985,7 +3711,8 @@ namespace Chroma
 	  // Color-contract colorvec0 and colorvec1
 	  Tensor<Nin + 1, COMPLEX> colorvec01 =
 	    colorvecs[0]
-	      .template like_this<Nin + 1, COMPLEX>("njc%xyzXt", '%', "", {{'j', colorvecs[1].kvdim()['n']}})
+	      .template like_this<Nin + 1, COMPLEX>("njc%xyzXt", '%', "",
+						    {{'j', colorvecs[1].kvdim()['n']}})
 	      .rename_dims({{'n', 'i'}});
 	  auto colorvec0 = colorvecs[0].reorder("nc%xyzXt", '%').rename_dims({{'n', 'i'}});
 	  auto colorvec1 = colorvecs[1].reorder("nc%xyzXt", '%').rename_dims({{'n', 'j'}});
@@ -3006,14 +3733,16 @@ namespace Chroma
 	  colorvec2m.contract(std::move(colorvec2), {}, NotConjugate, moms.first, {}, NotConjugate);
 
 	  // Contract colorvec2 and moms
-	  if (Nin == Nd + 4) {
+	  if (Nin == Nd + 4)
+	  {
 	    colorvec01 = colorvec01.reorder("%mt", '%');
 	    colorvec2m = colorvec2m.reorder("%mt", '%');
 	  }
 	  else
 	    colorvec2m = colorvec2m.reorder("kmc%xyzXt", '%');
 	  Tensor<5, COMPLEX> colorvec012m = colorvec01.template like_this<5, COMPLEX>(
-	    order_out, {{'k', colorvecs[2].kvdim()['n']}, {'m', moms.first.kvdim()['m']}}, dev, dist);
+	    order_out, {{'k', colorvecs[2].kvdim()['n']}, {'m', moms.first.kvdim()['m']}}, dev,
+	    dist);
 	  colorvec012m.contract(std::move(colorvec01), {}, NotConjugate, std::move(colorvec2m), {},
 				NotConjugate);
 
@@ -3201,8 +3930,8 @@ namespace Chroma
 	  // Contract left and right
 	  auto this_right = right.reorder("ncxyzX%t", '%').rename_dims({{'n', 'i'}});
 	  auto this_left = left.reorder("cxyzXn%t", '%').rename_dims({{'n', 'j'}});
-	  Tensor<4, COMPLEX> r =
-	    this_left.template like_this<4, COMPLEX>("jimt", {{'i', this_right.kvdim()['i']}}, dev, dist);
+	  Tensor<4, COMPLEX> r = this_left.template like_this<4, COMPLEX>(
+	    "jimt", {{'i', this_right.kvdim()['i']}}, dev, dist);
 	  r.contract(std::move(this_left), {}, Conjugate, std::move(this_right), {}, NotConjugate);
 
 	  // Do whatever
@@ -3237,7 +3966,7 @@ namespace Chroma
     /// \param deriv: if true, do left-right nabla derivatives
     /// \param call: function to call for each combination of disps0, disps1, and disps2
     /// \param order_out: coordinate order of the output tensor, a permutation of ijmt where
-    ///        i and j are the n index in the right and left colorvec respectively; and 
+    ///        i and j are the n index in the right and left colorvec respectively; and
     ///        m is the momentum index
 
     template <std::size_t Nin, typename COMPLEX>
@@ -3312,8 +4041,8 @@ namespace Chroma
 	if (!deriv)
 	{
 	  ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
-	    ut, std::move(moms_left), this_colorvec, first_tslice + tfrom, tree_disps,
-	    deriv, moms.second, 0, order_out_str, dev.getSome(OnDefaultDevice),
+	    ut, std::move(moms_left), this_colorvec, first_tslice + tfrom, tree_disps, deriv,
+	    moms.second, 0, order_out_str, dev.getSome(OnDefaultDevice),
 	    dist.getSome(OnEveryoneReplicated), call);
 	}
 	else

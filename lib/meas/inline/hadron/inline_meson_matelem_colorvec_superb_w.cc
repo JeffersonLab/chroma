@@ -410,11 +410,9 @@ namespace Chroma
     {
       START_CODE();
 
-      StopWatch snoop;
-      snoop.reset();
-      snoop.start();
-
       StopWatch swiss;
+      swiss.reset();
+      swiss.start();
 
       // Test and grab a reference to the gauge field
       XMLBufferWriter gauge_xml;
@@ -439,39 +437,8 @@ namespace Chroma
       //
       // Read in the source along with relevant information.
       //
-      QDPIO::cout << "Snarf the source from a std::map object disk file" << std::endl;
 
-      SB::MODS_t eigen_source;
-      eigen_source.setDebug(0);
-
-      std::string eigen_meta_data; // holds the eigenvalues
-
-      try
-      {
-	// Open
-	QDPIO::cout << "Open file= " << params.named_obj.colorvec_files[0] << std::endl;
-	eigen_source.open(params.named_obj.colorvec_files);
-
-	// Snarf the source info.
-	QDPIO::cout << "Get user data" << std::endl;
-	eigen_source.getUserdata(eigen_meta_data);
-      } catch (std::bad_cast)
-      {
-	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
-	QDP_abort(1);
-      } catch (const std::string& e)
-      {
-	QDPIO::cerr << name << ": error extracting source_header: " << e << std::endl;
-	QDP_abort(1);
-      } catch (const char* e)
-      {
-	QDPIO::cerr << name << ": Caught some char* exception:" << std::endl;
-	QDPIO::cerr << e << std::endl;
-	QDPIO::cerr << "Rethrowing" << std::endl;
-	throw;
-      }
-
-      QDPIO::cout << "Source successfully read and parsed" << std::endl;
+      SB::ColorvecsStorage colorvecsSto = SB::openColorvecStorage(params.named_obj.colorvec_files);
 
       push(xml_out, "MesonMatElemColorVec");
       write(xml_out, "update_no", update_no);
@@ -627,8 +594,9 @@ namespace Chroma
       push(xml_out, "ElementalOps");
 
       // Get num_vecs colorvecs on time-slice t_source
-      SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
-	eigen_source, params.param.decay_dir, tfrom, tsize, params.param.num_vecs, SB::none, phase);
+      SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	SB::getColorvecs<SB::Complex>(colorvecsSto, u, params.param.decay_dir, tfrom, tsize,
+				      params.param.num_vecs, SB::none, phase);
 
       // Call for storing the baryons
       double time_storing = 0; // total time in writing elementals
@@ -664,7 +632,8 @@ namespace Chroma
 	      qdp_db[0].insert(key, val);
 	    }
 	  }
-
+	 
+	  tstoring.stop();
 	  time_storing += tstoring.getTimeInSeconds();
 	}
       });
@@ -690,8 +659,7 @@ namespace Chroma
       // Close the namelist output file XMLDAT
       pop(xml_out); // MesonMatElemColorVector
 
-      snoop.stop();
-      QDPIO::cout << name << ": total time = " << snoop.getTimeInSeconds() << " secs" << std::endl;
+      QDPIO::cout << name << ": total time = " << swiss.getTimeInSeconds() << " secs" << std::endl;
 
       QDPIO::cout << name << ": ran successfully" << std::endl;
 

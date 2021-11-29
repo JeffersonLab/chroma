@@ -55,6 +55,12 @@
 /* Build SUPERB tasks */
 #cmakedefine BUILD_SB   @BUILD_SB@
 
+/* Build with PRIMME */
+#cmakedefine BUILD_PRIMME   @BUILD_PRIMME@
+
+/* Build with MAGMA */
+#cmakedefine BUILD_MAGMA   @BUILD_MAGMA@
+
 /* Build Scalarsite BICGStab Kernels */
 #cmakedefine BUILD_SCALARSITE_BICGSTAB  @BUILD_SCALARSITE_BICGSTAB@
 

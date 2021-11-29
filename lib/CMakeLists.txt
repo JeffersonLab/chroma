@@ -1983,7 +1983,7 @@ target_sources(chromalib PRIVATE
 if( QUDA_TARGET_HIP )
   # QUDA injects an unnecessary dependency to hip::device through roc::rocprim_hip.
   # The inclusion of hip::device adds flags for hipcc, forcing chroma to use hipcc.
-  # Being not sure how to avoid QUDA injecting the hip::device depenency, the easiest
+  # Being not sure how to avoid QUDA injecting the hip::device dependency, the easiest
   # solution (hack) is to empty of content hip::device.
   set_target_properties(hip::device PROPERTIES INTERFACE_COMPILE_OPTIONS ""
                                              INTERFACE_LINK_LIBRARIES "")
@@ -2002,6 +2002,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.h
      meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.h
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h
+     meas/inline/hadron/inline_create_colorvecs_superb.h
   )
   target_sources(chromalib PRIVATE 
      meas/inline/hadron/inline_disco_prob_defl_superb_w.cc
@@ -2009,16 +2010,46 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.cc
      meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.cc 
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.cc 
+     meas/inline/hadron/inline_create_colorvecs_superb.cc
   )
   target_include_directories(chromalib PUBLIC ${SUPERBBLAS_DIR}/include)
   add_library(superbblas STATIC IMPORTED )
   set_target_properties( superbblas PROPERTIES IMPORTED_LOCATION ${SUPERBBLAS_DIR}/lib/libsuperbblas.a )
   target_link_libraries(chromalib PUBLIC superbblas )
+
+  if( Chroma_ENABLE_MAGMA )
+     target_include_directories(chromalib PUBLIC ${MAGMA_DIR}/include)
+     add_library(magma STATIC IMPORTED )
+     set_target_properties( magma PROPERTIES IMPORTED_LOCATION ${MAGMA_DIR}/lib/libmagma.a )
+     target_link_libraries(chromalib PUBLIC magma )
+     if( QDP_BACKEND_CUDA )
+       target_link_libraries(magma INTERFACE CUDA::cublas CUDA::cublasLt CUDA::cusparse CUDA::cudart)
+     endif()
+     target_link_libraries(magma INTERFACE BLAS::BLAS ${Chroma_extra_link_flags})
+  endif()
+
+  if( Chroma_ENABLE_PRIMME )
+     target_include_directories(chromalib PUBLIC ${PRIMME_DIR}/include)
+     add_library(primme STATIC IMPORTED )
+     set_target_properties( primme PROPERTIES IMPORTED_LOCATION ${PRIMME_DIR}/lib/libprimme.a )
+     target_link_libraries(chromalib PUBLIC primme )
+     if( Chroma_ENABLE_MAGMA )
+        target_link_libraries(primme INTERFACE magma)
+     elseif( QDP_BACKEND_CUDA )
+       target_link_libraries(primme INTERFACE CUDA::cublas CUDA::cudart BLAS::BLAS ${Chroma_extra_link_flags})
+     else()
+       target_link_libraries(primme INTERFACE BLAS::BLAS ${Chroma_extra_link_flags})
+     endif()
+  endif()
+
   if( QDP_BACKEND_ROCM )
      target_compile_options(chromalib PUBLIC ${HIP_CPP_CONFIG})
      target_link_libraries(superbblas INTERFACE roc::hipblas)
   endif()
-  target_link_libraries(superbblas INTERFACE BLAS::BLAS)
+  if( QDP_BACKEND_CUDA )
+    target_link_libraries(superbblas INTERFACE CUDA::cublas CUDA::cublasLt CUDA::cusparse CUDA::cudart)
+  endif()
+  target_link_libraries(superbblas INTERFACE BLAS::BLAS ${Chroma_extra_link_flags})
 endif()
 
 
@@ -2026,6 +2057,7 @@ if( Chroma_SANITIZER_OPTS )
    target_compile_options(chromalib PRIVATE ${Chroma_SANITIZER_OPTS})
    target_link_options(chromalib PUBLIC ${Chroma_SANITIZER_OPTS})
 endif()
+
 ################################################
 # A yucky way to install because the install
 # only supports directories as a destination
