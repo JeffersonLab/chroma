@@ -237,16 +237,16 @@ namespace Chroma
       const int Lt = Layout::lattSize()[3];
       SB::storeColorvecStorage(params.named_obj.colorvec_out, params.param.link_smear, u, 0, Lt,
 			       params.param.num_vecs, params.param.write_fingerprint,
-			       params.param.write_fingerprint);
+			       params.param.write_fingerprint, params.named_obj.colorvec_files);
 
-     pop(xml_out); // CreateColorVecsSuperb
+      pop(xml_out); // CreateColorVecsSuperb
 
-     snoop.stop();
-     QDPIO::cout << name << ": total time = " << snoop.getTimeInSeconds() << " secs" << std::endl;
+      snoop.stop();
+      QDPIO::cout << name << ": total time = " << snoop.getTimeInSeconds() << " secs" << std::endl;
 
-     QDPIO::cout << name << ": ran successfully" << std::endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
-     END_CODE();
+      END_CODE();
     } 
 
   }

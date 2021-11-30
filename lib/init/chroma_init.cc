@@ -7,6 +7,7 @@
 #include "singleton.h"
 #include "init/chroma_init.h"
 #include "io/xmllog_io.h"
+#include "util/ferm/superb_contractions.h"
 
 #include "qdp_init.h"
 
@@ -230,6 +231,11 @@ namespace Chroma
 #    endif
     setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
 
+    // Initialize MAGMA before anything else
+#    if defined(BUILD_MAGMA)
+    SB::detail::getMagmaContext(cuda_device);
+#    endif
+
     QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")"
 		<< std::endl;
 
@@ -253,6 +259,12 @@ namespace Chroma
 #    ifdef QDP_USE_COMM_SPLIT_INIT
     QDP_setGPUCommSplit();
 #    endif
+
+    // Initialize MAGMA before anything else
+#    if defined(BUILD_MAGMA)
+    SB::detail::getMagmaContext(dev);
+#    endif
+
     QDPIO::cout << "Initializing start GPUs" << std::endl;
 #    ifdef QDP_FIX_GPU_SETTING
     QDP_startGPU(dev);

@@ -368,20 +368,23 @@ namespace Chroma
 
 #  if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
       // Return a MAGMA context
-      inline std::shared_ptr<magma_queue_t> getMagmaContext()
+      inline std::shared_ptr<magma_queue_t> getMagmaContext(Maybe<int> device = none)
       {
 	static std::shared_ptr<magma_queue_t> queue;
 	if (!queue)
 	{
 	  // Start MAGMA and create a queue
-	  int dev = -1;
+	  int dev = device.getSome(-1);
+	  if (dev < 0)
+	  {
 #    ifdef SUPERBBLAS_USE_CUDA
-	  superbblas::detail::cudaCheck(cudaGetDevice(&dev));
+	    superbblas::detail::cudaCheck(cudaGetDevice(&dev));
 #    elif defined(SUPERBBLAS_USE_HIP)
-	  superbblas::detail::hipCheck(hipGetDevice(&dev));
+	    superbblas::detail::hipCheck(hipGetDevice(&dev));
 #    else
 #      error superbblas was not build with support for GPUs
 #    endif
+	  }
 	  magma_init();
 	  magma_queue_t q;
 	  magma_queue_create(dev, &q);
@@ -2411,6 +2414,8 @@ namespace Chroma
     typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, Tensor<Nd, ComplexF>> MODS_t;
     typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, Tensor<Nd, ComplexF>> MOD_t;
 
+    // Represent either FILEDB or S3T handle for file containing distillation vectors
+
     struct ColorvecsStorage {
       std::shared_ptr<MODS_t> mod;	   // old storage
       StorageTensor<Nd + 2, ComplexD> s3t; // cxyztn
@@ -2516,6 +2521,10 @@ namespace Chroma
 	    x[perm[i] * Nc + c] = y[i * Nc + c];
       }
 
+      /// Return a lattice field with value exp(2*pi*(x./dim)'*phase) for each lattice site x
+      /// \param phase: integer phase
+      /// \param dev: device of the returned tensor
+
       template <typename T>
       Tensor<Nd + 1, T> getPhase(Coor<Nd - 1> phase, DeviceHost dev = OnDefaultDevice)
       {
@@ -2534,7 +2543,11 @@ namespace Chroma
       // NOTE: for now, the GPU version requires MAGMA
 #  if defined(BUILD_PRIMME) && (!defined(QDP_IS_QDPJIT) || defined(BUILD_MAGMA))
 
-      // Laplacian operator on the spatial dimensions
+      // Apply the laplacian operator on the spatial dimensions
+      /// \param u: Gauge fields restricted to the same t-slice as chi and psi
+      /// \param first_tslice: global t index of the zero t index
+      /// \param chi: output vector
+      /// \param psi: input vector
 
       inline void LaplacianOperator(const std::vector<Tensor<Nd + 3, ComplexD>> u,
 				    Index first_tslice, Tensor<Nd + 3, ComplexD> chi,
@@ -2552,11 +2565,21 @@ namespace Chroma
 	}
       }
 
+      // Auxiliary structure passed to PRIMME's matvec
+
       struct OperatorAux {
-	const std::vector<Tensor<Nd + 3, ComplexD>> u;
-	const Index first_tslice;
-	const std::string order;
+	const std::vector<Tensor<Nd + 3, ComplexD>> u; // Gauge fields
+	const Index first_tslice;		       // global t index
+	const std::string order;		       // Laplacian input/output tensor's order
       };
+
+      // Wrapper for PRIMME of `LaplacianOperator`
+      /// \param x: pointer to input vector
+      /// \param ldx: leading dimension for `x`
+      /// \param y: pointer to output vector
+      /// \param ldy: leading dimension for `y`
+      /// \param blockSize: number of input/output vectors
+      /// \param ierr: output error state (zero means ok)
 
       extern "C" inline void primmeMatvec(void* x, PRIMME_INT* ldx, void* y, PRIMME_INT* ldy,
 					  int* blockSize, primme_params* primme, int* ierr)
@@ -2581,20 +2604,35 @@ namespace Chroma
 	}
       }
 
+      /// Wrapper for PRIMME of a global sum for double
+      /// \param sendBuf: pointer to input vector
+      /// \param recvBuf: pointer to output vector
+      /// \param count: number of elements in the input/output vector
+      /// \param primme: pointer to the current primme_params
+      /// \param ierr: output error state (zero means ok)
+
       extern "C" inline void primmeGlobalSum(void* sendBuf, void* recvBuf, int* count,
 					     primme_params* primme, int* ierr)
       {
 	if (sendBuf == recvBuf)
 	{
-	  *ierr = MPI_Allreduce(MPI_IN_PLACE, recvBuf, *count, MPI_FLOAT, MPI_SUM,
+	  *ierr = MPI_Allreduce(MPI_IN_PLACE, recvBuf, *count, MPI_DOUBLE, MPI_SUM,
 				MPI_COMM_WORLD) != MPI_SUCCESS;
 	}
 	else
 	{
-	  *ierr = MPI_Allreduce(sendBuf, recvBuf, *count, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD) !=
+	  *ierr = MPI_Allreduce(sendBuf, recvBuf, *count, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD) !=
 		  MPI_SUCCESS;
 	}
       }
+
+      /// Compute the eigenpairs of the laplacian operator on the spatial dimensions using PRIMME
+      /// \param u: Gauge field
+      /// \param from_tslice: index of the first t-slice to compute the eigenvectors from
+      /// \param n_tslices: number of tslices to compute
+      /// \param n_colorvecs: number of eigenpairs to compute
+      /// \param order_: order of the output tensor for the eigenvectors
+      /// \return: a pair of the eigenvectors and the eigenvalues
 
       inline std::pair<Tensor<Nd + 3, ComplexD>, std::vector<std::vector<double>>>
       computeColorvecs(const multi1d<LatticeColorMatrix>& u, int from_tslice, int n_tslices,
@@ -2648,7 +2686,7 @@ namespace Chroma
 	  primme.numEvals = n_colorvecs;
 	  primme.printLevel = 0;
 	  primme.n = n;
-	  primme.eps = 1e-8;
+	  primme.eps = 1e-9;
 	  primme.target = primme_largest;
 
 	  // Set parallel settings
@@ -2753,6 +2791,15 @@ namespace Chroma
       }
 #  endif // BUILD_PRIMME
 
+      /// Read colorvecs from a FILEDB
+      /// \param eigen_source: database handle
+      /// \param decay_dir: something we assume is always three
+      /// \param from_tslice: first tslice to read
+      /// \param n_tslices: number of tslices to read
+      /// \param n_colorvecs: number of eigenpairs to read
+      /// \param order_: order of the output tensor for the eigenvectors
+      /// \return: a tensor containing the eigenvectors
+
       template <typename COMPLEX = ComplexF>
       Tensor<Nd + 3, COMPLEX> getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice,
 					   int n_tslices, int n_colorvecs,
@@ -2809,6 +2856,16 @@ namespace Chroma
 	return r;
       }
 
+      /// Read colorvecs from a S3T file
+      /// \param s3t: database handle
+      /// \param u: gauge field
+      /// \param decay_dir: something we assume is always three
+      /// \param from_tslice: first tslice to read
+      /// \param n_tslices: number of tslices to read
+      /// \param n_colorvecs: number of eigenpairs to read
+      /// \param order_: order of the output tensor for the eigenvectors
+      /// \return: a tensor containing the eigenvectors
+ 
       template <typename COMPLEX = ComplexF>
       Tensor<Nd + 3, COMPLEX> getColorvecs(StorageTensor<Nd + 2, ComplexD> s3t,
 					   const multi1d<LatticeColorMatrix>& u, int decay_dir,
@@ -2834,7 +2891,7 @@ namespace Chroma
 	  std::istringstream xml_l(link_smear.xml);
 	  XMLReader linktop(xml_l);
 	  Handle<LinkSmearing> linkSmearing(TheLinkSmearingFactory::Instance().createObject(
-	    link_smear.id, linktop, link_smear.path));
+	    link_smear.id, linktop, "/LinkSmearing"));
 	  (*linkSmearing)(u_smr);
 	} catch (const std::string& e)
 	{
@@ -2931,12 +2988,153 @@ namespace Chroma
       }
     }
 
+    /// Read colorvecs from either a FILEDB or S3T file
+    /// \param colorvec_files: filenames
+    /// \return: a handle
+
+    inline ColorvecsStorage openColorvecStorage(std::vector<std::string> colorvec_files)
+    {
+      ColorvecsStorage sto{}; // returned object
+
+      std::string metadata; // the metadata content of the file
+
+      // Try to open the file as a s3t database
+      try
+      {
+	if (colorvec_files.size() == 1)
+	  sto.s3t = StorageTensor<Nd + 2, ComplexD>(colorvec_files[0], true, "/MODMetaData/order");
+	metadata = sto.s3t.metadata;
+      } catch (...)
+      {
+      }
+
+      // Try to open the files as a MOD database
+      if (!sto.s3t)
+      {
+	sto.mod = std::make_shared<MODS_t>();
+	sto.mod->setDebug(0);
+
+	try
+	{
+	  // Open
+	  sto.mod->open(colorvec_files);
+	  sto.mod->getUserdata(metadata);
+	} catch (std::bad_cast)
+	{
+	  QDPIO::cerr << ": caught dynamic cast error" << std::endl;
+	  QDP_abort(1);
+	} catch (const std::string& e)
+	{
+	  QDPIO::cerr << ": error extracting source_header: " << e << std::endl;
+	  QDP_abort(1);
+	} catch (const char* e)
+	{
+	  QDPIO::cerr << ": Caught some char* exception:" << std::endl;
+	  QDPIO::cerr << e << std::endl;
+	  QDP_abort(1);
+	}
+      }
+
+      // Check that the file stores colorvecs and is from a lattice of the same size
+
+      std::istringstream is(metadata);
+      XMLReader xml_buf(is);
+
+      std::string id;
+      read(xml_buf, "/MODMetaData/id", id);
+      if (id != "eigenVecsTimeSlice") {
+	  std::stringstream ss;
+	  ss << "The file `" << colorvec_files[0] << "' does not contain colorvecs";
+	  throw std::runtime_error(ss.str());
+      }
+
+      multi1d<int> spatialLayout(3);
+      read(xml_buf, "/MODMetaData/lattSize", spatialLayout);
+      if (spatialLayout[0] != Layout::lattSize()[0] || spatialLayout[1] != Layout::lattSize()[1] ||
+	  spatialLayout[2] != Layout::lattSize()[2])
+      {
+	std::stringstream ss;
+	ss << "The spatial dimensions of the colorvecs in `" << colorvec_files[0]
+	   << "' do not much the current lattice";
+	throw std::runtime_error(ss.str());
+      }
+
+      return sto;
+    }
+
+    /// Read colorvecs from a handle returned by `openColorvecStorage`
+    /// \param sto: database handle
+    /// \param u: gauge field
+    /// \param decay_dir: something we assume is always three
+    /// \param from_tslice: first tslice to read
+    /// \param n_tslices: number of tslices to read
+    /// \param n_colorvecs: number of eigenpairs to read
+    /// \param order: order of the output tensor for the eigenvectors
+    /// \param phase: apply a phase to the eigenvectors
+    /// \return: a tensor containing the eigenvectors
+
+    template <typename COMPLEX = ComplexF>
+    Tensor<Nd + 3, COMPLEX>
+    getColorvecs(const ColorvecsStorage& sto, const multi1d<LatticeColorMatrix>& u, int decay_dir,
+		 int from_tslice, int n_tslices, int n_colorvecs,
+		 Maybe<const std::string> order = none, Coor<Nd - 1> phase = {})
+    {
+      using namespace ns_getColorvecs;
+
+      StopWatch sw;
+      sw.reset();
+      sw.start();
+
+      if (decay_dir != 3)
+	throw std::runtime_error("Only support for decay_dir being the temporal dimension");
+
+      // Read the colorvecs with the proper function
+      Tensor<Nd + 3, COMPLEX> r;
+      if (sto.s3t)
+	r = ns_getColorvecs::getColorvecs<COMPLEX>(sto.s3t, u, decay_dir, from_tslice, n_tslices, n_colorvecs,
+						   order);
+      else if (sto.mod)
+	r = ns_getColorvecs::getColorvecs<COMPLEX>(*sto.mod, decay_dir, from_tslice, n_tslices, n_colorvecs,
+						order);
+
+      // Phase colorvecs if phase != (0,0,0)
+      if (phase != Coor<Nd - 1>{})
+      {
+	Tensor<Nd + 1, COMPLEX> tphase =
+	  getPhase<COMPLEX>(phase)
+	    .kvslice_from_size({{'t', from_tslice}}, {{'t', n_tslices}})
+	    .reorder("xyztX");
+	Tensor<Nd + 3, COMPLEX> rp = r.like_this("cnxyztX");
+	rp.contract(r, {}, NotConjugate, tphase, {}, NotConjugate);
+	r = rp.reorder(order.getSome(rp.order));
+      }
+
+      sw.stop();
+      QDPIO::cout << "Time to read " << n_colorvecs << " colorvecs from " << n_tslices
+		  << " time slices: " << sw.getTimeInSeconds() << " secs" << std::endl;
+
+      return r;
+    }
+
+    /// Compute and store colorvecs
+    /// \param colorvec_file: file to store the colorvecs
+    /// \param link_smear: smearing gauge field options before building the laplacian
+    /// \param u: gauge field
+    /// \param from_tslice: first tslice to read
+    /// \param n_tslices: number of tslices to read
+    /// \param n_colorvecs: number of eigenpairs to read
+    /// \param use_s3t_storage: if true S3T is used, otherwise FILEDB
+    /// \param fingerprint: whether to store only a few sites of each colorvecs
+    /// \param colorvec_file_src: if given, read the colorvecs from that file and if they
+    ///        match the computed ones, they are the ones stored; this guarantee that the
+    ///        that given smearing options were used to generate the colorvecs in `colorvec_file_src`
+
     inline void storeColorvecStorage(std::string colorvec_file, GroupXML_t link_smear,
 				     const multi1d<LatticeColorMatrix>& u, int from_tslice,
 				     int n_tslices, int n_colorvecs, bool use_s3t_storage = false,
-				     bool fingerprint = false)
+				     bool fingerprint = false,
+				     Maybe<std::vector<std::string>> colorvec_file_src = none)
     {
-
       // Smear the gauge field if needed
       multi1d<LatticeColorMatrix> u_smr = u;
       try
@@ -2969,6 +3167,23 @@ namespace Chroma
 	evals[i].resize(n_tslices);
 	for (int t = 0; t < n_tslices; ++t)
 	  evals[i][t] = -colorvecs_and_evals.second[t][i];
+      }
+
+      // Read the eigenvectors from another source if indicated
+      if (colorvec_file_src.getSome({}).size() > 0)
+      {
+	ColorvecsStorage colorvecsSto = openColorvecStorage(colorvec_file_src.getSome());
+	auto colorvecs_src =
+	  getColorvecs<ComplexD>(colorvecsSto, u, 3, from_tslice, n_tslices, n_colorvecs);
+
+	Tensor<2, ComplexD> ip("nt", Coor<2>{n_colorvecs, n_tslices}, OnHost, OnEveryoneReplicated);
+	ip.contract(colorvecs, {}, Conjugate, colorvecs_src, {}, NotConjugate);
+	for (int t = 0; t < n_tslices; ++t)
+	  for (int n = 0; n < n_colorvecs; ++n)
+	    if (std::fabs(std::fabs(ip.get({n, t})) - 1) > 1e-4)
+	      throw std::runtime_error(
+		"The given colorvec does not correspond to current gates field and smearing");
+	colorvecs = colorvecs_src;
       }
 
       if (!use_s3t_storage)
@@ -3092,121 +3307,6 @@ namespace Chroma
 	  }
 	}
       }
-    }
-
-    inline ColorvecsStorage openColorvecStorage(std::vector<std::string> colorvec_files)
-    {
-      ColorvecsStorage sto{}; // returned object
-
-      std::string metadata; // the metadata content of the file
-
-      // Try to open the file as a s3t database
-      try
-      {
-	if (colorvec_files.size() == 1)
-	  sto.s3t = StorageTensor<Nd + 2, ComplexD>(colorvec_files[0], true, "/MODMetaData/order");
-	metadata = sto.s3t.metadata;
-      } catch (...)
-      {
-      }
-
-      // Try to open the files as a MOD database
-      if (!sto.s3t)
-      {
-	sto.mod = std::make_shared<MODS_t>();
-	sto.mod->setDebug(0);
-
-	try
-	{
-	  // Open
-	  sto.mod->open(colorvec_files);
-	  sto.mod->getUserdata(metadata);
-	} catch (std::bad_cast)
-	{
-	  QDPIO::cerr << ": caught dynamic cast error" << std::endl;
-	  QDP_abort(1);
-	} catch (const std::string& e)
-	{
-	  QDPIO::cerr << ": error extracting source_header: " << e << std::endl;
-	  QDP_abort(1);
-	} catch (const char* e)
-	{
-	  QDPIO::cerr << ": Caught some char* exception:" << std::endl;
-	  QDPIO::cerr << e << std::endl;
-	  QDP_abort(1);
-	}
-      }
-
-      // Check that the file stores colorvecs and is from a lattice of the same size
-
-      std::istringstream is(metadata);
-      XMLReader xml_buf(is);
-
-      std::string id;
-      read(xml_buf, "/MODMetaData/id", id);
-      if (id != "eigenVecsTimeSlice") {
-	  std::stringstream ss;
-	  ss << "The file `" << colorvec_files[0] << "' does not contain colorvecs";
-	  throw std::runtime_error(ss.str());
-      }
-
-      multi1d<int> spatialLayout(3);
-      read(xml_buf, "/MODMetaData/lattSize", spatialLayout);
-      if (spatialLayout[0] != Layout::lattSize()[0] || spatialLayout[1] != Layout::lattSize()[1] ||
-	  spatialLayout[2] != Layout::lattSize()[2])
-      {
-	std::stringstream ss;
-	ss << "The spatial dimensions of the colorvecs in `" << colorvec_files[0]
-	   << "' do not much the current lattice";
-	throw std::runtime_error(ss.str());
-      }
-
-      return sto;
-    }
-
-    /// Get colorvecs(t,n) for t=from_slice..(from_slice+n_tslices-1) and n=0..(n_colorvecs-1)
-
-    template <typename COMPLEX = ComplexF>
-    Tensor<Nd + 3, COMPLEX>
-    getColorvecs(const ColorvecsStorage& sto, const multi1d<LatticeColorMatrix>& u, int decay_dir,
-		 int from_tslice, int n_tslices, int n_colorvecs,
-		 Maybe<const std::string> order = none, Coor<Nd - 1> phase = {})
-    {
-      using namespace ns_getColorvecs;
-
-      StopWatch sw;
-      sw.reset();
-      sw.start();
-
-      if (decay_dir != 3)
-	throw std::runtime_error("Only support for decay_dir being the temporal dimension");
-
-      // Read the colorvecs with the proper function
-      Tensor<Nd + 3, COMPLEX> r;
-      if (sto.s3t)
-	r = ns_getColorvecs::getColorvecs<COMPLEX>(sto.s3t, u, decay_dir, from_tslice, n_tslices, n_colorvecs,
-						   order);
-      else if (sto.mod)
-	r = ns_getColorvecs::getColorvecs<COMPLEX>(*sto.mod, decay_dir, from_tslice, n_tslices, n_colorvecs,
-						order);
-
-      // Phase colorvecs if phase != (0,0,0)
-      if (phase != Coor<Nd - 1>{})
-      {
-	Tensor<Nd + 1, COMPLEX> tphase =
-	  getPhase<COMPLEX>(phase)
-	    .kvslice_from_size({{'t', from_tslice}}, {{'t', n_tslices}})
-	    .reorder("xyztX");
-	Tensor<Nd + 3, COMPLEX> rp = r.like_this("cnxyztX");
-	rp.contract(r, {}, NotConjugate, tphase, {}, NotConjugate);
-	r = rp.reorder(order.getSome(rp.order));
-      }
-
-      sw.stop();
-      QDPIO::cout << "Time to read " << n_colorvecs << " colorvecs from " << n_tslices
-		  << " time slices: " << sw.getTimeInSeconds() << " secs" << std::endl;
-
-      return r;
     }
 
     //
