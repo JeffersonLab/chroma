@@ -18,6 +18,8 @@
 
 #include "meas/inline/io/named_objmap.h"
 
+#ifdef BUILD_SB
+
 namespace Chroma 
 { 
   namespace InlineCreateColorVecsSuperbEnv 
@@ -279,3 +281,5 @@ namespace Chroma
   }
 
 } // namespace Chroma
+
+#endif // BUILD_SB
