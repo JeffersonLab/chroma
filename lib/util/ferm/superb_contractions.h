@@ -3062,6 +3062,26 @@ namespace Chroma
       return sto;
     }
 
+    /// Phase colorvecs
+    /// \param colorvecs: tensor with the colorvecs
+    /// \param from_tslice: first tslice of the tensor
+    /// \param phase: apply a phase to the eigenvectors
+    /// \return: a tensor containing the eigenvectors phased
+
+    template <typename COMPLEX>
+    Tensor<Nd + 3, COMPLEX> phaseColorvecs(Tensor<Nd + 3, COMPLEX> colorvecs, int from_tslice,
+					   Coor<Nd - 1> phase = {})
+    {
+      // Phase colorvecs if phase != (0,0,0)
+      if (phase == Coor<Nd - 1>{}) return colorvecs;
+
+      Tensor<Nd + 1, COMPLEX> tphase = ns_getColorvecs::getPhase<COMPLEX>(phase).kvslice_from_size(
+	{{'t', from_tslice}}, {{'t', colorvecs.kvdim()['t']}});
+      Tensor<Nd + 3, COMPLEX> r = colorvecs.like_this();
+      r.contract(colorvecs, {}, NotConjugate, tphase, {}, NotConjugate);
+      return r;
+    }
+
     /// Read colorvecs from a handle returned by `openColorvecStorage`
     /// \param sto: database handle
     /// \param u: gauge field
@@ -3079,8 +3099,6 @@ namespace Chroma
 		 int from_tslice, int n_tslices, int n_colorvecs,
 		 Maybe<const std::string> order = none, Coor<Nd - 1> phase = {})
     {
-      using namespace ns_getColorvecs;
-
       StopWatch sw;
       sw.reset();
       sw.start();
@@ -3097,17 +3115,8 @@ namespace Chroma
 	r = ns_getColorvecs::getColorvecs<COMPLEX>(*sto.mod, decay_dir, from_tslice, n_tslices, n_colorvecs,
 						order);
 
-      // Phase colorvecs if phase != (0,0,0)
-      if (phase != Coor<Nd - 1>{})
-      {
-	Tensor<Nd + 1, COMPLEX> tphase =
-	  getPhase<COMPLEX>(phase)
-	    .kvslice_from_size({{'t', from_tslice}}, {{'t', n_tslices}})
-	    .reorder("xyztX");
-	Tensor<Nd + 3, COMPLEX> rp = r.like_this("cnxyztX");
-	rp.contract(r, {}, NotConjugate, tphase, {}, NotConjugate);
-	r = rp.reorder(order.getSome(rp.order));
-      }
+      // Phase colorvecs
+      r = phaseColorvecs(r, from_tslice, phase);
 
       sw.stop();
       QDPIO::cout << "Time to read " << n_colorvecs << " colorvecs from " << n_tslices
@@ -3125,15 +3134,16 @@ namespace Chroma
     /// \param n_colorvecs: number of eigenpairs to read
     /// \param use_s3t_storage: if true S3T is used, otherwise FILEDB
     /// \param fingerprint: whether to store only a few sites of each colorvecs
+    /// \param phase: apply a phase to the eigenvectors
     /// \param colorvec_file_src: if given, read the colorvecs from that file and if they
     ///        match the computed ones, they are the ones stored; this guarantee that the
     ///        that given smearing options were used to generate the colorvecs in `colorvec_file_src`
 
-    inline void storeColorvecStorage(std::string colorvec_file, GroupXML_t link_smear,
-				     const multi1d<LatticeColorMatrix>& u, int from_tslice,
-				     int n_tslices, int n_colorvecs, bool use_s3t_storage = false,
-				     bool fingerprint = false,
-				     Maybe<std::vector<std::string>> colorvec_file_src = none)
+    inline void createColorvecStorage(std::string colorvec_file, GroupXML_t link_smear,
+				      const multi1d<LatticeColorMatrix>& u, int from_tslice,
+				      int n_tslices, int n_colorvecs, bool use_s3t_storage = false,
+				      bool fingerprint = false, Coor<Nd - 1> phase = {},
+				      Maybe<std::vector<std::string>> colorvec_file_src = none)
     {
       // Smear the gauge field if needed
       multi1d<LatticeColorMatrix> u_smr = u;
@@ -3185,6 +3195,9 @@ namespace Chroma
 		"The given colorvec does not correspond to current gates field and smearing");
 	colorvecs = colorvecs_src;
       }
+
+      // Phase colorvecs
+      colorvecs = phaseColorvecs(colorvecs, from_tslice, phase);
 
       if (!use_s3t_storage)
       {

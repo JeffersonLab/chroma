@@ -32,6 +32,7 @@ namespace Chroma
 	int         decay_dir;   /*!< Decay direction */
 	GroupXML_t  link_smear;  /*!< link smearing xml */
 	bool        write_fingerprint;  /*!< whether to write a portion of the colorvec instead of the whole */
+	multi1d<float>  phase;   /*!< Phase to apply to colorvecs */
       };
 
       struct NamedObject_t

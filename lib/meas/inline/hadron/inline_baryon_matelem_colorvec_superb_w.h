@@ -44,6 +44,7 @@ namespace Chroma
 	int                     num_vecs;               /*!< Number of color vectors to use */
 	int                     decay_dir;              /*!< Decay direction */
 	multi1d<Displacement_t> displacement_list;      /*!< Array of displacements list to generate */
+	std::vector< multi1d<int>>  mom_list;           /*!< Alternative array of momenta to generate */
 	GroupXML_t              link_smearing;          /*!< link smearing xml */
 	int			Nt_forward;		/*!< Nt_forward */
 	int			t_source;		/*!< t_source */

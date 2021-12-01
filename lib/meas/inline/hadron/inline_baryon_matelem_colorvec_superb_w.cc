@@ -63,42 +63,40 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
 
-      int version;
-      read(paramtop, "version", version);
-
-      switch (version)
+      param.use_derivP = true;
+      if (paramtop.count("use_derivP") > 0)
       {
-      case 1: param.use_derivP = false; break;
-
-      case 2: read(paramtop, "use_derivP", param.use_derivP); break;
-
-      default:
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
-	QDP_abort(1);
+	read(paramtop, "use_derivP", param.use_derivP);
       }
 
-      read(paramtop, "mom2_max", param.mom2_max);
+      param.mom2_max = 0;
+      if (paramtop.count("mom2_max") > 0)
+      {
+	read(paramtop, "mom2_max", param.mom2_max);
+      }
+
+      if (paramtop.count("mom_list") > 0)
+      {
+	read(paramtop, "mom_list", param.mom_list);
+      }
+
       read(paramtop, "displacement_length", param.displacement_length);
       read(paramtop, "displacement_list", param.displacement_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
+
+      param.t_source = 0;
       if (paramtop.count("t_source") > 0)
       {
 	read(paramtop, "t_source", param.t_source);
       }
-      else
-      {
-	param.t_source = 0;
-      }
 
+      param.Nt_forward = Layout::lattSize()[param.decay_dir];
       if (paramtop.count("Nt_forward") > 0)
       {
 	read(paramtop, "Nt_forward", param.Nt_forward);
       }
-      else
-      {
-	param.Nt_forward = Layout::lattSize()[param.decay_dir];
-      }
+
       if (paramtop.count("t_slices") > 0)
       {
 	read(paramtop, "t_slices", param.t_slices);
@@ -114,6 +112,7 @@ namespace Chroma
 	for (int i = 0; i < Nd - 1; ++i)
 	  param.phase[i] = 0;
       }
+
       param.max_tslices_in_contraction = 0;
       if (paramtop.count("max_tslices_in_contraction") == 1)
       {
@@ -139,6 +138,7 @@ namespace Chroma
 
       write(xml, "version", version);
       write(xml, "mom2_max", param.mom2_max);
+      write(xml, "mom_list", param.mom_list);
       write(xml, "use_derivP", param.use_derivP);
       write(xml, "displacement_length", param.displacement_length);
       write(xml, "displacement_list", param.displacement_list);
@@ -520,6 +520,22 @@ namespace Chroma
       // Initialize the slow Fourier transform phases
       //
       SftMom phases(params.param.mom2_max, false, params.param.decay_dir);
+      
+      //
+      // If a list of momenta has been specified only need phases corresponding to these
+      //
+      if (params.param.mom_list.size() > 0)
+      {
+	int num_mom = params.param.mom_list.size();
+	int mom_size = params.param.mom_list[0].size();
+	multi2d<int> moms(num_mom,mom_size);
+	for(int i = 0; i < num_mom; i++)
+	{
+	  moms[i] = params.param.mom_list[i];
+	}
+	SftMom temp_phases(moms, params.param.decay_dir);
+	phases = temp_phases;
+      }
 
       //
       // Smear the gauge field if needed
@@ -697,6 +713,7 @@ namespace Chroma
 	      }
 	    }
 
+	    tstoring.stop();
 	    time_storing += tstoring.getTimeInSeconds();
 	  }
 	});

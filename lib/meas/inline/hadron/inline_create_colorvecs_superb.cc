@@ -56,6 +56,17 @@ namespace Chroma
       if (inputtop.count("write_fingerprint") == 1)
 	read(inputtop, "write_fingerprint", input.write_fingerprint);
       input.link_smear = readXMLGroup(inputtop, "LinkSmearing", "LinkSmearingType");
+
+      if (inputtop.count("phase") == 1)
+      {
+	read(inputtop, "phase", input.phase);
+      }
+      else
+      {
+	input.phase.resize(Nd - 1);
+	for (int i = 0; i < Nd - 1; ++i)
+	  input.phase[i] = 0;
+      }
     }
 
     //! Propagator output
@@ -66,6 +77,7 @@ namespace Chroma
       write(xml, "num_vecs", out.num_vecs);
       write(xml, "decay_dir", out.decay_dir);
       write(xml, "write_fingerprint", out.write_fingerprint);
+      write(xml, "phase", out.phase);
       xml << out.link_smear.xml;
 
       pop(xml);
@@ -233,11 +245,26 @@ namespace Chroma
       // Calculate some gauge invariant observables just for info.
       MesPlq(xml_out, "Observables", u);
 
+      // Parse the phase
+      if (params.param.phase.size() != Nd - 1)
+      {
+	QDPIO::cerr << "phase tag should have " << Nd - 1 << " components" << std::endl;
+	QDP_abort(1);
+      }
+      SB::Coor<Nd - 1> phase;
+      for (int i = 0; i < Nd - 1; ++i)
+      {
+	phase[i] = params.param.phase[i];
+	if (std::fabs(phase[i] - params.param.phase[i]) > 0)
+	  std::runtime_error("phase should be integer");
+      }
+
       // Compute and store the colorvecs
       const int Lt = Layout::lattSize()[3];
-      SB::storeColorvecStorage(params.named_obj.colorvec_out, params.param.link_smear, u, 0, Lt,
-			       params.param.num_vecs, params.param.write_fingerprint,
-			       params.param.write_fingerprint, params.named_obj.colorvec_files);
+      SB::createColorvecStorage(params.named_obj.colorvec_out, params.param.link_smear, u, 0, Lt,
+				params.param.num_vecs, params.param.write_fingerprint,
+				params.param.write_fingerprint, phase,
+				params.named_obj.colorvec_files);
 
       pop(xml_out); // CreateColorVecsSuperb
 
