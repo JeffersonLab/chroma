@@ -648,6 +648,9 @@ namespace Chroma
       for (auto& db : qdp_db)
 	db.close();
 
+      // Close colorvecs storage
+      SB::closeColorvecStorage(colorvecsSto);
+
       swiss.stop();
 
       QDPIO::cout << "All meson operators computed in time= "

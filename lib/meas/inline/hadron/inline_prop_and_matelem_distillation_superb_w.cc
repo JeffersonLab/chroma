@@ -559,6 +559,9 @@ namespace Chroma
 	QDP_error_exit("%s: caught exception: %s\n", name, e.what());
       }
 
+      // Close colorvecs storage
+      SB::closeColorvecStorage(colorvecsSto);
+
       push(xml_out,"Relaxation_Iterations");
       write(xml_out, "ncg_had", ncg_had);
       pop(xml_out);

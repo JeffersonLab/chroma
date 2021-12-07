@@ -1076,7 +1076,9 @@ namespace Chroma
 	write(metadata_xml, "eigen_phase", params.param.contract.phase);
 	pop(metadata_xml);
 
-	std::string metadata(metadata_xml.str());
+	// NOTE: metadata_xml only has a valid value on Master node; so do a broadcast
+	std::string metadata = SB::broadcast(metadata_xml.str());
+
 	qdp5_db =
 	  SB::StorageTensor<10, SB::ComplexD>(params.named_obj.dist_op_file, metadata, qdp5_order,
 					      SB::kvcoors<10>(qdp5_order, {{'n', num_vecs},
@@ -1410,6 +1412,9 @@ namespace Chroma
 	for (auto& db : qdp4_db)
 	  db.close();
       }
+
+      // Close colorvecs storage
+      SB::closeColorvecStorage(colorvecsSto);
 
       // Close the xml output file
       pop(xml_out);     // UnsmearedHadronNode

@@ -14,6 +14,7 @@
 
 // Activate the MPI support in Superbblas
 #  define SUPERBBLAS_USE_MPI
+//#  define SUPERBBLAS_USE_MPIIO
 
 #  include "actions/ferm/fermacts/fermact_factory_w.h"
 #  include "actions/ferm/fermacts/fermacts_aggregate_w.h"
@@ -916,7 +917,7 @@ namespace Chroma
 	}();
 	return v;
       }
-   }
+    }
 
     template <std::size_t N, typename T>
     struct Tensor {
@@ -1465,9 +1466,10 @@ namespace Chroma
       {
 	T* ptr = this->data.get();
 	MPI_Comm comm = (dist == OnMaster || dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
-	superbblas::copy<N, N>(T{0}, p->p.data(), 1, order.c_str(), from, size, (const T**)&ptr,
-			       &*ctx, p->p.data(), 1, order.c_str(), from, &ptr, &*ctx, comm,
-			       superbblas::FastToSlow, superbblas::Copy);
+	if (dist != OnMaster || Layout::nodeNumber() == 0)
+	  superbblas::copy<N, N>(T{0}, p->p.data(), 1, order.c_str(), from, size, (const T**)&ptr,
+				 &*ctx, p->p.data(), 1, order.c_str(), from, &ptr, &*ctx, comm,
+				 superbblas::FastToSlow, superbblas::Copy);
       }
 
       /// Copy this tensor into the given one
@@ -1833,9 +1835,10 @@ namespace Chroma
     }
 
     template <typename COMPLEX>
-    Tensor<1, COMPLEX> asTensorView(std::vector<COMPLEX>& v)
+    Tensor<1, COMPLEX> asTensorView(std::vector<COMPLEX>& v,
+				    Distribution dist = OnEveryoneReplicated)
     {
-      return Tensor<1, COMPLEX>("i", Coor<1>{Index(v.size())}, OnHost, OnEveryoneReplicated,
+      return Tensor<1, COMPLEX>("i", Coor<1>{Index(v.size())}, OnHost, dist,
 				std::shared_ptr<COMPLEX>(v.data(), [](COMPLEX*) {}));
     }
 
@@ -1865,6 +1868,21 @@ namespace Chroma
       Tensor<2, COMPLEX> r("ij", {Ns, Ns}, dev, OnEveryoneReplicated);
       asTensorView(g).copyTo(r);
       return r;
+    }
+
+    /// Broadcast a string from process zero
+    inline std::string broadcast(std::string s)
+    {
+      // Broadcast the size of the string
+      std::vector<float> size_orig(1, s.size()), size_dest(1, 0);
+      asTensorView(size_orig, OnMaster).copyTo(asTensorView(size_dest));
+
+      // Broadcast the content of the string
+      std::vector<float> orig(s.begin(), s.end());
+      orig.resize(size_dest[0]);
+      std::vector<float> dest(size_dest[0]);
+      asTensorView(orig, OnMaster).copyTo(asTensorView(dest));
+      return std::string(dest.begin(), dest.end());
     }
 
     template <std::size_t N, typename T>
@@ -1953,7 +1971,8 @@ namespace Chroma
 	metadata = std::string(metadatav.begin(), metadatav.end());
 
 	// Read the order
-	if (read_order) {
+	if (read_order)
+	{
 	  std::istringstream is(metadata);
 	  XMLReader xml_buf(is);
 	  read(xml_buf, order_tag.getSome("order"), order);
@@ -2339,7 +2358,6 @@ namespace Chroma
 
       return r;
     }
-
 
     // template <std::size_t N, typename T>
     // class Transform : public Tensor<N,T> {
@@ -2776,7 +2794,7 @@ namespace Chroma
 
 	return {all_evecs, all_evals};
       }
-#  else // BUILD_PRIMME
+#  else	 // BUILD_PRIMME
       inline Tensor<Nd + 3, ComplexD> computeColorvecs(const multi1d<LatticeColorMatrix>& u,
 						       int from_tslice, int n_tslices,
 						       int n_colorvecs,
@@ -2865,7 +2883,7 @@ namespace Chroma
       /// \param n_colorvecs: number of eigenpairs to read
       /// \param order_: order of the output tensor for the eigenvectors
       /// \return: a tensor containing the eigenvectors
- 
+
       template <typename COMPLEX = ComplexF>
       Tensor<Nd + 3, COMPLEX> getColorvecs(StorageTensor<Nd + 2, ComplexD> s3t,
 					   const multi1d<LatticeColorMatrix>& u, int decay_dir,
@@ -2882,7 +2900,8 @@ namespace Chroma
 	XMLReader xml_buf(is);
 	bool write_fingerprint = false;
 	read(xml_buf, "/MODMetaData/fingerprint", write_fingerprint);
-	GroupXML_t link_smear = readXMLGroup(xml_buf, "/MODMetaData/LinkSmearing", "LinkSmearingType");
+	GroupXML_t link_smear =
+	  readXMLGroup(xml_buf, "/MODMetaData/LinkSmearing", "LinkSmearingType");
 
 	// Smear the gauge field if needed
 	multi1d<LatticeColorMatrix> u_smr = u;
@@ -2981,7 +3000,8 @@ namespace Chroma
 	  }
 
 	  // Apply the phase of the colorvecs in s3t to the computed colorvecs
-	  colorvecs_s3t.contract(colorvecs, {}, NotConjugate, ip, {}, NotConjugate);
+	  colorvecs_s3t.contract(colorvecs, {}, NotConjugate, ip.make_sure(none, none, OnEveryone),
+				 {}, NotConjugate);
 	}
 
 	return colorvecs_s3t.make_sure<COMPLEX>();
@@ -3042,10 +3062,11 @@ namespace Chroma
 
       std::string id;
       read(xml_buf, "/MODMetaData/id", id);
-      if (id != "eigenVecsTimeSlice") {
-	  std::stringstream ss;
-	  ss << "The file `" << colorvec_files[0] << "' does not contain colorvecs";
-	  throw std::runtime_error(ss.str());
+      if (id != "eigenVecsTimeSlice")
+      {
+	std::stringstream ss;
+	ss << "The file `" << colorvec_files[0] << "' does not contain colorvecs";
+	throw std::runtime_error(ss.str());
       }
 
       multi1d<int> spatialLayout(3);
@@ -3062,6 +3083,22 @@ namespace Chroma
       return sto;
     }
 
+    /// Close a colorvec storage
+    /// \param sto: colorvec storage handle
+
+    inline void closeColorvecStorage(ColorvecsStorage& sto)
+    {
+      if (!sto.s3t)
+      {
+	sto.s3t.release();
+      }
+      else if (sto.mod)
+      {
+	sto.mod->close();
+	sto.mod.reset();
+      }
+    }
+
     /// Phase colorvecs
     /// \param colorvecs: tensor with the colorvecs
     /// \param from_tslice: first tslice of the tensor
@@ -3073,7 +3110,8 @@ namespace Chroma
 					   Coor<Nd - 1> phase = {})
     {
       // Phase colorvecs if phase != (0,0,0)
-      if (phase == Coor<Nd - 1>{}) return colorvecs;
+      if (phase == Coor<Nd - 1>{})
+	return colorvecs;
 
       Tensor<Nd + 1, COMPLEX> tphase = ns_getColorvecs::getPhase<COMPLEX>(phase).kvslice_from_size(
 	{{'t', from_tslice}}, {{'t', colorvecs.kvdim()['t']}});
@@ -3109,11 +3147,11 @@ namespace Chroma
       // Read the colorvecs with the proper function
       Tensor<Nd + 3, COMPLEX> r;
       if (sto.s3t)
-	r = ns_getColorvecs::getColorvecs<COMPLEX>(sto.s3t, u, decay_dir, from_tslice, n_tslices, n_colorvecs,
-						   order);
+	r = ns_getColorvecs::getColorvecs<COMPLEX>(sto.s3t, u, decay_dir, from_tslice, n_tslices,
+						   n_colorvecs, order);
       else if (sto.mod)
-	r = ns_getColorvecs::getColorvecs<COMPLEX>(*sto.mod, decay_dir, from_tslice, n_tslices, n_colorvecs,
-						order);
+	r = ns_getColorvecs::getColorvecs<COMPLEX>(*sto.mod, decay_dir, from_tslice, n_tslices,
+						   n_colorvecs, order);
 
       // Phase colorvecs
       r = phaseColorvecs(r, from_tslice, phase);
@@ -3151,8 +3189,8 @@ namespace Chroma
       {
 	std::istringstream xml_l(link_smear.xml);
 	XMLReader linktop(xml_l);
-	Handle<LinkSmearing> linkSmearing(TheLinkSmearingFactory::Instance().createObject(
-	  link_smear.id, linktop, link_smear.path));
+	Handle<LinkSmearing> linkSmearing(
+	  TheLinkSmearingFactory::Instance().createObject(link_smear.id, linktop, link_smear.path));
 	(*linkSmearing)(u_smr);
       } catch (const std::string& e)
       {
@@ -3229,7 +3267,7 @@ namespace Chroma
 	// Allocate a single time slice colorvec in case of using RB ordering
 	Tensor<Nd + 1, ComplexF> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
 
-	// Store the colorvecs in natural order (not in red-black ordering) 
+	// Store the colorvecs in natural order (not in red-black ordering)
 	const int Nt = Layout::lattSize()[3];
 	for (int t = 0; t < n_tslices; ++t)
 	{
@@ -3286,8 +3324,10 @@ namespace Chroma
 	file_xml << link_smear.xml;
 	pop(file_xml);
 
+	// NOTE: file_xml has nonzero value only at the master node; so do a broadcast
+
 	StorageTensor<Nd + 2, ComplexD> sto(
-	  colorvec_file, file_xml.str(), sto_order,
+	  colorvec_file, broadcast(file_xml.str()), sto_order,
 	  latticeSize<Nd + 2>(sto_order, {{'n', n_colorvecs}, {'x', Layout::lattSize()[0]}}),
 	  Sparse, superbblas::BlockChecksum);
 
@@ -3298,7 +3338,7 @@ namespace Chroma
 	// Allocate a single time slice colorvec in case of using RB ordering
 	Tensor<Nd + 1, ComplexD> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
 
-	// Store the colorvecs in natural order (not in red-black ordering) 
+	// Store the colorvecs in natural order (not in red-black ordering)
 	const int Nt = Layout::lattSize()[3];
 	std::map<char, int> colorvec_size{};
 	if (fingerprint)
