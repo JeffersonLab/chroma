@@ -3671,8 +3671,7 @@ namespace Chroma
       detail::check_order_contains(right.order, "cxyzXnSst");
 
       if (right.kvdim()['t'] != leftconj.kvdim()['t'])
-	;
-      throw std::runtime_error("The t component of `right' and `left' does not match");
+	throw std::runtime_error("The t component of `right' and `left' does not match");
       int Nt = right.kvdim()['t'];
 
       int max_t = max_active_tslices.getSome(Nt);
