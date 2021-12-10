@@ -2235,7 +2235,7 @@ namespace Chroma
 	int maxT = std::min(2, t);
 	auto v_eo = v.split_dimension('y', "Yy", 2)
 		      .split_dimension('z', "Zz", 2)
-		      .split_dimension('t', "Tt", 2);
+		      .split_dimension('t', "Tt", maxT);
 	auto r_eo = r.split_dimension('y', "Yy", 2)
 		      .split_dimension('z', "Zz", 2)
 		      .split_dimension('t', "Tt", maxT);
@@ -2283,7 +2283,6 @@ namespace Chroma
       assert(d < u.size());
 
       Tensor<N, COMPLEX> r = v.like_this("c%xyzXt", '%');
-      v = v.reorder("c%xyzXt", '%');
       if (len > 0)
       {
 	// Do u[d] * shift(x,d)
@@ -2349,11 +2348,11 @@ namespace Chroma
 
       // r = conj(phases) * displace(u, v, dir)
       Tensor<N, COMPLEX> r = v.like_this("c%xyzXtm", '%');
-      r.contract(displace(u, v, first_tslice, -dir).reorder("%m", '%'), {}, NotConjugate,
+      r.contract(displace(u, v, first_tslice, -dir), {}, NotConjugate,
 		 asTensorView(phases), {{'i', 'm'}}, Conjugate);
 
       // r = r - phases * displace(u, v, dir) if !ConjUnderAdd else r + phases * displace(u, v, dir)
-      r.contract(displace(u, v, first_tslice, dir).scale(conjUnderAdd ? 1 : -1).reorder("%m", '%'),
+      r.contract(displace(u, v, first_tslice, dir).scale(conjUnderAdd ? 1 : -1),
 		 {}, NotConjugate, asTensorView(phases), {{'i', 'm'}}, NotConjugate, {}, 1.0);
 
       return r;
@@ -2672,7 +2671,7 @@ namespace Chroma
 	    ut[d] = asTensorView(u[d])
 		      .kvslice_from_size({{'t', from_tslice + t}}, {{'t', 1}})
 		      .toComplex()
-		      .template make_sure<ComplexD>("ijxyzXt");
+		      .template make_sure<ComplexD>();
 	  }
 
 	  // Create an auxiliary struct for the PRIMME's matvec
@@ -3560,11 +3559,10 @@ namespace Chroma
 	  // Contract the spatial components and the color of the leftconj and right tensors
 	  Tensor<Nout, COMPLEX> aux =
 	    r.template like_this<Nout, COMPLEX>("mNQqnSst%", '%', "gd", {{'S', Ns}, {'Q', Ns}});
-	  aux.contract(leftconj, {}, Conjugate, right.reorder("cxyzXnSst%", '%'), {}, NotConjugate,
+	  aux.contract(leftconj, {}, Conjugate, right, {}, NotConjugate,
 		       {});
 
 	  // Contract the spin components S and Q with the gammas, and put the result on r[d=disp_indices.size()]
-	  aux = aux.reorder("QSmNqnst");
 	  Tensor<Nout - 1, COMPLEX> aux0 =
 	    r.template like_this<Nout - 1, COMPLEX>("gmNqnst%", '%', "d");
 	  aux0.contract(gammas, {}, NotConjugate, aux, {}, NotConjugate);
@@ -3724,7 +3722,6 @@ namespace Chroma
 
       // Iterate over time-slices
       std::vector<int> disp_indices;
-      leftconj = leftconj.reorder("QNqc%xyzXt", '%');
 
       for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
@@ -3759,7 +3756,6 @@ namespace Chroma
 			   NotConjugate);
 	if (tfrom + tsize >= Nt)
 	  leftconj.release();
-	moms_left = moms_left.reorder("cxyzXmNQqt%", '%');
 
 	// Make a copy of the time-slicing of u[d] also supporting left and right
 	std::vector<Tensor<Nd + 3, Complex>> ut(Nd);
@@ -3771,8 +3767,7 @@ namespace Chroma
 	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as leftconj and right
 	  ut[d] = asTensorView(u[d])
 		    .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
-		    .toComplex()
-		    .reorder("ijxyzXt");
+		    .toComplex();
 	}
 
 	// Do the thing
@@ -3866,9 +3861,9 @@ namespace Chroma
 	      .template like_this<Nin + 1, COMPLEX>("njc%xyzXt", '%', "",
 						    {{'j', colorvecs[1].kvdim()['n']}})
 	      .rename_dims({{'n', 'i'}});
-	  auto colorvec0 = colorvecs[0].reorder("nc%xyzXt", '%').rename_dims({{'n', 'i'}});
-	  auto colorvec1 = colorvecs[1].reorder("nc%xyzXt", '%').rename_dims({{'n', 'j'}});
-	  auto colorvec2 = colorvecs[2].reorder("nc%xyzXt", '%').rename_dims({{'n', 'k'}});
+	  auto colorvec0 = colorvecs[0].rename_dims({{'n', 'i'}});
+	  auto colorvec1 = colorvecs[1].rename_dims({{'n', 'j'}});
+	  auto colorvec2 = colorvecs[2].rename_dims({{'n', 'k'}});
 	  colorvec01.contract(colorvec0.kvslice_from_size({{'c', 2}}), {}, NotConjugate,
 			      colorvec1.kvslice_from_size({{'c', 1}}), {}, NotConjugate);
 	  colorvec01.contract(colorvec0.kvslice_from_size({{'c', 1}}), {}, NotConjugate,
@@ -3885,13 +3880,6 @@ namespace Chroma
 	  colorvec2m.contract(std::move(colorvec2), {}, NotConjugate, moms.first, {}, NotConjugate);
 
 	  // Contract colorvec2 and moms
-	  if (Nin == Nd + 4)
-	  {
-	    colorvec01 = colorvec01.reorder("%mt", '%');
-	    colorvec2m = colorvec2m.reorder("%mt", '%');
-	  }
-	  else
-	    colorvec2m = colorvec2m.reorder("kmc%xyzXt", '%');
 	  Tensor<5, COMPLEX> colorvec012m = colorvec01.template like_this<5, COMPLEX>(
 	    order_out, {{'k', colorvecs[2].kvdim()['n']}, {'m', moms.first.kvdim()['m']}}, dev,
 	    dist);
@@ -3998,8 +3986,7 @@ namespace Chroma
 	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as colorvec and moms
 	  ut[d] = asTensorView(u[d])
 		    .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
-		    .toComplex()
-		    .reorder("ijxyzXt");
+		    .toComplex();
 	}
 
 	// Get the time-slice for colorvec
@@ -4080,8 +4067,8 @@ namespace Chroma
 			   std::to_string(disps.disp_index));
 
 	  // Contract left and right
-	  auto this_right = right.reorder("ncxyzX%t", '%').rename_dims({{'n', 'i'}});
-	  auto this_left = left.reorder("cxyzXn%t", '%').rename_dims({{'n', 'j'}});
+	  auto this_right = right.rename_dims({{'n', 'i'}});
+	  auto this_left = left.rename_dims({{'n', 'j'}});
 	  Tensor<4, COMPLEX> r = this_left.template like_this<4, COMPLEX>(
 	    "jimt", {{'i', this_right.kvdim()['i']}}, dev, dist);
 	  r.contract(std::move(this_left), {}, Conjugate, std::move(this_right), {}, NotConjugate);
@@ -4168,8 +4155,7 @@ namespace Chroma
 	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as colorvec and moms
 	  ut[d] = asTensorView(u[d])
 		    .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
-		    .toComplex()
-		    .reorder("ijxyzXt");
+		    .toComplex();
 	}
 
 	// Get the time-slice for colorvec
@@ -4180,8 +4166,6 @@ namespace Chroma
 	int Nmom = moms.first.kvdim()['m'];
 	Tensor<Nin + 1, COMPLEX> moms_left =
 	  colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', Nmom}});
-	this_moms = this_moms.reorder("mxyzXt");
-	this_colorvec = this_colorvec.reorder("c%xyzXt", '%');
 	moms_left.contract(std::move(this_moms), {}, Conjugate, this_colorvec, {}, NotConjugate);
 
 	if (tfrom + tsize >= Nt)
