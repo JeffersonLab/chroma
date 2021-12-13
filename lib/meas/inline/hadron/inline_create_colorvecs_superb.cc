@@ -54,6 +54,16 @@ namespace Chroma
 
       read(inputtop, "num_vecs", input.num_vecs);
       read(inputtop, "decay_dir", input.decay_dir);
+      input.t_start = 0;
+      if (inputtop.count("t_start") == 1) {
+        read(inputtop, "t_start", input.t_start);
+      }
+
+      input.Nt_forward = Layout::lattSize()[3];
+      if (inputtop.count("Nt_forward") == 1) {
+        read(inputtop, "Nt_forward", input.Nt_forward);
+      }
+
       input.write_fingerprint = false;
       if (inputtop.count("write_fingerprint") == 1)
 	read(inputtop, "write_fingerprint", input.write_fingerprint);
@@ -78,6 +88,8 @@ namespace Chroma
 
       write(xml, "num_vecs", out.num_vecs);
       write(xml, "decay_dir", out.decay_dir);
+      write(xml, "t_start", out.t_start);
+      write(xml, "Nt_forward", out.Nt_forward);
       write(xml, "write_fingerprint", out.write_fingerprint);
       write(xml, "phase", out.phase);
       xml << out.link_smear.xml;
@@ -263,10 +275,10 @@ namespace Chroma
 
       // Compute and store the colorvecs
       const int Lt = Layout::lattSize()[3];
-      SB::createColorvecStorage(params.named_obj.colorvec_out, params.param.link_smear, u, 0, Lt,
-				params.param.num_vecs, params.param.write_fingerprint,
-				params.param.write_fingerprint, phase,
-				params.named_obj.colorvec_files);
+      SB::createColorvecStorage(
+	params.named_obj.colorvec_out, params.param.link_smear, u, params.param.t_start,
+	params.param.Nt_forward, params.param.num_vecs, params.param.write_fingerprint,
+	params.param.write_fingerprint, phase, params.named_obj.colorvec_files);
 
       pop(xml_out); // CreateColorVecsSuperb
 

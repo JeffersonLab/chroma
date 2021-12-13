@@ -1401,7 +1401,7 @@ namespace Chroma
       }
       catch (const std::exception& e) 
       {
-	QDP_error_exit("%s: caught exception: %s\n", name, e.what());
+	QDP_error_exit("%s: caught exception: %s\n", name.c_str(), e.what());
       }
 
       // Close db

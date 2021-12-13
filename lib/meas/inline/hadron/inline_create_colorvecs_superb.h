@@ -30,6 +30,8 @@ namespace Chroma
       {
 	int         num_vecs;    /*!< Number of vectors */
 	int         decay_dir;   /*!< Decay direction */
+	int         t_start;     /*!< First t_slice to compute */
+	int         Nt_forward;  /*!< Number of t_slices to compute */
 	GroupXML_t  link_smear;  /*!< link smearing xml */
 	bool        write_fingerprint;  /*!< whether to write a portion of the colorvec instead of the whole */
 	multi1d<float>  phase;   /*!< Phase to apply to colorvecs */
