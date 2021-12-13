@@ -396,8 +396,6 @@ namespace Chroma
 
 
       q_gauge_param.ga_pad = max_face;
-      quda_inv_param.sp_pad = 0;
-      quda_inv_param.cl_pad = 0;
 
 
       // Setting GCR Preconditioner to defaults, as we don't use it..
