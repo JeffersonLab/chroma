@@ -82,10 +82,13 @@ namespace Chroma
     /// Whether complex conjugate the elements before contraction (see Tensor::contract)
     enum Conjugation { NotConjugate, Conjugate };
 
-    /// Whether the tensor is dense or sparse
+    /// Whether the tensor is dense or sparse (see StorageTensor)
     enum Sparsity { Dense, Sparse };
 
-    /// Auxiliary class for initialize Maybe<T> with no value
+    /// Whether to copy or add the values into the destination tensor (see Tensor::doAction)
+    enum Action { CopyTo, AddTo };
+
+     /// Auxiliary class for initialize Maybe<T> with no value
     struct None {
     };
 
@@ -1034,6 +1037,7 @@ namespace Chroma
 	checkOrder();
       }
 
+	// Default copy constractor
     protected:
       // Construct a slice of a tensor
       Tensor(const Tensor& t, const std::string& order, Coor<N> from, Coor<N> size)
@@ -1437,13 +1441,15 @@ namespace Chroma
 				scalar);
       }
 
-      /// Copy this tensor into the given one
+      /// Copy/add this tensor into the given one
+      /// NOTE: if this tensor or the given tensor is fake real, force both to be fake real
+
       template <std::size_t Nw, typename Tw,
 		typename std::enable_if<
 		  detail::is_complex<T>::value != detail::is_complex<Tw>::value, bool>::type = true>
-      void copyTo(Tensor<Nw, Tw> w) const
+      void doAction(Action action, Tensor<Nw, Tw> w) const
       {
-	toFakeReal().copyTo(w.toFakeReal());
+	toFakeReal().doAction(action, w.toFakeReal());
       }
 
       /// Return the local support of this tensor
@@ -1475,20 +1481,23 @@ namespace Chroma
 				 superbblas::FastToSlow, superbblas::Copy);
       }
 
-      /// Copy this tensor into the given one
+      /// Copy/Add this tensor into the given one
       template <std::size_t Nw, typename Tw,
 		typename std::enable_if<
 		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
-      void copyTo(Tensor<Nw, Tw> w) const
+      void doAction(Action action, Tensor<Nw, Tw> w) const
       {
 	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
 	for (unsigned int i = 0; i < N; ++i)
 	  if (size[i] > wsize[i])
 	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
 
+	if (action == AddTo && w.scalar != Tw{1})
+	  throw std::runtime_error("Not allowed to add to a tensor whose implicit scalar factor is not one");
+
 	if ((dist == Local && w.dist != Local) || (dist != Local && w.dist == Local))
 	{
-	  getLocal().copyTo(w.getLocal());
+	  getLocal().doAction(action, w.getLocal());
 	  return;
 	}
 
@@ -1499,30 +1508,25 @@ namespace Chroma
 								     : MPI_COMM_WORLD);
 	if (dist != OnMaster || w.dist != OnMaster || Layout::nodeNumber() == 0)
 	{
-	  superbblas::copy<N, Nw>(detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1,
-				  order.c_str(), from, size, (const T**)&ptr, &*ctx, w.p->p.data(),
-				  1, w.order.c_str(), w.from, &w_ptr, &*w.ctx, comm,
-				  superbblas::FastToSlow, superbblas::Copy);
+	  superbblas::copy<N, Nw>(
+	    detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1, order.c_str(), from, size,
+	    (const T**)&ptr, &*ctx, w.p->p.data(), 1, w.order.c_str(), w.from, &w_ptr, &*w.ctx,
+	    comm, superbblas::FastToSlow, action == CopyTo ? superbblas::Copy : superbblas::Add);
 	}
+      }
+
+      /// Copy this tensor into the given one
+      template <std::size_t Nw, typename Tw>
+      void copyTo(Tensor<Nw, Tw> w) const
+      {
+	doAction(CopyTo, w);
       }
 
       // Add `this` tensor into the given one
       template <std::size_t Nw, typename Tw>
       void addTo(Tensor<Nw, Tw> w) const
       {
-	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
-	for (unsigned int i = 0; i < N; ++i)
-	  if (size[i] > wsize[i])
-	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
-
-	if (w.scalar != T{1})
-	  throw std::runtime_error("Not allowed to addTo to tensor with a scalar not being one");
-
-	T* ptr = this->data.get();
-	Tw* w_ptr = w.data.get();
-	superbblas::copy<N, Nw>(scalar, p->p.data(), 1, order.c_str(), from, size, (const T**)&ptr,
-				&*ctx, w.p->p.data(), 1, w.order.c_str(), w.from, &w_ptr, &*w.ctx,
-				MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Add);
+	doAction(AddTo, w);
       }
 
       // Contract the dimensions with the same label in `v` and `w` than do not appear on `this` tensor.
@@ -2205,13 +2209,23 @@ namespace Chroma
     /// \param dir: 0 is x; 1 is y...
 
     template <typename COMPLEX, std::size_t N>
-    Tensor<N, COMPLEX> shift(const Tensor<N, COMPLEX> v, Index first_tslice, int len, int dir)
+    Tensor<N, COMPLEX> shift(const Tensor<N, COMPLEX> v, Index first_tslice, int len, int dir,
+			     Maybe<Action> action = none, Maybe<Tensor<N, COMPLEX>> w=none)
     {
       if (dir < 0 || dir >= Nd - 1)
 	throw std::runtime_error("Invalid direction");
 
+      if (action.hasSome() != w.hasSome())
+	throw std::runtime_error("Invalid default value");
+
+      // Address zero length case
       if (len == 0)
-	return v;
+      {
+	if (!w.hasSome())
+	  return v;
+	v.doAction(action.getSome(), w.getSome());
+	return w.getSome();
+      }
 
       // NOTE: chroma uses the reverse convention for direction: shifting FORWARD moves the sites on the negative direction
       len = -len;
@@ -2219,17 +2233,27 @@ namespace Chroma
       const char dir_label[] = "xyz";
 #  if QDP_USE_LEXICO_LAYOUT
       // If we are not using red-black ordering, return a view where the tensor is shifted on the given direction
-      return v.kvslice_from_size({{dir_label[dir], -len}});
+      v = v.kvslice_from_size({{dir_label[dir], -len}});
+
+      if (!w.hasSome())
+	return v;
+
+      v.doAction(action, w.getSome());
+      return w.getSome();
 
 #  elif QDP_USE_CB2_LAYOUT
       // Assuming that v has support on the origin and destination lattice elements
-      if (v.kvdim()['X'] != 2 && len % 2 != 0)
+      int dimX = v.kvdim()['X'];
+      if (dimX != 2 && len % 2 != 0)
 	throw std::runtime_error("Unsupported shift");
 
-      Tensor<N, COMPLEX> r = v.like_this();
       if (dir != 0)
       {
-	v.copyTo(r.kvslice_from_size({{'X', len}, {dir_label[dir], len}}));
+	if (!w.hasSome())
+	  return v.kvslice_from_size({{'X', -len}, {dir_label[dir], -len}});
+	v.doAction(action.getSome(),
+		   w.getSome().kvslice_from_size({{'X', len}, {dir_label[dir], len}}));
+	return w.getSome();
       }
       else
       {
@@ -2241,27 +2265,36 @@ namespace Chroma
 	auto v_eo = v.split_dimension('y', "Yy", 2)
 		      .split_dimension('z', "Zz", 2)
 		      .split_dimension('t', "Tt", maxT);
+	Tensor<N, COMPLEX> r = w.hasSome() ? w.getSome() : v.like_this();
 	auto r_eo = r.split_dimension('y', "Yy", 2)
 		      .split_dimension('z', "Zz", 2)
 		      .split_dimension('t', "Tt", maxT);
 	while (len < 0)
 	  len += v.kvdim()['x'] * 2;
 	for (int T = 0; T < maxT; ++T)
+	{
 	  for (int Z = 0; Z < 2; ++Z)
+	  {
 	    for (int Y = 0; Y < 2; ++Y)
+	    {
 	      for (int X = 0; X < 2; ++X)
-		v_eo
-		  .kvslice_from_size({{'X', X}, {'Y', Y}, {'Z', Z}, {'T', T}},
-				     {{'X', 1}, {'Y', 1}, {'Z', 1}, {'T', 1}})
-		  .copyTo(
-		    r_eo.kvslice_from_size({{'X', X + len},
-					    {'x', (len + ((X + Y + Z + T + first_tslice) % 2)) / 2},
-					    {'Y', Y},
-					    {'Z', Z},
-					    {'T', T}},
-					   {{'Y', 1}, {'Z', 1}, {'T', 1}}));
+	      {
+		auto v_eo_slice = v_eo.kvslice_from_size({{'X', X}, {'Y', Y}, {'Z', Z}, {'T', T}},
+							 {{'X', 1}, {'Y', 1}, {'Z', 1}, {'T', 1}});
+		auto r_eo_slice =
+		  r_eo.kvslice_from_size({{'X', X + len},
+					  {'x', (len + ((X + Y + Z + T + first_tslice) % 2)) / 2},
+					  {'Y', Y},
+					  {'Z', Z},
+					  {'T', T}},
+					 {{'Y', 1}, {'Z', 1}, {'T', 1}});
+		v_eo_slice.doAction(action.getSome(CopyTo), r_eo_slice);
+	      }
+	    }
+	  }
+	}
+	return r;
       }
-      return r;
 #  else
       throw std::runtime_error("Unsupported layout");
 #  endif
@@ -2275,32 +2308,44 @@ namespace Chroma
 
     template <typename COMPLEX, std::size_t N>
     Tensor<N, COMPLEX> displace(const std::vector<Tensor<Nd + 3, COMPLEX>>& u, Tensor<N, COMPLEX> v,
-				Index first_tslice, int dir)
+				Index first_tslice, int dir, Maybe<Action> action = none,
+				Maybe<Tensor<N, COMPLEX>> w = none)
     {
       if (std::abs(dir) > Nd)
 	throw std::runtime_error("Invalid direction");
 
+      if (action.hasSome() != w.hasSome())
+	throw std::runtime_error("Invalid default value");
+
+      // Address the zero direction case
       if (dir == 0)
-	return v;
+      {
+	if (!w.hasSome())
+	  return v;
+	v.doAction(action.getSome(), w.getSome());
+	return w.getSome();
+      }
 
       int d = std::abs(dir) - 1;    // space lattice direction, 0: x, 1: y, 2: z
       int len = (dir > 0 ? 1 : -1); // displacement unit direction
       assert(d < u.size());
 
-      Tensor<N, COMPLEX> r = v.like_this("c%xyzXt", '%');
       if (len > 0)
       {
 	// Do u[d] * shift(x,d)
+	Tensor<N, COMPLEX> r = w.hasSome() ? w.getSome() : v.like_this();
 	v = shift(std::move(v), first_tslice, len, d);
-	r.contract(u[d], {{'j', 'c'}}, NotConjugate, std::move(v), {}, NotConjugate, {{'c', 'i'}});
+	r.contract(std::move(v), {}, NotConjugate, u[d], {{'j', 'c'}}, NotConjugate, {{'c', 'i'}},
+		   action.getSome(CopyTo) == CopyTo ? 0.0 : 1.0);
+	return r;
       }
       else
       {
 	// Do shift(adj(u[d]) * x,d)
-	r.contract(u[d], {{'i', 'c'}}, Conjugate, std::move(v), {}, NotConjugate, {{'c', 'j'}});
-	r = shift(std::move(r), first_tslice, len, d);
+	Tensor<N, COMPLEX> r = v.like_this();
+	r.contract(std::move(v), {}, NotConjugate, u[d], {{'i', 'c'}}, Conjugate, {{'c', 'j'}});
+	return shift(std::move(r), first_tslice, len, d, action, w);
       }
-      return r;
     }
 
     /// Apply right nabla onto v on the direction dir
@@ -2581,10 +2626,13 @@ namespace Chroma
 	// chi = -2*N*psi
 	psi.scale(-2 * N).copyTo(chi);
 
+	// I have no idea how to do this....
+	using MaybeTensor = Maybe<Tensor<Nd + 3, ComplexD>>;
+
 	for (int mu = 0; mu < N; ++mu)
 	{
-	  displace(u, psi, first_tslice, mu + 1).addTo(chi);
-	  displace(u, psi, first_tslice, -(mu + 1)).addTo(chi);
+	  displace(u, psi, first_tslice, mu + 1, Action::AddTo, MaybeTensor(chi));
+	  displace(u, psi, first_tslice, -(mu + 1), Action::AddTo, MaybeTensor(chi));
 	}
       }
 
@@ -2677,11 +2725,13 @@ namespace Chroma
 	    ut[d] = asTensorView(u[d])
 		      .kvslice_from_size({{'t', from_tslice + t}}, {{'t', 1}})
 		      .toComplex()
-		      .template make_sure<ComplexD>();
+		      .template make_sure<ComplexD>("ijxyztX");
 	  }
 
 	  // Create an auxiliary struct for the PRIMME's matvec
-	  OperatorAux opaux{ut, from_tslice + t, "cxyzXnt"};
+	  // NOTE: Please keep 'n' as the slowest index; the rows of vectors taken by PRIMME's matvec has dimensions 'cxyztX',
+          // and 'n' is the dimension for the columns.
+	  OperatorAux opaux{ut, from_tslice + t, "cxyztXn"};
 
 	  // Make a bigger structure holding
 	  primme_params primme;
