@@ -2772,6 +2772,11 @@ namespace Chroma
 	  primme.matrixMatvec = primmeMatvec;
 	  primme.matrix = &opaux;
 
+	  // Set block size
+          primme.maxBasisSize = 32;
+	  primme.maxBlockSize = 4;
+          primme.ldOPs = primme.nLocal;
+
 	  // Should set lots of defaults
 	  if (primme_set_method(PRIMME_DEFAULT_MIN_TIME, &primme) < 0)
 	  {
@@ -2843,7 +2848,7 @@ namespace Chroma
 	  }
 
 	  // Copy evecs into all_evecs
-	  evecs.copyTo(all_evecs.kvslice_from_size({{'t', from_tslice + t}}, {{'t', 1}}));
+	  evecs.copyTo(all_evecs.kvslice_from_size({{'t', t}}, {{'t', 1}}));
 	  all_evals.push_back(evals);
 	}
 
@@ -3033,9 +3038,13 @@ namespace Chroma
 	  // We need to phase the individual eigenvectors so that the have the same phase as the
 	  // s3t's colorvecs. That is, we need to apply a phase phi[i] to each eigenvector so that
 	  //
-	  //    colorvecs_s3t[i]^\dagger * colorvecs[i] * phi[i] = 1.
+	  //    colorvecs_s3t[i] = colorvecs[i] * phi[i].
 	  //
-	  // Then, phi[i] = 1 / (colorvecs_s3t[i]^\dagger * colorvecs[i])
+	  // We have a subset of the s3t's colorvecs, so we restrict the above equation to that:
+	  //
+	  //    colorvecs_s3t[i]^\dagger * colorvecs_s3t[i] = colorvecs_s3t[i]^\dagger * colorvecs[i] * phi[i].
+	  //
+	  // Therefore, phi[i] = (colorvecs_s3t[i]^\dagger * colorvecs_s3t[i]) / (colorvecs_s3t[i]^\dagger * colorvecs[i])
 
 	  auto ip = colorvecs_s3t_norms2.like_this();
 	  ip.contract(colorvecs_s3t, {}, Conjugate, colorvecs, {}, NotConjugate);
@@ -3045,7 +3054,7 @@ namespace Chroma
 	  {
 	    for (int n = 0; n < n_colorvecs; ++n)
 	    {
-	      auto phi_i = std::sqrt(colorvecs_s3t_norms2.get({n, t})) / ip.get({n, t});
+	      auto phi_i = colorvecs_s3t_norms2.get({n, t}) / ip.get({n, t});
 	      if (std::fabs(std::fabs(phi_i) - 1) > 1e-4)
 		throw std::runtime_error(
 		  "The colorvec fingerprint does not correspond to current gates field");
@@ -3054,7 +3063,7 @@ namespace Chroma
 	  }
 
 	  // Apply the phase of the colorvecs in s3t to the computed colorvecs
-	  colorvecs_s3t.contract(colorvecs, {}, NotConjugate, ip.make_sure(none, none, OnEveryone),
+	  colorvecs_s3t.contract(colorvecs, {}, NotConjugate, phi.make_sure(none, none, OnEveryone),
 				 {}, NotConjugate);
 	}
 
@@ -3317,7 +3326,7 @@ namespace Chroma
 	write(file_xml, "id", "eigenVecsTimeSlice");
 	multi1d<int> spatialLayout(3);
 	spatialLayout[0] = Layout::lattSize()[0];
-	spatialLayout[1] = Layout::lattSize()[2];
+	spatialLayout[1] = Layout::lattSize()[1];
 	spatialLayout[2] = Layout::lattSize()[2];
 	write(file_xml, "lattSize", spatialLayout);
 	write(file_xml, "decay_dir", 3);
@@ -3328,7 +3337,7 @@ namespace Chroma
 	if (fingerprint)
 	{
 	  spatialLayout[0] = fingerprint_dim[0];
-	  spatialLayout[1] = fingerprint_dim[2];
+	  spatialLayout[1] = fingerprint_dim[1];
 	  spatialLayout[2] = fingerprint_dim[2];
 	  write(file_xml, "fingerprint_lattice", spatialLayout);
 	}
