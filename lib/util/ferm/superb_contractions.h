@@ -639,6 +639,39 @@ namespace Chroma
 	    localSize(), PartitionStored(1, superbblas::PartitionItem<N>{{{}, localSize()}}), true};
 	}
 
+	/// Return a copy of this tensor with a compatible distribution to be contracted with the given tensor
+	/// \param order: labels for this distribution
+	/// \param t: given tensor distribution
+	/// \param ordert: labels for the given distribution
+
+	template <std::size_t Nt>
+	TensorPartition<N> make_suitable_for_contraction(const std::string& order,
+							 const TensorPartition<Nt>& t,
+							 const std::string& ordert) const
+	{
+	  PartitionStored r(p.size());
+	  std::map<char, Index> mf, ms;
+	  for (std::size_t i = 0; i < N; ++i)
+	    mf[order[i]] = 0;
+	  for (std::size_t i = 0; i < N; ++i)
+	    ms[order[i]] = dim[i];
+	  for (std::size_t pi = 0; pi < p.size(); ++pi)
+	  {
+	    std::map<char, Index> mfrom = mf;
+	    for (std::size_t i = 0; i < Nt; ++i)
+	      mfrom[ordert[i]] = t.p[pi][0][i];
+	    for (std::size_t i = 0; i < N; ++i)
+	      r[pi][0][i] = mfrom[order[i]];
+
+	    std::map<char, Index> msize = ms;
+	    for (std::size_t i = 0; i < Nt; ++i)
+	      msize[ordert[i]] = t.p[pi][1][i];
+	    for (std::size_t i = 0; i < N; ++i)
+	      r[pi][1][i] = msize[order[i]];
+	  }
+	  return TensorPartition<N>{dim, r, isLocal};
+	}
+
       private:
 	/// Return a partitioning for a non-collective tensor
 	/// \param dim: dimension size for the tensor
@@ -959,28 +992,10 @@ namespace Chroma
       // Construct used by non-Chroma tensors
       Tensor(const std::string& order, Coor<N> dim, DeviceHost dev = OnDefaultDevice,
 	     Distribution dist = OnEveryone)
-	: order(order),
-	  dim(dim),
-	  ctx(detail::getContext(dev)),
-	  dist(dist),
-	  from{},
-	  size(dim),
-	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
-	  scalar{1}
+	: Tensor(order, dim, dev, dist,
+		 std::make_shared<detail::TensorPartition<N>>(
+		   detail::TensorPartition<N>(order, dim, dist)))
       {
-	checkOrder();
-	superbblas::Context ctx0 = *ctx;
-	p = std::make_shared<detail::TensorPartition<N>>(
-	  detail::TensorPartition<N>(order, dim, dist));
-	std::string s = repr();
-	detail::log(1, "allocating " + s);
-	T* ptr = superbblas::allocate<T>(p->localVolume(), *ctx);
-	detail::log_mem();
-	data = std::shared_ptr<T>(ptr, [=](const T* ptr) {
-	  superbblas::deallocate(ptr, ctx0);
-	  detail::log(1, "deallocated " + s);
-	  detail::log_mem();
-	});
       }
 
       // Empty constructor
@@ -1037,8 +1052,33 @@ namespace Chroma
 	checkOrder();
       }
 
-	// Default copy constractor
     protected:
+      // Construct used by non-Chroma tensors and make_suitable_for_contraction
+      Tensor(const std::string& order, Coor<N> dim, DeviceHost dev, Distribution dist,
+	     std::shared_ptr<detail::TensorPartition<N>> p)
+	: order(order),
+	  dim(dim),
+	  ctx(detail::getContext(dev)),
+	  p(p),
+	  dist(dist),
+	  from{},
+	  size(dim),
+	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
+	  scalar{1}
+      {
+	checkOrder();
+	superbblas::Context ctx0 = *ctx;
+	std::string s = repr();
+	detail::log(1, "allocating " + s);
+	T* ptr = superbblas::allocate<T>(p->localVolume(), *ctx);
+	detail::log_mem();
+	data = std::shared_ptr<T>(ptr, [=](const T* ptr) {
+	  superbblas::deallocate(ptr, ctx0);
+	  detail::log(1, "deallocated " + s);
+	  detail::log_mem();
+	});
+      }
+
       // Construct a slice of a tensor
       Tensor(const Tensor& t, const std::string& order, Coor<N> from, Coor<N> size)
 	: order(order),
@@ -1529,6 +1569,29 @@ namespace Chroma
 	doAction(AddTo, w);
       }
 
+      /// Return a copy of this tensor with a compatible distribution to be contracted with the given tensor
+      /// \param v: given tensor
+
+      template <std::size_t Nv, typename Tv,
+		typename std::enable_if<std::is_same<T, Tv>::value, bool>::type = true>
+      Tensor<N, T> make_suitable_for_contraction(Tensor<Nv, Tv> v) const
+      {
+	if (dist != OnEveryoneReplicated)
+	  throw std::runtime_error("Invalid tensor distribution for this function");
+
+	Coor<N> vsize = kvcoors<N>(order, v.kvdim(), 0, NoThrow);
+	for (unsigned int i = 0; i < N; ++i)
+	  if (vsize[i] != 0 && vsize[i] != size[i])
+	    throw std::runtime_error("Invalid tensor contractions: one of the dimensions does not match");
+
+	auto new_p = std::make_shared<detail::TensorPartition<N>>(
+	  p->make_suitable_for_contraction(order, *v.p, v.order));
+
+	Tensor<N, T> r(order, dim, getDev(), OnEveryone, new_p);
+	copyTo(r);
+	return r;
+      }
+
       // Contract the dimensions with the same label in `v` and `w` than do not appear on `this` tensor.
       template <std::size_t Nv, std::size_t Nw>
       void contract(Tensor<Nv, T> v, const remap& mv, Conjugation conjv, Tensor<Nw, T> w,
@@ -1557,6 +1620,29 @@ namespace Chroma
 	  aux.copyTo(*this);
 	  return;
 	}
+
+	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
+	  throw std::runtime_error(
+	    "One of the contracted tensors or the output tensor is local and others are not!");
+
+	if ((v.dist == OnMaster && w.dist == OnEveryone) ||
+	    (v.dist == OnEveryone && w.dist == OnMaster))
+	  throw std::runtime_error("Incompatible layout for contractions: one of the tensors is on "
+				   "the master node and the other is distributed");
+
+	if ((v.dist == OnMaster && w.dist == OnEveryoneReplicated) ||
+	    (v.dist == OnEveryoneReplicated && w.dist == OnMaster))
+	{
+	  contract(v.make_sure(none, none, OnMaster), mv, conjv, w.make_sure(none, none, OnMaster),
+		   mw, conjw, mr, beta);
+	  return;
+	}
+
+	if (v.dist == OnEveryone && w.dist == OnEveryoneReplicated)
+	  w = w.make_suitable_for_contraction(v);
+
+	if (v.dist == OnEveryoneReplicated && w.dist == OnEveryone)
+	  v = v.make_suitable_for_contraction(w);
 
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
@@ -3063,8 +3149,7 @@ namespace Chroma
 	  }
 
 	  // Apply the phase of the colorvecs in s3t to the computed colorvecs
-	  colorvecs_s3t.contract(colorvecs, {}, NotConjugate, phi.make_sure(none, none, OnEveryone),
-				 {}, NotConjugate);
+	  colorvecs_s3t.contract(colorvecs, {}, NotConjugate, phi, {}, NotConjugate);
 	}
 
 	return colorvecs_s3t.make_sure<COMPLEX>();
