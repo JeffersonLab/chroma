@@ -527,8 +527,8 @@ namespace Chroma
       // DB storage
       // NOTE: Only the master node opens the storage and writes on it
       //
-      std::vector<BinaryStoreDB<LocalSerialDBKey<KeyMesonElementalOperator_t>,
-				LocalSerialDBData<ValMesonElementalOperator_t>>>
+      std::vector<LocalBinaryStoreDB<LocalSerialDBKey<KeyMesonElementalOperator_t>,
+				     LocalSerialDBData<ValMesonElementalOperator_t>>>
 	qdp_db;
 
       // This function opens the output file
