@@ -371,9 +371,6 @@ public:
 
 
 		q_gauge_param.ga_pad = max_face;
-		// PADDING
-		quda_inv_param.sp_pad = 0;
-		quda_inv_param.cl_pad = 0;
 
 		if( invParam.MULTIGRIDParamsP ) {
 			QDPIO::cout << "Setting MULTIGRID solver params" << std::endl;
@@ -471,9 +468,6 @@ public:
 		//MG is the only option.
 		quda_inv_param.inv_type_precondition = QUDA_MG_INVERTER;
 		//New invert test changes here.
-
-		mg_inv_param.sp_pad = 0;
-		mg_inv_param.cl_pad = 0;
 
 		mg_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
 		mg_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;

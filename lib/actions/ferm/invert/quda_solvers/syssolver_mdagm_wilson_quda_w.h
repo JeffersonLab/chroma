@@ -344,8 +344,6 @@ namespace Chroma
       
       
       q_gauge_param.ga_pad = max_face;
-      quda_inv_param.sp_pad = 0;
-      quda_inv_param.cl_pad = 0;
 
      if( invParam.innerParamsP ) {
 	QDPIO::cout << "Setting inner solver params" << std::endl;
