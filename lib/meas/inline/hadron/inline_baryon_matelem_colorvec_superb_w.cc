@@ -125,6 +125,12 @@ namespace Chroma
 	read(paramtop, "max_moms_in_contraction", param.max_moms_in_contraction);
       }
 
+      param.max_vecs = 0;
+      if (paramtop.count("max_vecs") == 1)
+      {
+	read(paramtop, "max_vecs", param.max_vecs);
+      }
+
       param.link_smearing = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
 
@@ -150,6 +156,7 @@ namespace Chroma
       write(xml, "phase", param.phase);
       write(xml, "max_tslices_in_contraction", param.max_tslices_in_contraction);
       write(xml, "max_moms_in_contraction", param.max_moms_in_contraction);
+      write(xml, "max_vecs", param.max_vecs);
       xml << param.link_smearing.xml;
 
       pop(xml);
@@ -685,7 +692,7 @@ namespace Chroma
       // Get num_vecs colorvecs on time-slice t_source
       SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
 	SB::getColorvecs<SB::Complex>(colorvecsSto, u, params.param.decay_dir, tfrom, tsize,
-				      params.param.num_vecs, SB::none, phase);
+				      params.param.num_vecs, "cxyzXnt", phase);
 
       // Call for storing the baryons
       double time_storing = 0; // total time in writing elementals
@@ -733,8 +740,8 @@ namespace Chroma
       auto moms = SB::getMoms(params.param.decay_dir, phases, SB::none, SB::none, tfrom, tsize);
       SB::doMomDisp_colorContractions(
 	u_smr, source_colorvec, moms, tfrom, displacement_list, params.param.use_derivP, call,
-	params.param.max_tslices_in_contraction, params.param.max_moms_in_contraction, SB::none,
-	SB::OnDefaultDevice, SB::OnMaster);
+	params.param.max_tslices_in_contraction, params.param.max_moms_in_contraction,
+	params.param.max_vecs, SB::none, SB::OnDefaultDevice, SB::OnMaster);
 
       // Close db
       for (auto& db : qdp_db)

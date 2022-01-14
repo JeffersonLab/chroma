@@ -52,6 +52,7 @@ namespace Chroma
 	multi1d<float>          phase;         		/*!< Phase to apply to colorvecs */
 	int 			max_tslices_in_contraction; /*! maximum number of contracted tslices simultaneously */
 	int 			max_moms_in_contraction;/*! maximum number of contracted momenta simultaneously */
+	int 			max_vecs;               /*! maximum number of columns from the first tensor being contracted */
       };
 
       struct NamedObject_t
