@@ -4273,7 +4273,13 @@ namespace Chroma
     }
 
     /// Contract three LatticeColorvec with different momenta and displacements.
+    /// It computes
+    ///    \eta_j^\dagger exp(- i left_phase \cdot x) \Gamma \eta_k exp(i right_phase \cdot x)
+    /// where \eta_i is the ith colorvec, x is a lattice site, and \Gamma is a combination of
+    /// derivatives and momenta.
     /// \param colorvecs: lattice color tensor on several t_slices, ctxyzXn
+    /// \param left_phase: phase to the left colorvecs
+    /// \param right_phase: phase to the right colorvecs
     /// \param moms: momenta tensor on several t_slices, mtxyzX
     /// \param disps: list of displacements/derivatives
     /// \param deriv: if true, do left-right nabla derivatives
@@ -4284,9 +4290,9 @@ namespace Chroma
 
     template <std::size_t Nin, typename COMPLEX>
     void doMomDisp_contractions(const multi1d<LatticeColorMatrix>& u, Tensor<Nin, COMPLEX> colorvec,
-				Moms<COMPLEX> moms, Index first_tslice,
-				const std::vector<std::vector<int>>& disps, bool deriv,
-				const ContractionFn<COMPLEX>& call,
+				Coor<3> left_phase, Coor<3> right_phase, Moms<COMPLEX> moms,
+				Index first_tslice, const std::vector<std::vector<int>>& disps,
+				bool deriv, const ContractionFn<COMPLEX>& call,
 				const Maybe<std::string>& order_out = none,
 				Maybe<DeviceHost> dev = none, Maybe<Distribution> dist = none)
     {
@@ -4335,11 +4341,17 @@ namespace Chroma
 	auto this_colorvec = colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
 	auto this_moms = moms.first.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
 
-	// Apply momenta conjugated to the left tensor
+	// Apply left phase and momenta conjugated to the left tensor
+	// NOTE: look for the minus sign on left_phase in the doc of this function
 	int Nmom = moms.first.kvdim()['m'];
 	Tensor<Nin + 1, COMPLEX> moms_left =
 	  colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', Nmom}});
-	moms_left.contract(std::move(this_moms), {}, Conjugate, this_colorvec, {}, NotConjugate);
+	moms_left.contract(std::move(this_moms), {}, Conjugate,
+			   phaseColorvecs(this_colorvec, first_tslice + tfrom, left_phase),
+			   {}, NotConjugate);
+
+	// Apply the right phase
+	this_colorvec = phaseColorvecs(this_colorvec, first_tslice + tfrom, right_phase);
 
 	if (tfrom + tsize >= Nt)
 	{
