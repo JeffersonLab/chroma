@@ -523,6 +523,8 @@ namespace Chroma
 	  std::runtime_error("phase should be integer");
       }
 
+      SB::Coor<Nd - 1> minus_phase = {-phase[0], -phase[1], -phase[2]};
+
       //
       // DB storage
       // NOTE: Only the master node opens the storage and writes on it
@@ -594,9 +596,8 @@ namespace Chroma
       push(xml_out, "ElementalOps");
 
       // Get num_vecs colorvecs on time-slice t_source
-      SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
-	SB::getColorvecs<SB::Complex>(colorvecsSto, u, params.param.decay_dir, tfrom, tsize,
-				      params.param.num_vecs, SB::none, phase);
+      SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
+	colorvecsSto, u, params.param.decay_dir, tfrom, tsize, params.param.num_vecs, SB::none);
 
       // Call for storing the baryons
       double time_storing = 0; // total time in writing elementals
@@ -640,9 +641,9 @@ namespace Chroma
 
       // Do the contractions
       auto moms = SB::getMoms(params.param.decay_dir, phases, SB::none, SB::none, tfrom, tsize);
-      SB::doMomDisp_contractions(u_smr, source_colorvec, moms, tfrom, displacement_list,
-				 params.param.use_derivP, call, SB::none, SB::OnDefaultDevice,
-				 SB::OnMaster);
+      SB::doMomDisp_contractions(u_smr, source_colorvec, minus_phase, phase, moms, tfrom,
+				 displacement_list, params.param.use_derivP, call, SB::none,
+				 SB::OnDefaultDevice, SB::OnMaster);
 
       // Close db
       for (auto& db : qdp_db)
