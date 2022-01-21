@@ -125,9 +125,9 @@ namespace Chroma
 
       // p(i) = prod(dim(end:-1:i))
       CoorType p;
-      p.back() = 1;
-      for (int i = p.size() - 1; i >= 1; i--)
-	p[i - 1] = p[i] * dim[i];
+      p[order[0]] = 1;
+      for (unsigned int i = 1; i < dim.size(); i++)
+	p[order[i]] = p[order[i - 1]] * dim[order[i - 1]];
 
       // coors(i,j) = indices(i) / p(i)
       // NOTE: every coordinate value is normalize to modulus the lattice dimension
