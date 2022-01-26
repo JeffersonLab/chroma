@@ -2860,7 +2860,7 @@ namespace Chroma
 
 	  // Set block size
           primme.maxBasisSize = 64;
-	  primme.maxBlockSize = 8;
+	  primme.maxBlockSize = 4;
           primme.ldOPs = primme.nLocal;
 
 	  // Should set lots of defaults
