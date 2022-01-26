@@ -4,7 +4,6 @@ target_include_directories(chromalib PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SO
 										    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 										    $<INSTALL_INTERFACE:include> )
 										 
-target_link_libraries(chromalib PUBLIC QDPXX::qdp)										 
 target_link_libraries(chromalib PUBLIC QDPLapack::qdp_lapack)
 
 if( Chroma_ENABLE_CPP_WILSON_DSLASH)
@@ -2070,11 +2069,14 @@ foreach( file ${ChromaLIB_HEADERS})
   install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/${file} DESTINATION include/${basedir} )
 endforeach()
 
+set(Chroma_CXX_STANDARD "17")
 if (QDP_IS_QDPJIT)
   if(QDP_PROP_OPT)
-    set_target_properties( chromalib PROPERTIES CXX_STANDARD 20 )
+	  set(Chroma_CXX_STANDARD "20")
   endif()
 endif()
+set_target_properties( chromalib PROPERTIES CXX_STANDARD ${Chroma_CXX_STANDARD} )
+set_target_properties( chromalib PROPERTIES CXX_EXTENSIONS OFF )
  
 ##############################################
 # Install the library and the targets
