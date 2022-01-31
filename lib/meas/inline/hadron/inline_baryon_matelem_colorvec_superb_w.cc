@@ -717,11 +717,11 @@ namespace Chroma
 	    // Invert the time - make it an independent key
 	    for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
 	    {
-	      if (t_slices_to_write.count(first_tslice + t) == 0)
+	      if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
 		continue;
 	      for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
 	      {
-		key.t_slice = first_tslice + t;
+		key.t_slice = (first_tslice + t) % Nt;
 		key.left = tomulti1d(displacement_list[disp][0]);
 		key.middle = tomulti1d(displacement_list[disp][1]);
 		key.right = tomulti1d(displacement_list[disp][2]);
