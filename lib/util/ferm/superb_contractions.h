@@ -2245,8 +2245,8 @@ namespace Chroma
     Tensor<N, COMPLEX> fillLatticeField(const std::string& order, const std::map<char, int>& size,
 					DeviceHost dev, Func func)
     {
-      static_assert(N >= Nd + 1, "The minimum number of dimensions should be Nd+1");
-      if (order.size() < Nd + 1 || order.compare(0, 5, "xyztX") != 0)
+      static_assert(N >= 5, "The minimum number of dimensions should be 5");
+      if (order.size() < 5 || order.compare(0, 5, "xyztX") != 0)
 	throw std::runtime_error("Wrong `order`, it should start with xyztX");
 
       // Get final object dimension
@@ -2279,7 +2279,7 @@ namespace Chroma
 	coor[1] = c[1];					       // y
 	coor[2] = c[2];					       // z
 	coor[3] = c[3];					       // t
-	std::copy_n(c.begin() + 5, N - (Nd - 1), coor.begin() + 4);
+	std::copy_n(c.begin() + 5, N - 5, coor.begin() + 4);
 
 	// Call the function
 	ptr[i] = func(coor);
