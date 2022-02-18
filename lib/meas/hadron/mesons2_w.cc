@@ -80,6 +80,11 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/mesons_w.h"
 
+// DEBUG DRtoDP
+#include "util/ferm/diractodr.h"
+
+
+
 namespace Chroma {
 
 //! Meson 2-pt functions
@@ -126,6 +131,40 @@ void mesons2(const LatticePropagator& quark_prop_1,
   // momenta are stored.  It's primary disadvantage is that it
   // requires more memory because it does all of the Fourier transforms
   // at the same time.
+
+  // DEBUG DRtoDP
+  SpinMatrix         DRtoDP = DiracToDRMat();
+  LatticePropagator dr_prop = quark_prop_2;
+  LatticePropagator dp_prop = adj(DRtoDP) * quark_prop_2 * DRtoDP ;
+  LatticePropagator anti_dr_prop = Gamma(G5) * dr_prop * Gamma(G5);
+  LatticePropagator anti_dp_prop = Gamma(G5) * dp_prop * Gamma(G5);
+
+  LatticeComplex DR_pion = zero;
+  LatticeComplex DP_pion = zero;
+  
+  DR_pion = trace(Gamma(15) * dr_prop * Gamma(15) * anti_dr_prop);
+  DP_pion = trace(Gamma(15) * dp_prop * Gamma(15) * anti_dp_prop);
+
+  multi2d<DComplex> drdp_sum;
+  drdp_sum = phases.sft(DR_pion);
+  multi1d<DComplex> dr_mes(length);
+  multi1d<DComplex> dp_mes(length);
+  
+  QDPIO::cout<< "\nDEBUG DR to DP with QDP-jit" << std::endl;
+  QDPIO::cout<< "Degrand Rossi pion" << std::endl;
+  for (int t=0; t < length; t++){
+      dr_mes[t] = drdp_sum[0][t];
+      QDPIO::cout<< "t="<<t<<" "<<dr_mes[t]<<std::endl;
+  }
+  drdp_sum = phases.sft(DP_pion);
+  QDPIO::cout<< "\nDirac Pauli pion" << std::endl;
+  for (int t=0; t < length; t++){
+      dr_mes[t] = drdp_sum[0][t];
+      QDPIO::cout<< "t="<<t<<" "<<dr_mes[t]<<std::endl;
+  }
+
+  // END DEBUG DRtoDP
+
 
   // Loop over gamma matrix insertions
   XMLArrayWriter xml_gamma(xml,Ns*Ns);
