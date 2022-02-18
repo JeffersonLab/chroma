@@ -345,9 +345,6 @@ namespace Chroma
       }
       
       q_gauge_param.ga_pad = max_face;
-      // PADDING
-      quda_inv_param.sp_pad = 0;
-      quda_inv_param.cl_pad = 0;
       
       QDPIO::cout << "Setting Precondition stuff to defaults for not using" << std::endl;
       quda_inv_param.inv_type_precondition= QUDA_INVALID_INVERTER;
