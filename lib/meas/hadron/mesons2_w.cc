@@ -134,16 +134,15 @@ void mesons2(const LatticePropagator& quark_prop_1,
 
   // DEBUG DRtoDP
   SpinMatrix         DRtoDP = DiracToDRMat();
-  LatticePropagator dr_prop = quark_prop_2;
-  LatticePropagator dp_prop = adj(DRtoDP) * quark_prop_2 * DRtoDP ;
-  LatticePropagator anti_dr_prop = Gamma(G5) * dr_prop * Gamma(G5);
-  LatticePropagator anti_dp_prop = Gamma(G5) * dp_prop * Gamma(G5);
+  LatticePropagator dp_prop_1 = adj(DRtoDP) * quark_prop_1 * DRtoDP ;
+  LatticePropagator dp_prop_2 = adj(DRtoDP) * quark_prop_2 * DRtoDP ;
+  LatticePropagator anti_dp_prop_2 = Gamma(G5) * dp_prop_2 * Gamma(G5);
 
   LatticeComplex DR_pion = zero;
   LatticeComplex DP_pion = zero;
   
-  DR_pion = trace(Gamma(15) * dr_prop * Gamma(15) * anti_dr_prop);
-  DP_pion = trace(Gamma(15) * dp_prop * Gamma(15) * anti_dp_prop);
+  DR_pion = trace(Gamma(15) * quark_prop_1 * Gamma(15) * adj(anti_quark_prop));
+  DP_pion = trace(Gamma(15) * dp_prop_1    * Gamma(15) * adj(anti_dp_prop_2));
 
   multi2d<DComplex> drdp_sum;
   drdp_sum = phases.sft(DR_pion);
