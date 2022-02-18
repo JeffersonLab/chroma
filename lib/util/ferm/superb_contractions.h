@@ -2966,7 +2966,8 @@ namespace Chroma
       template <typename COMPLEX = ComplexF>
       Tensor<Nd + 3, COMPLEX> getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice,
 					   int n_tslices, int n_colorvecs,
-					   const Maybe<const std::string>& order_ = none)
+					   const Maybe<const std::string>& order_ = none,
+					   DeviceHost dev = OnDefaultDevice)
       {
 	const std::string order = order_.getSome("cxyztXn");
 	detail::check_order_contains(order, "cxyztXn");
@@ -2975,7 +2976,7 @@ namespace Chroma
 
 	// Allocate tensor to return
 	Tensor<Nd + 3, COMPLEX> r(
-	  order, latticeSize<Nd + 3>(order, {{'t', n_tslices}, {'n', n_colorvecs}}));
+	  order, latticeSize<Nd + 3>(order, {{'t', n_tslices}, {'n', n_colorvecs}}), dev);
 
 	// Allocate a single time slice colorvec in natural ordering, as colorvec are stored
 	Tensor<Nd, ComplexF> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
@@ -3030,10 +3031,10 @@ namespace Chroma
       /// \return: a tensor containing the eigenvectors
 
       template <typename COMPLEX = ComplexF>
-      Tensor<Nd + 3, COMPLEX> getColorvecs(StorageTensor<Nd + 2, ComplexD> s3t,
-					   const multi1d<LatticeColorMatrix>& u, int decay_dir,
-					   int from_tslice, int n_tslices, int n_colorvecs,
-					   const Maybe<const std::string>& order_ = none)
+      Tensor<Nd + 3, COMPLEX>
+      getColorvecs(StorageTensor<Nd + 2, ComplexD> s3t, const multi1d<LatticeColorMatrix>& u,
+		   int decay_dir, int from_tslice, int n_tslices, int n_colorvecs,
+		   const Maybe<const std::string>& order_ = none, DeviceHost dev = OnDefaultDevice)
       {
 	const std::string order = order_.getSome("cxyztXn");
 	detail::check_order_contains(order, "cxyztXn");
@@ -3069,7 +3070,7 @@ namespace Chroma
 
 	// Allocate tensor with the content of s3t
 	Tensor<Nd + 3, ComplexD> colorvecs_s3t(
-	  order, latticeSize<Nd + 3>(order, {{'t', n_tslices}, {'n', n_colorvecs}}));
+	  order, latticeSize<Nd + 3>(order, {{'t', n_tslices}, {'n', n_colorvecs}}), dev);
 
 	// Allocate a single time slice colorvec in natural ordering, as colorvec are stored
 	Tensor<Nd, ComplexD> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
@@ -3261,8 +3262,9 @@ namespace Chroma
       if (phase == Coor<Nd - 1>{})
 	return colorvecs;
 
-      Tensor<Nd + 1, COMPLEX> tphase = ns_getColorvecs::getPhase<COMPLEX>(phase).kvslice_from_size(
-	{{'t', from_tslice}}, {{'t', colorvecs.kvdim()['t']}});
+      Tensor<Nd + 1, COMPLEX> tphase =
+	ns_getColorvecs::getPhase<COMPLEX>(phase, colorvecs.getDev())
+	  .kvslice_from_size({{'t', from_tslice}}, {{'t', colorvecs.kvdim()['t']}});
       Tensor<Nd + 3, COMPLEX> r = colorvecs.like_this();
       r.contract(colorvecs, {}, NotConjugate, tphase, {}, NotConjugate);
       return r;
@@ -3280,10 +3282,11 @@ namespace Chroma
     /// \return: a tensor containing the eigenvectors
 
     template <typename COMPLEX = ComplexF>
-    Tensor<Nd + 3, COMPLEX>
-    getColorvecs(const ColorvecsStorage& sto, const multi1d<LatticeColorMatrix>& u, int decay_dir,
-		 int from_tslice, int n_tslices, int n_colorvecs,
-		 const Maybe<const std::string>& order = none, Coor<Nd - 1> phase = {})
+    Tensor<Nd + 3, COMPLEX> getColorvecs(const ColorvecsStorage& sto,
+					 const multi1d<LatticeColorMatrix>& u, int decay_dir,
+					 int from_tslice, int n_tslices, int n_colorvecs,
+					 const Maybe<const std::string>& order = none,
+					 Coor<Nd - 1> phase = {}, DeviceHost dev = OnDefaultDevice)
     {
       StopWatch sw;
       sw.reset();
@@ -3296,10 +3299,10 @@ namespace Chroma
       Tensor<Nd + 3, COMPLEX> r;
       if (sto.s3t)
 	r = ns_getColorvecs::getColorvecs<COMPLEX>(sto.s3t, u, decay_dir, from_tslice, n_tslices,
-						   n_colorvecs, order);
+						   n_colorvecs, order, dev);
       else if (sto.mod)
 	r = ns_getColorvecs::getColorvecs<COMPLEX>(*sto.mod, decay_dir, from_tslice, n_tslices,
-						   n_colorvecs, order);
+						   n_colorvecs, order, dev);
 
       // Phase colorvecs
       r = phaseColorvecs(r, from_tslice, phase);
@@ -3537,11 +3540,11 @@ namespace Chroma
     ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
 
     template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-    Tensor<Nd + 5, COMPLEX_OUT> doInversion(const SystemSolver<LatticeFermion>& PP,
-					    const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
-					    int first_tslice_out, int n_tslice_out,
-					    const std::vector<int>& spin_sources, int max_rhs,
-					    const std::string& order_out = "cSxyztXns")
+    Tensor<Nd + 5, COMPLEX_OUT>
+    doInversion(const SystemSolver<LatticeFermion>& PP, const Tensor<Nd + 3, COMPLEX_CHI> chi,
+		int t_source, int first_tslice_out, int n_tslice_out,
+		const std::vector<int>& spin_sources, int max_rhs,
+		const std::string& order_out = "cSxyztXns", DeviceHost dev = OnDefaultDevice)
     {
       detail::check_order_contains(order_out, "cSxyztXns");
       if (chi.kvdim()['t'] != 1)
@@ -3554,8 +3557,8 @@ namespace Chroma
       Tensor<Nd + 5, COMPLEX_OUT> psi(
 	order_out,
 	latticeSize<Nd + 5>(
-	  order_out,
-	  {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}));
+	  order_out, {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}),
+	dev);
 
       int max_step = std::max(num_vecs, max_rhs);
       std::vector<std::shared_ptr<LatticeFermion>> chis(max_step), quark_solns(max_step);
@@ -3820,7 +3823,8 @@ namespace Chroma
       Tensor<Nright, COMPLEX> right, Index first_tslice, const SftMom& moms, int first_mom,
       Maybe<int> num_moms, const std::vector<Tensor<2, COMPLEX>>& gammas,
       const std::vector<std::vector<int>>& disps, bool deriv,
-      const std::string& order_out = "gmNndsqt", Maybe<int> max_active_tslices = none)
+      const std::string& order_out = "gmNndsqt", Maybe<int> max_active_tslices = none,
+      DeviceHost dev = OnDefaultDevice)
     {
       detail::check_order_contains(order_out, "gmNndsqt");
       detail::check_order_contains(leftconj.order, "cxyzXNQqt");
@@ -3869,8 +3873,7 @@ namespace Chroma
       }
 
       // Copy all gammas into a single tensor
-      Tensor<3, COMPLEX> gammast("gQS", {(Index)gammas.size(), Ns, Ns}, OnDefaultDevice,
-				 OnEveryoneReplicated);
+      Tensor<3, COMPLEX> gammast("gQS", {(Index)gammas.size(), Ns, Ns}, dev, OnEveryoneReplicated);
       for (unsigned int g = 0; g < gammas.size(); g++)
       {
 	gammas[g]
@@ -3896,7 +3899,7 @@ namespace Chroma
 	// Copy moms into a single tensor
 	std::string momst_order = "mxyzXt";
 	Tensor<Nd + 2, COMPLEX> momst(
-	  momst_order, latticeSize<Nd + 2>(momst_order, {{'t', tsize}, {'m', numMom}}));
+	  momst_order, latticeSize<Nd + 2>(momst_order, {{'t', tsize}, {'m', numMom}}), dev);
 	for (unsigned int mom = 0; mom < numMom; ++mom)
 	{
 	  asTensorView(moms[first_mom + mom])
@@ -3924,7 +3927,8 @@ namespace Chroma
 	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as leftconj and right
 	  ut[d] = asTensorView(u[d])
 		    .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
-		    .toComplex();
+		    .toComplex()
+		    .make_sure(none, dev);
 	}
 
 	// Do the thing

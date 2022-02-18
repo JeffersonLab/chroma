@@ -176,6 +176,11 @@ namespace Chroma
         read(inputtop, "max_moms_in_contraction", input.max_moms_in_contraction);
       }
 
+      input.use_device_for_contractions = true;
+      if( inputtop.count("use_device_for_contractions") == 1 ) {
+        read(inputtop, "use_device_for_contractions", input.use_device_for_contractions);
+      }
+
       input.use_genprop4_format = false;
       if( inputtop.count("use_genprop4_format") == 1 ) {
         read(inputtop, "use_genprop4_format", input.use_genprop4_format);
@@ -217,6 +222,7 @@ namespace Chroma
       write(xml, "max_moms_in_contraction", input.max_moms_in_contraction);
       write(xml, "use_genprop4_format", input.use_genprop4_format);
       write(xml, "use_genprop5_format", input.use_genprop5_format);
+      write(xml, "use_device_for_contractions", input.use_device_for_contractions);
       write(xml, "use_multiple_writers", input.use_multiple_writers);
       write(xml, "phase", input.phase);
 
@@ -1149,6 +1155,10 @@ namespace Chroma
 	if (max_moms_in_contraction <= 0)
 	  max_moms_in_contraction = phases.numMom();
 
+	// Set place for doing the contractions
+	SB::DeviceHost dev =
+	  params.param.contract.use_device_for_contractions ? SB::OnDefaultDevice : SB::OnHost;
+
 	for (const auto& sink_source : params.param.sink_source_pairs)
 	{
 	  int t_sink         = sink_source.t_sink % Lt;
@@ -1177,14 +1187,14 @@ namespace Chroma
 	    }
 
 	    // Get num_vecs colorvecs on time-slice t_source
-	    SB::Tensor<Nd + 3, SB::ComplexF> source_colorvec =
-	      SB::getColorvecs(colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none, phase);
+	    SB::Tensor<Nd + 3, SB::ComplexF> source_colorvec = SB::getColorvecs(
+	      colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none, phase, dev);
 
 	    // Invert the source for all spins and retrieve num_tslices_active
 	    // time-slices starting from time-slice first_tslice_active
 	    invCache[t_source] = SB::doInversion<SB::ComplexF, SB::Complex>(
 	      *PP, std::move(source_colorvec), t_source, active_tslices[t_source].from,
-	      active_tslices[t_source].size, {0, 1, 2, 3}, max_rhs, "cxyzXnSst");
+	      active_tslices[t_source].size, {0, 1, 2, 3}, max_rhs, "cxyzXnSst", dev);
 	  }
 
 	  if (!invCache[t_sink])
@@ -1197,14 +1207,14 @@ namespace Chroma
 	    }
 
 	    // Get num_vecs colorvecs on time-slice t_sink
-	    SB::Tensor<Nd + 3, SB::ComplexF> sink_colorvec =
-	      SB::getColorvecs(colorvecsSto, u, decay_dir, t_sink, 1, num_vecs, SB::none, phase);
+	    SB::Tensor<Nd + 3, SB::ComplexF> sink_colorvec = SB::getColorvecs(
+	      colorvecsSto, u, decay_dir, t_sink, 1, num_vecs, SB::none, phase, dev);
 
 	    // Invert the sink for all spins and retrieve num_tslices_active time-slices starting from
 	    // time-slice first_tslice_active
 	    invCache[t_sink] = SB::doInversion<SB::ComplexF, SB::Complex>(
 	      *PP, std::move(sink_colorvec), t_sink, active_tslices[t_sink].from,
-	      active_tslices[t_sink].size, {0, 1, 2, 3}, max_rhs, "ScnsxyzXt");
+	      active_tslices[t_sink].size, {0, 1, 2, 3}, max_rhs, "ScnsxyzXt", dev);
 	  }
 
 	  // The cache may have more tslices than need it; restrict to the ones required for this source-sink pair
@@ -1255,7 +1265,7 @@ namespace Chroma
 		SB::doMomGammaDisp_contractions<8>(
 		  u, std::move(this_invSink), std::move(this_invSource),
 		  first_tslice_active + tfrom, phases, mfrom, msize, gamma_mats, disps,
-		  params.param.contract.use_derivP, order_out);
+		  params.param.contract.use_derivP, order_out, SB::none, dev);
 
 	      // Premultiply by g5, again; see above commit about this
 	      SB::Tensor<8, SB::Complex> g5_con = r.first.like_this(

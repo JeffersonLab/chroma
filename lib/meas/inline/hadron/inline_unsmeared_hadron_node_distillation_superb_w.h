@@ -71,6 +71,7 @@ namespace Chroma
 	  int                       max_rhs;                /*! maximum number of linear systems solved simultaneously */
 	  int                       max_tslices_in_contraction;  /*! maximum number of contracted tslices simultaneously */
 	  int                       max_moms_in_contraction;/*! maximum number of contracted momenta simultaneously */
+	  bool                      use_device_for_contractions;  /*!< Whether use gpu for contractions if available */
 	  bool                      use_genprop4_format;    /*!< Use the efficient genprop4 format instead of the traditional one */
 	  bool                      use_genprop5_format;    /*!< Use the superb format instead of the traditional one */
 	  bool                      use_multiple_writers;   /*!< Whether several processes are going to write down the elementals on separate files */
