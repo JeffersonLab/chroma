@@ -1194,7 +1194,7 @@ namespace Chroma
 	    // time-slices starting from time-slice first_tslice_active
 	    invCache[t_source] = SB::doInversion<SB::ComplexF, SB::Complex>(
 	      *PP, std::move(source_colorvec), t_source, active_tslices[t_source].from,
-	      active_tslices[t_source].size, {0, 1, 2, 3}, max_rhs, "cxyzXnSst", dev);
+	      active_tslices[t_source].size, {0, 1, 2, 3}, max_rhs, "cxyzXnSst");
 	  }
 
 	  if (!invCache[t_sink])
@@ -1214,7 +1214,7 @@ namespace Chroma
 	    // time-slice first_tslice_active
 	    invCache[t_sink] = SB::doInversion<SB::ComplexF, SB::Complex>(
 	      *PP, std::move(sink_colorvec), t_sink, active_tslices[t_sink].from,
-	      active_tslices[t_sink].size, {0, 1, 2, 3}, max_rhs, "ScnsxyzXt", dev);
+	      active_tslices[t_sink].size, {0, 1, 2, 3}, max_rhs, "ScnsxyzXt");
 	  }
 
 	  // The cache may have more tslices than need it; restrict to the ones required for this source-sink pair

@@ -39,39 +39,6 @@
 
 namespace Chroma 
 { 
-  //----------------------------------------------------------------------------
-  // Utilities
-  namespace
-  {
-    multi1d<SubsetVectorWeight_t> readEigVals(const std::string& meta)
-    {    
-      std::istringstream  xml_l(meta);
-      XMLReader eigtop(xml_l);
-
-      std::string pat("/MODMetaData/Weights");
-      //      multi1d<SubsetVectorWeight_t> eigenvalues;
-      multi1d< multi1d<Real> > eigens;
-      try
-      {
-	read(eigtop, pat, eigens);
-      }
-      catch(const std::string& e) 
-      {
-	QDPIO::cerr << __func__ << ": Caught Exception reading meta= XX" << meta << "XX   with path= " << pat << "   error= " << e << std::endl;
-	QDP_abort(1);
-      }
-
-      eigtop.close();
-
-      multi1d<SubsetVectorWeight_t> eigenvalues(eigens.size());
-
-      for(int i=0; i < eigens.size(); ++i)
-	eigenvalues[i].weights = eigens[i];
-
-      return eigenvalues;
-    }
-  }
-  
 
   //----------------------------------------------------------------------------
   namespace InlinePropAndMatElemDistillationSuperbEnv 
@@ -124,22 +91,9 @@ namespace Chroma
         read(inputtop, "phase", input.phase);
       }
 
-      input.zero_colorvecs = false;
-      if( inputtop.count("zero_colorvecs") == 1 ) {
-	read(inputtop, "zero_colorvecs", input.zero_colorvecs );
-	if (input.zero_colorvecs)
-	  {
-	    QDPIO::cout << "zero_colorvecs found, *** timing mode activated ***\n";
-	  }
-      }
-
-      input.fuse_timeloop = false;
-      if( inputtop.count("fuse_timeloop") == 1 ) {
-	read(inputtop, "fuse_timeloop", input.fuse_timeloop );
-	if (input.fuse_timeloop)
-	  {
-	    QDPIO::cout << "fuse_timeloop found!\n";
-	  }
+      input.use_device_for_contractions = true;
+      if( inputtop.count("use_device_for_contractions") == 1 ) {
+        read(inputtop, "use_device_for_contractions", input.use_device_for_contractions);
       }
 
     }
@@ -158,6 +112,7 @@ namespace Chroma
       write(xml, "num_tries", input.num_tries);
       write(xml, "max_rhs", input.max_rhs);
       write(xml, "phase", input.phase);
+      write(xml, "use_device_for_contractions", input.use_device_for_contractions);
 
       pop(xml);
     }
@@ -376,35 +331,32 @@ namespace Chroma
       //
       BinaryStoreDB< SerialDBKey<KeyPropElementalOperator_t>, SerialDBData<ValPropElementalOperator_t> > qdp_db;
 
-      if (!params.param.contract.zero_colorvecs)
-	{
-	  // Open the file, and write the meta-data and the binary for this operator
-	  if (! qdp_db.fileExists(params.named_obj.prop_op_file))
-	    {
-	      XMLBufferWriter file_xml;
-	      push(file_xml, "DBMetaData");
-	      write(file_xml, "id", std::string("propElemOp"));
-	      write(file_xml, "lattSize", QDP::Layout::lattSize());
-	      write(file_xml, "decay_dir", params.param.contract.decay_dir);
-	      proginfo(file_xml);    // Print out basic program info
-	      write(file_xml, "Params", params.param);
-	      write(file_xml, "Config_info", gauge_xml);
-	      pop(file_xml);
+      // Open the file, and write the meta-data and the binary for this operator
+      if (!qdp_db.fileExists(params.named_obj.prop_op_file))
+      {
+	XMLBufferWriter file_xml;
+	push(file_xml, "DBMetaData");
+	write(file_xml, "id", std::string("propElemOp"));
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "decay_dir", params.param.contract.decay_dir);
+	proginfo(file_xml); // Print out basic program info
+	write(file_xml, "Params", params.param);
+	write(file_xml, "Config_info", gauge_xml);
+	pop(file_xml);
 
-	      std::string file_str(file_xml.str());
-	      qdp_db.setMaxUserInfoLen(file_str.size());
+	std::string file_str(file_xml.str());
+	qdp_db.setMaxUserInfoLen(file_str.size());
 
-	      qdp_db.open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
+	qdp_db.open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
 
-	      qdp_db.insertUserdata(file_str);
-	    }
-	  else
-	    {
-	      qdp_db.open(params.named_obj.prop_op_file, O_RDWR, 0664);
-	    }
+	qdp_db.insertUserdata(file_str);
+      }
+      else
+      {
+	qdp_db.open(params.named_obj.prop_op_file, O_RDWR, 0664);
+      }
 
-	  QDPIO::cout << "Finished opening peram file" << std::endl;
-	}
+      QDPIO::cout << "Finished opening peram file" << std::endl;
 
       //
       // Parse the phase
@@ -421,9 +373,6 @@ namespace Chroma
 	if (std::fabs(phase[i] - params.param.contract.phase[i]) > 0)
 	  std::runtime_error("phase should be integer");
       }
-
-      // Total number of iterations
-      int ncg_had = 0;
 
       //
       // Try the factories
@@ -468,6 +417,10 @@ namespace Chroma
 	const multi1d<int>& t_sources = params.param.contract.t_sources;
 	const int max_rhs             = params.param.contract.max_rhs;
 
+	// Set place for doing the contractions
+	SB::DeviceHost dev =
+	  params.param.contract.use_device_for_contractions ? SB::OnDefaultDevice : SB::OnHost;
+
 	// Loop over each time source
 	for (int tt = 0; tt < t_sources.size(); ++tt)
 	{
@@ -481,7 +434,7 @@ namespace Chroma
 
 	  // Get `num_vecs` colorvecs, and `num_tslices` tslices starting from time-slice `first_tslice`
 	  SB::Tensor<Nd + 3, SB::Complex> colorvec = SB::getColorvecs<SB::Complex>(
-	    colorvecsSto, u, decay_dir, first_tslice, num_tslices, num_vecs, "cxyzXnt", phase);
+	    colorvecsSto, u, decay_dir, first_tslice, num_tslices, num_vecs, "cxyzXnt", phase, dev);
 
 	  // Get all eigenvectors for `t_source`
 	  auto source_colorvec =
@@ -561,10 +514,6 @@ namespace Chroma
 
       // Close colorvecs storage
       SB::closeColorvecStorage(colorvecsSto);
-
-      push(xml_out,"Relaxation_Iterations");
-      write(xml_out, "ncg_had", ncg_had);
-      pop(xml_out);
 
       pop(xml_out);  // prop_dist
 

@@ -3540,11 +3540,11 @@ namespace Chroma
     ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
 
     template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-    Tensor<Nd + 5, COMPLEX_OUT>
-    doInversion(const SystemSolver<LatticeFermion>& PP, const Tensor<Nd + 3, COMPLEX_CHI> chi,
-		int t_source, int first_tslice_out, int n_tslice_out,
-		const std::vector<int>& spin_sources, int max_rhs,
-		const std::string& order_out = "cSxyztXns", DeviceHost dev = OnDefaultDevice)
+    Tensor<Nd + 5, COMPLEX_OUT> doInversion(const SystemSolver<LatticeFermion>& PP,
+					    const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
+					    int first_tslice_out, int n_tslice_out,
+					    const std::vector<int>& spin_sources, int max_rhs,
+					    const std::string& order_out = "cSxyztXns")
     {
       detail::check_order_contains(order_out, "cSxyztXns");
       if (chi.kvdim()['t'] != 1)
@@ -3558,7 +3558,7 @@ namespace Chroma
 	order_out,
 	latticeSize<Nd + 5>(
 	  order_out, {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}),
-	dev);
+	chi.getDev());
 
       int max_step = std::max(num_vecs, max_rhs);
       std::vector<std::shared_ptr<LatticeFermion>> chis(max_step), quark_solns(max_step);
