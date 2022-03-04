@@ -122,7 +122,12 @@ namespace Chroma
     //
     // Initialize source xml
     //
-    std::istringstream  xml_s(source.xml);
+		std::string foo="";
+	  if( Layout::primaryNode() )  {
+			foo=source.xml;
+	  }
+		QDPInternal::broadcast_str(foo);
+    std::istringstream  xml_s(foo);
     XMLReader  sourcetop(xml_s);
 
     multi1d<int> t_srce;
@@ -163,16 +168,21 @@ namespace Chroma
     //
     // Initialize source xml
     //
-    std::istringstream  xml_s(source.xml);
+		std::string foo="";
+	  if( Layout::primaryNode() )  {
+			foo=source.xml;
+	  }
+		QDPInternal::broadcast_str(foo);
+    std::istringstream  xml_s(foo);
     XMLReader  sourcetop(xml_s);
 
-    multi1d<int> t_srce;
+    multi1d<int> mom;
 
     try
     {
       XMLReader  top(sourcetop, source.path);
 
-      read(top, "mom", t_srce);
+      read(top, "mom", mom);
     }
     catch (const std::string& e) 
     {
@@ -180,7 +190,7 @@ namespace Chroma
       throw e;
     }
 
-    return t_srce;
+    return mom;
   }
 
 
