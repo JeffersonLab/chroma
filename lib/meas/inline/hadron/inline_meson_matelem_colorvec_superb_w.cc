@@ -555,7 +555,16 @@ namespace Chroma
 	  write(file_xml, "Params", params.param);
 	  write(file_xml, "Op_Info", params.param.displacement_list);
 	  write(file_xml, "Config_info", gauge_xml);
-	  //write(file_xml, "Weights", getEigenValues(eigen_source, params.param.num_vecs));
+	  // Some tasks read the eigenvalues from metadata but they not used; so we are going to give fake values
+	  multi1d<multi1d<double>> evals(params.param.num_vecs);
+	  const int Nt = Layout::lattSize()[params.param.decay_dir];
+	  for (int i = 0; i < params.param.num_vecs; ++i)
+	  {
+	    evals[i].resize(Nt);
+	    for (int t = 0; t < Nt; ++t)
+	      evals[i][t] = 0;
+	  }
+	  write(file_xml, "Weights", evals);
 	  pop(file_xml);
 
 	  std::string file_str(file_xml.str());
