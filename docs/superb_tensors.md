@@ -77,10 +77,14 @@ List of basic tensor operations:
 
 The following code shows the correspondence between Chroma objects and `Tensor` objects:
 ```C++
-// Chroma objects    | // New objects
-SpinMatrix t;        | Tensor<2,Complex> t("ij", {{Ns,Ns}});
-                     | t.set_zero(); // Tensor objects are uninitialized!
-SpinMatrix q = t;    | Tensor<2,Complex> q = t.clone();
+// Chroma objects                              | // New objects
+SpinMatrix t;                                  | Tensor<2,Complex> t("ij", {{Ns,Ns}});
+                                               | t.set_zero(); // Tensor objects are uninitialized!
+SpinMatrix q = t;                              | Tensor<2,Complex> q = t.clone();
+
+LatticeSpin x;                                 | Tensor<6,Complex> x("sxyzXt", latticeSize("sxyzXt"));
+LatticeSpin y = x * Gamma(1);                  | Tensor<6,Complex> y = x.like_this();
+                                               | y.contract(x, {{'x','i'}}, NotConjugate, asTensorView(Gamma(i)), {}, NotConjugate, {{'j','s'}});
 ```
 
 ## Tensor arithmetic operations
