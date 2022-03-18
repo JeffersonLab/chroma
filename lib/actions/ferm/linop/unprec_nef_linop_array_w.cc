@@ -77,15 +77,15 @@ namespace Chroma
       {
 	if (n == 0)
 	  //c_tmp=0.5*(psi[1]-
-	  //   m_q*psi[N5-1] - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5-1]+psi[1])) ;
+	  //   m_q*psi[N5-1] - Gamma(15)*(m_q*psi[N5-1]+psi[1])) ;
 	  c_tmp = chiralProjectMinus(psi[1]) -m_q*chiralProjectPlus(psi[N5-1]);
 	else if (n == N5-1)
 	  //c_tmp = 0.5*(psi[N5-2]  - 
-	  //   m_q*psi[0] + GammaConst<Ns,Ns*Ns-1>()*(psi[N5-2] + m_q*psi[0])) ;
+	  //   m_q*psi[0] + Gamma(15)*(psi[N5-2] + m_q*psi[0])) ;
 	  c_tmp = chiralProjectPlus(psi[N5-2]) - m_q*chiralProjectMinus(psi[0]) ;
 	else
 	  //c_tmp=0.5*(psi[n+1]+
-	  //	   psi[n-1]+GammaConst<Ns,Ns*Ns-1>()*(psi[n-1]-psi[n+1]));
+	  //	   psi[n-1]+Gamma(15)*(psi[n-1]-psi[n+1]));
 	  c_tmp = chiralProjectPlus(psi[n-1]) + chiralProjectMinus(psi[n+1]);
       
 	cmb = b5[n]*psi[n] + c5[n]*c_tmp;

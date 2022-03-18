@@ -158,10 +158,10 @@ namespace Chroma
     */
     if( N5 > 1 ) { 
       // 6NcNs flops
-      chi[0][rb[cb]] = alpha[0]*psi[1] + a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
+      chi[0][rb[cb]] = alpha[0]*psi[1] + a[0]*(Gamma(15)*psi[0]);
     }
     else {
-      chi[0][rb[cb]] = a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
+      chi[0][rb[cb]] = a[0]*(Gamma(15)*psi[0]);
     }
     // All the rest
 
@@ -176,7 +176,7 @@ namespace Chroma
       tmp[rb[cb]] = Gamma(G5)*psi[i];
       chi[i][rb[cb]] += a[i]*tmp;
       */
-      chi[i][rb[cb]] = alpha[i-1]*psi[i-1] + a[i]*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
+      chi[i][rb[cb]] = alpha[i-1]*psi[i-1] + a[i]*(Gamma(15)*psi[i]);
 
       // When i hits N5-1, we don't have the B_N5-1 term
       if(i < N5-2) 
@@ -228,7 +228,7 @@ namespace Chroma
     for(int i = 1; i < N5-1; i++) 
     {
       /* tmp[rb[cb]] = Gamma(G5)*y[i-1]; */
-      y[i][rb[cb]] = psi[i] - u[i-1]*(GammaConst<Ns,Ns*Ns-1>()*y[i-1]);
+      y[i][rb[cb]] = psi[i] - u[i-1]*(Gamma(15)*y[i-1]);
     } 
 
     // Backsubstitute U chi = y
@@ -240,13 +240,13 @@ namespace Chroma
     
     // Real backsubstitutions starts from chi[N5-2]
     // 2NcNs flops
-    chi[N5-2][rb[cb]] =  dinv[N5-2]*(GammaConst<Ns,Ns*Ns-1>()*y[N5-2]);
+    chi[N5-2][rb[cb]] =  dinv[N5-2]*(Gamma(15)*y[N5-2]);
 
     // N5-2 * 6NcNs flops
     for(int i = N5-3; i >= 0; i--) {
       //tmp = Gamma(G5)*chi[i+1];
-      // y[i][rb[cb]] = dinv[i]*(GammaConst<Ns,Ns*Ns-1>()*y[i]);
-      chi[i][rb[cb]] = GammaConst<Ns,Ns*Ns-1>()*( dinv[i]*y[i] - u[i]*chi[i+1]);
+      // y[i][rb[cb]] = dinv[i]*(Gamma(15)*y[i]);
+      chi[i][rb[cb]] = Gamma(15)*( dinv[i]*y[i] - u[i]*chi[i+1]);
     }
 
     END_CODE();
@@ -283,7 +283,7 @@ namespace Chroma
     for(int i=0; i < N5-1; i++) 
     {
       // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      chi[i][rb[cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*tmp[i]);
+      chi[i][rb[cb]] = off_diag_coeff[i]*(Gamma(15)*tmp[i]);
     }
   
     chi[N5-1][rb[cb]] = zero;
@@ -329,7 +329,7 @@ namespace Chroma
 	// coeff = -Real(0.5)*beta_tilde[i];
 
 	// Chi_i is now -(1/2) beta_tilde_i Dslash 
-	tmp[rb[cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*chi[i]);
+	tmp[rb[cb]] = off_diag_coeff[i]*(Gamma(15)*chi[i]);
 
 	// Apply g5 Dslash
 	Dslash.deriv(ds_tmp, tmp, psi[i], PLUS, cb);
@@ -349,7 +349,7 @@ namespace Chroma
 	// coeff = -Real(0.5)*beta_tilde[i];
 
 	// Chi_i is now -(1/2) beta_tilde_i Dslash 
-	tmp[rb[1-cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
+	tmp[rb[1-cb]] = off_diag_coeff[i]*(Gamma(15)*psi[i]);
 
 	// Apply g5 Dslash
 	Dslash.deriv(ds_tmp, chi[i], tmp, MINUS, cb);

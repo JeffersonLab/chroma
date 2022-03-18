@@ -121,17 +121,17 @@ namespace Chroma
       {
 	// Lowest corner
 	// 2*Nc*Ns flops/cbsite	
-	chi[N5-1][rb[cb]] = E* ( GammaConst<Ns,Ns*Ns-1>()*psi[N5-1] );
+	chi[N5-1][rb[cb]] = E* ( Gamma(15)*psi[N5-1] );
 
 	
 	int p=0; 
 	// ((N5-1)/2)*20*Nc*Ns flops/cbsite = 10*Nc*Ns*(N5-1) flops/cbsite
 	for(int i=0; i < N5-1; i+=2, p++) { 
 	  // 6*Nc*Ns flops/cbsite
-	  chi[i][rb[cb]] = B[p]*psi[i+1] + A*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
+	  chi[i][rb[cb]] = B[p]*psi[i+1] + A*(Gamma(15)*psi[i]);
 
 	  // 6*Nc*Ns flops/cbsite
-	  chi[i+1][rb[cb]] = B[p]*psi[i] + C[p]*(GammaConst<Ns,Ns*Ns-1>()*psi[i+1]);
+	  chi[i+1][rb[cb]] = B[p]*psi[i] + C[p]*(Gamma(15)*psi[i+1]);
 	  // 4*Nc*Ns flops/cbsite
 	  chi[i+1][rb[cb]] += D[p]*psi[N5-1];
 
@@ -144,16 +144,16 @@ namespace Chroma
       {
 	// Lowest corner
 	// 2*Nc*Ns cbsite flops
-	chi[N5-1][rb[cb]] = E*(GammaConst<Ns,Ns*Ns-1>()*psi[N5-1]);
+	chi[N5-1][rb[cb]] = E*(Gamma(15)*psi[N5-1]);
 	
 	int p=0; 
 	// 10 Nc*Ns*(N5-1) cbsite flops for loop
 	for(int i=0; i < N5-1; i+=2, p++) { 
 	  // 6*Nc*Ns cbsite flops
-	  chi[i][rb[cb]] = B[p]*psi[i+1] + A*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
+	  chi[i][rb[cb]] = B[p]*psi[i+1] + A*(Gamma(15)*psi[i]);
 
 	  // 6*Nc*Ns cbsite flops
-	  chi[i+1][rb[cb]] = B[p]*psi[i] + C[p]*(GammaConst<Ns,Ns*Ns-1>()*psi[i+1]);
+	  chi[i+1][rb[cb]] = B[p]*psi[i] + C[p]*(Gamma(15)*psi[i+1]);
 	  // 4*Nc*Ns cbsite flops
 	  chi[i+1][rb[cb]] -= D[p]*psi[N5-1];
 	  
@@ -194,17 +194,17 @@ namespace Chroma
      
 	// Lowest corner
 	// 2*Nc*Ns*cbsite flops
-	chi[N5-1][rb[cb]] = Eprime*(GammaConst<Ns,Ns*Ns-1>()*Dpsi[N5-1]);
+	chi[N5-1][rb[cb]] = Eprime*(Gamma(15)*Dpsi[N5-1]);
 	
 	int p=0; 
 	// Total flops for loop: 10*(N5-1)*Nc*Ns cbsite flops
 	for(int i=0; i < N5-1; i+=2, p++) { 
 
 	  // 6*Nc*Ns*cbsite flops
-	  chi[i][rb[cb]] = Bprime[p]*Dpsi[i+1] + Aprime*(GammaConst<Ns,Ns*Ns-1>()*Dpsi[i]);
+	  chi[i][rb[cb]] = Bprime[p]*Dpsi[i+1] + Aprime*(Gamma(15)*Dpsi[i]);
 
 	  // 6*Nc*Ns*cbsite flops
-	  chi[i+1][rb[cb]] = Bprime[p]*Dpsi[i] + Cprime[p]*(GammaConst<Ns,Ns*Ns-1>()*Dpsi[i+1]);
+	  chi[i+1][rb[cb]] = Bprime[p]*Dpsi[i] + Cprime[p]*(Gamma(15)*Dpsi[i+1]);
 
 	  // 4*Nc*Ns*cbsite flops
 	  chi[i+1][rb[cb]] += Dprime[p]*Dpsi[N5-1];
@@ -223,15 +223,15 @@ namespace Chroma
 
 	// Lowest corner
 	// 2*Nc*Ns cbsite flops
-	tmp[N5-1][rb[otherCB]] = Eprime*(GammaConst<Ns,Ns*Ns-1>()*psi[N5-1]);
+	tmp[N5-1][rb[otherCB]] = Eprime*(Gamma(15)*psi[N5-1]);
 	
 	int p=0; 
 	for(int i=0; i < N5-1; i+=2, p++) { 
 	  // 6*Nc*Ns cbsite flops
-	  tmp[i][rb[otherCB]] = Bprime[p]*psi[i+1] + Aprime*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
+	  tmp[i][rb[otherCB]] = Bprime[p]*psi[i+1] + Aprime*(Gamma(15)*psi[i]);
 	  
 	  // 6*Nc*Ns cbsite flops
-	  tmp[i+1][rb[otherCB]] = Bprime[p]*psi[i] + Cprime[p]*(GammaConst<Ns,Ns*Ns-1>()*psi[i+1]);
+	  tmp[i+1][rb[otherCB]] = Bprime[p]*psi[i] + Cprime[p]*(Gamma(15)*psi[i+1]);
 
 	  // 4*Nc*Ns cbsite flops
 	  tmp[i+1][rb[otherCB]] -= Dprime[p]*psi[N5-1];
@@ -322,7 +322,7 @@ namespace Chroma
       ftmp = sign*D_bd_inv[i];
       ftmp2 = sign*D_bd_inv[i+1];
 
-      tmp4[rb[cb]] =ftmp *chi[i] - ftmp2*(GammaConst<Ns,Ns*Ns-1>()*chi[i+1]);
+      tmp4[rb[cb]] =ftmp *chi[i] - ftmp2*(Gamma(15)*chi[i+1]);
       
       // 4Nc*Ns cbsite flops
       tmp5[N5-1][rb[cb]] -= tmp4;
@@ -367,17 +367,17 @@ namespace Chroma
       // Do all the blocks
       // 6Nc*Ns flops
       ftmp=-Btilde[p];
-      psi[i][rb[cb]] =  ftmp*tmp5[i+1] + Ctilde[p]*(GammaConst<Ns,Ns*Ns-1>()*tmp5[i]);
+      psi[i][rb[cb]] =  ftmp*tmp5[i+1] + Ctilde[p]*(Gamma(15)*tmp5[i]);
 
       // 6Nc*Ns flops
-      psi[i+1][rb[cb]] = ftmp*tmp5[i] + Atilde[p]*(GammaConst<Ns,Ns*Ns-1>()*tmp5[i+1]);
+      psi[i+1][rb[cb]] = ftmp*tmp5[i] + Atilde[p]*(Gamma(15)*tmp5[i+1]);
     }
 
     // Do the last bit
     ftmp = Real(1)/S;
 
     // 2*Nc*Ns flops
-    psi[N5-1][rb[cb]] = ftmp*(GammaConst<Ns,Ns*Ns-1>()*tmp5[N5-1]);
+    psi[N5-1][rb[cb]] = ftmp*(Gamma(15)*tmp5[N5-1]);
 
 
       
@@ -406,7 +406,7 @@ namespace Chroma
     // First piece already done
     // Only need this so precompute it out here.
     
-    tmp4[rb[cb]] = Real(1)*(GammaConst<Ns,Ns*Ns-1>()*psi[N5-1]);
+    tmp4[rb[cb]] = Real(1)*(Gamma(15)*psi[N5-1]);
     
     // Npoles * 8Nc*Ns flops
     for(int i=0; i < 2*Npoles; i+=2) {

@@ -67,7 +67,7 @@ namespace Chroma
     {
       // Apply  chi = (b5+c5) * gamma_5 * D_w * [D_denum]^(-1) * gamma_5 * psi
       LatticeFermion tmp;      moveToFastMemoryHint(tmp);
-      chi = GammaConst<Ns,Ns*Ns-1>()*psi;      
+      chi = Gamma(15)*psi;      
       (*D_denum)(tmp, chi, MINUS);
 
       res = InvCG2(*D_denum, 
@@ -77,7 +77,7 @@ namespace Chroma
 		   invParam.MaxCG);
       
       (*D_w)(tmp, chi, PLUS);
-      chi  = GammaConst<Ns,Ns*Ns-1>()*tmp;
+      chi  = Gamma(15)*tmp;
       break;
     }
     default:
@@ -131,7 +131,7 @@ namespace Chroma
     // Apply chi = (b5+c5)^2 * gamma_5 * D_w * [ D_denum^dag * D_denum ]^{-1} * gamma_5 * D_w * psi
     LatticeFermion tmp;       moveToFastMemoryHint(tmp);
     (*D_w)(chi, psi, PLUS);
-    tmp = GammaConst<Ns,Ns*Ns-1>()*chi;
+    tmp = Gamma(15)*chi;
 
     chi = tmp;
     InvCG2(*D_denum, 
@@ -141,7 +141,7 @@ namespace Chroma
 	   invParam.MaxCG);
 
     (*D_w)(tmp, chi, PLUS);
-    chi = GammaConst<Ns,Ns*Ns-1>()*tmp;
+    chi = Gamma(15)*tmp;
     chi *= Real((b5 + c5)*(b5 + c5));
 
     QDPIO::cout << "UnprecDWFTransfMdagMLinOp: ncount= " << n_count << std::endl;

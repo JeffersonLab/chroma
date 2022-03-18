@@ -159,7 +159,7 @@ namespace Chroma
     //tmp[rb[cb]] = Gamma(G5)*psi[0];
 
     // 2*Nc*Ns flops/cbsite
-    chi[0][rb[cb]] = a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
+    chi[0][rb[cb]] = a[0]*(Gamma(15)*psi[0]);
     if( N5 > 1 ) { 
 
       // 4*Nc*Ns flops/cbsite
@@ -175,7 +175,7 @@ namespace Chroma
       // A_{i} psi[i] = a_{i} g_5 psi[i]
       // tmp[rb[cb]] = Gamma(G5)*psi[i];
       // 6 NcNs flops/cbsite
-      chi[i][rb[cb]] = alpha_tilde[i-1]*psi[i-1] + a[i]*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
+      chi[i][rb[cb]] = alpha_tilde[i-1]*psi[i-1] + a[i]*(Gamma(15)*psi[i]);
 
       // When i hits N5-1, we don't have the B_N5-1 term
       if(i < N5-1) {
@@ -228,11 +228,11 @@ namespace Chroma
 
     /* (N5 - 2)* 6NcNs */
     for(int i = 1; i < N5; i++) { 
-      y[i][rb[cb]] = psi[i] - u[i-1]*(GammaConst<Ns,Ns*Ns-1>()*y[i-1]);
-      y[i-1][rb[cb]] = invd[i-1]*(GammaConst<Ns,Ns*Ns-1>()*y[i-1]);
+      y[i][rb[cb]] = psi[i] - u[i-1]*(Gamma(15)*y[i-1]);
+      y[i-1][rb[cb]] = invd[i-1]*(Gamma(15)*y[i-1]);
     } 
     /* 2NcNs */
-    y[N5-1][rb[cb]] = invd[N5-1]*(GammaConst<Ns,Ns*Ns-1>()*y[N5-1]);
+    y[N5-1][rb[cb]] = invd[N5-1]*(Gamma(15)*y[N5-1]);
 
     // Backsubstitute U chi = y
     chi[N5-1][rb[cb]] = y[N5-1];
@@ -240,7 +240,7 @@ namespace Chroma
     // (N5-1)*4NcNs
     for(int i = N5-2; i >= 0; i--) {
       // tmp = Gamma(G5)*chi[i+1];
-      chi[i][rb[cb]] = y[i] - u[i]*(GammaConst<Ns,Ns*Ns-1>()*chi[i+1]);
+      chi[i][rb[cb]] = y[i] - u[i]*(Gamma(15)*chi[i+1]);
     }
 
     //Done! That was not that bad after all....
@@ -326,7 +326,7 @@ namespace Chroma
       coeff_2 = Real(-0.5)*alpha[0]*f_minus;
 
       // 6NcNs flops
-      tmp5[0][rb[otherCB]] = coeff_2*psi[1] + coeff_1*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
+      tmp5[0][rb[otherCB]] = coeff_2*psi[1] + coeff_1*(Gamma(15)*psi[0]);
 #endif	
       // N5-2*(10NcNs)
       for(int i=1; i < N5-1; i++) { 
@@ -342,7 +342,7 @@ namespace Chroma
 	coeff_3 = Real(-0.5)*beta_tilde[i];
 	//	  tmp[rb[otherCB]] = Gamma(G5)*psi[i];
 	  
-	tmp5[i][rb[otherCB]] = coeff_1*psi[i-1] + coeff_3*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
+	tmp5[i][rb[otherCB]] = coeff_1*psi[i-1] + coeff_3*(Gamma(15)*psi[i]);
 	//tmp5[i][rb[otherCB]] += coeff_3*tmp;
 	tmp5[i][rb[otherCB]] += coeff_2*psi[i+1];
       }
@@ -359,7 +359,7 @@ namespace Chroma
       //tmp[rb[otherCB]] = Gamma(G5)*psi[N5-1];
 
       // 6NcNs
-      tmp5[N5-1][rb[otherCB]] = coeff_1 * psi[N5-2] + coeff_2*(GammaConst<Ns,Ns*Ns-1>()*psi[N5-1]);
+      tmp5[N5-1][rb[otherCB]] = coeff_1 * psi[N5-2] + coeff_2*(Gamma(15)*psi[N5-1]);
 
       // Now apply Dslash^{DAGGER} !!!!! 
       //
@@ -395,13 +395,13 @@ namespace Chroma
       //	chi[0][rb[cb]] = Gamma(G5)*D_psi[0];
       //      chi[0][rb[cb]] *= beta_tilde[0];
       ftmp = alpha[0]*f_minus;
-      chi[0][rb[cb]] = ftmp*D_psi[1] + beta_tilde[0]*(GammaConst<Ns,Ns*Ns-1>()*D_psi[0]);
+      chi[0][rb[cb]] = ftmp*D_psi[1] + beta_tilde[0]*(Gamma(15)*D_psi[0]);
 
       for(int i=1; i < N5-1; i++) {
 		  
 	ftmp = alpha[i-1]*f_minus;
 	ftmp2 = alpha[i]*f_minus;
-	chi[i][rb[cb]] = ftmp*D_psi[i-1] + beta_tilde[i]*(GammaConst<Ns,Ns*Ns-1>()*D_psi[i]);
+	chi[i][rb[cb]] = ftmp*D_psi[i-1] + beta_tilde[i]*(Gamma(15)*D_psi[i]);
 	  
 	//	  ftmp = beta_tilde[i];
 	//      tmp[rb[cb]] = Gamma(G5)*D_psi[i];
@@ -415,14 +415,14 @@ namespace Chroma
       // tmp[rb[cb]] = Gamma(G5) * D_psi[N5-1];
       ftmp = mass*f_minus;
       ftmp2 = alpha[N5-2]*f_minus;
-      chi[N5-1][rb[cb]] = ftmp2*D_psi[N5-2] + ftmp*(GammaConst<Ns,Ns*Ns-1>()*D_psi[N5-1]);
+      chi[N5-1][rb[cb]] = ftmp2*D_psi[N5-2] + ftmp*(Gamma(15)*D_psi[N5-1]);
 
 
 
 
       if( !isLastZeroP ) { 
 	LatticeFermion tmp; moveToFastMemoryHint(tmp);
-	tmp[rb[cb]] = beta_tilde[N5-1]*(GammaConst<Ns,Ns*Ns-1>()*D_psi[N5-1]);
+	tmp[rb[cb]] = beta_tilde[N5-1]*(Gamma(15)*D_psi[N5-1]);
 	chi[N5-1][rb[cb]] += tmp;
       }
 

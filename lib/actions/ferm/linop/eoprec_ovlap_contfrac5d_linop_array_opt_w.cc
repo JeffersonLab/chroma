@@ -59,7 +59,7 @@ namespace Chroma
     const int end   = rb[cb].end();
 
     if( N5 > 1 ) { 
-      //chi[0][rb[cb]] = alpha[0]*psi[1] + a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
+      //chi[0][rb[cb]] = alpha[0]*psi[1] + a[0]*(Gamma(15)*psi[0]);
       
       REAL scalep   = alpha[0].elem().elem().elem().elem();
       REAL scalep2  = a[0].elem().elem().elem().elem();
@@ -226,7 +226,7 @@ namespace Chroma
     }
     else 
     {
-      //chi[0][rb[cb]] = a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
+      //chi[0][rb[cb]] = a[0]*(Gamma(15)*psi[0]);
       REAL scalep =  a[0].elem().elem().elem().elem();
       REAL *In    = (REAL *) &(psi[0].elem(start).elem(0).elem(0).real());
       REAL *Out   = (REAL *) &(chi[0].elem(start).elem(0).elem(0).real());
@@ -359,7 +359,7 @@ namespace Chroma
       chi[i][rb[cb]] += a[i]*tmp;
       */
       {
-	//chi[i][rb[cb]] = alpha[i-1]*psi[i-1] + a[i]*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
+	//chi[i][rb[cb]] = alpha[i-1]*psi[i-1] + a[i]*(Gamma(15)*psi[i]);
 
 	REAL scalep   = alpha[i-1].elem().elem().elem().elem();
 	REAL scalep2  = a[i].elem().elem().elem().elem();
@@ -745,7 +745,7 @@ namespace Chroma
       {
 	// tmp[rb[cb]] = Gamma(G5)*y[i-1];
 	// y[i][rb[cb]] = psi[i] - u[i-1]*tmp;
-	//y[i][rb[cb]] = psi[i] - u[i-1]*(GammaConst<Ns,Ns*Ns-1>()*y[i-1]);
+	//y[i][rb[cb]] = psi[i] - u[i-1]*(Gamma(15)*y[i-1]);
 
 	REAL  scalep  =  u[i-1].elem().elem().elem().elem();
 	REAL *InScale = (REAL *) &(y[i-1].elem().elem(0).elem(0).real());
@@ -893,7 +893,7 @@ namespace Chroma
       // 2NcNs
 
       {
-	//chi[N5-1][rb[cb]] = invd[N5-1]*(GammaConst<Ns,Ns*Ns-1>()*y[N5-1]);
+	//chi[N5-1][rb[cb]] = invd[N5-1]*(Gamma(15)*y[N5-1]);
 	REAL scalep =  invd[N5-1].elem().elem().elem().elem();
 	REAL *In    = (REAL *) &(y[N5-1].elem().elem(0).elem(0).real());
 	REAL *Out   = (REAL *) &(chi[N5-1].elem(site).elem(0).elem(0).real());
@@ -1009,10 +1009,10 @@ namespace Chroma
       {
 	// tmp[rb[cb]] = Gamma(G5)*chi[i+1]
 	// chi[i][rb[cb]] = y[i] - u[i]*tmp;
-	// y[i][rb[cb]] = invd[i]*(GammaConst<Ns,Ns*Ns-1>()*y[i]);
-	// chi[i][rb[cb]] = y[i] - u[i]*(GammaConst<Ns,Ns*Ns-1>()*chi[i+1]);
+	// y[i][rb[cb]] = invd[i]*(Gamma(15)*y[i]);
+	// chi[i][rb[cb]] = y[i] - u[i]*(Gamma(15)*chi[i+1]);
 
-	//chi[i][rb[cb]] = GammaConst<Ns,Ns*Ns-1>()*(invd[i]*y[i]-u[i]*chi[i+1]); 
+	//chi[i][rb[cb]] = Gamma(15)*(invd[i]*y[i]-u[i]*chi[i+1]); 
 	REAL scalep   = invd[i].elem().elem().elem().elem();
 	REAL scalep2  = u[i].elem().elem().elem().elem();
 	REAL *InScale = (REAL *) &(y[i].elem().elem(0).elem(0).real());

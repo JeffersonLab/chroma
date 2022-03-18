@@ -89,7 +89,7 @@ namespace Chroma
 
 
 	//	chi[s][rb[cb]] = b5InvTwoKappa*psi[s] - 
-	//  c5Fact*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s-1] - psi[s+1]) ) ;
+	//  c5Fact*( psi[s+1] + psi[s-1] + Gamma(15)*(psi[s-1] - psi[s+1]) ) ;
 
 	// Recoded using chiralProject and BLASology
 	// 4Nc Ns flops/site
@@ -103,7 +103,7 @@ namespace Chroma
 
       //s=0 -- 1/2k psi[0] - P_- * psi[1] + mf* P_+ * psi[N5-1]
       //      chi[0][rb[cb]] = b5InvTwoKappa*psi[0] - 
-      //	c5Fact*( psi[1]   - m_q*psi[N5m1] - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]) ) ;
+      //	c5Fact*( psi[1]   - m_q*psi[N5m1] - Gamma(15)*(m_q*psi[N5m1] + psi[1]) ) ;
 
       // Recoded using chiralProject with BLAS-ology. c5Fact-s factor of 
       // 1/2 absorbed by projectors
@@ -117,7 +117,7 @@ namespace Chroma
 
       //s=N5-1 -- 1/2k psi[N5-1] +mf* P_- * psi[0]  -  P_+ * psi[N5-2]
       // chi[N5m1][rb[cb]] = b5InvTwoKappa*psi[N5m1] - 
-      //	c5Fact*( psi[N5m2] - m_q *psi[0] + GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
+      //	c5Fact*( psi[N5m2] - m_q *psi[0] + Gamma(15)*(psi[N5m2] + m_q * psi[0]) );
 
       // Recoded with chiral projector and BLAS ology
       // These two lines: 6Nc Ns flops /site
@@ -133,7 +133,7 @@ namespace Chroma
     {    
       for(int s(1);s<N5-1;s++) { // 1/2k psi[s] - P_+ * psi[s+1] - P_- * psi[s-1]
 	// chi[s][rb[cb]] = b5InvTwoKappa*psi[s] - 
-	//  c5Fact*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s+1] - psi[s-1]) ) ;
+	//  c5Fact*( psi[s+1] + psi[s-1] + Gamma(15)*(psi[s+1] - psi[s-1]) ) ;
 
 	// Recoded using chiral projector and BLASology
 	chi[s][rb[cb]] = b5InvTwoKappa*psi[s] - c5InvTwoKappa*chiralProjectPlus(psi[s+1]);
@@ -142,7 +142,7 @@ namespace Chroma
 
       //s=0 -- 1/2k psi[0] - P_+ * psi[1] + mf* P_- * psi[N5-1]
       //      chi[0][rb[cb]] = b5InvTwoKappa*psi[0] - 
-      //	c5Fact*( psi[1]   - m_q*psi[N5-1] + GammaConst<Ns,Ns*Ns-1>()*( psi[1]+m_q*psi[N5-1]) ) ;
+      //	c5Fact*( psi[1]   - m_q*psi[N5-1] + Gamma(15)*( psi[1]+m_q*psi[N5-1]) ) ;
       chi[0][rb[cb]] = b5InvTwoKappa*psi[0] - c5InvTwoKappa*chiralProjectPlus(psi[1]);
       chi[0][rb[cb]] += c5InvTwoKappamf * chiralProjectMinus(psi[N5-1]);
       
@@ -150,7 +150,7 @@ namespace Chroma
 
       //s=N5-1 -- 1/2k psi[N5-1] + mf* P_+ * psi[0]  -  P_- * psi[N5-2]
       // chi[N5-1][rb[cb]] = b5InvTwoKappa*psi[N5-1] - 
-      //	c5Fact*( psi[N5-2] - m_q *psi[0] - GammaConst<Ns,Ns*Ns-1>()*(psi[N5-2] + m_q * psi[0]) );
+      //	c5Fact*( psi[N5-2] - m_q *psi[0] - Gamma(15)*(psi[N5-2] + m_q * psi[0]) );
 
       // Recoded using Chiral Projector and BLAS ology
       chi[N5-1][rb[cb]] = b5InvTwoKappa*psi[N5-1] - c5InvTwoKappa*chiralProjectMinus(psi[N5-2]);
@@ -331,7 +331,7 @@ namespace Chroma
       for(int s = 1; s < N5-1; s++){
 	//	tmp[s][rb[otherCB]] = fb5*psi[s] + 
 	//   fc5*(psi[s+1] + psi[s-1] +
-	//       GammaConst<Ns,Ns*Ns-1>()*(psi[s-1]-psi[s+1]));
+	//       Gamma(15)*(psi[s-1]-psi[s+1]));
 	//
 	// Recoded with chiral projectors and BLAS ology.
 	// 4Nc Ns flops
@@ -344,7 +344,7 @@ namespace Chroma
       
       // tmp[0][rb[otherCB]] = fb5*psi[0]  + 
       //	fc5*(psi[1] - m_q*psi[N5-1] 
-      //     - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5-1] + psi[1]));
+      //     - Gamma(15)*(m_q*psi[N5-1] + psi[1]));
       //
       // Recoded with chiralProjec and BLAS ology
       // 6Nc Ns flops/site
@@ -356,7 +356,7 @@ namespace Chroma
 
       // tmp[N5-1][rb[otherCB]] = fb5*psi[N5-1] + 
       //	fc5*( psi[N5-2] - m_q *psi[0] +
-      //           GammaConst<Ns,Ns*Ns-1>()*(psi[N5-2] + m_q * psi[0]));
+      //           Gamma(15)*(psi[N5-2] + m_q * psi[0]));
 
       // 6Nc Ns flops:
       //    4Nc Ns flops
@@ -383,7 +383,7 @@ namespace Chroma
       for(int s(1);s<N5-1;s++){
 	//	chi[s][rb[cb]] = fb5*tmp[s] + 
 	//  fc5*(tmp[s+1] + tmp[s-1] -
-	//       GammaConst<Ns,Ns*Ns-1>()*(tmp[s-1]-tmp[s+1]));
+	//       Gamma(15)*(tmp[s-1]-tmp[s+1]));
 	//  
 	//  Recoded using chiralProject and BLAS ology
 	chi[s][rb[cb]] = fb5*tmp[s] + fc5*chiralProjectPlus(tmp[s+1]);
@@ -392,7 +392,7 @@ namespace Chroma
 
       // chi[0][rb[cb]] = fb5*tmp[0]  + 
       //	fc5*(tmp[1] - m_q*tmp[N5-1] + 
-      // GammaConst<Ns,Ns*Ns-1>()*(m_q*tmp[N5-1] + tmp[1]));
+      // Gamma(15)*(m_q*tmp[N5-1] + tmp[1]));
       //
       // Recoded using chiralProject and BLAS ology
       chi[0][rb[cb]] = fb5*tmp[0] + fc5*chiralProjectPlus(tmp[1]);
@@ -401,7 +401,7 @@ namespace Chroma
       
       // chi[N5-1][rb[cb]] = fb5*tmp[N5-1] + 
       //	fc5*( tmp[N5-2] - m_q *tmp[0] -
-      //          GammaConst<Ns,Ns*Ns-1>()*(tmp[N5-2] + m_q * tmp[0]));
+      //          Gamma(15)*(tmp[N5-2] + m_q * tmp[0]));
       chi[N5-1][rb[cb]] = fb5*tmp[N5-1] + fc5*chiralProjectMinus(tmp[N5-2]);
       chi[N5-1][rb[cb]] -= fc5mf*chiralProjectPlus(tmp[0]);
 

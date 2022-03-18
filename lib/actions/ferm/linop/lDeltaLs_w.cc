@@ -31,11 +31,11 @@ void lDeltaLs::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   // Construct  eps(H)*psi
   (*D)(tmp1, psi, PLUS);
-  tmp2 = GammaConst<Ns,Ns*Ns-1>()*(Real(2)*tmp1 - Real(1)*psi);
+  tmp2 = Gamma(15)*(Real(2)*tmp1 - Real(1)*psi);
 
   // Construct  eps(H)*eps(H)*psi
   (*D)(tmp1, tmp2, PLUS);
-  tmp3 = GammaConst<Ns,Ns*Ns-1>()*(Real(2)*tmp1 - Real(1)*tmp2);
+  tmp3 = Gamma(15)*(Real(2)*tmp1 - Real(1)*tmp2);
 
   // Construct  (1/4)(1 - eps(H)*eps(H))*psi
   chi = Real(0.25)*(psi - tmp3);
