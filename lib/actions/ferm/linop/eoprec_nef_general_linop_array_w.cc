@@ -141,7 +141,7 @@ namespace Chroma
       fact = Real(0.5)*f_minus[0];
       
       chi[0][rb[cb]] = f_plus[0]*psi[0] + 
-	fact*( tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2 );
+	fact*( tmp1 - Gamma(15)*tmp2 );
       */
 
       // Recoded using chiral projectors
@@ -175,7 +175,7 @@ namespace Chroma
       tmp2[rb[cb]] = psi[N5-2] + m_q * psi[0];
       
       chi[N5-1][rb[cb]] = f_plus[N5-1]*psi[N5-1] 
-	+ fact*( tmp1 + GammaConst<Ns,Ns*Ns-1>() * tmp2);
+	+ fact*( tmp1 + Gamma(15) * tmp2);
       */
 
       // Recoded using chiral projectors
@@ -205,7 +205,7 @@ namespace Chroma
 	tmp2[rb[cb]] = psi[s-1] - psi[s+1];
 	
 	chi[s][rb[cb]] = f_plus[s]*psi[s] +
-	  fact*( tmp1 + GammaConst<Ns,Ns*Ns-1>() * tmp2  );
+	  fact*( tmp1 + Gamma(15) * tmp2  );
 	*/
 
 	// Recoded using chiral projectors
@@ -240,7 +240,7 @@ namespace Chroma
       tmp2[rb[cb]] = f_minus[1]*psi[1] + m_q*f_minus[N5-1]*psi[N5-1];
 
       chi[0][rb[cb]] = f_plus[0]*psi[0] + 
-	fact*( tmp1 + GammaConst<Ns, Ns*Ns-1>()*tmp2 );
+	fact*( tmp1 + Gamma(15)*tmp2 );
       */
 
       // Recoded using chiral projectors
@@ -256,7 +256,7 @@ namespace Chroma
       tmp2[rb[cb]] = f_minus[N5-2]*psi[N5-2] + m_q * f_minus[0]* psi[0];
       
       chi[N5-1][rb[cb]] = f_plus[N5-1]*psi[N5-1]
-	+ fact*( tmp1 - GammaConst<Ns,Ns*Ns-1>()*tmp2 ) ;
+	+ fact*( tmp1 - Gamma(15)*tmp2 ) ;
       */
 
       // Recoded using Chiral Projectors
@@ -274,7 +274,7 @@ namespace Chroma
 	tmp2[rb[cb]] = f_minus[s-1]*psi[s-1] - f_minus[s+1]*psi[s+1];
 
 	chi[s][rb[cb]] = f_plus[s]*psi[s] +
-	  fact*( tmp1 - GammaConst<Ns,Ns*Ns-1>()*tmp2 );
+	  fact*( tmp1 - Gamma(15)*tmp2 );
 	*/
 
 	// Recoded using Chiral Projectors
@@ -332,7 +332,7 @@ namespace Chroma
 	// OLD CODE
 	// The factor of 1/2 is for the projection expression
 	//	fact = Real(0.5)*l[s];
-        //      z[N5-1][rb[cb]] -=  fact*(psi[s] - GammaConst<Ns,Ns*Ns-1>()*psi[s])  ;
+        //      z[N5-1][rb[cb]] -=  fact*(psi[s] - Gamma(15)*psi[s])  ;
        
 	// Recoded with projector
 	z[N5-1][rb[cb]] -= l[s]*chiralProjectMinus(psi[s]);
@@ -348,7 +348,7 @@ namespace Chroma
 	// OLD CODE 
 	// The factor of 1/2 is for the projection part
 	//	fact = Real(0.5)*a[s];
-	// z_prime[s+1][rb[cb]] = z[s+1] - fact*(z_prime[s] + GammaConst<Ns,Ns*Ns-1>()*z_prime[s]);
+	// z_prime[s+1][rb[cb]] = z[s+1] - fact*(z_prime[s] + Gamma(15)*z_prime[s]);
 
 	// Recoded using chiralProjectors
 	z_prime[s+1][rb[cb]] = z[s+1] - a[s]*chiralProjectPlus(z_prime[s]);
@@ -369,7 +369,7 @@ namespace Chroma
 	// OLD CODE
 	// fact = Real(0.5)*b[s];
 
-	// z_prime[s][rb[cb]] = z[s] - fact*(z_prime[s+1] - GammaConst<Ns,Ns*Ns-1>()*z_prime[s+1]);
+	// z_prime[s][rb[cb]] = z[s] - fact*(z_prime[s+1] - Gamma(15)*z_prime[s+1]);
 
 	// Recoded Using ChiralProjectors
 	z_prime[s][rb[cb]] = z[s] - b[s]*chiralProjectMinus(z_prime[s+1]);
@@ -382,7 +382,7 @@ namespace Chroma
 	// OLD CODE
 	// fact = Real(0.5)*r[s]; 
 
-	// chi[s][rb[cb]] = z_prime[s] - fact*(chi[N5-1] + GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
+	// chi[s][rb[cb]] = z_prime[s] - fact*(chi[N5-1] + Gamma(15)*chi[N5-1]);
 	
 	// Recoded using ChiralProjectors
 	chi[s][rb[cb]] = z_prime[s] - r[s]*chiralProjectPlus(chi[N5-1]);
@@ -406,7 +406,7 @@ namespace Chroma
 	// OLD CODE 
 	// The factor of 1/2 is for the projection expression
 	// fact = Real(0.5)*r[s];
-        // z[N5-1][rb[cb]] -=  fact*(psi[s] + GammaConst<Ns,Ns*Ns-1>()*psi[s])  ;
+        // z[N5-1][rb[cb]] -=  fact*(psi[s] + Gamma(15)*psi[s])  ;
 	// Recoded Using Chiral Projectors
 	z[N5-1][rb[cb]] -= r[s]*chiralProjectPlus(psi[s]);
       }
@@ -422,7 +422,7 @@ namespace Chroma
 	// OLD CODE
 	// The factor of 1/2 is for the projection part
 	// fact = Real(0.5)*b[s];
-	// z_prime[s+1][rb[cb]] = z[s+1] - fact*(z_prime[s] - GammaConst<Ns,Ns*Ns-1>()*z_prime[s]);
+	// z_prime[s+1][rb[cb]] = z[s+1] - fact*(z_prime[s] - Gamma(15)*z_prime[s]);
 
 	// Recoded using Chiral Projectors
 	z_prime[s+1][rb[cb]] = z[s+1] - b[s]*chiralProjectMinus(z_prime[s]);
@@ -444,7 +444,7 @@ namespace Chroma
 
 	// OLD CODE
 	// fact = Real(0.5)*a[s];
-	//z_prime[s][rb[cb]] = z[s] - fact*(z_prime[s+1] + GammaConst<Ns,Ns*Ns-1>()*z_prime[s+1]);
+	//z_prime[s][rb[cb]] = z[s] - fact*(z_prime[s+1] + Gamma(15)*z_prime[s+1]);
 
 	// Recoded using Chiral Projectors
 	z_prime[s][rb[cb]] = z[s] - a[s]*chiralProjectPlus(z_prime[s+1]);
@@ -457,7 +457,7 @@ namespace Chroma
 
 	// OLD CODE
 	//	fact = Real(0.5)*l[s]; 
-	// chi[s][rb[cb]] = z_prime[s] - fact*(chi[N5-1] - GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
+	// chi[s][rb[cb]] = z_prime[s] - fact*(chi[N5-1] - Gamma(15)*chi[N5-1]);
 
 	
 	// Recoded using Chiral Projectors
@@ -514,7 +514,7 @@ namespace Chroma
       tmp2[rb[otherCB]] = psi[1] + m_q*psi[N5-1];
       
       tmp[0][rb[otherCB]] = fact1*psi[0] 
-	+ fact2*(tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2);
+	+ fact2*(tmp1 - Gamma(15)*tmp2);
       */
 
       // Recoded using Chiral Projectors
@@ -536,7 +536,7 @@ namespace Chroma
       tmp2[rb[otherCB]]=psi[N5-2]+m_q*psi[0];
 
       tmp[N5-1][rb[otherCB]] = fact1*psi[N5-1]
-	+ fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2 );
+	+ fact2*(tmp1 + Gamma(15)*tmp2 );
       */
 
       // Recoded using Chiral Projectors
@@ -559,7 +559,7 @@ namespace Chroma
 	  tmp2[rb[otherCB]]=psi[s-1] - psi[s+1];
 	  
 	  tmp[s][rb[otherCB]]= fact1*psi[s] 
-	  + fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2) ;
+	  + fact2*(tmp1 + Gamma(15)*tmp2) ;
 	*/
 
 	// Recoded using Chiral Projectors
@@ -599,7 +599,7 @@ namespace Chroma
       tmp2[rb[cb]] = c5[1]*tmp_d[1] + fact*tmp_d[N5-1];
 
       chi[0][rb[cb]] = factb*tmp_d[0]
-	- one_quarter*( tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2 );
+	- one_quarter*( tmp1 + Gamma(15)*tmp2 );
       */
 
       // Recoded with Chiral Projector
@@ -621,7 +621,7 @@ namespace Chroma
       tmp2[rb[cb]] = c5[N5-2]*tmp_d[N5-2] + fact * tmp_d[0];
 
       chi[N5-1][rb[cb]] = factb * tmp_d[N5-1]
-	- one_quarter * ( tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2 );
+	- one_quarter * ( tmp1 - Gamma(15)*tmp2 );
       */
 
       // Recoded with Chiral Projector
@@ -644,7 +644,7 @@ namespace Chroma
 	//     tmp2[rb[cb]] = c5[s-1]*tmp_d[s-1] - c5[s+1]*tmp_d[s+1];
 
 	// chi[s][rb[cb]] = factb*tmp_d[s] 
-	//  - one_quarter*( tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2 );
+	//  - one_quarter*( tmp1 - Gamma(15)*tmp2 );
 
 	// Recoded with Chiral Projector
 	chi[s][rb[cb]] = factb*tmp_d[s];
@@ -717,7 +717,7 @@ namespace Chroma
 	tmp2[rb[otherCB]] = psi[1] + m_q*psi[N5-1];
 	
 	tmp[rb[otherCB]] = fact1*psi[0] 
-	  + fact2*(tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2);
+	  + fact2*(tmp1 - Gamma(15)*tmp2);
 	*/
 
 	// Recoded with chiralProject
@@ -739,7 +739,7 @@ namespace Chroma
 	tmp2[rb[otherCB]]=psi[N5-2]+m_q*psi[0];
 	
 	tmp[rb[otherCB]] = fact1*psi[N5-1]
-	  + fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2 );
+	  + fact2*(tmp1 + Gamma(15)*tmp2 );
 	*/
 
 	// Recoded using Chiral Projectors
@@ -766,7 +766,7 @@ namespace Chroma
 	  tmp2[rb[otherCB]]=psi[s-1] - psi[s+1];
 	  
 	  tmp[rb[otherCB]]= fact1*psi[s] 
-	    + fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2) ;
+	    + fact2*(tmp1 + Gamma(15)*tmp2) ;
 	  */
 
 	  	// Recoded using Chiral Projectors
@@ -820,10 +820,10 @@ namespace Chroma
 	for(int s=0; s < N5; s++) {
 	  // OLD CODE
 	  /*
-	  chi_plus[s][rb[cb]]  = chi[s] + GammaConst<Ns,Ns*Ns-1>()*chi[s];
+	  chi_plus[s][rb[cb]]  = chi[s] + Gamma(15)*chi[s];
 	  chi_plus[s][rb[cb]] *= Real(0.5);
 	  
-	  chi_minus[s][rb[cb]] = chi[s] - GammaConst<Ns,Ns*Ns-1>()*chi[s];
+	  chi_minus[s][rb[cb]] = chi[s] - Gamma(15)*chi[s];
 	  chi_minus[s][rb[cb]]*= Real(0.5);
 	  */
 

@@ -71,17 +71,17 @@ namespace Chroma
     {
       for(int s(1);s<N5-1;s++) // 1/2k psi[s] + P_- * psi[s+1] + P_+ * psi[s-1]
 	chi[s][rb[cb]] = b5InvTwoKappa*psi[s] - 
-	  (0.5*c5InvTwoKappa)*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s-1] - psi[s+1]) ) ;
+	  (0.5*c5InvTwoKappa)*( psi[s+1] + psi[s-1] + Gamma(15)*(psi[s-1] - psi[s+1]) ) ;
       
       int N5m1(N5-1) ;
       //s=0 -- 1/2k psi[0] - P_- * psi[1] + mf* P_+ * psi[N5-1]
       chi[0][rb[cb]] = b5InvTwoKappa*psi[0] - 
-	(0.5*c5InvTwoKappa)*( psi[1]   - m_q*psi[N5m1] - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]) ) ;
+	(0.5*c5InvTwoKappa)*( psi[1]   - m_q*psi[N5m1] - Gamma(15)*(m_q*psi[N5m1] + psi[1]) ) ;
       
       int N5m2(N5-2);
       //s=N5-1 -- 1/2k psi[N5-1] +mf* P_- * psi[0]  -  P_+ * psi[N5-2]
       chi[N5m1][rb[cb]] = b5InvTwoKappa*psi[N5m1] - 
-	(0.5*c5InvTwoKappa)*( psi[N5m2] - m_q *psi[0] + GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
+	(0.5*c5InvTwoKappa)*( psi[N5m2] - m_q *psi[0] + Gamma(15)*(psi[N5m2] + m_q * psi[0]) );
     }
     break ;
 
@@ -89,17 +89,17 @@ namespace Chroma
     {    
       for(int s(1);s<N5-1;s++) // 1/2k psi[s] - P_+ * psi[s+1] - P_- * psi[s-1]
 	chi[s][rb[cb]] = b5InvTwoKappa*psi[s] - 
-	  (0.5*c5InvTwoKappa)*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s+1] - psi[s-1]) ) ;
+	  (0.5*c5InvTwoKappa)*( psi[s+1] + psi[s-1] + Gamma(15)*(psi[s+1] - psi[s-1]) ) ;
       
       int N5m1(N5-1) ;
       //s=0 -- 1/2k psi[0] - P_+ * psi[1] + mf* P_- * psi[N5-1]
       chi[0][rb[cb]] = b5InvTwoKappa*psi[0] - 
-	(0.5*c5InvTwoKappa)*( psi[1]   - m_q*psi[N5m1] + GammaConst<Ns,Ns*Ns-1>()*( psi[1]+m_q*psi[N5m1]) ) ;
+	(0.5*c5InvTwoKappa)*( psi[1]   - m_q*psi[N5m1] + Gamma(15)*( psi[1]+m_q*psi[N5m1]) ) ;
       
       int N5m2(N5-2);
       //s=N5-1 -- 1/2k psi[N5-1] + mf* P_+ * psi[0]  -  P_- * psi[N5-2]
       chi[N5m1][rb[cb]] = b5InvTwoKappa*psi[N5m1] - 
-	(0.5*c5InvTwoKappa)*( psi[N5m2] - m_q *psi[0] - GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
+	(0.5*c5InvTwoKappa)*( psi[N5m2] - m_q *psi[0] - Gamma(15)*(psi[N5m2] + m_q * psi[0]) );
     }
     break ;
     }
@@ -141,13 +141,13 @@ namespace Chroma
       // First apply the inverse of Lm 
       Real fact(0.5*m_q*TwoKappa) ;
       for(int s(0);s<N5-1;s++){
-	chi[N5-1][rb[cb]] -= fact * (chi[s] - GammaConst<Ns,Ns*Ns-1>()*chi[s])  ;
+	chi[N5-1][rb[cb]] -= fact * (chi[s] - Gamma(15)*chi[s])  ;
 	fact *= TwoKappa ;
       }
       
       //Now apply the inverse of L. Forward elimination 
       for(int s(1);s<N5;s++)
-	chi[s][rb[cb]] += Kappa*(chi[s-1] + GammaConst<Ns,Ns*Ns-1>()*chi[s-1]) ;
+	chi[s][rb[cb]] += Kappa*(chi[s-1] + Gamma(15)*chi[s-1]) ;
       
       //The inverse of D  now
       chi[N5-1][rb[cb]] *= invDfactor ;
@@ -155,12 +155,12 @@ namespace Chroma
       
       //The inverse of R. Back substitution...... Getting there! 
       for(int s(N5-2);s>-1;s--)
-	chi[s][rb[cb]] += Kappa*(chi[s+1] - GammaConst<Ns,Ns*Ns-1>()*chi[s+1]) ;
+	chi[s][rb[cb]] += Kappa*(chi[s+1] - Gamma(15)*chi[s+1]) ;
       
       //Finally the inverse of Rm 
       LatticeFermion tt;            moveToFastMemoryHint(tt);
       fact = 0.5*m_q*TwoKappa;
-      tt[rb[cb]] = fact*(chi[N5-1] + GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
+      tt[rb[cb]] = fact*(chi[N5-1] + Gamma(15)*chi[N5-1]);
       for(int s(0);s<N5-1;s++){
 	chi[s][rb[cb]] -= tt  ;
 	tt[rb[cb]] *= TwoKappa ;
@@ -174,13 +174,13 @@ namespace Chroma
       // First apply the inverse of Lm 
       Real fact(0.5*m_q*TwoKappa) ;
       for(int s(0);s<N5-1;s++){
-	chi[N5-1][rb[cb]] -= fact * (chi[s] + GammaConst<Ns,Ns*Ns-1>()*chi[s])  ;
+	chi[N5-1][rb[cb]] -= fact * (chi[s] + Gamma(15)*chi[s])  ;
 	fact *= TwoKappa ;
       }
       
       //Now apply the inverse of L. Forward elimination 
       for(int s(1);s<N5;s++)
-	chi[s][rb[cb]] += Kappa*(chi[s-1] - GammaConst<Ns,Ns*Ns-1>()*chi[s-1]) ;
+	chi[s][rb[cb]] += Kappa*(chi[s-1] - Gamma(15)*chi[s-1]) ;
       
       //The inverse of D  now
       chi[N5-1][rb[cb]] *= invDfactor ;
@@ -188,11 +188,11 @@ namespace Chroma
       
       //The inverse of R. Back substitution...... Getting there! 
       for(int s(N5-2);s>-1;s--)
-	chi[s][rb[cb]] += Kappa*(chi[s+1] + GammaConst<Ns,Ns*Ns-1>()*chi[s+1]) ;
+	chi[s][rb[cb]] += Kappa*(chi[s+1] + Gamma(15)*chi[s+1]) ;
       
       //Finally the inverse of Rm 
       LatticeFermion tt;                 moveToFastMemoryHint(tt);
-      tt[rb[cb]] = (0.5*m_q*TwoKappa)*(chi[N5-1] - GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
+      tt[rb[cb]] = (0.5*m_q*TwoKappa)*(chi[N5-1] - Gamma(15)*chi[N5-1]);
       for(int s(0);s<N5-1;s++){
 	chi[s][rb[cb]] -= tt  ;
 	tt[rb[cb]] *= TwoKappa ;
@@ -236,7 +236,7 @@ namespace Chroma
       {
 	tmp[rb[otherCB]] = psi[s] + 
 	  0.5*( psi[s+1] + psi[s-1] + 
-		GammaConst<Ns,Ns*Ns-1>()*(psi[s-1] - psi[s+1]));
+		Gamma(15)*(psi[s-1] - psi[s+1]));
 	D.apply(chi[s],tmp,isign,cb);
 	chi[s][rb[cb]] *= (-0.5);
       }
@@ -244,14 +244,14 @@ namespace Chroma
       int N5m1(N5-1);
       tmp[rb[otherCB]] = psi[0]  + 
 	0.5*(psi[1] - m_q*psi[N5m1] 
-	     - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]));
+	     - Gamma(15)*(m_q*psi[N5m1] + psi[1]));
       D.apply(chi[0],tmp,isign,cb);
       chi[0][rb[cb]] *= (-0.5);
       
       int N5m2(N5-2);
       tmp[rb[otherCB]] = psi[N5m1] + 
 	0.5*(psi[N5m2] - m_q *psi[0] 
-	     + GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]));
+	     + Gamma(15)*(psi[N5m2] + m_q * psi[0]));
 
       D.apply(chi[N5m1],tmp,isign,cb);
       chi[N5m1][rb[cb]] *= (-0.5);
@@ -269,18 +269,18 @@ namespace Chroma
       for(int s(1);s<N5-1;s++){
 	chi[s][rb[cb]] = tmp[s] + 
 	  0.5*(tmp[s+1] + tmp[s-1] -
-	       GammaConst<Ns,Ns*Ns-1>()*(tmp[s-1]-tmp[s+1]));
+	       Gamma(15)*(tmp[s-1]-tmp[s+1]));
       }
       int N5m1(N5-1);
       chi[0][rb[cb]] = tmp[0]  + 
 	0.5*(tmp[1] - m_q*tmp[N5m1] + 
-	     GammaConst<Ns,Ns*Ns-1>()*(m_q*tmp[N5m1] + tmp[1]));
+	     Gamma(15)*(m_q*tmp[N5m1] + tmp[1]));
       
       
       int N5m2(N5-2);
       chi[N5m1][rb[cb]] = tmp[N5m1] + 
 	0.5*(tmp[N5m2] - m_q *tmp[0] -
-	     GammaConst<Ns,Ns*Ns-1>()*(tmp[N5m2] + m_q * tmp[0]));
+	     Gamma(15)*(tmp[N5m2] + m_q * tmp[0]));
       
     }
     break ;

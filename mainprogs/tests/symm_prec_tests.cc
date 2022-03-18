@@ -707,7 +707,7 @@ TEST_F(SymmFixture,TestTwist)
     {
 	(*M_tw)(t1,source,PLUS);
 	(*M_symm)(t2,source, PLUS);
-	t2[ rb[1] ] += twist*(GammaConst<Ns,Ns*Ns-1>()*timesI(source));
+	t2[ rb[1] ] += twist*(Gamma(15)*timesI(source));
 
 	t2[ rb[1] ] -= t1;
 	Double normdiff = sqrt(norm2(t2,rb[1]));
@@ -720,7 +720,7 @@ TEST_F(SymmFixture,TestTwist)
     {
  	(*M_tw)(t1,source,MINUS);
  	(*M_symm)(t2,source, MINUS);
- 	t2[ rb[1] ] -= twist*(GammaConst<Ns,Ns*Ns-1>()*timesI(source));
+ 	t2[ rb[1] ] -= twist*(Gamma(15)*timesI(source));
 
  	t2[ rb[1] ] -= t1;
  	Double normdiff = sqrt(norm2(t2,rb[1]));
@@ -742,13 +742,13 @@ TEST_F(SymmFixture,TestTwist)
     	mdagm[rb[1]] += (twist*twist)*source;
 
     	// +i mu M^\dag gamma_5
-    	t1[rb[1]] = (GammaConst<Ns,Ns*Ns-1>()*timesI(source));
+    	t1[rb[1]] = (Gamma(15)*timesI(source));
     	(*M_symm)(t3,t1,MINUS);
     	mdagm[rb[1]] += twist*t3;
 
     	// -i mu gamma_5 M soure
     	(*M_symm)(t1,source,PLUS);
-    	t3[rb[1]] = (GammaConst<Ns,Ns*Ns-1>()*timesI(t1));
+    	t3[rb[1]] = (Gamma(15)*timesI(t1));
     	mdagm[rb[1]] -= twist*t3;
 
 

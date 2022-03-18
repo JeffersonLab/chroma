@@ -154,8 +154,8 @@ namespace Chroma
   {
 #ifndef QDP_IS_QDPJIT
     LatticeFermion tmp;
-    GammaConst<4,8> g4; // gamma_4
-    GammaConst<4,4> g3; // gamma_3
+    Gamma g4(8); // gamma_4
+    Gamma g3(4); // gamma_3
     
     for(int tt=0; tt < QDP::Layout::subgridLattSize()[3]; ++tt)
     {
