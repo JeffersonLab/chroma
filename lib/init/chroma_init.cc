@@ -71,7 +71,8 @@ namespace Chroma
     //! Has the input instance been created?
     // bool xmlInputP = false;
 
-
+    std::vector<std::string> input_list;
+    
     // Internal
     std::string constructFileName(const std::string& filename)
     {
@@ -90,6 +91,11 @@ namespace Chroma
 
   } // End anonymous namespace
 
+
+  //! Get input file name
+  std::vector<std::string>& getInputFileList()  {return input_list;}
+
+  
   //! Get input file name
   std::string getXMLInputFileName() {return constructFileName(input_filename);}
 
@@ -151,7 +157,37 @@ namespace Chroma
 		    << std::endl;
 	QDP_abort(0);
       }
+      
+      // Search for -il
+      if( argv_i == std::string("-il") )
+      {
+	QDPIO::cout << "Input file list:" << std::endl;
+	if( i + 1 < *argc )
+	{
+	  std::ifstream flist((*argv)[i+1]);
 
+	  std::string line;
+	  int count=0;
+	  while (std::getline(flist, line))
+	    {
+	      QDPIO::cout << line << std::endl;
+	      input_list.push_back(line);
+	      count++;
+	    }
+
+	  QDPIO::cout << "Total number of input files: " << count << std::endl;
+	  // Skip over next
+	  i++;
+	}
+	else 
+	{
+	  // i + 1 is too big
+	  QDPIO::cerr << "Error: dangling -il specified. " << std::endl;
+	  QDP_abort(1);
+	}
+      }
+
+      
       // Search for -i or --chroma-i
       if( argv_i == std::string("-i") || argv_i == std::string("--chroma-i") ) 
       {
