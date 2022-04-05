@@ -396,7 +396,7 @@ namespace Chroma
     }
 
     //----------------------------------------------------------------------------
-    //! Normalize just one displacement array and return std::vector
+    //! Return multi1d from std::vector
     multi1d<int> tomulti1d(const std::vector<int>& orig)
     {
       multi1d<int> r(orig.size());

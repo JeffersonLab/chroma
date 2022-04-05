@@ -32,6 +32,7 @@
 #  include <iomanip>
 #  include <map>
 #  include <memory>
+#  include <random>
 #  include <set>
 #  include <sstream>
 #  include <stdexcept>
@@ -118,6 +119,12 @@ namespace Chroma
       bool hasSome() const
       {
 	return opt_val.first;
+      }
+
+      /// Return whether it has been initialized with a value
+      explicit operator bool() const noexcept
+      {
+	return hasSome();
       }
 
       /// Return the value if it has been initialized with some
@@ -1115,7 +1122,7 @@ namespace Chroma
       /// Return whether the tensor is not empty
       explicit operator bool() const noexcept
       {
-	return superbblas::detail::volume(size) > 0;
+	return volume() > 0;
       }
 
       // Return whether from != 0 or size != dim
@@ -1683,7 +1690,7 @@ namespace Chroma
 	if (dist != OnMaster && dist != Local)
 	  return false;
 
-	if (superbblas::detail::volume(size) > 0 && N > 1)
+	if (volume() > 0 && N > 1)
 	{
 	  bool non_full_dim = false; // some dimension is not full
 	  for (unsigned int i = 0; i < N - 1; ++i)
@@ -1758,7 +1765,7 @@ namespace Chroma
 	  throw std::runtime_error("Not allowed for tensor with a scale not being one");
 
 	// Only on primary node read the data
-	std::size_t vol = superbblas::detail::volume(size);
+	std::size_t vol = volume();
 	std::size_t disp = detail::coor2index<N>(from, dim, strides);
 	std::size_t word_size = sizeof(typename detail::WordType<T>::type);
 	bin.readArrayPrimaryNode((char*)&data.get()[disp], word_size, sizeof(T) / word_size * vol);
@@ -1799,7 +1806,7 @@ namespace Chroma
 	  ss << "% " << repr(data.get()) << std::endl;
 	  ss << "% dist=" << p->p << std::endl;
 	  ss << name << "=reshape([";
-	  std::size_t vol = superbblas::detail::volume(size);
+	  std::size_t vol = volume();
 	  for (std::size_t i = 0; i < vol; ++i)
 	  {
 	    //using detail::repr::operator<<;
@@ -2234,6 +2241,78 @@ namespace Chroma
 				       superbblas::Copy);
       }
     };
+
+    /// Modify the content of a tensor with the result of a function
+    /// \param t: tensor template
+    /// \param func: function () -> COMPLEX
+    /// \param threaded: whether to run threaded
+
+    template <std::size_t N, typename COMPLEX, typename Func>
+    void fillWithCPUFuncNoArgs(const Tensor<N, COMPLEX>& t, Func func, bool threaded = true)
+    {
+      auto l = t.getLocal().like_this(none, OnHost);
+      std::size_t vol = l.volume();
+      COMPLEX* ptr = r.data.get();
+
+      if (threaded)
+      {
+#  ifdef _OPENMP
+#    pragma omp parallel for schedule(static)
+#  endif
+	for (std::size_t i = 0; i < vol; ++i)
+	  ptr[i] = func();
+      }
+      else
+      {
+	for (std::size_t i = 0; i < vol; ++i)
+	  ptr[i] = func();
+      }
+
+      l.copyTo(t.getLocal());
+    }
+
+    namespace detail
+    {
+      inline std::mt19937_64& getSeed()
+      {
+	//  This is quick and dirty and nonreproducible if the lattice is distributed
+	//  among the processes is different ways.
+	static std::mt19937_64 twister_engine(10 +  QMP_get_node_number());
+	return twister_engine;
+      }
+    }
+
+    /// Modify with complex random uniformly distributed numbers with the real and the imaginary part between [a,b]
+    /// \param t: tensor to fill with random numbers
+    /// \param a: minimum random value
+    /// \param b: maximum random value
+
+    template <std::size_t N, typename T,
+	      typename std::enable_if<detail::is_complex<T>::value, bool>::type = true>
+    void urand(const Tensor<N, T>& t, T::value_type a=0, T::value_type b=1)
+    {
+      std::uniform_real_distribution<T::value_type> d(a, b);
+      fillWithCPUFuncNoArgs(
+	t,
+	[]() {
+	  return {d(detail::getSeed()), d(detail::getSeed())};
+	},
+	false);
+    }
+
+    /// Modify with random uniformly distributed numbers between [a,b]
+    /// \param t: tensor to fill with random numbers
+    /// \param a: minimum random value
+    /// \param b: maximum random value
+
+    template <std::size_t N, typename T,
+	      typename std::enable_if<!detail::is_complex<T>::value, bool>::type = true>
+    void urand(const Tensor<N, T>& t, T::value_type a=0, T::value_type b=1)
+    {
+      std::uniform_real_distribution<T> d(a, b);
+      fillWithCPUFuncNoArgs(
+	t, []() { return d(detail::getSeed()); }, false);
+    }
 
     /// Return a tensor filled with the value of the function applied to each element
     /// \param order: dimension labels, they should start with "xyztX"
