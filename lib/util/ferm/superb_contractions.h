@@ -294,15 +294,32 @@ namespace Chroma
 	}
       }
 
-      // Throw an error if `order` does not contain a label in `should_contain`
-      inline std::string remove_dimensions(const std::string& order, const std::string& remove_dims)
+      /// Concatenate the two given orders without repeating characters and removing some other characters
+      /// \param order0: input string
+      /// \param order1: input string
+      /// \param remove_dims: remove these characters
+
+      inline std::string union_dimensions(const std::string& order0, const std::string& order1,
+					  const std::string& remove_dims = "")
       {
 	std::string out;
-	out.reserve(order.size());
-	for (char c : order)
-	  if (remove_dims.find(c) == std::string::npos)
+	out.reserve(order0.size() + order1.size());
+	for (char c : order0)
+	  if (out.find(c) == std::string::npos && remove_dims.find(c) == std::string::npos)
+	    out.push_back(c);
+	for (char c : order1)
+	  if (out.find(c) == std::string::npos && remove_dims.find(c) == std::string::npos)
 	    out.push_back(c);
 	return out;
+      }
+
+      /// Remove some characters from a given string
+      /// \param order: input string
+      /// \param remove_dims: remove these characters from `order`
+
+      inline std::string remove_dimensions(const std::string& order, const std::string& remove_dims)
+      {
+	return union_dimensions(order, "", remove_dims);
       }
 
       template <std::size_t N>
@@ -2053,15 +2070,63 @@ namespace Chroma
 #  endif
     };
 
-    //     inline void* getQDPPtrFromId(int id)
-    //     {
-    // #  ifdef QDP_IS_QDPJIT
-    //       std::vector<QDPCache::ArgKey> v(id, 1);
-    //       return QDP_get_global_cache().get_kernel_args(v, false)[0];
-    // #  else
-    //       return nullptr;
-    // #  endif
-    //     }
+    /// Contract some dimension of the given tensors
+    /// \param v: one tensor to contract
+    /// \param w: the other tensor to contract
+    /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
+    /// \param action: either to copy or add to the given output tensor if given
+    /// \param r: optional given tensor where to put the resulting contraction
+    /// \param mr: map from the given `r` to the labels of the contraction
+    /// \param beta: scale on `r` if the `action` in `AddTo`
+    ///
+    /// Example:
+    ///
+    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("Ss", {{Ns,Ns}});
+    ///   Tensor<2,Complex> r0 = contract<2>(t, q, "s"); // r0 dims are "cS"
+    ///   Tensor<3,Complex> r1 = contract<3>(t, q, ""); // r1 dims are "csS"
+    ///   Tensor<2,Complex> r2("cS", {{Nc,Ns}});
+    ///   contract<2>(t, q, "s", CopyTo, r2); // r2 = q * s
+    ///   Tensor<2,Complex> r3("cs", {{Nc,Ns}});
+    ///   contract<2>(t, q, "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s
+    ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
+
+    template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
+    Tensor<Nr, T> contract(Tensor<Nv, T> v, Tensor<Nw, T> w, const std::string& labels_to_contract,
+			   Maybe<Action> action = none, Maybe<Tensor<Nr, T>> r = none,
+			   const remap& mr = {}, T beta = T{1})
+    {
+      if (action.hasSome() != r.hasSome())
+	throw std::runtime_error("Invalid default value");
+
+      // Compute the labels of the output tensor: v.order + w.order - labels_to_contract
+      std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
+      if (Nr != rorder.size())
+	throw std::runtime_error(
+	  "contract: The dimension of the output tensor does not match the template argument");
+      if (r && union_dimensions(rorder, r.getSome().order) != rorder)
+	throw std::runtime_error("contract: The given output tensor has an unexpected ordering");
+
+      // If the output tensor is not given create a new one
+      Tensor<Nr, T> r0;
+      if (!r)
+      {
+	r0 = v.like_this<Nr>(rorder, w.kvdim());
+	beta = 0;
+      }
+      else
+      {
+	r0 = r.getSome();
+      }
+
+      // Correct beta for the action
+      if (action.hasSome() && action.getSome() == CopyTo)
+	beta = 0.0;
+
+      // Do the contraction
+      r0.contract(v, {}, NotConjugate, w, {}, NotConjugate, mr, beta);
+
+      return r0;
+    }
 
     template <typename T>
     void* getQDPPtr(const T& t)
