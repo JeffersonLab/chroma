@@ -93,12 +93,21 @@ foreach( EXEC ${ChromaSingleExecs})
   add_executable( ${EXEC} ${EXEC}.cc )
 
   if (QDP_IS_QDPJIT)
+    
     if(QDP_PROP_OPT)
       set_target_properties( ${EXEC} PROPERTIES CXX_STANDARD 20 )
     endif()
+    
+    if( QDP_BACKEND_L0 )
+      find_package(PkgConfig REQUIRED)
+      pkg_search_module(PKG_LLVMSPIRV REQUIRED LLVMSPIRVLib)
+      target_link_libraries(${EXEC} PUBLIC ${PKG_LLVMSPIRV_LIBRARIES})
+      target_link_options(${EXEC} PUBLIC ${PKG_LLVMSPIRV_LDFLAGS})
+    endif()
+
   endif()
   
-  target_link_libraries( ${EXEC} Chroma::chromalib )
+  target_link_libraries( ${EXEC} PUBLIC Chroma::chromalib )
   target_include_directories( ${EXEC} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endforeach()
 
@@ -115,11 +124,20 @@ add_executable(t_symm_prec
 	)
 
 if (QDP_IS_QDPJIT)
-  set_target_properties( t_symm_prec PROPERTIES CXX_STANDARD 20 )
+  if(QDP_PROP_OPT)
+    set_target_properties( t_symm_prec PROPERTIES CXX_STANDARD 20 )
+  endif()
+    
+  if( QDP_BACKEND_L0 )
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(PKG_LLVMSPIRV REQUIRED LLVMSPIRVLib)
+    target_link_libraries(t_symm_prec PUBLIC ${PKG_LLVMSPIRV_LIBRARIES})
+    target_link_options(t_symm_prec PUBLIC ${PKG_LLVMSPIRV_LDFLAGS})
+  endif()
 endif()
 
-target_link_libraries( t_symm_prec PRIVATE Chroma::chromalib GTest)
-target_include_directories(t_symm_prec PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries( t_symm_prec PUBLIC Chroma::chromalib GTest)
+target_include_directories(t_symm_prec PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 if ( Chroma_ENABLE_LAPACK )
@@ -130,9 +148,18 @@ add_executable(t_inv_fgmres_dr
 	)
 
 if (QDP_IS_QDPJIT)
-  set_target_properties( t_inv_fgmres_dr PROPERTIES CXX_STANDARD 20 )
+  if(QDP_PROP_OPT)
+    set_target_properties( t_inv_fgmres_dr PROPERTIES CXX_STANDARD 20 )
+  endif()
+    
+  if( QDP_BACKEND_L0 )
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(PKG_LLVMSPIRV REQUIRED LLVMSPIRVLib)
+    target_link_libraries(t_inv_fgmres_dr PUBLIC ${PKG_LLVMSPIRV_LIBRARIES})
+    target_link_options(t_inv_fgmres_dr PUBLIC ${PKG_LLVMSPIRV_LDFLAGS})
+  endif()
 endif()
 
-target_link_libraries( t_inv_fgmres_dr PRIVATE Chroma::chromalib GTest)
-target_include_directories(t_inv_fgmres_dr PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries( t_inv_fgmres_dr PUBLIC Chroma::chromalib GTest)
+target_include_directories(t_inv_fgmres_dr PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
