@@ -90,13 +90,38 @@ namespace Chroma
 
       if (paramtop.count("phase") == 1)
       {
-	read(paramtop, "phase", param.phase);
+	read(paramtop, "phase", param.quarkPhase);
+	if (paramtop.count("quarkPhase") == 1 || paramtop.count("quarkPhase") == 1)
+	{
+	  QDPIO::cerr << "Error: please don't give the tag `phase' and either `quarkPhase' or "
+			 "`aQuarkPhase'"
+		      << std::endl;
+	  QDP_abort(1);
+	}
+      }
+      else if (paramtop.count("quarkPhase") == 1)
+      {
+	read(paramtop, "quarkPhase", param.quarkPhase);
+      }
+      else if (paramtop.count("aQuarkPhase") == 1)
+      {
+	QDPIO::cerr << "Label `aQuarkPhase' without the label `quarkPhase'" << std::endl;
+	QDP_abort(1);
       }
       else
       {
-	param.phase.resize(Nd - 1);
-	for (int i = 0; i < Nd - 1; ++i)
-	  param.phase[i] = 0;
+	param.quarkPhase.resize(Nd - 1);
+	param.aQuarkPhase.resize(Nd - 1);
+      }
+
+      if (paramtop.count("aQuarkPhase") == 1)
+      {
+	read(paramtop, "aQuarkPhase", param.aQuarkPhase);
+      }
+      else
+      {
+	for (float i : param.quarkPhase)
+	  param.aQuarkPhase.push_back(-i);
       }
 
       param.link_smearing = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
@@ -121,7 +146,8 @@ namespace Chroma
       write(xml, "decay_dir", param.decay_dir);
       write(xml, "t_source", param.t_source);
       write(xml, "Nt_forward", param.Nt_forward);
-      write(xml, "phase", param.phase);
+      //write(xml, "quarkPhase", param.quarkPhase);
+      //write(xml, "aQuarkPhase", param.aQuarkPhase);
       xml << param.link_smearing.xml;
 
       pop(xml);
@@ -510,20 +536,21 @@ namespace Chroma
       //
       // Parse the phase
       //
-      if (params.param.phase.size() != Nd - 1)
+      if (params.param.quarkPhase.size() != Nd - 1 || params.param.aQuarkPhase.size() != Nd - 1)
       {
-	QDPIO::cerr << "phase tag should have " << Nd - 1 << " components" << std::endl;
+	QDPIO::cerr << "`phase', `quarkPhase', and `aQuarkPhase' tags should have " << Nd - 1
+		    << " components" << std::endl;
 	QDP_abort(1);
       }
-      SB::Coor<Nd - 1> phase;
+      SB::Coor<Nd - 1> leftphase, rightphase;
       for (int i = 0; i < Nd - 1; ++i)
       {
-	phase[i] = params.param.phase[i];
-	if (std::fabs(phase[i] - params.param.phase[i]) > 0)
-	  std::runtime_error("phase should be integer");
+	if (std::fabs((int)params.param.quarkPhase[i] - params.param.quarkPhase[i]) > 0 ||
+	    std::fabs((int)params.param.aQuarkPhase[i] - params.param.aQuarkPhase[i]) > 0)
+	  std::runtime_error("phase', `quarkPhase', and `aQuarkPhase' should be integer");
+	rightphase[i] = params.param.quarkPhase[i];
+	leftphase[i] = params.param.aQuarkPhase[i];
       }
-
-      SB::Coor<Nd - 1> minus_phase = {-phase[0], -phase[1], -phase[2]};
 
       //
       // DB storage
@@ -650,7 +677,7 @@ namespace Chroma
 
       // Do the contractions
       auto moms = SB::getMoms(params.param.decay_dir, phases, SB::none, SB::none, tfrom, tsize);
-      SB::doMomDisp_contractions(u_smr, source_colorvec, minus_phase, phase, moms, tfrom,
+      SB::doMomDisp_contractions(u_smr, source_colorvec, leftphase, rightphase, moms, tfrom,
 				 displacement_list, params.param.use_derivP, call, SB::none,
 				 SB::OnDefaultDevice, SB::OnMaster);
 
