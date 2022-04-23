@@ -20,10 +20,10 @@ namespace Chroma
 
     /// Verbosity level for solvers
     enum Verbosity {
-      NoOutput,	   ///< Print nothing
-      JustSummary, ///< Print summary of the performance, eg., number of iterations and final residual
-      Detailed,	   ///< Print progress
-      VeryDetailed ///< Print whatever
+      NoOutput = 0,    ///< Print nothing
+      JustSummary = 1, ///< Print summary at the end of the solver execution
+      Detailed = 2,    ///< Print progress
+      VeryDetailed = 3 ///< Print whatever
     };
 
     /// Return the map from string to Verbosity values
@@ -109,7 +109,7 @@ namespace Chroma
     /// \param order_cols: dimension labels that are the columns of the matrices V and W
 
     template <std::size_t NV, std::size_t NW, typename COMPLEX>
-    void ortho(const Tensor<NV, COMPLEX>& V, Tensor<NW, COMPLEX>& W, Maybe<std::string> order_t,
+    void ortho(Maybe<Tensor<NV, COMPLEX>> V, Tensor<NW, COMPLEX>& W, Maybe<std::string> order_t,
 	       Maybe<std::string> order_rows, Maybe<std::string> order_cols,
 	       unsigned int max_its = 3)
     {
@@ -134,14 +134,9 @@ namespace Chroma
 	if (V)
 	  contract(V.scale(-1), contract(V.conj(), W, rorder), Vcorder, AddTo, W);
 
-	// W = W/chol(Wa'*W)
-	contract(W,
-		 inverse(chol(contract(Wa.conj(), W, rorder), torder, Wacorder, Wcorder), torder,
-			 Wacorder, Wcorder),
-		 CopyTo, W);
+	// W = W/chol(Wa'*W), where Wa'*W has dimensions (rows,cols)=(Wacorder,Wcorder)
+	cholInv(W, contract(Wa.conj(), W, rorder), torder, Wacorder, Wcorder, CopyTo, W);
       }
-
-      // For each column in W do classic Gram-Schmidt
     }
 
     /// Solve iteratively op * y = x using FGMRES
@@ -170,9 +165,93 @@ namespace Chroma
 		unsigned int max_simultaneous_rhs = 0, Verbosity verb = NoOutput,
 		std::string prefix = "")
     {
-      // Find volume of columns in W
+      const bool do_ortho = false;
 
-      // For each column in W do classic Gram-Schmidt
+      // Get an unused label for the search subspace columns
+      char Vc = get_free_label(x.order);
+      char Vac = get_free_label(x.order + std::string(1, Vc));
+
+      // Compute residual, r = op * y - x
+      auto r = op(y) x.scale(-1).copyTo(r);
+      auto normr0 = norm(r, order_t + order_cols); // type std::vector<real of T>
+
+      // Allocate the search subspace U (onto the left singular space), and
+      // Z (onto the right singular space)
+      auto U = r.like_this<Nd + 1>(std::string("%") + std::string(1, Vc), '%', "",
+				   {{Vc, max_basis_size + 1}});
+
+      // Allocate the search subspace Z (onto the right singular space); when no preconditioning
+      // then Z = U
+
+      auto Z = U.kvslice_from_size({}, {{Vc, max_basis_size}}); // set Z an alias of U
+      if (prec.hasSome())
+	Z = Z.like_this(); // create new space when using preconditioning
+
+      auto normr = normr0;
+      unsigned int it = 0;
+      double max_tol = HUGE_VAL;
+      for (it = 0; it < max_its; ++it)
+      {
+	// U(:,0) = r;
+	r.copyTo(U.kvslice_from_size({}, {{Vc, 1}}));
+
+	// Expand the search subspace from residual
+	for (unsigned int i = 0; i < max_basis_size; ++i) {
+	  // Z(:,i) = prec * U(:,i)
+	  if (prec.hasSome())
+	    prec(U.kvslice_from_size({{Vc, i}}, {{Vc, 1}}))
+	      .copyTo(Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}));
+
+	  // U(:,i+1) = op * Z(:,i)
+	  op(Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}))
+	    .copyTo(U.kvslice_from_size({{Vc, i + 1}}, {{Vc, 1}}));
+	}
+
+	// Orthogonalize U and put it into W: W = orth(U(:,2:end))
+	// NOTE: for small max_basis_size and assuming r is far from a left singular vector,
+	//       a light or none orthogonalization should be enough
+	auto Up = U.kvslice_from_size({{Vc, 1}}, {{Vc, max_basis_size}}).rename_dims({{Vc, Vac}});
+	auto Uo = Up;
+	if (do_ortho)
+	{
+	  Uo = Uo.clone();
+	  ortho(none, Uo, order_t + order_cols, order_rows, std::string(1, Vac),
+		1 /* one iteration should be enough */);
+	}
+
+	// Restrict to Uo: [x_rt H_rt] = Uo'*U = Up'*[r Up]
+	auto x_rt = contract<NRhs - Nr + 1>(Uo.conj(), r, order_rows);
+	auto H_rt = contract<NRhs - Nr + 2>(Uo.conj(), Up, order_rows);
+
+	// Solve the projected problem: y_rt = (Uo'*U(:2:end))\(Uo'*r);
+	auto y_rt = solve<NRhs - Nr + 1>(H_rt, x_rt, none, std::string(1, Vac), std::string(1, Vc));
+
+	// Update solution: x += -Z*y_rt
+	contract(Z.scale(-1), y_rt, order_columns, AddTo, x);
+
+	// Update residual: r += -U(2:end)*y_rt
+	contract(Up.scale(-1), y_rt, order_columns, AddTo, r);
+
+	// Compute the norm
+	auto normr = norm(r, order_t + order_cols);
+
+	// Get the worse tolerance
+	max_tol = 0;
+	for (unsigned int i = 0; i < normr.size(); ++i)
+	  max_tol = std::max(max_tol, normr[i] / normr0[i]);
+
+	// Report iteration
+	if (Verbosity >= Detailed)
+	  QDPIO::cout << prefix << " MGPROTON FGMRES iteration it.: " << it
+		      << " max rel. residual: " << max_tol << std::endl;
+
+	if (max_tol <= tol) break;
+      }
+
+      // Report iteration
+      if (Verbosity >= Summary)
+	QDPIO::cout << prefix << " MGPROTON FGMRES summary its.: " << it
+		    << " max rel. residual: " << max_tol << std::endl;
     }
 
     template <std::size_t NOp, typename COMPLEX>
@@ -343,7 +422,7 @@ namespace Chroma
       /// and, this coarse operator is easier to solve than V'\gamma_5*Op*V.
       ///
       /// \param op: operator to make the inverse of
-      /// \param ops: options to select the solver from `solvers` and influence the solver construction
+      /// \param ops: options to select the solver and the null-vectors creation
 
       template <std::size_t NOp, typename COMPLEX>
       Operator<NOp, COMPLEX> getMGPrec(const Operator<NOp, COMPLEX>& op, const Options& ops)
@@ -353,13 +432,13 @@ namespace Chroma
 	std::vector<unsigned int> blocking_v =
 	  getOption<std::vector<unsigned int>>(ops, "blocking");
 	if (blocking_v.size() != Nd)
-	  throw std::runtime_error("Error generating MG preconditioner for prefix `" + ops.prefix +
-				   "': the blocking should be a vector with four elements");
+	  ops.getValue("blocking")
+	    .throw_error("getMGPrec: the blocking should be a vector with four elements");
 	std::map<char, unsigned int> blocking{
 	  {'x', blocking_v[0]}, {'y', blocking_v[1]}, {'z', blocking_v[2]}, {'t', blocking_v[3]}};
-	const Options& nvInvOps = ops.getValue("prec_null_vecs", none, Dictionary);
+	const Options& nvInvOps = ops.getValue("solver_null_vecs", none, Dictionary);
 	const Operator<NOp, COMPLEX> nullSolver = getSolver(op, nvInvOps);
-	auto V = getMGProlongator(op, num_null_vecs, blocking, nullSolver);
+	const Operator<NOp, COMPLEX> V = getMGProlongator(op, num_null_vecs, blocking, nullSolver);
 
 	// Compute the coarse operator
 	const Operator<NOp, COMPLEX> op_c = getCoarseOperator(op, V);

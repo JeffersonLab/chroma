@@ -1496,6 +1496,7 @@ namespace Chroma
       Tensor<N, Tn> cloneOn(DeviceHost new_dev) const
       {
 	Tensor<N, Tn> r = like_this<N, Tn>(none, {}, new_dev);
+	r.conjugate = conjugate;
 	copyTo(r);
 	return r;
       }
@@ -1854,8 +1855,10 @@ namespace Chroma
 	  throw std::runtime_error("Incompatible layout for contractions: one of the tensors is on "
 				   "the master node and the other is distributed");
 
-	if ((v.dist == OnMaster && w.dist == OnEveryoneReplicated) ||
-	    (v.dist == OnEveryoneReplicated && w.dist == OnMaster))
+	// Avoid replicating the same computation in all nodes
+	// TODO: check whether superbblas does this already
+	if ((v.dist == OnMaster || v.dist == OnEveryoneReplicated) ||
+	    (w.dist == OnMaster && w.dist == OnEveryoneReplicated))
 	{
 	  contract(v.make_sure(none, none, OnMaster), mv, conjv, w.make_sure(none, none, OnMaster),
 		   mw, conjw, mr, beta);
@@ -1884,6 +1887,153 @@ namespace Chroma
 	  MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
+      /// Compute the Cholesky factor of `v' and contract its inverse with `w`
+      /// \param v: tensor to compute the Cholesky factor
+      /// \param order_rows: labels that are rows of the matrices to factor
+      /// \param order_cols: labels that are columns of the matrices to factor
+      /// \param w: the other tensor to contract
+
+      template <std::size_t Nv, std::size_t Nw>
+      void cholInv(Tensor<Nv, T> v, const std::string& order_rows, const std::string& order_cols,
+		   Tensor<Nw, COMPLEX>& w)
+      {
+	Tensor<Nv, T> v0 = v;
+
+	// Conjugacy isn't supported
+	if (v.conjugate || w.conjugate || conjugate)
+	  throw std::runtime_error("cholInv: Unsupported implicit conjugate tensors");
+
+	// If either v or w is on OnDevice, force both to be on device
+	if (v.ctx->plat != w.ctx->plat)
+	{
+	  if (v.getDev() != OnDefaultDevice)
+	    v = v.cloneOn(OnDefaultDevice);
+	  if (w.getDev() != OnDefaultDevice)
+	    w = w.cloneOn(OnDefaultDevice);
+	}
+
+	// Superbblas tensor contraction is shit and those not deal with subtensors or contracting a host and
+	// device tensor (for now)
+	if (v.isSubtensor())
+	  v = v.clone();
+	if (w.isSubtensor())
+	  w = w.clone();
+	if (isSubtensor() || getDev() != v.getDev())
+	{
+	  Tensor<N, T> aux = like_this(none, {}, v.getDev());
+	  aux.cholInv(v, w, order_t, order_rows, order_cols);
+	  aux.copyTo(*this);
+	  return;
+	}
+
+	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
+	  throw std::runtime_error(
+	    "One of the contracted tensors or the output tensor is local and others are not!");
+
+	// Help superbblas to get the same verbatim value in all processes for the same tensor element in all
+	// replicated copies
+	// TODO: check whether superbblas does this already
+	if ((v.dist == OnMaster || v.dist == OnEveryoneReplicated) ||
+	    (w.dist == OnMaster && w.dist == OnEveryoneReplicated))
+	{
+	  v = v.make_sure(none, none, OnMaster);
+	  w = w.make_sure(none, none, OnMaster);
+	}
+
+	if (v.dist == OnEveryone && w.dist == OnEveryoneReplicated)
+	  w = w.make_suitable_for_contraction(v);
+
+	if (v.dist == OnEveryoneReplicated && w.dist == OnEveryone)
+	  v = v.make_suitable_for_contraction(w);
+
+	// v is going to be modified, so make a clone if we haven't made one already
+	if (v.data.get() == v0.data.get())
+	  v = v.clone();
+
+	T* v_ptr = v.data.get();
+	T* w_ptr = w.data.get();
+	T* ptr = this->data.get();
+	superbblas::cholesky<Nv>(v.p->p.data(), 1, v.order.c_str(), &v_ptr, order_rows.c_str(),
+				 order_cols.c_str(), &*v.ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
+	superbblas::trsm<Nv, Nw, N>(
+	  v.scalar * w.scalar / scalar, //
+	  v.p->p.data(), 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
+	  order_cols.c_str(),
+	  &*v.ctx,							 //
+	  w.p->p.data(), 1, w.order.c_str(), (const T**)&w_ptr, &*w.ctx, //
+	  p->p.data(), 1, order.c_str(), &ptr, &*ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
+      }
+
+      /// Solve the linear systems within tensor `v' and right-hand-sides `w`
+      /// \param v: tensor to compute the Cholesky factor
+      /// \param order_rows: labels that are rows of the matrices to factor
+      /// \param order_cols: labels that are columns of the matrices to factor
+      /// \param w: the other tensor to contract
+
+      template <std::size_t Nv, std::size_t Nw>
+      void solve(Tensor<Nv, T> v, const std::string& order_rows, const std::string& order_cols,
+		 Tensor<Nw, COMPLEX>& w)
+      {
+	// Conjugacy isn't supported
+	if (v.conjugate || w.conjugate || conjugate)
+	  throw std::runtime_error("solve: Unsupported implicit conjugate tensors");
+
+	// If either v or w is on OnDevice, force both to be on device
+	if (v.ctx->plat != w.ctx->plat)
+	{
+	  if (v.getDev() != OnDefaultDevice)
+	    v = v.cloneOn(OnDefaultDevice);
+	  if (w.getDev() != OnDefaultDevice)
+	    w = w.cloneOn(OnDefaultDevice);
+	}
+
+	// Superbblas tensor contraction is shit and those not deal with subtensors or contracting a host and
+	// device tensor (for now)
+	if (v.isSubtensor())
+	  v = v.clone();
+	if (w.isSubtensor())
+	  w = w.clone();
+	if (isSubtensor() || getDev() != v.getDev())
+	{
+	  Tensor<N, T> aux = like_this(none, {}, v.getDev());
+	  aux.solve(v, order_rows, order_cols, w);
+	  aux.copyTo(*this);
+	  return;
+	}
+
+	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
+	  throw std::runtime_error(
+	    "solve: One of the contracted tensors or the output tensor is local and others are not!");
+
+	// Help superbblas to get the same verbatim value in all processes for the same tensor element in all
+	// replicated copies
+	// TODO: check whether superbblas does this already
+	if ((v.dist == OnMaster || v.dist == OnEveryoneReplicated) ||
+	    (w.dist == OnMaster && w.dist == OnEveryoneReplicated))
+	{
+	  v = v.make_sure(none, none, OnMaster);
+	  w = w.make_sure(none, none, OnMaster);
+	}
+
+	if (v.dist == OnEveryone && w.dist == OnEveryoneReplicated)
+	  w = w.make_suitable_for_contraction(v);
+
+	if (v.dist == OnEveryoneReplicated && w.dist == OnEveryone)
+	  v = v.make_suitable_for_contraction(w);
+
+	T* v_ptr = v.data.get();
+	T* w_ptr = w.data.get();
+	T* ptr = this->data.get();
+	superbblas::gesm<Nv, Nw, N>(
+	  v.scalar * w.scalar / scalar, //
+	  v.p->p.data(), 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
+	  order_cols.c_str(),
+	  &*v.ctx,							 //
+	  w.p->p.data(), 1, w.order.c_str(), (const T**)&w_ptr, &*w.ctx, //
+	  p->p.data(), 1, order.c_str(), &ptr, &*ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
+      }
+
+ 
       /// Return a view of this tensor where the elements are scaled by the given argument
       /// \param s: scaling factor
       /// \return: a new view (it doesn't create a copy of the tensor)
@@ -2131,6 +2281,100 @@ namespace Chroma
 
       // Do the contraction
       r0.contract(v, {}, NotConjugate, w, {}, NotConjugate, mr, beta);
+
+      return r0;
+    }
+
+    /// Compute the Cholesky factor of `v' and contract its inverse with `w`
+    /// \param v: tensor to compute the Cholesky factor
+    /// \param order_rows: labels that are rows of the matrices to factor
+    /// \param order_cols: labels that are columns of the matrices to factor
+    /// \param w: the other tensor to contract
+    /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
+    /// \param action: either to copy or add to the given output tensor if given (only `CopyTo' supported)
+    /// \param r: optional given tensor where to put the resulting contraction
+
+    template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
+    Tensor<Nr, T> cholInv(Tensor<Nv, T> v, const std::string& order_rows,
+			  const std::string& order_cols, Tensor<Nw, T> w,
+			  const std::string& labels_to_contract, Maybe<Action> action = none,
+			  Maybe<Tensor<Nr, T>> r = none)
+    {
+      if (action.hasSome() != r.hasSome())
+	throw std::runtime_error("Invalid default value");
+
+      // Compute the labels of the output tensor: v.order + w.order - labels_to_contract
+      std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
+      if (Nr != rorder.size())
+	throw std::runtime_error(
+	  "cholInv: The dimension of the output tensor does not match the template argument");
+      if (r && union_dimensions(rorder, r.getSome().order) != rorder)
+	throw std::runtime_error("cholInv: The given output tensor has an unexpected ordering");
+
+      // If the output tensor is not given create a new one
+      Tensor<Nr, T> r0;
+      if (!r)
+      {
+	r0 = v.like_this<Nr>(rorder, w.kvdim());
+      }
+      else
+      {
+	r0 = r.getSome();
+      }
+
+      // For now, only `CopyTo' action is supported
+      if (action.hasSome() && action.getSome() != CopyTo)
+	throw std::runtime_error("cholInv: unsupported action");
+
+      // Do the contraction
+      r0.cholInv(v, order_rows, order_cols, w);
+
+      return r0;
+    }
+
+    /// Solve the linear systems within tensor `v' and right-hand-sides `w`
+    /// \param v: tensor to compute the Cholesky factor
+    /// \param order_rows: labels that are rows of the matrices to factor
+    /// \param order_cols: labels that are columns of the matrices to factor
+    /// \param w: the other tensor to contract
+    /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
+    /// \param action: either to copy or add to the given output tensor if given (only `CopyTo' supported)
+    /// \param r: optional given tensor where to put the resulting contraction
+
+    template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
+    Tensor<Nr, T> solve(Tensor<Nv, T> v, const std::string& order_rows,
+			const std::string& order_cols, Tensor<Nw, T> w,
+			const std::string& labels_to_contract, Maybe<Action> action = none,
+			Maybe<Tensor<Nr, T>> r = none)
+    {
+      if (action.hasSome() != r.hasSome())
+	throw std::runtime_error("solve: Invalid default value");
+
+      // Compute the labels of the output tensor: v.order + w.order - labels_to_contract
+      std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
+      if (Nr != rorder.size())
+	throw std::runtime_error(
+	  "solve: The dimension of the output tensor does not match the template argument");
+      if (r && union_dimensions(rorder, r.getSome().order) != rorder)
+	throw std::runtime_error("solve: The given output tensor has an unexpected ordering");
+
+      // If the output tensor is not given create a new one
+      Tensor<Nr, T> r0;
+      if (!r)
+      {
+	r0 = v.like_this<Nr>(rorder, w.kvdim());
+      }
+      else
+      {
+	r0 = r.getSome();
+      }
+
+      // For now, only `CopyTo' action is supported
+      if (action.hasSome() && action.getSome() != CopyTo)
+	throw std::runtime_error("solve: unsupported action");
+
+      // Do the contraction
+      r0.solve(v, order_rows, order_cols, w);
 
       return r0;
     }
