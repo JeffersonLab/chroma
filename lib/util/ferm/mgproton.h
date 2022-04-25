@@ -10,6 +10,9 @@
 
 #include "chromabase.h"
 #include "util/ferm/superb_contractions.h"
+#include "util/ferm/superb_options.h"
+
+#include <set>
 
 #ifdef BUILD_SB
 namespace Chroma
@@ -362,6 +365,50 @@ namespace Chroma
 	}
       }
 
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> cloneEOOperator(const Operator<NOp, COMPLEX>& op)
+      {
+	// Unsupported explicitly colorized operators
+	if (op.domain_eg.kvdim().count('X') == 0 || op.domain_eg.kvdim()['X'] != 2)
+	  throw std::runtime_error("cloneEOOperator: unsupported not explicitly colored operators");
+
+	// Construct the probing vectors
+	std::size_t vol_non_lattice = 1;
+	std::string order_non_lattice;
+	std::set<char> lattice_dims{'x', 'y', 'z', 't'};
+	auto kvdim_non_lattice = op.domain_eg.kvdim();
+	auto kvdim_lattice = op.domain_eg.kvdim();
+	for (const auto& it : op.domain_eg.kvdim())
+	{
+	  if (lattice_dims.count(it.first) == 0)
+	  {
+	    order_non_lattice.push_back(it.first);
+	    vol_non_lattice *= it.second;
+	  }
+	  else
+	  {
+	    kvimd_non_lattice[it.first] = 1;
+	  }
+	}
+	order_non_lattice.push_back('n');
+	kvdim_non_lattice['n'] = vol_non_lattice;
+	Tensor<NOp - 5, COMPLEX> t_nl{order_non_lattice,
+				      latticeSize(order_non_lattice, kvdim_non_lattice), OnHost,
+				      OnEveryoneReplicated};
+	t_nl.set_zero();
+	COMPLEX* t_nl_data = t_nl.data.get();
+	for (std::size_t i = 0; i < vol_non_lattice; ++i)
+	  t_nl_data[i * vol_non_lattice] = COMPLEX{1};
+	Tensor<4, COMPLEX> t_l{"xyzt", latticeSize<4>("xyzt", op.domain_eg.kvdim())};
+	fillWithCPUFuncNoArgs(t_l, []() { return COMPLEX{1}; });
+	auto probs = contract<NOp>(t_l, t_nl, "");
+
+	// Compute the matvecs
+	auto mv = op(probs);
+
+	// Create the sparse operator
+      }
+
       /// Returns the prolongator constructed from
       /// \param solvers: map of solvers
       /// \param op: operator to make the inverse of
@@ -484,6 +531,234 @@ namespace Chroma
       };
 
       return detail::getSolver(solvers, op, ops);
+    }
+
+    //
+    // High-level chroma operations
+    //
+ 
+    /// Either a Chroma solver or a superb solver
+    struct ChimeraSolver {
+      /// Action
+      Handle<
+	FermionAction<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>
+	S;
+
+      /// State
+      Handle<
+	FermionState<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>
+	state;
+
+      /// Chroma solver (optional)
+      Handle<SystemSolver<LatticeFermion>> PP;
+
+      /// Operator on scxyztX (optional)
+      Maybe<Operator<Nd + 3>> op;
+
+      /// Constructor
+      /// \param fermAction: XML for the fermion action
+      /// \param invParam: XML for the quark propagator
+      /// \param u: gauge fields
+
+      ChimeraSolver(const GroupXML_t& fermAction, const GroupXML_t& invParam,
+		    const multi1d<LatticeColorMatrix>& u)
+      {
+	// Initialize fermion action and state
+	std::istringstream  xml_s(fermAction.xml);
+	XMLReader  fermacttop(xml_s);
+	QDPIO::cout << "FermAct = " << fermAction.id << std::endl;
+	S = TheFermionActionFactory::Instance().createObject(fermAction.id, fermacttop,
+							     fermAction.path);
+	state = S->createState(u);
+
+	// If the inverter is MGPROTON, use this infrastructure
+	if (invParam.id == "MGPROTON")
+	{
+	  // Parse XML with the inverter options
+	  Options ops = getOptionsFromXML(invParam.xml);
+
+	  // Clone the matvec
+	  LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
+
+	  // Construct the solver
+	  op = Maybe(getSolver(mv, ops));
+	}
+	else
+	{
+	  PP = S->qprop(state, invParam);
+	}
+      }
+    };
+
+    namespace detail
+    {
+      /// Apply the inverse to LatticeColorVec tensors for a list of spins
+      /// \param PP: invertor
+      /// \param chi: lattice color tensor on a t_slice, cxyzXn
+      /// \param t_source: time-slice in chi
+      /// \param Nt_forward: return the next Nt_forward time-slices after t_source
+      /// \param Nt_backward: return the previous Nt_backward time-slices before t_source
+      /// \param spin_sources: list of spins
+      /// \param max_rhs: maximum number of vectors solved at once
+      /// \param order_out: coordinate order of the output tensor, a permutation of cSxyztXns where
+      ///        s is the spin source and S is the spin sink
+      /// \return: tensor cSxyztXns where the first t_slice is the t_source-Nt_backward time-slice of
+      ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
+
+      template <typename COMPLEX_CHI, typename COMPLEX_OUT>
+      Tensor<Nd + 5, COMPLEX_OUT> doInversion(const SystemSolver<LatticeFermion>& PP,
+					      const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
+					      int first_tslice_out, int n_tslice_out,
+					      const std::vector<int>& spin_sources, int max_rhs,
+					      const std::string& order_out = "cSxyztXns")
+      {
+	Tensor<Nd + 5, COMPLEX_OUT> psi(
+	  order_out,
+	  latticeSize<Nd + 5>(
+	    order_out,
+	    {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}),
+	  chi.getDev());
+
+	int max_step = std::max(num_vecs, max_rhs);
+	std::vector<std::shared_ptr<LatticeFermion>> chis(max_step), quark_solns(max_step);
+	for (int col = 0; col < max_step; col++)
+	  chis[col].reset(new LatticeFermion);
+	for (int col = 0; col < max_step; col++)
+	  quark_solns[col].reset(new LatticeFermion);
+
+	for (int spin_source : spin_sources)
+	{
+	  for (int n0 = 0, n_step = std::min(max_rhs, num_vecs); n0 < num_vecs;
+	       n0 += n_step, n_step = std::min(n_step, num_vecs - n0))
+	  {
+	    for (int n = n0, col = 0; col < n_step; ++n, ++col)
+	    {
+	      // Put the colorvec sources for the t_source on chis for spin `spin_source`
+	      // chis[col][s=spin_source] = chi[n=n0]
+	      *chis[col] = zero;
+	      chi.kvslice_from_size({{'n', n}}, {{'n', 1}})
+		.copyTo(SB::asTensorView(*chis[col])
+			  .kvslice_from_size({{'t', t_source}, {'s', spin_source}}));
+
+	      *quark_solns[col] = zero;
+	    }
+
+	    // Solve
+	    std::vector<SystemSolverResults_t> res =
+	      PP(std::vector<std::shared_ptr<LatticeFermion>>(quark_solns.begin(),
+							      quark_solns.begin() + n_step),
+		 std::vector<std::shared_ptr<const LatticeFermion>>(chis.begin(),
+								    chis.begin() + n_step));
+
+	    for (int n = n0, col = 0; col < n_step; ++n, ++col)
+	    {
+	      // psi[n=n] = quark_solns[col][t=first_tslice+(0:n_tslice_out-1)]
+	      asTensorView(*quark_solns[col])
+		.kvslice_from_size({{'t', first_tslice_out}}, {{'t', n_tslice_out}})
+		.rename_dims({{'s', 'S'}})
+		.copyTo(psi.kvslice_from_size({{'n', n}, {'s', spin_source}}));
+	    }
+	  }
+	}
+
+	return psi;
+      }
+
+      /// Apply the inverse to LatticeColorVec tensors for a list of spins
+      /// \param sol: invertor
+      /// \param chi: lattice color tensor on a t_slice, cxyzXn
+      /// \param t_source: time-slice in chi
+      /// \param Nt_forward: return the next Nt_forward time-slices after t_source
+      /// \param Nt_backward: return the previous Nt_backward time-slices before t_source
+      /// \param spin_sources: list of spins
+      /// \param max_rhs: maximum number of vectors solved at once
+      /// \param order_out: coordinate order of the output tensor, a permutation of cSxyztXns where
+      ///        s is the spin source and S is the spin sink
+      /// \return: tensor cSxyztXns where the first t_slice is the t_source-Nt_backward time-slice of
+      ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
+
+      template <typename COMPLEX_CHI, typename COMPLEX_OUT>
+      Tensor<Nd + 5, COMPLEX_OUT> doInversion(const Operator<Nd + 5, COMPLEX_OUT>& op,
+					      const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
+					      int first_tslice_out, int n_tslice_out,
+					      const std::vector<int>& spin_sources, int max_rhs,
+					      const std::string& order_out = "cSxyztXns")
+      {
+	Tensor<Nd + 5, COMPLEX_OUT> psi(
+	  order_out,
+	  latticeSize<Nd + 5>(
+	    order_out,
+	    {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}),
+	  chi.getDev());
+
+	// Create tensors with full support on the lattice
+	int max_step = std::max(num_vecs, max_rhs);
+	auto aux = chi.like_this(none, {{'n', max_step}, {Layout::lattSize()[3]}});
+
+	for (int spin_source : spin_sources)
+	{
+	  for (int n0 = 0, n_step = std::min(max_rhs, num_vecs); n0 < num_vecs;
+	       n0 += n_step, n_step = std::min(n_step, num_vecs - n0))
+	  {
+	    auto aux0 = aux.kvslice_from_size({}, {{'n', n_step}});
+	    aux0.set_zero();
+	    chi.kvslice_from_size({{'n', n}}, {{'n', n_step}})
+	      .copyTo(aux0.kvslice_from_size({{'t', t_source}, {'s', spin_source}}));
+
+	    // Solve
+	    op(aux0)
+	      .kvslice_from_size({{'t', first_tslice_out}}, {{'t', n_tslice_out}})
+	      .rename_dims({{'s', 'S'}})
+	      .copyTo(psi.kvslice_from_size({{'n', n}, {'s', spin_source}}));
+	  }
+	}
+
+	return psi;
+      }
+    }
+
+    /// Apply the inverse to LatticeColorVec tensors for a list of spins
+    /// \param PP: invertor
+    /// \param chi: lattice color tensor on a t_slice, cxyzXn
+    /// \param t_source: time-slice in chi
+    /// \param Nt_forward: return the next Nt_forward time-slices after t_source
+    /// \param Nt_backward: return the previous Nt_backward time-slices before t_source
+    /// \param spin_sources: list of spins
+    /// \param max_rhs: maximum number of vectors solved at once
+    /// \param order_out: coordinate order of the output tensor, a permutation of cSxyztXns where
+    ///        s is the spin source and S is the spin sink
+    /// \return: tensor cSxyztXns where the first t_slice is the t_source-Nt_backward time-slice of
+    ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
+
+    template <typename COMPLEX_CHI, typename COMPLEX_OUT>
+    Tensor<Nd + 5, COMPLEX_OUT>
+    doInversion(const ChimeraSolver& sol, const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
+		int first_tslice_out, int n_tslice_out, const std::vector<int>& spin_sources,
+		int max_rhs, const std::string& order_out = "cSxyztXns")
+    {
+      detail::check_order_contains(order_out, "cSxyztXns");
+      if (chi.kvdim()['t'] != 1)
+	throw std::runtime_error("Expected one time-slice");
+      const int num_vecs = chi.kvdim()['n'];
+
+      if (n_tslice_out > Layout::lattSize()[3])
+	throw std::runtime_error("Too many tslices");
+
+      StopWatch snarss1;
+      snarss1.reset();
+      snarss1.start();
+
+      if (sol.op.hasSome())
+	detail::doInversion<Nd + 5, COMPLEX_OUT>(sol.op.getSome(), chi, t_source, first_tslice_out,
+						 n_tslice_out, spin_sources, max_rhs, order_out);
+      else
+	detail::doInversion<Nd + 5, COMPLEX_OUT>(sol.PP, chi, t_source, first_tslice_out,
+						 n_tslice_out, spin_sources, max_rhs, order_out);
+
+      snarss1.stop();
+      QDPIO::cout << "Time to compute inversions for " << spin_sources.size()
+		  << " spin sources and " << num_vecs
+		  << " colorvecs : " << snarss1.getTimeInSeconds() << " secs" << std::endl;
     }
   }
 }

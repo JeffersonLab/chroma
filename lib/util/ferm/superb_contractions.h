@@ -670,6 +670,25 @@ namespace Chroma
 	    r};
 	}
 
+	/// Extend the support of some directions
+
+	TensorPartition<N> extend_support(Coor<N> m) const
+	{
+	  typename TensorPartition<N>::PartitionStored r;
+	  r.reserve(p.size());
+	  for (const auto& i : p)
+	  {
+	    superbblas::PartitionItem<N> fs;
+	    for (unsigned int j = 0; j < N; ++j)
+	    {
+	      fs[0][j] = (i[0][j] - m[j] + dim[j]) % dim[j];
+	      fs[1][j] = std::min(i[1][j] + 2 * m[j], dim[j]);
+	    }
+	    r.push_back(fs);
+	  }
+	  return TensorPartition<N>{dim, r};
+	}
+
 	/// Return a partition with the local portion of the tensor
 
 	TensorPartition<N> get_local_partition() const
@@ -967,6 +986,18 @@ namespace Chroma
 
       template <typename T>
       struct is_complex<std::complex<T>> : std::true_type {
+      };
+
+      /// real_type<T>::type is T::value_type if T is complex; otherwise it is T
+
+      template <typename T>
+      struct real_type {
+	using type = T;
+      };
+
+      template <typename T>
+      struct real_type<std::complex<T>> {
+	using type = T::value_type;
       };
 
       template <typename T, typename A, typename B,
@@ -1272,6 +1303,19 @@ namespace Chroma
 	return superbblas::detail::volume(size);
       }
 
+      /// Return whether the tensor is an example
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   t.volume(); // is Nc*Ns
+      ///   t.kvslice_from_size({}, {{'s',1}}).volume(); // is Nc*1
+
+      bool is_eg() const
+      {
+	return (bool)data;
+      }
+
       /// Get an element of the tensor
       /// \param coor: coordinates of the element to get
       /// \return: the value of the element at the coordinate
@@ -1299,6 +1343,8 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements on a distributed tensor; change the distribution to "
 	    "be supported on master, replicated among all nodes, or local");
+	if (volume() > 0 && is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	// coor[i] = coor[i] + from[i]
 	for (unsigned int i = 0; i < N; ++i)
@@ -1333,6 +1379,8 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "Unsupported to `set` elements on a distributed tensor; change the distribution to "
 	    "be supported on master, replicated among all nodes, or local");
+	if (volume() > 0 && is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	// coor[i] = coor[i] + from[i]
 	for (unsigned int i = 0; i < N; ++i)
@@ -1340,6 +1388,52 @@ namespace Chroma
 
 	data.get()[detail::coor2index<N>(coor, dim, strides)] =
 	  detail::cond_conj(conjugate, v) / scalar;
+      }
+
+      /// Modify the content this tensor with the result of a function on each element
+      /// \param func: function () -> COMPLEX
+      /// \param threaded: whether to run threaded
+
+      void fillWithCPUFuncNoArgs(Func func, bool threaded = true)
+      {
+	auto l = t.getLocal();
+	auto h = l.like_this(none, OnHost);
+	std::size_t vol = l.volume();
+	COMPLEX* ptr = h.data.get();
+
+	if (threaded)
+	{
+#  ifdef _OPENMP
+#    pragma omp parallel for schedule(static)
+#  endif
+	  for (std::size_t i = 0; i < vol; ++i)
+	    ptr[i] = func();
+	}
+	else
+	{
+	  for (std::size_t i = 0; i < vol; ++i)
+	    ptr[i] = func();
+	}
+
+	h.copyTo(l);
+      }
+
+      /// Set all elements with the given value
+      /// \param v: the new value for all the elements
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}, OnHost, OnEveryoneReplicated);
+      ///   t.set({0,1}, 1.0); // set the element with c=0 and s=1 to 1.0
+      ///
+      ///   Tensor<5,double> q("xyztX", latticeSize<5>("xyztX"), OnHost);
+      ///   q.getLocal().set({0,0,0,0,0}, 1.0); // set the first local element in this process to 1.0
+
+      void set(T v)
+      {
+	if (std::norm(v) == 0) set_zero();
+	else
+	  fillWithCPUFuncNoArgs([]() { return v; });
       }
 
       /// Return a new tensors with the dimension labels renamed
@@ -1495,10 +1589,27 @@ namespace Chroma
       template <typename Tn = T>
       Tensor<N, Tn> cloneOn(DeviceHost new_dev) const
       {
+	if (volume() > 0 && is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
 	Tensor<N, Tn> r = like_this<N, Tn>(none, {}, new_dev);
 	r.conjugate = conjugate;
 	copyTo(r);
 	return r;
+      }
+
+      /// Return a template of this tensor
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,std::complex<double>> t("cs", {{Nc,Ns}});
+      ///   Tensor<2,std::complex<double>> t_eg = t.make_eg();
+      ///   Tensor<2,std::complex<double>> q = t_eg.like_this(); // create a new tensor like t
+
+      Tensor<N, T> make_eg() const
+      {
+	return Tensor<T, N>(order, dim, ctx, std::shared_ptr<T>(), p, dist, from, size, T{1},
+			    false);
       }
 
     private:
@@ -1555,6 +1666,8 @@ namespace Chroma
 	std::string new_order1 = get_order_for_reorder(new_order, remaining_char);
 	if (order == new_order1)
 	  return *this;
+	if (is_eg())
+	  return like_this(new_order1).make_eg();
 	Tensor<N, T> r = like_this(new_order1);
 	copyTo(r);
 	return r;
@@ -1591,6 +1704,9 @@ namespace Chroma
       {
 	assert(!isFakeReal());
 
+	if (volume() > 0 && is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
 	std::string new_order = "." + order;
 	Coor<N + 1> new_from = {0};
 	std::copy_n(from.begin(), N, new_from.begin() + 1);
@@ -1617,6 +1733,9 @@ namespace Chroma
       Tensor<N - 1, std::complex<U>> toComplex(bool allow_cloning = true) const
       {
 	assert(isFakeReal() && kvdim()['.'] == 2);
+
+	if (volume() > 0 && is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	std::size_t dot_pos = order.find('.');
 	std::string new_order = detail::remove_coor(order, dot_pos);
@@ -1735,6 +1854,9 @@ namespace Chroma
       /// Set zero
       void set_zero()
       {
+	if (volume() > 0 && is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
 	T* ptr = this->data.get();
 	MPI_Comm comm = (dist == OnMaster || dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	if (dist != OnMaster || Layout::nodeNumber() == 0)
@@ -1749,6 +1871,9 @@ namespace Chroma
 		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
       void doAction(Action action, Tensor<Nw, Tw> w) const
       {
+	if (volume() > 0 && is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
 	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
 	for (unsigned int i = 0; i < N; ++i)
 	  if (size[i] > wsize[i])
@@ -1822,6 +1947,10 @@ namespace Chroma
       void contract(Tensor<Nv, T> v, const remap& mv, Conjugation conjv, Tensor<Nw, T> w,
 		    const remap& mw, Conjugation conjw, const remap& mr = {}, T beta = T{0})
       {
+	if ((volume() > 0 && is_eg()) || (v.volume() > 0 && v.is_eg()) ||
+	    (w.volume() > 0 && w.is_eg()))
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
 	// If either v or w is on OnDevice, force both to be on device
 	if (v.ctx->plat != w.ctx->plat)
 	{
@@ -1857,8 +1986,8 @@ namespace Chroma
 
 	// Avoid replicating the same computation in all nodes
 	// TODO: check whether superbblas does this already
-	if ((v.dist == OnMaster || v.dist == OnEveryoneReplicated) ||
-	    (w.dist == OnMaster && w.dist == OnEveryoneReplicated))
+	if ((v.dist == OnMaster || v.dist == OnEveryoneReplicated) &&
+	    (w.dist == OnMaster || w.dist == OnEveryoneReplicated))
 	{
 	  contract(v.make_sure(none, none, OnMaster), mv, conjv, w.make_sure(none, none, OnMaster),
 		   mw, conjw, mr, beta);
@@ -1897,6 +2026,10 @@ namespace Chroma
       void cholInv(Tensor<Nv, T> v, const std::string& order_rows, const std::string& order_cols,
 		   Tensor<Nw, COMPLEX>& w)
       {
+	if ((volume() > 0 && is_eg()) || (v.volume() > 0 && v.is_eg()) ||
+	    (w.volume() > 0 && w.is_eg()))
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
 	Tensor<Nv, T> v0 = v;
 
 	// Conjugacy isn't supported
@@ -1974,6 +2107,10 @@ namespace Chroma
       void solve(Tensor<Nv, T> v, const std::string& order_rows, const std::string& order_cols,
 		 Tensor<Nw, COMPLEX>& w)
       {
+	if ((volume() > 0 && is_eg()) || (v.volume() > 0 && v.is_eg()) ||
+	    (w.volume() > 0 && w.is_eg()))
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
 	// Conjugacy isn't supported
 	if (v.conjugate || w.conjugate || conjugate)
 	  throw std::runtime_error("solve: Unsupported implicit conjugate tensors");
@@ -2123,6 +2260,20 @@ namespace Chroma
 	return r;
       }
 
+      Tensor<N, T> extend_support(const std::map<char,int> &m) const
+      {
+	p->extend_support(kvcoor<N>(order, m, 0));
+	Tensor<N,T> r{order, dim, getDev(), dist, p->extend_support(kvcoor<N>(order, m, 0))};
+	r.from = from;
+	r.size =size;
+	r.strides = strides;
+	r.scalar = scalar;
+	r.conjugate = conjugate;
+	if (!is_eg())
+	  copyTo(r);
+	return r;
+      }
+
       /// Get where the tensor is stored
 
       DeviceHost getDev() const
@@ -2136,6 +2287,8 @@ namespace Chroma
 
       void binaryRead(BinaryReader& bin)
       {
+	if (volume() > 0 && is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
 	if (ctx->plat != superbblas::CPU)
 	  throw std::runtime_error("Only supported to read on `OnHost` tensors");
 	if (dist != OnMaster)
@@ -2154,6 +2307,9 @@ namespace Chroma
 
       void binaryWrite(BinaryWriter& bin) const
       {
+	if (volume() > 0 && is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
 	// If the writing is collective, the root process needs to hold the whole tensor
 	if (!bin.isLocal() && dist != OnMaster)
 	  throw std::runtime_error("For collective writing, the tensor should be `OnMaster`");
@@ -2180,6 +2336,9 @@ namespace Chroma
 
       void print(const std::string& name) const
       {
+	if (volume() > 0 && is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
 	std::stringstream ss;
 	auto t = toComplex();
 	auto t_host = t.like_this(none, {}, OnHost, OnMaster);
@@ -2498,6 +2657,215 @@ namespace Chroma
       return r;
     }
 
+    /// Class for operating sparse tensors
+    /// \tparam ND: number of domain dimensions
+    /// \tparam NI: number of image dimensions
+    /// \tparam T: datatype
+
+    template <std::size_t ND, std::size_t DI, typename T>
+    struct SpTensor {
+      static_assert(superbblas::supported_type<T>::value, "Not supported type");
+
+    public:
+      Tensor<ND, T> d;				///< Tensor example for the domain
+      Tensor<NI, T> i;				///< Tensor example for the image
+      Coor<ND> blkd;				///< blocking for the domain
+      Coor<NI> blki;				///< blocking for the image
+      Tensor<NI, int> ii;			///< Number of blocks in each row
+      Tensor<NI + 1, int> jj;			///< Coordinate of the first element on each block
+      Tensor<NI + ND + 1, T> data;		///< Nonzero values
+      std::shared_ptr<superbblas::BSR_handle> handle; ///< suparbblas sparse tensor handle
+      T scalar;					      ///< Scalar factor of the tensor
+
+      /// Return a string describing the tensor
+      /// \param ptr: pointer to the memory allocation
+      /// \return: the string representing the tensor
+
+      std::string repr() const
+      {
+	using namespace detail::repr;
+	std::stringstream ss;
+	ss << "SpTensor{";
+	if (data.data)
+	  ss << "data:" << data.data << ", ";
+	std::size_t sizemb = (ii.getLocal().volume() * sizeof(int) + //
+			      jj.getLocal().volume() * sizeof(int) + //
+			      data.getLocal().volume() * sizeof(T)) /
+			     1024 / 1024;
+	ss << "domain_order: " << d.order << ", domain_dim:" << d.dim << "image_order: " << i.order
+	   << ", image_dim:" << i.dim << ", dist:" << dist << ", local_storage:"
+	   << sizemb
+	   << " MiB}";
+	return ss.str();
+      }
+
+      /// Constructor
+      /// \param d: example tensor for the domain
+      /// \param i: example tensor for the image
+      /// \param blockd: block size for each domain dimension
+      /// \param blocki: block size for each image dimension
+      /// \param num_neighbors: number of nonzeros for each blocked row
+
+      SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, std::map<char, int> blockd,
+	       std::map<char, int> blocki, unsigned int num_neighbors)
+	: d{d.make_eg()},
+	  i{i.make_eg()},
+	  blkd{kvcoors<ND>(d.order, blockd, 1)},
+	  blki{kvcoors<NI>(i.order, blocki, 1)},
+	  scalar{T{1}}
+      {
+	// Check that the examples are on the same device
+	if (d.getDev() != i.getDev())
+	  throw std::runtime_error("Please give example vectors on the same device");
+
+	// Check that the domain and image labels are different
+	detail::check_order<NI + ND>(i.order + d.order);
+
+	// Check the blocking and get the number of blocking dimensions
+	unsigned int nblkd = numBlockedDims(d.size, blkd);
+	unsigned int nblki = numBlockedDims(i.size, blki);
+
+	// Create the tensor containing the number of neighbors for each blocking
+	std::map<char,int> nonblki;
+	for (const auto i : i.kvdim())
+	  nonblki[i.first] = i.second / (blki.count(i.first) == 1 ? blki[i.first] : 1);
+	ii = i.like_this<NI, int>(none, nonblki);
+	ii.set(num_neighbors);
+
+	// Create the tensor containing the domain coordinates of the first nonzero in each block
+	jj = i.like_this<NI + 1>("~u%", '%', "", {{'~', ND}, {'u', num_neighbors}});
+
+	// Compute the data dimensions as image_blocked_dims + domain_dims + u + image_nonblocked_dims
+	std::map<char, int> data_dims = i.kvdim();
+	for (const auto it : d.kvdim())
+	  data_dims[it.first] = (blockd.count(it.first) == 1 ? blockd[it.first] : 1);
+	data_dims['u'] = num_neighbors;
+	std::string data_order = std::string(i.order.begin(), i.order.begin() + nblki) + d.order +
+				 std::string("u") +
+				 std::string(i.order.begin() + nblki, i.order.end());
+	data = i.like_this<NI + ND + 1, T>(data_order, data_dims);
+      }
+
+      /// Empty constructor
+
+      SpTensor() : blki{}, blkd{}, scalar{0}
+      {
+      }
+
+      template <std::size_t N>
+      static unsigned int numBlockedDims(Coor<N> dim, Coor<N> blk)
+      {
+	bool non_blocking_viewed = false;
+	unsigned int num_blk_dims = 0;
+	for (std::size_t i = 0; i < N; ++i)
+	{
+	  // Check that the blocking are complete
+	  if (blk[i] != 1 && blk[i] != dim[i])
+	    throw std::runtime_error("Unsupported partial blocking on a dimension");
+
+	  // Check that non-blocking dimensions don't interleave blocking dimensions
+	  if (blk[i] == dim[i] && non_blocking_viewed)
+	    throw std::runtime_error(
+	      "Unsupported interleaving blocking and non-blocking dimensions in the ordering");
+
+	  // Mark that we saw a non-blocking dimension
+	  if (blk[i] != dim[i])
+	    non_blocking_viewed = true;
+
+	  // Count the number of blocking dimensions
+	  if (blk[i] == dim[i]) ++num_blk_dims;
+	}
+
+	return num_blk_dims;
+      }
+
+      /// Construct the sparse operator
+      void construct()
+      {
+	int *iiptr = ii.data.get();
+	int *jjptr = jj.data.get();
+	const T* ptr = data.data.get();
+	superbblas::BSR_handle* bsr = nullptr;
+	superbblas::create_bsr<ND, NI, T>(i.p->p.data(), d.p->p.data(), 1, blki.data(), blkd.data(),
+					  true, &iiptr, &jjptr, &ptr, &*ctx, MPI_COMM_WORLD,
+					  FastToSlow, &bsr);
+	handle = std::shared_ptr<superbblas::BSR_handle>(
+	  bsr, [=](const superbblas::BSR_handle* bsr) { destroy_bsr(bsr); });
+      }
+
+      /// Return whether the sparse tensor has been constructed
+
+      bool is_constructed() const
+      {
+	return (bool)handle;
+      }
+
+      /// Get where the tensor is stored
+
+      DeviceHost getDev() const
+      {
+	return i.getDev();
+      }
+
+      // Contract the dimensions with the same label in this tensor and in `v` than do not appear on `w`.
+      template <std::size_t Nv, std::size_t Nw>
+      void contractWith(Tensor<Nv, T> v, Tensor<Nw, T> w)
+      {
+	if ((volume() > 0 && is_eg()) || (v.volume() > 0 && v.is_eg()) ||
+	    (w.volume() > 0 && w.is_eg()))
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
+	if (!is_constructed())
+	  throw std::runtime_error("invalid operation on an not constructed tensor");
+
+	// If either this tensor or v are on OnDevice, force both to be on the same device as this tensor.
+	// Also, Superbblas tensor contraction is shit and those not deal with subtensors or contracting a host and
+	// device tensor (for now)
+	if (v.ctx->plat != ctx->plat || v.isSubtensor())
+	{
+	  v = v.cloneOn(v.getDev());
+	}
+
+	if (w.isSubtensor() || getDev() != w.getDev())
+	{
+	  Tensor<N, T> aux = w.like_this(none, {}, getDev());
+	  contract(v, aux);
+	  aux.copyTo(w);
+	  return;
+	}
+
+	/// Continue
+	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
+	  throw std::runtime_error(
+	    "One of the contracted tensors or the output tensor is local and others are not!");
+
+	if ((v.dist == OnMaster && w.dist == OnEveryone) ||
+	    (v.dist == OnEveryone && w.dist == OnMaster))
+	  throw std::runtime_error("Incompatible layout for contractions: one of the tensors is on "
+				   "the master node and the other is distributed");
+
+	// Avoid replicating the same computation in all nodes
+	// TODO: check whether superbblas does this already
+	if ((dist == OnMaster || dist == OnEveryoneReplicated)  &&
+	    (v.dist == OnMaster || v.dist == OnEveryoneReplicated))
+	{
+	  make_sure(none, none, OnMaster).contract(v.make_sure(none, none, OnMaster), w);
+	  return;
+	}
+
+	T* v_ptr = v.data.get();
+	T* w_ptr = w.data.get();
+	T* ptr = this->data.get();
+	superbblas::bsr_krylov<ND, NI, Nv, Nw, T>(
+	  handle.get(), i.order.c_str(), d.order.c_str(),					  //
+	  v.p->p.data(), 1, v.order.c_str(), (const T**)&v_ptr,					  //
+	  w.p->p.data(), 1, w.order.c_str(), 0 /* krylov power dim (none for now) */ (T**)&w_ptr, //
+	  MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Copy);
+	w.scalar = scalar * v.scalar;
+      }
+
+    };
+
     /// Broadcast a string from process zero
     inline std::string broadcast(const std::string& s)
     {
@@ -2768,35 +3136,6 @@ namespace Chroma
       }
     };
 
-    /// Modify the content of a tensor with the result of a function
-    /// \param t: tensor template
-    /// \param func: function () -> COMPLEX
-    /// \param threaded: whether to run threaded
-
-    template <std::size_t N, typename COMPLEX, typename Func>
-    void fillWithCPUFuncNoArgs(const Tensor<N, COMPLEX>& t, Func func, bool threaded = true)
-    {
-      auto l = t.getLocal().like_this(none, OnHost);
-      std::size_t vol = l.volume();
-      COMPLEX* ptr = r.data.get();
-
-      if (threaded)
-      {
-#  ifdef _OPENMP
-#    pragma omp parallel for schedule(static)
-#  endif
-	for (std::size_t i = 0; i < vol; ++i)
-	  ptr[i] = func();
-      }
-      else
-      {
-	for (std::size_t i = 0; i < vol; ++i)
-	  ptr[i] = func();
-      }
-
-      l.copyTo(t.getLocal());
-    }
-
     namespace detail
     {
       inline std::mt19937_64& getSeed()
@@ -2815,15 +3154,10 @@ namespace Chroma
 
     template <std::size_t N, typename T,
 	      typename std::enable_if<detail::is_complex<T>::value, bool>::type = true>
-    void urand(const Tensor<N, T>& t, T::value_type a=0, T::value_type b=1)
+    void urand(Tensor<N, T>& t, T::value_type a=0, T::value_type b=1)
     {
       std::uniform_real_distribution<T::value_type> d(a, b);
-      fillWithCPUFuncNoArgs(
-	t,
-	[]() {
-	  return {d(detail::getSeed()), d(detail::getSeed())};
-	},
-	false);
+      t.fillWithCPUFuncNoArgs([]() { return {d(detail::getSeed()), d(detail::getSeed())}; }, false);
     }
 
     /// Modify with random uniformly distributed numbers between [a,b]
@@ -2833,7 +3167,7 @@ namespace Chroma
 
     template <std::size_t N, typename T,
 	      typename std::enable_if<!detail::is_complex<T>::value, bool>::type = true>
-    void urand(const Tensor<N, T>& t, T::value_type a=0, T::value_type b=1)
+    void urand(Tensor<N, T>& t, T::value_type a=0, T::value_type b=1)
     {
       std::uniform_real_distribution<T> d(a, b);
       fillWithCPUFuncNoArgs(
@@ -4131,94 +4465,6 @@ namespace Chroma
     // High-level chroma operations
     //
 
-    /// Apply the inverse to LatticeColorVec tensors for a list of spins
-    /// \param PP: invertor
-    /// \param chi: lattice color tensor on a t_slice, cxyzXn
-    /// \param t_source: time-slice in chi
-    /// \param Nt_forward: return the next Nt_forward time-slices after t_source
-    /// \param Nt_backward: return the previous Nt_backward time-slices before t_source
-    /// \param spin_sources: list of spins
-    /// \param max_rhs: maximum number of vectors solved at once
-    /// \param order_out: coordinate order of the output tensor, a permutation of cSxyztXns where
-    ///        s is the spin source and S is the spin sink
-    /// \return: tensor cSxyztXns where the first t_slice is the t_source-Nt_backward time-slice of
-    ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
-
-    template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-    Tensor<Nd + 5, COMPLEX_OUT> doInversion(const SystemSolver<LatticeFermion>& PP,
-					    const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
-					    int first_tslice_out, int n_tslice_out,
-					    const std::vector<int>& spin_sources, int max_rhs,
-					    const std::string& order_out = "cSxyztXns")
-    {
-      detail::check_order_contains(order_out, "cSxyztXns");
-      if (chi.kvdim()['t'] != 1)
-	throw std::runtime_error("Expected one time-slice");
-      const int num_vecs = chi.kvdim()['n'];
-
-      if (n_tslice_out > Layout::lattSize()[3])
-	throw std::runtime_error("Too many tslices");
-
-      Tensor<Nd + 5, COMPLEX_OUT> psi(
-	order_out,
-	latticeSize<Nd + 5>(
-	  order_out, {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}),
-	chi.getDev());
-
-      int max_step = std::max(num_vecs, max_rhs);
-      std::vector<std::shared_ptr<LatticeFermion>> chis(max_step), quark_solns(max_step);
-      for (int col = 0; col < max_step; col++)
-	chis[col].reset(new LatticeFermion);
-      for (int col = 0; col < max_step; col++)
-	quark_solns[col].reset(new LatticeFermion);
-
-      StopWatch snarss1;
-      snarss1.reset();
-      snarss1.start();
-
-      for (int spin_source : spin_sources)
-      {
-	for (int n0 = 0, n_step = std::min(max_rhs, num_vecs); n0 < num_vecs;
-	     n0 += n_step, n_step = std::min(n_step, num_vecs - n0))
-	{
-	  for (int n = n0, col = 0; col < n_step; ++n, ++col)
-	  {
-	    // Put the colorvec sources for the t_source on chis for spin `spin_source`
-	    // chis[col][s=spin_source] = chi[n=n0]
-	    *chis[col] = zero;
-	    chi.kvslice_from_size({{'n', n}}, {{'n', 1}})
-	      .copyTo(SB::asTensorView(*chis[col])
-			.kvslice_from_size({{'t', t_source}, {'s', spin_source}}));
-
-	    *quark_solns[col] = zero;
-	  }
-
-	  // Solve
-	  std::vector<SystemSolverResults_t> res =
-	    PP(std::vector<std::shared_ptr<LatticeFermion>>(quark_solns.begin(),
-							    quark_solns.begin() + n_step),
-	       std::vector<std::shared_ptr<const LatticeFermion>>(chis.begin(),
-								  chis.begin() + n_step));
-
-	  for (int n = n0, col = 0; col < n_step; ++n, ++col)
-	  {
-	    // psi[n=n] = quark_solns[col][t=first_tslice+(0:n_tslice_out-1)]
-	    asTensorView(*quark_solns[col])
-	      .kvslice_from_size({{'t', first_tslice_out}}, {{'t', n_tslice_out}})
-	      .rename_dims({{'s', 'S'}})
-	      .copyTo(psi.kvslice_from_size({{'n', n}, {'s', spin_source}}));
-	  }
-	}
-      }
-
-      snarss1.stop();
-      QDPIO::cout << "Time to compute inversions for " << spin_sources.size()
-		  << " spin sources and " << num_vecs
-		  << " colorvecs : " << snarss1.getTimeInSeconds() << " secs" << std::endl;
-
-      return psi;
-    }
-
     namespace detail
     {
       /// Path Node
@@ -5050,7 +5296,7 @@ namespace Chroma
 	sizer = dim;
       }
     }
-  }
+    }
 }
 
 namespace QDP
