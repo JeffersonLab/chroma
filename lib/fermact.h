@@ -91,6 +91,12 @@ namespace Chroma
      */
     virtual const CreateFermState<T,P,Q>& getCreateState() const = 0;
 
+    //! Produce a linear operator for this action
+    virtual LinearOperator<T>* genLinOp(Handle<FermState<T, P, Q>> state) const
+    {
+      return nullptr;
+    }
+
     //! Return quark prop solver, solution of unpreconditioned system
     virtual SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
 				   const GroupXML_t& invParam) const = 0;
