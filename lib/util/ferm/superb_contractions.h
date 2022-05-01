@@ -1865,11 +1865,11 @@ namespace Chroma
 				 superbblas::FastToSlow, superbblas::Copy);
       }
 
-      /// Copy/Add this tensor into the given one
-      template <std::size_t Nw, typename Tw,
+      /// Copy/Add this tensor into the given one; and copy only where the values of the mask are nonzero if given
+      template <std::size_t Nw, typename Tw, std::size_t Nm = N, typename Tm = float,
 		typename std::enable_if<
 		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
-      void doAction(Action action, Tensor<Nw, Tw> w) const
+      void doAction(Action action, Tensor<Nw, Tw> w, Maybe<Tensor<Nm, Tm>> m = none) const
       {
 	if (volume() > 0 && is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
@@ -1887,8 +1887,29 @@ namespace Chroma
 
 	if ((dist == Local && w.dist != Local) || (dist != Local && w.dist == Local))
 	{
-	  getLocal().doAction(action, w.getLocal());
+	  getLocal().doAction(action, w.getLocal(), m);
 	  return;
+	}
+
+	// Compute masks
+	float *m0ptr = nullptr, *m1ptr = nullptr;
+	Tensor<N, float> m0;
+	Tensor<Nw, float> m1;
+	if (m.hasSome())
+	{
+	  m0 = Tensor<N, float>{order, dim, getDev(), dist, p};
+	  m0.from = from;
+	  m0.size = size;
+	  m0.conjugate = conjugate;
+	  m.copyTo(m0);
+	  m0ptr = m0.data();
+
+	  m1 = Tensor<Nw, float>{w.order, w.dim, w.getDev(), w.dist, w.p};
+	  m1.from = w.from;
+	  m1.size = w.size;
+	  m1.conjugate = w.conjugate;
+	  m.copyTo(m1);
+	  m1ptr = m1.data();
 	}
 
 	T* ptr = this->data.get();
@@ -1898,10 +1919,11 @@ namespace Chroma
 								     : MPI_COMM_WORLD);
 	if (dist != OnMaster || w.dist != OnMaster || Layout::nodeNumber() == 0)
 	{
-	  superbblas::copy<N, Nw>(
-	    detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1, order.c_str(), from, size,
-	    (const T**)&ptr, &*ctx, w.p->p.data(), 1, w.order.c_str(), w.from, &w_ptr, &*w.ctx,
-	    comm, superbblas::FastToSlow, action == CopyTo ? superbblas::Copy : superbblas::Add);
+	  superbblas::copy<N, Nw>(detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1,
+				  order.c_str(), from, size, (const T**)&ptr, (const float**)&m0ptr,
+				  &*ctx, w.p->p.data(), 1, w.order.c_str(), w.from, &w_ptr, &*w.ctx,
+				  (const float**)&m1ptr, comm, superbblas::FastToSlow,
+				  action == CopyTo ? superbblas::Copy : superbblas::Add);
 	}
       }
 
@@ -1910,6 +1932,13 @@ namespace Chroma
       void copyTo(Tensor<Nw, Tw> w) const
       {
 	doAction(CopyTo, w);
+      }
+
+      /// Copy this tensor into the given one but only the elements where the mask is nonzero
+      template <std::size_t Nw, typename Tw, std::size_t Nm, typename Tm>
+      void copyToWithMask(Tensor<Nw, Tw> w, Tensor<Nm, Tm> m) const
+      {
+	doAction(CopyTo, w, m);
       }
 
       // Add `this` tensor into the given one
@@ -2718,8 +2747,8 @@ namespace Chroma
 	if (d.getDev() != i.getDev())
 	  throw std::runtime_error("Please give example vectors on the same device");
 
-	// Check that the domain and image labels are different
-	detail::check_order<NI + ND>(i.order + d.order);
+	// Check that the domain and image labels are different and do not contain `u` or `~`
+	detail::check_order<NI + ND + 2>(i.order + d.order + std::string("u~"));
 
 	// Check the blocking and get the number of blocking dimensions
 	unsigned int nblkd = numBlockedDims(d.size, blkd);
