@@ -381,16 +381,10 @@ namespace Chroma
   }
 
   // Construct a k-distance coloring
-  Coloring::Coloring(unsigned int distance, unsigned int power)
+  void construct(unsigned int distance, unsigned int power, CoorType latt_size, bool build_local)
   {
-    // Get lattice dimensions
-    CoorType latt_size;
-    for (unsigned int i = 0; i < latt_size.size(); i++)
-      latt_size[i] = Layout::lattSize()[i];
-
     // Compute the tile size; the tile size should be divisible by the lattice size and
     // greater or equal than 2*(dist+power)
-    CoorType tile_size;
     for (unsigned int i = 0; i < latt_size.size(); i++)
     {
       tile_size[i] = std::min(2 * ((i == 2 ? distance : 0) + power), latt_size[i]);
@@ -399,22 +393,36 @@ namespace Chroma
     }
 
     // Get colors for all nodes
-    Indices colors = get_colors(distance, power, tile_size, num_colors);
+    colors = get_colors(distance, power, tile_size, num_colors);
 
-    // Store the colors of the local nodes
-    int this_node = Layout::nodeNumber();
-    local_colors.resize(Layout::sitesOnNode());
-    for (unsigned int i = 0; i < Layout::sitesOnNode(); i++)
+    if (build_local)
     {
-      // Local coordinates of node i
-      multi1d<int> x = Layout::siteCoords(this_node, i);
+      // Store the colors of the local nodes
+      int this_node = Layout::nodeNumber();
+      local_colors.resize(Layout::sitesOnNode());
+      for (unsigned int i = 0; i < Layout::sitesOnNode(); i++)
+      {
+	// Local coordinates of node i
+	multi1d<int> x = Layout::siteCoords(this_node, i);
 
-      CoorType c;
-      for (unsigned int j = 0; j < c.size(); j++)
-	c[j] = x[j];
+	CoorType c;
+	for (unsigned int j = 0; j < c.size(); j++)
+	  c[j] = x[j];
 
-      local_colors[i] = colors[coor2index(Coors(1, c), tile_size)[0]];
+	local_colors[i] = colors[coor2index(Coors(1, c), tile_size)[0]];
+      }
     }
+  }
+
+  // Construct a k-distance coloring
+  Coloring::Coloring(unsigned int distance, unsigned int power)
+  {
+    // Get lattice dimensions
+    CoorType latt_size;
+    for (unsigned int i = 0; i < latt_size.size(); i++)
+      latt_size[i] = Layout::lattSize()[i];
+
+    construct(distance, power, latt_size, true);
   }
 
   // Read the coloring from a file
@@ -471,6 +479,8 @@ namespace Chroma
   {
     if (color >= num_colors)
       throw std::runtime_error("Invalid color value");
+    if (local_colors.size() == 0)
+      throw std::runtime_error("Invalid function");
 
     int node = Layout::nodeNumber();
     for (int s(0); s < Layout::sitesOnNode(); s++)
@@ -481,4 +491,9 @@ namespace Chroma
     }
   }
 
+  // Return the color for a site
+  unsigned int Coloring::getColor(CoorType coor) const
+  {
+    return colors[coor2index(Coors(1, coor), tile_size)[0]];
+  }
 }
