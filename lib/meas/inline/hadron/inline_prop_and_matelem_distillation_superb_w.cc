@@ -390,24 +390,10 @@ namespace Chroma
 	typedef multi1d<LatticeColorMatrix>  Q;
 
 	//
-	// Initialize fermion action
+	// Initialize fermion action and create the solver
 	//
-	std::istringstream  xml_s(params.param.prop.fermact.xml);
-	XMLReader  fermacttop(xml_s);
-	QDPIO::cout << "FermAct = " << params.param.prop.fermact.id << std::endl;
+	SB::ChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u};
 
-	// Generic Wilson-Type stuff
-	Handle< FermionAction<T,P,Q> >
-	  S_f(TheFermionActionFactory::Instance().createObject(params.param.prop.fermact.id,
-							       fermacttop,
-							       params.param.prop.fermact.path));
-
-	Handle< FermState<T,P,Q> > state(S_f->createState(u));
-
-	Handle< SystemSolver<LatticeFermion> > PP = S_f->qprop(state,
-							       params.param.prop.invParam);
-      
-	QDPIO::cout << "Suitable factory found: compute all the quark props" << std::endl;
 	swatch.start();
 
 	//
@@ -446,7 +432,7 @@ namespace Chroma
 	    // Invert the source for `spin_source` spin and retrieve `num_tslices` tslices starting from tslice `first_tslice`
 	    // NOTE: s is spin source, and S is spin sink
 	    SB::Tensor<Nd + 5, SB::Complex> quark_solns = SB::doInversion<SB::Complex, SB::Complex>(
-	      *PP, source_colorvec, t_source, first_tslice, num_tslices, {spin_source}, max_rhs,
+	      PP, source_colorvec, t_source, first_tslice, num_tslices, {spin_source}, max_rhs,
 	      "cxyzXnSst");
 
 	    StopWatch snarss1;

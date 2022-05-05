@@ -302,6 +302,7 @@ namespace Chroma
 	{
 	  throw_error("expected the value to be an integer");
 	}
+	throw std::exception{}; // silent no return warning
       }
       unsigned int getUInt() const override
       {
@@ -313,6 +314,7 @@ namespace Chroma
 	{
 	  throw_error("expected the value to be an unsigned integer");
 	}
+	throw std::exception{}; // silent no return warning
       }
       bool getBool() const override
       {
@@ -325,6 +327,7 @@ namespace Chroma
 	if (valueLower == std::string("false"))
 	  return false;
 	throw_error("expected the value to be boolean, either `true' or `false'");
+	throw std::exception{}; // silent no return warning
       }
       std::vector<Options> getVector() const override
       {

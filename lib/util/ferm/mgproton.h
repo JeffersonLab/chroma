@@ -108,10 +108,7 @@ namespace Chroma
 	  o.insert({it.second, it.first});
 	return o;
       }
-    }
 
-    namespace detail
-    {
       /// Check that the common dimensions have the same size
       /// \param V: tensor to check
       /// \param W: other tensor to check
@@ -141,23 +138,26 @@ namespace Chroma
     /// \param order_rows: dimension labels that are the rows of the matrices V and W
     /// \param order_cols: dimension labels that are the columns of the matrices V and W
 
-    template <std::size_t NV, std::size_t NW, typename COMPLEX>
-    void ortho(Maybe<Tensor<NV, COMPLEX>> V, Tensor<NW, COMPLEX>& W, std::string order_t,
-	       std::string order_rows, std::string order_cols, unsigned int max_its = 3)
+    template <std::size_t Nrows, std::size_t NV, typename COMPLEX, std::size_t NW>
+    void ortho(Tensor<NV, COMPLEX> V, Tensor<NW, COMPLEX> W, const std::string& order_t,
+	       const std::string& order_rows, const std::string& order_cols,
+	       unsigned int max_its = 3)
     {
+      // Check Nrows
+      if (order_rows.size() != Nrows)
+	throw std::runtime_error("ortho: invalid template argument `Nrows`");
+
       // Check that V and W are compatible, excepting the column dimensions
       if (V)
-	detail::check_compatible(V.getSome(), W, none, order_cols);
+	detail::check_compatible(V, W, none, order_cols);
 
       // Find the ordering
       std::string Wcorder = detail::remove_dimensions(W.order, order_t + order_rows);
-      std::string Vcorder = V.hasSome()
-			      ? detail::remove_dimensions(V.hasSome().order, order_t + order_rows)
-			      : std::string{};
+      std::string Vcorder =
+	V ? detail::remove_dimensions(V.order, order_t + order_rows) : std::string{};
 
       // Create an alternative view of W with different labels for the column
-      remap Wac =
-	getNewLabels(Wcorder, (V.hasSome() ? V.getSome().order : std::string{}) + W.order);
+      remap Wac = detail::getNewLabels(Wcorder, (V ? V.order : std::string{}) + W.order);
       std::string Wacorder = detail::update_order<NW>(Wcorder, Wac);
       auto Wa = W.rename_dims(Wac);
 
@@ -165,12 +165,27 @@ namespace Chroma
       {
 	// W = W - V*(V'*W)
 	if (V)
-	  contract(V.getSome().scale(-1), contract(V.getSome().conj(), W, order_rows), Vcorder, AddTo,
-		   W);
+	  contract(V.scale(-1), contract<NV + NW - Nrows * 2>(V.conj(), W, order_rows), Vcorder,
+		   AddTo, W);
 
 	// W = W/chol(Wa'*W), where Wa'*W has dimensions (rows,cols)=(Wacorder,Wcorder)
-	cholInv(W, contract(Wa.conj(), W, order_rows), order_t, Wacorder, Wcorder, CopyTo, W);
+	cholInv(W, contract<NW * 2 - Nrows * 2>(Wa.conj(), W, order_rows), order_t, Wacorder,
+		Wcorder, CopyTo, W);
       }
+    }
+
+    /// Orthonormalize W, W_out <- W_in*R, with R such that W_out'*W_out = I,
+    /// for each combination of values of the order_t dimensions, or once if it is empty.
+    /// \param W: matrix to orthogonalize
+    /// \param order_t: dimension labels that do not participate in the orthogonalization
+    /// \param order_rows: dimension labels that are the rows of the matrices V and W
+    /// \param order_cols: dimension labels that are the columns of the matrices V and W
+
+    template <typename Nrows, std::size_t NW, typename COMPLEX>
+    void ortho(Tensor<NW, COMPLEX> W, std::string order_t, std::string order_rows,
+	       std::string order_cols, unsigned int max_its = 3)
+    {
+      ortho<Nrows>(Tensor<NW, COMPLEX>{}, W, order_t, order_rows, order_cols, max_its);
     }
 
     /// Solve iteratively op * y = x using FGMRES
@@ -208,12 +223,12 @@ namespace Chroma
       // Compute residual, r = op * y - x
       auto r = op(y);
       x.scale(-1).copyTo(r);
-      auto normr0 = norm(r, op.order_t + order_cols); // type std::vector<real of T>
+      auto normr0 = norm<1>(r, op.order_t + order_cols); // type std::vector<real of T>
 
       // Allocate the search subspace U (onto the left singular space), and
       // Z (onto the right singular space)
-      auto U = r.template like_this<Nd + 1>(std::string("%") + std::string(1, Vc), '%', "",
-					    {{Vc, max_basis_size + 1}});
+      auto U = r.template like_this<NOp + 1>(std::string("%") + std::string(1, Vc), '%', "",
+					     {{Vc, max_basis_size + 1}});
 
       // Allocate the search subspace Z (onto the right singular space); when no preconditioning
       // then Z = U
@@ -234,7 +249,7 @@ namespace Chroma
 	for (unsigned int i = 0; i < max_basis_size; ++i) {
 	  // Z(:,i) = prec * U(:,i)
 	  if (prec.hasSome())
-	    prec(U.kvslice_from_size({{Vc, i}}, {{Vc, 1}}))
+	    prec.getSome()(U.kvslice_from_size({{Vc, i}}, {{Vc, 1}}))
 	      .copyTo(Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}));
 
 	  // U(:,i+1) = op * Z(:,i)
@@ -249,9 +264,9 @@ namespace Chroma
 	auto Uo = Up;
 	if (do_ortho)
 	{
-	  Uo = Uo.clone();
-	  ortho(none, Uo, op.order_t + order_cols, order_rows, std::string(1, Vac),
-		1 /* one iteration should be enough */);
+	  //Uo = Uo.clone();
+	  //ortho<NOp, NOp + 1, COMPLEX>(Uo, op.order_t + order_cols, order_rows, std::string(1, Vac),
+	//			       1 /* one iteration should be enough */);
 	}
 
 	// Restrict to Uo: [x_rt H_rt] = Uo'*U = Up'*[r Up]
@@ -259,7 +274,8 @@ namespace Chroma
 	auto H_rt = contract<3>(Uo.conj(), Up, order_rows);
 
 	// Solve the projected problem: y_rt = (Uo'*U(:2:end))\(Uo'*r);
-	auto y_rt = solve<2>(H_rt, x_rt, none, std::string(1, Vac), std::string(1, Vc));
+	auto y_rt =
+	  solve<2>(H_rt, std::string(1, Vac), std::string(1, Vc), x_rt, std::string(1, Vac));
 
 	// Update solution: x += -Z*y_rt
 	contract(Z.scale(-1), y_rt, order_cols, AddTo, x);
@@ -268,12 +284,12 @@ namespace Chroma
 	contract(Up.scale(-1), y_rt, order_cols, AddTo, r);
 
 	// Compute the norm
-	auto normr = norm(r, op.order_t + order_cols);
+	auto normr = norm<1>(r, op.order_t + order_cols);
 
 	// Get the worse tolerance
 	max_tol = 0;
-	for (unsigned int i = 0; i < normr.size(); ++i)
-	  max_tol = std::max(max_tol, normr[i] / normr0[i]);
+	for (int i = 0, vol = normr.volume(); i < vol; ++i)
+	  max_tol = std::max(max_tol, normr.get({{i}}) / normr0.get({{i}}));
 
 	// Report iteration
 	if (verb >= Detailed)
@@ -622,17 +638,17 @@ namespace Chroma
 					      const Operator<NOp, COMPLEX>& null_solver)
       {
 	// Create num_null_vecs random vectors and solve them
-	auto b = op.d.template like_this<NOp + 1>("%n", '%', {{'n', num_null_vecs}});
+	auto b = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
 	urand(b, -1, 1);
 	auto nv = null_solver(std::move(b));
 
 	// Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
 	// TODO: experiment without chirality splitting
-	int ns = nv.kvdims()['s'];
+	int ns = nv.kvdim().at('s');
 	if (ns != 2 && ns != Ns)
 	  throw std::runtime_error("Error in getMGProlongator: Unsupported spin number");
 
-	auto nv2 = nv.like_this(none, {'n', num_null_vecs * 2});
+	auto nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
 	auto g5 = getGamma5(ns, OnHost), g5pos = g5.clone(), g5neg = g5.clone();
 	for (int i = 0; i < Ns; ++i) // make diagonal entries of gpos all positive or zero
 	  g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
@@ -651,15 +667,16 @@ namespace Chroma
 			.split_dimension('n', "CS", num_null_vecs);
 
 	// Do the orthogonalization on each block and chirality
-	ortho(Tensor<1, COMPLEX>(), nv_blk, "xyztn", "WYZTXsc", "N");
+	/// XXX: TEMP!!!
+	//ortho<7>(nv_blk, "xyztn", "WYZTXsc", "N");
 
 	// Return the operator
 	auto dimd = nv_blk.kvdim();
 	dimd['c'] = num_null_vecs;
 	dimd['s'] = 2;
 	Tensor<NOp, COMPLEX> d = d.like_this(none, dimd), i = op.i;
-	return {[=](Tensor<NOp + 1, COMPLEX> t) {
-		  auto out = i.template like_this<NOp + 1>("%n", '%', {{'n', t.kvdim()['n']}});
+	return {[=](const Tensor<NOp + 1, COMPLEX>& t) -> Tensor<NOp + 1, COMPLEX> {
+		  auto out = i.template like_this<NOp + 1>("%n", '%', "", {{'n', t.kvdim()['n']}});
 		  auto out_blk = out.split_dimension('x', "Wx", blocking.at('x'))
 				   .split_dimension('y', "Yy", blocking.at('y'))
 				   .split_dimension('z', "Zz", blocking.at('z'))
@@ -668,13 +685,14 @@ namespace Chroma
 		  return out;
 		},
 		d, i,
-		[=](Tensor<NOp + 1, COMPLEX> t) {
+		[=](const Tensor<NOp + 1, COMPLEX>& t) -> Tensor<NOp + 1, COMPLEX> {
 		  auto t_blk = t.split_dimension('x', "Wx", blocking.at('x'))
 				 .split_dimension('y', "Yy", blocking.at('y'))
 				 .split_dimension('z', "Zz", blocking.at('z'))
 				 .split_dimension('t', "Tt", blocking.at('t'));
 		  return contract<NOp + 1>(nv_blk.conj(), t_blk, "WYZT");
-		}, op.order_t};
+		},
+		op.order_t};
       }
 
 
@@ -702,7 +720,7 @@ namespace Chroma
 	unsigned int num_null_vecs = getOption<unsigned int>(ops, "num_null_vecs");
 	std::vector<unsigned int> blocking_v = getVectorOption<unsigned int>(ops, "blocking");
 	if (blocking_v.size() != Nd)
-	  ops.getValue("blocking")
+		ops.getValue("blocking")
 	    .throw_error("getMGPrec: the blocking should be a vector with four elements");
 	std::map<char, unsigned int> blocking{
 	  {'x', blocking_v[0]}, {'y', blocking_v[1]}, {'z', blocking_v[2]}, {'t', blocking_v[3]}};
@@ -808,18 +826,18 @@ namespace Chroma
 		    const multi1d<LatticeColorMatrix>& u)
       {
 	// Initialize fermion action and state
-	std::istringstream  xml_s(fermAction.xml);
-	XMLReader  fermacttop(xml_s);
+	std::istringstream xml_s(fermAction.xml);
+	XMLReader fermacttop(xml_s);
 	QDPIO::cout << "FermAct = " << fermAction.id << std::endl;
 	S = TheFermionActionFactory::Instance().createObject(fermAction.id, fermacttop,
 							     fermAction.path);
 	state = S->createState(u);
 
 	// If the inverter is MGPROTON, use this infrastructure
-	if (invParam.id == "MGPROTON")
+	if (invParam.id == std::string("MGPROTON"))
 	{
 	  // Parse XML with the inverter options
-	  Options ops = getOptionsFromXML(invParam.xml);
+	  Options ops = getOptionsFromXML(broadcast(invParam.xml));
 
 	  // Clone the matvec
 	  LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);

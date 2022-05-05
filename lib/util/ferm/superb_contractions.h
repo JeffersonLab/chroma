@@ -1562,6 +1562,39 @@ namespace Chroma
 	h.copyTo(l);
       }
 
+      /// Return a new tensor with the value of the function applied to each element
+      /// \param func: function T -> Tr
+      /// \param threaded: whether to run threaded
+
+      template <typename Tr, typename Func>
+      Tensor<N, Tr> transformWithCPUFun(Func func, bool threaded = true) const
+      {
+	auto r = like_this<N, Tr>(none, {}, OnHost);
+	auto t = cloneOn(OnHost);
+	assert(r.isSubtensor() && t.isSubtensor());
+	auto l = r.getLocal();
+	std::size_t vol = t.getLocal().volume();
+	T* tptr = t.data.get();
+	Tr* rptr = r.data.get();
+
+	if (threaded)
+	{
+#  ifdef _OPENMP
+#    pragma omp parallel for schedule(static)
+#  endif
+	  for (std::size_t i = 0; i < vol; ++i)
+	    rptr[i] = func(rptr[i]);
+	}
+	else
+	{
+	  for (std::size_t i = 0; i < vol; ++i)
+	    rptr[i] = func(tptr[i]);
+	}
+
+	return r;
+      }
+
+
       /// Set all elements with the given value
       /// \param v: the new value for all the elements
       ///
@@ -2647,10 +2680,10 @@ namespace Chroma
 
     template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
     Tensor<Nr, T> contract(Tensor<Nv, T> v, Tensor<Nw, T> w, const std::string& labels_to_contract,
-			   Maybe<Action> action = none, Maybe<Tensor<Nr, T>> r = none,
+			   Maybe<Action> action = none, Tensor<Nr, T> r = Tensor<Nr, T>{},
 			   const remap& mr = {}, T beta = T{1})
     {
-      if (action.hasSome() != r.hasSome())
+      if (action.hasSome() != (bool)r)
 	throw std::runtime_error("Invalid default value");
 
       // Compute the labels of the output tensor: v.order + w.order - labels_to_contract
@@ -2658,7 +2691,7 @@ namespace Chroma
       if (Nr != rorder.size())
 	throw std::runtime_error(
 	  "contract: The dimension of the output tensor does not match the template argument");
-      if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
+      if ((bool)r && detail::union_dimensions(rorder, r.order) != rorder)
 	throw std::runtime_error("contract: The given output tensor has an unexpected ordering");
 
       // If the output tensor is not given create a new one
@@ -2670,7 +2703,7 @@ namespace Chroma
       }
       else
       {
-	r0 = r.getSome();
+	r0 = r;
       }
 
       // Correct beta for the action
@@ -2681,6 +2714,47 @@ namespace Chroma
       r0.contract(v, {}, NotConjugate, w, {}, NotConjugate, mr, beta);
 
       return r0;
+    }
+
+    /// Compute the norm along some dimensions
+    /// \param v: tensor 
+    /// \param order_t: labels not to contract (optional)
+    /// \param order_rows: labels to contract (optional, either order_rows or order_t
+    ///        should be provided)
+    ///
+    /// Example:
+    ///
+    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("Ss", {{Ns,Ns}});
+    ///   Tensor<2,Complex> r0 = contract<2>(t, q, "s"); // r0 dims are "cS"
+    ///   Tensor<3,Complex> r1 = contract<3>(t, q, ""); // r1 dims are "csS"
+    ///   Tensor<2,Complex> r2("cS", {{Nc,Ns}});
+    ///   contract<2>(t, q, "s", CopyTo, r2); // r2 = q * s
+    ///   Tensor<2,Complex> r3("cs", {{Nc,Ns}});
+    ///   contract<2>(t, q, "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s
+    ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
+
+    template <std::size_t Nr, std::size_t Nv, typename T>
+    Tensor<Nr, typename detail::real_type<T>::type>
+    norm(Tensor<Nv, T> v, Maybe<std::string> order_t = none, Maybe<std::string> order_rows = none)
+    {
+      if (!order_t.hasSome() && !order_rows.hasSome())
+	throw std::runtime_error(
+	  "norm: invalid input, give at least either `order_t` or `order_rows`");
+
+      // Compute the labels to contract
+      std::string rorder = order_rows.hasSome()
+			     ? order_rows.getSome()
+			     : detail::remove_dimensions(v.order, order_t.getSome());
+      std::string torder =
+	order_t.hasSome() ? order_t.getSome() : detail::remove_dimensions(v.order, rorder);
+
+      // Allocate the output on the host and spread the result to every process
+      auto r = contract<Nr>(v.conj(), v, rorder).make_sure(torder, OnHost, OnEveryoneReplicated);
+
+      // Do the square root and return the result
+      using Treal = typename detail::real_type<T>::type;
+      return r.template transformWithCPUFun<Treal>(
+	[](const T& t) { return std::sqrt(std::real(t)); });
     }
 
     /// Compute the Cholesky factor of `v' and contract its inverse with `w`
@@ -2753,14 +2827,14 @@ namespace Chroma
       if (Nr != rorder.size())
 	throw std::runtime_error(
 	  "solve: The dimension of the output tensor does not match the template argument");
-      if (r && union_dimensions(rorder, r.getSome().order) != rorder)
+      if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
 	throw std::runtime_error("solve: The given output tensor has an unexpected ordering");
 
       // If the output tensor is not given create a new one
       Tensor<Nr, T> r0;
       if (!r)
       {
-	r0 = v.like_this<Nr>(rorder, w.kvdim());
+	r0 = v.template like_this<Nr>(rorder, w.kvdim());
       }
       else
       {
@@ -3389,7 +3463,7 @@ namespace Chroma
     void urand(Tensor<N, T>& t, typename T::value_type a = 0, typename T::value_type b = 1)
     {
       std::uniform_real_distribution<typename T::value_type> d(a, b);
-      t.fillWithCPUFuncNoArgs([&]() { return {d(detail::getSeed()), d(detail::getSeed())}; }, false);
+      t.fillWithCPUFuncNoArgs([&]() { return T{d(detail::getSeed()), d(detail::getSeed())}; }, false);
     }
 
     /// Modify with random uniformly distributed numbers between [a,b]
@@ -4086,16 +4160,12 @@ namespace Chroma
 	    auto r = evecs.like_this();
 	    LaplacianOperator(opaux.u, opaux.first_tslice, r, evecs);
 	    std::vector<std::complex<double>> evals_cmpl(evals.begin(), evals.end());
-	    r.contract(evecs, {}, NotConjugate,
-		       asTensorView(evals_cmpl).rename_dims({{'i', 'n'}}).scale(-1), {},
-		       NotConjugate, {}, 1);
-	    std::vector<std::complex<double>> norm2_r(evals.size());
-	    asTensorView(norm2_r)
-	      .rename_dims({{'i', 'n'}})
-	      .contract(r, {}, Conjugate, r, {}, NotConjugate);
-	    for (const auto& i : norm2_r)
+	    contract<Nd + 3, Nd + 3, 1, ComplexD>(
+	      evecs, asTensorView(evals_cmpl).rename_dims({{'i', 'n'}}).scale(-1), "", AddTo, r);
+	    auto rnorm = norm<1>(r, "n");
+	    for (int i = 0, vol = rnorm.volume(); i < vol; ++i)
 	    {
-	      if (std::sqrt(std::real(i)) > primme.stats.estimateLargestSVal * primme.eps * 10)
+	      if (rnorm.get({{i}}) > primme.stats.estimateLargestSVal * primme.eps * 10)
 	      {
 		QDPIO::cerr << "Error: primme returned eigenpairs with too much error\n";
 		QDP_abort(1);
@@ -4272,15 +4342,10 @@ namespace Chroma
 	}
 
 	// Compute the 2-norm of colorvecs_s3t and check that no vector is null
-
-	Tensor<2, ComplexD> colorvecs_s3t_norms2("nt", Coor<2>{n_colorvecs, n_tslices}, OnHost,
-						 OnEveryoneReplicated);
-	colorvecs_s3t_norms2.contract(colorvecs_s3t, {}, Conjugate, colorvecs_s3t, {},
-				      NotConjugate);
-
+	auto colorvecs_s3t_norms = norm<2>(colorvecs_s3t, "nt");
 	for (int t = 0; t < n_tslices; ++t)
 	  for (int n = 0; n < n_colorvecs; ++n)
-	    if (std::norm(colorvecs_s3t_norms2.get({n, t})) == 0)
+	    if (colorvecs_s3t_norms.get({n, t}) == 0)
 	      throw std::runtime_error(
 		"no colorvec exists with key t_slice= " + std::to_string(t + from_tslice) +
 		" colorvec= " + std::to_string(n));
@@ -4303,15 +4368,17 @@ namespace Chroma
 	  //
 	  // Therefore, phi[i] = (colorvecs_s3t[i]^\dagger * colorvecs_s3t[i]) / (colorvecs_s3t[i]^\dagger * colorvecs[i])
 
-	  auto ip = colorvecs_s3t_norms2.like_this();
-	  ip.contract(colorvecs_s3t, {}, Conjugate, colorvecs, {}, NotConjugate);
+	  auto ip = contract<2>(colorvecs_s3t.conj(), colorvecs,
+				detail::remove_dimensions(colorvecs.order, "nt"))
+		      .make_sure("nt", OnHost, OnEveryoneReplicated);
 
 	  auto phi = ip.like_this();
 	  for (int t = 0; t < n_tslices; ++t)
 	  {
 	    for (int n = 0; n < n_colorvecs; ++n)
 	    {
-	      auto phi_i = colorvecs_s3t_norms2.get({n, t}) / ip.get({n, t});
+	      auto cv_norm = colorvecs_s3t_norms.get({n, t});
+	      auto phi_i = cv_norm * cv_norm / ip.get({n, t});
 	      if (std::fabs(std::fabs(phi_i) - 1) > 1e-4)
 		throw std::runtime_error(
 		  "The colorvec fingerprint does not correspond to current gates field");
