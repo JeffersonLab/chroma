@@ -381,7 +381,7 @@ namespace Chroma
   }
 
   // Construct a k-distance coloring
-  void construct(unsigned int distance, unsigned int power, CoorType latt_size, bool build_local)
+  void Coloring::construct(unsigned int distance, unsigned int power, CoorType latt_size, bool build_local)
   {
     // Compute the tile size; the tile size should be divisible by the lattice size and
     // greater or equal than 2*(dist+power)
@@ -492,8 +492,10 @@ namespace Chroma
   }
 
   // Return the color for a site
-  unsigned int Coloring::getColor(CoorType coor) const
+  unsigned int Coloring::getColor(std::array<int, 4>  coor) const
   {
-    return colors[coor2index(Coors(1, coor), tile_size)[0]];
+    CoorType coor0{(unsigned int)coor[0], (unsigned int)coor[1], (unsigned int)coor[2],
+		   (unsigned int)coor[3]};
+    return colors[coor2index(Coors(1, coor0), tile_size)[0]];
   }
 }

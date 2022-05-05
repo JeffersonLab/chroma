@@ -23,6 +23,7 @@
 #include "util/ferm/key_val_db.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/superb_contractions.h"
+#include "util/ferm/mgproton.h"
 #include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
 #include "util/ft/time_slice_set.h"

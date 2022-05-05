@@ -397,6 +397,98 @@ namespace Chroma
 	return v;
       }
 
+      /// Return a character not given
+      /// \param used_labels: labels not to use
+
+      inline char get_free_label(const std::string& used_labels)
+      {
+	for (char c = '0'; c < 128; ++c)
+	  if (used_labels.find(c) == std::string::npos)
+	    return c;
+	throw std::runtime_error("get_free_labels: out of labels");
+      }
+
+      /// Return a map to transform given labels into another ones
+      /// \param labels: labels to remap
+      /// \param used_labels: labels not to use, besides `labels`
+
+      inline remap getNewLabels(const std::string& labels, std::string used_labels)
+      {
+	remap r;
+	used_labels += labels;
+	for (unsigned int i = 0; i < labels.size(); ++i)
+	{
+	  char c = get_free_label(used_labels);
+	  r[labels[i]] = c;
+	  used_labels.push_back(c);
+	}
+	return r;
+      }
+
+      enum CoorType { From, Size };
+
+      /// Split a dimension into another dimensions
+      /// \param pos: dimension to split
+      /// \param c: coordinate to transform
+      /// \param new_dim: dimensions of the new tensor
+      /// \param t: either `From` (first element) or `Size` (number of elements in each dimension)
+
+      template <std::size_t Nout, std::size_t N>
+      Coor<Nout> split_dimension(std::size_t pos, const Coor<N>& c, const Coor<Nout>& new_dim,
+				 CoorType t)
+      {
+	constexpr std::size_t Nnew = Nout + 1 - N;
+	Coor<Nout> r;
+	std::copy_n(c.begin(), pos, r.begin());
+	Index stride = 1;
+	for (unsigned int k = 0; k < Nnew; ++k)
+	{
+	  if (!(c[pos] < stride || c[pos] % stride == 0))
+	    throw std::runtime_error("split_dimension: Not supporting for this partition");
+	  if (t == From)
+	    r[pos + k] = (c[pos] / stride) % new_dim[pos + k];
+	  else
+	    r[pos + k] = std::max((c[pos] + stride - 1) / stride, new_dim[pos + k]);
+	  stride *= new_dim[pos + k];
+	}
+	std::copy_n(c.begin() + pos + 1, N - pos - 1, r.begin() + pos + Nnew);
+	return r;
+      }
+
+      /// Collapse several dimensions into another dimension
+      /// \param pos: first dimension to collapse
+      /// \param c: coordinate to transform
+      /// \param old_dim: dimensions of the old tensor
+      /// \param t: either `From` (first element) or `Size` (number of elements in each dimension)
+
+      template <std::size_t Nout, std::size_t N>
+      Coor<Nout> collapse_dimensions(std::size_t pos, const Coor<N>& c, const Coor<N>& old_dim,
+				     CoorType t)
+      {
+	constexpr std::size_t Ncol = N + 1 - Nout; // number of dimensions to collapse
+	Coor<Nout> r;
+	std::copy_n(c.begin(), pos, r.begin());
+	Index stride = 1, i = (t == From ? 0 : 1);
+	bool odd_dim_watched = false;
+	for (unsigned int k = 0; k < Ncol; ++k)
+	{
+	  if (t == Size && c[pos+k] > 0 && c[pos+k] != old_dim[pos+k]) {
+	    if (odd_dim_watched)
+	      throw std::runtime_error(
+		"collapse_dimensions: unsupported to collapse a range with holes");
+		odd_dim_watched = true;
+	  }
+	  if (t == From)
+	    i += c[pos + k] * stride;
+	  else
+	    i *= c[pos + k];
+	  stride *= old_dim[pos + k];
+	}
+	r[pos] = i;
+	std::copy_n(c.begin() + pos + Ncol, Nout - pos - Ncol, r.begin() + pos + 1);
+	return r;
+      }
+
 #  if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
       // Return a MAGMA context
       inline std::shared_ptr<magma_queue_t> getMagmaContext(Maybe<int> device = none)
@@ -651,23 +743,28 @@ namespace Chroma
 
 	/// Split a dimension into a non-distributed dimension and another dimension
 
-	TensorPartition<N + 1> split_dimension(std::size_t pos, Index step) const
+	template <std::size_t Nout, typename std::enable_if<(N > 0), bool>::type = true>
+	TensorPartition<Nout> split_dimension(std::size_t pos, const Coor<Nout>& new_dim) const
 	{
-	  typename TensorPartition<N + 1>::PartitionStored r;
+	  typename TensorPartition<Nout>::PartitionStored r;
 	  r.reserve(p.size());
 	  for (const auto& i : p)
-	  {
-	    if (i[1][pos] % step != 0 && i[1][pos] > step)
-	      throw std::runtime_error("Unsupported splitting a dimension with an uneven lattice "
-				       "portions in all processes");
-	    r.push_back(
-	      {insert_coor(replace_coor(i[0], pos, i[0][pos] % step), pos + 1, i[0][pos] / step),
-	       insert_coor(replace_coor(i[1], pos, std::min(i[1][pos], step)), pos + 1,
-			   (i[1][pos] + step - 1) / step)});
-	  }
-	  return TensorPartition<N + 1>{
-	    insert_coor(replace_coor(dim, pos, std::min(dim[pos], step)), pos + 1, dim[pos] / step),
-	    r};
+	    r.push_back({detail::split_dimension(pos, i[0], new_dim, From),
+			 detail::split_dimension(pos, i[1], new_dim, Size)});
+	  return TensorPartition<Nout>{detail::split_dimension(pos, dim, new_dim, Size), r};
+	}
+
+	/// Collapse several dimensions into another dimension
+
+	template <std::size_t Nout, typename std::enable_if<(Nout > 0), bool>::type = true>
+	TensorPartition<Nout> collapse_dimensions(std::size_t pos) const
+	{
+	  typename TensorPartition<Nout>::PartitionStored r;
+	  r.reserve(p.size());
+	  for (const auto& i : p)
+	    r.push_back({detail::collapse_dimensions<Nout>(pos, i[0], dim, From),
+			 detail::collapse_dimensions<Nout>(pos, i[1], dim, Size)});
+	  return TensorPartition<Nout>{detail::collapse_dimensions<Nout>(pos, dim, dim, Size), r};
 	}
 
 	/// Extend the support of some directions
@@ -997,7 +1094,7 @@ namespace Chroma
 
       template <typename T>
       struct real_type<std::complex<T>> {
-	using type = T::value_type;
+	using type = T;
       };
 
       template <typename T, typename A, typename B,
@@ -1155,7 +1252,6 @@ namespace Chroma
 	checkOrder();
       }
 
-    protected:
       /// Internal constructor, used by `make_suitable_for_contraction`
       /// \param order: dimension labels of the tensor
       /// \param dim: size for each dimension
@@ -1188,6 +1284,7 @@ namespace Chroma
 	});
       }
 
+    protected:
       /// Internal constructor, used by functions making slices, eg. `kvslice_from_size`
       /// \param order: dimension labels of the tensor
       /// \param from: coordinate of the first element in this view
@@ -1394,12 +1491,13 @@ namespace Chroma
       /// \param func: function () -> COMPLEX
       /// \param threaded: whether to run threaded
 
+      template <typename Func>
       void fillWithCPUFuncNoArgs(Func func, bool threaded = true)
       {
-	auto l = t.getLocal();
-	auto h = l.like_this(none, OnHost);
+	auto l = getLocal();
+	auto h = l.make_sure(none, OnHost);
 	std::size_t vol = l.volume();
-	COMPLEX* ptr = h.data.get();
+	T* ptr = h.data.get();
 
 	if (threaded)
 	{
@@ -1413,6 +1511,52 @@ namespace Chroma
 	{
 	  for (std::size_t i = 0; i < vol; ++i)
 	    ptr[i] = func();
+	}
+
+	h.copyTo(l);
+      }
+
+      /// Fill the tensor with the value of the function applied to each element
+      /// \param func: function (Coor<N>) -> T
+      /// \param threaded: whether to run threaded
+
+      template <typename Func>
+      void fillCpuFunCoor(Func func, bool threaded = true)
+      {
+	using superbblas::detail::operator+;
+
+	auto l = getLocal();
+	auto h = l.make_sure(none, OnHost);
+	std::size_t vol = l.volume();
+	T* ptr = h.data.get();
+	/// Number of elements in each direction for the local part
+	Coor<N> local_size = l.size;
+	/// Stride for the local volume
+	Coor<N> local_stride = superbblas::detail::get_strides(local_size, superbblas::FastToSlow);
+	/// Coordinates of first elements stored locally
+	Coor<N> local_from = p->localFrom();
+
+	if (threaded)
+	{
+#  ifdef _OPENMP
+#    pragma omp parallel for schedule(static)
+#  endif
+	  for (std::size_t i = 0; i < vol; ++i)
+	  {
+	    // Get the global coordinates
+	    Coor<N> c = normalize_coor(
+	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, dim);
+	    ptr[i] = func(c);
+	  }
+	}
+	else
+	{
+	  for (std::size_t i = 0; i < vol; ++i)
+	  {
+	    Coor<N> c = normalize_coor(
+	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, dim);
+	    ptr[i] = func(c);
+	  }
 	}
 
 	h.copyTo(l);
@@ -1433,7 +1577,7 @@ namespace Chroma
       {
 	if (std::norm(v) == 0) set_zero();
 	else
-	  fillWithCPUFuncNoArgs([]() { return v; });
+	  fillWithCPUFuncNoArgs([=]() { return v; });
       }
 
       /// Return a new tensors with the dimension labels renamed
@@ -1608,7 +1752,7 @@ namespace Chroma
 
       Tensor<N, T> make_eg() const
       {
-	return Tensor<T, N>(order, dim, ctx, std::shared_ptr<T>(), p, dist, from, size, T{1},
+	return Tensor<N, T>(order, dim, ctx, std::shared_ptr<T>(), p, dist, from, size, T{1},
 			    false);
       }
 
@@ -1779,9 +1923,14 @@ namespace Chroma
 	return *this;
       }
 
-      /// Return a fake real view of this tensor
+      /// Split a dimension into another dimensions
+      /// \param dim_label: dimension to split
+      /// \param new_labels: the labels of the new dimensions
+      /// \param new_dim: number of elements in each new labels
 
-      Tensor<N + 1, T> split_dimension(char dim_label, std::string new_labels, Index step) const
+      template <std::size_t Nout, typename std::enable_if<(N > 0), bool>::type = true>
+      Tensor<Nout, T> split_dimension(char dim_label, std::string new_labels,
+				      const std::map<char, int> &new_dim) const
       {
 	using namespace detail;
 
@@ -1795,32 +1944,93 @@ namespace Chroma
 	  throw std::runtime_error(ss.str());
 	}
 
-	// Check the other arguments
-	if (new_labels.size() != 2)
-	  throw std::runtime_error("`new_labels` should have two labels!");
+	// Check the length of the output tensor
+	if (N + new_labels.size() - 1 != Nout)
+	  throw std::runtime_error(
+	    "split_dimension: `new_labels` doesn't match the output tensor dimensions!");
 
-	if (step < 1)
-	  throw std::runtime_error("`step` cannot be zero or negative");
-
-	if (size[pos] % step != 0 && size[pos] > step)
-	  throw std::runtime_error("Not supporting `split_dimension` for this lattice dimensions");
+	// Check that the size is divisible by the new partition
+	if (new_labels.size() == 0)
+	{
+	  if (size[pos] != 1)
+	    throw std::runtime_error("Invalid operation: removing a dimension that isn't singlet");
+	  if (dim[pos] != 1)
+	    throw std::runtime_error("Unsupported remove a dimension that isn't singlet; clone "
+				     "this object before doing the operator");
+	}
 
 	// Set the new characteristics of the tensor
-	std::string new_order =
-	  insert_coor(replace_coor(order, pos, new_labels[0]), pos + 1, new_labels[1]);
-	Coor<N + 1> new_from =
-	  insert_coor(replace_coor(from, pos, from[pos] % step), pos + 1, from[pos] / step);
-	Coor<N + 1> new_size = insert_coor(replace_coor(size, pos, std::min(size[pos], step)),
-					   pos + 1, (size[pos] + step - 1) / step);
-	Coor<N + 1> new_dim = insert_coor(replace_coor(dim, pos, std::min(dim[pos], step)), pos + 1,
-					  (dim[pos] + step - 1) / step);
+	std::string new_order = std::string(order.begin(), order.begin() + pos) + new_labels +
+				std::string(order.begin() + pos + 1, order.end());
+	Coor<Nout> d;
+	std::copy_n(dim.begin(), pos, d.begin());
+	for (unsigned int i = 0; i < new_labels.size(); ++i)
+	  d[pos + i] = new_dim.at(new_labels[i]);
+	std::copy_n(dim.begin() + pos + 1, N - pos - 1, d.begin() + pos + new_labels.size());
 
-	auto new_p =
-	  std::make_shared<detail::TensorPartition<N + 1>>(p->split_dimension(pos, step));
+	// Transform the partition
+	auto new_p = std::make_shared<detail::TensorPartition<Nout>>(p->split_dimension(pos, d));
 
-	return Tensor<N + 1, T>(new_order, new_dim, ctx, data, new_p, dist, new_from, new_size,
-				scalar, conjugate);
+	return Tensor<Nout, T>(new_order, new_p->dim, ctx, data, new_p, dist,
+			       detail::split_dimension(pos, from, d, From),
+			       detail::split_dimension(pos, size, d, Size), scalar, conjugate);
       }
+
+      /// Return a fake real view of this tensor
+
+      Tensor<N + 1, T> split_dimension(char dim_label, std::string new_labels, Index step) const
+      {
+	return split_dimension<N + 1>(dim_label, new_labels, {{new_labels[0], step}});
+      }
+
+      /// Collapse several dimensions into a new one
+      /// \param dim_label: dimension to split
+      /// \param new_labels: the labels of the new dimensions
+      /// \param new_dim: number of elements in each new labels
+
+      template <std::size_t Nout, typename std::enable_if<(N > 0), bool>::type = true>
+      Tensor<Nout, T> collapse_dimensions(std::string labels, char new_label) const
+      {
+	using namespace detail;
+
+	// Find the first and the last position of the `labels` into order
+	std::string::size_type min_pos = order.size(), max_pos = 0;
+	for( char c: labels) {
+		std::string::size_type pos = order.find(c);
+		if (pos == std::string::npos)
+		  continue;
+		min_pos = std::min(min_pos, pos);
+		max_pos = std::max(max_pos, pos);
+	}
+
+	// Check that all `labels` are together in `order`
+	if (labels.size() > 0 && max_pos + 1 - min_pos != labels.size())
+	  throw std::runtime_error("collapse_dimensions: invalid labels to collapse or they are "
+				   "not together on the tensor ordering");
+
+	// Check the length of the output tensor
+	if (N - labels.size() + 1 != Nout)
+	  throw std::runtime_error(
+	    "collapse_dimensions: `labels` doesn't match the output tensor dimensions!");
+
+	// Lets put the new dimension on the first dimension to collapse
+	std::string::size_type pos = min_pos;
+
+	// Set the new characteristics of the tensor
+	std::string new_order = std::string(order.begin(), order.begin() + pos) +
+				std::string(1, new_label) +
+				std::string(order.begin() + pos + labels.size(), order.end());
+	
+	// Transform the partition
+	auto new_p = std::make_shared<detail::TensorPartition<Nout>>(
+	  p->template collapse_dimensions<Nout>(pos));
+
+	return Tensor<Nout, T>(new_order, new_p->dim, ctx, data, new_p, dist,
+			       detail::collapse_dimensions<Nout>(pos, from, dim, From),
+			       detail::collapse_dimensions<Nout>(pos, size, dim, Size), scalar,
+			       conjugate);
+      }
+
 
       /// Copy/add this tensor into the given one
       /// NOTE: if this tensor or the given tensor is fake real, force both to be fake real
@@ -1861,8 +2071,8 @@ namespace Chroma
 	MPI_Comm comm = (dist == OnMaster || dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	if (dist != OnMaster || Layout::nodeNumber() == 0)
 	  superbblas::copy<N, N>(T{0}, p->p.data(), 1, order.c_str(), from, size, (const T**)&ptr,
-				 &*ctx, p->p.data(), 1, order.c_str(), from, &ptr, &*ctx, comm,
-				 superbblas::FastToSlow, superbblas::Copy);
+				 nullptr, &*ctx, p->p.data(), 1, order.c_str(), from, &ptr, nullptr,
+				 &*ctx, comm, superbblas::FastToSlow, superbblas::Copy);
       }
 
       /// Copy/Add this tensor into the given one; and copy only where the values of the mask are nonzero if given
@@ -1901,15 +2111,15 @@ namespace Chroma
 	  m0.from = from;
 	  m0.size = size;
 	  m0.conjugate = conjugate;
-	  m.copyTo(m0);
-	  m0ptr = m0.data();
+	  m.getSome().copyTo(m0);
+	  m0ptr = m0.data.get();
 
 	  m1 = Tensor<Nw, float>{w.order, w.dim, w.getDev(), w.dist, w.p};
 	  m1.from = w.from;
 	  m1.size = w.size;
 	  m1.conjugate = w.conjugate;
-	  m.copyTo(m1);
-	  m1ptr = m1.data();
+	  m.getSome().copyTo(m1);
+	  m1ptr = m1.data.get();
 	}
 
 	T* ptr = this->data.get();
@@ -1921,8 +2131,8 @@ namespace Chroma
 	{
 	  superbblas::copy<N, Nw>(detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1,
 				  order.c_str(), from, size, (const T**)&ptr, (const float**)&m0ptr,
-				  &*ctx, w.p->p.data(), 1, w.order.c_str(), w.from, &w_ptr, &*w.ctx,
-				  (const float**)&m1ptr, comm, superbblas::FastToSlow,
+				  &*ctx, w.p->p.data(), 1, w.order.c_str(), w.from, &w_ptr,
+				  (const float**)&m1ptr, &*w.ctx, comm, superbblas::FastToSlow,
 				  action == CopyTo ? superbblas::Copy : superbblas::Add);
 	}
       }
@@ -1938,7 +2148,7 @@ namespace Chroma
       template <std::size_t Nw, typename Tw, std::size_t Nm, typename Tm>
       void copyToWithMask(Tensor<Nw, Tw> w, Tensor<Nm, Tm> m) const
       {
-	doAction(CopyTo, w, m);
+	doAction<Nw, Tw, Nm, Tm>(CopyTo, w, m);
       }
 
       // Add `this` tensor into the given one
@@ -2053,7 +2263,7 @@ namespace Chroma
 
       template <std::size_t Nv, std::size_t Nw>
       void cholInv(Tensor<Nv, T> v, const std::string& order_rows, const std::string& order_cols,
-		   Tensor<Nw, COMPLEX>& w)
+		   Tensor<Nw, T>& w)
       {
 	if ((volume() > 0 && is_eg()) || (v.volume() > 0 && v.is_eg()) ||
 	    (w.volume() > 0 && w.is_eg()))
@@ -2083,7 +2293,7 @@ namespace Chroma
 	if (isSubtensor() || getDev() != v.getDev())
 	{
 	  Tensor<N, T> aux = like_this(none, {}, v.getDev());
-	  aux.cholInv(v, w, order_t, order_rows, order_cols);
+	  aux.cholInv(v, w, order_rows, order_cols);
 	  aux.copyTo(*this);
 	  return;
 	}
@@ -2134,7 +2344,7 @@ namespace Chroma
 
       template <std::size_t Nv, std::size_t Nw>
       void solve(Tensor<Nv, T> v, const std::string& order_rows, const std::string& order_cols,
-		 Tensor<Nw, COMPLEX>& w)
+		 Tensor<Nw, T>& w)
       {
 	if ((volume() > 0 && is_eg()) || (v.volume() > 0 && v.is_eg()) ||
 	    (w.volume() > 0 && w.is_eg()))
@@ -2291,8 +2501,8 @@ namespace Chroma
 
       Tensor<N, T> extend_support(const std::map<char,int> &m) const
       {
-	p->extend_support(kvcoor<N>(order, m, 0));
-	Tensor<N,T> r{order, dim, getDev(), dist, p->extend_support(kvcoor<N>(order, m, 0))};
+	p->extend_support(kvcoors<N>(order, m, 0));
+	Tensor<N,T> r{order, dim, getDev(), dist, p->extend_support(kvcoors<N>(order, m, 0))};
 	r.from = from;
 	r.size =size;
 	r.strides = strides;
@@ -2448,14 +2658,14 @@ namespace Chroma
       if (Nr != rorder.size())
 	throw std::runtime_error(
 	  "contract: The dimension of the output tensor does not match the template argument");
-      if (r && union_dimensions(rorder, r.getSome().order) != rorder)
+      if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
 	throw std::runtime_error("contract: The given output tensor has an unexpected ordering");
 
       // If the output tensor is not given create a new one
       Tensor<Nr, T> r0;
       if (!r)
       {
-	r0 = v.like_this<Nr>(rorder, w.kvdim());
+	r0 = v.template like_this<Nr>(rorder, w.kvdim());
 	beta = 0;
       }
       else
@@ -2691,7 +2901,7 @@ namespace Chroma
     /// \tparam NI: number of image dimensions
     /// \tparam T: datatype
 
-    template <std::size_t ND, std::size_t DI, typename T>
+    template <std::size_t ND, std::size_t NI, typename T>
     struct SpTensor {
       static_assert(superbblas::supported_type<T>::value, "Not supported type");
 
@@ -2701,7 +2911,7 @@ namespace Chroma
       Coor<ND> blkd;				///< blocking for the domain
       Coor<NI> blki;				///< blocking for the image
       Tensor<NI, int> ii;			///< Number of blocks in each row
-      Tensor<NI + 1, int> jj;			///< Coordinate of the first element on each block
+      Tensor<NI + 2, int> jj;			///< Coordinate of the first element on each block
       Tensor<NI + ND + 1, T> data;		///< Nonzero values
       std::shared_ptr<superbblas::BSR_handle> handle; ///< suparbblas sparse tensor handle
       T scalar;					      ///< Scalar factor of the tensor
@@ -2722,9 +2932,7 @@ namespace Chroma
 			      data.getLocal().volume() * sizeof(T)) /
 			     1024 / 1024;
 	ss << "domain_order: " << d.order << ", domain_dim:" << d.dim << "image_order: " << i.order
-	   << ", image_dim:" << i.dim << ", dist:" << dist << ", local_storage:"
-	   << sizemb
-	   << " MiB}";
+	   << ", image_dim:" << i.dim << ", local_storage:" << sizemb << " MiB}";
 	return ss.str();
       }
 
@@ -2757,12 +2965,17 @@ namespace Chroma
 	// Create the tensor containing the number of neighbors for each blocking
 	std::map<char,int> nonblki;
 	for (const auto i : i.kvdim())
-	  nonblki[i.first] = i.second / (blki.count(i.first) == 1 ? blki[i.first] : 1);
-	ii = i.like_this<NI, int>(none, nonblki);
+	  nonblki[i.first] = i.second / (blocki.count(i.first) == 1 ? blocki[i.first] : 1);
+	ii = i.template like_this<NI, int>(none, nonblki);
 	ii.set(num_neighbors);
 
 	// Create the tensor containing the domain coordinates of the first nonzero in each block
-	jj = i.like_this<NI + 1>("~u%", '%', "", {{'~', ND}, {'u', num_neighbors}});
+	jj = i.template like_this<NI + 2, int>(
+	  "~u%", '%', "", std::map<char, int>{{'~', (int)ND}, {'u', (int)num_neighbors}});
+	// NOTE: despite jj being a vector of `int`, superbblas will use jj as a vector of Coor<NI>, so check that the alignment
+	if (jj.volume() > 0 && superbblas::detail::align(alignof(Coor<NI>), sizeof(int),
+							 jj.data.get(), sizeof(int)) == nullptr)
+	  throw std::runtime_error("Ups! Look into this");
 
 	// Compute the data dimensions as image_blocked_dims + domain_dims + u + image_nonblocked_dims
 	std::map<char, int> data_dims = i.kvdim();
@@ -2772,7 +2985,7 @@ namespace Chroma
 	std::string data_order = std::string(i.order.begin(), i.order.begin() + nblki) + d.order +
 				 std::string("u") +
 				 std::string(i.order.begin() + nblki, i.order.end());
-	data = i.like_this<NI + ND + 1, T>(data_order, data_dims);
+	data = i.template like_this<NI + ND + 1, T>(data_order, data_dims);
       }
 
       /// Empty constructor
@@ -2812,14 +3025,14 @@ namespace Chroma
       void construct()
       {
 	int *iiptr = ii.data.get();
-	int *jjptr = jj.data.get();
+	Coor<NI>* jjptr = (Coor<NI>*)jj.data.get();
 	const T* ptr = data.data.get();
 	superbblas::BSR_handle* bsr = nullptr;
-	superbblas::create_bsr<ND, NI, T>(i.p->p.data(), d.p->p.data(), 1, blki.data(), blkd.data(),
-					  true, &iiptr, &jjptr, &ptr, &*ctx, MPI_COMM_WORLD,
-					  FastToSlow, &bsr);
+	superbblas::create_bsr<ND, NI, T>(i.p->p.data(), d.p->p.data(), 1, blki, blkd, true, &iiptr,
+					  &jjptr, &ptr, &*data.ctx, MPI_COMM_WORLD,
+					  superbblas::FastToSlow, &bsr);
 	handle = std::shared_ptr<superbblas::BSR_handle>(
-	  bsr, [=](const superbblas::BSR_handle* bsr) { destroy_bsr(bsr); });
+	  bsr, [=](superbblas::BSR_handle* bsr) { destroy_bsr(bsr); });
       }
 
       /// Return whether the sparse tensor has been constructed
@@ -2838,10 +3051,10 @@ namespace Chroma
 
       // Contract the dimensions with the same label in this tensor and in `v` than do not appear on `w`.
       template <std::size_t Nv, std::size_t Nw>
-      void contractWith(Tensor<Nv, T> v, Tensor<Nw, T> w)
+      void contractWith(Tensor<Nv, T> v, Tensor<Nw, T> w) const
       {
-	if ((volume() > 0 && is_eg()) || (v.volume() > 0 && v.is_eg()) ||
-	    (w.volume() > 0 && w.is_eg()))
+	if ((data.volume() > 0 && (ii.is_eg() || jj.is_eg() || data.is_eg())) ||
+	    (v.volume() > 0 && v.is_eg()) || (w.volume() > 0 && w.is_eg()))
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	if (!is_constructed())
@@ -2850,21 +3063,21 @@ namespace Chroma
 	// If either this tensor or v are on OnDevice, force both to be on the same device as this tensor.
 	// Also, Superbblas tensor contraction is shit and those not deal with subtensors or contracting a host and
 	// device tensor (for now)
-	if (v.ctx->plat != ctx->plat || v.isSubtensor())
+	if (v.ctx->plat != data.ctx->plat || v.isSubtensor())
 	{
 	  v = v.cloneOn(v.getDev());
 	}
 
 	if (w.isSubtensor() || getDev() != w.getDev())
 	{
-	  Tensor<N, T> aux = w.like_this(none, {}, getDev());
-	  contract(v, aux);
+	  Tensor<Nw, T> aux = w.like_this(none, {}, getDev());
+	  contractWith(v, aux);
 	  aux.copyTo(w);
 	  return;
 	}
 
 	/// Continue
-	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
+	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (data.dist == Local))
 	  throw std::runtime_error(
 	    "One of the contracted tensors or the output tensor is local and others are not!");
 
@@ -2873,23 +3086,13 @@ namespace Chroma
 	  throw std::runtime_error("Incompatible layout for contractions: one of the tensors is on "
 				   "the master node and the other is distributed");
 
-	// Avoid replicating the same computation in all nodes
-	// TODO: check whether superbblas does this already
-	if ((dist == OnMaster || dist == OnEveryoneReplicated)  &&
-	    (v.dist == OnMaster || v.dist == OnEveryoneReplicated))
-	{
-	  make_sure(none, none, OnMaster).contract(v.make_sure(none, none, OnMaster), w);
-	  return;
-	}
-
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
-	T* ptr = this->data.get();
 	superbblas::bsr_krylov<ND, NI, Nv, Nw, T>(
-	  handle.get(), i.order.c_str(), d.order.c_str(),					  //
-	  v.p->p.data(), 1, v.order.c_str(), (const T**)&v_ptr,					  //
-	  w.p->p.data(), 1, w.order.c_str(), 0 /* krylov power dim (none for now) */ (T**)&w_ptr, //
-	  MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Copy);
+	  handle.get(), i.order.c_str(), d.order.c_str(),					//
+	  v.p->p.data(), 1, v.order.c_str(), (const T**)&v_ptr,					//
+	  w.p->p.data(), w.order.c_str(), 0 /* krylov power dim (none for now) */, (T**)&w_ptr, //
+	  &*data.ctx, MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Copy);
 	w.scalar = scalar * v.scalar;
       }
 
@@ -3183,10 +3386,10 @@ namespace Chroma
 
     template <std::size_t N, typename T,
 	      typename std::enable_if<detail::is_complex<T>::value, bool>::type = true>
-    void urand(Tensor<N, T>& t, T::value_type a=0, T::value_type b=1)
+    void urand(Tensor<N, T>& t, typename T::value_type a = 0, typename T::value_type b = 1)
     {
-      std::uniform_real_distribution<T::value_type> d(a, b);
-      t.fillWithCPUFuncNoArgs([]() { return {d(detail::getSeed()), d(detail::getSeed())}; }, false);
+      std::uniform_real_distribution<typename T::value_type> d(a, b);
+      t.fillWithCPUFuncNoArgs([&]() { return {d(detail::getSeed()), d(detail::getSeed())}; }, false);
     }
 
     /// Modify with random uniformly distributed numbers between [a,b]
@@ -3196,11 +3399,11 @@ namespace Chroma
 
     template <std::size_t N, typename T,
 	      typename std::enable_if<!detail::is_complex<T>::value, bool>::type = true>
-    void urand(Tensor<N, T>& t, T::value_type a=0, T::value_type b=1)
+    void urand(Tensor<N, T>& t, T a = 0, T b = 1)
     {
       std::uniform_real_distribution<T> d(a, b);
       fillWithCPUFuncNoArgs(
-	t, []() { return d(detail::getSeed()); }, false);
+	t, [&]() { return d(detail::getSeed()); }, false);
     }
 
     /// Return a tensor filled with the value of the function applied to each element
@@ -3223,8 +3426,7 @@ namespace Chroma
       // Populate the tensor on CPU
       Tensor<N, COMPLEX> r(order, dim, OnHost);
       Coor<N> local_latt_size = r.p->localSize(); // local dimensions for xyztX
-      Coor<N> stride =
-	superbblas::detail::get_strides<Nd + 1>(local_latt_size, superbblas::FastToSlow);
+      Coor<N> stride = superbblas::detail::get_strides(local_latt_size, superbblas::FastToSlow);
       Coor<N> local_latt_from =
 	r.p->localFrom(); // coordinates of first elements stored locally for xyztX
       std::size_t vol = superbblas::detail::volume(local_latt_size);

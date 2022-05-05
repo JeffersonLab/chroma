@@ -24,6 +24,7 @@
 #include "util/ferm/diractodr.h"
 #include "util/ferm/twoquark_contract_ops.h"
 #include "util/ferm/superb_contractions.h"
+#include "util/ferm/mgproton.h"
 #include "util/ft/sftmom.h"
 #include "util/ft/time_slice_set.h"
 #include "util/info/proginfo.h"

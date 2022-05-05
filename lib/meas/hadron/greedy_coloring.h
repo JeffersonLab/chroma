@@ -22,7 +22,9 @@ namespace Chroma
     // Construct a k-distance coloring
     Coloring(unsigned int distance, unsigned int power, std::array<int, 4> dim)
     {
-      construct(distance, power, dim, false);
+      std::array<unsigned int, 4> dimu{(unsigned int)dim[0], (unsigned int)dim[1],
+				       (unsigned int)dim[2], (unsigned int)dim[3]};
+      construct(distance, power, dimu, false);
     }
 
     // Reading the coloring from a file
@@ -43,10 +45,10 @@ namespace Chroma
   private:
     std::vector<unsigned int> colors;
     std::vector<unsigned int> local_colors;
-    std::array<int, 4> tile_size;
+    std::array<unsigned int, 4> tile_size;
     unsigned int num_colors;
-    void construct();
-    void construct(unsigned int distance, unsigned int power, CoorType latt_size);
+    void construct(unsigned int distance, unsigned int power, std::array<unsigned int, 4> latt_size,
+		   bool build_local);
   };
 
 }

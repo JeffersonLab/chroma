@@ -9,7 +9,7 @@
 
 #include "wilstype_fermact_w.h"
 #include "eoprec_linop.h"
-#include "lunprec_w.h"
+#include "actions/ferm/linop/lunprec_w.h"
 
 namespace Chroma
 {
@@ -33,7 +33,7 @@ namespace Chroma
     //! Produce a linear operator for this action
     LinearOperator<T>* genLinOp(Handle<FermState<T, P, Q>> state) const override
     {
-      return new Lunprec(linOp(state));
+      return new Lunprec<T,P,Q>(linOp(state));
     }
 
     //! Return quark prop solver, solution of unpreconditioned system
