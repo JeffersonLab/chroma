@@ -448,7 +448,7 @@ namespace Chroma
 	  if (t == From)
 	    r[pos + k] = (c[pos] / stride) % new_dim[pos + k];
 	  else
-	    r[pos + k] = std::max((c[pos] + stride - 1) / stride, new_dim[pos + k]);
+	    r[pos + k] = std::min((c[pos] + stride - 1) / stride, new_dim[pos + k]);
 	  stride *= new_dim[pos + k];
 	}
 	std::copy_n(c.begin() + pos + 1, N - pos - 1, r.begin() + pos + Nnew);
