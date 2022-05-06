@@ -767,7 +767,7 @@ namespace Chroma
 	  return TensorPartition<Nout>{detail::collapse_dimensions<Nout>(pos, dim, dim, Size), r};
 	}
 
-	/// Extend the support of some directions
+	/// Extend the support of distributed dimensions by one step in each direction
 
 	TensorPartition<N> extend_support(Coor<N> m) const
 	{
@@ -1144,6 +1144,7 @@ namespace Chroma
       Coor<N> strides;	 ///< Displacement for the next element along every direction
       T scalar;		 ///< Scalar factor of the tensor
       bool conjugate;	 ///< Whether the values are implicitly conjugated
+      bool eg;		 ///< Whether this tensor is an example
 
       /// Return a string describing the tensor
       /// \param ptr: pointer to the memory allocation
@@ -1190,7 +1191,8 @@ namespace Chroma
 	  size{},
 	  strides{},
 	  scalar{0},
-	  conjugate{false}
+	  conjugate{false},
+	  eg{false}
       {
       }
 
@@ -1212,7 +1214,8 @@ namespace Chroma
 	  size(dim),
 	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
 	  scalar{1},
-	  conjugate{false}
+	  conjugate{false},
+	  eg{false}
       {
 	checkOrder();
 
@@ -1236,7 +1239,7 @@ namespace Chroma
 
       Tensor(const std::string& order, Coor<N> dim, std::shared_ptr<superbblas::Context> ctx,
 	     std::shared_ptr<T> data, std::shared_ptr<detail::TensorPartition<N>> p,
-	     Distribution dist, Coor<N> from, Coor<N> size, T scalar, bool conjugate)
+	     Distribution dist, Coor<N> from, Coor<N> size, T scalar, bool conjugate, bool eg)
 	: order(order),
 	  dim(dim),
 	  ctx(ctx),
@@ -1247,7 +1250,8 @@ namespace Chroma
 	  size(size),
 	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
 	  scalar(scalar),
-	  conjugate(conjugate)
+	  conjugate(conjugate),
+	  eg(eg)
       {
 	checkOrder();
       }
@@ -1269,7 +1273,8 @@ namespace Chroma
 	  size(dim),
 	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
 	  scalar{1},
-	  conjugate{false}
+	  conjugate{false},
+	  eg{false}
       {
 	checkOrder();
 	superbblas::Context ctx0 = *ctx;
@@ -1301,7 +1306,8 @@ namespace Chroma
 	  size(size),
 	  strides(t.strides),
 	  scalar{t.scalar},
-	  conjugate{t.conjugate}
+	  conjugate{t.conjugate},
+	  eg{t.eg}
       {
 	checkOrder();
       }
@@ -1321,7 +1327,8 @@ namespace Chroma
 	  size(t.size),
 	  strides(t.strides),
 	  scalar{scalar},
-	  conjugate{conjugate}
+	  conjugate{conjugate},
+	  eg{false}
       {
 	checkOrder();
       }
@@ -1410,7 +1417,7 @@ namespace Chroma
 
       bool is_eg() const
       {
-	return (bool)data;
+	return eg;
       }
 
       /// Get an element of the tensor
@@ -1440,7 +1447,7 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements on a distributed tensor; change the distribution to "
 	    "be supported on master, replicated among all nodes, or local");
-	if (volume() > 0 && is_eg())
+	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	// coor[i] = coor[i] + from[i]
@@ -1476,7 +1483,7 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "Unsupported to `set` elements on a distributed tensor; change the distribution to "
 	    "be supported on master, replicated among all nodes, or local");
-	if (volume() > 0 && is_eg())
+	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	// coor[i] = coor[i] + from[i]
@@ -1494,6 +1501,9 @@ namespace Chroma
       template <typename Func>
       void fillWithCPUFuncNoArgs(Func func, bool threaded = true)
       {
+	if (is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
 	auto l = getLocal();
 	auto h = l.make_sure(none, OnHost);
 	std::size_t vol = l.volume();
@@ -1523,6 +1533,9 @@ namespace Chroma
       template <typename Func>
       void fillCpuFunCoor(Func func, bool threaded = true)
       {
+	if (is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
 	using superbblas::detail::operator+;
 
 	auto l = getLocal();
@@ -1569,6 +1582,9 @@ namespace Chroma
       template <typename Tr, typename Func>
       Tensor<N, Tr> transformWithCPUFun(Func func, bool threaded = true) const
       {
+	if (is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
 	auto r = like_this<N, Tr>(none, {}, OnHost);
 	auto t = cloneOn(OnHost);
 	assert(r.isSubtensor() && t.isSubtensor());
@@ -1766,7 +1782,7 @@ namespace Chroma
       template <typename Tn = T>
       Tensor<N, Tn> cloneOn(DeviceHost new_dev) const
       {
-	if (volume() > 0 && is_eg())
+	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	Tensor<N, Tn> r = like_this<N, Tn>(none, {}, new_dev);
@@ -1786,7 +1802,7 @@ namespace Chroma
       Tensor<N, T> make_eg() const
       {
 	return Tensor<N, T>(order, dim, ctx, std::shared_ptr<T>(), p, dist, from, size, T{1},
-			    false);
+			    false /* not conjugate */, true /* is eg */);
       }
 
     private:
@@ -1843,10 +1859,11 @@ namespace Chroma
 	std::string new_order1 = get_order_for_reorder(new_order, remaining_char);
 	if (order == new_order1)
 	  return *this;
-	if (is_eg())
-	  return like_this(new_order1).make_eg();
 	Tensor<N, T> r = like_this(new_order1);
-	copyTo(r);
+	if (is_eg())
+	  r = r.make_eg();
+	else
+	  copyTo(r);
 	return r;
       }
 
@@ -1881,7 +1898,7 @@ namespace Chroma
       {
 	assert(!isFakeReal());
 
-	if (volume() > 0 && is_eg())
+	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	std::string new_order = "." + order;
@@ -1902,7 +1919,7 @@ namespace Chroma
 	auto new_p = std::make_shared<detail::TensorPartition<N + 1>>(p->insert_dimension(0, 2));
 
 	return Tensor<N + 1, new_T>(new_order, new_dim, ctx, new_data, new_p, dist, new_from,
-				    new_size, new_scalar, conjugate);
+				    new_size, new_scalar, conjugate, eg);
       }
 
       template <typename U = T,
@@ -1911,7 +1928,7 @@ namespace Chroma
       {
 	assert(isFakeReal() && kvdim()['.'] == 2);
 
-	if (volume() > 0 && is_eg())
+	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	std::size_t dot_pos = order.find('.');
@@ -1936,7 +1953,7 @@ namespace Chroma
 	auto new_p = std::make_shared<detail::TensorPartition<N - 1>>(p->remove_dimension(dot_pos));
 
 	return Tensor<N - 1, new_T>(new_order, new_dim, ctx, new_data, new_p, dist, new_from,
-				    new_size, new_scalar, conjugate);
+				    new_size, new_scalar, conjugate, eg);
       }
 
       template <typename U = T,
@@ -2006,7 +2023,7 @@ namespace Chroma
 
 	return Tensor<Nout, T>(new_order, new_p->dim, ctx, data, new_p, dist,
 			       detail::split_dimension(pos, from, d, From),
-			       detail::split_dimension(pos, size, d, Size), scalar, conjugate);
+			       detail::split_dimension(pos, size, d, Size), scalar, conjugate, eg);
       }
 
       /// Return a fake real view of this tensor
@@ -2061,7 +2078,7 @@ namespace Chroma
 	return Tensor<Nout, T>(new_order, new_p->dim, ctx, data, new_p, dist,
 			       detail::collapse_dimensions<Nout>(pos, from, dim, From),
 			       detail::collapse_dimensions<Nout>(pos, size, dim, Size), scalar,
-			       conjugate);
+			       conjugate, eg);
       }
 
 
@@ -2091,13 +2108,14 @@ namespace Chroma
 	using superbblas::detail::operator-;
 	return Tensor<N, T>(order, p->localSize(), ctx, data,
 			    std::make_shared<detail::TensorPartition<N>>(p->get_local_partition()),
-			    Local, normalize_coor(from - p->localFrom(), dim), lsize, scalar, conjugate);
+			    Local, normalize_coor(from - p->localFrom(), dim), lsize, scalar,
+			    conjugate, eg);
       }
 
       /// Set zero
       void set_zero()
       {
-	if (volume() > 0 && is_eg())
+	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	T* ptr = this->data.get();
@@ -2114,7 +2132,7 @@ namespace Chroma
 		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
       void doAction(Action action, Tensor<Nw, Tw> w, Maybe<Tensor<Nm, Tm>> m = none) const
       {
-	if (volume() > 0 && is_eg())
+	if (is_eg() || w.is_eg() || (m.hasSome() && m.getSome().is_eg()))
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
@@ -2219,8 +2237,7 @@ namespace Chroma
       void contract(Tensor<Nv, T> v, const remap& mv, Conjugation conjv, Tensor<Nw, T> w,
 		    const remap& mw, Conjugation conjw, const remap& mr = {}, T beta = T{0})
       {
-	if ((volume() > 0 && is_eg()) || (v.volume() > 0 && v.is_eg()) ||
-	    (w.volume() > 0 && w.is_eg()))
+	if (is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	// If either v or w is on OnDevice, force both to be on device
@@ -2298,8 +2315,7 @@ namespace Chroma
       void cholInv(Tensor<Nv, T> v, const std::string& order_rows, const std::string& order_cols,
 		   Tensor<Nw, T>& w)
       {
-	if ((volume() > 0 && is_eg()) || (v.volume() > 0 && v.is_eg()) ||
-	    (w.volume() > 0 && w.is_eg()))
+	if (is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	Tensor<Nv, T> v0 = v;
@@ -2379,8 +2395,7 @@ namespace Chroma
       void solve(Tensor<Nv, T> v, const std::string& order_rows, const std::string& order_cols,
 		 Tensor<Nw, T>& w)
       {
-	if ((volume() > 0 && is_eg()) || (v.volume() > 0 && v.is_eg()) ||
-	    (w.volume() > 0 && w.is_eg()))
+	if (is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	// Conjugacy isn't supported
@@ -2449,6 +2464,8 @@ namespace Chroma
 
       Tensor<N, T> scale(T s) const
       {
+	if (is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
 	return Tensor<N, T>(*this, scalar * detail::cond_conj(conjugate, s), conjugate);
       }
 
@@ -2457,6 +2474,8 @@ namespace Chroma
  
       Tensor<N, T> conj() const
       {
+	if (is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
 	return Tensor<N, T>(*this, scalar, !conjugate);
       }
 
@@ -2471,6 +2490,7 @@ namespace Chroma
 	strides = {};
 	scalar = T{0};
 	conjugate = false;
+	eg = false;
       }
 
       // Return whether the current view is contiguous in memory
@@ -2512,7 +2532,10 @@ namespace Chroma
 	    !detail::is_same(new_dev.getSome(getDev()), getDev()) || new_dist.getSome(dist) != dist)
 	{
 	  Tensor<N, Tn> r = like_this(new_order, {}, new_dev, new_dist);
-	  copyTo(r);
+	  if (is_eg())
+	    r = r.make_eg();
+	  else
+	    copyTo(r);
 	  return r;
 	}
 	else
@@ -2528,20 +2551,29 @@ namespace Chroma
 			      Maybe<Distribution> new_dist = none) const
       {
 	Tensor<N, Tn> r = like_this<N, Tn>(new_order, {}, new_dev, new_dist);
-	copyTo(r);
+	if (is_eg())
+	  r = r.make_eg();
+	else
+	  copyTo(r);
 	return r;
       }
+
+      /// Extend the support of each dimension by the given amount in each direction
+      /// \param m: amount to extend the support for each process
+      /// \return a new tensor with the extension
 
       Tensor<N, T> extend_support(const std::map<char,int> &m) const
       {
 	p->extend_support(kvcoors<N>(order, m, 0));
 	Tensor<N,T> r{order, dim, getDev(), dist, p->extend_support(kvcoors<N>(order, m, 0))};
 	r.from = from;
-	r.size =size;
+	r.size = size;
 	r.strides = strides;
 	r.scalar = scalar;
 	r.conjugate = conjugate;
-	if (!is_eg())
+	if (is_eg())
+	  r = r.make_eg();
+	else
 	  copyTo(r);
 	return r;
       }
@@ -2559,7 +2591,7 @@ namespace Chroma
 
       void binaryRead(BinaryReader& bin)
       {
-	if (volume() > 0 && is_eg())
+	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 	if (ctx->plat != superbblas::CPU)
 	  throw std::runtime_error("Only supported to read on `OnHost` tensors");
@@ -2579,7 +2611,7 @@ namespace Chroma
 
       void binaryWrite(BinaryWriter& bin) const
       {
-	if (volume() > 0 && is_eg())
+	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	// If the writing is collective, the root process needs to hold the whole tensor
@@ -2608,7 +2640,7 @@ namespace Chroma
 
       void print(const std::string& name) const
       {
-	if (volume() > 0 && is_eg())
+	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	std::stringstream ss;
@@ -3127,8 +3159,7 @@ namespace Chroma
       template <std::size_t Nv, std::size_t Nw>
       void contractWith(Tensor<Nv, T> v, Tensor<Nw, T> w) const
       {
-	if ((data.volume() > 0 && (ii.is_eg() || jj.is_eg() || data.is_eg())) ||
-	    (v.volume() > 0 && v.is_eg()) || (w.volume() > 0 && w.is_eg()))
+	if (data.is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	if (!is_constructed())
