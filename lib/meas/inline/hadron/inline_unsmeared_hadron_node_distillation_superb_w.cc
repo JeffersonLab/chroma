@@ -1118,21 +1118,7 @@ namespace Chroma
 	//
 	// Initialize fermion action
 	//
-	std::istringstream  xml_s(params.param.prop.fermact.xml);
-	XMLReader  fermacttop(xml_s);
-	QDPIO::cout << "FermAct = " << params.param.prop.fermact.id << std::endl;
-
-	// Generic Wilson-Type stuff
-	Handle< FermionAction<T,P,Q> >
-	  S_f(TheFermionActionFactory::Instance().createObject(params.param.prop.fermact.id,
-							       fermacttop,
-							       params.param.prop.fermact.path));
-
-	Handle< FermState<T,P,Q> > state(S_f->createState(u));
-
-	Handle< SystemSolver<LatticeFermion> > PP = S_f->qprop(state,
-							       params.param.prop.invParam);
-      
+	SB::ChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u};
 
 	//
 	// Loop over the source color and spin, creating the source
@@ -1194,7 +1180,7 @@ namespace Chroma
 	    // Invert the source for all spins and retrieve num_tslices_active
 	    // time-slices starting from time-slice first_tslice_active
 	    invCache[t_source] = SB::doInversion<SB::ComplexF, SB::Complex>(
-	      *PP, std::move(source_colorvec), t_source, active_tslices[t_source].from,
+	      PP, std::move(source_colorvec), t_source, active_tslices[t_source].from,
 	      active_tslices[t_source].size, {0, 1, 2, 3}, max_rhs, "cxyzXnSst");
 	  }
 
@@ -1214,7 +1200,7 @@ namespace Chroma
 	    // Invert the sink for all spins and retrieve num_tslices_active time-slices starting from
 	    // time-slice first_tslice_active
 	    invCache[t_sink] = SB::doInversion<SB::ComplexF, SB::Complex>(
-	      *PP, std::move(sink_colorvec), t_sink, active_tslices[t_sink].from,
+	      PP, std::move(sink_colorvec), t_sink, active_tslices[t_sink].from,
 	      active_tslices[t_sink].size, {0, 1, 2, 3}, max_rhs, "ScnsxyzXt");
 	  }
 

@@ -25,8 +25,9 @@ namespace Chroma
       /// \param num_prev_lines: maximum number of previous lines to print
       /// \param prefix: string to print previous to each line
 
-      std::string get_prev_lines(const std::string& file, std::size_t char_num,
-			  unsigned int num_prev_lines = 0, const std::string prefix = "")
+      inline std::string get_prev_lines(const std::string& file, std::size_t char_num,
+					unsigned int num_prev_lines = 0,
+					const std::string prefix = "")
       {
 	if (char_num > file.size())
 	  throw std::runtime_error("Erroneous character number");
@@ -463,8 +464,8 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <>
-    std::string getOption<std::string>(const Options& ops, const std::string& path,
-				       Maybe<std::string> defaultValue)
+    inline std::string getOption<std::string>(const Options& ops, const std::string& path,
+					      Maybe<std::string> defaultValue)
     {
       return ops
 	.getValue(path, defaultValue ? Maybe<Options>{StringOption{defaultValue.getSome()}} : none)
@@ -477,8 +478,8 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <>
-    double getOption<double>(const Options& ops, const std::string& path,
-			     Maybe<double> defaultValue)
+    inline double getOption<double>(const Options& ops, const std::string& path,
+				    Maybe<double> defaultValue)
     {
       return ops
 	.getValue(path, defaultValue ? Maybe<Options>{DoubleOption{defaultValue.getSome()}} : none)
@@ -491,7 +492,7 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <>
-    int getOption<int>(const Options& ops, const std::string& path, Maybe<int> defaultValue)
+    inline int getOption<int>(const Options& ops, const std::string& path, Maybe<int> defaultValue)
     {
       return ops
 	.getValue(path, defaultValue ? Maybe<Options>{DoubleOption{(double)defaultValue.getSome()}}
@@ -505,8 +506,8 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <>
-    unsigned int getOption<unsigned int>(const Options& ops, const std::string& path,
-			   Maybe<unsigned int> defaultValue)
+    inline unsigned int getOption<unsigned int>(const Options& ops, const std::string& path,
+						Maybe<unsigned int> defaultValue)
     {
       return ops
 	.getValue(path, defaultValue ? Maybe<Options>{DoubleOption{(double)defaultValue.getSome()}}
@@ -520,7 +521,8 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <>
-    bool getOption<bool>(const Options& ops, const std::string& path, Maybe<bool> defaultValue)
+    inline bool getOption<bool>(const Options& ops, const std::string& path,
+				Maybe<bool> defaultValue)
     {
       return ops
 	.getValue(path, defaultValue

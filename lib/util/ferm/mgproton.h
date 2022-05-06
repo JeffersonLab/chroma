@@ -91,8 +91,9 @@ namespace Chroma
 	// The `t` labels that are not in `d` are the column labels
 	std::string cols = detail::union_dimensions(t.order, "", d.order); // t.order - d.order
 
-	return fop(t.template collapse_dimensions<NOp + 1>(cols, 'n'))
-	  .template split_dimension<N>('n', cols, t.kvdim());
+	return fop(t.template collapse_dimensions<NOp + 1>(cols, 'n').template make_sure<COMPLEX>())
+	  .template split_dimension<N>('n', cols, t.kvdim())
+	  .template make_sure<T>();
       }
     };
 
@@ -101,7 +102,7 @@ namespace Chroma
       /// Return the inverse map
       /// \param map: from domain labels to image labels
 
-      remap reverse(const remap& map)
+      inline remap reverse(const remap& map)
       {
 	remap o;
 	for (const auto& it : map)
@@ -942,7 +943,7 @@ namespace Chroma
       ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
 
       template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-      Tensor<Nd + 5, COMPLEX_OUT> doInversion(const Operator<Nd + 5, COMPLEX_OUT>& op,
+      Tensor<Nd + 5, COMPLEX_OUT> doInversion(const Operator<Nd + 3, COMPLEX_OUT>& op,
 					      const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
 					      int first_tslice_out, int n_tslice_out,
 					      const std::vector<int>& spin_sources, int max_rhs,
@@ -958,7 +959,7 @@ namespace Chroma
 
 	// Create tensors with full support on the lattice
 	int max_step = std::max(num_vecs, max_rhs);
-	auto aux = chi.like_this(none, {{'n', max_step}, {Layout::lattSize()[3]}});
+	auto aux = chi.like_this(none, {{'n', max_step}, {'t', Layout::lattSize()[3]}});
 
 	for (int spin_source : spin_sources)
 	{
@@ -1013,17 +1014,21 @@ namespace Chroma
       snarss1.reset();
       snarss1.start();
 
+      Tensor<Nd + 5, COMPLEX_OUT> r;
       if (sol.op.hasSome())
-	detail::doInversion<Nd + 5, COMPLEX_OUT>(sol.op.getSome(), chi, t_source, first_tslice_out,
-						 n_tslice_out, spin_sources, max_rhs, order_out);
+	r = detail::doInversion<COMPLEX_CHI, COMPLEX_OUT>(sol.op.getSome(), chi, t_source,
+							  first_tslice_out, n_tslice_out,
+							  spin_sources, max_rhs, order_out);
       else
-	detail::doInversion<Nd + 5, COMPLEX_OUT>(sol.PP, chi, t_source, first_tslice_out,
-						 n_tslice_out, spin_sources, max_rhs, order_out);
+	r = detail::doInversion<COMPLEX_CHI, COMPLEX_OUT>(
+	  *sol.PP, chi, t_source, first_tslice_out, n_tslice_out, spin_sources, max_rhs, order_out);
 
       snarss1.stop();
       QDPIO::cout << "Time to compute inversions for " << spin_sources.size()
 		  << " spin sources and " << num_vecs
 		  << " colorvecs : " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+
+      return r;
     }
   }
 }
