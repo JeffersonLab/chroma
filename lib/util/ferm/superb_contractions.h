@@ -1585,9 +1585,9 @@ namespace Chroma
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	auto r = like_this<N, Tr>(none, {}, OnHost);
-	auto t = cloneOn(OnHost);
-	assert(r.isSubtensor() && t.isSubtensor());
+	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
+	auto r = t.template like_this<N, Tr>();
+	assert(!r.isSubtensor() && !t.isSubtensor());
 	auto l = r.getLocal();
 	std::size_t vol = t.getLocal().volume();
 	T* tptr = t.data.get();
@@ -1599,7 +1599,7 @@ namespace Chroma
 #    pragma omp parallel for schedule(static)
 #  endif
 	  for (std::size_t i = 0; i < vol; ++i)
-	    rptr[i] = func(rptr[i]);
+	    rptr[i] = func(tptr[i]);
 	}
 	else
 	{
@@ -2030,7 +2030,15 @@ namespace Chroma
 
       Tensor<N + 1, T> split_dimension(char dim_label, std::string new_labels, Index step) const
       {
-	return split_dimension<N + 1>(dim_label, new_labels, {{new_labels[0], step}});
+	if (new_labels.size() != 2)
+	  throw std::runtime_error(
+	    "split_dimension: invalid `new_labels`, it should have size two");
+	if (kvdim().at(dim_label) % step != 0)
+	  throw std::runtime_error(
+	    "split_dimension: invalid `step`, it should divide the dimension size");
+	return split_dimension<N + 1>(
+	  dim_label, new_labels,
+	  {{new_labels[0], step}, {new_labels[1], kvdim().at(dim_label) / step}});
       }
 
       /// Collapse several dimensions into a new one
