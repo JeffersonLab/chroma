@@ -336,9 +336,9 @@ namespace Chroma
 	std::vector<Options> v;
 	for (auto i = value.begin(), w = value.begin(); i != value.end(); ++i)
 	{
-	  if (std::isblank(*i) || i + 1 == value.end())
+	  if (std::isspace(*i) || i + 1 == value.end())
 	  {
-	    if (!std::isblank(*w))
+	    if (!std::isspace(*w))
 	      v.push_back(StringOption{std::string(w, i + 1 == value.end() ? i + 1 : i), *this});
 	    w = i + 1;
 	  }
@@ -600,7 +600,7 @@ namespace Chroma
       for (auto i = s.begin(); i != s.end(); ++i)
       {
 	// Ignore blanks
-	if (std::isblank(*i))
+	if (std::isspace(*i))
 	  continue;
 
 	// Detect a token
@@ -636,6 +636,8 @@ namespace Chroma
 	    for (; i0 != s.end() && std::isalpha(*i0); ++i0)
 	      ;
 	    std::string tag(i + 1, i0);
+	    if (tag.size() == 0)
+	      throw_error(i, "Error: empty tag");
 	    auto i1 = std::find(i0, s.end(), '>');
 	    if (i1 == s.end())
 	      throw_error(i, "Broken tag: `<' without `>'");
@@ -678,14 +680,17 @@ namespace Chroma
 	      else
 		ops.back().getDictionary().insert({tag, new_op});
 	    }
+	    i = i1;
 	  }
 	  else if (*(i + 1) == '/')
 	  {
 	    // This is a close tag
-	    auto i0 = i + 1;
+	    auto i0 = i + 2;
 	    for (; i0 != s.end() && std::isalpha(*i0); ++i0)
 	      ;
-	    std::string tag(i + 1, i0);
+	    std::string tag(i + 2, i0);
+	    if (tag.size() == 0)
+	      throw_error(i, "Error: empty tag");
 	    auto i1 = std::find(i0, s.end(), '>');
 	    if (i1 == s.end())
 	      throw_error(i, "Broken tag: `<' without `>'");
@@ -705,22 +710,25 @@ namespace Chroma
 	      ops.back().getVector().push_back(op);
 	    else
 	      ops.back().getDictionary().insert({tag, op});
+	    i = i1;
 	  }
 	}
+	else
+	{
+	  // Detect content
+	  if (types.back() != Options::None)
+	    throw_error(i, "Not supported text between tags");
 
-	// Detect content
-	if (types.back() != Options::None)
-	  throw_error(i, "Not supported text between tags");
+	  auto p = std::find(i, s.end(), '<'); // first non-content character
+	  auto i1 = p - 1;
+	  for (; std::isspace(*i1); --i1)
+	    ;
+	  std::string content(i, i1 + 1);
 
-	auto p = std::find(i, s.end(), '<'); // first non-content character
-	auto i1 = p - 1;
-	for (; std::isblank(*i1); --i1)
-	  ;
-	std::string content(i, i1 + 1);
-
-	// Set content into the top option
-	ops.back() = StringOption{content, ops.back()};
-	i = p - 1;
+	  // Set content into the top option
+	  ops.back() = StringOption{content, ops.back()};
+	  i = p - 1;
+	}
       }
 
       if (tags.size() != 1)
