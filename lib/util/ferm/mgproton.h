@@ -325,18 +325,18 @@ namespace Chroma
       Operator<NOp, COMPLEX> getSolver(const std::map<std::string, Solver<NOp, COMPLEX>>& solvers,
 				       const Operator<NOp, COMPLEX>& op, const Options& ops)
       {
-	std::string type = ops.getValue("type", StringOption{""}).getString();
+	std::string type = getOption<std::string>(ops, "type");
 	if (type.size() == 0)
-	  throw std::runtime_error("Error getting a solver from option `" + ops.prefix +
-				   "': missing tag `type'");
+	  ops.getValue("type").throw_error(
+	    "Error constructing the solver: invalid `type', it's empty");
 	if (solvers.count(type) == 0)
 	{
 	  std::string supported_tags;
 	  for (const auto& it : solvers)
 	    supported_tags += it.first + " ";
-	  throw std::runtime_error("Error getting a solver from option `" + ops.prefix +
-				   "': unsupported tag value `" + type +
-				   "'; supported values: " + supported_tags);
+	  ops.getValue("type").throw_error(
+	    "Error constructing the solver: unsupported `type' value `" + type +
+	    "'; supported values: " + supported_tags);
 	}
 
 	return solvers.at(type)(op, ops);
@@ -351,8 +351,9 @@ namespace Chroma
       {
 	// Get preconditioner
 	Maybe<Operator<NOp, COMPLEX>> prec = none;
-	const Options& precOps = ops.getValue("prec", NoneOption{}, Options::Dictionary);
-	if (precOps) prec = Maybe<Operator<NOp, COMPLEX>>(getSolver(op, precOps));
+	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
+	if (precOps)
+	  prec = Maybe<Operator<NOp, COMPLEX>>(getSolver(op, precOps.getSome()));
 
 	// Get the remainder options
 	unsigned int max_basis_size = getOption<unsigned int>(ops, "max_basis_size", 0);
@@ -427,7 +428,7 @@ namespace Chroma
 	// Create the ordering for the domain and the image, moving the lattice dimensions as the slowest indices
 	// NOTE: assuming that x,y,z,t are the only non-blocking dimensions
 	std::set<char> lattice_dims{'x', 'y', 'z', 't', 'X'};
-	remap ri = getNewLabels(op.i.order, op.d.order + std::string{"u~"});
+	remap ri = getNewLabels(op.i.order, op.d.order + "u~");
 	auto d = op.d.reorder("%Xxyzt", '%');
 	auto i = op.i.reorder("%Xxyzt", '%').rename_dims(ri);
 	auto dim = d.kvdim();
@@ -436,33 +437,19 @@ namespace Chroma
 	std::map<char, int> blkd, blki;
 	for (const auto& it : d.kvdim())
 	  blkd[it.first] = (lattice_dims.count(it.first) == 0 ? it.second : 1);
+	remap rev_ri = reverse(ri);
 	for (const auto& it : i.kvdim())
-	  blki[it.first] = (lattice_dims.count(it.first) == 0 ? it.second : 1);
+	  blki[it.first] = (lattice_dims.count(rev_ri.at(it.first)) == 0 ? it.second : 1);
 
-	// Generate a remap for dimensions that are going to be just one element
-	remap rd1 = getNewLabels(op.d.order, op.d.order);
-	remap rd1_latt, rd1_nonlatt;
-	for (const auto& it : dim)
-	{
-	  if (lattice_dims.count(it.first) == 0)
-	    rd1_nonlatt[it.first] = it.second;
-	  else
-	    rd1_latt[it.first] = it.second;
-	}
-	std::string rd1_labels;
-	for (const auto& it : dim)
-	  rd1_labels.push_back(it.first);
-
-	// Generate a remap for the columns of the probing vectors, which has
-	// one column for each element of the non-lattice dimensions
-	remap rdc = getNewLabels(op.d.order, op.d.order + rd1_labels);
-
-	// Construct the probing vectors, which they have as the rows the domain and as columns the domain blocking
-	// dimensions
+	// Construct the probing vectors, which they have as the rows the domain labels and as
+	// columns the domain blocking dimensions
 	
 	auto t_bl = op.d.like_this(none, blkd, OnHost, OnEveryoneReplicated);
 	t_bl.set_zero();
-	auto t_blbl = contract<NOp * 2>(t_bl.rename_dims(rd1_latt), t_bl.rename_dims(rdc), "");
+	auto t_bl_rows = t_bl.template like_this<NOp - 5>("%", '%', "xyztX");
+	t_bl.copyTo(t_bl_rows);
+	remap rdc = getNewLabels(d.order, d.order + i.order + "u~");
+	auto t_blbl = contract<NOp * 2 - 5>(t_bl_rows, t_bl.rename_dims(rdc), "");
 	COMPLEX* t_blbl_data = t_blbl.data.get();
 	for (std::size_t i = 0, vol = t_bl.volume(); i < vol; ++i)
 	  t_blbl_data[i * vol + i] = COMPLEX{1};
@@ -472,8 +459,9 @@ namespace Chroma
 	  nonblkd[it.first] = (lattice_dims.count(it.first) == 0 ? 1 : it.second);
 
 	// Compute the coloring
-	Coloring coloring{
-	  0, max_dist_neigbors * 2 + 1, {{dim['x'] * dim['X'], dim['y'], dim['z'], dim['t']}}};
+	Coloring coloring{0,			     // zero displacement in coloring
+			  max_dist_neigbors * 2 + 1, // k-distance coloring
+			  {{dim['x'] * dim['X'], dim['y'], dim['z'], dim['t']}}};
 	unsigned int num_colors = coloring.numColors();
 
 	// Get the number of neighbors
@@ -483,7 +471,7 @@ namespace Chroma
 	    num_neighbors += (dim[it.first] <= 1 ? 0 : (dim[it.first] <= 2 ? 1 : 2));
 
 	// Create the sparse tensor
-	SpTensor<NOp, NOp, COMPLEX> sop{d, i, blkd, blki, num_neighbors};
+	SpTensor<NOp, NOp, COMPLEX> sop{d, i, NOp - 5, NOp - 5, num_neighbors};
 
 	int maxX = dim['X'];
 	int maxY = std::min(2, dim['y']);
@@ -493,28 +481,24 @@ namespace Chroma
 	for (unsigned int color = 0; color < num_colors; ++color)
 	{
 	  // Extracting the proving vector
-	  auto t_l = fillLatticeField<NOp, COMPLEX>(
-	    d.reorder("xyztX%", '%').order, nonblkd, OnDefaultDevice, [&](Coor<NOp - 1> c) {
+	  auto t_l =
+	    fillLatticeField<5, COMPLEX>("xyztX", nonblkd, OnDefaultDevice, [&](Coor<4> c) {
 	      return coloring.getColor({{c[0], c[1], c[2], c[3]}}) == color ? COMPLEX{1}
 									    : COMPLEX{0};
 	    });
 
 	  // Contracting the proving vector with the blocking components
-	  auto probs = contract<NOp * 3>(t_l, t_blbl, "");
+	  auto probs = contract<NOp * 2>(t_l, t_blbl, "");
 
 	  // Compute the matvecs
-	  auto mv = op(probs).rename_dims(ri).rename_dims(reverse(rdc));
+	  auto mv = op(probs); //.rename_dims(ri).rename_dims(reverse(rdc));
 
 	  // Construct an indicator tensor where all blocking dimensions but only the nodes colored `color` are copied
-	  auto ones = op.d.template like_this<NOp, float>(none, blkd, OnHost, OnEveryoneReplicated);
+	  auto ones = t_blbl.template like_this<NOp * 2 - 5, float>();
 	  ones.set(1);
-	  auto sel = contract<NOp * 3>(
-	    fillLatticeField<NOp, float>(
-	      d.reorder("xyztX%", '%').order, nonblkd, OnDefaultDevice,
-	      [&](Coor<NOp - 1> c) {
-		return coloring.getColor({{c[0], c[1], c[2], c[3]}}) == color ? 1 : 0;
-	      }),
-	    ones, "");
+	  auto sel = contract<NOp * 2>(t_l.template transformWithCPUFun<float>(
+					 [](const COMPLEX& t) { return (float)std::real(t); }),
+				       ones, "");
 
 	  // Split mv and sel into subsets where the neighbors are at the same position
 	  auto sel_eo = sel.split_dimension('y', "Yy", maxY)
@@ -553,7 +537,10 @@ namespace Chroma
 		if (ldir != 0)
 		  to[ldir] = dir;
 
-		mv.copyToWithMask(sop.data.kvslice_from_size(to), sel);
+		mv.rename_dims(ri)
+		  .rename_dims(reverse(rdc))
+		  .copyToWithMask(sop.data.kvslice_from_size(to),
+				  sel.rename_dims(ri).rename_dims(reverse(rdc)));
 	      }
 	      else
 	      {
@@ -572,9 +559,13 @@ namespace Chroma
 			std::map<char, int> XYZTfrom{{'X', X}, {'Y', Y}, {'Z', Z}, {'T', T}};
 			to['x'] = (dir0 + ((X + Y + Z + T) % 2)) / 2;
 			mv.kvslice_from_size(XYZTfrom, XYZTsize)
+			  .rename_dims(ri)
+			  .rename_dims(reverse(rdc))
 			  .copyToWithMask(
 			    sop.data.kvslice_from_size(to).kvslice_from_size(XYZTfrom, XYZTsize),
-			    sel.kvslice_from_size(XYZTfrom, XYZTsize));
+			    sel.kvslice_from_size(XYZTfrom, XYZTsize)
+			      .rename_dims(ri)
+			      .rename_dims(reverse(rdc)));
 		      }
 		    }
 		  }
@@ -618,13 +609,33 @@ namespace Chroma
 	// Construct the sparse operator
 	sop.construct();
 
-	// Return the operator
-	return {[=](const Tensor<NOp + 1, COMPLEX>& x) {
-		  auto y = x.like_this();
-		  sop.contractWith(x, y.rename_dims(ri));
-		  return y;
-		},
-		d, d, nullptr, op.order_t};
+	// Construct the operator to return
+	Operator<NOp, COMPLEX> rop{[=](const Tensor<NOp + 1, COMPLEX>& x) {
+				     auto y = x.like_this();
+				     sop.contractWith(x, y.rename_dims(ri));
+				     return y;
+				   },
+				   d, d, nullptr, op.order_t};
+
+	// Do a test
+	auto x = d.template like_this<NOp + 1>("%n", '%', "", {{'n', 2}});
+	urand(x, -1, 1);
+	auto y = op(x);
+	auto base_norm = norm<1>(y, "n");
+	rop(x).scale(-1).addTo(y);
+	auto error = norm<1>(y, "n");
+	auto eps =
+	  std::sqrt(std::numeric_limits<typename detail::real_type<COMPLEX>::type>::epsilon());
+	for (int i = 0; i < base_norm.volume(); ++i)
+	{
+	  if (error.get({{i}}) > eps * base_norm.get({{i}}))
+	  {
+	    QDPIO::cerr << "cloneOperator: too much error on the cloned operator\n";
+	    QDP_abort(1);
+	  }
+	}
+
+	return rop;
       }
 
       /// Returns the prolongator constructed from
@@ -721,12 +732,12 @@ namespace Chroma
 	unsigned int num_null_vecs = getOption<unsigned int>(ops, "num_null_vecs");
 	std::vector<unsigned int> blocking_v = getVectorOption<unsigned int>(ops, "blocking");
 	if (blocking_v.size() != Nd)
-		ops.getValue("blocking")
+	  ops.getValue("blocking")
 	    .throw_error("getMGPrec: the blocking should be a vector with four elements");
 	std::map<char, unsigned int> blocking{
 	  {'x', blocking_v[0]}, {'y', blocking_v[1]}, {'z', blocking_v[2]}, {'t', blocking_v[3]}};
-	const Options& nvInvOps = ops.getValue("solver_null_vecs", none, Options::Dictionary);
-	const Operator<NOp, COMPLEX> nullSolver = getSolver(op, nvInvOps);
+	const Operator<NOp, COMPLEX> nullSolver =
+	  getSolver(op, getOptions(ops, "solver_null_vecs"));
 	const Operator<NOp, COMPLEX> V = getMGProlongator(op, num_null_vecs, blocking, nullSolver);
 
 	// Compute the coarse operator, V' * op * V
@@ -735,12 +746,11 @@ namespace Chroma
 				 V.d, V.d, nullptr, op.order_t});
 
 	// Get the solver for the projector
-	const Options& coarseSolverOps = ops.getValue("solver_coarse", none, Options::Dictionary);
-	const Operator<NOp, COMPLEX> coarseSolver = getSolver(op_c, coarseSolverOps);
+	const Operator<NOp, COMPLEX> coarseSolver =
+	  getSolver(op_c, getOptions(ops, "solver_coarse"));
 
 	// Get the solver for the smoother
-	const Options& opSolverOps = ops.getValue("solver_smoother", none, Options::Dictionary);
-	const Operator<NOp, COMPLEX> opSolver = getSolver(op, opSolverOps);
+	const Operator<NOp, COMPLEX> opSolver = getSolver(op, getOptions(ops, "solver_smoother"));
 
 	// Return the solver
 	return {[=](Tensor<NOp + 1, COMPLEX> x) {
@@ -838,14 +848,14 @@ namespace Chroma
 	if (invParam.id == std::string("MGPROTON"))
 	{
 	  // Parse XML with the inverter options
-	  Options ops = getOptionsFromXML(broadcast(invParam.xml));
+	  std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(invParam.xml));
 
 	  // Clone the matvec
 	  LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
 	  Operator<Nd + 3, Complex> linOp = detail::cloneOperator(asOperatorView(*fLinOp));
 
 	  // Construct the solver
-	  op = Maybe<Operator<Nd + 3, Complex>>{getSolver(linOp, ops)};
+	  op = Maybe<Operator<Nd + 3, Complex>>{getSolver(linOp, getOptions(*ops, "InvertParam"))};
 	}
 	else
 	{

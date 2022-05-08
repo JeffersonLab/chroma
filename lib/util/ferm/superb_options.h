@@ -46,7 +46,7 @@ namespace Chroma
     }
 
     /// Class for storing options
-    struct Options {
+    struct Option {
       /// Get track of the path of this option on a set of options
       std::string prefix;
       /// Content of the file where the option comes from
@@ -56,12 +56,12 @@ namespace Chroma
       /// Whether this option has been checked
       mutable bool visited;
 
-      Options() : char_num(0), visited(false)
+      Option() : char_num(0), visited(false)
       {
       }
 
     protected:
-      Options(std::shared_ptr<std::string> file, std::size_t char_num)
+      Option(std::shared_ptr<std::string> file, std::size_t char_num)
 	: file(file), char_num(char_num), visited(false)
       {
       }
@@ -69,7 +69,7 @@ namespace Chroma
       /// Copy `prefix`, `file` and `char_num` from a given option
       /// \param op: option to copy the info
 
-      void copyFileInfo(const Options& op)
+      void copyFileInfo(const Option& op)
       {
 	  prefix = op.prefix;
 	  file = op.file;
@@ -103,8 +103,8 @@ namespace Chroma
       /// Return the type of this option
       virtual Type getType() const
       {
-	throw_error("getType: invalid object, it's abstract");
-	throw std::exception{}; // silent no return warning
+        throw_error("getType: invalid object, it's abstract");
+        throw std::exception{}; // silent no return warning
       }
 
       /// Return if this options isn't None
@@ -149,42 +149,49 @@ namespace Chroma
       }
 
       /// Return the vector content of the vector
-      virtual std::vector<Options> getVector() const
+      virtual std::vector<std::shared_ptr<Option>> getVector() const
       {
 	throw_error("expected the value to be a vector");
 	throw std::exception{}; // silent no return warning
       }
 
       /// Return the vector content of the vector
-      virtual std::vector<Options>& getVector()
+      virtual std::vector<std::shared_ptr<Option>>& getVector()
       {
 	throw_error("expected the value to be a vector");
 	throw std::exception{}; // silent no return warning
       }
 
       /// Return the map content of the vector
-      virtual const std::map<std::string, Options>& getDictionary() const
+      virtual const std::map<std::string, std::shared_ptr<Option>>& getDictionary() const
       {
 	throw_error("expected the value to be a dictionary");
 	throw std::exception{}; // silent no return warning
       }
 
       /// Return the map content of the vector
-      virtual std::map<std::string, Options>& getDictionary()
+      virtual std::map<std::string, std::shared_ptr<Option>>& getDictionary()
       {
 	throw_error("expected the value to be a dictionary");
 	throw std::exception{}; // silent no return warning
       }
 
       /// Return the option content on a path
-      Options getValue(const std::string& path, Maybe<Options> defaultValue = none,
-		       Maybe<Type> expectedType = none, Maybe<Options> fromOption = none,
-		       Maybe<std::string> originalPath = none) const
+      const Option& getValue(const std::string& path, Maybe<const Option&> defaultValue = none,
+			     Maybe<Type> expectedType = none,
+			     Maybe<const Option&> fromOption = none,
+			     Maybe<std::string> originalPath = none) const
       {
+	// If fromOption is none, set this node
+	Maybe<const Option&> fromOption_{fromOption.getSome(*this)};
+
+	// If originalPath is none, set the given path
+	Maybe<std::string> originalPath_{originalPath.getSome(path)};
+
 	// Construct a nice error message
 	const std::string errorHeader = "Error in searching for option `" +
-					originalPath.getSome(path) + "' from option at `" +
-					fromOption.getSome(*this).prefix + "': ";
+					originalPath_.getSome() + "' from option at `" +
+					fromOption_.getSome().prefix + "': ";
 
 	// If the path is empty or ask for the root node, just return this node
 	if (path.size() == 0 || path == std::string("/")) {
@@ -205,7 +212,7 @@ namespace Chroma
 	// If path starts with `/`, consume it and continue
 	if (path[0] == '/')
 	  return getValue(std::string(path.begin() + 1, path.end()), defaultValue, expectedType,
-			  fromOption.getSome(*this), originalPath.getSome(path));
+			  fromOption_, originalPath_);
 
 	// Find the name of the tag
 	auto p = std::find(path.begin(), path.end(), '/');
@@ -220,13 +227,33 @@ namespace Chroma
 	}
 
 	// Otherwise, consume the tag name, and continue
-	return m[fieldName].getValue(std::string(p, path.end()), defaultValue, expectedType,
-				     fromOption.getSome(*this), originalPath.getSome(path));
+	return m[fieldName]->getValue(std::string(p, path.end()), defaultValue, expectedType,
+				      fromOption_, originalPath_);
+      }
+
+      /// Return the option content on a path
+      const Option& getValue(const std::string& path, Type expectedType) const
+      {
+	return getValue(path, none, expectedType);
+      }
+
+      /// Return the option content on a path
+      Maybe<const Option&> getValueMaybe(const std::string& path, Maybe<Type> expectedType = none) const
+      {
+	struct AuxNone : Option {
+	  Type getType() const override
+	  {
+	    return None;
+	  }
+	} defaultOp;
+	const Option& op = getValue(path, Maybe<const Option&>{defaultOp}, expectedType);
+	if (&op == &defaultOp)
+	  return none;
+	return op;
       }
 
       void setPrefix(const std::string& thisPrefix = "")
-      {
-	// Set the prefix of this option
+      { // Set the prefix of this option
 	prefix = thisPrefix;
 
 	switch (getType())
@@ -243,14 +270,14 @@ namespace Chroma
 	{
 	  unsigned int i = 0;
 	  for (auto& it : getVector())
-	    it.setPrefix(thisPrefix + "[" + std::to_string(i++) + "]/");
+	    it->setPrefix(thisPrefix + "[" + std::to_string(i++) + "]/");
 	  break;
 	}
 
 	case Dictionary:
 	{
 	  for (auto& it : getDictionary())
-	    it.second.setPrefix(thisPrefix + it.first + "/");
+	    it.second->setPrefix(thisPrefix + it.first + "/");
 	  break;
 	}
 	}
@@ -258,11 +285,11 @@ namespace Chroma
     };
 
     /// Storing a string as the value of an option
-    struct NoneOption : public Options {
+    struct NoneOption : public Option {
       NoneOption()
       {
       }
-      NoneOption(std::shared_ptr<std::string> file, std::size_t char_num) : Options{file, char_num}
+      NoneOption(std::shared_ptr<std::string> file, std::size_t char_num) : Option{file, char_num}
       {
       }
       Type getType() const override
@@ -272,13 +299,13 @@ namespace Chroma
     };
 
     /// Storing a string as the value of an option
-    struct StringOption : public Options {
+    struct StringOption : public Option {
       std::string value;
       StringOption(const std::string& s, std::shared_ptr<std::string> file, std::size_t char_num)
-	: Options{file, char_num}, value(s)
+	: Option{file, char_num}, value(s)
       {
       }
-      StringOption(const std::string& s, Maybe<Options> op=none) : value(s)
+      StringOption(const std::string& s, Maybe<const Option&> op=none) : value(s)
       {
 	if (op)
 	  copyFileInfo(op.getSome());
@@ -330,16 +357,17 @@ namespace Chroma
 	throw_error("expected the value to be boolean, either `true' or `false'");
 	throw std::exception{}; // silent no return warning
       }
-      std::vector<Options> getVector() const override
+      std::vector<std::shared_ptr<Option>> getVector() const override
       {
 	visited = true;
-	std::vector<Options> v;
+	std::vector<std::shared_ptr<Option>> v;
 	for (auto i = value.begin(), w = value.begin(); i != value.end(); ++i)
 	{
 	  if (std::isspace(*i) || i + 1 == value.end())
 	  {
 	    if (!std::isspace(*w))
-	      v.push_back(StringOption{std::string(w, i + 1 == value.end() ? i + 1 : i), *this});
+	      v.push_back(std::make_shared<StringOption>(
+		std::string(w, i + 1 == value.end() ? i + 1 : i), *this));
 	    w = i + 1;
 	  }
 	}
@@ -348,13 +376,13 @@ namespace Chroma
     };
 
     /// Storing a double as the value of an option
-    struct DoubleOption : public Options {
+    struct DoubleOption : public Option {
       double value;
       DoubleOption(double d, std::shared_ptr<std::string> file, std::size_t char_num)
-	: Options{file, char_num}, value(d)
+	: Option{file, char_num}, value(d)
       {
       }
-      DoubleOption(double d, Maybe<Options> op=none) : value(d)
+      DoubleOption(double d, Maybe<const Option&> op=none) : value(d)
       {
 	if (op)
 	  copyFileInfo(op.getSome());
@@ -391,29 +419,23 @@ namespace Chroma
     };
 
     /// Storing a vector as the value of an option
-    struct VectorOption : public Options {
-      std::vector<Options> value;
-      VectorOption(const std::vector<Options>& v, std::shared_ptr<std::string> file,
-		   std::size_t char_num)
-	: Options{file, char_num}, value(v)
+    struct VectorOption : public Option {
+      std::vector<std::shared_ptr<Option>> value;
+      VectorOption(const Option& op)
       {
-      }
-      VectorOption(const std::vector<Options> &v, Maybe<Options> op=none) : value(v)
-      {
-	if (op)
-	  copyFileInfo(op.getSome());
+	copyFileInfo(op);
       }
 
       Type getType() const override
       {
 	return Vector;
       }
-      std::vector<Options> getVector() const override
+      std::vector<std::shared_ptr<Option>> getVector() const override
       {
 	visited = true;
 	return value;
       }
-      std::vector<Options>& getVector() override
+      std::vector<std::shared_ptr<Option>>& getVector() override
       {
 	visited = true;
 	return value;
@@ -421,29 +443,23 @@ namespace Chroma
     };
 
     /// Storing a vector as the value of an option
-    struct DictionaryOption : public Options {
-      std::map<std::string, Options> value;
-      DictionaryOption(const std::map<std::string, Options>& m, std::shared_ptr<std::string> file,
-		       std::size_t char_num)
-	: Options{file, char_num}, value(m)
+    struct DictionaryOption : public Option {
+      std::map<std::string, std::shared_ptr<Option>> value;
+      DictionaryOption(const Option& op) 
       {
-      }
-      DictionaryOption(const std::map<std::string, Options>& m, Maybe<Options> op=none) : value(m)
-      {
-	if (op)
-	  copyFileInfo(op.getSome());
+	copyFileInfo(op);
       }
 
       Type getType() const override
       {
 	return Dictionary;
       }
-      const std::map<std::string, Options>& getDictionary() const override
+      const std::map<std::string, std::shared_ptr<Option>>& getDictionary() const override
       {
 	visited = true;
 	return value;
       }
-      std::map<std::string, Options>& getDictionary() override
+      std::map<std::string, std::shared_ptr<Option>>& getDictionary() override
       {
 	visited = true;
 	return value;
@@ -456,7 +472,7 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <typename T>
-    T getOption(const Options& ops, const std::string& path, Maybe<T> defaultValue = none);
+    T getOption(const Option& ops, const std::string& path, Maybe<T> defaultValue = none);
 
     /// Return a string option given a path
     /// \param ops: options into look for
@@ -464,12 +480,11 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <>
-    inline std::string getOption<std::string>(const Options& ops, const std::string& path,
+    inline std::string getOption<std::string>(const Option& ops, const std::string& path,
 					      Maybe<std::string> defaultValue)
     {
-      return ops
-	.getValue(path, defaultValue ? Maybe<Options>{StringOption{defaultValue.getSome()}} : none)
-	.getString();
+      StringOption defaultOp{defaultValue.getSome("")};
+      return ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none).getString();
     }
 
     /// Return a double option given a path
@@ -478,12 +493,11 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <>
-    inline double getOption<double>(const Options& ops, const std::string& path,
+    inline double getOption<double>(const Option& ops, const std::string& path,
 				    Maybe<double> defaultValue)
     {
-      return ops
-	.getValue(path, defaultValue ? Maybe<Options>{DoubleOption{defaultValue.getSome()}} : none)
-	.getDouble();
+      DoubleOption defaultOp{defaultValue.getSome(0.0)};
+      return ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none).getDouble();
     }
 
     /// Return an integer option given a path
@@ -492,12 +506,10 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <>
-    inline int getOption<int>(const Options& ops, const std::string& path, Maybe<int> defaultValue)
+    inline int getOption<int>(const Option& ops, const std::string& path, Maybe<int> defaultValue)
     {
-      return ops
-	.getValue(path, defaultValue ? Maybe<Options>{DoubleOption{(double)defaultValue.getSome()}}
-				     : none)
-	.getInt();
+      DoubleOption defaultOp{(double)defaultValue.getSome(0)};
+      return ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none).getInt();
     }
 
     /// Return an unsigned integer option given a path
@@ -506,13 +518,11 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <>
-    inline unsigned int getOption<unsigned int>(const Options& ops, const std::string& path,
+    inline unsigned int getOption<unsigned int>(const Option& ops, const std::string& path,
 						Maybe<unsigned int> defaultValue)
     {
-      return ops
-	.getValue(path, defaultValue ? Maybe<Options>{DoubleOption{(double)defaultValue.getSome()}}
-				     : none)
-	.getUInt();
+      DoubleOption defaultOp{(double)defaultValue.getSome(0)};
+      return ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none).getUInt();
     }
 
     /// Return a boolean option given a path
@@ -521,14 +531,11 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <>
-    inline bool getOption<bool>(const Options& ops, const std::string& path,
+    inline bool getOption<bool>(const Option& ops, const std::string& path,
 				Maybe<bool> defaultValue)
     {
-      return ops
-	.getValue(path, defaultValue
-			  ? Maybe<Options>{StringOption{defaultValue.getSome() ? "true" : "false"}}
-			  : none)
-	.getBool();
+      StringOption defaultOp{defaultValue.getSome(false) ? "true" : "false"};
+      return ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none).getBool();
     }
 
     /// Return an enum option given a path
@@ -537,21 +544,21 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <typename Enum>
-    Enum getOption(const Options& ops, const std::string& path,
+    Enum getOption(const Option& ops, const std::string& path,
 		   const std::map<std::string, Enum>& m, Maybe<Enum> defaultValue)
     {
       const std::string defaultStr = "default";
+      StringOption defaultOp{defaultStr};
       std::string value =
-	ops.getValue(path, defaultValue ? Maybe<Options>{StringOption{defaultStr}} : none)
-	  .getString();
+	ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none).getString();
       if (value == defaultStr)
 	return defaultValue.getSome();
       if (m.count(value) == 0)
       {
-	std::string availableOptions = "";
+	std::string availableOption = "";
 	for (const auto& it : m)
-	  availableOptions += it.first + " ";
-	ops.throw_error("unsupported value `" + value + "'; supported values: " + availableOptions);
+	  availableOption += it.first + " ";
+	ops.throw_error("unsupported value `" + value + "'; supported values: " + availableOption);
       }
       return m.at(value);
     }
@@ -562,22 +569,43 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <typename T>
-    std::vector<T> getVectorOption(const Options& ops, const std::string& path,
+    std::vector<T> getVectorOption(const Option& ops, const std::string& path,
 				   Maybe<std::vector<T>> defaultValue = none)
     {
-      Options valueOp = ops.getValue(path, defaultValue ? Maybe<Options>{NoneOption{}} : none);
+      NoneOption defaultOp{};
+      const Option& valueOp = ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none);
       if (!valueOp)
 	return defaultValue.getSome();
       std::vector<T> r;
       for (const auto& op : valueOp.getVector())
-	r.push_back(getOption<T>(op, ""));
+	r.push_back(getOption<T>(*op, ""));
       return r;
     }
+
+    /// Return a dictionary option
+    /// \param ops: options into look for
+    /// \param path: option path
+
+    inline const Option& getOptions(const Option& ops, const std::string& path)
+    {
+      return ops.getValue(path, Option::Dictionary);
+    }
+
+    /// Return a dictionary option
+    /// \param ops: options into look for
+    /// \param path: option path
+
+    inline Maybe<const Option&> getOptionsMaybe(const Option& ops, const std::string& path)
+    {
+      return ops.getValueMaybe(path, Option::Dictionary);
+    }
+
+    using Options = Option;
 
     /// Returns options from XML
     /// \param s: text
 
-    inline Options getOptionsFromXML(const std::string& s)
+    inline std::shared_ptr<Option> getOptionsFromXML(const std::string& s)
     {
 
       auto throw_error = [&](std::string::const_iterator i, std::string err_msg) {
@@ -586,15 +614,15 @@ namespace Chroma
 				 err_msg);
       };
 
-      std::vector<Options> ops;		// options of the open tags
+      std::vector<std::shared_ptr<Option>> ops;		// options of the open tags
       std::vector<std::string> tags;	// names of the open tags
-      std::vector<Options::Type> types; // type of the open tags
+      std::vector<Option::Type> types; // type of the open tags
 
       // Put the root element
       tags.push_back("/");
-      types.push_back(Options::None);
+      types.push_back(Option::None);
       std::shared_ptr<std::string> file = std::make_shared<std::string>(s);
-      ops.push_back(NoneOption{file, 0});
+      ops.push_back(std::make_shared<NoneOption>(file, 0));
 
       // Parse the string
       for (auto i = s.begin(); i != s.end(); ++i)
@@ -646,39 +674,40 @@ namespace Chroma
 
 	    // Set the type of the current option
 	    bool is_vector = tag == std::string("elem");
-	    if (is_vector && types.back() != Options::None && types.back() != Options::Vector)
+	    if (is_vector && types.back() != Option::None && types.back() != Option::Vector)
 	      throw_error(i, "Mixing <elem> tags with other tags is not supported");
-	    if (!is_vector && types.back() != Options::None && types.back() != Options::Dictionary)
+	    if (!is_vector && types.back() != Option::None && types.back() != Option::Dictionary)
 	      throw_error(i, "Mixing <elem> tags with other tags is not supported");
-	    if (types.back() == Options::None)
+	    if (types.back() == Option::None)
 	    {
 	      if (is_vector)
-		ops.back() = VectorOption{{}, ops.back()};
+		ops.back() = std::make_shared<VectorOption>(*ops.back());
 	      else
-		ops.back() = DictionaryOption{{}, ops.back()};
-	      types.back() = (is_vector ? Options::Vector : Options::Dictionary);
+		ops.back() = std::make_shared<DictionaryOption>(*ops.back());
+	      types.back() = (is_vector ? Option::Vector : Option::Dictionary);
 	    }
-	    else if (!is_vector && ops.back().getDictionary().count(tag) != 0)
+	    else if (!is_vector && ops.back()->getDictionary().count(tag) != 0)
 	    {
 	      throw_error(i,
 			  "Unsupported more than one tag with the same name under the same node");
 	    }
 
-	    Options new_op = NoneOption{file, (std::size_t)(i - s.begin())}; // new option to be filled
+	    std::shared_ptr<Option> new_op = std::make_shared<NoneOption>(
+	      file, (std::size_t)(i - s.begin())); // new option to be filled
 	    if (!closing_tag)
 	    {
 	      // Open tag
 	      tags.push_back(tag);
-	      types.push_back(Options::None);
+	      types.push_back(Option::None);
 	      ops.push_back(new_op);
 	    }
 	    else
 	    {
 	      // Open and close tag
 	      if (is_vector)
-		ops.back().getVector().push_back(new_op);
+		ops.back()->getVector().push_back(new_op);
 	      else
-		ops.back().getDictionary().insert({tag, new_op});
+		ops.back()->getDictionary().insert({tag, new_op});
 	    }
 	    i = i1;
 	  }
@@ -703,20 +732,20 @@ namespace Chroma
 
 	    // Consume the option on top
 	    types.pop_back();
-	    Options op = ops.back();
+	    std::shared_ptr<Option> op = ops.back();
 	    ops.pop_back();
 	    tags.pop_back();
-	    if (types.back() == Options::Vector)
-	      ops.back().getVector().push_back(op);
+	    if (types.back() == Option::Vector)
+	      ops.back()->getVector().push_back(op);
 	    else
-	      ops.back().getDictionary().insert({tag, op});
+	      ops.back()->getDictionary().insert({tag, op});
 	    i = i1;
 	  }
 	}
 	else
 	{
 	  // Detect content
-	  if (types.back() != Options::None)
+	  if (types.back() != Option::None)
 	    throw_error(i, "Not supported text between tags");
 
 	  auto p = std::find(i, s.end(), '<'); // first non-content character
@@ -726,7 +755,7 @@ namespace Chroma
 	  std::string content(i, i1 + 1);
 
 	  // Set content into the top option
-	  ops.back() = StringOption{content, ops.back()};
+	  ops.back() = std::make_shared<StringOption>(content, *ops.back());
 	  i = p - 1;
 	}
       }
@@ -735,7 +764,7 @@ namespace Chroma
 	throw_error(s.end(), "there are unclosed tags");
 
       if (ops.size() == 0)
-	return NoneOption{};
+	return std::make_shared<NoneOption>();
 
       return ops.front();
     }

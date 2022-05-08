@@ -110,8 +110,9 @@ namespace Chroma
       }
 
       /// Constructor with a value
-      template <typename Q>
-      Maybe(Q t) : opt_val{true, T(t)}
+      template <typename Q,
+		typename std::enable_if<std::is_convertible<Q, T>::value, bool>::type = true>
+      Maybe(const Q& t) : opt_val{true, T(t)}
       {
       }
 
@@ -485,7 +486,7 @@ namespace Chroma
 	  stride *= old_dim[pos + k];
 	}
 	r[pos] = i;
-	std::copy_n(c.begin() + pos + Ncol, Nout - pos - Ncol, r.begin() + pos + 1);
+	std::copy_n(c.begin() + pos + Ncol, N - pos - Ncol, r.begin() + pos + 1);
 	return r;
       }
 
@@ -2286,9 +2287,8 @@ namespace Chroma
 	if ((v.dist == OnMaster || v.dist == OnEveryoneReplicated) &&
 	    (w.dist == OnMaster || w.dist == OnEveryoneReplicated))
 	{
-	  contract(v.make_sure(none, none, OnMaster), mv, conjv, w.make_sure(none, none, OnMaster),
-		   mw, conjw, mr, beta);
-	  return;
+	  v = v.make_sure(none, none, OnMaster);
+	  w = w.make_sure(none, none, OnMaster);
 	}
 
 	if (v.dist == OnEveryone && w.dist == OnEveryoneReplicated)
@@ -3053,17 +3053,13 @@ namespace Chroma
       /// Constructor
       /// \param d: example tensor for the domain
       /// \param i: example tensor for the image
-      /// \param blockd: block size for each domain dimension
-      /// \param blocki: block size for each image dimension
+      /// \param nblockd: the first `nblockd` domain labels will be blocked
+      /// \param nblocki: the first `nblocki` image labels will blocked
       /// \param num_neighbors: number of nonzeros for each blocked row
 
-      SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, std::map<char, int> blockd,
-	       std::map<char, int> blocki, unsigned int num_neighbors)
-	: d{d.make_eg()},
-	  i{i.make_eg()},
-	  blkd{kvcoors<ND>(d.order, blockd, 1)},
-	  blki{kvcoors<NI>(i.order, blocki, 1)},
-	  scalar{T{1}}
+      SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, unsigned int nblockd, unsigned int nblocki,
+	       unsigned int num_neighbors)
+	: d{d.make_eg()}, i{i.make_eg()}, scalar{T{1}}
       {
 	// Check that the examples are on the same device
 	if (d.getDev() != i.getDev())
@@ -3072,14 +3068,18 @@ namespace Chroma
 	// Check that the domain and image labels are different and do not contain `u` or `~`
 	detail::check_order<NI + ND + 2>(i.order + d.order + std::string("u~"));
 
-	// Check the blocking and get the number of blocking dimensions
-	unsigned int nblkd = numBlockedDims(d.size, blkd);
-	unsigned int nblki = numBlockedDims(i.size, blki);
+	// Check the blocking
+	blkd = kvcoors<ND>(d.order, d.kvdim());
+	for (unsigned int i = nblockd; i < ND; ++i)
+	  blkd[i] = 1;
+	blki = kvcoors<NI>(i.order, i.kvdim());
+	for (unsigned int i = nblocki; i < NI; ++i)
+	  blki[i] = 1;
 
 	// Create the tensor containing the number of neighbors for each blocking
-	std::map<char,int> nonblki;
-	for (const auto i : i.kvdim())
-	  nonblki[i.first] = i.second / (blocki.count(i.first) == 1 ? blocki[i.first] : 1);
+	std::map<char, int> nonblki;
+	for (unsigned int j = 0; j < NI; ++j)
+	  nonblki[i.order[j]] = i.size[j] / blki[j];
 	ii = i.template like_this<NI, int>(none, nonblki);
 	ii.set(num_neighbors);
 
@@ -3093,12 +3093,12 @@ namespace Chroma
 
 	// Compute the data dimensions as image_blocked_dims + domain_dims + u + image_nonblocked_dims
 	std::map<char, int> data_dims = i.kvdim();
-	for (const auto it : d.kvdim())
-	  data_dims[it.first] = (blockd.count(it.first) == 1 ? blockd[it.first] : 1);
+	for (unsigned int i = 0; i < ND; ++i)
+	  data_dims[d.order[i]] = blkd[i];
 	data_dims['u'] = num_neighbors;
-	std::string data_order = std::string(i.order.begin(), i.order.begin() + nblki) + d.order +
+	std::string data_order = std::string(i.order.begin(), i.order.begin() + nblocki) + d.order +
 				 std::string("u") +
-				 std::string(i.order.begin() + nblki, i.order.end());
+				 std::string(i.order.begin() + nblocki, i.order.end());
 	data = i.template like_this<NI + ND + 1, T>(data_order, data_dims);
       }
 
@@ -3120,12 +3120,12 @@ namespace Chroma
 	    throw std::runtime_error("Unsupported partial blocking on a dimension");
 
 	  // Check that non-blocking dimensions don't interleave blocking dimensions
-	  if (blk[i] == dim[i] && non_blocking_viewed)
+	  if (dim[i] != 1 && blk[i] == dim[i] && non_blocking_viewed)
 	    throw std::runtime_error(
 	      "Unsupported interleaving blocking and non-blocking dimensions in the ordering");
 
 	  // Mark that we saw a non-blocking dimension
-	  if (blk[i] != dim[i])
+	  if (dim[i] != 1 && blk[i] != dim[i])
 	    non_blocking_viewed = true;
 
 	  // Count the number of blocking dimensions
