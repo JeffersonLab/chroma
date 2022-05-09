@@ -215,6 +215,13 @@ namespace Chroma
       if (op.order_t.size() > 0)
 	throw std::runtime_error("Not implemented");
 
+      // Check options
+      if (max_its == 0 && tol <= 0)
+	throw std::runtime_error("fgmres: please give a stopping criterion, either a tolerance or "
+				 "a maximum number of iterations");
+      if (max_basis_size == 0)
+	max_basis_size = 5;
+
       // Get an unused label for the search subspace columns
       char Vc = detail::get_free_label(x.order);
       char Vac = detail::get_free_label(x.order + std::string(1, Vc));
@@ -228,7 +235,7 @@ namespace Chroma
 
       // Allocate the search subspace U (onto the left singular space), and
       // Z (onto the right singular space)
-      auto U = r.template like_this<NOp + 1>(std::string("%") + std::string(1, Vc), '%', "",
+      auto U = r.template like_this<NOp + 2>(std::string("%") + std::string(1, Vc), '%', "",
 					     {{Vc, max_basis_size + 1}});
 
       // Allocate the search subspace Z (onto the right singular space); when no preconditioning
@@ -359,6 +366,8 @@ namespace Chroma
 	unsigned int max_basis_size = getOption<unsigned int>(ops, "max_basis_size", 0);
 	double tol = getOption<double>(ops, "tol", 0.0);
 	unsigned int max_its = getOption<unsigned int>(ops, "max_its", 0);
+	if (max_its == 0 && tol <= 0)
+	  ops.throw_error("set either `tol` or `max_its`");
 	bool error_if_not_converged = getOption<bool>(ops, "max_basis_size", true);
 	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
@@ -611,8 +620,9 @@ namespace Chroma
 
 	// Construct the operator to return
 	Operator<NOp, COMPLEX> rop{[=](const Tensor<NOp + 1, COMPLEX>& x) {
-				     auto y = x.like_this();
-				     sop.contractWith(x, y.rename_dims(ri));
+				     auto x0 = x.reorder("%Xxyztn", '%');
+				     auto y = x0.like_this();
+				     sop.contractWith(x0, y.rename_dims(ri));
 				     return y;
 				   },
 				   d, d, nullptr, op.order_t};
@@ -969,7 +979,8 @@ namespace Chroma
 
 	// Create tensors with full support on the lattice
 	int max_step = std::max(num_vecs, max_rhs);
-	auto aux = chi.like_this(none, {{'n', max_step}, {'t', Layout::lattSize()[3]}});
+	auto aux = chi.template like_this<Nd + 4>(
+	  "csxyztXn", {{'n', max_step}, {'t', Layout::lattSize()[3]}, {'s', Ns}});
 
 	for (int spin_source : spin_sources)
 	{

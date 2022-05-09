@@ -344,6 +344,18 @@ namespace Chroma
 	}
 	throw std::exception{}; // silent no return warning
       }
+      double getDouble() const override
+      {
+	visited = true;
+	try
+	{
+	  return std::stod(value);
+	} catch (...)
+	{
+	  throw_error("expected the value to be a double");
+	}
+	throw std::exception{}; // silent no return warning
+      }
       bool getBool() const override
       {
 	visited = true;
