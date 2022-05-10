@@ -3084,7 +3084,7 @@ namespace Chroma
 	ii.set(num_neighbors);
 
 	// Create the tensor containing the domain coordinates of the first nonzero in each block
-	jj = i.template like_this<NI + 2, int>(
+	jj = ii.template like_this<NI + 2, int>(
 	  "~u%", '%', "", std::map<char, int>{{'~', (int)ND}, {'u', (int)num_neighbors}});
 	// NOTE: despite jj being a vector of `int`, superbblas will use jj as a vector of Coor<NI>, so check that the alignment
 	if (jj.volume() > 0 && superbblas::detail::align(alignof(Coor<NI>), sizeof(int),
@@ -3106,33 +3106,6 @@ namespace Chroma
 
       SpTensor() : blki{}, blkd{}, scalar{0}
       {
-      }
-
-      template <std::size_t N>
-      static unsigned int numBlockedDims(Coor<N> dim, Coor<N> blk)
-      {
-	bool non_blocking_viewed = false;
-	unsigned int num_blk_dims = 0;
-	for (std::size_t i = 0; i < N; ++i)
-	{
-	  // Check that the blocking are complete
-	  if (blk[i] != 1 && blk[i] != dim[i])
-	    throw std::runtime_error("Unsupported partial blocking on a dimension");
-
-	  // Check that non-blocking dimensions don't interleave blocking dimensions
-	  if (dim[i] != 1 && blk[i] == dim[i] && non_blocking_viewed)
-	    throw std::runtime_error(
-	      "Unsupported interleaving blocking and non-blocking dimensions in the ordering");
-
-	  // Mark that we saw a non-blocking dimension
-	  if (dim[i] != 1 && blk[i] != dim[i])
-	    non_blocking_viewed = true;
-
-	  // Count the number of blocking dimensions
-	  if (blk[i] == dim[i]) ++num_blk_dims;
-	}
-
-	return num_blk_dims;
       }
 
       /// Construct the sparse operator

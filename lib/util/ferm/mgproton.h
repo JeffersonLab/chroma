@@ -198,6 +198,7 @@ namespace Chroma
     /// \param tol: maximum tolerance
     /// \param max_its: maximum number of iterations
     /// \param error_if_not_converged: throw an error if the tolerance was not satisfied
+    /// \param passing_initial_guess: whether `y` contains a solution guess
     /// \param max_simultaneous_rhs: maximum number of right-hand-sides solved simultaneously; all by default
     /// \param verb: verbosity level
     /// \param prefix: prefix printed before every line
@@ -206,8 +207,9 @@ namespace Chroma
     void fgmres(const Operator<NOp, COMPLEX>& op, Maybe<Operator<NOp, COMPLEX>> prec,
 		const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX>& y,
 		unsigned int max_basis_size, double tol, unsigned int max_its = 0,
-		bool error_if_not_converged = true, unsigned int max_simultaneous_rhs = 0,
-		Verbosity verb = NoOutput, std::string prefix = "")
+		bool error_if_not_converged = true, bool passing_initial_guess = false,
+		unsigned int max_simultaneous_rhs = 0, Verbosity verb = NoOutput,
+		std::string prefix = "")
     {
       const bool do_ortho = false;
 
@@ -221,6 +223,8 @@ namespace Chroma
 				 "a maximum number of iterations");
       if (max_basis_size == 0)
 	max_basis_size = 5;
+      if (max_its == 0)
+	max_its = std::numeric_limits<unsigned int>::max();
 
       // Get an unused label for the search subspace columns
       char Vc = detail::get_free_label(x.order);
@@ -229,8 +233,17 @@ namespace Chroma
       std::string order_rows = detail::remove_dimensions(op.d.order, op.order_t);
 
       // Compute residual, r = op * y - x
-      auto r = op(y);
-      x.scale(-1).copyTo(r);
+      Tensor<NOp + 1, COMPLEX> r;
+      if (passing_initial_guess)
+      {
+	r = op(y);
+      }
+      else
+      {
+	r = y.like_this();
+	r.set_zero();
+      }
+      x.scale(-1).addTo(r);
       auto normr0 = norm<1>(r, op.order_t + order_cols); // type std::vector<real of T>
 
       // Allocate the search subspace U (onto the left singular space), and
@@ -245,7 +258,7 @@ namespace Chroma
       if (prec.hasSome())
 	Z = Z.like_this(); // create new space when using preconditioning
 
-      auto normr = normr0;
+      auto normr = normr0.clone();
       unsigned int it = 0;
       double max_tol = HUGE_VAL;
       for (it = 0; it < max_its; ++it)
@@ -268,8 +281,8 @@ namespace Chroma
 	// Orthogonalize U and put it into W: W = orth(U(:,2:end))
 	// NOTE: for small max_basis_size and assuming r is far from a left singular vector,
 	//       a light or none orthogonalization should be enough
-	auto Up = U.kvslice_from_size({{Vc, 1}}, {{Vc, max_basis_size}}).rename_dims({{Vc, Vac}});
-	auto Uo = Up;
+	auto Up = U.kvslice_from_size({{Vc, 1}}, {{Vc, max_basis_size}});
+	auto Uo = Up.rename_dims({{Vc, Vac}});
 	if (do_ortho)
 	{
 	  //Uo = Uo.clone();
@@ -282,8 +295,8 @@ namespace Chroma
 	auto H_rt = contract<3>(Uo.conj(), Up, order_rows);
 
 	// Solve the projected problem: y_rt = (Uo'*U(:2:end))\(Uo'*r);
-	auto y_rt =
-	  solve<2>(H_rt, std::string(1, Vac), std::string(1, Vc), x_rt, std::string(1, Vac));
+	auto y_rt = solve<2>(H_rt, std::string(1, Vac), std::string(1, Vc),
+			     x_rt.rename_dims({{Vac, Vc}}), std::string(1, Vc));
 
 	// Update solution: x += -Z*y_rt
 	contract(Z.scale(-1), y_rt, order_cols, AddTo, x);
@@ -377,7 +390,7 @@ namespace Chroma
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x) {
 		  auto y = x.like_this();
 		  fgmres(op, prec, x, y, max_basis_size, tol, max_its, error_if_not_converged,
-			 max_simultaneous_rhs, verb, prefix);
+			 false /* no init guess */, max_simultaneous_rhs, verb, prefix);
 		  return y;
 		},
 		op.i, op.d, nullptr, op.order_t};
@@ -416,6 +429,14 @@ namespace Chroma
 	{
 	  throw std::runtime_error("Error in getGamma5: Unsupported spin number");
 	}
+      }
+
+      inline std::map<char, int> update_dims(const std::map<char, int>& m, const remap& rm)
+      {
+	std::map<char, int> r;
+	for (const auto& it : m)
+	  r[rm.at(it.first)] = it.second;
+	return r;
       }
 
       template <std::size_t NOp, typename COMPLEX>
@@ -468,25 +489,37 @@ namespace Chroma
 	  nonblkd[it.first] = (lattice_dims.count(it.first) == 0 ? 1 : it.second);
 
 	// Compute the coloring
+	Coor<Nd> dims{{dim['x'] * dim['X'], dim['y'], dim['z'], dim['t']}};
 	Coloring coloring{0,			     // zero displacement in coloring
 			  max_dist_neigbors * 2 + 1, // k-distance coloring
-			  {{dim['x'] * dim['X'], dim['y'], dim['z'], dim['t']}}};
+			  dims};
 	unsigned int num_colors = coloring.numColors();
 
 	// Get the number of neighbors
-	unsigned int num_neighbors = 1;
-	for (const auto& it : dim)
-	  if (lattice_dims.count(it.first) == 1)
-	    num_neighbors += (dim[it.first] <= 1 ? 0 : (dim[it.first] <= 2 ? 1 : 2));
+	constexpr int Nblk = NOp - Nd - 1;
+	std::vector<Coor<Nd>> neighbors(1, Coor<Nd>{{}});
+	for (unsigned int j = 0; j < Nd; ++j)
+	{
+	  Coor<Nd> c{{}};
+	  if (dims[j] >= 2)
+	  {
+	    c[j] = 1;
+	    neighbors.push_back(c);
+	  }
+	  if (dims[j] > 2)
+	  {
+	    c[j] = -1;
+	    neighbors.push_back(c);
+	  }
+	}
 
 	// Create the sparse tensor
-	SpTensor<NOp, NOp, COMPLEX> sop{d, i, NOp - 5, NOp - 5, num_neighbors};
+	SpTensor<NOp, NOp, COMPLEX> sop{d, i, NOp - 5, NOp - 5, (unsigned int)neighbors.size()};
 
 	int maxX = dim['X'];
-	int maxY = std::min(2, dim['y']);
-	int maxZ = std::min(2, dim['z']);
-	int maxT = std::min(2, dim['t']);
-	int dimx2 = dim['x'] * 2;
+	int maxY = std::min(2, dims[1]);
+	int maxZ = std::min(2, dims[2]);
+	int maxT = std::min(2, dims[3]);
 	for (unsigned int color = 0; color < num_colors; ++color)
 	{
 	  // Extracting the proving vector
@@ -516,103 +549,74 @@ namespace Chroma
 	  auto mv_eo = mv.split_dimension('y', "Yy", maxY)
 			 .split_dimension('z', "Zz", maxZ)
 			 .split_dimension('t', "Tt", maxT);
+	  //remap rdata = getNewLabels("xyztX", sop.data.order);
+	  auto data_eo = sop.data.rename_dims(rdc)
+			   .rename_dims(reverse(ri))
+			   .split_dimension('y', "Yy", maxY)
+			   .split_dimension('z', "Zz", maxZ)
+			   .split_dimension('t', "Tt", maxT);
 
 	  // Populate the nonzeros
-	  int mu = 0; // 0: self; 1: neg. x; 2: pos. x; 3: neg. y; 4: pos. y...
-	  for (char ldir : std::vector<char>{0, 'x', 'y', 'z', 't'})
+	  std::map<char, int> XYZTsize{{'X', 1}, {'Y', 1}, {'Z', 1}, {'T', 1}};
+	  for (int mu = 0; mu < neighbors.size(); ++mu)
 	  {
-	    // Process lattice dimensions in this operator only
-	    if (ldir != 0 && d.kvdim().count(ldir) == 0)
-	      continue;
-
-	    for (unsigned int dir = -1; dir < 1; ++dir)
+	    const auto& dir = neighbors[mu];
+	    for (int T = 0; T < maxT; ++T)
 	    {
-	      // Skip invalid combinations:
-	      //  a) ldir=0 is the self direction and does not have any other neighbors
-	      //  b) the lattice directions, x,y,z,t may have a neighbor on the negative or on the positive direction
-	      //  c) a lattice direction with size <= 1 does not have any neighbors
-	      //  d) a lattice direction with size == 2 only have one neighbor
-	      if ((ldir == 0 && dir != 0) ||		     // a)
-		  (ldir != 0 && dir == 0) ||		     // b)
-		  (ldir != 0 && dim[ldir] <= 1) ||	     // c)
-		  (ldir != 0 && dim[ldir] == 2 && dir >= 0)) // d)
-		continue;
-
-	      // Copy the nonzeros from the proving vector results to the sparse tensor data
-	      if (ldir != 'x' || maxX == 1)
+	      for (int Z = 0; Z < maxZ; ++Z)
 	      {
-		// Case where the direction isn't 'x' or not using even-odd layout (dim['X'] == 1)
-		std::map<char, int> to{{'X', ldir == 0 ? 0 : 1}, {'u', mu}};
-		if (ldir != 0)
-		  to[ldir] = dir;
-
-		mv.rename_dims(ri)
-		  .rename_dims(reverse(rdc))
-		  .copyToWithMask(sop.data.kvslice_from_size(to),
-				  sel.rename_dims(ri).rename_dims(reverse(rdc)));
-	      }
-	      else
-	      {
-		// Case where the direction is 'x' and we are using even-odd layout
-		std::map<char, int> XYZTsize{{'X', 1}, {'Y', 1}, {'Z', 1}, {'T', 1}};
-		std::map<char, int> to{{'X', 1}, {'u', mu}};
-		int dir0 = (dir < 0 ? dir + dimx2 : dir); // avoid modulus with negative numbers
-		for (int T = 0; T < maxT; ++T)
+		for (int Y = 0; Y < maxY; ++Y)
 		{
-		  for (int Z = 0; Z < maxZ; ++Z)
+		  for (int X = 0; X < maxX; ++X)
 		  {
-		    for (int Y = 0; Y < maxY; ++Y)
-		    {
-		      for (int X = 0; X < maxX; ++X)
-		      {
-			std::map<char, int> XYZTfrom{{'X', X}, {'Y', Y}, {'Z', Z}, {'T', T}};
-			to['x'] = (dir0 + ((X + Y + Z + T) % 2)) / 2;
-			mv.kvslice_from_size(XYZTfrom, XYZTsize)
-			  .rename_dims(ri)
-			  .rename_dims(reverse(rdc))
-			  .copyToWithMask(
-			    sop.data.kvslice_from_size(to).kvslice_from_size(XYZTfrom, XYZTsize),
-			    sel.kvslice_from_size(XYZTfrom, XYZTsize)
-			      .rename_dims(ri)
-			      .rename_dims(reverse(rdc)));
-		      }
-		    }
-		  }
-		}
-	      }
-
-	      // Increase mu
-	      mu++;
-	    } // dir
-	  }   // ldir
-	}     // color
+		    std::map<char, int> XYZTfrom{{'X', X}, {'Y', Y}, {'Z', Z}, {'T', T}};
+		    int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
+		    std::map<char, int> to{
+		      {'X', sumdir},
+		      {'x', (dir[0] + dims[0] + (X + Y + Z + T + sumdir + Nd * 2) % maxX) / maxX},
+		      {'Y', dir[1]},
+		      {'y', (dir[1] + dims[1] + Y) / 2},
+		      {'Z', dir[2]},
+		      {'z', (dir[2] + dims[2] + Z) / 2},
+		      {'T', dir[3]},
+		      {'t', (dir[3] + dims[3] + T) / 2}};
+		    mv_eo.kvslice_from_size(to, XYZTsize)
+		      .copyToWithMask(data_eo.kvslice_from_size(to, XYZTsize)
+					.kvslice_from_size({{'u', mu}}, {{'u', 1}}),
+				      sel_eo.kvslice_from_size(XYZTfrom, XYZTsize));
+		  } // X
+		}   // Y
+	      }	    // Z
+	    }	    // T
+	  }	    // mu
+	}	    // color
 
 	// Populate the coordinate of the columns
-	Coor<Nd> dims{{dim['x'] * dim['X'], dim['y'], dim['z'], dim['t']}};
 	sop.jj.fillCpuFunCoor([&](const Coor<NOp + 2>& c) {
-	  // c has order '~uXxyzt...' where Xxyzt... were remapped by ri
-	  int base = c[c[0] + 2];
-	  if (c[1] == 0)
+	  // c has order '~u%Xxyzt...' where Xxyzt... were remapped by ri
+	  int domi = c[0];	   // the domain label to evaluate, label ~
+	  int mu = c[1];	   // the direction, label u
+	  int base = c[domi + 2];
+
+	  // Do nothing for a blocking direction
+	  if (domi < Nblk)
+	    return 0;
+
+	  const auto& dir = neighbors[mu];
+
+	  // For labels X and x
+	  if (domi <= Nblk + 1)
 	  {
-	    // self direction, do nothing
+	    int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
+	    if (domi == Nblk)
+	      return (base + sumdir + maxX * Nd) % maxX;
+	    int sumc = std::accumulate(c.begin() + 2 + Nblk, c.begin() + 2 + Nblk + Nd, int{0});
+	    return ((-dir[0] + dims[0] + (sumc - sumdir + Nd * maxX) % maxX) / maxX) %
+		   (dims[0] / maxX);
 	  }
-	  else if ((c[1] == 1 || c[1] == 2) && c[0] == 0)
-	  {
-	    // Move one step behind or forward on the x direction and update X
-	    base = (base + 1) % maxX;
-	  }
-	  else if ((c[1] == 1 || c[1] == 2) && c[0] == 1)
-	  {
-	    // Move one step behind or forward on the x direction and update x
-	    int dir0 = (c[1] == 1 ? dimx2 - 1 : 1); // avoid modulus with negative numbers
-	    base = (dir0 + ((c[2] / 2 + c[3] / 2 + c[4] / 2 + c[5] / 2) % 2)) / 2;
-	  }
-	  else if ((c[1] - 1) / 2 == c[0] - 1)
-	  {
-	    // Move on the same direction as the coordinate
-	    base += (c[1] % 2 == 1 ? dims[(c[1] - 1) / 2] - 1 : 1);
-	  }
-	  return base;
+
+	  int latd = domi - Nblk - 1;
+	  return (base - dir[latd] + dims[latd]) % dims[latd];
 	});
 
 	// Construct the sparse operator
@@ -809,7 +813,7 @@ namespace Chroma
 		{
 		  t.kvslice_from_size({{'n', i}}, {{'n', 1}}).copyTo(asTensorView(x));
 		  y = zero;
-		  linOp(x, y, PLUS /* I believe, it's ignored */);
+		  linOp(y, x, PLUS /* I believe, it's ignored */);
 		  asTensorView(y).copyTo(r.kvslice_from_size({{'n', i}}, {{'n', 1}}));
 		}
 		return r;

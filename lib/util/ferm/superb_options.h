@@ -43,6 +43,18 @@ namespace Chroma
 	}
 	return r;
       }
+
+      /// Return the given string with lowercase characters
+      /// \param s: input string
+
+      inline std::string to_lower(const std::string& s)
+      {
+
+	std::string valueLower = s;
+	std::transform(valueLower.begin(), valueLower.end(), valueLower.begin(),
+		       [](unsigned char c) { return std::tolower(c); });
+	return valueLower;
+      }
     }
 
     /// Class for storing options
@@ -359,9 +371,7 @@ namespace Chroma
       bool getBool() const override
       {
 	visited = true;
-	std::string valueLower = value;
-	std::transform(valueLower.begin(), valueLower.end(), valueLower.begin(),
-		       [](unsigned char c) { return std::tolower(c); });
+	std::string valueLower = detail::to_lower(value);
 	if (valueLower == std::string("true"))
 	  return true;
 	if (valueLower == std::string("false"))
@@ -559,20 +569,37 @@ namespace Chroma
     Enum getOption(const Option& ops, const std::string& path,
 		   const std::map<std::string, Enum>& m, Maybe<Enum> defaultValue)
     {
+      // Transform the map entries to lowercase
+      std::map<std::string, Enum> m0;
+      for (const auto& it : m) {
+	std::string k = detail::to_lower(it.first);
+	if (m0.count(k) == 1)
+	  throw std::runtime_error("getOption: invalid map, case sensitive keys");
+	m0[k] = it.second;
+      }
+
+      // Get value from the options
       const std::string defaultStr = "default";
       StringOption defaultOp{defaultStr};
-      std::string value =
-	ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none).getString();
-      if (value == defaultStr)
+      std::string value = detail::to_lower(
+	ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none).getString());
+
+      // If no option was given or it's the default, return the default value if a default value is given
+      if (defaultValue && value == defaultStr)
 	return defaultValue.getSome();
-      if (m.count(value) == 0)
+
+      // Check that the value is in the map
+      if (m0.count(value) == 0)
       {
-	std::string availableOption = "";
-	for (const auto& it : m)
-	  availableOption += it.first + " ";
-	ops.throw_error("unsupported value `" + value + "'; supported values: " + availableOption);
+	std::string availableOption = defaultValue ? defaultStr : std::string{};
+	for (const auto& it : m0)
+	  availableOption += std::string(" ") + it.first;
+	ops.getValue(path).throw_error("unsupported value `" + value +
+				       "'; supported values: " + availableOption);
       }
-      return m.at(value);
+
+      // Return the enum associated to the value
+      return m0.at(value);
     }
 
     /// Return a vector of options given a path
