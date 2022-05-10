@@ -2168,6 +2168,7 @@ namespace Chroma
 	if (m.hasSome())
 	{
 	  m0 = Tensor<N, float>{order, dim, getDev(), dist, p};
+	  m0.set_zero();
 	  m0.from = from;
 	  m0.size = size;
 	  m0.conjugate = conjugate;
@@ -2175,6 +2176,7 @@ namespace Chroma
 	  m0ptr = m0.data.get();
 
 	  m1 = Tensor<Nw, float>{w.order, w.dim, w.getDev(), w.dist, w.p};
+	  m1.set_zero();
 	  m1.from = w.from;
 	  m1.size = w.size;
 	  m1.conjugate = w.conjugate;
@@ -3531,10 +3533,10 @@ namespace Chroma
 
 	// Translate even-odd coordinates to natural coordinates
 	Coor<N - 1> coor;
-	coor[0] = c[0] * 2 + (c[1] + c[2] + c[3] + c[4]) % nX; // x
-	coor[1] = c[1];					       // y
-	coor[2] = c[2];					       // z
-	coor[3] = c[3];					       // t
+	coor[0] = c[0] * nX + (c[1] + c[2] + c[3] + c[4]) % nX; // x
+	coor[1] = c[1];						// y
+	coor[2] = c[2];						// z
+	coor[3] = c[3];						// t
 	std::copy_n(c.begin() + 5, N - 5, coor.begin() + 4);
 
 	// Call the function
@@ -3599,27 +3601,31 @@ namespace Chroma
       }
       else
       {
-	int t = v.kvdim()['t'];
+	auto dims = v.kvdim();
+	int t = dims.at('t');
 	if (t > 1 && t % 2 == 1)
 	  throw std::runtime_error(
 	    "The t dimension should be zero, one, or even when doing shifting on the X dimension");
-	int maxT = std::min(2, t);
-	auto v_eo = v.split_dimension('y', "Yy", 2)
-		      .split_dimension('z', "Zz", 2)
+	int maxX = dims.at('X');
+	int maxY = std::min(2, dims.at('y'));
+        int maxZ = std::min(2, dims.at('z'));
+        int maxT = std::min(2, dims.at('t'));
+	auto v_eo = v.split_dimension('y', "Yy", maxY)
+		      .split_dimension('z', "Zz", maxZ)
 		      .split_dimension('t', "Tt", maxT);
 	Tensor<N, COMPLEX> r = w.hasSome() ? w.getSome() : v.like_this();
-	auto r_eo = r.split_dimension('y', "Yy", 2)
-		      .split_dimension('z', "Zz", 2)
+	auto r_eo = r.split_dimension('y', "Yy", maxY)
+		      .split_dimension('z', "Zz", maxZ)
 		      .split_dimension('t', "Tt", maxT);
 	while (len < 0)
-	  len += v.kvdim()['x'] * 2;
+	  len += dims.at('x') * maxX;
 	for (int T = 0; T < maxT; ++T)
 	{
-	  for (int Z = 0; Z < 2; ++Z)
+	  for (int Z = 0; Z < maxZ; ++Z)
 	  {
-	    for (int Y = 0; Y < 2; ++Y)
+	    for (int Y = 0; Y < maxY; ++Y)
 	    {
-	      for (int X = 0; X < 2; ++X)
+	      for (int X = 0; X < maxX; ++X)
 	      {
 		auto v_eo_slice = v_eo.kvslice_from_size({{'X', X}, {'Y', Y}, {'Z', Z}, {'T', T}},
 							 {{'X', 1}, {'Y', 1}, {'Z', 1}, {'T', 1}});
@@ -4115,9 +4121,12 @@ namespace Chroma
 	  primme.matrix = &opaux;
 
 	  // Set block size
-          primme.maxBasisSize = 64;
-	  primme.maxBlockSize = 4;
-          primme.ldOPs = primme.nLocal;
+	  if (n > 128)
+	  {
+	    primme.maxBasisSize = 64;
+	    primme.maxBlockSize = 4;
+	  }
+	  primme.ldOPs = primme.nLocal;
 
 	  // Should set lots of defaults
 	  if (primme_set_method(PRIMME_DEFAULT_MIN_TIME, &primme) < 0)

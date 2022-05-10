@@ -296,13 +296,14 @@ namespace Chroma
 
 	// Solve the projected problem: y_rt = (Uo'*U(:2:end))\(Uo'*r);
 	auto y_rt = solve<2>(H_rt, std::string(1, Vac), std::string(1, Vc),
-			     x_rt.rename_dims({{Vac, Vc}}), std::string(1, Vc));
+			     x_rt.rename_dims({{Vac, Vc}}), std::string(1, Vc))
+		      .rename_dims({{Vac, Vc}});
 
 	// Update solution: x += -Z*y_rt
-	contract(Z.scale(-1), y_rt, order_cols, AddTo, x);
+	contract(Z.scale(-1), y_rt, std::string(1, Vc), AddTo, x);
 
 	// Update residual: r += -U(2:end)*y_rt
-	contract(Up.scale(-1), y_rt, order_cols, AddTo, r);
+	contract(Up.scale(-1), y_rt, std::string(1, Vc), AddTo, r);
 
 	// Compute the norm
 	auto normr = norm<1>(r, op.order_t + order_cols);
@@ -561,6 +562,7 @@ namespace Chroma
 	  for (int mu = 0; mu < neighbors.size(); ++mu)
 	  {
 	    const auto& dir = neighbors[mu];
+	    int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
 	    for (int T = 0; T < maxT; ++T)
 	    {
 	      for (int Z = 0; Z < maxZ; ++Z)
@@ -570,16 +572,11 @@ namespace Chroma
 		  for (int X = 0; X < maxX; ++X)
 		  {
 		    std::map<char, int> XYZTfrom{{'X', X}, {'Y', Y}, {'Z', Z}, {'T', T}};
-		    int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
 		    std::map<char, int> to{
-		      {'X', sumdir},
-		      {'x', (dir[0] + dims[0] + (X + Y + Z + T + sumdir + Nd * 2) % maxX) / maxX},
-		      {'Y', dir[1]},
-		      {'y', (dir[1] + dims[1] + Y) / 2},
-		      {'Z', dir[2]},
-		      {'z', (dir[2] + dims[2] + Z) / 2},
-		      {'T', dir[3]},
-		      {'t', (dir[3] + dims[3] + T) / 2}};
+		      {'X', X + sumdir}, {'x', (dir[0] + dims[0] + (X + Y + Z + T) % maxX) / maxX},
+		      {'Y', Y + dir[1]}, {'y', (dir[1] + dims[1] + Y) / maxY},
+		      {'Z', Z + dir[2]}, {'z', (dir[2] + dims[2] + Z) / maxZ},
+		      {'T', T + dir[3]}, {'t', (dir[3] + dims[3] + T) / maxT}};
 		    mv_eo.kvslice_from_size(to, XYZTsize)
 		      .copyToWithMask(data_eo.kvslice_from_size(to, XYZTsize)
 					.kvslice_from_size({{'u', mu}}, {{'u', 1}}),
@@ -611,8 +608,7 @@ namespace Chroma
 	    if (domi == Nblk)
 	      return (base + sumdir + maxX * Nd) % maxX;
 	    int sumc = std::accumulate(c.begin() + 2 + Nblk, c.begin() + 2 + Nblk + Nd, int{0});
-	    return ((-dir[0] + dims[0] + (sumc - sumdir + Nd * maxX) % maxX) / maxX) %
-		   (dims[0] / maxX);
+	    return ((sumc - dir[0] + dims[0]) / maxX) % (dims[0] / maxX);
 	  }
 
 	  int latd = domi - Nblk - 1;
