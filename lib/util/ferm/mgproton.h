@@ -490,28 +490,29 @@ namespace Chroma
 	// Create the ordering for the domain and the image, moving the lattice dimensions as the slowest indices
 	// NOTE: assuming that x,y,z,t are the only non-blocking dimensions
 	std::set<char> lattice_dims{'x', 'y', 'z', 't', 'X'};
-	remap ri = getNewLabels(op.i.order, op.d.order + "u~");
-	auto d = op.d.reorder("%Xxyzt", '%');
-	auto i = op.i.reorder("%Xxyzt", '%').rename_dims(ri);
-	auto dim = d.kvdim();
+	remap rd = getNewLabels(op.d.order, op.i.order + "u~");
+	auto d = op.d.reorder("%Xxyzt", '%').rename_dims(rd);
+	auto i = op.i.reorder("%Xxyzt", '%');
+	auto dim = i.kvdim();
 
 	// Get the blocking for the domain and the image
 	std::map<char, int> blkd, blki;
+	remap rev_rd = reverse(rd);
 	for (const auto& it : d.kvdim())
-	  blkd[it.first] = (lattice_dims.count(it.first) == 0 ? it.second : 1);
-	remap rev_ri = reverse(ri);
+	  blkd[it.first] = (lattice_dims.count(rev_rd.at(it.first)) == 0 ? it.second : 1);
 	for (const auto& it : i.kvdim())
-	  blki[it.first] = (lattice_dims.count(rev_ri.at(it.first)) == 0 ? it.second : 1);
+	  blki[it.first] = (lattice_dims.count(it.first) == 0 ? it.second : 1);
 
 	// Construct the probing vectors, which they have as the rows the domain labels and as
 	// columns the domain blocking dimensions
 	
-	auto t_bl = op.d.like_this(none, blkd, OnHost, OnEveryoneReplicated);
+	auto t_bl = d.like_this(none, blkd, OnHost, OnEveryoneReplicated);
 	t_bl.set_zero();
-	auto t_bl_rows = t_bl.template like_this<NOp - 5>("%", '%', "xyztX");
-	t_bl.copyTo(t_bl_rows);
-	remap rdc = getNewLabels(d.order, d.order + i.order + "u~");
-	auto t_blbl = contract<NOp * 2 - 5>(t_bl_rows, t_bl.rename_dims(rdc), "");
+	auto t_bl_rows = i.template like_this<NOp - 5>("%", '%', "xyztX");
+	t_bl_rows.set_zero();
+	auto t_blbl =
+	  contract<NOp * 2 - 5>(t_bl_rows, t_bl, "").make_sure(none, none, OnEveryoneReplicated);
+	assert(!t_blbl.isSubtensor());
 	COMPLEX* t_blbl_data = t_blbl.data.get();
 	for (std::size_t i = 0, vol = t_bl.volume(); i < vol; ++i)
 	  t_blbl_data[i * vol + i] = COMPLEX{1};
@@ -546,6 +547,10 @@ namespace Chroma
 	}
 
 	// Create the sparse tensor
+	d = d.extend_support({{rd.at('x'), max_dist_neigbors},
+			      {rd.at('y'), max_dist_neigbors},
+			      {rd.at('z'), max_dist_neigbors},
+			      {rd.at('t'), max_dist_neigbors}});
 	SpTensor<NOp, NOp, COMPLEX> sop{d, i, NOp - 5, NOp - 5, (unsigned int)neighbors.size()};
 
 	int maxX = dim['X'];
@@ -565,7 +570,7 @@ namespace Chroma
 	  auto probs = contract<NOp * 2>(t_l, t_blbl, "");
 
 	  // Compute the matvecs
-	  auto mv = op(probs); //.rename_dims(ri).rename_dims(reverse(rdc));
+	  auto mv = op(probs);
 
 	  // Construct an indicator tensor where all blocking dimensions but only the nodes colored `color` are copied
 	  auto ones = t_blbl.template like_this<NOp * 2 - 5, float>();
@@ -581,10 +586,7 @@ namespace Chroma
 	  auto mv_eo = mv.split_dimension('y', "Yy", maxY)
 			 .split_dimension('z', "Zz", maxZ)
 			 .split_dimension('t', "Tt", maxT);
-	  //remap rdata = getNewLabels("xyztX", sop.data.order);
-	  auto data_eo = sop.data.rename_dims(rdc)
-			   .rename_dims(reverse(ri))
-			   .split_dimension('y', "Yy", maxY)
+	  auto data_eo = sop.data.split_dimension('y', "Yy", maxY)
 			   .split_dimension('z', "Zz", maxZ)
 			   .split_dimension('t', "Tt", maxT);
 
@@ -653,13 +655,13 @@ namespace Chroma
 	Operator<NOp, COMPLEX> rop{[=](const Tensor<NOp + 1, COMPLEX>& x) {
 				     auto x0 = x.reorder("%Xxyztn", '%');
 				     auto y = x0.like_this();
-				     sop.contractWith(x0, y.rename_dims(ri));
+				     sop.contractWith(x0.rename_dims(rd), y);
 				     return y;
 				   },
-				   d, d, nullptr, op.order_t};
+				   i, i, nullptr, op.order_t};
 
 	// Do a test
-	auto x = d.template like_this<NOp + 1>("%n", '%', "", {{'n', 2}});
+	auto x = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', 2}});
 	urand(x, -1, 1);
 	auto y = op(x);
 	auto base_norm = norm<1>(y, "n");
@@ -668,13 +670,8 @@ namespace Chroma
 	auto eps =
 	  std::sqrt(std::numeric_limits<typename detail::real_type<COMPLEX>::type>::epsilon());
 	for (int i = 0; i < base_norm.volume(); ++i)
-	{
 	  if (error.get({{i}}) > eps * base_norm.get({{i}}))
-	  {
-	    QDPIO::cerr << "cloneOperator: too much error on the cloned operator\n";
-	    QDP_abort(1);
-	  }
-	}
+	    throw std::runtime_error("cloneOperator: too much error on the cloned operator");
 
 	return rop;
       }

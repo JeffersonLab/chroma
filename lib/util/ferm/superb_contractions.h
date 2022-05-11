@@ -622,7 +622,7 @@ namespace Chroma
       {
 	std::string r(N, 0);
 	for (std::size_t i = 0; i < N; ++i)
-	  r[i] = i % 128;
+	  r[i] = (i + 1) % 128;
 	return r;
       }
 
@@ -943,6 +943,15 @@ namespace Chroma
       /// Return a Nan for float, double, and complex variants
       template <typename T>
       struct NaN;
+
+      /// Specialization for int
+      template <>
+      struct NaN<int> {
+	static int get()
+	{
+	  return std::numeric_limits<int>::min();
+	}
+      };
 
       /// Specialization for float
       template <>
@@ -1288,6 +1297,9 @@ namespace Chroma
 	  detail::log(1, "deallocated " + s);
 	  detail::log_mem();
 	});
+
+	// TEMP!!!
+	fillWithCPUFuncNoArgs([=]() { return detail::NaN<T>::get(); });
       }
 
     protected:
@@ -1521,10 +1533,9 @@ namespace Chroma
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	auto l = getLocal();
-	auto h = l.make_sure(none, OnHost);
-	std::size_t vol = l.volume();
-	T* ptr = h.data.get();
+	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
+	std::size_t vol = t.getLocal().volume();
+	T* ptr = t.data.get();
 
 	if (threaded)
 	{
@@ -1540,7 +1551,7 @@ namespace Chroma
 	    ptr[i] = func();
 	}
 
-	h.copyTo(l);
+	t.copyTo(*this);
       }
 
       /// Fill the tensor with the value of the function applied to each element
@@ -1555,16 +1566,15 @@ namespace Chroma
 
 	using superbblas::detail::operator+;
 
-	auto l = getLocal();
-	auto h = l.make_sure(none, OnHost);
-	std::size_t vol = l.volume();
-	T* ptr = h.data.get();
+	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
+	std::size_t vol = t.getLocal().volume();
+	T* ptr = t.data.get();
 	/// Number of elements in each direction for the local part
-	Coor<N> local_size = l.size;
+	Coor<N> local_size = t.getLocal().size;
 	/// Stride for the local volume
 	Coor<N> local_stride = superbblas::detail::get_strides(local_size, superbblas::FastToSlow);
 	/// Coordinates of first elements stored locally
-	Coor<N> local_from = p->localFrom();
+	Coor<N> local_from = t.p->localFrom();
 
 	if (threaded)
 	{
@@ -1575,7 +1585,7 @@ namespace Chroma
 	  {
 	    // Get the global coordinates
 	    Coor<N> c = normalize_coor(
-	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, dim);
+	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
 	    ptr[i] = func(c);
 	  }
 	}
@@ -1584,12 +1594,12 @@ namespace Chroma
 	  for (std::size_t i = 0; i < vol; ++i)
 	  {
 	    Coor<N> c = normalize_coor(
-	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, dim);
+	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
 	    ptr[i] = func(c);
 	  }
 	}
 
-	h.copyTo(l);
+	t.copyTo(*this);
       }
 
       /// Return a new tensor with the value of the function applied to each element
@@ -1605,7 +1615,6 @@ namespace Chroma
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
 	auto r = t.template like_this<N, Tr>();
 	assert(!r.isSubtensor() && !t.isSubtensor());
-	auto l = r.getLocal();
 	std::size_t vol = t.getLocal().volume();
 	T* tptr = t.data.get();
 	Tr* rptr = r.data.get();
@@ -1627,6 +1636,35 @@ namespace Chroma
 	return r;
       }
 
+      /// Apply the function to each tensor element
+      /// \param func: function T -> void
+      /// \param threaded: whether to run threaded
+
+      template <typename Func>
+      void foreachWithCPUFun(Func func, bool threaded = true) const
+      {
+	if (is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
+	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
+	assert(!t.isSubtensor());
+	std::size_t vol = t.getLocal().volume();
+	T* tptr = t.data.get();
+
+	if (threaded)
+	{
+#  ifdef _OPENMP
+#    pragma omp parallel for schedule(static)
+#  endif
+	  for (std::size_t i = 0; i < vol; ++i)
+	    func(tptr[i]);
+	}
+	else
+	{
+	  for (std::size_t i = 0; i < vol; ++i)
+	    func(tptr[i]);
+	}
+      }
 
       /// Set all elements with the given value
       /// \param v: the new value for all the elements
@@ -2588,10 +2626,11 @@ namespace Chroma
       /// \param m: amount to extend the support for each process
       /// \return a new tensor with the extension
 
-      Tensor<N, T> extend_support(const std::map<char,int> &m) const
+      Tensor<N, T> extend_support(const std::map<char, int>& m) const
       {
-	p->extend_support(kvcoors<N>(order, m, 0));
-	Tensor<N,T> r{order, dim, getDev(), dist, p->extend_support(kvcoors<N>(order, m, 0))};
+	Tensor<N, T> r{
+	  order, dim, getDev(), dist,
+	  std::make_shared<detail::TensorPartition<N>>(p->extend_support(kvcoors<N>(order, m, 0)))};
 	r.from = from;
 	r.size = size;
 	r.strides = strides;
@@ -3121,8 +3160,9 @@ namespace Chroma
 	jj = ii.template like_this<NI + 2, int>(
 	  "~u%", '%', "", std::map<char, int>{{'~', (int)ND}, {'u', (int)num_neighbors}});
 	// NOTE: despite jj being a vector of `int`, superbblas will use jj as a vector of Coor<NI>, so check that the alignment
-	if (jj.volume() > 0 && superbblas::detail::align(alignof(Coor<NI>), sizeof(int),
-							 jj.data.get(), sizeof(int)) == nullptr)
+	if (jj.getLocal().volume() > 0 &&
+	    superbblas::detail::align(alignof(Coor<NI>), sizeof(int), jj.data.get(), sizeof(int)) ==
+	      nullptr)
 	  throw std::runtime_error("Ups! Look into this");
 
 	// Compute the data dimensions as image_blocked_dims + domain_dims + u + image_nonblocked_dims
