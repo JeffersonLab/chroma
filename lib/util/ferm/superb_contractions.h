@@ -1408,6 +1408,22 @@ namespace Chroma
 	return superbblas::detail::volume(size);
       }
 
+      /// Return the product of the size for each given label
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   t.volume("c"); // is Nc
+
+      std::size_t volume(const std::string& labels) const
+      {
+	const auto d = kvdim();
+	std::size_t vol = 1;
+	for (char l : labels)
+	  vol *= d.at(l);
+	return vol;
+      }
+
       /// Return whether the tensor is an example
       ///
       /// Example:
@@ -2797,6 +2813,22 @@ namespace Chroma
       using Treal = typename detail::real_type<T>::type;
       return r.template transformWithCPUFun<Treal>(
 	[](const T& t) { return std::sqrt(std::real(t)); });
+    }
+
+    /// Compute the maximum for a small tensor
+    /// \param v: tensor
+
+    template <std::size_t N, typename T>
+    T max(Tensor<N, T> v)
+    {
+      v = v.make_sure(none, OnHost, OnEveryoneReplicated);
+      if (v.isSubtensor())
+	v = v.clone();
+      T r = T{0};
+      T* p = v.data.get();
+      for (unsigned int i = 0, vol = v.volume(); i < vol; ++i)
+	r = std::max(r, p[i]);
+      return r;
     }
 
     /// Compute the Cholesky factor of `v' and contract its inverse with `w`

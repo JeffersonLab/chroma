@@ -129,6 +129,17 @@ namespace Chroma
 	      wdims.count(it.first) > 0 && wdims.at(it.first) != it.second)
 	    throw std::runtime_error("check_compatible: some label does not match");
       }
+
+      /// Return a string version of the number in scientific notation
+      /// \param v: number to convert
+      /// \param prec: number of digits to print
+
+      inline std::string tostr(double v, unsigned int prec = 2)
+      {
+	std::stringstream ss;
+	ss << std::scientific << std::setprecision(prec) << v;
+	return ss.str();
+      }
     }
 
     /// Orthonormalize W against V, W_out <- (I-V*V')*W_in*R, with R such that W_out'*W_out = I,
@@ -231,12 +242,17 @@ namespace Chroma
       char Vac = detail::get_free_label(x.order + std::string(1, Vc));
       std::string order_cols = detail::remove_dimensions(x.order, op.i.order);
       std::string order_rows = detail::remove_dimensions(op.d.order, op.order_t);
+      std::size_t num_cols = x.volume(order_cols);
+
+      // Counting op and prec applications
+      unsigned int nops = 0, nprecs = 0;
 
       // Compute residual, r = op * y - x
       Tensor<NOp + 1, COMPLEX> r;
       if (passing_initial_guess)
       {
 	r = op(y);
+	nops += num_cols;
       }
       else
       {
@@ -245,6 +261,8 @@ namespace Chroma
       }
       x.scale(-1).addTo(r);
       auto normr0 = norm<1>(r, op.order_t + order_cols); // type std::vector<real of T>
+      if (max(normr0) == 0)
+	return;
 
       // Allocate the search subspace U (onto the left singular space), and
       // Z (onto the right singular space)
@@ -270,12 +288,16 @@ namespace Chroma
 	for (unsigned int i = 0; i < max_basis_size; ++i) {
 	  // Z(:,i) = prec * U(:,i)
 	  if (prec.hasSome())
+	  {
 	    prec.getSome()(U.kvslice_from_size({{Vc, i}}, {{Vc, 1}}))
 	      .copyTo(Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}));
+	    nprecs += num_cols;
+	  }
 
 	  // U(:,i+1) = op * Z(:,i)
 	  op(Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}))
 	    .copyTo(U.kvslice_from_size({{Vc, i + 1}}, {{Vc, 1}}));
+	  nops += num_cols;
 	}
 
 	// Orthogonalize U and put it into W: W = orth(U(:,2:end))
@@ -299,8 +321,8 @@ namespace Chroma
 			     x_rt.rename_dims({{Vac, Vc}}), std::string(1, Vc))
 		      .rename_dims({{Vac, Vc}});
 
-	// Update solution: x += -Z*y_rt
-	contract(Z.scale(-1), y_rt, std::string(1, Vc), AddTo, x);
+	// Update solution: y += -Z*y_rt
+	contract(Z.scale(-1), y_rt, std::string(1, Vc), AddTo, y);
 
 	// Update residual: r += -U(2:end)*y_rt
 	contract(Up.scale(-1), y_rt, std::string(1, Vc), AddTo, r);
@@ -316,15 +338,29 @@ namespace Chroma
 	// Report iteration
 	if (verb >= Detailed)
 	  QDPIO::cout << prefix << " MGPROTON FGMRES iteration it.: " << it
-		      << " max rel. residual: " << max_tol << std::endl;
+		      << " max rel. residual: " << detail::tostr(max_tol, 2) << std::endl;
 
 	if (max_tol <= tol) break;
       }
 
+      // Check final residual
+      if (error_if_not_converged) {
+	r = op(y);
+	nops += num_cols;
+	x.scale(-1).addTo(r);
+	auto normr = norm<1>(r, op.order_t + order_cols);
+	max_tol = 0;
+	for (int i = 0, vol = normr.volume(); i < vol; ++i)
+	  max_tol = std::max(max_tol, normr.get({{i}}) / normr0.get({{i}}));
+	if (tol > 0 && max_tol > tol)
+	  throw std::runtime_error("fmgres didn't converged and you ask for checking the error");
+      }
+
       // Report iteration
       if (verb >= JustSummary)
-	QDPIO::cout << prefix << " MGPROTON FGMRES summary its.: " << it
-		    << " max rel. residual: " << max_tol << std::endl;
+	QDPIO::cout << prefix << " MGPROTON FGMRES summary its.: " << (it + 1)
+		    << " max rel. residual: " << detail::tostr(max_tol, 2) << " matvecs: " << nops
+		    << " precs: " << nprecs << std::endl;
     }
 
     template <std::size_t NOp, typename COMPLEX>
@@ -382,7 +418,7 @@ namespace Chroma
 	unsigned int max_its = getOption<unsigned int>(ops, "max_its", 0);
 	if (max_its == 0 && tol <= 0)
 	  ops.throw_error("set either `tol` or `max_its`");
-	bool error_if_not_converged = getOption<bool>(ops, "max_basis_size", true);
+	bool error_if_not_converged = getOption<bool>(ops, "error_if_not_converged", true);
 	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
@@ -397,7 +433,7 @@ namespace Chroma
 		op.i, op.d, nullptr, op.order_t};
       }
 
-      /// Returns the \gamma_5 or a projection for a given number of spins
+      /// Returns the \gamma_5 for a given number of spins
       /// \param ns: number of spins
 
       template <typename COMPLEX = Complex>
@@ -415,11 +451,6 @@ namespace Chroma
 	}
 	else if (ns == 2)
 	{
-	  Tensor<1, COMPLEX> ones("j", {Ns}, OnHost, OnEveryoneReplicated);
-	  for (int i = 0; i < Ns; ++i)
-	    ones.set({{i}}, COMPLEX{1});
-	  Tensor<1, COMPLEX> p("i", {Ns}, OnHost, OnEveryoneReplicated);
-	  p.contract(getGamma5(Ns), {}, NotConjugate, ones, {}, NotConjugate);
 	  Tensor<2, COMPLEX> r("ij", {2, 2}, OnHost, OnEveryoneReplicated);
 	  r.set_zero();
 	  r.set({{0, 0}}, COMPLEX{1});
@@ -677,33 +708,32 @@ namespace Chroma
 	for (int i = 0; i < Ns; ++i) // make diagonal entries of gneg all negative or zero
 	  g5neg.set({{i, i}}, g5.get({{i, i}}) - COMPLEX{1});
 	nv2.kvslice_from_size({}, {{'n', num_null_vecs}})
-	  .contract(g5pos, {}, NotConjugate, nv, {}, NotConjugate);
+	  .contract(g5pos, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
 	nv2.kvslice_from_size({{'n', num_null_vecs}}, {{'n', num_null_vecs}})
-	  .contract(g5neg, {}, NotConjugate, nv, {}, NotConjugate);
+	  .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
 
 	// Do the blocking
 	auto nv_blk = nv.split_dimension('x', "Wx", blocking.at('x'))
 			.split_dimension('y', "Yy", blocking.at('y'))
 			.split_dimension('z', "Zz", blocking.at('z'))
 			.split_dimension('t', "Tt", blocking.at('t'))
-			.split_dimension('n', "CS", num_null_vecs);
+			.rename_dims({{'c', 'C'}, {'s', 'S'}})
+			.split_dimension('n', "cs", num_null_vecs);
 
 	// Do the orthogonalization on each block and chirality
 	/// XXX: TEMP!!!
 	//ortho<7>(nv_blk, "xyztn", "WYZTXsc", "N");
 
 	// Return the operator
-	auto dimd = nv_blk.kvdim();
-	dimd['c'] = num_null_vecs;
-	dimd['s'] = 2;
-	Tensor<NOp, COMPLEX> d = d.like_this(none, dimd), i = op.i;
+	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk.kvdim()), i = op.i;
 	return {[=](const Tensor<NOp + 1, COMPLEX>& t) -> Tensor<NOp + 1, COMPLEX> {
 		  auto out = i.template like_this<NOp + 1>("%n", '%', "", {{'n', t.kvdim()['n']}});
 		  auto out_blk = out.split_dimension('x', "Wx", blocking.at('x'))
 				   .split_dimension('y', "Yy", blocking.at('y'))
 				   .split_dimension('z', "Zz", blocking.at('z'))
-				   .split_dimension('t', "Tt", blocking.at('t'));
-		  contract(nv_blk, t, "", CopyTo, out_blk);
+				   .split_dimension('t', "Tt", blocking.at('t'))
+				   .rename_dims({{'c', 'C'}, {'s', 'S'}});
+		  contract(nv_blk, t, "cs", CopyTo, out_blk);
 		  return out;
 		},
 		d, i,
@@ -711,8 +741,9 @@ namespace Chroma
 		  auto t_blk = t.split_dimension('x', "Wx", blocking.at('x'))
 				 .split_dimension('y', "Yy", blocking.at('y'))
 				 .split_dimension('z', "Zz", blocking.at('z'))
-				 .split_dimension('t', "Tt", blocking.at('t'));
-		  return contract<NOp + 1>(nv_blk.conj(), t_blk, "WYZT");
+				 .split_dimension('t', "Tt", blocking.at('t'))
+				 .rename_dims({{'c', 'C'}, {'s', 'S'}});
+		  return contract<NOp + 1>(nv_blk.conj(), t_blk, "WYZTCS");
 		},
 		op.order_t};
       }

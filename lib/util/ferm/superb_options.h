@@ -653,6 +653,8 @@ namespace Chroma
 				 err_msg);
       };
 
+      auto istag = [](unsigned char c) { return std::isalpha(c) || c == '_'; };
+
       std::vector<std::shared_ptr<Option>> ops;		// options of the open tags
       std::vector<std::string> tags;	// names of the open tags
       std::vector<Option::Type> types; // type of the open tags
@@ -700,7 +702,7 @@ namespace Chroma
 	  {
 	    // This is an open tag
 	    auto i0 = i + 1;
-	    for (; i0 != s.end() && std::isalpha(*i0); ++i0)
+	    for (; i0 != s.end() && istag(*i0); ++i0)
 	      ;
 	    std::string tag(i + 1, i0);
 	    if (tag.size() == 0)
@@ -754,7 +756,7 @@ namespace Chroma
 	  {
 	    // This is a close tag
 	    auto i0 = i + 2;
-	    for (; i0 != s.end() && std::isalpha(*i0); ++i0)
+	    for (; i0 != s.end() && istag(*i0); ++i0)
 	      ;
 	    std::string tag(i + 2, i0);
 	    if (tag.size() == 0)
