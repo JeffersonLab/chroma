@@ -3102,6 +3102,7 @@ namespace Chroma
       Tensor<NI + ND + 1, T> data;		///< Nonzero values
       std::shared_ptr<superbblas::BSR_handle> handle; ///< suparbblas sparse tensor handle
       T scalar;					      ///< Scalar factor of the tensor
+      static const bool isImgFastInBlock = false;     ///< whether the BSR blocks are in row-major
 
       /// Return a string describing the tensor
       /// \param ptr: pointer to the memory allocation
@@ -3165,14 +3166,19 @@ namespace Chroma
 	      nullptr)
 	  throw std::runtime_error("Ups! Look into this");
 
-	// Compute the data dimensions as image_blocked_dims + domain_dims + u + image_nonblocked_dims
+	// Compute the data dimensions as
+	//   image_blocked_dims + domain_dims + u + image_nonblocked_dims, for isImgFastInBlock
+	//   domain_blocked_dims + image_blocked_dims + u + image_nonblockd_dims otherwise
 	std::map<char, int> data_dims = i.kvdim();
 	for (unsigned int i = 0; i < ND; ++i)
 	  data_dims[d.order[i]] = blkd[i];
 	data_dims['u'] = num_neighbors;
-	std::string data_order = std::string(i.order.begin(), i.order.begin() + nblocki) + d.order +
-				 std::string("u") +
-				 std::string(i.order.begin() + nblocki, i.order.end());
+	std::string data_order =
+	  (isImgFastInBlock ? std::string(i.order.begin(), i.order.begin() + nblocki) + d.order
+			    : std::string(d.order.begin(), d.order.begin() + nblockd) +
+				std::string(i.order.begin(), i.order.begin() + nblocki) +
+				std::string(d.order.begin() + nblockd, d.order.end())) +
+	  std::string("u") + std::string(i.order.begin() + nblocki, i.order.end());
 	data = i.template like_this<NI + ND + 1, T>(data_order, data_dims);
       }
 
@@ -3189,9 +3195,9 @@ namespace Chroma
 	Coor<NI>* jjptr = (Coor<NI>*)jj.data.get();
 	const T* ptr = data.data.get();
 	superbblas::BSR_handle* bsr = nullptr;
-	superbblas::create_bsr<ND, NI, T>(i.p->p.data(), d.p->p.data(), 1, blki, blkd, true, &iiptr,
-					  &jjptr, &ptr, &*data.ctx, MPI_COMM_WORLD,
-					  superbblas::FastToSlow, &bsr);
+	superbblas::create_bsr<ND, NI, T>(i.p->p.data(), d.p->p.data(), 1, blki, blkd,
+					  isImgFastInBlock, &iiptr, &jjptr, &ptr, &*data.ctx,
+					  MPI_COMM_WORLD, superbblas::FastToSlow, &bsr);
 	handle = std::shared_ptr<superbblas::BSR_handle>(
 	  bsr, [=](superbblas::BSR_handle* bsr) { destroy_bsr(bsr); });
       }
