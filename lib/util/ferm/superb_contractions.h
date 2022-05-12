@@ -779,8 +779,8 @@ namespace Chroma
 	    superbblas::PartitionItem<N> fs;
 	    for (unsigned int j = 0; j < N; ++j)
 	    {
-	      fs[0][j] = (i[0][j] - m[j] + dim[j]) % dim[j];
 	      fs[1][j] = std::min(i[1][j] + 2 * m[j], dim[j]);
+	      fs[0][j] = (fs[1][j] < dim[j] ? (i[0][j] - m[j] + dim[j]) % dim[j] : 0);
 	    }
 	    r.push_back(fs);
 	  }

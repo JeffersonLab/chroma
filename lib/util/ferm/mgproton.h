@@ -319,7 +319,8 @@ namespace Chroma
 	// Solve the projected problem: y_rt = (Uo'*U(:2:end))\(Uo'*r);
 	auto y_rt = solve<2>(H_rt, std::string(1, Vac), std::string(1, Vc),
 			     x_rt.rename_dims({{Vac, Vc}}), std::string(1, Vc))
-		      .rename_dims({{Vac, Vc}});
+		      .rename_dims({{Vac, Vc}})
+		      .make_sure(none, none, OnEveryoneReplicated);
 
 	// Update solution: y += -Z*y_rt
 	contract(Z.scale(-1), y_rt, std::string(1, Vc), AddTo, y);
@@ -547,11 +548,11 @@ namespace Chroma
 	}
 
 	// Create the sparse tensor
-	d = d.extend_support({{rd.at('x'), max_dist_neigbors},
-			      {rd.at('y'), max_dist_neigbors},
-			      {rd.at('z'), max_dist_neigbors},
-			      {rd.at('t'), max_dist_neigbors}});
-	SpTensor<NOp, NOp, COMPLEX> sop{d, i, NOp - 5, NOp - 5, (unsigned int)neighbors.size()};
+	auto d_sop = d.extend_support({{rd.at('x'), max_dist_neigbors},
+				       {rd.at('y'), max_dist_neigbors},
+				       {rd.at('z'), max_dist_neigbors},
+				       {rd.at('t'), max_dist_neigbors}});
+	SpTensor<NOp, NOp, COMPLEX> sop{d_sop, i, NOp - 5, NOp - 5, (unsigned int)neighbors.size()};
 
 	int maxX = dim['X'];
 	int maxY = std::min(2, dims[1]);
