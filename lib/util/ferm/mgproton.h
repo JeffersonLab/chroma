@@ -591,7 +591,12 @@ namespace Chroma
 			   .split_dimension('z', "Zz", maxZ)
 			   .split_dimension('t', "Tt", maxT);
 
-	  // Populate the nonzeros
+	  // Populate the nonzeros by copying pieces from `mv` into sop.data. We want to copy only the
+	  // nonzeros in `mv`, which are `neighbors` away from the nonzeros of `probs`. Assume `probs` having a
+	  // single nonzero at the natural coordinates (X,Y,Z,T), and `mv` has some nonzero at direction `dir`, that is,
+	  // at the natural coordinate (x+dirx,Y+diry,Z+dirz,T+dirt), which has even-odd coordinates (X,x,y,z,t) =
+	  // ((X+Y+Z+T+dirx+diry+dirz+dirt)%maxX,(X+dirx)/maxX,Y+diry,Z+dirz,T+dirt)
+
 	  std::map<char, int> XYZTsize{{'X', 1}, {'Y', 1}, {'Z', 1}, {'T', 1}};
 	  for (int mu = 0; mu < neighbors.size(); ++mu)
 	  {
@@ -605,12 +610,18 @@ namespace Chroma
 		{
 		  for (int X = 0; X < maxX; ++X)
 		  {
-		    std::map<char, int> XYZTfrom{{'X', X}, {'Y', Y}, {'Z', Z}, {'T', T}};
-		    std::map<char, int> to{
-		      {'X', X + sumdir}, {'x', (dir[0] + dims[0] + (X + Y + Z + T) % maxX) / maxX},
-		      {'Y', Y + dir[1]}, {'y', (dir[1] + dims[1] + Y) / maxY},
-		      {'Z', Z + dir[2]}, {'z', (dir[2] + dims[2] + Z) / maxZ},
-		      {'T', T + dir[3]}, {'t', (dir[3] + dims[3] + T) / maxT}};
+		    // Nat coor (X,Y,Z,T) to even-odd coordinate
+		    std::map<char, int> XYZTfrom{
+		      {'X', X + Y + Z + T}, {'Y', Y}, {'Z', Z}, {'T', T}};
+		    // Nat coor (x+dirx,Y+diry,Z+dirz,T+dirt) to even-odd coordinate
+		    std::map<char, int> to{{'X', X + Y + Z + T + sumdir},
+					   {'x', (dir[0] + dims[0] + X) / maxX},
+					   {'Y', Y + dir[1]},
+					   {'y', (dir[1] + dims[1] + Y) / maxY},
+					   {'Z', Z + dir[2]},
+					   {'z', (dir[2] + dims[2] + Z) / maxZ},
+					   {'T', T + dir[3]},
+					   {'t', (dir[3] + dims[3] + T) / maxT}};
 		    mv_eo.kvslice_from_size(to, XYZTsize)
 		      .copyToWithMask(data_eo.kvslice_from_size(to, XYZTsize)
 					.kvslice_from_size({{'u', mu}}, {{'u', 1}}),
@@ -622,12 +633,19 @@ namespace Chroma
 	  }	    // mu
 	}	    // color
 
-	// Populate the coordinate of the columns
+	// Populate the coordinate of the columns, that is, to give the domain coordinates of first nonzero in each
+	// BSR nonzero block. Assume that we are processing nonzeros block for the image coordinate `c` on the
+	// direction `dir`, that is, the domain coordinates will be (cx-dirx,cy-diry,cz-dirz,dt-dirt) in natural
+	// coordinates. But we get the image coordinate `c` in even-odd coordinate, (cX,cx,cy,cz,ct), which has the
+	// following natural coordinates (cx*2+(cX+cy+cz+ct)%2,cy,cz,ct). After subtracting the direction we get the
+	// natural coordinates (cx*2+(cX+cy+cz+ct)%2-dirx,cy-diry,cz-dirz,ct-dirt), which corresponds to the following
+	// even-odd coordinates ((cX-dirx-diry-dirz-dirt)%2,(cx*2+(cX+cy+cz+ct)%2-dirx)/2,cy-diry,cz-dirz,ct-dirt).
+
 	sop.jj.fillCpuFunCoor([&](const Coor<NOp + 2>& c) {
 	  // c has order '~u%Xxyzt...' where Xxyzt... were remapped by ri
 	  int domi = c[0];	   // the domain label to evaluate, label ~
 	  int mu = c[1];	   // the direction, label u
-	  int base = c[domi + 2];
+	  int base = c[domi + 2];  // the image coordinate value for label `domi`
 
 	  // Do nothing for a blocking direction
 	  if (domi < Nblk)
@@ -641,8 +659,10 @@ namespace Chroma
 	    int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
 	    if (domi == Nblk)
 	      return (base + sumdir + maxX * Nd) % maxX;
-	    int sumc = std::accumulate(c.begin() + 2 + Nblk, c.begin() + 2 + Nblk + Nd, int{0});
-	    return ((sumc - dir[0] + dims[0]) / maxX) % (dims[0] / maxX);
+	    int sumyzt = std::accumulate(c.begin() + 2 + Nblk + 2, c.end(), int{0});
+	    const auto& cX = c[2 + Nblk];
+	    return ((base * maxX + (cX + sumyzt) % maxX + dims[0] - dir[0]) / maxX) %
+		   (dims[0] / maxX);
 	  }
 
 	  int latd = domi - Nblk - 1;
