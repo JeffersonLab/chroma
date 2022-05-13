@@ -602,36 +602,46 @@ namespace Chroma
 	  {
 	    const auto& dir = neighbors[mu];
 	    int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
-	    for (int T = 0; T < maxT; ++T)
+	    if ((dir[0] + dims[0]) % maxX == 0)
 	    {
-	      for (int Z = 0; Z < maxZ; ++Z)
+	      // Nat coor (0,diry,dirz,dirt) to even-odd coordinate
+	      std::map<char, int> to{{'X', sumdir}, {'y', dir[1]}, {'z', dir[2]}, {'t', dir[3]}};
+	      mv.kvslice_from_size(to).copyToWithMask(
+		sop.data.kvslice_from_size(to).kvslice_from_size({{'u', mu}}, {{'u', 1}}), sel);
+	    }
+	    else
+	    {
+	      for (int T = 0; T < maxT; ++T)
 	      {
-		for (int Y = 0; Y < maxY; ++Y)
+		for (int Z = 0; Z < maxZ; ++Z)
 		{
-		  for (int X = 0; X < maxX; ++X)
+		  for (int Y = 0; Y < maxY; ++Y)
 		  {
-		    // Nat coor (X,Y,Z,T) to even-odd coordinate
-		    std::map<char, int> XYZTfrom{
-		      {'X', X + Y + Z + T}, {'Y', Y}, {'Z', Z}, {'T', T}};
-		    // Nat coor (x+dirx,Y+diry,Z+dirz,T+dirt) to even-odd coordinate
-		    std::map<char, int> to{{'X', X + Y + Z + T + sumdir},
-					   {'x', (dir[0] + dims[0] + X) / maxX},
-					   {'Y', Y + dir[1]},
-					   {'y', (dir[1] + dims[1] + Y) / maxY},
-					   {'Z', Z + dir[2]},
-					   {'z', (dir[2] + dims[2] + Z) / maxZ},
-					   {'T', T + dir[3]},
-					   {'t', (dir[3] + dims[3] + T) / maxT}};
-		    mv_eo.kvslice_from_size(to, XYZTsize)
-		      .copyToWithMask(data_eo.kvslice_from_size(to, XYZTsize)
-					.kvslice_from_size({{'u', mu}}, {{'u', 1}}),
-				      sel_eo.kvslice_from_size(XYZTfrom, XYZTsize));
-		  } // X
-		}   // Y
-	      }	    // Z
-	    }	    // T
-	  }	    // mu
-	}	    // color
+		    for (int X = 0; X < maxX; ++X)
+		    {
+		      // Nat coor (X,Y,Z,T) to even-odd coordinate
+		      std::map<char, int> XYZTfrom{
+			{'X', X + Y + Z + T}, {'Y', Y}, {'Z', Z}, {'T', T}};
+		      // Nat coor (x+dirx,Y+diry,Z+dirz,T+dirt) to even-odd coordinate
+		      std::map<char, int> to{{'X', X + Y + Z + T + sumdir},
+					     {'x', (dir[0] + dims[0] + X) / maxX},
+					     {'Y', Y + dir[1]},
+					     {'y', (dir[1] + dims[1] + Y) / maxY},
+					     {'Z', Z + dir[2]},
+					     {'z', (dir[2] + dims[2] + Z) / maxZ},
+					     {'T', T + dir[3]},
+					     {'t', (dir[3] + dims[3] + T) / maxT}};
+		      mv_eo.kvslice_from_size(to, XYZTsize)
+			.copyToWithMask(data_eo.kvslice_from_size(to, XYZTsize)
+					  .kvslice_from_size({{'u', mu}}, {{'u', 1}}),
+					sel_eo.kvslice_from_size(XYZTfrom, XYZTsize));
+		    } // X
+		  }   // Y
+		}     // Z
+	      }	      // T
+	    }
+	  } // mu
+	}   // color
 
 	// Populate the coordinate of the columns, that is, to give the domain coordinates of first nonzero in each
 	// BSR nonzero block. Assume that we are processing nonzeros block for the image coordinate `c` on the
