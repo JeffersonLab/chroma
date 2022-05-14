@@ -548,13 +548,14 @@ namespace Chroma
 	}
 
 	// Create the sparse tensor
+	int maxX = dim['X'];
+	max_dist_neigbors += max_dist_neigbors % maxX;
 	auto d_sop = d.extend_support({{rd.at('x'), max_dist_neigbors},
 				       {rd.at('y'), max_dist_neigbors},
 				       {rd.at('z'), max_dist_neigbors},
 				       {rd.at('t'), max_dist_neigbors}});
 	SpTensor<NOp, NOp, COMPLEX> sop{d_sop, i, NOp - 5, NOp - 5, (unsigned int)neighbors.size()};
 
-	int maxX = dim['X'];
 	int maxY = std::min(2, dims[1]);
 	int maxZ = std::min(2, dims[2]);
 	int maxT = std::min(2, dims[3]);
@@ -605,7 +606,8 @@ namespace Chroma
 	    if ((dir[0] + dims[0]) % maxX == 0)
 	    {
 	      // Nat coor (0,diry,dirz,dirt) to even-odd coordinate
-	      std::map<char, int> to{{'X', sumdir}, {'y', dir[1]}, {'z', dir[2]}, {'t', dir[3]}};
+	      std::map<char, int> to{
+		{'X', sumdir}, {'x', dir[0]}, {'y', dir[1]}, {'z', dir[2]}, {'t', dir[3]}};
 	      mv.kvslice_from_size(to).copyToWithMask(
 		sop.data.kvslice_from_size(to).kvslice_from_size({{'u', mu}}, {{'u', 1}}), sel);
 	    }

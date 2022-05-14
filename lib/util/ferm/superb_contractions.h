@@ -1299,7 +1299,7 @@ namespace Chroma
 	});
 
 	// TEMP!!!
-	fillWithCPUFuncNoArgs([=]() { return detail::NaN<T>::get(); });
+	///fillWithCPUFuncNoArgs([=]() { return detail::NaN<T>::get(); });
       }
 
     protected:
@@ -1633,10 +1633,62 @@ namespace Chroma
 	    rptr[i] = func(tptr[i]);
 	}
 
-	return r;
+	return r.make_sure(none, getDev());
       }
 
-      /// Apply the function to each tensor element
+      /// Return a new tensor with the value of the function applied to each element
+      /// \param func: function (Coor<N>, T) -> Tr
+      /// \param threaded: whether to run threaded
+
+      template <typename Tr, typename FuncWithCoor>
+      Tensor<N, Tr> transformWithCPUFunWithCoor(FuncWithCoor func, bool threaded = true) const
+      {
+	if (is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
+	using superbblas::detail::operator+;
+
+	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
+	auto r = t.template like_this<N, Tr>();
+	assert(!r.isSubtensor() && !t.isSubtensor());
+	std::size_t vol = t.getLocal().volume();
+	T* tptr = t.data.get();
+	Tr* rptr = r.data.get();
+	/// Number of elements in each direction for the local part
+	Coor<N> local_size = t.getLocal().size;
+	/// Stride for the local volume
+	Coor<N> local_stride = superbblas::detail::get_strides(local_size, superbblas::FastToSlow);
+	/// Coordinates of first elements stored locally
+	Coor<N> local_from = t.p->localFrom();
+
+	if (threaded)
+	{
+#  ifdef _OPENMP
+#    pragma omp parallel for schedule(static)
+#  endif
+	  for (std::size_t i = 0; i < vol; ++i)
+	  {
+	    // Get the global coordinates
+	    Coor<N> c = normalize_coor(
+	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
+	    rptr[i] = func(c, tptr[i]);
+	  }
+	}
+	else
+	{
+	  for (std::size_t i = 0; i < vol; ++i)
+	  {
+	    // Get the global coordinates
+	    Coor<N> c = normalize_coor(
+	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
+	    rptr[i] = func(c, tptr[i]);
+	  }
+	}
+
+	return r.make_sure(none, getDev());
+      }
+
+       /// Apply the function to each tensor element
       /// \param func: function T -> void
       /// \param threaded: whether to run threaded
 
@@ -3160,11 +3212,6 @@ namespace Chroma
 	// Create the tensor containing the domain coordinates of the first nonzero in each block
 	jj = ii.template like_this<NI + 2, int>(
 	  "~u%", '%', "", std::map<char, int>{{'~', (int)ND}, {'u', (int)num_neighbors}});
-	// NOTE: despite jj being a vector of `int`, superbblas will use jj as a vector of Coor<NI>, so check that the alignment
-	if (jj.getLocal().volume() > 0 &&
-	    superbblas::detail::align(alignof(Coor<NI>), sizeof(int), jj.data.get(), sizeof(int)) ==
-	      nullptr)
-	  throw std::runtime_error("Ups! Look into this");
 
 	// Compute the data dimensions as
 	//   image_blocked_dims + domain_dims + u + image_nonblocked_dims, for isImgFastInBlock
@@ -3191,8 +3238,22 @@ namespace Chroma
       /// Construct the sparse operator
       void construct()
       {
+	// Superbblas needs the column coordinates to be local
+	// Remove the local domain coordinates to jj
+	const auto localFrom = d.p->localFrom();
+	const auto domDim = d.dim;
+	auto localjj =
+	  jj.template transformWithCPUFunWithCoor<int>([&](const Coor<NI + 2>& c, const int& t) {
+	    return (t - localFrom[c[0]] + domDim[c[0]]) % domDim[c[0]];
+	  });
+
 	int *iiptr = ii.data.get();
-	Coor<NI>* jjptr = (Coor<NI>*)jj.data.get();
+	Coor<ND>* jjptr = (Coor<ND>*)localjj.data.get();
+	// NOTE: despite jj being a vector of `int`, superbblas will use jj as a vector of Coor<NI>, so check that the alignment
+	if (localjj.getLocal().volume() > 0 &&
+	    superbblas::detail::align(alignof(Coor<NI>), sizeof(int), jjptr, sizeof(int)) ==
+	      nullptr)
+	  throw std::runtime_error("Ups! Look into this");
 	const T* ptr = data.data.get();
 	superbblas::BSR_handle* bsr = nullptr;
 	superbblas::create_bsr<ND, NI, T>(i.p->p.data(), d.p->p.data(), 1, blki, blkd,
