@@ -258,6 +258,7 @@ namespace Chroma
       {
 	r = y.like_this();
 	r.set_zero();
+	y.set_zero();
       }
       x.scale(-1).addTo(r);
       auto normr0 = norm<1>(r, op.order_t + order_cols); // type std::vector<real of T>
@@ -549,11 +550,10 @@ namespace Chroma
 
 	// Create the sparse tensor
 	int maxX = dim['X'];
-	max_dist_neigbors += max_dist_neigbors % maxX;
 	auto d_sop = d.extend_support({{rd.at('x'), max_dist_neigbors},
-				       {rd.at('y'), max_dist_neigbors},
-				       {rd.at('z'), max_dist_neigbors},
-				       {rd.at('t'), max_dist_neigbors}});
+				       {rd.at('y'), max_dist_neigbors + max_dist_neigbors % maxX},
+				       {rd.at('z'), max_dist_neigbors + max_dist_neigbors % maxX},
+				       {rd.at('t'), max_dist_neigbors + max_dist_neigbors % maxX}});
 	SpTensor<NOp, NOp, COMPLEX> sop{d_sop, i, NOp - 5, NOp - 5, (unsigned int)neighbors.size()};
 
 	int maxY = std::min(2, dims[1]);

@@ -780,6 +780,12 @@ namespace Chroma
 	    for (unsigned int j = 0; j < N; ++j)
 	    {
 	      fs[1][j] = std::min(i[1][j] + 2 * m[j], dim[j]);
+	      /// superbblas does not support intersection of tensors with more than one disconnected component.
+	      /// We avoid that by artificially enlarging the support of every dimension with range larger than
+	      /// half the dimension size.
+	      /// TODO: fix this from superbblas
+	      if (fs[1][j] > dim[j] / 2)
+		fs[1][j] = dim[j];
 	      fs[0][j] = (fs[1][j] < dim[j] ? (i[0][j] - m[j] + dim[j]) % dim[j] : 0);
 	    }
 	    r.push_back(fs);
@@ -2236,9 +2242,10 @@ namespace Chroma
 	T* ptr = this->data.get();
 	MPI_Comm comm = (dist == OnMaster || dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	if (dist != OnMaster || Layout::nodeNumber() == 0)
-	  superbblas::copy<N, N>(T{0}, p->p.data(), 1, order.c_str(), from, size, (const T**)&ptr,
-				 nullptr, &*ctx, p->p.data(), 1, order.c_str(), from, &ptr, nullptr,
-				 &*ctx, comm, superbblas::FastToSlow, superbblas::Copy);
+	  superbblas::copy<N, N>(T{0}, p->p.data(), 1, order.c_str(), from, size, dim,
+				 (const T**)&ptr, nullptr, &*ctx, p->p.data(), 1, order.c_str(),
+				 from, dim, &ptr, nullptr, &*ctx, comm, superbblas::FastToSlow,
+				 superbblas::Copy);
       }
 
       /// Copy/Add this tensor into the given one; and copy only where the values of the mask are nonzero if given
@@ -2297,11 +2304,11 @@ namespace Chroma
 								     : MPI_COMM_WORLD);
 	if (dist != OnMaster || w.dist != OnMaster || Layout::nodeNumber() == 0)
 	{
-	  superbblas::copy<N, Nw>(detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1,
-				  order.c_str(), from, size, (const T**)&ptr, (const float**)&m0ptr,
-				  &*ctx, w.p->p.data(), 1, w.order.c_str(), w.from, &w_ptr,
-				  (const float**)&m1ptr, &*w.ctx, comm, superbblas::FastToSlow,
-				  action == CopyTo ? superbblas::Copy : superbblas::Add);
+	  superbblas::copy<N, Nw>(
+	    detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1, order.c_str(), from, size, dim,
+	    (const T**)&ptr, (const float**)&m0ptr, &*ctx, w.p->p.data(), 1, w.order.c_str(),
+	    w.from, w.dim, &w_ptr, (const float**)&m1ptr, &*w.ctx, comm, superbblas::FastToSlow,
+	    action == CopyTo ? superbblas::Copy : superbblas::Add);
 	}
       }
 
@@ -2415,9 +2422,9 @@ namespace Chroma
 	bool conjw_ = (((conjw == Conjugate) xor w.conjugate) xor conjugate);
 	superbblas::contraction<Nv, Nw, N>(
 	  detail::cond_conj(conjv_, v.scalar) * detail::cond_conj(conjw_, w.scalar) / scalar, //
-	  v.p->p.data(), 1, orderv_.c_str(), conjv_, (const T**)&v_ptr, &*v.ctx,	      //
-	  w.p->p.data(), 1, orderw_.c_str(), conjw_, (const T**)&w_ptr, &*w.ctx,	      //
-	  detail::cond_conj(conjugate, beta), p->p.data(), 1, order_.c_str(), &ptr, &*ctx,
+	  v.p->p.data(), v.dim, 1, orderv_.c_str(), conjv_, (const T**)&v_ptr, &*v.ctx,	      //
+	  w.p->p.data(), w.dim, 1, orderw_.c_str(), conjw_, (const T**)&w_ptr, &*w.ctx,	      //
+	  detail::cond_conj(conjugate, beta), p->p.data(), dim, 1, order_.c_str(), &ptr, &*ctx,
 	  MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
@@ -2490,15 +2497,16 @@ namespace Chroma
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
 	T* ptr = this->data.get();
-	superbblas::cholesky<Nv>(v.p->p.data(), 1, v.order.c_str(), &v_ptr, order_rows.c_str(),
-				 order_cols.c_str(), &*v.ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
+	superbblas::cholesky<Nv>(v.p->p.data(), v.dim, 1, v.order.c_str(), &v_ptr,
+				 order_rows.c_str(), order_cols.c_str(), &*v.ctx, MPI_COMM_WORLD,
+				 superbblas::FastToSlow);
 	superbblas::trsm<Nv, Nw, N>(
 	  v.scalar * w.scalar / scalar, //
-	  v.p->p.data(), 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
+	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
 	  order_cols.c_str(),
-	  &*v.ctx,							 //
-	  w.p->p.data(), 1, w.order.c_str(), (const T**)&w_ptr, &*w.ctx, //
-	  p->p.data(), 1, order.c_str(), &ptr, &*ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
+	  &*v.ctx,								//
+	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const T**)&w_ptr, &*w.ctx, //
+	  p->p.data(), dim, 1, order.c_str(), &ptr, &*ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
       /// Solve the linear systems within tensor `v' and right-hand-sides `w`
@@ -2566,11 +2574,11 @@ namespace Chroma
 	T* ptr = this->data.get();
 	superbblas::gesm<Nv, Nw, N>(
 	  v.scalar * w.scalar / scalar, //
-	  v.p->p.data(), 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
+	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
 	  order_cols.c_str(),
-	  &*v.ctx,							 //
-	  w.p->p.data(), 1, w.order.c_str(), (const T**)&w_ptr, &*w.ctx, //
-	  p->p.data(), 1, order.c_str(), &ptr, &*ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
+	  &*v.ctx,								//
+	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const T**)&w_ptr, &*w.ctx, //
+	  p->p.data(), dim, 1, order.c_str(), &ptr, &*ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
  
@@ -3256,7 +3264,7 @@ namespace Chroma
 	  throw std::runtime_error("Ups! Look into this");
 	const T* ptr = data.data.get();
 	superbblas::BSR_handle* bsr = nullptr;
-	superbblas::create_bsr<ND, NI, T>(i.p->p.data(), d.p->p.data(), 1, blki, blkd,
+	superbblas::create_bsr<ND, NI, T>(i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd,
 					  isImgFastInBlock, &iiptr, &jjptr, &ptr, &*data.ctx,
 					  MPI_COMM_WORLD, superbblas::FastToSlow, &bsr);
 	handle = std::shared_ptr<superbblas::BSR_handle>(
@@ -3316,9 +3324,10 @@ namespace Chroma
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
 	superbblas::bsr_krylov<ND, NI, Nv, Nw, T>(
-	  handle.get(), i.order.c_str(), d.order.c_str(),					//
-	  v.p->p.data(), 1, v.order.c_str(), (const T**)&v_ptr,					//
-	  w.p->p.data(), w.order.c_str(), 0 /* krylov power dim (none for now) */, (T**)&w_ptr, //
+	  handle.get(), i.order.c_str(), d.order.c_str(),	       //
+	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const T**)&v_ptr, //
+	  w.p->p.data(), w.dim, w.order.c_str(), 0 /* krylov power dim (none for now) */,
+	  (T**)&w_ptr, //
 	  &*data.ctx, MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Copy);
 	w.scalar = scalar * v.scalar;
       }
@@ -3397,7 +3406,7 @@ namespace Chroma
 	if (sparsity == Dense)
 	{
 	  superbblas::PartitionItem<N> p{Coor<N>{}, dim};
-	  superbblas::append_blocks<N, T>(&p, 1, stoh, MPI_COMM_WORLD, superbblas::FastToSlow);
+	  superbblas::append_blocks<N, T>(&p, 1, dim, stoh, MPI_COMM_WORLD, superbblas::FastToSlow);
 	}
       }
 
@@ -3564,14 +3573,14 @@ namespace Chroma
 	if (sparsity == Sparse)
 	{
 	  superbblas::append_blocks<Nw, N, T>(w.p->p.data(), w.p->p.size(), w.order.c_str(), w.from,
-					      w.size, order.c_str(), from, ctx.get(), comm,
+					      w.size, w.dim, order.c_str(), from, ctx.get(), comm,
 					      superbblas::FastToSlow);
 	}
 
 	Tw* w_ptr = w.data.get();
 	superbblas::save<Nw, N, Tw, T>(detail::safe_div<Tw>(w.scalar, scalar), w.p->p.data(), 1,
-				       w.order.c_str(), w.from, w.size, (const Tw**)&w_ptr, &*w.ctx,
-				       order.c_str(), from, ctx.get(), comm,
+				       w.order.c_str(), w.from, w.size, w.dim, (const Tw**)&w_ptr,
+				       &*w.ctx, order.c_str(), from, ctx.get(), comm,
 				       superbblas::FastToSlow);
       }
 
@@ -3590,7 +3599,7 @@ namespace Chroma
 	MPI_Comm comm = (w.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	superbblas::load<N, Nw, T, Tw>(detail::safe_div<T>(scalar, w.scalar), ctx.get(),
 				       order.c_str(), from, size, w.p->p.data(), 1, w.order.c_str(),
-				       w.from, &w_ptr, &*w.ctx, comm, superbblas::FastToSlow,
+				       w.from, w.dim, &w_ptr, &*w.ctx, comm, superbblas::FastToSlow,
 				       superbblas::Copy);
       }
     };
