@@ -739,9 +739,9 @@ namespace Chroma
 
 	auto nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
 	auto g5 = getGamma5(ns, OnHost), g5pos = g5.clone(), g5neg = g5.clone();
-	for (int i = 0; i < Ns; ++i) // make diagonal entries of gpos all positive or zero
+	for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
 	  g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
-	for (int i = 0; i < Ns; ++i) // make diagonal entries of gneg all negative or zero
+	for (int i = 0; i < ns; ++i) // make diagonal entries of gneg all negative or zero
 	  g5neg.set({{i, i}}, g5.get({{i, i}}) - COMPLEX{1});
 	nv2.kvslice_from_size({}, {{'n', num_null_vecs}})
 	  .contract(g5pos, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
@@ -749,7 +749,7 @@ namespace Chroma
 	  .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
 
 	// Do the blocking
-	auto nv_blk = nv.split_dimension('x', "Wx", blocking.at('x'))
+	auto nv_blk = nv2.split_dimension('x', "Wx", blocking.at('x'))
 			.split_dimension('y', "Yy", blocking.at('y'))
 			.split_dimension('z', "Zz", blocking.at('z'))
 			.split_dimension('t', "Tt", blocking.at('t'))
