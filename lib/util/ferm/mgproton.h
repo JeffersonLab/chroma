@@ -222,6 +222,8 @@ namespace Chroma
 		unsigned int max_simultaneous_rhs = 0, Verbosity verb = NoOutput,
 		std::string prefix = "")
     {
+      detail::log(1, prefix + " starting fgmres");
+
       const bool do_ortho = false;
 
       // TODO: add optimizations for multiple operators
@@ -477,6 +479,8 @@ namespace Chroma
       Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op,
 					   unsigned int max_dist_neigbors = 1)
       {
+	detail::log(1, "starting cloneOperator");
+
 	// Unsupported explicitly colorized operators
 	if (op.d.kvdim().count('X') == 0 || op.d.kvdim()['X'] != 2)
 	  throw std::runtime_error("cloneOperator: unsupported not explicitly colored operators");
@@ -688,7 +692,7 @@ namespace Chroma
 	Operator<NOp, COMPLEX> rop{[=](const Tensor<NOp + 1, COMPLEX>& x) {
 				     auto x0 = x.reorder("%Xxyztn", '%');
 				     auto y = x0.like_this();
-				     sop.contractWith(x0.rename_dims(rd), y);
+				     sop.contractWith(x0, rd, y);
 				     return y;
 				   },
 				   i, i, nullptr, op.order_t};
@@ -720,6 +724,8 @@ namespace Chroma
 					      const std::map<char, unsigned int>& blocking,
 					      const Operator<NOp, COMPLEX>& null_solver)
       {
+	detail::log(1, "starting getMGProlongator");
+
 	// Create num_null_vecs random vectors and solve them
 	auto b = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
 	urand(b, -1, 1);

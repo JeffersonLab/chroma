@@ -3287,7 +3287,8 @@ namespace Chroma
 
       // Contract the dimensions with the same label in this tensor and in `v` than do not appear on `w`.
       template <std::size_t Nv, std::size_t Nw>
-      void contractWith(Tensor<Nv, T> v, Tensor<Nw, T> w) const
+      void contractWith(Tensor<Nv, T> v, const remap& mv, Tensor<Nw, T> w,
+			const remap& mw = {}) const
       {
 	if (data.is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
@@ -3306,7 +3307,7 @@ namespace Chroma
 	if (w.isSubtensor() || getDev() != w.getDev())
 	{
 	  Tensor<Nw, T> aux = w.like_this(none, {}, getDev());
-	  contractWith(v, aux);
+	  contractWith(v, mv, aux, mw);
 	  aux.copyTo(w);
 	  return;
 	}
@@ -3323,10 +3324,12 @@ namespace Chroma
 
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
+	std::string orderv = detail::update_order<Nv>(v.order, mv);
+	std::string orderw = detail::update_order<Nw>(w.order, mw);
 	superbblas::bsr_krylov<ND, NI, Nv, Nw, T>(
-	  handle.get(), i.order.c_str(), d.order.c_str(),	       //
-	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const T**)&v_ptr, //
-	  w.p->p.data(), w.dim, w.order.c_str(), 0 /* krylov power dim (none for now) */,
+	  handle.get(), i.order.c_str(), d.order.c_str(),	      //
+	  v.p->p.data(), v.dim, 1, orderv.c_str(), (const T**)&v_ptr, //
+	  w.p->p.data(), w.dim, orderw.c_str(), 0 /* krylov power dim (none for now) */,
 	  (T**)&w_ptr, //
 	  &*data.ctx, MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Copy);
 	w.scalar = scalar * v.scalar;
