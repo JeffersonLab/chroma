@@ -210,7 +210,6 @@ namespace Chroma
     /// \param max_its: maximum number of iterations
     /// \param error_if_not_converged: throw an error if the tolerance was not satisfied
     /// \param passing_initial_guess: whether `y` contains a solution guess
-    /// \param max_simultaneous_rhs: maximum number of right-hand-sides solved simultaneously; all by default
     /// \param verb: verbosity level
     /// \param prefix: prefix printed before every line
 
@@ -219,8 +218,7 @@ namespace Chroma
 		const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX>& y,
 		unsigned int max_basis_size, double tol, unsigned int max_its = 0,
 		bool error_if_not_converged = true, bool passing_initial_guess = false,
-		unsigned int max_simultaneous_rhs = 0, Verbosity verb = NoOutput,
-		std::string prefix = "")
+		Verbosity verb = NoOutput, std::string prefix = "")
     {
       detail::log(1, prefix + " starting fgmres");
 
@@ -403,6 +401,26 @@ namespace Chroma
 	return solvers.at(type)(op, ops);
       }
 
+      /// Apply the given function to all the given columns in x
+      /// \param x: tensor to apply to fun
+      /// \param y: output tensor
+      /// \param max_rhs: maximum number of columns to apply `fun` at once
+      /// \param fun: function to apply
+      /// \param d: column dimension
+
+      template <std::size_t N, typename T, typename Func>
+      inline void foreachInChuncks(const Tensor<N, T>& x, Tensor<N, T>& y, unsigned int max_rhs,
+				   const Func& fun, char d = 'n')
+      {
+	unsigned int n = x.kvdim().at(d);
+	if (max_rhs == 0)
+	  max_rhs = n;
+	for (unsigned int i = 0, step = std::min(max_rhs, n); i < n;
+	     i += step, step = std::min(max_rhs, n - i))
+	  fun(x.kvslice_from_size({{d, i}}, {{d, step}}),
+	      y.kvslice_from_size({{d, i}}, {{d, step}}));
+      }
+
       /// Returns a FGMRES solver
       /// \param op: operator to make the inverse of
       /// \param ops: options to select the solver from `solvers` and influence the solver construction
@@ -430,8 +448,13 @@ namespace Chroma
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x) {
 		  auto y = x.like_this();
-		  fgmres(op, prec, x, y, max_basis_size, tol, max_its, error_if_not_converged,
-			 false /* no init guess */, max_simultaneous_rhs, verb, prefix);
+		  foreachInChuncks(
+		    x, y, max_simultaneous_rhs,
+		    [=](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
+		      fgmres(op, prec, x, y, max_basis_size, tol, max_its, error_if_not_converged,
+			     false /* no init guess */, verb, prefix);
+		    },
+		    'n');
 		  return y;
 		},
 		op.i, op.d, nullptr, op.order_t};
@@ -576,7 +599,7 @@ namespace Chroma
 	  auto probs = contract<NOp * 2>(t_l, t_blbl, "");
 
 	  // Compute the matvecs
-	  auto mv = op(probs);
+	  auto mv = op(std::move(probs));
 
 	  // Construct an indicator tensor where all blocking dimensions but only the nodes colored `color` are copied
 	  auto ones = t_blbl.template like_this<NOp * 2 - 5, float>();
