@@ -2248,13 +2248,41 @@ namespace Chroma
 				 superbblas::Copy);
       }
 
+      /// Return whether the given tensor has the same distribution as this one
+      template <typename Tv>
+      bool is_distributed_like(Tensor<N, Tv> v) const
+      {
+	return from == v.from && size == v.size && dim == v.dim && p->p == v.p->p;
+      }
+
+      /// Return whether the given tensor has the same distribution as this one
+      template <std::size_t Nv, typename Tv, typename std::enable_if<N != Nv, bool>::type = true>
+      bool is_distributed_like(Tensor<Nv, Tv>) const
+      {
+	return false;
+      }
+
+      /// Return whether the given tensor has the same distribution as this one
+      Tensor<N, float> create_mask() const
+      {
+	Tensor<N, float> m{order, dim, getDev(), dist, p};
+	m.set_zero();
+	m.from = from;
+	m.size = size;
+	m.conjugate = conjugate;
+	return m;
+      }
+
       /// Copy/Add this tensor into the given one; and copy only where the values of the mask are nonzero if given
       template <std::size_t Nw, typename Tw, std::size_t Nm = N, typename Tm = float,
+		std::size_t Nwm = Nw, typename Twm = float,
 		typename std::enable_if<
 		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
-      void doAction(Action action, Tensor<Nw, Tw> w, Maybe<Tensor<Nm, Tm>> m = none) const
+      void doAction(Action action, Tensor<Nw, Tw> w, Maybe<Tensor<Nm, Tm>> m = none,
+		    Maybe<Tensor<Nwm, Twm>> wm = none) const
       {
-	if (is_eg() || w.is_eg() || (m.hasSome() && m.getSome().is_eg()))
+	if (is_eg() || w.is_eg() || (m.hasSome() && m.getSome().is_eg()) ||
+	    (wm.hasSome() && wm.getSome().is_eg()))
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
@@ -2278,22 +2306,40 @@ namespace Chroma
 	float *m0ptr = nullptr, *m1ptr = nullptr;
 	Tensor<N, float> m0;
 	Tensor<Nw, float> m1;
-	if (m.hasSome())
+	if (m.hasSome() || wm.hasSome())
 	{
-	  m0 = Tensor<N, float>{order, dim, getDev(), dist, p};
-	  m0.set_zero();
-	  m0.from = from;
-	  m0.size = size;
-	  m0.conjugate = conjugate;
-	  m.getSome().copyTo(m0);
-	  m0ptr = m0.data.get();
+	  if (m.hasSome())
+	  {
+	    if (is_distributed_like(m.getSome()))
+	    {
+	      m0 = m.getSome();
+	    }
+	    else
+	    {
+	      m0 = create_mask();
+	      m.getSome().copyTo(m0);
+	    }
+	  }
 
-	  m1 = Tensor<Nw, float>{w.order, w.dim, w.getDev(), w.dist, w.p};
-	  m1.set_zero();
-	  m1.from = w.from;
-	  m1.size = w.size;
-	  m1.conjugate = w.conjugate;
-	  m.getSome().copyTo(m1);
+	  if (wm.hasSome())
+	  {
+	    if (w.is_distributed_like(wm.getSome()))
+	    {
+	      m1 = wm.getSome();
+	    }
+	    else
+	    {
+	      m1 = w.create_mask();
+	      wm.getSome().copyTo(m1);
+	    }
+	  }
+
+	  if (m.hasSome() && !wm.hasSome())
+	    m0.copyTo(m1);
+	  if (!m.hasSome() && wm.hasSome())
+	    m1.copyTo(m0);
+
+	  m0ptr = m0.data.get();
 	  m1ptr = m1.data.get();
 	}
 
@@ -2320,10 +2366,11 @@ namespace Chroma
       }
 
       /// Copy this tensor into the given one but only the elements where the mask is nonzero
-      template <std::size_t Nw, typename Tw, std::size_t Nm, typename Tm>
-      void copyToWithMask(Tensor<Nw, Tw> w, Tensor<Nm, Tm> m) const
+      template <std::size_t Nw, typename Tw, std::size_t Nm, typename Tm, std::size_t Nwm,
+		typename Twm>
+      void copyToWithMask(Tensor<Nw, Tw> w, Tensor<Nm, Tm> m, Tensor<Nwm, Twm> wm) const
       {
-	doAction<Nw, Tw, Nm, Tm>(CopyTo, w, m);
+	doAction<Nw, Tw, Nm, Tm, Nwm, Twm>(CopyTo, w, m, wm);
       }
 
       // Add `this` tensor into the given one
@@ -3297,14 +3344,12 @@ namespace Chroma
 	  throw std::runtime_error("invalid operation on an not constructed tensor");
 
 	// If either this tensor or v are on OnDevice, force both to be on the same device as this tensor.
-	// Also, Superbblas tensor contraction is shit and those not deal with subtensors or contracting a host and
-	// device tensor (for now)
-	if (v.ctx->plat != data.ctx->plat || v.isSubtensor())
+	if (v.ctx->plat != data.ctx->plat)
 	{
 	  v = v.cloneOn(v.getDev());
 	}
 
-	if (w.isSubtensor() || getDev() != w.getDev())
+	if (getDev() != w.getDev())
 	{
 	  Tensor<Nw, T> aux = w.like_this(none, {}, getDev());
 	  contractWith(v, mv, aux, mw);
@@ -3327,9 +3372,10 @@ namespace Chroma
 	std::string orderv = detail::update_order<Nv>(v.order, mv);
 	std::string orderw = detail::update_order<Nw>(w.order, mw);
 	superbblas::bsr_krylov<ND, NI, Nv, Nw, T>(
-	  handle.get(), i.order.c_str(), d.order.c_str(),	      //
-	  v.p->p.data(), v.dim, 1, orderv.c_str(), (const T**)&v_ptr, //
-	  w.p->p.data(), w.dim, orderw.c_str(), 0 /* krylov power dim (none for now) */,
+	  handle.get(), i.order.c_str(), d.order.c_str(),			      //
+	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const T**)&v_ptr, //
+	  w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim,
+	  0 /* krylov power dim (none for now) */,
 	  (T**)&w_ptr, //
 	  &*data.ctx, MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Copy);
 	w.scalar = scalar * v.scalar;

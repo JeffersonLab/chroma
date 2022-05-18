@@ -197,7 +197,8 @@ namespace Chroma
     void ortho(Tensor<NW, COMPLEX> W, std::string order_t, std::string order_rows,
 	       std::string order_cols, unsigned int max_its = 3)
     {
-      ortho<Nrows>(Tensor<NW, COMPLEX>{}, W, order_t, order_rows, order_cols, max_its);
+      ortho<Nrows, NW, COMPLEX, NW>(Tensor<NW, COMPLEX>{}, W, order_t, order_rows, order_cols,
+				    max_its);
     }
 
     /// Solve iteratively op * y = x using FGMRES
@@ -607,17 +608,23 @@ namespace Chroma
 	  auto sel = contract<NOp * 2>(t_l.template transformWithCPUFun<float>(
 					 [](const COMPLEX& t) { return (float)std::real(t); }),
 				       ones, "");
+	  auto mv_mask = mv.create_mask();
+	  sel.copyTo(mv_mask);
+	  auto data_mask = sop.data.create_mask();
 
 	  // Split mv and sel into subsets where the neighbors are at the same position
-	  auto sel_eo = sel.split_dimension('y', "Yy", maxY)
-			  .split_dimension('z', "Zz", maxZ)
-			  .split_dimension('t', "Tt", maxT);
+	  auto mv_mask_eo = mv_mask.split_dimension('y', "Yy", maxY)
+			      .split_dimension('z', "Zz", maxZ)
+			      .split_dimension('t', "Tt", maxT);
 	  auto mv_eo = mv.split_dimension('y', "Yy", maxY)
 			 .split_dimension('z', "Zz", maxZ)
 			 .split_dimension('t', "Tt", maxT);
 	  auto data_eo = sop.data.split_dimension('y', "Yy", maxY)
 			   .split_dimension('z', "Zz", maxZ)
 			   .split_dimension('t', "Tt", maxT);
+	  auto data_mask_eo = data_mask.split_dimension('y', "Yy", maxY)
+				.split_dimension('z', "Zz", maxZ)
+				.split_dimension('t', "Tt", maxT);
 
 	  // Populate the nonzeros by copying pieces from `mv` into sop.data. We want to copy only the
 	  // nonzeros in `mv`, which are `neighbors` away from the nonzeros of `probs`. Assume `probs` having a
@@ -635,8 +642,12 @@ namespace Chroma
 	      // Nat coor (0,diry,dirz,dirt) to even-odd coordinate
 	      std::map<char, int> to{
 		{'X', sumdir}, {'x', dir[0]}, {'y', dir[1]}, {'z', dir[2]}, {'t', dir[3]}};
+	      auto data_mask_mu =
+		data_mask.kvslice_from_size(to).kvslice_from_size({{'u', mu}}, {{'u', 1}});
+	      mv_mask.copyTo(data_mask_mu);
 	      mv.kvslice_from_size(to).copyToWithMask(
-		sop.data.kvslice_from_size(to).kvslice_from_size({{'u', mu}}, {{'u', 1}}), sel);
+		sop.data.kvslice_from_size(to).kvslice_from_size({{'u', mu}}, {{'u', 1}}), mv_mask,
+		data_mask_mu);
 	    }
 	    else
 	    {
@@ -660,10 +671,14 @@ namespace Chroma
 					     {'z', (dir[2] + dims[2] + Z) / maxZ},
 					     {'T', T + dir[3]},
 					     {'t', (dir[3] + dims[3] + T) / maxT}};
+		      auto mv_mask_eo_mu = mv_mask_eo.kvslice_from_size(XYZTfrom, XYZTsize);
+		      auto data_mask_eo_mu = data_mask_eo.kvslice_from_size(to, XYZTsize)
+					       .kvslice_from_size({{'u', mu}}, {{'u', 1}});
+		      mv_mask_eo_mu.copyTo(data_mask_eo_mu);
 		      mv_eo.kvslice_from_size(to, XYZTsize)
 			.copyToWithMask(data_eo.kvslice_from_size(to, XYZTsize)
 					  .kvslice_from_size({{'u', mu}}, {{'u', 1}}),
-					sel_eo.kvslice_from_size(XYZTfrom, XYZTsize));
+					mv_mask_eo_mu, data_mask_eo_mu);
 		    } // X
 		  }   // Y
 		}     // Z
@@ -841,9 +856,18 @@ namespace Chroma
 	const Operator<NOp, COMPLEX> V = getMGProlongator(op, num_null_vecs, blocking, nullSolver);
 
 	// Compute the coarse operator, V' * op * V
-	const Operator<NOp, COMPLEX> op_c = cloneOperator(
-	  Operator<NOp, COMPLEX>{[&](Tensor<NOp + 1, COMPLEX> x) { return V.tconj()(op(V(x))); },
-				 V.d, V.d, nullptr, op.order_t});
+	unsigned int create_coarse_max_rhs =
+	  getOption<unsigned int>(ops, "create_coarse_max_rhs", 0);
+	const Operator<NOp, COMPLEX> op_c = cloneOperator(Operator<NOp, COMPLEX>{
+	  [&](Tensor<NOp + 1, COMPLEX> x) {
+	    auto y = x.like_this();
+	    foreachInChuncks(x, y, create_coarse_max_rhs,
+			     [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
+			       V.tconj()(op(V(x))).copyTo(y);
+			     });
+	    return y;
+	  },
+	  V.d, V.d, nullptr, op.order_t});
 
 	// Get the solver for the projector
 	const Operator<NOp, COMPLEX> coarseSolver =
