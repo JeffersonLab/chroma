@@ -330,17 +330,23 @@ namespace Chroma
 	return union_dimensions(order, "", remove_dims);
       }
 
-      template <std::size_t N>
-      std::string update_order(std::string order, const remap& m)
+      inline std::string update_order(std::string order, const remap& m)
       {
-	for (std::size_t i = 0; i < N; ++i)
+	for (std::size_t i = 0; i < order.size(); ++i)
 	{
 	  auto it = m.find(order[i]);
 	  if (it != m.end())
 	    order[i] = it->second;
 	}
-	check_order<N>(order);
 	return order;
+      }
+
+      template <std::size_t N>
+      std::string update_order_and_check(std::string order, const remap& m)
+      {
+	std::string new_order = update_order(order, m);
+	check_order<N>(new_order);
+	return new_order;
       }
 
       template <std::size_t N>
@@ -1754,7 +1760,7 @@ namespace Chroma
 
       Tensor<N, T> rename_dims(const SB::remap& m) const
       {
-	return Tensor<N, T>(*this, detail::update_order<N>(order, m), this->from, this->size);
+	return Tensor<N, T>(*this, detail::update_order_and_check<N>(order, m), this->from, this->size);
       }
 
       /// Return a slice of the tensor starting at coordinate `kvfrom` and taking `kvsize` elements
@@ -2462,9 +2468,9 @@ namespace Chroma
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
 	T* ptr = this->data.get();
-	std::string orderv_ = detail::update_order<Nv>(v.order, mv);
-	std::string orderw_ = detail::update_order<Nw>(w.order, mw);
-	std::string order_ = detail::update_order<N>(order, mr);
+	std::string orderv_ = detail::update_order_and_check<Nv>(v.order, mv);
+	std::string orderw_ = detail::update_order_and_check<Nw>(w.order, mw);
+	std::string order_ = detail::update_order_and_check<N>(order, mr);
 	bool conjv_ = (((conjv == Conjugate) xor v.conjugate) xor conjugate);
 	bool conjw_ = (((conjw == Conjugate) xor w.conjugate) xor conjugate);
 	superbblas::contraction<Nv, Nw, N>(
@@ -2512,7 +2518,7 @@ namespace Chroma
 	if (isSubtensor() || getDev() != v.getDev())
 	{
 	  Tensor<N, T> aux = like_this(none, {}, v.getDev());
-	  aux.cholInv(v, w, order_rows, order_cols);
+	  aux.cholInv(v, order_rows, order_cols, w);
 	  aux.copyTo(*this);
 	  return;
 	}
@@ -3000,14 +3006,14 @@ namespace Chroma
       if (Nr != rorder.size())
 	throw std::runtime_error(
 	  "cholInv: The dimension of the output tensor does not match the template argument");
-      if (r && union_dimensions(rorder, r.getSome().order) != rorder)
+      if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
 	throw std::runtime_error("cholInv: The given output tensor has an unexpected ordering");
 
       // If the output tensor is not given create a new one
       Tensor<Nr, T> r0;
       if (!r)
       {
-	r0 = v.like_this<Nr>(rorder, w.kvdim());
+	r0 = v.template like_this<Nr>(rorder, w.kvdim());
       }
       else
       {
@@ -3369,8 +3375,8 @@ namespace Chroma
 
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
-	std::string orderv = detail::update_order<Nv>(v.order, mv);
-	std::string orderw = detail::update_order<Nw>(w.order, mw);
+	std::string orderv = detail::update_order_and_check<Nv>(v.order, mv);
+	std::string orderw = detail::update_order_and_check<Nw>(w.order, mw);
 	superbblas::bsr_krylov<ND, NI, Nv, Nw, T>(
 	  handle.get(), i.order.c_str(), d.order.c_str(),			      //
 	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const T**)&v_ptr, //
@@ -3536,7 +3542,7 @@ namespace Chroma
       /// Rename dimensions
       StorageTensor<N, T> rename_dims(const SB::remap& m) const
       {
-	return StorageTensor<N, T>(*this, detail::update_order<N>(order, m), this->from,
+	return StorageTensor<N, T>(*this, detail::update_order_and_check<N>(order, m), this->from,
 				   this->size);
       }
 

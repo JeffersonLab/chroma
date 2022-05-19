@@ -121,11 +121,11 @@ namespace Chroma
 			    Maybe<std::string> check_dims = none,
 			    Maybe<std::string> not_check_dims = none)
       {
-	auto wdims = W.kvdims();
-	for (auto it : V.kvdims())
+	auto wdims = W.kvdim();
+	for (auto it : V.kvdim())
 	  if ((!check_dims.hasSome() || check_dims.getSome().find(it.first) != std::string::npos) &&
 	      (!not_check_dims.hasSome() ||
-	       not_check_dims.getSome().find(it.first).find(it.first) != std::string::npos) &&
+	       not_check_dims.getSome().find(it.first) != std::string::npos) &&
 	      wdims.count(it.first) > 0 && wdims.at(it.first) != it.second)
 	    throw std::runtime_error("check_compatible: some label does not match");
       }
@@ -150,7 +150,8 @@ namespace Chroma
     /// \param order_rows: dimension labels that are the rows of the matrices V and W
     /// \param order_cols: dimension labels that are the columns of the matrices V and W
 
-    template <std::size_t Nrows, std::size_t NV, typename COMPLEX, std::size_t NW>
+    template <std::size_t Nrows, std::size_t Ncols, std::size_t NV, typename COMPLEX,
+	      std::size_t NW>
     void ortho(Tensor<NV, COMPLEX> V, Tensor<NW, COMPLEX> W, const std::string& order_t,
 	       const std::string& order_rows, const std::string& order_cols,
 	       unsigned int max_its = 3)
@@ -158,6 +159,8 @@ namespace Chroma
       // Check Nrows
       if (order_rows.size() != Nrows)
 	throw std::runtime_error("ortho: invalid template argument `Nrows`");
+      if (order_cols.size() != Ncols)
+	throw std::runtime_error("ortho: invalid template argument `Ncols`");
 
       // Check that V and W are compatible, excepting the column dimensions
       if (V)
@@ -170,9 +173,10 @@ namespace Chroma
 
       // Create an alternative view of W with different labels for the column
       remap Wac = detail::getNewLabels(Wcorder, (V ? V.order : std::string{}) + W.order);
-      std::string Wacorder = detail::update_order<NW>(Wcorder, Wac);
+      std::string Wacorder = detail::update_order(Wcorder, Wac);
       auto Wa = W.rename_dims(Wac);
 
+      constexpr std::size_t Nt = NW - Nrows - Ncols;
       for (unsigned int i = 0; i < max_its; ++i)
       {
 	// W = W - V*(V'*W)
@@ -181,8 +185,9 @@ namespace Chroma
 		   AddTo, W);
 
 	// W = W/chol(Wa'*W), where Wa'*W has dimensions (rows,cols)=(Wacorder,Wcorder)
-	cholInv(W, contract<NW * 2 - Nrows * 2>(Wa.conj(), W, order_rows), order_t, Wacorder,
-		Wcorder, CopyTo, W);
+	cholInv<NW, Nt + 2 * Ncols, NW, COMPLEX>(contract<Nt + 2 * Ncols>(Wa.conj(), W, order_rows),
+						 Wacorder, Wcorder, W.rename_dims(Wac), Wacorder,
+						 CopyTo, W);
       }
     }
 
@@ -193,12 +198,12 @@ namespace Chroma
     /// \param order_rows: dimension labels that are the rows of the matrices V and W
     /// \param order_cols: dimension labels that are the columns of the matrices V and W
 
-    template <typename Nrows, std::size_t NW, typename COMPLEX>
-    void ortho(Tensor<NW, COMPLEX> W, std::string order_t, std::string order_rows,
-	       std::string order_cols, unsigned int max_its = 3)
+    template <std::size_t Nrows, std::size_t Ncols, std::size_t NW, typename COMPLEX>
+    void ortho(Tensor<NW, COMPLEX> W, const std::string& order_t, const std::string& order_rows,
+	       const std::string& order_cols, unsigned int max_its = 3)
     {
-      ortho<Nrows, NW, COMPLEX, NW>(Tensor<NW, COMPLEX>{}, W, order_t, order_rows, order_cols,
-				    max_its);
+      ortho<Nrows, Ncols, NW, COMPLEX, NW>(Tensor<NW, COMPLEX>{}, W, order_t, order_rows,
+					   order_cols, max_its);
     }
 
     /// Solve iteratively op * y = x using FGMRES
@@ -795,8 +800,7 @@ namespace Chroma
 			.split_dimension('n', "cs", num_null_vecs);
 
 	// Do the orthogonalization on each block and chirality
-	/// XXX: TEMP!!!
-	//ortho<7>(nv_blk, "xyztn", "WYZTXsc", "N");
+	ortho<7, 1, NOp + 1 + 5, COMPLEX>(nv_blk, "xyzts", "WYZTXSC", "c");
 
 	// Return the operator
 	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk.kvdim()), i = op.i;
