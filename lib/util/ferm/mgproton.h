@@ -186,8 +186,7 @@ namespace Chroma
 
 	// W = W/chol(Wa'*W), where Wa'*W has dimensions (rows,cols)=(Wacorder,Wcorder)
 	cholInv<NW, Nt + 2 * Ncols, NW, COMPLEX>(contract<Nt + 2 * Ncols>(Wa.conj(), W, order_rows),
-						 Wacorder, Wcorder, W.rename_dims(Wac), Wacorder,
-						 CopyTo, W);
+						 Wacorder, Wcorder, Wa, Wacorder, CopyTo, W);
       }
     }
 
@@ -511,7 +510,7 @@ namespace Chroma
 	detail::log(1, "starting cloneOperator");
 
 	// Unsupported explicitly colorized operators
-	if (op.d.kvdim().count('X') == 0 || op.d.kvdim()['X'] != 2)
+	if (op.d.kvdim().count('X') == 0)
 	  throw std::runtime_error("cloneOperator: unsupported not explicitly colored operators");
 
 	// If the operator is empty, just return itself
@@ -751,7 +750,7 @@ namespace Chroma
 	  std::sqrt(std::numeric_limits<typename detail::real_type<COMPLEX>::type>::epsilon());
 	for (int i = 0; i < base_norm.volume(); ++i)
 	  if (error.get({{i}}) > eps * base_norm.get({{i}}))
-	    throw std::runtime_error("cloneOperator: too much error on the cloned operator");
+	      throw std::runtime_error("cloneOperator: too much error on the cloned operator");
 
 	return rop;
       }
@@ -769,6 +768,13 @@ namespace Chroma
       {
 	detail::log(1, "starting getMGProlongator");
 
+	// For now blocking on x should be divisible by X
+	auto opdims = op.d.kvdim();
+	int X = opdims.at('X');
+	if (blocking.at('x') > 1 && blocking.at('x') % X != 0)
+	  throw std::runtime_error("Unsupported blocking in x direction with isn't divisible by 2 "
+				   "when using even-odd layout");
+
 	// Create num_null_vecs random vectors and solve them
 	auto b = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
 	urand(b, -1, 1);
@@ -776,7 +782,7 @@ namespace Chroma
 
 	// Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
 	// TODO: experiment without chirality splitting
-	int ns = nv.kvdim().at('s');
+	int ns = opdims.at('s');
 	if (ns != 2 && ns != Ns)
 	  throw std::runtime_error("Error in getMGProlongator: Unsupported spin number");
 
@@ -792,7 +798,13 @@ namespace Chroma
 	  .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
 
 	// Do the blocking
-	auto nv_blk = nv2.split_dimension('x', "Wx", blocking.at('x'))
+	// NOTE: Xx is transformed into WwXx, where W,X has size X, and w has size blocking(x)/X,
+	//       and the remaining x has size x/blocking(x)
+	int bx = blocking.at('x');
+	int dimw = bx > 1 ? bx / X : 1;
+	auto nv_blk = nv2.rename_dims({{'X', 'W'}})
+			.template split_dimension<NOp + 1 + 3 - 1>(
+			  'x', "wXx", {{'w', dimw}, {'X', 1}, {'x', opdims.at('x') / bx * X}})
 			.split_dimension('y', "Yy", blocking.at('y'))
 			.split_dimension('z', "Zz", blocking.at('z'))
 			.split_dimension('t', "Tt", blocking.at('t'))
@@ -800,28 +812,34 @@ namespace Chroma
 			.split_dimension('n', "cs", num_null_vecs);
 
 	// Do the orthogonalization on each block and chirality
-	ortho<7, 1, NOp + 1 + 5, COMPLEX>(nv_blk, "xyzts", "WYZTXSC", "c");
+	ortho<7, 1>(nv_blk, "Xxyzts", "WwYZTSC", "c");
 
 	// Return the operator
 	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk.kvdim()), i = op.i;
 	return {[=](const Tensor<NOp + 1, COMPLEX>& t) -> Tensor<NOp + 1, COMPLEX> {
 		  auto out = i.template like_this<NOp + 1>("%n", '%', "", {{'n', t.kvdim()['n']}});
-		  auto out_blk = out.split_dimension('x', "Wx", blocking.at('x'))
-				   .split_dimension('y', "Yy", blocking.at('y'))
-				   .split_dimension('z', "Zz", blocking.at('z'))
-				   .split_dimension('t', "Tt", blocking.at('t'))
-				   .rename_dims({{'c', 'C'}, {'s', 'S'}});
+		  auto out_blk =
+		    out.rename_dims({{'X', 'W'}})
+		      .template split_dimension<NOp + 1 + 3 - 1>(
+			'x', "wXx", {{'w', dimw}, {'X', 1}, {'x', opdims.at('x') / bx * X}})
+		      .split_dimension('y', "Yy", blocking.at('y'))
+		      .split_dimension('z', "Zz", blocking.at('z'))
+		      .split_dimension('t', "Tt", blocking.at('t'))
+		      .rename_dims({{'c', 'C'}, {'s', 'S'}});
 		  contract(nv_blk, t, "cs", CopyTo, out_blk);
 		  return out;
 		},
 		d, i,
 		[=](const Tensor<NOp + 1, COMPLEX>& t) -> Tensor<NOp + 1, COMPLEX> {
-		  auto t_blk = t.split_dimension('x', "Wx", blocking.at('x'))
-				 .split_dimension('y', "Yy", blocking.at('y'))
-				 .split_dimension('z', "Zz", blocking.at('z'))
-				 .split_dimension('t', "Tt", blocking.at('t'))
-				 .rename_dims({{'c', 'C'}, {'s', 'S'}});
-		  return contract<NOp + 1>(nv_blk.conj(), t_blk, "WYZTCS");
+		  auto t_blk =
+		    t.rename_dims({{'X', 'W'}})
+		      .template split_dimension<NOp + 1 + 3 - 1>(
+			'x', "wXx", {{'w', dimw}, {'X', 1}, {'x', opdims.at('x') / bx * X}})
+		      .split_dimension('y', "Yy", blocking.at('y'))
+		      .split_dimension('z', "Zz", blocking.at('z'))
+		      .split_dimension('t', "Tt", blocking.at('t'))
+		      .rename_dims({{'c', 'C'}, {'s', 'S'}});
+		  return contract<NOp + 1>(nv_blk.conj(), t_blk, "WwYZTSC");
 		},
 		op.order_t};
       }
