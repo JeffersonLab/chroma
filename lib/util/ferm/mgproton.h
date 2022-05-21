@@ -45,7 +45,8 @@ namespace Chroma
     /// output tensors have the same dimensions
 
     template <std::size_t NOp, typename COMPLEX>
-    using OperatorFun = std::function<Tensor<NOp + 1, COMPLEX>(const Tensor<NOp + 1, COMPLEX>&)>;
+    using OperatorFun =
+      std::function<void(const Tensor<NOp + 1, COMPLEX>&, Tensor<NOp + 1, COMPLEX>)>;
 
     /// Representation of an operator together with a map to convert from domain labels (columns) to
     /// image labels (rows)
@@ -91,9 +92,23 @@ namespace Chroma
 	// The `t` labels that are not in `d` are the column labels
 	std::string cols = detail::union_dimensions(t.order, "", d.order); // t.order - d.order
 
-	return fop(t.template collapse_dimensions<NOp + 1>(cols, 'n').template make_sure<COMPLEX>())
-	  .template split_dimension<N>('n', cols, t.kvdim())
-	  .template make_sure<T>();
+	auto x = t.template collapse_dimensions<NOp + 1>(cols, 'n').template make_sure<COMPLEX>();
+	auto y = i.template like_this<NOp + 1>("%n", '%', "", {{'n', x.kvdim()['n']}});
+	fop(x, y);
+	return y.template split_dimension<N>('n', cols, t.kvdim()).template make_sure<T>();
+      }
+
+      /// Apply the operator
+      template <std::size_t N, typename T>
+      void operator()(const Tensor<N, T>& x, Tensor<N, T> y) const
+      {
+	// The `t` labels that are not in `d` are the column labels
+	std::string cols = detail::union_dimensions(x.order, "", d.order); // t.order - d.order
+
+	auto x0 = x.template collapse_dimensions<NOp + 1>(cols, 'n').template make_sure<COMPLEX>();
+	auto y0 = y.template collapse_dimensions<NOp + 1>(cols, 'n').template make_sure<COMPLEX>();
+	fop(x0, y0);
+	if (y.data != y0.data) y0.copyTo(y);
       }
     };
 
@@ -295,14 +310,14 @@ namespace Chroma
 	  // Z(:,i) = prec * U(:,i)
 	  if (prec.hasSome())
 	  {
-	    prec.getSome()(U.kvslice_from_size({{Vc, i}}, {{Vc, 1}}))
-	      .copyTo(Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}));
+	    prec.getSome()(U.kvslice_from_size({{Vc, i}}, {{Vc, 1}}),
+			   Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}));
 	    nprecs += num_cols;
 	  }
 
 	  // U(:,i+1) = op * Z(:,i)
-	  op(Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}))
-	    .copyTo(U.kvslice_from_size({{Vc, i + 1}}, {{Vc, 1}}));
+	  op(Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}),
+	     U.kvslice_from_size({{Vc, i + 1}}, {{Vc, 1}}));
 	  nops += num_cols;
 	}
 
@@ -352,7 +367,7 @@ namespace Chroma
 
       // Check final residual
       if (error_if_not_converged) {
-	r = op(y);
+	op(y, r); // r = op(y)
 	nops += num_cols;
 	x.scale(-1).addTo(r);
 	auto normr = norm<1>(r, op.order_t + order_cols);
@@ -451,8 +466,7 @@ namespace Chroma
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
 	// Return the solver
-	return {[=](const Tensor<NOp + 1, COMPLEX>& x) {
-		  auto y = x.like_this();
+	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		  foreachInChuncks(
 		    x, y, max_simultaneous_rhs,
 		    [=](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
@@ -460,7 +474,6 @@ namespace Chroma
 			     false /* no init guess */, verb, prefix);
 		    },
 		    'n');
-		  return y;
 		},
 		op.i, op.d, nullptr, op.order_t};
       }
@@ -540,12 +553,13 @@ namespace Chroma
 	// Construct the probing vectors, which they have as the rows the domain labels and as
 	// columns the domain blocking dimensions
 
+	constexpr int Nblk = NOp - Nd - 1;
 	auto t_bl = d.like_this(none, blkd, OnHost, OnEveryoneReplicated);
 	t_bl.set_zero();
-	auto t_bl_rows = i.template like_this<NOp - 5>("%", '%', "xyztX");
+	auto t_bl_rows = i.template like_this<Nblk>("%", '%', "xyztX");
 	t_bl_rows.set_zero();
 	auto t_blbl =
-	  contract<NOp * 2 - 5>(t_bl_rows, t_bl, "").make_sure(none, none, OnEveryoneReplicated);
+	  contract<NOp + Nblk>(t_bl_rows, t_bl, "").make_sure(none, none, OnEveryoneReplicated);
 	assert(!t_blbl.isSubtensor());
 	COMPLEX* t_blbl_data = t_blbl.data.get();
 	for (std::size_t i = 0, vol = t_bl.volume(); i < vol; ++i)
@@ -563,7 +577,6 @@ namespace Chroma
 	unsigned int num_colors = coloring.numColors();
 
 	// Get the number of neighbors
-	constexpr int Nblk = NOp - Nd - 1;
 	std::vector<Coor<Nd>> neighbors(1, Coor<Nd>{{}});
 	for (unsigned int j = 0; j < Nd; ++j)
 	{
@@ -586,7 +599,7 @@ namespace Chroma
 				       {rd.at('y'), max_dist_neigbors + max_dist_neigbors % maxX},
 				       {rd.at('z'), max_dist_neigbors + max_dist_neigbors % maxX},
 				       {rd.at('t'), max_dist_neigbors + max_dist_neigbors % maxX}});
-	SpTensor<NOp, NOp, COMPLEX> sop{d_sop, i, NOp - 5, NOp - 5, (unsigned int)neighbors.size()};
+	SpTensor<NOp, NOp, COMPLEX> sop{d_sop, i, Nblk, Nblk, (unsigned int)neighbors.size()};
 
 	int maxY = std::min(2, dims[1]);
 	int maxZ = std::min(2, dims[2]);
@@ -737,11 +750,13 @@ namespace Chroma
 	sop.construct();
 
 	// Construct the operator to return
-	Operator<NOp, COMPLEX> rop{[=](const Tensor<NOp + 1, COMPLEX>& x) {
+	Operator<NOp, COMPLEX> rop{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	    auto x0 = x.reorder("%Xxyztn", '%');
-				     auto y = x0.like_this();
-				     sop.contractWith(x0, rd, y);
-				     return y;
+	    auto y0 = (y.order == x0.order ? y : x0.like_this());
+	    sop.contractWith(x0, rd, y0);
+	    if (y.data != y0.data)
+	      y0.copyTo(y);
 	  },
 	  i, i, nullptr, op.order_t};
 
@@ -822,30 +837,28 @@ namespace Chroma
 
 	// Return the operator
 	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk.kvdim()), i = op.i;
-	return {[=](const Tensor<NOp + 1, COMPLEX>& t) -> Tensor<NOp + 1, COMPLEX> {
-		  auto out = i.template like_this<NOp + 1>("%n", '%', "", {{'n', t.kvdim()['n']}});
-		  auto out_blk =
-		    out.rename_dims({{'X', 'W'}})
+	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		  auto y_blk =
+		    y.rename_dims({{'X', 'W'}})
 		      .template split_dimension<NOp + 1 + 3 - 1>(
 			'x', "wXx", {{'w', dimw}, {'X', 1}, {'x', opdims.at('x') / bx * X}})
 		      .split_dimension('y', "Yy", blocking.at('y'))
 		      .split_dimension('z', "Zz", blocking.at('z'))
 		      .split_dimension('t', "Tt", blocking.at('t'))
 		      .rename_dims({{'c', 'C'}, {'s', 'S'}});
-		  contract(nv_blk, t, "cs", CopyTo, out_blk);
-		  return out;
+		  contract(nv_blk, x, "cs", CopyTo, y_blk);
 		},
 		d, i,
-		[=](const Tensor<NOp + 1, COMPLEX>& t) -> Tensor<NOp + 1, COMPLEX> {
-		  auto t_blk =
-		    t.rename_dims({{'X', 'W'}})
+		[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		  auto x_blk =
+		    x.rename_dims({{'X', 'W'}})
 		      .template split_dimension<NOp + 1 + 3 - 1>(
 			'x', "wXx", {{'w', dimw}, {'X', 1}, {'x', opdims.at('x') / bx * X}})
 		      .split_dimension('y', "Yy", blocking.at('y'))
 		      .split_dimension('z', "Zz", blocking.at('z'))
 		      .split_dimension('t', "Tt", blocking.at('t'))
 		      .rename_dims({{'c', 'C'}, {'s', 'S'}});
-		  return contract<NOp + 1>(nv_blk.conj(), t_blk, "WwYZTSC");
+		  contract<NOp + 1>(nv_blk.conj(), x_blk, "WwYZTSC", CopyTo, y);
 		},
 		op.order_t};
       }
@@ -887,13 +900,11 @@ namespace Chroma
 	unsigned int create_coarse_max_rhs =
 	  getOption<unsigned int>(ops, "create_coarse_max_rhs", 0);
 	const Operator<NOp, COMPLEX> op_c = cloneOperator(Operator<NOp, COMPLEX>{
-	  [&](Tensor<NOp + 1, COMPLEX> x) {
-	    auto y = x.like_this();
+	  [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	    foreachInChuncks(x, y, create_coarse_max_rhs,
 			     [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
-			       V.tconj()(op(V(x))).copyTo(y);
+			       V.tconj()(op(V(x)), y);
 			     });
-	    return y;
 	  },
 	  V.d, V.d, nullptr, op.order_t});
 
@@ -905,7 +916,7 @@ namespace Chroma
 	const Operator<NOp, COMPLEX> opSolver = getSolver(op, getOptions(ops, "solver_smoother"));
 
 	// Return the solver
-	return {[=](Tensor<NOp + 1, COMPLEX> x) {
+	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		  // y0 = V*solver(V'*Op*V, V'x)
 		  auto y0 = V(coarseSolver(V.tconj()(x)));
 
@@ -914,10 +925,8 @@ namespace Chroma
 		  x.addTo(x1);
 
 		  // y = y0 + solver(Op, x1)
-		  auto y = opSolver(std::move(x1));
+		  opSolver(std::move(x1), y);
 		  y0.addTo(y);
-
-		  return y;
 		},
 		op.i, op.d, nullptr, op.order_t};
       }
@@ -943,18 +952,16 @@ namespace Chroma
     {
       LatticeFermion a;
       auto d = asTensorView(a).toComplex().make_eg();
-      return {[&](Tensor<Nd + 4, Complex> t) {
-		auto r = t.like_this();
-		LatticeFermion x, y;
-		unsigned int n = t.kvdim()['n'];
+      return {[&](const Tensor<Nd + 4, Complex>& x, Tensor<Nd + 4, Complex> y) {
+		LatticeFermion x0, y0;
+		unsigned int n = x.kvdim()['n'];
 		for (unsigned int i = 0; i < n; ++i)
 		{
-		  t.kvslice_from_size({{'n', i}}, {{'n', 1}}).copyTo(asTensorView(x));
-		  y = zero;
-		  linOp(y, x, PLUS /* I believe, it's ignored */);
-		  asTensorView(y).copyTo(r.kvslice_from_size({{'n', i}}, {{'n', 1}}));
+		  x.kvslice_from_size({{'n', i}}, {{'n', 1}}).copyTo(asTensorView(x0));
+		  y0 = zero;
+		  linOp(y0, x0, PLUS /* I believe, it's ignored */);
+		  asTensorView(y0).copyTo(y.kvslice_from_size({{'n', i}}, {{'n', 1}}));
 		}
-		return r;
 	      },
 	      d, d};
     }
