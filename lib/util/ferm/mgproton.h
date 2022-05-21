@@ -538,8 +538,8 @@ namespace Chroma
 	// NOTE: assuming that x,y,z,t are the only non-blocking dimensions
 	std::set<char> lattice_dims{'x', 'y', 'z', 't', 'X'};
 	remap rd = getNewLabels(op.d.order, op.i.order + "u~");
-	auto d = op.d.reorder("%Xxyzt", '%').rename_dims(rd);
-	auto i = op.i.reorder("%Xxyzt", '%');
+	auto d = op.d.reorder("%xyztX", '%').rename_dims(rd);
+	auto i = op.i.reorder("%xyztX", '%');
 	auto dim = i.kvdim();
 
 	// Get the blocking for the domain and the image
@@ -719,7 +719,7 @@ namespace Chroma
 	// even-odd coordinates ((cX-dirx-diry-dirz-dirt)%2,(cx*2+(cX+cy+cz+ct)%2-dirx)/2,cy-diry,cz-dirz,ct-dirt).
 
 	sop.jj.fillCpuFunCoor([&](const Coor<NOp + 2>& c) {
-	  // c has order '~u%Xxyzt...' where Xxyzt... were remapped by ri
+	  // c has order '~u%xyztX' where xyztX were remapped by ri
 	  int domi = c[0];	   // the domain label to evaluate, label ~
 	  int mu = c[1];	   // the direction, label u
 	  int base = c[domi + 2];  // the image coordinate value for label `domi`
@@ -731,18 +731,18 @@ namespace Chroma
 	  const auto& dir = neighbors[mu];
 
 	  // For labels X and x
-	  if (domi <= Nblk + 1)
+	  if (domi == Nblk || domi == Nblk + Nd)
 	  {
 	    int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
-	    if (domi == Nblk)
+	    if (domi == Nblk + Nd)
 	      return (base + sumdir + maxX * Nd) % maxX;
-	    int sumyzt = std::accumulate(c.begin() + 2 + Nblk + 2, c.end(), int{0});
-	    const auto& cX = c[2 + Nblk];
+	    int sumyzt = std::accumulate(c.begin() + 2 + Nblk + 1, c.end() - 1, int{0});
+	    const auto& cX = c[2 + Nblk + Nd];
 	    return ((base * maxX + (cX + sumyzt) % maxX + dims[0] - dir[0]) / maxX) %
 		   (dims[0] / maxX);
 	  }
 
-	  int latd = domi - Nblk - 1;
+	  int latd = domi - Nblk;
 	  return (base - dir[latd] + dims[latd]) % dims[latd];
 	});
 
@@ -752,7 +752,7 @@ namespace Chroma
 	// Construct the operator to return
 	Operator<NOp, COMPLEX> rop{
 	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	    auto x0 = x.reorder("%Xxyztn", '%');
+	    auto x0 = x.reorder("%xyztXn", '%');
 	    auto y0 = (y.order == x0.order ? y : x0.like_this());
 	    sop.contractWith(x0, rd, y0);
 	    if (y.data != y0.data)
