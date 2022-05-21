@@ -409,9 +409,13 @@ namespace Chroma
 
       inline char get_free_label(const std::string& used_labels)
       {
-	for (char c = '0'; c < 128; ++c)
+	for (char c = '0'; true; ++c)
+	{
 	  if (used_labels.find(c) == std::string::npos)
 	    return c;
+	  if (c == std::numeric_limits<char>::max())
+	    break;
+	}
 	throw std::runtime_error("get_free_labels: out of labels");
       }
 
@@ -1032,6 +1036,7 @@ namespace Chroma
 	  case OnMaster: s << "OnMaster"; break;
 	  case OnEveryone: s << "OnEveryone"; break;
 	  case OnEveryoneReplicated: s << "OnEveryoneReplicated"; break;
+	  case Local: s << "Local"; break;
 	  }
 	  return s;
 	}
