@@ -539,7 +539,7 @@ namespace Chroma
 
 	// Construct the probing vectors, which they have as the rows the domain labels and as
 	// columns the domain blocking dimensions
-	
+
 	auto t_bl = d.like_this(none, blkd, OnHost, OnEveryoneReplicated);
 	t_bl.set_zero();
 	auto t_bl_rows = i.template like_this<NOp - 5>("%", '%', "xyztX");
@@ -613,10 +613,12 @@ namespace Chroma
 					 [](const COMPLEX& t) { return (float)std::real(t); }),
 				       ones, "");
 	  auto mv_mask = mv.create_mask();
-	  sel.copyTo(mv_mask);
 	  auto data_mask = sop.data.create_mask();
 
 	  // Split mv and sel into subsets where the neighbors are at the same position
+	  auto sel_eo = sel.split_dimension('y', "Yy", maxY)
+			  .split_dimension('z', "Zz", maxZ)
+			  .split_dimension('t', "Tt", maxT);
 	  auto mv_mask_eo = mv_mask.split_dimension('y', "Yy", maxY)
 			      .split_dimension('z', "Zz", maxZ)
 			      .split_dimension('t', "Tt", maxT);
@@ -646,12 +648,14 @@ namespace Chroma
 	      // Nat coor (0,diry,dirz,dirt) to even-odd coordinate
 	      std::map<char, int> to{
 		{'X', sumdir}, {'x', dir[0]}, {'y', dir[1]}, {'z', dir[2]}, {'t', dir[3]}};
+	      auto mv_mask_mu = mv_mask.kvslice_from_size(to);
 	      auto data_mask_mu =
 		data_mask.kvslice_from_size(to).kvslice_from_size({{'u', mu}}, {{'u', 1}});
-	      mv_mask.copyTo(data_mask_mu);
+	      sel.copyTo(mv_mask_mu);
+	      sel.copyTo(data_mask_mu);
 	      mv.kvslice_from_size(to).copyToWithMask(
-		sop.data.kvslice_from_size(to).kvslice_from_size({{'u', mu}}, {{'u', 1}}), mv_mask,
-		data_mask_mu);
+		sop.data.kvslice_from_size(to).kvslice_from_size({{'u', mu}}, {{'u', 1}}),
+		mv_mask_mu, data_mask_mu);
 	    }
 	    else
 	    {
@@ -675,10 +679,12 @@ namespace Chroma
 					     {'z', (dir[2] + dims[2] + Z) / maxZ},
 					     {'T', T + dir[3]},
 					     {'t', (dir[3] + dims[3] + T) / maxT}};
-		      auto mv_mask_eo_mu = mv_mask_eo.kvslice_from_size(XYZTfrom, XYZTsize);
+		      auto sel_eo_mu = sel_eo.kvslice_from_size(XYZTfrom, XYZTsize);
+		      auto mv_mask_eo_mu = mv_mask_eo.kvslice_from_size(to, XYZTsize);
 		      auto data_mask_eo_mu = data_mask_eo.kvslice_from_size(to, XYZTsize)
 					       .kvslice_from_size({{'u', mu}}, {{'u', 1}});
-		      mv_mask_eo_mu.copyTo(data_mask_eo_mu);
+		      sel_eo_mu.copyTo(mv_mask_eo_mu);
+		      sel_eo_mu.copyTo(data_mask_eo_mu);
 		      mv_eo.kvslice_from_size(to, XYZTsize)
 			.copyToWithMask(data_eo.kvslice_from_size(to, XYZTsize)
 					  .kvslice_from_size({{'u', mu}}, {{'u', 1}}),
@@ -732,12 +738,12 @@ namespace Chroma
 
 	// Construct the operator to return
 	Operator<NOp, COMPLEX> rop{[=](const Tensor<NOp + 1, COMPLEX>& x) {
-				     auto x0 = x.reorder("%Xxyztn", '%');
+	    auto x0 = x.reorder("%Xxyztn", '%');
 				     auto y = x0.like_this();
 				     sop.contractWith(x0, rd, y);
 				     return y;
-				   },
-				   i, i, nullptr, op.order_t};
+	  },
+	  i, i, nullptr, op.order_t};
 
 	// Do a test
 	auto x = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', 2}});
