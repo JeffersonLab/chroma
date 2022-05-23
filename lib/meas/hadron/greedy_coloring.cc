@@ -498,4 +498,24 @@ namespace Chroma
 		   (unsigned int)coor[3]};
     return colors[coor2index(Coors(1, coor0), tile_size)[0]];
   }
+
+  // Return all neighbors
+  std::vector<std::array<int, 4>> Coloring::all_neighbors(unsigned int farthest_neighbor,
+							  std::array<int, 4> dim)
+  {
+    std::array<unsigned int, 4> dimu{(unsigned int)dim[0], (unsigned int)dim[1],
+				     (unsigned int)dim[2], (unsigned int)dim[3]};
+    Coors neighbors_coors(1);
+    for (unsigned int i = 0; i < farthest_neighbor; i++)
+    {
+      auto new_neighbors_coors = neighbors(neighbors_coors, dimu);
+      neighbors_coors.insert(neighbors_coors.end(), new_neighbors_coors.begin(),
+			     new_neighbors_coors.end());
+      neighbors_coors = index2coor(unique_and_sort(coor2index(neighbors_coors, dimu)), dimu);
+    }
+    std::vector<std::array<int, 4>> r;
+    for (const auto& i : neighbors_coors)
+      r.push_back(std::array<int, 4>{(int)i[0], (int)i[1], (int)i[2], (int)i[3]});
+    return r;
+  }
 }

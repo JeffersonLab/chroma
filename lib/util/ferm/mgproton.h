@@ -9,9 +9,9 @@
 #define __INCLUDE_MGPROTON__
 
 #include "chromabase.h"
+#include "meas/hadron/greedy_coloring.h"
 #include "util/ferm/superb_contractions.h"
 #include "util/ferm/superb_options.h"
-#include "meas/hadron/greedy_coloring.h"
 
 #include <set>
 
@@ -34,7 +34,7 @@ namespace Chroma
     inline const std::map<std::string, Verbosity>& getVerbosityMap()
     {
       static const std::map<std::string, Verbosity> m{{"NoOutput", NoOutput},
-						      {"JustSummary", JustSummary},
+						      {"Summary", JustSummary},
 						      {"Detailed", Detailed},
 						      {"VeryDetailed", VeryDetailed},
 						      {"false", NoOutput}};
@@ -63,6 +63,11 @@ namespace Chroma
       OperatorFun<NOp, COMPLEX> fop_tconj;
       /// Labels that distinguish different operator instantiations
       std::string order_t;
+      /// Distance of the farthest direct neighbor in each non-blocking (sparse) direction
+      unsigned int max_dist_neighbors;
+
+      /// Constant used in `Operator<NOp,COMPLEX>::max_dist_neighbors` to indicate that the operator is dense
+      static const unsigned int DenseOperator = std::numeric_limits<unsigned int>::max();
 
       /// Empty constructor
       Operator()
@@ -72,8 +77,13 @@ namespace Chroma
       /// Constructor
       Operator(const OperatorFun<NOp, COMPLEX>& fop, Tensor<NOp, COMPLEX> d, Tensor<NOp, COMPLEX> i,
 	       const OperatorFun<NOp, COMPLEX>& fop_tconj = nullptr,
-	       const std::string& order_t = "")
-	: fop(fop), d(d), i(i), fop_tconj(fop_tconj), order_t(order_t)
+	       const std::string& order_t = "", unsigned int max_dist_neighbors = 1)
+	: fop(fop),
+	  d(d),
+	  i(i),
+	  fop_tconj(fop_tconj),
+	  order_t(order_t),
+	  max_dist_neighbors(max_dist_neighbors)
       {
       }
 
@@ -82,7 +92,7 @@ namespace Chroma
       {
 	if (!fop_tconj)
 	  throw std::runtime_error("Operator does not have conjugate transpose form");
-	return {fop_tconj, i, d, fop, order_t};
+	return {fop_tconj, i, d, fop, order_t, max_dist_neighbors};
       }
 
       /// Apply the operator
@@ -108,7 +118,8 @@ namespace Chroma
 	auto x0 = x.template collapse_dimensions<NOp + 1>(cols, 'n').template make_sure<COMPLEX>();
 	auto y0 = y.template collapse_dimensions<NOp + 1>(cols, 'n').template make_sure<COMPLEX>();
 	fop(x0, y0);
-	if (y.data != y0.data) y0.copyTo(y);
+	if (y.data != y0.data)
+	  y0.copyTo(y);
       }
     };
 
@@ -306,7 +317,8 @@ namespace Chroma
 	r.copyTo(U.kvslice_from_size({}, {{Vc, 1}}));
 
 	// Expand the search subspace from residual
-	for (unsigned int i = 0; i < max_basis_size; ++i) {
+	for (unsigned int i = 0; i < max_basis_size; ++i)
+	{
 	  // Z(:,i) = prec * U(:,i)
 	  if (prec.hasSome())
 	  {
@@ -330,7 +342,7 @@ namespace Chroma
 	{
 	  //Uo = Uo.clone();
 	  //ortho<NOp, NOp + 1, COMPLEX>(Uo, op.order_t + order_cols, order_rows, std::string(1, Vac),
-	//			       1 /* one iteration should be enough */);
+	  //			       1 /* one iteration should be enough */);
 	}
 
 	// Restrict to Uo: [x_rt H_rt] = Uo'*U = Up'*[r Up]
@@ -362,11 +374,13 @@ namespace Chroma
 	  QDPIO::cout << prefix << " MGPROTON FGMRES iteration it.: " << it
 		      << " max rel. residual: " << detail::tostr(max_tol, 2) << std::endl;
 
-	if (max_tol <= tol) break;
+	if (max_tol <= tol)
+	  break;
       }
 
       // Check final residual
-      if (error_if_not_converged) {
+      if (error_if_not_converged)
+      {
 	op(y, r); // r = op(y)
 	nops += num_cols;
 	x.scale(-1).addTo(r);
@@ -475,7 +489,11 @@ namespace Chroma
 		    },
 		    'n');
 		},
-		op.i, op.d, nullptr, op.order_t};
+		op.i,
+		op.d,
+		nullptr,
+		op.order_t,
+		op.DenseOperator};
       }
 
       /// Returns the \gamma_5 for a given number of spins
@@ -516,11 +534,28 @@ namespace Chroma
 	return r;
       }
 
+      /// Return a sparse tensor with the content of the given operator
+      /// \param op: operator to extract the nonzeros from
+      /// \param power: maximum distance to recover the nonzeros:
+      ///               0, block diagonal; 1: near-neighbors...
+      /// \return: a pair of a sparse tensor and a remap; the sparse tensor has the same image
+      ///          labels as the given operator and domain labels are indicated by the returned remap.
+
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op,
-					   unsigned int max_dist_neigbors = 1)
+      std::pair<SpTensor<NOp, NOp, COMPLEX>, remap>
+      cloneOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power = 1)
       {
-	detail::log(1, "starting cloneOperator");
+	log(1, "starting cloneOperatorToSpTensor");
+
+	// Unsupported explicitly colorized operators
+	if (op.d.kvdim().count('X') == 0)
+	  throw std::runtime_error(
+	    "cloneOperatorToSpTensor: unsupported not explicitly colored operators");
+
+	// Unsupported other powers than zero or one
+	if (power != 0 && power != op.max_dist_neighbors)
+	  throw std::runtime_error("cloneOperatorToSpTensor: unsupported value for `power`: "
+				   "either zero or `max_dist_neighbors`");
 
 	// Unsupported explicitly colorized operators
 	if (op.d.kvdim().count('X') == 0)
@@ -528,7 +563,7 @@ namespace Chroma
 
 	// If the operator is empty, just return itself
 	if (op.d.volume() == 0 || op.i.volume() == 0)
-	  return op;
+	  return {{}, {}};
 
 	// TODO: add optimizations for multiple operators
 	if (op.order_t.size() > 0)
@@ -571,34 +606,23 @@ namespace Chroma
 
 	// Compute the coloring
 	Coor<Nd> dims{{dim['x'] * dim['X'], dim['y'], dim['z'], dim['t']}};
-	Coloring coloring{0,			     // zero displacement in coloring
-			  max_dist_neigbors * 2 + 1, // k-distance coloring
+	Coloring coloring{0, // zero displacement in coloring
+			  power == 0 ? op.max_dist_neighbors
+				     : op.max_dist_neighbors * 2 + 1, // k-distance coloring
 			  dims};
 	unsigned int num_colors = coloring.numColors();
 
 	// Get the number of neighbors
-	std::vector<Coor<Nd>> neighbors(1, Coor<Nd>{{}});
-	for (unsigned int j = 0; j < Nd; ++j)
-	{
-	  Coor<Nd> c{{}};
-	  if (dims[j] >= 2)
-	  {
-	    c[j] = 1;
-	    neighbors.push_back(c);
-	  }
-	  if (dims[j] > 2)
-	  {
-	    c[j] = -1;
-	    neighbors.push_back(c);
-	  }
-	}
+	std::vector<Coor<Nd>> neighbors = Coloring::all_neighbors(power, dims);
 
 	// Create the sparse tensor
 	int maxX = dim['X'];
-	auto d_sop = d.extend_support({{rd.at('x'), max_dist_neigbors},
-				       {rd.at('y'), max_dist_neigbors + max_dist_neigbors % maxX},
-				       {rd.at('z'), max_dist_neigbors + max_dist_neigbors % maxX},
-				       {rd.at('t'), max_dist_neigbors + max_dist_neigbors % maxX}});
+	auto d_sop =
+	  (power == 0 ? d
+		      : d.extend_support({{rd.at('x'), (op.max_dist_neighbors + maxX - 1) / maxX},
+					  {rd.at('y'), op.max_dist_neighbors},
+					  {rd.at('z'), op.max_dist_neighbors},
+					  {rd.at('t'), op.max_dist_neighbors}}));
 	SpTensor<NOp, NOp, COMPLEX> sop{d_sop, i, Nblk, Nblk, (unsigned int)neighbors.size()};
 
 	int maxY = std::min(2, dims[1]);
@@ -607,11 +631,10 @@ namespace Chroma
 	for (unsigned int color = 0; color < num_colors; ++color)
 	{
 	  // Extracting the proving vector
-	  auto t_l =
-	    fillLatticeField<5, COMPLEX>("xyztX", nonblkd, OnDefaultDevice, [&](Coor<4> c) {
-	      return coloring.getColor({{c[0], c[1], c[2], c[3]}}) == color ? COMPLEX{1}
-									    : COMPLEX{0};
-	    });
+	  auto t_l = fillLatticeField<5,
+				      COMPLEX>("xyztX", nonblkd, OnDefaultDevice, [&](Coor<4> c) {
+	    return coloring.getColor({{c[0], c[1], c[2], c[3]}}) == color ? COMPLEX{1} : COMPLEX{0};
+	  });
 
 	  // Contracting the proving vector with the blocking components
 	  auto probs = contract<NOp * 2>(t_l, t_blbl, "");
@@ -720,9 +743,9 @@ namespace Chroma
 
 	sop.jj.fillCpuFunCoor([&](const Coor<NOp + 2>& c) {
 	  // c has order '~u%xyztX' where xyztX were remapped by ri
-	  int domi = c[0];	   // the domain label to evaluate, label ~
-	  int mu = c[1];	   // the direction, label u
-	  int base = c[domi + 2];  // the image coordinate value for label `domi`
+	  int domi = c[0];	  // the domain label to evaluate, label ~
+	  int mu = c[1];	  // the direction, label u
+	  int base = c[domi + 2]; // the image coordinate value for label `domi`
 
 	  // Do nothing for a blocking direction
 	  if (domi < Nblk)
@@ -749,16 +772,43 @@ namespace Chroma
 	// Construct the sparse operator
 	sop.construct();
 
+	// Return the sparse tensor and the remap from original operator to domain of the sparse tensor
+	return {sop, rd};
+      }
+
+      /// Return a sparse tensor with the content of the given operator
+      /// \param op: operator to extract the nonzeros from
+      /// \param power: maximum distance to recover the nonzeros:
+      ///               0, block diagonal; 1: near-neighbors...
+      /// \return: a pair of a sparse tensor and a remap; the sparse tensor has the same image
+      ///          labels as the given operator and domain labels are indicated by the returned remap.
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op)
+      {
+	// If the operator is empty, just return itself
+	if (op.d.volume() == 0 || op.i.volume() == 0)
+	  return op;
+
+	// Get a sparse tensor representation of the operator
+	auto t = detail::cloneOperatorToSpTensor(op, op.max_dist_neighbors);
+	auto sop = t.first;
+	remap rd = t.second;
+
 	// Construct the operator to return
 	Operator<NOp, COMPLEX> rop{
 	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	    auto x0 = x.reorder("%xyztXn", '%');
+	    auto x0 = x.reorder(sop.i.order + "%", '%');
 	    auto y0 = (y.order == x0.order ? y : x0.like_this());
 	    sop.contractWith(x0, rd, y0);
 	    if (y.data != y0.data)
 	      y0.copyTo(y);
 	  },
-	  i, i, nullptr, op.order_t};
+	  sop.i,
+	  sop.i,
+	  nullptr,
+	  op.order_t,
+	  op.max_dist_neighbors};
 
 	// Do a test
 	auto x = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', 2}});
@@ -767,13 +817,45 @@ namespace Chroma
 	auto base_norm = norm<1>(y, "n");
 	rop(x).scale(-1).addTo(y);
 	auto error = norm<1>(y, "n");
-	auto eps =
-	  std::sqrt(std::numeric_limits<typename detail::real_type<COMPLEX>::type>::epsilon());
+	auto eps = std::sqrt(std::numeric_limits<typename real_type<COMPLEX>::type>::epsilon());
 	for (int i = 0; i < base_norm.volume(); ++i)
 	  if (error.get({{i}}) > eps * base_norm.get({{i}}))
-	      throw std::runtime_error("cloneOperator: too much error on the cloned operator");
+	    throw std::runtime_error("cloneOperator: too much error on the cloned operator");
 
 	return rop;
+      }
+
+      /// Return the block diagonal of an operator
+      /// \param op: operator to extract the block diagonal
+      /// \param block_labels: labels that compose the blocks
+      /// \param m: map from the operator block labels to the new labels to represent the rows
+      /// \return: tensor with the block labels as columns and the renamed labels as rows
+
+      template <std::size_t N, std::size_t NOp, typename COMPLEX>
+      Tensor<N, COMPLEX> getBlockDiag(const Operator<NOp, COMPLEX>& op,
+				      const std::string& block_labels, const remap& m)
+      {
+	// Check
+	// Get a sparse tensor representation of the operator
+	auto t = cloneOperatorToSpTensor(op, 0 /* clone only the block diagonal */);
+	auto sop = t.first;
+	remap rd = t.second;
+
+	// Create tensor to return
+	std::string order = update_order(block_labels, m) + op.d.order;
+	auto dims = op.d.kvdim();
+	for (const auto& it : m)
+	  dims[it.second] = dims[it.first];
+	Tensor<N, COMPLEX> r = op.d.template like_this<N>(order, dims);
+
+	// Copy the blocks
+	remap m_blk;
+	for (const auto& it : m)
+	  m_blk[rd[it.first]] = it.second;
+	sop.data.rename_dims(m_blk).copyTo(r);
+
+	// Return tensor
+	return r;
       }
 
       /// Returns the prolongator constructed from
@@ -848,7 +930,8 @@ namespace Chroma
 		      .rename_dims({{'c', 'C'}, {'s', 'S'}});
 		  contract(nv_blk, x, "cs", CopyTo, y_blk);
 		},
-		d, i,
+		d,
+		i,
 		[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		  auto x_blk =
 		    x.rename_dims({{'X', 'W'}})
@@ -860,9 +943,9 @@ namespace Chroma
 		      .rename_dims({{'c', 'C'}, {'s', 'S'}});
 		  contract<NOp + 1>(nv_blk.conj(), x_blk, "WwYZTSC", CopyTo, y);
 		},
-		op.order_t};
+		op.order_t,
+		op.DenseOperator};
       }
-
 
       /// Returns a MG preconditioner.
       ///
@@ -906,7 +989,7 @@ namespace Chroma
 			       V.tconj()(op(V(x)), y);
 			     });
 	  },
-	  V.d, V.d, nullptr, op.order_t});
+	  V.d, V.d, nullptr, op.order_t, op.max_dist_neighbors});
 
 	// Get the solver for the projector
 	const Operator<NOp, COMPLEX> coarseSolver =
@@ -928,7 +1011,124 @@ namespace Chroma
 		  opSolver(std::move(x1), y);
 		  y0.addTo(y);
 		},
-		op.i, op.d, nullptr, op.order_t};
+		op.i,
+		op.d,
+		nullptr,
+		op.order_t,
+		op.DenseOperator};
+      }
+
+      /// Returns an even-odd preconditioner.
+      ///
+      /// It returns an approximation of Op^{-1} by splitting the rows and columns into the two
+      /// (red-black, even-odd) and doing:
+      ///
+      ///  Op^{-1} = R^{-1} * A^{-1} * L^{-1} ->
+      ///
+      /// [ Op_ee Op_eo ]^{-1} = [       I            0 ] * [ Op_ee-Op_eo*Op_oo^{-1}*Op_oe   0   ]^{-1} *
+      /// [ Op_oe Op_oo ]        [ -Op_oo^{-1}*Op_oe  I ]   [              0               Op_oo ]
+      ///
+      ///                        * [ I  -Op_eo*Op_oo^{-1} ]
+      ///                          [ 0         I          ]
+      ///
+      /// The matrix Op_oo^{-1} is block diagonal and is computed directly, while
+      /// (Op_ee-Op_eo*Op_oo^{-1}*Op_oe)^{-1} is approximate by an iterative solver. Note that
+      /// the residual norm while solving A_ee=Op_ee-Op_eo*Op_oo^{-1}*Op_oe is the same as the original
+      /// residual norm. To prove that, notice that the global residual will be zero for the odds,
+      /// and that the global residual for a solution x'_e of A_ee is
+      ///   r = L*A*R * R^{-1}*[x'_e x'_o] - b = [r_e; 0];
+      /// therefore ||L^{-1}r|| = ||r|| because of the form of L, making
+      ///   ||r|| = || A_e*x'_e - (b_e-Op_eo*Op_oo^{-1}*b_o) ||.
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getEvenOddPrec(Operator<NOp, COMPLEX> op, const Options& ops)
+      {
+	auto dims = op.d.kvdim();
+	if (dims.count('X') == 0 || dims.at('X') != 2)
+	  ops.throw_error(
+	    "getEvenOddPrec: only supported on explicitly colored operators with two colors");
+
+	// Get the block diagonal of the operator
+	auto opDiag = getBlockDiag<NOp + 2>(op, "sc", {{'s', 'S'}, {'c', 'C'}});
+
+	// Get an explicit form for A:=I-Op_eo*Op_oo^{-1}*Op_oe*Op_ee^{-1}
+	unsigned int create_operator_max_rhs =
+	  getOption<unsigned int>(ops, "create_operator_max_rhs", 0);
+	const Operator<NOp, COMPLEX> opA = cloneOperator(Operator<NOp, COMPLEX>{
+	  [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    foreachInChuncks(
+	      x, y, create_operator_max_rhs,
+	      [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
+		// y0 = Op_ee^{-1} * x
+		auto y0 = op.d.template like_this<NOp + 1>(none, {{'n', x.kvdim()['n']}});
+		y0.set_zero();
+		solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		  opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "SC", "sc", x, "sc", CopyTo,
+		  y0.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+
+		// y1 = Op_oe * y0
+		auto y1 = op(y0).kvslice_from_size({{'X', 1}}, {{'X', 1}});
+		// y2 = Op_oo^{-1} * y1
+		auto y2 = y0;
+		y2.set_zero();
+		solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		  opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "SC", "sc", y1, "sc", CopyTo,
+		  y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+
+		// y3 = Op_eo * y2
+		auto y3 = op(y2).kvslice_from_size({{'X', 0}}, {{'X', 1}});
+
+		// y = x - y3
+		x.copyTo(y);
+		y3.scale(-1).addTo(y);
+	      });
+	  },
+	  op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
+	  op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}), nullptr, op.order_t,
+	  op.max_dist_neighbors * 2});
+
+	// Get solver on opA
+	const Operator<NOp, COMPLEX> solver = getSolver(opA, getOptions(ops, "solver"));
+
+	// Return the solver
+	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		  // be = x_e - Op_eo*Op_oo^{-1}*x_o
+		  auto be = solver.d.template like_this<NOp + 1>(none, {{'n', x.kvdim()['n']}});
+		  x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
+		  auto ya = op.d.template like_this<NOp + 1>(none, {{'n', x.kvdim()['n']}});
+		  ya.set_zero();
+		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "SC", "sc",
+		    x.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "sc", CopyTo,
+		    ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+		  op(ya).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(be);
+
+		  // Solve opA * ye0 = be
+		  auto ye0 = solver(be);
+
+		  // y_e = Op_ee^{-1} * ye0
+		  y.set_zero();
+		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		    opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "SC", "sc", ye0, "sc", CopyTo,
+		    y.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+
+		  // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
+		  op(y, ya);
+		  auto yo0 = be;
+		  x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
+		  ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).scale(-1).addTo(yo0);
+		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "SC", "sc", yo0, "sc", CopyTo,
+		    y.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+		},
+		op.i,
+		op.d,
+		nullptr,
+		op.order_t,
+		op.DenseOperator};
       }
     }
 
@@ -941,7 +1141,8 @@ namespace Chroma
     {
       static const std::map<std::string, detail::Solver<NOp, COMPLEX>> solvers{
 	{"fgmres", detail::getFGMRESSolver<NOp, COMPLEX>}, // flexible GMRES
-	{"mg", detail::getMGPrec<NOp, COMPLEX>}		   // Multigrid
+	{"mg", detail::getMGPrec<NOp, COMPLEX>},	   // Multigrid
+	{"eo", detail::getEvenOddPrec<NOp, COMPLEX>}	   // even-odd Schur preconditioner
       };
 
       return detail::getSolver(solvers, op, ops);
@@ -952,24 +1153,30 @@ namespace Chroma
     {
       LatticeFermion a;
       auto d = asTensorView(a).toComplex().make_eg();
-      return {[&](const Tensor<Nd + 4, Complex>& x, Tensor<Nd + 4, Complex> y) {
-		LatticeFermion x0, y0;
-		unsigned int n = x.kvdim()['n'];
-		for (unsigned int i = 0; i < n; ++i)
-		{
-		  x.kvslice_from_size({{'n', i}}, {{'n', 1}}).copyTo(asTensorView(x0));
-		  y0 = zero;
-		  linOp(y0, x0, PLUS /* I believe, it's ignored */);
-		  asTensorView(y0).copyTo(y.kvslice_from_size({{'n', i}}, {{'n', 1}}));
-		}
-	      },
-	      d, d};
+      return {
+	[&](const Tensor<Nd + 4, Complex>& x, Tensor<Nd + 4, Complex> y) {
+	  LatticeFermion x0, y0;
+	  unsigned int n = x.kvdim()['n'];
+	  for (unsigned int i = 0; i < n; ++i)
+	  {
+	    x.kvslice_from_size({{'n', i}}, {{'n', 1}}).copyTo(asTensorView(x0));
+	    y0 = zero;
+	    linOp(y0, x0, PLUS /* I believe, it's ignored */);
+	    asTensorView(y0).copyTo(y.kvslice_from_size({{'n', i}}, {{'n', 1}}));
+	  }
+	},
+	d,	 // domain
+	d,	 // image
+	nullptr, // no conjugate
+	"",	 // no order_t
+	1	 // links with near-neighbors only
+      };
     }
 
     //
     // High-level chroma operations
     //
- 
+
     /// Either a Chroma solver or a superb solver
     struct ChimeraSolver {
       /// Action

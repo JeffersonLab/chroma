@@ -42,6 +42,9 @@ namespace Chroma
       return num_colors;
     }
 
+    static std::vector<std::array<int, 4>> all_neighbors(unsigned int farthest_neighbor,
+							 std::array<int, 4> dim);
+
   private:
     std::vector<unsigned int> colors;
     std::vector<unsigned int> local_colors;
