@@ -164,10 +164,10 @@ namespace Chroma
     // chi[0][rb[cb]] = a[0]*tmp;
     
     if( N5 > 1 ) { 
-      chi[0][rb[cb]] = alpha[0]*psi[1] + a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
+      chi[0][rb[cb]] = alpha[0]*psi[1] + a[0]*(Gamma(15)*psi[0]);
     }
     else {
-      chi[0][rb[cb]] = a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
+      chi[0][rb[cb]] = a[0]*(Gamma(15)*psi[0]);
     }
 
     // All the rest
@@ -188,7 +188,7 @@ namespace Chroma
       tmp[rb[cb]] = Gamma(G5)*psi[i];
       chi[i][rb[cb]] += a[i]*tmp;
       */
-      chi[i][rb[cb]] = alpha[i-1]*psi[i-1] + a[i]*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
+      chi[i][rb[cb]] = alpha[i-1]*psi[i-1] + a[i]*(Gamma(15)*psi[i]);
 
       // When i hits N5-1, we don't have the B_N5-1 term
       if(i < N5-1) {
@@ -239,7 +239,7 @@ namespace Chroma
     for(int i = 1; i < N5; i++) { 
       // tmp[rb[cb]] = Gamma(G5)*y[i-1];
       // y[i][rb[cb]] = psi[i] - u[i-1]*tmp;
-      y[i][rb[cb]] = psi[i] - u[i-1]*(GammaConst<Ns,Ns*Ns-1>()*y[i-1]);
+      y[i][rb[cb]] = psi[i] - u[i-1]*(Gamma(15)*y[i-1]);
     } 
 
     // Invert diagonal piece  y <- D^{-1} y
@@ -251,15 +251,15 @@ namespace Chroma
 
     // 2NcNs
 
-    chi[N5-1][rb[cb]] = invd[N5-1]*(GammaConst<Ns,Ns*Ns-1>()*y[N5-1]);
+    chi[N5-1][rb[cb]] = invd[N5-1]*(Gamma(15)*y[N5-1]);
 
     // N5-1 * 6NcNs
     for(int i = N5-2; i >= 0; i--) {
       // tmp[rb[cb]] = Gamma(G5)*chi[i+1]
       // chi[i][rb[cb]] = y[i] - u[i]*tmp;
-      // y[i][rb[cb]] = invd[i]*(GammaConst<Ns,Ns*Ns-1>()*y[i]);
-      // chi[i][rb[cb]] = y[i] - u[i]*(GammaConst<Ns,Ns*Ns-1>()*chi[i+1]);
-      chi[i][rb[cb]] = GammaConst<Ns,Ns*Ns-1>()*(invd[i]*y[i]-u[i]*chi[i+1]); 
+      // y[i][rb[cb]] = invd[i]*(Gamma(15)*y[i]);
+      // chi[i][rb[cb]] = y[i] - u[i]*(Gamma(15)*chi[i+1]);
+      chi[i][rb[cb]] = Gamma(15)*(invd[i]*y[i]-u[i]*chi[i+1]); 
     }
 
     //Done! That was not that bad after all....
@@ -309,7 +309,7 @@ namespace Chroma
       // chi[i][rb[cb]] = Gamma(G5)*tmp;
       */
       // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      chi[i][rb[cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*tmp[i]);
+      chi[i][rb[cb]] = off_diag_coeff[i]*(Gamma(15)*tmp[i]);
     }
 
  
@@ -322,7 +322,7 @@ namespace Chroma
       // chi[N5-1][rb[cb]] = Gamma(G5)*tmp;
 
       // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      chi[N5-1][rb[cb]] = off_diag_coeff[N5-1]*(GammaConst<Ns,Ns*Ns-1>()*tmp[N5-1]);
+      chi[N5-1][rb[cb]] = off_diag_coeff[N5-1]*(Gamma(15)*tmp[N5-1]);
     }
     else { 
       chi[N5-1][rb[cb]] = zero;

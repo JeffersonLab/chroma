@@ -70,7 +70,7 @@ namespace Chroma
 
 	// chi = G_5 tmp
 	for(int s=0; s < N5; s++) { 
-	  chi[s][sub] = GammaConst<Ns,Ns*Ns-1>()*tmp[s];
+	  chi[s][sub] = Gamma(15)*tmp[s];
 	}
     
 	// tmp disappears here...
