@@ -557,10 +557,6 @@ namespace Chroma
 	  throw std::runtime_error("cloneOperatorToSpTensor: unsupported value for `power`: "
 				   "either zero or `max_dist_neighbors`");
 
-	// Unsupported explicitly colorized operators
-	if (op.d.kvdim().count('X') == 0)
-	  throw std::runtime_error("cloneOperator: unsupported not explicitly colored operators");
-
 	// If the operator is empty, just return itself
 	if (op.d.volume() == 0 || op.i.volume() == 0)
 	  return {{}, {}};
@@ -1052,7 +1048,8 @@ namespace Chroma
 	    "getEvenOddPrec: only supported on explicitly colored operators with two colors");
 
 	// Get the block diagonal of the operator
-	auto opDiag = getBlockDiag<NOp + 2>(op, "sc", {{'s', 'S'}, {'c', 'C'}});
+	remap m_sc{{'s', 'S'}, {'c', 'C'}};
+	auto opDiag = getBlockDiag<NOp + 2>(op, "sc", m_sc);
 
 	// Get an explicit form for A:=I-Op_eo*Op_oo^{-1}*Op_oe*Op_ee^{-1}
 	unsigned int create_operator_max_rhs =
@@ -1063,11 +1060,11 @@ namespace Chroma
 	      x, y, create_operator_max_rhs,
 	      [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
 		// y0 = Op_ee^{-1} * x
-		auto y0 = op.d.template like_this<NOp + 1>(none, {{'n', x.kvdim()['n']}});
+		auto y0 = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', x.kvdim()['n']}});
 		y0.set_zero();
 		solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		  opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "SC", "sc", x, "sc", CopyTo,
-		  y0.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+		  y0.kvslice_from_size({{'X', 0}}, {{'X', 1}}).rename_dims(m_sc));
 
 		// y1 = Op_oe * y0
 		auto y1 = op(y0).kvslice_from_size({{'X', 1}}, {{'X', 1}});
@@ -1076,7 +1073,7 @@ namespace Chroma
 		y2.set_zero();
 		solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		  opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "SC", "sc", y1, "sc", CopyTo,
-		  y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+		  y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
 
 		// y3 = Op_eo * y2
 		auto y3 = op(y2).kvslice_from_size({{'X', 0}}, {{'X', 1}});
@@ -1096,14 +1093,16 @@ namespace Chroma
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		  // be = x_e - Op_eo*Op_oo^{-1}*x_o
-		  auto be = solver.d.template like_this<NOp + 1>(none, {{'n', x.kvdim()['n']}});
+		  auto be =
+		    solver.d.template like_this<NOp + 1>("%n", '%', "", {{'n', x.kvdim()['n']}});
 		  x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
-		  auto ya = op.d.template like_this<NOp + 1>(none, {{'n', x.kvdim()['n']}});
+		  auto ya =
+		    op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', x.kvdim()['n']}});
 		  ya.set_zero();
 		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "SC", "sc",
 		    x.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "sc", CopyTo,
-		    ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+		    ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
 		  op(ya).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(be);
 
 		  // Solve opA * ye0 = be
@@ -1113,7 +1112,7 @@ namespace Chroma
 		  y.set_zero();
 		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		    opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "SC", "sc", ye0, "sc", CopyTo,
-		    y.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+		    y.kvslice_from_size({{'X', 0}}, {{'X', 1}}).rename_dims(m_sc));
 
 		  // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
 		  op(y, ya);
@@ -1122,7 +1121,7 @@ namespace Chroma
 		  ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).scale(-1).addTo(yo0);
 		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "SC", "sc", yo0, "sc", CopyTo,
-		    y.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+		    y.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
 		},
 		op.i,
 		op.d,
