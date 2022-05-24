@@ -48,7 +48,7 @@
 #    include <primme.h>
 #  endif
 
-#  if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
+#  if defined(BUILD_MAGMA)
 #    include "magma_v2.h"
 #  endif
 
@@ -500,7 +500,7 @@ namespace Chroma
 	return r;
       }
 
-#  if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
+#  if defined(BUILD_MAGMA)
       // Return a MAGMA context
       inline std::shared_ptr<magma_queue_t> getMagmaContext(Maybe<int> device = none)
       {
@@ -541,7 +541,7 @@ namespace Chroma
 	{
 	case OnHost: return cpuctx;
 	case OnDefaultDevice:
-#  ifdef QDP_IS_QDPJIT
+#  ifdef SUPERBBLAS_USE_GPU
 	  if (!cudactx)
 	  {
 
@@ -551,7 +551,7 @@ namespace Chroma
 #    elif defined(SUPERBBLAS_USE_HIP)
 	    superbblas::detail::hipCheck(hipGetDevice(&dev));
 #    else
-#      error superbblas was not build with support for GPUs
+#      error unsupported GPU platform
 #    endif
 
 #    if defined(BUILD_MAGMA)
@@ -560,11 +560,8 @@ namespace Chroma
 #    endif
 
 	    // Workaround on a potential issue in qdp-jit: avoid passing through the pool allocator
-	    if (jit_config_get_max_allocation() == 0)
-	    {
-	      cudactx = std::make_shared<superbblas::Context>(superbblas::createGpuContext(dev));
-	    }
-	    else
+#    if defined(QDP_IS_QDPJIT)
+	    if (jit_config_get_max_allocation() != 0)
 	    {
 	      cudactx = std::make_shared<superbblas::Context>(superbblas::createGpuContext(
 		dev,
@@ -591,11 +588,16 @@ namespace Chroma
 		    QDP_get_global_cache().signoffViaPtr(ptr);
 		}));
 	    }
+	    else
+#    endif // defined(QDP_IS_QDPJIT)
+	    {
+	      cudactx = std::make_shared<superbblas::Context>(superbblas::createGpuContext(dev));
+	    }
 	  }
 	  return cudactx;
-#  else
+#  else	 // SUPERBBLAS_USE_GPU
 	  return cpuctx;
-#  endif
+#  endif // SUPERBBLAS_USE_GPU
 	}
 	throw std::runtime_error("Unsupported `DeviceHost`");
       }
@@ -604,7 +606,7 @@ namespace Chroma
 
       inline bool is_same(DeviceHost a, DeviceHost b)
       {
-#  ifdef QDP_IS_QDPJIT
+#  ifdef SUPERBBLAS_USE_GPU
 	return a == b;
 #  else
 	// Without gpus, OnHost and OnDefaultDevice means on cpu.
@@ -801,6 +803,21 @@ namespace Chroma
 	    r.push_back(fs);
 	  }
 	  return TensorPartition<N>{dim, r};
+	}
+
+	/// Return a subpartition given a range
+
+	TensorPartition<N> get_subpartition(const Coor<N>& from, const Coor<N>& size) const
+	{
+	  typename TensorPartition<N>::PartitionStored r;
+	  r.reserve(p.size());
+	  for (const auto& i : p)
+	  {
+	    Coor<N> lfrom, lsize;
+	    superbblas::detail::intersection(i[0], i[1], from, size, dim, lfrom, lsize);
+	    r.push_back({lfrom, lsize});
+	  }
+	  return TensorPartition<N>{size, r};
 	}
 
 	/// Return a partition with the local portion of the tensor
@@ -1925,8 +1942,9 @@ namespace Chroma
 
       Tensor<N, T> make_eg() const
       {
-	return Tensor<N, T>(order, dim, ctx, std::shared_ptr<T>(), p, dist, from, size, T{1},
-			    false /* not conjugate */, true /* is eg */);
+	return Tensor<N, T>(order, size, ctx, std::shared_ptr<T>(),
+			    std::make_shared<detail::TensorPartition<N>>(p->get_subpartition(from, size)),
+			    dist, {}, size, T{1}, false /* not conjugate */, true /* is eg */);
       }
 
     private:
@@ -2765,7 +2783,7 @@ namespace Chroma
 
       DeviceHost getDev() const
       {
-#  ifdef QDP_IS_QDPJIT
+#  ifdef SUPERBBLAS_USE_GPU
 	return (ctx->plat != superbblas::CPU ? OnDefaultDevice : OnHost);
 #  else
 	return OnDefaultDevice;
@@ -3085,7 +3103,7 @@ namespace Chroma
     template <typename T>
     void* getQDPPtr(const T& t)
     {
-#  ifdef QDP_IS_QDPJIT
+#  if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
       std::vector<QDPCache::ArgKey> v(1, t.getId());
       void* r = QDP_get_global_cache().get_dev_ptrs(v)[0];
       assert(superbblas::detail::getPtrDevice(r) >= 0);
@@ -3107,7 +3125,7 @@ namespace Chroma
 				     std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
     }
 
-#  ifndef QDP_IS_QDPJIT
+#  if !defined(QDP_IS_QDPJIT) || !defined(SUPERBBLAS_USE_GPU)
     inline Tensor<Nd + 3, Complex> asTensorView(const LatticeFermion& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
@@ -3123,7 +3141,7 @@ namespace Chroma
     }
 #  endif
 
-#  ifndef QDP_IS_QDPJIT
+#  if !defined(QDP_IS_QDPJIT) || !defined(SUPERBBLAS_USE_GPU)
     inline Tensor<Nd + 1, Complex> asTensorView(const LatticeComplex& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
@@ -3139,7 +3157,7 @@ namespace Chroma
     }
 #  endif
 
-#  ifndef QDP_IS_QDPJIT
+#  if !defined(QDP_IS_QDPJIT) || !defined(SUPERBBLAS_USE_GPU)
     inline Tensor<Nd + 3, Complex> asTensorView(const LatticeColorMatrix& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
@@ -3256,6 +3274,10 @@ namespace Chroma
 	// Check that the examples are on the same device
 	if (d.getDev() != i.getDev())
 	  throw std::runtime_error("Please give example vectors on the same device");
+
+	// Check that `d` and `i` are not subtensors
+	if (this->d.isSubtensor() || this->i.isSubtensor())
+	  throw std::runtime_error("unsupported subtensors for domain/image distributions");
 
 	// Check that the domain and image labels are different and do not contain `u` or `~`
 	detail::check_order<NI + ND + 2>(i.order + d.order + std::string("u~"));
@@ -4165,7 +4187,7 @@ namespace Chroma
       }
 
       // NOTE: for now, the GPU version requires MAGMA
-#  if defined(BUILD_PRIMME) && (!defined(QDP_IS_QDPJIT) || defined(BUILD_MAGMA))
+#  if defined(BUILD_PRIMME)
 
       // Apply the laplacian operator on the spatial dimensions
       /// \param u: Gauge fields restricted to the same t-slice as chi and psi
@@ -4198,6 +4220,7 @@ namespace Chroma
 	const std::vector<Tensor<Nd + 3, ComplexD>> u; // Gauge fields
 	const Index first_tslice;		       // global t index
 	const std::string order;		       // Laplacian input/output tensor's order
+	const DeviceHost primme_dev;		       // where primme allocations are
       };
 
       // Wrapper for PRIMME of `LaplacianOperator`
@@ -4220,9 +4243,9 @@ namespace Chroma
 
 	  OperatorAux& opaux = *(OperatorAux*)primme->matrix;
 	  Coor<Nd + 3> size = latticeSize<Nd + 3>(opaux.order, {{'n', *blockSize}, {'t', 1}});
-	  Tensor<Nd + 3, ComplexD> tx(opaux.order, size, OnDefaultDevice, OnEveryone,
+	  Tensor<Nd + 3, ComplexD> tx(opaux.order, size, opaux.primme_dev, OnEveryone,
 				      std::shared_ptr<ComplexD>((ComplexD*)x, [](ComplexD*) {}));
-	  Tensor<Nd + 3, ComplexD> ty(opaux.order, size, OnDefaultDevice, OnEveryone,
+	  Tensor<Nd + 3, ComplexD> ty(opaux.order, size, opaux.primme_dev, OnEveryone,
 				      std::shared_ptr<ComplexD>((ComplexD*)y, [](ComplexD*) {}));
 	  LaplacianOperator(opaux.u, opaux.first_tslice, ty, tx);
 	  *ierr = 0;
@@ -4284,10 +4307,16 @@ namespace Chroma
 		      .template make_sure<ComplexD>("ijxyztX");
 	  }
 
+#    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
+	  DeviceHost primme_dev = OnDefaultDevice;
+#    else
+	  DeviceHost primme_dev = OnHost;
+#    endif
+
 	  // Create an auxiliary struct for the PRIMME's matvec
 	  // NOTE: Please keep 'n' as the slowest index; the rows of vectors taken by PRIMME's matvec has dimensions 'cxyztX',
-          // and 'n' is the dimension for the columns.
-	  OperatorAux opaux{ut, from_tslice + t, "cxyztXn"};
+	  // and 'n' is the dimension for the columns.
+	  OperatorAux opaux{ut, from_tslice + t, "cxyztXn", primme_dev};
 
 	  // Make a bigger structure holding
 	  primme_params primme;
@@ -4349,12 +4378,12 @@ namespace Chroma
 	  Tensor<Nd + 3, ComplexD> evecs(
 	    opaux.order, latticeSize<Nd + 3>(opaux.order, {{'n', primme.numEvals}, {'t', 1}}),
 	    OnDefaultDevice, OnEveryone);
-#    if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
+#    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
 	  primme.queue = &*detail::getMagmaContext();
 #    endif
 
 	  // Call primme
-#    if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
+#    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
 	  int ret = magma_zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
 #    else
 	  int ret = zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
