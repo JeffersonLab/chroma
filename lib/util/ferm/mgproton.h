@@ -622,27 +622,29 @@ namespace Chroma
 	Coor<Nd> real_dims{{dim['x'] * real_dim['X'], dim['y'], dim['z'], dim['t']}};
 	Coor<Nd> dims{{dim['x'] * dim['X'], dim['y'], dim['z'], dim['t']}};
 	Coloring coloring{0, // zero displacement in coloring
-			  power == 0 ? op.max_dist_neighbors
+			  power == 0 ? op.max_dist_neighbors + 1
 				     : op.max_dist_neighbors * 2 + 1, // k-distance coloring
 			  real_dims};
 	unsigned int num_colors = coloring.numColors();
 
 	// The first half of the colors are for even nodes
-	if (real_dim['X'] != dim['X'])
+	int maxX = dim['X'];
+	int real_maxX = real_dim['X'];
+	if (real_maxX != maxX)
 	  num_colors /= 2;
 
 	// Get the number of neighbors
-	std::vector<Coor<Nd>> neighbors = Coloring::all_neighbors(power, dims);
-	if (real_dim['X'] != dim['X'])
+	std::vector<Coor<Nd>> neighbors = Coloring::all_neighbors(power, real_dims);
+	if (real_maxX != maxX)
 	{
 	  // Filter out odd neighbors
 	  std::vector<Coor<Nd>> new_neighbors;
 	  for (const auto& it : neighbors)
 	  {
-	    if ((it[0] + it[1] + it[2] + it[3]) % real_dim['X'] == 0)
+	    if ((it[0] + it[1] + it[2] + it[3]) % real_maxX == 0)
 	    {
 	      Coor<Nd> r = it;
-	      r[0] = normalize_coor(r[0], real_dims[0]) / 2;
+	      r[0] = normalize_coor(r[0], real_dims[0]) / real_maxX;
 	      new_neighbors.push_back(r);
 	    }
 	  }
@@ -650,8 +652,6 @@ namespace Chroma
 	}
 
 	// Create the sparse tensor
-	int maxX = dim['X'];
-	int real_maxX = real_dim['X'];
 	auto d_sop =
 	  (power == 0 ? d
 		      : d.extend_support({{rd.at('x'), (op.max_dist_neighbors + real_maxX - 1) / real_maxX},
@@ -858,9 +858,34 @@ namespace Chroma
 	rop(x).scale(-1).addTo(y);
 	auto error = norm<1>(y, "n");
 	auto eps = std::sqrt(std::numeric_limits<typename real_type<COMPLEX>::type>::epsilon());
+	bool fail = false;
 	for (int i = 0; i < base_norm.volume(); ++i)
-	  if (error.get({{i}}) > eps * base_norm.get({{i}}))
+	  if (error.get({{i}}) > eps * base_norm.get({{i}})) fail = true;
+
+	if (fail)
+	for (unsigned int j = 0; j < op.i.volume(); ++j)
+	{
+	  auto x = op.i.template like_this<NOp + 1>("%n", '%', "", {{'n', 1}});
+	  x.set_zero();
+	  auto x0 = x.make_sure(none, OnHost, OnEveryoneReplicated);
+	  x0.data.get()[j] = COMPLEX{1};
+	  x0.copyTo(x);
+	  auto y = op(x);
+	  auto y0 = y.clone();
+	  auto base_norm = norm<1>(y, "n");
+	  auto y1 = rop(x);
+	  y1.scale(-1).addTo(y);
+	  auto error = norm<1>(y, "n");
+	  auto eps =
+	    std::sqrt(std::numeric_limits<typename detail::real_type<COMPLEX>::type>::epsilon());
+	  if (error.get({{0}}) > eps * base_norm.get({{0}}))
+	  {
+	    QDPIO::cout << "error at source " << j << std::endl;
+	    y0.reorder(op.i.order + "n").print("y0");
+	    y1.reorder(op.i.order + "n").print("y1");
 	    throw std::runtime_error("cloneOperator: too much error on the cloned operator");
+	  }
+	}
 
 	return rop;
       }
@@ -1095,7 +1120,7 @@ namespace Chroma
 
 	// Get the block diagonal of the operator
 	remap m_sc{{'s', 'S'}, {'c', 'C'}};
-	auto opDiag = getBlockDiag<NOp + 2>(op, "sc", m_sc);
+	auto opDiag = getBlockDiag<NOp + 2>(op, "cs", m_sc);
 
 	// Get an explicit form for A:=I-Op_eo*Op_oo^{-1}*Op_oe*Op_ee^{-1}
 	unsigned int create_operator_max_rhs =
@@ -1111,7 +1136,7 @@ namespace Chroma
 		  {{'n', x.kvdim()['n']}});
 		y0.set_zero();
 		solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		  opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "SC", "sc", x, "sc", CopyTo,
+		  opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "CS", "cs", x, "cs", CopyTo,
 		  y0.kvslice_from_size({{'X', 0}}, {{'X', 1}}).rename_dims(m_sc));
 
 		// y1 = Op_oe * y0
@@ -1120,7 +1145,7 @@ namespace Chroma
 		auto y2 = y0;
 		y2.set_zero();
 		solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		  opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "SC", "sc", y1, "sc", CopyTo,
+		  opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs", y1, "cs", CopyTo,
 		  y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
 
 		// y3 = Op_eo * y2
@@ -1150,8 +1175,8 @@ namespace Chroma
 		    {{'n', x.kvdim()['n']}});
 		  ya.set_zero();
 		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "SC", "sc",
-		    x.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "sc", CopyTo,
+		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs",
+		    x.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", CopyTo,
 		    ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
 		  op(ya).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(be);
 
@@ -1161,7 +1186,7 @@ namespace Chroma
 		  // y_e = Op_ee^{-1} * ye0
 		  y.set_zero();
 		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		    opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "SC", "sc", ye0, "sc", CopyTo,
+		    opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "CS", "cs", ye0, "cs", CopyTo,
 		    y.kvslice_from_size({{'X', 0}}, {{'X', 1}}).rename_dims(m_sc));
 
 		  // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
@@ -1170,7 +1195,7 @@ namespace Chroma
 		  x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
 		  ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).scale(-1).addTo(yo0);
 		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "SC", "sc", yo0, "sc", CopyTo,
+		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs", yo0, "cs", CopyTo,
 		    y.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
 		},
 		op.i,
