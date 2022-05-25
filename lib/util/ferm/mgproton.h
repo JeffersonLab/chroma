@@ -41,6 +41,13 @@ namespace Chroma
       return m;
     }
 
+    /// Ordering of matrices
+
+    enum ColOrdering {
+      RowMajor,	   ///< row-major ordering, the fastest index is the column
+      ColumnMajor, ///< row-major ordering, the fastest index is the row
+    };
+
     /// Representation of an operator, function of type tensor -> tensor where the input and the
     /// output tensors have the same dimensions
 
@@ -65,6 +72,8 @@ namespace Chroma
       std::string order_t;
       /// Distance of the farthest direct neighbor in each non-blocking (sparse) direction
       unsigned int max_dist_neighbors;
+	/// Preferred ordering
+      ColOrdering preferred_col_ordering;
 
       /// Constant used in `Operator<NOp,COMPLEX>::max_dist_neighbors` to indicate that the operator is dense
       static const unsigned int DenseOperator = std::numeric_limits<unsigned int>::max();
@@ -77,13 +86,15 @@ namespace Chroma
       /// Constructor
       Operator(const OperatorFun<NOp, COMPLEX>& fop, Tensor<NOp, COMPLEX> d, Tensor<NOp, COMPLEX> i,
 	       const OperatorFun<NOp, COMPLEX>& fop_tconj = nullptr,
-	       const std::string& order_t = "", unsigned int max_dist_neighbors = 1)
+	       const std::string& order_t = "", unsigned int max_dist_neighbors = 1,
+	       ColOrdering preferred_col_ordering = ColumnMajor)
 	: fop(fop),
 	  d(d),
 	  i(i),
 	  fop_tconj(fop_tconj),
 	  order_t(order_t),
-	  max_dist_neighbors(max_dist_neighbors)
+	  max_dist_neighbors(max_dist_neighbors),
+	  preferred_col_ordering(preferred_col_ordering)
       {
       }
 
@@ -92,7 +103,7 @@ namespace Chroma
       {
 	if (!fop_tconj)
 	  throw std::runtime_error("Operator does not have conjugate transpose form");
-	return {fop_tconj, i, d, fop, order_t, max_dist_neighbors};
+	return {fop_tconj, i, d, fop, order_t, max_dist_neighbors, preferred_col_ordering};
       }
 
       /// Apply the operator
@@ -103,7 +114,8 @@ namespace Chroma
 	std::string cols = detail::union_dimensions(t.order, "", d.order); // t.order - d.order
 
 	auto x = t.template collapse_dimensions<NOp + 1>(cols, 'n').template make_sure<COMPLEX>();
-	auto y = i.template like_this<NOp + 1>("%n", '%', "", {{'n', x.kvdim()['n']}});
+	auto y = i.template like_this<NOp + 1>(preferred_col_ordering == ColumnMajor ? "%n" : "n%",
+					       '%', "", {{'n', x.kvdim()['n']}});
 	fop(x, y);
 	return y.template split_dimension<N>('n', cols, t.kvdim()).template make_sure<T>();
       }
@@ -298,8 +310,10 @@ namespace Chroma
 
       // Allocate the search subspace U (onto the left singular space), and
       // Z (onto the right singular space)
-      auto U = r.template like_this<NOp + 2>(std::string("%") + std::string(1, Vc), '%', "",
-					     {{Vc, max_basis_size + 1}});
+      auto U = r.template like_this<NOp + 2>(op.preferred_col_ordering == ColumnMajor
+					       ? std::string("%") + std::string(1, Vc)
+					       : std::string(1, Vc) + std::string("%"),
+					     '%', "", {{Vc, max_basis_size + 1}});
 
       // Allocate the search subspace Z (onto the right singular space); when no preconditioning
       // then Z = U
@@ -493,7 +507,8 @@ namespace Chroma
 		op.d,
 		nullptr,
 		op.order_t,
-		op.DenseOperator};
+		op.DenseOperator,
+		op.preferred_col_ordering};
       }
 
       /// Returns the \gamma_5 for a given number of spins
@@ -510,7 +525,7 @@ namespace Chroma
 	}
 	else if (ns == Ns)
 	{
-	  return SB::Gamma(Ns * Ns - 1);
+	  return SB::Gamma(Ns * Ns - 1).make_sure(none, dev);
 	}
 	else if (ns == 2)
 	{
@@ -569,9 +584,10 @@ namespace Chroma
 	// NOTE: assuming that x,y,z,t are the only non-blocking dimensions
 	std::set<char> lattice_dims{'x', 'y', 'z', 't', 'X'};
 	remap rd = getNewLabels(op.d.order, op.i.order + "u~");
-	auto d = op.d.reorder("%xyztX", '%').rename_dims(rd);
-	auto i = op.i.reorder("%xyztX", '%');
+	auto d = op.d.reorder("%xyztX", '%').make_sure(none, OnDefaultDevice).rename_dims(rd);
+	auto i = op.i.reorder("%xyztX", '%').make_sure(none, OnDefaultDevice);
 	auto dim = i.kvdim();
+	auto real_dim = i.alloc_kvdim();
 
 	// Get the blocking for the domain and the image
 	std::map<char, int> blkd, blki;
@@ -590,7 +606,7 @@ namespace Chroma
 	auto t_bl_rows = i.template like_this<Nblk>("%", '%', "xyztX");
 	t_bl_rows.set_zero();
 	auto t_blbl =
-	  contract<NOp + Nblk>(t_bl_rows, t_bl, "").make_sure(none, none, OnEveryoneReplicated);
+	  contract<NOp + Nblk>(t_bl_rows, t_bl, "").make_sure(none, OnHost, OnEveryoneReplicated);
 	assert(!t_blbl.isSubtensor());
 	COMPLEX* t_blbl_data = t_blbl.data.get();
 	for (std::size_t i = 0, vol = t_bl.volume(); i < vol; ++i)
@@ -599,23 +615,46 @@ namespace Chroma
 	std::map<char, int> nonblkd;
 	for (const auto& it : dim)
 	  nonblkd[it.first] = (lattice_dims.count(it.first) == 0 ? 1 : it.second);
+	std::map<char, int> real_nonblkd = nonblkd;
+	real_nonblkd['X'] = real_dim['X'];
 
 	// Compute the coloring
+	Coor<Nd> real_dims{{dim['x'] * real_dim['X'], dim['y'], dim['z'], dim['t']}};
 	Coor<Nd> dims{{dim['x'] * dim['X'], dim['y'], dim['z'], dim['t']}};
 	Coloring coloring{0, // zero displacement in coloring
 			  power == 0 ? op.max_dist_neighbors
 				     : op.max_dist_neighbors * 2 + 1, // k-distance coloring
-			  dims};
+			  real_dims};
 	unsigned int num_colors = coloring.numColors();
+
+	// The first half of the colors are for even nodes
+	if (real_dim['X'] != dim['X'])
+	  num_colors /= 2;
 
 	// Get the number of neighbors
 	std::vector<Coor<Nd>> neighbors = Coloring::all_neighbors(power, dims);
+	if (real_dim['X'] != dim['X'])
+	{
+	  // Filter out odd neighbors
+	  std::vector<Coor<Nd>> new_neighbors;
+	  for (const auto& it : neighbors)
+	  {
+	    if ((it[0] + it[1] + it[2] + it[3]) % real_dim['X'] == 0)
+	    {
+	      Coor<Nd> r = it;
+	      r[0] = normalize_coor(r[0], real_dims[0]) / 2;
+	      new_neighbors.push_back(r);
+	    }
+	  }
+	  neighbors = new_neighbors;
+	}
 
 	// Create the sparse tensor
 	int maxX = dim['X'];
+	int real_maxX = real_dim['X'];
 	auto d_sop =
 	  (power == 0 ? d
-		      : d.extend_support({{rd.at('x'), (op.max_dist_neighbors + maxX - 1) / maxX},
+		      : d.extend_support({{rd.at('x'), (op.max_dist_neighbors + real_maxX - 1) / real_maxX},
 					  {rd.at('y'), op.max_dist_neighbors},
 					  {rd.at('z'), op.max_dist_neighbors},
 					  {rd.at('t'), op.max_dist_neighbors}}));
@@ -627,10 +666,11 @@ namespace Chroma
 	for (unsigned int color = 0; color < num_colors; ++color)
 	{
 	  // Extracting the proving vector
-	  auto t_l = fillLatticeField<5,
-				      COMPLEX>("xyztX", nonblkd, OnDefaultDevice, [&](Coor<4> c) {
-	    return coloring.getColor({{c[0], c[1], c[2], c[3]}}) == color ? COMPLEX{1} : COMPLEX{0};
-	  });
+	  auto t_l =
+	    fillLatticeField<5, COMPLEX>("xyztX", real_nonblkd, OnDefaultDevice, [&](Coor<4> c) {
+	      return coloring.getColor({{c[0], c[1], c[2], c[3]}}) == color ? COMPLEX{1}
+									    : COMPLEX{0};
+	    }).kvslice_from_size({}, {{'X', maxX}});
 
 	  // Contracting the proving vector with the blocking components
 	  auto probs = contract<NOp * 2>(t_l, t_blbl, "");
@@ -792,9 +832,11 @@ namespace Chroma
 	remap rd = t.second;
 
 	// Construct the operator to return
+	ColOrdering co = ColumnMajor; //sop.data.ctx->plat == superbblas::CPU ? ColumnMajor : RowMajor;
 	Operator<NOp, COMPLEX> rop{
 	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	    auto x0 = x.reorder(sop.i.order + "%", '%');
+	    auto x0 = x.reorder(
+	      co == ColumnMajor ? sop.i.order + "%" : std::string("%") + sop.i.order, '%');
 	    auto y0 = (y.order == x0.order ? y : x0.like_this());
 	    sop.contractWith(x0, rd, y0);
 	    if (y.data != y0.data)
@@ -804,10 +846,12 @@ namespace Chroma
 	  sop.i,
 	  nullptr,
 	  op.order_t,
-	  op.max_dist_neighbors};
+	  op.max_dist_neighbors,
+	  co};
 
 	// Do a test
-	auto x = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', 2}});
+	auto x =
+	  op.d.template like_this<NOp + 1>(co == ColumnMajor ? "%n" : "n%", '%', "", {{'n', 2}});
 	urand(x, -1, 1);
 	auto y = op(x);
 	auto base_norm = norm<1>(y, "n");
@@ -886,7 +930,7 @@ namespace Chroma
 	  throw std::runtime_error("Error in getMGProlongator: Unsupported spin number");
 
 	auto nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
-	auto g5 = getGamma5(ns, OnHost), g5pos = g5.clone(), g5neg = g5.clone();
+	auto g5 = getGamma5(ns, OnHost), g5pos = g5.cloneOn(OnHost), g5neg = g5.cloneOn(OnHost);
 	for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
 	  g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
 	for (int i = 0; i < ns; ++i) // make diagonal entries of gneg all negative or zero
@@ -940,7 +984,8 @@ namespace Chroma
 		  contract<NOp + 1>(nv_blk.conj(), x_blk, "WwYZTSC", CopyTo, y);
 		},
 		op.order_t,
-		op.DenseOperator};
+		op.DenseOperator,
+		op.preferred_col_ordering};
       }
 
       /// Returns a MG preconditioner.
@@ -985,7 +1030,7 @@ namespace Chroma
 			       V.tconj()(op(V(x)), y);
 			     });
 	  },
-	  V.d, V.d, nullptr, op.order_t, op.max_dist_neighbors});
+	  V.d, V.d, nullptr, op.order_t, op.max_dist_neighbors, op.preferred_col_ordering});
 
 	// Get the solver for the projector
 	const Operator<NOp, COMPLEX> coarseSolver =
@@ -1011,7 +1056,8 @@ namespace Chroma
 		op.d,
 		nullptr,
 		op.order_t,
-		op.DenseOperator};
+		op.DenseOperator,
+		op.preferred_col_ordering};
       }
 
       /// Returns an even-odd preconditioner.
@@ -1060,7 +1106,9 @@ namespace Chroma
 	      x, y, create_operator_max_rhs,
 	      [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
 		// y0 = Op_ee^{-1} * x
-		auto y0 = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', x.kvdim()['n']}});
+		auto y0 = op.d.template like_this<NOp + 1>(
+		  op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+		  {{'n', x.kvdim()['n']}});
 		y0.set_zero();
 		solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		  opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "SC", "sc", x, "sc", CopyTo,
@@ -1085,7 +1133,7 @@ namespace Chroma
 	  },
 	  op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
 	  op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}), nullptr, op.order_t,
-	  op.max_dist_neighbors * 2});
+	  op.max_dist_neighbors * 2, op.preferred_col_ordering});
 
 	// Get solver on opA
 	const Operator<NOp, COMPLEX> solver = getSolver(opA, getOptions(ops, "solver"));
@@ -1093,11 +1141,13 @@ namespace Chroma
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		  // be = x_e - Op_eo*Op_oo^{-1}*x_o
-		  auto be =
-		    solver.d.template like_this<NOp + 1>("%n", '%', "", {{'n', x.kvdim()['n']}});
+		  auto be = solver.d.template like_this<NOp + 1>(
+		    solver.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+		    {{'n', x.kvdim()['n']}});
 		  x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
-		  auto ya =
-		    op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', x.kvdim()['n']}});
+		  auto ya = op.d.template like_this<NOp + 1>(
+		    op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+		    {{'n', x.kvdim()['n']}});
 		  ya.set_zero();
 		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "SC", "sc",
@@ -1127,7 +1177,8 @@ namespace Chroma
 		op.d,
 		nullptr,
 		op.order_t,
-		op.DenseOperator};
+		op.DenseOperator,
+		op.preferred_col_ordering};
       }
     }
 
@@ -1164,11 +1215,12 @@ namespace Chroma
 	    asTensorView(y0).copyTo(y.kvslice_from_size({{'n', i}}, {{'n', 1}}));
 	  }
 	},
-	d,	 // domain
-	d,	 // image
-	nullptr, // no conjugate
-	"",	 // no order_t
-	1	 // links with near-neighbors only
+	d,	    // domain
+	d,	    // image
+	nullptr,    // no conjugate
+	"",	    // no order_t
+	1,	    // links with near-neighbors only
+	ColumnMajor // preferred ordering
       };
     }
 
@@ -1335,7 +1387,8 @@ namespace Chroma
 	// Create tensors with full support on the lattice
 	int max_step = std::max(num_vecs, max_rhs);
 	auto aux = chi.template like_this<Nd + 4>(
-	  "csxyztXn", {{'n', max_step}, {'t', Layout::lattSize()[3]}, {'s', Ns}});
+	  op.preferred_col_ordering == ColumnMajor ? "csxyztXn" : "ncsxyztX",
+	  {{'n', max_step}, {'t', Layout::lattSize()[3]}, {'s', Ns}});
 
 	for (int spin_source : spin_sources)
 	{

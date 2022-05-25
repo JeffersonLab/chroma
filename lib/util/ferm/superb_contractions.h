@@ -1441,6 +1441,22 @@ namespace Chroma
 	return d;
       }
 
+      /// Return the allocated dimensions of the tensor
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   t.kvslice_from_size({}, {{'s',1}}).kvdim(); // is {{'c',Nc},{'s',1}}
+      ///   t.kvslice_from_size({}, {{'s',1}}).alloc_kvdim(); // is {{'c',Nc},{'s',2}}
+
+      std::map<char, int> alloc_kvdim() const
+      {
+	std::map<char, int> d;
+	for (unsigned int i = 0; i < N; ++i)
+	  d[order[i]] = dim[i];
+	return d;
+      }
+
       /// Return the number of the elements in the tensor
       ///
       /// Example:
@@ -3379,7 +3395,7 @@ namespace Chroma
 	// If either this tensor or v are on OnDevice, force both to be on the same device as this tensor.
 	if (v.ctx->plat != data.ctx->plat)
 	{
-	  v = v.cloneOn(v.getDev());
+	  v = v.cloneOn(getDev());
 	}
 
 	if (getDev() != w.getDev())
@@ -4377,7 +4393,7 @@ namespace Chroma
 	  std::vector<double> rnorms(primme.numEvals);
 	  Tensor<Nd + 3, ComplexD> evecs(
 	    opaux.order, latticeSize<Nd + 3>(opaux.order, {{'n', primme.numEvals}, {'t', 1}}),
-	    OnDefaultDevice, OnEveryone);
+	    primme_dev, OnEveryone);
 #    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
 	  primme.queue = &*detail::getMagmaContext();
 #    endif
