@@ -454,7 +454,7 @@ namespace Chroma
 	Index stride = 1;
 	for (unsigned int k = 0; k < Nnew; ++k)
 	{
-	  if (!(c[pos] < stride || c[pos] % stride == 0))
+	  if (!(t == From || c[pos] < stride || c[pos] % stride == 0))
 	    throw std::runtime_error("split_dimension: Not supporting for this partition");
 	  if (t == From)
 	    r[pos + k] = (c[pos] / stride) % new_dim[pos + k];
