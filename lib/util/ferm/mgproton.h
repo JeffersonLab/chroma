@@ -630,8 +630,6 @@ namespace Chroma
 	// The first half of the colors are for even nodes
 	int maxX = dim['X'];
 	int real_maxX = real_dim['X'];
-	if (real_maxX != maxX)
-	  num_colors /= 2;
 
 	// Get the number of neighbors
 	std::vector<Coor<Nd>> neighbors = Coloring::all_neighbors(power, real_dims);
@@ -640,14 +638,8 @@ namespace Chroma
 	  // Filter out odd neighbors
 	  std::vector<Coor<Nd>> new_neighbors;
 	  for (const auto& it : neighbors)
-	  {
 	    if ((it[0] + it[1] + it[2] + it[3]) % real_maxX == 0)
-	    {
-	      Coor<Nd> r = it;
-	      r[0] = normalize_coor(r[0], real_dims[0]) / real_maxX;
-	      new_neighbors.push_back(r);
-	    }
-	  }
+	      new_neighbors.push_back(it);
 	  neighbors = new_neighbors;
 	}
 
@@ -715,11 +707,14 @@ namespace Chroma
 	  {
 	    const auto& dir = neighbors[mu];
 	    int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
-	    if ((dir[0] + dims[0]) % maxX == 0)
+	    if (maxX == real_maxX && (dir[0] + real_dims[0]) % real_maxX == 0)
 	    {
 	      // Nat coor (0,diry,dirz,dirt) to even-odd coordinate
-	      std::map<char, int> to{
-		{'X', sumdir}, {'x', dir[0]}, {'y', dir[1]}, {'z', dir[2]}, {'t', dir[3]}};
+	      std::map<char, int> to{{'X', sumdir},
+				     {'x', (dir[0] + real_dims[0]) / real_maxX},
+				     {'y', dir[1]},
+				     {'z', dir[2]},
+				     {'t', dir[3]}};
 	      auto mv_mask_mu = mv_mask.kvslice_from_size(to);
 	      auto data_mask_mu =
 		data_mask.kvslice_from_size(to).kvslice_from_size({{'u', mu}}, {{'u', 1}});
@@ -737,14 +732,16 @@ namespace Chroma
 		{
 		  for (int Y = 0; Y < maxY; ++Y)
 		  {
-		    for (int X = 0; X < maxX; ++X)
+		    for (int X = 0; X < real_maxX; ++X)
 		    {
+		      if (maxX != real_maxX && (X + Y + Z + T) % real_maxX != 0)
+			continue;
 		      // Nat coor (X,Y,Z,T) to even-odd coordinate
 		      std::map<char, int> XYZTfrom{
 			{'X', X + Y + Z + T}, {'Y', Y}, {'Z', Z}, {'T', T}};
 		      // Nat coor (x+dirx,Y+diry,Z+dirz,T+dirt) to even-odd coordinate
 		      std::map<char, int> to{{'X', X + Y + Z + T + sumdir},
-					     {'x', (dir[0] + dims[0] + X) / maxX},
+					     {'x', (dir[0] + real_dims[0] + X) / real_maxX},
 					     {'Y', Y + dir[1]},
 					     {'y', (dir[1] + dims[1] + Y) / maxY},
 					     {'Z', Z + dir[2]},
@@ -794,11 +791,12 @@ namespace Chroma
 	  {
 	    int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
 	    if (domi == Nblk + Nd)
-	      return (base + sumdir + maxX * Nd) % maxX;
+	      return (base + sumdir + real_maxX * Nd) % real_maxX;
 	    int sumyzt = std::accumulate(c.begin() + 2 + Nblk + 1, c.end() - 1, int{0});
 	    const auto& cX = c[2 + Nblk + Nd];
-	    return ((base * maxX + (cX + sumyzt) % maxX + dims[0] - dir[0]) / maxX) %
-		   (dims[0] / maxX);
+	    return ((base * real_maxX + (cX + sumyzt) % real_maxX + real_dims[0] - dir[0]) /
+		    real_maxX) %
+		   (real_dims[0] / real_maxX);
 	  }
 
 	  int latd = domi - Nblk;
