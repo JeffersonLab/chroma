@@ -643,6 +643,16 @@ namespace Chroma
 	  neighbors = new_neighbors;
 	}
 
+	// Create masks for the elements with even natural x coordinate and with odd natural x coordinate
+	auto even_x_mask =
+	  fillLatticeField<5, float>("xyztX", real_nonblkd, OnDefaultDevice, [&](Coor<4> c) {
+	    return c[0] % 2 == 0 ? float{1} : float{0};
+	  }).kvslice_from_size({}, {{'X', dim.at('X')}});
+	auto odd_x_mask =
+	  fillLatticeField<5, float>("xyztX", real_nonblkd, OnDefaultDevice, [&](Coor<4> c) {
+	    return c[0] % 2 == 1 ? float{1} : float{0};
+	  }).kvslice_from_size({}, {{'X', dim.at('X')}});
+
 	// Create the sparse tensor
 	auto d_sop =
 	  (power == 0 ? d
@@ -652,9 +662,7 @@ namespace Chroma
 					  {rd.at('t'), op.max_dist_neighbors}}));
 	SpTensor<NOp, NOp, COMPLEX> sop{d_sop, i, Nblk, Nblk, (unsigned int)neighbors.size()};
 
-	int maxY = std::min(2, dims[1]);
-	int maxZ = std::min(2, dims[2]);
-	int maxT = std::min(2, dims[3]);
+	// Extract the nonzeros with probing
 	for (unsigned int color = 0; color < num_colors; ++color)
 	{
 	  // Extracting the proving vector
@@ -663,6 +671,10 @@ namespace Chroma
 	      return coloring.getColor({{c[0], c[1], c[2], c[3]}}) == color ? COMPLEX{1}
 									    : COMPLEX{0};
 	    }).kvslice_from_size({}, {{'X', maxX}});
+
+	  // Skip empty masks
+	  if (std::norm(norm<1>(t_l.split_dimension('X', "Xn", maxX), "n").get({{0}})) == 0)
+	    continue;
 
 	  // Contracting the proving vector with the blocking components
 	  auto probs = contract<NOp * 2>(t_l, t_blbl, "");
@@ -673,98 +685,16 @@ namespace Chroma
 	  // Construct an indicator tensor where all blocking dimensions but only the nodes colored `color` are copied
 	  auto ones = t_blbl.template like_this<NOp * 2 - 5, float>();
 	  ones.set(1);
-	  auto sel = contract<NOp * 2>(t_l.template transformWithCPUFun<float>(
-					 [](const COMPLEX& t) { return (float)std::real(t); }),
-				       ones, "");
-	  auto mv_mask = mv.create_mask();
-	  auto data_mask = sop.data.create_mask();
-
-	  // Split mv and sel into subsets where the neighbors are at the same position
-	  auto sel_eo = sel.split_dimension('y', "Yy", maxY)
-			  .split_dimension('z', "Zz", maxZ)
-			  .split_dimension('t', "Tt", maxT);
-	  auto mv_mask_eo = mv_mask.split_dimension('y', "Yy", maxY)
-			      .split_dimension('z', "Zz", maxZ)
-			      .split_dimension('t', "Tt", maxT);
-	  auto mv_eo = mv.split_dimension('y', "Yy", maxY)
-			 .split_dimension('z', "Zz", maxZ)
-			 .split_dimension('t', "Tt", maxT);
-	  auto data_eo = sop.data.split_dimension('y', "Yy", maxY)
-			   .split_dimension('z', "Zz", maxZ)
-			   .split_dimension('t', "Tt", maxT);
-	  auto data_mask_eo = data_mask.split_dimension('y', "Yy", maxY)
-				.split_dimension('z', "Zz", maxZ)
-				.split_dimension('t', "Tt", maxT);
+	  auto color_mask = t_l.template transformWithCPUFun<float>(
+	    [](const COMPLEX& t) { return (float)std::real(t); });
+	  auto sel_x_even = contract<NOp * 2>(contract<5>(color_mask, even_x_mask, ""), ones, "");
+	  auto sel_x_odd = contract<NOp * 2>(contract<5>(color_mask, odd_x_mask, ""), ones, "");
 
 	  // Populate the nonzeros by copying pieces from `mv` into sop.data. We want to copy only the
-	  // nonzeros in `mv`, which are `neighbors` away from the nonzeros of `probs`. Assume `probs` having a
-	  // single nonzero at the natural coordinates (X,Y,Z,T), and `mv` has some nonzero at direction `dir`, that is,
-	  // at the natural coordinate (x+dirx,Y+diry,Z+dirz,T+dirt), which has even-odd coordinates (X,x,y,z,t) =
-	  // ((X+Y+Z+T+dirx+diry+dirz+dirt)%maxX,(X+dirx)/maxX,Y+diry,Z+dirz,T+dirt)
-
-	  std::map<char, int> XYZTsize{{'X', 1}, {'Y', 1}, {'Z', 1}, {'T', 1}};
-	  for (int mu = 0; mu < neighbors.size(); ++mu)
-	  {
-	    const auto& dir = neighbors[mu];
-	    int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
-	    if (maxX == real_maxX && (dir[0] + real_dims[0]) % real_maxX == 0)
-	    {
-	      // Nat coor (0,diry,dirz,dirt) to even-odd coordinate
-	      std::map<char, int> to{{'X', sumdir},
-				     {'x', (dir[0] + real_dims[0]) / real_maxX},
-				     {'y', dir[1]},
-				     {'z', dir[2]},
-				     {'t', dir[3]}};
-	      auto mv_mask_mu = mv_mask.kvslice_from_size(to);
-	      auto data_mask_mu =
-		data_mask.kvslice_from_size(to).kvslice_from_size({{'u', mu}}, {{'u', 1}});
-	      sel.copyTo(mv_mask_mu);
-	      sel.copyTo(data_mask_mu);
-	      mv.kvslice_from_size(to).copyToWithMask(
-		sop.data.kvslice_from_size(to).kvslice_from_size({{'u', mu}}, {{'u', 1}}),
-		mv_mask_mu, data_mask_mu);
-	    }
-	    else
-	    {
-	      for (int T = 0; T < maxT; ++T)
-	      {
-		for (int Z = 0; Z < maxZ; ++Z)
-		{
-		  for (int Y = 0; Y < maxY; ++Y)
-		  {
-		    for (int X = 0; X < real_maxX; ++X)
-		    {
-		      if (maxX != real_maxX && (X + Y + Z + T) % real_maxX != 0)
-			continue;
-		      // Nat coor (X,Y,Z,T) to even-odd coordinate
-		      std::map<char, int> XYZTfrom{
-			{'X', X + Y + Z + T}, {'Y', Y}, {'Z', Z}, {'T', T}};
-		      // Nat coor (x+dirx,Y+diry,Z+dirz,T+dirt) to even-odd coordinate
-		      std::map<char, int> to{{'X', X + Y + Z + T + sumdir},
-					     {'x', (dir[0] + real_dims[0] + X) / real_maxX},
-					     {'Y', Y + dir[1]},
-					     {'y', (dir[1] + dims[1] + Y) / maxY},
-					     {'Z', Z + dir[2]},
-					     {'z', (dir[2] + dims[2] + Z) / maxZ},
-					     {'T', T + dir[3]},
-					     {'t', (dir[3] + dims[3] + T) / maxT}};
-		      auto sel_eo_mu = sel_eo.kvslice_from_size(XYZTfrom, XYZTsize);
-		      auto mv_mask_eo_mu = mv_mask_eo.kvslice_from_size(to, XYZTsize);
-		      auto data_mask_eo_mu = data_mask_eo.kvslice_from_size(to, XYZTsize)
-					       .kvslice_from_size({{'u', mu}}, {{'u', 1}});
-		      sel_eo_mu.copyTo(mv_mask_eo_mu);
-		      sel_eo_mu.copyTo(data_mask_eo_mu);
-		      mv_eo.kvslice_from_size(to, XYZTsize)
-			.copyToWithMask(data_eo.kvslice_from_size(to, XYZTsize)
-					  .kvslice_from_size({{'u', mu}}, {{'u', 1}}),
-					mv_mask_eo_mu, data_mask_eo_mu);
-		    } // X
-		  }   // Y
-		}     // Z
-	      }	      // T
-	    }
-	  } // mu
-	}   // color
+	  // nonzeros in `mv`, which are `neighbors` away from the nonzeros of `probs`.
+	  latticeCopyToWithMask(mv, sop.data, 'u', neighbors, {{'X', real_maxX}}, sel_x_even,
+				sel_x_odd);
+	}
 
 	// Populate the coordinate of the columns, that is, to give the domain coordinates of first nonzero in each
 	// BSR nonzero block. Assume that we are processing nonzeros block for the image coordinate `c` on the

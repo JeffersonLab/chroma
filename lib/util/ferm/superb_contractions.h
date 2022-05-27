@@ -2907,6 +2907,68 @@ namespace Chroma
 #  endif
     };
 
+    /// Copy v.kvslice_from_size(dir) into w.kvslice_from_size(dir) for every dir in disps
+    /// assuming that v and w have even-odd layout (if 'X' == 2) and the displacements `disps`
+    /// are given in natural coordinates.
+    ///
+    /// \param v: origin tensor
+    /// \param w: destination tensor
+    /// \param label_mu: if given, copy each displacement into a separate coordinate.
+    /// \param disps: displacements in natural coordinates
+    /// \param real_dims: even-odd dimension of the original lattice
+    /// \param even_mask: mask into the elements with even x natural coordinate
+    /// \param odd_mask: mask into the elements with odd x natural coordinate
+
+    template <std::size_t Nv, typename Tv, std::size_t Nw, typename Tw, std::size_t Nm = Nv,
+	      typename Tm = float>
+    void latticeCopyToWithMask(Tensor<Nv, Tv> v, Tensor<Nw, Tw> w, char label_mu,
+			       const std::vector<Coor<Nd>>& disps,
+			       const std::map<char, int>& real_dims, Tensor<Nm, Tm> mask_even,
+			       Tensor<Nm, Tm> mask_odd)
+    {
+      // Shortcuts
+      if (disps.size() == 0)
+	return;
+
+      // Get the number of colors on the original lattice
+      const auto dim = v.kvdim();
+      int real_maxX = real_dims.count('X') == 1 ? real_dims.at('X') : dim.at('X');
+
+      // Preallocate the masks for v and w
+      Tensor<Nv, float> v_mask = v.create_mask();
+      Tensor<Nw, float> w_mask = w.create_mask();
+
+      for (unsigned int mu = 0; mu < disps.size(); ++mu)
+      {
+	const auto& dir = disps[mu];
+	int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
+
+	for (int x = 0; x < 2; ++x)
+	{
+	  // Nat coor (x+dirx,Y+diry,Z+dirz,T+dirt) to even-odd coordinate
+	  std::map<char, int> from{{'x', x / real_maxX}};
+	  std::map<char, int> to{{'X', sumdir},
+				 {'x', (dir[0] + dim.at('x') * real_maxX + x) / real_maxX},
+				 {'y', dir[1]},
+				 {'z', dir[2]},
+				 {'t', dir[3]}};
+
+	  // Restrict the destination tensor to label_mu if given
+	  auto w_mu = (label_mu == 0 ? w : w.kvslice_from_size({{label_mu, mu}}, {{label_mu, 1}}));
+
+	  auto mask_mu = (x == 0 ? mask_even : mask_odd).kvslice_from_size(from, {});
+	  auto v_mask_mu = v_mask.kvslice_from_size(to, {});
+	  auto w_mask_mu =
+	    (label_mu == 0 ? w_mask : w_mask.kvslice_from_size({{label_mu, mu}}, {{label_mu, 1}}));
+	  w_mask_mu = w_mask_mu.kvslice_from_size(to, {});
+	  mask_mu.copyTo(v_mask_mu);
+	  mask_mu.copyTo(w_mask_mu);
+	  v.kvslice_from_size(to, {}).copyToWithMask(w_mu.kvslice_from_size(to, {}), v_mask_mu,
+						     w_mask_mu);
+	} // x
+      }	  // mu
+    }
+
     /// Contract some dimension of the given tensors
     /// \param v: one tensor to contract
     /// \param w: the other tensor to contract
@@ -2963,162 +3025,162 @@ namespace Chroma
       r0.contract(v, {}, NotConjugate, w, {}, NotConjugate, mr, beta);
 
       return r0;
-    }
+      }
 
-    /// Compute the norm along some dimensions
-    /// \param v: tensor 
-    /// \param order_t: labels not to contract (optional)
-    /// \param order_rows: labels to contract (optional, either order_rows or order_t
-    ///        should be provided)
-    ///
-    /// Example:
-    ///
-    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("Ss", {{Ns,Ns}});
-    ///   Tensor<2,Complex> r0 = contract<2>(t, q, "s"); // r0 dims are "cS"
-    ///   Tensor<3,Complex> r1 = contract<3>(t, q, ""); // r1 dims are "csS"
-    ///   Tensor<2,Complex> r2("cS", {{Nc,Ns}});
-    ///   contract<2>(t, q, "s", CopyTo, r2); // r2 = q * s
-    ///   Tensor<2,Complex> r3("cs", {{Nc,Ns}});
-    ///   contract<2>(t, q, "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s
-    ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
+      /// Compute the norm along some dimensions
+      /// \param v: tensor
+      /// \param order_t: labels not to contract (optional)
+      /// \param order_rows: labels to contract (optional, either order_rows or order_t
+      ///        should be provided)
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("Ss", {{Ns,Ns}});
+      ///   Tensor<2,Complex> r0 = contract<2>(t, q, "s"); // r0 dims are "cS"
+      ///   Tensor<3,Complex> r1 = contract<3>(t, q, ""); // r1 dims are "csS"
+      ///   Tensor<2,Complex> r2("cS", {{Nc,Ns}});
+      ///   contract<2>(t, q, "s", CopyTo, r2); // r2 = q * s
+      ///   Tensor<2,Complex> r3("cs", {{Nc,Ns}});
+      ///   contract<2>(t, q, "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s
+      ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
 
-    template <std::size_t Nr, std::size_t Nv, typename T>
-    Tensor<Nr, typename detail::real_type<T>::type>
-    norm(Tensor<Nv, T> v, Maybe<std::string> order_t = none, Maybe<std::string> order_rows = none)
-    {
-      if (!order_t.hasSome() && !order_rows.hasSome())
-	throw std::runtime_error(
-	  "norm: invalid input, give at least either `order_t` or `order_rows`");
+      template <std::size_t Nr, std::size_t Nv, typename T>
+      Tensor<Nr, typename detail::real_type<T>::type> norm(
+	Tensor<Nv, T> v, Maybe<std::string> order_t = none, Maybe<std::string> order_rows = none)
+      {
+	if (!order_t.hasSome() && !order_rows.hasSome())
+	  throw std::runtime_error(
+	    "norm: invalid input, give at least either `order_t` or `order_rows`");
 
-      // Compute the labels to contract
-      std::string rorder = order_rows.hasSome()
-			     ? order_rows.getSome()
-			     : detail::remove_dimensions(v.order, order_t.getSome());
-      std::string torder =
-	order_t.hasSome() ? order_t.getSome() : detail::remove_dimensions(v.order, rorder);
+	// Compute the labels to contract
+	std::string rorder = order_rows.hasSome()
+			       ? order_rows.getSome()
+			       : detail::remove_dimensions(v.order, order_t.getSome());
+	std::string torder =
+	  order_t.hasSome() ? order_t.getSome() : detail::remove_dimensions(v.order, rorder);
 
-      // Allocate the output on the host and spread the result to every process
-      auto r = contract<Nr>(v.conj(), v, rorder).make_sure(torder, OnHost, OnEveryoneReplicated);
+	// Allocate the output on the host and spread the result to every process
+	auto r = contract<Nr>(v.conj(), v, rorder).make_sure(torder, OnHost, OnEveryoneReplicated);
 
-      // Do the square root and return the result
-      using Treal = typename detail::real_type<T>::type;
-      return r.template transformWithCPUFun<Treal>(
-	[](const T& t) { return std::sqrt(std::real(t)); });
-    }
+	// Do the square root and return the result
+	using Treal = typename detail::real_type<T>::type;
+	return r.template transformWithCPUFun<Treal>(
+	  [](const T& t) { return std::sqrt(std::real(t)); });
+      }
 
-    /// Compute the maximum for a small tensor
-    /// \param v: tensor
+      /// Compute the maximum for a small tensor
+      /// \param v: tensor
 
-    template <std::size_t N, typename T>
-    T max(Tensor<N, T> v)
-    {
-      v = v.make_sure(none, OnHost, OnEveryoneReplicated);
-      if (v.isSubtensor())
-	v = v.clone();
-      T r = T{0};
-      T* p = v.data.get();
-      for (unsigned int i = 0, vol = v.volume(); i < vol; ++i)
-	r = std::max(r, p[i]);
-      return r;
-    }
+      template <std::size_t N, typename T>
+      T max(Tensor<N, T> v)
+      {
+	v = v.make_sure(none, OnHost, OnEveryoneReplicated);
+	if (v.isSubtensor())
+	  v = v.clone();
+	T r = T{0};
+	T* p = v.data.get();
+	for (unsigned int i = 0, vol = v.volume(); i < vol; ++i)
+	  r = std::max(r, p[i]);
+	return r;
+      }
 
-    /// Compute the Cholesky factor of `v' and contract its inverse with `w`
-    /// \param v: tensor to compute the Cholesky factor
-    /// \param order_rows: labels that are rows of the matrices to factor
-    /// \param order_cols: labels that are columns of the matrices to factor
-    /// \param w: the other tensor to contract
-    /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
-    /// \param action: either to copy or add to the given output tensor if given (only `CopyTo' supported)
-    /// \param r: optional given tensor where to put the resulting contraction
+      /// Compute the Cholesky factor of `v' and contract its inverse with `w`
+      /// \param v: tensor to compute the Cholesky factor
+      /// \param order_rows: labels that are rows of the matrices to factor
+      /// \param order_cols: labels that are columns of the matrices to factor
+      /// \param w: the other tensor to contract
+      /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
+      /// \param action: either to copy or add to the given output tensor if given (only `CopyTo' supported)
+      /// \param r: optional given tensor where to put the resulting contraction
 
-    template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
-    Tensor<Nr, T> cholInv(Tensor<Nv, T> v, const std::string& order_rows,
+      template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
+      Tensor<Nr, T> cholInv(Tensor<Nv, T> v, const std::string& order_rows,
+			    const std::string& order_cols, Tensor<Nw, T> w,
+			    const std::string& labels_to_contract, Maybe<Action> action = none,
+			    Maybe<Tensor<Nr, T>> r = none)
+      {
+	if (action.hasSome() != r.hasSome())
+	  throw std::runtime_error("Invalid default value");
+
+	// Compute the labels of the output tensor: v.order + w.order - labels_to_contract
+	std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
+	if (Nr != rorder.size())
+	  throw std::runtime_error(
+	    "cholInv: The dimension of the output tensor does not match the template argument");
+	if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
+	  throw std::runtime_error("cholInv: The given output tensor has an unexpected ordering");
+
+	// If the output tensor is not given create a new one
+	Tensor<Nr, T> r0;
+	if (!r)
+	{
+	  r0 = v.template like_this<Nr>(rorder, w.kvdim());
+	}
+	else
+	{
+	  r0 = r.getSome();
+	}
+
+	// For now, only `CopyTo' action is supported
+	if (action.hasSome() && action.getSome() != CopyTo)
+	  throw std::runtime_error("cholInv: unsupported action");
+
+	// Do the contraction
+	r0.cholInv(v, order_rows, order_cols, w);
+
+	return r0;
+      }
+
+      /// Solve the linear systems within tensor `v' and right-hand-sides `w`
+      /// \param v: tensor to compute the Cholesky factor
+      /// \param order_rows: labels that are rows of the matrices to factor
+      /// \param order_cols: labels that are columns of the matrices to factor
+      /// \param w: the other tensor to contract
+      /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
+      /// \param action: either to copy or add to the given output tensor if given (only `CopyTo' supported)
+      /// \param r: optional given tensor where to put the resulting contraction
+
+      template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
+      Tensor<Nr, T> solve(Tensor<Nv, T> v, const std::string& order_rows,
 			  const std::string& order_cols, Tensor<Nw, T> w,
 			  const std::string& labels_to_contract, Maybe<Action> action = none,
 			  Maybe<Tensor<Nr, T>> r = none)
-    {
-      if (action.hasSome() != r.hasSome())
-	throw std::runtime_error("Invalid default value");
-
-      // Compute the labels of the output tensor: v.order + w.order - labels_to_contract
-      std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
-      if (Nr != rorder.size())
-	throw std::runtime_error(
-	  "cholInv: The dimension of the output tensor does not match the template argument");
-      if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
-	throw std::runtime_error("cholInv: The given output tensor has an unexpected ordering");
-
-      // If the output tensor is not given create a new one
-      Tensor<Nr, T> r0;
-      if (!r)
       {
-	r0 = v.template like_this<Nr>(rorder, w.kvdim());
-      }
-      else
-      {
-	r0 = r.getSome();
-      }
+	if (action.hasSome() != r.hasSome())
+	  throw std::runtime_error("solve: Invalid default value");
 
-      // For now, only `CopyTo' action is supported
-      if (action.hasSome() && action.getSome() != CopyTo)
-	throw std::runtime_error("cholInv: unsupported action");
+	// Compute the labels of the output tensor: v.order + w.order - labels_to_contract
+	std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
+	if (Nr != rorder.size())
+	  throw std::runtime_error(
+	    "solve: The dimension of the output tensor does not match the template argument");
+	if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
+	  throw std::runtime_error("solve: The given output tensor has an unexpected ordering");
 
-      // Do the contraction
-      r0.cholInv(v, order_rows, order_cols, w);
+	// If the output tensor is not given create a new one
+	Tensor<Nr, T> r0;
+	if (!r)
+	{
+	  r0 = v.template like_this<Nr>(rorder, w.kvdim());
+	}
+	else
+	{
+	  r0 = r.getSome();
+	}
 
-      return r0;
-    }
+	// For now, only `CopyTo' action is supported
+	if (action.hasSome() && action.getSome() != CopyTo)
+	  throw std::runtime_error("solve: unsupported action");
 
-    /// Solve the linear systems within tensor `v' and right-hand-sides `w`
-    /// \param v: tensor to compute the Cholesky factor
-    /// \param order_rows: labels that are rows of the matrices to factor
-    /// \param order_cols: labels that are columns of the matrices to factor
-    /// \param w: the other tensor to contract
-    /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
-    /// \param action: either to copy or add to the given output tensor if given (only `CopyTo' supported)
-    /// \param r: optional given tensor where to put the resulting contraction
+	// Do the contraction
+	r0.solve(v, order_rows, order_cols, w);
 
-    template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
-    Tensor<Nr, T> solve(Tensor<Nv, T> v, const std::string& order_rows,
-			const std::string& order_cols, Tensor<Nw, T> w,
-			const std::string& labels_to_contract, Maybe<Action> action = none,
-			Maybe<Tensor<Nr, T>> r = none)
-    {
-      if (action.hasSome() != r.hasSome())
-	throw std::runtime_error("solve: Invalid default value");
-
-      // Compute the labels of the output tensor: v.order + w.order - labels_to_contract
-      std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
-      if (Nr != rorder.size())
-	throw std::runtime_error(
-	  "solve: The dimension of the output tensor does not match the template argument");
-      if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
-	throw std::runtime_error("solve: The given output tensor has an unexpected ordering");
-
-      // If the output tensor is not given create a new one
-      Tensor<Nr, T> r0;
-      if (!r)
-      {
-	r0 = v.template like_this<Nr>(rorder, w.kvdim());
-      }
-      else
-      {
-	r0 = r.getSome();
+	return r0;
       }
 
-      // For now, only `CopyTo' action is supported
-      if (action.hasSome() && action.getSome() != CopyTo)
-	throw std::runtime_error("solve: unsupported action");
-
-      // Do the contraction
-      r0.solve(v, order_rows, order_cols, w);
-
-      return r0;
-    }
-
-    template <typename T>
-    void* getQDPPtr(const T& t)
-    {
+      template <typename T>
+      void* getQDPPtr(const T& t)
+      {
 #  if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
       std::vector<QDPCache::ArgKey> v(1, t.getId());
       void* r = QDP_get_global_cache().get_dev_ptrs(v)[0];
