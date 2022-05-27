@@ -1120,7 +1120,7 @@ namespace Chroma
 	remap m_sc{{'s', 'S'}, {'c', 'C'}};
 	auto opDiag = getBlockDiag<NOp + 2>(op, "cs", m_sc);
 
-	// Get an explicit form for A:=I-Op_eo*Op_oo^{-1}*Op_oe*Op_ee^{-1}
+	// Get an explicit form for A:=Op_ee-Op_eo*Op_oo^{-1}*Op_oe
 	unsigned int create_operator_max_rhs =
 	  getOption<unsigned int>(ops, "create_operator_max_rhs", 0);
 	const Operator<NOp, COMPLEX> opA = cloneOperator(Operator<NOp, COMPLEX>{
@@ -1128,17 +1128,18 @@ namespace Chroma
 	    foreachInChuncks(
 	      x, y, create_operator_max_rhs,
 	      [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
-		// y0 = Op_ee^{-1} * x
+		// y = Op_ee * x
+		contract(opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), x, "cs", CopyTo,
+			 y.rename_dims(m_sc));
+
+		// y1 = Op_oe * x
 		auto y0 = op.d.template like_this<NOp + 1>(
 		  op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
 		  {{'n', x.kvdim()['n']}});
 		y0.set_zero();
-		solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		  opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "CS", "cs", x, "cs", CopyTo,
-		  y0.kvslice_from_size({{'X', 0}}, {{'X', 1}}).rename_dims(m_sc));
-
-		// y1 = Op_oe * y0
+		x.copyTo(y0.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
 		auto y1 = op(y0).kvslice_from_size({{'X', 1}}, {{'X', 1}});
+
 		// y2 = Op_oo^{-1} * y1
 		auto y2 = y0;
 		y2.set_zero();
@@ -1146,12 +1147,8 @@ namespace Chroma
 		  opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs", y1, "cs", CopyTo,
 		  y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
 
-		// y3 = Op_eo * y2
-		auto y3 = op(y2).kvslice_from_size({{'X', 0}}, {{'X', 1}});
-
-		// y = x - y3
-		x.copyTo(y);
-		y3.scale(-1).addTo(y);
+		// y += -Op_eo * y2
+		op(y2).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(y);
 	      });
 	  },
 	  op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
@@ -1178,14 +1175,9 @@ namespace Chroma
 		    ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
 		  op(ya).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(be);
 
-		  // Solve opA * ye0 = be
-		  auto ye0 = solver(be);
-
-		  // y_e = Op_ee^{-1} * ye0
+		  // Solve opA * y_e = be
 		  y.set_zero();
-		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		    opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "CS", "cs", ye0, "cs", CopyTo,
-		    y.kvslice_from_size({{'X', 0}}, {{'X', 1}}).rename_dims(m_sc));
+		  solver(be, y.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
 
 		  // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
 		  op(y, ya);
