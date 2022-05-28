@@ -792,12 +792,6 @@ namespace Chroma
 	    for (unsigned int j = 0; j < N; ++j)
 	    {
 	      fs[1][j] = std::min(i[1][j] + 2 * m[j], dim[j]);
-	      /// superbblas does not support intersection of tensors with more than one disconnected component.
-	      /// We avoid that by artificially enlarging the support of every dimension with range larger than
-	      /// half the dimension size.
-	      /// TODO: fix this from superbblas
-	      if (fs[1][j] > dim[j] / 2)
-		fs[1][j] = dim[j];
 	      fs[0][j] = (fs[1][j] < dim[j] ? (i[0][j] - m[j] + dim[j]) % dim[j] : 0);
 	    }
 	    r.push_back(fs);
