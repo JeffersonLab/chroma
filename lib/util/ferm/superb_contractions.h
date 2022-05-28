@@ -89,7 +89,7 @@ namespace Chroma
     /// Whether to copy or add the values into the destination tensor (see Tensor::doAction)
     enum Action { CopyTo, AddTo };
 
-     /// Auxiliary class for initialize Maybe<T> with no value
+    /// Auxiliary class for initialize Maybe<T> with no value
     struct None {
     };
 
@@ -155,6 +155,14 @@ namespace Chroma
       return std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch())
 	.count();
     }
+
+    /// Wrapper around superbblas time tracking
+    struct Tracker : public superbblas::detail::tracker<superbblas::detail::Cpu> {
+      Tracker(const std::string& funcName)
+	: superbblas::detail::tracker<superbblas::detail::Cpu>(funcName, superbblas::detail::Cpu{})
+      {
+      }
+    };
 
     namespace detail
     {
