@@ -260,12 +260,11 @@ namespace Chroma
     void fgmres(const Operator<NOp, COMPLEX>& op, Maybe<Operator<NOp, COMPLEX>> prec,
 		const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX>& y,
 		unsigned int max_basis_size, double tol, unsigned int max_its = 0,
-		bool error_if_not_converged = true, bool passing_initial_guess = false,
-		Verbosity verb = NoOutput, std::string prefix = "")
+		bool error_if_not_converged = true, bool do_ortho = true,
+		bool passing_initial_guess = false, Verbosity verb = NoOutput,
+		std::string prefix = "")
     {
       detail::log(1, prefix + " starting fgmres");
-
-      const bool do_ortho = false;
 
       // TODO: add optimizations for multiple operators
       if (op.order_t.size() > 0)
@@ -356,9 +355,9 @@ namespace Chroma
 	auto Uo = Up.rename_dims({{Vc, Vac}});
 	if (do_ortho)
 	{
-	  //Uo = Uo.clone();
-	  //ortho<NOp, NOp + 1, COMPLEX>(Uo, op.order_t + order_cols, order_rows, std::string(1, Vac),
-	  //			       1 /* one iteration should be enough */);
+	  Uo = Uo.clone();
+	  ortho<NOp, 1>(Uo, op.order_t + order_cols, order_rows, std::string(1, Vac),
+			1 /* one iteration should be enough */);
 	}
 
 	// Restrict to Uo: [x_rt H_rt] = Uo'*U = Up'*[r Up]
@@ -491,6 +490,7 @@ namespace Chroma
 	if (max_its == 0 && tol <= 0)
 	  ops.throw_error("set either `tol` or `max_its`");
 	bool error_if_not_converged = getOption<bool>(ops, "error_if_not_converged", true);
+	bool do_ortho = getOption<bool>(ops, "do_ortho", true);
 	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
@@ -502,7 +502,7 @@ namespace Chroma
 		    x, y, max_simultaneous_rhs,
 		    [=](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
 		      fgmres(op, prec, x, y, max_basis_size, tol, max_its, error_if_not_converged,
-			     false /* no init guess */, verb, prefix);
+			     do_ortho, false /* no init guess */, verb, prefix);
 		    },
 		    'n');
 		},
