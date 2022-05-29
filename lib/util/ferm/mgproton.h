@@ -325,7 +325,7 @@ namespace Chroma
       auto normr = normr0.clone();
       unsigned int it = 0;
       double max_tol = HUGE_VAL;
-      for (it = 0; it < max_its; ++it)
+      for (it = 0; it < max_its;)
       {
 	// U(:,0) = r;
 	r.copyTo(U.kvslice_from_size({}, {{Vc, 1}}));
@@ -345,6 +345,8 @@ namespace Chroma
 	  op(Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}),
 	     U.kvslice_from_size({{Vc, i + 1}}, {{Vc, 1}}));
 	  nops += num_cols;
+
+	  ++it;
 	}
 
 	// Orthogonalize U and put it into W: W = orth(U(:,2:end))
@@ -385,7 +387,7 @@ namespace Chroma
 
 	// Report iteration
 	if (verb >= Detailed)
-	  QDPIO::cout << prefix << " MGPROTON FGMRES iteration it.: " << it
+	  QDPIO::cout << prefix << " MGPROTON FGMRES iteration #its.: " << it
 		      << " max rel. residual: " << detail::tostr(max_tol, 2) << std::endl;
 
 	if (max_tol <= tol)
@@ -408,7 +410,7 @@ namespace Chroma
 
       // Report iteration
       if (verb >= JustSummary)
-	QDPIO::cout << prefix << " MGPROTON FGMRES summary its.: " << (it + 1)
+	QDPIO::cout << prefix << " MGPROTON FGMRES summary #its.: " << it
 		    << " max rel. residual: " << detail::tostr(max_tol, 2) << " matvecs: " << nops
 		    << " precs: " << nprecs << std::endl;
     }
@@ -858,10 +860,10 @@ namespace Chroma
       /// \param ops: options to select the solver from `solvers` and influence the solver construction
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getMGProlongator(const Operator<NOp, COMPLEX>& op,
-					      unsigned int num_null_vecs,
-					      const std::map<char, unsigned int>& blocking,
-					      const Operator<NOp, COMPLEX>& null_solver)
+      Operator<NOp, COMPLEX>
+      getMGProlongator(const Operator<NOp, COMPLEX>& op, unsigned int num_null_vecs,
+		       const std::map<char, unsigned int>& blocking, bool do_chirality_splitting,
+		       const Operator<NOp, COMPLEX>& null_solver)
       {
 	detail::log(1, "starting getMGProlongator");
 
@@ -878,21 +880,23 @@ namespace Chroma
 	auto nv = null_solver(std::move(b));
 
 	// Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
-	// TODO: experiment without chirality splitting
 	int ns = opdims.at('s');
-	if (ns != 2 && ns != Ns)
+	if (ns != 1 && ns != 2 && ns != Ns)
 	  throw std::runtime_error("Error in getMGProlongator: Unsupported spin number");
-
-	auto nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
-	auto g5 = getGamma5(ns, OnHost), g5pos = g5.cloneOn(OnHost), g5neg = g5.cloneOn(OnHost);
-	for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
-	  g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
-	for (int i = 0; i < ns; ++i) // make diagonal entries of gneg all negative or zero
-	  g5neg.set({{i, i}}, g5.get({{i, i}}) - COMPLEX{1});
-	nv2.kvslice_from_size({}, {{'n', num_null_vecs}})
-	  .contract(g5pos, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
-	nv2.kvslice_from_size({{'n', num_null_vecs}}, {{'n', num_null_vecs}})
-	  .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
+	auto nv2 = nv;
+	if (ns > 1 && do_chirality_splitting)
+	{
+	  nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
+	  auto g5 = getGamma5(ns, OnHost), g5pos = g5.cloneOn(OnHost), g5neg = g5.cloneOn(OnHost);
+	  for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
+	    g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
+	  for (int i = 0; i < ns; ++i) // make diagonal entries of gneg all negative or zero
+	    g5neg.set({{i, i}}, g5.get({{i, i}}) - COMPLEX{1});
+	  nv2.kvslice_from_size({}, {{'n', num_null_vecs}})
+	    .contract(g5pos, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
+	  nv2.kvslice_from_size({{'n', num_null_vecs}}, {{'n', num_null_vecs}})
+	    .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
+	}
 
 	// Do the blocking
 	// NOTE: Xx is transformed into WwXx, where W,X has size X, and w has size blocking(x)/X,
@@ -972,16 +976,30 @@ namespace Chroma
 	  {'x', blocking_v[0]}, {'y', blocking_v[1]}, {'z', blocking_v[2]}, {'t', blocking_v[3]}};
 	const Operator<NOp, COMPLEX> nullSolver =
 	  getSolver(op, getOptions(ops, "solver_null_vecs"));
-	const Operator<NOp, COMPLEX> V = getMGProlongator(op, num_null_vecs, blocking, nullSolver);
+	bool do_chirality_splitting = getOption<bool>(ops, "chirality_splitting", true);
+	const Operator<NOp, COMPLEX> V =
+	  getMGProlongator(op, num_null_vecs, blocking, do_chirality_splitting, nullSolver);
 
-	// Compute the coarse operator, V' * op * V
+	// Compute the coarse operator, either V' * op * V or V' * op * g5 * V
 	unsigned int create_coarse_max_rhs =
 	  getOption<unsigned int>(ops, "create_coarse_max_rhs", 0);
+	int ns = op.d.kvdim().at('s');
+	auto g5 = getGamma5(ns);
 	const Operator<NOp, COMPLEX> op_c = cloneOperator(Operator<NOp, COMPLEX>{
 	  [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	    foreachInChuncks(x, y, create_coarse_max_rhs,
 			     [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
-			       V.tconj()(op(V(x)), y);
+			       if (do_chirality_splitting || ns == 1)
+			       {
+				 V.tconj()(op(V(x)), y);
+			       }
+			       else
+			       {
+				 V.tconj()(
+				   op(contract<NOp + 1>(g5.rename_dims({{'j', 's'}}), V(x), "s")
+					.rename_dims({{'i', 's'}})),
+				   y);
+			       }
 			     });
 	  },
 	  V.d, V.d, nullptr, op.order_t, op.max_dist_neighbors, op.preferred_col_ordering});
@@ -1126,6 +1144,237 @@ namespace Chroma
 		op.DenseOperator,
 		op.preferred_col_ordering};
       }
+
+      // Auxiliary structure passed to PRIMME's matvec
+
+      struct GDOperatorAux {
+	const DeviceHost primme_dev;		       // where primme allocations are
+	const Operator<Nd + 3, Complex>& op;
+      };
+
+      // Wrapper for PRIMME of `LaplacianOperator`
+      /// \param x: pointer to input vector
+      /// \param ldx: leading dimension for `x`
+      /// \param y: pointer to output vector
+      /// \param ldy: leading dimension for `y`
+      /// \param blockSize: number of input/output vectors
+      /// \param ierr: output error state (zero means ok)
+
+      extern "C" inline void GDPrimmeMatvec(void* x, PRIMME_INT* ldx, void* y, PRIMME_INT* ldy,
+					    int* blockSize, primme_params* primme, int* ierr)
+      {
+	*ierr = -1;
+	try
+	{
+	  // The implementation assumes that ldx and ldy is nLocal
+	  if (*blockSize > 1 && (*ldx != primme->nLocal || *ldy != primme->nLocal))
+	    throw std::runtime_error("We cannot play with the leading dimensions");
+
+	  GDOperatorAux& aux = *(GDOperatorAux*)primme->matrix;
+	  auto dim = aux.op.d.kvdim();
+	  dim['n'] = *blockSize;
+	  std::string order = aux.op.d.order + "n";
+	  Coor<Nd + 4> size = latticeSize<Nd + 4>(order, dim);
+	  Tensor<Nd + 4, ComplexD> tx(order, size, aux.primme_dev, OnEveryone,
+				      std::shared_ptr<ComplexD>((ComplexD*)x, [](ComplexD*) {}));
+	  Tensor<Nd + 4, ComplexD> ty(order, size, aux.primme_dev, OnEveryone,
+				      std::shared_ptr<ComplexD>((ComplexD*)y, [](ComplexD*) {}));
+
+	  // ty = op * g5 * x
+	  auto g5 = getGamma5(dim['s'], aux.primme_dev);
+	  aux.op(contract<Nd + 4>(g5.rename_dims({{'j', 's'}}), tx, "s").rename_dims({{'i', 's'}}),
+		 ty);
+
+	  *ierr = 0;
+	} catch (...)
+	{
+	}
+      }
+
+      /// Returns an inexact Generalized Davidson.
+      /// NOTE: this is an eigensolver not a linear solver
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getInexactGD(Operator<NOp, COMPLEX> op, const Options& ops)
+      {
+	// Get eigensolver properties
+	unsigned int max_basis_size = getOption<unsigned int>(ops, "max_basis_size", 0);
+	unsigned int max_block_size = getOption<unsigned int>(ops, "max_block_size", 1);
+	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
+	double tol = getOption<double>(getOptions(ops, "solver"), "tol", 0.0) * 3.0;
+	const Operator<NOp, COMPLEX> solver = getSolver(op, getOptions(ops, "solver"));
+
+	// Return the solver
+	return {
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+#  if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
+	    DeviceHost primme_dev = OnDefaultDevice;
+#  else
+	    DeviceHost primme_dev = OnHost;
+#  endif
+
+	    // Create an auxiliary struct for the PRIMME's matvec
+	    // NOTE: Please keep 'n' as the slowest index; the rows of vectors taken by PRIMME's matvec has dimensions 'cxyztX',
+	    // and 'n' is the dimension for the columns.
+	    GDOperatorAux opaux{primme_dev, solver};
+
+	    // Make a bigger structure holding
+	    primme_params primme;
+	    primme_initialize(&primme);
+
+	    // Primme solver setup
+	    unsigned int numEvals = x.kvdim()['n'];
+	    primme.numEvals = numEvals;
+	    primme.printLevel =
+	      (verb == NoOutput ? 0 : verb == JustSummary ? 1 : verb == Detailed ? 3 : 5);
+	    primme.n = solver.d.volume();
+	    primme.eps = tol;
+	    primme.target = primme_largest_abs;
+	    double zeros = 0;
+	    primme.targetShifts = &zeros;
+	    primme.numTargetShifts = 1;
+
+	    // Set parallel settings
+	    primme.nLocal = solver.d.getLocal().volume();
+	    primme.numProcs = QDP::Layout::numNodes();
+	    primme.procID = QDP::Layout::nodeNumber();
+	    primme.globalSumReal = ns_getColorvecs::primmeGlobalSum;
+
+	    // No preconditioner for my matrix
+	    primme.matrixMatvec = GDPrimmeMatvec;
+	    primme.matrix = &opaux;
+
+	    // Set block size
+	    primme.maxBasisSize = max_basis_size;
+	    primme.maxBlockSize = max_block_size;
+	    primme.ldOPs = primme.nLocal;
+
+	    // Should set lots of defaults
+	    if (primme_set_method(PRIMME_DEFAULT_MIN_TIME, &primme) < 0)
+	    {
+	      QDPIO::cerr << __func__ << ": invalid preset method\n";
+	      QDP_abort(1);
+	    }
+
+	    // Allocate space for converged Ritz values and residual norms
+	    std::vector<double> evals(primme.numEvals);
+	    std::vector<double> rnorms(primme.numEvals);
+	    Tensor<Nd + 4, ComplexD> evecs = solver.d.template like_this<Nd + 4, ComplexD>(
+	      "%n", '%', "", {{'n', (int)numEvals}}, primme_dev, OnEveryone);
+#  if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
+	    primme.queue = &*detail::getMagmaContext();
+#  endif
+
+	  // Call primme
+#    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
+	    int ret = magma_zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
+#    else
+	    int ret = zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
+#    endif
+
+	    if (verb != NoOutput)
+	    {
+	      QDPIO::cout << "Eigenpairs converged: " << primme.initSize << std::endl;
+	      QDPIO::cout << "Tolerance : " << primme.aNorm * primme.eps << std::endl;
+	      QDPIO::cout << "Iterations: " <<  (int)primme.stats.numOuterIterations << std::endl;
+	      QDPIO::cout << "Restarts  : " <<  (int)primme.stats.numRestarts << std::endl;
+	      QDPIO::cout << "Matvecs   : " <<  (int)primme.stats.numMatvecs << std::endl;
+	      QDPIO::cout << "Preconds  : " <<  (int)primme.stats.numPreconds << std::endl;
+	      QDPIO::cout << "T. ortho  : " <<  primme.stats.timeOrtho << std::endl;
+	      QDPIO::cout << "T. matvec : " <<  primme.stats.timeMatvec << std::endl;
+	      QDPIO::cout << "Total time: " <<  primme.stats.elapsedTime << std::endl;
+	    }
+
+	    if (ret != 0)
+	    {
+	      QDPIO::cerr << "Error: primme returned with nonzero exit status\n";
+	      QDP_abort(1);
+	    }
+
+	    // Cleanup
+	    primme_free(&primme);
+
+	    // Copy evecs into y
+	    evecs.copyTo(y);
+	  },
+	  solver.i,
+	  solver.d,
+	  nullptr,
+	  solver.order_t,
+	  solver.DenseOperator,
+	  solver.preferred_col_ordering};
+      }
+
+      /// Returns the conjugate transpose of an operator
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getDagger(Operator<NOp, COMPLEX> op, const Options& ops)
+      {
+	int ns = op.d.kvdim().at('s');
+	auto g5 = getGamma5(ns);
+
+	// Return the solver
+	return {
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    if (ns == 1)
+	    {
+	      x.copyTo(y);
+	    }
+	    else
+	    {
+	      // y = g5 * op * g5 * x
+	      auto y0 = op(
+		contract<NOp + 1>(g5.rename_dims({{'j', 's'}}), x, "s").rename_dims({{'i', 's'}}));
+	      contract<NOp + 1>(g5.rename_dims({{'j', 's'}}), y0, "s", CopyTo,
+				y.rename_dims({{'s', 'i'}}));
+	    }
+	  },
+	  op.d,
+	  op.i,
+	  nullptr,
+	  op.order_t,
+	  op.max_dist_neighbors,
+	  op.preferred_col_ordering};
+      }
+
+      /// Returns the conjugate transpose of an operator
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getG5(Operator<NOp, COMPLEX> op, const Options& ops)
+      {
+	int ns = op.d.kvdim().at('s');
+	auto g5 = getGamma5(ns);
+
+	// Return the solver
+	return {
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    if (ns == 1)
+	    {
+	      x.copyTo(y);
+	    }
+	    else
+	    {
+	      // y = g5 * x
+	      contract<NOp + 1>(g5.rename_dims({{'j', 's'}}), x, "s", CopyTo,
+				y.rename_dims({{'s', 'i'}}));
+	    }
+	  },
+	  op.d,
+	  op.i,
+	  nullptr,
+	  op.order_t,
+	  op.max_dist_neighbors,
+	  op.preferred_col_ordering};
+      }
     }
 
     /// Returns an operator that approximate the inverse of a given operator
@@ -1138,7 +1387,10 @@ namespace Chroma
       static const std::map<std::string, detail::Solver<NOp, COMPLEX>> solvers{
 	{"fgmres", detail::getFGMRESSolver<NOp, COMPLEX>}, // flexible GMRES
 	{"mg", detail::getMGPrec<NOp, COMPLEX>},	   // Multigrid
-	{"eo", detail::getEvenOddPrec<NOp, COMPLEX>}	   // even-odd Schur preconditioner
+	{"eo", detail::getEvenOddPrec<NOp, COMPLEX>},	   // even-odd Schur preconditioner
+	{"igd", detail::getInexactGD<NOp, COMPLEX>},	   // inexact Generalized Davidson
+	{"Ddag", detail::getDagger<NOp, COMPLEX>}, // return the operator conjugate transposed
+	{"g5", detail::getG5<NOp, COMPLEX>}	   // apply \gamma_5
       };
 
       return detail::getSolver(solvers, op, ops);
