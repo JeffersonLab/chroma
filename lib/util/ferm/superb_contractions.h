@@ -695,7 +695,7 @@ namespace Chroma
 	/// \param p: partition
 	/// \praam isLocal: whether the tensor is local
 
-	TensorPartition(Coor<N> dim, const PartitionStored& p, bool isLocal = false)
+	TensorPartition(Coor<N> dim, const PartitionStored& p, bool isLocal)
 	  : dim(dim), p(p), isLocal(isLocal)
 	{
 	}
@@ -762,7 +762,7 @@ namespace Chroma
 	  r.reserve(p.size());
 	  for (const auto& i : p)
 	    r.push_back({insert_coor(i[0], pos, 0), insert_coor(i[1], pos, dim_size)});
-	  return TensorPartition<N + 1>{insert_coor(dim, pos, dim_size), r};
+	  return TensorPartition<N + 1>{insert_coor(dim, pos, dim_size), r, isLocal};
 	}
 
 	/// Remove a non-distributed dimension
@@ -773,7 +773,7 @@ namespace Chroma
 	  r.reserve(p.size());
 	  for (const auto& i : p)
 	    r.push_back({remove_coor(i[0], pos), remove_coor(i[1], pos)});
-	  return TensorPartition<N - 1>{remove_coor(dim, pos), r};
+	  return TensorPartition<N - 1>{remove_coor(dim, pos), r, isLocal};
 	}
 
 	/// Split a dimension into a non-distributed dimension and another dimension
@@ -786,7 +786,8 @@ namespace Chroma
 	  for (const auto& i : p)
 	    r.push_back({detail::split_dimension(pos, i[0], new_dim, From),
 			 detail::split_dimension(pos, i[1], new_dim, Size)});
-	  return TensorPartition<Nout>{detail::split_dimension(pos, dim, new_dim, Size), r};
+	  return TensorPartition<Nout>{detail::split_dimension(pos, dim, new_dim, Size), r,
+				       isLocal};
 	}
 
 	/// Collapse several dimensions into another dimension
@@ -799,7 +800,8 @@ namespace Chroma
 	  for (const auto& i : p)
 	    r.push_back({detail::collapse_dimensions<Nout>(pos, i[0], dim, From),
 			 detail::collapse_dimensions<Nout>(pos, i[1], dim, Size)});
-	  return TensorPartition<Nout>{detail::collapse_dimensions<Nout>(pos, dim, dim, Size), r};
+	  return TensorPartition<Nout>{detail::collapse_dimensions<Nout>(pos, dim, dim, Size), r,
+				       isLocal};
 	}
 
 	/// Extend the support of distributed dimensions by one step in each direction
@@ -818,7 +820,7 @@ namespace Chroma
 	    }
 	    r.push_back(fs);
 	  }
-	  return TensorPartition<N>{dim, r};
+	  return TensorPartition<N>{dim, r, isLocal};
 	}
 
 	/// Return a subpartition given a range
@@ -833,7 +835,7 @@ namespace Chroma
 	    superbblas::detail::intersection(i[0], i[1], from, size, dim, lfrom, lsize);
 	    r.push_back({lfrom, lsize});
 	  }
-	  return TensorPartition<N>{size, r};
+	  return TensorPartition<N>{size, r, isLocal};
 	}
 
 	/// Return a partition with the local portion of the tensor
@@ -2549,8 +2551,6 @@ namespace Chroma
 	if (is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	Tensor<Nv, T> v0 = v;
-
 	// Conjugacy isn't supported
 	if (v.conjugate || w.conjugate || conjugate)
 	  throw std::runtime_error("cholInv: Unsupported implicit conjugate tensors");
@@ -2578,29 +2578,19 @@ namespace Chroma
 	  return;
 	}
 
+	// v is going to be modified and is reference, make a clone
+	if (v.data.use_count() > 1)
+	  v = v.clone();
+
 	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
 	  throw std::runtime_error(
 	    "One of the contracted tensors or the output tensor is local and others are not!");
-
-	// Help superbblas to get the same verbatim value in all processes for the same tensor element in all
-	// replicated copies
-	// TODO: check whether superbblas does this already
-	if ((v.dist == OnMaster || v.dist == OnEveryoneReplicated) ||
-	    (w.dist == OnMaster && w.dist == OnEveryoneReplicated))
-	{
-	  v = v.make_sure(none, none, OnMaster);
-	  w = w.make_sure(none, none, OnMaster);
-	}
 
 	if (v.dist == OnEveryone && w.dist == OnEveryoneReplicated)
 	  w = w.make_suitable_for_contraction(v);
 
 	if (v.dist == OnEveryoneReplicated && w.dist == OnEveryone)
 	  v = v.make_suitable_for_contraction(w);
-
-	// v is going to be modified, so make a clone if we haven't made one already
-	if (v.data.get() == v0.data.get())
-	  v = v.clone();
 
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
@@ -2609,7 +2599,7 @@ namespace Chroma
 				 order_rows.c_str(), order_cols.c_str(), &*v.ctx, MPI_COMM_WORLD,
 				 superbblas::FastToSlow);
 	superbblas::trsm<Nv, Nw, N>(
-	  v.scalar * w.scalar / scalar, //
+	  std::sqrt(v.scalar) * w.scalar / scalar, //
 	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
 	  order_cols.c_str(),
 	  &*v.ctx,								//
@@ -3152,7 +3142,7 @@ namespace Chroma
 	  throw std::runtime_error("cholInv: unsupported action");
 
 	// Do the contraction
-	r0.cholInv(v, order_rows, order_cols, w);
+	r0.cholInv(std::move(v), order_rows, order_cols, w);
 
 	return r0;
       }

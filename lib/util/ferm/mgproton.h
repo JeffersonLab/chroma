@@ -202,14 +202,15 @@ namespace Chroma
 	  throw std::runtime_error("ortho_level: the input tensor is not square");
 
 	// Construct the identity
-	auto t = C.template like_this<Nrows + Ncols>(order_rows + order_cols, {}, OnHost,
-						     OnEveryoneReplicated);
+	auto t = C.template like_this<Nrows + Ncols>(order_rows + order_cols, {}, OnHost, OnMaster);
 	t.set_zero();
-	COMPLEX* t_data = t.data.get();
-	for (std::size_t i = 0; i < m; ++i)
-	  t_data[i * m + i] = COMPLEX{1};
-	auto tones =
-	  C.template like_this<N - Nrows - Ncols>(order_t, {}, OnHost, OnEveryoneReplicated);
+	if (t.getLocal())
+	{
+	  COMPLEX* t_data = t.data.get();
+	  for (std::size_t i = 0; i < m; ++i)
+	    t_data[i * m + i] = COMPLEX{1};
+	}
+	auto tones = C.template like_this<N - Nrows - Ncols>(order_t, {}, OnHost, OnMaster);
 	tones.set(COMPLEX{1});
 	auto I = contract<N>(t.make_sure(none, OnDefaultDevice),
 			     tones.make_sure(none, OnDefaultDevice), "");
@@ -264,7 +265,7 @@ namespace Chroma
       constexpr std::size_t Nt = NW - Nrows - Ncols;
       double l = 0;
       unsigned int i = 0;
-      for (; i < max_its;)
+      for (; i <= max_its;)
       {
 	// W = W - V*(V'*W)
 	if (V)
@@ -273,20 +274,23 @@ namespace Chroma
 
 	// Compute Wa'*W and the orthogonality level of the basis
 	auto C = contract<Nt + 2 * Ncols>(Wa.conj(), W, order_rows);
-	if (i + 1 < max_its || verb >= Detailed)
-	{
-	  l = detail::ortho_level<Ncols, Ncols>(C, order_t, Wacorder, Wcorder);
-	  if (verb >= Detailed)
-	    QDPIO::cout << prefix << " ortho #its: " << i << " |I-V'*V|_F: " << detail::tostr(l)
-			<< std::endl;
-	  // If ||I-C|| < 1, then the basis has no linear dependencies; the conditioning of the basis is
-	  // also related to that norm, but we choose an arbitrary close but smaller value than one.
-	  if (l < 0.7)
-	    break;
-	}
+	l = detail::ortho_level<Ncols, Ncols>(C, order_t, Wacorder, Wcorder);
+	if (verb >= Detailed)
+	  QDPIO::cout << prefix << " ortho #its: " << i << " |I-V'*V|_F: " << detail::tostr(l)
+		      << std::endl;
+
+	// If ||I-C|| < 1, then the basis has no linear dependencies; the conditioning of the basis is
+	// also related to that norm, but we choose an arbitrary close but smaller value than one.
+	if (l < 0.7)
+	  break;
+
+	if (i >= max_its)
+	  throw std::runtime_error("ortho: failing in orthonormalizing the basis");
 
 	// W = W/chol(Wa'*W), where Wa'*W has dimensions (rows,cols)=(Wacorder,Wcorder)
-	cholInv<NW, Nt + 2 * Ncols, NW, COMPLEX>(C, Wacorder, Wcorder, Wa, Wacorder, CopyTo, W);
+	C = C.make_sure(none, none, OnEveryoneReplicated);
+	cholInv<NW, Nt + 2 * Ncols, NW, COMPLEX>(std::move(C), Wacorder, Wcorder, Wa, Wacorder,
+						 CopyTo, W);
 	++i;
       }
 
