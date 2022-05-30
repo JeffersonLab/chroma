@@ -440,6 +440,23 @@ namespace Chroma
 	// Compute the norm
 	auto normr = norm<1>(r, op.order_t + order_cols);
 
+	// Check final residual
+	if (superbblas::getDebugLevel() > 0)
+	{
+	  auto rd = r.like_this();
+	  op(y, rd); // rd = op(y)
+	  nops += num_cols;
+	  x.scale(-1).addTo(rd);
+	  r.scale(-1).addTo(rd);
+	  auto normrd = norm<1>(rd, op.order_t + order_cols);
+	  double max_tol_d = 0;
+	  for (int i = 0, vol = normr.volume(); i < vol; ++i)
+	    max_tol_d = std::max(max_tol_d, normrd.get({{i}}) / normr.get({{i}}));
+	  QDPIO::cout << prefix
+		      << " MGPROTON FGMRES error in residual vector: " << detail::tostr(max_tol_d)
+		      << std::endl;
+	}
+
 	// Get the worse tolerance
 	max_tol = 0;
 	for (int i = 0, vol = normr.volume(); i < vol; ++i)
@@ -934,6 +951,12 @@ namespace Chroma
 	if (blocking.at('x') > 1 && blocking.at('x') % X != 0)
 	  throw std::runtime_error("Unsupported blocking in x direction with isn't divisible by 2 "
 				   "when using even-odd layout");
+	for (const auto it : blocking)
+	{
+	  if ((it.first == 'x' && (opdims.at('x') * X) % it.second != 0) ||
+	      (it.first != 'x' && opdims.at(it.first) % it.second != 0))
+	    throw std::runtime_error("The operator dimensions are not divisible by the blocking");
+	}
 
 	// Create num_null_vecs random vectors and solve them
 	auto b = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
@@ -1077,13 +1100,20 @@ namespace Chroma
 		  // y0 = V*solver(V'*Op*V, V'x)
 		  auto y0 = V(coarseSolver(V.tconj()(x)));
 
-		  // x1 = x - op*y0
-		  auto x1 = op(y0.scale(-1));
+		  // y1 = g5 * y0 if !(do_chirality_splitting || ns == 1)
+		  auto y1 = y0;
+		  if (!(do_chirality_splitting || ns == 1)) {
+		    y1 = contract<NOp + 1>(g5.rename_dims({{'j', 's'}}), y0, "s")
+			   .rename_dims({{'i', 's'}});
+		  }
+
+		  // x1 = x - op*y1
+		  auto x1 = op(y1.scale(-1));
 		  x.addTo(x1);
 
-		  // y = y0 + solver(Op, x1)
+		  // y = y1 + solver(Op, x1)
 		  opSolver(std::move(x1), y);
-		  y0.addTo(y);
+		  y1.addTo(y);
 		},
 		op.i,
 		op.d,

@@ -3208,23 +3208,26 @@ namespace Chroma
 	r0.solve(v, order_rows, order_cols, w);
 
 	// Check the solution
-	auto res = w.clone().scale(-1);
-	remap m{};
-	for (unsigned int i = 0; i < order_rows.size(); ++i)
+	if (superbblas::getDebugLevel() > 0)
 	{
-	  m[order_rows[i]] = order_cols[i];
-	  m[order_cols[i]] = order_rows[i];
+	  auto res = w.clone().scale(-1);
+	  remap m{};
+	  for (unsigned int i = 0; i < order_rows.size(); ++i)
+	  {
+	    m[order_rows[i]] = order_cols[i];
+	    m[order_cols[i]] = order_rows[i];
+	  }
+	  contract<Nw>(v, r0.rename_dims(m), labels_to_contract, AddTo, res.rename_dims(m));
+	  auto wnorms = norm<Nw - Nlabels>(w, none, order_cols);
+	  auto rnorms = norm<Nw - Nlabels>(res, none, order_cols);
+	  double err = 0;
+	  for (int i = 0, i1 = wnorms.volume(); i < i1; ++i)
+	    err = std::max(err, (double)rnorms.data.get()[i] / wnorms.data.get()[i]);
+	  auto eps = std::sqrt(std::numeric_limits<typename detail::real_type<T>::type>::epsilon());
+	  if (err > eps)
+	    throw std::runtime_error(std::string("solve: too much error in dense solution, ") +
+				     detail::tostr(err));
 	}
-	contract<Nw>(v, r0.rename_dims(m), labels_to_contract, AddTo, res.rename_dims(m));
-	auto wnorms = norm<Nw - Nlabels>(w, none, order_cols);
-	auto rnorms = norm<Nw - Nlabels>(res, none, order_cols);
-	double err = 0;
-	for (int i = 0, i1 = wnorms.volume(); i < i1; ++i)
-	  err = std::max(err, (double)rnorms.data.get()[i] / wnorms.data.get()[i]);
-	auto eps = std::sqrt(std::numeric_limits<typename detail::real_type<T>::type>::epsilon());
-	if (err > eps)
-	  throw std::runtime_error(std::string("solve: too much error in dense solution, ") +
-				   detail::tostr(err));
 
 	return r0;
       }
