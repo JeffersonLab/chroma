@@ -427,6 +427,17 @@ namespace Chroma
 	throw std::runtime_error("get_free_labels: out of labels");
       }
 
+      /// Return a string version of the number in scientific notation
+      /// \param v: number to convert
+      /// \param prec: number of digits to print
+
+      inline std::string tostr(double v, unsigned int prec = 2)
+      {
+	std::stringstream ss;
+	ss << std::scientific << std::setprecision(prec) << v;
+	return ss.str();
+      }
+
       /// Return a map to transform given labels into another ones
       /// \param labels: labels to remap
       /// \param used_labels: labels not to use, besides `labels`
@@ -2671,7 +2682,7 @@ namespace Chroma
 	T* w_ptr = w.data.get();
 	T* ptr = this->data.get();
 	superbblas::gesm<Nv, Nw, N>(
-	  v.scalar * w.scalar / scalar, //
+	  w.scalar / v.scalar / scalar, //
 	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
 	  order_cols.c_str(),
 	  &*v.ctx,								//
@@ -3156,7 +3167,7 @@ namespace Chroma
       /// \param action: either to copy or add to the given output tensor if given (only `CopyTo' supported)
       /// \param r: optional given tensor where to put the resulting contraction
 
-      template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
+      template <std::size_t Nlabels, std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
       Tensor<Nr, T> solve(Tensor<Nv, T> v, const std::string& order_rows,
 			  const std::string& order_cols, Tensor<Nw, T> w,
 			  const std::string& labels_to_contract, Maybe<Action> action = none,
@@ -3172,6 +3183,11 @@ namespace Chroma
 	    "solve: The dimension of the output tensor does not match the template argument");
 	if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
 	  throw std::runtime_error("solve: The given output tensor has an unexpected ordering");
+	if (Nlabels != labels_to_contract.size())
+	  throw std::runtime_error(
+	    "solve: The length of `order_rows` does not match the template argument `Nrows`");
+	if (order_rows.size() != order_cols.size())
+	  throw std::runtime_error("solve: unsupported ordering for the matrix");
 
 	// If the output tensor is not given create a new one
 	Tensor<Nr, T> r0;
@@ -3188,8 +3204,27 @@ namespace Chroma
 	if (action.hasSome() && action.getSome() != CopyTo)
 	  throw std::runtime_error("solve: unsupported action");
 
-	// Do the contraction
+	// Compute the solution
 	r0.solve(v, order_rows, order_cols, w);
+
+	// Check the solution
+	auto res = w.clone().scale(-1);
+	remap m{};
+	for (unsigned int i = 0; i < order_rows.size(); ++i)
+	{
+	  m[order_rows[i]] = order_cols[i];
+	  m[order_cols[i]] = order_rows[i];
+	}
+	contract<Nw>(v, r0.rename_dims(m), labels_to_contract, AddTo, res.rename_dims(m));
+	auto wnorms = norm<Nw - Nlabels>(w, none, order_cols);
+	auto rnorms = norm<Nw - Nlabels>(res, none, order_cols);
+	double err = 0;
+	for (int i = 0, i1 = wnorms.volume(); i < i1; ++i)
+	  err = std::max(err, (double)rnorms.data.get()[i] / wnorms.data.get()[i]);
+	auto eps = std::sqrt(std::numeric_limits<typename detail::real_type<T>::type>::epsilon());
+	if (err > eps)
+	  throw std::runtime_error(std::string("solve: too much error in dense solution, ") +
+				   detail::tostr(err));
 
 	return r0;
       }

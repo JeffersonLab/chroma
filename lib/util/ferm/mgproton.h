@@ -168,17 +168,6 @@ namespace Chroma
 	    throw std::runtime_error("check_compatible: some label does not match");
       }
 
-      /// Return a string version of the number in scientific notation
-      /// \param v: number to convert
-      /// \param prec: number of digits to print
-
-      inline std::string tostr(double v, unsigned int prec = 2)
-      {
-	std::stringstream ss;
-	ss << std::scientific << std::setprecision(prec) << v;
-	return ss.str();
-      }
-
       /// Returns max ||I - C||_F, which is a heuristic of the orthogonality level of C=V^\dagger*V
       /// \param C: matrix to test
       /// \param order_t: dimension labels that do not participate in the orthogonalization
@@ -437,8 +426,8 @@ namespace Chroma
 	auto H_rt = contract<3>(Uo.conj(), Up, order_rows);
 
 	// Solve the projected problem: y_rt = (Uo'*U(:2:end))\(Uo'*r);
-	auto y_rt = solve<2>(H_rt, std::string(1, Vac), std::string(1, Vc),
-			     x_rt.rename_dims({{Vac, Vc}}), std::string(1, Vc))
+	auto y_rt = solve<1, 2>(H_rt, std::string(1, Vac), std::string(1, Vc),
+				x_rt.rename_dims({{Vac, Vc}}), std::string(1, Vc))
 		      .rename_dims({{Vac, Vc}})
 		      .make_sure(none, none, OnEveryoneReplicated);
 
@@ -1164,7 +1153,7 @@ namespace Chroma
 		// y2 = Op_oo^{-1} * y1
 		auto y2 = y0;
 		y2.set_zero();
-		solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		  opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs", y1, "cs", CopyTo,
 		  y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
 
@@ -1190,7 +1179,7 @@ namespace Chroma
 		    op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
 		    {{'n', x.kvdim()['n']}});
 		  ya.set_zero();
-		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		  solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs",
 		    x.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", CopyTo,
 		    ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
@@ -1205,7 +1194,7 @@ namespace Chroma
 		  auto yo0 = be;
 		  x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
 		  ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).scale(-1).addTo(yo0);
-		  solve<NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		  solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs", yo0, "cs", CopyTo,
 		    y.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
 		},
