@@ -215,7 +215,7 @@ namespace Chroma
 			     tones.make_sure(none, OnDefaultDevice), "");
 
 	// Compute ||I - C||_F^2
-	C.scale(-1).copyTo(I);
+	C.scale(-1).addTo(I);
 	auto fnorm2 = contract<N - Nrows - Ncols>(I.conj(), I, order_rows + order_cols);
 
 	// Return the square root
@@ -279,7 +279,9 @@ namespace Chroma
 	  if (verb >= Detailed)
 	    QDPIO::cout << prefix << " ortho #its: " << i << " |I-V'*V|_F: " << detail::tostr(l)
 			<< std::endl;
-	  if (l <= 3)
+	  // If ||I-C|| < 1, then the basis has no linear dependencies; the conditioning of the basis is
+	  // also related to that norm, but we choose an arbitrary close but smaller value than one.
+	  if (l < 0.7)
 	    break;
 	}
 
@@ -289,8 +291,8 @@ namespace Chroma
       }
 
       if (verb >= JustSummary)
-	QDPIO::cout << prefix << " ortho summary #its: " << i << " |I-V'*V|_F: " << detail::tostr(l)
-		    << std::endl;
+	QDPIO::cout << prefix << " ortho summary rank: " << detail::volume(W.kvdim(), Wcorder)
+		    << " #its: " << i << " |I-V'*V|_F: " << detail::tostr(l) << std::endl;
     }
 
     /// Orthonormalize W, W_out <- W_in*R, with R such that W_out'*W_out = I,
