@@ -444,6 +444,20 @@ namespace Chroma
 	return r;
       }
 
+      /// Return the volume associated to an order
+      /// \param m: size of each dimension
+      /// \param labels: labels to consider
+
+      inline std::size_t volume(const std::map<char, int>& m, const std::string& labels)
+      {
+	if (labels.size() == 0)
+	  return 0;
+	std::size_t vol = 1;
+	for (char c : labels)
+	  vol *= (std::size_t)m.at(c);
+	return vol;
+      }
+
       enum CoorType { From, Size };
 
       /// Split a dimension into another dimensions
@@ -2751,9 +2765,14 @@ namespace Chroma
 	{
 	  Tensor<N, Tn> r = like_this(new_order, {}, new_dev, new_dist);
 	  if (is_eg())
+	  {
 	    r = r.make_eg();
+	  }
 	  else
+	  {
+	    r.conjugate = conjugate;
 	    copyTo(r);
+	  }
 	  return r;
 	}
 	else
@@ -2770,9 +2789,14 @@ namespace Chroma
       {
 	Tensor<N, Tn> r = like_this<N, Tn>(new_order, {}, new_dev, new_dist);
 	if (is_eg())
+	{
 	  r = r.make_eg();
+	}
 	else
+	{
+	  r.conjugate = conjugate;
 	  copyTo(r);
+	}
 	return r;
       }
 

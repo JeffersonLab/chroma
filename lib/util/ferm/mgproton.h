@@ -178,6 +178,53 @@ namespace Chroma
 	ss << std::scientific << std::setprecision(prec) << v;
 	return ss.str();
       }
+
+      /// Returns max ||I - C||_F, which is a heuristic of the orthogonality level of C=V^\dagger*V
+      /// \param C: matrix to test
+      /// \param order_t: dimension labels that do not participate in the orthogonalization
+      /// \param order_rows: dimension labels that are the rows of the matrices V and W
+      /// \param order_cols: dimension labels that are the columns of the matrices V and W
+
+      template <std::size_t Nrows, std::size_t Ncols, std::size_t N, typename COMPLEX>
+      double ortho_level(Tensor<N, COMPLEX> C, const std::string& order_t,
+			 const std::string& order_rows, const std::string& order_cols)
+      {
+	// Check Nrows
+	if (order_rows.size() != Nrows)
+	  throw std::runtime_error("ortho_level: invalid template argument `Nrows`");
+	if (order_cols.size() != Ncols)
+	  throw std::runtime_error("ortho_level: invalid template argument `Ncols`");
+
+	// Check that the matrix is square
+	auto dim = C.kvdim();
+	std::size_t m = volume(dim, order_rows);
+	if (m != volume(dim, order_cols))
+	  throw std::runtime_error("ortho_level: the input tensor is not square");
+
+	// Construct the identity
+	auto t = C.template like_this<Nrows + Ncols>(order_rows + order_cols, {}, OnHost,
+						     OnEveryoneReplicated);
+	t.set_zero();
+	COMPLEX* t_data = t.data.get();
+	for (std::size_t i = 0; i < m; ++i)
+	  t_data[i * m + i] = COMPLEX{1};
+	auto tones =
+	  C.template like_this<N - Nrows - Ncols>(order_t, {}, OnHost, OnEveryoneReplicated);
+	tones.set(COMPLEX{1});
+	auto I = contract<N>(t.make_sure(none, OnDefaultDevice),
+			     tones.make_sure(none, OnDefaultDevice), "");
+
+	// Compute ||I - C||_F^2
+	C.scale(-1).copyTo(I);
+	auto fnorm2 = contract<N - Nrows - Ncols>(I.conj(), I, order_rows + order_cols);
+
+	// Return the square root
+	double tol = 0;
+	fnorm2.make_sure(none, OnHost, OnEveryoneReplicated)
+	  .foreachWithCPUFun(
+	    [&](const COMPLEX& t) { tol = std::max(tol, std::sqrt(std::real(t))); });
+	return tol;
+      }
     }
 
     /// Orthonormalize W against V, W_out <- (I-V*V')*W_in*R, with R such that W_out'*W_out = I,
@@ -192,7 +239,7 @@ namespace Chroma
 	      std::size_t NW>
     void ortho(Tensor<NV, COMPLEX> V, Tensor<NW, COMPLEX> W, const std::string& order_t,
 	       const std::string& order_rows, const std::string& order_cols,
-	       unsigned int max_its = 3)
+	       unsigned int max_its = 4, Verbosity verb = NoOutput, const std::string& prefix = "")
     {
       // Check Nrows
       if (order_rows.size() != Nrows)
@@ -215,17 +262,35 @@ namespace Chroma
       auto Wa = W.rename_dims(Wac);
 
       constexpr std::size_t Nt = NW - Nrows - Ncols;
-      for (unsigned int i = 0; i < max_its; ++i)
+      double l = 0;
+      unsigned int i = 0;
+      for (; i < max_its;)
       {
 	// W = W - V*(V'*W)
 	if (V)
 	  contract(V.scale(-1), contract<NV + NW - Nrows * 2>(V.conj(), W, order_rows), Vcorder,
 		   AddTo, W);
 
+	// Compute Wa'*W and the orthogonality level of the basis
+	auto C = contract<Nt + 2 * Ncols>(Wa.conj(), W, order_rows);
+	if (i + 1 < max_its || verb >= Detailed)
+	{
+	  l = detail::ortho_level<Ncols, Ncols>(C, order_t, Wacorder, Wcorder);
+	  if (verb >= Detailed)
+	    QDPIO::cout << prefix << " ortho #its: " << i << " |I-V'*V|_F: " << detail::tostr(l)
+			<< std::endl;
+	  if (l <= 3)
+	    break;
+	}
+
 	// W = W/chol(Wa'*W), where Wa'*W has dimensions (rows,cols)=(Wacorder,Wcorder)
-	cholInv<NW, Nt + 2 * Ncols, NW, COMPLEX>(contract<Nt + 2 * Ncols>(Wa.conj(), W, order_rows),
-						 Wacorder, Wcorder, Wa, Wacorder, CopyTo, W);
+	cholInv<NW, Nt + 2 * Ncols, NW, COMPLEX>(C, Wacorder, Wcorder, Wa, Wacorder, CopyTo, W);
+	++i;
       }
+
+      if (verb >= JustSummary)
+	QDPIO::cout << prefix << " ortho summary #its: " << i << " |I-V'*V|_F: " << detail::tostr(l)
+		    << std::endl;
     }
 
     /// Orthonormalize W, W_out <- W_in*R, with R such that W_out'*W_out = I,
@@ -237,10 +302,11 @@ namespace Chroma
 
     template <std::size_t Nrows, std::size_t Ncols, std::size_t NW, typename COMPLEX>
     void ortho(Tensor<NW, COMPLEX> W, const std::string& order_t, const std::string& order_rows,
-	       const std::string& order_cols, unsigned int max_its = 3)
+	       const std::string& order_cols, unsigned int max_its = 4, Verbosity verb = NoOutput,
+	       const std::string& prefix = "")
     {
       ortho<Nrows, Ncols, NW, COMPLEX, NW>(Tensor<NW, COMPLEX>{}, W, order_t, order_rows,
-					   order_cols, max_its);
+					   order_cols, max_its, verb, prefix);
     }
 
     /// Solve iteratively op * y = x using FGMRES
@@ -356,8 +422,8 @@ namespace Chroma
 	if (do_ortho)
 	{
 	  Uo = Uo.clone();
-	  ortho<NOp, 1>(Uo, op.order_t + order_cols, order_rows, std::string(1, Vac),
-			1 /* one iteration should be enough */);
+	  ortho<NOp, 1>(Uo, op.order_t + order_cols, order_rows, std::string(1, Vac), 4, verb,
+			prefix);
 	}
 
 	// Restrict to Uo: [x_rt H_rt] = Uo'*U = Up'*[r Up]
@@ -913,7 +979,7 @@ namespace Chroma
 			.split_dimension('n', "cs", num_null_vecs);
 
 	// Do the orthogonalization on each block and chirality
-	ortho<7, 1>(nv_blk, "Xxyzts", "WwYZTSC", "c");
+	ortho<7, 1>(nv_blk, "Xxyzts", "WwYZTSC", "c", 4, JustSummary, "prolongator");
 
 	// Return the operator
 	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk.kvdim()), i = op.i;
