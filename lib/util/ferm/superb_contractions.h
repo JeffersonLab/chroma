@@ -516,11 +516,12 @@ namespace Chroma
 	bool odd_dim_watched = false;
 	for (unsigned int k = 0; k < Ncol; ++k)
 	{
-	  if (t == Size && c[pos+k] > 0 && c[pos+k] != old_dim[pos+k]) {
+	  if (t == Size && c[pos + k] > 0 && c[pos + k] != old_dim[pos + k])
+	  {
 	    if (odd_dim_watched)
 	      throw std::runtime_error(
 		"collapse_dimensions: unsupported to collapse a range with holes");
-		odd_dim_watched = true;
+	    odd_dim_watched = true;
 	  }
 	  if (t == From)
 	    i += c[pos + k] * stride;
@@ -1231,8 +1232,8 @@ namespace Chroma
 	if (ptr)
 	  ss << "data:" << ptr << ", ";
 	std::size_t sizemb = p->localVolume() * sizeof(T) / 1024 / 1024;
-	ss << "order:" << order << ", dim:" << dim << ", dist:" << dist
-	   << ", local_storage:" << sizemb << " MiB}";
+	ss << "order:" << order << ", from:" << from << ", size:" << size << ", dim:" << dim
+	   << ", dist:" << dist << ", local_storage:" << sizemb << " MiB}";
 	return ss.str();
       }
 
@@ -1767,7 +1768,7 @@ namespace Chroma
 	return r.make_sure(none, getDev());
       }
 
-       /// Apply the function to each tensor element
+      /// Apply the function to each tensor element
       /// \param func: function T -> void
       /// \param threaded: whether to run threaded
 
@@ -1810,7 +1811,8 @@ namespace Chroma
 
       void set(T v)
       {
-	if (std::norm(v) == 0) set_zero();
+	if (std::norm(v) == 0)
+	  set_zero();
 	else
 	  fillWithCPUFuncNoArgs([=]() { return v; });
       }
@@ -1827,7 +1829,8 @@ namespace Chroma
 
       Tensor<N, T> rename_dims(const SB::remap& m) const
       {
-	return Tensor<N, T>(*this, detail::update_order_and_check<N>(order, m), this->from, this->size);
+	return Tensor<N, T>(*this, detail::update_order_and_check<N>(order, m), this->from,
+			    this->size);
       }
 
       /// Return a slice of the tensor starting at coordinate `kvfrom` and taking `kvsize` elements
@@ -1836,7 +1839,7 @@ namespace Chroma
       ///
       /// \param kvfrom: dictionary with the index of the first element in each direction
       /// \param kvsize: dictionary with the number of elements in each direction
-      /// \return: new view of the tensor 
+      /// \return: new view of the tensor
       ///
       /// Example:
       ///
@@ -1926,7 +1929,6 @@ namespace Chroma
       ///   // Create a tensor like q but without the dimension c
       ///   Tensor<2,Complex> v = q.like_this<2>("%", '%', "c");
 
-
       template <std::size_t Nn = N, typename Tn = T>
       Tensor<Nn, Tn>
       like_this(const std::string& new_order, char remaining_char,
@@ -1987,9 +1989,10 @@ namespace Chroma
 
       Tensor<N, T> make_eg() const
       {
-	return Tensor<N, T>(order, size, ctx, std::shared_ptr<T>(),
-			    std::make_shared<detail::TensorPartition<N>>(p->get_subpartition(from, size)),
-			    dist, {}, size, T{1}, false /* not conjugate */, true /* is eg */);
+	return Tensor<N, T>(
+	  order, size, ctx, std::shared_ptr<T>(),
+	  std::make_shared<detail::TensorPartition<N>>(p->get_subpartition(from, size)), dist, {},
+	  size, T{1}, false /* not conjugate */, true /* is eg */);
       }
 
     private:
@@ -2167,7 +2170,7 @@ namespace Chroma
 
       template <std::size_t Nout, typename std::enable_if<(N > 0), bool>::type = true>
       Tensor<Nout, T> split_dimension(char dim_label, std::string new_labels,
-				      const std::map<char, int> &new_dim) const
+				      const std::map<char, int>& new_dim) const
       {
 	using namespace detail;
 
@@ -2240,12 +2243,13 @@ namespace Chroma
 
 	// Find the first and the last position of the `labels` into order
 	std::string::size_type min_pos = order.size(), max_pos = 0;
-	for( char c: labels) {
-		std::string::size_type pos = order.find(c);
-		if (pos == std::string::npos)
-		  continue;
-		min_pos = std::min(min_pos, pos);
-		max_pos = std::max(max_pos, pos);
+	for (char c : labels)
+	{
+	  std::string::size_type pos = order.find(c);
+	  if (pos == std::string::npos)
+	    continue;
+	  min_pos = std::min(min_pos, pos);
+	  max_pos = std::max(max_pos, pos);
 	}
 
 	// Check that all `labels` are together in `order`
@@ -2265,7 +2269,7 @@ namespace Chroma
 	std::string new_order = std::string(order.begin(), order.begin() + pos) +
 				std::string(1, new_label) +
 				std::string(order.begin() + pos + labels.size(), order.end());
-	
+
 	// Transform the partition
 	auto new_p = std::make_shared<detail::TensorPartition<Nout>>(
 	  p->template collapse_dimensions<Nout>(pos));
@@ -2275,7 +2279,6 @@ namespace Chroma
 			       detail::collapse_dimensions<Nout>(pos, size, dim, Size), scalar,
 			       conjugate, eg);
       }
-
 
       /// Copy/add this tensor into the given one
       /// NOTE: if this tensor or the given tensor is fake real, force both to be fake real
@@ -2365,10 +2368,12 @@ namespace Chroma
 	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
 
 	if (action == AddTo && w.scalar != Tw{1})
-	  throw std::runtime_error("Not allowed to add to a tensor whose implicit scalar factor is not one");
+	  throw std::runtime_error(
+	    "Not allowed to add to a tensor whose implicit scalar factor is not one");
 
 	if (conjugate != w.conjugate)
-	  throw std::runtime_error("Not allowed to copy or add tensor with different implicit conjugacy");
+	  throw std::runtime_error(
+	    "Not allowed to copy or add tensor with different implicit conjugacy");
 
 	if ((dist == Local && w.dist != Local) || (dist != Local && w.dist == Local))
 	{
@@ -2467,7 +2472,8 @@ namespace Chroma
 	Coor<N> vsize = kvcoors<N>(order, v.kvdim(), 0, NoThrow);
 	for (unsigned int i = 0; i < N; ++i)
 	  if (vsize[i] != 0 && vsize[i] != size[i])
-	    throw std::runtime_error("Invalid tensor contractions: one of the dimensions does not match");
+	    throw std::runtime_error(
+	      "Invalid tensor contractions: one of the dimensions does not match");
 
 	auto new_p = std::make_shared<detail::TensorPartition<N>>(
 	  p->make_suitable_for_contraction(order, *v.p, v.order));
@@ -2557,7 +2563,7 @@ namespace Chroma
 
       template <std::size_t Nv, std::size_t Nw>
       void cholInv(Tensor<Nv, T> v, const std::string& order_rows, const std::string& order_cols,
-		   Tensor<Nw, T>& w)
+		   Tensor<Nw, T> w)
       {
 	if (is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
@@ -2603,6 +2609,9 @@ namespace Chroma
 	if (v.dist == OnEveryoneReplicated && w.dist == OnEveryone)
 	  v = v.make_suitable_for_contraction(w);
 
+	if (std::fabs(std::imag(v.scalar)) != 0 || std::real(v.scalar) < 0)
+	  throw std::runtime_error("cholInv: unsupported a negative or imaginary scale");
+
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
 	T* ptr = this->data.get();
@@ -2610,7 +2619,7 @@ namespace Chroma
 				 order_rows.c_str(), order_cols.c_str(), &*v.ctx, MPI_COMM_WORLD,
 				 superbblas::FastToSlow);
 	superbblas::trsm<Nv, Nw, N>(
-	  std::sqrt(v.scalar) * w.scalar / scalar, //
+	  w.scalar / std::sqrt(v.scalar) / scalar, //
 	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
 	  order_cols.c_str(),
 	  &*v.ctx,								//
@@ -2626,7 +2635,7 @@ namespace Chroma
 
       template <std::size_t Nv, std::size_t Nw>
       void solve(Tensor<Nv, T> v, const std::string& order_rows, const std::string& order_cols,
-		 Tensor<Nw, T>& w)
+		 Tensor<Nw, T> w)
       {
 	if (is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
@@ -2659,8 +2668,8 @@ namespace Chroma
 	}
 
 	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
-	  throw std::runtime_error(
-	    "solve: One of the contracted tensors or the output tensor is local and others are not!");
+	  throw std::runtime_error("solve: One of the contracted tensors or the output tensor is "
+				   "local and others are not!");
 
 	// Help superbblas to get the same verbatim value in all processes for the same tensor element in all
 	// replicated copies
@@ -2690,7 +2699,6 @@ namespace Chroma
 	  p->p.data(), dim, 1, order.c_str(), &ptr, &*ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
- 
       /// Return a view of this tensor where the elements are scaled by the given argument
       /// \param s: scaling factor
       /// \return: a new view (it doesn't create a copy of the tensor)
@@ -2704,7 +2712,7 @@ namespace Chroma
 
       /// Return a view of this tensor where the elements are conjuated
       /// \return: a new view (it doesn't create a copy of the tensor)
- 
+
       Tensor<N, T> conj() const
       {
 	if (is_eg())
@@ -2844,7 +2852,8 @@ namespace Chroma
 	if (!isContiguous())
 	  throw std::runtime_error("Only supported contiguous views in memory");
 	if (scalar != T{1} || conjugate)
-	  throw std::runtime_error("Not allowed for tensor with a scale not being one or implicitly conjugated");
+	  throw std::runtime_error(
+	    "Not allowed for tensor with a scale not being one or implicitly conjugated");
 
 	// Only on primary node read the data
 	std::size_t vol = volume();
@@ -2897,6 +2906,7 @@ namespace Chroma
 	  ss << "% " << repr(data.get()) << std::endl;
 	  ss << "% dist=" << p->p << std::endl;
 	  ss << name << "=reshape([";
+	  assert(!t_host.isSubtensor());
 	  std::size_t vol = volume();
 	  for (std::size_t i = 0; i < vol; ++i)
 	  {
@@ -3052,189 +3062,190 @@ namespace Chroma
       r0.contract(v, {}, NotConjugate, w, {}, NotConjugate, mr, beta);
 
       return r0;
-      }
+    }
 
-      /// Compute the norm along some dimensions
-      /// \param v: tensor
-      /// \param order_t: labels not to contract (optional)
-      /// \param order_rows: labels to contract (optional, either order_rows or order_t
-      ///        should be provided)
-      ///
-      /// Example:
-      ///
-      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("Ss", {{Ns,Ns}});
-      ///   Tensor<2,Complex> r0 = contract<2>(t, q, "s"); // r0 dims are "cS"
-      ///   Tensor<3,Complex> r1 = contract<3>(t, q, ""); // r1 dims are "csS"
-      ///   Tensor<2,Complex> r2("cS", {{Nc,Ns}});
-      ///   contract<2>(t, q, "s", CopyTo, r2); // r2 = q * s
-      ///   Tensor<2,Complex> r3("cs", {{Nc,Ns}});
-      ///   contract<2>(t, q, "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s
-      ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
+    /// Compute the norm along some dimensions
+    /// \param v: tensor
+    /// \param order_t: labels not to contract (optional)
+    /// \param order_rows: labels to contract (optional, either order_rows or order_t
+    ///        should be provided)
+    ///
+    /// Example:
+    ///
+    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("Ss", {{Ns,Ns}});
+    ///   Tensor<2,Complex> r0 = contract<2>(t, q, "s"); // r0 dims are "cS"
+    ///   Tensor<3,Complex> r1 = contract<3>(t, q, ""); // r1 dims are "csS"
+    ///   Tensor<2,Complex> r2("cS", {{Nc,Ns}});
+    ///   contract<2>(t, q, "s", CopyTo, r2); // r2 = q * s
+    ///   Tensor<2,Complex> r3("cs", {{Nc,Ns}});
+    ///   contract<2>(t, q, "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s
+    ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
 
-      template <std::size_t Nr, std::size_t Nv, typename T>
-      Tensor<Nr, typename detail::real_type<T>::type> norm(
-	Tensor<Nv, T> v, Maybe<std::string> order_t = none, Maybe<std::string> order_rows = none)
-      {
-	if (!order_t.hasSome() && !order_rows.hasSome())
-	  throw std::runtime_error(
-	    "norm: invalid input, give at least either `order_t` or `order_rows`");
+    template <std::size_t Nr, std::size_t Nv, typename T>
+    Tensor<Nr, typename detail::real_type<T>::type>
+    norm(Tensor<Nv, T> v, Maybe<std::string> order_t = none, Maybe<std::string> order_rows = none)
+    {
+      if (!order_t.hasSome() && !order_rows.hasSome())
+	throw std::runtime_error(
+	  "norm: invalid input, give at least either `order_t` or `order_rows`");
 
-	// Compute the labels to contract
-	std::string rorder = order_rows.hasSome()
-			       ? order_rows.getSome()
-			       : detail::remove_dimensions(v.order, order_t.getSome());
-	std::string torder =
-	  order_t.hasSome() ? order_t.getSome() : detail::remove_dimensions(v.order, rorder);
+      // Compute the labels to contract
+      std::string rorder = order_rows.hasSome()
+			     ? order_rows.getSome()
+			     : detail::remove_dimensions(v.order, order_t.getSome());
+      std::string torder =
+	order_t.hasSome() ? order_t.getSome() : detail::remove_dimensions(v.order, rorder);
 
-	// Allocate the output on the host and spread the result to every process
-	auto r = contract<Nr>(v.conj(), v, rorder).make_sure(torder, OnHost, OnEveryoneReplicated);
+      // Allocate the output on the host and spread the result to every process
+      auto r = contract<Nr>(v.conj(), v, rorder).make_sure(torder, OnHost, OnEveryoneReplicated);
 
-	// Do the square root and return the result
-	using Treal = typename detail::real_type<T>::type;
-	return r.template transformWithCPUFun<Treal>(
-	  [](const T& t) { return std::sqrt(std::real(t)); });
-      }
+      // Do the square root and return the result
+      using Treal = typename detail::real_type<T>::type;
+      return r.template transformWithCPUFun<Treal>(
+	[](const T& t) { return std::sqrt(std::real(t)); });
+    }
 
-      /// Compute the maximum for a small tensor
-      /// \param v: tensor
+    /// Compute the maximum for a small tensor
+    /// \param v: tensor
 
-      template <std::size_t N, typename T>
-      T max(Tensor<N, T> v)
-      {
-	v = v.make_sure(none, OnHost, OnEveryoneReplicated);
-	if (v.isSubtensor())
-	  v = v.clone();
-	T r = T{0};
-	T* p = v.data.get();
-	for (unsigned int i = 0, vol = v.volume(); i < vol; ++i)
-	  r = std::max(r, p[i]);
-	return r;
-      }
+    template <std::size_t N, typename T>
+    T max(Tensor<N, T> v)
+    {
+      v = v.make_sure(none, OnHost, OnEveryoneReplicated);
+      if (v.isSubtensor())
+	v = v.clone();
+      T r = T{0};
+      T* p = v.data.get();
+      for (unsigned int i = 0, vol = v.volume(); i < vol; ++i)
+	r = std::max(r, p[i]);
+      return r;
+    }
 
-      /// Compute the Cholesky factor of `v' and contract its inverse with `w`
-      /// \param v: tensor to compute the Cholesky factor
-      /// \param order_rows: labels that are rows of the matrices to factor
-      /// \param order_cols: labels that are columns of the matrices to factor
-      /// \param w: the other tensor to contract
-      /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
-      /// \param action: either to copy or add to the given output tensor if given (only `CopyTo' supported)
-      /// \param r: optional given tensor where to put the resulting contraction
+    /// Compute the Cholesky factor of `v' and contract its inverse with `w`
+    /// \param v: tensor to compute the Cholesky factor
+    /// \param order_rows: labels that are rows of the matrices to factor
+    /// \param order_cols: labels that are columns of the matrices to factor
+    /// \param w: the other tensor to contract
+    /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
+    /// \param action: either to copy or add to the given output tensor if given (only `CopyTo' supported)
+    /// \param r: optional given tensor where to put the resulting contraction
 
-      template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
-      Tensor<Nr, T> cholInv(Tensor<Nv, T> v, const std::string& order_rows,
-			    const std::string& order_cols, Tensor<Nw, T> w,
-			    const std::string& labels_to_contract, Maybe<Action> action = none,
-			    Maybe<Tensor<Nr, T>> r = none)
-      {
-	if (action.hasSome() != r.hasSome())
-	  throw std::runtime_error("Invalid default value");
-
-	// Compute the labels of the output tensor: v.order + w.order - labels_to_contract
-	std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
-	if (Nr != rorder.size())
-	  throw std::runtime_error(
-	    "cholInv: The dimension of the output tensor does not match the template argument");
-	if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
-	  throw std::runtime_error("cholInv: The given output tensor has an unexpected ordering");
-
-	// If the output tensor is not given create a new one
-	Tensor<Nr, T> r0;
-	if (!r)
-	{
-	  r0 = v.template like_this<Nr>(rorder, w.kvdim());
-	}
-	else
-	{
-	  r0 = r.getSome();
-	}
-
-	// For now, only `CopyTo' action is supported
-	if (action.hasSome() && action.getSome() != CopyTo)
-	  throw std::runtime_error("cholInv: unsupported action");
-
-	// Do the contraction
-	r0.cholInv(std::move(v), order_rows, order_cols, w);
-
-	return r0;
-      }
-
-      /// Solve the linear systems within tensor `v' and right-hand-sides `w`
-      /// \param v: tensor to compute the Cholesky factor
-      /// \param order_rows: labels that are rows of the matrices to factor
-      /// \param order_cols: labels that are columns of the matrices to factor
-      /// \param w: the other tensor to contract
-      /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
-      /// \param action: either to copy or add to the given output tensor if given (only `CopyTo' supported)
-      /// \param r: optional given tensor where to put the resulting contraction
-
-      template <std::size_t Nlabels, std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
-      Tensor<Nr, T> solve(Tensor<Nv, T> v, const std::string& order_rows,
+    template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
+    Tensor<Nr, T> cholInv(Tensor<Nv, T> v, const std::string& order_rows,
 			  const std::string& order_cols, Tensor<Nw, T> w,
 			  const std::string& labels_to_contract, Maybe<Action> action = none,
 			  Maybe<Tensor<Nr, T>> r = none)
+    {
+      if (action.hasSome() != r.hasSome())
+	throw std::runtime_error("Invalid default value");
+
+      // Compute the labels of the output tensor: v.order + w.order - labels_to_contract
+      std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
+      if (Nr != rorder.size())
+	throw std::runtime_error(
+	  "cholInv: The dimension of the output tensor does not match the template argument");
+      if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
+	throw std::runtime_error("cholInv: The given output tensor has an unexpected ordering");
+
+      // If the output tensor is not given create a new one
+      Tensor<Nr, T> r0;
+      if (!r)
       {
-	if (action.hasSome() != r.hasSome())
-	  throw std::runtime_error("solve: Invalid default value");
-
-	// Compute the labels of the output tensor: v.order + w.order - labels_to_contract
-	std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
-	if (Nr != rorder.size())
-	  throw std::runtime_error(
-	    "solve: The dimension of the output tensor does not match the template argument");
-	if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
-	  throw std::runtime_error("solve: The given output tensor has an unexpected ordering");
-	if (Nlabels != labels_to_contract.size())
-	  throw std::runtime_error(
-	    "solve: The length of `order_rows` does not match the template argument `Nrows`");
-	if (order_rows.size() != order_cols.size())
-	  throw std::runtime_error("solve: unsupported ordering for the matrix");
-
-	// If the output tensor is not given create a new one
-	Tensor<Nr, T> r0;
-	if (!r)
-	{
-	  r0 = v.template like_this<Nr>(rorder, w.kvdim());
-	}
-	else
-	{
-	  r0 = r.getSome();
-	}
-
-	// For now, only `CopyTo' action is supported
-	if (action.hasSome() && action.getSome() != CopyTo)
-	  throw std::runtime_error("solve: unsupported action");
-
-	// Compute the solution
-	r0.solve(v, order_rows, order_cols, w);
-
-	// Check the solution
-	if (superbblas::getDebugLevel() > 0)
-	{
-	  auto res = w.clone().scale(-1);
-	  remap m{};
-	  for (unsigned int i = 0; i < order_rows.size(); ++i)
-	  {
-	    m[order_rows[i]] = order_cols[i];
-	    m[order_cols[i]] = order_rows[i];
-	  }
-	  contract<Nw>(v, r0.rename_dims(m), labels_to_contract, AddTo, res.rename_dims(m));
-	  auto wnorms = norm<Nw - Nlabels>(w, none, order_cols);
-	  auto rnorms = norm<Nw - Nlabels>(res, none, order_cols);
-	  double err = 0;
-	  for (int i = 0, i1 = wnorms.volume(); i < i1; ++i)
-	    err = std::max(err, (double)rnorms.data.get()[i] / wnorms.data.get()[i]);
-	  auto eps = std::sqrt(std::numeric_limits<typename detail::real_type<T>::type>::epsilon());
-	  if (err > eps)
-	    throw std::runtime_error(std::string("solve: too much error in dense solution, ") +
-				     detail::tostr(err));
-	}
-
-	return r0;
+	r0 = v.template like_this<Nr>(rorder, w.kvdim());
+      }
+      else
+      {
+	r0 = r.getSome();
       }
 
-      template <typename T>
-      void* getQDPPtr(const T& t)
+      // For now, only `CopyTo' action is supported
+      if (action.hasSome() && action.getSome() != CopyTo)
+	throw std::runtime_error("cholInv: unsupported action");
+
+      // Do the contraction
+      r0.cholInv(std::move(v), order_rows, order_cols, w);
+
+      return r0;
+    }
+
+    /// Solve the linear systems within tensor `v' and right-hand-sides `w`
+    /// \param v: tensor to compute the Cholesky factor
+    /// \param order_rows: labels that are rows of the matrices to factor
+    /// \param order_cols: labels that are columns of the matrices to factor
+    /// \param w: the other tensor to contract
+    /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
+    /// \param action: either to copy or add to the given output tensor if given (only `CopyTo' supported)
+    /// \param r: optional given tensor where to put the resulting contraction
+
+    template <std::size_t Nlabels, std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
+    Tensor<Nr, T> solve(Tensor<Nv, T> v, const std::string& order_rows,
+			const std::string& order_cols, Tensor<Nw, T> w,
+			const std::string& labels_to_contract, Maybe<Action> action = none,
+			Maybe<Tensor<Nr, T>> r = none)
+    {
+      if (action.hasSome() != r.hasSome())
+	throw std::runtime_error("solve: Invalid default value");
+
+      // Compute the labels of the output tensor: v.order + w.order - labels_to_contract
+      std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
+      if (Nr != rorder.size())
+	throw std::runtime_error(
+	  "solve: The dimension of the output tensor does not match the template argument");
+      if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
+	throw std::runtime_error("solve: The given output tensor has an unexpected ordering");
+      if (Nlabels != labels_to_contract.size())
+	throw std::runtime_error(
+	  "solve: The length of `order_rows` does not match the template argument `Nrows`");
+      if (order_rows.size() != order_cols.size())
+	throw std::runtime_error("solve: unsupported ordering for the matrix");
+
+      // If the output tensor is not given create a new one
+      Tensor<Nr, T> r0;
+      if (!r)
       {
+	r0 = v.template like_this<Nr>(rorder, w.kvdim());
+      }
+      else
+      {
+	r0 = r.getSome();
+      }
+
+      // For now, only `CopyTo' action is supported
+      if (action.hasSome() && action.getSome() != CopyTo)
+	throw std::runtime_error("solve: unsupported action");
+
+      // Compute the solution
+      r0.solve(v, order_rows, order_cols, w);
+
+      // Check the solution
+      if (superbblas::getDebugLevel() > 0)
+      {
+	auto res = w.clone().scale(-1);
+	remap m{};
+	for (unsigned int i = 0; i < order_rows.size(); ++i)
+	{
+	  m[order_rows[i]] = order_cols[i];
+	  m[order_cols[i]] = order_rows[i];
+	}
+	contract<Nw>(v, r0.rename_dims(m), labels_to_contract, AddTo, res.rename_dims(m));
+	auto wnorms = norm<Nw - Nlabels>(w, none, order_cols);
+	auto rnorms = norm<Nw - Nlabels>(res, none, order_cols);
+	double err = 0;
+	for (int i = 0, i1 = wnorms.volume(); i < i1; ++i)
+	  err = std::max(err, (double)rnorms.data.get()[i] / wnorms.data.get()[i]);
+	QDPIO::cout << "solve error: " << detail::tostr(err) << std::endl;
+	auto eps = std::sqrt(std::numeric_limits<typename detail::real_type<T>::type>::epsilon());
+	if (err > eps)
+	  throw std::runtime_error(std::string("solve: too much error in dense solution, ") +
+				   detail::tostr(err));
+      }
+
+      return r0;
+    }
+
+    template <typename T>
+    void* getQDPPtr(const T& t)
+    {
 #  if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
       std::vector<QDPCache::ArgKey> v(1, t.getId());
       void* r = QDP_get_global_cache().get_dev_ptrs(v)[0];
@@ -3361,13 +3372,13 @@ namespace Chroma
       static_assert(superbblas::supported_type<T>::value, "Not supported type");
 
     public:
-      Tensor<ND, T> d;				///< Tensor example for the domain
-      Tensor<NI, T> i;				///< Tensor example for the image
-      Coor<ND> blkd;				///< blocking for the domain
-      Coor<NI> blki;				///< blocking for the image
-      Tensor<NI, int> ii;			///< Number of blocks in each row
-      Tensor<NI + 2, int> jj;			///< Coordinate of the first element on each block
-      Tensor<NI + ND + 1, T> data;		///< Nonzero values
+      Tensor<ND, T> d;		   ///< Tensor example for the domain
+      Tensor<NI, T> i;		   ///< Tensor example for the image
+      Coor<ND> blkd;		   ///< blocking for the domain
+      Coor<NI> blki;		   ///< blocking for the image
+      Tensor<NI, int> ii;	   ///< Number of blocks in each row
+      Tensor<NI + 2, int> jj;	   ///< Coordinate of the first element on each block
+      Tensor<NI + ND + 1, T> data; ///< Nonzero values
       std::shared_ptr<superbblas::BSR_handle> handle; ///< suparbblas sparse tensor handle
       T scalar;					      ///< Scalar factor of the tensor
       static const bool isImgFastInBlock = false;     ///< whether the BSR blocks are in row-major
@@ -3467,7 +3478,7 @@ namespace Chroma
 	    return (t - localFrom[c[0]] + domDim[c[0]]) % domDim[c[0]];
 	  });
 
-	int *iiptr = ii.data.get();
+	int* iiptr = ii.data.get();
 	Coor<ND>* jjptr = (Coor<ND>*)localjj.data.get();
 	// NOTE: despite jj being a vector of `int`, superbblas will use jj as a vector of Coor<NI>, so check that the alignment
 	if (localjj.getLocal().volume() > 0 &&
@@ -3545,7 +3556,6 @@ namespace Chroma
 	  &*data.ctx, MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Copy);
 	w.scalar = scalar * v.scalar;
       }
-
     };
 
     /// Broadcast a string from process zero
@@ -3824,7 +3834,7 @@ namespace Chroma
       {
 	//  This is quick and dirty and nonreproducible if the lattice is distributed
 	//  among the processes is different ways.
-	static std::mt19937_64 twister_engine(10 +  QMP_get_node_number());
+	static std::mt19937_64 twister_engine(10 + Layout::nodeNumber());
 	return twister_engine;
       }
     }
@@ -3839,7 +3849,11 @@ namespace Chroma
     void urand(Tensor<N, T>& t, typename T::value_type a = 0, typename T::value_type b = 1)
     {
       std::uniform_real_distribution<typename T::value_type> d(a, b);
-      t.fillWithCPUFuncNoArgs([&]() { return T{d(detail::getSeed()), d(detail::getSeed())}; }, false);
+      t.fillWithCPUFuncNoArgs(
+	[&]() {
+	  return T{d(detail::getSeed()), d(detail::getSeed())};
+	},
+	false);
     }
 
     /// Modify with random uniformly distributed numbers between [a,b]
@@ -3916,7 +3930,7 @@ namespace Chroma
 
     template <typename COMPLEX, std::size_t N>
     Tensor<N, COMPLEX> shift(const Tensor<N, COMPLEX> v, Index first_tslice, int len, int dir,
-			     Maybe<Action> action = none, Maybe<Tensor<N, COMPLEX>> w=none)
+			     Maybe<Action> action = none, Maybe<Tensor<N, COMPLEX>> w = none)
     {
       if (dir < 0 || dir >= Nd - 1)
 	throw std::runtime_error("Invalid direction");
@@ -3970,8 +3984,8 @@ namespace Chroma
 	    "The t dimension should be zero, one, or even when doing shifting on the X dimension");
 	int maxX = dims.at('X');
 	int maxY = std::min(2, dims.at('y'));
-        int maxZ = std::min(2, dims.at('z'));
-        int maxT = std::min(2, dims.at('t'));
+	int maxZ = std::min(2, dims.at('z'));
+	int maxT = std::min(2, dims.at('t'));
 	auto v_eo = v.split_dimension('y', "Yy", maxY)
 		      .split_dimension('z', "Zz", maxZ)
 		      .split_dimension('t', "Tt", maxT);
@@ -4109,12 +4123,12 @@ namespace Chroma
 
       // r = conj(phases) * displace(u, v, dir)
       Tensor<N, COMPLEX> r = v.like_this("c%xyzXtm", '%');
-      r.contract(displace(u, v, first_tslice, -dir), {}, NotConjugate,
-		 asTensorView(phases), {{'i', 'm'}}, Conjugate);
+      r.contract(displace(u, v, first_tslice, -dir), {}, NotConjugate, asTensorView(phases),
+		 {{'i', 'm'}}, Conjugate);
 
       // r = r - phases * displace(u, v, dir) if !ConjUnderAdd else r + phases * displace(u, v, dir)
-      r.contract(displace(u, v, first_tslice, dir).scale(conjUnderAdd ? 1 : -1),
-		 {}, NotConjugate, asTensorView(phases), {{'i', 'm'}}, NotConjugate, {}, 1.0);
+      r.contract(displace(u, v, first_tslice, dir).scale(conjUnderAdd ? 1 : -1), {}, NotConjugate,
+		 asTensorView(phases), {{'i', 'm'}}, NotConjugate, {}, 1.0);
 
       return r;
     }
@@ -5259,8 +5273,7 @@ namespace Chroma
 	  // Contract the spatial components and the color of the leftconj and right tensors
 	  Tensor<Nout, COMPLEX> aux =
 	    r.template like_this<Nout, COMPLEX>("mNQqnSst%", '%', "gd", {{'S', Ns}, {'Q', Ns}});
-	  aux.contract(leftconj, {}, Conjugate, right, {}, NotConjugate,
-		       {});
+	  aux.contract(leftconj, {}, Conjugate, right, {}, NotConjugate, {});
 
 	  // Contract the spin components S and Q with the gammas, and put the result on r[d=disp_indices.size()]
 	  Tensor<Nout - 1, COMPLEX> aux0 =
@@ -5689,9 +5702,8 @@ namespace Chroma
 	if (tsize > 1 && tsize % 2 != 0)
 	  --tsize;
 
-	detail::log(
-	  1, "color contracting " + std::to_string(tsize) + " tslices from tslice= " +
-	       std::to_string(tfrom));
+	detail::log(1, "color contracting " + std::to_string(tsize) +
+			 " tslices from tslice= " + std::to_string(tfrom));
 
 	// Make a copy of the time-slicing of u[d] also supporting left and right
 	std::vector<Tensor<Nd + 3, COMPLEX>> ut(Nd);
@@ -5890,8 +5902,8 @@ namespace Chroma
 	Tensor<Nin + 1, COMPLEX> moms_left =
 	  colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', Nmom}});
 	moms_left.contract(std::move(this_moms), {}, Conjugate,
-			   phaseColorvecs(this_colorvec, first_tslice + tfrom, left_phase),
-			   {}, NotConjugate);
+			   phaseColorvecs(this_colorvec, first_tslice + tfrom, left_phase), {},
+			   NotConjugate);
 
 	// Apply the right phase
 	this_colorvec = phaseColorvecs(this_colorvec, first_tslice + tfrom, right_phase);
@@ -5984,7 +5996,7 @@ namespace Chroma
 	sizer = dim;
       }
     }
-    }
+  }
 }
 
 namespace QDP

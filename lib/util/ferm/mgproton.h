@@ -359,6 +359,11 @@ namespace Chroma
       }
       else
       {
+	r = op.i.template like_this<NOp + 1>(op.preferred_col_ordering == ColumnMajor
+					       ? std::string("%") + std::string(1, Vc)
+					       : std::string(1, Vc) + std::string("%"),
+					     '%', "", {{Vc, max_basis_size + 1}});
+
 	r = y.like_this();
 	r.set_zero();
 	y.set_zero();
@@ -421,7 +426,7 @@ namespace Chroma
 			prefix);
 	}
 
-	// Restrict to Uo: [x_rt H_rt] = Uo'*U = Up'*[r Up]
+	// Restrict to Uo: [x_rt H_rt] = Uo'*U = Uo'*[r Up]
 	auto x_rt = contract<2>(Uo.conj(), r, order_rows);
 	auto H_rt = contract<3>(Uo.conj(), Up, order_rows);
 
@@ -867,34 +872,9 @@ namespace Chroma
 	rop(x).scale(-1).addTo(y);
 	auto error = norm<1>(y, "n");
 	auto eps = std::sqrt(std::numeric_limits<typename real_type<COMPLEX>::type>::epsilon());
-	bool fail = false;
 	for (int i = 0; i < base_norm.volume(); ++i)
-	  if (error.get({{i}}) > eps * base_norm.get({{i}})) fail = true;
-
-	if (fail)
-	for (unsigned int j = 0; j < op.i.volume(); ++j)
-	{
-	  auto x = op.i.template like_this<NOp + 1>("%n", '%', "", {{'n', 1}});
-	  x.set_zero();
-	  auto x0 = x.make_sure(none, OnHost, OnEveryoneReplicated);
-	  x0.data.get()[j] = COMPLEX{1};
-	  x0.copyTo(x);
-	  auto y = op(x);
-	  auto y0 = y.clone();
-	  auto base_norm = norm<1>(y, "n");
-	  auto y1 = rop(x);
-	  y1.scale(-1).addTo(y);
-	  auto error = norm<1>(y, "n");
-	  auto eps =
-	    std::sqrt(std::numeric_limits<typename detail::real_type<COMPLEX>::type>::epsilon());
-	  if (error.get({{0}}) > eps * base_norm.get({{0}}))
-	  {
-	    QDPIO::cout << "error at source " << j << std::endl;
-	    y0.reorder(op.i.order + "n").print("y0");
-	    y1.reorder(op.i.order + "n").print("y1");
+	  if (error.get({{i}}) > eps * base_norm.get({{i}}))
 	    throw std::runtime_error("cloneOperator: too much error on the cloned operator");
-	  }
-	}
 
 	return rop;
       }
@@ -1198,42 +1178,60 @@ namespace Chroma
 	// Get solver on opA
 	const Operator<NOp, COMPLEX> solver = getSolver(opA, getOptions(ops, "solver"));
 
-	// Return the solver
-	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		  // be = x_e - Op_eo*Op_oo^{-1}*x_o
-		  auto be = solver.d.template like_this<NOp + 1>(
-		    solver.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-		    {{'n', x.kvdim()['n']}});
-		  x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
-		  auto ya = op.d.template like_this<NOp + 1>(
-		    op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-		    {{'n', x.kvdim()['n']}});
-		  ya.set_zero();
-		  solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs",
-		    x.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", CopyTo,
-		    ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
-		  op(ya).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(be);
+	// Create the solver
+	Operator<NOp, COMPLEX> rop{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    // be = x_e - Op_eo*Op_oo^{-1}*x_o
+	    auto be = solver.d.template like_this<NOp + 1>(
+	      solver.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+	      {{'n', x.kvdim()['n']}});
+	    x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
+	    auto ya = op.d.template like_this<NOp + 1>(
+	      op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+	      {{'n', x.kvdim()['n']}});
+	    ya.set_zero();
+	    solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+	      opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs",
+	      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", CopyTo,
+	      ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
+	    op(ya).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(be);
 
-		  // Solve opA * y_e = be
-		  y.set_zero();
-		  solver(be, y.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+	    // Solve opA * y_e = be
+	    y.set_zero();
+	    solver(be, y.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
 
-		  // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
-		  op(y, ya);
-		  auto yo0 = be;
-		  x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
-		  ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).scale(-1).addTo(yo0);
-		  solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs", yo0, "cs", CopyTo,
-		    y.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
-		},
-		op.i,
-		op.d,
-		nullptr,
-		op.order_t,
-		op.DenseOperator,
-		op.preferred_col_ordering};
+	    // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
+	    op(y, ya);
+	    auto yo0 = be;
+	    x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
+	    ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).scale(-1).addTo(yo0);
+	    solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+	      opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs", yo0, "cs", CopyTo,
+	      y.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
+	  },
+	  op.i,
+	  op.d,
+	  nullptr,
+	  op.order_t,
+	  op.DenseOperator,
+	  op.preferred_col_ordering};
+
+	// Do a test
+	if (superbblas::getDebugLevel() > 0)
+	{
+	  auto x = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', 2}});
+	  urand(x, -1, 1);
+	  auto y = rop(op(x));
+	  x.scale(-1).addTo(y);
+	  auto normx = norm<1>(x, "n");
+	  auto normdiff = norm<1>(y, "n");
+	  double max_err = 0;
+	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
+	    max_err = std::max(max_err, normdiff.get({{i}}) / normx.get({{i}}));
+	  QDPIO::cout << " eo prec error: " << detail::tostr(max_err) << std::endl;
+	}
+
+	return rop;
       }
 
       // Auxiliary structure passed to PRIMME's matvec
