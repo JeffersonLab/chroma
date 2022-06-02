@@ -30,6 +30,13 @@ namespace Chroma
       VeryDetailed = 3 ///< Print whatever
     };
 
+    /// Ordering of matrices
+
+    enum ColOrdering {
+      RowMajor,	   ///< row-major ordering, the fastest index is the column
+      ColumnMajor, ///< row-major ordering, the fastest index is the row
+    };
+
     /// Return the map from string to Verbosity values
     inline const std::map<std::string, Verbosity>& getVerbosityMap()
     {
@@ -41,12 +48,12 @@ namespace Chroma
       return m;
     }
 
-    /// Ordering of matrices
-
-    enum ColOrdering {
-      RowMajor,	   ///< row-major ordering, the fastest index is the column
-      ColumnMajor, ///< row-major ordering, the fastest index is the row
-    };
+    /// Return the map from string to Verbosity values
+    inline const std::map<std::string, ColOrdering>& getColOrderingMap()
+    {
+      static const std::map<std::string, ColOrdering> m{{"row", RowMajor}, {"column", ColumnMajor}};
+      return m;
+    }
 
     /// Representation of an operator, function of type tensor -> tensor where the input and the
     /// output tensors have the same dimensions
@@ -113,7 +120,8 @@ namespace Chroma
 	// The `t` labels that are not in `d` are the column labels
 	std::string cols = detail::union_dimensions(t.order, "", d.order); // t.order - d.order
 
-	auto x = t.template collapse_dimensions<NOp + 1>(cols, 'n').template make_sure<COMPLEX>();
+	auto x =
+	  t.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
 	auto y = i.template like_this<NOp + 1>(preferred_col_ordering == ColumnMajor ? "%n" : "n%",
 					       '%', "", {{'n', x.kvdim()['n']}});
 	fop(x, y);
@@ -127,8 +135,10 @@ namespace Chroma
 	// The `t` labels that are not in `d` are the column labels
 	std::string cols = detail::union_dimensions(x.order, "", d.order); // t.order - d.order
 
-	auto x0 = x.template collapse_dimensions<NOp + 1>(cols, 'n').template make_sure<COMPLEX>();
-	auto y0 = y.template collapse_dimensions<NOp + 1>(cols, 'n').template make_sure<COMPLEX>();
+	auto x0 =
+	  x.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
+	auto y0 =
+	  y.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
 	fop(x0, y0);
 	if (y.data != y0.data)
 	  y0.copyTo(y);
@@ -834,7 +844,7 @@ namespace Chroma
       ///          labels as the given operator and domain labels are indicated by the returned remap.
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op)
+      Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op, ColOrdering co)
       {
 	// If the operator is empty, just return itself
 	if (op.d.volume() == 0 || op.i.volume() == 0)
@@ -846,22 +856,14 @@ namespace Chroma
 	remap rd = t.second;
 
 	// Construct the operator to return
-	ColOrdering co = ColumnMajor; //sop.data.ctx->plat == superbblas::CPU ? ColumnMajor : RowMajor;
-	Operator<NOp, COMPLEX> rop{
-	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	    auto x0 = x.reorder(
-	      co == ColumnMajor ? sop.i.order + "%" : std::string("%") + sop.i.order, '%');
-	    auto y0 = (y.order == x0.order ? y : x0.like_this());
-	    sop.contractWith(x0, rd, y0);
-	    if (y.data != y0.data)
-	      y0.copyTo(y);
-	  },
-	  sop.i,
-	  sop.i,
-	  nullptr,
-	  op.order_t,
-	  op.max_dist_neighbors,
-	  co};
+	Operator<NOp, COMPLEX> rop{[=](const Tensor<NOp + 1, COMPLEX>& x,
+				       Tensor<NOp + 1, COMPLEX> y) { sop.contractWith(x, rd, y); },
+				   sop.i,
+				   sop.i,
+				   nullptr,
+				   op.order_t,
+				   op.max_dist_neighbors,
+				   co};
 
 	// Do a test
 	auto x =
@@ -1047,11 +1049,18 @@ namespace Chroma
 	// Compute the coarse operator, either V' * op * V or V' * op * g5 * V
 	unsigned int create_coarse_max_rhs =
 	  getOption<unsigned int>(ops, "create_coarse_max_rhs", 0);
+	ColOrdering co =
+	  getOption<ColOrdering>(ops, "operator_ordering", getColOrderingMap(), ColumnMajor);
 	int ns = op.d.kvdim().at('s');
 	auto g5 = getGamma5(ns);
-	const Operator<NOp, COMPLEX> op_c = cloneOperator(Operator<NOp, COMPLEX>{
-	  [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	    foreachInChuncks(x, y, create_coarse_max_rhs,
+	const Operator<NOp, COMPLEX>
+	  op_c =
+	    cloneOperator(
+	      Operator<
+		NOp,
+		COMPLEX>{[&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+			   foreachInChuncks(
+			     x, y, create_coarse_max_rhs,
 			     [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
 			       if (do_chirality_splitting || ns == 1)
 			       {
@@ -1065,8 +1074,10 @@ namespace Chroma
 				   y);
 			       }
 			     });
-	  },
-	  V.d, V.d, nullptr, op.order_t, op.max_dist_neighbors, op.preferred_col_ordering});
+			 },
+			 V.d, V.d, nullptr, op.order_t, op.max_dist_neighbors,
+			 op.preferred_col_ordering},
+	      co);
 
 	// Get the solver for the projector
 	const Operator<NOp, COMPLEX> coarseSolver =
@@ -1143,37 +1154,41 @@ namespace Chroma
 	// Get an explicit form for A:=Op_ee-Op_eo*Op_oo^{-1}*Op_oe
 	unsigned int create_operator_max_rhs =
 	  getOption<unsigned int>(ops, "create_operator_max_rhs", 0);
-	const Operator<NOp, COMPLEX> opA = cloneOperator(Operator<NOp, COMPLEX>{
-	  [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	    foreachInChuncks(
-	      x, y, create_operator_max_rhs,
-	      [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
-		// y = Op_ee * x
-		contract(opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), x, "cs", CopyTo,
-			 y.rename_dims(m_sc));
+	ColOrdering co =
+	  getOption<ColOrdering>(ops, "operator_ordering", getColOrderingMap(), ColumnMajor);
+	const Operator<NOp, COMPLEX> opA = cloneOperator(
+	  Operator<NOp, COMPLEX>{
+	    [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      foreachInChuncks(
+		x, y, create_operator_max_rhs,
+		[&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
+		  // y = Op_ee * x
+		  contract(opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), x, "cs", CopyTo,
+			   y.rename_dims(m_sc));
 
-		// y1 = Op_oe * x
-		auto y0 = op.d.template like_this<NOp + 1>(
-		  op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-		  {{'n', x.kvdim()['n']}});
-		y0.set_zero();
-		x.copyTo(y0.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
-		auto y1 = op(y0).kvslice_from_size({{'X', 1}}, {{'X', 1}});
+		  // y1 = Op_oe * x
+		  auto y0 = op.d.template like_this<NOp + 1>(
+		    op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+		    {{'n', x.kvdim()['n']}});
+		  y0.set_zero();
+		  x.copyTo(y0.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+		  auto y1 = op(y0).kvslice_from_size({{'X', 1}}, {{'X', 1}});
 
-		// y2 = Op_oo^{-1} * y1
-		auto y2 = y0;
-		y2.set_zero();
-		solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		  opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs", y1, "cs", CopyTo,
-		  y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
+		  // y2 = Op_oo^{-1} * y1
+		  auto y2 = y0;
+		  y2.set_zero();
+		  solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs", y1, "cs", CopyTo,
+		    y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
 
-		// y += -Op_eo * y2
-		op(y2).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(y);
-	      });
-	  },
-	  op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
-	  op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}), nullptr, op.order_t,
-	  op.max_dist_neighbors * 2, op.preferred_col_ordering});
+		  // y += -Op_eo * y2
+		  op(y2).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(y);
+		});
+	    },
+	    op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
+	    op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}), nullptr, op.order_t,
+	    op.max_dist_neighbors * 2, op.preferred_col_ordering},
+	  co);
 
 	// Get solver on opA
 	const Operator<NOp, COMPLEX> solver = getSolver(opA, getOptions(ops, "solver"));
@@ -1556,7 +1571,9 @@ namespace Chroma
 
 	  // Clone the matvec
 	  LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
-	  Operator<Nd + 3, Complex> linOp = detail::cloneOperator(asOperatorView(*fLinOp));
+	  ColOrdering co =
+	    getOption<ColOrdering>(*ops, "operator_ordering", getColOrderingMap(), ColumnMajor);
+	  Operator<Nd + 3, Complex> linOp = detail::cloneOperator(asOperatorView(*fLinOp), co);
 
 	  // Construct the solver
 	  op = Maybe<Operator<Nd + 3, Complex>>{getSolver(linOp, getOptions(*ops, "InvertParam"))};

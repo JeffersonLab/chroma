@@ -2237,25 +2237,31 @@ namespace Chroma
       /// \param new_dim: number of elements in each new labels
 
       template <std::size_t Nout, typename std::enable_if<(N > 0), bool>::type = true>
-      Tensor<Nout, T> collapse_dimensions(std::string labels, char new_label) const
+      Tensor<Nout, T> collapse_dimensions(std::string labels, char new_label,
+					  bool allow_copy = false) const
       {
 	using namespace detail;
 
-	// Find the first and the last position of the `labels` into order
-	std::string::size_type min_pos = order.size(), max_pos = 0;
-	for (char c : labels)
-	{
-	  std::string::size_type pos = order.find(c);
-	  if (pos == std::string::npos)
-	    continue;
-	  min_pos = std::min(min_pos, pos);
-	  max_pos = std::max(max_pos, pos);
-	}
-
 	// Check that all `labels` are together in `order`
-	if (labels.size() > 0 && max_pos + 1 - min_pos != labels.size())
-	  throw std::runtime_error("collapse_dimensions: invalid labels to collapse or they are "
-				   "not together on the tensor ordering");
+	auto s_labels = std::search(order.begin(), order.end(), labels.begin(), labels.end());
+	if (s_labels == order.end())
+	{
+	  if (!allow_copy)
+	    throw std::runtime_error(
+	      "collapse_dimensions: invalid labels to collapse or they are "
+	      " not appear together in the same ordering and copying is not allow");
+
+	  // Find the position of the first label
+	  std::string new_order;
+	  for (char c : order)
+	  {
+	    if (std::find(labels.begin(), labels.end(), c) != labels.end())
+	      break;
+	    new_order.push_back(c);
+	  }
+	  new_order += labels + "%";
+	  return reorder(new_order, '%').template collapse_dimensions<Nout>(labels, new_label);
+	}
 
 	// Check the length of the output tensor
 	if (N - labels.size() + 1 != Nout)
@@ -2263,7 +2269,7 @@ namespace Chroma
 	    "collapse_dimensions: `labels` doesn't match the output tensor dimensions!");
 
 	// Lets put the new dimension on the first dimension to collapse
-	std::string::size_type pos = min_pos;
+	std::size_t pos = s_labels - order.begin();
 
 	// Set the new characteristics of the tensor
 	std::string new_order = std::string(order.begin(), order.begin() + pos) +
@@ -3533,7 +3539,7 @@ namespace Chroma
 	  return;
 	}
 
-	/// Continue
+	// Check unsupported distributions for contraction
 	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (data.dist == Local))
 	  throw std::runtime_error(
 	    "One of the contracted tensors or the output tensor is local and others are not!");
@@ -3543,18 +3549,21 @@ namespace Chroma
 	  throw std::runtime_error("Incompatible layout for contractions: one of the tensors is on "
 				   "the master node and the other is distributed");
 
+	// We don't support conjugacy for now
+	if (v.conjugate || w.conjugate)
+	  throw std::runtime_error("contractWith: unsupported implicit conjugacy");
+
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
 	std::string orderv = detail::update_order_and_check<Nv>(v.order, mv);
 	std::string orderw = detail::update_order_and_check<Nw>(w.order, mw);
 	superbblas::bsr_krylov<ND, NI, Nv, Nw, T>(
-	  handle.get(), i.order.c_str(), d.order.c_str(),			      //
-	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const T**)&v_ptr, //
+	  scalar * v.scalar / w.scalar, handle.get(), i.order.c_str(), d.order.c_str(), //
+	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const T**)&v_ptr,	//
 	  w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim,
 	  0 /* krylov power dim (none for now) */,
 	  (T**)&w_ptr, //
-	  &*data.ctx, MPI_COMM_WORLD, superbblas::FastToSlow, superbblas::Copy);
-	w.scalar = scalar * v.scalar;
+	  &*data.ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
       }
     };
 
