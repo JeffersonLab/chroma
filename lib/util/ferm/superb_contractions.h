@@ -3387,7 +3387,7 @@ namespace Chroma
       Tensor<NI + ND + 1, T> data; ///< Nonzero values
       std::shared_ptr<superbblas::BSR_handle> handle; ///< suparbblas sparse tensor handle
       T scalar;					      ///< Scalar factor of the tensor
-      static const bool isImgFastInBlock = false;     ///< whether the BSR blocks are in row-major
+      const bool isImgFastInBlock;		      ///< whether the BSR blocks are in row-major
 
       /// Return a string describing the tensor
       /// \param ptr: pointer to the memory allocation
@@ -3417,8 +3417,8 @@ namespace Chroma
       /// \param num_neighbors: number of nonzeros for each blocked row
 
       SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, unsigned int nblockd, unsigned int nblocki,
-	       unsigned int num_neighbors)
-	: d{d.make_eg()}, i{i.make_eg()}, scalar{T{1}}
+	       unsigned int num_neighbors, bool isImgFastInBlock = false)
+	: d{d.make_eg()}, i{i.make_eg()}, scalar{T{1}}, isImgFastInBlock{isImgFastInBlock}
       {
 	// Check that the examples are on the same device
 	if (d.getDev() != i.getDev())
@@ -3468,7 +3468,7 @@ namespace Chroma
 
       /// Empty constructor
 
-      SpTensor() : blki{}, blkd{}, scalar{0}
+      SpTensor() : blki{}, blkd{}, scalar{0}, isImgFastInBlock{false}
       {
       }
 

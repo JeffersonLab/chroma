@@ -649,12 +649,14 @@ namespace Chroma
       /// \param op: operator to extract the nonzeros from
       /// \param power: maximum distance to recover the nonzeros:
       ///               0, block diagonal; 1: near-neighbors...
+      /// \param coBlk: ordering of the nonzero blocks of the sparse operator
       /// \return: a pair of a sparse tensor and a remap; the sparse tensor has the same image
       ///          labels as the given operator and domain labels are indicated by the returned remap.
 
       template <std::size_t NOp, typename COMPLEX>
       std::pair<SpTensor<NOp, NOp, COMPLEX>, remap>
-      cloneOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power = 1)
+      cloneOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power = 1,
+			      ColOrdering coBlk = RowMajor)
       {
 	log(1, "starting cloneOperatorToSpTensor");
 
@@ -756,7 +758,8 @@ namespace Chroma
 					  {rd.at('y'), op.max_dist_neighbors},
 					  {rd.at('z'), op.max_dist_neighbors},
 					  {rd.at('t'), op.max_dist_neighbors}}));
-	SpTensor<NOp, NOp, COMPLEX> sop{d_sop, i, Nblk, Nblk, (unsigned int)neighbors.size()};
+	SpTensor<NOp, NOp, COMPLEX> sop{
+	  d_sop, i, Nblk, Nblk, (unsigned int)neighbors.size(), coBlk == ColumnMajor};
 
 	// Extract the nonzeros with probing
 	for (unsigned int color = 0; color < num_colors; ++color)
@@ -840,18 +843,21 @@ namespace Chroma
       /// \param op: operator to extract the nonzeros from
       /// \param power: maximum distance to recover the nonzeros:
       ///               0, block diagonal; 1: near-neighbors...
+      /// \param co: preferred ordering of dense input and output tensors
+      /// \param coBlk: ordering of the nonzero blocks of the sparse operator
       /// \return: a pair of a sparse tensor and a remap; the sparse tensor has the same image
       ///          labels as the given operator and domain labels are indicated by the returned remap.
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op, ColOrdering co)
+      Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op, ColOrdering co,
+					   ColOrdering coBlk)
       {
 	// If the operator is empty, just return itself
 	if (op.d.volume() == 0 || op.i.volume() == 0)
 	  return op;
 
 	// Get a sparse tensor representation of the operator
-	auto t = detail::cloneOperatorToSpTensor(op, op.max_dist_neighbors);
+	auto t = detail::cloneOperatorToSpTensor(op, op.max_dist_neighbors, coBlk);
 	auto sop = t.first;
 	remap rd = t.second;
 
@@ -1066,6 +1072,8 @@ namespace Chroma
 	  getOption<unsigned int>(ops, "create_coarse_max_rhs", 0);
 	ColOrdering co = getOption<ColOrdering>(ops, "operator_ordering", getColOrderingMap(),
 						op.preferred_col_ordering);
+	ColOrdering co_blk =
+	  getOption<ColOrdering>(ops, "operator_block_ordering", getColOrderingMap(), RowMajor);
 	int ns = op.d.kvdim().at('s');
 	auto g5 = getGamma5(ns);
 	const Operator<NOp, COMPLEX>
@@ -1092,7 +1100,7 @@ namespace Chroma
 			 },
 			 V.d, V.d, nullptr, op.order_t, op.max_dist_neighbors,
 			 op.preferred_col_ordering},
-	      co);
+	      co, co_blk);
 
 	// Get the solver for the projector
 	const Operator<NOp, COMPLEX> coarseSolver =
@@ -1171,6 +1179,8 @@ namespace Chroma
 	  getOption<unsigned int>(ops, "create_operator_max_rhs", 0);
 	ColOrdering co = getOption<ColOrdering>(ops, "operator_ordering", getColOrderingMap(),
 						op.preferred_col_ordering);
+	ColOrdering co_blk =
+	  getOption<ColOrdering>(ops, "operator_block_ordering", getColOrderingMap(), RowMajor);
 	const Operator<NOp, COMPLEX> opA = cloneOperator(
 	  Operator<NOp, COMPLEX>{
 	    [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1203,7 +1213,7 @@ namespace Chroma
 	    op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
 	    op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}), nullptr, op.order_t,
 	    op.max_dist_neighbors * 2, op.preferred_col_ordering},
-	  co);
+	  co, co_blk);
 
 	// Get solver on opA
 	const Operator<NOp, COMPLEX> solver = getSolver(opA, getOptions(ops, "solver"));
@@ -1588,7 +1598,10 @@ namespace Chroma
 	  LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
 	  ColOrdering co = getOption<ColOrdering>(*ops, "InvertParam/operator_ordering",
 						  getColOrderingMap(), ColumnMajor);
-	  Operator<Nd + 3, Complex> linOp = detail::cloneOperator(asOperatorView(*fLinOp), co);
+	  ColOrdering co_blk = getOption<ColOrdering>(*ops, "InvertParam/operator_block_ordering",
+						      getColOrderingMap(), RowMajor);
+	  Operator<Nd + 3, Complex> linOp =
+	    detail::cloneOperator(asOperatorView(*fLinOp), co, co_blk);
 
 	  // Construct the solver
 	  op = Maybe<Operator<Nd + 3, Complex>>{getSolver(linOp, getOptions(*ops, "InvertParam"))};
