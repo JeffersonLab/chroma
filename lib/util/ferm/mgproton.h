@@ -369,10 +369,10 @@ namespace Chroma
       }
       else
       {
-	r = op.i.template like_this<NOp + 1>(op.preferred_col_ordering == ColumnMajor
-					       ? std::string("%") + std::string(1, Vc)
-					       : std::string(1, Vc) + std::string("%"),
-					     '%', "", {{Vc, max_basis_size + 1}});
+	r = op.i.template like_this<NOp + 1>(
+	  op.preferred_col_ordering == ColumnMajor ? std::string("%") + order_cols
+						   : order_cols + std::string("%"),
+	  '%', "", {{order_cols[0], x.kvdim().at(order_cols[0])}});
 
 	r = y.like_this();
 	r.set_zero();
@@ -866,17 +866,32 @@ namespace Chroma
 				   co};
 
 	// Do a test
-	auto x =
-	  op.d.template like_this<NOp + 1>(co == ColumnMajor ? "%n" : "n%", '%', "", {{'n', 2}});
-	urand(x, -1, 1);
-	auto y = op(x);
-	auto base_norm = norm<1>(y, "n");
-	rop(x).scale(-1).addTo(y);
-	auto error = norm<1>(y, "n");
-	auto eps = std::sqrt(std::numeric_limits<typename real_type<COMPLEX>::type>::epsilon());
-	for (int i = 0; i < base_norm.volume(); ++i)
-	  if (error.get({{i}}) > eps * base_norm.get({{i}}))
-	    throw std::runtime_error("cloneOperator: too much error on the cloned operator");
+	for (const auto& test_order : std::vector<std::string>{"%n", "n%"})
+	{
+	  auto x = op.d.template like_this<NOp + 1>(test_order, '%', "", {{'n', 2}});
+	  auto y_rop = op.d.template like_this<NOp + 1>(test_order, '%', "", {{'n', 2}});
+	  urand(x, -1, 1);
+	  auto y_op = op(x);
+	  for (int nfrom = 0; nfrom < 2; ++nfrom)
+	  {
+	    for (int nsize = 1; nsize <= 2; ++nsize)
+	    {
+	      y_rop.set(detail::NaN<COMPLEX>::get());
+	      auto x0 = x.kvslice_from_size({{'n', nfrom}, {'n', nsize}});
+	      auto y_op0 = y_op.kvslice_from_size({{'n', nfrom}, {'n', nsize}});
+	      auto y_rop0 = y_rop.kvslice_from_size({{'n', nfrom}, {'n', nsize}});
+	      auto base_norm0 = norm<1>(y_op0, "n");
+	      rop(x0, y_rop0); // y_rop0 = rop(x0)
+	      y_op0.scale(-1).addTo(y_rop0);
+	      auto error = norm<1>(y_rop0, "n");
+	      auto eps =
+		std::sqrt(std::numeric_limits<typename real_type<COMPLEX>::type>::epsilon());
+	      for (int i = 0; i < base_norm0.volume(); ++i)
+		if (error.get({{i}}) > eps * base_norm0.get({{i}}))
+		  throw std::runtime_error("cloneOperator: too much error on the cloned operator");
+	    }
+	  }
+	}
 
 	return rop;
       }
@@ -1049,8 +1064,8 @@ namespace Chroma
 	// Compute the coarse operator, either V' * op * V or V' * op * g5 * V
 	unsigned int create_coarse_max_rhs =
 	  getOption<unsigned int>(ops, "create_coarse_max_rhs", 0);
-	ColOrdering co =
-	  getOption<ColOrdering>(ops, "operator_ordering", getColOrderingMap(), ColumnMajor);
+	ColOrdering co = getOption<ColOrdering>(ops, "operator_ordering", getColOrderingMap(),
+						op.preferred_col_ordering);
 	int ns = op.d.kvdim().at('s');
 	auto g5 = getGamma5(ns);
 	const Operator<NOp, COMPLEX>
@@ -1154,8 +1169,8 @@ namespace Chroma
 	// Get an explicit form for A:=Op_ee-Op_eo*Op_oo^{-1}*Op_oe
 	unsigned int create_operator_max_rhs =
 	  getOption<unsigned int>(ops, "create_operator_max_rhs", 0);
-	ColOrdering co =
-	  getOption<ColOrdering>(ops, "operator_ordering", getColOrderingMap(), ColumnMajor);
+	ColOrdering co = getOption<ColOrdering>(ops, "operator_ordering", getColOrderingMap(),
+						op.preferred_col_ordering);
 	const Operator<NOp, COMPLEX> opA = cloneOperator(
 	  Operator<NOp, COMPLEX>{
 	    [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1571,8 +1586,8 @@ namespace Chroma
 
 	  // Clone the matvec
 	  LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
-	  ColOrdering co =
-	    getOption<ColOrdering>(*ops, "operator_ordering", getColOrderingMap(), ColumnMajor);
+	  ColOrdering co = getOption<ColOrdering>(*ops, "InvertParam/operator_ordering",
+						  getColOrderingMap(), ColumnMajor);
 	  Operator<Nd + 3, Complex> linOp = detail::cloneOperator(asOperatorView(*fLinOp), co);
 
 	  // Construct the solver

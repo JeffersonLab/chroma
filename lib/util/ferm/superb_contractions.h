@@ -1363,7 +1363,7 @@ namespace Chroma
 	});
 
 	// TEMP!!!
-	///fillWithCPUFuncNoArgs([=]() { return detail::NaN<T>::get(); });
+	///set(detail::NaN<T>::get());
       }
 
     protected:
