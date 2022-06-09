@@ -196,8 +196,8 @@ namespace Chroma
 
     enum Throw_kvcoors { NoThrow, ThrowOnUnmatchLabel, ThrowOnMissing };
 
-    template <std::size_t N>
-    Coor<N> kvcoors(const std::string& order, const std::map<char, int>& m, Index missing = 0,
+    template <std::size_t N, typename INT = int>
+    Coor<N> kvcoors(const std::string& order, const std::map<char, INT>& m, Index missing = 0,
 		    Throw_kvcoors t = ThrowOnUnmatchLabel)
     {
       detail::check_order<N>(order);
@@ -295,6 +295,15 @@ namespace Chroma
     namespace detail
     {
       using namespace superbblas::detail;
+
+      /// Return whether a character is in a string
+      /// \param s: the string
+      /// \param c: the character
+
+      inline bool is_in(const std::string& s, char c)
+      {
+	return std::find(s.begin(), s.end(), c) != s.end();
+      }
 
       // Throw an error if `order` does not contain a label in `should_contain`
       inline void check_order_contains(const std::string& order, const std::string& should_contain)
@@ -533,6 +542,75 @@ namespace Chroma
 	std::copy_n(c.begin() + pos + Ncol, N - pos - Ncol, r.begin() + pos + 1);
 	return r;
       }
+
+      /// Reshape several dimensions into another dimension
+      /// \param ncollapse: number of dimensions to collapse starting from each old dimension
+      /// \param nsplit: number of dimensions to split starting from each old dimension
+      /// \param old_dim: dimensions of the old tensor
+      /// \param new_dim: maximum dimension size for the new tensor
+      /// \param t: either `From` (first element) or `Size` (number of elements in each dimension)
+      /// \param c: coordinate to transform
+
+      template <std::size_t Nout, std::size_t N>
+      Coor<Nout> reshape_dimensions(const Coor<N>& ncollapse, const Coor<N>& nsplit,
+				    const Coor<N>& old_dim, const Coor<Nout>& new_dim, CoorType t,
+				    const Coor<N>& c)
+      {
+	Coor<Nout> r;
+	unsigned int ri = 0;
+	for (unsigned int ci = 0; ci < N; ++ci)
+	{
+	  if (ncollapse[ci] == 1 && nsplit[ci] == 1) {
+		r[ri++] = c[ci];
+	  }
+	  else
+	  {
+	    // Collapse the dimensions from it[0] up to it[0]+it[1]-1
+	    Index idx = 0;
+	    {
+	      Index stride = 1;
+	      idx = (t == From ? 0 : 1);
+	      bool odd_dim_watched = false;
+	      for (unsigned int k = 0; k < ncollapse[ci]; ++k)
+	      {
+		if (t == Size && c[ci + k] > 0 && c[ci + k] != old_dim[ci + k])
+		{
+		  if (odd_dim_watched)
+		    throw std::runtime_error(
+		      "reshape_dimensions: unsupported to collapse a range with holes");
+		  odd_dim_watched = true;
+		}
+		if (t == From)
+		  idx += c[ci + k] * stride;
+		else
+		  idx *= c[ci + k];
+		stride *= old_dim[ci + k];
+	      }
+	    }
+	    ci += ncollapse[ci] - 1;
+
+	    // Split the new dimension into it[2] new dimensions
+	    {
+	      Index stride = 1;
+	      for (unsigned int k = 0; k < nsplit[ci]; ++k)
+	      {
+		if (!(t == From || idx < stride || idx % stride == 0))
+		  throw std::runtime_error("reshape_dimension: Not supporting for this partition");
+		if (t == From)
+		  r[ri + k] = (idx / stride) % new_dim[ri + k];
+		else
+		  r[ri + k] = std::min((idx + stride - 1) / stride, new_dim[ri + k]);
+		stride *= new_dim[ri + k];
+	      }
+	    }
+	    ri += nsplit[ci];
+	  }
+	}
+
+	// Return the new coordinates
+	return r;
+      }
+
 
 #  if defined(BUILD_MAGMA)
       // Return a MAGMA context
@@ -814,6 +892,26 @@ namespace Chroma
 			 detail::collapse_dimensions<Nout>(pos, i[1], dim, Size)});
 	  return TensorPartition<Nout>{detail::collapse_dimensions<Nout>(pos, dim, dim, Size), r,
 				       isLocal};
+	}
+
+	/// Reshape several dimensions into another dimension
+	/// \param ncollapse: number of dimensions to collapse starting from each old dimension
+	/// \param nsplit: number of dimensions to split starting from each old dimension
+	/// \param new_dim: maximum dimension size for the new tensor
+
+	template <std::size_t Nout, typename std::enable_if<(N > 0 && Nout > 0), bool>::type = true>
+	TensorPartition<Nout> reshape_dimensions(const Coor<N>& ncollapse, const Coor<N>& nsplit,
+						 const Coor<Nout>& new_dim) const
+	{
+	  typename TensorPartition<Nout>::PartitionStored r;
+	  r.reserve(p.size());
+	  for (const auto& i : p)
+	    r.push_back(
+	      {detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, new_dim, From, i[0]),
+	       detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, new_dim, Size, i[1])});
+	  return TensorPartition<Nout>{
+	    detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, new_dim, Size, dim), r,
+	    isLocal};
 	}
 
 	/// Extend the support of distributed dimensions by one step in each direction
@@ -2216,9 +2314,13 @@ namespace Chroma
 			       detail::split_dimension(pos, size, d, Size), scalar, conjugate, eg);
       }
 
-      /// Return a fake real view of this tensor
+      /// Split a dimension into another dimensions
+      /// \param dim_label: dimension to split
+      /// \param new_labels: the labels of the new dimensions
+      /// \param step: length of the first label in `new_labels`
 
-      Tensor<N + 1, T> split_dimension(char dim_label, std::string new_labels, Index step) const
+      Tensor<N + 1, T> split_dimension(char dim_label, const std::string& new_labels,
+				       Index step) const
       {
 	if (new_labels.size() != 2)
 	  throw std::runtime_error(
@@ -2284,6 +2386,96 @@ namespace Chroma
 			       detail::collapse_dimensions<Nout>(pos, from, dim, From),
 			       detail::collapse_dimensions<Nout>(pos, size, dim, Size), scalar,
 			       conjugate, eg);
+      }
+
+      /// Rearrange several dimensions into new ones
+      /// \param m: maps from suborder of the current tensor to new orders
+      /// \param allow_copy: whether to allow to return a reordered copy of the current tensor
+
+      template <std::size_t Nout, typename std::enable_if<(N > 0), bool>::type = true>
+      Tensor<Nout, T> reshape_dimensions(const std::map<std::string, std::string>& m,
+					 const std::map<char, int>& new_dim,
+					 bool allow_copy = true) const
+      {
+	using namespace detail;
+
+	// Check that all suborders in `m` are together in `order`
+	std::string old_order = order;
+	for (const auto& it : m)
+	{
+	  if (it.first.size() == 0 || it.second.size() == 0)
+	    throw std::runtime_error("reshape_dimensions: invalid map element with empty string");
+
+	  auto s_labels = std::search(order.begin(), order.end(), it.first.begin(), it.first.end());
+	  if (s_labels == order.end())
+	  {
+	    if (!allow_copy)
+	      throw std::runtime_error(
+		"reshape_dimensions: invalid labels to reshape or they do "
+		" not appear together in the same way as in the tensor and copying is not allow");
+
+	    // Find the position of the first label to reshape and enforce the given subordering
+	    std::string old_order0;
+	    for (char c : old_order)
+	    {
+	      if (std::find(it.first.begin(), it.first.end(), c) != it.first.end())
+		break;
+	      old_order0.push_back(c);
+	    }
+	    old_order = old_order0 + it.first + remove_dimensions(old_order, old_order0 + it.first);
+	  }
+	}
+	if (old_order != order)
+	  return reorder(old_order).template reshape_dimensions<Nout>(m, new_dim, false);
+
+	// Check the length of the output tensor
+	int nout = N;
+	for (const auto& it : m)
+	  nout += (int)it.second.size() - (int)it.first.size();
+	if (nout != Nout)
+	  throw std::runtime_error("reshape_dimensions: the resulting tensor after the changes "
+				   "given in `m` doesn't match the output tensor's dimensions!");
+
+	// Compute the new order
+	std::string new_order = order;
+	for (const auto& it : m)
+	{
+	  auto s_first = std::find(new_order.begin(), new_order.end(), it.first.front());
+	  new_order = std::string(new_order.begin(), s_first) + it.second +
+		      std::string(s_first + it.first.size(), new_order.end());
+	}
+
+	// Compute the dimensions of the new tensor
+	auto new_dim0 = kvdim();
+	for (const auto& it : new_dim)
+	  new_dim0[it.first] = it.second;
+
+	// The last label on the new subordering is optional
+	for (const auto& it : m)
+	  if (new_dim.count(it.second.back()) == 0)
+	    new_dim0[it.second.back()] = std::numeric_limits<int>::max();
+
+	// Compute the number of dimensions to collapse and to split
+	std::map<char, int> m_ncollapse, m_nsplit;
+	for (const auto& it : m)
+	{
+	  m_ncollapse[it.first.front()] = it.first.size();
+	  m_nsplit[it.first.front()] = it.second.size();
+	}
+	Coor<N> ncollapse = kvcoors<N>(order, m_ncollapse, 1);
+	Coor<N> nsplit = kvcoors<N>(order, m_nsplit, 1);
+	Coor<Nout> d = detail::reshape_dimensions<Nout>(
+	  ncollapse, nsplit, dim, kvcoors<Nout>(new_order, new_dim0, 0, ThrowOnMissing), Size, dim);
+
+	// Transform the partition
+	auto new_p = std::make_shared<detail::TensorPartition<Nout>>(
+	  p->template reshape_dimensions<Nout>(ncollapse, nsplit, d));
+
+	return Tensor<Nout, T>(
+	  new_order, new_p->dim, ctx, data, new_p, dist,
+	  detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, d, From, from),
+	  detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, d, Size, size), scalar,
+	  conjugate, eg);
       }
 
       /// Copy/add this tensor into the given one
@@ -3388,6 +3580,26 @@ namespace Chroma
       std::shared_ptr<superbblas::BSR_handle> handle; ///< suparbblas sparse tensor handle
       T scalar;					      ///< Scalar factor of the tensor
       const bool isImgFastInBlock;		      ///< whether the BSR blocks are in row-major
+      const unsigned int nblockd;		      ///< Number of blocked domain dimensions
+      const unsigned int nblocki;		      ///< Number of blocked image dimensions
+
+      /// Low-level constructor
+      SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, Coor<ND> blkd, Coor<NI> blki, Tensor<NI, int> ii,
+	       Tensor<NI + 2, int> jj, Tensor<NI + ND + 1, T> data, T scalar, bool isImgFastInBlock,
+	       unsigned int nblockd, unsigned int nblocki)
+	: d(d.make_eg()),
+	  i(i.make_eg()),
+	  blkd(blkd),
+	  blki(blki),
+	  ii(ii),
+	  jj(jj),
+	  data(data),
+	  scalar(scalar),
+	  isImgFastInBlock(isImgFastInBlock),
+	  nblockd(nblockd),
+	  nblocki(nblocki)
+      {
+      }
 
       /// Return a string describing the tensor
       /// \param ptr: pointer to the memory allocation
@@ -3418,7 +3630,12 @@ namespace Chroma
 
       SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, unsigned int nblockd, unsigned int nblocki,
 	       unsigned int num_neighbors, bool isImgFastInBlock = false)
-	: d{d.make_eg()}, i{i.make_eg()}, scalar{T{1}}, isImgFastInBlock{isImgFastInBlock}
+	: d{d.make_eg()},
+	  i{i.make_eg()},
+	  scalar{T{1}},
+	  isImgFastInBlock{isImgFastInBlock},
+	  nblockd(nblockd),
+	  nblocki(nblocki)
       {
 	// Check that the examples are on the same device
 	if (d.getDev() != i.getDev())
@@ -3468,7 +3685,7 @@ namespace Chroma
 
       /// Empty constructor
 
-      SpTensor() : blki{}, blkd{}, scalar{0}, isImgFastInBlock{false}
+      SpTensor() : blki{}, blkd{}, scalar{0}, isImgFastInBlock{false}, nblockd{0}, nblocki{0}
       {
       }
 
@@ -3499,6 +3716,147 @@ namespace Chroma
 	handle = std::shared_ptr<superbblas::BSR_handle>(
 	  bsr, [=](superbblas::BSR_handle* bsr) { destroy_bsr(bsr); });
       }
+
+      /// Split a dimension into another dimensions
+      /// \param dom_dim_label: dominion dimension to split
+      /// \param dom_new_labels: the labels of the new dominion dimensions
+      /// \param dom_step: length of the first label in `dom_new_labels`
+      /// \param img_dim_label: image dimension to split
+      /// \param img_new_labels: the labels of the image new dimensions
+      /// \param img_step: length of the first label in `img_new_labels`
+
+      SpTensor<ND + 1, NI + 1, T> split_dimension(char dom_dim_label, const std::string& dom_new_labels,
+						  Index dom_step, char img_dim_label,
+						  const std::string& img_new_labels,
+						  Index img_step) const
+      {
+	if (dom_new_labels.size() != 2)
+	  throw std::runtime_error(
+	    "split_dimension: invalid `dom_new_labels`, it should have size two");
+	if (img_new_labels.size() != 2)
+	  throw std::runtime_error(
+	    "split_dimension: invalid `dom_new_labels`, it should have size two");
+	if (d.kvdim().at(dom_dim_label) % dom_step != 0)
+	  throw std::runtime_error(
+	    "split_dimension: invalid `dom_step`, it should divide the dimension size");
+	if (i.kvdim().at(img_dim_label) % img_step != 0)
+	  throw std::runtime_error(
+	    "split_dimension: invalid `img_step`, it should divide the dimension size");
+
+	std::string::size_type d_pos = d.order.find(dom_dim_label);
+	std::string::size_type i_pos = i.order.find(img_dim_label);
+
+	if (blkd[d_pos] > 1 && blkd[d_pos] % dom_step != 0)
+	  throw std::runtime_error(
+	    "split_dimension: invalid `dom_step`, it should divide the block size");
+	if (blki[i_pos] > 1 && blki[i_pos] % img_step != 0)
+	  throw std::runtime_error(
+	    "split_dimension: invalid `img_step`, it should divide the block size");
+
+	auto new_d = d.split_dimension(dom_dim_label, dom_new_labels, dom_step);
+	auto new_i = i.split_dimension(img_dim_label, img_new_labels, img_step);
+
+	int new_blkd_pos = blkd[d_pos] == 1 ? 1 : dom_step;
+	auto new_blkd = detail::insert_coor(blkd, d_pos, new_blkd_pos);
+	new_blkd[d_pos + 1] /= new_blkd_pos;
+	int new_blki_pos = blki[i_pos] == 1 ? 1 : img_step;
+	auto new_blki = detail::insert_coor(blki, i_pos, new_blki_pos);
+	new_blki[i_pos + 1] /= new_blki_pos;
+
+	auto new_ii = ii.split_dimension(img_dim_label, img_new_labels, img_step);
+	auto new_jj_dim = new_ii.kvdim();
+	new_jj_dim['~'] = (int)ND + 1;
+	auto new_jj = jj.template like_this<NI + 3>(std::string("~u") + new_ii.order, new_jj_dim);
+	{
+	  auto local_jj = jj.make_sure(none, OnHost).getLocal();
+	  auto local_new_jj = new_jj.make_sure(none, OnHost).getLocal();
+	  assert(local_jj.volume() * (ND + 1) == local_new_jj.volume() * ND);
+	  const int *p = local_jj.data.get();
+	  int* new_p = local_new_jj.data.get();
+	  auto new_dom_dim = detail::insert_coor(d.size, d_pos, dom_step);
+	  for (std::size_t i = 0, i1 = local_jj.volume() / ND; i < i1; ++i)
+	  {
+	    Coor<ND> c;
+	    std::copy_n(p + ND * i, ND, c.begin());
+	    Coor<ND + 1> new_c = detail::split_dimension(d_pos, c, new_dom_dim, detail::From);
+	    std::copy_n(new_c.begin(), ND + 1, new_p + (ND + 1) * i);
+	  }
+	  local_new_jj.copyTo(new_jj.getLocal());
+	}
+
+	auto new_data = data.split_dimension(dom_dim_label, dom_new_labels, dom_step)
+			  .split_dimension(img_dim_label, img_new_labels, img_step);
+
+	SpTensor<ND + 1, NI + 1, T> r(new_d, new_i, new_blkd, new_blki, new_ii, new_jj, new_data,
+				      scalar, isImgFastInBlock, nblockd + (d_pos < nblockd ? 1 : 0),
+				      nblocki + (i_pos < nblocki ? 1 : 0));
+	if (is_constructed())
+	  r.construct();
+
+	return r;
+      }
+
+      /// Reorder the domain and image orders
+      /// \param new_dom_order: new ordering for the domain
+      /// \param new_img_order: new ordering for the image
+      /// \param remaining_char: if it isn't the null char, placeholder for the remaining dimensions
+
+      SpTensor<ND, NI, T> reorder(const std::string& new_dom_order,
+				  const std::string& new_img_order, char remaining_char = 0) const
+      {
+	if (remaining_char == '~' || remaining_char == 'u')
+	  throw std::runtime_error("reorder: invalid remaining char, it shouldn't be `~` or `u`");
+
+	auto new_d = d.reorder(new_dom_order, remaining_char);
+	auto new_i = i.reorder(new_img_order, remaining_char);
+
+	Coor<ND> d_perm = superbblas::detail::find_permutation(d.order, new_dom_order);
+	Coor<NI> i_perm = superbblas::detail::find_permutation(i.order, new_img_order);
+	auto new_blkd = superbblas::detail::reorder_coor(blkd, d_perm);
+	auto new_blki = superbblas::detail::reorder_coor(blki, i_perm);
+
+	// Check the blocking
+	for (unsigned int i = 0; i < ND; ++i)
+	  if (i >= nblockd && new_blkd[i] != new_d.size[i])
+	    throw std::runtime_error("reorder: invalid domain reordering, it is mixing blocking "
+				     "and nonblocking dimensions");
+	for (unsigned int i = 0; i < NI; ++i)
+	  if (i >= nblocki && new_blki[i] != new_i.size[i])
+	    throw std::runtime_error("reorder: invalid image reordering, it is mixing blocking "
+				     "and nonblocking dimensions");
+
+	auto new_ii = ii.reorder(new_img_order, remaining_char);
+	auto new_jj = jj.reorder(std::string("~u") + new_img_order, remaining_char);
+	if (new_jj.order != jj.order)
+	{
+	  auto local_new_jj = new_jj.make_sure(none, OnHost).getLocal();
+	  int* new_p = local_new_jj.data.get();
+	  for (std::size_t i = 0, i1 = local_new_jj.volume() / ND; i < i1; ++i)
+	  {
+	    Coor<ND> c;
+	    std::copy_n(new_p + ND * i, ND, c.begin());
+	    Coor<ND> new_c = superbblas::detail::reorder_coor(c, d_perm);
+	    std::copy_n(new_c.begin(), new_p + ND * i, ND);
+	  }
+	  local_new_jj.copyTo(new_jj.getLocal());
+	}
+
+	std::string data_order =
+	  (isImgFastInBlock ? std::string(i.order.begin(), i.order.begin() + nblocki) + d.order
+			    : std::string(d.order.begin(), d.order.begin() + nblockd) +
+				std::string(i.order.begin(), i.order.begin() + nblocki) +
+				std::string(d.order.begin() + nblockd, d.order.end())) +
+	  std::string("u") + std::string(i.order.begin() + nblocki, i.order.end());
+	auto new_data = data.reorder(data_order);
+
+	SpTensor<ND + 1, NI + 1, T> r(new_d, new_i, new_blkd, new_blki, new_ii, new_jj, new_data,
+				      scalar, isImgFastInBlock, nblockd, nblocki);
+	if (is_constructed())
+	  r.construct();
+
+	return r;
+      }
+
 
       /// Return whether the sparse tensor has been constructed
 
@@ -3877,6 +4235,50 @@ namespace Chroma
       std::uniform_real_distribution<T> d(a, b);
       fillWithCPUFuncNoArgs(
 	t, [&]() { return d(detail::getSeed()); }, false);
+    }
+
+    /// Return an identity matrix
+    /// \param dim: length for each of the row dimensions
+    /// \param m: labels map from the row to the column dimensions
+    /// \param order: order of the rows for the returned tensor
+    /// \return: tensor with ordering `order`+`m[order]`
+
+    template <std::size_t N, typename T>
+    Tensor<N * 2, T> identity(const std::map<char, int>& dim, const remap& m,
+			      Maybe<std::string> order)
+    {
+      // Get the order for the rows
+      std::string orows;
+      if (order)
+      {
+	orows = order.getSome();
+      }
+      else
+      {
+	for (const auto& it : dim)
+	  orows.push_back(it.first);
+      }
+
+      // Get the order for the columns
+      std::string ocols = detail::update_order(orows, m);
+
+      // Get the dimensions of the returned tensor
+      std::map<char, int> tdim = dim;
+      for (const auto& it : dim)
+	tdim[m.at(it.first)] = it.second;
+
+      // Create the identity tensor
+      Tensor<N * 2, T> t{orows + ocols, kvcoors<N * 2>(orows + ocols, tdim, 0, ThrowOnMissing),
+			 OnHost, OnMaster};
+      t.set_zero();
+      if (t.getLocal())
+      {
+	T* p = t.data.get();
+	for (unsigned int i = 0, vol = detail::volume(dim, orows); i < vol; ++i)
+	  p[vol * i + i] = T{1};
+      }
+
+      return t;
     }
 
     /// Return a tensor filled with the value of the function applied to each element
