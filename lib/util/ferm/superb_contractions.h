@@ -587,7 +587,6 @@ namespace Chroma
 		stride *= old_dim[ci + k];
 	      }
 	    }
-	    ci += ncollapse[ci] - 1;
 
 	    // Split the new dimension into it[2] new dimensions
 	    {
@@ -603,7 +602,9 @@ namespace Chroma
 		stride *= new_dim[ri + k];
 	      }
 	    }
+
 	    ri += nsplit[ci];
+	    ci += ncollapse[ci] - 1;
 	  }
 	}
 
@@ -2325,6 +2326,8 @@ namespace Chroma
 	if (new_labels.size() != 2)
 	  throw std::runtime_error(
 	    "split_dimension: invalid `new_labels`, it should have size two");
+	if (kvdim().at(dim_label) == 1)
+	  step = 1;
 	if (kvdim().at(dim_label) % step != 0)
 	  throw std::runtime_error(
 	    "split_dimension: invalid `step`, it should divide the dimension size");
@@ -3767,6 +3770,7 @@ namespace Chroma
 	auto new_jj_dim = new_ii.kvdim();
 	new_jj_dim['~'] = (int)ND + 1;
 	auto new_jj = jj.template like_this<NI + 3>(std::string("~u") + new_ii.order, new_jj_dim);
+	// TODO: create new_jj with a compatible partition as new_ii and copy and transform the content of jj into new_jj
 	{
 	  auto local_jj = jj.make_sure(none, OnHost).getLocal();
 	  auto local_new_jj = new_jj.make_sure(none, OnHost).getLocal();

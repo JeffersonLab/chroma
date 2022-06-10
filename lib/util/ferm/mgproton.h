@@ -883,15 +883,15 @@ namespace Chroma
 
       template <std::size_t NOp, typename COMPLEX>
       std::pair<SpTensor<NOp, NOp, COMPLEX>, remap>
-      cloneOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power = 1,
+      cloneUnblockedOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power = 1,
 			      ColOrdering coBlk = RowMajor)
       {
-	log(1, "starting cloneOperatorToSpTensor");
+	log(1, "starting cloneUnblockedOperatorToSpTensor");
 
 	// Unsupported explicitly colorized operators
 	if (op.d.kvdim().count('X') == 0)
 	  throw std::runtime_error(
-	    "cloneOperatorToSpTensor: unsupported not explicitly colored operators");
+	    "cloneUnblockedOperatorToSpTensor: unsupported not explicitly colored operators");
 
 	// If the operator is empty, just return itself
 	if (op.d.volume() == 0 || op.i.volume() == 0)
@@ -1040,22 +1040,20 @@ namespace Chroma
 	return {sop, rd};
       }
 
-      /// Return an efficient operator application
+      /// Return a sparse tensor with the content of the given operator
       /// \param op: operator to extract the nonzeros from
       /// \param power: maximum distance to recover the nonzeros:
       ///               0, block diagonal; 1: near-neighbors...
-      /// \param co: preferred ordering of dense input and output tensors
       /// \param coBlk: ordering of the nonzero blocks of the sparse operator
+      /// \return: a pair of a sparse tensor and a remap; the sparse tensor has the same image
+      ///          labels as the given operator and domain labels are indicated by the returned remap.
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op, unsigned int power,
-					   ColOrdering co, ColOrdering coBlk)
+      std::pair<SpTensor<NOp, NOp, COMPLEX>, remap>
+      cloneOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power = 1,
+			      ColOrdering coBlk = RowMajor)
       {
-	// If the operator is empty, just return itself
-	if (op.d.volume() == 0 || op.i.volume() == 0)
-	  return op;
-
-	// Unblock the given operator, the code of `cloneOperatorToSpTensor` is too complex as it is
+	// Unblock the given operator, the code of `cloneUnblockedOperatorToSpTensor` is too complex as it is
 	auto unblki = op.i
 			.template reshape_dimensions<NOp - 4>(
 			  {{"0x", "x"}, {"1y", "y"}, {"2z", "z"}, {"3t", "t"}}, {}, true)
@@ -1076,10 +1074,10 @@ namespace Chroma
 	  op.domLayout,
 	  op.imgLayout,
 	  op.neighbors,
-	  co};
+	  coBlk};
 
 	// Get a sparse tensor representation of the operator
-	auto t = detail::cloneOperatorToSpTensor(unblocked_op, power, coBlk);
+	auto t = cloneUnblockedOperatorToSpTensor(unblocked_op, power, coBlk);
 	remap rd = t.second;
 	for (const auto& it :
 	     detail::getNewLabels("0123", op.d.order + op.i.order + "0123" + t.first.d.order))
@@ -1093,6 +1091,29 @@ namespace Chroma
 				      opdim.at('2'))
 		     .split_dimension(rd['t'], update_order("3t", rd), opdim.at('3'), 't', "3t",
 				      opdim.at('3'));
+
+	return {sop, rd};
+      }
+
+      /// Return an efficient operator application
+      /// \param op: operator to extract the nonzeros from
+      /// \param power: maximum distance to recover the nonzeros:
+      ///               0, block diagonal; 1: near-neighbors...
+      /// \param co: preferred ordering of dense input and output tensors
+      /// \param coBlk: ordering of the nonzero blocks of the sparse operator
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op, unsigned int power,
+					   ColOrdering co, ColOrdering coBlk)
+      {
+	// If the operator is empty, just return itself
+	if (op.d.volume() == 0 || op.i.volume() == 0)
+	  return op;
+
+	// Get a sparse tensor representation of the operator
+	auto t = cloneOperatorToSpTensor(op, power, coBlk);
+	auto sop = t.first;
+	remap rd = t.second;
 
 	// Construct the operator to return
 	Operator<NOp, COMPLEX> rop{[=](const Tensor<NOp + 1, COMPLEX>& x,
@@ -1586,27 +1607,38 @@ namespace Chroma
 	auto blkd = op.d
 		      .template reshape_dimensions<NOp>(
 			{{"0x", "0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}},
-			{{'0', std::max(nX, (int)blocking.at('x')) / nX},
-			 {'1', blocking.at('y')},
-			 {'2', blocking.at('z')},
-			 {'3', blocking.at('t')}},
+			{{'0', std::max(nX, (int)mblk.at('x')) / nX},
+			 {'1', mblk.at('y')},
+			 {'2', mblk.at('z')},
+			 {'3', mblk.at('t')}},
 			true)
 		      .reorder("%0123Xxyzt", '%');
 
-	const auto blkdim = op.d.kvdim();
-	const Operator<NOp, COMPLEX> rop = cloneOperator(
+	const auto blkdim = blkd.kvdim();
+	const Operator<NOp, COMPLEX> sop = cloneOperator(
 	  Operator<NOp, COMPLEX>{
 	    [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	      op(x.template reshape_dimensions<NOp>(
+	      op(x.template reshape_dimensions<NOp + 1>(
 		   {{"0x", "0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, dim, true))
-		.template reshape_dimensions<NOp>(
+		.template reshape_dimensions<NOp + 1>(
 		  {{"0x", "0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, blkdim, true)
 		.copyTo(y);
 	    },
 	    blkd, blkd, nullptr, op},
 	  co, co_blk);
 
-	return rop;
+	auto solverOps = getOptionsMaybe(ops, "solver");
+	const Operator<NOp, COMPLEX> solver =
+	  solverOps.hasSome() ? getSolver(sop, solverOps.getSome()) : sop;
+
+	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		  solver(x.template reshape_dimensions<NOp + 1>(
+			   {{"0x", "0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, blkdim, true))
+		    .template reshape_dimensions<NOp + 1>(
+		      {{"0x", "0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, dim, true)
+		    .copyTo(y);
+		},
+		op.d, op.d, nullptr, op};
       }
 
       // Auxiliary structure passed to PRIMME's matvec
