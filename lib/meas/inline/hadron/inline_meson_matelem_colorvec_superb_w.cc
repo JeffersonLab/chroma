@@ -88,6 +88,11 @@ namespace Chroma
       if (paramtop.count("Nt_forward") > 0)
 	read(paramtop, "Nt_forward", param.Nt_forward);
 
+      param.max_tslices_in_contraction = 0;
+      if( paramtop.count("max_tslices_in_contraction") == 1 ) {
+        read(paramtop, "max_tslices_in_contraction", param.max_tslices_in_contraction);
+      }
+
       if (paramtop.count("phase") == 1)
       {
 	read(paramtop, "phase", param.quarkPhase);
@@ -146,6 +151,7 @@ namespace Chroma
       write(xml, "decay_dir", param.decay_dir);
       write(xml, "t_source", param.t_source);
       write(xml, "Nt_forward", param.Nt_forward);
+      write(xml, "max_tslices_in_contraction", param.max_tslices_in_contraction);
       //write(xml, "quarkPhase", param.quarkPhase);
       //write(xml, "aQuarkPhase", param.aQuarkPhase);
       xml << param.link_smearing.xml;
@@ -679,7 +685,8 @@ namespace Chroma
       auto moms = SB::getMoms(params.param.decay_dir, phases, SB::none, SB::none, tfrom, tsize);
       SB::doMomDisp_contractions(u_smr, source_colorvec, leftphase, rightphase, moms, tfrom,
 				 displacement_list, params.param.use_derivP, call, SB::none,
-				 SB::OnDefaultDevice, SB::OnMaster);
+				 SB::OnDefaultDevice, SB::OnMaster,
+				 params.param.max_tslices_in_contraction);
 
       // Close db
       for (auto& db : qdp_db)
