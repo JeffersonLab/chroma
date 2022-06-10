@@ -74,7 +74,7 @@ namespace Chroma
     /// How to distribute the tensor (see class Tensor)
     enum Distribution {
       OnMaster,		    ///< Fully supported on node with index zero
-      OnEveryone,	    ///< Distributed the lattice dimensions (x, y, z, t) as chroma does
+      OnEveryone,	    ///< Distribute the lattice dimensions (x, y, z, t) as chroma does
       OnEveryoneReplicated, ///< All nodes have a copy of the tensor
       Local		    ///< Non-collective
     };
@@ -294,15 +294,32 @@ namespace Chroma
 	}
       }
 
-      // Throw an error if `order` does not contain a label in `should_contain`
-      inline std::string remove_dimensions(const std::string& order, const std::string& remove_dims)
+      /// Concatenate the two given orders without repeating characters and removing some other characters
+      /// \param order0: input string
+      /// \param order1: input string
+      /// \param remove_dims: remove these characters
+
+      inline std::string union_dimensions(const std::string& order0, const std::string& order1,
+					  const std::string& remove_dims = "")
       {
 	std::string out;
-	out.reserve(order.size());
-	for (char c : order)
-	  if (remove_dims.find(c) == std::string::npos)
+	out.reserve(order0.size() + order1.size());
+	for (char c : order0)
+	  if (out.find(c) == std::string::npos && remove_dims.find(c) == std::string::npos)
+	    out.push_back(c);
+	for (char c : order1)
+	  if (out.find(c) == std::string::npos && remove_dims.find(c) == std::string::npos)
 	    out.push_back(c);
 	return out;
+      }
+
+      /// Remove some characters from a given string
+      /// \param order: input string
+      /// \param remove_dims: remove these characters from `order`
+
+      inline std::string remove_dimensions(const std::string& order, const std::string& remove_dims)
+      {
+	return union_dimensions(order, "", remove_dims);
       }
 
       template <std::size_t N>
@@ -483,6 +500,21 @@ namespace Chroma
 	// Without gpus, OnHost and OnDefaultDevice means on cpu.
 	return true;
 #  endif
+      }
+
+      /// Return x if conjugate is false and conj(x) otherwise
+      /// \param x: value to conjugate
+
+      template <typename T, typename std::enable_if<is_complex<T>::value, bool>::type = true>
+      T cond_conj(bool conjugate, const T& x)
+      {
+	return (conjugate ? std::conj(x) : x);
+      }
+
+      template <typename T, typename std::enable_if<!is_complex<T>::value, bool>::type = true>
+      T cond_conj(bool, const T& x)
+      {
+	return x;
       }
 
       /// Return an ordering with labels 0, 1, ...
@@ -958,6 +990,8 @@ namespace Chroma
       }
     }
 
+    /// Class for operating dense tensors
+
     template <std::size_t N, typename T>
     struct Tensor {
       static_assert(superbblas::supported_type<T>::value, "Not supported type");
@@ -974,8 +1008,12 @@ namespace Chroma
       Coor<N> size;	 ///< Number of active coordinates on each dimension
       Coor<N> strides;	 ///< Displacement for the next element along every direction
       T scalar;		 ///< Scalar factor of the tensor
+      bool conjugate;	 ///< Whether the values are implicitly conjugated
 
-      // Return a string describing the tensor
+      /// Return a string describing the tensor
+      /// \param ptr: pointer to the memory allocation
+      /// \return: the string representing the tensor
+
       std::string repr(T* ptr = nullptr) const
       {
 	using namespace detail::repr;
@@ -989,7 +1027,13 @@ namespace Chroma
 	return ss.str();
       }
 
-      // Construct used by non-Chroma tensors
+      /// Constructor
+      /// \param order: dimension labels of the tensor
+      /// \param dim: size for each dimension
+      /// \param dev: where to allocate the content on the GPU if available (`OnDefaultDevice`)
+      ///        or on CPU always (`OnHost`)
+      /// \param dist: how to distribute the tensor, see `Distribution`
+
       Tensor(const std::string& order, Coor<N> dim, DeviceHost dev = OnDefaultDevice,
 	     Distribution dist = OnEveryone)
 	: Tensor(order, dim, dev, dist,
@@ -998,7 +1042,8 @@ namespace Chroma
       {
       }
 
-      // Empty constructor
+      /// Empty constructor
+
       Tensor()
 	: order(detail::getTrivialOrder(N)),
 	  dim{},
@@ -1009,11 +1054,18 @@ namespace Chroma
 	  from{},
 	  size{},
 	  strides{},
-	  scalar{0}
+	  scalar{0},
+	  conjugate{false}
       {
       }
 
-      // Construct used by Chroma tensors (see `asTensorView`)
+      /// Constructor for bringing the memory allocation (see `asTensorView`)
+      /// \param order: dimension labels of the tensor
+      /// \param dim: size for each dimension
+      /// \param dev: where to allocate the content on the GPU if available (`OnDefaultDevice`)
+      ///        or on CPU always (`OnHost`)
+      /// \param dist: how to distribute the tensor, see `Distribution`
+
       Tensor(const std::string& order, Coor<N> dim, DeviceHost dev, Distribution dist,
 	     std::shared_ptr<T> data)
 	: order(order),
@@ -1024,7 +1076,8 @@ namespace Chroma
 	  from{},
 	  size(dim),
 	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
-	  scalar{1}
+	  scalar{1},
+	  conjugate{false}
       {
 	checkOrder();
 
@@ -1034,10 +1087,21 @@ namespace Chroma
 	  detail::TensorPartition<N>(order, dim, dist));
       }
 
-      // Construct for toFakeReal
+      /// Internal constructor, used by `toFakeReal`
+      /// \param order: dimension labels of the tensor
+      /// \param dim: size for each dimension
+      /// \param ctx: superbblas context
+      /// \param data: memory allocation
+      /// \param p: partition of the tensor among the processes
+      /// \param dist: how to distribute the tensor, see `Distribution`
+      /// \param from: coordinate of the first element in this view
+      /// \param size: elements in each direction in this view
+      /// \param scalar: scalar factor of this view
+      /// \param conjugate: whether the elements are implicitly conjugated
+
       Tensor(const std::string& order, Coor<N> dim, std::shared_ptr<superbblas::Context> ctx,
 	     std::shared_ptr<T> data, std::shared_ptr<detail::TensorPartition<N>> p,
-	     Distribution dist, Coor<N> from, Coor<N> size, T scalar)
+	     Distribution dist, Coor<N> from, Coor<N> size, T scalar, bool conjugate)
 	: order(order),
 	  dim(dim),
 	  ctx(ctx),
@@ -1047,13 +1111,19 @@ namespace Chroma
 	  from(normalize_coor(from, dim)),
 	  size(size),
 	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
-	  scalar(scalar)
+	  scalar(scalar),
+	  conjugate(conjugate)
       {
 	checkOrder();
       }
 
     protected:
-      // Construct used by non-Chroma tensors and make_suitable_for_contraction
+      /// Internal constructor, used by `make_suitable_for_contraction`
+      /// \param order: dimension labels of the tensor
+      /// \param dim: size for each dimension
+      /// \param dist: how to distribute the tensor, see `Distribution`
+      /// \param p: partition of the tensor among the processes
+
       Tensor(const std::string& order, Coor<N> dim, DeviceHost dev, Distribution dist,
 	     std::shared_ptr<detail::TensorPartition<N>> p)
 	: order(order),
@@ -1064,7 +1134,8 @@ namespace Chroma
 	  from{},
 	  size(dim),
 	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
-	  scalar{1}
+	  scalar{1},
+	  conjugate{false}
       {
 	checkOrder();
 	superbblas::Context ctx0 = *ctx;
@@ -1079,7 +1150,11 @@ namespace Chroma
 	});
       }
 
-      // Construct a slice of a tensor
+      /// Internal constructor, used by functions making slices, eg. `kvslice_from_size`
+      /// \param order: dimension labels of the tensor
+      /// \param from: coordinate of the first element in this view
+      /// \param size: elements in each direction in this view
+
       Tensor(const Tensor& t, const std::string& order, Coor<N> from, Coor<N> size)
 	: order(order),
 	  dim(t.dim),
@@ -1090,13 +1165,17 @@ namespace Chroma
 	  from(normalize_coor(from, t.dim)),
 	  size(size),
 	  strides(t.strides),
-	  scalar{t.scalar}
+	  scalar{t.scalar},
+	  conjugate{t.conjugate}
       {
 	checkOrder();
       }
 
-      // Construct a scaled tensor
-      Tensor(const Tensor& t, T scalar)
+      /// Internal constructor, used by `scale` and `conj`
+      /// \param scalar: scalar factor of this view
+      /// \param conjugate: whether the elements are implicitly conjugated
+
+      Tensor(const Tensor& t, T scalar, bool conjugate)
 	: order(t.order),
 	  dim(t.dim),
 	  ctx(t.ctx),
@@ -1106,25 +1185,49 @@ namespace Chroma
 	  from(t.from),
 	  size(t.size),
 	  strides(t.strides),
-	  scalar{scalar}
+	  scalar{scalar},
+	  conjugate{conjugate}
       {
 	checkOrder();
       }
 
     public:
       /// Return whether the tensor is not empty
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   Tensor<2,Complex> q("cs", {{Nc,0}});
+      ///   if (t) std::cout << "t is not empty";  // print this
+      ///   if (q) std::cout << "q is not empty";  // doesn't print this
+
       explicit operator bool() const noexcept
       {
 	return superbblas::detail::volume(size) > 0;
       }
 
-      // Return whether from != 0 or size != dim
+      /// Return whether the view doesn't start at the origin or doesn't encompass the whole original tensor
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   t.isSubtensor(); // is false
+      ///   t.slice_from_size({{0,1}}).isSubtensor(); // is true
+      ///   t.slice_from_size({}, {{0,1}}).isSubtensor(); // is true
+
       bool isSubtensor() const
       {
 	return (from != Coor<N>{} || size != dim);
       }
 
-      // Return the first coordinate supported by the tensor
+      /// Return the first coordinate supported by the tensor
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   t.kvfrom(); // is {{'c',0},{'s',0}}
+      ///   t.kvslice_from_size({{'s',1}}).kvfrom(); // is {{'c',0},{'s',1}}
+
       std::map<char, int> kvfrom() const
       {
 	std::map<char, int> d;
@@ -1133,7 +1236,14 @@ namespace Chroma
 	return d;
       }
 
-      // Return the dimensions of the tensor
+      /// Return the dimensions of the tensor
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   t.kvdim(); // is {{'c',Nc},{'s',Ns}}
+      ///   t.kvslice_from_size({}, {{'s',1}}).kvdim(); // is {{'c',Nc},{'s',1}}
+
       std::map<char, int> kvdim() const
       {
 	std::map<char, int> d;
@@ -1142,13 +1252,37 @@ namespace Chroma
 	return d;
       }
 
-      // Return the volume of the tensor
+      /// Return the number of the elements in the tensor
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   t.volume(); // is Nc*Ns
+      ///   t.kvslice_from_size({}, {{'s',1}}).volume(); // is Nc*1
+
       std::size_t volume() const
       {
 	return superbblas::detail::volume(size);
       }
 
-      // Get an element of the tensor
+      /// Get an element of the tensor
+      /// \param coor: coordinates of the element to get
+      /// \return: the value of the element at the coordinate
+      ///
+      /// NOTE:
+      /// - operation allowed only for tensors supported on the CPU and replicated on every process (or local)
+      /// - the operation is slow, avoid in critical performance operations
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}, OnHost, OnEveryoneReplicated);
+      ///   t.set({0,1}, 1.0); // set the element with c=0 and s=1 to 1.0
+      ///   t.get({0,1}); // get the element with c=0 and s=1
+      ///
+      ///   Tensor<5,double> q("xyztX", latticeSize<5>("xyztX"), OnHost);
+      ///   q.getLocal().set({0,0,0,0,0}, 1.0); // set the first local element in this process to 1.0
+      ///   q.getLocal().get({0,0,0,0,0}); // get the first local element in this process
+
       T get(Coor<N> coor) const
       {
 	if (ctx->plat != superbblas::CPU)
@@ -1163,10 +1297,26 @@ namespace Chroma
 	for (unsigned int i = 0; i < N; ++i)
 	  coor[i] = normalize_coor(normalize_coor(coor[i], size[i]) + from[i], dim[i]);
 
-	return data.get()[detail::coor2index<N>(coor, dim, strides)] * scalar;
+	return detail::cond_conj(conjugate,
+				 data.get()[detail::coor2index<N>(coor, dim, strides)] * scalar);
       }
 
-      // Set an element of the tensor
+      /// Set an element of the tensor
+      /// \param coor: coordinates of the element to set
+      /// \param v: the new value of the element
+      ///
+      /// NOTE:
+      /// - operation allowed only for tensors supported on the CPU and replicated on every process (or local)
+      /// - the operation is slow, avoid in critical performance operations
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}, OnHost, OnEveryoneReplicated);
+      ///   t.set({0,1}, 1.0); // set the element with c=0 and s=1 to 1.0
+      ///
+      ///   Tensor<5,double> q("xyztX", latticeSize<5>("xyztX"), OnHost);
+      ///   q.getLocal().set({0,0,0,0,0}, 1.0); // set the first local element in this process to 1.0
+
       void set(Coor<N> coor, T v)
       {
 	if (ctx->plat != superbblas::CPU)
@@ -1181,17 +1331,39 @@ namespace Chroma
 	for (unsigned int i = 0; i < N; ++i)
 	  coor[i] = normalize_coor(normalize_coor(coor[i], size[i]) + from[i], dim[i]);
 
-	data.get()[detail::coor2index<N>(coor, dim, strides)] = v / scalar;
+	data.get()[detail::coor2index<N>(coor, dim, strides)] =
+	  detail::cond_conj(conjugate, v) / scalar;
       }
 
-      /// Rename dimensions
+      /// Return a new tensors with the dimension labels renamed
+      /// \param m: dictionary with the dimensions to rename
+      /// \return: new view of the tensor with the dimension labels renamed
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   Tensor<2,Complex> q = t.rename_dims({{'s','S'}});
+      ///   q.order; // is "cS"
+
       Tensor<N, T> rename_dims(const SB::remap& m) const
       {
 	return Tensor<N, T>(*this, detail::update_order<N>(order, m), this->from, this->size);
       }
 
-      // Return a slice of the tensor starting at coordinate `kvfrom` and taking `kvsize` elements in each direction.
-      // The missing dimension in `kvfrom` are set to zero and the missing direction in `kvsize` are set to the active size of the tensor.
+      /// Return a slice of the tensor starting at coordinate `kvfrom` and taking `kvsize` elements
+      /// in each direction. The missing dimensions in `kvfrom` are set to zero and the missing
+      /// directions in `kvsize` are set to the size of the tensor.
+      ///
+      /// \param kvfrom: dictionary with the index of the first element in each direction
+      /// \param kvsize: dictionary with the number of elements in each direction
+      /// \return: new view of the tensor 
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   t.kvslice_from_size({{'s',1}}); // is a view where the origin element is t(c=0,s=1)
+      ///   t.slice_from_size({{0,1}},{{Nc,Ns}}); // equivalent view
+
       Tensor<N, T> kvslice_from_size(const std::map<char, int>& kvfrom = {},
 				     const std::map<char, int>& kvsize = {}) const
       {
@@ -1201,7 +1373,20 @@ namespace Chroma
 	return slice_from_size(kvcoors<N>(order, kvfrom), kvcoors<N>(order, updated_kvsize));
       }
 
-      // Return a slice of the tensor starting at coordinate `from` and taking `size` elements in each direction.
+      /// Return a slice of the tensor starting at coordinate `from` and taking `size` elements
+      /// in each direction.
+      ///
+      /// \param from: first coordinate in the view
+      /// \param size: number of elements in each direction
+      /// \return: new view of the tensor
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   t.slice_from_size({{0,1}},{{Nc,Ns}}); // view of the tensor starting at element (0,1)
+      ///   t.slice_from_size({{0,1}},{{1,1}}); // view of a single element at (0,1)
+      ///   t.slice_from_size({{0,1}},{{Nc,1}}); // view of all elements with s=1
+
       Tensor<N, T> slice_from_size(Coor<N> from, Coor<N> size) const
       {
 	for (unsigned int i = 0; i < N; ++i)
@@ -1224,6 +1409,14 @@ namespace Chroma
       /// \param kvsize: override the length of the given dimensions
       /// \param new_dev: device
       /// \param new_dist: distribution
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   // Create a new tensor as a collection of three `t` tensors
+      ///   Tensor<3,Complex> q = t.like_this<3>("csn", {{'n',3}});
+      ///   // Create a tensor like q but with allocation on host
+      ///   Tensor<3,Complex> v = q.like_this(none, {}, OnHost);
 
       template <std::size_t Nn = N, typename Tn = T>
       Tensor<Nn, Tn>
@@ -1244,6 +1437,15 @@ namespace Chroma
       /// \param kvsize: override the length of the given dimensions
       /// \param new_dev: device
       /// \param new_dist: distribution
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   // Create a new tensor as a collection of three `t` tensors
+      ///   Tensor<3,Complex> q = t.like_this<3>("%n", '%', "", {{'n',3}});
+      ///   // Create a tensor like q but without the dimension c
+      ///   Tensor<2,Complex> v = q.like_this<2>("%", '%', "c");
+
 
       template <std::size_t Nn = N, typename Tn = T>
       Tensor<Nn, Tn>
@@ -1260,7 +1462,13 @@ namespace Chroma
 			      new_dev.getSome(getDev()), new_dist.getSome(dist));
       }
 
-      /// Return a copy of this tensor, possible with a new precision `nT`
+      /// Return a copy of this tensor, possibly with a new precision `nT`
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,std::complex<double>> t("cs", {{Nc,Ns}});
+      ///   Tensor<2,std::complex<double>> v = t.clone(); // copy of t
+      ///   Tensor<2,std::complex<float>> q = t.clone<std::complex<float>>(); // copy of t in single prec.
 
       template <typename Tn = T>
       Tensor<N, Tn> clone() const
@@ -1268,8 +1476,14 @@ namespace Chroma
 	return cloneOn<Tn>(getDev());
       }
 
-      /// Return a copy of this tensor on device `new_dev`, possible with a new precision `nT`
+      /// Return a copy of this tensor on device `new_dev`, possibly with a new precision `nT`
       /// \param new_dev: device that will hold the new tensor
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,std::complex<double>> t("cs", {{Nc,Ns}});
+      ///   Tensor<2,std::complex<double>> v = t.cloneOn(OnHost); // copy of t on host
+      ///   Tensor<2,std::complex<float>> q = t.cloneOn<std::complex<float>>(OnHost); // copy of t in single prec. on host
 
       template <typename Tn = T>
       Tensor<N, Tn> cloneOn(DeviceHost new_dev) const
@@ -1387,7 +1601,7 @@ namespace Chroma
 	auto new_p = std::make_shared<detail::TensorPartition<N + 1>>(p->insert_dimension(0, 2));
 
 	return Tensor<N + 1, new_T>(new_order, new_dim, ctx, new_data, new_p, dist, new_from,
-				    new_size, new_scalar);
+				    new_size, new_scalar, conjugate);
       }
 
       template <typename U = T,
@@ -1418,7 +1632,7 @@ namespace Chroma
 	auto new_p = std::make_shared<detail::TensorPartition<N - 1>>(p->remove_dimension(dot_pos));
 
 	return Tensor<N - 1, new_T>(new_order, new_dim, ctx, new_data, new_p, dist, new_from,
-				    new_size, new_scalar);
+				    new_size, new_scalar, conjugate);
       }
 
       template <typename U = T,
@@ -1478,7 +1692,7 @@ namespace Chroma
 	  std::make_shared<detail::TensorPartition<N + 1>>(p->split_dimension(pos, step));
 
 	return Tensor<N + 1, T>(new_order, new_dim, ctx, data, new_p, dist, new_from, new_size,
-				scalar);
+				scalar, conjugate);
       }
 
       /// Copy/add this tensor into the given one
@@ -1507,7 +1721,7 @@ namespace Chroma
 	using superbblas::detail::operator-;
 	return Tensor<N, T>(order, p->localSize(), ctx, data,
 			    std::make_shared<detail::TensorPartition<N>>(p->get_local_partition()),
-			    Local, normalize_coor(from - p->localFrom(), dim), lsize, scalar);
+			    Local, normalize_coor(from - p->localFrom(), dim), lsize, scalar, conjugate);
       }
 
       /// Set zero
@@ -1534,6 +1748,9 @@ namespace Chroma
 
 	if (action == AddTo && w.scalar != Tw{1})
 	  throw std::runtime_error("Not allowed to add to a tensor whose implicit scalar factor is not one");
+
+	if (conjugate != w.conjugate)
+	  throw std::runtime_error("Not allowed to copy or add tensor with different implicit conjugacy");
 
 	if ((dist == Local && w.dist != Local) || (dist != Local && w.dist == Local))
 	{
@@ -1650,18 +1867,31 @@ namespace Chroma
 	std::string orderv_ = detail::update_order<Nv>(v.order, mv);
 	std::string orderw_ = detail::update_order<Nw>(w.order, mw);
 	std::string order_ = detail::update_order<N>(order, mr);
-	T vscalar = conjv == NotConjugate ? v.scalar : std::conj(v.scalar);
-	T wscalar = conjw == NotConjugate ? w.scalar : std::conj(w.scalar);
+	bool conjv_ = (((conjv == Conjugate) xor v.conjugate) xor conjugate);
+	bool conjw_ = (((conjw == Conjugate) xor w.conjugate) xor conjugate);
 	superbblas::contraction<Nv, Nw, N>(
-	  vscalar * wscalar / scalar, v.p->p.data(), 1, orderv_.c_str(), conjv == Conjugate,
-	  (const T**)&v_ptr, &*v.ctx, w.p->p.data(), 1, orderw_.c_str(), conjw == Conjugate,
-	  (const T**)&w_ptr, &*w.ctx, beta, p->p.data(), 1, order_.c_str(), &ptr, &*ctx,
+	  detail::cond_conj(conjv_, v.scalar) * detail::cond_conj(conjw_, w.scalar) / scalar, //
+	  v.p->p.data(), 1, orderv_.c_str(), conjv_, (const T**)&v_ptr, &*v.ctx,	      //
+	  w.p->p.data(), 1, orderw_.c_str(), conjw_, (const T**)&w_ptr, &*w.ctx,	      //
+	  detail::cond_conj(conjugate, beta), p->p.data(), 1, order_.c_str(), &ptr, &*ctx,
 	  MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
+      /// Return a view of this tensor where the elements are scaled by the given argument
+      /// \param s: scaling factor
+      /// \return: a new view (it doesn't create a copy of the tensor)
+
       Tensor<N, T> scale(T s) const
       {
-	return Tensor<N, T>(*this, scalar * s);
+	return Tensor<N, T>(*this, scalar * detail::cond_conj(conjugate, s), conjugate);
+      }
+
+      /// Return a view of this tensor where the elements are conjuated
+      /// \return: a new view (it doesn't create a copy of the tensor)
+ 
+      Tensor<N, T> conj() const
+      {
+	return Tensor<N, T>(*this, scalar, !conjugate);
       }
 
       void release()
@@ -1674,6 +1904,7 @@ namespace Chroma
 	size = {};
 	strides = {};
 	scalar = T{0};
+	conjugate = false;
       }
 
       // Return whether the current view is contiguous in memory
@@ -1754,8 +1985,8 @@ namespace Chroma
 	  throw std::runtime_error("Only supported to read on `OnMaster` tensors");
 	if (!isContiguous())
 	  throw std::runtime_error("Only supported contiguous views in memory");
-	if (scalar != T{1})
-	  throw std::runtime_error("Not allowed for tensor with a scale not being one");
+	if (scalar != T{1} || conjugate)
+	  throw std::runtime_error("Not allowed for tensor with a scale not being one or implicitly conjugated");
 
 	// Only on primary node read the data
 	std::size_t vol = superbblas::detail::volume(size);
@@ -1773,6 +2004,9 @@ namespace Chroma
 	// If the writing is non-collective, the tensor should be local
 	if (bin.isLocal() && dist != Local)
 	  throw std::runtime_error("For non-collective writing, the tensor should be `Local`");
+
+	if (conjugate)
+	  throw std::runtime_error("Not allowed for tensors implicitly conjugated");
 
 	// If the tensor has an implicit scale, view, or is not on host, make a copy
 	if (scalar != T{1} || isSubtensor() || ctx->plat != superbblas::CPU)
@@ -1836,15 +2070,63 @@ namespace Chroma
 #  endif
     };
 
-    //     inline void* getQDPPtrFromId(int id)
-    //     {
-    // #  ifdef QDP_IS_QDPJIT
-    //       std::vector<QDPCache::ArgKey> v(id, 1);
-    //       return QDP_get_global_cache().get_kernel_args(v, false)[0];
-    // #  else
-    //       return nullptr;
-    // #  endif
-    //     }
+    /// Contract some dimension of the given tensors
+    /// \param v: one tensor to contract
+    /// \param w: the other tensor to contract
+    /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
+    /// \param action: either to copy or add to the given output tensor if given
+    /// \param r: optional given tensor where to put the resulting contraction
+    /// \param mr: map from the given `r` to the labels of the contraction
+    /// \param beta: scale on `r` if the `action` in `AddTo`
+    ///
+    /// Example:
+    ///
+    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("Ss", {{Ns,Ns}});
+    ///   Tensor<2,Complex> r0 = contract<2>(t, q, "s"); // r0 dims are "cS"
+    ///   Tensor<3,Complex> r1 = contract<3>(t, q, ""); // r1 dims are "csS"
+    ///   Tensor<2,Complex> r2("cS", {{Nc,Ns}});
+    ///   contract<2>(t, q, "s", CopyTo, r2); // r2 = q * s
+    ///   Tensor<2,Complex> r3("cs", {{Nc,Ns}});
+    ///   contract<2>(t, q, "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s
+    ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
+
+    template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
+    Tensor<Nr, T> contract(Tensor<Nv, T> v, Tensor<Nw, T> w, const std::string& labels_to_contract,
+			   Maybe<Action> action = none, Maybe<Tensor<Nr, T>> r = none,
+			   const remap& mr = {}, T beta = T{1})
+    {
+      if (action.hasSome() != r.hasSome())
+	throw std::runtime_error("Invalid default value");
+
+      // Compute the labels of the output tensor: v.order + w.order - labels_to_contract
+      std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
+      if (Nr != rorder.size())
+	throw std::runtime_error(
+	  "contract: The dimension of the output tensor does not match the template argument");
+      if (r && union_dimensions(rorder, r.getSome().order) != rorder)
+	throw std::runtime_error("contract: The given output tensor has an unexpected ordering");
+
+      // If the output tensor is not given create a new one
+      Tensor<Nr, T> r0;
+      if (!r)
+      {
+	r0 = v.like_this<Nr>(rorder, w.kvdim());
+	beta = 0;
+      }
+      else
+      {
+	r0 = r.getSome();
+      }
+
+      // Correct beta for the action
+      if (action.hasSome() && action.getSome() == CopyTo)
+	beta = 0.0;
+
+      // Do the contraction
+      r0.contract(v, {}, NotConjugate, w, {}, NotConjugate, mr, beta);
+
+      return r0;
+    }
 
     template <typename T>
     void* getQDPPtr(const T& t)
@@ -4298,7 +4580,8 @@ namespace Chroma
 				Index first_tslice, const std::vector<std::vector<int>>& disps,
 				bool deriv, const ContractionFn<COMPLEX>& call,
 				const Maybe<std::string>& order_out = none,
-				Maybe<DeviceHost> dev = none, Maybe<Distribution> dist = none)
+				Maybe<DeviceHost> dev = none, Maybe<Distribution> dist = none,
+				int max_tslices_in_contraction = 0)
     {
       const std::string order_out_str = order_out.getSome("ijmt");
       detail::check_order_contains(order_out_str, "ijmt");
@@ -4319,7 +4602,10 @@ namespace Chroma
 	throw std::runtime_error("The t component of `colorvec' and `moms' does not match");
 
       // Iterate over time-slices
-      for (int tfrom = 0, tsize = Nt; tfrom < Nt; tfrom += tsize, tsize = Nt - tfrom)
+      if (max_tslices_in_contraction <= 0)
+	max_tslices_in_contraction = Nt;
+      for (int tfrom = 0, tsize = std::min(Nt, max_tslices_in_contraction); tfrom < Nt;
+	   tfrom += tsize, tsize = std::min(max_tslices_in_contraction, Nt - tfrom))
       {
 	// Make tsize one or even
 	if (tsize > 1 && tsize % 2 != 0)
