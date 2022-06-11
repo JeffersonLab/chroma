@@ -1172,9 +1172,9 @@ namespace Chroma
 
       /// Return the block diagonal of an operator
       /// \param op: operator to extract the block diagonal
-      /// \param block_labels: labels that compose the blocks
-      /// \param m: map from the operator block labels to the new labels to represent the rows
-      /// \return: tensor with the block labels as columns and the renamed labels as rows
+      /// \param block_labels: labels that compose the blocks (and will be the rows)
+      /// \param m: map from the operator block labels to the new labels for the columns
+      /// \return: tensor with the block labels as rows and the renamed labels as columns
 
       template <std::size_t N, std::size_t NOp, typename COMPLEX>
       Tensor<N, COMPLEX> getBlockDiag(const Operator<NOp, COMPLEX>& op,
@@ -1458,7 +1458,7 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "getEvenOddPrec: not supported for operators with other than distance-1 neighbors");
 
-	// Get the block diagonal of the operator
+	// Get the block diagonal of the operator with rows cs and columns CS
 	remap m_sc{{'s', 'S'}, {'c', 'C'}};
 	auto opDiag = getBlockDiag<NOp + 2>(op, "cs", m_sc);
 
@@ -1477,13 +1477,13 @@ namespace Chroma
 		x, y, create_operator_max_rhs,
 		[&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
 		  // y = Op_ee * x
-		  contract(opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), x, "cs", CopyTo,
-			   y.rename_dims(m_sc));
+		  contract(opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), x.rename_dims(m_sc),
+			   "CS", CopyTo, y);
 
 		  // y1 = Op_oe * x
 		  auto y0 = op.d.template like_this<NOp + 1>(
 		    op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-		    {{'n', x.kvdim()['n']}});
+		    {{'n', x.kvdim().at('n')}});
 		  y0.set_zero();
 		  x.copyTo(y0.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
 		  auto y1 = op(y0).kvslice_from_size({{'X', 1}}, {{'X', 1}});
@@ -1492,8 +1492,9 @@ namespace Chroma
 		  auto y2 = y0;
 		  y2.set_zero();
 		  solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs", y1, "cs", CopyTo,
-		    y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
+		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS",
+		    y1.rename_dims(m_sc), "CS", CopyTo,
+		    y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
 
 		  // y += -Op_eo * y2
 		  op(y2).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(y);
@@ -1514,16 +1515,16 @@ namespace Chroma
 	    // be = x_e - Op_eo*Op_oo^{-1}*x_o
 	    auto be = solver.d.template like_this<NOp + 1>(
 	      solver.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-	      {{'n', x.kvdim()['n']}});
+	      {{'n', x.kvdim().at('n')}});
 	    x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
 	    auto ya = op.d.template like_this<NOp + 1>(
 	      op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-	      {{'n', x.kvdim()['n']}});
+	      {{'n', x.kvdim().at('n')}});
 	    ya.set_zero();
 	    solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-	      opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs",
-	      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", CopyTo,
-	      ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
+	      opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS",
+	      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc), "CS", CopyTo,
+	      ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
 	    op(ya).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(be);
 
 	    // Solve opA * y_e = be
@@ -1536,8 +1537,8 @@ namespace Chroma
 	    x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
 	    ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).scale(-1).addTo(yo0);
 	    solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-	      opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "CS", "cs", yo0, "cs", CopyTo,
-	      y.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc));
+	      opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS", yo0.rename_dims(m_sc),
+	      "CS", CopyTo, y.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
 	  },
 	  op.i,
 	  op.d,
