@@ -1263,7 +1263,7 @@ namespace Chroma
 	auto nv_blk =
 	  nv2.rename_dims({{'c', 'C'}, {'s', 'S'}})
 	    .template reshape_dimensions<NOp + 1 + 5>(
-	      {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Y2z"}, {"3t", "T3t"}, {"n", "cs"}},
+	      {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"}, {"n", "cs"}},
 	      {{'X', 1}, // we don't do even-odd layout on the coarse operator space
 	       {'W', mg_blocking.at('x')},
 	       {'Y', mg_blocking.at('y')},
@@ -1283,9 +1283,9 @@ namespace Chroma
 	// Return the operator
 	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk.kvdim()), i = op.i;
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		  contract<NOp + 1>(nv_blk, x, "cs")
+		  contract<NOp + 1 + 4>(nv_blk, x, "cs")
 		    .template reshape_dimensions<NOp + 1>(
-		      {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Y2z", "2z"}, {"T3t", "3t"}}, opdims, true)
+		      {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"}, {"T3t", "3t"}}, opdims, true)
 		    .rename_dims({{'C', 'c'}, {'S', 's'}})
 		    .copyTo(y);
 		},
@@ -1293,8 +1293,8 @@ namespace Chroma
 		i,
 		[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		  auto x_blk = x.rename_dims({{'c', 'C'}, {'s', 'S'}})
-				 .template reshape_dimensions<NOp + 1 + 5>(
-				   {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Y2z"}, {"3t", "T3t"}},
+				 .template reshape_dimensions<NOp + 1 + 4>(
+				   {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"}},
 				   nv_blk.kvdim(), true)
 				 .rename_dims({{'c', 'C'}, {'s', 'S'}});
 		  contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC", CopyTo, y);
