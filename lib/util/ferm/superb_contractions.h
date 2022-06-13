@@ -480,6 +480,38 @@ namespace Chroma
 
       enum CoorType { From, Size };
 
+      /// Return whether two from-size ranges are compatible on common dimensions
+      /// \param o0: order for the first coordinates
+      /// \param from0: first coordinate on the first range
+      /// \param size0: range size on the first range
+      /// \param o0: order for the second coordinates
+      /// \param from1: first coordinate on the second range
+      /// \param size1: range size on the second range
+      /// \param labelsToCompare: labels to compare
+
+      template <std::size_t N0, std::size_t N1>
+      bool compatibleRanges(const std::string& o0, const Coor<N0>& from0, const Coor<N0>& size0,
+			    const std::string& o1, const Coor<N1>& from1, const Coor<N1>& size1,
+			    const std::string& labelsToCompare)
+      {
+	if (o0.size() != N0 || o1.size() != N1)
+	  throw std::runtime_error("compatibleRanges: invalid size of input ordering");
+	std::map<char, std::array<int, 2>> mfs0;
+	for (unsigned int i = 0; i < N0; ++i)
+	  if (std::find(labelsToCompare.begin(), labelsToCompare.end(), o0[i]) !=
+	      labelsToCompare.end())
+	    mfs0[o0[i]] = {{from0[i], size0[i]}};
+	for (unsigned int i = 0; i < N1; ++i)
+	{
+	  if (mfs0.count(o1[i]) == 0)
+	    continue;
+	  auto fs0 = mfs0.at(o1[i]);
+	  if (fs0[0] != from1[i] || fs0[1] != size1[i])
+	    return false;
+	}
+	return true;
+      }
+
       /// Split a dimension into another dimensions
       /// \param pos: dimension to split
       /// \param c: coordinate to transform
@@ -843,6 +875,21 @@ namespace Chroma
 	int MpiProcRank() const
 	{
 	  return (isLocal ? 0 : Layout::nodeNumber());
+	}
+
+	/// Return whether other partition is compatible with this one
+
+	template <std::size_t N0>
+	bool is_compatible(const std::string& o0, const TensorPartition<N0>& t,
+			   const std::string& o1, const std::string& labelToCompare) const
+	{
+	  if (t.p.size() != p.size())
+	    return false;
+	  for (unsigned int i = 0; i < p.size(); ++i)
+	    if (!compatibleRanges(o0, p[i][0], p[i][1], o1, t.p[i][0], t.p[i][1], labelToCompare))
+	      return false;
+
+	  return true;
 	}
 
 	/// Insert a new non-distributed dimension
@@ -1626,6 +1673,15 @@ namespace Chroma
       bool is_eg() const
       {
 	return eg;
+      }
+
+      /// Return if the given tensor has the same distribution as this
+      /// \param w: tensor to compare with
+
+      template <std::size_t Nw, typename Tw>
+      bool isDistributedAs(Tensor<Nw, Tw> w, Maybe<std::string> labels = none) const
+      {
+	return p->is_compatible(order, *w.p, w.order, labels.getSome(order));
       }
 
       /// Get an element of the tensor
@@ -3684,6 +3740,13 @@ namespace Chroma
 				std::string(d.order.begin() + nblockd, d.order.end())) +
 	  std::string("u") + std::string(i.order.begin() + nblocki, i.order.end());
 	data = i.template like_this<NI + ND + 1, T>(data_order, data_dims);
+
+	std::string nonblock_img_labels(i.order.begin() + nblocki, i.order.end());
+	if (!ii.isDistributedAs(this->i, nonblock_img_labels) ||
+	    !ii.isDistributedAs(jj, nonblock_img_labels) ||
+	    !ii.isDistributedAs(data, nonblock_img_labels))
+	  throw std::runtime_error("SpTensor: the dense tensors representing the sparse tensor "
+				   "have incompatible distributions");
       }
 
       /// Empty constructor
@@ -3704,6 +3767,12 @@ namespace Chroma
 	    return (t - localFrom[c[0]] + domDim[c[0]]) % domDim[c[0]];
 	  });
 
+	std::string nonblock_img_labels(i.order.begin() + nblocki, i.order.end());
+	if (!ii.isDistributedAs(this->i, nonblock_img_labels) ||
+	    !ii.isDistributedAs(localjj, nonblock_img_labels) ||
+	    !ii.isDistributedAs(data, nonblock_img_labels))
+	  throw std::runtime_error("SpTensor: the dense tensors representing the sparse tensor "
+				   "have incompatible distributions");
 	int* iiptr = ii.data.get();
 	Coor<ND>* jjptr = (Coor<ND>*)localjj.data.get();
 	// NOTE: despite jj being a vector of `int`, superbblas will use jj as a vector of Coor<NI>, so check that the alignment
@@ -3766,34 +3835,36 @@ namespace Chroma
 	auto new_blki = detail::insert_coor(blki, i_pos, new_blki_pos);
 	new_blki[i_pos + 1] /= new_blki_pos;
 
-	auto new_ii = ii.split_dimension(img_dim_label, img_new_labels, img_step);
-	auto new_jj_dim = new_ii.kvdim();
-	new_jj_dim['~'] = (int)ND + 1;
-	auto new_jj = jj.template like_this<NI + 3>(std::string("~u") + new_ii.order, new_jj_dim);
-	// TODO: create new_jj with a compatible partition as new_ii and copy and transform the content of jj into new_jj
+	// Create the returning tensor
+	SpTensor<ND + 1, NI + 1, T> r{new_d,
+				      new_i,
+				      nblockd + (d_pos < nblockd ? 1 : 0),
+				      nblocki + (i_pos < nblocki ? 1 : 0),
+				      (unsigned int)jj.kvdim().at('u'),
+				      isImgFastInBlock};
+
+	ii.split_dimension(img_dim_label, img_new_labels, img_step).copyTo(r.ii);
+	auto new_jj = r.jj.like_this(none, {}, OnHost);
+	jj.split_dimension(img_dim_label, img_new_labels, img_step)
+	  .copyTo(new_jj.kvslice_from_size({}, {{'~', (int)ND}}));
 	{
-	  auto local_jj = jj.make_sure(none, OnHost).getLocal();
-	  auto local_new_jj = new_jj.make_sure(none, OnHost).getLocal();
-	  assert(local_jj.volume() * (ND + 1) == local_new_jj.volume() * ND);
-	  const int *p = local_jj.data.get();
-	  int* new_p = local_new_jj.data.get();
+	  auto local_new_jj = new_jj.getLocal();
+	  int* p = local_new_jj.data.get();
 	  auto new_dom_dim = detail::insert_coor(d.size, d_pos, dom_step);
-	  for (std::size_t i = 0, i1 = local_jj.volume() / ND; i < i1; ++i)
+	  for (std::size_t i = 0, i1 = local_new_jj.volume() / (ND + 1); i < i1; ++i)
 	  {
 	    Coor<ND> c;
-	    std::copy_n(p + ND * i, ND, c.begin());
+	    std::copy_n(p + (ND + 1) * i, ND, c.begin());
 	    Coor<ND + 1> new_c = detail::split_dimension(d_pos, c, new_dom_dim, detail::From);
-	    std::copy_n(new_c.begin(), ND + 1, new_p + (ND + 1) * i);
+	    std::copy_n(new_c.begin(), ND + 1, p + (ND + 1) * i);
 	  }
-	  local_new_jj.copyTo(new_jj.getLocal());
 	}
+	new_jj.copyTo(r.jj);
 
-	auto new_data = data.split_dimension(dom_dim_label, dom_new_labels, dom_step)
-			  .split_dimension(img_dim_label, img_new_labels, img_step);
+	data.split_dimension(dom_dim_label, dom_new_labels, dom_step)
+	  .split_dimension(img_dim_label, img_new_labels, img_step)
+	  .copyTo(r.data);
 
-	SpTensor<ND + 1, NI + 1, T> r(new_d, new_i, new_blkd, new_blki, new_ii, new_jj, new_data,
-				      scalar, isImgFastInBlock, nblockd + (d_pos < nblockd ? 1 : 0),
-				      nblocki + (i_pos < nblocki ? 1 : 0));
 	if (is_constructed())
 	  r.construct();
 
