@@ -906,8 +906,7 @@ namespace Chroma
 	std::string sparse_labels("xyztX");
 	std::string dense_labels = remove_dimensions(op.i.order, sparse_labels);
 	remap rd = getNewLabels(op.d.order, op.i.order + "u~0123");
-	auto d = op.d.reorder("%xyztX", '%').make_sure(none, OnDefaultDevice).rename_dims(rd);
-	auto i = op.i.reorder("%xyztX", '%').make_sure(none, OnDefaultDevice);
+	auto i = op.i.reorder("%xyztX", '%').like_this(none, {}, OnDefaultDevice).make_eg();
 
 	// Get the blocking for the domain and the image
 	std::map<char, int> blkd, blki;
@@ -953,12 +952,12 @@ namespace Chroma
 
 	// Create the sparse tensor
 	auto d_sop =
-	  (power == 0
-	     ? d
-	     : d.extend_support({{rd.at('x'), (max_dist_neighbors + real_maxX - 1) / real_maxX},
-				 {rd.at('y'), max_dist_neighbors},
-				 {rd.at('z'), max_dist_neighbors},
-				 {rd.at('t'), max_dist_neighbors}}));
+	  (power == 0 ? i
+		      : i.extend_support({{'x', (max_dist_neighbors + real_maxX - 1) / real_maxX},
+					  {'y', max_dist_neighbors},
+					  {'z', max_dist_neighbors},
+					  {'t', max_dist_neighbors}}))
+	    .rename_dims(rd);
 	SpTensor<NOp, NOp, COMPLEX> sop{
 	  d_sop, i, Nblk, Nblk, (unsigned int)neighbors.size(), coBlk == ColumnMajor};
 

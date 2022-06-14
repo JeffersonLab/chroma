@@ -810,6 +810,9 @@ namespace Chroma
 	    p = local(dim);
 	    isLocal = true;
 	    break;
+	  default:
+	    throw std::runtime_error("TensorPartition: unsupported distribution type");
+	    break;
 	  }
 	}
 
@@ -890,6 +893,41 @@ namespace Chroma
 	      return false;
 
 	  return true;
+	}
+
+	/// Make a partition compatible with a given one
+
+	template <std::size_t N1>
+	TensorPartition<N> make_compatible(const std::string& o0, const TensorPartition<N1>& t,
+			   const std::string& o1, const std::string& labelsToCompare) const
+	{
+	  if (t.p.size() != p.size())
+	    throw std::runtime_error(
+	      "make_compatible: the given partition should have the same number of elemens");
+
+	  if (o0.size() != N || o1.size() != N1)
+	    throw std::runtime_error(
+	      "make_compatible: one the given orders does not match the expected length");
+
+	  typename TensorPartition<N>::PartitionStored r = p;
+	  for (unsigned int i = 0; i < p.size(); ++i)
+	  {
+	    std::map<char, std::array<int, 2>> mfs1;
+	    for (unsigned int j = 0; j < N1; ++j)
+	      if (std::find(labelsToCompare.begin(), labelsToCompare.end(), o1[j]) !=
+		  labelsToCompare.end())
+		mfs1[o1[j]] = {{t.p[i][0][j], t.p[i][1][j]}};
+	    for (unsigned int j = 0; j < N; ++j)
+	    {
+	      if (mfs1.count(o0[j]) == 0)
+		continue;
+	      auto fs1 = mfs1.at(o0[j]);
+	      r[i][0][j] = fs1[0];
+	      r[i][1][j] = fs1[1];
+	    }
+	  }
+
+	  return TensorPartition<N>{dim, r, isLocal};
 	}
 
 	/// Insert a new non-distributed dimension
@@ -1848,7 +1886,7 @@ namespace Chroma
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
-	auto r = t.template like_this<N, Tr>();
+	auto r = t.template make_compatible<N, Tr>();
 	assert(!r.isSubtensor() && !t.isSubtensor());
 	std::size_t vol = t.getLocal().volume();
 	T* tptr = t.data.get();
@@ -1884,7 +1922,7 @@ namespace Chroma
 	using superbblas::detail::operator+;
 
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
-	auto r = t.template like_this<N, Tr>();
+	auto r = t.template make_compatible<N, Tr>();
 	assert(!r.isSubtensor() && !t.isSubtensor());
 	std::size_t vol = t.getLocal().volume();
 	T* tptr = t.data.get();
@@ -2042,6 +2080,41 @@ namespace Chroma
 	return Tensor<N, T>(*this, order, this->from + from, size);
       }
 
+      /// Return a similar tensor keeping the same distribution
+      /// \param new_order: dimension labels of the new tensor
+      /// \param kvsize: override the length of the given dimensions
+      /// \param new_dev: device
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   // Create a new tensor as a collection of three `t` tensors
+      ///   Tensor<3,Complex> q = t.make_compatible<3>("csn", {{'n',3}});
+      ///   // Create a tensor like q but with allocation on host
+      ///   Tensor<3,Complex> v = q.make_compatible(none, {}, OnHost);
+
+      template <std::size_t Nn = N, typename Tn = T>
+      Tensor<Nn, Tn> make_compatible(const Maybe<std::string>& new_order = none,
+				     const std::map<char, int>& kvsize = {},
+				     Maybe<DeviceHost> new_dev = none) const
+      {
+	std::map<char, int> new_kvdim = kvdim();
+	for (const auto& it : kvsize)
+	  new_kvdim[it.first] = it.second;
+	std::string new_order_ = new_order.getSome(order);
+	auto new_dim = kvcoors<Nn>(new_order_, new_kvdim, 0, ThrowOnMissing);
+	std::string same_dim_labels;
+	auto dim_ = kvdim();
+	for (char c : new_order_)
+	  if (dim_.count(c) == 1 && dim_.at(c) == new_kvdim.at(c))
+	    same_dim_labels.push_back(c);
+	return Tensor<Nn, Tn>(new_order_, new_dim, new_dev.getSome(getDev()), dist,
+			      std::make_shared<detail::TensorPartition<Nn>>(
+				detail::TensorPartition<Nn>(new_order_, new_dim, dist)
+				  .make_compatible(new_order_, p->get_subpartition(from, size),
+						   order, same_dim_labels)));
+      }
+
       /// Return a tensor on the same device and following the same distribution
       /// \param new_order: dimension labels of the new tensor
       /// \param kvsize: override the length of the given dimensions
@@ -2065,8 +2138,9 @@ namespace Chroma
 	for (const auto& it : kvsize)
 	  new_kvdim[it.first] = it.second;
 	std::string new_order_ = new_order.getSome(order);
-	return Tensor<Nn, Tn>(new_order_, kvcoors<Nn>(new_order_, new_kvdim, 0, ThrowOnMissing),
-			      new_dev.getSome(getDev()), new_dist.getSome(dist));
+	auto new_dim = kvcoors<Nn>(new_order_, new_kvdim, 0, ThrowOnMissing);
+	return Tensor<Nn, Tn>(new_order_, new_dim, new_dev.getSome(getDev()),
+			      new_dist.getSome(dist));
       }
 
       /// Return a tensor on the same device and following the same distribution
@@ -2090,13 +2164,9 @@ namespace Chroma
 		const std::string& remove_dims = "", const std::map<char, int>& kvsize = {},
 		Maybe<DeviceHost> new_dev = none, Maybe<Distribution> new_dist = none) const
       {
-	std::map<char, int> new_kvdim = kvdim();
-	for (const auto& it : kvsize)
-	  new_kvdim[it.first] = it.second;
-	std::string new_order_ =
-	  detail::remove_dimensions(get_order_for_reorder(new_order, remaining_char), remove_dims);
-	return Tensor<Nn, Tn>(new_order_, kvcoors<Nn>(new_order_, new_kvdim, 0, ThrowOnMissing),
-			      new_dev.getSome(getDev()), new_dist.getSome(dist));
+	return like_this<Nn, Tn>(
+	  detail::remove_dimensions(get_order_for_reorder(new_order, remaining_char), remove_dims),
+	  kvsize, new_dev, new_dist);
       }
 
       /// Return a copy of this tensor, possibly with a new precision `nT`
@@ -2204,7 +2274,7 @@ namespace Chroma
 	std::string new_order1 = get_order_for_reorder(new_order, remaining_char);
 	if (order == new_order1)
 	  return *this;
-	Tensor<N, T> r = like_this(new_order1);
+	Tensor<N, T> r = make_compatible(new_order1);
 	if (is_eg())
 	  r = r.make_eg();
 	else
@@ -3719,12 +3789,12 @@ namespace Chroma
 	std::map<char, int> nonblki;
 	for (unsigned int j = 0; j < NI; ++j)
 	  nonblki[i.order[j]] = i.size[j] / blki[j];
-	ii = i.template like_this<NI, int>(none, nonblki);
+	ii = i.template make_compatible<NI, int>(none, nonblki);
 	ii.set(num_neighbors);
 
 	// Create the tensor containing the domain coordinates of the first nonzero in each block
-	jj = ii.template like_this<NI + 2, int>(
-	  "~u%", '%', "", std::map<char, int>{{'~', (int)ND}, {'u', (int)num_neighbors}});
+	jj = ii.template make_compatible<NI + 2, int>(std::string("~u") + i.order,
+						      {{'~', (int)ND}, {'u', (int)num_neighbors}});
 
 	// Compute the data dimensions as
 	//   image_blocked_dims + domain_dims + u + image_nonblocked_dims, for isImgFastInBlock
@@ -3739,7 +3809,7 @@ namespace Chroma
 				std::string(i.order.begin(), i.order.begin() + nblocki) +
 				std::string(d.order.begin() + nblockd, d.order.end())) +
 	  std::string("u") + std::string(i.order.begin() + nblocki, i.order.end());
-	data = i.template like_this<NI + ND + 1, T>(data_order, data_dims);
+	data = ii.template make_compatible<NI + ND + 1, T>(data_order, data_dims);
 
 	std::string nonblock_img_labels(i.order.begin() + nblocki, i.order.end());
 	if (!ii.isDistributedAs(this->i, nonblock_img_labels) ||
@@ -3844,7 +3914,7 @@ namespace Chroma
 				      isImgFastInBlock};
 
 	ii.split_dimension(img_dim_label, img_new_labels, img_step).copyTo(r.ii);
-	auto new_jj = r.jj.like_this(none, {}, OnHost);
+	auto new_jj = r.jj.make_compatible(none, {}, OnHost);
 	jj.split_dimension(img_dim_label, img_new_labels, img_step)
 	  .copyTo(new_jj.kvslice_from_size({}, {{'~', (int)ND}}));
 	{
