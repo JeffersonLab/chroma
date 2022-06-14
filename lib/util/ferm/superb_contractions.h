@@ -4635,7 +4635,7 @@ namespace Chroma
 	// NOTE: look for the minus sign on left_phase in the doc of this function
 	int Nmom = moms.first.kvdim()['m'];
 	Tensor<Nin + 1, COMPLEX> moms_left =
-	  colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', Nmom}});
+	  this_colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', Nmom}});
 	moms_left.contract(std::move(this_moms), {}, Conjugate,
 			   phaseColorvecs(this_colorvec, first_tslice + tfrom, left_phase),
 			   {}, NotConjugate);
