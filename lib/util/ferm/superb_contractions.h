@@ -536,6 +536,9 @@ namespace Chroma
 	    r[pos + k] = std::min((c[pos] + stride - 1) / stride, new_dim[pos + k]);
 	  stride *= new_dim[pos + k];
 	}
+	if (t == Size && new_dim[pos + Nnew - 1] != std::numeric_limits<int>::max() &&
+	    c[pos] > stride)
+	  throw std::runtime_error("split_dimension: dimension shorter than it should be");
 	std::copy_n(c.begin() + pos + 1, N - pos - 1, r.begin() + pos + Nnew);
 	return r;
       }
@@ -633,6 +636,9 @@ namespace Chroma
 		  r[ri + k] = std::min((idx + stride - 1) / stride, new_dim[ri + k]);
 		stride *= new_dim[ri + k];
 	      }
+	      if (t == Size && new_dim[ri + nsplit[ci] - 1] != std::numeric_limits<int>::max() &&
+		  idx > stride)
+		throw std::runtime_error("reshape_dimension: dimension shorter than it should be");
 	    }
 
 	    ri += nsplit[ci];
@@ -3921,6 +3927,7 @@ namespace Chroma
 	  auto local_new_jj = new_jj.getLocal();
 	  int* p = local_new_jj.data.get();
 	  auto new_dom_dim = detail::insert_coor(d.size, d_pos, dom_step);
+	  new_dom_dim[d_pos + 1] /= dom_step;
 	  for (std::size_t i = 0, i1 = local_new_jj.volume() / (ND + 1); i < i1; ++i)
 	  {
 	    Coor<ND> c;
@@ -4067,6 +4074,80 @@ namespace Chroma
 	  0 /* krylov power dim (none for now) */,
 	  (T**)&w_ptr, //
 	  &*data.ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
+      }
+
+      void print(const std::string& name) const
+      {
+	std::stringstream ss;
+
+	auto ii_host = ii.make_sure(none, OnHost, OnMaster);
+	auto jj_host = jj.make_sure(none, OnHost, OnMaster);
+	auto data_host = data.make_sure(none, OnHost, OnMaster);
+
+	// Only master node prints
+	if (ii_host.getLocal())
+	{
+	  assert(!ii_host.isSubtensor() && !jj_host.isSubtensor() && !data_host.isSubtensor());
+
+	  ss << "% " << repr() << std::endl;
+	  ss << name << "=sparse([";
+
+	  // Print the row indices
+	  std::size_t volblki = superbblas::detail::volume(blki);
+	  std::size_t volblkj = superbblas::detail::volume(blkd);
+	  auto ii_host_ptr = ii_host.data.get();
+	  for (std::size_t i = 0, iivol = ii_host.volume(); i < iivol; ++i)
+	  {
+	    for (unsigned int neighbor = 0, num_neighbors = ii_host_ptr[i];
+		 neighbor < num_neighbors; ++neighbor)
+	    {
+	      if (isImgFastInBlock)
+	      {
+		for (unsigned int bj = 0; bj < volblkj; ++bj)
+		  for (unsigned int bi = 0; bi < volblki; ++bi)
+		    ss << " " << i * volblki + bi + 1;
+	      }
+	      else
+	      {
+		for (unsigned int bi = 0; bi < volblki; ++bi)
+		  for (unsigned int bj = 0; bj < volblkj; ++bj)
+		    ss << " " << i * volblki + bi + 1;
+	      }
+	    }
+	  }
+	  ss << "], [";
+
+	  // Print the column indices
+	  auto jj_host_ptr = jj_host.data.get();
+	  Coor<ND> dstrides = superbblas::detail::get_strides(d.size, superbblas::FastToSlow);
+	  for (std::size_t j = 0, jjvol = jj_host.volume(); j < jjvol; j += ND)
+	  {
+	    Coor<ND> j_coor;
+	    std::copy_n(jj_host_ptr + j, ND, j_coor.begin());
+	    auto j_idx = superbblas::detail::coor2index(j_coor, d.size, dstrides);
+	    if (isImgFastInBlock)
+	    {
+	      for (unsigned int bj = 0; bj < volblkj; ++bj)
+		for (unsigned int bi = 0; bi < volblki; ++bi)
+		  ss << " " << j_idx + bj + 1;
+	    }
+	    else
+	    {
+	      for (unsigned int bi = 0; bi < volblki; ++bi)
+		for (unsigned int bj = 0; bj < volblkj; ++bj)
+		  ss << " " << j_idx + bj + 1;
+	    }
+	  }
+	  ss << "], [";
+
+	  // Print the values
+	  auto data_host_ptr = data_host.data.get();
+	  for (std::size_t i = 0, data_vol = data_host.volume(); i < data_vol; ++i)
+	    detail::repr::operator<<(ss << " ", data_host_ptr[i]);
+	  ss << "]);" << std::endl;
+	}
+
+	detail::log(1, ss.str());
       }
     };
 
