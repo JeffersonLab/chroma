@@ -1089,7 +1089,8 @@ namespace Chroma
 		     .split_dimension(rd['z'], update_order("2z", rd), opdim.at('2'), 'z', "2z",
 				      opdim.at('2'))
 		     .split_dimension(rd['t'], update_order("3t", rd), opdim.at('3'), 't', "3t",
-				      opdim.at('3'));
+				      opdim.at('3'))
+		     .reorder(std::string("%") + update_order("0123xyztX", rd), "%0123xyztX", '%');
 
 	return {sop, rd};
       }

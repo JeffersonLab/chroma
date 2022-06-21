@@ -464,6 +464,19 @@ namespace Chroma
 	return r;
       }
 
+      // Return an array with an order, used by superbblas
+
+      template <std::size_t N>
+      std::array<char, N> to_sb_order(const std::string& order)
+      {
+	if (order.size() != N)
+	  throw std::runtime_error(
+	    "to_sb_order: the given string doesn't match the template parameter");
+	std::array<char, N> c;
+	std::copy_n(order.begin(), N, c.begin());
+	return c;
+      }
+
       /// Return the volume associated to an order
       /// \param m: size of each dimension
       /// \param labels: labels to consider
@@ -2254,7 +2267,6 @@ namespace Chroma
 	  size, T{1}, false /* not conjugate */, true /* is eg */);
       }
 
-    private:
       /// Return the new ordering based on a partial reordering
       /// \param new_order: new dimension labels order
       /// \param remaining_char: if it isn't the null char, placeholder for the dimensions not given
@@ -2294,7 +2306,6 @@ namespace Chroma
 	return new_order1;
       }
 
-    public:
       /// Return a copy of this tensor with the given ordering
       /// \param new_order: new dimension labels order
       /// \param remaining_char: if it isn't the null char, placeholder for the dimensions not given
@@ -3958,6 +3969,14 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "split_dimension: invalid `img_step`, it should divide the block size");
 
+	// Transform the distribution of the domain and the image spaces
+	// NOTE: blocking does not operate well with range intersection in the sense that
+	//       intersection(range_a, range_b) != unblock(intersection(block(range_a), block(range_b))).
+	//       A way to guarantee that is by enforcing that the first coordinate and the size of all ranges are
+	//       divisible by the blocking. That's enforced by `coarse_support`.
+	// FIXME: enforce that all contracted dense tensors with this sparse tensor have divisible partitions by
+	//       the blocking.
+
 	auto new_d = d.coarse_support({{dom_dim_label, dom_step}})
 		       .split_dimension(dom_dim_label, dom_new_labels, dom_step);
 	auto new_i = i.split_dimension(img_dim_label, img_new_labels, img_step);
@@ -4017,50 +4036,56 @@ namespace Chroma
 	if (remaining_char == '~' || remaining_char == 'u')
 	  throw std::runtime_error("reorder: invalid remaining char, it shouldn't be `~` or `u`");
 
-	auto new_d = d.reorder(new_dom_order, remaining_char);
-	auto new_i = i.reorder(new_img_order, remaining_char);
+	std::string new_dom_order0 = d.get_order_for_reorder(new_dom_order, remaining_char);
+	std::string new_img_order0 = i.get_order_for_reorder(new_img_order, remaining_char);
+	auto new_d = d.reorder(new_dom_order0);
+	auto new_i = i.reorder(new_img_order0);
 
-	Coor<ND> d_perm = superbblas::detail::find_permutation(d.order, new_dom_order);
-	Coor<NI> i_perm = superbblas::detail::find_permutation(i.order, new_img_order);
+	Coor<ND> d_perm = superbblas::detail::find_permutation(
+	  detail::to_sb_order<ND>(d.order), detail::to_sb_order<ND>(new_dom_order0));
+	Coor<NI> i_perm = superbblas::detail::find_permutation(
+	  detail::to_sb_order<NI>(i.order), detail::to_sb_order<NI>(new_img_order0));
 	auto new_blkd = superbblas::detail::reorder_coor(blkd, d_perm);
 	auto new_blki = superbblas::detail::reorder_coor(blki, i_perm);
 
 	// Check the blocking
 	for (unsigned int i = 0; i < ND; ++i)
-	  if (i >= nblockd && new_blkd[i] != new_d.size[i])
+	  if ((i < nblockd && new_blkd[i] != new_d.size[i]) || (i >= nblockd && new_blkd[i] != 1))
 	    throw std::runtime_error("reorder: invalid domain reordering, it is mixing blocking "
 				     "and nonblocking dimensions");
 	for (unsigned int i = 0; i < NI; ++i)
-	  if (i >= nblocki && new_blki[i] != new_i.size[i])
+	  if ((i < nblocki && new_blki[i] != new_i.size[i]) || (i >= nblocki && new_blki[i] != 1))
 	    throw std::runtime_error("reorder: invalid image reordering, it is mixing blocking "
 				     "and nonblocking dimensions");
 
-	auto new_ii = ii.reorder(new_img_order, remaining_char);
-	auto new_jj = jj.reorder(std::string("~u") + new_img_order, remaining_char);
+	auto new_ii = ii.reorder(new_img_order0);
+	auto new_jj = jj.reorder(std::string("~u") + new_img_order0);
 	if (new_jj.order != jj.order)
 	{
-	  auto local_new_jj = new_jj.make_sure(none, OnHost).getLocal();
+	  auto host_new_jj = new_jj.make_sure(none, OnHost);
+	  auto local_new_jj = host_new_jj.getLocal();
 	  int* new_p = local_new_jj.data.get();
-	  for (std::size_t i = 0, i1 = local_new_jj.volume() / ND; i < i1; ++i)
+	  for (std::size_t i = 0, i1 = local_new_jj.volume(); i < i1; i+= ND)
 	  {
 	    Coor<ND> c;
-	    std::copy_n(new_p + ND * i, ND, c.begin());
+	    std::copy_n(new_p + i, ND, c.begin());
 	    Coor<ND> new_c = superbblas::detail::reorder_coor(c, d_perm);
-	    std::copy_n(new_c.begin(), new_p + ND * i, ND);
+	    std::copy_n(new_c.begin(), ND, new_p + i);
 	  }
-	  local_new_jj.copyTo(new_jj.getLocal());
+	  host_new_jj.copyTo(new_jj);
 	}
 
 	std::string data_order =
-	  (isImgFastInBlock ? std::string(i.order.begin(), i.order.begin() + nblocki) + d.order
-			    : std::string(d.order.begin(), d.order.begin() + nblockd) +
-				std::string(i.order.begin(), i.order.begin() + nblocki) +
-				std::string(d.order.begin() + nblockd, d.order.end())) +
-	  std::string("u") + std::string(i.order.begin() + nblocki, i.order.end());
+	  (isImgFastInBlock
+	     ? std::string(new_i.order.begin(), new_i.order.begin() + nblocki) + new_d.order
+	     : std::string(new_d.order.begin(), new_d.order.begin() + nblockd) +
+		 std::string(new_i.order.begin(), new_i.order.begin() + nblocki) +
+		 std::string(new_d.order.begin() + nblockd, new_d.order.end())) +
+	  std::string("u") + std::string(new_i.order.begin() + nblocki, new_i.order.end());
 	auto new_data = data.reorder(data_order);
 
-	SpTensor<ND + 1, NI + 1, T> r(new_d, new_i, new_blkd, new_blki, new_ii, new_jj, new_data,
-				      scalar, isImgFastInBlock, nblockd, nblocki);
+	SpTensor<ND, NI, T> r(new_d, new_i, new_blkd, new_blki, new_ii, new_jj, new_data, scalar,
+			      isImgFastInBlock, nblockd, nblocki);
 	if (is_constructed())
 	  r.construct();
 
