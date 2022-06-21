@@ -512,6 +512,22 @@ namespace Chroma
 	return true;
       }
 
+      /// Coarse a range given a blocking
+      /// \param fs: range to block
+      /// \param blocking: blocking on each coordinate
+
+      template <std::size_t N>
+      std::array<Coor<N>, 2> coarse_range(const std::array<Coor<N>, 2>& fs, const Coor<N>& blocking)
+      {
+	std::array<Coor<N>,2> r;
+	for (unsigned int i = 0; i < N; ++i)
+	{
+	  r[0][i] = fs[0][i] / blocking[i] * blocking[i];
+	  r[1][i] = (fs[0][i] + fs[1][i] + blocking[i] - 1) / blocking[i] * blocking[i] - r[0][i];
+	}
+	return r;
+      }
+
       /// Split a dimension into another dimensions
       /// \param pos: dimension to split
       /// \param c: coordinate to transform
@@ -971,6 +987,18 @@ namespace Chroma
 	  return TensorPartition<Nout>{detail::split_dimension(pos, dim, new_dim, Size), r,
 				       isLocal};
 	}
+
+        /// Coarse the ranges on each process
+
+        template <typename std::enable_if<(N > 0), bool>::type = true>
+        TensorPartition<N> coarse_support(const Coor<N>& blocking) const
+        {
+          typename TensorPartition<N>::PartitionStored r;
+          r.reserve(p.size());
+          for (const auto& i : p)
+            r.push_back(detail::coarse_range(i, blocking));
+          return TensorPartition<N>{dim, r, isLocal};
+        }
 
 	/// Collapse several dimensions into another dimension
 
@@ -2613,6 +2641,35 @@ namespace Chroma
 	  conjugate, eg);
       }
 
+      /// Coarse the support range of the tensor on each process
+      /// \param blocking: blocking for each dimension
+
+      template <typename std::enable_if<(N > 0), bool>::type = true>
+      Tensor<N, T> coarse_support(const std::map<char, int>& blocking) const
+      {
+	// Get the blocking and check that it divides each diension
+	auto c_blk = kvcoors<N>(order, blocking, 1);
+	for (std::size_t i = 0; i < N; ++i)
+	  if (dim[i] % c_blk[i] != 0)
+	    throw std::runtime_error(
+	      "coarse_support: the given blocking isn't dividing the tensor dimensions");
+
+	// Transform the partition
+	auto new_p = std::make_shared<detail::TensorPartition<N>>(p->coarse_support(c_blk));
+
+	// Create output tensor
+	Tensor<N, T> r(order, dim, getDev(), dist, new_p);
+	r.from = from;
+	r.size = size;
+	r.conjugate = conjugate;
+
+	// Return it	
+	if (is_eg())
+	  return r.make_eg();
+	copyTo(r);
+	return r;
+      }
+
       /// Copy/add this tensor into the given one
       /// NOTE: if this tensor or the given tensor is fake real, force both to be fake real
 
@@ -3901,7 +3958,8 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "split_dimension: invalid `img_step`, it should divide the block size");
 
-	auto new_d = d.split_dimension(dom_dim_label, dom_new_labels, dom_step);
+	auto new_d = d.coarse_support({{dom_dim_label, dom_step}})
+		       .split_dimension(dom_dim_label, dom_new_labels, dom_step);
 	auto new_i = i.split_dimension(img_dim_label, img_new_labels, img_step);
 
 	int new_blkd_pos = blkd[d_pos] == 1 ? 1 : dom_step;
