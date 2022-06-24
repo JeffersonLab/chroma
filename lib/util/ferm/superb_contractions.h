@@ -2652,6 +2652,17 @@ namespace Chroma
 	  conjugate, eg);
       }
 
+      /// Append a dimension with size one
+      /// \param new_label: label for the new dimension
+
+      template <typename std::enable_if<(N > 0), bool>::type = true>
+      Tensor<N + 1, T> append_dimension(char new_label) const
+      {
+	std::string last_label{order.back()};
+	return reshape_dimensions({{last_label, last_label + std::string(new_label)}},
+				  {{new_label, 1}}, false);
+      }
+
       /// Coarse the support range of the tensor on each process
       /// \param blocking: blocking for each dimension
 
@@ -2674,7 +2685,7 @@ namespace Chroma
 	r.size = size;
 	r.conjugate = conjugate;
 
-	// Return it	
+	// Return it
 	if (is_eg())
 	  return r.make_eg();
 	copyTo(r);
@@ -4092,6 +4103,38 @@ namespace Chroma
 	return r;
       }
 
+      /// Extend the support of each dimension by the given amount in each direction
+      /// \param m: amount to extend the support for each process
+
+      SpTensor<ND, NI, T> extend_support(const std::map<char, int>& m) const
+      {
+	std::map<char, int> md, mi;
+	for (const auto& it : m)
+	{
+	  if (detail::is_in(d.order, it.first))
+	    md[it.first] = it.second;
+	  else if (detail::is_in(i.order, it.first))
+	    mi[it.first] = it.second;
+	  else
+	    throw std::runtime_error("extend_support: unmatched label");
+	}
+	auto new_d = d.extend_support(md);
+	auto new_i = i.extend_support(mi);
+
+	// Create the returning tensor
+	SpTensor<ND, NI, T> r{
+	  new_d, new_i, nblockd, nblocki, (unsigned int)jj.kvdim().at('u'), isImgFastInBlock};
+
+	// Populate the new tensor
+	ii.copyTo(r.ii);
+	jj.copyTo(r.jj);
+	data.copyTo(r.data);
+
+	if (is_constructed())
+	  r.construct();
+
+	return r;
+      }
 
       /// Return whether the sparse tensor has been constructed
 
@@ -4109,8 +4152,8 @@ namespace Chroma
 
       // Contract the dimensions with the same label in this tensor and in `v` than do not appear on `w`.
       template <std::size_t Nv, std::size_t Nw>
-      void contractWith(Tensor<Nv, T> v, const remap& mv, Tensor<Nw, T> w,
-			const remap& mw = {}) const
+      void contractWith(Tensor<Nv, T> v, const remap& mv, Tensor<Nw, T> w, const remap& mw = {},
+			char power_label = 0) const
       {
 	if (data.is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
@@ -4127,7 +4170,7 @@ namespace Chroma
 	if (getDev() != w.getDev())
 	{
 	  Tensor<Nw, T> aux = w.like_this(none, {}, getDev());
-	  contractWith(v, mv, aux, mw);
+	  contractWith(v, mv, aux, mw, power_label);
 	  aux.copyTo(w);
 	  return;
 	}
@@ -4146,6 +4189,13 @@ namespace Chroma
 	if (v.conjugate || w.conjugate)
 	  throw std::runtime_error("contractWith: unsupported implicit conjugacy");
 
+	// Check the power label
+	if (power_label != 0 && detail::is_in(v.order, power_label) &&
+	    v.kvdim().at(power_label) > 1)
+	  throw std::runtime_error("contractWith: `power_label` for `v` does not have size one");
+	if (power_label != 0 && !detail::is_in(w.order, power_label))
+	  throw std::runtime_error("contractWidth: `power_label` isn't in `w`");
+
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
 	std::string orderv = detail::update_order_and_check<Nv>(v.order, mv);
@@ -4153,8 +4203,7 @@ namespace Chroma
 	superbblas::bsr_krylov<ND, NI, Nv, Nw, T>(
 	  scalar * v.scalar / w.scalar, handle.get(), i.order.c_str(), d.order.c_str(), //
 	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const T**)&v_ptr,	//
-	  w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim,
-	  0 /* krylov power dim (none for now) */,
+	  w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim, power_label,
 	  (T**)&w_ptr, //
 	  &*data.ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
       }

@@ -81,6 +81,13 @@ namespace Chroma
     using OperatorFun =
       std::function<void(const Tensor<NOp + 1, COMPLEX>&, Tensor<NOp + 1, COMPLEX>)>;
 
+    /// Representation of an operator, function of type tensor -> tensor where the output tensor
+    /// has powers of the operator applied to the input tensor
+
+    template <std::size_t NOp, typename COMPLEX>
+    using OperatorPowerFun =
+      std::function<void(const Tensor<NOp + 2, COMPLEX>&, Tensor<NOp + 2, COMPLEX>, char)>;
+
     /// Representation of an operator together with a map to convert from domain labels (columns) to
     /// image labels (rows)
 
@@ -104,6 +111,8 @@ namespace Chroma
       NaturalNeighbors neighbors;
       /// Preferred ordering
       ColOrdering preferred_col_ordering;
+      /// Alternative function that the operators applies when asking for power
+      OperatorPowerFun<NOp, COMPLEX> power_fop;
 
       /// Empty constructor
       Operator()
@@ -123,7 +132,26 @@ namespace Chroma
 	  domLayout(domLayout),
 	  imgLayout(imgLayout),
 	  neighbors(neighbors),
-	  preferred_col_ordering(preferred_col_ordering)
+	  preferred_col_ordering(preferred_col_ordering),
+	  power_fop{}
+      {
+      }
+
+      /// Constructor for a power-supported function
+      Operator(const OperatorPowerFun<NOp, COMPLEX>& power_fop, Tensor<NOp, COMPLEX> d,
+	       Tensor<NOp, COMPLEX> i, const std::string& order_t, OperatorLayout domLayout,
+	       OperatorLayout imgLayout, NaturalNeighbors neighbors,
+	       ColOrdering preferred_col_ordering)
+	: fop{},
+	  d(d),
+	  i(i),
+	  fop_tconj{},
+	  order_t(order_t),
+	  domLayout(domLayout),
+	  imgLayout(imgLayout),
+	  neighbors(neighbors),
+	  preferred_col_ordering(preferred_col_ordering),
+	  power_fop{power_fop}
       {
       }
 
@@ -138,14 +166,15 @@ namespace Chroma
 	  domLayout(op.domLayout),
 	  imgLayout(op.imgLayout),
 	  neighbors(op.neighbors),
-	  preferred_col_ordering(op.preferred_col_ordering)
+	  preferred_col_ordering(op.preferred_col_ordering),
+	  power_fop()
       {
       }
 
       /// Return the transpose conjugate of the operator
       Operator<NOp, COMPLEX> tconj() const
       {
-	if (!fop_tconj)
+	if (power_fop || !fop_tconj)
 	  throw std::runtime_error("Operator does not have conjugate transpose form");
 	return {
 	  fop_tconj, i, d, fop, order_t, imgLayout, domLayout, neighbors, preferred_col_ordering};
@@ -156,30 +185,75 @@ namespace Chroma
       Tensor<N, T> operator()(const Tensor<N, T>& t) const
       {
 	// The `t` labels that are not in `d` are the column labels
-	std::string cols = detail::union_dimensions(t.order, "", d.order); // t.order - d.order
+	std::string cols = detail::remove_dimensions(t.order, d.order); // t.order - d.order
 
-	auto x =
-	  t.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
-	auto y = i.template like_this<NOp + 1>(preferred_col_ordering == ColumnMajor ? "%n" : "n%",
-					       '%', "", {{'n', x.kvdim()['n']}});
-	fop(x, y);
-	return y.template split_dimension<N>('n', cols, t.kvdim()).template make_sure<T>();
+	if (power_fop)
+	{
+	  auto x = t.template reshape_dimensions<NOp + 2>({{cols, "^n"}}, {{'^', 1}})
+		     .template make_sure<COMPLEX>();
+	  auto y =
+	    i.template like_this<NOp + 2>(preferred_col_ordering == ColumnMajor ? "%n^" : "n^%",
+					  '%', "", {{'n', x.kvdim()['n']}, {'^', 1}});
+	  power_fop(x, y, 0);
+	  return y.template reshape_dimensions<N>({{"n^", cols}}, t.kvdim(), false)
+	    .template make_sure<T>();
+	}
+	else
+	{
+	  auto x =
+	    t.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
+	  auto y = i.template like_this<NOp + 1>(
+	    preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "", {{'n', x.kvdim()['n']}});
+	  fop(x, y);
+	  return y.template split_dimension<N>('n', cols, t.kvdim()).template make_sure<T>();
+	}
       }
 
       /// Apply the operator
       template <std::size_t N, typename T>
-      void operator()(const Tensor<N, T>& x, Tensor<N, T> y) const
+      void operator()(const Tensor<N, T>& x, Tensor<N, T> y, char power_label = 0) const
       {
-	// The `t` labels that are not in `d` are the column labels
-	std::string cols = detail::union_dimensions(x.order, "", d.order); // t.order - d.order
+	// The `x` labels that are not in `d` are the column labels
+	std::string cols = detail::remove_dimensions(x.order, d.order); // x.order - d.order
+	if (power_label != 0)
+	  cols = detail::remove_dimensions(cols, std::string(1, power_label));
 
-	auto x0 =
-	  x.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
-	auto y0 =
-	  y.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
-	fop(x0, y0);
-	if (y.data != y0.data)
-	  y0.copyTo(y);
+	if (power_fop)
+	{
+	  if (power_label == 0)
+	  {
+	    auto x0 = x.template reshape_dimensions<NOp + 2>({{cols, "^n"}}, {{'^', 1}}, true)
+			.template make_sure<COMPLEX>();
+	    auto y0 = y.template reshape_dimensions<NOp + 2>({{cols, "^n"}}, {{'^', 1}}, true)
+			.template make_sure<COMPLEX>();
+	    power_fop(x0, y0, 0);
+	    if (y.data != y0.data)
+	      y0.copyTo(y);
+	  }
+	  else
+	  {
+	    auto x0 = x.template collapse_dimensions<NOp + 2>(cols, 'n', true)
+			.template make_sure<COMPLEX>();
+	    auto y0 = y.template collapse_dimensions<NOp + 2>(cols, 'n', true)
+			.template make_sure<COMPLEX>();
+	    power_fop(x0, y0, power_label);
+	    if (y.data != y0.data)
+	      y0.copyTo(y);
+	  }
+	}
+	else
+	{
+	  if (power_label != 0)
+	    std::runtime_error(
+	      "operator(): invalid operator, computing powers on a non-square operator");
+	  auto x0 =
+	    x.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
+	  auto y0 =
+	    y.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
+	  fop(x0, y0);
+	  if (y.data != y0.data)
+	    y0.copyTo(y);
+	}
       }
     };
 
@@ -444,22 +518,30 @@ namespace Chroma
 	r.copyTo(U.kvslice_from_size({}, {{Vc, 1}}));
 
 	// Expand the search subspace from residual
-	for (unsigned int i = 0; i < max_basis_size; ++i)
+	if (prec.hasSome())
 	{
-	  // Z(:,i) = prec * U(:,i)
-	  if (prec.hasSome())
+	  for (unsigned int i = 0; i < max_basis_size; ++i)
 	  {
+	    // Z(:,i) = prec * U(:,i)
 	    prec.getSome()(U.kvslice_from_size({{Vc, i}}, {{Vc, 1}}),
 			   Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}));
 	    nprecs += num_cols;
+
+	    // U(:,i+1) = op * Z(:,i)
+	    op(Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}),
+	       U.kvslice_from_size({{Vc, i + 1}}, {{Vc, 1}}));
+	    nops += num_cols;
+
+	    ++it;
 	  }
-
-	  // U(:,i+1) = op * Z(:,i)
-	  op(Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}),
-	     U.kvslice_from_size({{Vc, i + 1}}, {{Vc, 1}}));
-	  nops += num_cols;
-
-	  ++it;
+	}
+	else
+	{
+	  // U(:,i+1) = op * U(:,i) for i=0..max_basis_size-1
+	  op(U.kvslice_from_size({}, {{Vc, 1}}),
+	     U.kvslice_from_size({{Vc, 1}}, {{Vc, max_basis_size}}), Vc);
+	  nops += num_cols * max_basis_size;
+	  it += max_basis_size;
 	}
 
 	// Orthogonalize U and put it into W: W = orth(U(:,2:end))
@@ -535,7 +617,7 @@ namespace Chroma
 	for (int i = 0, vol = normr.volume(); i < vol; ++i)
 	  max_tol = std::max(max_tol, normr.get({{i}}) / normr0.get({{i}}));
 	if (tol > 0 && max_tol > tol)
-	  throw std::runtime_error("fmgres didn't converged and you ask for checking the error");
+	  throw std::runtime_error("fgmres didn't converged and you ask for checking the error");
       }
 
       // Report iteration
@@ -1049,7 +1131,7 @@ namespace Chroma
 
       template <std::size_t NOp, typename COMPLEX>
       std::pair<SpTensor<NOp, NOp, COMPLEX>, remap>
-      cloneOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power = 1,
+      cloneOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power,
 			      ColOrdering coBlk = RowMajor)
       {
 	// Unblock the given operator, the code of `cloneUnblockedOperatorToSpTensor` is too complex as it is
@@ -1076,12 +1158,21 @@ namespace Chroma
 	  coBlk};
 
 	// Get a sparse tensor representation of the operator
-	auto t = cloneUnblockedOperatorToSpTensor(unblocked_op, power, coBlk);
+	unsigned int op_dist = getFurthestNeighborDistance(op);
+	if (power % op_dist != 0)
+	  throw std::runtime_error("cloneOperatorToSpTensor: invalid power value, it isn't "
+				   "divisible by the furthest neighbor distance");
+	auto opdims = op.i.kvdim();
+	auto t = cloneUnblockedOperatorToSpTensor(unblocked_op, std::min(power, op_dist), coBlk);
 	remap rd = t.second;
 	for (const auto& it :
 	     detail::getNewLabels("0123", op.d.order + op.i.order + "0123" + t.first.d.order))
 	  rd[it.first] = it.second;
-	auto sop = t.first
+	int max_op_power = std::max(power / op_dist, 1u) - 1u;
+	std::map<char,int> m_power{};
+	for (char c : std::string("xyzt") + update_order("xyzt", rd))
+	  m_power[c] = max_op_power;
+	auto sop = t.first.extend_support(m_power)
 		     .split_dimension(rd['x'], update_order("0x", rd), opdim.at('0'), 'x', "0x",
 				      opdim.at('0'))
 		     .split_dimension(rd['y'], update_order("1y", rd), opdim.at('1'), 'y', "1y",
@@ -1111,21 +1202,50 @@ namespace Chroma
 	  return op;
 
 	// Get a sparse tensor representation of the operator
+	unsigned int op_dist = getFurthestNeighborDistance(op);
+	if (power % op_dist != 0)
+	  throw std::runtime_error("cloneOperator: invalid power value");
+	unsigned int max_power = std::max(power / op_dist, 1u);
 	auto t = cloneOperatorToSpTensor(op, power, coBlk);
 	auto sop = t.first;
 	remap rd = t.second;
 
 	// Construct the operator to return
-	Operator<NOp, COMPLEX> rop{[=](const Tensor<NOp + 1, COMPLEX>& x,
-				       Tensor<NOp + 1, COMPLEX> y) { sop.contractWith(x, rd, y); },
-				   sop.i,
-				   sop.i,
-				   nullptr,
-				   op.order_t,
-				   op.domLayout,
-				   op.imgLayout,
-				   op.neighbors,
-				   co};
+	Operator<NOp, COMPLEX> rop{
+	  [=](const Tensor<NOp + 2, COMPLEX>& x, Tensor<NOp + 2, COMPLEX> y, char power_label) {
+	    std::string cols = detail::remove_dimensions(x.order, sop.i.order);
+	    remap mcols = detail::getNewLabels(cols, sop.d.order + sop.i.order);
+	    auto x0 = x.rename_dims(mcols);
+	    auto y0 = y.rename_dims(mcols);
+
+	    if (power_label == 0)
+	    {
+	      sop.contractWith(x0, rd, y0, {});
+	    }
+	    else
+	    {
+	      unsigned int num_powers = (unsigned int)y.kvdim().at(power_label);
+	      char power_label0 =
+		mcols.count(power_label) == 1 ? mcols.at(power_label) : power_label;
+	      sop.contractWith(
+		x0, rd, y0.kvslice_from_size({}, {{power_label0, std::min(num_powers, max_power)}}),
+		{}, power_label0);
+	      for (unsigned int i = std::min(num_powers, max_power),
+		       ni = std::min(max_power, num_powers - i);
+		   i < num_powers; i += ni, ni = std::min(max_power, num_powers - i))
+		sop.contractWith(
+		  y0.kvslice_from_size({{power_label0, (int)i - 1}}, {{power_label0, 1}}), rd,
+		  y0.kvslice_from_size({{power_label0, (int)i}}, {{power_label0, (int)ni}}), {},
+		  power_label0);
+	    }
+	  },
+	  sop.i,
+	  sop.i,
+	  op.order_t,
+	  op.domLayout,
+	  op.imgLayout,
+	  op.neighbors,
+	  co};
 
 	// Do a test
 	for (const auto& test_order : std::vector<std::string>{"%n", "n%"})
@@ -1151,6 +1271,40 @@ namespace Chroma
 	      for (int i = 0; i < base_norm0.volume(); ++i)
 		if (error.get({{i}}) > eps * base_norm0.get({{i}}))
 		  throw std::runtime_error("cloneOperator: too much error on the cloned operator");
+	    }
+	  }
+	}
+
+	// Test for powers
+	for (const auto& test_order : std::vector<std::string>{"%n^", "n%^"})
+	{
+	  const int max_power = 3;
+	  auto x = op.d.template like_this<NOp + 2>(test_order, '%', "", {{'n', 2}, {'^', 1}});
+	  auto y_op =
+	    op.d.template like_this<NOp + 2>(test_order, '%', "", {{'n', 2}, {'^', max_power}});
+	  urand(x, -1, 1);
+	  op(x).copyTo(y_op.kvslice_from_size({}, {{'^', 1}}));
+	  for (unsigned int i = 1; i < max_power; ++i)
+	    op(y_op.kvslice_from_size({{'^', i - 1}}, {{'^', 1}}))
+	      .copyTo(y_op.kvslice_from_size({{'^', i}}, {{'^', 1}}));
+	  auto y_rop = y_op.like_this();
+	  for (int nfrom = 0; nfrom < 2; ++nfrom)
+	  {
+	    for (int nsize = 1; nsize <= 2; ++nsize)
+	    {
+	      y_rop.set(detail::NaN<COMPLEX>::get());
+	      auto x0 = x.kvslice_from_size({{'n', nfrom}, {'n', nsize}});
+	      auto y_op0 = y_op.kvslice_from_size({{'n', nfrom}, {'n', nsize}});
+	      auto y_rop0 = y_rop.kvslice_from_size({{'n', nfrom}, {'n', nsize}});
+	      auto base_norm0 = norm<2>(y_op0, "n^").template collapse_dimensions<1>("n^", 'n');
+	      rop(x0, y_rop0, '^'); // y_rop0 = {rop(x0), rop(rop(x0)), ...}
+	      y_op0.scale(-1).addTo(y_rop0);
+	      auto error = norm<2>(y_rop0, "n^").template collapse_dimensions<1>("n^", 'n');
+	      auto eps =
+		std::sqrt(std::numeric_limits<typename real_type<COMPLEX>::type>::epsilon());
+	      for (int i = 0; i < base_norm0.volume(); ++i)
+		if (error.get({{i}}) > eps * base_norm0.get({{i}}))
+		  throw std::runtime_error("cloneOperator: too much error on the cloned operator for the power");
 	    }
 	  }
 	}
@@ -1603,6 +1757,7 @@ namespace Chroma
 						op.preferred_col_ordering);
 	ColOrdering co_blk =
 	  getOption<ColOrdering>(ops, "operator_block_ordering", getColOrderingMap(), RowMajor);
+	unsigned int power = getOption<unsigned int>(ops, "power", 1);
 
 	int nX = (dim.count('X') == 0 ? 1 : dim.at('X'));
 	auto blkd = op.d
@@ -1626,7 +1781,7 @@ namespace Chroma
 		.copyTo(y);
 	    },
 	    blkd, blkd, nullptr, op},
-	  co, co_blk);
+	  getFurthestNeighborDistance(op) * power, co, co_blk);
 
 	auto solverOps = getOptionsMaybe(ops, "solver");
 	const Operator<NOp, COMPLEX> solver =
@@ -1639,7 +1794,7 @@ namespace Chroma
 		      {{"0x", "0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, dim, true)
 		    .copyTo(y);
 		},
-		op.d, op.d, nullptr, op};
+		sop.d, sop.d, nullptr, sop};
       }
 
       // Auxiliary structure passed to PRIMME's matvec
