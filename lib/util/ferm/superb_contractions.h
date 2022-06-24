@@ -2659,7 +2659,7 @@ namespace Chroma
       Tensor<N + 1, T> append_dimension(char new_label) const
       {
 	std::string last_label{order.back()};
-	return reshape_dimensions({{last_label, last_label + std::string(new_label)}},
+	return reshape_dimensions({{last_label, last_label + std::string(1, new_label)}},
 				  {{new_label, 1}}, false);
       }
 
