@@ -1794,7 +1794,7 @@ namespace Chroma
 		      {{"0x", "0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, dim, true)
 		    .copyTo(y);
 		},
-		sop.d, sop.d, nullptr, sop};
+		solverOps.hasSome() ? op.i : op.d, solverOps.hasSome() ? op.d : op.i, nullptr, sop};
       }
 
       // Auxiliary structure passed to PRIMME's matvec
