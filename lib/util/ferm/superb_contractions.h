@@ -960,6 +960,8 @@ namespace Chroma
 	      r[i][0][j] = fs1[0];
 	      r[i][1][j] = fs1[1];
 	    }
+	    if (superbblas::detail::volume(r[i][1]) == 0)
+	      r[i] = std::array<Coor<N>, 2>{Coor<N>{{}}, Coor<N>{{}}};
 	  }
 
 	  return TensorPartition<N>{dim, r, isLocal};
@@ -1076,7 +1078,9 @@ namespace Chroma
 	  {
 	    Coor<N> lfrom, lsize;
 	    superbblas::detail::intersection(i[0], i[1], from, size, dim, lfrom, lsize);
-	    r.push_back({lfrom, lsize});
+	    r.push_back(superbblas::detail::volume(lsize) == 0
+			  ? std::array<Coor<N>, 2>{Coor<N>{{}}, Coor<N>{{}}}
+			  : std::array<Coor<N>, 2>{normalize_coor(lfrom - from, size), lsize});
 	  }
 	  return TensorPartition<N>{size, r, isLocal};
 	}
@@ -1118,6 +1122,9 @@ namespace Chroma
 	      msize[ordert[i]] = t.p[pi][1][i];
 	    for (std::size_t i = 0; i < N; ++i)
 	      r[pi][1][i] = msize[order[i]];
+
+	    if (superbblas::detail::volume(r[pi][1]) == 0)
+	      r[pi] = std::array<Coor<N>, 2>{Coor<N>{{}}, Coor<N>{{}}};
 	  }
 	  return TensorPartition<N>{dim, r, isLocal};
 	}
@@ -1219,6 +1226,10 @@ namespace Chroma
 		break;
 	      }
 	    }
+
+	    // Normalize
+	    if (superbblas::detail::volume(fs[rank][1]) == 0)
+	      fs[rank] = std::array<Coor<N>, 2>{Coor<N>{{}}, Coor<N>{{}}};
 	  }
 	  return fs;
 	}
@@ -3184,7 +3195,9 @@ namespace Chroma
 	if (new_order.getSome(order) != order ||
 	    !detail::is_same(new_dev.getSome(getDev()), getDev()) || new_dist.getSome(dist) != dist)
 	{
-	  Tensor<N, Tn> r = like_this(new_order, {}, new_dev, new_dist);
+	  Tensor<N, Tn> r = new_dist.getSome(dist) != dist
+			      ? like_this(new_order, {}, new_dev, new_dist)
+			      : make_compatible(new_order, {}, new_dev);
 	  if (is_eg())
 	  {
 	    r = r.make_eg();
@@ -5219,6 +5232,7 @@ namespace Chroma
 	    ut[d] = asTensorView(u[d])
 		      .kvslice_from_size({{'t', from_tslice + t}}, {{'t', 1}})
 		      .toComplex()
+		      .clone()
 		      .template make_sure<ComplexD>("ijxyztX");
 	  }
 
