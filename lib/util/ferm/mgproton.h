@@ -113,6 +113,8 @@ namespace Chroma
       ColOrdering preferred_col_ordering;
       /// Alternative function that the operators applies when asking for power
       OperatorPowerFun<NOp, COMPLEX> power_fop;
+      /// Identity
+      std::shared_ptr<std::string> id;
 
       /// Empty constructor
       Operator()
@@ -123,7 +125,7 @@ namespace Chroma
       Operator(const OperatorFun<NOp, COMPLEX>& fop, Tensor<NOp, COMPLEX> d, Tensor<NOp, COMPLEX> i,
 	       const OperatorFun<NOp, COMPLEX>& fop_tconj, const std::string& order_t,
 	       OperatorLayout domLayout, OperatorLayout imgLayout, NaturalNeighbors neighbors,
-	       ColOrdering preferred_col_ordering)
+	       ColOrdering preferred_col_ordering, const std::string& id = "")
 	: fop(fop),
 	  d(d),
 	  i(i),
@@ -133,7 +135,8 @@ namespace Chroma
 	  imgLayout(imgLayout),
 	  neighbors(neighbors),
 	  preferred_col_ordering(preferred_col_ordering),
-	  power_fop{}
+	  power_fop{},
+	  id(std::make_shared<std::string>(id))
       {
       }
 
@@ -141,7 +144,7 @@ namespace Chroma
       Operator(const OperatorPowerFun<NOp, COMPLEX>& power_fop, Tensor<NOp, COMPLEX> d,
 	       Tensor<NOp, COMPLEX> i, const std::string& order_t, OperatorLayout domLayout,
 	       OperatorLayout imgLayout, NaturalNeighbors neighbors,
-	       ColOrdering preferred_col_ordering)
+	       ColOrdering preferred_col_ordering, const std::string& id = "")
 	: fop{},
 	  d(d),
 	  i(i),
@@ -151,13 +154,14 @@ namespace Chroma
 	  imgLayout(imgLayout),
 	  neighbors(neighbors),
 	  preferred_col_ordering(preferred_col_ordering),
-	  power_fop{power_fop}
+	  power_fop{power_fop},
+	  id(std::make_shared<std::string>(id))
       {
       }
 
       /// Constructor from other operator
       Operator(const OperatorFun<NOp, COMPLEX>& fop, Tensor<NOp, COMPLEX> d, Tensor<NOp, COMPLEX> i,
-	       const OperatorFun<NOp, COMPLEX>& fop_tconj, const Operator<NOp, COMPLEX>& op)
+	       const OperatorFun<NOp, COMPLEX>& fop_tconj, const Operator<NOp, COMPLEX>& op, const std::string& id = "")
 	: fop(fop),
 	  d(d),
 	  i(i),
@@ -167,8 +171,15 @@ namespace Chroma
 	  imgLayout(op.imgLayout),
 	  neighbors(op.neighbors),
 	  preferred_col_ordering(op.preferred_col_ordering),
-	  power_fop()
+	  power_fop(),
+	  id(std::make_shared<std::string>(id))
       {
+      }
+
+      /// Return whether the operator is not empty
+      explicit operator bool() const noexcept
+      {
+	return (bool)d;
       }
 
       /// Return the transpose conjugate of the operator
@@ -214,9 +225,10 @@ namespace Chroma
       void operator()(const Tensor<N, T>& x, Tensor<N, T> y, char power_label = 0) const
       {
 	// The `x` labels that are not in `d` are the column labels
-	std::string cols = detail::remove_dimensions(x.order, d.order); // x.order - d.order
-	if (power_label != 0)
-	  cols = detail::remove_dimensions(cols, std::string(1, power_label));
+	std::string cols_and_power = detail::remove_dimensions(x.order, d.order); // x.order - d.order
+	std::string cols =
+	  power_label == 0 ? cols_and_power
+			   : detail::remove_dimensions(cols_and_power, std::string(1, power_label));
 
 	if (power_fop)
 	{
@@ -243,16 +255,24 @@ namespace Chroma
 	}
 	else
 	{
-	  if (power_label != 0)
-	    std::runtime_error(
-	      "operator(): invalid operator, computing powers on a non-square operator");
-	  auto x0 =
-	    x.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
-	  auto y0 =
-	    y.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
-	  fop(x0, y0);
-	  if (y.data != y0.data)
-	    y0.copyTo(y);
+	  if (power_label == 0)
+	  {
+	    auto x0 = x.template collapse_dimensions<NOp + 1>(cols_and_power, 'n', true)
+			.template make_sure<COMPLEX>();
+	    auto y0 = y.template collapse_dimensions<NOp + 1>(cols_and_power, 'n', true)
+			.template make_sure<COMPLEX>();
+	    fop(x0, y0);
+	    if (y.data != y0.data)
+	      y0.copyTo(y);
+	  }
+	  else if (y.kvdim().at(power_label) > 0)
+	  {
+	    operator()(x.kvslice_from_size({}, {{power_label, 1}}),
+		       y.kvslice_from_size({}, {{power_label, 1}}));
+	    for (int i = 1, p = y.kvdim().at(power_label); i < p; ++i)
+	      operator()(y.kvslice_from_size({{power_label, i - 1}}, {{power_label, 1}}),
+			 y.kvslice_from_size({{power_label, i}}, {{power_label, 1}}));
+	  }
 	}
       }
     };
@@ -462,6 +482,12 @@ namespace Chroma
       if (max_its == 0)
 	max_its = std::numeric_limits<unsigned int>::max();
 
+      // Check that the operator and the preconditioner are compatible with the input and output vectors
+      if (!op.d.is_compatible(x) || !op.d.is_compatible(y) ||
+	  (prec && !prec.getSome().d.is_compatible(op.d)))
+	throw std::runtime_error("Either the input or the output vector isn't compatible with the "
+				 "operator or de the preconditioner");
+
       // Get an unused label for the search subspace columns
       char Vc = detail::get_free_label(x.order);
       char Vac = detail::get_free_label(x.order + std::string(1, Vc));
@@ -628,14 +654,15 @@ namespace Chroma
     }
 
     template <std::size_t NOp, typename COMPLEX>
-    Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops);
+    Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
+				     const Operator<NOp, COMPLEX>& prec = Operator<NOp, COMPLEX>());
 
     namespace detail
     {
       /// Function that gets an operator and options and returns an operator that approximates the inverse
       template <std::size_t NOp, typename COMPLEX>
-      using Solver =
-	std::function<Operator<NOp, COMPLEX>(const Operator<NOp, COMPLEX>& op, const Options& ops)>;
+      using Solver = std::function<Operator<NOp, COMPLEX>(
+	const Operator<NOp, COMPLEX>& op, const Options& ops, const Operator<NOp, COMPLEX>& prec)>;
 
       /// Returns an approximate inverse operator given an operator, options, and a list of solvers
       /// \param solvers: map of solvers
@@ -643,8 +670,10 @@ namespace Chroma
       /// \param ops: options to select the solver from `solvers` and influence the solver construction
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getSolver(const std::map<std::string, Solver<NOp, COMPLEX>>& solvers,
-				       const Operator<NOp, COMPLEX>& op, const Options& ops)
+      Operator<NOp, COMPLEX>
+      getSolver(const std::map<std::string, Solver<NOp, COMPLEX>>& solvers,
+		const Operator<NOp, COMPLEX>& op, const Options& ops,
+		const Operator<NOp, COMPLEX>& prec = Operator<NOp, COMPLEX>())
       {
 	std::string type = getOption<std::string>(ops, "type");
 	if (type.size() == 0)
@@ -660,7 +689,7 @@ namespace Chroma
 	    "'; supported values: " + supported_tags);
 	}
 
-	return solvers.at(type)(op, ops);
+	return solvers.at(type)(op, ops, prec);
       }
 
       /// Apply the given function to all the given columns in x
@@ -688,13 +717,19 @@ namespace Chroma
       /// \param ops: options to select the solver from `solvers` and influence the solver construction
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getFGMRESSolver(Operator<NOp, COMPLEX> op, const Options& ops)
+      Operator<NOp, COMPLEX> getFGMRESSolver(Operator<NOp, COMPLEX> op, const Options& ops,
+					     Operator<NOp, COMPLEX> prec_)
       {
 	// Get preconditioner
 	Maybe<Operator<NOp, COMPLEX>> prec = none;
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
+	if (precOps && prec_)
+	  throw std::runtime_error(
+	    "getFGMRESSolver: invalid `prec` tag: the solver got a preconditioner already");
 	if (precOps)
 	  prec = Maybe<Operator<NOp, COMPLEX>>(getSolver(op, precOps.getSome()));
+	else if (prec_)
+	  prec = Maybe<Operator<NOp, COMPLEX>>(prec_);
 
 	// Get the remainder options
 	unsigned int max_basis_size = getOption<unsigned int>(ops, "max_basis_size", 0);
@@ -1431,13 +1466,28 @@ namespace Chroma
 	       {'s', nv2.kvdim()['n'] / num_null_vecs}},
 	      true);
 
+	// User even-odd ordering for nv_blk
+	auto nv_blk_eo = nv_blk;
+	if (X == 2)
+	{
+	  nv_blk_eo = nv_blk.make_compatible(none, {{'X', X}, {'x', nv_blk.kvdim().at('x') / X}});
+	  for (int oddity = 0; oddity < 2; ++oddity)
+	  {
+	    auto nat_mask = getXOddityMask<NOp + 6>(oddity, nv_blk.kvdim(), NaturalLayout)
+			      .reshape_dimensions({{"X0x", "X0x"}}, nv_blk_eo.kvdim());
+	    auto eo_mask = getXOddityMask<NOp + 6>(oddity, nv_blk_eo.kvdim(), XEvenOddLayout);
+	    nv_blk.reshape_dimensions({{"X0x", "X0x"}}, nv_blk_eo.kvdim())
+	      .copyToWithMask(nv_blk_eo, nat_mask, eo_mask);
+	  }
+	}
+
 	// Do the orthogonalization on each block and chirality
-	ortho<6, 1>(nv_blk, "X0123xyzts", "WYZTSC", "c", 4, JustSummary, "prolongator");
+	ortho<6, 1>(nv_blk_eo, "X0123xyzts", "WYZTSC", "c", 4, JustSummary, "prolongator");
 
 	// Return the operator
-	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk.kvdim()), i = op.i;
+	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo.kvdim()), i = op.i;
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		  contract<NOp + 1 + 4>(nv_blk, x, "cs")
+		  contract<NOp + 1 + 4>(nv_blk_eo, x, "cs")
 		    .template reshape_dimensions<NOp + 1>(
 		      {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"}, {"T3t", "3t"}}, opdims, true)
 		    .rename_dims({{'C', 'c'}, {'S', 's'}})
@@ -1449,12 +1499,12 @@ namespace Chroma
 		  auto x_blk = x.rename_dims({{'c', 'C'}, {'s', 'S'}})
 				 .template reshape_dimensions<NOp + 1 + 4>(
 				   {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"}},
-				   nv_blk.kvdim(), true)
+				   nv_blk_eo.kvdim(), true)
 				 .rename_dims({{'c', 'C'}, {'s', 'S'}});
-		  contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC", CopyTo, y);
+		  contract<NOp + 1>(nv_blk_eo.conj(), x_blk, "WYZTSC", CopyTo, y);
 		},
 		op.order_t,
-		NaturalLayout, // we don't do even-odd layout on the coarse operator space
+		XEvenOddLayout,
 		op.imgLayout,
 		getNeighborsAfterBlocking(mg_blocking, op.d.kvdim(), op.neighbors, op.imgLayout),
 		op.preferred_col_ordering};
@@ -1478,8 +1528,12 @@ namespace Chroma
       /// \param ops: options to select the solver and the null-vectors creation
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getMGPrec(Operator<NOp, COMPLEX> op, const Options& ops)
+      Operator<NOp, COMPLEX> getMGPrec(Operator<NOp, COMPLEX> op, const Options& ops,
+				       Operator<NOp, COMPLEX> prec_)
       {
+	if (prec_)
+	  throw std::runtime_error("getMGPrec: unsupported input preconditioner");
+
 	// Get prolongator, V
 	unsigned int num_null_vecs = getOption<unsigned int>(ops, "num_null_vecs");
 	std::vector<unsigned int> mg_blocking_v = getVectorOption<unsigned int>(ops, "blocking");
@@ -1575,6 +1629,13 @@ namespace Chroma
 	  op.preferred_col_ordering};
       }
 
+      template <std::size_t NOp, typename COMPLEX>
+      std::map<void*, Operator<NOp, COMPLEX>>& getEvenOddOperatorsCache()
+      {
+	static std::map<void*, Operator<NOp, COMPLEX>> m{};
+	return m;
+      }
+
       /// Returns an even-odd preconditioner.
       ///
       /// It returns an approximation of Op^{-1} by splitting the rows and columns into the two
@@ -1601,7 +1662,8 @@ namespace Chroma
       /// \param ops: options to select the solver and the null-vectors creation
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getEvenOddPrec(Operator<NOp, COMPLEX> op, const Options& ops)
+      Operator<NOp, COMPLEX> getEvenOddPrec(Operator<NOp, COMPLEX> op, const Options& ops,
+					    Operator<NOp, COMPLEX> prec_)
       {
 	auto dims = op.d.kvdim();
 	if (dims.count('X') == 0 || dims.at('X') != 2)
@@ -1611,6 +1673,9 @@ namespace Chroma
 	if (getFurthestNeighborDistance(op) != 1)
 	  throw std::runtime_error(
 	    "getEvenOddPrec: not supported for operators with other than distance-1 neighbors");
+
+	if (prec_)
+	  throw std::runtime_error("getEvenOddPrec: unsupported input preconditioner");
 
 	// Get the block diagonal of the operator with rows cs and columns CS
 	remap m_sc{{'s', 'S'}, {'c', 'C'}};
@@ -1623,85 +1688,130 @@ namespace Chroma
 						op.preferred_col_ordering);
 	ColOrdering co_blk =
 	  getOption<ColOrdering>(ops, "operator_block_ordering", getColOrderingMap(), RowMajor);
+	bool make_explicit = getOption<bool>(ops, "make_explicit", false);
 	unsigned int max_dist_neighbors_opA = 2;
-	const Operator<NOp, COMPLEX> opA = cloneOperator(
-	  Operator<NOp, COMPLEX>{
-	    [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	      foreachInChuncks(
-		x, y, create_operator_max_rhs,
-		[&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
-		  // y = Op_ee * x
-		  contract(opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), x.rename_dims(m_sc),
-			   "CS", CopyTo, y);
 
-		  // y1 = Op_oe * x
-		  auto y0 = op.d.template like_this<NOp + 1>(
-		    op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-		    {{'n', x.kvdim().at('n')}});
-		  y0.set_zero();
-		  x.copyTo(y0.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
-		  auto y1 = op(y0).kvslice_from_size({{'X', 1}}, {{'X', 1}});
-
-		  // y2 = Op_oo^{-1} * y1
-		  auto y2 = y0;
-		  y2.set_zero();
-		  solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		    opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS",
-		    y1.rename_dims(m_sc), "CS", CopyTo,
-		    y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
-
-		  // y += -Op_eo * y2
-		  op(y2).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(y);
-		});
-	    },
-	    op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
-	    op.i.kvslice_from_size({{'X', 0}}, {{'X', 1}}), nullptr, op.order_t, EvensOnlyLayout,
-	    EvensOnlyLayout, getNeighbors(op.i.kvdim(), max_dist_neighbors_opA, EvensOnlyLayout),
-	    op.preferred_col_ordering},
-	  co, co_blk);
-
-	// Get solver on opA
-	const Operator<NOp, COMPLEX> solver = getSolver(opA, getOptions(ops, "solver"));
-
-	// Create the solver
-	Operator<NOp, COMPLEX> rop{
+	Operator<NOp, COMPLEX> opA_implicit{
 	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	    // be = x_e - Op_eo*Op_oo^{-1}*x_o
-	    auto be = solver.d.template like_this<NOp + 1>(
-	      solver.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-	      {{'n', x.kvdim().at('n')}});
-	    x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
-	    auto ya = op.d.template like_this<NOp + 1>(
-	      op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-	      {{'n', x.kvdim().at('n')}});
-	    ya.set_zero();
-	    solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-	      opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS",
-	      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc), "CS", CopyTo,
-	      ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
-	    op(ya).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(be);
+	    foreachInChuncks(x, y, create_operator_max_rhs,
+			     [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
+			       // y = Op_ee * x
+			       contract(opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
+					x.rename_dims(m_sc), "CS", CopyTo, y);
 
-	    // Solve opA * y_e = be
-	    y.set_zero();
-	    solver(be, y.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+			       // y1 = Op_oe * x
+			       auto y0 = op.d.template like_this<NOp + 1>(
+				 op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+				 {{'n', x.kvdim().at('n')}});
+			       y0.set_zero();
+			       x.copyTo(y0.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+			       auto y1 = op(y0).kvslice_from_size({{'X', 1}}, {{'X', 1}});
 
-	    // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
-	    op(y, ya);
-	    auto yo0 = be;
-	    x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
-	    ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).scale(-1).addTo(yo0);
-	    solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-	      opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS", yo0.rename_dims(m_sc),
-	      "CS", CopyTo, y.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+			       // y2 = Op_oo^{-1} * y1
+			       auto y2 = y0;
+			       y2.set_zero();
+			       solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+				 opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS",
+				 y1.rename_dims(m_sc), "CS", CopyTo,
+				 y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+
+			       // y += -Op_eo * y2
+			       op(y2).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(y);
+			     });
 	  },
-	  op.i,
-	  op.d,
+	  op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
+	  op.i.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
 	  nullptr,
 	  op.order_t,
-	  op.imgLayout,
-	  op.domLayout,
-	  DenseOperator(),
+	  EvensOnlyLayout,
+	  EvensOnlyLayout,
+	  getNeighbors(op.i.kvdim(), max_dist_neighbors_opA, EvensOnlyLayout),
 	  op.preferred_col_ordering};
+
+	Operator<NOp, COMPLEX> opA;
+	if (!make_explicit)
+	{
+	  opA = opA_implicit;
+	}
+	else if (getEvenOddOperatorsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
+	{
+	  opA = cloneOperator(opA_implicit, co, co_blk);
+
+	  getEvenOddOperatorsCache<NOp, COMPLEX>()[op.id.get()] = opA;
+	}
+	else
+	{
+	  opA = getEvenOddOperatorsCache<NOp, COMPLEX>().at(op.id.get());
+	}
+
+	// Get preconditioner
+	auto precOps = getOptionsMaybe(ops, "prec_ee");
+	Operator<NOp, COMPLEX> prec_ee;
+	if (precOps)
+	{
+	  auto prec = getSolver(op, precOps.getSome());
+	  prec_ee = Operator<NOp, COMPLEX>{
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      auto x0 = x.make_compatible(none, {{'X', 2}});
+	      x0.set_zero();
+	      x.copyTo(x0.kvslice_from_size({}, {{'X', 1}}));
+	      auto y0 = y.make_compatible(none, {{'X', 2}});
+	      prec(x0, y0);
+	      y0.kvslice_from_size({}, {{'X', 1}}).copyTo(y);
+	    },
+	    op.i.kvslice_from_size({}, {{'X', 1}}),
+	    op.d.kvslice_from_size({}, {{'X', 1}}),
+	    nullptr,
+	    op.order_t,
+	    EvensOnlyLayout,
+	    EvensOnlyLayout,
+	    DenseOperator(),
+	    op.preferred_col_ordering};
+	}
+
+	// Get solver on opA
+	const Operator<NOp, COMPLEX> solver = getSolver(opA, getOptions(ops, "solver"), prec_ee);
+
+	// Create the solver
+	Operator<NOp, COMPLEX>
+	  rop{
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      // be = x_e - Op_eo*Op_oo^{-1}*x_o
+	      auto be = solver.d.template like_this<NOp + 1>(
+		solver.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+		{{'n', x.kvdim().at('n')}});
+	      x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
+	      auto ya = op.d.template like_this<NOp + 1>(
+		op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+		{{'n', x.kvdim().at('n')}});
+	      ya.set_zero();
+	      solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS",
+		x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc), "CS", CopyTo,
+		ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+	      op(ya).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(be);
+
+	      // Solve opA * y_e = be
+	      y.set_zero();
+	      solver(be, y.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+
+	      // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
+	      op(y, ya);
+	      auto yo0 = be;
+	      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
+	      ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).scale(-1).addTo(yo0);
+	      solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS", yo0.rename_dims(m_sc),
+		"CS", CopyTo, y.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+	    },
+	    op.i,
+	    op.d,
+	    nullptr,
+	    op.order_t,
+	    op.imgLayout,
+	    op.domLayout,
+	    DenseOperator(),
+	    op.preferred_col_ordering};
 
 	// Do a test
 	if (superbblas::getDebugLevel() > 0)
@@ -1727,8 +1837,11 @@ namespace Chroma
       /// \param ops: options to select the solver and the null-vectors creation
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getBlocking(Operator<NOp, COMPLEX> op, const Options& ops)
+      Operator<NOp, COMPLEX> getBlocking(Operator<NOp, COMPLEX> op, const Options& ops, Operator<NOp, COMPLEX> prec_)
       {
+	if (prec_)
+	  throw std::runtime_error("getBlocking: unsupported input preconditioner");
+
 	auto dim = op.d.kvdim();
 
 	std::vector<unsigned int> default_blocking{
@@ -1852,8 +1965,12 @@ namespace Chroma
       /// \param ops: options to select the solver and the null-vectors creation
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getInexactGD(Operator<NOp, COMPLEX> op, const Options& ops)
+      Operator<NOp, COMPLEX> getInexactGD(Operator<NOp, COMPLEX> op, const Options& ops,
+					  Operator<NOp, COMPLEX> prec_)
       {
+	if (prec_)
+	  throw std::runtime_error("getInexactGD: unsupported input preconditioner");
+
 	// Get eigensolver properties
 	unsigned int max_basis_size = getOption<unsigned int>(ops, "max_basis_size", 0);
 	unsigned int max_block_size = getOption<unsigned int>(ops, "max_block_size", 1);
@@ -1970,8 +2087,12 @@ namespace Chroma
       /// \param ops: options to select the solver and the null-vectors creation
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getDagger(Operator<NOp, COMPLEX> op, const Options& ops)
+      Operator<NOp, COMPLEX> getDagger(Operator<NOp, COMPLEX> op, const Options& ops,
+				       Operator<NOp, COMPLEX> prec_)
       {
+	if (prec_)
+	  throw std::runtime_error("getDagger: unsupported input preconditioner");
+
 	int ns = op.d.kvdim().at('s');
 	auto g5 = getGamma5(ns);
 
@@ -2000,8 +2121,11 @@ namespace Chroma
       /// \param ops: options to select the solver and the null-vectors creation
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getG5(Operator<NOp, COMPLEX> op, const Options& ops)
+      Operator<NOp, COMPLEX> getG5(Operator<NOp, COMPLEX> op, const Options& ops, Operator<NOp, COMPLEX> prec_)
       {
+	if (prec_)
+	  throw std::runtime_error("getG5: unsupported input preconditioner");
+
 	int ns = op.d.kvdim().at('s');
 	auto g5 = getGamma5(ns);
 
@@ -2034,7 +2158,8 @@ namespace Chroma
     /// \param ops: options to select the solver from `solvers` and influence the solver construction
 
     template <std::size_t NOp, typename COMPLEX>
-    Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops)
+    Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
+				     const Operator<NOp, COMPLEX>& prec)
     {
       static const std::map<std::string, detail::Solver<NOp, COMPLEX>> solvers{
 	{"fgmres", detail::getFGMRESSolver<NOp, COMPLEX>}, // flexible GMRES
@@ -2046,7 +2171,7 @@ namespace Chroma
 	{"blocking", detail::getBlocking<NOp, COMPLEX>} // reshape the operator
       };
 
-      return detail::getSolver(solvers, op, ops);
+      return detail::getSolver(solvers, op, ops, prec);
     }
 
     /// Return an Operator that wraps up a LinearOperator<LatticeFermion>
@@ -2143,6 +2268,9 @@ namespace Chroma
 
 	  // Construct the solver
 	  op = Maybe<Operator<Nd + 7, Complex>>{getSolver(linOp, getOptions(*ops, "InvertParam"))};
+
+	  // Clean cache of operators
+	  detail::getEvenOddOperatorsCache<Nd + 7, Complex>().clear();
 	}
 	else
 	{

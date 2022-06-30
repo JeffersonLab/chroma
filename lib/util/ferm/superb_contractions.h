@@ -1780,6 +1780,22 @@ namespace Chroma
 	return p->is_compatible(order, *w.p, w.order, labels.getSome(order));
       }
 
+      /// Return if the given tensor the same length for the shared dimensions
+      /// \param w: tensor to compare with
+      /// \param labels: dimension labels to compare if given; all labels otherwise
+
+      template <std::size_t Nw, typename Tw>
+      bool is_compatible(Tensor<Nw, Tw> w, Maybe<std::string> labels = none) const
+      {
+	std::string labels_to_compare = labels.getSome(order);
+	auto dims = kvdim();
+	auto wdims = w.kvdim();
+	for (char c : labels_to_compare)
+	  if (wdims.count(c) == 1 && wdims.at(c) != dims.at(c))
+	    return false;
+	return true;
+      }
+
       /// Get an element of the tensor
       /// \param coor: coordinates of the element to get
       /// \return: the value of the element at the coordinate
@@ -2577,7 +2593,7 @@ namespace Chroma
       /// \param m: maps from suborder of the current tensor to new orders
       /// \param allow_copy: whether to allow to return a reordered copy of the current tensor
 
-      template <std::size_t Nout, typename std::enable_if<(N > 0), bool>::type = true>
+      template <std::size_t Nout = N, typename std::enable_if<(N > 0), bool>::type = true>
       Tensor<Nout, T> reshape_dimensions(const std::map<std::string, std::string>& m,
 					 const std::map<char, int>& new_dim,
 					 bool allow_copy = true) const
