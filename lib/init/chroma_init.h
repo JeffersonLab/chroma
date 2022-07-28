@@ -19,6 +19,9 @@ namespace Chroma
   //! Chroma abort routine
   void abort(int i);
 
+  //! Get input list
+  std::vector<std::string>& getInputFileList();
+
   //! Get input file name
   std::string getXMLInputFileName();
 

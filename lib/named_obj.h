@@ -319,6 +319,19 @@ namespace Chroma
       return dynamic_cast<NamedObject<T>&>(get(id)).getData();
     }
 
+    void erase_all()
+    {
+      std::vector<std::string> keys;
+      for(auto const& key_value: the_map)
+	keys.push_back(key_value.first);
+
+      for( auto const& k: keys)
+	{
+	  QDPIO::cout << "erase: " << k << std::endl;
+	  erase(k);
+	}
+    }
+    
   private:
     typedef std::map<std::string, NamedObjectBase*> MapType_t;
     MapType_t the_map;

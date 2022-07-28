@@ -4,6 +4,7 @@ target_include_directories(chromalib PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SO
 										    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 										    $<INSTALL_INTERFACE:include> )
 										 
+target_link_libraries(chromalib PUBLIC QDPXX::qdp)										 
 target_link_libraries(chromalib PUBLIC QDPLapack::qdp_lapack)
 
 if( Chroma_ENABLE_CPP_WILSON_DSLASH)
