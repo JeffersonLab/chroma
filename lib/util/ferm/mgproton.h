@@ -990,6 +990,83 @@ namespace Chroma
 	  .kvslice_from_size({}, {{'X', dim.at('X')}});
       }
 
+      /// Return a copy of the given tensor in natural ordering into an even-odd ordering.
+      ///
+      /// \param v: origin tensor
+
+      template <std::size_t N, typename T>
+      Tensor<N, T> toEvenOddOrdering(const Tensor<N, T>& v)
+      {
+	// If the tensor is already in even-odd ordering, return it
+	if (v.kvdim().at('X') == 2)
+	  return v;
+
+	// All even/odd coordinate x elements cannot be selected with slicing at once for even-odd
+	// ordering, so we use arbitrary selection of elements: masks. The approach to convert between
+	// orderings is to mask all elements with even/odd x coordinate and copy them to a new tensor
+	// with the target layout. The copying with mask superbblas operation wasn't design to support
+	// different mask on the origin and destination tensor. But it's going to produce the desired
+	// effect if the following properties match:
+	//   a) the origin and destination masks are active in all dimensions excepting some dimensions,
+	//      only X in this case;
+	//   b) for all coordinates only one element is active on the excepting dimensions, the even or the odd
+	//      x coordinates in the X dimension in this case;
+	//   c) the excepting dimensions are fully supported on all processes; and
+	//   d) the excepting dimensions are the fastest index and have the same ordering in the origin and
+	//      the destination tensors.
+
+	auto r =
+	  v.make_compatible(none, {{'X', 2}, {'x', v.kvdim().at('x') / 2}}).reorder("Xxyzt%", '%');
+	auto v0 = v.reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}}).reorder("Xxyzt%", '%');
+	for (int oddity = 0; oddity < 2; ++oddity)
+	{
+	  auto nat_mask = getXOddityMask<N>(oddity, v.kvdim(), NaturalLayout)
+			    .reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}});
+	  auto eo_mask = getXOddityMask<N>(oddity, r.kvdim(), XEvenOddLayout);
+	  v0.copyToWithMask(r, nat_mask, eo_mask);
+	}
+	return r;
+      }
+
+      /// Return a copy of the given tensor in even-odd ordering into a natural ordering.
+      ///
+      /// \param v: origin tensor
+
+      template <std::size_t N, typename T>
+      Tensor<N, T> toNaturalOrdering(const Tensor<N, T>& v)
+      {
+	// If the tensor is already in natural ordering, return it
+	if (v.kvdim().at('X') == 1)
+	  return v;
+
+	// All even/odd coordinate x elements cannot be selected with slicing at once for even-odd
+	// ordering, so we use arbitrary selection of elements: masks. The approach to convert between
+	// orderings is to mask all elements with even/odd x coordinate and copy them to a new tensor
+	// with the target layout. The copying with mask superbblas operation wasn't design to support
+	// different mask on the origin and destination tensor. But it's going to produce the desired
+	// effect if the following properties match:
+	//   a) the origin and destination masks are active in all dimensions excepting some dimensions,
+	//      only X in this case;
+	//   b) for all coordinates only one element is active on the excepting dimensions, the even or the odd
+	//      x coordinates in the X dimension in this case;
+	//   c) the excepting dimensions are fully supported on all processes; and
+	//   d) the excepting dimensions are the fastest index and have the same ordering in the origin and
+	//      the destination tensors.
+
+	auto r =
+	  v.make_compatible(none, {{'X', 1}, {'x', v.kvdim().at('x') * 2}}).reorder("Xxyzt%", '%');
+	auto r0 = r.reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}}, false);
+	auto v0 = v.reorder("Xxyzt%", '%');
+	for (int oddity = 0; oddity < 2; ++oddity)
+	{
+	  auto eo_mask = getXOddityMask<N>(oddity, v.kvdim(), XEvenOddLayout);
+	  auto nat_mask = getXOddityMask<N>(oddity, r.kvdim(), NaturalLayout)
+			    .reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}});
+	  v0.copyToWithMask(r0, eo_mask, nat_mask);
+	}
+	return r;
+      }
+
       /// Return a sparse tensor with the content of the given operator
       /// \param op: operator to extract the nonzeros from
       /// \param power: maximum distance to recover the nonzeros:
@@ -1305,9 +1382,9 @@ namespace Chroma
 		std::sqrt(std::numeric_limits<typename real_type<COMPLEX>::type>::epsilon());
 	      for (int i = 0; i < base_norm0.volume(); ++i)
 		if (error.get({{i}}) > eps * base_norm0.get({{i}}))
-		  throw std::runtime_error("cloneOperator: too much error on the cloned operator");
-	    }
-	  }
+            throw std::runtime_error("cloneOperator: too much error on the cloned operator");
+          }
+        }
 	}
 
 	// Test for powers
@@ -1409,7 +1486,7 @@ namespace Chroma
 	// For now blocking on x should be divisible by X
 	auto opdims = op.d.kvdim();
 	int X = opdims.at('X');
-	if (mg_blocking.at('x') > 1 && mg_blocking.at('x') % X != 0)
+	if (mg_blocking.at('x') % X != 0)
 	  throw std::runtime_error("Unsupported blocking in x direction with isn't divisible by 2 "
 				   "when using even-odd layout");
 	for (const auto it : getNatLatticeDims(opdims, op.imgLayout))
@@ -1467,27 +1544,20 @@ namespace Chroma
 	      true);
 
 	// User even-odd ordering for nv_blk
-	auto nv_blk_eo = nv_blk;
-	if (X == 2)
-	{
-	  nv_blk_eo = nv_blk.make_compatible(none, {{'X', X}, {'x', nv_blk.kvdim().at('x') / X}});
-	  for (int oddity = 0; oddity < 2; ++oddity)
-	  {
-	    auto nat_mask = getXOddityMask<NOp + 6>(oddity, nv_blk.kvdim(), NaturalLayout)
-			      .reshape_dimensions({{"X0x", "X0x"}}, nv_blk_eo.kvdim());
-	    auto eo_mask = getXOddityMask<NOp + 6>(oddity, nv_blk_eo.kvdim(), XEvenOddLayout);
-	    nv_blk.reshape_dimensions({{"X0x", "X0x"}}, nv_blk_eo.kvdim())
-	      .copyToWithMask(nv_blk_eo, nat_mask, eo_mask);
-	  }
-	}
-
+	if (nv_blk.kvdim().at('0') != 1)
+	  throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
 	// Do the orthogonalization on each block and chirality
-	ortho<6, 1>(nv_blk_eo, "X0123xyzts", "WYZTSC", "c", 4, JustSummary, "prolongator");
+	ortho<6, 1>(nv_blk, "X0123xyzts", "WYZTSC", "c", 4, JustSummary, "prolongator");
 
 	// Return the operator
-	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo.kvdim()), i = op.i;
+	auto nv_blk_eo_dim = nv_blk.kvdim();
+	if (X == 2) {
+	  nv_blk_eo_dim['x'] /= 2;
+	  nv_blk_eo_dim['X'] = 2;
+	}
+	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		  contract<NOp + 1 + 4>(nv_blk_eo, x, "cs")
+		  contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
 		    .template reshape_dimensions<NOp + 1>(
 		      {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"}, {"T3t", "3t"}}, opdims, true)
 		    .rename_dims({{'C', 'c'}, {'S', 's'}})
@@ -1499,12 +1569,11 @@ namespace Chroma
 		  auto x_blk = x.rename_dims({{'c', 'C'}, {'s', 'S'}})
 				 .template reshape_dimensions<NOp + 1 + 4>(
 				   {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"}},
-				   nv_blk_eo.kvdim(), true)
-				 .rename_dims({{'c', 'C'}, {'s', 'S'}});
-		  contract<NOp + 1>(nv_blk_eo.conj(), x_blk, "WYZTSC", CopyTo, y);
+				   nv_blk.kvdim(), true);
+		  toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC")).copyTo(y);
 		},
 		op.order_t,
-		XEvenOddLayout,
+		X == 2 ? XEvenOddLayout : NaturalLayout,
 		op.imgLayout,
 		getNeighborsAfterBlocking(mg_blocking, op.d.kvdim(), op.neighbors, op.imgLayout),
 		op.preferred_col_ordering};
