@@ -1496,10 +1496,11 @@ namespace Chroma
 	    throw std::runtime_error("The operator dimensions are not divisible by the blocking");
 	}
 
-	// Create num_null_vecs random vectors and solve them
+	// Solve Ax=0 with random initial guesses
 	auto b = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
 	urand(b, -1, 1);
-	auto nv = null_solver(std::move(b));
+	auto nv = null_solver(op(b));
+	b.scale(-1).addTo(nv);
 
 	// Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
 	int ns = opdims.at('s');
