@@ -2290,62 +2290,71 @@ namespace Chroma
 
     /// Either a Chroma solver or a superb solver
     struct ChimeraSolver {
-      /// Action
-      Handle<
-	FermionAction<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>
-	S;
+	/// Action type
+	using Action = Handle<
+	  FermionAction<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>;
 
-      /// State
-      Handle<FermState<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>
-	state;
+	/// Action
+	Action S;
 
-      /// Chroma solver (optional)
-      Handle<SystemSolver<LatticeFermion>> PP;
+	/// State type
+	using State = Handle<FermState<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>;
 
-      /// Operator on scxyztX (optional)
-      Maybe<Operator<Nd + 7, Complex>> op;
+	/// State
+	State state;
 
-      /// Constructor
-      /// \param fermAction: XML for the fermion action
-      /// \param invParam: XML for the quark propagator
-      /// \param u: gauge fields
+	/// Chroma solver (optional)
+	Handle<SystemSolver<LatticeFermion>> PP;
 
-      ChimeraSolver(const GroupXML_t& fermAction, const GroupXML_t& invParam,
-		    const multi1d<LatticeColorMatrix>& u)
-      {
-	// Initialize fermion action and state
-	std::istringstream xml_s(fermAction.xml);
-	XMLReader fermacttop(xml_s);
-	QDPIO::cout << "FermAct = " << fermAction.id << std::endl;
-	S = TheFermionActionFactory::Instance().createObject(fermAction.id, fermacttop,
-							     fermAction.path);
-	state = S->createState(u);
+	/// Operator on scxyztX (optional)
+	Maybe<Operator<Nd + 7, Complex>> op;
 
-	// If the inverter is MGPROTON, use this infrastructure
-	if (invParam.id == std::string("MGPROTON"))
+	/// Constructor
+	/// \param fermAction: XML for the fermion action
+	/// \param invParam: XML for the quark propagator
+	/// \param u: gauge fields
+
+	ChimeraSolver(const GroupXML_t& fermAction, const GroupXML_t& invParam,
+		      const multi1d<LatticeColorMatrix>& u)
 	{
-	  // Parse XML with the inverter options
-	  std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(invParam.xml));
+	  // Initialize fermion action and state
+	  std::istringstream xml_s(fermAction.xml);
+	  XMLReader fermacttop(xml_s);
+	  QDPIO::cout << "FermAct = " << fermAction.id << std::endl;
+	  S = TheFermionActionFactory::Instance().createObject(fermAction.id, fermacttop,
+							       fermAction.path);
+	  state = S->createState(u);
 
-	  // Clone the matvec
-	  LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
-	  ColOrdering co = getOption<ColOrdering>(*ops, "InvertParam/operator_ordering",
-						  getColOrderingMap(), ColumnMajor);
-	  ColOrdering co_blk = getOption<ColOrdering>(*ops, "InvertParam/operator_block_ordering",
-						      getColOrderingMap(), RowMajor);
-	  Operator<Nd + 7, Complex> linOp =
-	    detail::cloneOperator(asOperatorView(*fLinOp), co, co_blk);
+	  // If the inverter is MGPROTON, use this infrastructure
+	  if (invParam.id == std::string("MGPROTON"))
+	  {
+	    // Parse XML with the inverter options
+	    std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(invParam.xml));
 
-	  // Construct the solver
-	  op = Maybe<Operator<Nd + 7, Complex>>{getSolver(linOp, getOptions(*ops, "InvertParam"))};
+	    // Clone the matvec
+	    LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
+	    ColOrdering co = getOption<ColOrdering>(*ops, "InvertParam/operator_ordering",
+						    getColOrderingMap(), ColumnMajor);
+	    ColOrdering co_blk = getOption<ColOrdering>(*ops, "InvertParam/operator_block_ordering",
+							getColOrderingMap(), RowMajor);
+	    Operator<Nd + 7, Complex> linOp =
+	      detail::cloneOperator(asOperatorView(*fLinOp), co, co_blk);
 
-	  // Clean cache of operators
-	  detail::getEvenOddOperatorsCache<Nd + 7, Complex>().clear();
-	}
-	else
-	{
-	  PP = S->qprop(state, invParam);
-	}
+	    // Destroy chroma objects
+	    state = State();
+	    S = Action();
+
+	    // Construct the solver
+	    op =
+	      Maybe<Operator<Nd + 7, Complex>>{getSolver(linOp, getOptions(*ops, "InvertParam"))};
+
+	    // Clean cache of operators
+	    detail::getEvenOddOperatorsCache<Nd + 7, Complex>().clear();
+	  }
+	  else
+	  {
+	    PP = S->qprop(state, invParam);
+	  }
       }
     };
 
