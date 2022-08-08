@@ -1498,7 +1498,7 @@ namespace Chroma
 
 	// Solve Ax=0 with random initial guesses
 	auto b = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
-	urand(b, -1, 1);
+	nrand(b);
 	auto nv = null_solver(op(b));
 	b.scale(-1).addTo(nv);
 

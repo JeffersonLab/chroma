@@ -4624,6 +4624,33 @@ namespace Chroma
 	t, [&]() { return d(detail::getSeed()); }, false);
     }
 
+    /// Modify with complex random normal distributed numbers
+    /// \param t: tensor to fill with random numbers
+
+    template <std::size_t N, typename T,
+	      typename std::enable_if<detail::is_complex<T>::value, bool>::type = true>
+    void nrand(Tensor<N, T>& t)
+    {
+      std::normal_distribution<typename T::value_type> d{};
+      t.fillWithCPUFuncNoArgs(
+	[&]() {
+	  return T{d(detail::getSeed()), d(detail::getSeed())};
+	},
+	false);
+    }
+
+    /// Modify with random normal distributed numbers
+    /// \param t: tensor to fill with random numbers
+
+    template <std::size_t N, typename T,
+	      typename std::enable_if<!detail::is_complex<T>::value, bool>::type = true>
+    void nrand(Tensor<N, T>& t)
+    {
+      std::normal_distribution<T> d{};
+      fillWithCPUFuncNoArgs(
+	t, [&]() { return d(detail::getSeed()); }, false);
+    }
+
     /// Return an identity matrix
     /// \param dim: length for each of the row dimensions
     /// \param m: labels map from the row to the column dimensions
