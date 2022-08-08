@@ -2341,6 +2341,7 @@ namespace Chroma
 	      detail::cloneOperator(asOperatorView(*fLinOp), co, co_blk);
 
 	    // Destroy chroma objects
+	    delete fLinOp;
 	    state = State();
 	    S = Action();
 
