@@ -1650,8 +1650,8 @@ namespace Chroma
 				 else
 				 {
 				   V.tconj()(
-				     op(contract<NOp + 1>(g5.rename_dims({{'j', 's'}}), V(x), "s")
-					  .rename_dims({{'i', 's'}})),
+				     contract<NOp + 1>(g5.rename_dims({{'j', 's'}}), op(V(x)), "s")
+				       .rename_dims({{'i', 's'}}),
 				     y);
 				 }
 			       });
@@ -1670,24 +1670,24 @@ namespace Chroma
 	// Return the solver
 	return {
 	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	    // y0 = V*solver(V'*Op*V, V'x)
-	    auto y0 = V(coarseSolver(V.tconj()(x)));
-
-	    // y1 = g5 * y0 if !(do_chirality_splitting || ns == 1)
-	    auto y1 = y0;
-	    if (!(do_chirality_splitting || ns == 1))
+	    // x0 = g5 * x if !do_chirality_splitting && ns > 1
+	    auto x0 = x;
+	    if (!do_chirality_splitting && ns > 1)
 	    {
-	      y1 =
-		contract<NOp + 1>(g5.rename_dims({{'j', 's'}}), y0, "s").rename_dims({{'i', 's'}});
+	      x0 =
+		contract<NOp + 1>(g5.rename_dims({{'j', 's'}}), x, "s").rename_dims({{'i', 's'}});
 	    }
 
-	    // x1 = x - op*y1
-	    auto x1 = op(y1.scale(-1));
+	    // y0 = V*solver(V'*Op*V, V'x0)
+	    auto y0 = V(coarseSolver(V.tconj()(x0)));
+
+	    // x1 = x - op*y0
+	    auto x1 = op(y0.scale(-1));
 	    x.addTo(x1);
 
 	    // y = y1 + solver(Op, x1)
 	    opSolver(std::move(x1), y);
-	    y1.addTo(y);
+	    y0.addTo(y);
 	  },
 	  op.i,
 	  op.d,
