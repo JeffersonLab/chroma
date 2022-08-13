@@ -862,9 +862,8 @@ namespace Chroma
 	  Params::Param_t::SinkSource_t ss;
 	  ss.t_sink = snk % Lt;
 	  ss.t_source = it.first % Lt;
-	  int tdisp = it.first - params.param.contract.alt_t_start;
-	  ss.Nt_backward = -tdisp;
-	  ss.Nt_forward = tdisp + params.param.contract.alt_Nt_forward;
+	  ss.Nt_backward = it.first - params.param.contract.alt_t_start;
+	  ss.Nt_forward = params.param.contract.alt_Nt_forward - ss.Nt_backward;
 	  params.param.sink_source_pairs.push_back(ss);
 	  cache_tslice[ss.t_source] = cache_tslice[ss.t_sink] = true;
 	}

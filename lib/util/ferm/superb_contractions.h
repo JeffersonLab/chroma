@@ -6675,7 +6675,8 @@ namespace Chroma
 				Index first_tslice, const std::vector<std::vector<int>>& disps,
 				bool deriv, const ContractionFn<COMPLEX>& call,
 				const Maybe<std::string>& order_out = none,
-				Maybe<DeviceHost> dev = none, Maybe<Distribution> dist = none)
+				Maybe<DeviceHost> dev = none, Maybe<Distribution> dist = none,
+				int max_tslices_in_contraction = 0)
     {
       const std::string order_out_str = order_out.getSome("ijmt");
       detail::check_order_contains(order_out_str, "ijmt");
@@ -6696,7 +6697,10 @@ namespace Chroma
 	throw std::runtime_error("The t component of `colorvec' and `moms' does not match");
 
       // Iterate over time-slices
-      for (int tfrom = 0, tsize = Nt; tfrom < Nt; tfrom += tsize, tsize = Nt - tfrom)
+      if (max_tslices_in_contraction <= 0)
+	max_tslices_in_contraction = Nt;
+      for (int tfrom = 0, tsize = std::min(Nt, max_tslices_in_contraction); tfrom < Nt;
+	   tfrom += tsize, tsize = std::min(max_tslices_in_contraction, Nt - tfrom))
       {
 	// Make tsize one or even
 	if (tsize > 1 && tsize % 2 != 0)
@@ -6726,7 +6730,7 @@ namespace Chroma
 	// NOTE: look for the minus sign on left_phase in the doc of this function
 	int Nmom = moms.first.kvdim()['m'];
 	Tensor<Nin + 1, COMPLEX> moms_left =
-	  colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', Nmom}});
+	  this_colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', Nmom}});
 	moms_left.contract(std::move(this_moms), {}, Conjugate,
 			   phaseColorvecs(this_colorvec, first_tslice + tfrom, left_phase), {},
 			   NotConjugate);

@@ -40,7 +40,9 @@ namespace Chroma
 	GroupXML_t              link_smearing;          /*!< link smearing xml */
 	int			Nt_forward;		/*!< Nt_forward */
 	int			t_source;		/*!< t_source */
-	multi1d<float>          phase;                  /*!< Phase to apply to colorvecs */
+	int                     max_tslices_in_contraction;  /*! maximum number of contracted tslices simultaneously */
+	std::vector<float>          quarkPhase;         /*!< Phase to apply to the right colorvecs (quarks) */
+	std::vector<float>          aQuarkPhase;        /*!< Phase to apply to the left colorvecs (antiquarks) */
       };
 
       struct NamedObject_t
