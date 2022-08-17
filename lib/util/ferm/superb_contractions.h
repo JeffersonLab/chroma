@@ -726,12 +726,37 @@ namespace Chroma
 	  {
 
 	    int dev = -1;
-#    ifdef SUPERBBLAS_USE_CUDA
+#    if defined(QDP_IS_QDPJIT)
+	    // When using QDP-JIT, the GPU device to use is already selected
+#      ifdef SUPERBBLAS_USE_CUDA
 	    superbblas::detail::cudaCheck(cudaGetDevice(&dev));
-#    elif defined(SUPERBBLAS_USE_HIP)
+#      elif defined(SUPERBBLAS_USE_HIP)
 	    superbblas::detail::hipCheck(hipGetDevice(&dev));
+#      else
+#	error unsupported GPU platform
+#      endif
 #    else
-#      error unsupported GPU platform
+	    // When not using QDP-JIT, select the GPU device based on either the local
+	    // MPI rank or the global MPI rank and assuming that consecutive MPI ranks
+	    // tends to be on the same node.
+	    const char* l = std::getenv("SLURM_LOCALID");
+	    if (l)
+	    {
+	      dev = std::atoi(l);
+	    }
+	    else
+	    {
+	      const char* l = std::getenv("SB_NUM_GPUS_ON_NODE");
+	      if (l)
+	      {
+		dev = Layout::nodeNumber() % std::atoi(l);
+	      }
+	      else
+	      {
+		QDPIO::cerr << "Please set SB_NUM_GPUS_ON_NODE or SLURM_LOCALID" << std::endl;
+		QDP_abort(1);
+	      }
+	    }
 #    endif
 
 #    if defined(BUILD_MAGMA)
