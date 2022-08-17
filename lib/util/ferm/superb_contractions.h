@@ -2958,26 +2958,6 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "One of the contracted tensors or the output tensor is local and others are not!");
 
-	if ((v.dist == OnMaster && w.dist == OnEveryone) ||
-	    (v.dist == OnEveryone && w.dist == OnMaster))
-	  throw std::runtime_error("Incompatible layout for contractions: one of the tensors is on "
-				   "the master node and the other is distributed");
-
-	// Avoid replicating the same computation in all nodes
-	// TODO: check whether superbblas does this already
-	if ((v.dist == OnMaster || v.dist == OnEveryoneReplicated) &&
-	    (w.dist == OnMaster || w.dist == OnEveryoneReplicated))
-	{
-	  v = v.make_sure(none, none, OnMaster);
-	  w = w.make_sure(none, none, OnMaster);
-	}
-
-	if (v.dist == OnEveryone && w.dist == OnEveryoneReplicated)
-	  w = w.make_suitable_for_contraction(v);
-
-	if (v.dist == OnEveryoneReplicated && w.dist == OnEveryone)
-	  v = v.make_suitable_for_contraction(w);
-
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
 	T* ptr = this->data.get();
