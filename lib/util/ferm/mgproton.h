@@ -829,15 +829,15 @@ namespace Chroma
 
 	// Filter out odd neighbors if `Xsubrange` and block them
 	std::set<Index> idx_neighbors;
-	Coor<Nd> blk_strides = superbblas::detail::get_strides(blk, superbblas::FastToSlow);
+	Coor<Nd> blk_strides = superbblas::detail::get_strides<Index>(blk, superbblas::FastToSlow);
 	Coor<Nd> blk_nat_dims = nat_dims / blk;
 	Coor<Nd> blk_nat_dims_strides =
-	  superbblas::detail::get_strides(blk_nat_dims, superbblas::FastToSlow);
+	  superbblas::detail::get_strides<Index>(blk_nat_dims, superbblas::FastToSlow);
 	std::size_t blk_vol = superbblas::detail::volume(blk);
 	for (const auto& kvcoor : neighbors)
 	{
 	  Coor<Nd> c = kvcoors<Nd>("xyzt", kvcoor);
-	  for (unsigned int i = 0; i < blk_vol; ++i)
+	  for (Index i = 0; i < blk_vol; ++i)
 	  {
 	    Coor<Nd> blk_c =
 	      normalize_coor(c + superbblas::detail::index2coor(i, blk, blk_strides), nat_dims) /
@@ -907,8 +907,9 @@ namespace Chroma
 	std::vector<Coor<Nd>> neighbors = Coloring::all_neighbors(max_dist_neighbors, nat_dims);
 
 	// Filter out odd neighbors if the layout is `EvensOnlyLayout`
-	std::set<Index> idx_neighbors;
-	Coor<Nd> strides = superbblas::detail::get_strides(nat_dims, superbblas::FastToSlow);
+	std::set<std::size_t> idx_neighbors;
+	Stride<Nd> strides =
+	  superbblas::detail::get_strides<std::size_t>(nat_dims, superbblas::FastToSlow);
 	for (const auto& c : neighbors)
 	{
 	  if (layout == EvensOnlyLayout && std::accumulate(c.begin(), c.end(), Index{0}) % 2 != 0)
@@ -918,7 +919,7 @@ namespace Chroma
 
 	// Convert the indices into maps
 	NaturalNeighbors r;
-	for (Index idx : idx_neighbors)
+	for (std::size_t idx : idx_neighbors)
 	{
 	  Coor<Nd> c = superbblas::detail::index2coor(idx, nat_dims, strides);
 	  r.push_back(std::map<char, int>{{'x', c[0]}, {'y', c[1]}, {'z', c[2]}, {'t', c[3]}});

@@ -64,6 +64,8 @@ namespace Chroma
     using ComplexF = std::complex<REAL32>;
     template <std::size_t N>
     using Coor = superbblas::Coor<N>;
+    template <std::size_t N>
+    using Stride = superbblas::Coor<N, std::size_t>;
     using checksum_type = superbblas::checksum_type;
 
     /// Where to store the tensor (see class Tensor)
@@ -1482,7 +1484,7 @@ namespace Chroma
       Distribution dist; ///< Whether the tensor is stored on the cpu or a device
       Coor<N> from;	 ///< First active coordinate in the tensor
       Coor<N> size;	 ///< Number of active coordinates on each dimension
-      Coor<N> strides;	 ///< Displacement for the next element along every direction
+      Stride<N> strides; ///< Displacement for the next element along every direction
       T scalar;		 ///< Scalar factor of the tensor
       bool conjugate;	 ///< Whether the values are implicitly conjugated
       bool eg;		 ///< Whether this tensor is an example
@@ -1553,7 +1555,7 @@ namespace Chroma
 	  dist(dist),
 	  from{},
 	  size(dim),
-	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
+	  strides(detail::get_strides<std::size_t, N>(dim, superbblas::FastToSlow)),
 	  scalar{1},
 	  conjugate{false},
 	  eg{false}
@@ -1589,7 +1591,7 @@ namespace Chroma
 	  dist(dist),
 	  from(normalize_coor(from, dim)),
 	  size(size),
-	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
+	  strides(detail::get_strides<std::size_t, N>(dim, superbblas::FastToSlow)),
 	  scalar(scalar),
 	  conjugate(conjugate),
 	  eg(eg)
@@ -1612,7 +1614,7 @@ namespace Chroma
 	  dist(dist),
 	  from{},
 	  size(dim),
-	  strides(detail::get_strides<N>(dim, superbblas::FastToSlow)),
+	  strides(detail::get_strides<std::size_t, N>(dim, superbblas::FastToSlow)),
 	  scalar{1},
 	  conjugate{false},
 	  eg{false}
@@ -1944,7 +1946,8 @@ namespace Chroma
 	/// Number of elements in each direction for the local part
 	Coor<N> local_size = t.getLocal().size;
 	/// Stride for the local volume
-	Coor<N> local_stride = superbblas::detail::get_strides(local_size, superbblas::FastToSlow);
+	Stride<N> local_stride =
+	  superbblas::detail::get_strides<std::size_t>(local_size, superbblas::FastToSlow);
 	/// Coordinates of first elements stored locally
 	Coor<N> local_from = t.p->localFrom();
 
@@ -2029,7 +2032,8 @@ namespace Chroma
 	/// Number of elements in each direction for the local part
 	Coor<N> local_size = t.getLocal().size;
 	/// Stride for the local volume
-	Coor<N> local_stride = superbblas::detail::get_strides(local_size, superbblas::FastToSlow);
+	Stride<N> local_stride =
+	  superbblas::detail::get_strides<std::size_t>(local_size, superbblas::FastToSlow);
 	/// Coordinates of first elements stored locally
 	Coor<N> local_from = t.p->localFrom();
 
@@ -4285,7 +4289,8 @@ namespace Chroma
 
 	  // Print the column indices
 	  auto jj_host_ptr = jj_host.data.get();
-	  Coor<ND> dstrides = superbblas::detail::get_strides(d.size, superbblas::FastToSlow);
+	  Stride<ND> dstrides =
+	    superbblas::detail::get_strides<std::size_t>(d.size, superbblas::FastToSlow);
 	  for (std::size_t j = 0, jjvol = jj_host.volume(); j < jjvol; j += ND)
 	  {
 	    Coor<ND> j_coor;
@@ -4720,7 +4725,8 @@ namespace Chroma
       // Populate the tensor on CPU
       Tensor<N, COMPLEX> r(order, dim, OnHost);
       Coor<N> local_latt_size = r.p->localSize(); // local dimensions for xyztX
-      Coor<N> stride = superbblas::detail::get_strides(local_latt_size, superbblas::FastToSlow);
+      Stride<N> stride =
+	superbblas::detail::get_strides<std::size_t>(local_latt_size, superbblas::FastToSlow);
       Coor<N> local_latt_from =
 	r.p->localFrom(); // coordinates of first elements stored locally for xyztX
       std::size_t vol = superbblas::detail::volume(local_latt_size);
