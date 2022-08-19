@@ -739,17 +739,17 @@ namespace Chroma
 	    // When not using QDP-JIT, select the GPU device based on either the local
 	    // MPI rank or the global MPI rank and assuming that consecutive MPI ranks
 	    // tends to be on the same node.
-	    const char* l = std::getenv("SLURM_LOCALID");
+	    const char* l = std::getenv("SB_NUM_GPUS_ON_NODE");
 	    if (l)
 	    {
-	      dev = std::atoi(l);
+	      dev = Layout::nodeNumber() % std::atoi(l);
 	    }
 	    else
 	    {
-	      const char* l = std::getenv("SB_NUM_GPUS_ON_NODE");
+	      const char* l = std::getenv("SLURM_LOCALID");
 	      if (l)
 	      {
-		dev = Layout::nodeNumber() % std::atoi(l);
+		dev = std::atoi(l);
 	      }
 	      else
 	      {
