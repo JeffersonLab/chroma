@@ -969,26 +969,56 @@ namespace Chroma
 
       /// Return a mask for the sites with even or odd x coordinate
       /// \param xoddity: 0 for even, 1 for odd x coordinates
-      /// \param dim: operator dimensions
-      /// \param layout: operator's layout
+      /// \param t: return a tensor with this distribution
+      /// \param layout: tensor's layout
 
-      template <std::size_t N>
-      Tensor<N, float> getXOddityMask(int xoddity, const std::map<char, int>& dim,
-				      OperatorLayout layout)
+      template <std::size_t N, typename T>
+      Tensor<N, float> getXOddityMask(int xoddity, const Tensor<N, T>& t, OperatorLayout layout)
       {
-	int nX = (layout == EvensOnlyLayout ? 2 : (dim.count('X') == 1 ? dim.at('X') : 1));
-	auto real_dim = dim;
-	real_dim['X'] = nX;
-	std::string labels;
-	for (const auto& it : dim)
-	  labels.push_back(it.first);
-	std::string order = std::string("xyztX") + remove_dimensions(labels, "xyztX");
 	if (xoddity != 0 && xoddity != 1)
-	  throw std::runtime_error("getXOddity: invalid input argument `xoddity`");
-	return fillLatticeField<N, float>(
-		 order, real_dim, OnDefaultDevice,
-		 [&](Coor<N - 1> c) { return c[0] % 2 == xoddity ? float{1} : float{0}; })
-	  .kvslice_from_size({}, {{'X', dim.at('X')}});
+	  throw std::runtime_error("getXOddityMask: invalid input argument `xoddity`");
+	auto dim = t.kvdim();
+	auto r = t.template make_compatible<N, float>();
+	if (layout == NaturalLayout)
+	{
+	  if (dim.at('X') != 1 && dim.at('X') != 2)
+	    throw std::runtime_error("getXOddityMask: invalid dimension size `X`");
+	  Index xLabelPos = -1;
+	  char xLabel = (dim.at('X') == 1 ? 'x' : 'X');
+	  for (std::size_t i = 0; i < N; ++i)
+	    if (r.order[i] == xLabel)
+	      xLabelPos = i;
+	  if (xLabelPos < 0)
+	    throw std::runtime_error("getXOddityMask: given tensor doesn't have `x` dimension");
+	  r.fillCpuFunCoor([&](const Coor<N>& coor) {
+	    return coor[xLabelPos] % 2 == xoddity ? float{1} : float{0};
+	  });
+	}
+	else if (layout == XEvenOddLayout)
+	{
+	  if (dim.at('X') != 2)
+	    throw std::runtime_error("getXOddityMask: invalid dimension size `X`");
+	  Coor<4> c;
+	  for (std::size_t i = 0, j = 0; i < N; ++i)
+	    if (is_in("Xyzt", r.order[i]))
+	      c[j++] = i;
+	  r.fillCpuFunCoor([&](const Coor<N>& coor) {
+	    Index s = 0;
+	    for (Index i : c)
+	      s += coor[i];
+	    return s % 2 == xoddity ? float{1} : float{0};
+	  });
+	}
+	else if (layout == EvensOnlyLayout)
+	{
+	  if (dim.at('X') != 1)
+	    throw std::runtime_error("getXOddityMask: invalid dimension size `X`");
+	  r.set(xoddity == 0 ? float{1} : float{0});
+	}
+	else
+	  throw std::runtime_error("getXOddityMask: unsupported layout");
+
+	return r;
       }
 
       /// Return a copy of the given tensor in natural ordering into an even-odd ordering.
@@ -999,8 +1029,16 @@ namespace Chroma
       Tensor<N, T> toEvenOddOrdering(const Tensor<N, T>& v)
       {
 	// If the tensor is already in even-odd ordering, return it
-	if (v.kvdim().at('X') == 2)
+	auto vdim = v.kvdim();
+	if (vdim.at('X') == 2)
 	  return v;
+
+	// Check that the tensor can be reordered in even-ordering compressed on the x-direction
+	if (!(vdim.at('x') % 2 == 0 && //
+	      (vdim.at('y') == 1 || vdim.at('y') % 2 == 0) &&
+	      (vdim.at('z') == 1 || vdim.at('z') % 2 == 0) &&
+	      (vdim.at('t') == 1 || vdim.at('t') % 2 == 0)))
+	  throw std::runtime_error("toEvenOddOrdering: invalid tensor dimensions");
 
 	// All even/odd coordinate x elements cannot be selected with slicing at once for even-odd
 	// ordering, so we use arbitrary selection of elements: masks. The approach to convert between
@@ -1016,14 +1054,12 @@ namespace Chroma
 	//   d) the excepting dimensions are the fastest index and have the same ordering in the origin and
 	//      the destination tensors.
 
-	auto r =
-	  v.make_compatible(none, {{'X', 2}, {'x', v.kvdim().at('x') / 2}}).reorder("Xxyzt%", '%');
 	auto v0 = v.reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}}).reorder("Xxyzt%", '%');
+	auto r = v0.make_compatible();
 	for (int oddity = 0; oddity < 2; ++oddity)
 	{
-	  auto nat_mask = getXOddityMask<N>(oddity, v.kvdim(), NaturalLayout)
-			    .reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}});
-	  auto eo_mask = getXOddityMask<N>(oddity, r.kvdim(), XEvenOddLayout);
+	  auto nat_mask = getXOddityMask<N>(oddity, v0, NaturalLayout);
+	  auto eo_mask = getXOddityMask<N>(oddity, r, XEvenOddLayout);
 	  v0.copyToWithMask(r, nat_mask, eo_mask);
 	}
 	return r;
@@ -1037,7 +1073,8 @@ namespace Chroma
       Tensor<N, T> toNaturalOrdering(const Tensor<N, T>& v)
       {
 	// If the tensor is already in natural ordering, return it
-	if (v.kvdim().at('X') == 1)
+	auto vdim = v.kvdim();
+	if (vdim.at('X') == 1)
 	  return v;
 
 	// All even/odd coordinate x elements cannot be selected with slicing at once for even-odd
@@ -1054,18 +1091,15 @@ namespace Chroma
 	//   d) the excepting dimensions are the fastest index and have the same ordering in the origin and
 	//      the destination tensors.
 
-	auto r =
-	  v.make_compatible(none, {{'X', 1}, {'x', v.kvdim().at('x') * 2}}).reorder("Xxyzt%", '%');
-	auto r0 = r.reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}}, false);
 	auto v0 = v.reorder("Xxyzt%", '%');
+	auto r = v0.make_compatible();
 	for (int oddity = 0; oddity < 2; ++oddity)
 	{
-	  auto eo_mask = getXOddityMask<N>(oddity, v.kvdim(), XEvenOddLayout);
-	  auto nat_mask = getXOddityMask<N>(oddity, r.kvdim(), NaturalLayout)
-			    .reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}});
-	  v0.copyToWithMask(r0, eo_mask, nat_mask);
+	  auto eo_mask = getXOddityMask<N>(oddity, v0, XEvenOddLayout);
+	  auto nat_mask = getXOddityMask<N>(oddity, r, NaturalLayout);
+	  v0.copyToWithMask(r, eo_mask, nat_mask);
 	}
-	return r;
+	return r.reshape_dimensions({{"Xx", "Xx"}}, {{'X', 1}, {'x', vdim.at('x') * 2}});
       }
 
       /// Return a sparse tensor with the content of the given operator
@@ -1140,8 +1174,8 @@ namespace Chroma
 	}
 
 	// Create masks for the elements with even natural x coordinate and with odd natural x coordinate
-	auto even_x_mask = getXOddityMask<NOp>(0, i.kvdim(), op.imgLayout);
-	auto odd_x_mask = getXOddityMask<NOp>(1, i.kvdim(), op.imgLayout);
+	auto even_x_mask = getXOddityMask<NOp>(0, i, op.imgLayout);
+	auto odd_x_mask = getXOddityMask<NOp>(1, i, op.imgLayout);
 	auto ones_blk = t_blk.template like_this<Nblk * 2, float>();
 	ones_blk.set(1);
 
@@ -1487,13 +1521,10 @@ namespace Chroma
 	// For now blocking on x should be divisible by X
 	auto opdims = op.d.kvdim();
 	int X = opdims.at('X');
-	if (mg_blocking.at('x') % X != 0)
-	  throw std::runtime_error("Unsupported blocking in x direction with isn't divisible by 2 "
-				   "when using even-odd layout");
+	bool x_blocking_divide_X = (mg_blocking.at('x') % X == 0);
 	for (const auto it : getNatLatticeDims(opdims, op.imgLayout))
 	{
-	  if ((it.first == 'x' && it.second % mg_blocking.at('x') != 0) ||
-	      (it.first != 'x' && it.second % mg_blocking.at(it.first) != 0))
+	  if (it.second % mg_blocking.at(it.first) != 0)
 	    throw std::runtime_error("The operator dimensions are not divisible by the blocking");
 	}
 
@@ -1522,60 +1553,92 @@ namespace Chroma
 	    .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
 	}
 
+	// If the blocking in x isn't divisible by X, then work on natural ordering
+	if (not x_blocking_divide_X) {
+	  nv2 = toNaturalOrdering(nv2);
+	  opdims['x'] *= X;
+	  opdims['X'] = 1;
+	}
+
 	// Do the blocking, which encompasses the following transformations:
 	//  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
 	// where output X is a singlet dimension, and W,Y,Z, and T have size mg_blocking,
 	// and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
 	// have the remaining
 
-	auto nv_blk =
-	  nv2.rename_dims({{'c', 'C'}, {'s', 'S'}})
-	    .template reshape_dimensions<NOp + 1 + 5>(
-	      {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"}, {"n", "cs"}},
-	      {{'X', 1}, // we don't do even-odd layout on the coarse operator space
-	       {'W', mg_blocking.at('x')},
-	       {'Y', mg_blocking.at('y')},
-	       {'Z', mg_blocking.at('z')},
-	       {'T', mg_blocking.at('t')},
-	       {'0', layout_blocking.at('x')},
-	       {'1', layout_blocking.at('y')},
-	       {'2', layout_blocking.at('z')},
-	       {'3', layout_blocking.at('t')},
-	       {'c', num_null_vecs},
-	       {'s', nv2.kvdim()['n'] / num_null_vecs}},
-	      true);
+	auto nv_blk = nv2.template reshape_dimensions<NOp + 1 + 5>(
+	  {{"X0x", "WX0x"},
+	   {"1y", "Y1y"},
+	   {"2z", "Z2z"},
+	   {"3t", "T3t"},
+	   {"n", "cs"},
+	   {"c", "C"},
+	   {"s", "S"}},
+	  {{'X', 1}, // we don't do even-odd layout on the coarse operator space
+	   {'W', mg_blocking.at('x')},
+	   {'Y', mg_blocking.at('y')},
+	   {'Z', mg_blocking.at('z')},
+	   {'T', mg_blocking.at('t')},
+	   {'0', layout_blocking.at('x')},
+	   {'1', layout_blocking.at('y')},
+	   {'2', layout_blocking.at('z')},
+	   {'3', layout_blocking.at('t')},
+	   {'c', num_null_vecs},
+	   {'s', nv2.kvdim()['n'] / num_null_vecs}},
+	  true);
 
 	// User even-odd ordering for nv_blk
 	if (nv_blk.kvdim().at('0') != 1)
 	  throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
+
 	// Do the orthogonalization on each block and chirality
 	ortho<6, 1>(nv_blk, "X0123xyzts", "WYZTSC", "c", 4, JustSummary, "prolongator");
 
 	// Return the operator
 	auto nv_blk_eo_dim = nv_blk.kvdim();
-	if (X == 2) {
+	if (X == 2 && nv_blk_eo_dim.at('x') % 2 == 0 &&
+	    (nv_blk_eo_dim.at('y') == 1 || nv_blk_eo_dim.at('y') % 2 == 0) &&
+	    (nv_blk_eo_dim.at('z') == 1 || nv_blk_eo_dim.at('z') % 2 == 0) &&
+	    (nv_blk_eo_dim.at('t') == 1 || nv_blk_eo_dim.at('t') % 2 == 0))
+	{
 	  nv_blk_eo_dim['x'] /= 2;
 	  nv_blk_eo_dim['X'] = 2;
 	}
 	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		  contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
-		    .template reshape_dimensions<NOp + 1>(
-		      {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"}, {"T3t", "3t"}}, opdims, true)
-		    .rename_dims({{'C', 'c'}, {'S', 's'}})
-		    .copyTo(y);
+		  auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
+			      .template reshape_dimensions<NOp + 1>({{"WX0x", "X0x"},
+								     {"Y1y", "1y"},
+								     {"Z2z", "2z"},
+								     {"T3t", "3t"},
+								     {"C", "c"},
+								     {"S", "s"}},
+								    opdims, true);
+		  if (not x_blocking_divide_X)
+		    toEvenOddOrdering(y0).copyTo(y);
+		  else
+		    y0.copyTo(y);
 		},
 		d,
 		i,
 		[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		  auto x_blk = x.rename_dims({{'c', 'C'}, {'s', 'S'}})
-				 .template reshape_dimensions<NOp + 1 + 4>(
-				   {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"}},
-				   nv_blk.kvdim(), true);
-		  toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC")).copyTo(y);
+		  auto x0 = x;
+		  if (not x_blocking_divide_X)
+		    x0 = toNaturalOrdering(x);
+		  auto x_blk = x0.template reshape_dimensions<NOp + 1 + 4>({{"X0x", "WX0x"},
+									    {"1y", "Y1y"},
+									    {"2z", "Z2z"},
+									    {"3t", "T3t"},
+									    {"c", "C"},
+									    {"s", "S"}},
+									   nv_blk.kvdim(), true);
+		  if (nv_blk_eo_dim.at('X') == 1)
+		    contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC", CopyTo, y);
+		  else
+		    toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC")).copyTo(y);
 		},
 		op.order_t,
-		X == 2 ? XEvenOddLayout : NaturalLayout,
+		nv_blk_eo_dim.at('X') == 2 ? XEvenOddLayout : NaturalLayout,
 		op.imgLayout,
 		getNeighborsAfterBlocking(mg_blocking, op.d.kvdim(), op.neighbors, op.imgLayout),
 		op.preferred_col_ordering};
