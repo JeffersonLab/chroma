@@ -971,9 +971,10 @@ namespace Chroma
       /// \param xoddity: 0 for even, 1 for odd x coordinates
       /// \param t: return a tensor with this distribution
       /// \param layout: tensor's layout
+      /// NOTE: this implementation may be too slow for large tensors
 
       template <std::size_t N, typename T>
-      Tensor<N, float> getXOddityMask(int xoddity, const Tensor<N, T>& t, OperatorLayout layout)
+      Tensor<N, float> getXOddityMask_aux(int xoddity, const Tensor<N, T>& t, OperatorLayout layout)
       {
 	if (xoddity != 0 && xoddity != 1)
 	  throw std::runtime_error("getXOddityMask: invalid input argument `xoddity`");
@@ -1017,6 +1018,34 @@ namespace Chroma
 	}
 	else
 	  throw std::runtime_error("getXOddityMask: unsupported layout");
+
+	return r;
+      }
+
+      /// Return a mask for the sites with even or odd x coordinate
+      /// \param xoddity: 0 for even, 1 for odd x coordinates
+      /// \param t: return a tensor with this distribution
+      /// \param layout: tensor's layout
+
+      template <std::size_t N, typename T>
+      Tensor<N, float> getXOddityMask(int xoddity, const Tensor<N, T>& t, OperatorLayout layout)
+      {
+	// Create the mask on the lattice components
+	auto r_lat = t.template make_compatible<5, float>("Xxyzt");
+	r_lat = getXOddityMask_aux(xoddity, r_lat, layout);
+
+	// Create a matrix of ones to extend the mask onto the other components
+	auto dim_dense = t.kvdim();
+	for (auto& it : dim_dense)
+	  if (is_in("xyztX", it.first))
+	    it.second = 1;
+	auto r_dense = t.template like_this<N - 5, float>("%", '%', "xyztX", dim_dense, none,
+							  OnEveryoneReplicated);
+	r_dense.set(1);
+
+	// Contract both to create the output tensor
+	auto r = t.template make_compatible<N, float>();
+	contract(r_lat, r_dense, "", CopyTo, r);
 
 	return r;
       }
