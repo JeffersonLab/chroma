@@ -191,6 +191,12 @@ namespace Chroma
 	  fop_tconj, i, d, fop, order_t, imgLayout, domLayout, neighbors, preferred_col_ordering};
       }
 
+      /// Return whether the operator has transpose conjugate
+      bool has_tconj() const
+      {
+	return !power_fop && fop_tconj;
+      }
+
       /// Apply the operator
       template <std::size_t N, typename T>
       Tensor<N, T> operator()(const Tensor<N, T>& t) const
@@ -201,13 +207,13 @@ namespace Chroma
 	if (power_fop)
 	{
 	  auto x = t.template reshape_dimensions<NOp + 2>({{cols, "^n"}}, {{'^', 1}})
-		     .template make_sure<COMPLEX>();
+		     .template cast<COMPLEX>();
 	  auto y =
 	    i.template like_this<NOp + 2>(preferred_col_ordering == ColumnMajor ? "%n^" : "n^%",
 					  '%', "", {{'n', x.kvdim()['n']}, {'^', 1}});
 	  power_fop(x, y, 0);
 	  return y.template reshape_dimensions<N>({{"n^", cols}}, t.kvdim(), false)
-	    .template make_sure<T>();
+	    .template cast<T>();
 	}
 	else
 	{
@@ -235,22 +241,20 @@ namespace Chroma
 	  if (power_label == 0)
 	  {
 	    auto x0 = x.template reshape_dimensions<NOp + 2>({{cols, "^n"}}, {{'^', 1}}, true)
-			.template make_sure<COMPLEX>();
+			.template cast<COMPLEX>();
 	    auto y0 = y.template reshape_dimensions<NOp + 2>({{cols, "^n"}}, {{'^', 1}}, true)
-			.template make_sure<COMPLEX>();
+			.template cast_like<COMPLEX>();
 	    power_fop(x0, y0, 0);
-	    if (y.data != y0.data)
-	      y0.copyTo(y);
+	    y0.copyTo(y);
 	  }
 	  else
 	  {
 	    auto x0 = x.template collapse_dimensions<NOp + 2>(cols, 'n', true)
-			.template make_sure<COMPLEX>();
+			.template cast<COMPLEX>();
 	    auto y0 = y.template collapse_dimensions<NOp + 2>(cols, 'n', true)
-			.template make_sure<COMPLEX>();
+			.template cast_like<COMPLEX>();
 	    power_fop(x0, y0, power_label);
-	    if (y.data != y0.data)
-	      y0.copyTo(y);
+	    y0.copyTo(y);
 	  }
 	}
 	else
@@ -258,12 +262,11 @@ namespace Chroma
 	  if (power_label == 0)
 	  {
 	    auto x0 = x.template collapse_dimensions<NOp + 1>(cols_and_power, 'n', true)
-			.template make_sure<COMPLEX>();
+			.template cast<COMPLEX>();
 	    auto y0 = y.template collapse_dimensions<NOp + 1>(cols_and_power, 'n', true)
-			.template make_sure<COMPLEX>();
+			.template cast_like<COMPLEX>();
 	    fop(x0, y0);
-	    if (y.data != y0.data)
-	      y0.copyTo(y);
+	    y0.copyTo(y);
 	  }
 	  else if (y.kvdim().at(power_label) > 0)
 	  {
@@ -273,6 +276,44 @@ namespace Chroma
 	      operator()(y.kvslice_from_size({{power_label, i - 1}}, {{power_label, 1}}),
 			 y.kvslice_from_size({{power_label, i}}, {{power_label, 1}}));
 	  }
+	}
+      }
+
+      /// Return this operator with an implicit different type
+      /// \tparam T: new implicit precision
+
+      template <typename T = COMPLEX,
+		typename std::enable_if<std::is_same<T, COMPLEX>::value, bool>::type = true>
+      Operator<NOp, T> cast() const
+      {
+	return *this;
+      }
+
+      template <typename T,
+		typename std::enable_if<!std::is_same<T, COMPLEX>::value, bool>::type = true>
+      Operator<NOp, T> cast() const
+      {
+	if (!*this)
+	  return {};
+
+	if (power_fop)
+	{
+	  const Operator<NOp, COMPLEX> op = *this;
+	  return Operator<NOp, T>(
+	    [=](const Tensor<NOp + 2, T>& x, Tensor<NOp + 2, T> y, char p) { op(x, y, p); },
+	    d.template cast<T>(), i.template cast<T>(), order_t, domLayout, imgLayout, neighbors,
+	    preferred_col_ordering);
+	}
+	else
+	{
+	  const Operator<NOp, COMPLEX> op = *this,
+				       op_tconj = has_tconj() ? tconj() : Operator<NOp, COMPLEX>{};
+	  return Operator<NOp, T>(
+	    [=](const Tensor<NOp + 1, T>& x, Tensor<NOp + 1, T> y) { op(x, y); },
+	    d.template cast<T>(), i.template cast<T>(),
+	    op_tconj ? [=](const Tensor<NOp + 1, T>& x, Tensor<NOp + 1, T> y) { op_tconj(x, y); }
+		     : OperatorFun<NOp, T>{},
+	    order_t, domLayout, imgLayout, neighbors, preferred_col_ordering);
 	}
       }
     };
@@ -354,7 +395,7 @@ namespace Chroma
 	double tol = 0;
 	fnorm2.make_sure(none, OnHost, OnEveryoneReplicated)
 	  .foreachWithCPUFun(
-	    [&](const COMPLEX& t) { tol = std::max(tol, std::sqrt(std::real(t))); });
+	    [&](const COMPLEX& t) { tol = std::max(tol, (double)std::sqrt(std::real(t))); });
 	return tol;
       }
     }
@@ -612,7 +653,7 @@ namespace Chroma
 	  auto normrd = norm<1>(rd, op.order_t + order_cols);
 	  double max_tol_d = 0;
 	  for (int i = 0, vol = normr.volume(); i < vol; ++i)
-	    max_tol_d = std::max(max_tol_d, normrd.get({{i}}) / normr.get({{i}}));
+	    max_tol_d = std::max(max_tol_d, (double)normrd.get({{i}}) / normr.get({{i}}));
 	  QDPIO::cout << prefix
 		      << " MGPROTON FGMRES error in residual vector: " << detail::tostr(max_tol_d)
 		      << std::endl;
@@ -621,7 +662,7 @@ namespace Chroma
 	// Get the worse tolerance
 	max_tol = 0;
 	for (int i = 0, vol = normr.volume(); i < vol; ++i)
-	  max_tol = std::max(max_tol, normr.get({{i}}) / normr0.get({{i}}));
+	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
 
 	// Report iteration
 	if (verb >= Detailed)
@@ -641,7 +682,7 @@ namespace Chroma
 	auto normr = norm<1>(r, op.order_t + order_cols);
 	max_tol = 0;
 	for (int i = 0, vol = normr.volume(); i < vol; ++i)
-	  max_tol = std::max(max_tol, normr.get({{i}}) / normr0.get({{i}}));
+	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
 	if (tol > 0 && max_tol > tol)
 	  throw std::runtime_error("fgmres didn't converged and you ask for checking the error");
       }
@@ -778,7 +819,7 @@ namespace Chroma
 	}
 	else if (ns == Ns)
 	{
-	  return SB::Gamma(Ns * Ns - 1).make_sure(none, dev);
+	  return SB::Gamma(Ns * Ns - 1).template make_sure<COMPLEX>(none, dev);
 	}
 	else if (ns == 2)
 	{
@@ -1571,7 +1612,8 @@ namespace Chroma
 	if (ns > 1 && do_chirality_splitting)
 	{
 	  nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
-	  auto g5 = getGamma5(ns, OnHost), g5pos = g5.cloneOn(OnHost), g5neg = g5.cloneOn(OnHost);
+	  auto g5 = getGamma5<COMPLEX>(ns, OnHost), g5pos = g5.cloneOn(OnHost),
+	       g5neg = g5.cloneOn(OnHost);
 	  for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
 	    g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
 	  for (int i = 0; i < ns; ++i) // make diagonal entries of gneg all negative or zero
@@ -1730,7 +1772,7 @@ namespace Chroma
 	ColOrdering co_blk =
 	  getOption<ColOrdering>(ops, "operator_block_ordering", getColOrderingMap(), RowMajor);
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5(ns);
+	auto g5 = getGamma5<COMPLEX>(ns);
 	const Operator<NOp, COMPLEX> op_c = cloneOperator(
 	  Operator<NOp, COMPLEX>{
 	    [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -2005,7 +2047,7 @@ namespace Chroma
 	  auto normdiff = norm<1>(y, "n");
 	  double max_err = 0;
 	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
-	    max_err = std::max(max_err, normdiff.get({{i}}) / normx.get({{i}}));
+	    max_err = std::max(max_err, (double)normdiff.get({{i}}) / normx.get({{i}}));
 	  QDPIO::cout << " eo prec error: " << detail::tostr(max_err) << std::endl;
 	}
 
@@ -2093,10 +2135,10 @@ namespace Chroma
 
       // Auxiliary structure passed to PRIMME's matvec
 
-      template <std::size_t NOp>
+      template <std::size_t NOp, typename COMPLEX>
       struct GDOperatorAux {
 	const DeviceHost primme_dev; // where primme allocations are
-	const Operator<NOp, Complex>& op;
+	const Operator<NOp, COMPLEX>& op;
 
 	// Wrapper for PRIMME of `LaplacianOperator`
 	/// \param x: pointer to input vector
@@ -2116,7 +2158,7 @@ namespace Chroma
 	    if (*blockSize > 1 && (*ldx != primme->nLocal || *ldy != primme->nLocal))
 	      throw std::runtime_error("We cannot play with the leading dimensions");
 
-	    GDOperatorAux<NOp>& aux = *(GDOperatorAux<NOp>*)primme->matrix;
+	    GDOperatorAux<NOp, COMPLEX>& aux = *(GDOperatorAux<NOp, COMPLEX>*)primme->matrix;
 	    auto dim = aux.op.d.kvdim();
 	    dim['n'] = *blockSize;
 	    std::string order = aux.op.d.order + "n";
@@ -2127,7 +2169,7 @@ namespace Chroma
 					 std::shared_ptr<ComplexD>((ComplexD*)y, [](ComplexD*) {}));
 
 	    // ty = op * g5 * x
-	    auto g5 = getGamma5(dim['s'], aux.primme_dev);
+	    auto g5 = getGamma5<ComplexD>(dim['s'], aux.primme_dev);
 	    aux.op(
 	      contract<NOp + 1>(g5.rename_dims({{'j', 's'}}), tx, "s").rename_dims({{'i', 's'}}),
 	      ty);
@@ -2171,7 +2213,7 @@ namespace Chroma
 	    // Create an auxiliary struct for the PRIMME's matvec
 	    // NOTE: Please keep 'n' as the slowest index; the rows of vectors taken by PRIMME's matvec has dimensions 'cxyztX',
 	    // and 'n' is the dimension for the columns.
-	    GDOperatorAux<NOp> opaux{primme_dev, solver};
+	    GDOperatorAux<NOp, COMPLEX> opaux{primme_dev, solver};
 
 	    // Make a bigger structure holding
 	    primme_params primme;
@@ -2275,7 +2317,7 @@ namespace Chroma
 	  throw std::runtime_error("getDagger: unsupported input preconditioner");
 
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5(ns);
+	auto g5 = getGamma5<COMPLEX>(ns);
 
 	// Return the solver
 	return {
@@ -2308,7 +2350,7 @@ namespace Chroma
 	  throw std::runtime_error("getG5: unsupported input preconditioner");
 
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5(ns);
+	auto g5 = getGamma5<COMPLEX>(ns);
 
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -2332,6 +2374,39 @@ namespace Chroma
 		getNeighbors(op.d.kvdim(), 0, op.domLayout),
 		op.preferred_col_ordering};
       }
+
+      /// Returns a solver with possible different precision than the operator's
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getCasting(Operator<NOp, COMPLEX> op, const Options& ops, Operator<NOp, COMPLEX> prec_)
+      {
+	// Get the current precision and the requested by the user
+	enum Precision { Single, Double, Default };
+	static const std::map<std::string, Precision> precisionMap{{"default", Default},
+								   {"single", Single},
+								   {"float", Single},
+								   {"double", Double}};
+	Precision defaultPrecision = std::is_same<COMPLEX, ComplexD>::value ? Double : Single;
+	Precision requestedPrecision =
+	  getOption<Precision>(ops, "precision", precisionMap, Default);
+	if (requestedPrecision == Default)
+	  requestedPrecision = defaultPrecision;
+
+	// Get the solver options
+	const Options& solverOps = getOptions(ops, "solver");
+
+	if (requestedPrecision == Double)
+	{
+	  return getSolver(op.template cast<ComplexD>(), solverOps, prec_.template cast<ComplexD>())
+	    .template cast<COMPLEX>();
+	} else {
+	  return getSolver(op.template cast<ComplexF>(), solverOps, prec_.template cast<ComplexF>())
+	    .template cast<COMPLEX>();
+	}
+      }
     }
 
     /// Returns an operator that approximate the inverse of a given operator
@@ -2347,9 +2422,10 @@ namespace Chroma
 	{"mg", detail::getMGPrec<NOp, COMPLEX>},	   // Multigrid
 	{"eo", detail::getEvenOddPrec<NOp, COMPLEX>},	   // even-odd Schur preconditioner
 	{"igd", detail::getInexactGD<NOp, COMPLEX>},	   // inexact Generalized Davidson
-	{"Ddag", detail::getDagger<NOp, COMPLEX>},	// return the operator conjugate transposed
-	{"g5", detail::getG5<NOp, COMPLEX>},		// apply \gamma_5
-	{"blocking", detail::getBlocking<NOp, COMPLEX>} // reshape the operator
+	{"Ddag", detail::getDagger<NOp, COMPLEX>},	 // return the operator conjugate transposed
+	{"g5", detail::getG5<NOp, COMPLEX>},		 // apply \gamma_5
+	{"blocking", detail::getBlocking<NOp, COMPLEX>}, // reshape the operator
+	{"casting", detail::getCasting<NOp, COMPLEX>}	 // change the precision
       };
 
       return detail::getSolver(solvers, op, ops, prec);

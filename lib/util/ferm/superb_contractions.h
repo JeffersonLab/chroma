@@ -2807,6 +2807,40 @@ namespace Chroma
 	return false;
       }
 
+      /// Return whether the given tensor has the same shape, distribution, type, and implicit scalar
+      /// and conjugacy.
+      /// \param v: tensor to compare
+
+      bool is_like(Tensor<N, T> v) const
+      {
+	return order == v.order && from == v.from && size == v.size && dim == v.dim &&
+	       scalar == v.scalar && conjugate == v.conjugate && dist == v.dist && p->p == v.p->p;
+      }
+
+      template <
+	std::size_t Nv, typename Tv,
+	typename std::enable_if<(N != Nv || !std::is_same<T, Tv>::value), bool>::type = true>
+      bool is_like(Tensor<Nv, Tv>) const
+      {
+	return false;
+      }
+
+      /// Return whether the given tensor has the same memory allocation as this one
+      /// \param v: tensor to compare
+
+      template <std::size_t Nv>
+      bool has_same_allocation(Tensor<Nv, T> v) const
+      {
+	return data == v.data;
+      }
+
+      template <std::size_t Nv, typename Tv,
+		typename std::enable_if<!std::is_same<T, Tv>::value, bool>::type = true>
+      bool has_same_allocation(Tensor<Nv, Tv>) const
+      {
+	return false;
+      }
+
       /// Return whether the given tensor has the same distribution as this one
       Tensor<N, float> create_mask() const
       {
@@ -2843,10 +2877,30 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "Not allowed to copy or add tensor with different implicit conjugacy");
 
-	if ((dist == Local && w.dist != Local) || (dist != Local && w.dist == Local))
+	bool some_is_local = dist == Local || w.dist == Local || (m && m.getSome().dist == Local) ||
+			     (wm && wm.getSome().dist == Local);
+	bool some_isnt_local = dist != Local || w.dist != Local ||
+			       (m && m.getSome().dist != Local) ||
+			       (wm && wm.getSome().dist != Local);
+	if (some_is_local && some_isnt_local)
+	  throw std::runtime_error(
+	    "Not allowed to copy or add a non-local tensor into a local tensor or vice versa");
+
+	// Transform to a local copy when both tensors have the same shape and distribution
+	if (action == CopyTo && is_like(w))
 	{
-	  getLocal().doAction(action, w.getLocal(), m);
-	  return;
+	  if (some_isnt_local)
+	  {
+	    auto this_local = getLocal();
+	    auto w_local = w.getLocal();
+	    if (w_local && this_local)
+	      this_local.doAction(action, w_local,
+				  m ? Maybe<Tensor<Nm, Tm>>(m.getSome().getLocal()) : none,
+				  wm ? Maybe<Tensor<Nwm, Twm>>(wm.getSome().getLocal()) : none);
+	    return;
+	  }
+	  if (some_is_local && has_same_allocation(w) && !m && !wm)
+	    return;
 	}
 
 	// Compute masks
@@ -3255,6 +3309,59 @@ namespace Chroma
 	{
 	  r.conjugate = conjugate;
 	  copyTo(r);
+	}
+	return r;
+      }
+
+      /// Return a copy of this tensor in a different type or this tensor if the type coincides
+      /// \tparam Tn: new precision
+
+      template <typename Tn = T,
+		typename std::enable_if<std::is_same<T, Tn>::value, bool>::type = true>
+      Tensor<N, Tn> cast() const
+      {
+	return *this;
+      }
+
+      template <typename Tn = T,
+		typename std::enable_if<!std::is_same<T, Tn>::value, bool>::type = true>
+      Tensor<N, Tn> cast() const
+      {
+	auto r = make_compatible<N, Tn>();
+	if (is_eg())
+	{
+	  r = r.make_eg();
+	}
+	else
+	{
+	  r.conjugate = conjugate;
+	  copyTo(r);
+	}
+	return r;
+      }
+
+      /// Return a compatible tensor in a different type or this tensor if the type coincides
+      /// \tparam Tn: new precision
+
+      template <typename Tn = T,
+		typename std::enable_if<std::is_same<T, Tn>::value, bool>::type = true>
+      Tensor<N, Tn> cast_like() const
+      {
+	return *this;
+      }
+
+      template <typename Tn = T,
+		typename std::enable_if<!std::is_same<T, Tn>::value, bool>::type = true>
+      Tensor<N, Tn> cast_like() const
+      {
+	auto r = make_compatible<N, Tn>();
+	if (is_eg())
+	{
+	  r = r.make_eg();
+	}
+	else
+	{
+	  r.conjugate = conjugate;
 	}
 	return r;
       }
