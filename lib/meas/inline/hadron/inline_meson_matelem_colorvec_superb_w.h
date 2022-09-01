@@ -41,6 +41,7 @@ namespace Chroma
 	int			Nt_forward;		/*!< Nt_forward */
 	int			t_source;		/*!< t_source */
 	int                     max_tslices_in_contraction;  /*! maximum number of contracted tslices simultaneously */
+	int                     max_moms_in_contraction;  /*! maximum number of contracted momenta simultaneously */
 	std::vector<float>          quarkPhase;         /*!< Phase to apply to the right colorvecs (quarks) */
 	std::vector<float>          aQuarkPhase;        /*!< Phase to apply to the left colorvecs (antiquarks) */
       };

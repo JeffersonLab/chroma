@@ -4581,7 +4581,7 @@ namespace Chroma
 				bool deriv, const ContractionFn<COMPLEX>& call,
 				const Maybe<std::string>& order_out = none,
 				Maybe<DeviceHost> dev = none, Maybe<Distribution> dist = none,
-				int max_tslices_in_contraction = 0)
+				int max_tslices_in_contraction = 0, int max_moms_in_contraction = 0)
     {
       const std::string order_out_str = order_out.getSome("ijmt");
       detail::check_order_contains(order_out_str, "ijmt");
@@ -4601,9 +4601,13 @@ namespace Chroma
       if (Nt != moms.first.kvdim()['t'])
 	throw std::runtime_error("The t component of `colorvec' and `moms' does not match");
 
-      // Iterate over time-slices
       if (max_tslices_in_contraction <= 0)
 	max_tslices_in_contraction = Nt;
+      int Nmom = moms.first.kvdim()['m'];
+      if (max_moms_in_contraction <= 0)
+	max_moms_in_contraction = Nmom;
+
+      // Iterate over time-slices
       for (int tfrom = 0, tsize = std::min(Nt, max_tslices_in_contraction); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_tslices_in_contraction, Nt - tfrom))
       {
@@ -4629,45 +4633,56 @@ namespace Chroma
 
 	// Get the time-slice for colorvec
 	auto this_colorvec = colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
-	auto this_moms = moms.first.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
 
-	// Apply left phase and momenta conjugated to the left tensor
-	// NOTE: look for the minus sign on left_phase in the doc of this function
-	int Nmom = moms.first.kvdim()['m'];
-	Tensor<Nin + 1, COMPLEX> moms_left =
-	  this_colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', Nmom}});
-	moms_left.contract(std::move(this_moms), {}, Conjugate,
-			   phaseColorvecs(this_colorvec, first_tslice + tfrom, left_phase),
-			   {}, NotConjugate);
+	// Apply the phases
+	auto this_colorvec_phase_right =
+	  phaseColorvecs(this_colorvec, first_tslice + tfrom, right_phase);
+	auto this_colorvec_phase_left =
+	  phaseColorvecs(this_colorvec, first_tslice + tfrom, left_phase);
 
-	// Apply the right phase
-	this_colorvec = phaseColorvecs(this_colorvec, first_tslice + tfrom, right_phase);
-
-	if (tfrom + tsize >= Nt)
+	// Loop over the momenta
+	for (int mfrom = 0, msize = std::min(max_moms_in_contraction, Nmom); mfrom < Nmom;
+	     mfrom += msize, msize = std::min(max_moms_in_contraction, Nmom - mfrom))
 	{
-	  colorvec.release();
-	  moms.first.release();
-	}
 
-	if (!deriv)
-	{
-	  ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
-	    ut, std::move(moms_left), this_colorvec, first_tslice + tfrom, tree_disps, deriv,
-	    moms.second, 0, order_out_str, dev.getSome(OnDefaultDevice),
-	    dist.getSome(OnEveryoneReplicated), call);
-	}
-	else
-	{
-	  // When using derivatives, each momenta has a different effect
-	  std::vector<COMPLEX> ones(Nmom, COMPLEX(1));
-	  Tensor<Nin + 1, COMPLEX> this_colorvec_m =
-	    this_colorvec.template like_this<Nin + 1>("%m", '%', "", {{'m', Nmom}});
-	  this_colorvec_m.contract(std::move(this_colorvec), {}, NotConjugate, asTensorView(ones),
-				   {{'i', 'm'}}, NotConjugate);
-	  ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
-	    ut, std::move(moms_left), this_colorvec_m, first_tslice + tfrom, tree_disps, deriv,
-	    moms.second, 0, order_out_str, dev.getSome(OnDefaultDevice),
-	    dist.getSome(OnEveryoneReplicated), call);
+	  auto this_moms = moms.first.kvslice_from_size({{'t', tfrom}, {'m', mfrom}},
+							{{'t', tsize}, {'m', msize}});
+
+	  // Apply left phase and momenta conjugated to the left tensor
+	  // NOTE: look for the minus sign on left_phase in the doc of this function
+	  Tensor<Nin + 1, COMPLEX> moms_left =
+	    this_colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', msize}});
+	  moms_left.contract(std::move(this_moms), {}, Conjugate, this_colorvec_phase_left, {},
+			     NotConjugate);
+
+	  if (tfrom + tsize >= Nt && mfrom + msize >= Nmom)
+	  {
+	    colorvec.release();
+	    moms.first.release();
+	  }
+
+	  auto this_moms_coors = std::vector<Coor<Nd - 1>>(moms.second.begin() + mfrom,
+							   moms.second.begin() + mfrom + msize);
+	  if (!deriv)
+	  {
+	    ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
+	      ut, std::move(moms_left), this_colorvec_phase_right, first_tslice + tfrom, tree_disps,
+	      deriv, this_moms_coors, mfrom, order_out_str, dev.getSome(OnDefaultDevice),
+	      dist.getSome(OnEveryoneReplicated), call);
+	  }
+	  else
+	  {
+	    // When using derivatives, each momenta has a different effect
+	    std::vector<COMPLEX> ones(msize, COMPLEX(1));
+	    Tensor<Nin + 1, COMPLEX> this_colorvec_m =
+	      this_colorvec.template like_this<Nin + 1>("%m", '%', "", {{'m', msize}});
+	    this_colorvec_m.contract(this_colorvec_phase_right, {}, NotConjugate,
+				     asTensorView(ones), {{'i', 'm'}}, NotConjugate);
+	    ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
+	      ut, std::move(moms_left), std::move(this_colorvec_m), first_tslice + tfrom,
+	      tree_disps, deriv, this_moms_coors, mfrom, order_out_str,
+	      dev.getSome(OnDefaultDevice), dist.getSome(OnEveryoneReplicated), call);
+	  }
 	}
       }
     }
