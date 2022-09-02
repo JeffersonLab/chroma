@@ -1525,14 +1525,14 @@ namespace Chroma
 
       Tensor()
 	: order(detail::getTrivialOrder(N)),
-	  dim{},
+	  dim{{}},
 	  ctx(detail::getContext(OnHost)),
 	  p(std::make_shared<detail::TensorPartition<N>>(
-	    detail::TensorPartition<N>(detail::getTrivialOrder(N), {}, OnEveryoneReplicated))),
+	    detail::TensorPartition<N>(detail::getTrivialOrder(N), {{}}, OnEveryoneReplicated))),
 	  dist(OnEveryoneReplicated),
-	  from{},
-	  size{},
-	  strides{},
+	  from{{}},
+	  size{{}},
+	  strides{{}},
 	  scalar{0},
 	  conjugate{false},
 	  eg{false}
@@ -1553,7 +1553,7 @@ namespace Chroma
 	  ctx(detail::getContext(dev)),
 	  data(data),
 	  dist(dist),
-	  from{},
+	  from{{}},
 	  size(dim),
 	  strides(detail::get_strides<std::size_t, N>(dim, superbblas::FastToSlow)),
 	  scalar{1},
@@ -1612,7 +1612,7 @@ namespace Chroma
 	  ctx(detail::getContext(dev)),
 	  p(p),
 	  dist(dist),
-	  from{},
+	  from{{}},
 	  size(dim),
 	  strides(detail::get_strides<std::size_t, N>(dim, superbblas::FastToSlow)),
 	  scalar{1},
@@ -1705,7 +1705,7 @@ namespace Chroma
 
       bool isSubtensor() const
       {
-	return (from != Coor<N>{} || size != dim);
+	return (from != Coor<N>{{}} || size != dim);
       }
 
       /// Return the first coordinate supported by the tensor
@@ -2319,7 +2319,7 @@ namespace Chroma
       {
 	return Tensor<N, T>(
 	  order, size, ctx, std::shared_ptr<T>(),
-	  std::make_shared<detail::TensorPartition<N>>(p->get_subpartition(from, size)), dist, {},
+	  std::make_shared<detail::TensorPartition<N>>(p->get_subpartition(from, size)), dist, {{}},
 	  size, T{1}, false /* not conjugate */, true /* is eg */);
       }
 
@@ -3224,13 +3224,13 @@ namespace Chroma
 
       void release()
       {
-	dim = {};
+	dim = {{}};
 	data.reset();
 	p.reset();
 	ctx.reset();
-	from = {};
-	size = {};
-	strides = {};
+	from = {{}};
+	size = {{}};
+	strides = {{}};
 	scalar = T{0};
 	conjugate = false;
 	eg = false;
@@ -4051,7 +4051,7 @@ namespace Chroma
 
       /// Empty constructor
 
-      SpTensor() : blki{}, blkd{}, scalar{0}, isImgFastInBlock{false}, nblockd{0}, nblocki{0}
+      SpTensor() : blki{{}}, blkd{{}}, scalar{0}, isImgFastInBlock{false}, nblockd{0}, nblocki{0}
       {
       }
 
@@ -4465,11 +4465,11 @@ namespace Chroma
 	: filename{},
 	  metadata{},
 	  order(detail::getTrivialOrder(N)),
-	  dim{},
+	  dim{{}},
 	  sparsity(Dense),
 	  ctx{},
-	  from{},
-	  size{},
+	  from{{}},
+	  size{{}},
 	  scalar{0}
       {
       }
@@ -4483,7 +4483,7 @@ namespace Chroma
 	  order(order),
 	  dim(dim),
 	  sparsity(sparsity),
-	  from{},
+	  from{{}},
 	  size{dim},
 	  scalar{1}
       {
@@ -4500,7 +4500,7 @@ namespace Chroma
 	// If the tensor to store is dense, create the block here; otherwise, create the block on copy
 	if (sparsity == Dense)
 	{
-	  superbblas::PartitionItem<N> p{Coor<N>{}, dim};
+	  superbblas::PartitionItem<N> p{Coor<N>{{}}, dim};
 	  superbblas::append_blocks<N, T>(&p, 1, dim, stoh, MPI_COMM_WORLD, superbblas::FastToSlow);
 	}
       }
@@ -4508,7 +4508,7 @@ namespace Chroma
       // Open storage construct
       StorageTensor(const std::string& filename, bool read_order = true,
 		    const Maybe<std::string>& order_tag = none)
-	: filename(filename), sparsity(Sparse), from{}, scalar{1}
+	: filename(filename), sparsity(Sparse), from{{}}, scalar{1}
       {
 	// Read information from the storage
 	superbblas::values_datatype values_dtype;
@@ -4622,10 +4622,10 @@ namespace Chroma
 
       void release()
       {
-	dim = {};
+	dim = {{}};
 	ctx.reset();
-	from = {};
-	size = {};
+	from = {{}};
+	size = {{}};
 	scalar = T{0};
 	filename = "";
 	metadata = "";
@@ -5841,10 +5841,10 @@ namespace Chroma
 
     template <typename COMPLEX>
     Tensor<Nd + 3, COMPLEX> phaseColorvecs(Tensor<Nd + 3, COMPLEX> colorvecs, int from_tslice,
-					   Coor<Nd - 1> phase = {})
+					   Coor<Nd - 1> phase = {{}})
     {
       // Phase colorvecs if phase != (0,0,0)
-      if (phase == Coor<Nd - 1>{})
+      if (phase == Coor<Nd - 1>{{}})
 	return colorvecs;
 
       Tensor<Nd + 1, COMPLEX> tphase =
@@ -5871,7 +5871,7 @@ namespace Chroma
 					 const multi1d<LatticeColorMatrix>& u, int decay_dir,
 					 int from_tslice, int n_tslices, int n_colorvecs,
 					 const Maybe<const std::string>& order = none,
-					 Coor<Nd - 1> phase = {}, DeviceHost dev = OnDefaultDevice)
+					 Coor<Nd - 1> phase = {{}}, DeviceHost dev = OnDefaultDevice)
     {
       StopWatch sw;
       sw.reset();
@@ -5917,7 +5917,7 @@ namespace Chroma
     createColorvecStorage(const std::string& colorvec_file, GroupXML_t link_smear,
 			  const multi1d<LatticeColorMatrix>& u, int from_tslice, int n_tslices,
 			  int n_colorvecs, bool use_s3t_storage = false, bool fingerprint = false,
-			  Coor<Nd - 1> phase = {},
+			  Coor<Nd - 1> phase = {{}},
 			  const Maybe<std::vector<std::string>>& colorvec_file_src = none)
     {
       // Check input
@@ -5959,7 +5959,7 @@ namespace Chroma
       // Open the DB and write metada
       MOD_t mod;
       StorageTensor<Nd + 2, ComplexD> sto;
-      Coor<3> fingerprint_dim{};
+      Coor<3> fingerprint_dim{{}};
 
       if (!use_s3t_storage)
       {
@@ -6338,7 +6338,7 @@ namespace Chroma
       detail::PathNode tree_disps = ns_doMomGammaDisp_contractions::get_tree(disps);
 
       // Get what directions are going to be used and the maximum number of displacements in memory
-      std::array<bool, Nd> active_dirs{};
+      std::array<bool, Nd> active_dirs{{}};
       unsigned int max_active_disps = 0;
       detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps);
 
@@ -6620,7 +6620,7 @@ namespace Chroma
       detail::PathNode tree_disps = ns_doMomDisp_colorContractions::get_tree(disps);
 
       // Get what directions are going to be used and the maximum number of displacements in memory
-      std::array<bool, Nd> active_dirs{};
+      std::array<bool, Nd> active_dirs{{}};
       unsigned int max_active_disps = 0;
       detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps);
 
@@ -6805,7 +6805,7 @@ namespace Chroma
       detail::PathNode tree_disps = detail::get_tree(disps);
 
       // Get what directions are going to be used and the maximum number of displacements in memory
-      std::array<bool, Nd> active_dirs{};
+      std::array<bool, Nd> active_dirs{{}};
       unsigned int max_active_disps = 0;
       detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps);
 
