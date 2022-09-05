@@ -2760,6 +2760,7 @@ namespace Chroma
 	  for (const auto& it : m)
 	    reverse_m[it.second] = it.first;
 	  copyTo(r.template reshape_dimensions<N>(reverse_m, kvdim(), false));
+	  return r;
 	}
       }
 
