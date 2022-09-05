@@ -787,6 +787,7 @@ namespace Chroma
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		  Tracker _t(std::string("fgmres ") + prefix);
+		  _t.cost = x.kvdim().at('n');
 		  foreachInChuncks(
 		    x, y, max_simultaneous_rhs,
 		    [=](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1183,9 +1184,11 @@ namespace Chroma
       template <std::size_t NOp, typename COMPLEX>
       std::pair<SpTensor<NOp, NOp, COMPLEX>, remap>
       cloneUnblockedOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power = 1,
-			      ColOrdering coBlk = RowMajor)
+				       ColOrdering coBlk = RowMajor, const std::string& prefix = "")
       {
 	log(1, "starting cloneUnblockedOperatorToSpTensor");
+
+	Tracker _t(std::string("clone unblocked operator ") + prefix);
 
 	// Unsupported explicitly colorized operators
 	if (op.d.kvdim().count('X') == 0)
@@ -1349,8 +1352,10 @@ namespace Chroma
       template <std::size_t NOp, typename COMPLEX>
       std::pair<SpTensor<NOp, NOp, COMPLEX>, remap>
       cloneOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power,
-			      ColOrdering coBlk = RowMajor)
+			      ColOrdering coBlk = RowMajor, const std::string& prefix = "")
       {
+	Tracker _t(std::string("clone blocked operator ") + prefix);
+
 	// Unblock the given operator, the code of `cloneUnblockedOperatorToSpTensor` is too complex as it is
 	auto unblki = op.i
 			.template reshape_dimensions<NOp - 4>(
@@ -1380,7 +1385,8 @@ namespace Chroma
 	  throw std::runtime_error("cloneOperatorToSpTensor: invalid power value, it isn't "
 				   "divisible by the furthest neighbor distance");
 	auto opdims = op.i.kvdim();
-	auto t = cloneUnblockedOperatorToSpTensor(unblocked_op, std::min(power, op_dist), coBlk);
+	auto t =
+	  cloneUnblockedOperatorToSpTensor(unblocked_op, std::min(power, op_dist), coBlk, prefix);
 	remap rd = t.second;
 	for (const auto& it :
 	     detail::getNewLabels("0123", op.d.order + op.i.order + "0123" + t.first.d.order))
@@ -1412,7 +1418,8 @@ namespace Chroma
 
       template <std::size_t NOp, typename COMPLEX>
       Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op, unsigned int power,
-					   ColOrdering co, ColOrdering coBlk)
+					   ColOrdering co, ColOrdering coBlk,
+					   const std::string& prefix = "")
       {
 	// If the operator is empty, just return itself
 	if (op.d.volume() == 0 || op.i.volume() == 0)
@@ -1423,7 +1430,7 @@ namespace Chroma
 	if (power % op_dist != 0)
 	  throw std::runtime_error("cloneOperator: invalid power value");
 	unsigned int max_power = std::max(power / op_dist, 1u);
-	auto t = cloneOperatorToSpTensor(op, power, coBlk);
+	auto t = cloneOperatorToSpTensor(op, power, coBlk, prefix);
 	auto sop = t.first;
 	remap rd = t.second;
 
@@ -1465,6 +1472,7 @@ namespace Chroma
 	  co};
 
 	// Do a test
+	Tracker _t(std::string("clone blocked operator (testing) ") + prefix);
 	for (const auto& test_order : std::vector<std::string>{"%n", "n%"})
 	{
 	  auto x = op.d.template like_this<NOp + 1>(test_order, '%', "", {{'n', 2}});
@@ -1536,9 +1544,9 @@ namespace Chroma
 
       template <std::size_t NOp, typename COMPLEX>
       Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op, ColOrdering co,
-					   ColOrdering coBlk)
+					   ColOrdering coBlk, const std::string& prefix = "")
       {
-	return cloneOperator(op, getFurthestNeighborDistance(op), co, coBlk);
+	return cloneOperator(op, getFurthestNeighborDistance(op), co, coBlk, prefix);
       }
 
       /// Return the block diagonal of an operator
@@ -1553,7 +1561,8 @@ namespace Chroma
       {
 	// Check
 	// Get a sparse tensor representation of the operator
-	auto t = cloneOperatorToSpTensor(op, 0 /* clone only the block diagonal */);
+	auto t = cloneOperatorToSpTensor(op, 0 /* clone only the block diagonal */, RowMajor,
+					 "block diag");
 	auto sop = t.first;
 	remap rd = t.second;
 
@@ -1793,7 +1802,7 @@ namespace Chroma
 	    },
 	    V.d, V.d, nullptr, op.order_t, V.domLayout, V.domLayout, V.neighbors,
 	    op.preferred_col_ordering},
-	  co, co_blk);
+	  co, co_blk, "coarse");
 
 	// Get the solver for the projector
 	const Operator<NOp, COMPLEX> coarseSolver =
@@ -1958,7 +1967,7 @@ namespace Chroma
 	}
 	else if (getEvenOddOperatorsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
 	{
-	  opA = cloneOperator(opA_implicit, co, co_blk);
+	  opA = cloneOperator(opA_implicit, co, co_blk, "eo");
 
 	  getEvenOddOperatorsCache<NOp, COMPLEX>()[op.id.get()] = opA;
 	}
@@ -2117,7 +2126,7 @@ namespace Chroma
 		.copyTo(y);
 	    },
 	    blkd, blkd, nullptr, op},
-	  getFurthestNeighborDistance(op) * power, co, co_blk);
+	  getFurthestNeighborDistance(op) * power, co, co_blk, "blocking");
 
 	auto solverOps = getOptionsMaybe(ops, "solver");
 	const Operator<NOp, COMPLEX> solver =
@@ -2444,11 +2453,13 @@ namespace Chroma
       const auto blkdim = blkd.kvdim();
       return {
 	[&, blkdim](Tensor<Nd + 8, Complex> x, Tensor<Nd + 8, Complex> y) {
+	  Tracker _t("chroma's matvec ");
+	  unsigned int n = x.kvdim().at('n');
+	  _t.cost = n;
 	  auto tx = x.template reshape_dimensions<Nd + 4>(
 	    {{"0x", "x"}, {"1y", "y"}, {"2z", "z"}, {"3t", "t"}}, {}, true);
 	  auto ty = tx.like_this();
 	  LatticeFermion x0, y0;
-	  unsigned int n = x.kvdim().at('n');
 	  for (unsigned int i = 0; i < n; ++i)
 	  {
 	    tx.kvslice_from_size({{'n', i}}, {{'n', 1}}).copyTo(asTensorView(x0));
@@ -2515,6 +2526,9 @@ namespace Chroma
 	  // If the inverter is MGPROTON, use this infrastructure
 	  if (invParam.id == std::string("MGPROTON"))
 	  {
+	    QDPIO::cout << "Setting up MGPROTON invertor..." << std::endl;
+	    Tracker _t("setup mgproton");
+
 	    // Parse XML with the inverter options
 	    std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(invParam.xml));
 
@@ -2525,7 +2539,7 @@ namespace Chroma
 	    ColOrdering co_blk = getOption<ColOrdering>(*ops, "InvertParam/operator_block_ordering",
 							getColOrderingMap(), RowMajor);
 	    Operator<Nd + 7, Complex> linOp =
-	      detail::cloneOperator(asOperatorView(*fLinOp), co, co_blk);
+	      detail::cloneOperator(asOperatorView(*fLinOp), co, co_blk, "chroma's operator");
 
 	    // Destroy chroma objects
 	    delete fLinOp;
@@ -2539,6 +2553,9 @@ namespace Chroma
 	    // Clean cache of operators
 	    detail::getEvenOddOperatorsCache<Nd + 7, Complex>().clear();
 	    detail::getEvenOddBlkDiagOperatorsCache<Nd + 7 + 2, Complex>().clear();
+
+	    QDPIO::cout << "MGPROTON invertor ready; setup time: "
+			<< detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;
 	  }
 	  else
 	  {

@@ -161,7 +161,8 @@ namespace Chroma
     /// Wrapper around superbblas time tracking
     struct Tracker : public superbblas::detail::tracker<superbblas::detail::Cpu> {
       Tracker(const std::string& funcName)
-	: superbblas::detail::tracker<superbblas::detail::Cpu>(funcName, superbblas::detail::Cpu{})
+	: superbblas::detail::tracker<superbblas::detail::Cpu>(funcName, superbblas::detail::Cpu{},
+							       true /* time it anyway */)
       {
       }
     };
