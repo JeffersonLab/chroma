@@ -610,6 +610,13 @@ namespace Chroma
 	return r;
       }
 
+      enum ReshapeDimensionsError {
+	Success,		     ///< success
+	CollapseRangeWithHoles,	     ///< unsupported to collapse a range with holes
+	SizeNotDivisibleByPartition, ///< unsupported size for the partition
+	NewDimensionIsTooShort	     ///< new dimension shorter than it should be
+      };
+
       /// Reshape several dimensions into another dimension
       /// \param ncollapse: number of dimensions to collapse starting from each old dimension
       /// \param nsplit: number of dimensions to split starting from each old dimension
@@ -619,9 +626,9 @@ namespace Chroma
       /// \param c: coordinate to transform
 
       template <std::size_t Nout, std::size_t N>
-      Coor<Nout> reshape_dimensions(const Coor<N>& ncollapse, const Coor<N>& nsplit,
-				    const Coor<N>& old_dim, const Coor<Nout>& new_dim, CoorType t,
-				    const Coor<N>& c)
+      std::pair<ReshapeDimensionsError, Coor<Nout>>
+      reshape_dimensions(const Coor<N>& ncollapse, const Coor<N>& nsplit, const Coor<N>& old_dim,
+			 const Coor<Nout>& new_dim, CoorType t, const Coor<N>& c)
       {
 	Coor<Nout> r;
 	unsigned int ri = 0;
@@ -643,8 +650,7 @@ namespace Chroma
 		if (t == Size && c[ci + k] > 0 && c[ci + k] != old_dim[ci + k])
 		{
 		  if (odd_dim_watched)
-		    throw std::runtime_error(
-		      "reshape_dimensions: unsupported to collapse a range with holes");
+		    return {CollapseRangeWithHoles, {}};
 		  odd_dim_watched = true;
 		}
 		if (t == From)
@@ -661,7 +667,7 @@ namespace Chroma
 	      for (unsigned int k = 0; k < nsplit[ci]; ++k)
 	      {
 		if (!(t == From || idx < stride || idx % stride == 0))
-		  throw std::runtime_error("reshape_dimension: Not supporting for this partition");
+		  return {SizeNotDivisibleByPartition, {}};
 		if (t == From)
 		  r[ri + k] = (idx / stride) % new_dim[ri + k];
 		else
@@ -670,7 +676,7 @@ namespace Chroma
 	      }
 	      if (t == Size && new_dim[ri + nsplit[ci] - 1] != std::numeric_limits<int>::max() &&
 		  idx > stride)
-		throw std::runtime_error("reshape_dimension: dimension shorter than it should be");
+		return {NewDimensionIsTooShort, {}};
 	    }
 
 	    ri += nsplit[ci];
@@ -679,7 +685,7 @@ namespace Chroma
 	}
 
 	// Return the new coordinates
-	return r;
+	return {Success, r};
       }
 
 
@@ -889,6 +895,11 @@ namespace Chroma
 	{
 	}
 
+	/// Empty constructor
+	TensorPartition() : dim{}, p{}, isLocal{false}
+	{
+	}
+
 	/// Return the volume of the tensor supported on this node
 	std::size_t localVolume() const
 	{
@@ -1063,18 +1074,29 @@ namespace Chroma
 	/// \param new_dim: maximum dimension size for the new tensor
 
 	template <std::size_t Nout, typename std::enable_if<(N > 0 && Nout > 0), bool>::type = true>
-	TensorPartition<Nout> reshape_dimensions(const Coor<N>& ncollapse, const Coor<N>& nsplit,
-						 const Coor<Nout>& new_dim) const
+	std::pair<ReshapeDimensionsError, TensorPartition<Nout>>
+	reshape_dimensions(const Coor<N>& ncollapse, const Coor<N>& nsplit,
+			   const Coor<Nout>& new_dim) const
 	{
+	  auto new_dim_aux =
+	    detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, new_dim, Size, dim);
+	  if (new_dim_aux.first != Success)
+	    return {new_dim_aux.first, {}};
 	  typename TensorPartition<Nout>::PartitionStored r;
 	  r.reserve(p.size());
 	  for (const auto& i : p)
-	    r.push_back(
-	      {detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, new_dim, From, i[0]),
-	       detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, new_dim, Size, i[1])});
-	  return TensorPartition<Nout>{
-	    detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, new_dim, Size, dim), r,
-	    isLocal};
+	  {
+	    auto new_from =
+	      detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, new_dim, From, i[0]);
+	    auto new_size =
+	      detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, new_dim, Size, i[1]);
+	    if (new_from.first != Success)
+	      return {new_from.first, {}};
+	    if (new_size.first != Success)
+	      return {new_size.first, {}};
+	    r.push_back({new_from.second, new_size.second});
+	  }
+	  return {Success, TensorPartition<Nout>{new_dim_aux.second, r, isLocal}};
 	}
 
 	/// Extend the support of distributed dimensions by one step in each direction
@@ -2657,7 +2679,7 @@ namespace Chroma
 	  }
 	}
 	if (old_order != order)
-	  return reorder(old_order).template reshape_dimensions<Nout>(m, new_dim, false);
+	  return reorder(old_order).template reshape_dimensions<Nout>(m, new_dim, true);
 
 	// Check the length of the output tensor
 	int nout = N;
@@ -2695,18 +2717,50 @@ namespace Chroma
 	}
 	Coor<N> ncollapse = kvcoors<N>(order, m_ncollapse, 1);
 	Coor<N> nsplit = kvcoors<N>(order, m_nsplit, 1);
-	Coor<Nout> d = detail::reshape_dimensions<Nout>(
+	auto d_aux = detail::reshape_dimensions<Nout>(
 	  ncollapse, nsplit, dim, kvcoors<Nout>(new_order, new_dim0, 0, ThrowOnMissing), Size, dim);
+	if (d_aux.first != Success)
+	  throw std::runtime_error("reshape_dimensions: invalid reshape, most likely some new dimension is too short");
+	auto d = d_aux.second; // new dimensions
 
 	// Transform the partition
-	auto new_p = std::make_shared<detail::TensorPartition<Nout>>(
-	  p->template reshape_dimensions<Nout>(ncollapse, nsplit, d));
+	auto new_p_aux = p->template reshape_dimensions<Nout>(ncollapse, nsplit, d);
+	auto new_from = detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, d, From, from);
+	auto new_size =  detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, d, Size, size);
 
-	return Tensor<Nout, T>(
-	  new_order, new_p->dim, ctx, data, new_p, dist,
-	  detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, d, From, from),
-	  detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, d, Size, size), scalar,
-	  conjugate, eg);
+	// Whether a compatible partition can be made that doesn't require a copy of the tensors' data
+	bool success = (new_p_aux.first == Success && new_from.first == Success && new_size.first == Success);
+
+	// Return the new tensor
+	if (!allow_copy && !success)
+	{
+	  throw std::runtime_error("reshape_dimensions: unsupported reshape without copying");
+	}
+	else if (success)
+	{
+	  // Return a tensor with this data but a different shape
+	  auto new_p = std::make_shared<detail::TensorPartition<Nout>>(new_p_aux.second);
+	  return Tensor<Nout, T>(new_order, new_p->dim, ctx, data, new_p, dist, new_from.second,
+				 new_size.second, scalar, conjugate, eg);
+	}
+	else if (new_size.first != Success)
+	{
+	  // This shouldn't happen
+	  throw std::runtime_error("reshape_dimensions: something is wrong...");
+	}
+	else
+	{
+	  // Try the other way around
+	  Tensor<Nout, T> r(new_order, new_size.second, getDev(), dist);
+	  r.scalar = scalar;
+	  r.conjugate = conjugate;
+	  if (eg)
+	    return r.make_eg();
+	  std::map<std::string, std::string> reverse_m;
+	  for (const auto& it : m)
+	    reverse_m[it.second] = it.first;
+	  copyTo(r.template reshape_dimensions<N>(reverse_m, kvdim(), false));
+	}
       }
 
       /// Append a dimension with size one
