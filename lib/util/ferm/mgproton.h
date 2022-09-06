@@ -496,6 +496,8 @@ namespace Chroma
     /// \param tol: maximum tolerance
     /// \param max_its: maximum number of iterations
     /// \param error_if_not_converged: throw an error if the tolerance was not satisfied
+    /// \param ortho_each_its: orthogonalize every this number of iterations
+    /// \param max_residual_updates: recompute residual vector every this number of restarts
     /// \param passing_initial_guess: whether `y` contains a solution guess
     /// \param verb: verbosity level
     /// \param prefix: prefix printed before every line
@@ -504,9 +506,9 @@ namespace Chroma
     void fgmres(const Operator<NOp, COMPLEX>& op, Maybe<Operator<NOp, COMPLEX>> prec,
 		const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX>& y,
 		unsigned int max_basis_size, double tol, unsigned int max_its = 0,
-		bool error_if_not_converged = true, bool do_ortho = true,
-		bool passing_initial_guess = false, Verbosity verb = NoOutput,
-		std::string prefix = "")
+		bool error_if_not_converged = true, unsigned int ortho_each_its = 0,
+		unsigned int max_residual_updates = 0, bool passing_initial_guess = false,
+		Verbosity verb = NoOutput, std::string prefix = "")
     {
       detail::log(1, prefix + " starting fgmres");
 
@@ -522,6 +524,16 @@ namespace Chroma
 	max_basis_size = 5;
       if (max_its == 0)
 	max_its = std::numeric_limits<unsigned int>::max();
+      if (ortho_each_its == 0)
+	ortho_each_its = (std::is_same<COMPLEX, double>::value ||
+			  std::is_same<COMPLEX, std::complex<double>>::value)
+			   ? 8
+			   : 4;
+      if (max_residual_updates == 0)
+	max_residual_updates = (std::is_same<COMPLEX, double>::value ||
+				std::is_same<COMPLEX, std::complex<double>>::value)
+				 ? 4
+				 : 2;
 
       // Check that the operator and the preconditioner are compatible with the input and output vectors
       if (!op.d.is_compatible(x) || !op.d.is_compatible(y) ||
@@ -567,36 +579,38 @@ namespace Chroma
       auto U = r.template like_this<NOp + 2>(op.preferred_col_ordering == ColumnMajor
 					       ? std::string("%") + std::string(1, Vc)
 					       : std::string(1, Vc) + std::string("%"),
-					     '%', "", {{Vc, max_basis_size + 1}});
+					     '%', "", {{Vc, max_basis_size}});
 
-      // Allocate the search subspace Z (onto the right singular space); when no preconditioning
-      // then Z = U
+      // Allocate the search subspace Z (onto the right singular space)
+      auto Z = U.like_this();
 
-      auto Z = U.kvslice_from_size({}, {{Vc, max_basis_size}}); // set Z an alias of U
-      if (prec.hasSome())
-	Z = Z.like_this(); // create new space when using preconditioning
+      // Extend r with Vc
+      auto r_Vc = r.append_dimension(Vc);
 
-      auto normr = normr0.clone();
-      unsigned int it = 0;
-      double max_tol = HUGE_VAL;
+      // Do the iterations
+      auto normr = normr0.clone(); ///< residual norms
+      unsigned int it = 0;	   ///< iteration number
+      double max_tol = HUGE_VAL;   ///< maximum residual norm
+      unsigned int ires = 0;	   ///< vector index for the last restart starting
+      unsigned int residual_updates = 0; ///< number of residual updates
       for (it = 0; it < max_its;)
       {
-	// U(:,0) = r;
-	r.copyTo(U.kvslice_from_size({}, {{Vc, 1}}));
+	unsigned int expansion_size =
+	  std::min(std::min(max_basis_size - ires, ortho_each_its), max_its - it);
 
 	// Expand the search subspace from residual
 	if (prec.hasSome())
 	{
-	  for (unsigned int i = 0; i < max_basis_size; ++i)
+	  for (unsigned int i = 0; i < expansion_size; ++i)
 	  {
-	    // Z(:,i) = prec * U(:,i)
-	    prec.getSome()(U.kvslice_from_size({{Vc, i}}, {{Vc, 1}}),
-			   Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}));
+	    // Z(:,ires+i) = prec * U(:,ires+i-1)
+	    prec.getSome()(i == 0 ? r_Vc : U.kvslice_from_size({{Vc, ires + i - 1}}, {{Vc, 1}}),
+			   Z.kvslice_from_size({{Vc, ires + i}}, {{Vc, 1}}));
 	    nprecs += num_cols;
 
-	    // U(:,i+1) = op * Z(:,i)
-	    op(Z.kvslice_from_size({{Vc, i}}, {{Vc, 1}}),
-	       U.kvslice_from_size({{Vc, i + 1}}, {{Vc, 1}}));
+	    // U(:,ires+i) = op * Z(:,ires+i)
+	    op(Z.kvslice_from_size({{Vc, ires + i}}, {{Vc, 1}}),
+	       U.kvslice_from_size({{Vc, ires + i}}, {{Vc, 1}}));
 	    nops += num_cols;
 
 	    ++it;
@@ -604,24 +618,24 @@ namespace Chroma
 	}
 	else
 	{
-	  // U(:,i+1) = op * U(:,i) for i=0..max_basis_size-1
-	  op(U.kvslice_from_size({}, {{Vc, 1}}),
-	     U.kvslice_from_size({{Vc, 1}}, {{Vc, max_basis_size}}), Vc);
-	  nops += num_cols * max_basis_size;
-	  it += max_basis_size;
+	  // U(:,ires+i) = op ^ i * r for i=1..expansion_size-1
+	  op(r_Vc, U.kvslice_from_size({{Vc, ires}}, {{Vc, expansion_size}}), Vc);
+	  r_Vc.copyTo(Z.kvslice_from_size({{Vc, ires}}, {{Vc, 1}}));
+	  U.kvslice_from_size({{Vc, ires}}, {{Vc, expansion_size - 1}})
+	    .copyTo(Z.kvslice_from_size({{Vc, ires + 1}}, {{Vc, expansion_size - 1}}));
+	  nops += num_cols * expansion_size;
+	  it += expansion_size;
 	}
 
 	// Orthogonalize U and put it into W: W = orth(U(:,2:end))
 	// NOTE: for small max_basis_size and assuming r is far from a left singular vector,
 	//       a light or none orthogonalization should be enough
-	auto Up = U.kvslice_from_size({{Vc, 1}}, {{Vc, max_basis_size}});
+	unsigned int basis_size = ires + expansion_size;
+	auto Up = U.kvslice_from_size({}, {{Vc, basis_size}});
 	auto Uo = Up.rename_dims({{Vc, Vac}});
-	if (do_ortho)
-	{
-	  Uo = Uo.clone();
-	  ortho<NOp, 1>(Uo, op.order_t + order_cols, order_rows, std::string(1, Vac), 4, verb,
-			prefix);
-	}
+	Uo = Uo.clone();
+	ortho<NOp, 1>(Uo, op.order_t + order_cols, order_rows, std::string(1, Vac), 4, verb,
+		      prefix);
 
 	// Restrict to Uo: [x_rt H_rt] = Uo'*U = Uo'*[r Up]
 	auto x_rt = contract<2>(Uo.conj(), r, order_rows);
@@ -634,10 +648,23 @@ namespace Chroma
 		      .make_sure(none, none, OnEveryoneReplicated);
 
 	// Update solution: y += -Z*y_rt
-	contract(Z.scale(-1), y_rt, std::string(1, Vc), AddTo, y);
+	contract(Z.kvslice_from_size({}, {{Vc, basis_size}}).scale(-1), y_rt, std::string(1, Vc),
+		 AddTo, y);
 
-	// Update residual: r += -U(2:end)*y_rt
-	contract(Up.scale(-1), y_rt, std::string(1, Vc), AddTo, r);
+	// Compute residual
+	if (residual_updates < max_residual_updates)
+	{
+	  // Update residual by saving a matvec: r += -U*y_rt
+	  contract(Up.scale(-1), y_rt, std::string(1, Vc), AddTo, r);
+	  residual_updates++;
+	}
+	else
+	{
+	  op(y, r); // r = op(y)
+	  x.scale(-1).addTo(r);
+	  nops += num_cols;
+	  residual_updates = 0;
+	}
 
 	// Compute the norm
 	auto normr = norm<1>(r, op.order_t + order_cols);
@@ -669,8 +696,14 @@ namespace Chroma
 	  QDPIO::cout << prefix << " MGPROTON FGMRES iteration #its.: " << it
 		      << " max rel. residual: " << detail::tostr(max_tol, 2) << std::endl;
 
+	// Stop if the residual tolerance is satisfied
 	if (max_tol <= tol)
 	  break;
+
+	// Start a new expansion after the current one if there's space left; otherwise do a full restart
+	ires += expansion_size;
+	if (ires >= max_basis_size)
+	  ires = 0;
       }
 
       // Check final residual
@@ -779,7 +812,8 @@ namespace Chroma
 	if (max_its == 0 && tol <= 0)
 	  ops.throw_error("set either `tol` or `max_its`");
 	bool error_if_not_converged = getOption<bool>(ops, "error_if_not_converged", true);
-	bool do_ortho = getOption<bool>(ops, "do_ortho", true);
+	unsigned int ortho_each_its = getOption<unsigned int>(ops, "ortho_each_its", 0);
+	unsigned int max_residual_updates = getOption<unsigned int>(ops, "max_residual_updates", 0);
 	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
@@ -792,7 +826,8 @@ namespace Chroma
 		    x, y, max_simultaneous_rhs,
 		    [=](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
 		      fgmres(op, prec, x, y, max_basis_size, tol, max_its, error_if_not_converged,
-			     do_ortho, false /* no init guess */, verb, prefix);
+			     ortho_each_its, max_residual_updates, false /* no init guess */, verb,
+			     prefix);
 		    },
 		    'n');
 		},
