@@ -1037,9 +1037,12 @@ namespace Chroma
 	    order.push_back(it.first);
 	auto real_dim = dim;
 	real_dim['X'] = (layout == EvensOnlyLayout ? 2 : (dim.count('X') == 1 ? dim.at('X') : 1));
-	auto t = fillLatticeField<N, float>(order, real_dim, OnDefaultDevice, [&](Coor<N - 1> c) {
-		   return (float)coloring.getColor({{c[0], c[1], c[2], c[3]}});
-		 }).kvslice_from_size({}, {{'X', dim.at('X')}});
+	auto t =
+	  fillLatticeField<N, float>(order, {}, real_dim, real_dim, OnDefaultDevice,
+				     [&](Coor<N - 1> c) {
+				       return (float)coloring.getColor({{c[0], c[1], c[2], c[3]}});
+				     })
+	    .kvslice_from_size({}, {{'X', dim.at('X')}});
 
 	return {t, coloring.numColors()};
       }

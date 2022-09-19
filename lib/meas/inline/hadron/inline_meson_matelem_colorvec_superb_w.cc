@@ -13,7 +13,6 @@
 #include "util/ferm/key_val_db.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/superb_contractions.h"
-#include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 
 #include "meas/inline/io/named_objmap.h"
@@ -71,7 +70,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      param.use_derivP = false;
+      param.use_derivP = true;
       if (paramtop.count("use_derivP") > 0)
 	read(paramtop, "use_derivP", param.use_derivP);
       read(paramtop, "mom2_max", param.mom2_max);
@@ -88,9 +87,16 @@ namespace Chroma
       if (paramtop.count("Nt_forward") > 0)
 	read(paramtop, "Nt_forward", param.Nt_forward);
 
-      param.max_tslices_in_contraction = 0;
-      if( paramtop.count("max_tslices_in_contraction") == 1 ) {
-        read(paramtop, "max_tslices_in_contraction", param.max_tslices_in_contraction);
+      param.max_tslices_in_contraction = Layout::logicalSize()[param.decay_dir];
+      if (paramtop.count("max_tslices_in_contraction") == 1)
+      {
+	read(paramtop, "max_tslices_in_contraction", param.max_tslices_in_contraction);
+      }
+
+      param.max_moms_in_contraction = 1;
+      if (paramtop.count("max_moms_in_contraction") == 1)
+      {
+	read(paramtop, "max_moms_in_contraction", param.max_moms_in_contraction);
       }
 
       if (paramtop.count("phase") == 1)
@@ -152,6 +158,7 @@ namespace Chroma
       write(xml, "t_source", param.t_source);
       write(xml, "Nt_forward", param.Nt_forward);
       write(xml, "max_tslices_in_contraction", param.max_tslices_in_contraction);
+      write(xml, "max_moms_in_contraction", param.max_moms_in_contraction);
       //write(xml, "quarkPhase", param.quarkPhase);
       //write(xml, "aQuarkPhase", param.aQuarkPhase);
       xml << param.link_smearing.xml;
@@ -377,16 +384,6 @@ namespace Chroma
 
     //----------------------------------------------------------------------------
     //! Normalize just one displacement array and return std::vector
-    multi1d<int> tomulti1d(const std::vector<int>& orig)
-    {
-      multi1d<int> r(orig.size());
-      for (int i = 0; i < orig.size(); ++i)
-	r[i] = orig[i];
-      return r;
-    }
-
-    //----------------------------------------------------------------------------
-    //! Normalize just one displacement array and return std::vector
     std::vector<int> normDisp(const multi1d<int>& orig)
     {
       std::vector<int> r; // path to return
@@ -494,25 +491,16 @@ namespace Chroma
       MesPlq(xml_out, "Observables", u);
 
       //
-      // Initialize the slow Fourier transform phases
-      //
-      SftMom phases(params.param.mom2_max, false, params.param.decay_dir);
-
-      //
       // If a list of momenta has been specified only need phases corresponding to these
       //
-      if (params.param.mom_list.size() > 0)
+      SB::CoorMoms mom_list;
+      if (params.param.mom_list.size() == 0)
       {
-	int num_mom = params.param.mom_list.size();
-	int mom_size = params.param.mom_list[0].size();
-	multi2d<int> moms(num_mom, mom_size);
-	for (int i = 0; i < num_mom; i++)
-	{
-	  moms[i] = params.param.mom_list[i];
-	}
-	SftMom temp_phases(moms, params.param.decay_dir);
-	phases = temp_phases;
-	params.param.mom2_min = 0;
+	mom_list = SB::getMomenta(params.param.mom2_min, params.param.mom2_max);
+      }
+      else
+      {
+	mom_list = SB::getMomenta(params.param.mom_list);
       }
 
       //
@@ -618,11 +606,6 @@ namespace Chroma
       int tsize = params.param.Nt_forward; // Number of t-slices to compute
       const int Nt = Layout::lattSize()[params.param.decay_dir];
 
-      // The function SB::doMomDisp_contractions constrains that the number of t points to compute
-      // should be zero, one, or even
-      if (tsize > 1 && tsize % 2 == 1)
-	tsize++;
-
       // Make sure displacements are something sensible and transform to std objects
       std::vector<std::vector<int>> displacement_list =
 	normalizeDisplacements(params.param.displacement_list);
@@ -637,56 +620,67 @@ namespace Chroma
 
       push(xml_out, "ElementalOps");
 
-      // Get num_vecs colorvecs on time-slice t_source
-      SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
-	colorvecsSto, u, params.param.decay_dir, tfrom, tsize, params.param.num_vecs, SB::none);
-
-      // Call for storing the baryons
       double time_storing = 0; // total time in writing elementals
-      SB::ContractionFn<SB::Complex> call([&](SB::Tensor<4, SB::Complex> tensor, int disp,
-					      int first_tslice, int first_mom) {
-	// Only the master node writes the elementals and we assume that tensor is only supported on master
-	assert(tensor.dist == SB::OnMaster);
-	tensor = tensor.getLocal();
-	if (tensor) // if the local tensor isn't empty, ie this node holds the tensor
-	{
-	  // Open the database
-	  open_db();
 
-	  StopWatch tstoring;
-	  tstoring.reset();
-	  tstoring.start();
+      // Iterate over time-slices
+      for (int tfrom0 = 0, this_tsize = std::min(tsize, params.param.max_tslices_in_contraction);
+	   tfrom0 < tsize; tfrom0 += this_tsize,
+	       this_tsize = std::min(params.param.max_tslices_in_contraction, tsize - tfrom0))
+      {
+	int this_tfrom = (tfrom + tfrom0) % Nt;
 
-	  KeyMesonElementalOperator_t key;
-	  ValMesonElementalOperator_t val(params.param.num_vecs, params.param.use_derivP
-								   ? COLORVEC_MATELEM_TYPE_DERIV
-								   : COLORVEC_MATELEM_TYPE_GENERIC);
+	// Get num_vecs colorvecs on time-slice t_source
+	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	  SB::getColorvecs<SB::Complex>(colorvecsSto, u, params.param.decay_dir, this_tfrom,
+					this_tsize, params.param.num_vecs, SB::none);
 
-	  // The keys for the displacements for this particular elemental operator
-	  // Invert the time - make it an independent key
-	  for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
-	  {
-	    for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
+	// Call for storing the baryons
+	SB::ContractionFn<SB::Complex> call(
+	  [&](SB::Tensor<4, SB::Complex> tensor, int disp, int first_tslice, int first_mom) {
+	    // Only the master node writes the elementals and we assume that tensor is only supported on master
+	    assert(tensor.dist == SB::OnMaster);
+	    tensor = tensor.getLocal();
+	    if (tensor) // if the local tensor isn't empty, ie this node holds the tensor
 	    {
-	      key.t_slice = first_tslice + t;
-	      key.mom = phases.numToMom(first_mom + m);
-	      key.displacement = tomulti1d(displacement_list[disp]); // only right colorstd::vector
-	      tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}}).copyTo(val);
-	      qdp_db[0].insert(key, val);
-	    }
-	  }
-	 
-	  tstoring.stop();
-	  time_storing += tstoring.getTimeInSeconds();
-	}
-      });
+	      // Open the database
+	      open_db();
 
-      // Do the contractions
-      auto moms = SB::getMoms(params.param.decay_dir, phases, SB::none, SB::none, tfrom, tsize);
-      SB::doMomDisp_contractions(u_smr, source_colorvec, leftphase, rightphase, moms, tfrom,
-				 displacement_list, params.param.use_derivP, call, SB::none,
-				 SB::OnDefaultDevice, SB::OnMaster,
-				 params.param.max_tslices_in_contraction);
+	      StopWatch tstoring;
+	      tstoring.reset();
+	      tstoring.start();
+
+	      KeyMesonElementalOperator_t key;
+	      ValMesonElementalOperator_t val(
+		params.param.num_vecs, params.param.use_derivP ? COLORVEC_MATELEM_TYPE_DERIV
+							       : COLORVEC_MATELEM_TYPE_GENERIC);
+
+	      // The keys for the displacements for this particular elemental operator
+	      // Invert the time - make it an independent key
+	      for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
+	      {
+		for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
+		{
+		  key.t_slice = first_tslice + t;
+		  key.mom = SB::tomulti1d(mom_list[first_mom + m]);
+		  key.displacement =
+		    SB::tomulti1d(displacement_list[disp]); // only right colorstd::vector
+		  tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}}).copyTo(val);
+		  qdp_db[0].insert(key, val);
+		}
+	      }
+
+	      tstoring.stop();
+	      time_storing += tstoring.getTimeInSeconds();
+	    }
+	  });
+
+	// Do the contractions
+	SB::doMomDisp_contractions(u_smr, source_colorvec, leftphase, rightphase, mom_list,
+				   this_tfrom, displacement_list, params.param.use_derivP, call,
+				   SB::none, SB::OnDefaultDevice, SB::OnMaster,
+				   0 /* max_tslices_in_contraction==0 means to do all */,
+				   params.param.max_moms_in_contraction);
+      }
 
       // Close db
       for (auto& db : qdp_db)

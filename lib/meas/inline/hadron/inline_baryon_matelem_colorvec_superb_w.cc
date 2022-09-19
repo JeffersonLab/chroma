@@ -13,7 +13,6 @@
 #include "util/ferm/key_val_db.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/superb_contractions.h"
-#include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 
 #include "meas/inline/io/named_objmap.h"
@@ -67,6 +66,12 @@ namespace Chroma
       if (paramtop.count("use_derivP") > 0)
       {
 	read(paramtop, "use_derivP", param.use_derivP);
+      }
+
+      param.mom2_min = 0;
+      if (paramtop.count("mom2_min") > 0)
+      {
+	read(paramtop, "mom2_min", param.mom2_min);
       }
 
       param.mom2_max = 0;
@@ -143,6 +148,7 @@ namespace Chroma
       int version = 2;
 
       write(xml, "version", version);
+      write(xml, "mom2_min", param.mom2_min);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "mom_list", param.mom_list);
       write(xml, "use_derivP", param.use_derivP);
@@ -254,6 +260,7 @@ namespace Chroma
     Params::Params()
     {
       frequency = 0;
+      param.mom2_min = 0;
       param.mom2_max = 0;
     }
 
@@ -396,16 +403,6 @@ namespace Chroma
     }
 
     //----------------------------------------------------------------------------
-    //! Return multi1d from std::vector
-    multi1d<int> tomulti1d(const std::vector<int>& orig)
-    {
-      multi1d<int> r(orig.size());
-      for (int i = 0; i < orig.size(); ++i)
-	r[i] = orig[i];
-      return r;
-    }
-
-    //----------------------------------------------------------------------------
     //! Normalize just one displacement array and return std::vector
     std::vector<int> normDisp(const multi1d<int>& orig)
     {
@@ -524,24 +521,16 @@ namespace Chroma
       MesPlq(xml_out, "Observables", u);
 
       //
-      // Initialize the slow Fourier transform phases
-      //
-      SftMom phases(params.param.mom2_max, false, params.param.decay_dir);
-      
-      //
       // If a list of momenta has been specified only need phases corresponding to these
       //
-      if (params.param.mom_list.size() > 0)
+      SB::CoorMoms mom_list;
+      if (params.param.mom_list.size() == 0)
       {
-	int num_mom = params.param.mom_list.size();
-	int mom_size = params.param.mom_list[0].size();
-	multi2d<int> moms(num_mom,mom_size);
-	for(int i = 0; i < num_mom; i++)
-	{
-	  moms[i] = params.param.mom_list[i];
-	}
-	SftMom temp_phases(moms, params.param.decay_dir);
-	phases = temp_phases;
+	mom_list = SB::getMomenta(params.param.mom2_min, params.param.mom2_max);
+      }
+      else
+      {
+	mom_list = SB::getMomenta(params.param.mom_list);
       }
 
       //
@@ -665,11 +654,6 @@ namespace Chroma
 	}
       }
 
-      // The function SB::doMomDisp_colorContractions constrains that the number of t points to compute
-      // should be zero, one, or even
-      if (tsize > 1 && tsize % 2 == 1)
-	tsize++;
-
       //
       // Baryon operators
       //
@@ -689,59 +673,68 @@ namespace Chroma
       std::vector<std::array<std::vector<int>, 3>> displacement_list =
 	normalizeDisplacements(params.param.displacement_list);
 
-      // Get num_vecs colorvecs on time-slice t_source
-      SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
-	SB::getColorvecs<SB::Complex>(colorvecsSto, u, params.param.decay_dir, tfrom, tsize,
-				      params.param.num_vecs, "cxyzXnt", phase);
-
-      // Call for storing the baryons
       double time_storing = 0; // total time in writing elementals
-      SB::ColorContractionFn<SB::Complex> call(
-	[&](SB::Tensor<5, SB::Complex> tensor, int disp, int first_tslice, int first_mom) {
-	  // Only the master node writes the elementals and we assume that tensor is only supported on master
-	  assert(tensor.dist == SB::OnMaster);
-	  tensor = tensor.getLocal();
-	  if (tensor) // if the local tensor isn't empty, ie this node holds the tensor
-	  {
-	    // Open the database
-	    open_db();
 
-	    StopWatch tstoring;
-	    tstoring.reset();
-	    tstoring.start();
+      // Iterate over time-slices
+      for (int tfrom0 = 0, this_tsize = std::min(tsize, params.param.max_tslices_in_contraction);
+	   tfrom0 < tsize; tfrom0 += this_tsize,
+	       this_tsize = std::min(params.param.max_tslices_in_contraction, tsize - tfrom0))
+      {
+	int this_tfrom = (tfrom + tfrom0) % Nt;
 
-	    KeyBaryonElementalOperator_t key;
-	    ValBaryonElementalOperator_t val(params.param.num_vecs);
+	// Get num_vecs colorvecs on time-slice t_source
+	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	  SB::getColorvecs<SB::Complex>(colorvecsSto, u, params.param.decay_dir, this_tfrom,
+					this_tsize, params.param.num_vecs, "cxyzXnt", phase);
 
-	    // The keys for the displacements for this particular elemental operator
-	    // Invert the time - make it an independent key
-	    for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
+	// Call for storing the baryons
+	SB::ColorContractionFn<SB::Complex> call(
+	  [&](SB::Tensor<5, SB::Complex> tensor, int disp, int first_tslice, int first_mom) {
+	    // Only the master node writes the elementals and we assume that tensor is only supported on master
+	    assert(tensor.dist == SB::OnMaster);
+	    tensor = tensor.getLocal();
+	    if (tensor) // if the local tensor isn't empty, ie this node holds the tensor
 	    {
-	      if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
-		continue;
-	      for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
+	      // Open the database
+	      open_db();
+
+	      StopWatch tstoring;
+	      tstoring.reset();
+	      tstoring.start();
+
+	      KeyBaryonElementalOperator_t key;
+	      ValBaryonElementalOperator_t val(params.param.num_vecs);
+
+	      // The keys for the displacements for this particular elemental operator
+	      // Invert the time - make it an independent key
+	      for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
 	      {
-		key.t_slice = (first_tslice + t) % Nt;
-		key.left = tomulti1d(displacement_list[disp][0]);
-		key.middle = tomulti1d(displacement_list[disp][1]);
-		key.right = tomulti1d(displacement_list[disp][2]);
-		key.mom = phases.numToMom(first_mom + m);
-		tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}}).copyTo(val);
-		qdp_db[0].insert(key, val);
+		if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
+		  continue;
+		for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
+		{
+		  key.t_slice = (first_tslice + t) % Nt;
+		  key.left = SB::tomulti1d(displacement_list[disp][0]);
+		  key.middle = SB::tomulti1d(displacement_list[disp][1]);
+		  key.right = SB::tomulti1d(displacement_list[disp][2]);
+		  key.mom = SB::tomulti1d(mom_list[first_mom + m]);
+		  tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}}).copyTo(val);
+		  qdp_db[0].insert(key, val);
+		}
 	      }
+
+	      tstoring.stop();
+	      time_storing += tstoring.getTimeInSeconds();
 	    }
+	  });
 
-	    tstoring.stop();
-	    time_storing += tstoring.getTimeInSeconds();
-	  }
-	});
-
-      // Do the color-contraction
-      auto moms = SB::getMoms(params.param.decay_dir, phases, SB::none, SB::none, tfrom, tsize);
-      SB::doMomDisp_colorContractions(
-	u_smr, source_colorvec, moms, tfrom, displacement_list, params.param.use_derivP, call,
-	params.param.max_tslices_in_contraction, params.param.max_moms_in_contraction,
-	params.param.max_vecs, SB::none, SB::OnDefaultDevice, SB::OnMaster);
+	// Do the color-contraction
+	SB::doMomDisp_colorContractions(
+	  u_smr, source_colorvec, mom_list, this_tfrom, displacement_list, params.param.use_derivP,
+	  call, 0 /*params.param.max_tslices_in_contraction==0 means to do all */,
+	  params.param.max_moms_in_contraction, params.param.max_vecs, SB::none,
+	  SB::OnDefaultDevice, SB::OnMaster);
+      }
 
       // Close db
       for (auto& db : qdp_db)
@@ -749,7 +742,7 @@ namespace Chroma
 
       // Close colorvecs storage
       SB::closeColorvecStorage(colorvecsSto);
- 
+
       swiss.stop();
 
       QDPIO::cout << "All baryon operators computed in time= "

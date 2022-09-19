@@ -4595,7 +4595,8 @@ namespace Chroma
 	}
 
 	superbblas::Storage_handle stoh;
-	superbblas::open_storage<N, T>(filename.c_str(), MPI_COMM_WORLD, &stoh);
+	superbblas::open_storage<N, T>(filename.c_str(), false /* don't allow writing */,
+				       MPI_COMM_WORLD, &stoh);
 	ctx = std::shared_ptr<superbblas::detail::Storage_context_abstract>(
 	  stoh, [=](superbblas::detail::Storage_context_abstract* ptr) {
 	    superbblas::close_storage<N, T>(ptr, MPI_COMM_WORLD);
@@ -4875,23 +4876,32 @@ namespace Chroma
     /// \param func: function (Coor<N-1>) -> COMPLEX
 
     template <std::size_t N, typename COMPLEX, typename Func>
-    Tensor<N, COMPLEX> fillLatticeField(const std::string& order, const std::map<char, int>& size,
-					DeviceHost dev, Func func)
+    Tensor<N, COMPLEX> fillLatticeField(const std::string& order, const std::map<char, int>& from,
+					const std::map<char, int>& size,
+					const std::map<char, int>& dim, DeviceHost dev, Func func)
     {
+      using superbblas::detail::operator+;
+
       static_assert(N >= 5, "The minimum number of dimensions should be 5");
       if (order.size() < 5 || order.compare(0, 5, "xyztX") != 0)
 	throw std::runtime_error("Wrong `order`, it should start with xyztX");
 
       // Get final object dimension
-      Coor<N> dim = latticeSize<N>(order, size);
+      Coor<N> dim_c = latticeSize<N>(order, dim);
+      std::map<char, int> size0 = dim;
+      for (const auto& it : size)
+	size0[it.first] = it.second;
+      Coor<N> size_c = latticeSize<N>(order, size0);
+      Coor<N> from_c = kvcoors<N>(order, from);
 
       // Populate the tensor on CPU
-      Tensor<N, COMPLEX> r(order, dim, OnHost);
+      Tensor<N, COMPLEX> r(order, size_c, OnHost);
       Coor<N> local_latt_size = r.p->localSize(); // local dimensions for xyztX
       Stride<N> stride =
 	superbblas::detail::get_strides<std::size_t>(local_latt_size, superbblas::FastToSlow);
       Coor<N> local_latt_from =
 	r.p->localFrom(); // coordinates of first elements stored locally for xyztX
+      local_latt_from = local_latt_from + from_c;
       std::size_t vol = superbblas::detail::volume(local_latt_size);
       Index nX = r.kvdim()['X'];
       COMPLEX* ptr = r.data.get();
@@ -4902,9 +4912,8 @@ namespace Chroma
       for (std::size_t i = 0; i < vol; ++i)
       {
 	// Get the global coordinates
-	using superbblas::detail::operator+;
 	Coor<N> c = normalize_coor(
-	  superbblas::detail::index2coor(i, local_latt_size, stride) + local_latt_from, dim);
+	  superbblas::detail::index2coor(i, local_latt_size, stride) + local_latt_from, dim_c);
 
 	// Translate even-odd coordinates to natural coordinates
 	Coor<N - 1> coor;
@@ -5317,18 +5326,20 @@ namespace Chroma
       /// \param dev: device of the returned tensor
 
       template <typename T>
-      Tensor<Nd + 1, T> getPhase(Coor<Nd - 1> phase, DeviceHost dev = OnDefaultDevice)
+      Tensor<Nd + 1, T> getPhase(Coor<Nd - 1> phase, int tfrom, int tsize,
+				 DeviceHost dev = OnDefaultDevice)
       {
 	// Get spatial dimensions of the current lattice
 	Coor<Nd> dim = latticeSize<Nd>("xyzX", {});
 	dim[0] *= dim[3];
-	return fillLatticeField<5, T>("xyztX", {}, dev, [=](Coor<Nd> c) {
-	  typename T::value_type phase_dot_coor = 0;
-	  for (int i = 0; i < Nd - 1; ++i)
-	    phase_dot_coor += c[i] * 2 * M_PI * phase[i] / dim[i];
+	return fillLatticeField<5, T>("xyztX", {{'t', tfrom}}, {{'t', tsize}}, {}, dev,
+				      [=](Coor<Nd> c) {
+					typename T::value_type phase_dot_coor = 0;
+					for (int i = 0; i < Nd - 1; ++i)
+					  phase_dot_coor += c[i] * 2 * M_PI * phase[i] / dim[i];
 
-	  return T{cos(phase_dot_coor), sin(phase_dot_coor)};
-	});
+					return T{cos(phase_dot_coor), sin(phase_dot_coor)};
+				      });
       }
 
       // NOTE: for now, the GPU version requires MAGMA
@@ -5903,9 +5914,8 @@ namespace Chroma
       if (phase == Coor<Nd - 1>{{}})
 	return colorvecs;
 
-      Tensor<Nd + 1, COMPLEX> tphase =
-	ns_getColorvecs::getPhase<COMPLEX>(phase, colorvecs.getDev())
-	  .kvslice_from_size({{'t', from_tslice}}, {{'t', colorvecs.kvdim()['t']}});
+      Tensor<Nd + 1, COMPLEX> tphase = ns_getColorvecs::getPhase<COMPLEX>(
+	phase, from_tslice, colorvecs.kvdim()['t'], colorvecs.getDev());
       Tensor<Nd + 3, COMPLEX> r = colorvecs.like_this();
       r.contract(colorvecs, {}, NotConjugate, tphase, {}, NotConjugate);
       return r;
@@ -6307,6 +6317,8 @@ namespace Chroma
       }
     }
 
+    using CoorMoms = std::vector<Coor<3>>;
+
     template <typename COMPLEX = Complex>
     using Moms = std::pair<Tensor<Nd + 2, COMPLEX>, std::vector<Coor<3>>>;
 
@@ -6660,7 +6672,7 @@ namespace Chroma
 
     template <std::size_t Nin, typename COMPLEX>
     void doMomDisp_colorContractions(
-      const multi1d<LatticeColorMatrix>& u, Tensor<Nin, COMPLEX> colorvec, Moms<COMPLEX> moms,
+      const multi1d<LatticeColorMatrix>& u, Tensor<Nin, COMPLEX> colorvec, const CoorMoms& moms,
       Index first_tslice, const std::vector<std::array<std::vector<int>, 3>>& disps, bool deriv,
       const ColorContractionFn<COMPLEX>& call, Maybe<int> max_active_tslices = none,
       Maybe<int> max_active_momenta = none, Maybe<int> max_cols = none,
@@ -6670,7 +6682,6 @@ namespace Chroma
       const std::string order_out_str = order_out.getSome("ijkmt");
       detail::check_order_contains(order_out_str, "ijkmt");
       detail::check_order_contains(colorvec.order, "cxyzXtn");
-      detail::check_order_contains(moms.first.order, "xyzXtm");
 
       // Form a tree with the displacement paths
       detail::PathNode tree_disps = ns_doMomDisp_colorContractions::get_tree(disps);
@@ -6682,14 +6693,12 @@ namespace Chroma
 
       // Check that all tensors have the same number of time
       int Nt = colorvec.kvdim()['t'];
-      if (Nt != moms.first.kvdim()['t'])
-	throw std::runtime_error("The t component of `colorvec' and `moms' does not match");
 
       int max_t = max_active_tslices.getSome(Nt);
       if (max_t <= 0)
 	max_t = Nt;
 
-      int Nmom = moms.first.kvdim()['m'];
+      int Nmom = moms.size();
       int max_active_moms = max_active_momenta.getSome(Nmom);
       if (max_active_moms <= 0)
 	max_active_moms = Nmom;
@@ -6698,12 +6707,9 @@ namespace Chroma
       for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
       {
-	// Make tsize one or even
-	if (tsize > 1 && tsize % 2 != 0)
-	  --tsize;
-
-	detail::log(1, "color contracting " + std::to_string(tsize) +
-			 " tslices from tslice= " + std::to_string(tfrom));
+	detail::log(
+	  1, "color contracting " + std::to_string(tsize) + " tslices from tslice= " +
+	       std::to_string(first_tslice + tfrom));
 
 	// Make a copy of the time-slicing of u[d] also supporting left and right
 	std::vector<Tensor<Nd + 3, COMPLEX>> ut(Nd);
@@ -6725,15 +6731,18 @@ namespace Chroma
 	for (int mfrom = 0, msize = std::min(max_active_moms, Nmom); mfrom < Nmom;
 	     mfrom += msize, msize = std::min(max_active_moms, Nmom - mfrom))
 	{
-	  auto this_moms = moms.first.kvslice_from_size({{'t', tfrom}, {'m', mfrom}},
-							{{'t', tsize}, {'m', msize}});
+	  auto this_moms =
+	    this_colorvec.template like_this<Nd + 2, COMPLEX>("xyzXtm", {{'m', msize}});
+	  for (int m = 0; m < msize; ++m)
+	    ns_getColorvecs::getPhase<COMPLEX>(moms[mfrom + m], first_tslice + tfrom, tsize,
+					       this_moms.getDev())
+	      .copyTo(this_moms.kvslice_from_size({{'m', m}}, {{'m', 1}}));
+
 	  if (tfrom + tsize >= Nt && mfrom + msize >= Nmom)
 	  {
 	    colorvec.release();
-	    moms.first.release();
 	  }
-	  std::vector<Coor<3>> moms_list(moms.second.begin() + mfrom,
-					 moms.second.begin() + mfrom + msize);
+	  std::vector<Coor<3>> moms_list(moms.begin() + mfrom, moms.begin() + mfrom + msize);
 	  if (!deriv)
 	  {
 	    ns_doMomDisp_colorContractions::doMomDisp_colorContractions<COMPLEX, Nin>(
@@ -6845,17 +6854,16 @@ namespace Chroma
 
     template <std::size_t Nin, typename COMPLEX>
     void doMomDisp_contractions(const multi1d<LatticeColorMatrix>& u, Tensor<Nin, COMPLEX> colorvec,
-				Coor<3> left_phase, Coor<3> right_phase, Moms<COMPLEX> moms,
+				Coor<3> left_phase, Coor<3> right_phase, const CoorMoms& moms,
 				Index first_tslice, const std::vector<std::vector<int>>& disps,
 				bool deriv, const ContractionFn<COMPLEX>& call,
 				const Maybe<std::string>& order_out = none,
 				Maybe<DeviceHost> dev = none, Maybe<Distribution> dist = none,
-				int max_tslices_in_contraction = 0)
+				int max_tslices_in_contraction = 0, int max_moms_in_contraction = 0)
     {
       const std::string order_out_str = order_out.getSome("ijmt");
       detail::check_order_contains(order_out_str, "ijmt");
       detail::check_order_contains(colorvec.order, "cxyzXtn");
-      detail::check_order_contains(moms.first.order, "xyzXtm");
 
       // Form a tree with the displacement paths
       detail::PathNode tree_disps = detail::get_tree(disps);
@@ -6867,12 +6875,14 @@ namespace Chroma
 
       // Check that all tensors have the same number of time
       int Nt = colorvec.kvdim()['t'];
-      if (Nt != moms.first.kvdim()['t'])
-	throw std::runtime_error("The t component of `colorvec' and `moms' does not match");
 
-      // Iterate over time-slices
       if (max_tslices_in_contraction <= 0)
 	max_tslices_in_contraction = Nt;
+      int Nmom = moms.size();
+      if (max_moms_in_contraction <= 0)
+	max_moms_in_contraction = Nmom;
+
+      // Iterate over time-slices
       for (int tfrom = 0, tsize = std::min(Nt, max_tslices_in_contraction); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_tslices_in_contraction, Nt - tfrom))
       {
@@ -6898,45 +6908,60 @@ namespace Chroma
 
 	// Get the time-slice for colorvec
 	auto this_colorvec = colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
-	auto this_moms = moms.first.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
 
-	// Apply left phase and momenta conjugated to the left tensor
-	// NOTE: look for the minus sign on left_phase in the doc of this function
-	int Nmom = moms.first.kvdim()['m'];
-	Tensor<Nin + 1, COMPLEX> moms_left =
-	  this_colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', Nmom}});
-	moms_left.contract(std::move(this_moms), {}, Conjugate,
-			   phaseColorvecs(this_colorvec, first_tslice + tfrom, left_phase), {},
-			   NotConjugate);
+	// Apply the phases
+	auto this_colorvec_phase_right =
+	  phaseColorvecs(this_colorvec, first_tslice + tfrom, right_phase);
+	auto this_colorvec_phase_left =
+	  phaseColorvecs(this_colorvec, first_tslice + tfrom, left_phase);
 
-	// Apply the right phase
-	this_colorvec = phaseColorvecs(this_colorvec, first_tslice + tfrom, right_phase);
-
-	if (tfrom + tsize >= Nt)
+	// Loop over the momenta
+	for (int mfrom = 0, msize = std::min(max_moms_in_contraction, Nmom); mfrom < Nmom;
+	     mfrom += msize, msize = std::min(max_moms_in_contraction, Nmom - mfrom))
 	{
-	  colorvec.release();
-	  moms.first.release();
-	}
 
-	if (!deriv)
-	{
-	  ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
-	    ut, std::move(moms_left), this_colorvec, first_tslice + tfrom, tree_disps, deriv,
-	    moms.second, 0, order_out_str, dev.getSome(OnDefaultDevice),
-	    dist.getSome(OnEveryoneReplicated), call);
-	}
-	else
-	{
-	  // When using derivatives, each momenta has a different effect
-	  std::vector<COMPLEX> ones(Nmom, COMPLEX(1));
-	  Tensor<Nin + 1, COMPLEX> this_colorvec_m =
-	    this_colorvec.template like_this<Nin + 1>("%m", '%', "", {{'m', Nmom}});
-	  this_colorvec_m.contract(std::move(this_colorvec), {}, NotConjugate, asTensorView(ones),
-				   {{'i', 'm'}}, NotConjugate);
-	  ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
-	    ut, std::move(moms_left), this_colorvec_m, first_tslice + tfrom, tree_disps, deriv,
-	    moms.second, 0, order_out_str, dev.getSome(OnDefaultDevice),
-	    dist.getSome(OnEveryoneReplicated), call);
+	  auto this_moms =
+	    this_colorvec_phase_left.template like_this<Nd + 2, COMPLEX>("xyzXtm", {{'m', msize}});
+	  for (int m = 0; m < msize; ++m)
+	    ns_getColorvecs::getPhase<COMPLEX>(moms[mfrom + m], first_tslice + tfrom, tsize,
+					       this_moms.getDev())
+	      .copyTo(this_moms.kvslice_from_size({{'m', m}}, {{'m', 1}}));
+
+
+	  // Apply left phase and momenta conjugated to the left tensor
+	  // NOTE: look for the minus sign on left_phase in the doc of this function
+	  Tensor<Nin + 1, COMPLEX> moms_left =
+	    this_colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', msize}});
+	  moms_left.contract(std::move(this_moms), {}, Conjugate, this_colorvec_phase_left, {},
+			     NotConjugate);
+
+	  if (tfrom + tsize >= Nt && mfrom + msize >= Nmom)
+	  {
+	    colorvec.release();
+	  }
+
+	  auto this_moms_coors = std::vector<Coor<Nd - 1>>(moms.begin() + mfrom,
+							   moms.begin() + mfrom + msize);
+	  if (!deriv)
+	  {
+	    ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
+	      ut, std::move(moms_left), this_colorvec_phase_right, first_tslice + tfrom, tree_disps,
+	      deriv, this_moms_coors, mfrom, order_out_str, dev.getSome(OnDefaultDevice),
+	      dist.getSome(OnEveryoneReplicated), call);
+	  }
+	  else
+	  {
+	    // When using derivatives, each momenta has a different effect
+	    std::vector<COMPLEX> ones(msize, COMPLEX(1));
+	    Tensor<Nin + 1, COMPLEX> this_colorvec_m =
+	      this_colorvec.template like_this<Nin + 1>("%m", '%', "", {{'m', msize}});
+	    this_colorvec_m.contract(this_colorvec_phase_right, {}, NotConjugate,
+				     asTensorView(ones), {{'i', 'm'}}, NotConjugate);
+	    ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
+	      ut, std::move(moms_left), std::move(this_colorvec_m), first_tslice + tfrom,
+	      tree_disps, deriv, this_moms_coors, mfrom, order_out_str,
+	      dev.getSome(OnDefaultDevice), dist.getSome(OnEveryoneReplicated), call);
+	  }
 	}
       }
     }
@@ -6999,6 +7024,70 @@ namespace Chroma
 	fromr = 0;
 	sizer = dim;
       }
+    }
+
+    /// Return a multi1d from std::vector
+    /// \param v: vector to convert
+
+    template <typename T>
+    multi1d<T> tomulti1d(const std::vector<T>& v)
+    {
+      multi1d<T> r(v.size());
+      for (int i = 0; i < v.size(); ++i)
+	r[i] = v[i];
+      return r;
+    }
+
+    /// Return a multi1d from std::array
+    /// \param v: array to convert
+
+    template <typename T, std::size_t N>
+    multi1d<T> tomulti1d(const std::array<T, N>& v)
+    {
+      multi1d<T> r(v.size());
+      for (int i = 0; i < v.size(); ++i)
+	r[i] = v[i];
+      return r;
+    }
+
+    /// Return all momenta with magnitude squared within a range
+    /// \param min_mom2: all returned momenta should have this magnitude squared at least
+    /// \param max_mom2: all returned momenta should have up to this magnitude squared
+
+    inline CoorMoms getMomenta(int min_mom2, int max_mom2)
+    {
+      static_assert(Nd == 4);
+      int max_component = (int)std::sqrt((float)max_mom2) + 1;
+      CoorMoms r;
+      for (int i = -max_component; i <= max_component; ++i)
+      {
+	for (int j = -max_component; j <= max_component; ++j)
+	{
+	  for (int k = -max_component; k <= max_component; ++k)
+	  {
+	    int mom_magnitude2 = i + i + j * j + k * k;
+	    if (min_mom2 <= mom_magnitude2 && mom_magnitude2 <= max_mom2)
+	      r.push_back(Coor<3>{i, j, k});
+	  }
+	}
+      }
+      return r;
+    }
+
+    /// Return a list of momenta as std::vector<Coor<3>> from std::vector<std::vector<int>>
+    /// \param v: list of momenta to transform
+
+    inline CoorMoms getMomenta(const std::vector<std::vector<int>> &v)
+    {
+      static_assert(Nd == 4);
+      CoorMoms r;
+      for (const auto vi : v)
+      {
+	Coor<3> c;
+	std::copy_n(vi.begin(), 3, c.begin());
+	r.push_back(c);
+      }
+      return r;
     }
   }
 }
