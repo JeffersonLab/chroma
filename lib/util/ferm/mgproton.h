@@ -1624,7 +1624,8 @@ namespace Chroma
 	remap rd = t.second;
 
 	// Create tensor to return
-	std::string order = update_order(block_labels, m) + op.d.order;
+	std::string order = block_labels + update_order(block_labels, m) +
+			    detail::remove_dimensions(op.d.order, block_labels);
 	auto dims = op.d.kvdim();
 	for (const auto& it : m)
 	  dims[it.second] = dims[it.first];
@@ -2001,7 +2002,7 @@ namespace Chroma
 	Operator<NOp, COMPLEX> op_eo, op_oe;
 	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
 	{
-	  opDiag = getBlockDiag<NOp + 2>(op, "cs", m_sc);
+	  opDiag = getBlockDiag<NOp + 2>(op, "cs", m_sc); // rows cs, cols CS
 	  op_eo = op.kvslice_from_size({{'X', 1}}, {{'X', 1}}, {{'X', 0}}, {{'X', 1}});
 	  op_oe = op.kvslice_from_size({{'X', 0}}, {{'X', 1}}, {{'X', 1}}, {{'X', 1}});
 	  getEvenOddOperatorsPartsCache<NOp, COMPLEX>()[op.id.get()] = {op_eo, op_oe, opDiag};

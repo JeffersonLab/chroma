@@ -4521,14 +4521,21 @@ namespace Chroma
 	auto new_i = i.kvslice_from_size(img_kvfrom, img_kvsize).make_eg();
 
 	// Get the nonzeros in the slice
-	auto ii_slice = ii.kvslice_from_size(img_kvfrom, img_kvsize).make_sure(none, OnHost);
+	auto ii_slice =
+	  ii.kvslice_from_size(img_kvfrom, img_kvsize).cloneOn(OnHost);
 	auto new_ii = ii_slice.make_compatible(none, {}, OnHost);
 	new_ii.set_zero();
-	auto jj_slice = jj.kvslice_from_size(img_kvfrom, img_kvsize).make_sure(none, OnHost);
+	auto jj_slice =
+	  jj.kvslice_from_size(img_kvfrom, img_kvsize).cloneOn(OnHost);
 	auto new_jj = jj_slice.template make_compatible<NI + 1, float>(
 	  detail::remove_dimensions(jj_slice.order, "~"), {}, OnHost);
 	new_jj.set_zero();
 	unsigned int num_neighbors = jj.kvdim().at('u');
+	if (ii_slice.isSubtensor() || new_ii.isSubtensor() || jj_slice.isSubtensor() ||
+	    new_jj.isSubtensor())
+	{
+	  throw std::runtime_error("This shouldn't happen");
+	}
 	{
 	  Coor<ND> from_dom = kvcoors<ND>(d.order, dom_kvfrom);
 	  std::map<char, int> updated_dom_kvsize = d.kvdim();
@@ -4611,6 +4618,30 @@ namespace Chroma
 
 	if (is_constructed())
 	  r.construct();
+
+	// Do a test
+	if (superbblas::getDebugLevel() > 0)
+	{
+	  auto x0 = d.template like_this<ND + 1>("%n", '%', "", {{'n', 2}});
+	  x0.set_zero();
+	  urand(x0.kvslice_from_size(dom_kvfrom, dom_kvsize), -1, 1);
+	  auto y0 = i.template like_this<NI + 1>("%n", '%', "", {{'n', 2}});
+	  contractWith(x0, {}, y0, {});
+	  y0 = y0.kvslice_from_size(img_kvfrom, img_kvsize);
+
+	  auto y = r.i.template like_this<NI + 1>("%n", '%', "", {{'n', 2}});
+	  if (!is_constructed())
+	    r.construct();
+	  r.contractWith(x0.kvslice_from_size(dom_kvfrom, dom_kvsize), {}, y, {});
+
+	  y0.scale(-1).addTo(y);
+	  auto norm0 = norm<1>(y0, "n");
+	  auto normdiff = norm<1>(y, "n");
+	  double max_err = 0;
+	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
+	    max_err = std::max(max_err, (double)normdiff.get({{i}}) / norm0.get({{i}}));
+	  QDPIO::cout << "kvslice_from_size error: " << detail::tostr(max_err) << std::endl;
+	}
 
 	return r;
       }
@@ -5185,7 +5216,7 @@ namespace Chroma
 
     template <std::size_t N, typename T,
 	      typename std::enable_if<detail::is_complex<T>::value, bool>::type = true>
-    void urand(Tensor<N, T>& t, typename T::value_type a = 0, typename T::value_type b = 1)
+    void urand(Tensor<N, T> t, typename T::value_type a = 0, typename T::value_type b = 1)
     {
       std::uniform_real_distribution<typename T::value_type> d(a, b);
       t.fillWithCPUFuncNoArgs(
