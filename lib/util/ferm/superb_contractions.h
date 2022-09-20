@@ -95,7 +95,7 @@ namespace Chroma
     struct None {
     };
 
-    template <typename T>
+    template <typename T, bool B = std::is_reference<T>::value>
     struct Maybe;
 
     template <typename T>
@@ -115,7 +115,7 @@ namespace Chroma
 
     /// Class for optional values
     template <typename T>
-    struct Maybe {
+    struct Maybe<T, false> {
       /// Whether the value is set
       bool has_value;
 
@@ -164,7 +164,64 @@ namespace Chroma
       T getSome(T def) const
       {
 	if (has_value)
-	  return value;
+	  return getSome();
+	else
+	  return def;
+      }
+    };
+
+    /// Class for optional values
+    template <typename T>
+    struct Maybe<T, true> {
+      /// Whether the value is set
+      bool has_value;
+
+      /// The value type: change references by pointers
+      using Tvalue = typename std::remove_reference<T>::type*;
+
+      /// The value
+      Tvalue value;
+
+      /// Constructor without a value
+      Maybe() : has_value{false}, value{}
+      {
+      }
+
+      /// Constructor without a value
+      Maybe(None) : Maybe()
+      {
+      }
+
+      /// Constructor with a value
+      Maybe(const T& t) : has_value{true}, value{&t}
+      {
+      }
+
+      /// Return whether it has been initialized with a value
+      bool hasSome() const
+      {
+	return has_value;
+      }
+
+      /// Return whether it has been initialized with a value
+      explicit operator bool() const noexcept
+      {
+	return has_value;
+      }
+
+      /// Return the value if it has been initialized with some
+      T getSome() const
+      {
+	if (has_value)
+	  return *value;
+	throw std::runtime_error("Maybe::getSome: value isn't set");
+      }
+
+      /// Return the value if it has been initialized with some; otherwise return `def`
+      T getSome(T def) const
+      {
+	if (has_value)
+	  return getSome();
 	else
 	  return def;
       }
