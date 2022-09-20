@@ -88,12 +88,12 @@ namespace Chroma
     using OperatorPowerFun =
       std::function<void(const Tensor<NOp + 2, COMPLEX>&, Tensor<NOp + 2, COMPLEX>, char)>;
 
-    /// Representation of an operator together with a map to convert from domain labels (columns) to
-    /// image labels (rows)
+    /// Representation of a function that takes and returns tensors with the same labels, although the
+    /// dimensions may be different.
 
     template <std::size_t NOp, typename COMPLEX>
     struct Operator {
-      /// Function that the operators applies
+      /// Function that the operators applies (optional)
       OperatorFun<NOp, COMPLEX> fop;
       /// Example tensor for the input tensor (domain)
       Tensor<NOp, COMPLEX> d;
@@ -111,8 +111,12 @@ namespace Chroma
       NaturalNeighbors neighbors;
       /// Preferred ordering
       ColOrdering preferred_col_ordering;
-      /// Alternative function that the operators applies when asking for power
-      OperatorPowerFun<NOp, COMPLEX> power_fop;
+      /// Operator based on sparse tensor (optional)
+      SpTensor<NOp, NOp, COMPLEX> sp;
+      /// Sparse tensor map from image labels to domain labels (optional)
+      remap rd;
+      /// Operator maximum power support (optional)
+      unsigned int max_power;
       /// Identity
       std::shared_ptr<std::string> id;
 
@@ -135,15 +139,17 @@ namespace Chroma
 	  imgLayout(imgLayout),
 	  neighbors(neighbors),
 	  preferred_col_ordering(preferred_col_ordering),
-	  power_fop{},
+	  sp{},
+	  rd{},
+	  max_power{0},
 	  id(std::make_shared<std::string>(id))
       {
       }
 
       /// Constructor for a power-supported function
-      Operator(const OperatorPowerFun<NOp, COMPLEX>& power_fop, Tensor<NOp, COMPLEX> d,
-	       Tensor<NOp, COMPLEX> i, const std::string& order_t, OperatorLayout domLayout,
-	       OperatorLayout imgLayout, NaturalNeighbors neighbors,
+      Operator(const SpTensor<NOp, NOp, COMPLEX>& sp, const remap& rd, unsigned int max_power,
+	       Tensor<NOp, COMPLEX> d, Tensor<NOp, COMPLEX> i, const std::string& order_t,
+	       OperatorLayout domLayout, OperatorLayout imgLayout, NaturalNeighbors neighbors,
 	       ColOrdering preferred_col_ordering, const std::string& id = "")
 	: fop{},
 	  d(d),
@@ -154,14 +160,17 @@ namespace Chroma
 	  imgLayout(imgLayout),
 	  neighbors(neighbors),
 	  preferred_col_ordering(preferred_col_ordering),
-	  power_fop{power_fop},
+	  sp{sp},
+	  rd{rd},
+	  max_power{max_power},
 	  id(std::make_shared<std::string>(id))
       {
       }
 
       /// Constructor from other operator
       Operator(const OperatorFun<NOp, COMPLEX>& fop, Tensor<NOp, COMPLEX> d, Tensor<NOp, COMPLEX> i,
-	       const OperatorFun<NOp, COMPLEX>& fop_tconj, const Operator<NOp, COMPLEX>& op, const std::string& id = "")
+	       const OperatorFun<NOp, COMPLEX>& fop_tconj, const Operator<NOp, COMPLEX>& op,
+	       const std::string& id = "")
 	: fop(fop),
 	  d(d),
 	  i(i),
@@ -171,7 +180,9 @@ namespace Chroma
 	  imgLayout(op.imgLayout),
 	  neighbors(op.neighbors),
 	  preferred_col_ordering(op.preferred_col_ordering),
-	  power_fop(),
+	  sp{},
+	  rd{},
+	  max_power{0},
 	  id(std::make_shared<std::string>(id))
       {
       }
@@ -185,7 +196,7 @@ namespace Chroma
       /// Return the transpose conjugate of the operator
       Operator<NOp, COMPLEX> tconj() const
       {
-	if (power_fop || !fop_tconj)
+	if (sp || !fop_tconj)
 	  throw std::runtime_error("Operator does not have conjugate transpose form");
 	return {
 	  fop_tconj, i, d, fop, order_t, imgLayout, domLayout, neighbors, preferred_col_ordering};
@@ -194,7 +205,7 @@ namespace Chroma
       /// Return whether the operator has transpose conjugate
       bool has_tconj() const
       {
-	return !power_fop && fop_tconj;
+	return !sp && fop_tconj;
       }
 
       /// Apply the operator
@@ -204,16 +215,14 @@ namespace Chroma
 	// The `t` labels that are not in `d` are the column labels
 	std::string cols = detail::remove_dimensions(t.order, d.order); // t.order - d.order
 
-	if (power_fop)
+	if (sp)
 	{
-	  auto x = t.template reshape_dimensions<NOp + 2>({{cols, "^n"}}, {{'^', 1}})
-		     .template cast<COMPLEX>();
-	  auto y =
-	    i.template like_this<NOp + 2>(preferred_col_ordering == ColumnMajor ? "%n^" : "n^%",
-					  '%', "", {{'n', x.kvdim()['n']}, {'^', 1}});
-	  power_fop(x, y, 0);
-	  return y.template reshape_dimensions<N>({{"n^", cols}}, t.kvdim(), false)
-	    .template cast<T>();
+	  remap mcols = detail::getNewLabels(cols, sp.d.order + sp.i.order);
+	  auto y = i.template like_this<N, T>(
+	    preferred_col_ordering == ColumnMajor ? std::string("%") + cols : cols + "%", '%', "",
+	    t.kvdim());
+	  sp.contractWith(t.rename_dims(mcols), rd, y.rename_dims(mcols), {});
+	  return y;
 	}
 	else
 	{
@@ -231,30 +240,37 @@ namespace Chroma
       void operator()(const Tensor<N, T>& x, Tensor<N, T> y, char power_label = 0) const
       {
 	// The `x` labels that are not in `d` are the column labels
-	std::string cols_and_power = detail::remove_dimensions(x.order, d.order); // x.order - d.order
+	std::string cols_and_power =
+	  detail::remove_dimensions(x.order, d.order); // x.order - d.order
 	std::string cols =
 	  power_label == 0 ? cols_and_power
 			   : detail::remove_dimensions(cols_and_power, std::string(1, power_label));
+	int power = power_label == 0 ? 1 : y.kvdim().at(power_label);
+	if (power <= 0)
+	  return;
 
-	if (power_fop)
+	if (sp)
 	{
-	  if (power_label == 0)
+	  remap mcols = detail::getNewLabels(cols_and_power, sp.d.order + sp.i.order);
+	  if (power == 1)
 	  {
-	    auto x0 = x.template reshape_dimensions<NOp + 2>({{cols, "^n"}}, {{'^', 1}}, true)
-			.template cast<COMPLEX>();
-	    auto y0 = y.template reshape_dimensions<NOp + 2>({{cols, "^n"}}, {{'^', 1}}, true)
-			.template cast_like<COMPLEX>();
-	    power_fop(x0, y0, 0);
-	    y0.copyTo(y);
+	    sp.contractWith(x.rename_dims(mcols), rd, y.rename_dims(mcols), {});
 	  }
 	  else
 	  {
-	    auto x0 = x.template collapse_dimensions<NOp + 2>(cols, 'n', true)
-			.template cast<COMPLEX>();
-	    auto y0 = y.template collapse_dimensions<NOp + 2>(cols, 'n', true)
-			.template cast_like<COMPLEX>();
-	    power_fop(x0, y0, power_label);
-	    y0.copyTo(y);
+	    char power_label0 = mcols.count(power_label) == 1 ? mcols.at(power_label) : power_label;
+	    auto x0 = x.rename_dims(mcols);
+	    auto y0 = y.rename_dims(mcols);
+	    sp.contractWith(
+	      x0, rd, y0.kvslice_from_size({}, {{power_label0, std::min(power, (int)max_power)}}),
+	      {}, power_label0);
+	    for (int i = std::min(power, (int)max_power), ni = std::min((int)max_power, power - i);
+		 i < power; i += ni, ni = std::min((int)max_power, power - i))
+	    {
+	      sp.contractWith(y0.kvslice_from_size({{power_label0, i - 1}}, {{power_label0, 1}}),
+			      rd, y0.kvslice_from_size({{power_label0, i}}, {{power_label0, ni}}),
+			      {}, power_label0);
+	    }
 	  }
 	}
 	else
@@ -268,11 +284,11 @@ namespace Chroma
 	    fop(x0, y0);
 	    y0.copyTo(y);
 	  }
-	  else if (y.kvdim().at(power_label) > 0)
+	  else if (power > 0)
 	  {
 	    operator()(x.kvslice_from_size({}, {{power_label, 1}}),
 		       y.kvslice_from_size({}, {{power_label, 1}}));
-	    for (int i = 1, p = y.kvdim().at(power_label); i < p; ++i)
+	    for (int i = 1, p = power; i < p; ++i)
 	      operator()(y.kvslice_from_size({{power_label, i - 1}}, {{power_label, 1}}),
 			 y.kvslice_from_size({{power_label, i}}, {{power_label, 1}}));
 	  }
@@ -296,13 +312,11 @@ namespace Chroma
 	if (!*this)
 	  return {};
 
-	if (power_fop)
+	if (sp)
 	{
-	  const Operator<NOp, COMPLEX> op = *this;
-	  return Operator<NOp, T>(
-	    [=](const Tensor<NOp + 2, T>& x, Tensor<NOp + 2, T> y, char p) { op(x, y, p); },
-	    d.template cast<T>(), i.template cast<T>(), order_t, domLayout, imgLayout, neighbors,
-	    preferred_col_ordering);
+	  return Operator<NOp, T>(sp.template cast<T>(), rd, max_power, d.template cast<T>(),
+				  i.template cast<T>(), order_t, domLayout, imgLayout, neighbors,
+				  preferred_col_ordering);
 	}
 	else
 	{
@@ -314,6 +328,71 @@ namespace Chroma
 	    op_tconj ? [=](const Tensor<NOp + 1, T>& x, Tensor<NOp + 1, T> y) { op_tconj(x, y); }
 		     : OperatorFun<NOp, T>{},
 	    order_t, domLayout, imgLayout, neighbors, preferred_col_ordering);
+	}
+      }
+
+      /// Return a slice of the tensor starting at coordinate `dom_kvfrom`, `img_kvfrom` and taking
+      /// `dom_kvsize`, `img_kvsize` elements in each direction. The missing dimensions in `*_kvfrom`
+      /// are set to zero and the missing directions in `*_kvsize` are set to the size of the tensor.
+      ///
+      /// \param dom_kvfrom: dictionary with the index of the first element in each domain direction
+      /// \param dom_kvsize: dictionary with the number of elements in each domain direction
+      /// \param img_kvfrom: dictionary with the index of the first element in each domain direction
+      /// \param img_kvsize: dictionary with the number of elements in each domain direction
+      /// \return: a copy of the tensor or an implicit operator
+
+      Operator<NOp, COMPLEX> kvslice_from_size(const std::map<char, int>& dom_kvfrom = {},
+					       const std::map<char, int>& dom_kvsize = {},
+					       const std::map<char, int>& img_kvfrom = {},
+					       const std::map<char, int>& img_kvsize = {}) const
+      {
+	if (!*this)
+	  return {};
+
+	// Update the eg layouts and the data layouts
+	auto new_d = d.kvslice_from_size(dom_kvfrom, dom_kvsize);
+	auto new_i = i.kvslice_from_size(img_kvfrom, img_kvsize);
+	OperatorLayout new_domLayout = (new_d.kvdim().at('X') == 1 ? EvensOnlyLayout : domLayout);
+	OperatorLayout new_imgLayout = (new_i.kvdim().at('X') == 1 ? EvensOnlyLayout : imgLayout);
+	if (sp)
+	{
+	  return Operator<NOp, COMPLEX>(sp.kvslice_from_size(detail::update_kvcoor(dom_kvfrom, rd),
+							     detail::update_kvcoor(dom_kvsize, rd),
+							     img_kvfrom, img_kvsize),
+					rd, max_power, new_d, new_i, order_t, new_domLayout,
+					new_imgLayout, neighbors, preferred_col_ordering);
+	}
+	else
+	{
+	  const Operator<NOp, COMPLEX> op = *this,
+				       op_tconj = has_tconj() ? tconj() : Operator<NOp, COMPLEX>{};
+	  return Operator<NOp, COMPLEX>(
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      auto x0 = op.d.template like_this<NOp + 1>(
+		op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+		{{'n', x.kvdim().at('n')}});
+	      x0.set_zero();
+	      x.copyTo(x0.kvslice_from_size(dom_kvfrom, dom_kvsize));
+	      auto y0 = op.i.template like_this<NOp + 1>(
+		op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+		{{'n', x.kvdim().at('n')}});
+	      op(x0, y0);
+	      y0.kvslice_from_size(img_kvfrom, img_kvsize).copyTo(y);
+	    },
+	    new_d, new_i,
+	    op_tconj ? [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      auto x0 = op_tconj.d.template like_this<NOp + 1>(
+		op_tconj.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+		{{'n', x.kvdim().at('n')}});
+	      x0.set_zero();
+	      x.copyTo(x0.kvslice_from_size(img_kvfrom, img_kvsize));
+	      auto y0 = op_tconj.i.template like_this<NOp + 1>(
+		op_tconj.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
+		{{'n', x.kvdim().at('n')}});
+	      op_tconj(x0, y0);
+	      y0.kvslice_from_size(dom_kvfrom, dom_kvsize).copyTo(y);
+            } : OperatorFun<NOp, COMPLEX>{},
+	    order_t, new_domLayout, new_imgLayout, neighbors, preferred_col_ordering);
 	}
       }
     };
@@ -501,6 +580,13 @@ namespace Chroma
     /// \param passing_initial_guess: whether `y` contains a solution guess
     /// \param verb: verbosity level
     /// \param prefix: prefix printed before every line
+    ///
+    /// For FGMRES we find an approximation of op^{-1}*b in a space Z by minimizing
+    /// || op*Z*x - b ||_2:
+    ///
+    /// argmin_x || op*Z*x - b ||_2 = (U'*op*Z)^{-1} * (U'*b), where U = op*Z
+    ///
+    /// In FGMRES, it just happens that Z_0 = prec * r and Z_i = prec * U_{i-1} if i>0.
 
     template <std::size_t NOp, typename COMPLEX>
     void fgmres(const Operator<NOp, COMPLEX>& op, Maybe<Operator<NOp, COMPLEX>> prec,
@@ -565,7 +651,6 @@ namespace Chroma
 						   : order_cols + std::string("%"),
 	  '%', "", {{order_cols[0], x.kvdim().at(order_cols[0])}});
 
-	r = y.like_this();
 	r.set_zero();
 	y.set_zero();
       }
@@ -733,39 +818,6 @@ namespace Chroma
 
     namespace detail
     {
-      /// Function that gets an operator and options and returns an operator that approximates the inverse
-      template <std::size_t NOp, typename COMPLEX>
-      using Solver = std::function<Operator<NOp, COMPLEX>(
-	const Operator<NOp, COMPLEX>& op, const Options& ops, const Operator<NOp, COMPLEX>& prec)>;
-
-      /// Returns an approximate inverse operator given an operator, options, and a list of solvers
-      /// \param solvers: map of solvers
-      /// \param op: operator to make the inverse of
-      /// \param ops: options to select the solver from `solvers` and influence the solver construction
-
-      template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX>
-      getSolver(const std::map<std::string, Solver<NOp, COMPLEX>>& solvers,
-		const Operator<NOp, COMPLEX>& op, const Options& ops,
-		const Operator<NOp, COMPLEX>& prec = Operator<NOp, COMPLEX>())
-      {
-	std::string type = getOption<std::string>(ops, "type");
-	if (type.size() == 0)
-	  ops.getValue("type").throw_error(
-	    "Error constructing the solver: invalid `type', it's empty");
-	if (solvers.count(type) == 0)
-	{
-	  std::string supported_tags;
-	  for (const auto& it : solvers)
-	    supported_tags += it.first + " ";
-	  ops.getValue("type").throw_error(
-	    "Error constructing the solver: unsupported `type' value `" + type +
-	    "'; supported values: " + supported_tags);
-	}
-
-	return solvers.at(type)(op, ops, prec);
-      }
-
       /// Apply the given function to all the given columns in x
       /// \param x: tensor to apply to fun
       /// \param y: output tensor
@@ -1473,41 +1525,8 @@ namespace Chroma
 	remap rd = t.second;
 
 	// Construct the operator to return
-	Operator<NOp, COMPLEX> rop{
-	  [=](const Tensor<NOp + 2, COMPLEX>& x, Tensor<NOp + 2, COMPLEX> y, char power_label) {
-	    std::string cols = detail::remove_dimensions(x.order, sop.i.order);
-	    remap mcols = detail::getNewLabels(cols, sop.d.order + sop.i.order);
-	    auto x0 = x.rename_dims(mcols);
-	    auto y0 = y.rename_dims(mcols);
-
-	    if (power_label == 0)
-	    {
-	      sop.contractWith(x0, rd, y0, {});
-	    }
-	    else
-	    {
-	      unsigned int num_powers = (unsigned int)y.kvdim().at(power_label);
-	      char power_label0 =
-		mcols.count(power_label) == 1 ? mcols.at(power_label) : power_label;
-	      sop.contractWith(
-		x0, rd, y0.kvslice_from_size({}, {{power_label0, std::min(num_powers, max_power)}}),
-		{}, power_label0);
-	      for (unsigned int i = std::min(num_powers, max_power),
-		       ni = std::min(max_power, num_powers - i);
-		   i < num_powers; i += ni, ni = std::min(max_power, num_powers - i))
-		sop.contractWith(
-		  y0.kvslice_from_size({{power_label0, (int)i - 1}}, {{power_label0, 1}}), rd,
-		  y0.kvslice_from_size({{power_label0, (int)i}}, {{power_label0, (int)ni}}), {},
-		  power_label0);
-	    }
-	  },
-	  sop.i,
-	  sop.i,
-	  op.order_t,
-	  op.domLayout,
-	  op.imgLayout,
-	  op.neighbors,
-	  co};
+	Operator<NOp, COMPLEX> rop{sop,	       rd,	     power,	   sop.i,	 sop.i,
+				   op.order_t, op.domLayout, op.imgLayout, op.neighbors, co};
 
 	// Do a test
 	Tracker _t(std::string("clone blocked operator (testing) ") + prefix);
@@ -1881,21 +1900,57 @@ namespace Chroma
 	  op.preferred_col_ordering};
       }
 
+      /// Destroy function
+      using DestroyFun = std::function<void()>;
+
+      /// Return a list of destroy callbacks after setting a solver
+
+      inline std::vector<DestroyFun>& getEvenOddOperatorsCacheDestroyList()
+      {
+	static std::vector<DestroyFun> list;
+	return list;
+      }
+
+      /// Call the destroy callbacks set up in `getEvenOddOperatorsCacheDestroyList`
+      inline void cleanEvenOddOperatorsCache()
+      {
+	// Destroy in reverse order to the allocated one
+	while (getEvenOddOperatorsCacheDestroyList().size() > 0)
+	{
+	  getEvenOddOperatorsCacheDestroyList().back()();
+	  getEvenOddOperatorsCacheDestroyList().pop_back();
+	}
+      }
+
       /// Return the cache of explicit even-odd operators generated by getEvenOddPrec
 
       template <std::size_t NOp, typename COMPLEX>
       std::map<void*, Operator<NOp, COMPLEX>>& getEvenOddOperatorsCache()
       {
-	static std::map<void*, Operator<NOp, COMPLEX>> m{};
+	static std::map<void*, Operator<NOp, COMPLEX>> m = []() {
+	  getEvenOddOperatorsCacheDestroyList().push_back(
+	    []() { getEvenOddOperatorsCache<NOp, COMPLEX>().clear(); });
+	  return std::map<void*, Operator<NOp, COMPLEX>>{};
+	}();
 	return m;
       }
 
+      /// Tuple storing the operator even-odd and odd-even parts and the block diagonal
+
+      template <std::size_t NOp, typename COMPLEX>
+      using EvenOddOperatorParts =
+	std::tuple<Operator<NOp, COMPLEX>, Operator<NOp, COMPLEX>, Tensor<NOp + 2, COMPLEX>>;
+
       /// Return the cache of block diagonals for even-odd operators generated by getEvenOddPrec
 
-      template <std::size_t N, typename COMPLEX>
-      std::map<void*, Tensor<N, COMPLEX>>& getEvenOddBlkDiagOperatorsCache()
+      template <std::size_t NOp, typename COMPLEX>
+      std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>>& getEvenOddOperatorsPartsCache()
       {
-	static std::map<void*, Tensor<N, COMPLEX>> m{};
+	static std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>> m = []() {
+	  getEvenOddOperatorsCacheDestroyList().push_back(
+	    []() { getEvenOddOperatorsPartsCache<NOp, COMPLEX>().clear(); });
+	  return std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>>{};
+	}();
 	return m;
       }
 
@@ -1943,12 +1998,18 @@ namespace Chroma
 	// Get the block diagonal of the operator with rows cs and columns CS
 	remap m_sc{{'s', 'S'}, {'c', 'C'}};
 	Tensor<NOp + 2, COMPLEX> opDiag;
-	if (getEvenOddBlkDiagOperatorsCache<NOp + 2, COMPLEX>().count(op.id.get()) == 0)
+	Operator<NOp, COMPLEX> op_eo, op_oe;
+	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
 	{
 	  opDiag = getBlockDiag<NOp + 2>(op, "cs", m_sc);
-	  getEvenOddBlkDiagOperatorsCache<NOp + 2, COMPLEX>()[op.id.get()] = opDiag;
+	  op_eo = op.kvslice_from_size({{'X', 1}}, {{'X', 1}}, {{'X', 0}}, {{'X', 1}});
+	  op_oe = op.kvslice_from_size({{'X', 0}}, {{'X', 1}}, {{'X', 1}}, {{'X', 1}});
+	  getEvenOddOperatorsPartsCache<NOp, COMPLEX>()[op.id.get()] = {op_eo, op_oe, opDiag};
 	} else {
-	  opDiag = getEvenOddBlkDiagOperatorsCache<NOp + 2, COMPLEX>().at(op.id.get());
+	  auto t = getEvenOddOperatorsPartsCache<NOp, COMPLEX>().at(op.id.get());
+	  op_eo = std::get<0>(t);
+	  op_oe = std::get<1>(t);
+	  opDiag = std::get<2>(t);
 	}
 
 	// Get an explicit form for A:=Op_ee-Op_eo*Op_oo^{-1}*Op_oe
@@ -1970,23 +2031,15 @@ namespace Chroma
 					x.rename_dims(m_sc), "CS", CopyTo, y);
 
 			       // y1 = Op_oe * x
-			       auto y0 = op.d.template like_this<NOp + 1>(
-				 op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-				 {{'n', x.kvdim().at('n')}});
-			       y0.set_zero();
-			       x.copyTo(y0.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
-			       auto y1 = op(y0).kvslice_from_size({{'X', 1}}, {{'X', 1}});
+			       auto y1 = op_oe(x);
 
 			       // y2 = Op_oo^{-1} * y1
-			       auto y2 = y0;
-			       y2.set_zero();
-			       solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+			       auto y2 = solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 				 opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS",
-				 y1.rename_dims(m_sc), "CS", CopyTo,
-				 y2.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+				 y1.rename_dims(m_sc), "CS");
 
 			       // y += -Op_eo * y2
-			       op(y2).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(y);
+			       op_eo(y2).scale(-1).addTo(y);
 			     });
 	  },
 	  op.d.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
@@ -2019,24 +2072,8 @@ namespace Chroma
 	Operator<NOp, COMPLEX> prec_ee;
 	if (precOps)
 	{
-	  auto prec = getSolver(op, precOps.getSome());
-	  prec_ee = Operator<NOp, COMPLEX>{
-	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	      auto x0 = x.make_compatible(none, {{'X', 2}});
-	      x0.set_zero();
-	      x.copyTo(x0.kvslice_from_size({}, {{'X', 1}}));
-	      auto y0 = y.make_compatible(none, {{'X', 2}});
-	      prec(x0, y0);
-	      y0.kvslice_from_size({}, {{'X', 1}}).copyTo(y);
-	    },
-	    op.i.kvslice_from_size({}, {{'X', 1}}),
-	    op.d.kvslice_from_size({}, {{'X', 1}}),
-	    nullptr,
-	    op.order_t,
-	    EvensOnlyLayout,
-	    EvensOnlyLayout,
-	    DenseOperator(),
-	    op.preferred_col_ordering};
+	  prec_ee =
+	    getSolver(op, precOps.getSome()).kvslice_from_size({}, {{'X', 1}}, {}, {{'X', 1}});
 	}
 
 	// Get solver on opA
@@ -2051,25 +2088,19 @@ namespace Chroma
 		solver.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
 		{{'n', x.kvdim().at('n')}});
 	      x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
-	      auto ya = op.d.template like_this<NOp + 1>(
-		op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-		{{'n', x.kvdim().at('n')}});
-	      ya.set_zero();
-	      solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS",
-		x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc), "CS", CopyTo,
-		ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
-	      op(ya).kvslice_from_size({{'X', 0}}, {{'X', 1}}).scale(-1).addTo(be);
+	      op_eo(solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		      opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS",
+		      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc), "CS"))
+		.scale(-1)
+		.addTo(be);
 
 	      // Solve opA * y_e = be
-	      y.set_zero();
 	      solver(be, y.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
 
 	      // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
-	      op(y, ya);
 	      auto yo0 = be;
 	      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
-	      ya.kvslice_from_size({{'X', 1}}, {{'X', 1}}).scale(-1).addTo(yo0);
+	      op_eo(y.kvslice_from_size({{'X', 0}}, {{'X', 1}})).scale(-1).addTo(yo0);
 	      solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS", yo0.rename_dims(m_sc),
 		"CS", CopyTo, y.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
@@ -2432,10 +2463,8 @@ namespace Chroma
       {
 	// Get the current precision and the requested by the user
 	enum Precision { Single, Double, Default };
-	static const std::map<std::string, Precision> precisionMap{{"default", Default},
-								   {"single", Single},
-								   {"float", Single},
-								   {"double", Double}};
+	static const std::map<std::string, Precision> precisionMap{
+	  {"default", Default}, {"single", Single}, {"float", Single}, {"double", Double}};
 	Precision defaultPrecision = std::is_same<COMPLEX, ComplexD>::value ? Double : Single;
 	Precision requestedPrecision =
 	  getOption<Precision>(ops, "precision", precisionMap, Default);
@@ -2446,15 +2475,15 @@ namespace Chroma
 	const Options& solverOps = getOptions(ops, "solver");
 
 	if (requestedPrecision == Double)
-	{
+	  {
 	  return getSolver(op.template cast<ComplexD>(), solverOps, prec_.template cast<ComplexD>())
-	    .template cast<COMPLEX>();
+	      .template cast<COMPLEX>();
 	} else {
 	  return getSolver(op.template cast<ComplexF>(), solverOps, prec_.template cast<ComplexF>())
-	    .template cast<COMPLEX>();
+	      .template cast<COMPLEX>();
+	  }
 	}
       }
-    }
 
     /// Returns an operator that approximate the inverse of a given operator
     /// \param op: operator to make the inverse of
@@ -2464,18 +2493,31 @@ namespace Chroma
     Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
 				     const Operator<NOp, COMPLEX>& prec)
     {
-      static const std::map<std::string, detail::Solver<NOp, COMPLEX>> solvers{
-	{"fgmres", detail::getFGMRESSolver<NOp, COMPLEX>}, // flexible GMRES
-	{"mg", detail::getMGPrec<NOp, COMPLEX>},	   // Multigrid
-	{"eo", detail::getEvenOddPrec<NOp, COMPLEX>},	   // even-odd Schur preconditioner
-	{"igd", detail::getInexactGD<NOp, COMPLEX>},	   // inexact Generalized Davidson
-	{"Ddag", detail::getDagger<NOp, COMPLEX>},	 // return the operator conjugate transposed
-	{"g5", detail::getG5<NOp, COMPLEX>},		 // apply \gamma_5
-	{"blocking", detail::getBlocking<NOp, COMPLEX>}, // reshape the operator
-	{"casting", detail::getCasting<NOp, COMPLEX>}	 // change the precision
-      };
-
-      return detail::getSolver(solvers, op, ops, prec);
+      enum SolverType { FGMRES, MG, EO, IGD, DDAG, G5, BLOCKING, CASTING };
+      static const std::map<std::string, SolverType> solverTypeMap{
+	{"fgmres", FGMRES},	{"mg", MG},	     {"eo", EO}, {"igd", IGD}, {"g5", G5},
+	{"blocking", BLOCKING}, {"casting", CASTING}};
+      SolverType solverType = getOption<SolverType>(ops, "type", solverTypeMap);
+      switch (solverType)
+      {
+      case FGMRES: // flexible GMRES
+	return detail::getFGMRESSolver(op, ops, prec);
+      case MG: // Multigrid
+	return detail::getMGPrec(op, ops, prec);
+      case EO: // even-odd Schur preconditioner
+	return detail::getEvenOddPrec(op, ops, prec);
+      case IGD: // inexact Generalized Davidson
+	return detail::getInexactGD(op, ops, prec);
+      case DDAG: // return the operator conjugate transposed
+	return detail::getDagger(op, ops, prec);
+      case G5: // apply \gamma_5
+	return detail::getG5(op, ops, prec);
+      case BLOCKING: // reshape the operator
+	return detail::getBlocking(op, ops, prec);
+      case CASTING: // change the precision
+	return detail::getCasting(op, ops, prec);
+      }
+      throw std::runtime_error("This shouldn't happen");
     }
 
     /// Return an Operator that wraps up a LinearOperator<LatticeFermion>
@@ -2586,11 +2628,10 @@ namespace Chroma
 
 	    // Construct the solver
 	    op =
-	      Maybe<Operator<Nd + 7, Complex>>{getSolver(linOp, getOptions(*ops, "InvertParam"))};
+	      Maybe<Operator<Nd + 7, Complex>>(getSolver(linOp, getOptions(*ops, "InvertParam")));
 
 	    // Clean cache of operators
-	    detail::getEvenOddOperatorsCache<Nd + 7, Complex>().clear();
-	    detail::getEvenOddBlkDiagOperatorsCache<Nd + 7 + 2, Complex>().clear();
+	    detail::cleanEvenOddOperatorsCache();
 
 	    QDPIO::cout << "MGPROTON invertor ready; setup time: "
 			<< detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;

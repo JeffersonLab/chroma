@@ -95,14 +95,35 @@ namespace Chroma
     struct None {
     };
 
+    template <typename T>
+    struct Maybe;
+
+    template <typename T>
+    struct is_maybe {
+      static constexpr bool value = false;
+    };
+
+    template <>
+    struct is_maybe<None> {
+      static constexpr bool value = true;
+    };
+
+    template <typename T>
+    struct is_maybe<Maybe<T>> {
+      static constexpr bool value = true;
+    };
+
     /// Class for optional values
     template <typename T>
     struct Maybe {
-      /// opt_val.first is whether a value was set, and opt_val.second has the value if that's the case
-      std::pair<bool, T> opt_val;
+      /// Whether the value is set
+      bool has_value;
+
+      /// The value
+      T value;
 
       /// Constructor without a value
-      Maybe() : opt_val{false, {}}
+      Maybe() : has_value{false}, value{}
       {
       }
 
@@ -113,36 +134,37 @@ namespace Chroma
 
       /// Constructor with a value
       template <typename Q,
-		typename std::enable_if<std::is_convertible<Q, T>::value, bool>::type = true>
-      Maybe(const Q& t) : opt_val{true, T(t)}
+		typename std::enable_if<(!is_maybe<Q>::value && std::is_convertible<Q, T>::value),
+					bool>::type = true>
+      Maybe(const Q& t) : has_value{true}, value{T(t)}
       {
       }
 
       /// Return whether it has been initialized with a value
       bool hasSome() const
       {
-	return opt_val.first;
+	return has_value;
       }
 
       /// Return whether it has been initialized with a value
       explicit operator bool() const noexcept
       {
-	return hasSome();
+	return has_value;
       }
 
       /// Return the value if it has been initialized with some
       T getSome() const
       {
-	if (opt_val.first)
-	  return opt_val.second;
-	throw std::runtime_error("W!");
+	if (has_value)
+	  return value;
+	throw std::runtime_error("Maybe::getSome: value isn't set");
       }
 
       /// Return the value if it has been initialized with some; otherwise return `def`
       T getSome(T def) const
       {
-	if (opt_val.first)
-	  return opt_val.second;
+	if (has_value)
+	  return value;
 	else
 	  return def;
       }
@@ -306,6 +328,14 @@ namespace Chroma
       inline bool is_in(const std::string& s, char c)
       {
 	return std::find(s.begin(), s.end(), c) != s.end();
+      }
+
+      inline std::map<char, int> update_kvcoor(const std::map<char, int>& kvcoor, const remap& m)
+      {
+	std::map<char, int> r;
+	for (auto const& it: kvcoor)
+	  r[m.at(it.first)] = it.second;
+	return r;
       }
 
       // Throw an error if `order` does not contain a label in `should_contain`
@@ -2807,12 +2837,15 @@ namespace Chroma
       /// Copy/add this tensor into the given one
       /// NOTE: if this tensor or the given tensor is fake real, force both to be fake real
 
-      template <std::size_t Nw, typename Tw,
+      template <std::size_t Nw, typename Tw, std::size_t Nm = N, typename Tm = float,
+		std::size_t Nwm = Nw, typename Twm = float,
 		typename std::enable_if<
 		  detail::is_complex<T>::value != detail::is_complex<Tw>::value, bool>::type = true>
-      void doAction(Action action, Tensor<Nw, Tw> w) const
+      void doAction(Action action, Tensor<Nw, Tw> w, Maybe<Tensor<Nm, Tm>> m = none,
+		    Maybe<Tensor<Nwm, Twm>> wm = none,
+		    const std::string& uneven_mask_labels = "") const
       {
-	toFakeReal().doAction(action, w.toFakeReal());
+	toFakeReal().doAction(action, w.toFakeReal(), m, wm, uneven_mask_labels);
       }
 
       /// Return the local support of this tensor
@@ -2914,7 +2947,8 @@ namespace Chroma
 		typename std::enable_if<
 		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
       void doAction(Action action, Tensor<Nw, Tw> w, Maybe<Tensor<Nm, Tm>> m = none,
-		    Maybe<Tensor<Nwm, Twm>> wm = none) const
+		    Maybe<Tensor<Nwm, Twm>> wm = none,
+		    const std::string& uneven_mask_labels = "") const
       {
 	if (is_eg() || w.is_eg() || (m.hasSome() && m.getSome().is_eg()) ||
 	    (wm.hasSome() && wm.getSome().is_eg()))
@@ -2922,8 +2956,12 @@ namespace Chroma
 
 	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
 	for (unsigned int i = 0; i < N; ++i)
-	  if (size[i] > wsize[i])
+	  if (size[i] > wsize[i] && !detail::is_in(uneven_mask_labels, order[i]))
 	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
+	if (m.hasSome() || wm.hasSome())
+	  for (unsigned int i = 0; i < N; ++i)
+	    if (size[i] != wsize[i] && !detail::is_in(uneven_mask_labels, order[i]))
+	      throw std::runtime_error("copying with masks tensor with different dimensions");
 
 	if (action == AddTo && w.scalar != Tw{1})
 	  throw std::runtime_error(
@@ -2950,13 +2988,65 @@ namespace Chroma
 	    auto this_local = getLocal();
 	    auto w_local = w.getLocal();
 	    if (w_local && this_local)
-	      this_local.doAction(action, w_local,
-				  m ? Maybe<Tensor<Nm, Tm>>(m.getSome().getLocal()) : none,
-				  wm ? Maybe<Tensor<Nwm, Twm>>(wm.getSome().getLocal()) : none);
+	      this_local.doAction(
+		action, w_local, m ? Maybe<Tensor<Nm, Tm>>(m.getSome().getLocal()) : none,
+		wm ? Maybe<Tensor<Nwm, Twm>>(wm.getSome().getLocal()) : none, uneven_mask_labels);
 	    return;
 	  }
 	  if (some_is_local && has_same_allocation(w) && !m && !wm)
 	    return;
+	}
+
+	// Check if some dimension size doesn't match
+	if (m.hasSome() || wm.hasSome())
+	{
+	  std::map<char, int> new_size;
+	  bool v_has_new_size = false, w_has_new_size = false;
+	  for (unsigned int i = 0; i < N; ++i)
+	  {
+	    if (size[i] != wsize[i])
+	    {
+	      new_size[order[i]] = std::max(size[i], wsize[i]);
+	      v_has_new_size |= new_size[order[i]] != size[i];
+	      w_has_new_size |= new_size[order[i]] != wsize[i];
+	    }
+	  }
+	  if (new_size.size() > 0)
+	  {
+	    auto v0 = *this;
+	    auto w0 = w;
+	    auto m0 = m;
+	    auto wm0 = wm, wm0_sliced = wm;
+	    if (v_has_new_size)
+	    {
+	      v0 = like_this(none, new_size);
+	      copyTo(v0);
+	      if (m.hasSome())
+	      {
+		auto m0_ = m.getSome().like_this(none, new_size);
+		m0_.set_zero();
+		m.getSome().copyTo(m0_);
+		m0 = Maybe<Tensor<Nm, Tm>>(m0_);
+	      }
+	    }
+	    if (w_has_new_size)
+	    {
+	      w0 = w.like_this(none, new_size);
+	      w.copyTo(w0);
+	      if (wm.hasSome())
+	      {
+		auto wm0_ = wm.getSome().like_this(none, new_size);
+		wm0_.set_zero();
+		wm.getSome().copyTo(wm0_);
+		wm0 = Maybe<Tensor<Nwm, Twm>>(wm0_);
+		wm0_sliced = Maybe<Tensor<Nwm, Twm>>(wm0_.kvslice_from_size({}, w.kvdim()));
+	      }
+	    }
+	    v0.doAction(action, w0, m0, wm0);
+	    if (w_has_new_size)
+	      w0.kvslice_from_size({}, w.kvdim()).doAction(CopyTo, w, wm0_sliced, wm);
+	    return;
+	  }
 	}
 
 	// Compute masks
@@ -3025,9 +3115,10 @@ namespace Chroma
       /// Copy this tensor into the given one but only the elements where the mask is nonzero
       template <std::size_t Nw, typename Tw, std::size_t Nm, typename Tm, std::size_t Nwm,
 		typename Twm>
-      void copyToWithMask(Tensor<Nw, Tw> w, Tensor<Nm, Tm> m, Tensor<Nwm, Twm> wm) const
+      void copyToWithMask(Tensor<Nw, Tw> w, Tensor<Nm, Tm> m, Tensor<Nwm, Twm> wm,
+			  const std::string uneven_mask_labels = "") const
       {
-	doAction<Nw, Tw, Nm, Tm, Nwm, Twm>(CopyTo, w, m, wm);
+	doAction<Nw, Tw, Nm, Tm, Nwm, Twm>(CopyTo, w, m, wm, uneven_mask_labels);
       }
 
       // Add `this` tensor into the given one
@@ -3677,6 +3768,65 @@ namespace Chroma
       return r0;
     }
 
+    /// Do the Kronecker product of two tensors
+    /// \param v: one tensor to contract
+    /// \param w: the other tensor to contract
+    /// \param r: optional given tensor where to put the resulting contraction
+
+    template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
+    Tensor<Nr, T> kronecker(Tensor<Nv, T> v, Tensor<Nw, T> w, Tensor<Nr, T> r = Tensor<Nr, T>{})
+    {
+      // Make sure that no dimension in common has size larger than one in both tensors
+      auto v_kvdim = v.kvdim();
+      auto w_kvdim = w.kvdim();
+      for (const auto& it : v_kvdim)
+	if (it.second > 1 && w_kvdim.count(it.first) > 0 && w_kvdim.at(it.first) > 1)
+	  throw std::runtime_error(
+	    "kronecker: input tensors have a common dimension with size larger than one");
+
+      // Renamed all dimensions in w to avoid a common label between the tensors
+      remap w_m = detail::getNewLabels(w.order, v.order);
+
+      // Do the contraction
+      auto k = contract<Nv + Nw>(v, w.rename_dims(w_m), "");
+
+      // The labels of the output tensor are the union of the input tensors labels
+      std::string rorder = detail::union_dimensions(v.order, w.order);
+
+      // The output tensor has the maximum size of the input tensors
+      auto rdims = v_kvdim;
+      for (const auto& it : w_kvdim)
+	if (rdims.count(it.first) == 0 || rdims.at(it.first) == 1)
+	  rdims[it.first] = it.second;
+
+      // For the common labels, rename the singleton one
+      remap k_m;
+      for (const auto& it : w_kvdim)
+      {
+	if (v_kvdim.count(it.first) == 1 && it.second > 1)
+	{
+	  k_m[w_m.at(it.first)] = it.first;
+	  k_m[it.first] = w_m.at(it.first);
+	}
+	else if (v_kvdim.count(it.first) == 0) {
+	  k_m[w_m.at(it.first)] = it.first;
+	}
+      }
+
+      // If the output tensor is not given create a new one
+      if (!r)
+      {
+	auto r0 = v.template like_this<Nr>(rorder, rdims);
+	k.rename_dims(k_m).copyTo(r0);
+	return r0;
+      }
+      else
+      {
+	k.rename_dims(k_m).copyTo(r);
+	return r;
+      }
+    }
+
     /// Compute the norm along some dimensions
     /// \param v: tensor
     /// \param order_t: labels not to contract (optional)
@@ -3975,6 +4125,29 @@ namespace Chroma
       return r;
     }
 
+    /// Broadcast a string from process zero
+    inline std::string broadcast(const std::string& s)
+    {
+      // Broadcast the size of the string
+      std::vector<float> size_orig(1, s.size()), size_dest(1, 0);
+      asTensorView(size_orig, OnMaster).copyTo(asTensorView(size_dest));
+
+      // Broadcast the content of the string
+      std::vector<float> orig(s.begin(), s.end());
+      orig.resize(size_dest[0]);
+      std::vector<float> dest(size_dest[0]);
+      asTensorView(orig, OnMaster).copyTo(asTensorView(dest));
+      return std::string(dest.begin(), dest.end());
+    }
+
+    /// Broadcast a string from process zero
+    inline int broadcast(int s)
+    {
+      std::vector<int> v(1, s), dest(1, 0);
+      asTensorView(v, OnMaster).copyTo(asTensorView(dest));
+      return dest[0];
+    }
+
     /// Class for operating sparse tensors
     /// \tparam ND: number of domain dimensions
     /// \tparam NI: number of image dimensions
@@ -3994,9 +4167,9 @@ namespace Chroma
       Tensor<NI + ND + 1, T> data; ///< Nonzero values
       std::shared_ptr<superbblas::BSR_handle> handle; ///< suparbblas sparse tensor handle
       T scalar;					      ///< Scalar factor of the tensor
-      const bool isImgFastInBlock;		      ///< whether the BSR blocks are in row-major
-      const unsigned int nblockd;		      ///< Number of blocked domain dimensions
-      const unsigned int nblocki;		      ///< Number of blocked image dimensions
+      bool isImgFastInBlock;			      ///< whether the BSR blocks are in row-major
+      unsigned int nblockd;			      ///< Number of blocked domain dimensions
+      unsigned int nblocki;			      ///< Number of blocked image dimensions
 
       /// Low-level constructor
       SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, Coor<ND> blkd, Coor<NI> blki, Tensor<NI, int> ii,
@@ -4111,6 +4284,13 @@ namespace Chroma
       {
       }
 
+      /// Return whether the tensor is not empty
+
+      explicit operator bool() const noexcept
+      {
+	return (bool)d;
+      }
+
       /// Construct the sparse operator
       void construct()
       {
@@ -4217,7 +4397,11 @@ namespace Chroma
 	  int* p = local_new_jj.data.get();
 	  auto new_dom_dim = detail::insert_coor(d.size, d_pos, dom_step);
 	  new_dom_dim[d_pos + 1] /= dom_step;
-	  for (std::size_t i = 0, i1 = local_new_jj.volume() / (ND + 1); i < i1; ++i)
+	  std::size_t i1 = local_new_jj.volume() / (ND + 1);
+#  ifdef _OPENMP
+#    pragma omp parallel for schedule(static)
+#  endif
+	  for (std::size_t i = 0; i < i1; ++i)
 	  {
 	    Coor<ND> c;
 	    std::copy_n(p + (ND + 1) * i, ND, c.begin());
@@ -4230,6 +4414,143 @@ namespace Chroma
 	data.split_dimension(dom_dim_label, dom_new_labels, dom_step)
 	  .split_dimension(img_dim_label, img_new_labels, img_step)
 	  .copyTo(r.data);
+
+	if (is_constructed())
+	  r.construct();
+
+	return r;
+      }
+
+      /// Return a slice of the tensor starting at coordinate `dom_kvfrom`, `img_kvfrom` and taking
+      /// `dom_kvsize`, `img_kvsize` elements in each direction. The missing dimensions in `*_kvfrom`
+      /// are set to zero and the missing directions in `*_kvsize` are set to the size of the tensor.
+      ///
+      /// \param dom_kvfrom: dictionary with the index of the first element in each domain direction
+      /// \param dom_kvsize: dictionary with the number of elements in each domain direction
+      /// \param img_kvfrom: dictionary with the index of the first element in each domain direction
+      /// \param img_kvsize: dictionary with the number of elements in each domain direction
+      /// \return: a copy of the tensor
+
+      SpTensor<ND, NI, T> kvslice_from_size(const std::map<char, int>& dom_kvfrom = {},
+					    const std::map<char, int>& dom_kvsize = {},
+					    const std::map<char, int>& img_kvfrom = {},
+					    const std::map<char, int>& img_kvsize = {}) const
+      {
+	// Check that we aren't slicing the blocking dimensions
+	bool fail = false;
+	std::string o_blk_d = std::string(d.order.begin(), d.order.begin() + nblockd);
+	for (auto& it : dom_kvfrom)
+	  if (detail::is_in(o_blk_d, it.first) && it.second != 0)
+	    fail = true;
+	auto dim_d = d.kvdim();
+	for (auto& it : dom_kvsize)
+	  if (detail::is_in(o_blk_d, it.first) && it.second != dim_d.at(it.first))
+	    fail = true;
+
+	std::string o_blk_i = std::string(i.order.begin(), i.order.begin() + nblocki);
+	for (auto& it : img_kvfrom)
+	  if (detail::is_in(o_blk_i, it.first) && it.second != 0)
+	    fail = true;
+	auto dim_i = i.kvdim();
+	for (auto& it : img_kvsize)
+	  if (detail::is_in(o_blk_i, it.first) && it.second != dim_i.at(it.first))
+	    fail = true;
+
+	if (fail)
+	  throw std::runtime_error(
+	    "SpTensor::kvslice_from_size: unsupported slicing on blocked dimensions");
+
+	auto new_d = d.kvslice_from_size(dom_kvfrom, dom_kvsize).make_eg();
+	auto new_i = i.kvslice_from_size(img_kvfrom, img_kvsize).make_eg();
+
+	// Get the nonzeros in the slice
+	auto ii_slice = ii.kvslice_from_size(img_kvfrom, img_kvsize).make_sure(none, OnHost);
+	auto new_ii = ii_slice.make_compatible(none, {}, OnHost);
+	new_ii.set_zero();
+	auto jj_slice = jj.kvslice_from_size(img_kvfrom, img_kvsize).make_sure(none, OnHost);
+	auto new_jj = jj_slice.template make_compatible<NI + 1, float>(
+	  detail::remove_dimensions(jj_slice.order, "~"), {}, OnHost);
+	new_jj.set_zero();
+	unsigned int num_neighbors = jj.kvdim().at('u');
+	{
+	  Coor<ND> from_dom = kvcoors<ND>(d.order, dom_kvfrom);
+	  std::map<char, int> updated_dom_kvsize = d.kvdim();
+	  for (const auto& it : dom_kvsize)
+	    updated_dom_kvsize[it.first] = it.second;
+	  Coor<ND> size_dom = kvcoors<ND>(d.order, updated_dom_kvsize);
+	  auto ii_slice_local = ii_slice.getLocal();
+	  int* ii_slice_ptr = ii_slice_local.data.get();
+	  auto jj_slice_local = jj_slice.getLocal();
+	  int* jj_slice_ptr = jj_slice_local.data.get();
+	  auto new_ii_local = new_ii.getLocal();
+	  int* new_ii_ptr = new_ii_local.data.get();
+	  auto new_jj_local = new_jj.getLocal();
+	  float* new_jj_ptr = new_jj_local.data.get();
+	  Coor<ND> size_nnz = d.size;
+	  for (unsigned int i = nblockd; i < ND; ++i)
+	    size_nnz[i] = 1;
+	  for (std::size_t i = 0, i_acc = 0, i1 = new_ii_local.volume(); i < i1;
+	       i_acc += ii_slice_ptr[i], ++i)
+	  {
+	    for (unsigned int j = i_acc, j1 = i_acc + ii_slice_ptr[i]; j < j1; ++j)
+	    {
+	      Coor<ND> from_nnz;
+	      std::copy_n(jj_slice_ptr + j * ND, ND, from_nnz.begin());
+	      Coor<ND> lfrom, lsize;
+	      superbblas::detail::intersection(from_dom, size_dom, from_nnz, size_nnz, d.dim, lfrom,
+					       lsize);
+	      if (superbblas::detail::volume(lsize) == 0)
+		continue;
+	      new_ii_ptr[i]++;
+	      new_jj_ptr[j] = 1;
+	    }
+	    if (i > 0 && new_ii_ptr[i] != new_ii_ptr[0])
+	      throw std::runtime_error("SpTensor::kvslice_from_size: unsupported slices ending up "
+				       "in different number of nonzero values in each row");
+	  }
+
+	  // Make sure that all nodes with support have the same number of neighbors
+	  if (new_ii_local.volume() > 0)
+	    num_neighbors = new_ii_ptr[0];
+	  int global_num_neighbors = broadcast(num_neighbors);
+	  if (new_ii_local.volume() > 0 && global_num_neighbors != num_neighbors)
+	    throw std::runtime_error("SpTensor::kvslice_from_size: unsupported distribution");
+	  num_neighbors = global_num_neighbors;
+	}
+
+	// Create the returning tensor
+	SpTensor<ND, NI, T> r{new_d, new_i, nblockd, nblocki, num_neighbors, isImgFastInBlock};
+	new_ii.copyTo(r.ii);
+
+	auto jj_mask = jj.create_mask();
+	jj_mask.set_zero();
+	std::vector<float> ones_tilde(ND, 1);
+	contract<ND + 2>(new_jj, asTensorView(ones_tilde).rename_dims({{'i', '~'}}), "")
+	  .copyTo(jj_mask.kvslice_from_size(img_kvfrom, img_kvsize));
+	auto r_jj_mask = r.jj.create_mask();
+	r_jj_mask.set(1);
+	jj.kvslice_from_size(img_kvfrom, img_kvsize)
+	  .copyToWithMask(r.jj, jj_mask.kvslice_from_size(img_kvfrom, img_kvsize), r_jj_mask,
+			  jj.order);
+
+	auto data_mask = data.create_mask();
+	data_mask.set_zero();
+	std::map<char, int> blk_m;
+	auto data_dim = data.kvdim();
+	for (unsigned int i = 0; i < ND; ++i)
+	  blk_m[d.order[i]] = data_dim.at(d.order[i]);
+	for (unsigned int i = 0; i < NI; ++i)
+	  blk_m[this->i.order[i]] = (i < nblocki ? data_dim.at(this->i.order[i]) : 1);
+	auto data_blk =
+	  data.template like_this<NI + ND, float>("%", '%', "u", blk_m, none, OnEveryoneReplicated);
+	data_blk.set(1);
+	kronecker<NI + ND + 1>(new_jj, data_blk)
+	  .copyTo(data_mask.kvslice_from_size(img_kvfrom, img_kvsize));
+	auto r_data_mask = r.data.create_mask();
+	r_data_mask.set(1);
+	data.kvslice_from_size(img_kvfrom, img_kvsize)
+	  .copyToWithMask(r.data, data_mask.kvslice_from_size(img_kvfrom, img_kvsize), r_data_mask,
+			  data.order);
 
 	if (is_constructed())
 	  r.construct();
@@ -4352,6 +4673,23 @@ namespace Chroma
       }
 
       // Contract the dimensions with the same label in this tensor and in `v` than do not appear on `w`.
+      template <std::size_t Nv, std::size_t Nw, typename Tv, typename Tw,
+		typename std::enable_if<
+		  (!std::is_same<Tv, T>::value || !std::is_same<Tw, T>::value), bool>::type = true>
+      void contractWith(Tensor<Nv, Tv> v, const remap& mv, Tensor<Nw, Tw> w, const remap& mw = {},
+			char power_label = 0) const
+      {
+	if (data.is_eg() || v.is_eg() || w.is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
+	if (!is_constructed())
+	  throw std::runtime_error("invalid operation on an not constructed tensor");
+
+	auto w0 = w.template cast_like<T>();
+	contractWith(v.template cast<T>(), mv, w0);
+	w0.copyTo(w);
+      }
+
       template <std::size_t Nv, std::size_t Nw>
       void contractWith(Tensor<Nv, T> v, const remap& mv, Tensor<Nw, T> w, const remap& mw = {},
 			char power_label = 0) const
@@ -4395,7 +4733,7 @@ namespace Chroma
 	    v.kvdim().at(power_label) > 1)
 	  throw std::runtime_error("contractWith: `power_label` for `v` does not have size one");
 	if (power_label != 0 && !detail::is_in(w.order, power_label))
-	  throw std::runtime_error("contractWidth: `power_label` isn't in `w`");
+	  throw std::runtime_error("contractWith: `power_label` isn't in `w`");
 
 	T* v_ptr = v.data.get();
 	T* w_ptr = w.data.get();
@@ -4483,22 +4821,38 @@ namespace Chroma
 
 	detail::log(1, ss.str());
       }
+
+      /// Return a copy of the tensor in a different precision
+      ///
+      /// \tparam Q: new precision
+
+      template <typename Q = T,
+		typename std::enable_if<std::is_same<T, Q>::value, bool>::type = true>
+      SpTensor<ND, NI, Q> cast() const
+      {
+	return *this;
+      }
+
+      template <typename Q = T,
+		typename std::enable_if<!std::is_same<T, Q>::value, bool>::type = true>
+      SpTensor<ND, NI, Q> cast() const
+      {
+	SpTensor<ND, NI, Q> r{d.template cast<Q>(),
+			      i.template cast<Q>(),
+			      blkd,
+			      blki,
+			      ii,
+			      jj,
+			      data.template cast<Q>(),
+			      (Q)scalar,
+			      isImgFastInBlock,
+			      nblockd,
+			      nblocki};
+	if (is_constructed())
+	  r.construct();
+	return r;
+      }
     };
-
-    /// Broadcast a string from process zero
-    inline std::string broadcast(const std::string& s)
-    {
-      // Broadcast the size of the string
-      std::vector<float> size_orig(1, s.size()), size_dest(1, 0);
-      asTensorView(size_orig, OnMaster).copyTo(asTensorView(size_dest));
-
-      // Broadcast the content of the string
-      std::vector<float> orig(s.begin(), s.end());
-      orig.resize(size_dest[0]);
-      std::vector<float> dest(size_dest[0]);
-      asTensorView(orig, OnMaster).copyTo(asTensorView(dest));
-      return std::string(dest.begin(), dest.end());
-    }
 
     template <std::size_t N, typename T>
     struct StorageTensor {

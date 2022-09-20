@@ -566,8 +566,8 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <typename Enum>
-    Enum getOption(const Option& ops, const std::string& path,
-		   const std::map<std::string, Enum>& m, Maybe<Enum> defaultValue)
+    Enum getOption(const Option& ops, const std::string& path, const std::map<std::string, Enum>& m,
+		   Maybe<Enum> defaultValue = none)
     {
       // Transform the map entries to lowercase
       std::map<std::string, Enum> m0;
