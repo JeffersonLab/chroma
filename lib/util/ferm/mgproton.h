@@ -1657,8 +1657,11 @@ namespace Chroma
 
 	// For now blocking on x should be divisible by X
 	auto opdims = op.d.kvdim();
-	int X = opdims.at('X');
+	int X = op.imgLayout == EvensOnlyLayout ? 2 : opdims.at('X');
 	bool x_blocking_divide_X = (mg_blocking.at('x') % X == 0);
+	if (!x_blocking_divide_X && op.imgLayout == EvensOnlyLayout)
+	  throw std::runtime_error(
+	    "When using even-odd preconditioning, the blocking on x should be divisible by 2");
 	for (const auto it : getNatLatticeDims(opdims, op.imgLayout))
 	{
 	  if (it.second % mg_blocking.at(it.first) != 0)
@@ -1713,7 +1716,7 @@ namespace Chroma
 	   {"c", "C"},
 	   {"s", "S"}},
 	  {{'X', 1}, // we don't do even-odd layout on the coarse operator space
-	   {'W', mg_blocking.at('x')},
+	   {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
 	   {'Y', mg_blocking.at('y')},
 	   {'Z', mg_blocking.at('z')},
 	   {'T', mg_blocking.at('t')},
