@@ -7507,7 +7507,7 @@ namespace Chroma
 	{
 	  for (int k = -max_component; k <= max_component; ++k)
 	  {
-	    int mom_magnitude2 = i + i + j * j + k * k;
+	    int mom_magnitude2 = i * i + j * j + k * k;
 	    if (min_mom2 <= mom_magnitude2 && mom_magnitude2 <= max_mom2)
 	      r.push_back(Coor<3>{i, j, k});
 	  }
