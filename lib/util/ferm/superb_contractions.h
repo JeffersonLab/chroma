@@ -2902,7 +2902,10 @@ namespace Chroma
 		    Maybe<Tensor<Nwm, Twm>> wm = none,
 		    const std::string& uneven_mask_labels = "") const
       {
-	toFakeReal().doAction(action, w.toFakeReal(), m, wm, uneven_mask_labels);
+	if (m || wm)
+	  throw std::runtime_error(
+	    "doAction: unsupported mixing real and complex types with masks");
+	toFakeReal().doAction(action, w.toFakeReal());
       }
 
       /// Return the local support of this tensor
