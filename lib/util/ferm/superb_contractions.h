@@ -5233,11 +5233,10 @@ namespace Chroma
 
     template <std::size_t N, typename T,
 	      typename std::enable_if<!detail::is_complex<T>::value, bool>::type = true>
-    void urand(Tensor<N, T>& t, T a = 0, T b = 1)
+    void urand(Tensor<N, T> t, T a = 0, T b = 1)
     {
       std::uniform_real_distribution<T> d(a, b);
-      fillWithCPUFuncNoArgs(
-	t, [&]() { return d(detail::getSeed()); }, false);
+      t.fillWithCPUFuncNoArgs([&]() { return d(detail::getSeed()); }, false);
     }
 
     /// Modify with complex random normal distributed numbers
@@ -5245,7 +5244,7 @@ namespace Chroma
 
     template <std::size_t N, typename T,
 	      typename std::enable_if<detail::is_complex<T>::value, bool>::type = true>
-    void nrand(Tensor<N, T>& t)
+    void nrand(Tensor<N, T> t)
     {
       std::normal_distribution<typename T::value_type> d{};
       t.fillWithCPUFuncNoArgs(
@@ -5260,11 +5259,10 @@ namespace Chroma
 
     template <std::size_t N, typename T,
 	      typename std::enable_if<!detail::is_complex<T>::value, bool>::type = true>
-    void nrand(Tensor<N, T>& t)
+    void nrand(Tensor<N, T> t)
     {
       std::normal_distribution<T> d{};
-      fillWithCPUFuncNoArgs(
-	t, [&]() { return d(detail::getSeed()); }, false);
+      t.fillWithCPUFuncNoArgs([&]() { return d(detail::getSeed()); }, false);
     }
 
     /// Return an identity matrix

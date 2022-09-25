@@ -261,10 +261,11 @@ namespace Chroma
 	    char power_label0 = mcols.count(power_label) == 1 ? mcols.at(power_label) : power_label;
 	    auto x0 = x.rename_dims(mcols);
 	    auto y0 = y.rename_dims(mcols);
+	    int power0 = (max_power == 0 ? power : std::min(power, (int)max_power));
 	    sp.contractWith(
-	      x0, rd, y0.kvslice_from_size({}, {{power_label0, std::min(power, (int)max_power)}}),
+	      x0, rd, y0.kvslice_from_size({}, {{power_label0, power0}}),
 	      {}, power_label0);
-	    for (int i = std::min(power, (int)max_power), ni = std::min((int)max_power, power - i);
+	    for (int i = power0, ni = std::min((int)max_power, power - i);
 		 i < power; i += ni, ni = std::min((int)max_power, power - i))
 	    {
 	      sp.contractWith(y0.kvslice_from_size({{power_label0, i - 1}}, {{power_label0, 1}}),
@@ -352,8 +353,14 @@ namespace Chroma
 	// Update the eg layouts and the data layouts
 	auto new_d = d.kvslice_from_size(dom_kvfrom, dom_kvsize);
 	auto new_i = i.kvslice_from_size(img_kvfrom, img_kvsize);
-	OperatorLayout new_domLayout = (new_d.kvdim().at('X') == 1 ? EvensOnlyLayout : domLayout);
-	OperatorLayout new_imgLayout = (new_i.kvdim().at('X') == 1 ? EvensOnlyLayout : imgLayout);
+	OperatorLayout new_domLayout =
+	  (new_d.kvdim().at('X') != d.kvdim().at('X') && domLayout == XEvenOddLayout
+	     ? EvensOnlyLayout
+	     : domLayout);
+	OperatorLayout new_imgLayout =
+	  (new_i.kvdim().at('X') != i.kvdim().at('X') && imgLayout == XEvenOddLayout
+	     ? EvensOnlyLayout
+	     : imgLayout);
 	if (sp)
 	{
 	  return Operator<NOp, COMPLEX>(sp.kvslice_from_size(detail::update_kvcoor(dom_kvfrom, rd),
@@ -1471,7 +1478,7 @@ namespace Chroma
 
 	// Get a sparse tensor representation of the operator
 	unsigned int op_dist = getFurthestNeighborDistance(op);
-	if (power % op_dist != 0)
+	if (op_dist > 1 && power % op_dist != 0)
 	  throw std::runtime_error("cloneOperatorToSpTensor: invalid power value, it isn't "
 				   "divisible by the furthest neighbor distance");
 	auto opdims = op.i.kvdim();
@@ -1481,7 +1488,7 @@ namespace Chroma
 	for (const auto& it :
 	     detail::getNewLabels("0123", op.d.order + op.i.order + "0123" + t.first.d.order))
 	  rd[it.first] = it.second;
-	int max_op_power = std::max(power / op_dist, 1u) - 1u;
+	int max_op_power = (op_dist == 0 ? 0 : std::max(power / op_dist, 1u) - 1u);
 	std::map<char,int> m_power{};
 	for (char c : std::string("xyzt") + update_order("xyzt", rd))
 	  m_power[c] = max_op_power;
@@ -1517,9 +1524,8 @@ namespace Chroma
 
 	// Get a sparse tensor representation of the operator
 	unsigned int op_dist = getFurthestNeighborDistance(op);
-	if (power % op_dist != 0)
+	if (op_dist > 1 && power % op_dist != 0)
 	  throw std::runtime_error("cloneOperator: invalid power value");
-	unsigned int max_power = std::max(power / op_dist, 1u);
 	auto t = cloneOperatorToSpTensor(op, power, coBlk, prefix);
 	auto sop = t.first;
 	remap rd = t.second;
@@ -1988,7 +1994,7 @@ namespace Chroma
 					    Operator<NOp, COMPLEX> prec_)
       {
 	auto dims = op.d.kvdim();
-	if (dims.count('X') == 0 || dims.at('X') != 2)
+	if (dims.count('X') == 0 || dims.at('X') != 2 || op.imgLayout != XEvenOddLayout)
 	  ops.throw_error(
 	    "getEvenOddPrec: only supported on explicitly colored operators with two colors");
 
@@ -2104,7 +2110,7 @@ namespace Chroma
 	      // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
 	      auto yo0 = be;
 	      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
-	      op_eo(y.kvslice_from_size({{'X', 0}}, {{'X', 1}})).scale(-1).addTo(yo0);
+	      op_oe(y.kvslice_from_size({{'X', 0}}, {{'X', 1}})).scale(-1).addTo(yo0);
 	      solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS", yo0.rename_dims(m_sc),
 		"CS", CopyTo, y.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
@@ -2123,7 +2129,7 @@ namespace Chroma
 	{
 	  auto x = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', 2}});
 	  urand(x, -1, 1);
-	  auto y = rop(op(x));
+	  auto y = op(rop(x));
 	  x.scale(-1).addTo(y);
 	  auto normx = norm<1>(x, "n");
 	  auto normdiff = norm<1>(y, "n");
