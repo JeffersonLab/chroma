@@ -44,6 +44,12 @@ namespace Chroma
       EvensOnlyLayout ///< x:x/2, y:y, z:z, t:t for all (x+y+z+t)%2==0
     };
 
+    /// Expected solver domain and image
+    enum SolverSpace {
+      FullSpace,     ///< input and output vector with full space support
+      OnlyEvensSpace ///< input and output vector restricted to even sites
+    };
+
     /// Return the map from string to Verbosity values
     inline const std::map<std::string, Verbosity>& getVerbosityMap()
     {
@@ -262,11 +268,10 @@ namespace Chroma
 	    auto x0 = x.rename_dims(mcols);
 	    auto y0 = y.rename_dims(mcols);
 	    int power0 = (max_power == 0 ? power : std::min(power, (int)max_power));
-	    sp.contractWith(
-	      x0, rd, y0.kvslice_from_size({}, {{power_label0, power0}}),
-	      {}, power_label0);
-	    for (int i = power0, ni = std::min((int)max_power, power - i);
-		 i < power; i += ni, ni = std::min((int)max_power, power - i))
+	    sp.contractWith(x0, rd, y0.kvslice_from_size({}, {{power_label0, power0}}), {},
+			    power_label0);
+	    for (int i = power0, ni = std::min((int)max_power, power - i); i < power;
+		 i += ni, ni = std::min((int)max_power, power - i))
 	    {
 	      sp.contractWith(y0.kvslice_from_size({{power_label0, i - 1}}, {{power_label0, 1}}),
 			      rd, y0.kvslice_from_size({{power_label0, i}}, {{power_label0, ni}}),
@@ -680,10 +685,10 @@ namespace Chroma
       auto r_Vc = r.append_dimension(Vc);
 
       // Do the iterations
-      auto normr = normr0.clone(); ///< residual norms
-      unsigned int it = 0;	   ///< iteration number
-      double max_tol = HUGE_VAL;   ///< maximum residual norm
-      unsigned int ires = 0;	   ///< vector index for the last restart starting
+      auto normr = normr0.clone();	 ///< residual norms
+      unsigned int it = 0;		 ///< iteration number
+      double max_tol = HUGE_VAL;	 ///< maximum residual norm
+      unsigned int ires = 0;		 ///< vector index for the last restart starting
       unsigned int residual_updates = 0; ///< number of residual updates
       for (it = 0; it < max_its;)
       {
@@ -821,7 +826,8 @@ namespace Chroma
 
     template <std::size_t NOp, typename COMPLEX>
     Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
-				     const Operator<NOp, COMPLEX>& prec = Operator<NOp, COMPLEX>());
+				     const Operator<NOp, COMPLEX>& prec = Operator<NOp, COMPLEX>(),
+				     SolverSpace solverSpace = FullSpace);
 
     namespace detail
     {
@@ -1489,7 +1495,7 @@ namespace Chroma
 	     detail::getNewLabels("0123", op.d.order + op.i.order + "0123" + t.first.d.order))
 	  rd[it.first] = it.second;
 	int max_op_power = (op_dist == 0 ? 0 : std::max(power / op_dist, 1u) - 1u);
-	std::map<char,int> m_power{};
+	std::map<char, int> m_power{};
 	for (char c : std::string("xyzt") + update_order("xyzt", rd))
 	  m_power[c] = max_op_power;
 	auto sop = t.first.extend_support(m_power)
@@ -1558,9 +1564,9 @@ namespace Chroma
 		std::sqrt(std::numeric_limits<typename real_type<COMPLEX>::type>::epsilon());
 	      for (int i = 0; i < base_norm0.volume(); ++i)
 		if (error.get({{i}}) > eps * base_norm0.get({{i}}))
-            throw std::runtime_error("cloneOperator: too much error on the cloned operator");
-          }
-        }
+		  throw std::runtime_error("cloneOperator: too much error on the cloned operator");
+	    }
+	  }
 	}
 
 	// Test for powers
@@ -1592,7 +1598,8 @@ namespace Chroma
 		std::sqrt(std::numeric_limits<typename real_type<COMPLEX>::type>::epsilon());
 	      for (int i = 0; i < base_norm0.volume(); ++i)
 		if (error.get({{i}}) > eps * base_norm0.get({{i}}))
-		  throw std::runtime_error("cloneOperator: too much error on the cloned operator for the power");
+		  throw std::runtime_error(
+		    "cloneOperator: too much error on the cloned operator for the power");
 	    }
 	  }
 	}
@@ -1659,7 +1666,8 @@ namespace Chroma
       getMGProlongator(const Operator<NOp, COMPLEX>& op, unsigned int num_null_vecs,
 		       const std::map<char, unsigned int>& mg_blocking,
 		       const std::map<char, unsigned int>& layout_blocking,
-		       bool do_chirality_splitting, const Operator<NOp, COMPLEX>& null_solver)
+		       bool do_chirality_splitting, const Operator<NOp, COMPLEX>& null_solver,
+		       SolverSpace solverSpace)
       {
 	detail::log(1, "starting getMGProlongator");
 
@@ -1678,7 +1686,15 @@ namespace Chroma
 
 	// Solve Ax=0 with random initial guesses
 	auto b = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
-	nrand(b);
+	if (solverSpace == FullSpace)
+	{
+	  nrand(b);
+	}
+	else
+	{
+	  b.set_zero();
+	  nrand(b.kvslice_from_size({}, {{'X', 1}}));
+	}
 	auto nv = null_solver(op(b));
 	b.scale(-1).addTo(nv);
 
@@ -1703,7 +1719,8 @@ namespace Chroma
 	}
 
 	// If the blocking in x isn't divisible by X, then work on natural ordering
-	if (not x_blocking_divide_X) {
+	if (not x_blocking_divide_X)
+	{
 	  nv2 = toNaturalOrdering(nv2);
 	  opdims['x'] *= X;
 	  opdims['X'] = 1;
@@ -1812,7 +1829,7 @@ namespace Chroma
 
       template <std::size_t NOp, typename COMPLEX>
       Operator<NOp, COMPLEX> getMGPrec(Operator<NOp, COMPLEX> op, const Options& ops,
-				       Operator<NOp, COMPLEX> prec_)
+				       Operator<NOp, COMPLEX> prec_, SolverSpace solverSpace)
       {
 	if (prec_)
 	  throw std::runtime_error("getMGPrec: unsupported input preconditioner");
@@ -1839,8 +1856,9 @@ namespace Chroma
 	const Operator<NOp, COMPLEX> nullSolver =
 	  getSolver(op, getOptions(ops, "solver_null_vecs"));
 	bool do_chirality_splitting = getOption<bool>(ops, "chirality_splitting", true);
-	const Operator<NOp, COMPLEX> V = getMGProlongator(
-	  op, num_null_vecs, mg_blocking, layout_blocking, do_chirality_splitting, nullSolver);
+	const Operator<NOp, COMPLEX> V =
+	  getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, do_chirality_splitting,
+			   nullSolver, solverSpace);
 
 	// Compute the coarse operator, either V' * op * V or V' * op * g5 * V
 	unsigned int create_coarse_max_rhs =
@@ -1988,7 +2006,7 @@ namespace Chroma
 
       template <std::size_t NOp, typename COMPLEX>
       Operator<NOp, COMPLEX> getEvenOddPrec(Operator<NOp, COMPLEX> op, const Options& ops,
-					    Operator<NOp, COMPLEX> prec_)
+					    Operator<NOp, COMPLEX> prec_, SolverSpace solverSpace)
       {
 	auto dims = op.d.kvdim();
 	if (dims.count('X') == 0 || dims.at('X') != 2 || op.imgLayout != XEvenOddLayout)
@@ -2014,7 +2032,9 @@ namespace Chroma
 	  op_eo = op.kvslice_from_size({{'X', 1}}, {{'X', 1}}, {{'X', 0}}, {{'X', 1}});
 	  op_oe = op.kvslice_from_size({{'X', 0}}, {{'X', 1}}, {{'X', 1}}, {{'X', 1}});
 	  getEvenOddOperatorsPartsCache<NOp, COMPLEX>()[op.id.get()] = {op_eo, op_oe, opDiag};
-	} else {
+	}
+	else
+	{
 	  auto t = getEvenOddOperatorsPartsCache<NOp, COMPLEX>().at(op.id.get());
 	  op_eo = std::get<0>(t);
 	  op_oe = std::get<1>(t);
@@ -2093,8 +2113,8 @@ namespace Chroma
 	Operator<NOp, COMPLEX> prec_ee;
 	if (precOps)
 	{
-	  auto prec_ee0 =
-	    getSolver(op, precOps.getSome()).kvslice_from_size({}, {{'X', 1}}, {}, {{'X', 1}});
+	  auto prec_ee0 = getSolver(op, precOps.getSome(), {}, OnlyEvensSpace)
+			    .kvslice_from_size({}, {{'X', 1}}, {}, {{'X', 1}});
 	  if (use_Aee_prec)
 	  {
 	    prec_ee = Operator<NOp, COMPLEX>{
@@ -2115,11 +2135,13 @@ namespace Chroma
 	const Operator<NOp, COMPLEX> solver = getSolver(opA, getOptions(ops, "solver"), prec_ee);
 
 	// Create the solver
-	Operator<NOp, COMPLEX>
-	  rop{
-	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	      // be = x_e - Op_eo*Op_oo^{-1}*x_o
-	      auto be = solver.d.template like_this<NOp + 1>(
+	Operator<NOp, COMPLEX> rop{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    // be = x_e - Op_eo*Op_oo^{-1}*x_o
+	    Tensor<NOp + 1, COMPLEX> be;
+	    if (solverSpace == FullSpace)
+	    {
+	      be = solver.d.template like_this<NOp + 1>(
 		solver.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
 		{{'n', x.kvdim().at('n')}});
 	      x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
@@ -2128,35 +2150,44 @@ namespace Chroma
 		      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc), "CS"))
 		.scale(-1)
 		.addTo(be);
+	    }
+	    else
+	    {
+	      be = x.kvslice_from_size({{'X', 0}}, {{'X', 1}});
+	    }
 
-	      // Solve opA * y_e = be
-	      auto ye = y.kvslice_from_size({{'X', 0}}, {{'X', 1}});
-	      solver(be, ye);
+	    // Solve opA * y_e = be
+	    auto ye = y.kvslice_from_size({{'X', 0}}, {{'X', 1}});
+	    solver(be, ye);
 
-	      // Do y_e = Op_ee^{-1} y_e if use_Aee_prec
-	      if (use_Aee_prec)
-	      {
-		solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		  opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "cs", "CS",
-		  ye.rename_dims(m_sc), "CS").copyTo(ye);
-	      }
+	    // Do y_e = Op_ee^{-1} y_e if use_Aee_prec
+	    if (use_Aee_prec)
+	    {
+	      solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "cs", "CS", ye.rename_dims(m_sc),
+		"CS")
+		.copyTo(ye);
+	    }
 
-	      // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
+	    // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
+	    if (solverSpace == FullSpace)
+	    {
 	      auto yo0 = be;
 	      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
 	      op_oe(ye).scale(-1).addTo(yo0);
 	      solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
 		opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS", yo0.rename_dims(m_sc),
 		"CS", CopyTo, y.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
-	    },
-	    op.i,
-	    op.d,
-	    nullptr,
-	    op.order_t,
-	    op.imgLayout,
-	    op.domLayout,
-	    DenseOperator(),
-	    op.preferred_col_ordering};
+	    }
+	  },
+	  op.i,
+	  op.d,
+	  nullptr,
+	  op.order_t,
+	  op.imgLayout,
+	  op.domLayout,
+	  DenseOperator(),
+	  op.preferred_col_ordering};
 
 	// Do a test
 	if (superbblas::getDebugLevel() > 0)
@@ -2210,7 +2241,8 @@ namespace Chroma
       /// \param ops: options to select the solver and the null-vectors creation
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getBlocking(Operator<NOp, COMPLEX> op, const Options& ops, Operator<NOp, COMPLEX> prec_)
+      Operator<NOp, COMPLEX> getBlocking(Operator<NOp, COMPLEX> op, const Options& ops,
+					 Operator<NOp, COMPLEX> prec_)
       {
 	if (prec_)
 	  throw std::runtime_error("getBlocking: unsupported input preconditioner");
@@ -2494,7 +2526,8 @@ namespace Chroma
       /// \param ops: options to select the solver and the null-vectors creation
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getG5(Operator<NOp, COMPLEX> op, const Options& ops, Operator<NOp, COMPLEX> prec_)
+      Operator<NOp, COMPLEX> getG5(Operator<NOp, COMPLEX> op, const Options& ops,
+				   Operator<NOp, COMPLEX> prec_)
       {
 	if (prec_)
 	  throw std::runtime_error("getG5: unsupported input preconditioner");
@@ -2531,7 +2564,8 @@ namespace Chroma
       /// \param ops: options to select the solver and the null-vectors creation
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getCasting(Operator<NOp, COMPLEX> op, const Options& ops, Operator<NOp, COMPLEX> prec_)
+      Operator<NOp, COMPLEX> getCasting(Operator<NOp, COMPLEX> op, const Options& ops,
+					Operator<NOp, COMPLEX> prec_, SolverSpace solverSpace)
       {
 	// Get the current precision and the requested by the user
 	enum Precision { Single, Double, Default };
@@ -2547,15 +2581,19 @@ namespace Chroma
 	const Options& solverOps = getOptions(ops, "solver");
 
 	if (requestedPrecision == Double)
-	  {
-	  return getSolver(op.template cast<ComplexD>(), solverOps, prec_.template cast<ComplexD>())
-	      .template cast<COMPLEX>();
-	} else {
-	  return getSolver(op.template cast<ComplexF>(), solverOps, prec_.template cast<ComplexF>())
-	      .template cast<COMPLEX>();
-	  }
+	{
+	  return getSolver(op.template cast<ComplexD>(), solverOps, prec_.template cast<ComplexD>(),
+			   solverSpace)
+	    .template cast<COMPLEX>();
+	}
+	else
+	{
+	  return getSolver(op.template cast<ComplexF>(), solverOps, prec_.template cast<ComplexF>(),
+			   solverSpace)
+	    .template cast<COMPLEX>();
 	}
       }
+    }
 
     /// Returns an operator that approximate the inverse of a given operator
     /// \param op: operator to make the inverse of
@@ -2563,7 +2601,7 @@ namespace Chroma
 
     template <std::size_t NOp, typename COMPLEX>
     Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
-				     const Operator<NOp, COMPLEX>& prec)
+				     const Operator<NOp, COMPLEX>& prec, SolverSpace solverSpace)
     {
       enum SolverType { FGMRES, MG, EO, BJ, IGD, DDAG, G5, BLOCKING, CASTING };
       static const std::map<std::string, SolverType> solverTypeMap{{"fgmres", FGMRES},
@@ -2580,9 +2618,9 @@ namespace Chroma
       case FGMRES: // flexible GMRES
 	return detail::getFGMRESSolver(op, ops, prec);
       case MG: // Multigrid
-	return detail::getMGPrec(op, ops, prec);
+	return detail::getMGPrec(op, ops, prec, solverSpace);
       case EO: // even-odd Schur preconditioner
-	return detail::getEvenOddPrec(op, ops, prec);
+	return detail::getEvenOddPrec(op, ops, prec, solverSpace);
       case BJ: // block Jacobi
 	return detail::getBlockJacobi(op, ops, prec);
       case IGD: // inexact Generalized Davidson
@@ -2594,7 +2632,7 @@ namespace Chroma
       case BLOCKING: // reshape the operator
 	return detail::getBlocking(op, ops, prec);
       case CASTING: // change the precision
-	return detail::getCasting(op, ops, prec);
+	return detail::getCasting(op, ops, prec, solverSpace);
       }
       throw std::runtime_error("This shouldn't happen");
     }
@@ -2647,78 +2685,78 @@ namespace Chroma
 
     /// Either a Chroma solver or a superb solver
     struct ChimeraSolver {
-	/// Action type
-	using Action = Handle<
-	  FermionAction<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>;
+      /// Action type
+      using Action = Handle<
+	FermionAction<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>;
 
-	/// Action
-	Action S;
+      /// Action
+      Action S;
 
-	/// State type
-	using State = Handle<FermState<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>;
+      /// State type
+      using State =
+	Handle<FermState<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>;
 
-	/// State
-	State state;
+      /// State
+      State state;
 
-	/// Chroma solver (optional)
-	Handle<SystemSolver<LatticeFermion>> PP;
+      /// Chroma solver (optional)
+      Handle<SystemSolver<LatticeFermion>> PP;
 
-	/// Operator on scxyztX (optional)
-	Maybe<Operator<Nd + 7, Complex>> op;
+      /// Operator on scxyztX (optional)
+      Maybe<Operator<Nd + 7, Complex>> op;
 
-	/// Constructor
-	/// \param fermAction: XML for the fermion action
-	/// \param invParam: XML for the quark propagator
-	/// \param u: gauge fields
+      /// Constructor
+      /// \param fermAction: XML for the fermion action
+      /// \param invParam: XML for the quark propagator
+      /// \param u: gauge fields
 
-	ChimeraSolver(const GroupXML_t& fermAction, const GroupXML_t& invParam,
-		      const multi1d<LatticeColorMatrix>& u)
+      ChimeraSolver(const GroupXML_t& fermAction, const GroupXML_t& invParam,
+		    const multi1d<LatticeColorMatrix>& u)
+      {
+	// Initialize fermion action and state
+	std::istringstream xml_s(fermAction.xml);
+	XMLReader fermacttop(xml_s);
+	QDPIO::cout << "FermAct = " << fermAction.id << std::endl;
+	S = TheFermionActionFactory::Instance().createObject(fermAction.id, fermacttop,
+							     fermAction.path);
+	state = S->createState(u);
+
+	// If the inverter is MGPROTON, use this infrastructure
+	if (invParam.id == std::string("MGPROTON"))
 	{
-	  // Initialize fermion action and state
-	  std::istringstream xml_s(fermAction.xml);
-	  XMLReader fermacttop(xml_s);
-	  QDPIO::cout << "FermAct = " << fermAction.id << std::endl;
-	  S = TheFermionActionFactory::Instance().createObject(fermAction.id, fermacttop,
-							       fermAction.path);
-	  state = S->createState(u);
+	  QDPIO::cout << "Setting up MGPROTON invertor..." << std::endl;
+	  Tracker _t("setup mgproton");
 
-	  // If the inverter is MGPROTON, use this infrastructure
-	  if (invParam.id == std::string("MGPROTON"))
-	  {
-	    QDPIO::cout << "Setting up MGPROTON invertor..." << std::endl;
-	    Tracker _t("setup mgproton");
+	  // Parse XML with the inverter options
+	  std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(invParam.xml));
 
-	    // Parse XML with the inverter options
-	    std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(invParam.xml));
+	  // Clone the matvec
+	  LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
+	  ColOrdering co = getOption<ColOrdering>(*ops, "InvertParam/operator_ordering",
+						  getColOrderingMap(), ColumnMajor);
+	  ColOrdering co_blk = getOption<ColOrdering>(*ops, "InvertParam/operator_block_ordering",
+						      getColOrderingMap(), RowMajor);
+	  Operator<Nd + 7, Complex> linOp =
+	    detail::cloneOperator(asOperatorView(*fLinOp), co, co_blk, "chroma's operator");
 
-	    // Clone the matvec
-	    LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
-	    ColOrdering co = getOption<ColOrdering>(*ops, "InvertParam/operator_ordering",
-						    getColOrderingMap(), ColumnMajor);
-	    ColOrdering co_blk = getOption<ColOrdering>(*ops, "InvertParam/operator_block_ordering",
-							getColOrderingMap(), RowMajor);
-	    Operator<Nd + 7, Complex> linOp =
-	      detail::cloneOperator(asOperatorView(*fLinOp), co, co_blk, "chroma's operator");
+	  // Destroy chroma objects
+	  delete fLinOp;
+	  state = State();
+	  S = Action();
 
-	    // Destroy chroma objects
-	    delete fLinOp;
-	    state = State();
-	    S = Action();
+	  // Construct the solver
+	  op = Maybe<Operator<Nd + 7, Complex>>(getSolver(linOp, getOptions(*ops, "InvertParam")));
 
-	    // Construct the solver
-	    op =
-	      Maybe<Operator<Nd + 7, Complex>>(getSolver(linOp, getOptions(*ops, "InvertParam")));
+	  // Clean cache of operators
+	  detail::cleanEvenOddOperatorsCache();
 
-	    // Clean cache of operators
-	    detail::cleanEvenOddOperatorsCache();
-
-	    QDPIO::cout << "MGPROTON invertor ready; setup time: "
-			<< detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;
-	  }
-	  else
-	  {
-	    PP = S->qprop(state, invParam);
-	  }
+	  QDPIO::cout << "MGPROTON invertor ready; setup time: "
+		      << detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;
+	}
+	else
+	{
+	  PP = S->qprop(state, invParam);
+	}
       }
     };
 
