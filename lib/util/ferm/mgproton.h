@@ -1626,22 +1626,24 @@ namespace Chroma
 	// Get a sparse tensor representation of the operator
 	auto t = cloneOperatorToSpTensor(op, 0 /* clone only the block diagonal */, RowMajor,
 					 "block diag");
-	auto sop = t.first;
-	remap rd = t.second;
+	const auto sop = t.first;
+	const remap rd = t.second;
 
 	// Create tensor to return
-	std::string order = block_labels + update_order(block_labels, m) +
-			    detail::remove_dimensions(op.d.order, block_labels);
+	const std::string cols = update_order(block_labels, m);
+	std::string order =
+	  block_labels + cols + detail::remove_dimensions(op.d.order, block_labels);
 	auto dims = op.d.kvdim();
 	for (const auto& it : m)
 	  dims[it.second] = dims[it.first];
 	Tensor<N, COMPLEX> r = op.d.template like_this<N>(order, dims);
 
 	// Copy the blocks
+	remap m_cols = getNewLabels(cols, sop.data.order);
 	remap m_blk;
 	for (const auto& it : m)
-	  m_blk[rd[it.first]] = it.second;
-	sop.data.rename_dims(m_blk).copyTo(r);
+	  m_blk[rd.at(it.first)] = m_cols.at(it.second);
+	sop.data.rename_dims(m_blk).copyTo(r.rename_dims(m_cols));
 
 	// Return tensor
 	return r;
@@ -2101,14 +2103,7 @@ namespace Chroma
 		contract(opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
 			 prec_ee0(x).rename_dims(m_sc), "CS", CopyTo, y);
 	      },
-	      prec_ee0.d,
-	      prec_ee0.i,
-	      nullptr,
-	      prec_ee0.order_t,
-	      prec_ee0.domLayout,
-	      prec_ee0.imgLayout,
-	      prec_ee0.neighbors,
-	      prec_ee0.preferred_col_ordering};
+	      prec_ee0.d, prec_ee0.i, nullptr, prec_ee0};
 	  }
 	  else
 	  {
@@ -2179,6 +2174,34 @@ namespace Chroma
 	}
 
 	return rop;
+      }
+
+      /// Returns the inverse of the block diagonal
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getBlockJacobi(Operator<NOp, COMPLEX> op, const Options& ops,
+					    Operator<NOp, COMPLEX> prec_)
+      {
+	if (prec_)
+	  throw std::runtime_error("getBlockJacobi: unsupported input preconditioner");
+
+	// Get the block diagonal of the operator with rows cs and columns CS
+	const std::string blk_rows = "cs0123"; // order of the block of rows to invert
+	remap m_blk = getNewLabels(blk_rows, op.d.order + op.i.order); // column labels
+	const std::string blk_cols =
+	  update_order(blk_rows, m_blk); // order of the block of columns to invert
+	Tensor<NOp + 6, COMPLEX> opDiag = getBlockDiag<NOp + 6>(op, blk_rows, m_blk);
+
+	// Return the solver
+	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		  // y = Op_diag^{-1} * x
+		  solve<6, NOp + 1, NOp + 6, NOp + 1, COMPLEX>(
+		    opDiag, blk_rows, blk_cols, x.rename_dims(m_blk), blk_cols, CopyTo, y);
+		},
+		op.d, op.i, nullptr, op};
       }
 
       /// Returns a blocking, which should enhanced the performance of the sparse-dense tensor contraction.
@@ -2542,10 +2565,15 @@ namespace Chroma
     Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
 				     const Operator<NOp, COMPLEX>& prec)
     {
-      enum SolverType { FGMRES, MG, EO, IGD, DDAG, G5, BLOCKING, CASTING };
-      static const std::map<std::string, SolverType> solverTypeMap{
-	{"fgmres", FGMRES},	{"mg", MG},	     {"eo", EO}, {"igd", IGD}, {"g5", G5},
-	{"blocking", BLOCKING}, {"casting", CASTING}};
+      enum SolverType { FGMRES, MG, EO, BJ, IGD, DDAG, G5, BLOCKING, CASTING };
+      static const std::map<std::string, SolverType> solverTypeMap{{"fgmres", FGMRES},
+								   {"mg", MG},
+								   {"eo", EO},
+								   {"bj", BJ},
+								   {"igd", IGD},
+								   {"g5", G5},
+								   {"blocking", BLOCKING},
+								   {"casting", CASTING}};
       SolverType solverType = getOption<SolverType>(ops, "type", solverTypeMap);
       switch (solverType)
       {
@@ -2555,6 +2583,8 @@ namespace Chroma
 	return detail::getMGPrec(op, ops, prec);
       case EO: // even-odd Schur preconditioner
 	return detail::getEvenOddPrec(op, ops, prec);
+      case BJ: // block Jacobi
+	return detail::getBlockJacobi(op, ops, prec);
       case IGD: // inexact Generalized Davidson
 	return detail::getInexactGD(op, ops, prec);
       case DDAG: // return the operator conjugate transposed
