@@ -936,19 +936,33 @@ namespace Chroma
 	}
       }
 
+      enum BlockingAsSparseDimensions {
+	ConsiderBlockingSparse, ///< Dimensions 0,1,2,3 will be sparse and part of the lattice
+	ConsiderBlockingDense	///< Dimensions 0,1,2,3 will be dense and not lattice dimensions
+      };
+
       /// Return the natural lattice dimensions
       /// \param dim: dimension for each label
       /// \param layout: operator's layout
 
-      inline std::map<char, int> getNatLatticeDims(const std::map<char, int>& dim,
-						   OperatorLayout layout)
+      inline std::map<char, int>
+      getNatLatticeDims(const std::map<char, int>& dim, OperatorLayout layout,
+			BlockingAsSparseDimensions blockDims = ConsiderBlockingSparse)
       {
 	int nX = (layout == EvensOnlyLayout ? 2 : (dim.count('X') == 1 ? dim.at('X') : 1));
-	return std::map<char, int>{
-	  {'x', dim.at('x') * (dim.count('0') == 1 ? dim.at('0') : 1) * nX},
-	  {'y', dim.at('y') * (dim.count('1') == 1 ? dim.at('1') : 1)},
-	  {'z', dim.at('z') * (dim.count('2') == 1 ? dim.at('2') : 1)},
-	  {'t', dim.at('t') * (dim.count('3') == 1 ? dim.at('3') : 1)}};
+	if (blockDims == ConsiderBlockingSparse)
+	{
+	  return std::map<char, int>{
+	    {'x', dim.at('x') * (dim.count('0') == 1 ? dim.at('0') : 1) * nX},
+	    {'y', dim.at('y') * (dim.count('1') == 1 ? dim.at('1') : 1)},
+	    {'z', dim.at('z') * (dim.count('2') == 1 ? dim.at('2') : 1)},
+	    {'t', dim.at('t') * (dim.count('3') == 1 ? dim.at('3') : 1)}};
+	}
+	else
+	{
+	  return std::map<char, int>{
+	    {'x', dim.at('x') * nX}, {'y', dim.at('y')}, {'z', dim.at('z')}, {'t', dim.at('t')}};
+	}
       }
 
       /// Return the neighbors as displacements from origin in natural coordinates
@@ -1089,7 +1103,8 @@ namespace Chroma
 				   "distance to the furthest neighbor");
 
 	// Compute the coloring
-	Coor<Nd> nat_dims = kvcoors<Nd>("xyzt", getNatLatticeDims(dim, layout));
+	Coor<Nd> nat_dims =
+	  kvcoors<Nd>("xyzt", getNatLatticeDims(dim, layout, ConsiderBlockingDense));
 	Coloring coloring{0, // zero displacement in coloring
 			  power == 0 ? max_dist_neighbors + 1
 				     : max_dist_neighbors * 2 + 1, // k-distance coloring
@@ -1520,9 +1535,11 @@ namespace Chroma
       /// \param coBlk: ordering of the nonzero blocks of the sparse operator
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op, unsigned int power,
-					   ColOrdering co, ColOrdering coBlk,
-					   const std::string& prefix = "")
+      Operator<NOp, COMPLEX>
+      cloneOperator(const Operator<NOp, COMPLEX>& op, unsigned int power, ColOrdering co,
+		    ColOrdering coBlk,
+		    BlockingAsSparseDimensions blockingAsSparseDimensions = ConsiderBlockingSparse,
+		    const std::string& prefix = "")
       {
 	// If the operator is empty, just return itself
 	if (op.d.volume() == 0 || op.i.volume() == 0)
@@ -1532,13 +1549,28 @@ namespace Chroma
 	unsigned int op_dist = getFurthestNeighborDistance(op);
 	if (op_dist > 1 && power % op_dist != 0)
 	  throw std::runtime_error("cloneOperator: invalid power value");
-	auto t = cloneOperatorToSpTensor(op, power, coBlk, prefix);
-	auto sop = t.first;
-	remap rd = t.second;
+	remap rd;
+	SpTensor<NOp, NOp, COMPLEX> sop;
+	if (blockingAsSparseDimensions == ConsiderBlockingSparse)
+	{
+	  auto t = cloneOperatorToSpTensor(op, power, coBlk, prefix);
+	  sop = t.first;
+	  rd = t.second;
+	}
+	else
+	{
+	  auto t = cloneUnblockedOperatorToSpTensor(op, power, coBlk, prefix);
+	  sop = t.first;
+	  rd = t.second;
+	}
 
 	// Construct the operator to return
 	Operator<NOp, COMPLEX> rop{sop,	       rd,	     power,	   sop.i,	 sop.i,
 				   op.order_t, op.domLayout, op.imgLayout, op.neighbors, co};
+
+	// Skip tests if power < op_dist
+	if (power < op_dist)
+	  return rop;
 
 	// Do a test
 	Tracker _t(std::string("clone blocked operator (testing) ") + prefix);
@@ -1613,10 +1645,13 @@ namespace Chroma
       /// \param coBlk: ordering of the nonzero blocks of the sparse operator
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> cloneOperator(const Operator<NOp, COMPLEX>& op, ColOrdering co,
-					   ColOrdering coBlk, const std::string& prefix = "")
+      Operator<NOp, COMPLEX>
+      cloneOperator(const Operator<NOp, COMPLEX>& op, ColOrdering co, ColOrdering coBlk,
+		    BlockingAsSparseDimensions blockingAsSparseDimensions = ConsiderBlockingSparse,
+		    const std::string& prefix = "")
       {
-	return cloneOperator(op, getFurthestNeighborDistance(op), co, coBlk, prefix);
+	return cloneOperator(op, getFurthestNeighborDistance(op), co, coBlk,
+			     blockingAsSparseDimensions, prefix);
       }
 
       /// Return the block diagonal of an operator
@@ -1626,15 +1661,29 @@ namespace Chroma
       /// \return: tensor with the block labels as rows and the renamed labels as columns
 
       template <std::size_t N, std::size_t NOp, typename COMPLEX>
-      Tensor<N, COMPLEX> getBlockDiag(const Operator<NOp, COMPLEX>& op,
-				      const std::string& block_labels, const remap& m)
+      Tensor<N, COMPLEX>
+      getBlockDiag(const Operator<NOp, COMPLEX>& op, const std::string& block_labels,
+		   const remap& m,
+		   BlockingAsSparseDimensions blockingAsSparseDimensions = ConsiderBlockingSparse)
       {
-	// Check
 	// Get a sparse tensor representation of the operator
-	auto t = cloneOperatorToSpTensor(op, 0 /* clone only the block diagonal */, RowMajor,
-					 "block diag");
-	const auto sop = t.first;
-	const remap rd = t.second;
+	remap rd;
+	SpTensor<NOp, NOp, COMPLEX> sop;
+	int power = 0; // clone only the block diagonal
+	ColOrdering coBlk = RowMajor;
+	const std::string prefix = "block diag";
+	if (blockingAsSparseDimensions == ConsiderBlockingSparse)
+	{
+	  auto t = cloneOperatorToSpTensor(op, power, coBlk, prefix);
+	  sop = t.first;
+	  rd = t.second;
+	}
+	else
+	{
+	  auto t = cloneUnblockedOperatorToSpTensor(op, power, coBlk, prefix);
+	  sop = t.first;
+	  rd = t.second;
+	}
 
 	// Create tensor to return
 	const std::string cols = update_order(block_labels, m);
@@ -1671,7 +1720,8 @@ namespace Chroma
       {
 	detail::log(1, "starting getMGProlongator");
 
-	// For now blocking on x should be divisible by X
+	// Check that the blocking divide the lattice sizes. For an operator with support only
+	// on the even sites, make sure that the blocking on x is divisible by two
 	auto opdims = op.d.kvdim();
 	int X = op.imgLayout == EvensOnlyLayout ? 2 : opdims.at('X');
 	bool x_blocking_divide_X = (mg_blocking.at('x') % X == 0);
@@ -1889,7 +1939,7 @@ namespace Chroma
 	    },
 	    V.d, V.d, nullptr, op.order_t, V.domLayout, V.domLayout, V.neighbors,
 	    op.preferred_col_ordering},
-	  co, co_blk, "coarse");
+	  co, co_blk, ConsiderBlockingSparse, "coarse");
 
 	// Get the solver for the projector
 	const Operator<NOp, COMPLEX> coarseSolver =
@@ -2219,20 +2269,176 @@ namespace Chroma
 	if (prec_)
 	  throw std::runtime_error("getBlockJacobi: unsupported input preconditioner");
 
-	// Get the block diagonal of the operator with rows cs and columns CS
-	const std::string blk_rows = "cs0123"; // order of the block of rows to invert
-	remap m_blk = getNewLabels(blk_rows, op.d.order + op.i.order); // column labels
-	const std::string blk_cols =
-	  update_order(blk_rows, m_blk); // order of the block of columns to invert
-	Tensor<NOp + 6, COMPLEX> opDiag = getBlockDiag<NOp + 6>(op, blk_rows, m_blk);
+	// Get the blocking
+	auto dim = op.d.kvdim();
+	std::vector<unsigned int> default_blocking{
+	  {op.imgLayout == EvensOnlyLayout ? 2u : 1u, 1u, 1u, 1u}};
+	std::vector<unsigned int> blocking =
+	  getVectorOption<unsigned int>(ops, "blocking", default_blocking);
+	if (blocking.size() != Nd)
+	  ops.getValue("blocking")
+	    .throw_error("getBlocking: the blocking should be a vector with four elements");
+	std::map<char, unsigned int> mblk{
+	  {'x', blocking[0]}, {'y', blocking[1]}, {'z', blocking[2]}, {'t', blocking[3]}};
 
-	// Return the solver
-	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		  // y = Op_diag^{-1} * x
-		  solve<6, NOp + 1, NOp + 6, NOp + 1, COMPLEX>(
-		    opDiag, blk_rows, blk_cols, x.rename_dims(m_blk), blk_cols, CopyTo, y);
-		},
-		op.d, op.i, nullptr, op};
+	// Shortcut for default blocking
+	if (blocking == default_blocking)
+	{
+	  // Get the block diagonal of the operator with rows cs and columns CS
+	  const std::string blk_rows = "cs"; // order of the block of rows to invert
+	  remap m_blk = getNewLabels(blk_rows, op.d.order + op.i.order); // column labels
+	  const std::string blk_cols =
+	    update_order(blk_rows, m_blk); // order of the block of columns to invert
+	  Tensor<NOp + 2, COMPLEX> opDiag = getBlockDiag<NOp + 2>(op, blk_rows, m_blk);
+
+	  // Return the solver
+	  return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		    // y = Op_diag^{-1} * x
+		    solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
+		      opDiag, blk_rows, blk_cols, x.rename_dims(m_blk), blk_cols, CopyTo, y);
+		  },
+		  op.d, op.i, nullptr, op};
+	}
+
+	// Check that the blocking divide the lattice sizes. For an operator with support only
+	// on the even sites, make sure that the blocking on x is divisible by two
+	int X = op.imgLayout == EvensOnlyLayout ? 2 : dim.at('X');
+	bool x_blocking_divide_X = (mblk.at('x') % X == 0);
+	if (!x_blocking_divide_X && op.imgLayout == EvensOnlyLayout)
+	  ops.getValue("blocking")
+	    .throw_error(
+	      "When using even-odd preconditioning, the blocking on x should be divisible by 2");
+	if (!x_blocking_divide_X && blocking[0] != default_blocking[0])
+	  ops.getValue("blocking")
+	    .throw_error(
+	      "unsupported blocking which is neither one nor divisible by 2 on the x direction");
+	for (const auto it : getNatLatticeDims(dim, op.imgLayout))
+	{
+	  if (it.second % mblk.at(it.first) != 0)
+	    ops.getValue("blocking")
+	      .throw_error("The operator dimensions are not divisible by the blocking");
+	}
+
+	// Shortcut when no blocking on x direction
+	if (default_blocking[0] == blocking[0])
+	{
+	  // Get the block diagonal of the operator with rows cs and columns CS
+	  const std::string blk_rows = "cs0123"; // order of the block of rows to invert
+	  remap m_blk = getNewLabels(blk_rows, op.d.order + op.i.order); // column labels
+	  const std::string blk_cols =
+	    update_order(blk_rows, m_blk); // order of the block of columns to invert
+
+	  std::map<char, int> blk{
+	    {'1', (int)blocking[1]}, {'2', (int)blocking[2]}, {'3', (int)blocking[3]}};
+	  std::map<char, unsigned int> blk_u{
+	    {'x', 1u}, {'y', blocking[1]}, {'z', blocking[2]}, {'t', blocking[3]}};
+	  auto new_d = op.d
+			 .template reshape_dimensions<NOp>(
+			   {{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, blk, true)
+			 .make_eg();
+	  auto new_i = op.i
+			 .template reshape_dimensions<NOp>(
+			   {{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, blk, true)
+			 .make_eg();
+	  auto blk_op =
+	    Operator<NOp, COMPLEX>{
+	      [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		auto x0 = x.template reshape_dimensions<NOp + 1>(
+		  {{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, dim, true);
+		auto y0 = op(std::move(x0));
+		y0.template reshape_dimensions<NOp + 1>({{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}},
+							blk, true)
+		  .copyTo(y);
+	      },
+	      new_d,
+	      new_i,
+	      nullptr,
+	      op.order_t,
+	      op.domLayout == EvensOnlyLayout ? NaturalLayout : op.domLayout,
+	      op.imgLayout == EvensOnlyLayout ? NaturalLayout : op.imgLayout,
+	      getNeighborsAfterBlocking(blk_u, op.d.kvdim(), op.neighbors, op.imgLayout),
+	      op.preferred_col_ordering};
+
+	  Tensor<NOp + 6, COMPLEX> opDiag =
+	    getBlockDiag<NOp + 6>(blk_op, blk_rows, m_blk, ConsiderBlockingDense);
+
+	  // Return the solver
+	  return Operator<NOp, COMPLEX>{
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      auto x0 = x.template reshape_dimensions<NOp + 1>(
+		{{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, blk, true);
+
+	      // y = Op_diag^{-1} * x
+	      auto y0 = solve<6, NOp + 1, NOp + 6, NOp + 1, COMPLEX>(
+		opDiag, blk_rows, blk_cols, std::move(x0).rename_dims(m_blk), blk_cols);
+
+	      y0.template reshape_dimensions<NOp + 1>({{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}},
+						      dim, true)
+		.copyTo(y);
+	    },
+	    op.d, op.i, nullptr, op};
+	}
+	else
+	{
+	  // Get the block diagonal of the operator with rows cs and columns CS
+	  const std::string blk_rows = "csX0123"; // order of the block of rows to invert
+	  remap m_blk = getNewLabels(blk_rows, op.d.order + op.i.order); // column labels
+	  const std::string blk_cols =
+	    update_order(blk_rows, m_blk); // order of the block of columns to invert
+
+	  std::map<char, int> blk{{'0', (int)(blocking[1] / X)},
+				  {'X', 1},
+				  {'1', (int)blocking[1]},
+				  {'2', (int)blocking[2]},
+				  {'3', (int)blocking[3]}};
+	  std::map<char, unsigned int> blk_u{
+	    {'x', blocking[1] / X}, {'y', blocking[1]}, {'z', blocking[2]}, {'t', blocking[3]}};
+
+	  auto new_d = op.d
+			 .template reshape_dimensions<NOp>(
+			   {{"X0x", "X0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, blk, true)
+			 .make_eg();
+	  auto new_i = op.i
+			 .template reshape_dimensions<NOp>(
+			   {{"X0x", "X0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, blk, true)
+			 .make_eg();
+	  auto blk_op = Operator<NOp, COMPLEX>{
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      auto x0 = x.template reshape_dimensions<NOp + 1>(
+		{{"X0x", "X0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, dim, true);
+	      auto y0 = op(std::move(x0));
+	      y0.template reshape_dimensions<NOp + 1>(
+		  {{"X0x", "X0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, blk, true)
+		.copyTo(y);
+	    },
+	    new_d,
+	    new_i,
+	    nullptr,
+	    op.order_t,
+	    NaturalLayout,
+	    NaturalLayout,
+	    getNeighborsAfterBlocking(blk_u, op.d.kvdim(), op.neighbors, op.imgLayout),
+	    op.preferred_col_ordering};
+
+	  Tensor<NOp + 7, COMPLEX> opDiag =
+	    getBlockDiag<NOp + 7>(blk_op, blk_rows, m_blk, ConsiderBlockingDense);
+
+	  // Return the solver
+	  return Operator<NOp, COMPLEX>{
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      auto x0 = x.template reshape_dimensions<NOp + 1>(
+		{{"X0x", "X0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, blk, true);
+
+	      // y = Op_diag^{-1} * x
+	      auto y0 = solve<7, NOp + 1, NOp + 7, NOp + 1, COMPLEX>(
+		opDiag, blk_rows, blk_cols, std::move(x0).rename_dims(m_blk), blk_cols);
+
+	      y0.template reshape_dimensions<NOp + 1>(
+		  {{"X0x", "X0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, dim, true)
+		.copyTo(y);
+	    },
+	    op.d, op.i, nullptr, op};
+	}
       }
 
       /// Returns a blocking, which should enhanced the performance of the sparse-dense tensor contraction.
@@ -2262,13 +2468,21 @@ namespace Chroma
 	std::map<char, unsigned int> mblk{
 	  {'x', blocking[0]}, {'y', blocking[1]}, {'z', blocking[2]}, {'t', blocking[3]}};
 
-	// Check that blocking is congruent with the lattice dimensions
-	const auto nat_dim = getNatLatticeDims(op.d.kvdim(), op.domLayout);
-	for (const auto& it : mblk)
-	  if (nat_dim.at(it.first) % it.second != 0)
+	// Check that the blocking divide the lattice sizes. For an operator with support only
+	// on the even sites, make sure that the blocking on x is divisible by two
+	auto opdims = op.d.kvdim();
+	int X = op.imgLayout == EvensOnlyLayout ? 2 : opdims.at('X');
+	bool x_blocking_divide_X = (mblk.at('x') % X == 0);
+	if (!x_blocking_divide_X && op.imgLayout == EvensOnlyLayout)
+	  ops.getValue("blocking")
+	    .throw_error(
+	      "When using even-odd preconditioning, the blocking on x should be divisible by 2");
+	for (const auto it : getNatLatticeDims(opdims, op.imgLayout))
+	{
+	  if (it.second % mblk.at(it.first) != 0)
 	    ops.getValue("blocking")
-	      .throw_error("getBlocking: one of the given blocking does not divide the operator "
-			   "dimension size");
+	      .throw_error("The operator dimensions are not divisible by the blocking");
+	}
 
 	// Construct the blocked operator
 	ColOrdering co = getOption<ColOrdering>(ops, "operator_ordering", getColOrderingMap(),
@@ -2276,12 +2490,12 @@ namespace Chroma
 	ColOrdering co_blk =
 	  getOption<ColOrdering>(ops, "operator_block_ordering", getColOrderingMap(), RowMajor);
 	unsigned int power = getOption<unsigned int>(ops, "power", 1);
+	bool make_explicit = getOption<bool>(ops, "make_explicit", true);
 
-	int nX = (dim.count('X') == 0 ? 1 : dim.at('X'));
 	auto blkd = op.d
 		      .template reshape_dimensions<NOp>(
 			{{"0x", "0x"}, {"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}},
-			{{'0', std::max(nX, (int)mblk.at('x')) / nX},
+			{{'0', std::max(X, (int)mblk.at('x')) / X},
 			 {'1', mblk.at('y')},
 			 {'2', mblk.at('z')},
 			 {'3', mblk.at('t')}},
@@ -2299,7 +2513,7 @@ namespace Chroma
 		.copyTo(y);
 	    },
 	    blkd, blkd, nullptr, op},
-	  getFurthestNeighborDistance(op) * power, co, co_blk, "blocking");
+	  getFurthestNeighborDistance(op) * power, co, co_blk, ConsiderBlockingSparse, "blocking");
 
 	auto solverOps = getOptionsMaybe(ops, "solver");
 	const Operator<NOp, COMPLEX> solver =
@@ -2737,7 +2951,8 @@ namespace Chroma
 	  ColOrdering co_blk = getOption<ColOrdering>(*ops, "InvertParam/operator_block_ordering",
 						      getColOrderingMap(), RowMajor);
 	  Operator<Nd + 7, Complex> linOp =
-	    detail::cloneOperator(asOperatorView(*fLinOp), co, co_blk, "chroma's operator");
+	    detail::cloneOperator(asOperatorView(*fLinOp), co, co_blk,
+				  detail::ConsiderBlockingSparse, "chroma's operator");
 
 	  // Destroy chroma objects
 	  delete fLinOp;
