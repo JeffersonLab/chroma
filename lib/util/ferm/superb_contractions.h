@@ -390,7 +390,7 @@ namespace Chroma
       inline std::map<char, int> update_kvcoor(const std::map<char, int>& kvcoor, const remap& m)
       {
 	std::map<char, int> r;
-	for (auto const& it: kvcoor)
+	for (auto const& it : kvcoor)
 	  r[m.at(it.first)] = it.second;
 	return r;
       }
@@ -622,7 +622,7 @@ namespace Chroma
       template <std::size_t N>
       std::array<Coor<N>, 2> coarse_range(const std::array<Coor<N>, 2>& fs, const Coor<N>& blocking)
       {
-	std::array<Coor<N>,2> r;
+	std::array<Coor<N>, 2> r;
 	for (unsigned int i = 0; i < N; ++i)
 	{
 	  r[0][i] = fs[0][i] / blocking[i] * blocking[i];
@@ -721,8 +721,9 @@ namespace Chroma
 	unsigned int ri = 0;
 	for (unsigned int ci = 0; ci < N; ++ci)
 	{
-	  if (ncollapse[ci] == 1 && nsplit[ci] == 1) {
-		r[ri++] = c[ci];
+	  if (ncollapse[ci] == 1 && nsplit[ci] == 1)
+	  {
+	    r[ri++] = c[ci];
 	  }
 	  else
 	  {
@@ -774,7 +775,6 @@ namespace Chroma
 	// Return the new coordinates
 	return {Success, r};
       }
-
 
 #  if defined(BUILD_MAGMA)
       // Return a MAGMA context
@@ -1060,7 +1060,8 @@ namespace Chroma
 
 	template <std::size_t N1>
 	TensorPartition<N> make_compatible(const std::string& o0, const TensorPartition<N1>& t,
-			   const std::string& o1, const std::string& labelsToCompare) const
+					   const std::string& o1,
+					   const std::string& labelsToCompare) const
 	{
 	  if (t.p.size() != p.size())
 	    throw std::runtime_error(
@@ -1129,17 +1130,17 @@ namespace Chroma
 				       isLocal};
 	}
 
-        /// Coarse the ranges on each process
+	/// Coarse the ranges on each process
 
-        template <typename std::enable_if<(N > 0), bool>::type = true>
-        TensorPartition<N> coarse_support(const Coor<N>& blocking) const
-        {
-          typename TensorPartition<N>::PartitionStored r;
-          r.reserve(p.size());
-          for (const auto& i : p)
-            r.push_back(detail::coarse_range(i, blocking));
-          return TensorPartition<N>{dim, r, isLocal};
-        }
+	template <typename std::enable_if<(N > 0), bool>::type = true>
+	TensorPartition<N> coarse_support(const Coor<N>& blocking) const
+	{
+	  typename TensorPartition<N>::PartitionStored r;
+	  r.reserve(p.size());
+	  for (const auto& i : p)
+	    r.push_back(detail::coarse_range(i, blocking));
+	  return TensorPartition<N>{dim, r, isLocal};
+	}
 
 	/// Collapse several dimensions into another dimension
 
@@ -2807,16 +2808,18 @@ namespace Chroma
 	auto d_aux = detail::reshape_dimensions<Nout>(
 	  ncollapse, nsplit, dim, kvcoors<Nout>(new_order, new_dim0, 0, ThrowOnMissing), Size, dim);
 	if (d_aux.first != Success)
-	  throw std::runtime_error("reshape_dimensions: invalid reshape, most likely some new dimension is too short");
+	  throw std::runtime_error(
+	    "reshape_dimensions: invalid reshape, most likely some new dimension is too short");
 	auto d = d_aux.second; // new dimensions
 
 	// Transform the partition
 	auto new_p_aux = p->template reshape_dimensions<Nout>(ncollapse, nsplit, d);
 	auto new_from = detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, d, From, from);
-	auto new_size =  detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, d, Size, size);
+	auto new_size = detail::reshape_dimensions<Nout>(ncollapse, nsplit, dim, d, Size, size);
 
 	// Whether a compatible partition can be made that doesn't require a copy of the tensors' data
-	bool success = (new_p_aux.first == Success && new_from.first == Success && new_size.first == Success);
+	bool success =
+	  (new_p_aux.first == Success && new_from.first == Success && new_size.first == Success);
 
 	// Return the new tensor
 	if (!allow_copy && !success)
@@ -2898,9 +2901,8 @@ namespace Chroma
 		std::size_t Nwm = Nw, typename Twm = float,
 		typename std::enable_if<
 		  detail::is_complex<T>::value != detail::is_complex<Tw>::value, bool>::type = true>
-      void doAction(Action action, Tensor<Nw, Tw> w, Maybe<Tensor<Nm, Tm>> m = none,
-		    Maybe<Tensor<Nwm, Twm>> wm = none,
-		    const std::string& uneven_mask_labels = "") const
+      void doAction(Action action, Tensor<Nw, Tw> w, Tensor<Nm, Tm> m = {},
+		    Tensor<Nwm, Twm> wm = {}, const std::string& uneven_mask_labels = "") const
       {
 	if (m || wm)
 	  throw std::runtime_error(
@@ -3006,19 +3008,17 @@ namespace Chroma
 		std::size_t Nwm = Nw, typename Twm = float,
 		typename std::enable_if<
 		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
-      void doAction(Action action, Tensor<Nw, Tw> w, Maybe<Tensor<Nm, Tm>> m = none,
-		    Maybe<Tensor<Nwm, Twm>> wm = none,
-		    const std::string& uneven_mask_labels = "") const
+      void doAction(Action action, Tensor<Nw, Tw> w, Tensor<Nm, Tm> m = {},
+		    Tensor<Nwm, Twm> wm = {}, const std::string& uneven_mask_labels = "") const
       {
-	if (is_eg() || w.is_eg() || (m.hasSome() && m.getSome().is_eg()) ||
-	    (wm.hasSome() && wm.getSome().is_eg()))
+	if (is_eg() || w.is_eg() || (m && m.is_eg()) || (wm && wm.is_eg()))
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
 	for (unsigned int i = 0; i < N; ++i)
 	  if (size[i] > wsize[i] && !detail::is_in(uneven_mask_labels, order[i]))
 	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
-	if (m.hasSome() || wm.hasSome())
+	if (m || wm)
 	  for (unsigned int i = 0; i < N; ++i)
 	    if (size[i] != wsize[i] && !detail::is_in(uneven_mask_labels, order[i]))
 	      throw std::runtime_error("copying with masks tensor with different dimensions");
@@ -3031,11 +3031,10 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "Not allowed to copy or add tensor with different implicit conjugacy");
 
-	bool some_is_local = dist == Local || w.dist == Local || (m && m.getSome().dist == Local) ||
-			     (wm && wm.getSome().dist == Local);
-	bool some_isnt_local = dist != Local || w.dist != Local ||
-			       (m && m.getSome().dist != Local) ||
-			       (wm && wm.getSome().dist != Local);
+	bool some_is_local =
+	  dist == Local || w.dist == Local || (m && m.dist == Local) || (wm && wm.dist == Local);
+	bool some_isnt_local =
+	  dist != Local || w.dist != Local || (m && m.dist != Local) || (wm && wm.dist != Local);
 	if (some_is_local && some_isnt_local)
 	  throw std::runtime_error(
 	    "Not allowed to copy or add a non-local tensor into a local tensor or vice versa");
@@ -3048,9 +3047,7 @@ namespace Chroma
 	    auto this_local = getLocal();
 	    auto w_local = w.getLocal();
 	    if (w_local && this_local)
-	      this_local.doAction(
-		action, w_local, m ? Maybe<Tensor<Nm, Tm>>(m.getSome().getLocal()) : none,
-		wm ? Maybe<Tensor<Nwm, Twm>>(wm.getSome().getLocal()) : none, uneven_mask_labels);
+	      this_local.doAction(action, w_local, m.getLocal(), wm.getLocal(), uneven_mask_labels);
 	    return;
 	  }
 	  if (some_is_local && has_same_allocation(w) && !m && !wm)
@@ -3058,7 +3055,7 @@ namespace Chroma
 	}
 
 	// Check if some dimension size doesn't match
-	if (m.hasSome() || wm.hasSome())
+	if (m || wm)
 	{
 	  std::map<char, int> new_size;
 	  bool v_has_new_size = false, w_has_new_size = false;
@@ -3081,25 +3078,23 @@ namespace Chroma
 	    {
 	      v0 = like_this(none, new_size);
 	      copyTo(v0);
-	      if (m.hasSome())
+	      if (m)
 	      {
-		auto m0_ = m.getSome().like_this(none, new_size);
-		m0_.set_zero();
-		m.getSome().copyTo(m0_);
-		m0 = Maybe<Tensor<Nm, Tm>>(m0_);
+		m0 = m.like_this(none, new_size);
+		m0.set_zero();
+		m.copyTo(m0);
 	      }
 	    }
 	    if (w_has_new_size)
 	    {
 	      w0 = w.like_this(none, new_size);
 	      w.copyTo(w0);
-	      if (wm.hasSome())
+	      if (wm)
 	      {
-		auto wm0_ = wm.getSome().like_this(none, new_size);
-		wm0_.set_zero();
-		wm.getSome().copyTo(wm0_);
-		wm0 = Maybe<Tensor<Nwm, Twm>>(wm0_);
-		wm0_sliced = Maybe<Tensor<Nwm, Twm>>(wm0_.kvslice_from_size({}, w.kvdim()));
+		wm0 = wm.like_this(none, new_size);
+		wm0.set_zero();
+		wm.copyTo(wm0);
+		wm0_sliced = wm0.kvslice_from_size({}, w.kvdim());
 	      }
 	    }
 	    v0.doAction(action, w0, m0, wm0);
@@ -3113,37 +3108,37 @@ namespace Chroma
 	float *m0ptr = nullptr, *m1ptr = nullptr;
 	Tensor<N, float> m0;
 	Tensor<Nw, float> m1;
-	if (m.hasSome() || wm.hasSome())
+	if (m || wm)
 	{
-	  if (m.hasSome())
+	  if (m)
 	  {
-	    if (is_distributed_like(m.getSome()))
+	    if (is_distributed_like(m))
 	    {
-	      m0 = m.getSome();
+	      m0 = m;
 	    }
 	    else
 	    {
 	      m0 = create_mask();
-	      m.getSome().copyTo(m0);
+	      m.copyTo(m0);
 	    }
 	  }
 
-	  if (wm.hasSome())
+	  if (wm)
 	  {
-	    if (w.is_distributed_like(wm.getSome()))
+	    if (w.is_distributed_like(wm))
 	    {
-	      m1 = wm.getSome();
+	      m1 = wm;
 	    }
 	    else
 	    {
 	      m1 = w.create_mask();
-	      wm.getSome().copyTo(m1);
+	      wm.copyTo(m1);
 	    }
 	  }
 
-	  if (m.hasSome() && !wm.hasSome())
+	  if (m && !wm)
 	    m0.copyTo(m1);
-	  if (!m.hasSome() && wm.hasSome())
+	  if (!m && wm)
 	    m1.copyTo(m0);
 
 	  m0ptr = m0.data.get();
@@ -3868,7 +3863,8 @@ namespace Chroma
 	  k_m[w_m.at(it.first)] = it.first;
 	  k_m[it.first] = w_m.at(it.first);
 	}
-	else if (v_kvdim.count(it.first) == 0) {
+	else if (v_kvdim.count(it.first) == 0)
+	{
 	  k_m[w_m.at(it.first)] = it.first;
 	}
       }
@@ -3957,9 +3953,9 @@ namespace Chroma
     Tensor<Nr, T> cholInv(Tensor<Nv, T> v, const std::string& order_rows,
 			  const std::string& order_cols, Tensor<Nw, T> w,
 			  const std::string& labels_to_contract, Maybe<Action> action = none,
-			  Maybe<Tensor<Nr, T>> r = none)
+			  Tensor<Nr, T> r = {})
     {
-      if (action.hasSome() != r.hasSome())
+      if (action.hasSome() != (bool)r)
 	throw std::runtime_error("Invalid default value");
 
       // Compute the labels of the output tensor: v.order + w.order - labels_to_contract
@@ -3967,7 +3963,7 @@ namespace Chroma
       if (Nr != rorder.size())
 	throw std::runtime_error(
 	  "cholInv: The dimension of the output tensor does not match the template argument");
-      if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
+      if (r && detail::union_dimensions(rorder, r.order) != rorder)
 	throw std::runtime_error("cholInv: The given output tensor has an unexpected ordering");
 
       // If the output tensor is not given create a new one
@@ -3978,7 +3974,7 @@ namespace Chroma
       }
       else
       {
-	r0 = r.getSome();
+	r0 = r;
       }
 
       // For now, only `CopyTo' action is supported
@@ -4004,9 +4000,9 @@ namespace Chroma
     Tensor<Nr, T> solve(Tensor<Nv, T> v, const std::string& order_rows,
 			const std::string& order_cols, Tensor<Nw, T> w,
 			const std::string& labels_to_contract, Maybe<Action> action = none,
-			Maybe<Tensor<Nr, T>> r = none)
+			Tensor<Nr, T> r = {})
     {
-      if (action.hasSome() != r.hasSome())
+      if (action.hasSome() != (bool)r)
 	throw std::runtime_error("solve: Invalid default value");
 
       // Compute the labels of the output tensor: v.order + w.order - labels_to_contract
@@ -4014,7 +4010,7 @@ namespace Chroma
       if (Nr != rorder.size())
 	throw std::runtime_error(
 	  "solve: The dimension of the output tensor does not match the template argument");
-      if (r && detail::union_dimensions(rorder, r.getSome().order) != rorder)
+      if (r && detail::union_dimensions(rorder, r.order) != rorder)
 	throw std::runtime_error("solve: The given output tensor has an unexpected ordering");
       if (Nlabels != labels_to_contract.size())
 	throw std::runtime_error(
@@ -4030,7 +4026,7 @@ namespace Chroma
       }
       else
       {
-	r0 = r.getSome();
+	r0 = r;
       }
 
       // For now, only `CopyTo' action is supported
@@ -4393,10 +4389,9 @@ namespace Chroma
       /// \param img_new_labels: the labels of the image new dimensions
       /// \param img_step: length of the first label in `img_new_labels`
 
-      SpTensor<ND + 1, NI + 1, T> split_dimension(char dom_dim_label, const std::string& dom_new_labels,
-						  Index dom_step, char img_dim_label,
-						  const std::string& img_new_labels,
-						  Index img_step) const
+      SpTensor<ND + 1, NI + 1, T>
+      split_dimension(char dom_dim_label, const std::string& dom_new_labels, Index dom_step,
+		      char img_dim_label, const std::string& img_new_labels, Index img_step) const
       {
 	if (dom_new_labels.size() != 2)
 	  throw std::runtime_error(
@@ -4524,12 +4519,10 @@ namespace Chroma
 	auto new_i = i.kvslice_from_size(img_kvfrom, img_kvsize).make_eg();
 
 	// Get the nonzeros in the slice
-	auto ii_slice =
-	  ii.kvslice_from_size(img_kvfrom, img_kvsize).cloneOn(OnHost);
+	auto ii_slice = ii.kvslice_from_size(img_kvfrom, img_kvsize).cloneOn(OnHost);
 	auto new_ii = ii_slice.make_compatible(none, {}, OnHost);
 	new_ii.set_zero();
-	auto jj_slice =
-	  jj.kvslice_from_size(img_kvfrom, img_kvsize).cloneOn(OnHost);
+	auto jj_slice = jj.kvslice_from_size(img_kvfrom, img_kvsize).cloneOn(OnHost);
 	auto new_jj = jj_slice.template make_compatible<NI + 1, float>(
 	  detail::remove_dimensions(jj_slice.order, "~"), {}, OnHost);
 	new_jj.set_zero();
@@ -4689,7 +4682,7 @@ namespace Chroma
 	  auto host_new_jj = new_jj.make_sure(none, OnHost);
 	  auto local_new_jj = host_new_jj.getLocal();
 	  int* new_p = local_new_jj.data.get();
-	  for (std::size_t i = 0, i1 = local_new_jj.volume(); i < i1; i+= ND)
+	  for (std::size_t i = 0, i1 = local_new_jj.volume(); i < i1; i += ND)
 	  {
 	    Coor<ND> c;
 	    std::copy_n(new_p + i, ND, c.begin());
@@ -5381,21 +5374,21 @@ namespace Chroma
 
     template <typename COMPLEX, std::size_t N>
     Tensor<N, COMPLEX> shift(const Tensor<N, COMPLEX> v, Index first_tslice, int len, int dir,
-			     Maybe<Action> action = none, Maybe<Tensor<N, COMPLEX>> w = none)
+			     Maybe<Action> action = none, Tensor<N, COMPLEX> w = {})
     {
       if (dir < 0 || dir >= Nd - 1)
 	throw std::runtime_error("Invalid direction");
 
-      if (action.hasSome() != w.hasSome())
+      if (action.hasSome() != (bool)w)
 	throw std::runtime_error("Invalid default value");
 
       // Address zero length case
       if (len == 0)
       {
-	if (!w.hasSome())
+	if (!w)
 	  return v;
-	v.doAction(action.getSome(), w.getSome());
-	return w.getSome();
+	v.doAction(action.getSome(), w);
+	return w;
       }
 
       // NOTE: chroma uses the reverse convention for direction: shifting FORWARD moves the sites on the negative direction
@@ -5406,11 +5399,11 @@ namespace Chroma
       // If we are not using red-black ordering, return a view where the tensor is shifted on the given direction
       v = v.kvslice_from_size({{dir_label[dir], -len}});
 
-      if (!w.hasSome())
+      if (!w)
 	return v;
 
-      v.doAction(action, w.getSome());
-      return w.getSome();
+      v.doAction(action, w);
+      return w;
 
 #  elif QDP_USE_CB2_LAYOUT
       // Assuming that v has support on the origin and destination lattice elements
@@ -5420,11 +5413,10 @@ namespace Chroma
 
       if (dir != 0)
       {
-	if (!w.hasSome())
+	if (!w)
 	  return v.kvslice_from_size({{'X', -len}, {dir_label[dir], -len}});
-	v.doAction(action.getSome(),
-		   w.getSome().kvslice_from_size({{'X', len}, {dir_label[dir], len}}));
-	return w.getSome();
+	v.doAction(action.getSome(), w.kvslice_from_size({{'X', len}, {dir_label[dir], len}}));
+	return w;
       }
       else
       {
@@ -5440,7 +5432,7 @@ namespace Chroma
 	auto v_eo = v.split_dimension('y', "Yy", maxY)
 		      .split_dimension('z', "Zz", maxZ)
 		      .split_dimension('t', "Tt", maxT);
-	Tensor<N, COMPLEX> r = w.hasSome() ? w.getSome() : v.like_this();
+	Tensor<N, COMPLEX> r = w ? w : v.like_this();
 	auto r_eo = r.split_dimension('y', "Yy", maxY)
 		      .split_dimension('z', "Zz", maxZ)
 		      .split_dimension('t', "Tt", maxT);
@@ -5484,21 +5476,21 @@ namespace Chroma
     template <typename COMPLEX, std::size_t N>
     Tensor<N, COMPLEX> displace(const std::vector<Tensor<Nd + 3, COMPLEX>>& u, Tensor<N, COMPLEX> v,
 				Index first_tslice, int dir, Maybe<Action> action = none,
-				Maybe<Tensor<N, COMPLEX>> w = none)
+				Tensor<N, COMPLEX> w = {})
     {
       if (std::abs(dir) > Nd)
 	throw std::runtime_error("Invalid direction");
 
-      if (action.hasSome() != w.hasSome())
+      if (action.hasSome() != (bool)w)
 	throw std::runtime_error("Invalid default value");
 
       // Address the zero direction case
       if (dir == 0)
       {
-	if (!w.hasSome())
+	if (!w)
 	  return v;
-	v.doAction(action.getSome(), w.getSome());
-	return w.getSome();
+	v.doAction(action.getSome(), w);
+	return w;
       }
 
       int d = std::abs(dir) - 1;    // space lattice direction, 0: x, 1: y, 2: z
@@ -5508,7 +5500,7 @@ namespace Chroma
       if (len > 0)
       {
 	// Do u[d] * shift(x,d)
-	Tensor<N, COMPLEX> r = w.hasSome() ? w.getSome() : v.like_this();
+	Tensor<N, COMPLEX> r = w ? w : v.like_this();
 	v = shift(std::move(v), first_tslice, len, d);
 	r.contract(std::move(v), {}, NotConjugate, u[d], {{'j', 'c'}}, NotConjugate, {{'c', 'i'}},
 		   action.getSome(CopyTo) == CopyTo ? 0.0 : 1.0);
@@ -5803,13 +5795,10 @@ namespace Chroma
 	// chi = -2*N*psi
 	psi.scale(-2 * N).copyTo(chi);
 
-	// I have no idea how to do this....
-	using MaybeTensor = Maybe<Tensor<Nd + 3, ComplexD>>;
-
 	for (int mu = 0; mu < N; ++mu)
 	{
-	  displace(u, psi, first_tslice, mu + 1, Action::AddTo, MaybeTensor(chi));
-	  displace(u, psi, first_tslice, -(mu + 1), Action::AddTo, MaybeTensor(chi));
+	  displace(u, psi, first_tslice, mu + 1, Action::AddTo, chi);
+	  displace(u, psi, first_tslice, -(mu + 1), Action::AddTo, chi);
 	}
       }
 
@@ -6376,11 +6365,11 @@ namespace Chroma
     /// \return: a tensor containing the eigenvectors
 
     template <typename COMPLEX = ComplexF>
-    Tensor<Nd + 3, COMPLEX> getColorvecs(const ColorvecsStorage& sto,
-					 const multi1d<LatticeColorMatrix>& u, int decay_dir,
-					 int from_tslice, int n_tslices, int n_colorvecs,
-					 const Maybe<const std::string>& order = none,
-					 Coor<Nd - 1> phase = {{}}, DeviceHost dev = OnDefaultDevice)
+    Tensor<Nd + 3, COMPLEX>
+    getColorvecs(const ColorvecsStorage& sto, const multi1d<LatticeColorMatrix>& u, int decay_dir,
+		 int from_tslice, int n_tslices, int n_colorvecs,
+		 const Maybe<const std::string>& order = none, Coor<Nd - 1> phase = {{}},
+		 DeviceHost dev = OnDefaultDevice)
     {
       StopWatch sw;
       sw.reset();
@@ -7150,9 +7139,8 @@ namespace Chroma
       for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
       {
-	detail::log(
-	  1, "color contracting " + std::to_string(tsize) + " tslices from tslice= " +
-	       std::to_string(first_tslice + tfrom));
+	detail::log(1, "color contracting " + std::to_string(tsize) +
+			 " tslices from tslice= " + std::to_string(first_tslice + tfrom));
 
 	// Make a copy of the time-slicing of u[d] also supporting left and right
 	std::vector<Tensor<Nd + 3, COMPLEX>> ut(Nd);
@@ -7370,7 +7358,6 @@ namespace Chroma
 					       this_moms.getDev())
 	      .copyTo(this_moms.kvslice_from_size({{'m', m}}, {{'m', 1}}));
 
-
 	  // Apply left phase and momenta conjugated to the left tensor
 	  // NOTE: look for the minus sign on left_phase in the doc of this function
 	  Tensor<Nin + 1, COMPLEX> moms_left =
@@ -7383,8 +7370,8 @@ namespace Chroma
 	    colorvec.release();
 	  }
 
-	  auto this_moms_coors = std::vector<Coor<Nd - 1>>(moms.begin() + mfrom,
-							   moms.begin() + mfrom + msize);
+	  auto this_moms_coors =
+	    std::vector<Coor<Nd - 1>>(moms.begin() + mfrom, moms.begin() + mfrom + msize);
 	  if (!deriv)
 	  {
 	    ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
@@ -7520,7 +7507,7 @@ namespace Chroma
     /// Return a list of momenta as std::vector<Coor<3>> from std::vector<std::vector<int>>
     /// \param v: list of momenta to transform
 
-    inline CoorMoms getMomenta(const std::vector<std::vector<int>> &v)
+    inline CoorMoms getMomenta(const std::vector<std::vector<int>>& v)
     {
       static_assert(Nd == 4);
       CoorMoms r;
