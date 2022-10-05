@@ -469,7 +469,7 @@ namespace Chroma
 	t.set_zero();
 	if (t.getLocal())
 	{
-	  COMPLEX* t_data = t.data.get();
+	  COMPLEX* t_data = t.data();
 	  for (std::size_t i = 0; i < m; ++i)
 	    t_data[i * m + i] = COMPLEX{1};
 	}
@@ -2559,10 +2559,8 @@ namespace Chroma
 	    dim['n'] = *blockSize;
 	    std::string order = aux.op.d.order + "n";
 	    Coor<NOp + 1> size = latticeSize<NOp + 1>(order, dim);
-	    Tensor<NOp + 1, ComplexD> tx(order, size, aux.primme_dev, OnEveryone,
-					 std::shared_ptr<ComplexD>((ComplexD*)x, [](ComplexD*) {}));
-	    Tensor<NOp + 1, ComplexD> ty(order, size, aux.primme_dev, OnEveryone,
-					 std::shared_ptr<ComplexD>((ComplexD*)y, [](ComplexD*) {}));
+	    Tensor<NOp + 1, ComplexD> tx(order, size, aux.primme_dev, OnEveryone, (ComplexD*)x);
+	    Tensor<NOp + 1, ComplexD> ty(order, size, aux.primme_dev, OnEveryone, (ComplexD*)y);
 
 	    // ty = op * g5 * x
 	    auto g5 = getGamma5<ComplexD>(dim['s'], aux.primme_dev);
@@ -2660,9 +2658,9 @@ namespace Chroma
 
 	  // Call primme
 #  if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
-	    int ret = magma_zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
+	    int ret = magma_zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
 #  else
-	    int ret = zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
+	    int ret = zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
 #  endif
 
 	    if (verb != NoOutput)

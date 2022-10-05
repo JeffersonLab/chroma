@@ -1577,6 +1577,57 @@ namespace Chroma
 	}();
 	return v;
       }
+
+      /// Data allocation
+      template <typename T>
+      struct Allocation {
+	/// Allocation
+	T* ptr;
+
+	/// Context of the allocation
+	std::shared_ptr<superbblas::Context> ctx;
+
+	/// Unfinished operations on the allocation
+	std::vector<superbblas::Request> pending_operations;
+
+	/// Deallocate the pointer on destruction
+	bool destroy_ptr;
+
+	/// Allocate n elements of type T with the given context
+	Allocation(std::size_t n, const std::shared_ptr<superbblas::Context>& ctx)
+	  : ptr(superbblas::allocate<T>(n, *ctx)), ctx(ctx), destroy_ptr(true)
+	{
+	}
+
+	/// User given pointer that will not be deallocated automatically
+	Allocation(T* ptr, const std::shared_ptr<superbblas::Context>& ctx)
+	  : ptr(ptr), ctx(ctx), destroy_ptr(false)
+	{
+	}
+
+	/// Destructor
+	~Allocation()
+	{
+	  finish_pending_operations();
+	  if (destroy_ptr)
+	    superbblas::deallocate(ptr, *ctx);
+	}
+
+	/// Return the pointer
+	T* data()
+	{
+	  finish_pending_operations();
+	  return ptr;
+	}
+
+	/// Finish all pending operations
+	void finish_pending_operations()
+	{
+	  for (const auto& i : pending_operations)
+	    superbblas::wait(i);
+	  pending_operations.clear();
+	}
+      };
     }
 
     /// Class for operating dense tensors
@@ -1585,11 +1636,14 @@ namespace Chroma
     struct Tensor {
       static_assert(superbblas::supported_type<T>::value, "Not supported type");
 
+      /// Allocation type
+      /// NOTE: the complex types decay to the base type, which is needed by `toFakeReal`
+      using Allocation = detail::Allocation<typename detail::real_type<T>::type>;
+
     public:
-      std::string order;			///< Labels of the tensor dimensions
-      Coor<N> dim;				///< Length of the tensor dimensions
-      std::shared_ptr<superbblas::Context> ctx; ///< Tensor storage information (device/host)
-      std::shared_ptr<T> data;			///< Pointer to the tensor storage
+      std::string order;		      ///< Labels of the tensor dimensions
+      Coor<N> dim;			      ///< Length of the tensor dimensions
+      std::shared_ptr<Allocation> allocation; ///< Tensor storage
       std::shared_ptr<detail::TensorPartition<N>>
 	p;		 ///< Distribution of the tensor among the processes
       Distribution dist; ///< Whether the tensor is stored on the cpu or a device
@@ -1637,7 +1691,6 @@ namespace Chroma
       Tensor()
 	: order(detail::getTrivialOrder(N)),
 	  dim{{}},
-	  ctx(detail::getContext(OnHost)),
 	  p(std::make_shared<detail::TensorPartition<N>>(
 	    detail::TensorPartition<N>(detail::getTrivialOrder(N), {{}}, OnEveryoneReplicated))),
 	  dist(OnEveryoneReplicated),
@@ -1656,13 +1709,13 @@ namespace Chroma
       /// \param dev: where to allocate the content on the GPU if available (`OnDefaultDevice`)
       ///        or on CPU always (`OnHost`)
       /// \param dist: how to distribute the tensor, see `Distribution`
+      /// \param ptr: pointer to the first element
 
-      Tensor(const std::string& order, Coor<N> dim, DeviceHost dev, Distribution dist,
-	     std::shared_ptr<T> data)
+      Tensor(const std::string& order, Coor<N> dim, DeviceHost dev, Distribution dist, T* ptr)
 	: order(order),
 	  dim(dim),
-	  ctx(detail::getContext(dev)),
-	  data(data),
+	  allocation(std::make_shared<Allocation>((typename detail::real_type<T>::type*)ptr,
+						  detail::getContext(dev))),
 	  dist(dist),
 	  from{{}},
 	  size(dim),
@@ -1682,8 +1735,7 @@ namespace Chroma
       /// Internal constructor, used by `toFakeReal`
       /// \param order: dimension labels of the tensor
       /// \param dim: size for each dimension
-      /// \param ctx: superbblas context
-      /// \param data: memory allocation
+      /// \param allocation: allocation
       /// \param p: partition of the tensor among the processes
       /// \param dist: how to distribute the tensor, see `Distribution`
       /// \param from: coordinate of the first element in this view
@@ -1691,13 +1743,12 @@ namespace Chroma
       /// \param scalar: scalar factor of this view
       /// \param conjugate: whether the elements are implicitly conjugated
 
-      Tensor(const std::string& order, Coor<N> dim, std::shared_ptr<superbblas::Context> ctx,
-	     std::shared_ptr<T> data, std::shared_ptr<detail::TensorPartition<N>> p,
-	     Distribution dist, Coor<N> from, Coor<N> size, T scalar, bool conjugate, bool eg)
+      Tensor(const std::string& order, Coor<N> dim, std::shared_ptr<Allocation> allocation,
+	     std::shared_ptr<detail::TensorPartition<N>> p, Distribution dist, Coor<N> from,
+	     Coor<N> size, T scalar, bool conjugate, bool eg)
 	: order(order),
 	  dim(dim),
-	  ctx(ctx),
-	  data(data),
+	  allocation(allocation),
 	  p(p),
 	  dist(dist),
 	  from(normalize_coor(from, dim)),
@@ -1720,7 +1771,8 @@ namespace Chroma
 	     std::shared_ptr<detail::TensorPartition<N>> p)
 	: order(order),
 	  dim(dim),
-	  ctx(detail::getContext(dev)),
+	  allocation(std::make_shared<Allocation>(
+	    p->localVolume() * (detail::is_complex<T>::value ? 2u : 1u), detail::getContext(dev))),
 	  p(p),
 	  dist(dist),
 	  from{{}},
@@ -1731,19 +1783,7 @@ namespace Chroma
 	  eg{false}
       {
 	checkOrder();
-	superbblas::Context ctx0 = *ctx;
-	std::string s = repr();
-	detail::log(1, "allocating " + s);
-	T* ptr = superbblas::allocate<T>(p->localVolume(), *ctx);
 	detail::log_mem();
-	data = std::shared_ptr<T>(ptr, [=](const T* ptr) {
-	  superbblas::deallocate(ptr, ctx0);
-	  detail::log(1, "deallocated " + s);
-	  detail::log_mem();
-	});
-
-	// TEMP!!!
-	///set(detail::NaN<T>::get());
       }
 
     protected:
@@ -1755,8 +1795,7 @@ namespace Chroma
       Tensor(const Tensor& t, const std::string& order, Coor<N> from, Coor<N> size)
 	: order(order),
 	  dim(t.dim),
-	  ctx(t.ctx),
-	  data(t.data),
+	  allocation(t.allocation),
 	  p(t.p),
 	  dist(t.dist),
 	  from(normalize_coor(from, t.dim)),
@@ -1776,8 +1815,7 @@ namespace Chroma
       Tensor(const Tensor& t, T scalar, bool conjugate)
 	: order(t.order),
 	  dim(t.dim),
-	  ctx(t.ctx),
-	  data(t.data),
+	  allocation(t.allocation),
 	  p(t.p),
 	  dist(t.dist),
 	  from(t.from),
@@ -1934,6 +1972,20 @@ namespace Chroma
 	return true;
       }
 
+      /// Return the pointer to the first local element
+
+      T* data() const
+      {
+	return (T*)allocation->data();
+      }
+
+      /// Return the allocation context
+
+      superbblas::Context& ctx() const
+      {
+	return *allocation->ctx;
+      }
+
       /// Get an element of the tensor
       /// \param coor: coordinates of the element to get
       /// \return: the value of the element at the coordinate
@@ -1954,7 +2006,7 @@ namespace Chroma
 
       T get(Coor<N> coor) const
       {
-	if (ctx->plat != superbblas::CPU)
+	if (ctx().plat != superbblas::CPU)
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements from tensors not stored on the host");
 	if (dist == OnEveryone)
@@ -1969,7 +2021,7 @@ namespace Chroma
 	  coor[i] = normalize_coor(normalize_coor(coor[i], size[i]) + from[i], dim[i]);
 
 	return detail::cond_conj(conjugate,
-				 data.get()[detail::coor2index<N>(coor, dim, strides)] * scalar);
+				 data()[detail::coor2index<N>(coor, dim, strides)] * scalar);
       }
 
       /// Set an element of the tensor
@@ -1990,7 +2042,7 @@ namespace Chroma
 
       void set(Coor<N> coor, T v)
       {
-	if (ctx->plat != superbblas::CPU)
+	if (ctx().plat != superbblas::CPU)
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements from tensors not stored on the host");
 	if (dist == OnEveryone)
@@ -2004,7 +2056,7 @@ namespace Chroma
 	for (unsigned int i = 0; i < N; ++i)
 	  coor[i] = normalize_coor(normalize_coor(coor[i], size[i]) + from[i], dim[i]);
 
-	data.get()[detail::coor2index<N>(coor, dim, strides)] =
+	data()[detail::coor2index<N>(coor, dim, strides)] =
 	  detail::cond_conj(conjugate, v) / scalar;
       }
 
@@ -2020,7 +2072,7 @@ namespace Chroma
 
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
 	std::size_t vol = t.getLocal().volume();
-	T* ptr = t.data.get();
+	T* ptr = t.data();
 
 	if (threaded)
 	{
@@ -2053,7 +2105,7 @@ namespace Chroma
 
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
 	std::size_t vol = t.getLocal().volume();
-	T* ptr = t.data.get();
+	T* ptr = t.data();
 	/// Number of elements in each direction for the local part
 	Coor<N> local_size = t.getLocal().size;
 	/// Stride for the local volume
@@ -2102,8 +2154,8 @@ namespace Chroma
 	auto r = t.template make_compatible<N, Tr>();
 	assert(!r.isSubtensor() && !t.isSubtensor());
 	std::size_t vol = t.getLocal().volume();
-	T* tptr = t.data.get();
-	Tr* rptr = r.data.get();
+	T* tptr = t.data();
+	Tr* rptr = r.data();
 
 	if (threaded)
 	{
@@ -2138,8 +2190,8 @@ namespace Chroma
 	auto r = t.template make_compatible<N, Tr>();
 	assert(!r.isSubtensor() && !t.isSubtensor());
 	std::size_t vol = t.getLocal().volume();
-	T* tptr = t.data.get();
-	Tr* rptr = r.data.get();
+	T* tptr = t.data();
+	Tr* rptr = r.data();
 	/// Number of elements in each direction for the local part
 	Coor<N> local_size = t.getLocal().size;
 	/// Stride for the local volume
@@ -2188,7 +2240,7 @@ namespace Chroma
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
 	assert(!t.isSubtensor());
 	std::size_t vol = t.getLocal().volume();
-	T* tptr = t.data.get();
+	T* tptr = t.data();
 
 	if (threaded)
 	{
@@ -2429,7 +2481,7 @@ namespace Chroma
       Tensor<N, T> make_eg() const
       {
 	return Tensor<N, T>(
-	  order, size, ctx, std::shared_ptr<T>(),
+	  order, size, {},
 	  std::make_shared<detail::TensorPartition<N>>(p->get_subpartition(from, size)), dist, {{}},
 	  size, T{1}, false /* not conjugate */, true /* is eg */);
       }
@@ -2540,13 +2592,10 @@ namespace Chroma
 	    "Unsupported conversion to fake real tensors with an implicit complex scale");
 	using new_T = typename T::value_type;
 	new_T new_scalar = std::real(scalar);
-	auto this_data = data;
-	auto new_data =
-	  std::shared_ptr<new_T>((new_T*)data.get(), [=](const new_T* ptr) { (void)this_data; });
 	auto new_p = std::make_shared<detail::TensorPartition<N + 1>>(p->insert_dimension(0, 2));
 
-	return Tensor<N + 1, new_T>(new_order, new_dim, ctx, new_data, new_p, dist, new_from,
-				    new_size, new_scalar, conjugate, eg);
+	return Tensor<N + 1, new_T>(new_order, new_dim, allocation, new_p, dist, new_from, new_size,
+				    new_scalar, conjugate, eg);
       }
 
       template <typename U = T,
@@ -2574,13 +2623,10 @@ namespace Chroma
 	Coor<N - 1> new_dim = detail::remove_coor(dim, dot_pos);
 	using new_T = std::complex<T>;
 	new_T new_scalar = new_T{scalar};
-	auto this_data = data;
-	auto new_data =
-	  std::shared_ptr<new_T>((new_T*)data.get(), [=](const new_T* ptr) { (void)this_data; });
 	auto new_p = std::make_shared<detail::TensorPartition<N - 1>>(p->remove_dimension(dot_pos));
 
-	return Tensor<N - 1, new_T>(new_order, new_dim, ctx, new_data, new_p, dist, new_from,
-				    new_size, new_scalar, conjugate, eg);
+	return Tensor<N - 1, new_T>(new_order, new_dim, allocation, new_p, dist, new_from, new_size,
+				    new_scalar, conjugate, eg);
       }
 
       template <typename U = T,
@@ -2648,7 +2694,7 @@ namespace Chroma
 	// Transform the partition
 	auto new_p = std::make_shared<detail::TensorPartition<Nout>>(p->split_dimension(pos, d));
 
-	return Tensor<Nout, T>(new_order, new_p->dim, ctx, data, new_p, dist,
+	return Tensor<Nout, T>(new_order, new_p->dim, allocation, new_p, dist,
 			       detail::split_dimension(pos, from, d, From),
 			       detail::split_dimension(pos, size, d, Size), scalar, conjugate, eg);
       }
@@ -2723,7 +2769,7 @@ namespace Chroma
 	auto new_p = std::make_shared<detail::TensorPartition<Nout>>(
 	  p->template collapse_dimensions<Nout>(pos));
 
-	return Tensor<Nout, T>(new_order, new_p->dim, ctx, data, new_p, dist,
+	return Tensor<Nout, T>(new_order, new_p->dim, allocation, new_p, dist,
 			       detail::collapse_dimensions<Nout>(pos, from, dim, From),
 			       detail::collapse_dimensions<Nout>(pos, size, dim, Size), scalar,
 			       conjugate, eg);
@@ -2830,7 +2876,7 @@ namespace Chroma
 	{
 	  // Return a tensor with this data but a different shape
 	  auto new_p = std::make_shared<detail::TensorPartition<Nout>>(new_p_aux.second);
-	  return Tensor<Nout, T>(new_order, new_p->dim, ctx, data, new_p, dist, new_from.second,
+	  return Tensor<Nout, T>(new_order, new_p->dim, allocation, new_p, dist, new_from.second,
 				 new_size.second, scalar, conjugate, eg);
 	}
 	else if (new_size.first != Success)
@@ -2923,7 +2969,7 @@ namespace Chroma
 	  return Tensor<N, T>{};
 
 	using superbblas::detail::operator-;
-	return Tensor<N, T>(order, p->localSize(), ctx, data,
+	return Tensor<N, T>(order, p->localSize(), allocation,
 			    std::make_shared<detail::TensorPartition<N>>(p->get_local_partition()),
 			    Local, normalize_coor(from - p->localFrom(), dim), lsize, scalar,
 			    conjugate, eg);
@@ -2935,12 +2981,12 @@ namespace Chroma
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	T* ptr = this->data.get();
+	T* ptr = data();
 	MPI_Comm comm = (dist == OnMaster || dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	if (dist != OnMaster || Layout::nodeNumber() == 0)
 	  superbblas::copy<N, N>(T{0}, p->p.data(), 1, order.c_str(), from, size, dim,
-				 (const T**)&ptr, nullptr, &*ctx, p->p.data(), 1, order.c_str(),
-				 from, dim, &ptr, nullptr, &*ctx, comm, superbblas::FastToSlow,
+				 (const T**)&ptr, nullptr, &ctx(), p->p.data(), 1, order.c_str(),
+				 from, dim, &ptr, nullptr, &ctx(), comm, superbblas::FastToSlow,
 				 superbblas::Copy);
       }
 
@@ -2982,11 +3028,15 @@ namespace Chroma
       template <std::size_t Nv>
       bool has_same_allocation(Tensor<Nv, T> v) const
       {
-	return data == v.data;
+	// Compare the allocation pointer, not the actual allocation.ptr; we are making sure that
+	// the two allocations are on the same device in this way
+	return allocation == v.allocation;
       }
 
       template <std::size_t Nv, typename Tv,
-		typename std::enable_if<!std::is_same<T, Tv>::value, bool>::type = true>
+		typename std::enable_if<!std::is_same<typename detail::real_type<T>::type,
+						      typename detail::real_type<Tv>::type>::value,
+					bool>::type = true>
       bool has_same_allocation(Tensor<Nv, Tv>) const
       {
 	return false;
@@ -3141,12 +3191,12 @@ namespace Chroma
 	  if (!m && wm)
 	    m1.copyTo(m0);
 
-	  m0ptr = m0.data.get();
-	  m1ptr = m1.data.get();
+	  m0ptr = m0.data();
+	  m1ptr = m1.data();
 	}
 
-	T* ptr = this->data.get();
-	Tw* w_ptr = w.data.get();
+	T* ptr = data();
+	Tw* w_ptr = w.data();
 	MPI_Comm comm =
 	  ((dist == OnMaster && w.dist == OnMaster) || dist == Local ? MPI_COMM_SELF
 								     : MPI_COMM_WORLD);
@@ -3154,8 +3204,8 @@ namespace Chroma
 	{
 	  superbblas::copy<N, Nw>(
 	    detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1, order.c_str(), from, size, dim,
-	    (const T**)&ptr, (const float**)&m0ptr, &*ctx, w.p->p.data(), 1, w.order.c_str(),
-	    w.from, w.dim, &w_ptr, (const float**)&m1ptr, &*w.ctx, comm, superbblas::FastToSlow,
+	    (const T**)&ptr, (const float**)&m0ptr, &ctx(), w.p->p.data(), 1, w.order.c_str(),
+	    w.from, w.dim, &w_ptr, (const float**)&m1ptr, &w.ctx(), comm, superbblas::FastToSlow,
 	    action == CopyTo ? superbblas::Copy : superbblas::Add);
 	}
       }
@@ -3216,7 +3266,7 @@ namespace Chroma
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	// If either v or w is on OnDevice, force both to be on device
-	if (v.ctx->plat != w.ctx->plat)
+	if (v.ctx().plat != w.ctx().plat)
 	{
 	  if (v.getDev() != OnDefaultDevice)
 	    v = v.cloneOn(OnDefaultDevice);
@@ -3243,9 +3293,9 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "One of the contracted tensors or the output tensor is local and others are not!");
 
-	T* v_ptr = v.data.get();
-	T* w_ptr = w.data.get();
-	T* ptr = this->data.get();
+	T* v_ptr = v.data();
+	T* w_ptr = w.data();
+	T* ptr = data();
 	std::string orderv_ = detail::update_order_and_check<Nv>(v.order, mv);
 	std::string orderw_ = detail::update_order_and_check<Nw>(w.order, mw);
 	std::string order_ = detail::update_order_and_check<N>(order, mr);
@@ -3253,9 +3303,9 @@ namespace Chroma
 	bool conjw_ = (((conjw == Conjugate) xor w.conjugate) xor conjugate);
 	superbblas::contraction<Nv, Nw, N>(
 	  detail::cond_conj(conjv_, v.scalar) * detail::cond_conj(conjw_, w.scalar) / scalar, //
-	  v.p->p.data(), v.dim, 1, orderv_.c_str(), conjv_, (const T**)&v_ptr, &*v.ctx,	      //
-	  w.p->p.data(), w.dim, 1, orderw_.c_str(), conjw_, (const T**)&w_ptr, &*w.ctx,	      //
-	  detail::cond_conj(conjugate, beta), p->p.data(), dim, 1, order_.c_str(), &ptr, &*ctx,
+	  v.p->p.data(), v.dim, 1, orderv_.c_str(), conjv_, (const T**)&v_ptr, &v.ctx(),      //
+	  w.p->p.data(), w.dim, 1, orderw_.c_str(), conjw_, (const T**)&w_ptr, &w.ctx(),      //
+	  detail::cond_conj(conjugate, beta), p->p.data(), dim, 1, order_.c_str(), &ptr, &ctx(),
 	  MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
@@ -3277,7 +3327,7 @@ namespace Chroma
 	  throw std::runtime_error("cholInv: Unsupported implicit conjugate tensors");
 
 	// If either v or w is on OnDevice, force both to be on device
-	if (v.ctx->plat != w.ctx->plat)
+	if (v.ctx().plat != w.ctx().plat)
 	{
 	  if (v.getDev() != OnDefaultDevice)
 	    v = v.cloneOn(OnDefaultDevice);
@@ -3300,7 +3350,7 @@ namespace Chroma
 	}
 
 	// v is going to be modified and is reference, make a clone
-	if (v.data.use_count() > 1)
+	if (v.allocation.use_count() > 1)
 	  v = v.clone();
 
 	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
@@ -3316,19 +3366,19 @@ namespace Chroma
 	if (std::fabs(std::imag(v.scalar)) != 0 || std::real(v.scalar) < 0)
 	  throw std::runtime_error("cholInv: unsupported a negative or imaginary scale");
 
-	T* v_ptr = v.data.get();
-	T* w_ptr = w.data.get();
-	T* ptr = this->data.get();
+	T* v_ptr = v.data();
+	T* w_ptr = w.data();
+	T* ptr = data();
 	superbblas::cholesky<Nv>(v.p->p.data(), v.dim, 1, v.order.c_str(), &v_ptr,
-				 order_rows.c_str(), order_cols.c_str(), &*v.ctx, MPI_COMM_WORLD,
+				 order_rows.c_str(), order_cols.c_str(), &v.ctx(), MPI_COMM_WORLD,
 				 superbblas::FastToSlow);
 	superbblas::trsm<Nv, Nw, N>(
 	  w.scalar / std::sqrt(v.scalar) / scalar, //
 	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
 	  order_cols.c_str(),
-	  &*v.ctx,								//
-	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const T**)&w_ptr, &*w.ctx, //
-	  p->p.data(), dim, 1, order.c_str(), &ptr, &*ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
+	  &v.ctx(),								 //
+	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const T**)&w_ptr, &w.ctx(), //
+	  p->p.data(), dim, 1, order.c_str(), &ptr, &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
       /// Solve the linear systems within tensor `v' and right-hand-sides `w`
@@ -3349,7 +3399,7 @@ namespace Chroma
 	  throw std::runtime_error("solve: Unsupported implicit conjugate tensors");
 
 	// If either v or w is on OnDevice, force both to be on device
-	if (v.ctx->plat != w.ctx->plat)
+	if (v.ctx().plat != w.ctx().plat)
 	{
 	  if (v.getDev() != OnDefaultDevice)
 	    v = v.cloneOn(OnDefaultDevice);
@@ -3391,16 +3441,16 @@ namespace Chroma
 	if (v.dist == OnEveryoneReplicated && w.dist == OnEveryone)
 	  v = v.make_suitable_for_contraction(w);
 
-	T* v_ptr = v.data.get();
-	T* w_ptr = w.data.get();
-	T* ptr = this->data.get();
+	T* v_ptr = v.data();
+	T* w_ptr = w.data();
+	T* ptr = data();
 	superbblas::gesm<Nv, Nw, N>(
 	  w.scalar / v.scalar / scalar, //
 	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
 	  order_cols.c_str(),
-	  &*v.ctx,								//
-	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const T**)&w_ptr, &*w.ctx, //
-	  p->p.data(), dim, 1, order.c_str(), &ptr, &*ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
+	  &v.ctx(),								 //
+	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const T**)&w_ptr, &w.ctx(), //
+	  p->p.data(), dim, 1, order.c_str(), &ptr, &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
       /// Return a view of this tensor where the elements are scaled by the given argument
@@ -3427,9 +3477,8 @@ namespace Chroma
       void release()
       {
 	dim = {{}};
-	data.reset();
+	allocation.reset();
 	p.reset();
-	ctx.reset();
 	from = {{}};
 	size = {{}};
 	strides = {{}};
@@ -3594,7 +3643,7 @@ namespace Chroma
       DeviceHost getDev() const
       {
 #  ifdef SUPERBBLAS_USE_GPU
-	return (ctx->plat != superbblas::CPU ? OnDefaultDevice : OnHost);
+	return (ctx().plat != superbblas::CPU ? OnDefaultDevice : OnHost);
 #  else
 	return OnDefaultDevice;
 #  endif
@@ -3604,7 +3653,7 @@ namespace Chroma
       {
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
-	if (ctx->plat != superbblas::CPU)
+	if (ctx().plat != superbblas::CPU)
 	  throw std::runtime_error("Only supported to read on `OnHost` tensors");
 	if (dist != OnMaster)
 	  throw std::runtime_error("Only supported to read on `OnMaster` tensors");
@@ -3618,7 +3667,7 @@ namespace Chroma
 	std::size_t vol = volume();
 	std::size_t disp = detail::coor2index<N>(from, dim, strides);
 	std::size_t word_size = sizeof(typename detail::WordType<T>::type);
-	bin.readArrayPrimaryNode((char*)&data.get()[disp], word_size, sizeof(T) / word_size * vol);
+	bin.readArrayPrimaryNode((char*)&data()[disp], word_size, sizeof(T) / word_size * vol);
       }
 
       void binaryWrite(BinaryWriter& bin) const
@@ -3638,7 +3687,7 @@ namespace Chroma
 	  throw std::runtime_error("Not allowed for tensors implicitly conjugated");
 
 	// If the tensor has an implicit scale, view, or is not on host, make a copy
-	if (scalar != T{1} || isSubtensor() || ctx->plat != superbblas::CPU)
+	if (scalar != T{1} || isSubtensor() || ctx().plat != superbblas::CPU)
 	{
 	  cloneOn(OnHost).binaryWrite(bin);
 	  return;
@@ -3647,7 +3696,7 @@ namespace Chroma
 	// Write the local data
 	std::size_t vol = p->localVolume();
 	std::size_t word_size = sizeof(typename detail::WordType<T>::type);
-	bin.writeArrayPrimaryNode((char*)data.get(), word_size, sizeof(T) / word_size * vol);
+	bin.writeArrayPrimaryNode((char*)data(), word_size, sizeof(T) / word_size * vol);
       }
 
       void print(const std::string& name) const
@@ -3662,7 +3711,7 @@ namespace Chroma
 	if (Layout::nodeNumber() == 0)
 	{
 	  using namespace detail::repr;
-	  ss << "% " << repr(data.get()) << std::endl;
+	  ss << "% " << repr(data()) << std::endl;
 	  ss << "% dist=" << p->p << std::endl;
 	  ss << name << "=reshape([";
 	  assert(!t_host.isSubtensor());
@@ -3671,7 +3720,7 @@ namespace Chroma
 	  {
 	    //using detail::repr::operator<<;
 	    ss << " ";
-	    detail::repr::operator<<(ss, t_host.data.get()[i]);
+	    detail::repr::operator<<(ss, t_host.data()[i]);
 	  }
 	  ss << "], [" << size << "]);" << std::endl;
 	}
@@ -3717,10 +3766,10 @@ namespace Chroma
 
     template <std::size_t Nv, typename Tv, std::size_t Nw, typename Tw, std::size_t Nm = Nv,
 	      typename Tm = float>
-    void latticeCopyToWithMask(Tensor<Nv, Tv> v, Tensor<Nw, Tw> w, char label_mu,
+    void latticeCopyToWithMask(const Tensor<Nv, Tv>& v, const Tensor<Nw, Tw>& w, char label_mu,
 			       const std::vector<Coor<Nd>>& disps,
-			       const std::map<char, int>& real_dims, Tensor<Nm, Tm> mask_even,
-			       Tensor<Nm, Tm> mask_odd)
+			       const std::map<char, int>& real_dims,
+			       const Tensor<Nm, Tm>& mask_even, const Tensor<Nm, Tm>& mask_odd)
     {
       // Shortcuts
       if (disps.size() == 0)
@@ -3786,9 +3835,9 @@ namespace Chroma
     ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
 
     template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
-    Tensor<Nr, T> contract(Tensor<Nv, T> v, Tensor<Nw, T> w, const std::string& labels_to_contract,
-			   Maybe<Action> action = none, Tensor<Nr, T> r = Tensor<Nr, T>{},
-			   const remap& mr = {}, T beta = T{1})
+    Tensor<Nr, T> contract(const Tensor<Nv, T>& v, Tensor<Nw, T> w,
+			   const std::string& labels_to_contract, Maybe<Action> action = none,
+			   Tensor<Nr, T> r = Tensor<Nr, T>{}, const remap& mr = {}, T beta = T{1})
     {
       if (action.hasSome() != (bool)r)
 	throw std::runtime_error("Invalid default value");
@@ -3829,7 +3878,8 @@ namespace Chroma
     /// \param r: optional given tensor where to put the resulting contraction
 
     template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
-    Tensor<Nr, T> kronecker(Tensor<Nv, T> v, Tensor<Nw, T> w, Tensor<Nr, T> r = Tensor<Nr, T>{})
+    Tensor<Nr, T> kronecker(const Tensor<Nv, T>& v, const Tensor<Nw, T>& w,
+			    Tensor<Nr, T> r = Tensor<Nr, T>{})
     {
       // Make sure that no dimension in common has size larger than one in both tensors
       auto v_kvdim = v.kvdim();
@@ -3901,8 +3951,9 @@ namespace Chroma
     ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
 
     template <std::size_t Nr, std::size_t Nv, typename T>
-    Tensor<Nr, typename detail::real_type<T>::type>
-    norm(Tensor<Nv, T> v, Maybe<std::string> order_t = none, Maybe<std::string> order_rows = none)
+    Tensor<Nr, typename detail::real_type<T>::type> norm(const Tensor<Nv, T>& v,
+							 Maybe<std::string> order_t = none,
+							 Maybe<std::string> order_rows = none)
     {
       if (!order_t.hasSome() && !order_rows.hasSome())
 	throw std::runtime_error(
@@ -3933,8 +3984,8 @@ namespace Chroma
       v = v.make_sure(none, OnHost, OnEveryoneReplicated);
       if (v.isSubtensor())
 	v = v.clone();
-      T r = T{0};
-      T* p = v.data.get();
+      T r = std::numeric_limits<T>::min();
+      T* p = v.data();
       for (unsigned int i = 0, vol = v.volume(); i < vol; ++i)
 	r = std::max(r, p[i]);
       return r;
@@ -3950,8 +4001,8 @@ namespace Chroma
     /// \param r: optional given tensor where to put the resulting contraction
 
     template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
-    Tensor<Nr, T> cholInv(Tensor<Nv, T> v, const std::string& order_rows,
-			  const std::string& order_cols, Tensor<Nw, T> w,
+    Tensor<Nr, T> cholInv(const Tensor<Nv, T>& v, const std::string& order_rows,
+			  const std::string& order_cols, const Tensor<Nw, T>& w,
 			  const std::string& labels_to_contract, Maybe<Action> action = none,
 			  Tensor<Nr, T> r = {})
     {
@@ -3997,8 +4048,8 @@ namespace Chroma
     /// \param r: optional given tensor where to put the resulting contraction
 
     template <std::size_t Nlabels, std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
-    Tensor<Nr, T> solve(Tensor<Nv, T> v, const std::string& order_rows,
-			const std::string& order_cols, Tensor<Nw, T> w,
+    Tensor<Nr, T> solve(const Tensor<Nv, T>& v, const std::string& order_rows,
+			const std::string& order_cols, const Tensor<Nw, T>& w,
 			const std::string& labels_to_contract, Maybe<Action> action = none,
 			Tensor<Nr, T> r = {})
     {
@@ -4051,7 +4102,7 @@ namespace Chroma
 	auto rnorms = norm<Nw - Nlabels>(res, none, order_cols);
 	double err = 0;
 	for (int i = 0, i1 = wnorms.volume(); i < i1; ++i)
-	  err = std::max(err, (double)rnorms.data.get()[i] / wnorms.data.get()[i]);
+	  err = std::max(err, (double)rnorms.data()[i] / wnorms.data()[i]);
 	QDPIO::cout << "solve error: " << detail::tostr(err) << std::endl;
 	auto eps = std::sqrt(std::numeric_limits<typename detail::real_type<T>::type>::epsilon());
 	if (err > eps)
@@ -4084,7 +4135,7 @@ namespace Chroma
       using Complex = std::complex<T>;
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 2, Complex>("cxyztX", latticeSize<Nd + 2>("cxyztX"), OnHost, OnEveryone,
-				     std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
+				     v_ptr);
     }
 
 #  if !defined(QDP_IS_QDPJIT) || !defined(SUPERBBLAS_USE_GPU)
@@ -4092,14 +4143,14 @@ namespace Chroma
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 3, Complex>("csxyztX", latticeSize<Nd + 3>("csxyztX"), OnHost, OnEveryone,
-				     std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
+				     v_ptr);
     }
 #  else
     inline Tensor<Nd + 4, REAL> asTensorView(const LatticeFermion& v)
     {
       REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
       return Tensor<Nd + 4, REAL>("xyztXsc.", latticeSize<Nd + 4>("xyztXsc."), OnDefaultDevice,
-				  OnEveryone, std::shared_ptr<REAL>(v_ptr, [](REAL*) {}));
+				  OnEveryone, v_ptr);
     }
 #  endif
 
@@ -4108,14 +4159,14 @@ namespace Chroma
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 1, Complex>("xyztX", latticeSize<Nd + 1>("xyztX"), OnHost, OnEveryone,
-				     std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
+				     v_ptr);
     }
 #  else
     inline Tensor<Nd + 2, REAL> asTensorView(const LatticeComplex& v)
     {
       REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
       return Tensor<Nd + 2, REAL>("xyztX.", latticeSize<Nd + 2>("xyztX."), OnDefaultDevice,
-				  OnEveryone, std::shared_ptr<REAL>(v_ptr, [](REAL*) {}));
+				  OnEveryone, v_ptr);
     }
 #  endif
 
@@ -4125,39 +4176,37 @@ namespace Chroma
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 3, Complex>("jixyztX",
 				     latticeSize<Nd + 3>("jixyztX", {{'i', Nc}, {'j', Nc}}), OnHost,
-				     OnEveryone, std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
+				     OnEveryone, v_ptr);
     }
 #  else
     inline Tensor<Nd + 4, REAL> asTensorView(const LatticeColorMatrix& v)
     {
       REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
-      return Tensor<Nd + 4, REAL>(
-	"xyztXji.", latticeSize<Nd + 4>("xyztXji.", {{'i', Nc}, {'j', Nc}}), OnDefaultDevice,
-	OnEveryone, std::shared_ptr<REAL>(v_ptr, [](REAL*) {}));
+      return Tensor<Nd + 4, REAL>("xyztXji.",
+				  latticeSize<Nd + 4>("xyztXji.", {{'i', Nc}, {'j', Nc}}),
+				  OnDefaultDevice, OnEveryone, v_ptr);
     }
 #  endif
 
     inline Tensor<Nd + 4, Complex> asTensorView(const LatticeColorVectorSpinMatrix& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd + 4, Complex>(
-	"cjixyztX", latticeSize<Nd + 4>("cjixyztX", {{'i', Ns}, {'j', Ns}}), OnHost, OnEveryone,
-	std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
+      return Tensor<Nd + 4, Complex>("cjixyztX",
+				     latticeSize<Nd + 4>("cjixyztX", {{'i', Ns}, {'j', Ns}}),
+				     OnHost, OnEveryone, v_ptr);
     }
 
     template <typename COMPLEX>
     Tensor<1, COMPLEX> asTensorView(std::vector<COMPLEX>& v,
 				    Distribution dist = OnEveryoneReplicated)
     {
-      return Tensor<1, COMPLEX>("i", Coor<1>{Index(v.size())}, OnHost, dist,
-				std::shared_ptr<COMPLEX>(v.data(), [](COMPLEX*) {}));
+      return Tensor<1, COMPLEX>("i", Coor<1>{Index(v.size())}, OnHost, dist, v.data());
     }
 
     inline Tensor<2, Complex> asTensorView(SpinMatrix& smat)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(smat.getF());
-      return Tensor<2, Complex>("ji", Coor<2>{Ns, Ns}, OnHost, OnEveryoneReplicated,
-				std::shared_ptr<Complex>(v_ptr, [](Complex*) {}));
+      return Tensor<2, Complex>("ji", Coor<2>{Ns, Ns}, OnHost, OnEveryoneReplicated, v_ptr);
     }
 
     inline SpinMatrix SpinMatrixIdentity()
@@ -4254,8 +4303,8 @@ namespace Chroma
 	using namespace detail::repr;
 	std::stringstream ss;
 	ss << "SpTensor{";
-	if (data.data)
-	  ss << "data:" << data.data << ", ";
+	if (data.data())
+	  ss << "data:" << data.data() << ", ";
 	std::size_t sizemb = (ii.getLocal().volume() * sizeof(int) + //
 			      jj.getLocal().volume() * sizeof(int) + //
 			      data.getLocal().volume() * sizeof(T)) /
@@ -4365,17 +4414,17 @@ namespace Chroma
 	    !ii.isDistributedAs(data, nonblock_img_labels))
 	  throw std::runtime_error("SpTensor: the dense tensors representing the sparse tensor "
 				   "have incompatible distributions");
-	int* iiptr = ii.data.get();
-	Coor<ND>* jjptr = (Coor<ND>*)localjj.data.get();
+	int* iiptr = ii.data();
+	Coor<ND>* jjptr = (Coor<ND>*)localjj.data();
 	// NOTE: despite jj being a vector of `int`, superbblas will use jj as a vector of Coor<NI>, so check that the alignment
 	if (localjj.getLocal().volume() > 0 &&
 	    superbblas::detail::align(alignof(Coor<NI>), sizeof(int), jjptr, sizeof(int)) ==
 	      nullptr)
 	  throw std::runtime_error("Ups! Look into this");
-	const T* ptr = data.data.get();
+	const T* ptr = data.data();
 	superbblas::BSR_handle* bsr = nullptr;
 	superbblas::create_bsr<ND, NI, T>(i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd,
-					  isImgFastInBlock, &iiptr, &jjptr, &ptr, &*data.ctx,
+					  isImgFastInBlock, &iiptr, &jjptr, &ptr, &data.ctx(),
 					  MPI_COMM_WORLD, superbblas::FastToSlow, &bsr);
 	handle = std::shared_ptr<superbblas::BSR_handle>(
 	  bsr, [=](superbblas::BSR_handle* bsr) { destroy_bsr(bsr); });
@@ -4449,7 +4498,7 @@ namespace Chroma
 	  .copyTo(new_jj.kvslice_from_size({}, {{'~', (int)ND}}));
 	{
 	  auto local_new_jj = new_jj.getLocal();
-	  int* p = local_new_jj.data.get();
+	  int* p = local_new_jj.data();
 	  auto new_dom_dim = detail::insert_coor(d.size, d_pos, dom_step);
 	  new_dom_dim[d_pos + 1] /= dom_step;
 	  std::size_t i1 = local_new_jj.volume() / (ND + 1);
@@ -4539,13 +4588,13 @@ namespace Chroma
 	    updated_dom_kvsize[it.first] = it.second;
 	  Coor<ND> size_dom = kvcoors<ND>(d.order, updated_dom_kvsize);
 	  auto ii_slice_local = ii_slice.getLocal();
-	  int* ii_slice_ptr = ii_slice_local.data.get();
+	  int* ii_slice_ptr = ii_slice_local.data();
 	  auto jj_slice_local = jj_slice.getLocal();
-	  int* jj_slice_ptr = jj_slice_local.data.get();
+	  int* jj_slice_ptr = jj_slice_local.data();
 	  auto new_ii_local = new_ii.getLocal();
-	  int* new_ii_ptr = new_ii_local.data.get();
+	  int* new_ii_ptr = new_ii_local.data();
 	  auto new_jj_local = new_jj.getLocal();
-	  float* new_jj_ptr = new_jj_local.data.get();
+	  float* new_jj_ptr = new_jj_local.data();
 	  Coor<ND> size_nnz = d.size;
 	  for (unsigned int i = nblockd; i < ND; ++i)
 	    size_nnz[i] = 1;
@@ -4681,7 +4730,7 @@ namespace Chroma
 	{
 	  auto host_new_jj = new_jj.make_sure(none, OnHost);
 	  auto local_new_jj = host_new_jj.getLocal();
-	  int* new_p = local_new_jj.data.get();
+	  int* new_p = local_new_jj.data();
 	  for (std::size_t i = 0, i1 = local_new_jj.volume(); i < i1; i += ND)
 	  {
 	    Coor<ND> c;
@@ -4760,8 +4809,8 @@ namespace Chroma
       template <std::size_t Nv, std::size_t Nw, typename Tv, typename Tw,
 		typename std::enable_if<
 		  (!std::is_same<Tv, T>::value || !std::is_same<Tw, T>::value), bool>::type = true>
-      void contractWith(Tensor<Nv, Tv> v, const remap& mv, Tensor<Nw, Tw> w, const remap& mw = {},
-			char power_label = 0) const
+      void contractWith(Tensor<Nv, Tv> v, const remap& mv, const Tensor<Nw, Tw>& w,
+			const remap& mw = {}, char power_label = 0) const
       {
 	if (data.is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
@@ -4770,7 +4819,7 @@ namespace Chroma
 	  throw std::runtime_error("invalid operation on an not constructed tensor");
 
 	auto w0 = w.template cast_like<T>();
-	contractWith(v.template cast<T>(), mv, w0);
+	contractWith(std::move(v).template cast<T>(), mv, w0);
 	w0.copyTo(w);
       }
 
@@ -4785,7 +4834,7 @@ namespace Chroma
 	  throw std::runtime_error("invalid operation on an not constructed tensor");
 
 	// If either this tensor or v are on OnDevice, force both to be on the same device as this tensor.
-	if (v.ctx->plat != data.ctx->plat)
+	if (v.ctx().plat != data.ctx().plat)
 	{
 	  v = v.cloneOn(getDev());
 	}
@@ -4819,8 +4868,8 @@ namespace Chroma
 	if (power_label != 0 && !detail::is_in(w.order, power_label))
 	  throw std::runtime_error("contractWith: `power_label` isn't in `w`");
 
-	T* v_ptr = v.data.get();
-	T* w_ptr = w.data.get();
+	T* v_ptr = v.data();
+	T* w_ptr = w.data();
 	std::string orderv = detail::update_order_and_check<Nv>(v.order, mv);
 	std::string orderw = detail::update_order_and_check<Nw>(w.order, mw);
 	superbblas::bsr_krylov<ND, NI, Nv, Nw, T>(
@@ -4828,7 +4877,7 @@ namespace Chroma
 	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const T**)&v_ptr,	//
 	  w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim, power_label,
 	  (T**)&w_ptr, //
-	  &*data.ctx, MPI_COMM_WORLD, superbblas::FastToSlow);
+	  &data.ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
       void print(const std::string& name) const
@@ -4850,7 +4899,7 @@ namespace Chroma
 	  // Print the row indices
 	  std::size_t volblki = superbblas::detail::volume(blki);
 	  std::size_t volblkj = superbblas::detail::volume(blkd);
-	  auto ii_host_ptr = ii_host.data.get();
+	  auto ii_host_ptr = ii_host.data();
 	  for (std::size_t i = 0, iivol = ii_host.volume(); i < iivol; ++i)
 	  {
 	    for (unsigned int neighbor = 0, num_neighbors = ii_host_ptr[i];
@@ -4873,7 +4922,7 @@ namespace Chroma
 	  ss << "], [";
 
 	  // Print the column indices
-	  auto jj_host_ptr = jj_host.data.get();
+	  auto jj_host_ptr = jj_host.data();
 	  Stride<ND> dstrides =
 	    superbblas::detail::get_strides<std::size_t>(d.size, superbblas::FastToSlow);
 	  for (std::size_t j = 0, jjvol = jj_host.volume(); j < jjvol; j += ND)
@@ -4897,7 +4946,7 @@ namespace Chroma
 	  ss << "], [";
 
 	  // Print the values
-	  auto data_host_ptr = data_host.data.get();
+	  auto data_host_ptr = data_host.data();
 	  for (std::size_t i = 0, data_vol = data_host.volume(); i < data_vol; ++i)
 	    detail::repr::operator<<(ss << " ", data_host_ptr[i]);
 	  ss << "]);" << std::endl;
@@ -5150,7 +5199,7 @@ namespace Chroma
       template <std::size_t Nw, typename Tw,
 		typename std::enable_if<
 		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
-      void copyFrom(Tensor<Nw, Tw> w) const
+      void copyFrom(const Tensor<Nw, Tw>& w) const
       {
 	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
 	for (unsigned int i = 0; i < N; ++i)
@@ -5167,10 +5216,10 @@ namespace Chroma
 					      superbblas::FastToSlow);
 	}
 
-	Tw* w_ptr = w.data.get();
+	Tw* w_ptr = w.data();
 	superbblas::save<Nw, N, Tw, T>(detail::safe_div<Tw>(w.scalar, scalar), w.p->p.data(), 1,
 				       w.order.c_str(), w.from, w.size, w.dim, (const Tw**)&w_ptr,
-				       &*w.ctx, order.c_str(), from, ctx.get(), comm,
+				       &w.ctx(), order.c_str(), from, ctx.get(), comm,
 				       superbblas::FastToSlow);
       }
 
@@ -5178,19 +5227,19 @@ namespace Chroma
       template <std::size_t Nw, typename Tw,
 		typename std::enable_if<
 		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
-      void copyTo(Tensor<Nw, Tw> w) const
+      void copyTo(const Tensor<Nw, Tw>& w) const
       {
 	Coor<N> wsize = kvcoors<N>(order, w.kvdim(), 1, NoThrow);
 	for (unsigned int i = 0; i < N; ++i)
 	  if (size[i] > wsize[i])
 	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
 
-	Tw* w_ptr = w.data.get();
+	Tw* w_ptr = w.data();
 	MPI_Comm comm = (w.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	superbblas::load<N, Nw, T, Tw>(detail::safe_div<T>(scalar, w.scalar), ctx.get(),
 				       order.c_str(), from, size, w.p->p.data(), 1, w.order.c_str(),
-				       w.from, w.dim, &w_ptr, &*w.ctx, comm, superbblas::FastToSlow,
-				       superbblas::Copy);
+				       w.from, w.dim, &w_ptr, &w.ctx(), comm,
+				       superbblas::FastToSlow, superbblas::Copy);
       }
     };
 
@@ -5297,7 +5346,7 @@ namespace Chroma
       t.set_zero();
       if (t.getLocal())
       {
-	T* p = t.data.get();
+	T* p = t.data();
 	for (unsigned int i = 0, vol = detail::volume(dim, orows); i < vol; ++i)
 	  p[vol * i + i] = T{1};
       }
@@ -5340,7 +5389,7 @@ namespace Chroma
       local_latt_from = local_latt_from + from_c;
       std::size_t vol = superbblas::detail::volume(local_latt_size);
       Index nX = r.kvdim()['X'];
-      COMPLEX* ptr = r.data.get();
+      COMPLEX* ptr = r.data();
 
 #  ifdef _OPENMP
 #    pragma omp parallel for schedule(static)
@@ -5373,7 +5422,7 @@ namespace Chroma
     /// \param dir: 0 is x; 1 is y...
 
     template <typename COMPLEX, std::size_t N>
-    Tensor<N, COMPLEX> shift(const Tensor<N, COMPLEX> v, Index first_tslice, int len, int dir,
+    Tensor<N, COMPLEX> shift(const Tensor<N, COMPLEX>& v, Index first_tslice, int len, int dir,
 			     Maybe<Action> action = none, Tensor<N, COMPLEX> w = {})
     {
       if (dir < 0 || dir >= Nd - 1)
@@ -5721,8 +5770,8 @@ namespace Chroma
 	assert(tnat.p->localVolume() == perm.size() * Nc);
 
 	unsigned int i1 = perm.size();
-	const T* x = tnat.data.get();
-	T* y = trb.data.get();
+	const T* x = tnat.data();
+	T* y = trb.data();
 
 #  ifdef _OPENMP
 #    pragma omp parallel for schedule(static)
@@ -5745,8 +5794,8 @@ namespace Chroma
 	assert(tnat.p->localVolume() == perm.size() * Nc);
 
 	unsigned int i1 = perm.size();
-	T* x = tnat.data.get();
-	const T* y = trb.data.get();
+	T* x = tnat.data();
+	const T* y = trb.data();
 
 #  ifdef _OPENMP
 #    pragma omp parallel for schedule(static)
@@ -5832,9 +5881,9 @@ namespace Chroma
 	  OperatorAux& opaux = *(OperatorAux*)primme->matrix;
 	  Coor<Nd + 3> size = latticeSize<Nd + 3>(opaux.order, {{'n', *blockSize}, {'t', 1}});
 	  Tensor<Nd + 3, ComplexD> tx(opaux.order, size, opaux.primme_dev, OnEveryone,
-				      std::shared_ptr<ComplexD>((ComplexD*)x, [](ComplexD*) {}));
+				      (ComplexD*)x);
 	  Tensor<Nd + 3, ComplexD> ty(opaux.order, size, opaux.primme_dev, OnEveryone,
-				      std::shared_ptr<ComplexD>((ComplexD*)y, [](ComplexD*) {}));
+				      (ComplexD*)y);
 	  LaplacianOperator(opaux.u, opaux.first_tslice, ty, tx);
 	  *ierr = 0;
 	} catch (...)
@@ -5973,9 +6022,9 @@ namespace Chroma
 
 	  // Call primme
 #    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
-	  int ret = magma_zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
+	  int ret = magma_zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
 #    else
-	  int ret = zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
+	  int ret = zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
 #    endif
 
 	  if (primme.procID == 0)
