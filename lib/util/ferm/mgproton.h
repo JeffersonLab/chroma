@@ -467,9 +467,9 @@ namespace Chroma
 	// Construct the identity
 	auto t = C.template like_this<Nrows + Ncols>(order_rows + order_cols, {}, OnHost, OnMaster);
 	t.set_zero();
+	COMPLEX* t_data = t.data();
 	if (t.getLocal())
 	{
-	  COMPLEX* t_data = t.data();
 	  for (std::size_t i = 0; i < m; ++i)
 	    t_data[i * m + i] = COMPLEX{1};
 	}

@@ -1594,18 +1594,25 @@ namespace Chroma
 	bool destroy_ptr;
 
 	/// Allocate n elements of type T with the given context
+	/// \param n: number of elements to allocate
+	/// \param ctx: context of the allocation
+
 	Allocation(std::size_t n, const std::shared_ptr<superbblas::Context>& ctx)
 	  : ptr(superbblas::allocate<T>(n, *ctx)), ctx(ctx), destroy_ptr(true)
 	{
 	}
 
 	/// User given pointer that will not be deallocated automatically
+	/// \param ptr: pointer to an allocation
+	/// \param ctx: context of the allocation
+
 	Allocation(T* ptr, const std::shared_ptr<superbblas::Context>& ctx)
 	  : ptr(ptr), ctx(ctx), destroy_ptr(false)
 	{
 	}
 
 	/// Destructor
+
 	~Allocation()
 	{
 	  finish_pending_operations();
@@ -1614,10 +1621,30 @@ namespace Chroma
 	}
 
 	/// Return the pointer
+
 	T* data()
 	{
 	  finish_pending_operations();
 	  return ptr;
+	}
+
+	/// Append a pending operation
+	/// \param req: pending operation to finish later
+	/// NOTE: finish the operation for pointers not managed; those come from Chroma objects
+	///       and Chroma users may get unexpected results if they access the Chroma object
+	///       while the proxy Tensor object created with `asTensorView` is still alive.
+
+	void append_pending_operation(const superbblas::Request& req)
+	{
+	  if (destroy_ptr)
+	  {
+	    if (req)
+	      pending_operations.push_back(req);
+	  }
+	  else
+	  {
+	    superbblas::wait(req);
+	  }
 	}
 
 	/// Finish all pending operations
@@ -1645,14 +1672,16 @@ namespace Chroma
       Coor<N> dim;			      ///< Length of the tensor dimensions
       std::shared_ptr<Allocation> allocation; ///< Tensor storage
       std::shared_ptr<detail::TensorPartition<N>>
-	p;		 ///< Distribution of the tensor among the processes
-      Distribution dist; ///< Whether the tensor is stored on the cpu or a device
-      Coor<N> from;	 ///< First active coordinate in the tensor
-      Coor<N> size;	 ///< Number of active coordinates on each dimension
-      Stride<N> strides; ///< Displacement for the next element along every direction
-      T scalar;		 ///< Scalar factor of the tensor
-      bool conjugate;	 ///< Whether the values are implicitly conjugated
-      bool eg;		 ///< Whether this tensor is an example
+	p;		      ///< Distribution of the tensor among the processes
+      Distribution dist;      ///< Whether the tensor is stored on the cpu or a device
+      Coor<N> from;	      ///< First active coordinate in the tensor
+      Coor<N> size;	      ///< Number of active coordinates on each dimension
+      Stride<N> strides;      ///< Displacement for the next element along every direction
+      T scalar;		      ///< Scalar factor of the tensor
+      bool conjugate;	      ///< Whether the values are implicitly conjugated
+      bool eg;		      ///< Whether this tensor is an example
+      bool unordered_writing; ///< Whether to allow execution of writing operations
+			      /// in a different order than the one issue
 
       /// Return a string describing the tensor
       /// \param ptr: pointer to the memory allocation
@@ -1682,7 +1711,8 @@ namespace Chroma
 	     Distribution dist = OnEveryone)
 	: Tensor(order, dim, dev, dist,
 		 std::make_shared<detail::TensorPartition<N>>(
-		   detail::TensorPartition<N>(order, dim, dist)))
+		   detail::TensorPartition<N>(order, dim, dist)),
+		 false /*= unordered_writing */)
       {
       }
 
@@ -1699,7 +1729,8 @@ namespace Chroma
 	  strides{{}},
 	  scalar{0},
 	  conjugate{false},
-	  eg{false}
+	  eg{false},
+	  unordered_writing{false}
       {
       }
 
@@ -1722,7 +1753,8 @@ namespace Chroma
 	  strides(detail::get_strides<std::size_t, N>(dim, superbblas::FastToSlow)),
 	  scalar{1},
 	  conjugate{false},
-	  eg{false}
+	  eg{false},
+	  unordered_writing{false}
       {
 	checkOrder();
 
@@ -1745,7 +1777,7 @@ namespace Chroma
 
       Tensor(const std::string& order, Coor<N> dim, std::shared_ptr<Allocation> allocation,
 	     std::shared_ptr<detail::TensorPartition<N>> p, Distribution dist, Coor<N> from,
-	     Coor<N> size, T scalar, bool conjugate, bool eg)
+	     Coor<N> size, T scalar, bool conjugate, bool eg, bool unordered_writing)
 	: order(order),
 	  dim(dim),
 	  allocation(allocation),
@@ -1756,7 +1788,8 @@ namespace Chroma
 	  strides(detail::get_strides<std::size_t, N>(dim, superbblas::FastToSlow)),
 	  scalar(scalar),
 	  conjugate(conjugate),
-	  eg(eg)
+	  eg(eg),
+	  unordered_writing(unordered_writing)
       {
 	checkOrder();
       }
@@ -1768,7 +1801,7 @@ namespace Chroma
       /// \param p: partition of the tensor among the processes
 
       Tensor(const std::string& order, Coor<N> dim, DeviceHost dev, Distribution dist,
-	     std::shared_ptr<detail::TensorPartition<N>> p)
+	     std::shared_ptr<detail::TensorPartition<N>> p, bool unordered_writing)
 	: order(order),
 	  dim(dim),
 	  allocation(std::make_shared<Allocation>(
@@ -1780,7 +1813,8 @@ namespace Chroma
 	  strides(detail::get_strides<std::size_t, N>(dim, superbblas::FastToSlow)),
 	  scalar{1},
 	  conjugate{false},
-	  eg{false}
+	  eg{false},
+	  unordered_writing{unordered_writing}
       {
 	checkOrder();
 	detail::log_mem();
@@ -1803,7 +1837,8 @@ namespace Chroma
 	  strides(t.strides),
 	  scalar{t.scalar},
 	  conjugate{t.conjugate},
-	  eg{t.eg}
+	  eg{t.eg},
+	  unordered_writing{t.unordered_writing}
       {
 	checkOrder();
       }
@@ -1823,7 +1858,8 @@ namespace Chroma
 	  strides(t.strides),
 	  scalar{scalar},
 	  conjugate{conjugate},
-	  eg{false}
+	  eg{false},
+	  unordered_writing{t.unordered_writing}
       {
 	checkOrder();
       }
@@ -1973,9 +2009,24 @@ namespace Chroma
       }
 
       /// Return the pointer to the first local element
+      /// NOTE: there will be no pending writing operations
 
       T* data() const
       {
+	if (!allocation)
+	  return nullptr;
+	return (T*)allocation->data();
+      }
+
+      /// Return the pointer to the first local element
+      /// NOTE: there may be pending writing operations if `unordered_writing` is true
+
+      T* data_for_writing() const
+      {
+	if (!allocation)
+	  return nullptr;
+	if (unordered_writing)
+	  return (T*)allocation->ptr;
 	return (T*)allocation->data();
       }
 
@@ -1983,6 +2034,8 @@ namespace Chroma
 
       superbblas::Context& ctx() const
       {
+	if (!allocation)
+	  return *detail::getContext(OnHost);
 	return *allocation->ctx;
       }
 
@@ -2009,10 +2062,10 @@ namespace Chroma
 	if (ctx().plat != superbblas::CPU)
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements from tensors not stored on the host");
-	if (dist == OnEveryone)
+	if (dist != OnEveryoneReplicated && dist != Local)
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements on a distributed tensor; change the distribution to "
-	    "be supported on master, replicated among all nodes, or local");
+	    "`OnEveryoneReplicated` or local");
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
@@ -2045,10 +2098,10 @@ namespace Chroma
 	if (ctx().plat != superbblas::CPU)
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements from tensors not stored on the host");
-	if (dist == OnEveryone)
+	if (dist != OnEveryoneReplicated && dist != Local)
 	  throw std::runtime_error(
 	    "Unsupported to `set` elements on a distributed tensor; change the distribution to "
-	    "be supported on master, replicated among all nodes, or local");
+	    "`OnEveryoneReplicated` or local");
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
@@ -2056,7 +2109,7 @@ namespace Chroma
 	for (unsigned int i = 0; i < N; ++i)
 	  coor[i] = normalize_coor(normalize_coor(coor[i], size[i]) + from[i], dim[i]);
 
-	data()[detail::coor2index<N>(coor, dim, strides)] =
+	data_for_writing()[detail::coor2index<N>(coor, dim, strides)] =
 	  detail::cond_conj(conjugate, v) / scalar;
       }
 
@@ -2072,7 +2125,7 @@ namespace Chroma
 
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
 	std::size_t vol = t.getLocal().volume();
-	T* ptr = t.data();
+	T* ptr = t.data_for_writing();
 
 	if (threaded)
 	{
@@ -2105,7 +2158,7 @@ namespace Chroma
 
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
 	std::size_t vol = t.getLocal().volume();
-	T* ptr = t.data();
+	T* ptr = t.data_for_writing();
 	/// Number of elements in each direction for the local part
 	Coor<N> local_size = t.getLocal().size;
 	/// Stride for the local volume
@@ -2378,7 +2431,8 @@ namespace Chroma
 			      std::make_shared<detail::TensorPartition<Nn>>(
 				detail::TensorPartition<Nn>(new_order_, new_dim, dist)
 				  .make_compatible(new_order_, p->get_subpartition(from, size),
-						   order, same_dim_labels)));
+						   order, same_dim_labels)),
+			      false /* unordered_writing */);
       }
 
       /// Return a tensor on the same device and following the same distribution
@@ -2483,7 +2537,18 @@ namespace Chroma
 	return Tensor<N, T>(
 	  order, size, {},
 	  std::make_shared<detail::TensorPartition<N>>(p->get_subpartition(from, size)), dist, {{}},
-	  size, T{1}, false /* not conjugate */, true /* is eg */);
+	  size, T{1}, false /* not conjugate */, true /* is eg */, false /* ordered writing */);
+      }
+
+      /// Return this tensor but allowing consecutive writing operations (from `copyTo`, `contract`...)
+      /// to apply non-atomically and in different order than issued. In return, this may reduce the
+      /// latency impact by overlapping communications with other operations.
+
+      Tensor<N, T> make_writing_nonatomic() const
+      {
+	Tensor<N, T> t = *this;
+	t.unordered_writing = true;
+	return t;
       }
 
       /// Return the new ordering based on a partial reordering
@@ -2543,6 +2608,7 @@ namespace Chroma
 	  r = r.make_eg();
 	else
 	  copyTo(r);
+	r.unordered_writing = unordered_writing;
 	return r;
       }
 
@@ -2595,7 +2661,7 @@ namespace Chroma
 	auto new_p = std::make_shared<detail::TensorPartition<N + 1>>(p->insert_dimension(0, 2));
 
 	return Tensor<N + 1, new_T>(new_order, new_dim, allocation, new_p, dist, new_from, new_size,
-				    new_scalar, conjugate, eg);
+				    new_scalar, conjugate, eg, unordered_writing);
       }
 
       template <typename U = T,
@@ -2626,14 +2692,15 @@ namespace Chroma
 	auto new_p = std::make_shared<detail::TensorPartition<N - 1>>(p->remove_dimension(dot_pos));
 
 	return Tensor<N - 1, new_T>(new_order, new_dim, allocation, new_p, dist, new_from, new_size,
-				    new_scalar, conjugate, eg);
+				    new_scalar, conjugate, eg, unordered_writing);
       }
 
       template <typename U = T,
 		typename std::enable_if<!detail::is_complex<U>::value, bool>::type = true>
       Tensor<N, U> toFakeReal() const
       {
-	assert(isFakeReal());
+	if (!isFakeReal())
+	  throw std::runtime_error("toFakeReal: unsupported on a non-complex tensor");
 	return *this;
       }
 
@@ -2642,7 +2709,6 @@ namespace Chroma
       Tensor<N, U> toComplex(bool allow_cloning = true) const
       {
 	(void)allow_cloning;
-	assert(!isFakeReal());
 	return *this;
       }
 
@@ -2696,7 +2762,8 @@ namespace Chroma
 
 	return Tensor<Nout, T>(new_order, new_p->dim, allocation, new_p, dist,
 			       detail::split_dimension(pos, from, d, From),
-			       detail::split_dimension(pos, size, d, Size), scalar, conjugate, eg);
+			       detail::split_dimension(pos, size, d, Size), scalar, conjugate, eg,
+			       unordered_writing);
       }
 
       /// Split a dimension into another dimensions
@@ -2772,7 +2839,7 @@ namespace Chroma
 	return Tensor<Nout, T>(new_order, new_p->dim, allocation, new_p, dist,
 			       detail::collapse_dimensions<Nout>(pos, from, dim, From),
 			       detail::collapse_dimensions<Nout>(pos, size, dim, Size), scalar,
-			       conjugate, eg);
+			       conjugate, eg, unordered_writing);
       }
 
       /// Rearrange several dimensions into new ones
@@ -2877,7 +2944,7 @@ namespace Chroma
 	  // Return a tensor with this data but a different shape
 	  auto new_p = std::make_shared<detail::TensorPartition<Nout>>(new_p_aux.second);
 	  return Tensor<Nout, T>(new_order, new_p->dim, allocation, new_p, dist, new_from.second,
-				 new_size.second, scalar, conjugate, eg);
+				 new_size.second, scalar, conjugate, eg, unordered_writing);
 	}
 	else if (new_size.first != Success)
 	{
@@ -2890,6 +2957,7 @@ namespace Chroma
 	  Tensor<Nout, T> r(new_order, new_size.second, getDev(), dist);
 	  r.scalar = scalar;
 	  r.conjugate = conjugate;
+	  r.unordered_writing = unordered_writing;
 	  if (eg)
 	    return r.make_eg();
 	  std::map<std::string, std::string> reverse_m;
@@ -2928,7 +2996,7 @@ namespace Chroma
 	auto new_p = std::make_shared<detail::TensorPartition<N>>(p->coarse_support(c_blk));
 
 	// Create output tensor
-	Tensor<N, T> r(order, dim, getDev(), dist, new_p);
+	Tensor<N, T> r(order, dim, getDev(), dist, new_p, unordered_writing);
 	r.from = from;
 	r.size = size;
 	r.conjugate = conjugate;
@@ -2959,6 +3027,13 @@ namespace Chroma
       /// Return the local support of this tensor
       Tensor<N, T> getLocal() const
       {
+	// Shortcut for empty and local tensors
+	if (!*this || dist == Local)
+	  return *this;
+
+	// Finish writing operations: local tensor will not be able to finish pending writing operations
+	data();
+
 	// Compute the size of the intersection of the current view and the local support
 	Coor<N> lfrom, lsize;
 	superbblas::detail::intersection(p->localFrom(), p->localSize(), from, size, dim, lfrom,
@@ -2972,7 +3047,7 @@ namespace Chroma
 	return Tensor<N, T>(order, p->localSize(), allocation,
 			    std::make_shared<detail::TensorPartition<N>>(p->get_local_partition()),
 			    Local, normalize_coor(from - p->localFrom(), dim), lsize, scalar,
-			    conjugate, eg);
+			    conjugate, eg, false /* ordered writing */);
       }
 
       /// Set zero
@@ -2981,7 +3056,7 @@ namespace Chroma
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	T* ptr = data();
+	T* ptr = data_for_writing();
 	MPI_Comm comm = (dist == OnMaster || dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	if (dist != OnMaster || Layout::nodeNumber() == 0)
 	  superbblas::copy<N, N>(T{0}, p->p.data(), 1, order.c_str(), from, size, dim,
@@ -3045,7 +3120,7 @@ namespace Chroma
       /// Return whether the given tensor has the same distribution as this one
       Tensor<N, float> create_mask() const
       {
-	Tensor<N, float> m{order, dim, getDev(), dist, p};
+	Tensor<N, float> m{order, dim, getDev(), dist, p, false /* ordered writing */};
 	m.set_zero();
 	m.from = from;
 	m.size = size;
@@ -3196,17 +3271,19 @@ namespace Chroma
 	}
 
 	T* ptr = data();
-	Tw* w_ptr = w.data();
+	Tw* w_ptr = w.data_for_writing();
 	MPI_Comm comm =
 	  ((dist == OnMaster && w.dist == OnMaster) || dist == Local ? MPI_COMM_SELF
 								     : MPI_COMM_WORLD);
 	if (dist != OnMaster || w.dist != OnMaster || Layout::nodeNumber() == 0)
 	{
+	  superbblas::Request req;
 	  superbblas::copy<N, Nw>(
 	    detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1, order.c_str(), from, size, dim,
 	    (const T**)&ptr, (const float**)&m0ptr, &ctx(), w.p->p.data(), 1, w.order.c_str(),
 	    w.from, w.dim, &w_ptr, (const float**)&m1ptr, &w.ctx(), comm, superbblas::FastToSlow,
-	    action == CopyTo ? superbblas::Copy : superbblas::Add);
+	    action == CopyTo ? superbblas::Copy : superbblas::Add, &req);
+	  w.allocation->append_pending_operation(req);
 	}
       }
 
@@ -3252,7 +3329,7 @@ namespace Chroma
 	auto new_p = std::make_shared<detail::TensorPartition<N>>(
 	  p->make_suitable_for_contraction(order, *v.p, v.order));
 
-	Tensor<N, T> r(order, dim, getDev(), OnEveryone, new_p);
+	Tensor<N, T> r(order, dim, getDev(), OnEveryone, new_p, unordered_writing);
 	copyTo(r);
 	return r;
       }
@@ -3295,7 +3372,7 @@ namespace Chroma
 
 	T* v_ptr = v.data();
 	T* w_ptr = w.data();
-	T* ptr = data();
+	T* ptr = std::norm(beta) == 0 ? data_for_writing() : data();
 	std::string orderv_ = detail::update_order_and_check<Nv>(v.order, mv);
 	std::string orderw_ = detail::update_order_and_check<Nw>(w.order, mw);
 	std::string order_ = detail::update_order_and_check<N>(order, mr);
@@ -3368,7 +3445,7 @@ namespace Chroma
 
 	T* v_ptr = v.data();
 	T* w_ptr = w.data();
-	T* ptr = data();
+	T* ptr = data_for_writing();
 	superbblas::cholesky<Nv>(v.p->p.data(), v.dim, 1, v.order.c_str(), &v_ptr,
 				 order_rows.c_str(), order_cols.c_str(), &v.ctx(), MPI_COMM_WORLD,
 				 superbblas::FastToSlow);
@@ -3443,7 +3520,7 @@ namespace Chroma
 
 	T* v_ptr = v.data();
 	T* w_ptr = w.data();
-	T* ptr = data();
+	T* ptr = data_for_writing();
 	superbblas::gesm<Nv, Nw, N>(
 	  w.scalar / v.scalar / scalar, //
 	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
@@ -3535,6 +3612,7 @@ namespace Chroma
 	  else
 	  {
 	    r.conjugate = conjugate;
+	    r.unordered_writing = unordered_writing;
 	    copyTo(r);
 	  }
 	  return r;
@@ -3559,6 +3637,7 @@ namespace Chroma
 	else
 	{
 	  r.conjugate = conjugate;
+	  r.unordered_writing = unordered_writing;
 	  copyTo(r);
 	}
 	return r;
@@ -3586,6 +3665,7 @@ namespace Chroma
 	else
 	{
 	  r.conjugate = conjugate;
+	  r.unordered_writing = unordered_writing;
 	  copyTo(r);
 	}
 	return r;
@@ -3613,6 +3693,7 @@ namespace Chroma
 	else
 	{
 	  r.conjugate = conjugate;
+	  r.unordered_writing = unordered_writing;
 	}
 	return r;
       }
@@ -3624,8 +3705,12 @@ namespace Chroma
       Tensor<N, T> extend_support(const std::map<char, int>& m) const
       {
 	Tensor<N, T> r{
-	  order, dim, getDev(), dist,
-	  std::make_shared<detail::TensorPartition<N>>(p->extend_support(kvcoors<N>(order, m, 0)))};
+	  order,
+	  dim,
+	  getDev(),
+	  dist,
+	  std::make_shared<detail::TensorPartition<N>>(p->extend_support(kvcoors<N>(order, m, 0))),
+	  unordered_writing};
 	r.from = from;
 	r.size = size;
 	r.strides = strides;
@@ -3667,7 +3752,8 @@ namespace Chroma
 	std::size_t vol = volume();
 	std::size_t disp = detail::coor2index<N>(from, dim, strides);
 	std::size_t word_size = sizeof(typename detail::WordType<T>::type);
-	bin.readArrayPrimaryNode((char*)&data()[disp], word_size, sizeof(T) / word_size * vol);
+	bin.readArrayPrimaryNode((char*)&data_for_writing()[disp], word_size,
+				 sizeof(T) / word_size * vol);
       }
 
       void binaryWrite(BinaryWriter& bin) const
@@ -4869,7 +4955,7 @@ namespace Chroma
 	  throw std::runtime_error("contractWith: `power_label` isn't in `w`");
 
 	T* v_ptr = v.data();
-	T* w_ptr = w.data();
+	T* w_ptr = w.data_for_writing();
 	std::string orderv = detail::update_order_and_check<Nv>(v.order, mv);
 	std::string orderw = detail::update_order_and_check<Nw>(w.order, mw);
 	superbblas::bsr_krylov<ND, NI, Nv, Nw, T>(
@@ -4884,12 +4970,12 @@ namespace Chroma
       {
 	std::stringstream ss;
 
-	auto ii_host = ii.make_sure(none, OnHost, OnMaster);
-	auto jj_host = jj.make_sure(none, OnHost, OnMaster);
-	auto data_host = data.make_sure(none, OnHost, OnMaster);
+	auto ii_host = ii.make_sure(none, OnHost, OnMaster).getLocal();
+	auto jj_host = jj.make_sure(none, OnHost, OnMaster).getLocal();
+	auto data_host = data.make_sure(none, OnHost, OnMaster).getLocal();
 
 	// Only master node prints
-	if (ii_host.getLocal())
+	if (ii_host)
 	{
 	  assert(!ii_host.isSubtensor() && !jj_host.isSubtensor() && !data_host.isSubtensor());
 
@@ -5234,7 +5320,7 @@ namespace Chroma
 	  if (size[i] > wsize[i])
 	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
 
-	Tw* w_ptr = w.data();
+	Tw* w_ptr = w.data_for_writing();
 	MPI_Comm comm = (w.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	superbblas::load<N, Nw, T, Tw>(detail::safe_div<T>(scalar, w.scalar), ctx.get(),
 				       order.c_str(), from, size, w.p->p.data(), 1, w.order.c_str(),
@@ -5344,9 +5430,9 @@ namespace Chroma
       Tensor<N * 2, T> t{orows + ocols, kvcoors<N * 2>(orows + ocols, tdim, 0, ThrowOnMissing),
 			 OnHost, OnMaster};
       t.set_zero();
+      T* p = t.data();
       if (t.getLocal())
       {
-	T* p = t.data();
 	for (unsigned int i = 0, vol = detail::volume(dim, orows); i < vol; ++i)
 	  p[vol * i + i] = T{1};
       }
