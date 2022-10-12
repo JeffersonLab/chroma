@@ -79,6 +79,17 @@ namespace Chroma
     void oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 		     enum PlusMinus isign) const;
 
+    // apply the inv even-even and inv odd-odd block onto a source std::vector
+    void oddOddInvLinOp(LatticeFermion& chi, const LatticeFermion& psi,
+                     		 enum PlusMinus isign) const;
+
+    // Apply the hopping term to a source std::vector
+    void evenHoppingOp(LatticeFermion& chi, const LatticeFermion& psi,
+		   enum PlusMinus isign) const;
+    
+    void oddHoppingOp(LatticeFermion& chi, const LatticeFermion& psi,
+                   enum PlusMinus isign) const;
+
     // Override inherited one with a few more funkies
     void operator()(LatticeFermion& chi, const LatticeFermion& psi, 
 		    enum PlusMinus isign) const;

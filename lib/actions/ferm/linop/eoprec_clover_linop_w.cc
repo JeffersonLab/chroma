@@ -28,6 +28,8 @@ namespace Chroma
  
     invclov.create(fs,param,clov);  // make a copy
     invclov.choles(0);  // invert the cb=0 part
+    invclov.choles(1); //invert the cb = 1 part for hopping linOp
+
 
     D.create(fs, param.anisoParam);
 
@@ -135,7 +137,88 @@ namespace Chroma
     END_CODE();
   }
 
+  //! Apply the hopping operator to a field
+  /*!
+   * \param chi           Pseudofermion field                  (Write)
+   * \param psi           Pseudofermion field                  (Read)
+   * \param isign   Flag ( PLUS | MINUS )              (Read)
+   */
 
+  //Apply the inv odd-odd onto a source std::vector
+  //Necessary for hopping expansion
+  void
+  EvenOddPrecCloverLinOp::oddOddInvLinOp(LatticeFermion& chi,
+                                       		 const LatticeFermion& psi,
+                                       		 enum PlusMinus isign) const
+  {
+    START_CODE();
+    //swatch.reset(); swatch.start();
+    // chi_e = D_ee^{-1} * x_e
+    //invclov.apply(chi, psi, isign, 0);
+    //swatch.stop();
+    //clov_apply_time += swatch.getTimeInSeconds();
+
+    swatch.reset(); swatch.start();
+    // chi_o = D_oo^{-1} * x_o
+    invclov.apply(chi, psi, isign, 1);
+    swatch.stop();
+    clov_apply_time += swatch.getTimeInSeconds();
+    
+    END_CODE();
+  }
+
+  //Apply the hopping operator (I-A^{-1}H) onto a source std::vector
+  void
+  EvenOddPrecCloverLinOp::evenHoppingOp(LatticeFermion& chi,
+                                       const LatticeFermion& psi,
+                                       enum PlusMinus isign) const
+  {
+    START_CODE();
+    Real mhalf = -0.5;
+
+    //do Deo * x_o 
+    D.apply(tmp1, psi, isign, 0);
+    tmp1[rb[0]] *= mhalf;
+
+    //do Doe * x_e
+    //D.apply(tmp1,psi,isign,1);
+    //tmp1[rb[1]] *= mhalf;
+
+    //do Dee^{-1} * Deo * x_o
+    swatch.reset(); swatch.start();
+    invclov.apply(chi, tmp1, isign, 0);
+    swatch.stop();
+    clov_apply_time += swatch.getTimeInSeconds();
+    
+    //do Doo^{-1} * Doe * x_e
+    //invclov.apply(chi, tmp1, isign, 1);
+
+
+    END_CODE();
+
+  }
+
+  void
+  EvenOddPrecCloverLinOp::oddHoppingOp(LatticeFermion& chi,
+                                       const LatticeFermion& psi,
+                                       enum PlusMinus isign) const
+  {
+    START_CODE();
+    Real mhalf = -0.5;
+
+    //do Doe * x_e
+    D.apply(tmp1, psi, isign, 1);
+    tmp1[rb[1]] *= mhalf;
+
+    //do Doo^{-1} * Doe * x_e
+    swatch.reset(); swatch.start();
+    invclov.apply(chi, tmp1, isign, 1);
+    swatch.stop();
+    clov_apply_time += swatch.getTimeInSeconds();
+
+    END_CODE();
+  
+  }
   //! Apply even-odd preconditioned Clover fermion linear operator
   /*!
    * \param chi 	  Pseudofermion field     	       (Write)
@@ -171,7 +254,7 @@ namespace Chroma
     // Twisted Term?
     if( param.twisted_m_usedP ){ 
       // tmp1 = i mu gamma_5 tmp1
-      tmp1[rb[1]] = (Gamma(15) * timesI(psi));
+      tmp1[rb[1]] = (GammaConst<Ns,Ns*Ns-1>() * timesI(psi));
       
       if( isign == PLUS ) {
 	chi[rb[1]] += param.twisted_m * tmp1;

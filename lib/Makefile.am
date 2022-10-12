@@ -674,6 +674,8 @@ nobase_include_HEADERS += \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
 	meas/hadron/npr_vertex_w.h \
 	meas/hadron/greedy_coloring.h \
+        meas/hadron/interpolation.h \
+        meas/hadron/recursive_interpolation.h \
 	meas/smear/deriv_quark_displacement_w.h \
 	meas/smear/gamma_displacement_w.h \
         meas/schrfun/sfpcac_w.h \
@@ -888,6 +890,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_prob_defl_w.h \
 	meas/inline/hadron/inline_disco_prob_defl_superb_w.h \
+	meas/inline/hadron/inline_disco_recursive_fs_prob_multimass_superb_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
 	meas/inline/hadron/inline_disco_eigcg_w.h \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
@@ -1678,6 +1681,8 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/hadron/npr_vertex_w.cc \
 	meas/hadron/greedy_coloring.cc \
+        meas/hadron/interpolation.cc \
+        meas/hadron/recursive_interpolation.cc \
 	meas/pbp/mespbp_w.cc \
         meas/schrfun/sfpcac_w.cc \
         meas/schrfun/sfcorr_w.cc \
@@ -1814,6 +1819,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_prob_defl_w.cc \
 	meas/inline/hadron/inline_disco_prob_defl_superb_w.cc \
+	meas/inline/hadron/inline_disco_recursive_fs_prob_multimass_superb_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
 	meas/inline/hadron/inline_disco_eigcg_w.cc \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
