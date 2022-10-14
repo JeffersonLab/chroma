@@ -675,9 +675,10 @@ namespace Chroma
       //
       // Initialize fermion action
       //
+      SB::ChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u};
+
       std::istringstream  xml_s(params.param.prop.fermact.xml);
       XMLReader  fermacttop(xml_s);
-      QDPIO::cout << "FermAct = " << params.param.prop.fermact.id << std::endl;
 
       Handle< FermionAction<T,P,Q> >
 	      S_f(TheFermionActionFactory::Instance().createObject(params.param.prop.fermact.id,
@@ -686,8 +687,6 @@ namespace Chroma
 
       Handle< FermState<T,P,Q> > state(S_f->createState(u));
 
-      Handle< SystemSolver<LatticeFermion> > PP = S_f->qprop(state,
-							       params.param.prop.invParam);
       Handle< Projector<LatticeFermion> > proj = S_f->projector(state, params.param.projParam); 
 
       // Initialize the slow Fourier transform phases
@@ -715,19 +714,19 @@ namespace Chroma
         // collect dk pairs of vectors
         LatticeFermion vi_lambda, // = v[i]/(u[i]'*Dslash*v[i])
                        ui, vi;     // = u[i], v[i]
-	proj->V(k,vi);
+        proj->V(k,vi);
         DComplex lambda;
         proj->lambda(k, lambda);
         vi_lambda = vi / lambda;
-	proj->U(k,ui);
+        proj->U(k,ui);
 
-	std::vector<std::shared_ptr<LatticeFermion>> vi_lambda_sh(
-	  1, std::shared_ptr<LatticeFermion>(&vi_lambda, [](LatticeFermion*) {}));
-	std::vector<std::shared_ptr<LatticeFermion>> ui_sh(
-	  1, std::shared_ptr<LatticeFermion>(&ui, [](LatticeFermion*) {}));
-	do_disco(dbdet, vi_lambda_sh, ui_sh, ft,
-		 params.param.use_ferm_state_links ? state->getLinks() : u,
-		 params.param.max_path_length);
+        std::vector<std::shared_ptr<LatticeFermion>> vi_lambda_sh(
+          1, std::shared_ptr<LatticeFermion>(&vi_lambda, [](LatticeFermion*) {}));
+        std::vector<std::shared_ptr<LatticeFermion>> ui_sh(
+          1, std::shared_ptr<LatticeFermion>(&ui, [](LatticeFermion*) {}));
+        do_disco(dbdet, vi_lambda_sh, ui_sh, ft,
+        	 params.param.use_ferm_state_links ? state->getLinks() : u,
+        	 params.param.max_path_length);
       }
       swatch_det.stop();
       QDPIO::cout << "Projector contribution computed in time= " << swatch_det.getTimeInSeconds() << " secs" << std::endl;
@@ -776,8 +775,10 @@ namespace Chroma
             }
           }
 
-          (*PP)(v_psi, std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
-          proj->VUAObliqueProjector(v_q, std::vector<std::shared_ptr<const LatticeFermion>>(v_psi.begin(), v_psi.end()));
+	  SB::doInversion(
+	    PP, v_psi,
+	    std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
+	  proj->VUAObliqueProjector(v_q, std::vector<std::shared_ptr<const LatticeFermion>>(v_psi.begin(), v_psi.end()));
           for (int i=0; i<v_psi.size(); ++i)
             *v_q[i] = *v_psi[i] - *v_q[i]; // q <= (I - V*inv(U'*AV*)*U'*A)*quark_soln
 
