@@ -1,18 +1,18 @@
 /*! \file
- * \brief Compute the disconnected diagrams with 4D probing and Recursive Frequency Splitting
+ * \brief Compute the disconnected diagrams with 4D probing and Frequency Splitting
  * \Travis Whyte -> thwhyte@wm.edu so you know who to blame
  *
  * Propagator calculation on a colorstd::vector
  */
 
-#include "inline_disco_recursive_fs_prob_multimass_superb_w.h"
+#include "inline_disco_frequencysplitting_prob_multimass_superb_w.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "actions/ferm/linop/eoprec_clover_linop_w.h"
 #include "fermact.h"
 #include "meas/glue/mesplq.h"
 #include "meas/hadron/greedy_coloring.h"
-#include "meas/hadron/recursive_interpolation.h"
+#include "meas/hadron/interpolation.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/io/named_objmap.h"
 #include "meas/inline/make_xml_file.h"
@@ -32,12 +32,13 @@
 #include <cassert>
 #include <string>
 #include <complex>
+#include <iomanip>
 
-//using namespace RecInterp;
+//using namespace Interp;
 
 namespace Chroma 
 { 
-  namespace InlineDiscoRecFreqSplitProbMMSuperb 
+  namespace InlineDiscoFreqSplitProbMMSuperb 
   {
 
     typedef std::vector<std::shared_ptr<LatticeFermion>> X1dvector;
@@ -45,7 +46,7 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const std::string& path, InlineDiscoRecFreqSplitProbMMSuperb::Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineDiscoFreqSplitProbMMSuperb::Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -54,7 +55,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const std::string& path, const InlineDiscoRecFreqSplitProbMMSuperb::Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineDiscoFreqSplitProbMMSuperb::Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -65,7 +66,7 @@ namespace Chroma
     }
 
     //! Propagator input
-    void read(XMLReader& xml, const std::string& path, InlineDiscoRecFreqSplitProbMMSuperb::Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, InlineDiscoFreqSplitProbMMSuperb::Params::Param_t& param)
     {
       XMLReader inputtop(xml, path);
       
@@ -191,7 +192,7 @@ namespace Chroma
       if(inputtop.count("noise_vectors")!=0){
         read(inputtop,"noise_vectors",param.noise_vectors) ;
       } else {
-	param.noise_vectors.resize(2*param.shifts.size()-1);
+	param.noise_vectors.resize(param.shifts.size()+1);
 	for (int i = 0; i < param.noise_vectors.size(); i++){
         param.noise_vectors[i] = 1;
 	}
@@ -271,10 +272,11 @@ namespace Chroma
       if (inputtop.count("do_trace_est")!=0){
 	 read(inputtop,"do_trace_est",param.do_trace_est);
       }
+  
 
   }
     //! Propagator output
-    void write(XMLWriter& xml, const std::string& path, const InlineDiscoRecFreqSplitProbMMSuperb::Params::Param_t& param)
+    void write(XMLWriter& xml, const std::string& path, const InlineDiscoFreqSplitProbMMSuperb::Params::Param_t& param)
     {
       push(xml, path);
 
@@ -298,14 +300,14 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const std::string& path, InlineDiscoRecFreqSplitProbMMSuperb::Params& input)
+    void read(XMLReader& xml, const std::string& path, InlineDiscoFreqSplitProbMMSuperb::Params& input)
     {
-      InlineDiscoRecFreqSplitProbMMSuperb::Params tmp(xml, path);
+      InlineDiscoFreqSplitProbMMSuperb::Params tmp(xml, path);
       input = tmp;
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const std::string& path, const InlineDiscoRecFreqSplitProbMMSuperb::Params& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineDiscoFreqSplitProbMMSuperb::Params& input)
     {
       push(xml, path);
     
@@ -467,6 +469,247 @@ namespace Chroma
       return detox_aux<T>::get(e);
     }
 
+    struct Restart_t {
+
+      int level;
+      int noise;
+      //int prob_int;
+      int num_levels;
+      //QDP::Seed rng_seed;
+      std::vector<double> count = std::vector<double>(2);
+      std::vector<double> level_cost; //needs to be resized!!!
+      std::vector<double> shifts; //needs to be resized!!!
+      std::map<KeyOperator_t, ValOperator_t> db_trace;
+      std::map<KeyOperator_t, ValOperator_t> db_var;
+
+    };
+
+    void send_to_nodes(Restart_t restart)
+    {
+    QDPIO::cin >> restart.level;
+    QDPIO::cin >> restart.noise;
+    QDPIO::cin >> restart.num_levels;
+    QDPIO::cin >> restart.count[0];
+    QDPIO::cin >> restart.count[1];
+    for (int i = 0; i < restart.level_cost.size(); i++){
+	QDPIO::cin >> restart.level_cost[i];
+    }
+
+
+    }
+
+    void restart_seed_out(const std::string& filename, const QDP::Seed& rng_seed)
+    {
+
+    QDP::TextFileWriter out(filename);
+    out << rng_seed;
+    out.close();
+    
+    }
+
+    QDP::Seed restart_seed_in(const std::string& filename)
+    {
+    
+    QDP::TextFileReader in(filename);
+    QDP::Seed tmp;
+    in >> tmp;
+    in.close();
+    return tmp; 
+    }
+
+    void assign_KeyOperator(std::string& str, KeyOperator_t& keyop)
+    {
+
+      std::vector<std::string> out_string;
+      std::string delim = " ";
+      size_t pos = 0;
+      std::string substring;
+      while ((pos = str.find(delim)) != std::string::npos) {
+	    substring = str.substr(0, pos);
+	    out_string.push_back(substring);
+	    str.erase(0, pos+delim.length());
+      }
+      out_string.push_back(str);
+     
+      std::string key = "t_slice";
+      auto loc = std::find(out_string.begin(), out_string.end(), key);
+      keyop.t_slice = std::stoi(out_string[std::distance(out_string.begin(), loc)+2]);
+      key = "disp";
+      loc = std::find(out_string.begin(), out_string.end(), key);
+      key = "mom";
+      auto loc2 = std::find(out_string.begin(), out_string.end(), key);
+      std::vector<int> tmpdisp;
+      for (int i = std::distance(out_string.begin(), loc)+2; i <= std::distance(out_string.begin(), loc2)-2; i++){
+	  tmpdisp.push_back(std::stoi(out_string[i]));
+      }
+      keyop.disp.resize(tmpdisp.size());
+      for (int i = 0; i < keyop.disp.size(); i++){
+	  keyop.disp[i] = tmpdisp[i];
+      }
+      std::vector<int> tmpmom;
+      for (int i = std::distance(out_string.begin(), loc2)+2; i < out_string.size()-1; i++){
+	tmpmom.push_back(std::stoi(out_string[i]));
+      }
+      keyop.mom.resize(tmpmom.size());
+      for (int i = 0; i < keyop.mom.size(); i++){
+	keyop.mom[i] = tmpmom[i];
+      }
+    }
+
+    Restart_t checkpoint_in(const std::string& tracefile, const std::string& varfile, const int& max_path_length)
+
+    {
+    
+    const int Nt = Layout::lattSize()[3];
+    Restart_t restart;
+    std::string line_t;
+    std::string line_v;
+    std::ifstream file_trace;
+    file_trace.open(tracefile, std::ios::in);
+    std::ifstream file_var;
+    file_var.open(varfile, std::ios::in);
+    if (!file_trace.is_open()){
+       QDPIO::cout << "Could not open trace checkpoint file...aborting" << std::endl;
+       QDP_abort(1);
+    }
+    if (!file_var.is_open()){
+       QDPIO::cout << "Could not open variance checkpoint file...aborting" << std::endl;
+       QDP_abort(1);
+    }
+    getline(file_trace,line_t);
+    restart.level = stoi(line_t);
+    getline(file_trace,line_t);
+    restart.noise = stoi(line_t);
+    getline(file_trace,line_t);
+    restart.num_levels = stoi(line_t);
+    getline(file_trace,line_t);
+    restart.count[0] = stod(line_t);
+    getline(file_trace,line_t);
+    restart.count[1] = stod(line_t);
+    restart.level_cost.resize(restart.num_levels);
+    restart.shifts.resize(restart.num_levels);
+    for (int i = 0; i < restart.level_cost.size(); i++){
+	getline(file_trace,line_t);
+	restart.level_cost[i] = stod(line_t);
+    }
+    for (int i = 0; i < restart.shifts.size(); i++){
+	getline(file_trace,line_t);
+	restart.shifts[i] = stod(line_t);
+    }
+    QDPIO::cout << "Restart params read in successfully" << std::endl;
+    for (int i = 0; i < (2*max_path_length+1)*Nt; i++){
+	std::pair<KeyOperator_t, ValOperator_t> kv ;
+	std::pair<KeyOperator_t, ValOperator_t> kvv ;
+	getline(file_trace,line_t);
+	getline(file_var,line_v);
+	assign_KeyOperator(line_t, kv.first);
+	assign_KeyOperator(line_v, kvv.first);
+	getline(file_trace,line_t);
+	getline(file_var,line_v);
+        auto it = restart.db_trace.find(kv.first);
+        if (it == restart.db_trace.end()){ it = restart.db_trace.insert(kv).first; }
+        auto itv = restart.db_var.find(kvv.first);
+        if (itv == restart.db_var.end()) {itv = restart.db_var.insert(kvv).first;}
+
+	for (int g = 0; g < Ns * Ns; g++){
+	    getline(file_trace,line_t);
+	    getline(file_var,line_v);
+#ifdef QDP_IS_QDPJIT
+	    it->second.op[g].elem().elem().elem().real().elem() = stod(line_t);
+	    itv->second.op[g].elem().elem().elem().real().elem() = stod(line_v);
+	    getline(file_trace,line_t);
+	    getline(file_var,line_v);
+	    it->second.op[g].elem().elem().elem().imag().elem() = stod(line_t);
+	    itv->second.op[g].elem().elem().elem().imag().elem() = stod(line_v);
+#else
+	    it->second.op[g].elem().elem().elem().real() = stod(line_t);
+	    itv->second.op[g].elem().elem().elem().real() = stod(line_v);
+	    getline(file_trace,line_t);
+	    getline(file_var,line_v);
+	    it->second.op[g].elem().elem().elem().imag() = stod(line_t);
+	    itv->second.op[g].elem().elem().elem().imag() = stod(line_v);
+#endif
+	}
+	
+      }
+      QDPIO::cout << "Traces and variances read in successfully" << std::endl;
+
+    
+    
+
+
+    //} //nodelist
+
+    return restart;
+    } //func
+
+    void checkpoint_out(const int& level, const int& noise, const QDP::Seed& rng_seed,
+			const int& num_levels, const std::vector<double> level_cost,
+			const std::vector<double>& count, multi1d<Real>& shifts, std::map<KeyOperator_t, ValOperator_t>& db_trace,
+      			const std::map<KeyOperator_t, ValOperator_t>& db_var, const std::string& tracefile, const std::string& varfile)
+    {
+
+    int nodelist = Layout::nodeNumber();
+    //only master node writes to file
+    if (nodelist == 0){
+    int prec = 17; //for output to file
+    std::ofstream file_trace;
+    std::ofstream file_var;
+    file_trace.open(tracefile, std::ios::out);
+    file_var.open(varfile, std::ios::out);
+    if (file_trace.is_open() && file_var.is_open()){
+        file_trace << level << '\n';
+	file_trace << noise << '\n';
+	file_trace << num_levels << '\n';
+	for (auto i : count){ file_trace << i << '\n'; }
+	for (auto i : level_cost){ file_trace << i << '\n'; }
+	for (int i = 0; i < shifts.size(); i++) { file_trace << std::setprecision(std::numeric_limits<double>::max_digits10) << shifts[i] << std::endl; }
+	std::map< KeyOperator_t, ValOperator_t >::const_iterator itv = db_var.begin();
+	for (std::map< KeyOperator_t, ValOperator_t >::const_iterator it=db_trace.begin(); it != db_trace.end(); it++) {
+	    file_trace << it->first << '\n';
+	    file_var << itv->first << '\n';
+	    for (int g = 0; g < Ns * Ns; g++){
+		DComplex a;
+		DComplex b;
+#ifdef QDP_IS_QDPJIT
+		a.elem().elem().elem().real() = it->second.op[g].elem().elem().elem().real().elem();
+		a.elem().elem().elem().imag() = it->second.op[g].elem().elem().elem().imag().elem();
+		//file_trace << it->second.op[g].elem().elem().elem().real().elem() << '\n';
+		file_trace << std::fixed << std::setprecision(prec) << detox(a.elem().elem().elem().real())<< '\n';
+		//file_trace << it->second.op[g].elem().elem().elem().imag().elem() << '\n';
+		file_trace << std::fixed << std::setprecision(prec) << detox(a.elem().elem().elem().imag()) << '\n';
+		b.elem().elem().elem().real() = itv->second.op[g].elem().elem().elem().real().elem();
+		b.elem().elem().elem().imag() = itv->second.op[g].elem().elem().elem().imag().elem();
+		//file_var << itv->second.op[g].elem().elem().elem().real().elem() << '\n';
+		file_var << std::fixed << std::setprecision(prec) << detox(b.elem().elem().elem().real()) << '\n';
+		//file_var << itv->second.op[g].elem().elem().elem().imag().elem() << '\n';
+		file_var << std::fixed << std::setprecision(prec) << detox(b.elem().elem().elem().imag()) << '\n';
+		
+#else
+		a.elem().elem().elem().real() = it->second.op[g].elem().elem().elem().real();
+		a.elem().elem().elem().imag() = it->second.op[g].elem().elem().elem().imag();
+		file_trace << std::fixed << std::setprecision(prec) << detox(a.elem().elem().elem().real()) << '\n';
+		file_trace << std::fixed << std::setprecision(prec) << detox(a.elem().elem().elem().imag()) << '\n';
+		//file_trace << it->second.op[g].elem().elem().elem().real() << '\n';
+		//file_trace << it->second.op[g].elem().elem().elem().imag() << '\n';
+		b.elem().elem().elem().real() = itv->second.op[g].elem().elem().elem().real();
+		b.elem().elem().elem().imag() = itv->second.op[g].elem().elem().elem().imag();
+		//file_var << itv->second.op[g].elem().elem().elem().real() << '\n';
+		//file_var << itv->second.op[g].elem().elem().elem().imag() << '\n';
+		file_var << std::fixed << std::setprecision(prec) << detox(b.elem().elem().elem().real()) << '\n';
+		file_var << std::fixed << std::setprecision(prec) << detox(b.elem().elem().elem().imag()) << '\n';
+#endif
+	    } //g
+	    itv++;
+	} //it
+
+    } //is_open
+    file_trace.close();
+    file_var.close();
+    } //node
+
+    } //func
+
     void do_disco(std::map<KeyOperator_t, ValOperator_t>& db,
 		  const std::vector<std::shared_ptr<LatticeFermion>>& qbar,
 		  const std::vector<std::shared_ptr<LatticeFermion>>& q, const SftMom& p,
@@ -476,6 +719,7 @@ namespace Chroma
       const int Nt = Layout::lattSize()[3];
       const int a = qbar.size();
       assert(qbar.size() == q.size());
+
       // Copy q and qbar to tensor forms
       std::string q_order = "cxyzXnSst*";
       SB::Tensor<Nd + 6, SB::Complex> qt(
@@ -1105,7 +1349,7 @@ namespace Chroma
         kv.second.resize(it->second.op.size());
         for(int i(0);i<it->second.op.size();i++) {
           DComplex a = it->second.op[i] / num_noise - itmean->second.op[i] * conj(itmean->second.op[i]) / num_noise / num_noise;
-          kv.second[i] = a.elem().elem().elem().real() / hadamard_normalization / hadamard_normalization;
+          kv.second[i] = detox(a.elem().elem().elem().real()) / hadamard_normalization / hadamard_normalization;
         }
         std::pair<std::map< KeyOperator_t, std::vector<double> >::iterator, bool> itbo = dbvar_avg.insert(kv);
         if(itbo.second ){
@@ -1117,7 +1361,7 @@ namespace Chroma
         }
     
 
-        for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag())) / hadamard_normalization / num_noise;
+        for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(detox(itmean->second.op[i].elem().elem().elem().real()), detox(itmean->second.op[i].elem().elem().elem().imag()))) / hadamard_normalization / num_noise;
         itbo = dbmean_avg.insert(kv);
         if(!itbo.second){
           for(int i(0);i<it->second.op.size();i++) itbo.first->second[i] += kv.second[i];
@@ -1126,7 +1370,7 @@ namespace Chroma
 
         itmean = dbdet.find(it->first);
         if (itmean != dbdet.cend()) {
-          for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(itmean->second.op[i].elem().elem().elem().real(), itmean->second.op[i].elem().elem().elem().imag()));
+          for(int i(0);i<it->second.op.size();i++) kv.second[i] = abs(std::complex<double>(detox(itmean->second.op[i].elem().elem().elem().real()), detox(itmean->second.op[i].elem().elem().elem().imag())));
         } else {
           for(int i(0);i<it->second.op.size();i++) kv.second[i] = 0.0;
         }
@@ -1161,9 +1405,71 @@ namespace Chroma
 
       }
 
+    void modifySubspaceId(std::string& xml_str, std::string& modifier)
+    {
+      //tags for mgproto/qop_mg
+      std::string open_tag = "<SubspaceId>";
+      std::string close_tag = "</SubspaceId>";
+      auto o_pos = xml_str.find(open_tag);
+      auto c_pos = xml_str.find(close_tag);
+      if(o_pos == std::string::npos){
+	//if met, then either QUDA MG or no MG
+	open_tag = "<SubspaceID>";
+	close_tag = "</SubspaceID>";
+	auto o_pos = xml_str.find(open_tag);
+	auto c_pos = xml_str.find(close_tag);
+	if(o_pos == std::string::npos){
+	    return;
+	}else{
+	    int id_size = c_pos - (o_pos + open_tag.size());
+	    std::string new_id = xml_str.substr(o_pos+open_tag.size(), id_size);
+	    new_id.append(modifier);
+	    xml_str.replace(o_pos+open_tag.size(), id_size, new_id);
+	}
+      }else{
+      int id_size = c_pos - (o_pos + open_tag.size());
+      std::string new_id = xml_str.substr(o_pos+open_tag.size(), id_size);
+      new_id.append(modifier);
+      xml_str.replace(o_pos+open_tag.size(), id_size, new_id);
+      }
+    } 
+
+    std::string retrieveSubspaceId(std::string& xml_str)
+    {
+
+      std::string id = "foo";
+      //tags for mgproto/qop_mg
+      std::string open_tag = "<SubspaceId>";
+      std::string close_tag = "</SubspaceId>";
+      auto o_pos = xml_str.find(open_tag);
+      auto c_pos = xml_str.find(close_tag);
+      if(o_pos == std::string::npos){
+	  //either not using MG at all or using QUDA MG
+	  //Idk why but the xml tags are different
+	  //Below are tags for QUDA MG subspaces
+	  //At this point, I am assuming that there are no other MG that
+	  //are currently in production use
+	  open_tag = "<SubspaceID>";
+	  close_tag = "</SubspaceID>";
+	  auto o_pos = xml_str.find(open_tag);
+	  auto c_pos = xml_str.find(close_tag);
+	  if(o_pos == std::string::npos){
+	    return id;
+	  }else{
+            int id_size = c_pos - (o_pos + open_tag.size());
+	    id = xml_str.substr(o_pos+open_tag.size(), id_size);
+	  }
+        //return id;
+      }else{
+      int id_size = c_pos - (o_pos + open_tag.size());
+      id = xml_str.substr(o_pos+open_tag.size(), id_size);
+      }
+      return id;
+    }
+
 
     void exactHPE(std::map< KeyOperator_t, ValOperator_t >& db, 
-		  const InlineDiscoRecFreqSplitProbMMSuperb::Params::Param_t& param,
+		  const InlineDiscoFreqSplitProbMMSuperb::Params::Param_t& param,
 		  const multi1d<LatticeColorMatrix>& u)
     {
 
@@ -1275,7 +1581,7 @@ namespace Chroma
     } //end of exact hpe
 
     void exactHPE2(std::map< KeyOperator_t, ValOperator_t >& db,
-                  const InlineDiscoRecFreqSplitProbMMSuperb::Params::Param_t& param,
+                  const InlineDiscoFreqSplitProbMMSuperb::Params::Param_t& param,
                   const multi1d<LatticeColorMatrix>& u)
     {
 
@@ -1408,7 +1714,7 @@ namespace Chroma
 
   } //end of func
 
-    std::vector<RecInterp::MinCosts_t> getOptimalShifts(SB::ShiftedChimeraSolver& PP, InlineDiscoRecFreqSplitProbMMSuperb::Params::Param_t& param, const multi1d<LatticeColorMatrix>& u)
+    std::vector<Interp::MinCosts_t> getOptimalShifts(SB::ShiftedChimeraSolver& PP, InlineDiscoFreqSplitProbMMSuperb::Params::Param_t& param, const multi1d<LatticeColorMatrix>& u)
     {
 
       typedef LatticeFermion               T;
@@ -1470,8 +1776,8 @@ namespace Chroma
     QDPIO::cout << "num colors " << Nsrc << std::endl;
     QDPIO::cout << "Optimizing z Displacement  = " << param.disp_gamma[0] << " and Gamma = " << param.disp_gamma[1] << std::endl;
     //set to the original mass
-    //modifyMass(param.prop.fermact.xml, tmpmass, param.shifts[0]);
-    //modifyMass(param.prop.invParam.xml, tmpmass, param.shifts[0]);
+    modifyMass(param.prop.fermact.xml, tmpmass, param.shifts[0]);
+    modifyMass(param.prop.invParam.xml, tmpmass, param.shifts[0]);
     std::istringstream xml_s(param.prop.fermact.xml);
     XMLReader fermacttop(xml_s);
     
@@ -1484,19 +1790,18 @@ namespace Chroma
 
      //Handle< SystemSolver<LatticeFermion> > PP = S_f->qprop(state,
 //							      param.prop.invParam);	
-
-      //Set up the solver
-      //SB::ShiftedChimeraSolver PP{param.prop.fermact, param.prop.invParam, u}; 
+      //SB::ShiftedChimeraSolver PP{param.prop.fermact, param.prop.invParam, u};
+      //have to calculate the test shifts or have them provided...
+    
 
       Complex NOne;
       Real a;
       a = -1.0;
       NOne = cmplx(a,0.0);
 
-      RecInterp::CostHolder_t costs;
+      Interp::CostHolder_t costs;
       costs.r_variances.resize(param.num_shifts);
-      costs.rrs_variances.resize(param.num_shifts, std::vector<double>(param.num_shifts));
-      costs.rr_variances.resize(param.num_shifts, std::vector<double>(param.num_shifts));
+      costs.rs_variances.resize(param.num_shifts, std::vector<double>(param.num_shifts));
       costs.level_costs.resize(param.num_shifts); 
       costs.shifts.resize(param.num_shifts);
       QDPIO::cout << "Shifts used to estimate the variance are : " << std::endl;
@@ -1505,20 +1810,75 @@ namespace Chroma
       QDPIO::cout << costs.shifts[i] << std::endl;
       }   
 
-      MatMap dbrrs_mean(param.num_shifts, VecMap(param.num_shifts));
-      MatMap dbrrs_var(param.num_shifts, VecMap(param.num_shifts));
-      MatMap dbrr_mean(param.num_shifts, VecMap(param.num_shifts));
-      MatMap dbrr_var(param.num_shifts, VecMap(param.num_shifts));
+      MatMap dbrs_mean(param.num_shifts, VecMap(param.num_shifts));;
+      MatMap dbrs_var(param.num_shifts, VecMap(param.num_shifts));;
       VecMap dbr_mean(param.num_shifts);
       VecMap dbr_var(param.num_shifts);
 
-      std::vector<RecInterp::MinCosts_t> mincosts;
+      std::vector<Interp::MinCosts_t> mincosts;
+      int pos;
       std::vector<double> level_sum;
       level_sum.resize(param.num_shifts);
+      std::vector<double> count(2); //for checkpoint
+      //int level = 0; //for checkpoint
+
+      //Restart_t restart;
+      //QDP::Seed rng_seed;
+      //QDP::RNG::savern(rng_seed);
+      //std::string seed_file = "current_seed_" + param.mass_label + "_" + param.probing_file;
+      /*if (param.interp_restart && param.use_interpolation){
+        for (int i = 0; i < param.num_shifts; i++){
+	for (int j = i; j < param.num_shifts; j++){
+
+	//this does all the product terms
+        std::string filename_traces = "interp_traces_shifts_" + std::to_string(i) + std::to_string(j) + "_" + param.mass_label + "_" + param.probing_file;
+        std::string filename_vars = "interp_variances_shifts_" + std::to_string(i) + std::to_string(j) + "_" + param.mass_label + "_" + param.probing_file;
+        std::ifstream file_t;
+        std::ifstream file_v;
+        file_t.open(filename_traces, std::ios::in);
+        file_v.open(filename_vars, std::ios::in);
+        if (file_t && file_v){
+        QDPIO::cout << "Trace and Variance checkpoint files exist. Reading in the values." << std::endl;
+        file_t.close();
+        file_v.close();
+        restart = checkpoint_in(filename_traces, filename_vars, param.max_path_length);
+        dbrs_mean[i][j] = restart.db_trace;
+        dbrs_var[i][j] = restart.db_var;
+        level_sum = restart.level_cost;
+        } //file
+	} //j
+	
+	//this does the single terms
+	std::string filename_traces = "interp_traces_shifts_" + std::to_string(i) + "_" + param.mass_label + "_" + param.probing_file;
+        std::string filename_vars = "interp_variances_shifts_" + std::to_string(i) + "_" + param.mass_label + "_" + param.probing_file;
+        std::ifstream file_t;
+        std::ifstream file_v;
+        file_t.open(filename_traces, std::ios::in);
+        file_v.open(filename_vars, std::ios::in);
+        if (file_t && file_v){
+        QDPIO::cout << "Trace and Variance checkpoint files exist. Reading in the values." << std::endl;
+        file_t.close();
+        file_v.close();
+        restart = checkpoint_in(filename_traces, filename_vars, param.max_path_length);
+        dbr_mean[i] = restart.db_trace;
+        dbr_var[i] = restart.db_var;
+	level_sum = restart.level_cost;
+	}//file
+        } //i
+        rng_seed = restart_seed_in(seed_file);
+        QDP::RNG::setrn(rng_seed);
+        QDPIO::cout << "Seed " << rng_seed << " has been set" << std::endl;
+      }else{
+        restart.level = 0;
+        restart.noise = 0;
+      } */
+
+
 
       for (int noise = 0; noise < param.num_samples; noise++){
-	  MatMap dbrrs(param.num_shifts, VecMap(param.num_shifts));
-	  MatMap dbrr(param.num_shifts, VecMap(param.num_shifts));
+      //int noise;
+      //for ( param.interp_restart ? noise = restart.noise+1 : noise = 0; noise < param.num_samples; noise++){ 
+	  MatMap dbrs(param.num_shifts, VecMap(param.num_shifts));;
 	  VecMap dbr(param.num_shifts);
 
 	  QDPIO::cout << " Doing noise vector " << noise  << std::endl;
@@ -1538,11 +1898,10 @@ namespace Chroma
 	     X1dvector v_chi(Ns * Nc * dk);
 	     for (int col=0; col<v_chi.size(); col++) v_chi[col].reset(new LatticeFermion);
 	     X2dmatrix v_psi(param.num_shifts, X1dvector(Ns * Nc * dk));
-	     X2dmatrix v_psi2(param.num_shifts, X1dvector(Ns * Nc * dk));
+
 	     for (int row = 0; row < param.num_shifts; row++){
 		 for (int col = 0; col < v_psi[row].size(); col++){
 		     v_psi[row][col].reset(new LatticeFermion);
-		     v_psi2[row][col].reset(new LatticeFermion);
 		  }
 	
 	     }
@@ -1561,48 +1920,41 @@ namespace Chroma
                 *v_chi[i_v * Ns * Nc + color_source * Ns + spin_source]  = zero;
                 CvToFerm(vec_srce, *v_chi[i_v * Ns * Nc + color_source * Ns + spin_source], spin_source);
 		for (int row=0; row < param.num_shifts; row++) *v_psi[row][i_v * Ns * Nc + color_source * Ns + spin_source]  = zero;
-		for (int row=0; row < param.num_shifts; row++) *v_psi2[row][i_v * Ns * Nc + color_source * Ns + spin_source]  = zero;	      
 	      }
 	    }
 	  }
-	  
+
 	  for (int m1 = 0; m1 < param.num_shifts; m1++){
 	      QDPIO::cout << "Solving for shift number " << m1 << " while generating the variances " <<  std::endl;
-	      /*modifyMass(param.prop.fermact.xml, tmpmass, param.shifts[m1]);
-	      modifyMass(param.prop.invParam.xml, tmpmass, param.shifts[m1]);
-	      std::istringstream xml_r(param.prop.fermact.xml);
-	      XMLReader fermacttop(xml_r);
-              Handle< FermionAction<T,P,Q> > S_r(TheFermionActionFactory::Instance().createObject(param.prop.fermact.id,
-                                                               fermacttop,
-                                                               param.prop.fermact.path));
+	      //modifyMass(param.prop.fermact.xml, tmpmass, param.shifts[m1]);
+	      //modifyMass(param.prop.invParam.xml, tmpmass, param.shifts[m1]);
+	      //std::istringstream xml_r(param.prop.fermact.xml);
+	      //XMLReader fermacttop(xml_r);
+              //Handle< FermionAction<T,P,Q> > S_r(TheFermionActionFactory::Instance().createObject(param.prop.fermact.id,
+              //                                                 fermacttop,
+              //                                                 param.prop.fermact.path));
 
-	      Handle< FermState<T,P,Q> > state_r(S_r->createState(u));
+	      //Handle< FermState<T,P,Q> > state_r(S_r->createState(u));
 
-	      Handle< SystemSolver<LatticeFermion> > PP = S_r->qprop(state_r, param.prop.invParam);
-	      std::vector<SystemSolverResults_t> res = (*PP)(v_psi[m1], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
-	      */
-
-	      //new way with mgproton
-	      //create the solver
-	      //SB::ShiftedChimeraSolver PP{param.prop.fermact, param.prop.invParam, u, tmpmass+param.shifts[m1]};
+	      //Handle< SystemSolver<LatticeFermion> > PP = S_r->qprop(state_r, param.prop.invParam);
+	      //std::vector<SystemSolverResults_t> res = (*PP)(v_psi[m1], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
 	      PP.shiftSolver(tmpmass+param.shifts[m1]);
 	      StopWatch solve_time;
-	      //do the solve
 	      solve_time.start();
-	      //SB::Tensor<Nd + 4, SB::Complex> quark_solns = SB::doInversion<SB::Complex, SB::Complex>(PP, v_chi, "cxyzXnst");
 	      SB::doInversion(PP, v_psi[m1], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
 	      solve_time.stop();
 	      level_sum[m1] += solve_time.getTimeInSeconds();
+		//  for (int t = 0; t < res.size(); t++){
+		 //     level_sum[m1] += 1.0 * res[t].n_count;
+		 // }
 
-	      //res = (*PP)(v_psi2[m1], std::vector<std::shared_ptr<const LatticeFermion>>(v_psi[m1].begin(), v_psi[m1].end()));
-	      //SB::Tensor<Nd + 4, SB::Complex> quark_solns2 = SB::doInversion<SB::Complex, SB::Complex>(PP, quark_solns, "cxyzXnst");
-	      SB::doInversion(PP, v_psi2[m1], std::vector<std::shared_ptr<const LatticeFermion>>(v_psi[m1].begin(), v_psi[m1].end()));
+
 
 	   }
 
 
 	   //now do all the dot products, first does just the (D+sI)^{-1} terms
-	   QDPIO::cout << "Entering dot products for single inverse terms" << std::endl;
+	   QDPIO::cout << "Entering dot products for product and single terms" << std::endl;
 	   StopWatch swatch_dots;
        swatch_dots.start();
 	   int clov_tracker = 0;
@@ -1629,26 +1981,11 @@ namespace Chroma
 	    }else{ //do_hpe	 
 		   do_disco(dbr[m1], v_chi, v_psi[m1], ft, param.use_ferm_state_links ? state->getLinks() : u, param.max_path_length);
 	    } //do_hpe
-
-	    QDPIO::cout << "Entering dot products for double inverse terms" << std::endl;
-	    std::vector<std::shared_ptr<LatticeFermion>> v_eta(Ns * Nc * dk);
-	    for (int col = 0; col < v_eta.size(); col++){v_eta[col].reset(new LatticeFermion);}
-	    for (int idk = 0; idk < dk; idk++){
-                    for (int col = 0; col < Nc * Ns; col++){
-                      if (col == 2 || col == 3 || col == 6 || col == 7 || col == 10 || col == 11){
-                         *v_eta[idk * Nc * Ns + col] = NOne * (Gamma(15) * *v_psi[m1][idk * Nc * Ns + col]);
-                      }else{
-                         *v_eta[idk * Nc * Ns + col] =  (Gamma(15) * *v_psi[m1][idk * Nc * Ns + col]);
-                     }
-		  } //col
-	    } //idk
-	    do_disco(dbrr[0][m1], v_eta, v_psi[m1], ft, param.use_ferm_state_links ? state->getLinks() : u, param.max_path_length);
-	    
 		    
 	    //now do all the dot products for the product combinations
 	    //changing things up in the interpolation
 	    //now need the terms with out the shift difference in front
-	      QDPIO::cout << "Entering dot products for triple inverse terms" << std::endl;
+
 	      for (int m2 = m1; m2 < param.num_shifts; m2++){
 		  assert(v_psi[m1].size() == v_psi[m2].size());
 		  std::vector<std::shared_ptr<LatticeFermion>> v_eta(Nc * Ns * dk);
@@ -1657,13 +1994,13 @@ namespace Chroma
 		  for (int idk = 0; idk < dk; idk++){
 		    for (int col = 0; col < Nc * Ns; col++){
 		      if (col == 2 || col == 3 || col == 6 || col == 7 || col == 10 || col == 11){
-			 *v_eta[idk * Nc * Ns + col] = NOne * (Gamma(15) * *v_psi2[m2][idk * Nc * Ns + col]);
+			 *v_eta[idk * Nc * Ns + col] = NOne * (Gamma(15) * *v_psi[m1][idk * Nc * Ns + col]);
 		      }else{
-			 *v_eta[idk * Nc * Ns + col] =  (Gamma(15) * *v_psi2[m2][idk * Nc * Ns + col]); 
+			 *v_eta[idk * Nc * Ns + col] =  (Gamma(15) * *v_psi[m1][idk * Nc * Ns + col]); 
 		     }
 		} //col
 	      } //idk
-		  do_disco(dbrrs[m1][m2], v_eta, v_psi[m1], ft, param.use_ferm_state_links ? state->getLinks() : u, param.max_path_length);
+		  do_disco(dbrs[m1][m2], v_eta, v_psi[m2], ft, param.use_ferm_state_links ? state->getLinks() : u, param.max_path_length);
 	    } //m2   
 
 	    } // m1
@@ -1676,15 +2013,18 @@ namespace Chroma
 	QDPIO::cout << "Updating the dbs " << std::endl;
         for (int m1 = 0; m1 < param.num_shifts; m1++){
 	    for (int m2 = m1; m2 < param.num_shifts; m2++){
-	    do_update(dbrrs_mean[m1][m2], dbrrs_var[m1][m2], dbrrs[m1][m2], noise == 0);
+	    do_update(dbrs_mean[m1][m2], dbrs_var[m1][m2], dbrs[m1][m2], noise == 0);
+	    //std::string filename_traces = "interp_traces_shifts_" + std::to_string(m1) + std::to_string(m2) + "_" + param.mass_label + "_" + param.probing_file;
+	    //std::string filename_vars = "interp_variances_shifts_" + std::to_string(m1) + std::to_string(m2) + "_" + param.mass_label + "_" + param.probing_file;
+	    //checkpoint_out(level, noise, rng_seed, param.num_shifts, level_sum, count, param.shifts, dbrs_mean[m1][m2], dbrs_var[m1][m2], filename_traces, filename_vars);
 	    }
-	    QDPIO::cout << "Updated the triple products" << std::endl;
 	    do_update(dbr_mean[m1], dbr_var[m1], dbr[m1], noise == 0);
-	    QDPIO::cout << "Updated the single term" << std::endl;	  
-
-	    do_update(dbrr_mean[0][m1], dbrr_var[0][m1], dbrr[0][m1], noise == 0);
-	    QDPIO::cout << "Updated the double products" << std::endl;
+	    //std::string filename_traces = "interp_traces_shifts_" + std::to_string(m1) + "_" + param.mass_label + "_" + param.probing_file;
+	    //std::string filename_vars = "interp_variances_shifts_" + std::to_string(m1) + "_" + param.mass_label + "_" + param.probing_file;
+	    //checkpoint_out(level, noise, rng_seed, param.num_shifts, level_sum, count, param.shifts, dbr_mean[m1], dbr_var[m1], filename_traces, filename_vars);
 	}
+        //QDP::RNG::savern(rng_seed);
+        //restart_seed_out(seed_file, rng_seed);
 
 
 	//need to divide the costs by the current number of noise vectors to get one sample variance
@@ -1695,24 +2035,22 @@ namespace Chroma
 	for (int k = 0; k < param.max_path_length+1; ++k){
         QDPIO::cout << "Retrieving product and single variances for displacement " << k << " and Gamma " << param.disp_gamma[1] <<  std::endl;
         //costs.rs_variances = retrieve_variances(dbrs_mean, dbrs_var, 1, noise+1, param.num_shifts, param.gamma_disp[0], param.gamma_disp[1]);
-        costs.rrs_variances = retrieve_variances(dbrrs_mean, dbrrs_var, 1, noise+1, param.num_shifts, k, param.disp_gamma[1]);
+        costs.rs_variances = retrieve_variances(dbrs_mean, dbrs_var, 1, noise+1, param.num_shifts, k, param.disp_gamma[1]);
         //costs.r_variances = retrieve_variances(dbr_mean, dbr_var, 1, noise+1, param.num_shifts, param.gamma_disp[0], param.gamma_disp[1]);
-        costs.rr_variances = retrieve_variances(dbrr_mean, dbrr_var, 1, noise+1, param.num_shifts, k, param.disp_gamma[1]);
-	costs.r_variances = retrieve_variances(dbr_mean, dbr_var, 1, noise+1, param.num_shifts, k, param.disp_gamma[1]);
+        costs.r_variances = retrieve_variances(dbr_mean, dbr_var, 1, noise+1, param.num_shifts, k, param.disp_gamma[1]);
 
 
 	//make sure all nodes get the same data
 	   for (int i = 0; i < costs.r_variances.size(); i++){
 	       QDPIO::cin >> costs.r_variances[i];
-	       for (int j = 0; j < costs.rrs_variances[i].size(); j++){
-	       QDPIO::cin >> costs.rrs_variances[i][j];
-	       QDPIO::cin >> costs.rr_variances[i][j];
+	       for (int j = 0; j < costs.rs_variances[i].size(); j++){
+	       QDPIO::cin >> costs.rs_variances[i][j];
 	       }
 	    }
 
 	//here is the call for interpolation
 	if (noise > 0){
-	mincosts = RecInterp::getMinShifts(costs, param.del_s, param.num_bcshifts, param.use_mg, k, param.disp_gamma[1]);
+	mincosts = Interp::getMinShifts(costs, param.del_s, param.num_bcshifts, param.use_mg, k, param.disp_gamma[1]);
 	//QDPIO::cout << "Cost for regular calculation of Disp = " << param.gamma_disp[0] << ", Gamma = " << param.gamma_disp[1] << "for noise vector " << noise << " is : " << mincosts[0].reg_costs << std::endl;
 	QDPIO::cout << "Cost for regular calculation of Disp = " << k  << ", Gamma = " << param.disp_gamma[1] << "for noise vector " << noise << " is : " << mincosts[0].reg_costs << std::endl;
 	}
@@ -1745,7 +2083,7 @@ namespace Chroma
       bool registered = false;
     }
       
-    const std::string name = "DISCO_REC_FREQUENCY_SPLITTING_PROB_MM_SUPERB";
+    const std::string name = "DISCO_FREQUENCY_SPLITTING_PROB_MM_SUPERB";
 
     //! Register all the factories
     bool registerAll() 
@@ -1873,6 +2211,9 @@ namespace Chroma
       pop(xml_out);
 
 
+        //QDP::Seed rng_seed;
+        //QDP::RNG::savern(rng_seed);
+        //QDPIO::cout << "The seed before setup is  " << rng_seed << std::endl;
 
       // Calculate some gauge invariant observables just for info.
       MesPlq(xml_out, "Observables", u);
@@ -1881,6 +2222,7 @@ namespace Chroma
 
       //get the initial mass before anything!!
       Real m_qi = getMass(params.param.prop.fermact);
+      //int nodelist = Layout::nodeNumber();
 
 
           modifyMass(params.param.prop.fermact.xml, m_qi, params.param.shifts[0]);
@@ -1891,11 +2233,11 @@ namespace Chroma
                                                                fermactr,
                                                                params.param.prop.fermact.path));
           Handle< FermState<T,P,Q> > state(S_s->createState(u));
-      //Handle< SystemSolver<LatticeFermion> > PP = S_s->qprop(state, params.param.prop.invParam);
-      //set up the solver
-      SB::ShiftedChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u};
+	  //Handle< SystemSolver<LatticeFermion> > PP = S_s->qprop(state, params.param.prop.invParam);
+	  SB::ShiftedChimeraSolver PP{params.param.prop.fermact, params.param.prop.fermact, u};
 
-      std::vector<RecInterp::MinCosts_t> mincosts;
+
+      std::vector<Interp::MinCosts_t> mincosts;
       if(params.param.use_interpolation){
       mincosts = getOptimalShifts(PP, params.param, u);
       
@@ -1955,12 +2297,12 @@ namespace Chroma
 
 	  
       //reset the mass
-      //modifyMass(params.param.prop.fermact.xml, m_qi, params.param.shifts[0]);
+      modifyMass(params.param.prop.fermact.xml, m_qi, params.param.shifts[0]);
       Complex NOne;
       Real a;
       a = -1.0;
       NOne = cmplx(a,0.0);
-      int num_levels = 2*params.param.shifts.size()-1;
+      int num_levels = params.param.shifts.size();
       QDPIO::cout << "Number of levels is " << num_levels << std::endl;
       int level_switch;
 
@@ -1968,6 +2310,7 @@ namespace Chroma
       dbs.levels_var.resize(num_levels);
       dbs.levels_avg.resize(num_levels);
       std::vector<double> cl(num_levels);
+      //std::vector<double> cl;
 
           //modifyMass(params.param.prop.fermact.xml, m_qi, params.param.shifts[0]);
           //modifyMass(params.param.prop.invParam.xml, m_qi, params.param.shifts[0]);
@@ -1977,9 +2320,61 @@ namespace Chroma
           //                                                     fermactr,
           //                                                     params.param.prop.fermact.path));
           //Handle< FermState<T,P,Q> > state(S_s->createState(u));
-      //Handle< SystemSolver<LatticeFermion> > PP = S_s->qprop(state, params.param.prop.invParam);
-      //set up the solver
-      //SB::ShiftedChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u};
+	  //Handle< SystemSolver<LatticeFermion> > PP = S_s->qprop(state, params.param.prop.invParam);
+	  //SB::ShiftedChimeraSolver PP{params.param.prop.fermact, params.param.prop.fermact, u};
+
+
+      //will never be above 7 (for now) so I am ok with this for the time being
+      //int max_num_levels = 7;
+
+      //if using a checkpoint, this block will be used
+      //this whole thing needs to be redone, but it works....
+      /*Restart_t restart;
+      QDP::Seed rng_seed;
+      QDP::RNG::savern(rng_seed);
+      std::string seed_file = "current_seed_" + params.param.mass_label + "_" + params.param.probing_file;
+      if (params.param.trace_restart){
+	for (int i = 0; i < max_num_levels; i++){
+	std::string filename_traces = "traces_level_" + std::to_string(i) + "_" + params.param.mass_label + "_" + params.param.probing_file;
+	std::string filename_vars = "variances_level_" + std::to_string(i) + "_" + params.param.mass_label + "_" + params.param.probing_file;
+	std::ifstream file_t;
+	std::ifstream file_v;
+	file_t.open(filename_traces, std::ios::in);
+	file_v.open(filename_vars, std::ios::in);
+	if (file_t && file_v){
+	QDPIO::cout << "Trace and Variance checkpoint files exist. Reading in the values." << std::endl;
+	file_t.close();
+	file_v.close();
+	restart = checkpoint_in(filename_traces, filename_vars, params.param.max_path_length);
+  
+	//dbs.levels_avg[i] = restart.db_trace;
+	//dbs.levels_var[i] = restart.db_var;
+	dbs.levels_avg.push_back(restart.db_trace);
+	dbs.levels_var.push_back(restart.db_var);
+
+	//show_stats(dbs.levels_avg[i], dbs.levels_var[i], dbdet, 1, restart.noise+1, restart.level);
+	cl = restart.level_cost;
+	} //file
+	} //i
+	rng_seed = restart_seed_in(seed_file);
+	num_levels = restart.num_levels;
+	params.param.shifts.resize(num_levels);
+	std::map<KeyOperator_t, ValOperator_t> db;
+	for (int i = restart.level+1; i < restart.num_levels; i++){
+	    dbs.levels_var.push_back(db);
+	    dbs.levels_avg.push_back(db);
+	}
+	for (int i = 0; i < num_levels; i++){ params.param.shifts[i].elem() = restart.shifts[i]; }
+	QDP::RNG::setrn(rng_seed);
+	QDPIO::cout << "Seed " << rng_seed << " has been set" << std::endl;
+      }else{
+	restart.level = 0;
+	restart.noise = 0;
+	num_levels = params.param.shifts.size();
+	cl.resize(num_levels);
+	dbs.levels_var.resize(num_levels);
+	dbs.levels_avg.resize(num_levels);
+      } */
 
       //do the exact part of the HPE
       std::map< KeyOperator_t, ValOperator_t > dbdet;
@@ -2011,24 +2406,35 @@ namespace Chroma
 
 
 
-      for (int level = 0; level < num_levels; level++) {
-
-	//controls the shifts to use at each level 	
-	if  ((level % 2 == 0) && (level != num_levels-1)) {
-	    level_switch = level/2;
-	}else if ( (level % 2 == 0) && (level == num_levels-1)) {
-	    level_switch = level/2 - 1;
+      //for (int level = restart.level; level < num_levels; level++){
+      for (int level = 0; level < num_levels; level++){
+	
+	if (level < num_levels-1){
+	    level_switch = level;
+	}else{
+	    level_switch = level - 1;
 	}
 	QDPIO::cout << "On level : " << level << std::endl;
+	//std::string filename_traces = "traces_level_" + std::to_string(level) + "_" + params.param.mass_label + "_" + params.param.probing_file;
+	//std::string filename_vars = "variances_level_" + std::to_string(level) + "_" + params.param.mass_label + "_" + params.param.probing_file;
 	QDPIO::cout << "Computing with shifts " << params.param.shifts[level_switch] << " and " << params.param.shifts[level_switch+1] << std::endl;
 
 	double count_r = 0.0;
 	double count_s = 0.0;
 	std::vector<double> count(2);
-	for (int noise = 0; noise < params.param.noise_vectors[level]; noise++) {
+	//if (params.param.trace_restart && level == restart.level){
+	 //  count = restart.count;
+	//}
+	//count.resize(2);
+	
+	//int noise;
+	//for (int noise = restart.noise ; noise < params.param.noise_vectors[level]; noise++) {
+	//for ( (params.param.trace_restart && (level == restart.level)) ?  noise = restart.noise+1 :  noise = 0 ; noise < params.param.noise_vectors[level]; noise++) {
+	for (int noise = 0; noise < params.param.noise_vectors[level]; noise++){
 	std::map< KeyOperator_t, ValOperator_t > db;
         // doing a new noise vector
         QDPIO::cout << " Doing noise vector " << noise  << std::endl; 
+        //QDPIO::cout << "The seed is " << rng_seed << " on level " << level << " and noise vector " << noise << std::endl;
 
 
 	//generate a random std::vector
@@ -2073,76 +2479,34 @@ namespace Chroma
             }
           }
 
-	if (level < num_levels-1){ //level control
-	
-	// does the triple product terms
-	if ( level % 2 == 0){
+	  if (level < num_levels-1){ //level control
 
-
-	
-	  //solve (D+s_iI)^{-1}
-	  /*modifyMass(params.param.prop.fermact.xml, m_qi, params.param.shifts[level_switch]);
-	  modifyMass(params.param.prop.invParam.xml, m_qi, params.param.shifts[level_switch]);
+	int sol = 0;
+	for (int m = level_switch; m < level_switch+2; m++){
+	  /*modifyMass(params.param.prop.fermact.xml, m_qi, params.param.shifts[m]);
+	  modifyMass(params.param.prop.invParam.xml, m_qi, params.param.shifts[m]);
 	  std::istringstream  xml_r(params.param.prop.fermact.xml);
 	  XMLReader  fermactr(xml_r);
-	  Handle< FermionAction<T,P,Q> > S_r(TheFermionActionFactory::Instance().createObject(params.param.prop.fermact.id,
+          Handle< FermionAction<T,P,Q> > S_r(TheFermionActionFactory::Instance().createObject(params.param.prop.fermact.id,
                                                                fermactr,
                                                                params.param.prop.fermact.path));
-	  Handle< FermState<T,P,Q> > state_r(S_r->createState(u));
+          Handle< FermState<T,P,Q> > state_r(S_r->createState(u));
 	  Handle< SystemSolver<LatticeFermion> > PP = S_r->qprop(state_r, params.param.prop.invParam);
-	  std::vector<SystemSolverResults_t> res_r = (*PP)(v_psi[0], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
-	  for (int t = 0; t < res_r.size(); t++){
-          count[0] += 1.0 * res_r[t].n_count;
-          } */
-    
-	  //solve (D+siI)^{-1}
-	  //SB::ShiftedChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u, m_qi+params.param.shifts[level_switch]};
-	  PP.shiftSolver(m_qi+params.param.shifts[level_switch]);
-	  StopWatch solve_time1;
-	  solve_time1.start();
-          //SB::Tensor<Nd + 4, SB::Complex> quark_solns1 = SB::doInversion<SB::Complex, SB::Complex>(PP, v_chi, "cxyzXnst");
-          SB::doInversion(PP, v_psi[0], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
-          solve_time1.stop();
-          count[0] += solve_time1.getTimeInSeconds();
-
-
-	  //solve (D+s_{i+1}I)^{-2}
-          /*modifyMass(params.param.prop.fermact.xml, m_qi, params.param.shifts[level_switch+1]);
-          modifyMass(params.param.prop.invParam.xml, m_qi, params.param.shifts[level_switch+1]);
-          std::istringstream  xml_rs(params.param.prop.fermact.xml);
-          XMLReader  fermactrs(xml_rs);
-          Handle< FermionAction<T,P,Q> > S_rs(TheFermionActionFactory::Instance().createObject(params.param.prop.fermact.id,
-                                                               fermactrs,
-                                                               params.param.prop.fermact.path));
-          Handle< FermState<T,P,Q> > state_rs(S_r->createState(u));
-          PP = S_rs->qprop(state_rs, params.param.prop.invParam);
-          std::vector<SystemSolverResults_t> res_rs = (*PP)(v_psi[1], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
-	  for (int t = 0; t < res_rs.size(); t++){
-          count[1] += 1.0 * res_rs[t].n_count;
-          } */
-	  //will this be a problem with self reference?
-	  /*res_rs = (*PP)(v_psi[1], std::vector<std::shared_ptr<const LatticeFermion>>(v_psi[1].begin(), v_psi[1].end()));
-	            for (int t = 0; t < res_rs.size(); t++){
-          count[1] += 1.0 * res_rs[t].n_count;
+	  std::vector<SystemSolverResults_t> res_r = (*PP)(v_psi[sol], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
+          for (int t = 0; t < res_r.size(); t++){
+          count[sol] += 1.0 * res_r[t].n_count;
           }*/
 
+	  PP.shiftSolver(m_qi+params.param.shifts[m]);
+	  StopWatch solve_time;
+	  solve_time.start();
+	  SB::doInversion(PP, v_psi[sol], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
+	  solve_time.stop();
+	  count[sol] += solve_time.getTimeInSeconds();
+          QDPIO::cout << "On level = " << level << " and noise vector " << noise << " and count = " << count[sol] << std::endl;
+	  sol++;
+	}
 
-	  //solve (D+s_{i+1}I)^{-2}
-          //SB::ShiftedChimeraSolver PP2{params.param.prop.fermact, params.param.prop.invParam, u, m_qi+params.param.shifts[level_switch+1]};
-          PP.shiftSolver(m_qi+params.param.shifts[level_switch+1]);
-          //PP{params.param.prop.fermact, params.param.prop.invParam, u, m_qi+params.param.shifts[level_switch+1]};
-          StopWatch solve_time2;
-          solve_time2.start();
-          //SB::Tensor<Nd + 4, SB::Complex> quark_solns2 = SB::doInversion<SB::Complex, SB::Complex>(PP, v_chi, "cxyzXnst");
-          SB::doInversion(PP, v_psi[1], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
-          //quark_solns2 = SB::doInversion<SB::Complex, SB::Complex>(PP2, v_chi, "cxyzXnSst");
-	  //quark_solns2 = SB::doInversion<SB::Complex, SB::Complex>(PP2, quark_solns2, "cxyzXnst");
-	  SB::doInversion(PP, v_psi[1], std::vector<std::shared_ptr<const LatticeFermion>>(v_psi[1].begin(), v_psi[1].end()));
-
-          solve_time2.stop();
-          count[1] += solve_time2.getTimeInSeconds();
-
-	  
 
           // here the recursive call goes to compute 
           // the loops
@@ -2152,14 +2516,14 @@ namespace Chroma
 	  assert(v_chi.size() == v_psi[0].size());
 	  DComplex cmplxshifts;
 	  cmplxshifts = cmplx(params.param.shifts[level_switch+1]-params.param.shifts[level_switch],0.0);
-	  cmplxshifts = cmplxshifts * cmplxshifts;
-	  do_disco(db, v_psi[1], v_psi[0], ft, params.param.use_ferm_state_links ? state->getLinks() : u, params.param.max_path_length, cmplxshifts, dk);
+	  do_disco(db, v_psi[0], v_psi[1], ft, params.param.use_ferm_state_links ? state->getLinks() : u, params.param.max_path_length, cmplxshifts, dk);
           swatch_dots.stop();
-          QDPIO::cout << "Computing inner products of triple product term " << swatch_dots.getTimeInSeconds() << " secs" << std::endl;
+          QDPIO::cout << "Computing inner products " << swatch_dots.getTimeInSeconds() << " secs"
+                      << std::endl;
 
-	  } else if (level % 2 == 1) { //end triple product terms, this does double product terms
+	  }else{ // level control
+	  
 
-	  //Solve (D+s_{i+1}I)^{1}
           /*modifyMass(params.param.prop.fermact.xml, m_qi, params.param.shifts[level_switch+1]);
           modifyMass(params.param.prop.invParam.xml, m_qi, params.param.shifts[level_switch+1]);
           std::istringstream  xml_r(params.param.prop.fermact.xml);
@@ -2170,59 +2534,17 @@ namespace Chroma
           Handle< FermState<T,P,Q> > state_r(S_r->createState(u));
           Handle< SystemSolver<LatticeFermion> > PP = S_r->qprop(state_r, params.param.prop.invParam);
           std::vector<SystemSolverResults_t> res_r = (*PP)(v_psi[0], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
-	  
           for (int t = 0; t < res_r.size(); t++){
           count[0] += 1.0 * res_r[t].n_count;
           } */
 
-          //SB::ShiftedChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u, m_qi+params.param.shifts[level_switch+1]};
-          PP.shiftSolver(m_qi+params.param.shifts[level_switch+1]);
-          StopWatch solve_time2;
-          solve_time2.start();
-          //SB::Tensor<Nd + 4, SB::Complex> quark_solns = SB::doInversion<SB::Complex, SB::Complex>(PP, v_chi, "cxyzXnst");
-          SB::doInversion(PP, v_psi[0], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
-	  solve_time2.stop();
-	  count[0] += solve_time2.getTimeInSeconds();
-	  //with spin color dilution, this level only requires 1 solve
-	  count[1] = 0.0;
-	
-
-
-	  StopWatch swatch_dots;
-          swatch_dots.start();
-          DComplex cmplxshifts;
-          cmplxshifts = cmplx(params.param.shifts[level_switch+1]-params.param.shifts[level_switch],0.0);
-          do_disco(db, v_psi[0], v_psi[0], ft, params.param.use_ferm_state_links ? state->getLinks() : u, params.param.max_path_length, cmplxshifts, dk);
-          swatch_dots.stop();
-          QDPIO::cout << "Computing inner products of double product term" << swatch_dots.getTimeInSeconds() << " secs" << std::endl;
-	  
-	  }
-
-	  } else { //this does the last term if level = num_levels
-
-          /*modifyMass(params.param.prop.fermact.xml, m_qi, params.param.shifts[level_switch+1]);
-          modifyMass(params.param.prop.invParam.xml, m_qi, params.param.shifts[level_switch+1]);
-          std::istringstream  xml_r(params.param.prop.fermact.xml);
-          XMLReader  fermactr(xml_r);
-          Handle< FermionAction<T,P,Q> > S_r(TheFermionActionFactory::Instance().createObject(params.param.prop.fermact.id,
-                                                               fermactr,
-                                                               params.param.prop.fermact.path));
-          Handle< FermState<T,P,Q> > state_r(S_r->createState(u));
-          Handle< SystemSolver<LatticeFermion> > PP = S_r->qprop(state_r, params.param.prop.invParam);
-          std::vector<SystemSolverResults_t> res_r = (*PP)(v_psi[0], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
-          for (int t = 0; t < res_r.size(); t++){
-          count[0] += 1.0 * res_r[t].n_count;
-          }*/
-
-          //SB::ShiftedChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u, m_qi+params.param.shifts[level_switch+1]};
-          PP.shiftSolver(m_qi+params.param.shifts[level_switch+1]);
-          StopWatch solve_time2;
-          solve_time2.start();
-          //SB::Tensor<Nd + 4, SB::Complex> quark_solns = SB::doInversion<SB::Complex, SB::Complex>(PP, v_chi, "cxyzXnst");
-       	  SB::doInversion(PP, v_psi[0], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
-	  solve_time2.stop();
-	  count[0] += solve_time2.getTimeInSeconds();
-          //QDPIO::cout << "On level = " << level << " and noise vector " << noise << " and count = " << count[0] << std::endl;
+	  PP.shiftSolver(m_qi+params.param.shifts[level_switch+1]);
+	  StopWatch solve_time;
+	  solve_time.start();
+	  SB::doInversion(PP, v_psi[0], std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
+	  solve_time.stop();
+	  count[0] += solve_time.getTimeInSeconds(); 
+          QDPIO::cout << "On level = " << level << " and noise vector " << noise << " and count = " << count[0] << std::endl;
 
           StopWatch swatch_dots2;
           swatch_dots2.start();
@@ -2258,6 +2580,10 @@ namespace Chroma
 
        // Update the mean and the average
         do_update(dbs.levels_avg[level], dbs.levels_var[level], db, noise == 0);
+
+	//checkpoint_out(level, noise, rng_seed, num_levels, cl, count, params.param.shifts, dbs.levels_avg[level], dbs.levels_var[level], filename_traces, filename_vars);
+	//QDP::RNG::savern(rng_seed);
+	//restart_seed_out(seed_file, rng_seed);
 
         // Show stats
         if(params.param.display_level_stats){
@@ -2308,13 +2634,13 @@ for (int level = 0; level < num_levels; level++){
       }
      }
 
-
-      //add the traces of all the levels
+    
+      //add the traces of the levels
       for (int level = 0; level < num_levels; level++){
         for(std::map< KeyOperator_t, ValOperator_t >::iterator it=dbs.total_avg.begin();it != dbs.total_avg.end(); it++){
-	    it->second.op += dbs.levels_avg[level][it->first].op;
-	}
-      }	
+            it->second.op += dbs.levels_avg[level][it->first].op;
+        }
+      }
 
 
       // Add the deterministic part to the traces

@@ -578,7 +578,6 @@ namespace Chroma
 
 	// W = W/chol(Wa'*W), where Wa'*W has dimensions (rows,cols)=(Wacorder,Wcorder)
 	C = C.make_sure(none, none, OnEveryoneReplicated);
-	QDPIO::cout << "Entering cholInv" << std::endl;
 	cholInv<NW, Nt + 2 * Ncols, NW, COMPLEX>(std::move(C), Wacorder, Wcorder, Wa, Wacorder,
 						 CopyTo, W);
 	++i;
@@ -886,6 +885,7 @@ namespace Chroma
       Operator<NOp, COMPLEX> getFGMRESSolver(Operator<NOp, COMPLEX> op, const Options& ops,
 					     Operator<NOp, COMPLEX> prec_)
       {
+
 	// Get preconditioner
 	Maybe<Operator<NOp, COMPLEX>> prec = none;
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
@@ -1732,6 +1732,14 @@ namespace Chroma
 	return r;
       }
 
+      //cache for the prolongator
+      template <std::size_t NOp, typename COMPLEX>
+      static std::map<void*, Operator<NOp, COMPLEX>>& getProlongatorCache()
+      {
+	static std::map<void*, Operator<NOp, COMPLEX>> m;
+        return m;
+      }
+
       /// Returns the prolongator constructed from
       /// \param solvers: map of solvers
       /// \param op: operator to make the inverse of
@@ -1933,9 +1941,28 @@ namespace Chroma
 	const Operator<NOp, COMPLEX> nullSolver =
 	  getSolver(op, getOptions(ops, "solver_null_vecs"));
 	bool do_chirality_splitting = getOption<bool>(ops, "chirality_splitting", true);
-	const Operator<NOp, COMPLEX> V =
-	  getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, do_chirality_splitting,
-			   nullSolver, solverSpace);
+
+	//here is where I will need to check if V has been created already and assign if so
+	//const Operator<Nop, COMPLEX> V;
+	//if (getProlongatorCache<NOp, COMPLEX>().count(op.id.get()) == 0) {
+	// //call getMGProlongator
+	// }else{
+	// //assign V
+	// }
+	//const Operator<NOp, COMPLEX> V =
+	  //getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, do_chirality_splitting,
+	//		   nullSolver, solverSpace);
+	Operator<NOp, COMPLEX> V;
+	static std::shared_ptr<std::string> prolongator_id(std::make_shared<std::string>("prolongator"));
+	std::cout << "Memory address of id pointer is " << prolongator_id.get() << " with value " << *prolongator_id.get() << std::endl;
+	if (getProlongatorCache<NOp, COMPLEX>().count(prolongator_id.get()) == 0){
+		QDPIO::cout << "Didn't find a prolongator. Generating...." << std::endl;
+		V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, do_chirality_splitting, nullSolver, solverSpace);
+		getProlongatorCache<NOp, COMPLEX>()[prolongator_id.get()] = V;
+	} else {
+		QDPIO::cout << "Found a prolongator!" << std::endl;
+		V = getProlongatorCache<NOp, COMPLEX>().at(prolongator_id.get());
+	}
 
 	// Compute the coarse operator, either V' * op * V or V' * op * g5 * V
 	unsigned int create_coarse_max_rhs =
@@ -2926,26 +2953,6 @@ namespace Chroma
 	/// \param xml_str: the xml string to replace the mass in
 	/// \param mq: the new mass
 
-      namespace {	
-      void shiftQuarkMass(std::string& xml_str, const Real& mq)
-      {
-
-      //delimiter is the opening/close  mass tag
-      std::string open_tag = "<Mass>";
-      std::string close_tag = "</Mass>";
-      auto o_pos = xml_str.find(open_tag);
-      auto c_pos = xml_str.find(close_tag);
-      if(o_pos == std::string::npos){
-        return;
-      }else{
-      //std::string mq0_str = std::to_string(toDouble(m_q0));
-      std::string new_mq = std::to_string(toDouble(mq));
-      int m_q0_size = c_pos - (o_pos + open_tag.size());
-      xml_str.replace(o_pos+open_tag.size(), m_q0_size, new_mq);
-      }
-
-      }
-      }
 
     /// Either a Chroma solver or a superb solver
     struct ChimeraSolver {
@@ -2969,6 +2976,7 @@ namespace Chroma
       /// Operator on scxyztX (optional)
       Maybe<Operator<Nd + 7, Complex>> op;
 
+
       /// Constructor
       /// \param fermAction: XML for the fermion action
       /// \param invParam: XML for the quark propagator
@@ -2984,6 +2992,7 @@ namespace Chroma
 	S = TheFermionActionFactory::Instance().createObject(fermAction.id, fermacttop,
 							     fermAction.path);
 	state = S->createState(u);
+
 
 	// If the inverter is MGPROTON, use this infrastructure
 	if (invParam.id == std::string("MGPROTON"))
@@ -3031,6 +3040,15 @@ namespace Chroma
 
     /// Either a Chroma solver or a superb solver
     struct ShiftedChimeraSolver {
+
+      /// fermion Action xml
+      GroupXML_t fermActXml;
+
+      /// inversion parameters XML
+      GroupXML_t invParamXml;
+
+      multi1d<LatticeColorMatrix> links;
+
       /// Action type
       using Action = Handle<
 	FermionAction<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>;
@@ -3058,29 +3076,34 @@ namespace Chroma
 	  /// \param mq: the quark mass (may be mq = m_0 + \sigma)
 
       ShiftedChimeraSolver(GroupXML_t& fermAction, GroupXML_t& invParam,
-		    const multi1d<LatticeColorMatrix>& u, const Real& mq)
+		    const multi1d<LatticeColorMatrix>& u)
       {
 	
-	//shift the quark mass in the fermAction and invParams
-	shiftQuarkMass(fermAction.xml, mq);
-	shiftQuarkMass(invParam.xml, mq); //if the inverter requires it
+	//set the structs fermion action xml
+	fermActXml = fermAction;
+	//set the structs invparam xml
+	invParamXml = invParam;
+	
+	//set the structs gauge links
+	links = u;
 	
 	// Initialize fermion action and state
-	std::istringstream xml_s(fermAction.xml);
+	std::istringstream xml_s(fermActXml.xml);
 	XMLReader fermacttop(xml_s);
-	QDPIO::cout << "FermAct = " << fermAction.id << std::endl;
-	S = TheFermionActionFactory::Instance().createObject(fermAction.id, fermacttop,
-							     fermAction.path);
-	state = S->createState(u);
+	QDPIO::cout << "FermAct = " << fermActXml.id << std::endl;
+	S = TheFermionActionFactory::Instance().createObject(fermActXml.id, fermacttop,
+							     fermActXml.path);
+	state = S->createState(links);
+
 
 	// If the inverter is MGPROTON, use this infrastructure
-	if (invParam.id == std::string("MGPROTON"))
+	if (invParamXml.id == std::string("MGPROTON"))
 	{
 	  QDPIO::cout << "Setting up MGPROTON invertor..." << std::endl;
 	  Tracker _t("setup mgproton");
 
 	  // Parse XML with the inverter options
-	  std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(invParam.xml));
+	  std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(invParamXml.xml));
 
 	  // Clone the matvec
 	  LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
@@ -3108,9 +3131,84 @@ namespace Chroma
 	}
 	else
 	{
-	  PP = S->qprop(state, invParam);
+	  PP = S->qprop(state, invParamXml);
 	}
       }
+
+      //function to overwrite the xml string with new mass
+      void shiftQuarkMass(std::string& xml_str, const Real& mq)
+      {
+
+      //delimiter is the opening/close  mass tag
+      std::string open_tag = "<Mass>";
+      std::string close_tag = "</Mass>";
+      auto o_pos = xml_str.find(open_tag);
+      auto c_pos = xml_str.find(close_tag);
+      if(o_pos == std::string::npos){
+        return;
+      }else{
+      std::string new_mq = std::to_string(toDouble(mq));
+      int m_q0_size = c_pos - (o_pos + open_tag.size());
+      xml_str.replace(o_pos+open_tag.size(), m_q0_size, new_mq);
+      }
+      }
+
+      //function to recompute the solver if it is being shifted
+      //hopefully this works if the prolongators have already been computed
+      void shiftSolver(const Real& mq)
+      {
+
+	shiftQuarkMass(fermActXml.xml, mq);
+	shiftQuarkMass(invParamXml.xml, mq); //if the solver needs it
+
+
+	std::istringstream xml_s(fermActXml.xml);
+	XMLReader fermacttop(xml_s);
+	QDPIO::cout << "FermAct = " << fermActXml.id << std::endl;
+	S = TheFermionActionFactory::Instance().createObject(fermActXml.id, fermacttop,
+							     fermActXml.path);
+	state = S->createState(links);
+
+	// If the inverter is MGPROTON, use this infrastructure
+	if (invParamXml.id == std::string("MGPROTON"))
+	{
+	  QDPIO::cout << "Setting up MGPROTON invertor..." << std::endl;
+	  Tracker _t("setup mgproton");
+
+	  // Parse XML with the inverter options
+	  std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(invParamXml.xml));
+
+	  // Clone the matvec
+	  LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
+	  ColOrdering co = getOption<ColOrdering>(*ops, "InvertParam/operator_ordering",
+						  getColOrderingMap(), ColumnMajor);
+	  ColOrdering co_blk = getOption<ColOrdering>(*ops, "InvertParam/operator_block_ordering",
+						      getColOrderingMap(), RowMajor);
+	  Operator<Nd + 7, Complex> linOp =
+	    detail::cloneOperator(asOperatorView(*fLinOp), co, co_blk,
+				  detail::ConsiderBlockingSparse, "chroma's operator");
+
+	  // Destroy chroma objects
+	  delete fLinOp;
+	  state = State();
+	  S = Action();
+
+	  // Construct the solver. Hopefully the prolongator  is already set so this should work!
+	  op = Maybe<Operator<Nd + 7, Complex>>(getSolver(linOp, getOptions(*ops, "InvertParam")));
+
+	  // Clean cache of operators
+	  detail::cleanEvenOddOperatorsCache();
+
+	  QDPIO::cout << "MGPROTON invertor ready; setup time: "
+		      << detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;
+	}
+	else
+	{
+	  PP = S->qprop(state, invParamXml);
+	}
+
+      }
+
     };
 
     namespace detail
@@ -3459,6 +3557,57 @@ namespace Chroma
     /// \param max_rhs: maximum number of vectors solved at once
 
     inline void doInversion(const ChimeraSolver& sol, MultipleLatticeFermions& psis,
+			    const ConstMultipleLatticeFermions& chis, int max_rhs = 0)
+    {
+      StopWatch snarss1;
+      snarss1.reset();
+      snarss1.start();
+
+      if (max_rhs <= 0)
+	max_rhs = chis.size();
+
+      // Do the inversion
+      if (sol.op.hasSome())
+      {
+	auto op = sol.op.getSome();
+	auto tchi = op.make_compatible_dom<Nd + 8>("n", {{'n', max_rhs}});
+	auto tpsi = op.make_compatible_img<Nd + 8>("n", {{'n', max_rhs}});
+	for (int i = 0, n = std::min(max_rhs, (int)chis.size()); i < chis.size();
+	     i += n, n = std::min((int)chis.size() - i, max_rhs))
+	{
+	  // Adjust the size of tchi and tpsi to n
+	  auto this_tchi = tchi.kvslice_from_size({{'n', 0}}, {{'n', n}});
+	  auto this_tpsi = tpsi.kvslice_from_size({{'n', 0}}, {{'n', n}});
+
+	  // Copy chis into this_tchi
+	  for (int j = 0; j < n; ++j)
+	    asTensorView(*chis[i + j]).copyTo(this_tchi.kvslice_from_size({{'n', j}}, {{'n', 1}}));
+
+	  // Do the inversion: this_tpsi = D^{-1} * this_tchi
+	  op(this_tchi, this_tpsi);
+
+	  // Copy the solution into psis
+	  for (int j = 0; j < n; ++j)
+	    this_tpsi.kvslice_from_size({{'n', j}}, {{'n', 1}}).copyTo(asTensorView(*psis[i + j]));
+	}
+      }
+      else
+      {
+	for (int i = 0, n = std::min(max_rhs, (int)chis.size()); i < chis.size();
+	     i += n, n = std::min((int)chis.size() - i, max_rhs))
+	{
+	  (*sol.PP)(MultipleLatticeFermions(psis.begin() + i, psis.begin() + i + n),
+		    ConstMultipleLatticeFermions(chis.begin() + i, chis.begin() + i + n));
+	}
+      }
+
+      snarss1.stop();
+      QDPIO::cout << "Time to compute " << chis.size()
+		  << " inversions: " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+    }
+
+
+    inline void doInversion(const ShiftedChimeraSolver& sol, MultipleLatticeFermions& psis,
 			    const ConstMultipleLatticeFermions& chis, int max_rhs = 0)
     {
       StopWatch snarss1;

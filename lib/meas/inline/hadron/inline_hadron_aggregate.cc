@@ -21,6 +21,7 @@
 #include "meas/inline/hadron/inline_disco_prob_defl_w.h"
 #include "meas/inline/hadron/inline_disco_prob_defl_superb_w.h"
 #include "meas/inline/hadron/inline_disco_recursive_fs_prob_multimass_superb_w.h"
+#include "meas/inline/hadron/inline_disco_frequencysplitting_prob_multimass_superb_w.h"
 #include "meas/inline/hadron/inline_disco_eoprec_w.h"
 #include "meas/inline/hadron/inline_disco_eo_eigcg_w.h"
 #include "meas/inline/hadron/inline_disco_eigcg_w.h"
@@ -150,6 +151,7 @@ namespace Chroma
 #ifdef BUILD_SB
 	success &= InlineDiscoProbDeflSuperb::registerAll();
 	success &= InlineDiscoRecFreqSplitProbMMSuperb::registerAll();
+	success &= InlineDiscoFreqSplitProbMMSuperb::registerAll();
 #endif
 
 	success &= InlineStagToWilsEnv::registerAll();
