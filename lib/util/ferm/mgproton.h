@@ -1734,9 +1734,9 @@ namespace Chroma
 
       //cache for the prolongator
       template <std::size_t NOp, typename COMPLEX>
-      static std::map<void*, Operator<NOp, COMPLEX>>& getProlongatorCache()
+      static std::map<std::string, Operator<NOp, COMPLEX>>& getProlongatorCache()
       {
-	static std::map<void*, Operator<NOp, COMPLEX>> m;
+	static std::map<std::string, Operator<NOp, COMPLEX>> m;
         return m;
       }
 
@@ -1942,23 +1942,13 @@ namespace Chroma
 	  getSolver(op, getOptions(ops, "solver_null_vecs"));
 	bool do_chirality_splitting = getOption<bool>(ops, "chirality_splitting", true);
 
-	//here is where I will need to check if V has been created already and assign if so
-	//const Operator<Nop, COMPLEX> V;
-	//if (getProlongatorCache<NOp, COMPLEX>().count(op.id.get()) == 0) {
-	// //call getMGProlongator
-	// }else{
-	// //assign V
-	// }
-	//const Operator<NOp, COMPLEX> V =
-	  //getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, do_chirality_splitting,
-	//		   nullSolver, solverSpace);
+        // Grab the prolongator from cache if the user name it
 	Operator<NOp, COMPLEX> V;
-	static std::shared_ptr<std::string> prolongator_id(std::make_shared<std::string>("prolongator"));
-	std::cout << "Memory address of id pointer is " << prolongator_id.get() << " with value " << *prolongator_id.get() << std::endl;
-	if (getProlongatorCache<NOp, COMPLEX>().count(prolongator_id.get()) == 0){
+        std::string prolongator_id = getOption<std::string>(ops, "prolongator_id", "");
+	if (prolongator_id.size() == 0 || getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0){
 		QDPIO::cout << "Didn't find a prolongator. Generating...." << std::endl;
 		V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, do_chirality_splitting, nullSolver, solverSpace);
-		getProlongatorCache<NOp, COMPLEX>()[prolongator_id.get()] = V;
+		if (prolongator_id.size() > 0) getProlongatorCache<NOp, COMPLEX>()[prolongator_id] = V;
 	} else {
 		QDPIO::cout << "Found a prolongator!" << std::endl;
 		V = getProlongatorCache<NOp, COMPLEX>().at(prolongator_id.get());
