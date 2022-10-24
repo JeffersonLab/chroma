@@ -1944,14 +1944,14 @@ namespace Chroma
 
         // Grab the prolongator from cache if the user name it
 	Operator<NOp, COMPLEX> V;
-        std::string prolongator_id = getOption<std::string>(ops, "prolongator_id", "");
+        static std::string prolongator_id = getOption<std::string>(ops, "prolongator_id", "");
 	if (prolongator_id.size() == 0 || getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0){
 		QDPIO::cout << "Didn't find a prolongator. Generating...." << std::endl;
 		V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, do_chirality_splitting, nullSolver, solverSpace);
 		if (prolongator_id.size() > 0) getProlongatorCache<NOp, COMPLEX>()[prolongator_id] = V;
 	} else {
 		QDPIO::cout << "Found a prolongator!" << std::endl;
-		V = getProlongatorCache<NOp, COMPLEX>().at(prolongator_id.get());
+		V = getProlongatorCache<NOp, COMPLEX>().at(prolongator_id);
 	}
 
 	// Compute the coarse operator, either V' * op * V or V' * op * g5 * V
