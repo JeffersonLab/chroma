@@ -75,12 +75,17 @@ namespace Chroma
     };
 
     /// How to distribute the tensor (see class Tensor)
-    enum Distribution {
-      OnMaster,		    ///< Fully supported on node with index zero
-      OnEveryone,	    ///< Distribute the lattice dimensions (x, y, z, t) as chroma does
-      OnEveryoneReplicated, ///< All nodes have a copy of the tensor
-      Local		    ///< Non-collective
-    };
+    using Distribution = std::string;
+    /// Fully supported on node with index zero
+    static const Distribution OnMaster("__OnMaster__");
+    /// Distribute the lattice dimensions (x, y, z, t) 
+    static const Distribution OnEveryone("xyzt");
+    /// Distribute the lattice dimensions (x, y, z, t) as chroma does
+    static const Distribution OnEveryoneAsChroma("__OnEveryonAsChroma__");
+     /// All nodes have a copy of the tensor
+    static const Distribution OnEveryoneReplicated("__OnEveryoneReplicated__");
+    /// Non-collective
+    static const Distribution Local("");
 
     /// Whether complex conjugate the elements before contraction (see Tensor::contract)
     enum Conjugation { NotConjugate, Conjugate };
@@ -939,6 +944,30 @@ namespace Chroma
 	return r;
       }
 
+      /// Return a map with pairs from elements withdraw from two lists
+      /// ita_begin, first element for the first pair
+      /// ita_end, first element not to include
+      /// itb_begin, second element for the first pair
+
+      template <typename ITA_BEGIN, typename ITA_END, typename ITB_BEGIN>
+      std::map<char, int> zip(ITA_BEGIN ita_begin, ITA_END ita_end, ITB_BEGIN itb_begin)
+      {
+	std::map<char, int> m;
+	while (ita_begin != ita_end)
+	{
+	  m[*ita_begin] = *itb_begin;
+	  ita_begin++;
+	  itb_begin++;
+	}
+	return m;
+      }
+
+      /// Return whether the tensor isn't local or on master or replicated
+      inline bool isDistributedOnEveryone(const Distribution& dist)
+      {
+	return dist != OnMaster && dist != OnEveryoneReplicated && dist != Local;
+      }
+
       /// Stores the subtensor supported on each node (used by class Tensor)
       template <std::size_t N>
       struct TensorPartition {
@@ -957,18 +986,26 @@ namespace Chroma
 	{
 	  detail::check_order<N>(order);
 	  isLocal = false;
-	  switch (dist)
+	  if (dist == OnMaster)
 	  {
-	  case OnMaster: p = all_tensor_on_master(dim); break;
-	  case OnEveryone: p = partitioning_chroma_compatible(order, dim); break;
-	  case OnEveryoneReplicated: p = all_tensor_replicated(dim); break;
-	  case Local:
+	    p = all_tensor_on_master(dim);
+	  }
+	  else if (dist == OnEveryoneReplicated)
+	  {
+	    p = all_tensor_replicated(dim);
+	  }
+	  else if (dist == OnEveryoneAsChroma)
+	  {
+	    p = partitioning_chroma_compatible(order, dim);
+	  }
+	  else if (dist == Local)
+	  {
 	    p = local(dim);
 	    isLocal = true;
-	    break;
-	  default:
-	    throw std::runtime_error("TensorPartition: unsupported distribution type");
-	    break;
+	  }
+	  else
+	  {
+	    p = partitioning_distributed(order, dim, dist);
 	  }
 	}
 
@@ -1371,6 +1408,102 @@ namespace Chroma
 	  }
 	  return fs;
 	}
+
+	/// Return a partitioning for a tensor of `dim` dimension onto a grid of processes
+	/// \param order: dimension labels
+	/// \param dim: dimension size for the tensor
+	/// \param order: labels to distribute
+
+	static PartitionStored partitioning_distributed(const std::string& order,
+							const Coor<N>& dim,
+							const std::string& dist_labels)
+	{
+	  std::string dist_order;
+	  Coor<N> dist_dim;
+	  for (unsigned int i = 0; i < dist_labels.size(); ++i)
+	  {
+	    const auto& it = std::find(order.begin(), order.end(), dist_labels[i]);
+	    if (it != order.end() && dim[it - order.begin()] > 1)
+	    {
+	      dist_dim[dist_order.size()] = dim[it - order.begin()];
+	      dist_order.push_back(dist_labels[i]);
+	    }
+	  }
+	  for (unsigned int i = dist_order.size(); i < N; ++i)
+	    dist_dim[i] = 1;
+
+	  // Update the dimension x with the even-odd label X
+	  {
+	    const auto& itX = std::find(order.begin(), order.end(), 'X');
+	    const auto& itx = std::find(dist_order.begin(), dist_order.end(), 'x');
+	    if (itX != order.end() && itx != dist_order.end())
+	    {
+	      dist_dim[itx - dist_order.begin()] *= dim[itX - order.begin()];
+	    }
+	  }
+
+	  // Avoid splitting even and odds components for xyzt
+	  const std::string even_odd_labels = "xyzt";
+	  for (unsigned int i = 0; i < even_odd_labels.size(); ++i)
+	  {
+	    const auto& it = std::find(dist_order.begin(), dist_order.end(), even_odd_labels[i]);
+	    if (it != dist_order.end() && dist_dim[it - dist_order.begin()] % 2 == 0)
+	      dist_dim[it - dist_order.begin()] /= 2;
+	  }
+
+	  // Update the number of active dimensions
+	  int num_dims = 0;
+	  for (unsigned int i = 0; i < dist_order.size(); ++i)
+	    if (dist_dim[i] > 1)
+	      num_dims++;
+
+	  // If no dimension is going to be distributed, the whole tensor will have support only on node zero
+	  if (num_dims == 0 || superbblas::detail::volume(dim) == 0)
+	    return all_tensor_on_master(dim);
+
+	  // Compute the ideal length of a hypercube in each process with total volume equal to the tensor volume
+	  double vol = superbblas::detail::volume(dist_dim);
+	  int num_procs = Layout::numNodes();
+	  double r = std::exp(std::log(vol / num_procs) / num_dims);
+
+	  // Put as many processes in each direction to get close to the ideal length
+	  Coor<N> p;
+	  int remaining_procs = num_procs;
+	  for (unsigned int i = 0; i < N; ++i)
+	  {
+	    p[i] =
+	      std::min(dist_dim[i], std::min(remaining_procs, (int)std::max(1.0, std::round(dist_dim[i] / r))));
+	    remaining_procs /= p[i];
+	    assert(p[i] > 0);
+	  }
+
+	  // For each proc, get its coordinate in procs (logical coordinate) and compute the
+	  // fair range of the tensor supported on the proc
+	  PartitionStored fs(num_procs);
+	  Coor<N> stride = superbblas::detail::get_strides<int>(p, superbblas::FastToSlow);
+	  int active_procs = superbblas::detail::volume(p);
+	  Coor<N> procs =
+	    kvcoors<N>(order, zip(dist_order.begin(), dist_order.end(), p.begin()), 1, NoThrow);
+	  for (int rank = 0; rank < active_procs; ++rank)
+	  {
+	    Coor<N> cproc_ = superbblas::detail::index2coor(rank, p, stride);
+	    Coor<N> cproc = kvcoors<N>(
+	      order, zip(dist_order.begin(), dist_order.end(), cproc_.begin()), 0, NoThrow);
+	    for (unsigned int i = 0; i < N; ++i)
+	    {
+	      // First coordinate in process with rank 'rank' on dimension 'i'
+	      fs[rank][0][i] = dim[i] / procs[i] * cproc[i] + std::min(cproc[i], dim[i] % procs[i]);
+	      // Number of elements in process with rank 'cproc[i]' on dimension 'i'
+	      fs[rank][1][i] =
+		dim[i] / procs[i] + (dim[i] % procs[i] > cproc[i] ? 1 : 0) % procs[i];
+	    }
+
+	    // Normalize
+	    if (superbblas::detail::volume(fs[rank][1]) == 0)
+	      fs[rank] = std::array<Coor<N>, 2>{Coor<N>{{}}, Coor<N>{{}}};
+	  }
+	  return fs;
+	}
       };
 
       template <typename T>
@@ -1452,19 +1585,6 @@ namespace Chroma
 	  for (unsigned int i = 1; i < N; ++i)
 	    s << "," << o[i];
 	  s << "]";
-	  return s;
-	}
-
-	template <typename Ostream>
-	Ostream& operator<<(Ostream& s, Distribution dist)
-	{
-	  switch (dist)
-	  {
-	  case OnMaster: s << "OnMaster"; break;
-	  case OnEveryone: s << "OnEveryone"; break;
-	  case OnEveryoneReplicated: s << "OnEveryoneReplicated"; break;
-	  case Local: s << "Local"; break;
-	  }
 	  return s;
 	}
 
@@ -3434,10 +3554,10 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "One of the contracted tensors or the output tensor is local and others are not!");
 
-	if (v.dist == OnEveryone && w.dist == OnEveryoneReplicated)
+	if (detail::isDistributedOnEveryone(v.dist) && w.dist == OnEveryoneReplicated)
 	  w = w.make_suitable_for_contraction(v);
 
-	if (v.dist == OnEveryoneReplicated && w.dist == OnEveryone)
+	if (v.dist == OnEveryoneReplicated && detail::isDistributedOnEveryone(w.dist))
 	  v = v.make_suitable_for_contraction(w);
 
 	if (std::fabs(std::imag(v.scalar)) != 0 || std::real(v.scalar) < 0)
@@ -3512,10 +3632,10 @@ namespace Chroma
 	  w = w.make_sure(none, none, OnMaster);
 	}
 
-	if (v.dist == OnEveryone && w.dist == OnEveryoneReplicated)
+	if (detail::isDistributedOnEveryone(v.dist) && w.dist == OnEveryoneReplicated)
 	  w = w.make_suitable_for_contraction(v);
 
-	if (v.dist == OnEveryoneReplicated && w.dist == OnEveryone)
+	if (v.dist == OnEveryoneReplicated && detail::isDistributedOnEveryone(w.dist))
 	  v = v.make_suitable_for_contraction(w);
 
 	T* v_ptr = v.data();
@@ -4220,7 +4340,7 @@ namespace Chroma
     {
       using Complex = std::complex<T>;
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd + 2, Complex>("cxyztX", latticeSize<Nd + 2>("cxyztX"), OnHost, OnEveryone,
+      return Tensor<Nd + 2, Complex>("cxyztX", latticeSize<Nd + 2>("cxyztX"), OnHost, OnEveryoneAsChroma,
 				     v_ptr);
     }
 
@@ -4228,7 +4348,7 @@ namespace Chroma
     inline Tensor<Nd + 3, Complex> asTensorView(const LatticeFermion& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd + 3, Complex>("csxyztX", latticeSize<Nd + 3>("csxyztX"), OnHost, OnEveryone,
+      return Tensor<Nd + 3, Complex>("csxyztX", latticeSize<Nd + 3>("csxyztX"), OnHost, OnEveryoneAsChroma,
 				     v_ptr);
     }
 #  else
@@ -4236,7 +4356,7 @@ namespace Chroma
     {
       REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
       return Tensor<Nd + 4, REAL>("xyztXsc.", latticeSize<Nd + 4>("xyztXsc."), OnDefaultDevice,
-				  OnEveryone, v_ptr);
+				  OnEveryoneAsChroma, v_ptr);
     }
 #  endif
 
@@ -4244,7 +4364,7 @@ namespace Chroma
     inline Tensor<Nd + 1, Complex> asTensorView(const LatticeComplex& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd + 1, Complex>("xyztX", latticeSize<Nd + 1>("xyztX"), OnHost, OnEveryone,
+      return Tensor<Nd + 1, Complex>("xyztX", latticeSize<Nd + 1>("xyztX"), OnHost, OnEveryoneAsChroma,
 				     v_ptr);
     }
 #  else
@@ -4252,7 +4372,7 @@ namespace Chroma
     {
       REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
       return Tensor<Nd + 2, REAL>("xyztX.", latticeSize<Nd + 2>("xyztX."), OnDefaultDevice,
-				  OnEveryone, v_ptr);
+				  OnEveryoneAsChroma, v_ptr);
     }
 #  endif
 
@@ -4262,7 +4382,7 @@ namespace Chroma
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 3, Complex>("jixyztX",
 				     latticeSize<Nd + 3>("jixyztX", {{'i', Nc}, {'j', Nc}}), OnHost,
-				     OnEveryone, v_ptr);
+				     OnEveryoneAsChroma, v_ptr);
     }
 #  else
     inline Tensor<Nd + 4, REAL> asTensorView(const LatticeColorMatrix& v)
@@ -4270,7 +4390,7 @@ namespace Chroma
       REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
       return Tensor<Nd + 4, REAL>("xyztXji.",
 				  latticeSize<Nd + 4>("xyztXji.", {{'i', Nc}, {'j', Nc}}),
-				  OnDefaultDevice, OnEveryone, v_ptr);
+				  OnDefaultDevice, OnEveryoneAsChroma, v_ptr);
     }
 #  endif
 
@@ -4279,7 +4399,7 @@ namespace Chroma
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
       return Tensor<Nd + 4, Complex>("cjixyztX",
 				     latticeSize<Nd + 4>("cjixyztX", {{'i', Ns}, {'j', Ns}}),
-				     OnHost, OnEveryone, v_ptr);
+				     OnHost, OnEveryoneAsChroma, v_ptr);
     }
 
     template <typename COMPLEX>
@@ -4938,8 +5058,8 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "One of the contracted tensors or the output tensor is local and others are not!");
 
-	if ((v.dist == OnMaster && w.dist == OnEveryone) ||
-	    (v.dist == OnEveryone && w.dist == OnMaster))
+	if ((v.dist == OnMaster && detail::isDistributedOnEveryone(w.dist)) ||
+	    (detail::isDistributedOnEveryone(v.dist) && w.dist == OnMaster))
 	  throw std::runtime_error("Incompatible layout for contractions: one of the tensors is on "
 				   "the master node and the other is distributed");
 
@@ -5571,6 +5691,7 @@ namespace Chroma
 	auto r_eo = r.split_dimension('y', "Yy", maxY)
 		      .split_dimension('z', "Zz", maxZ)
 		      .split_dimension('t', "Tt", maxT);
+		      //.make_writing_nonatomic();
 	while (len < 0)
 	  len += dims.at('x') * maxX;
 	for (int T = 0; T < maxT; ++T)
@@ -5970,7 +6091,9 @@ namespace Chroma
 				      (ComplexD*)x);
 	  Tensor<Nd + 3, ComplexD> ty(opaux.order, size, opaux.primme_dev, OnEveryone,
 				      (ComplexD*)y);
+	  assert(tx.getLocal().volume() == primme->nLocal * (*blockSize));
 	  LaplacianOperator(opaux.u, opaux.first_tslice, ty, tx);
+	  assert(ty.allocation->pending_operations.size() == 0);
 	  *ierr = 0;
 	} catch (...)
 	{
@@ -6102,6 +6225,7 @@ namespace Chroma
 	  Tensor<Nd + 3, ComplexD> evecs(
 	    opaux.order, latticeSize<Nd + 3>(opaux.order, {{'n', primme.numEvals}, {'t', 1}}),
 	    primme_dev, OnEveryone);
+	  assert(evecs.getLocal().volume() == primme.nLocal * primme.numEvals);
 #    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
 	  primme.queue = &*detail::getMagmaContext();
 #    endif
