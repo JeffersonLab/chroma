@@ -1944,7 +1944,7 @@ namespace Chroma
 
         // Grab the prolongator from cache if the user name it
 	Operator<NOp, COMPLEX> V;
-        static std::string prolongator_id = getOption<std::string>(ops, "prolongator_id", "");
+        std::string prolongator_id = getOption<std::string>(ops, "prolongator_id", "");
 	if (prolongator_id.size() == 0 || getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0){
 		QDPIO::cout << "Didn't find a prolongator. Generating...." << std::endl;
 		V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, do_chirality_splitting, nullSolver, solverSpace);
