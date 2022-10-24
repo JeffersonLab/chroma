@@ -1886,6 +1886,16 @@ namespace Chroma
 		op.preferred_col_ordering};
       }
 
+      /// Return a cache for the prolongators
+      /// NOTE: this one isn't destroyed by `cleanEvenOddOperatorsCache`
+
+      template <std::size_t NOp, typename COMPLEX>
+      static std::map<std::string, Operator<NOp, COMPLEX>>& getProlongatorCache()
+      {
+	static std::map<std::string, Operator<NOp, COMPLEX>> m;
+	return m;
+      }
+
       /// Returns a MG preconditioner.
       ///
       /// It returns an approximation of Op^{-1} = Op^{-1}*Q + Op^{-1}(I-Q), where Q is a projector
@@ -1932,9 +1942,23 @@ namespace Chroma
 	const Operator<NOp, COMPLEX> nullSolver =
 	  getSolver(op, getOptions(ops, "solver_null_vecs"));
 	bool do_chirality_splitting = getOption<bool>(ops, "chirality_splitting", true);
-	const Operator<NOp, COMPLEX> V =
-	  getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, do_chirality_splitting,
-			   nullSolver, solverSpace);
+
+	// Grab the prolongator from cache if the user name it
+	Operator<NOp, COMPLEX> V;
+	std::string prolongator_id = getOption<std::string>(ops, "prolongator_id", "");
+	if (prolongator_id.size() == 0 ||
+	    getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0)
+	{
+	  V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking,
+			       do_chirality_splitting, nullSolver, solverSpace);
+	  if (prolongator_id.size() > 0)
+	    getProlongatorCache<NOp, COMPLEX>()[prolongator_id] = V;
+	}
+	else
+	{
+	  QDPIO::cout << "Found prolongator for id " << prolongator_id << std::endl;
+	  V = getProlongatorCache<NOp, COMPLEX>().at(prolongator_id);
+	}
 
 	// Compute the coarse operator, either V' * op * V or V' * op * g5 * V
 	unsigned int create_coarse_max_rhs =
