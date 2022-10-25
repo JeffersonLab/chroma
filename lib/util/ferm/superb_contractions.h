@@ -4323,7 +4323,8 @@ namespace Chroma
     void* getQDPPtr(const T& t)
     {
 #  if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
-      std::vector<QDPCache::ArgKey> v(1, t.getId());
+      multi1d<QDPCache::ArgKey> v(1);
+      v[0] = t.getId();
       void* r = QDP_get_global_cache().get_dev_ptrs(v)[0];
       assert(superbblas::detail::getPtrDevice(r) >= 0);
       return r;
