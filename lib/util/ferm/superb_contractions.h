@@ -5453,14 +5453,18 @@ namespace Chroma
 
     /// Return a tensor filled with the value of the function applied to each element
     /// \param order: dimension labels, they should start with "xyztX"
-    /// \param size: length of each dimension
+    /// \param from: coordinates of the first element
+    /// \param size: length of each tensor dimension
+    /// \param dim: length of each global dimension (which is usually equal to size)
     /// \param dev: either OnHost or OnDefaultDevice
     /// \param func: function (Coor<N-1>) -> COMPLEX
+    /// \param zero_is_even: (optional) whether the first element (`from`) is an even site (usually true)
 
     template <std::size_t N, typename COMPLEX, typename Func>
     Tensor<N, COMPLEX> fillLatticeField(const std::string& order, const std::map<char, int>& from,
 					const std::map<char, int>& size,
-					const std::map<char, int>& dim, DeviceHost dev, Func func)
+					const std::map<char, int>& dim, DeviceHost dev, Func func,
+					bool zero_is_even = true)
     {
       using superbblas::detail::operator+;
 
@@ -5487,6 +5491,7 @@ namespace Chroma
       std::size_t vol = superbblas::detail::volume(local_latt_size);
       Index nX = r.kvdim()['X'];
       COMPLEX* ptr = r.data();
+      int d = (zero_is_even ? 0 : 1);
 
 #  ifdef _OPENMP
 #    pragma omp parallel for schedule(static)
@@ -5499,10 +5504,10 @@ namespace Chroma
 
 	// Translate even-odd coordinates to natural coordinates
 	Coor<N - 1> coor;
-	coor[0] = c[0] * nX + (c[1] + c[2] + c[3] + c[4]) % nX; // x
-	coor[1] = c[1];						// y
-	coor[2] = c[2];						// z
-	coor[3] = c[3];						// t
+	coor[0] = c[0] * nX + (c[1] + c[2] + c[3] + c[4] + d) % nX; // x
+	coor[1] = c[1];						    // y
+	coor[2] = c[2];						    // z
+	coor[3] = c[3];						    // t
 	std::copy_n(c.begin() + 5, N - 5, coor.begin() + 4);
 
 	// Call the function
@@ -5570,10 +5575,22 @@ namespace Chroma
 
     /// Operator's layout
     enum OperatorLayout {
-      NaturalLayout,  ///< natural ordering
-      XEvenOddLayout, ///< X:(x+y+z+t)%2, x:x/2, y:y, z:z, t:t
-      EvensOnlyLayout ///< x:x/2, y:y, z:z, t:t for all (x+y+z+t)%2==0
+      NaturalLayout,	     ///< natural ordering
+      XEvenOddLayout,	     ///< X:(x+y+z+t)%2, x:x/2, y:y, z:z, t:t
+      XEvenOddLayoutZeroOdd, ///< X:(x+y+z+t+1)%2, x:x/2, y:y, z:z, t:t
+      EvensOnlyLayout	     ///< x:x/2, y:y, z:z, t:t for all (x+y+z+t)%2==0
     };
+
+    /// Return whether the layout is XEvenOddLayout or XEvenOddLayoutZeroOdd
+    /// \param layout: layout to test
+
+    namespace detail
+    {
+      inline bool isEvenOddLayout(OperatorLayout layout)
+      {
+	return layout == XEvenOddLayout || layout == XEvenOddLayoutZeroOdd;
+      }
+    }
 
     /// Representation of an operator, function of type tensor -> tensor where the input and the
     /// output tensors have the same dimensions
@@ -5892,11 +5909,11 @@ namespace Chroma
 	auto new_d = d.kvslice_from_size(dom_kvfrom, dom_kvsize);
 	auto new_i = i.kvslice_from_size(img_kvfrom, img_kvsize);
 	OperatorLayout new_domLayout =
-	  (new_d.kvdim().at('X') != d.kvdim().at('X') && domLayout == XEvenOddLayout
+	  (new_d.kvdim().at('X') != d.kvdim().at('X') && detail::isEvenOddLayout(domLayout)
 	     ? EvensOnlyLayout
 	     : domLayout);
 	OperatorLayout new_imgLayout =
-	  (new_i.kvdim().at('X') != i.kvdim().at('X') && imgLayout == XEvenOddLayout
+	  (new_i.kvdim().at('X') != i.kvdim().at('X') && detail::isEvenOddLayout(imgLayout)
 	     ? EvensOnlyLayout
 	     : imgLayout);
 	if (sp)
@@ -6125,12 +6142,13 @@ namespace Chroma
 	    order.push_back(it.first);
 	auto real_dim = dim;
 	real_dim['X'] = (layout == EvensOnlyLayout ? 2 : (dim.count('X') == 1 ? dim.at('X') : 1));
-	auto t =
-	  fillLatticeField<N, float>(order, {}, real_dim, real_dim, OnDefaultDevice,
-				     [&](Coor<N - 1> c) {
-				       return (float)coloring.getColor({{c[0], c[1], c[2], c[3]}});
-				     })
-	    .kvslice_from_size({}, {{'X', dim.at('X')}});
+	auto t = fillLatticeField<N, float>(
+		   order, {}, real_dim, real_dim, OnDefaultDevice,
+		   [&](Coor<N - 1> c) {
+		     return (float)coloring.getColor({{c[0], c[1], c[2], c[3]}});
+		   },
+		   layout == XEvenOddLayout)
+		   .kvslice_from_size({}, {{'X', dim.at('X')}});
 
 	return {t, coloring.numColors()};
       }
@@ -6163,7 +6181,7 @@ namespace Chroma
 	    return coor[xLabelPos] % 2 == xoddity ? float{1} : float{0};
 	  });
 	}
-	else if (layout == XEvenOddLayout)
+	else if (isEvenOddLayout(layout))
 	{
 	  if (dim.at('X') != 2)
 	    throw std::runtime_error("getXOddityMask: invalid dimension size `X`");
@@ -6171,6 +6189,8 @@ namespace Chroma
 	  for (std::size_t i = 0, j = 0; i < N; ++i)
 	    if (is_in("Xyzt", r.order[i]))
 	      c[j++] = i;
+	  if (layout == XEvenOddLayoutZeroOdd)
+	    xoddity = (xoddity + 1) % 2;
 	  r.fillCpuFunCoor([&](const Coor<N>& coor) {
 	    Index s = 0;
 	    for (Index i : c)
@@ -6432,6 +6452,7 @@ namespace Chroma
 	// even-odd coordinates ((cX-dirx-diry-dirz-dirt)%2,(cx*2+(cX+cy+cz+ct)%2-dirx)/2,cy-diry,cz-dirz,ct-dirt).
 
 	Coor<Nd> real_dims = kvcoors<Nd>("xyzt", getNatLatticeDims(i.kvdim(), op.imgLayout));
+	int d = op.imgLayout == XEvenOddLayoutZeroOdd ? 1 : 0;
 	sop.jj.fillCpuFunCoor([&](const Coor<NOp + 2>& c) {
 	  // c has order '~u%xyztX' where xyztX were remapped by ri
 	  int domi = c[0];	  // the domain label to evaluate, label ~
@@ -6450,7 +6471,7 @@ namespace Chroma
 	    int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
 	    if (domi == Nblk + Nd)
 	      return (base + sumdir + real_maxX * Nd) % real_maxX;
-	    int sumyzt = std::accumulate(c.begin() + 2 + Nblk + 1, c.end() - 1, int{0});
+	    int sumyzt = std::accumulate(c.begin() + 2 + Nblk + 1, c.end() - 1, d);
 	    const auto& cX = c[2 + Nblk + Nd];
 	    return ((base * real_maxX + (cX + sumyzt) % real_maxX + real_dims[0] - dir[0]) /
 		    real_maxX) %
@@ -7282,13 +7303,15 @@ namespace Chroma
 	  std::string order("cxyztX");
 	  auto eg = Tensor<Nd + 2, ComplexD>(order, latticeSize<Nd + 2>(order, {{'t', 1}}),
 					     OnDefaultDevice, OnEveryone).make_eg();
+	  OperatorLayout op_layout =
+	    ((from_tslice + t) % 2 == 0 ? XEvenOddLayout : XEvenOddLayoutZeroOdd);
 	  auto laplacianOp = Chroma::SB::detail::cloneOperator(
 	    Operator<Nd + 2, ComplexD>{
 	      [&](Tensor<Nd + 3, Complex> x, Tensor<Nd + 3, Complex> y) {
 		LaplacianOperator(ut, from_tslice + t, y, x);
 	      },
-	      eg, eg, nullptr, "", XEvenOddLayout, XEvenOddLayout,
-	      detail::getNeighbors(eg.kvdim(), 1 /* near-neighbors links only */, XEvenOddLayout),
+	      eg, eg, nullptr, "", op_layout, op_layout,
+	      detail::getNeighbors(eg.kvdim(), 1 /* near-neighbors links only */, op_layout),
 	      ColumnMajor},
 	    ColumnMajor, RowMajor, Chroma::SB::detail::ConsiderBlockingDense, "laplacian");
 
