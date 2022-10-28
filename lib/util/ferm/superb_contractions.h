@@ -80,7 +80,7 @@ namespace Chroma
     /// Fully supported on node with index zero
     static const Distribution OnMaster("__OnMaster__");
     /// Distribute the lattice dimensions (x, y, z, t) 
-    static const Distribution OnEveryone("xyzt");
+    static const Distribution OnEveryone("tzyx");
     /// Distribute the lattice dimensions (x, y, z, t) as chroma does
     static const Distribution OnEveryoneAsChroma("__OnEveryonAsChroma__");
      /// All nodes have a copy of the tensor
@@ -1128,8 +1128,14 @@ namespace Chroma
 	    if (superbblas::detail::volume(r[i][1]) == 0)
 	      r[i] = std::array<Coor<N>, 2>{Coor<N>{{}}, Coor<N>{{}}};
 	  }
+	  TensorPartition<N> new_t{dim, r, isLocal};
 
-	  return TensorPartition<N>{dim, r, isLocal};
+	  // TODO: Fusing different tensor partitions isn't trivial. If both partitions differ in the number of
+	  // active processes (processes with nonzero support), then the current implementation will fail
+	  if (!new_t.is_compatible(o0, t, o1, labelsToCompare))
+	    throw std::runtime_error("make_compatible is broken and you hit a corner case");
+
+	  return new_t;
 	}
 
 	/// Insert a new non-distributed dimension
@@ -1419,27 +1425,15 @@ namespace Chroma
 							const Coor<N>& dim,
 							const std::string& dist_labels)
 	{
-	  std::string dist_order;
-	  Coor<N> dist_dim;
-	  for (unsigned int i = 0; i < dist_labels.size(); ++i)
-	  {
-	    const auto& it = std::find(order.begin(), order.end(), dist_labels[i]);
-	    if (it != order.end() && dim[it - order.begin()] > 1)
-	    {
-	      dist_dim[dist_order.size()] = dim[it - order.begin()];
-	      dist_order.push_back(dist_labels[i]);
-	    }
-	  }
-	  for (unsigned int i = dist_order.size(); i < N; ++i)
-	    dist_dim[i] = 1;
+	  Coor<N> dist_dim = dim;
 
 	  // Update the dimension x with the even-odd label X
 	  {
 	    const auto& itX = std::find(order.begin(), order.end(), 'X');
-	    const auto& itx = std::find(dist_order.begin(), dist_order.end(), 'x');
-	    if (itX != order.end() && itx != dist_order.end())
+	    const auto& itx = std::find(order.begin(), order.end(), 'x');
+	    if (itX != order.end() && itx != order.end())
 	    {
-	      dist_dim[itx - dist_order.begin()] *= dim[itX - order.begin()];
+	      dist_dim[itx - order.begin()] *= dim[itX - order.begin()];
 	    }
 	  }
 
@@ -1447,63 +1441,16 @@ namespace Chroma
 	  const std::string even_odd_labels = "xyzt";
 	  for (unsigned int i = 0; i < even_odd_labels.size(); ++i)
 	  {
-	    const auto& it = std::find(dist_order.begin(), dist_order.end(), even_odd_labels[i]);
-	    if (it != dist_order.end() && dist_dim[it - dist_order.begin()] % 2 == 0)
-	      dist_dim[it - dist_order.begin()] /= 2;
+	    const auto& it = std::find(order.begin(), order.end(), even_odd_labels[i]);
+	    if (it != order.end() && dist_dim[it - order.begin()] % 2 == 0)
+	      dist_dim[it - order.begin()] /= 2;
 	  }
 
-	  // Update the number of active dimensions
-	  int num_dims = 0;
-	  for (unsigned int i = 0; i < dist_order.size(); ++i)
-	    if (dist_dim[i] > 1)
-	      num_dims++;
-
-	  // If no dimension is going to be distributed, the whole tensor will have support only on node zero
-	  if (num_dims == 0 || superbblas::detail::volume(dim) == 0)
-	    return all_tensor_on_master(dim);
-
-	  // Compute the ideal length of a hypercube in each process with total volume equal to the tensor volume
-	  double vol = superbblas::detail::volume(dist_dim);
 	  int num_procs = Layout::numNodes();
-	  double r = std::exp(std::log(vol / num_procs) / num_dims);
-
-	  // Put as many processes in each direction to get close to the ideal length
-	  Coor<N> p;
-	  int remaining_procs = num_procs;
-	  for (unsigned int i = 0; i < N; ++i)
-	  {
-	    p[i] =
-	      std::min(dist_dim[i], std::min(remaining_procs, (int)std::max(1.0, std::round(dist_dim[i] / r))));
-	    remaining_procs /= p[i];
-	    assert(p[i] > 0);
-	  }
-
-	  // For each proc, get its coordinate in procs (logical coordinate) and compute the
-	  // fair range of the tensor supported on the proc
-	  PartitionStored fs(num_procs);
-	  Coor<N> stride = superbblas::detail::get_strides<int>(p, superbblas::FastToSlow);
-	  int active_procs = superbblas::detail::volume(p);
-	  Coor<N> procs =
-	    kvcoors<N>(order, zip(dist_order.begin(), dist_order.end(), p.begin()), 1, NoThrow);
-	  for (int rank = 0; rank < active_procs; ++rank)
-	  {
-	    Coor<N> cproc_ = superbblas::detail::index2coor(rank, p, stride);
-	    Coor<N> cproc = kvcoors<N>(
-	      order, zip(dist_order.begin(), dist_order.end(), cproc_.begin()), 0, NoThrow);
-	    for (unsigned int i = 0; i < N; ++i)
-	    {
-	      // First coordinate in process with rank 'rank' on dimension 'i'
-	      fs[rank][0][i] = dim[i] / procs[i] * cproc[i] + std::min(cproc[i], dim[i] % procs[i]);
-	      // Number of elements in process with rank 'cproc[i]' on dimension 'i'
-	      fs[rank][1][i] =
-		dim[i] / procs[i] + (dim[i] % procs[i] > cproc[i] ? 1 : 0) % procs[i];
-	    }
-
-	    // Normalize
-	    if (superbblas::detail::volume(fs[rank][1]) == 0)
-	      fs[rank] = std::array<Coor<N>, 2>{Coor<N>{{}}, Coor<N>{{}}};
-	  }
-	  return fs;
+	  auto procs = superbblas::partitioning_distributed_procs(order.c_str(), dist_dim,
+								  dist_labels.c_str(), num_procs);
+	  return superbblas::basic_partitioning(order.c_str(), dim, procs, dist_labels.c_str(),
+						num_procs);
 	}
       };
 
@@ -3982,6 +3929,15 @@ namespace Chroma
       if (disps.size() == 0)
 	return;
 
+      // Make sure that v is distributed as w
+      if (!w.isDistributedAs(v))
+      {
+	auto v_ = w.template make_compatible<Nv, Tv>(v.order, v.kvdim());
+	v.copyTo(v_);
+	latticeCopyToWithMask(v_, w, label_mu, disps, real_dims, mask_even, mask_odd);
+	return;
+      }
+
       // Get the number of colors on the original lattice
       const auto dim = v.kvdim();
       int real_maxX = real_dims.count('X') == 1 ? real_dims.at('X') : dim.at('X');
@@ -6355,7 +6311,8 @@ namespace Chroma
 	std::string sparse_labels("xyztX");
 	std::string dense_labels = remove_dimensions(op.i.order, sparse_labels);
 	remap rd = getNewLabels(op.d.order, op.i.order + "u~0123");
-	auto i = op.i.reorder("%xyztX", '%').like_this(none, {}, OnDefaultDevice).make_eg();
+	auto i =
+	  op.i.reorder("%xyztX", '%').like_this(none, {}, OnDefaultDevice, OnEveryone).make_eg();
 
 	// Get the blocking for the domain and the image
 	std::map<char, int> blkd, blki;
