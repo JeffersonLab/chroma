@@ -944,12 +944,8 @@ namespace Chroma
       /// Call the destroy callbacks set up in `getEvenOddOperatorsCacheDestroyList`
       inline void cleanEvenOddOperatorsCache()
       {
-	// Destroy in reverse order to the allocated one
-	while (getEvenOddOperatorsCacheDestroyList().size() > 0)
-	{
-	  getEvenOddOperatorsCacheDestroyList().back()();
-	  getEvenOddOperatorsCacheDestroyList().pop_back();
-	}
+	for (const auto& f : getEvenOddOperatorsCacheDestroyList())
+	  f();
       }
 
       /// Tuple storing the operator even-odd and odd-even parts and the block diagonal
