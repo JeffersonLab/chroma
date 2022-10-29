@@ -443,6 +443,15 @@ AC_ARG_WITH(magma,
   [ with_magma="no" ]
 )
 
+AC_ARG_WITH(boost,
+  AC_HELP_STRING(
+    [--with-boost=DIR],
+    [Build Chroma with boost in DIR]
+  ),
+  [ BOOST_HOME="${with_boost}" ],
+  [ with_boost="no" ]
+)
+
 if test "X${QDPCVER_HOME}X" = "XX" ; then
   AC_MSG_NOTICE([QDPCVER_HOME variable not set.])
 else
@@ -1442,6 +1451,26 @@ fi
 
 AM_CONDITIONAL(BUILD_MAGMA,
 	[test "x${with_magma}x" != "xnox" ])
+
+################################################################################
+# BOOST 
+################################################################################
+ 
+if test "X${BOOST_HOME}X" != "XX";
+then
+  AC_SUBST(BOOST_CXXFLAGS, "-I${BOOST_HOME}" ) 
+  AC_MSG_NOTICE([ Build chroma with boost installation in ${BOOST_HOME}])
+  AC_DEFINE([BUILD_BOOST], [], [Build with boost])
+else
+  if test "X${with_boost}X" != "XnoX";
+  then
+    AC_MSG_NOTICE([ Building with boost installation given in the CXXFLAGS ])
+    AC_DEFINE([BUILD_BOOST], [], [Build with boost])
+  fi
+fi
+
+AM_CONDITIONAL(BUILD_BOOST,
+	[test "x${with_boost}x" != "xnox" ])
 
 
 

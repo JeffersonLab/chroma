@@ -2052,6 +2052,10 @@ if( Chroma_ENABLE_SUPERBBLAS )
   target_link_libraries(superbblas INTERFACE BLAS::BLAS ${Chroma_extra_link_flags})
 endif()
 
+if( Chroma_ENABLE_BOOST )
+     target_include_directories(chromalib PUBLIC ${BOOST_DIR})
+endif()
+ 
 
 if( Chroma_SANITIZER_OPTS )
    target_compile_options(chromalib PRIVATE ${Chroma_SANITIZER_OPTS})

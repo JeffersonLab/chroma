@@ -29,6 +29,7 @@ option(Chroma_ENABLE_OPENMP "Enable OpenMP" OFF)
 option(Chroma_ENABLE_SUPERBBLAS  "Enable tasks using Superbblas" OFF)
 option(Chroma_ENABLE_PRIMME  "Build with PRIMME" OFF)
 option(Chroma_ENABLE_MAGMA  "Build with MAGMA" OFF)
+option(Chroma_ENABLE_BOOST  "Build with boost" OFF)
 set(BLAS_SUFFIX_LINK_FLAGS "" CACHE STRING "Extra linking flags placed after BLAS")
 separate_arguments(Chroma_extra_link_flags UNIX_COMMAND ${BLAS_SUFFIX_LINK_FLAGS})
 message(STATUS "Chroma extra links: ${Chroma_extra_link_flags}")
@@ -54,6 +55,7 @@ option(Chroma_USE_MGPROTO "Use the MGProto Multigrid solver" OFF)
 set(SUPERBBLAS_DIR "" CACHE PATH "path to superbblas installation")
 set(PRIMME_DIR "" CACHE PATH "path to PRIMME installation")
 set(MAGMA_DIR "" CACHE PATH "path to MAGMA installation")
+set(BOOST_DIR "" CACHE PATH "path to boost installation")
 
 ##################
 # End of Options
@@ -225,6 +227,12 @@ if( Chroma_ENABLE_SUPERBBLAS )
     message(STATUS "Enabling PRIMME")
     set(BUILD_PRIMME 1)
   endif()
+endif()
+
+# Deal with boost
+if( Chroma_ENABLE_BOOST )
+  message(STATUS "Enabling boost")
+  set(BUILD_BOOST 1)
 endif()
 
 

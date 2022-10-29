@@ -9,7 +9,6 @@
 #define __INCLUDE_MGPROTON__
 
 #include "chromabase.h"
-#include "meas/hadron/greedy_coloring.h"
 #include "util/ferm/superb_contractions.h"
 #include "util/ferm/superb_options.h"
 
@@ -28,20 +27,6 @@ namespace Chroma
       JustSummary = 1, ///< Print summary at the end of the solver execution
       Detailed = 2,    ///< Print progress
       VeryDetailed = 3 ///< Print whatever
-    };
-
-    /// Ordering of matrices
-
-    enum ColOrdering {
-      RowMajor,	   ///< row-major ordering, the fastest index is the column
-      ColumnMajor, ///< row-major ordering, the fastest index is the row
-    };
-
-    /// Operator's layout
-    enum OperatorLayout {
-      NaturalLayout,  ///< natural ordering
-      XEvenOddLayout, ///< X:(x+y+z+t)%2, x:x/2, y:y, z:z, t:t
-      EvensOnlyLayout ///< x:x/2, y:y, z:z, t:t for all (x+y+z+t)%2==0
     };
 
     /// Expected solver domain and image
@@ -67,373 +52,6 @@ namespace Chroma
       static const std::map<std::string, ColOrdering> m{{"row", RowMajor}, {"column", ColumnMajor}};
       return m;
     }
-
-    /// Displacements of each site nonzero edge for every operator's site
-
-    using NaturalNeighbors = std::vector<std::map<char, int>>;
-
-    /// Special value to indicate that the operator is dense
-
-    inline const NaturalNeighbors& DenseOperator()
-    {
-      static const NaturalNeighbors dense{{{(char)0, 0}}};
-      return dense;
-    }
-
-    /// Representation of an operator, function of type tensor -> tensor where the input and the
-    /// output tensors have the same dimensions
-
-    template <std::size_t NOp, typename COMPLEX>
-    using OperatorFun =
-      std::function<void(const Tensor<NOp + 1, COMPLEX>&, Tensor<NOp + 1, COMPLEX>)>;
-
-    /// Representation of an operator, function of type tensor -> tensor where the output tensor
-    /// has powers of the operator applied to the input tensor
-
-    template <std::size_t NOp, typename COMPLEX>
-    using OperatorPowerFun =
-      std::function<void(const Tensor<NOp + 2, COMPLEX>&, Tensor<NOp + 2, COMPLEX>, char)>;
-
-    /// Representation of a function that takes and returns tensors with the same labels, although the
-    /// dimensions may be different.
-
-    template <std::size_t NOp, typename COMPLEX>
-    struct Operator {
-      /// Function that the operators applies (optional)
-      OperatorFun<NOp, COMPLEX> fop;
-      /// Example tensor for the input tensor (domain)
-      Tensor<NOp, COMPLEX> d;
-      /// Example tensor for the output tensor (image)
-      Tensor<NOp, COMPLEX> i;
-      /// Function to apply when conjugate transposed (optional)
-      OperatorFun<NOp, COMPLEX> fop_tconj;
-      /// Labels that distinguish different operator instantiations
-      std::string order_t;
-      /// Operator's domain space layout
-      OperatorLayout domLayout;
-      /// Operator's image space layout
-      OperatorLayout imgLayout;
-      /// Neighbors for each site in this operator
-      NaturalNeighbors neighbors;
-      /// Preferred ordering
-      ColOrdering preferred_col_ordering;
-      /// Operator based on sparse tensor (optional)
-      SpTensor<NOp, NOp, COMPLEX> sp;
-      /// Sparse tensor map from image labels to domain labels (optional)
-      remap rd;
-      /// Operator maximum power support (optional)
-      unsigned int max_power;
-      /// Identity
-      std::shared_ptr<std::string> id;
-
-      /// Empty constructor
-      Operator()
-      {
-      }
-
-      /// Constructor
-      Operator(const OperatorFun<NOp, COMPLEX>& fop, Tensor<NOp, COMPLEX> d, Tensor<NOp, COMPLEX> i,
-	       const OperatorFun<NOp, COMPLEX>& fop_tconj, const std::string& order_t,
-	       OperatorLayout domLayout, OperatorLayout imgLayout, NaturalNeighbors neighbors,
-	       ColOrdering preferred_col_ordering, const std::string& id = "")
-	: fop(fop),
-	  d(d),
-	  i(i),
-	  fop_tconj(fop_tconj),
-	  order_t(order_t),
-	  domLayout(domLayout),
-	  imgLayout(imgLayout),
-	  neighbors(neighbors),
-	  preferred_col_ordering(preferred_col_ordering),
-	  sp{},
-	  rd{},
-	  max_power{0},
-	  id(std::make_shared<std::string>(id))
-      {
-      }
-
-      /// Constructor for a power-supported function
-      Operator(const SpTensor<NOp, NOp, COMPLEX>& sp, const remap& rd, unsigned int max_power,
-	       Tensor<NOp, COMPLEX> d, Tensor<NOp, COMPLEX> i, const std::string& order_t,
-	       OperatorLayout domLayout, OperatorLayout imgLayout, NaturalNeighbors neighbors,
-	       ColOrdering preferred_col_ordering, const std::string& id = "")
-	: fop{},
-	  d(d),
-	  i(i),
-	  fop_tconj{},
-	  order_t(order_t),
-	  domLayout(domLayout),
-	  imgLayout(imgLayout),
-	  neighbors(neighbors),
-	  preferred_col_ordering(preferred_col_ordering),
-	  sp{sp},
-	  rd{rd},
-	  max_power{max_power},
-	  id(std::make_shared<std::string>(id))
-      {
-      }
-
-      /// Constructor from other operator
-      Operator(const OperatorFun<NOp, COMPLEX>& fop, Tensor<NOp, COMPLEX> d, Tensor<NOp, COMPLEX> i,
-	       const OperatorFun<NOp, COMPLEX>& fop_tconj, const Operator<NOp, COMPLEX>& op,
-	       const std::string& id = "")
-	: fop(fop),
-	  d(d),
-	  i(i),
-	  fop_tconj(fop_tconj),
-	  order_t(op.order_t),
-	  domLayout(op.domLayout),
-	  imgLayout(op.imgLayout),
-	  neighbors(op.neighbors),
-	  preferred_col_ordering(op.preferred_col_ordering),
-	  sp{},
-	  rd{},
-	  max_power{0},
-	  id(std::make_shared<std::string>(id))
-      {
-      }
-
-      /// Return whether the operator is not empty
-      explicit operator bool() const noexcept
-      {
-	return (bool)d;
-      }
-
-      /// Return the transpose conjugate of the operator
-      Operator<NOp, COMPLEX> tconj() const
-      {
-	if (sp || !fop_tconj)
-	  throw std::runtime_error("Operator does not have conjugate transpose form");
-	return {
-	  fop_tconj, i, d, fop, order_t, imgLayout, domLayout, neighbors, preferred_col_ordering};
-      }
-
-      /// Return whether the operator has transpose conjugate
-      bool has_tconj() const
-      {
-	return !sp && fop_tconj;
-      }
-
-      /// Return compatible domain tensors
-      /// \param col_order: order for the columns
-      /// \param m: column dimension size
-
-      template <std::size_t N>
-      Tensor<N, COMPLEX> make_compatible_dom(const std::string& col_order,
-					     const std::map<char, int>& m)
-      {
-	return d.template like_this<N, COMPLEX>(
-	  preferred_col_ordering == ColumnMajor ? std::string("%") + col_order : col_order + "%",
-	  '%', "", m);
-      }
-
-      /// Return compatible image tensors
-      /// \param col_order: order for the columns
-      /// \param m: column dimension size
-
-      template <std::size_t N>
-      Tensor<N, COMPLEX> make_compatible_img(const std::string& col_order,
-					     const std::map<char, int>& m)
-      {
-	return i.template like_this<N, COMPLEX>(
-	  preferred_col_ordering == ColumnMajor ? std::string("%") + col_order : col_order + "%",
-	  '%', "", m);
-      }
-
-      /// Apply the operator
-      template <std::size_t N, typename T>
-      Tensor<N, T> operator()(const Tensor<N, T>& t) const
-      {
-	// The `t` labels that are not in `d` are the column labels
-	std::string cols = detail::remove_dimensions(t.order, d.order); // t.order - d.order
-
-	if (sp)
-	{
-	  remap mcols = detail::getNewLabels(cols, sp.d.order + sp.i.order);
-	  auto y = i.template like_this<N, T>(
-	    preferred_col_ordering == ColumnMajor ? std::string("%") + cols : cols + "%", '%', "",
-	    t.kvdim());
-	  sp.contractWith(t.rename_dims(mcols), rd, y.rename_dims(mcols), {});
-	  return y;
-	}
-	else
-	{
-	  auto x =
-	    t.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
-	  auto y = i.template like_this<NOp + 1>(
-	    preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "", {{'n', x.kvdim()['n']}});
-	  fop(x, y);
-	  return y.template split_dimension<N>('n', cols, t.kvdim()).template make_sure<T>();
-	}
-      }
-
-      /// Apply the operator
-      template <std::size_t N, typename T>
-      void operator()(const Tensor<N, T>& x, Tensor<N, T> y, char power_label = 0) const
-      {
-	// The `x` labels that are not in `d` are the column labels
-	std::string cols_and_power =
-	  detail::remove_dimensions(x.order, d.order); // x.order - d.order
-	std::string cols =
-	  power_label == 0 ? cols_and_power
-			   : detail::remove_dimensions(cols_and_power, std::string(1, power_label));
-	int power = power_label == 0 ? 1 : y.kvdim().at(power_label);
-	if (power <= 0)
-	  return;
-
-	if (sp)
-	{
-	  remap mcols = detail::getNewLabels(cols_and_power, sp.d.order + sp.i.order);
-	  if (power == 1)
-	  {
-	    sp.contractWith(x.rename_dims(mcols), rd, y.rename_dims(mcols), {});
-	  }
-	  else
-	  {
-	    char power_label0 = mcols.count(power_label) == 1 ? mcols.at(power_label) : power_label;
-	    auto x0 = x.rename_dims(mcols);
-	    auto y0 = y.rename_dims(mcols);
-	    int power0 = (max_power == 0 ? power : std::min(power, (int)max_power));
-	    sp.contractWith(x0, rd, y0.kvslice_from_size({}, {{power_label0, power0}}), {},
-			    power_label0);
-	    for (int i = power0, ni = std::min((int)max_power, power - i); i < power;
-		 i += ni, ni = std::min((int)max_power, power - i))
-	    {
-	      sp.contractWith(y0.kvslice_from_size({{power_label0, i - 1}}, {{power_label0, 1}}),
-			      rd, y0.kvslice_from_size({{power_label0, i}}, {{power_label0, ni}}),
-			      {}, power_label0);
-	    }
-	  }
-	}
-	else
-	{
-	  if (power_label == 0)
-	  {
-	    auto x0 = x.template collapse_dimensions<NOp + 1>(cols_and_power, 'n', true)
-			.template cast<COMPLEX>();
-	    auto y0 = y.template collapse_dimensions<NOp + 1>(cols_and_power, 'n', true)
-			.template cast_like<COMPLEX>();
-	    fop(x0, y0);
-	    y0.copyTo(y);
-	  }
-	  else if (power > 0)
-	  {
-	    operator()(x.kvslice_from_size({}, {{power_label, 1}}),
-		       y.kvslice_from_size({}, {{power_label, 1}}));
-	    for (int i = 1, p = power; i < p; ++i)
-	      operator()(y.kvslice_from_size({{power_label, i - 1}}, {{power_label, 1}}),
-			 y.kvslice_from_size({{power_label, i}}, {{power_label, 1}}));
-	  }
-	}
-      }
-
-      /// Return this operator with an implicit different type
-      /// \tparam T: new implicit precision
-
-      template <typename T = COMPLEX,
-		typename std::enable_if<std::is_same<T, COMPLEX>::value, bool>::type = true>
-      Operator<NOp, T> cast() const
-      {
-	return *this;
-      }
-
-      template <typename T,
-		typename std::enable_if<!std::is_same<T, COMPLEX>::value, bool>::type = true>
-      Operator<NOp, T> cast() const
-      {
-	if (!*this)
-	  return {};
-
-	if (sp)
-	{
-	  return Operator<NOp, T>(sp.template cast<T>(), rd, max_power, d.template cast<T>(),
-				  i.template cast<T>(), order_t, domLayout, imgLayout, neighbors,
-				  preferred_col_ordering);
-	}
-	else
-	{
-	  const Operator<NOp, COMPLEX> op = *this,
-				       op_tconj = has_tconj() ? tconj() : Operator<NOp, COMPLEX>{};
-	  return Operator<NOp, T>(
-	    [=](const Tensor<NOp + 1, T>& x, Tensor<NOp + 1, T> y) { op(x, y); },
-	    d.template cast<T>(), i.template cast<T>(),
-	    op_tconj ? [=](const Tensor<NOp + 1, T>& x, Tensor<NOp + 1, T> y) { op_tconj(x, y); }
-		     : OperatorFun<NOp, T>{},
-	    order_t, domLayout, imgLayout, neighbors, preferred_col_ordering);
-	}
-      }
-
-      /// Return a slice of the tensor starting at coordinate `dom_kvfrom`, `img_kvfrom` and taking
-      /// `dom_kvsize`, `img_kvsize` elements in each direction. The missing dimensions in `*_kvfrom`
-      /// are set to zero and the missing directions in `*_kvsize` are set to the size of the tensor.
-      ///
-      /// \param dom_kvfrom: dictionary with the index of the first element in each domain direction
-      /// \param dom_kvsize: dictionary with the number of elements in each domain direction
-      /// \param img_kvfrom: dictionary with the index of the first element in each domain direction
-      /// \param img_kvsize: dictionary with the number of elements in each domain direction
-      /// \return: a copy of the tensor or an implicit operator
-
-      Operator<NOp, COMPLEX> kvslice_from_size(const std::map<char, int>& dom_kvfrom = {},
-					       const std::map<char, int>& dom_kvsize = {},
-					       const std::map<char, int>& img_kvfrom = {},
-					       const std::map<char, int>& img_kvsize = {}) const
-      {
-	if (!*this)
-	  return {};
-
-	// Update the eg layouts and the data layouts
-	auto new_d = d.kvslice_from_size(dom_kvfrom, dom_kvsize);
-	auto new_i = i.kvslice_from_size(img_kvfrom, img_kvsize);
-	OperatorLayout new_domLayout =
-	  (new_d.kvdim().at('X') != d.kvdim().at('X') && domLayout == XEvenOddLayout
-	     ? EvensOnlyLayout
-	     : domLayout);
-	OperatorLayout new_imgLayout =
-	  (new_i.kvdim().at('X') != i.kvdim().at('X') && imgLayout == XEvenOddLayout
-	     ? EvensOnlyLayout
-	     : imgLayout);
-	if (sp)
-	{
-	  return Operator<NOp, COMPLEX>(sp.kvslice_from_size(detail::update_kvcoor(dom_kvfrom, rd),
-							     detail::update_kvcoor(dom_kvsize, rd),
-							     img_kvfrom, img_kvsize),
-					rd, max_power, new_d, new_i, order_t, new_domLayout,
-					new_imgLayout, neighbors, preferred_col_ordering);
-	}
-	else
-	{
-	  const Operator<NOp, COMPLEX> op = *this,
-				       op_tconj = has_tconj() ? tconj() : Operator<NOp, COMPLEX>{};
-	  return Operator<NOp, COMPLEX>(
-	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	      auto x0 = op.d.template like_this<NOp + 1>(
-		op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-		{{'n', x.kvdim().at('n')}});
-	      x0.set_zero();
-	      x.copyTo(x0.kvslice_from_size(dom_kvfrom, dom_kvsize));
-	      auto y0 = op.i.template like_this<NOp + 1>(
-		op.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-		{{'n', x.kvdim().at('n')}});
-	      op(x0, y0);
-	      y0.kvslice_from_size(img_kvfrom, img_kvsize).copyTo(y);
-	    },
-	    new_d, new_i,
-	    op_tconj ? [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	      auto x0 = op_tconj.d.template like_this<NOp + 1>(
-		op_tconj.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-		{{'n', x.kvdim().at('n')}});
-	      x0.set_zero();
-	      x.copyTo(x0.kvslice_from_size(img_kvfrom, img_kvsize));
-	      auto y0 = op_tconj.i.template like_this<NOp + 1>(
-		op_tconj.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-		{{'n', x.kvdim().at('n')}});
-	      op_tconj(x0, y0);
-	      y0.kvslice_from_size(dom_kvfrom, dom_kvsize).copyTo(y);
-            } : OperatorFun<NOp, COMPLEX>{},
-	    order_t, new_domLayout, new_imgLayout, neighbors, preferred_col_ordering);
-	}
-      }
-    };
 
     namespace detail
     {
@@ -963,724 +581,6 @@ namespace Chroma
 	}
       }
 
-      enum BlockingAsSparseDimensions {
-	ConsiderBlockingSparse, ///< Dimensions 0,1,2,3 will be sparse and part of the lattice
-	ConsiderBlockingDense	///< Dimensions 0,1,2,3 will be dense and not lattice dimensions
-      };
-
-      /// Return the natural lattice dimensions
-      /// \param dim: dimension for each label
-      /// \param layout: operator's layout
-
-      inline std::map<char, int>
-      getNatLatticeDims(const std::map<char, int>& dim, OperatorLayout layout,
-			BlockingAsSparseDimensions blockDims = ConsiderBlockingSparse)
-      {
-	int nX = (layout == EvensOnlyLayout ? 2 : (dim.count('X') == 1 ? dim.at('X') : 1));
-	if (blockDims == ConsiderBlockingSparse)
-	{
-	  return std::map<char, int>{
-	    {'x', dim.at('x') * (dim.count('0') == 1 ? dim.at('0') : 1) * nX},
-	    {'y', dim.at('y') * (dim.count('1') == 1 ? dim.at('1') : 1)},
-	    {'z', dim.at('z') * (dim.count('2') == 1 ? dim.at('2') : 1)},
-	    {'t', dim.at('t') * (dim.count('3') == 1 ? dim.at('3') : 1)}};
-	}
-	else
-	{
-	  return std::map<char, int>{
-	    {'x', dim.at('x') * nX}, {'y', dim.at('y')}, {'z', dim.at('z')}, {'t', dim.at('t')}};
-	}
-      }
-
-      /// Return the neighbors as displacements from origin in natural coordinates
-      /// \param blocking: blocking for each natural direction
-      /// \param dim: operator dimensions
-      /// \param neighbors: operator's neighbors in natural coordinates
-      /// \param layout: operator's layout
-
-      inline NaturalNeighbors
-      getNeighborsAfterBlocking(const std::map<char, unsigned int>& blocking,
-				const std::map<char, int>& dim, const NaturalNeighbors& neighbors,
-				OperatorLayout layout)
-      {
-	using superbblas::detail::operator/;
-	using superbblas::detail::operator+;
-
-	// Get the natural dimensions of the lattice
-	Coor<Nd> blk = kvcoors<Nd>("xyzt", blocking, 1);
-	Coor<Nd> nat_dims = kvcoors<Nd>("xyzt", getNatLatticeDims(dim, layout));
-
-	// Filter out odd neighbors if `Xsubrange` and block them
-	std::set<Index> idx_neighbors;
-	Coor<Nd> blk_strides = superbblas::detail::get_strides<Index>(blk, superbblas::FastToSlow);
-	Coor<Nd> blk_nat_dims = nat_dims / blk;
-	Coor<Nd> blk_nat_dims_strides =
-	  superbblas::detail::get_strides<Index>(blk_nat_dims, superbblas::FastToSlow);
-	std::size_t blk_vol = superbblas::detail::volume(blk);
-	for (const auto& kvcoor : neighbors)
-	{
-	  Coor<Nd> c = kvcoors<Nd>("xyzt", kvcoor);
-	  for (Index i = 0; i < blk_vol; ++i)
-	  {
-	    Coor<Nd> blk_c =
-	      normalize_coor(c + superbblas::detail::index2coor(i, blk, blk_strides), nat_dims) /
-	      blk;
-	    Index idx_blk_c =
-	      superbblas::detail::coor2index(blk_c, blk_nat_dims, blk_nat_dims_strides);
-	    idx_neighbors.insert(idx_blk_c);
-	  }
-	}
-
-	// Convert the indices into maps
-	NaturalNeighbors r;
-	for (Index idx : idx_neighbors)
-	{
-	  Coor<Nd> c = superbblas::detail::index2coor(idx, blk_nat_dims, blk_nat_dims_strides);
-	  r.push_back(std::map<char, int>{{{'x', c[0]}, {'y', c[1]}, {'z', c[2]}, {'t', c[3]}}});
-	}
-
-	return r;
-      }
-
-      /// Return the Manhattan distance of the furthest neighbor
-      /// \param neighbors: operator's neighbors in natural coordinates
-      /// \param dim: operator dimensions
-      /// \param layout: operator's layout
-
-      inline unsigned int getFurthestNeighborDistance(const NaturalNeighbors& neighbors,
-						      const std::map<char, int>& dim,
-						      OperatorLayout layout)
-      {
-	const auto natdim = getNatLatticeDims(dim, layout);
-	unsigned int max_distance = 0;
-	for (const auto& kvcoor : neighbors)
-	{
-	  unsigned int dist = 0;
-	  for (const auto& it : kvcoor)
-	  {
-	    int label_dim = natdim.at(it.first);
-	    int label_coor = normalize_coor(it.second, label_dim);
-	    dist += std::min(label_coor, label_dim - label_coor);
-	  }
-	  max_distance = std::max(max_distance, dist);
-	}
-
-	return max_distance;
-      }
-
-      /// Return the Manhattan distance of the furthest neighbor in an operator
-      /// \param op: given operator
-
-      template <std::size_t NOp, typename COMPLEX>
-      unsigned int getFurthestNeighborDistance(Operator<NOp, COMPLEX> op)
-      {
-	return getFurthestNeighborDistance(op.neighbors, op.i.kvdim(), op.imgLayout);
-      }
-
-      /// Return the neighbors as displacements from origin in natural coordinates
-      /// \param dim: operator dimensions
-      /// \param max_dist_neighbors: the distance of the farthest neighbor for each site
-      /// \param layout: operator's layout
-
-      inline NaturalNeighbors getNeighbors(const std::map<char, int>& dim,
-					   unsigned int max_dist_neighbors, OperatorLayout layout)
-      {
-	// Get the natural dimensions of the lattice and all the neighbors up to distance `max_dist_neighbors`
-	Coor<Nd> nat_dims = kvcoors<Nd>("xyzt", getNatLatticeDims(dim, layout));
-	std::vector<Coor<Nd>> neighbors = Coloring::all_neighbors(max_dist_neighbors, nat_dims);
-
-	// Filter out odd neighbors if the layout is `EvensOnlyLayout`
-	std::set<std::size_t> idx_neighbors;
-	Stride<Nd> strides =
-	  superbblas::detail::get_strides<std::size_t>(nat_dims, superbblas::FastToSlow);
-	for (const auto& c : neighbors)
-	{
-	  if (layout == EvensOnlyLayout && std::accumulate(c.begin(), c.end(), Index{0}) % 2 != 0)
-	    continue;
-	  idx_neighbors.insert(superbblas::detail::coor2index(c, nat_dims, strides));
-	}
-
-	// Convert the indices into maps
-	NaturalNeighbors r;
-	for (std::size_t idx : idx_neighbors)
-	{
-	  Coor<Nd> c = superbblas::detail::index2coor(idx, nat_dims, strides);
-	  r.push_back(std::map<char, int>{{'x', c[0]}, {'y', c[1]}, {'z', c[2]}, {'t', c[3]}});
-	}
-
-	return r;
-      }
-
-      /// Return the color for each site
-      /// \param dim: operator dimensions
-      /// \param layout: operator's layout
-      /// \param neighbors: operator's neighbors in natural coordinates
-      /// \param power: maximum distance to recover the nonzeros:
-      ///               0, block diagonal; 1: near-neighbors...
-
-      template <std::size_t N>
-      std::pair<Tensor<N, float>, std::size_t>
-      getColors(const std::map<char, int>& dim, OperatorLayout layout,
-		const NaturalNeighbors& neighbors, unsigned int power)
-      {
-	// Unsupported other powers than zero or one
-	unsigned int max_dist_neighbors = getFurthestNeighborDistance(neighbors, dim, layout);
-	if (power != 0 && power != max_dist_neighbors)
-	  throw std::runtime_error("getColors: unsupported value for `power`: either zero or the "
-				   "distance to the furthest neighbor");
-
-	// Compute the coloring
-	Coor<Nd> nat_dims =
-	  kvcoors<Nd>("xyzt", getNatLatticeDims(dim, layout, ConsiderBlockingDense));
-	Coloring coloring{0, // zero displacement in coloring
-			  power == 0 ? max_dist_neighbors + 1
-				     : max_dist_neighbors * 2 + 1, // k-distance coloring
-			  nat_dims};
-
-	// Create a field with the color of each site
-	std::string order("xyztX");
-	for (const auto& it : dim)
-	  if (std::find(order.begin(), order.end(), it.first) == order.end())
-	    order.push_back(it.first);
-	auto real_dim = dim;
-	real_dim['X'] = (layout == EvensOnlyLayout ? 2 : (dim.count('X') == 1 ? dim.at('X') : 1));
-	auto t =
-	  fillLatticeField<N, float>(order, {}, real_dim, real_dim, OnDefaultDevice,
-				     [&](Coor<N - 1> c) {
-				       return (float)coloring.getColor({{c[0], c[1], c[2], c[3]}});
-				     })
-	    .kvslice_from_size({}, {{'X', dim.at('X')}});
-
-	return {t, coloring.numColors()};
-      }
-
-      /// Return a mask for the sites with even or odd x coordinate
-      /// \param xoddity: 0 for even, 1 for odd x coordinates
-      /// \param t: return a tensor with this distribution
-      /// \param layout: tensor's layout
-      /// NOTE: this implementation may be too slow for large tensors
-
-      template <std::size_t N, typename T>
-      Tensor<N, float> getXOddityMask_aux(int xoddity, const Tensor<N, T>& t, OperatorLayout layout)
-      {
-	if (xoddity != 0 && xoddity != 1)
-	  throw std::runtime_error("getXOddityMask: invalid input argument `xoddity`");
-	auto dim = t.kvdim();
-	auto r = t.template make_compatible<N, float>();
-	if (layout == NaturalLayout)
-	{
-	  if (dim.at('X') != 1 && dim.at('X') != 2)
-	    throw std::runtime_error("getXOddityMask: invalid dimension size `X`");
-	  Index xLabelPos = -1;
-	  char xLabel = (dim.at('X') == 1 ? 'x' : 'X');
-	  for (std::size_t i = 0; i < N; ++i)
-	    if (r.order[i] == xLabel)
-	      xLabelPos = i;
-	  if (xLabelPos < 0)
-	    throw std::runtime_error("getXOddityMask: given tensor doesn't have `x` dimension");
-	  r.fillCpuFunCoor([&](const Coor<N>& coor) {
-	    return coor[xLabelPos] % 2 == xoddity ? float{1} : float{0};
-	  });
-	}
-	else if (layout == XEvenOddLayout)
-	{
-	  if (dim.at('X') != 2)
-	    throw std::runtime_error("getXOddityMask: invalid dimension size `X`");
-	  Coor<4> c;
-	  for (std::size_t i = 0, j = 0; i < N; ++i)
-	    if (is_in("Xyzt", r.order[i]))
-	      c[j++] = i;
-	  r.fillCpuFunCoor([&](const Coor<N>& coor) {
-	    Index s = 0;
-	    for (Index i : c)
-	      s += coor[i];
-	    return s % 2 == xoddity ? float{1} : float{0};
-	  });
-	}
-	else if (layout == EvensOnlyLayout)
-	{
-	  if (dim.at('X') != 1)
-	    throw std::runtime_error("getXOddityMask: invalid dimension size `X`");
-	  r.set(xoddity == 0 ? float{1} : float{0});
-	}
-	else
-	  throw std::runtime_error("getXOddityMask: unsupported layout");
-
-	return r;
-      }
-
-      /// Return a mask for the sites with even or odd x coordinate
-      /// \param xoddity: 0 for even, 1 for odd x coordinates
-      /// \param t: return a tensor with this distribution
-      /// \param layout: tensor's layout
-
-      template <std::size_t N, typename T>
-      Tensor<N, float> getXOddityMask(int xoddity, const Tensor<N, T>& t, OperatorLayout layout)
-      {
-	// Create the mask on the lattice components
-	auto r_lat = t.template make_compatible<5, float>("Xxyzt");
-	r_lat = getXOddityMask_aux(xoddity, r_lat, layout);
-
-	// Create a matrix of ones to extend the mask onto the other components
-	auto dim_dense = t.kvdim();
-	for (auto& it : dim_dense)
-	  if (is_in("xyztX", it.first))
-	    it.second = 1;
-	auto r_dense = t.template like_this<N - 5, float>("%", '%', "xyztX", dim_dense, none,
-							  OnEveryoneReplicated);
-	r_dense.set(1);
-
-	// Contract both to create the output tensor
-	auto r = t.template make_compatible<N, float>();
-	contract(r_lat, r_dense, "", CopyTo, r);
-
-	return r;
-      }
-
-      /// Return a copy of the given tensor in natural ordering into an even-odd ordering.
-      ///
-      /// \param v: origin tensor
-
-      template <std::size_t N, typename T>
-      Tensor<N, T> toEvenOddOrdering(const Tensor<N, T>& v)
-      {
-	// If the tensor is already in even-odd ordering, return it
-	auto vdim = v.kvdim();
-	if (vdim.at('X') == 2)
-	  return v;
-
-	// Check that the tensor can be reordered in even-ordering compressed on the x-direction
-	if (!(vdim.at('x') % 2 == 0 && //
-	      (vdim.at('y') == 1 || vdim.at('y') % 2 == 0) &&
-	      (vdim.at('z') == 1 || vdim.at('z') % 2 == 0) &&
-	      (vdim.at('t') == 1 || vdim.at('t') % 2 == 0)))
-	  throw std::runtime_error("toEvenOddOrdering: invalid tensor dimensions");
-
-	// All even/odd coordinate x elements cannot be selected with slicing at once for even-odd
-	// ordering, so we use arbitrary selection of elements: masks. The approach to convert between
-	// orderings is to mask all elements with even/odd x coordinate and copy them to a new tensor
-	// with the target layout. The copying with mask superbblas operation wasn't design to support
-	// different mask on the origin and destination tensor. But it's going to produce the desired
-	// effect if the following properties match:
-	//   a) the origin and destination masks are active in all dimensions excepting some dimensions,
-	//      only X in this case;
-	//   b) for all coordinates only one element is active on the excepting dimensions, the even or the odd
-	//      x coordinates in the X dimension in this case;
-	//   c) the excepting dimensions are fully supported on all processes; and
-	//   d) the excepting dimensions are the fastest index and have the same ordering in the origin and
-	//      the destination tensors.
-
-	auto v0 = v.reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}}).reorder("Xxyzt%", '%');
-	auto r = v0.make_compatible();
-	for (int oddity = 0; oddity < 2; ++oddity)
-	{
-	  auto nat_mask = getXOddityMask<N>(oddity, v0, NaturalLayout);
-	  auto eo_mask = getXOddityMask<N>(oddity, r, XEvenOddLayout);
-	  v0.copyToWithMask(r, nat_mask, eo_mask);
-	}
-	return r;
-      }
-
-      /// Return a copy of the given tensor in even-odd ordering into a natural ordering.
-      ///
-      /// \param v: origin tensor
-
-      template <std::size_t N, typename T>
-      Tensor<N, T> toNaturalOrdering(const Tensor<N, T>& v)
-      {
-	// If the tensor is already in natural ordering, return it
-	auto vdim = v.kvdim();
-	if (vdim.at('X') == 1)
-	  return v;
-
-	// All even/odd coordinate x elements cannot be selected with slicing at once for even-odd
-	// ordering, so we use arbitrary selection of elements: masks. The approach to convert between
-	// orderings is to mask all elements with even/odd x coordinate and copy them to a new tensor
-	// with the target layout. The copying with mask superbblas operation wasn't design to support
-	// different mask on the origin and destination tensor. But it's going to produce the desired
-	// effect if the following properties match:
-	//   a) the origin and destination masks are active in all dimensions excepting some dimensions,
-	//      only X in this case;
-	//   b) for all coordinates only one element is active on the excepting dimensions, the even or the odd
-	//      x coordinates in the X dimension in this case;
-	//   c) the excepting dimensions are fully supported on all processes; and
-	//   d) the excepting dimensions are the fastest index and have the same ordering in the origin and
-	//      the destination tensors.
-
-	auto v0 = v.reorder("Xxyzt%", '%');
-	auto r = v0.make_compatible();
-	for (int oddity = 0; oddity < 2; ++oddity)
-	{
-	  auto eo_mask = getXOddityMask<N>(oddity, v0, XEvenOddLayout);
-	  auto nat_mask = getXOddityMask<N>(oddity, r, NaturalLayout);
-	  v0.copyToWithMask(r, eo_mask, nat_mask);
-	}
-	return r.reshape_dimensions({{"Xx", "Xx"}}, {{'X', 1}, {'x', vdim.at('x') * 2}});
-      }
-
-      /// Return a sparse tensor with the content of the given operator
-      /// \param op: operator to extract the nonzeros from
-      /// \param power: maximum distance to recover the nonzeros:
-      ///               0, block diagonal; 1: near-neighbors...
-      /// \param coBlk: ordering of the nonzero blocks of the sparse operator
-      /// \return: a pair of a sparse tensor and a remap; the sparse tensor has the same image
-      ///          labels as the given operator and domain labels are indicated by the returned remap.
-
-      template <std::size_t NOp, typename COMPLEX>
-      std::pair<SpTensor<NOp, NOp, COMPLEX>, remap>
-      cloneUnblockedOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power = 1,
-				       ColOrdering coBlk = RowMajor, const std::string& prefix = "")
-      {
-	log(1, "starting cloneUnblockedOperatorToSpTensor");
-
-	Tracker _t(std::string("clone unblocked operator ") + prefix);
-
-	// Unsupported explicitly colorized operators
-	if (op.d.kvdim().count('X') == 0)
-	  throw std::runtime_error(
-	    "cloneUnblockedOperatorToSpTensor: unsupported not explicitly colored operators");
-
-	// If the operator is empty, just return itself
-	if (op.d.volume() == 0 || op.i.volume() == 0)
-	  return {{}, {}};
-
-	// TODO: add optimizations for multiple operators
-	if (op.order_t.size() > 0)
-	  throw std::runtime_error("Not implemented");
-
-	// Create the ordering for the domain and the image where the dense dimensions indices run faster than the sparse dimensions
-	// NOTE: assuming that x,y,z,t are the only sparse dimensions; X remains sparse
-	std::string sparse_labels("xyztX");
-	std::string dense_labels = remove_dimensions(op.i.order, sparse_labels);
-	remap rd = getNewLabels(op.d.order, op.i.order + "u~0123");
-	auto i = op.i.reorder("%xyztX", '%').like_this(none, {}, OnDefaultDevice).make_eg();
-
-	// Get the blocking for the domain and the image
-	std::map<char, int> blkd, blki;
-	for (const auto& it : i.kvdim())
-	  blki[it.first] = (is_in(dense_labels, it.first) ? it.second : 1);
-	for (const auto& it : blki)
-	  blkd[rd.at(it.first)] = it.second;
-
-	// Construct the probing vectors, which they have as the rows the domain labels and as
-	// columns the domain blocking dimensions
-
-	constexpr int Nblk = NOp - Nd - 1;
-	auto t_blk = identity<Nblk, COMPLEX>(blki, rd, dense_labels)
-		       .make_sure(none, none, OnEveryoneReplicated);
-
-	// Compute the coloring
-	auto t_ = getColors<NOp>(i.kvdim(), op.imgLayout, op.neighbors, power);
-	Tensor<NOp, float> colors = t_.first;
-	unsigned int num_colors = t_.second;
-
-	// The first half of the colors are for even nodes
-	int maxX = op.i.kvdim().at('X');
-	int real_maxX = (op.imgLayout == EvensOnlyLayout ? 2 : maxX);
-
-	// Get the neighbors
-	unsigned int max_dist_neighbors = getFurthestNeighborDistance(op);
-	std::vector<Coor<Nd>> neighbors;
-	if (power == 0)
-	{
-	  neighbors.push_back(Coor<Nd>{{}});
-	}
-	else if (power == max_dist_neighbors)
-	{
-	  for (const auto& it : op.neighbors)
-	    neighbors.push_back(kvcoors<Nd>("xyzt", it, 0));
-	}
-
-	// Create masks for the elements with even natural x coordinate and with odd natural x coordinate
-	auto even_x_mask = getXOddityMask<NOp>(0, i, op.imgLayout);
-	auto odd_x_mask = getXOddityMask<NOp>(1, i, op.imgLayout);
-	auto ones_blk = t_blk.template like_this<Nblk * 2, float>();
-	ones_blk.set(1);
-
-	// Create the sparse tensor
-	auto d_sop =
-	  (power == 0 ? i
-		      : i.extend_support({{'x', (max_dist_neighbors + real_maxX - 1) / real_maxX},
-					  {'y', max_dist_neighbors},
-					  {'z', max_dist_neighbors},
-					  {'t', max_dist_neighbors}}))
-	    .rename_dims(rd);
-	SpTensor<NOp, NOp, COMPLEX> sop{
-	  d_sop, i, Nblk, Nblk, (unsigned int)neighbors.size(), coBlk == ColumnMajor};
-
-	// Extract the nonzeros with probing
-	sop.data.set_zero(); // all values may not be populated when using blocking
-	for (unsigned int color = 0; color < num_colors; ++color)
-	{
-	  // Extracting the proving vector
-	  auto t_l = colors.template transformWithCPUFun<COMPLEX>(
-	    [&](float site_color) { return site_color == color ? COMPLEX{1} : COMPLEX{0}; });
-
-	  // Skip empty masks
-	  // NOTE: the call to split_dimension add a fake dimension that acts as columns
-	  if (std::norm(norm<1>(t_l.split_dimension('X', "Xn", maxX), "n").get({{0}})) == 0)
-	    continue;
-
-	  // Contracting the proving vector with the blocking components
-	  auto probs = contract<NOp + Nblk>(t_l, t_blk, "");
-
-	  // Compute the matvecs
-	  auto mv = op(std::move(probs));
-
-	  // Construct an indicator tensor where all blocking dimensions but only the nodes colored `color` are copied
-	  auto color_mask = t_l.template transformWithCPUFun<float>(
-	    [](const COMPLEX& t) { return (float)std::real(t); });
-	  auto sel_x_even =
-	    contract<NOp + Nblk>(contract<NOp>(color_mask, even_x_mask, ""), ones_blk, "");
-	  auto sel_x_odd =
-	    contract<NOp + Nblk>(contract<NOp>(color_mask, odd_x_mask, ""), ones_blk, "");
-
-	  // Populate the nonzeros by copying pieces from `mv` into sop.data. We want to copy only the
-	  // nonzeros in `mv`, which are `neighbors` away from the nonzeros of `probs`.
-	  latticeCopyToWithMask(mv, sop.data, 'u', neighbors, {{'X', real_maxX}}, sel_x_even,
-				sel_x_odd);
-	}
-
-	// Populate the coordinate of the columns, that is, to give the domain coordinates of first nonzero in each
-	// BSR nonzero block. Assume that we are processing nonzeros block for the image coordinate `c` on the
-	// direction `dir`, that is, the domain coordinates will be (cx-dirx,cy-diry,cz-dirz,dt-dirt) in natural
-	// coordinates. But we get the image coordinate `c` in even-odd coordinate, (cX,cx,cy,cz,ct), which has the
-	// following natural coordinates (cx*2+(cX+cy+cz+ct)%2,cy,cz,ct). After subtracting the direction we get the
-	// natural coordinates (cx*2+(cX+cy+cz+ct)%2-dirx,cy-diry,cz-dirz,ct-dirt), which corresponds to the following
-	// even-odd coordinates ((cX-dirx-diry-dirz-dirt)%2,(cx*2+(cX+cy+cz+ct)%2-dirx)/2,cy-diry,cz-dirz,ct-dirt).
-
-	Coor<Nd> real_dims = kvcoors<Nd>("xyzt", getNatLatticeDims(i.kvdim(), op.imgLayout));
-	sop.jj.fillCpuFunCoor([&](const Coor<NOp + 2>& c) {
-	  // c has order '~u%xyztX' where xyztX were remapped by ri
-	  int domi = c[0];	  // the domain label to evaluate, label ~
-	  int mu = c[1];	  // the direction, label u
-	  int base = c[domi + 2]; // the image coordinate value for label `domi`
-
-	  // Do nothing for a blocking direction
-	  if (domi < Nblk)
-	    return 0;
-
-	  const auto& dir = neighbors[mu];
-
-	  // For labels X and x
-	  if (domi == Nblk || domi == Nblk + Nd)
-	  {
-	    int sumdir = std::accumulate(dir.begin(), dir.end(), int{0});
-	    if (domi == Nblk + Nd)
-	      return (base + sumdir + real_maxX * Nd) % real_maxX;
-	    int sumyzt = std::accumulate(c.begin() + 2 + Nblk + 1, c.end() - 1, int{0});
-	    const auto& cX = c[2 + Nblk + Nd];
-	    return ((base * real_maxX + (cX + sumyzt) % real_maxX + real_dims[0] - dir[0]) /
-		    real_maxX) %
-		   (real_dims[0] / real_maxX);
-	  }
-
-	  int latd = domi - Nblk;
-	  return (base - dir[latd] + real_dims[latd]) % real_dims[latd];
-	});
-
-	// Construct the sparse operator
-	sop.construct();
-
-	// Return the sparse tensor and the remap from original operator to domain of the sparse tensor
-	return {sop, rd};
-      }
-
-      /// Return a sparse tensor with the content of the given operator
-      /// \param op: operator to extract the nonzeros from
-      /// \param power: maximum distance to recover the nonzeros:
-      ///               0, block diagonal; 1: near-neighbors...
-      /// \param coBlk: ordering of the nonzero blocks of the sparse operator
-      /// \return: a pair of a sparse tensor and a remap; the sparse tensor has the same image
-      ///          labels as the given operator and domain labels are indicated by the returned remap.
-
-      template <std::size_t NOp, typename COMPLEX>
-      std::pair<SpTensor<NOp, NOp, COMPLEX>, remap>
-      cloneOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power,
-			      ColOrdering coBlk = RowMajor, const std::string& prefix = "")
-      {
-	Tracker _t(std::string("clone blocked operator ") + prefix);
-
-	// Unblock the given operator, the code of `cloneUnblockedOperatorToSpTensor` is too complex as it is
-	auto unblki = op.i
-			.template reshape_dimensions<NOp - 4>(
-			  {{"0x", "x"}, {"1y", "y"}, {"2z", "z"}, {"3t", "t"}}, {}, true)
-			.make_eg();
-	auto opdim = op.i.kvdim();
-	Operator<NOp - 4, COMPLEX> unblocked_op{
-	  [=](const Tensor<NOp - 4 + 1, COMPLEX>& x, Tensor<NOp - 4 + 1, COMPLEX> y) {
-	    op(x.template reshape_dimensions<NOp + 1>(
-		 {{"x", "0x"}, {"y", "1y"}, {"z", "2z"}, {"t", "3t"}}, opdim, true))
-	      .template reshape_dimensions<NOp - 4 + 1>(
-		{{"0x", "x"}, {"1y", "y"}, {"2z", "z"}, {"3t", "t"}}, {}, true)
-	      .copyTo(y);
-	  },
-	  unblki,
-	  unblki,
-	  nullptr,
-	  op.order_t,
-	  op.domLayout,
-	  op.imgLayout,
-	  op.neighbors,
-	  coBlk};
-
-	// Get a sparse tensor representation of the operator
-	unsigned int op_dist = getFurthestNeighborDistance(op);
-	if (op_dist > 1 && power % op_dist != 0)
-	  throw std::runtime_error("cloneOperatorToSpTensor: invalid power value, it isn't "
-				   "divisible by the furthest neighbor distance");
-	auto opdims = op.i.kvdim();
-	auto t =
-	  cloneUnblockedOperatorToSpTensor(unblocked_op, std::min(power, op_dist), coBlk, prefix);
-	remap rd = t.second;
-	for (const auto& it :
-	     detail::getNewLabels("0123", op.d.order + op.i.order + "0123" + t.first.d.order))
-	  rd[it.first] = it.second;
-	int max_op_power = (op_dist == 0 ? 0 : std::max(power / op_dist, 1u) - 1u);
-	std::map<char, int> m_power{};
-	for (char c : std::string("xyzt") + update_order("xyzt", rd))
-	  m_power[c] = max_op_power;
-	auto sop = t.first.extend_support(m_power)
-		     .split_dimension(rd['x'], update_order("0x", rd), opdim.at('0'), 'x', "0x",
-				      opdim.at('0'))
-		     .split_dimension(rd['y'], update_order("1y", rd), opdim.at('1'), 'y', "1y",
-				      opdim.at('1'))
-		     .split_dimension(rd['z'], update_order("2z", rd), opdim.at('2'), 'z', "2z",
-				      opdim.at('2'))
-		     .split_dimension(rd['t'], update_order("3t", rd), opdim.at('3'), 't', "3t",
-				      opdim.at('3'))
-		     .reorder(std::string("%") + update_order("0123xyztX", rd), "%0123xyztX", '%');
-
-	return {sop, rd};
-      }
-
-      /// Return an efficient operator application
-      /// \param op: operator to extract the nonzeros from
-      /// \param power: maximum distance to recover the nonzeros:
-      ///               0, block diagonal; 1: near-neighbors...
-      /// \param co: preferred ordering of dense input and output tensors
-      /// \param coBlk: ordering of the nonzero blocks of the sparse operator
-
-      template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX>
-      cloneOperator(const Operator<NOp, COMPLEX>& op, unsigned int power, ColOrdering co,
-		    ColOrdering coBlk,
-		    BlockingAsSparseDimensions blockingAsSparseDimensions = ConsiderBlockingSparse,
-		    const std::string& prefix = "")
-      {
-	// If the operator is empty, just return itself
-	if (op.d.volume() == 0 || op.i.volume() == 0)
-	  return op;
-
-	// Get a sparse tensor representation of the operator
-	unsigned int op_dist = getFurthestNeighborDistance(op);
-	if (op_dist > 1 && power % op_dist != 0)
-	  throw std::runtime_error("cloneOperator: invalid power value");
-	remap rd;
-	SpTensor<NOp, NOp, COMPLEX> sop;
-	if (blockingAsSparseDimensions == ConsiderBlockingSparse)
-	{
-	  auto t = cloneOperatorToSpTensor(op, power, coBlk, prefix);
-	  sop = t.first;
-	  rd = t.second;
-	}
-	else
-	{
-	  auto t = cloneUnblockedOperatorToSpTensor(op, power, coBlk, prefix);
-	  sop = t.first;
-	  rd = t.second;
-	}
-
-	// Construct the operator to return
-	Operator<NOp, COMPLEX> rop{sop,	       rd,	     power,	   sop.i,	 sop.i,
-				   op.order_t, op.domLayout, op.imgLayout, op.neighbors, co};
-
-	// Skip tests if power < op_dist
-	if (power < op_dist)
-	  return rop;
-
-	// Do a test
-	Tracker _t(std::string("clone blocked operator (testing) ") + prefix);
-	for (const auto& test_order : std::vector<std::string>{"%n", "n%"})
-	{
-	  auto x = op.d.template like_this<NOp + 1>(test_order, '%', "", {{'n', 2}});
-	  auto y_rop = op.d.template like_this<NOp + 1>(test_order, '%', "", {{'n', 2}});
-	  urand(x, -1, 1);
-	  auto y_op = op(x);
-	  for (int nfrom = 0; nfrom < 2; ++nfrom)
-	  {
-	    for (int nsize = 1; nsize <= 2; ++nsize)
-	    {
-	      y_rop.set(detail::NaN<COMPLEX>::get());
-	      auto x0 = x.kvslice_from_size({{'n', nfrom}, {'n', nsize}});
-	      auto y_op0 = y_op.kvslice_from_size({{'n', nfrom}, {'n', nsize}});
-	      auto y_rop0 = y_rop.kvslice_from_size({{'n', nfrom}, {'n', nsize}});
-	      auto base_norm0 = norm<1>(y_op0, "n");
-	      rop(x0, y_rop0); // y_rop0 = rop(x0)
-	      y_op0.scale(-1).addTo(y_rop0);
-	      auto error = norm<1>(y_rop0, "n");
-	      auto eps =
-		std::sqrt(std::numeric_limits<typename real_type<COMPLEX>::type>::epsilon());
-	      for (int i = 0; i < base_norm0.volume(); ++i)
-		if (error.get({{i}}) > eps * base_norm0.get({{i}}))
-		  throw std::runtime_error("cloneOperator: too much error on the cloned operator");
-	    }
-	  }
-	}
-
-	// Test for powers
-	for (const auto& test_order : std::vector<std::string>{"%n^", "n%^"})
-	{
-	  const int max_power = 3;
-	  auto x = op.d.template like_this<NOp + 2>(test_order, '%', "", {{'n', 2}, {'^', 1}});
-	  auto y_op =
-	    op.d.template like_this<NOp + 2>(test_order, '%', "", {{'n', 2}, {'^', max_power}});
-	  urand(x, -1, 1);
-	  op(x).copyTo(y_op.kvslice_from_size({}, {{'^', 1}}));
-	  for (unsigned int i = 1; i < max_power; ++i)
-	    op(y_op.kvslice_from_size({{'^', i - 1}}, {{'^', 1}}))
-	      .copyTo(y_op.kvslice_from_size({{'^', i}}, {{'^', 1}}));
-	  auto y_rop = y_op.like_this();
-	  for (int nfrom = 0; nfrom < 2; ++nfrom)
-	  {
-	    for (int nsize = 1; nsize <= 2; ++nsize)
-	    {
-	      y_rop.set(detail::NaN<COMPLEX>::get());
-	      auto x0 = x.kvslice_from_size({{'n', nfrom}, {'n', nsize}});
-	      auto y_op0 = y_op.kvslice_from_size({{'n', nfrom}, {'n', nsize}});
-	      auto y_rop0 = y_rop.kvslice_from_size({{'n', nfrom}, {'n', nsize}});
-	      auto base_norm0 = norm<2>(y_op0, "n^").template collapse_dimensions<1>("n^", 'n');
-	      rop(x0, y_rop0, '^'); // y_rop0 = {rop(x0), rop(rop(x0)), ...}
-	      y_op0.scale(-1).addTo(y_rop0);
-	      auto error = norm<2>(y_rop0, "n^").template collapse_dimensions<1>("n^", 'n');
-	      auto eps =
-		std::sqrt(std::numeric_limits<typename real_type<COMPLEX>::type>::epsilon());
-	      for (int i = 0; i < base_norm0.volume(); ++i)
-		if (error.get({{i}}) > eps * base_norm0.get({{i}}))
-		  throw std::runtime_error(
-		    "cloneOperator: too much error on the cloned operator for the power");
-	    }
-	  }
-	}
-
-	return rop;
-      }
-
-      /// Return an efficient operator application
-      /// \param op: operator to extract the nonzeros from
-      /// \param co: preferred ordering of dense input and output tensors
-      /// \param coBlk: ordering of the nonzero blocks of the sparse operator
-
-      template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX>
-      cloneOperator(const Operator<NOp, COMPLEX>& op, ColOrdering co, ColOrdering coBlk,
-		    BlockingAsSparseDimensions blockingAsSparseDimensions = ConsiderBlockingSparse,
-		    const std::string& prefix = "")
-      {
-	return cloneOperator(op, getFurthestNeighborDistance(op), co, coBlk,
-			     blockingAsSparseDimensions, prefix);
-      }
-
       /// Return the block diagonal of an operator
       /// \param op: operator to extract the block diagonal
       /// \param block_labels: labels that compose the blocks (and will be the rows)
@@ -1730,14 +630,6 @@ namespace Chroma
 
 	// Return tensor
 	return r;
-      }
-
-      //cache for the prolongator
-      template <std::size_t NOp, typename COMPLEX>
-      static std::map<std::string, Operator<NOp, COMPLEX>>& getProlongatorCache()
-      {
-	static std::map<std::string, Operator<NOp, COMPLEX>> m;
-        return m;
       }
 
       /// Returns the prolongator constructed from
@@ -1895,6 +787,16 @@ namespace Chroma
 		op.preferred_col_ordering};
       }
 
+      /// Return a cache for the prolongators
+      /// NOTE: this one isn't destroyed by `cleanEvenOddOperatorsCache`
+
+      template <std::size_t NOp, typename COMPLEX>
+      static std::map<std::string, Operator<NOp, COMPLEX>>& getProlongatorCache()
+      {
+	static std::map<std::string, Operator<NOp, COMPLEX>> m;
+	return m;
+      }
+
       /// Returns a MG preconditioner.
       ///
       /// It returns an approximation of Op^{-1} = Op^{-1}*Q + Op^{-1}(I-Q), where Q is a projector
@@ -1942,16 +844,21 @@ namespace Chroma
 	  getSolver(op, getOptions(ops, "solver_null_vecs"));
 	bool do_chirality_splitting = getOption<bool>(ops, "chirality_splitting", true);
 
-        // Grab the prolongator from cache if the user name it
+	// Grab the prolongator from cache if the user name it
 	Operator<NOp, COMPLEX> V;
-        std::string prolongator_id = getOption<std::string>(ops, "prolongator_id", "");
-	if (prolongator_id.size() == 0 || getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0){
-		QDPIO::cout << "Didn't find a prolongator. Generating...." << std::endl;
-		V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, do_chirality_splitting, nullSolver, solverSpace);
-		if (prolongator_id.size() > 0) getProlongatorCache<NOp, COMPLEX>()[prolongator_id] = V;
-	} else {
-		QDPIO::cout << "Found a prolongator!" << std::endl;
-		V = getProlongatorCache<NOp, COMPLEX>().at(prolongator_id);
+	std::string prolongator_id = getOption<std::string>(ops, "prolongator_id", "");
+	if (prolongator_id.size() == 0 ||
+	    getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0)
+	{
+	  V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking,
+			       do_chirality_splitting, nullSolver, solverSpace);
+	  if (prolongator_id.size() > 0)
+	    getProlongatorCache<NOp, COMPLEX>()[prolongator_id] = V;
+	}
+	else
+	{
+	  QDPIO::cout << "Found prolongator for id " << prolongator_id << std::endl;
+	  V = getProlongatorCache<NOp, COMPLEX>().at(prolongator_id);
 	}
 
 	// Compute the coarse operator, either V' * op * V or V' * op * g5 * V
@@ -2039,11 +946,8 @@ namespace Chroma
       inline void cleanEvenOddOperatorsCache()
       {
 	// Destroy in reverse order to the allocated one
-	while (getEvenOddOperatorsCacheDestroyList().size() > 0)
-	{
-	  getEvenOddOperatorsCacheDestroyList().back()();
-	  getEvenOddOperatorsCacheDestroyList().pop_back();
-	}
+	for (const auto& f : getEvenOddOperatorsCacheDestroyList())
+	  f();
       }
 
       /// Tuple storing the operator even-odd and odd-even parts and the block diagonal
@@ -2384,24 +1288,23 @@ namespace Chroma
 			 .template reshape_dimensions<NOp>(
 			   {{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, blk, true)
 			 .make_eg();
-	  auto blk_op =
-	    Operator<NOp, COMPLEX>{
-	      [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		auto x0 = x.template reshape_dimensions<NOp + 1>(
-		  {{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, dim, true);
-		auto y0 = op(std::move(x0));
-		y0.template reshape_dimensions<NOp + 1>({{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}},
-							blk, true)
-		  .copyTo(y);
-	      },
-	      new_d,
-	      new_i,
-	      nullptr,
-	      op.order_t,
-	      op.domLayout == EvensOnlyLayout ? NaturalLayout : op.domLayout,
-	      op.imgLayout == EvensOnlyLayout ? NaturalLayout : op.imgLayout,
-	      getNeighborsAfterBlocking(blk_u, op.d.kvdim(), op.neighbors, op.imgLayout),
-	      op.preferred_col_ordering};
+	  auto blk_op = Operator<NOp, COMPLEX>{
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      auto x0 = x.template reshape_dimensions<NOp + 1>(
+		{{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, dim, true);
+	      auto y0 = op(std::move(x0));
+	      y0.template reshape_dimensions<NOp + 1>({{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}},
+						      blk, true)
+		.copyTo(y);
+	    },
+	    new_d,
+	    new_i,
+	    nullptr,
+	    op.order_t,
+	    op.domLayout == EvensOnlyLayout ? NaturalLayout : op.domLayout,
+	    op.imgLayout == EvensOnlyLayout ? NaturalLayout : op.imgLayout,
+	    getNeighborsAfterBlocking(blk_u, op.d.kvdim(), op.neighbors, op.imgLayout),
+	    op.preferred_col_ordering};
 
 	  Tensor<NOp + 6, COMPLEX> opDiag =
 	    getBlockDiag<NOp + 6>(blk_op, blk_rows, m_blk, ConsiderBlockingDense);
@@ -2939,10 +1842,9 @@ namespace Chroma
     // High-level chroma operations
     //
 
-	//shift the quark mass
-	/// \param xml_str: the xml string to replace the mass in
-	/// \param mq: the new mass
-
+    //shift the quark mass
+    /// \param xml_str: the xml string to replace the mass in
+    /// \param mq: the new mass
 
     /// Either a Chroma solver or a superb solver
     struct ChimeraSolver {
@@ -2966,7 +1868,6 @@ namespace Chroma
       /// Operator on scxyztX (optional)
       Maybe<Operator<Nd + 7, Complex>> op;
 
-
       /// Constructor
       /// \param fermAction: XML for the fermion action
       /// \param invParam: XML for the quark propagator
@@ -2982,7 +1883,6 @@ namespace Chroma
 	S = TheFermionActionFactory::Instance().createObject(fermAction.id, fermacttop,
 							     fermAction.path);
 	state = S->createState(u);
-
 
 	// If the inverter is MGPROTON, use this infrastructure
 	if (invParam.id == std::string("MGPROTON"))
@@ -3023,7 +1923,7 @@ namespace Chroma
 	}
       }
     };
-	
+
     //
     // High-level chroma operations
     // for shifted linear systems
@@ -3063,20 +1963,20 @@ namespace Chroma
       /// \param fermAction: XML for the fermion action
       /// \param invParam: XML for the quark propagator
       /// \param u: gauge fields
-	  /// \param mq: the quark mass (may be mq = m_0 + \sigma)
+      /// \param mq: the quark mass (may be mq = m_0 + \sigma)
 
       ShiftedChimeraSolver(GroupXML_t& fermAction, GroupXML_t& invParam,
-		    const multi1d<LatticeColorMatrix>& u)
+			   const multi1d<LatticeColorMatrix>& u)
       {
-	
+
 	//set the structs fermion action xml
 	fermActXml = fermAction;
 	//set the structs invparam xml
 	invParamXml = invParam;
-	
+
 	//set the structs gauge links
 	links = u;
-	
+
 	// Initialize fermion action and state
 	std::istringstream xml_s(fermActXml.xml);
 	XMLReader fermacttop(xml_s);
@@ -3084,7 +1984,6 @@ namespace Chroma
 	S = TheFermionActionFactory::Instance().createObject(fermActXml.id, fermacttop,
 							     fermActXml.path);
 	state = S->createState(links);
-
 
 	// If the inverter is MGPROTON, use this infrastructure
 	if (invParamXml.id == std::string("MGPROTON"))
@@ -3129,18 +2028,21 @@ namespace Chroma
       void shiftQuarkMass(std::string& xml_str, const Real& mq)
       {
 
-      //delimiter is the opening/close  mass tag
-      std::string open_tag = "<Mass>";
-      std::string close_tag = "</Mass>";
-      auto o_pos = xml_str.find(open_tag);
-      auto c_pos = xml_str.find(close_tag);
-      if(o_pos == std::string::npos){
-        return;
-      }else{
-      std::string new_mq = std::to_string(toDouble(mq));
-      int m_q0_size = c_pos - (o_pos + open_tag.size());
-      xml_str.replace(o_pos+open_tag.size(), m_q0_size, new_mq);
-      }
+	//delimiter is the opening/close  mass tag
+	std::string open_tag = "<Mass>";
+	std::string close_tag = "</Mass>";
+	auto o_pos = xml_str.find(open_tag);
+	auto c_pos = xml_str.find(close_tag);
+	if (o_pos == std::string::npos)
+	{
+	  return;
+	}
+	else
+	{
+	  std::string new_mq = std::to_string(toDouble(mq));
+	  int m_q0_size = c_pos - (o_pos + open_tag.size());
+	  xml_str.replace(o_pos + open_tag.size(), m_q0_size, new_mq);
+	}
       }
 
       //function to recompute the solver if it is being shifted
@@ -3150,7 +2052,6 @@ namespace Chroma
 
 	shiftQuarkMass(fermActXml.xml, mq);
 	shiftQuarkMass(invParamXml.xml, mq); //if the solver needs it
-
 
 	std::istringstream xml_s(fermActXml.xml);
 	XMLReader fermacttop(xml_s);
@@ -3196,9 +2097,7 @@ namespace Chroma
 	{
 	  PP = S->qprop(state, invParamXml);
 	}
-
       }
-
     };
 
     namespace detail
@@ -3456,9 +2355,10 @@ namespace Chroma
     ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
 
     template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-    Tensor<Nd + 5, COMPLEX_OUT> doInversion(const ChimeraSolver& sol, const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
-			                    int first_tslice_out, int n_tslice_out, const std::vector<int>& spin_sources,
-		                            int max_rhs, const std::string& order_out = "cSxyztXns")
+    Tensor<Nd + 5, COMPLEX_OUT>
+    doInversion(const ChimeraSolver& sol, const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
+		int first_tslice_out, int n_tslice_out, const std::vector<int>& spin_sources,
+		int max_rhs, const std::string& order_out = "cSxyztXns")
     {
       detail::check_order_contains(order_out, "cSxyztXns");
       if (chi.kvdim()['t'] != 1)
@@ -3595,7 +2495,6 @@ namespace Chroma
       QDPIO::cout << "Time to compute " << chis.size()
 		  << " inversions: " << snarss1.getTimeInSeconds() << " secs" << std::endl;
     }
-
 
     inline void doInversion(const ShiftedChimeraSolver& sol, MultipleLatticeFermions& psis,
 			    const ConstMultipleLatticeFermions& chis, int max_rhs = 0)
