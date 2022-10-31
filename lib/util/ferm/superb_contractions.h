@@ -59,14 +59,28 @@ namespace Chroma
   namespace SB
   {
 
-    using Index = superbblas::IndexType;
-    using Complex = std::complex<REAL>;
-    using ComplexD = std::complex<REAL64>;
-    using ComplexF = std::complex<REAL32>;
+    using Index = superbblas::IndexType;   ///< Default index type, `int` for now
+    using Complex = std::complex<REAL>;	   ///< Default chroma complex precision
+    using ComplexD = std::complex<REAL64>; ///< Complex double
+    using ComplexF = std::complex<REAL32>; ///< Complex single
+
+    /// Implicit complex type, there's a 2-size dimension for representing
+    /// the real and the imaginary part, which usually has the label `.`
+    template <typename T>
+    struct DIYComplex {
+      using value_type = T;
+    };
+
+    /// Type to represent coordinates
     template <std::size_t N>
     using Coor = superbblas::Coor<N>;
+
+    /// Type to represent tensor layouts, its coordinate has the number of
+    /// elements to jump to the element with the next coordinate
     template <std::size_t N>
     using Stride = superbblas::Coor<N, std::size_t>;
+
+    /// Type of checksum, used by StorageTensor
     using checksum_type = superbblas::checksum_type;
 
     /// Where to store the tensor (see class Tensor)
@@ -79,11 +93,11 @@ namespace Chroma
     using Distribution = std::string;
     /// Fully supported on node with index zero
     static const Distribution OnMaster("__OnMaster__");
-    /// Distribute the lattice dimensions (x, y, z, t) 
+    /// Distribute the lattice dimensions (x, y, z, t)
     static const Distribution OnEveryone("tzyx");
     /// Distribute the lattice dimensions (x, y, z, t) as chroma does
     static const Distribution OnEveryoneAsChroma("__OnEveryonAsChroma__");
-     /// All nodes have a copy of the tensor
+    /// All nodes have a copy of the tensor
     static const Distribution OnEveryoneReplicated("__OnEveryoneReplicated__");
     /// Non-collective
     static const Distribution Local("");
@@ -921,6 +935,55 @@ namespace Chroma
 #  endif
       }
 
+      /// is_complex<T>::value is true if `T` is complex
+
+      template <typename T>
+      struct is_complex : std::false_type {
+      };
+
+      template <typename T>
+      struct is_complex<std::complex<T>> : std::true_type {
+      };
+
+      /// real_type<T>::type is T::value_type if T is complex or DIYComplex; otherwise it is T
+
+      template <typename T>
+      struct real_type {
+	using type = T;
+      };
+
+      template <typename T>
+      struct real_type<std::complex<T>> {
+	using type = T;
+      };
+
+      template <typename T>
+      struct real_type<DIYComplex<T>> {
+	using type = T;
+      };
+
+      /// is_diycomplex<T>::value is true if `T` is DIYComplex
+
+      template <typename T>
+      struct is_diycomplex : std::false_type {
+      };
+
+      template <typename T>
+      struct is_diycomplex<DIYComplex<T>> : std::true_type {
+      };
+
+      /// base_type<T>::type is T excepting for base_type<DIYComplex<T>>::type that is T
+
+      template <typename T>
+      struct base_type {
+	using type = T;
+      };
+
+      template <typename T>
+      struct base_type<DIYComplex<T>> {
+	using type = T;
+      };
+
       /// Return x if conjugate is false and conj(x) otherwise
       /// \param x: value to conjugate
 
@@ -1504,6 +1567,15 @@ namespace Chroma
 	}
       };
 
+      /// Specialization for DIYComplex
+      template <typename T>
+      struct NaN<DIYComplex<T>> {
+	static T get()
+	{
+	  return NaN<T>::get();
+	}
+      };
+
       /// Return if a float, double, and std::complex is finite
       template <typename T>
       struct IsFinite {
@@ -1596,28 +1668,6 @@ namespace Chroma
 	   << " MiB   GPU: " << superbblas::getGpuMemUsed(0) / 1024 / 1024 << " MiB";
 	log(1, ss.str());
       }
-
-      /// is_complex<T>::value is true if `T` is complex
-
-      template <typename T>
-      struct is_complex : std::false_type {
-      };
-
-      template <typename T>
-      struct is_complex<std::complex<T>> : std::true_type {
-      };
-
-      /// real_type<T>::type is T::value_type if T is complex; otherwise it is T
-
-      template <typename T>
-      struct real_type {
-	using type = T;
-      };
-
-      template <typename T>
-      struct real_type<std::complex<T>> {
-	using type = T;
-      };
 
       template <typename T, typename A, typename B,
 		typename std::enable_if<!is_complex<T>::value, bool>::type = true>
@@ -1729,7 +1779,8 @@ namespace Chroma
 
     template <std::size_t N, typename T>
     struct Tensor {
-      static_assert(superbblas::supported_type<T>::value, "Not supported type");
+      using value_type = typename detail::base_type<T>::type;
+      static_assert(superbblas::supported_type<value_type>::value, "Not supported type");
 
       /// Allocation type
       /// NOTE: the complex types decay to the base type, which is needed by `toFakeReal`
@@ -1745,17 +1796,19 @@ namespace Chroma
       Coor<N> from;	      ///< First active coordinate in the tensor
       Coor<N> size;	      ///< Number of active coordinates on each dimension
       Stride<N> strides;      ///< Displacement for the next element along every direction
-      T scalar;		      ///< Scalar factor of the tensor
+      value_type scalar;      ///< Scalar factor of the tensor
       bool conjugate;	      ///< Whether the values are implicitly conjugated
       bool eg;		      ///< Whether this tensor is an example
       bool unordered_writing; ///< Whether to allow execution of writing operations
 			      /// in a different order than the one issue
+      char complexLabel;      /// label for the dimension having the real and the imaginary part
+			      /// (only used when `T` is DIYComplex
 
       /// Return a string describing the tensor
       /// \param ptr: pointer to the memory allocation
       /// \return: the string representing the tensor
 
-      std::string repr(T* ptr = nullptr) const
+      std::string repr(value_type* ptr = nullptr) const
       {
 	using namespace detail::repr;
 	std::stringstream ss;
@@ -1776,11 +1829,11 @@ namespace Chroma
       /// \param dist: how to distribute the tensor, see `Distribution`
 
       Tensor(const std::string& order, Coor<N> dim, DeviceHost dev = OnDefaultDevice,
-	     Distribution dist = OnEveryone)
+	     Distribution dist = OnEveryone, char complexLabel = 0)
 	: Tensor(order, dim, dev, dist,
 		 std::make_shared<detail::TensorPartition<N>>(
 		   detail::TensorPartition<N>(order, dim, dist)),
-		 false /*= unordered_writing */)
+		 false /*= unordered_writing */, complexLabel)
       {
       }
 
@@ -1798,7 +1851,8 @@ namespace Chroma
 	  scalar{0},
 	  conjugate{false},
 	  eg{false},
-	  unordered_writing{false}
+	  unordered_writing{false},
+	  complexLabel{0}
       {
       }
 
@@ -1810,7 +1864,8 @@ namespace Chroma
       /// \param dist: how to distribute the tensor, see `Distribution`
       /// \param ptr: pointer to the first element
 
-      Tensor(const std::string& order, Coor<N> dim, DeviceHost dev, Distribution dist, T* ptr)
+      Tensor(const std::string& order, Coor<N> dim, DeviceHost dev, Distribution dist,
+	     value_type* ptr, char complexLabel = 0)
 	: order(order),
 	  dim(dim),
 	  allocation(std::make_shared<Allocation>((typename detail::real_type<T>::type*)ptr,
@@ -1822,7 +1877,8 @@ namespace Chroma
 	  scalar{1},
 	  conjugate{false},
 	  eg{false},
-	  unordered_writing{false}
+	  unordered_writing{false},
+	  complexLabel{complexLabel}
       {
 	checkOrder();
 
@@ -1842,10 +1898,14 @@ namespace Chroma
       /// \param size: elements in each direction in this view
       /// \param scalar: scalar factor of this view
       /// \param conjugate: whether the elements are implicitly conjugated
+      /// \param eg: whether the tensor is an example gratia
+      /// \param unordered_writing: whether its allow to apply the writings in different order
+      /// \param complexLabel: complexity label
 
       Tensor(const std::string& order, Coor<N> dim, std::shared_ptr<Allocation> allocation,
 	     std::shared_ptr<detail::TensorPartition<N>> p, Distribution dist, Coor<N> from,
-	     Coor<N> size, T scalar, bool conjugate, bool eg, bool unordered_writing)
+	     Coor<N> size, value_type scalar, bool conjugate, bool eg, bool unordered_writing,
+	     char complexLabel)
 	: order(order),
 	  dim(dim),
 	  allocation(allocation),
@@ -1857,7 +1917,8 @@ namespace Chroma
 	  scalar(scalar),
 	  conjugate(conjugate),
 	  eg(eg),
-	  unordered_writing(unordered_writing)
+	  unordered_writing(unordered_writing),
+	  complexLabel(complexLabel)
       {
 	checkOrder();
       }
@@ -1869,9 +1930,11 @@ namespace Chroma
       /// \param p: partition of the tensor among the processes
 
       Tensor(const std::string& order, Coor<N> dim, DeviceHost dev, Distribution dist,
-	     std::shared_ptr<detail::TensorPartition<N>> p, bool unordered_writing)
+	     std::shared_ptr<detail::TensorPartition<N>> p, bool unordered_writing,
+	     char complexLabel)
 	: order(order),
 	  dim(dim),
+	  /// NOTE: the extra two factor shouldn't apply for DIYComplex
 	  allocation(std::make_shared<Allocation>(
 	    p->localVolume() * (detail::is_complex<T>::value ? 2u : 1u), detail::getContext(dev))),
 	  p(p),
@@ -1882,7 +1945,8 @@ namespace Chroma
 	  scalar{1},
 	  conjugate{false},
 	  eg{false},
-	  unordered_writing{unordered_writing}
+	  unordered_writing{unordered_writing},
+	  complexLabel{complexLabel}
       {
 	checkOrder();
 	detail::log_mem();
@@ -1906,7 +1970,8 @@ namespace Chroma
 	  scalar{t.scalar},
 	  conjugate{t.conjugate},
 	  eg{t.eg},
-	  unordered_writing{t.unordered_writing}
+	  unordered_writing{t.unordered_writing},
+	  complexLabel{t.complexLabel}
       {
 	checkOrder();
       }
@@ -1915,7 +1980,7 @@ namespace Chroma
       /// \param scalar: scalar factor of this view
       /// \param conjugate: whether the elements are implicitly conjugated
 
-      Tensor(const Tensor& t, T scalar, bool conjugate)
+      Tensor(const Tensor& t, value_type scalar, bool conjugate)
 	: order(t.order),
 	  dim(t.dim),
 	  allocation(t.allocation),
@@ -1927,7 +1992,8 @@ namespace Chroma
 	  scalar{scalar},
 	  conjugate{conjugate},
 	  eg{false},
-	  unordered_writing{t.unordered_writing}
+	  unordered_writing{t.unordered_writing},
+	  complexLabel{t.complexLabel}
       {
 	checkOrder();
       }
@@ -2079,23 +2145,23 @@ namespace Chroma
       /// Return the pointer to the first local element
       /// NOTE: there will be no pending writing operations
 
-      T* data() const
+      value_type* data() const
       {
 	if (!allocation)
 	  return nullptr;
-	return (T*)allocation->data();
+	return (value_type*)allocation->data();
       }
 
       /// Return the pointer to the first local element
       /// NOTE: there may be pending writing operations if `unordered_writing` is true
 
-      T* data_for_writing() const
+      value_type* data_for_writing() const
       {
 	if (!allocation)
 	  return nullptr;
 	if (unordered_writing)
-	  return (T*)allocation->ptr;
-	return (T*)allocation->data();
+	  return (value_type*)allocation->ptr;
+	return (value_type*)allocation->data();
       }
 
       /// Return the allocation context
@@ -2125,7 +2191,7 @@ namespace Chroma
       ///   q.getLocal().set({0,0,0,0,0}, 1.0); // set the first local element in this process to 1.0
       ///   q.getLocal().get({0,0,0,0,0}); // get the first local element in this process
 
-      T get(Coor<N> coor) const
+      value_type get(Coor<N> coor) const
       {
 	if (ctx().plat != superbblas::CPU)
 	  throw std::runtime_error(
@@ -2161,7 +2227,7 @@ namespace Chroma
       ///   Tensor<5,double> q("xyztX", latticeSize<5>("xyztX"), OnHost);
       ///   q.getLocal().set({0,0,0,0,0}, 1.0); // set the first local element in this process to 1.0
 
-      void set(Coor<N> coor, T v)
+      void set(Coor<N> coor, value_type v)
       {
 	if (ctx().plat != superbblas::CPU)
 	  throw std::runtime_error(
@@ -2182,7 +2248,7 @@ namespace Chroma
       }
 
       /// Modify the content this tensor with the result of a function on each element
-      /// \param func: function () -> COMPLEX
+      /// \param func: function () -> value_type
       /// \param threaded: whether to run threaded
 
       template <typename Func>
@@ -2193,7 +2259,7 @@ namespace Chroma
 
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
 	std::size_t vol = t.getLocal().volume();
-	T* ptr = t.data_for_writing();
+	value_type* ptr = t.data_for_writing();
 
 	if (threaded)
 	{
@@ -2213,7 +2279,7 @@ namespace Chroma
       }
 
       /// Fill the tensor with the value of the function applied to each element
-      /// \param func: function (Coor<N>) -> T
+      /// \param func: function (Coor<N>) -> value_type
       /// \param threaded: whether to run threaded
 
       template <typename Func>
@@ -2226,7 +2292,7 @@ namespace Chroma
 
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
 	std::size_t vol = t.getLocal().volume();
-	T* ptr = t.data_for_writing();
+	value_type* ptr = t.data_for_writing();
 	/// Number of elements in each direction for the local part
 	Coor<N> local_size = t.getLocal().size;
 	/// Stride for the local volume
@@ -2262,7 +2328,7 @@ namespace Chroma
       }
 
       /// Return a new tensor with the value of the function applied to each element
-      /// \param func: function T -> Tr
+      /// \param func: function value_type -> value_type for Tr
       /// \param threaded: whether to run threaded
 
       template <typename Tr, typename Func>
@@ -2275,8 +2341,8 @@ namespace Chroma
 	auto r = t.template make_compatible<N, Tr>();
 	assert(!r.isSubtensor() && !t.isSubtensor());
 	std::size_t vol = t.getLocal().volume();
-	T* tptr = t.data();
-	Tr* rptr = r.data();
+	value_type* tptr = t.data();
+	typename Tensor<N, Tr>::value_type* rptr = r.data();
 
 	if (threaded)
 	{
@@ -2296,7 +2362,7 @@ namespace Chroma
       }
 
       /// Return a new tensor with the value of the function applied to each element
-      /// \param func: function (Coor<N>, T) -> Tr
+      /// \param func: function (Coor<N>, value_type) -> value_type for Tr
       /// \param threaded: whether to run threaded
 
       template <typename Tr, typename FuncWithCoor>
@@ -2311,8 +2377,8 @@ namespace Chroma
 	auto r = t.template make_compatible<N, Tr>();
 	assert(!r.isSubtensor() && !t.isSubtensor());
 	std::size_t vol = t.getLocal().volume();
-	T* tptr = t.data();
-	Tr* rptr = r.data();
+	value_type* tptr = t.data();
+	typename Tensor<N, Tr>::value_type* rptr = r.data();
 	/// Number of elements in each direction for the local part
 	Coor<N> local_size = t.getLocal().size;
 	/// Stride for the local volume
@@ -2349,7 +2415,7 @@ namespace Chroma
       }
 
       /// Apply the function to each tensor element
-      /// \param func: function T -> void
+      /// \param func: function value_type -> void
       /// \param threaded: whether to run threaded
 
       template <typename Func>
@@ -2361,7 +2427,7 @@ namespace Chroma
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
 	assert(!t.isSubtensor());
 	std::size_t vol = t.getLocal().volume();
-	T* tptr = t.data();
+	value_type* tptr = t.data();
 
 	if (threaded)
 	{
@@ -2389,7 +2455,7 @@ namespace Chroma
       ///   Tensor<5,double> q("xyztX", latticeSize<5>("xyztX"), OnHost);
       ///   q.getLocal().set({0,0,0,0,0}, 1.0); // set the first local element in this process to 1.0
 
-      void set(T v)
+      void set(value_type v)
       {
 	if (std::norm(v) == 0)
 	  set_zero();
@@ -2500,7 +2566,7 @@ namespace Chroma
 				detail::TensorPartition<Nn>(new_order_, new_dim, dist)
 				  .make_compatible(new_order_, p->get_subpartition(from, size),
 						   order, same_dim_labels)),
-			      false /* unordered_writing */);
+			      false /* unordered_writing */, complexLabel);
       }
 
       /// Return a tensor on the same device and following the same distribution
@@ -2528,7 +2594,7 @@ namespace Chroma
 	std::string new_order_ = new_order.getSome(order);
 	auto new_dim = kvcoors<Nn>(new_order_, new_kvdim, 0, ThrowOnMissing);
 	return Tensor<Nn, Tn>(new_order_, new_dim, new_dev.getSome(getDev()),
-			      new_dist.getSome(dist));
+			      new_dist.getSome(dist), complexLabel);
       }
 
       /// Return a tensor on the same device and following the same distribution
@@ -2605,7 +2671,8 @@ namespace Chroma
 	return Tensor<N, T>(
 	  order, size, {},
 	  std::make_shared<detail::TensorPartition<N>>(p->get_subpartition(from, size)), dist, {{}},
-	  size, T{1}, false /* not conjugate */, true /* is eg */, false /* ordered writing */);
+	  size, value_type{1}, false /* not conjugate */, true /* is eg */,
+	  false /* ordered writing */, complexLabel);
       }
 
       /// Return this tensor but allowing consecutive writing operations (from `copyTo`, `contract`...)
@@ -2682,9 +2749,9 @@ namespace Chroma
 
       /// Return whether the tensor has complex components although being stored with a non-complex type `T`
 
-      bool isFakeReal() const
+      static constexpr bool isFakeReal()
       {
-	return order.find('.') != std::string::npos;
+	return detail::is_diycomplex<T>::value;
       }
 
       /// Check that the dimension labels are valid
@@ -2694,27 +2761,24 @@ namespace Chroma
 	// Check that all labels are different there are N
 	detail::check_order<N>(order);
 
-	/// Throw exception if this a fake real tensor but with a complex type `T`
-	if (isFakeReal() && detail::is_complex<T>::value)
-	  throw std::runtime_error("Invalid tensor: it is fake real and complex!");
+	/// Throw exception if this a diycomplex tensor but there's no complexity label
+	if (isFakeReal() && order.find(complexLabel) == std::string::npos)
+	  throw std::runtime_error("checkOrder: DIYComplex tensor missing the complexity label");
 
 	for (auto s : size)
 	  if (s < 0)
 	    std::runtime_error("Invalid tensor size: it should be positive");
       }
 
-      /// Return a fake real view of this tensor
+      /// Return a view of this tensor with an extra label for the real and the imaginary parts
+      /// \param complexLabel: label to represent the real and the imaginary part
 
-      template <typename U = T,
-		typename std::enable_if<detail::is_complex<U>::value, bool>::type = true>
-      Tensor<N + 1, typename U::value_type> toFakeReal() const
+      template <typename U = T>
+      typename std::enable_if<!detail::is_diycomplex<U>::value && detail::is_complex<U>::value,
+			      Tensor<N + 1, DIYComplex<typename U::value_type>>>::type
+      toFakeReal(char complexLabel = '.') const
       {
-	assert(!isFakeReal());
-
-	if (is_eg())
-	  throw std::runtime_error("Invalid operation from an example tensor");
-
-	std::string new_order = "." + order;
+	std::string new_order = std::string(1, complexLabel) + order;
 	Coor<N + 1> new_from = {0};
 	std::copy_n(from.begin(), N, new_from.begin() + 1);
 	Coor<N + 1> new_size = {2};
@@ -2724,30 +2788,47 @@ namespace Chroma
 	if (std::fabs(std::imag(scalar)) != 0)
 	  throw std::runtime_error(
 	    "Unsupported conversion to fake real tensors with an implicit complex scale");
-	using new_T = typename T::value_type;
-	new_T new_scalar = std::real(scalar);
+	typename T::value_type new_scalar = std::real(scalar);
 	auto new_p = std::make_shared<detail::TensorPartition<N + 1>>(p->insert_dimension(0, 2));
 
-	return Tensor<N + 1, new_T>(new_order, new_dim, allocation, new_p, dist, new_from, new_size,
-				    new_scalar, conjugate, eg, unordered_writing);
+	return Tensor<N + 1, DIYComplex<typename T::value_type>>(
+	  new_order, new_dim, allocation, new_p, dist, new_from, new_size, new_scalar, conjugate,
+	  eg, unordered_writing, complexLabel);
       }
 
-      template <typename U = T,
-		typename std::enable_if<!detail::is_complex<U>::value, bool>::type = true>
-      Tensor<N - 1, std::complex<U>> toComplex(bool allow_cloning = true) const
+      template <typename U = T>
+      typename std::enable_if<!detail::is_diycomplex<U>::value && !detail::is_complex<U>::value,
+			      Tensor<N, DIYComplex<T>>>::type
+      toFakeReal(char complexLabel = '.') const
       {
-	assert(isFakeReal() && kvdim()['.'] == 2);
+	return Tensor<N, DIYComplex<T>>(order, dim, allocation, p, dist, from, size, scalar,
+					conjugate, eg, unordered_writing, complexLabel);
+      }
 
-	if (is_eg())
-	  throw std::runtime_error("Invalid operation from an example tensor");
+      template <typename U = T>
+      typename std::enable_if<detail::is_diycomplex<U>::value, Tensor<N, T>>::type
+      toFakeReal(char newComplexLabel = 0) const
+      {
+	if (newComplexLabel == 0 || newComplexLabel == complexLabel)
+	  return *this;
+	return rename_dims({{complexLabel, newComplexLabel}});
+      }
 
-	std::size_t dot_pos = order.find('.');
+      /// Return a view or a copy of this tensor where the real and the imaginary parts are together in an std::complex
+      /// \param allow_cloning: whether to allow reordering to put the complexity label first
+
+      template <typename U = T>
+      typename std::enable_if<detail::is_diycomplex<U>::value,
+			      Tensor<N - 1, std::complex<typename U::value_type>>>::type
+      toComplex(bool allow_cloning = true) const
+      {
+	std::size_t dot_pos = order.find(complexLabel);
 	std::string new_order = detail::remove_coor(order, dot_pos);
 
 	if (dot_pos != 0)
 	{
-	  if (allow_cloning)
-	    return reorder("." + new_order).toComplex(false);
+	  if (allow_cloning || is_eg())
+	    return reorder(std::string(1, complexLabel) + new_order).toComplex(false);
 	  else
 	    throw std::runtime_error("Not allow to create a new tensor in `toComplex`");
 	}
@@ -2755,26 +2836,17 @@ namespace Chroma
 	Coor<N - 1> new_from = detail::remove_coor(from, dot_pos);
 	Coor<N - 1> new_size = detail::remove_coor(size, dot_pos);
 	Coor<N - 1> new_dim = detail::remove_coor(dim, dot_pos);
-	using new_T = std::complex<T>;
-	new_T new_scalar = new_T{scalar};
+	std::complex<typename T::value_type> new_scalar{scalar};
 	auto new_p = std::make_shared<detail::TensorPartition<N - 1>>(p->remove_dimension(dot_pos));
 
-	return Tensor<N - 1, new_T>(new_order, new_dim, allocation, new_p, dist, new_from, new_size,
-				    new_scalar, conjugate, eg, unordered_writing);
+	return Tensor<N - 1, std::complex<typename T::value_type>>(
+	  new_order, new_dim, allocation, new_p, dist, new_from, new_size, new_scalar, conjugate,
+	  eg, unordered_writing, 0 /* no complex label */);
       }
 
-      template <typename U = T,
-		typename std::enable_if<!detail::is_complex<U>::value, bool>::type = true>
-      Tensor<N, U> toFakeReal() const
-      {
-	if (!isFakeReal())
-	  throw std::runtime_error("toFakeReal: unsupported on a non-complex tensor");
-	return *this;
-      }
-
-      template <typename U = T,
-		typename std::enable_if<detail::is_complex<U>::value, bool>::type = true>
-      Tensor<N, U> toComplex(bool allow_cloning = true) const
+      template <typename U = T>
+      typename std::enable_if<!detail::is_diycomplex<U>::value, Tensor<N, T>>::type
+      toComplex(bool allow_cloning = true) const
       {
 	(void)allow_cloning;
 	return *this;
@@ -2831,7 +2903,7 @@ namespace Chroma
 	return Tensor<Nout, T>(new_order, new_p->dim, allocation, new_p, dist,
 			       detail::split_dimension(pos, from, d, From),
 			       detail::split_dimension(pos, size, d, Size), scalar, conjugate, eg,
-			       unordered_writing);
+			       unordered_writing, complexLabel);
       }
 
       /// Split a dimension into another dimensions
@@ -2907,7 +2979,7 @@ namespace Chroma
 	return Tensor<Nout, T>(new_order, new_p->dim, allocation, new_p, dist,
 			       detail::collapse_dimensions<Nout>(pos, from, dim, From),
 			       detail::collapse_dimensions<Nout>(pos, size, dim, Size), scalar,
-			       conjugate, eg, unordered_writing);
+			       conjugate, eg, unordered_writing, complexLabel);
       }
 
       /// Rearrange several dimensions into new ones
@@ -3012,7 +3084,8 @@ namespace Chroma
 	  // Return a tensor with this data but a different shape
 	  auto new_p = std::make_shared<detail::TensorPartition<Nout>>(new_p_aux.second);
 	  return Tensor<Nout, T>(new_order, new_p->dim, allocation, new_p, dist, new_from.second,
-				 new_size.second, scalar, conjugate, eg, unordered_writing);
+				 new_size.second, scalar, conjugate, eg, unordered_writing,
+				 complexLabel);
 	}
 	else if (new_size.first != Success)
 	{
@@ -3022,7 +3095,7 @@ namespace Chroma
 	else
 	{
 	  // Try the other way around
-	  Tensor<Nout, T> r(new_order, new_size.second, getDev(), dist);
+	  Tensor<Nout, T> r(new_order, new_size.second, getDev(), dist, complexLabel);
 	  r.scalar = scalar;
 	  r.conjugate = conjugate;
 	  r.unordered_writing = unordered_writing;
@@ -3064,7 +3137,7 @@ namespace Chroma
 	auto new_p = std::make_shared<detail::TensorPartition<N>>(p->coarse_support(c_blk));
 
 	// Create output tensor
-	Tensor<N, T> r(order, dim, getDev(), dist, new_p, unordered_writing);
+	Tensor<N, T> r(order, dim, getDev(), dist, new_p, unordered_writing, complexLabel);
 	r.from = from;
 	r.size = size;
 	r.conjugate = conjugate;
@@ -3115,7 +3188,7 @@ namespace Chroma
 	return Tensor<N, T>(order, p->localSize(), allocation,
 			    std::make_shared<detail::TensorPartition<N>>(p->get_local_partition()),
 			    Local, normalize_coor(from - p->localFrom(), dim), lsize, scalar,
-			    conjugate, eg, false /* ordered writing */);
+			    conjugate, eg, false /* ordered writing */, complexLabel);
       }
 
       /// Set zero
@@ -3124,13 +3197,13 @@ namespace Chroma
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	T* ptr = data_for_writing();
+	value_type* ptr = data_for_writing();
 	MPI_Comm comm = (dist == OnMaster || dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	if (dist != OnMaster || Layout::nodeNumber() == 0)
-	  superbblas::copy<N, N>(T{0}, p->p.data(), 1, order.c_str(), from, size, dim,
-				 (const T**)&ptr, nullptr, &ctx(), p->p.data(), 1, order.c_str(),
-				 from, dim, &ptr, nullptr, &ctx(), comm, superbblas::FastToSlow,
-				 superbblas::Copy);
+	  superbblas::copy<N, N>(value_type{0}, p->p.data(), 1, order.c_str(), from, size, dim,
+				 (const value_type**)&ptr, nullptr, &ctx(), p->p.data(), 1,
+				 order.c_str(), from, dim, &ptr, nullptr, &ctx(), comm,
+				 superbblas::FastToSlow, superbblas::Copy);
       }
 
       /// Return whether the given tensor has the same distribution as this one
@@ -3188,7 +3261,8 @@ namespace Chroma
       /// Return whether the given tensor has the same distribution as this one
       Tensor<N, float> create_mask() const
       {
-	Tensor<N, float> m{order, dim, getDev(), dist, p, false /* ordered writing */};
+	Tensor<N, float> m{order, dim, getDev(), dist, p, false /* ordered writing */,
+			   0 /* no complex label */};
 	m.set_zero();
 	m.from = from;
 	m.size = size;
@@ -3216,7 +3290,7 @@ namespace Chroma
 	    if (size[i] != wsize[i] && !detail::is_in(uneven_mask_labels, order[i]))
 	      throw std::runtime_error("copying with masks tensor with different dimensions");
 
-	if (action == AddTo && w.scalar != Tw{1})
+	if (action == AddTo && w.scalar != decltype(w.scalar){1})
 	  throw std::runtime_error(
 	    "Not allowed to add to a tensor whose implicit scalar factor is not one");
 
@@ -3338,8 +3412,8 @@ namespace Chroma
 	  m1ptr = m1.data();
 	}
 
-	T* ptr = data();
-	Tw* w_ptr = w.data_for_writing();
+	value_type* ptr = data();
+	typename decltype(w)::value_type* w_ptr = w.data_for_writing();
 	MPI_Comm comm =
 	  ((dist == OnMaster && w.dist == OnMaster) || dist == Local ? MPI_COMM_SELF
 								     : MPI_COMM_WORLD);
@@ -3347,10 +3421,10 @@ namespace Chroma
 	{
 	  superbblas::Request req;
 	  superbblas::copy<N, Nw>(
-	    detail::safe_div<T>(scalar, w.scalar), p->p.data(), 1, order.c_str(), from, size, dim,
-	    (const T**)&ptr, (const float**)&m0ptr, &ctx(), w.p->p.data(), 1, w.order.c_str(),
-	    w.from, w.dim, &w_ptr, (const float**)&m1ptr, &w.ctx(), comm, superbblas::FastToSlow,
-	    action == CopyTo ? superbblas::Copy : superbblas::Add, &req);
+	    detail::safe_div<value_type>(scalar, w.scalar), p->p.data(), 1, order.c_str(), from,
+	    size, dim, (const value_type**)&ptr, (const float**)&m0ptr, &ctx(), w.p->p.data(), 1,
+	    w.order.c_str(), w.from, w.dim, &w_ptr, (const float**)&m1ptr, &w.ctx(), comm,
+	    superbblas::FastToSlow, action == CopyTo ? superbblas::Copy : superbblas::Add, &req);
 	  w.allocation->append_pending_operation(req);
 	}
       }
@@ -3397,7 +3471,7 @@ namespace Chroma
 	auto new_p = std::make_shared<detail::TensorPartition<N>>(
 	  p->make_suitable_for_contraction(order, *v.p, v.order));
 
-	Tensor<N, T> r(order, dim, getDev(), OnEveryone, new_p, unordered_writing);
+	Tensor<N, T> r(order, dim, getDev(), OnEveryone, new_p, unordered_writing, complexLabel);
 	copyTo(r);
 	return r;
       }
@@ -3405,7 +3479,8 @@ namespace Chroma
       // Contract the dimensions with the same label in `v` and `w` than do not appear on `this` tensor.
       template <std::size_t Nv, std::size_t Nw>
       void contract(Tensor<Nv, T> v, const remap& mv, Conjugation conjv, Tensor<Nw, T> w,
-		    const remap& mw, Conjugation conjw, const remap& mr = {}, T beta = T{0})
+		    const remap& mw, Conjugation conjw, const remap& mr = {},
+		    value_type beta = value_type{0})
       {
 	if (is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
@@ -3438,18 +3513,18 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "One of the contracted tensors or the output tensor is local and others are not!");
 
-	T* v_ptr = v.data();
-	T* w_ptr = w.data();
-	T* ptr = std::norm(beta) == 0 ? data_for_writing() : data();
+	value_type* v_ptr = v.data();
+	value_type* w_ptr = w.data();
+	value_type* ptr = std::norm(beta) == 0 ? data_for_writing() : data();
 	std::string orderv_ = detail::update_order_and_check<Nv>(v.order, mv);
 	std::string orderw_ = detail::update_order_and_check<Nw>(w.order, mw);
 	std::string order_ = detail::update_order_and_check<N>(order, mr);
 	bool conjv_ = (((conjv == Conjugate) xor v.conjugate) xor conjugate);
 	bool conjw_ = (((conjw == Conjugate) xor w.conjugate) xor conjugate);
 	superbblas::contraction<Nv, Nw, N>(
-	  detail::cond_conj(conjv_, v.scalar) * detail::cond_conj(conjw_, w.scalar) / scalar, //
-	  v.p->p.data(), v.dim, 1, orderv_.c_str(), conjv_, (const T**)&v_ptr, &v.ctx(),      //
-	  w.p->p.data(), w.dim, 1, orderw_.c_str(), conjw_, (const T**)&w_ptr, &w.ctx(),      //
+	  detail::cond_conj(conjv_, v.scalar) * detail::cond_conj(conjw_, w.scalar) / scalar,	  //
+	  v.p->p.data(), v.dim, 1, orderv_.c_str(), conjv_, (const value_type**)&v_ptr, &v.ctx(), //
+	  w.p->p.data(), w.dim, 1, orderw_.c_str(), conjw_, (const value_type**)&w_ptr, &w.ctx(), //
 	  detail::cond_conj(conjugate, beta), p->p.data(), dim, 1, order_.c_str(), &ptr, &ctx(),
 	  MPI_COMM_WORLD, superbblas::FastToSlow);
       }
@@ -3511,18 +3586,18 @@ namespace Chroma
 	if (std::fabs(std::imag(v.scalar)) != 0 || std::real(v.scalar) < 0)
 	  throw std::runtime_error("cholInv: unsupported a negative or imaginary scale");
 
-	T* v_ptr = v.data();
-	T* w_ptr = w.data();
-	T* ptr = data_for_writing();
+	value_type* v_ptr = v.data();
+	value_type* w_ptr = w.data();
+	value_type* ptr = data_for_writing();
 	superbblas::cholesky<Nv>(v.p->p.data(), v.dim, 1, v.order.c_str(), &v_ptr,
 				 order_rows.c_str(), order_cols.c_str(), &v.ctx(), MPI_COMM_WORLD,
 				 superbblas::FastToSlow);
 	superbblas::trsm<Nv, Nw, N>(
 	  w.scalar / std::sqrt(v.scalar) / scalar, //
-	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
+	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const value_type**)&v_ptr, order_rows.c_str(),
 	  order_cols.c_str(),
-	  &v.ctx(),								 //
-	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const T**)&w_ptr, &w.ctx(), //
+	  &v.ctx(),									  //
+	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr, &w.ctx(), //
 	  p->p.data(), dim, 1, order.c_str(), &ptr, &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
@@ -3586,15 +3661,15 @@ namespace Chroma
 	if (v.dist == OnEveryoneReplicated && detail::isDistributedOnEveryone(w.dist))
 	  v = v.make_suitable_for_contraction(w);
 
-	T* v_ptr = v.data();
-	T* w_ptr = w.data();
-	T* ptr = data_for_writing();
+	value_type* v_ptr = v.data();
+	value_type* w_ptr = w.data();
+	value_type* ptr = data_for_writing();
 	superbblas::gesm<Nv, Nw, N>(
 	  w.scalar / v.scalar / scalar, //
-	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const T**)&v_ptr, order_rows.c_str(),
+	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const value_type**)&v_ptr, order_rows.c_str(),
 	  order_cols.c_str(),
-	  &v.ctx(),								 //
-	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const T**)&w_ptr, &w.ctx(), //
+	  &v.ctx(),									  //
+	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr, &w.ctx(), //
 	  p->p.data(), dim, 1, order.c_str(), &ptr, &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
@@ -3602,7 +3677,7 @@ namespace Chroma
       /// \param s: scaling factor
       /// \return: a new view (it doesn't create a copy of the tensor)
 
-      Tensor<N, T> scale(T s) const
+      Tensor<N, T> scale(value_type s) const
       {
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
@@ -3627,9 +3702,11 @@ namespace Chroma
 	from = {{}};
 	size = {{}};
 	strides = {{}};
-	scalar = T{0};
+	scalar = value_type{0};
 	conjugate = false;
 	eg = false;
+	unordered_writing = false;
+	complexLabel = 0;
       }
 
       // Return whether the current view is contiguous in memory
@@ -3721,8 +3798,10 @@ namespace Chroma
 	return *this;
       }
 
-      template <typename Tn = T,
-		typename std::enable_if<!std::is_same<T, Tn>::value, bool>::type = true>
+      template <typename Tn = T, typename std::enable_if<!std::is_same<T, Tn>::value &&
+							   detail::is_diycomplex<T>::value ==
+							     detail::is_diycomplex<Tn>::value,
+							 bool>::type = true>
       Tensor<N, Tn> cast() const
       {
 	auto r = make_compatible<N, Tn>();
@@ -3737,6 +3816,17 @@ namespace Chroma
 	  copyTo(r);
 	}
 	return r;
+      }
+
+      template <typename Tn = T, typename std::enable_if<
+				   !std::is_same<T, Tn>::value && detail::is_diycomplex<T>::value &&
+				     !detail::is_diycomplex<Tn>::value &&
+				     std::is_same<typename detail::base_type<T>::type, Tn>::value,
+				   bool>::type = true>
+      Tensor<N, Tn> cast() const
+      {
+	return Tensor<N, Tn>(order, dim, allocation, p, dist, from, size, scalar, conjugate, eg,
+			     unordered_writing, 0 /* no complexity label */);
       }
 
       /// Return a compatible tensor in a different type or this tensor if the type coincides
@@ -3778,7 +3868,8 @@ namespace Chroma
 	  getDev(),
 	  dist,
 	  std::make_shared<detail::TensorPartition<N>>(p->extend_support(kvcoors<N>(order, m, 0))),
-	  unordered_writing};
+	  unordered_writing,
+	  complexLabel};
 	r.from = from;
 	r.size = size;
 	r.strides = strides;
@@ -3812,7 +3903,7 @@ namespace Chroma
 	  throw std::runtime_error("Only supported to read on `OnMaster` tensors");
 	if (!isContiguous())
 	  throw std::runtime_error("Only supported contiguous views in memory");
-	if (scalar != T{1} || conjugate)
+	if (scalar != value_type{1} || conjugate)
 	  throw std::runtime_error(
 	    "Not allowed for tensor with a scale not being one or implicitly conjugated");
 
@@ -3841,7 +3932,7 @@ namespace Chroma
 	  throw std::runtime_error("Not allowed for tensors implicitly conjugated");
 
 	// If the tensor has an implicit scale, view, or is not on host, make a copy
-	if (scalar != T{1} || isSubtensor() || ctx().plat != superbblas::CPU)
+	if (scalar != value_type{1} || isSubtensor() || ctx().plat != superbblas::CPU)
 	{
 	  cloneOn(OnHost).binaryWrite(bin);
 	  return;
@@ -3998,9 +4089,10 @@ namespace Chroma
     ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
 
     template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
-    Tensor<Nr, T> contract(const Tensor<Nv, T>& v, Tensor<Nw, T> w,
-			   const std::string& labels_to_contract, Maybe<Action> action = none,
-			   Tensor<Nr, T> r = Tensor<Nr, T>{}, const remap& mr = {}, T beta = T{1})
+    Tensor<Nr, T>
+    contract(const Tensor<Nv, T>& v, Tensor<Nw, T> w, const std::string& labels_to_contract,
+	     Maybe<Action> action = none, Tensor<Nr, T> r = Tensor<Nr, T>{}, const remap& mr = {},
+	     typename detail::base_type<T>::type beta = typename detail::base_type<T>::type{1})
     {
       if (action.hasSome() != (bool)r)
 	throw std::runtime_error("Invalid default value");
@@ -4135,20 +4227,21 @@ namespace Chroma
       // Do the square root and return the result
       using Treal = typename detail::real_type<T>::type;
       return r.template transformWithCPUFun<Treal>(
-	[](const T& t) { return std::sqrt(std::real(t)); });
+	[](const typename detail::base_type<T>::type& t) { return std::sqrt(std::real(t)); });
     }
 
     /// Compute the maximum for a small tensor
     /// \param v: tensor
 
     template <std::size_t N, typename T>
-    T max(Tensor<N, T> v)
+    typename detail::base_type<T>::type max(Tensor<N, T> v)
     {
+      using value_type = typename detail::base_type<T>::type;
       v = v.make_sure(none, OnHost, OnEveryoneReplicated);
       if (v.isSubtensor())
 	v = v.clone();
-      T r = std::numeric_limits<T>::min();
-      T* p = v.data();
+      value_type r = std::numeric_limits<value_type>::min();
+      value_type* p = v.data();
       for (unsigned int i = 0, vol = v.volume(); i < vol; ++i)
 	r = std::max(r, p[i]);
       return r;
@@ -4298,23 +4391,23 @@ namespace Chroma
     {
       using Complex = std::complex<T>;
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd + 2, Complex>("cxyztX", latticeSize<Nd + 2>("cxyztX"), OnHost, OnEveryoneAsChroma,
-				     v_ptr);
+      return Tensor<Nd + 2, Complex>("cxyztX", latticeSize<Nd + 2>("cxyztX"), OnHost,
+				     OnEveryoneAsChroma, v_ptr);
     }
 
 #  if !defined(QDP_IS_QDPJIT) || !defined(SUPERBBLAS_USE_GPU)
     inline Tensor<Nd + 3, Complex> asTensorView(const LatticeFermion& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd + 3, Complex>("csxyztX", latticeSize<Nd + 3>("csxyztX"), OnHost, OnEveryoneAsChroma,
-				     v_ptr);
+      return Tensor<Nd + 3, Complex>("csxyztX", latticeSize<Nd + 3>("csxyztX"), OnHost,
+				     OnEveryoneAsChroma, v_ptr);
     }
 #  else
-    inline Tensor<Nd + 4, REAL> asTensorView(const LatticeFermion& v)
+    inline Tensor<Nd + 4, DIYComplex<REAL>> asTensorView(const LatticeFermion& v)
     {
       REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
-      return Tensor<Nd + 4, REAL>("xyztXsc.", latticeSize<Nd + 4>("xyztXsc."), OnDefaultDevice,
-				  OnEveryoneAsChroma, v_ptr);
+      return Tensor<Nd + 4, DIYComplex<REAL>>("xyztXsc.", latticeSize<Nd + 4>("xyztXsc."),
+					      OnDefaultDevice, OnEveryoneAsChroma, v_ptr, '.');
     }
 #  endif
 
@@ -4322,15 +4415,15 @@ namespace Chroma
     inline Tensor<Nd + 1, Complex> asTensorView(const LatticeComplex& v)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(v.getF());
-      return Tensor<Nd + 1, Complex>("xyztX", latticeSize<Nd + 1>("xyztX"), OnHost, OnEveryoneAsChroma,
-				     v_ptr);
+      return Tensor<Nd + 1, Complex>("xyztX", latticeSize<Nd + 1>("xyztX"), OnHost,
+				     OnEveryoneAsChroma, v_ptr);
     }
 #  else
-    inline Tensor<Nd + 2, REAL> asTensorView(const LatticeComplex& v)
+    inline Tensor<Nd + 2, DIYComplex<REAL>> asTensorView(const LatticeComplex& v)
     {
       REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
-      return Tensor<Nd + 2, REAL>("xyztX.", latticeSize<Nd + 2>("xyztX."), OnDefaultDevice,
-				  OnEveryoneAsChroma, v_ptr);
+      return Tensor<Nd + 2, DIYComplex<REAL>>("xyztX.", latticeSize<Nd + 2>("xyztX."),
+					      OnDefaultDevice, OnEveryoneAsChroma, v_ptr, '.');
     }
 #  endif
 
@@ -4343,12 +4436,12 @@ namespace Chroma
 				     OnEveryoneAsChroma, v_ptr);
     }
 #  else
-    inline Tensor<Nd + 4, REAL> asTensorView(const LatticeColorMatrix& v)
+    inline Tensor<Nd + 4, DIYComplex<REAL>> asTensorView(const LatticeColorMatrix& v)
     {
       REAL* v_ptr = reinterpret_cast<REAL*>(getQDPPtr(v));
-      return Tensor<Nd + 4, REAL>("xyztXji.",
-				  latticeSize<Nd + 4>("xyztXji.", {{'i', Nc}, {'j', Nc}}),
-				  OnDefaultDevice, OnEveryoneAsChroma, v_ptr);
+      return Tensor<Nd + 4, DIYComplex<REAL>>(
+	"xyztXji.", latticeSize<Nd + 4>("xyztXji.", {{'i', Nc}, {'j', Nc}}), OnDefaultDevice,
+	OnEveryoneAsChroma, v_ptr, '.');
     }
 #  endif
 
@@ -4424,7 +4517,8 @@ namespace Chroma
 
     template <std::size_t ND, std::size_t NI, typename T>
     struct SpTensor {
-      static_assert(superbblas::supported_type<T>::value, "Not supported type");
+      using value_type = typename detail::base_type<T>::type;
+      static_assert(superbblas::supported_type<value_type>::value, "Not supported type");
 
     public:
       Tensor<ND, T> d;		   ///< Tensor example for the domain
@@ -4435,15 +4529,15 @@ namespace Chroma
       Tensor<NI + 2, int> jj;	   ///< Coordinate of the first element on each block
       Tensor<NI + ND + 1, T> data; ///< Nonzero values
       std::shared_ptr<superbblas::BSR_handle> handle; ///< suparbblas sparse tensor handle
-      T scalar;					      ///< Scalar factor of the tensor
+      value_type scalar;			      ///< Scalar factor of the tensor
       bool isImgFastInBlock;			      ///< whether the BSR blocks are in row-major
       unsigned int nblockd;			      ///< Number of blocked domain dimensions
       unsigned int nblocki;			      ///< Number of blocked image dimensions
 
       /// Low-level constructor
       SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, Coor<ND> blkd, Coor<NI> blki, Tensor<NI, int> ii,
-	       Tensor<NI + 2, int> jj, Tensor<NI + ND + 1, T> data, T scalar, bool isImgFastInBlock,
-	       unsigned int nblockd, unsigned int nblocki)
+	       Tensor<NI + 2, int> jj, Tensor<NI + ND + 1, T> data, value_type scalar,
+	       bool isImgFastInBlock, unsigned int nblockd, unsigned int nblocki)
 	: d(d.make_eg()),
 	  i(i.make_eg()),
 	  blkd(blkd),
@@ -4471,7 +4565,7 @@ namespace Chroma
 	  ss << "data:" << data.data() << ", ";
 	std::size_t sizemb = (ii.getLocal().volume() * sizeof(int) + //
 			      jj.getLocal().volume() * sizeof(int) + //
-			      data.getLocal().volume() * sizeof(T)) /
+			      data.getLocal().volume() * sizeof(value_type)) /
 			     1024 / 1024;
 	ss << "domain_order: " << d.order << ", domain_dim:" << d.dim << "image_order: " << i.order
 	   << ", image_dim:" << i.dim << ", local_storage:" << sizemb << " MiB}";
@@ -4489,7 +4583,7 @@ namespace Chroma
 	       unsigned int num_neighbors, bool isImgFastInBlock = false)
 	: d{d.make_eg()},
 	  i{i.make_eg()},
-	  scalar{T{1}},
+	  scalar{value_type{1}},
 	  isImgFastInBlock{isImgFastInBlock},
 	  nblockd(nblockd),
 	  nblocki(nblocki)
@@ -4585,11 +4679,11 @@ namespace Chroma
 	    superbblas::detail::align(alignof(Coor<NI>), sizeof(int), jjptr, sizeof(int)) ==
 	      nullptr)
 	  throw std::runtime_error("Ups! Look into this");
-	const T* ptr = data.data();
+	const value_type* ptr = data.data();
 	superbblas::BSR_handle* bsr = nullptr;
-	superbblas::create_bsr<ND, NI, T>(i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd,
-					  isImgFastInBlock, &iiptr, &jjptr, &ptr, &data.ctx(),
-					  MPI_COMM_WORLD, superbblas::FastToSlow, &bsr);
+	superbblas::create_bsr<ND, NI, value_type>(
+	  i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd, isImgFastInBlock, &iiptr,
+	  &jjptr, &ptr, &data.ctx(), MPI_COMM_WORLD, superbblas::FastToSlow, &bsr);
 	handle = std::shared_ptr<superbblas::BSR_handle>(
 	  bsr, [=](superbblas::BSR_handle* bsr) { destroy_bsr(bsr); });
       }
@@ -4922,6 +5016,61 @@ namespace Chroma
 	return r;
       }
 
+      /// Return a view of this tensor with an extra label for the real and the imaginary parts
+
+      template <typename U = T>
+      typename std::enable_if<!detail::is_diycomplex<U>::value && detail::is_complex<U>::value,
+			      SpTensor<ND + 1, NI + 1, DIYComplex<typename U::value_type>>>::type
+      toFakeReal() const
+      {
+	using newT = DIYComplex<typename U::value_type>;
+
+	// Get the new domain and image
+	char d_complexLabel = detail::get_free_label(d.order + i.order);
+	auto new_d = d.toFakeReal(d_complexLabel);
+	char i_complexLabel = detail::get_free_label(new_d.order + i.order);
+	auto new_i = i.toFakeReal(i_complexLabel);
+
+	// Create the returning tensor
+	SpTensor<ND + 1, NI + 1, newT> r{
+	  new_d,	   new_i, nblockd + 1, nblocki + 1, (unsigned int)jj.kvdim().at('u'),
+	  isImgFastInBlock};
+
+	// Copy the data to the new tensor
+	// a) same number of nonzeros per row
+	ii.copyTo(r.ii);
+	// b) the nonzero blocks start at the same position
+	r.jj.kvslice_from_size({}, {{'~', 1}}).set(0);
+	jj.copyTo(r.jj.kvslice_from_size({{'~', 1}}, {{'~', ND}}));
+	// c) each element in data xr+xi*i -> [xr  -xi; xi  xr]
+	auto data0 = data.toFakeReal(d_complexLabel);
+	data0.kvslice_from_size({}, {{d_complexLabel, 1}})
+	  .copyTo(r.data.kvslice_from_size({}, {{d_complexLabel, 1}, {i_complexLabel, 1}}));
+	data0.kvslice_from_size({}, {{d_complexLabel, 1}})
+	  .copyTo(r.data.kvslice_from_size({{d_complexLabel, 1}, {i_complexLabel, 1}},
+					   {{d_complexLabel, 1}, {i_complexLabel, 1}}));
+	data0.kvslice_from_size({{d_complexLabel, 1}}, {{d_complexLabel, 1}})
+	  .scale(-1)
+	  .copyTo(r.data.kvslice_from_size({{d_complexLabel, 1}},
+					   {{d_complexLabel, 1}, {i_complexLabel, 1}}));
+	data0.kvslice_from_size({{d_complexLabel, 1}}, {{d_complexLabel, 1}})
+	  .copyTo(r.data.kvslice_from_size({{i_complexLabel, 1}},
+					   {{d_complexLabel, 1}, {i_complexLabel, 1}}));
+
+	if (is_constructed())
+	  r.construct();
+
+	return r;
+      }
+
+      template <typename U = T>
+      typename std::enable_if<detail::is_diycomplex<U>::value || !detail::is_complex<U>::value,
+			      SpTensor<ND, NI, U>>::type
+      toFakeReal() const
+      {
+	return *this;
+      }
+
       /// Extend the support of each dimension by the given amount in each direction
       /// \param m: amount to extend the support for each process
 
@@ -5032,15 +5181,15 @@ namespace Chroma
 	if (power_label != 0 && !detail::is_in(w.order, power_label))
 	  throw std::runtime_error("contractWith: `power_label` isn't in `w`");
 
-	T* v_ptr = v.data();
-	T* w_ptr = w.data_for_writing();
+	value_type* v_ptr = v.data();
+	value_type* w_ptr = w.data_for_writing();
 	std::string orderv = detail::update_order_and_check<Nv>(v.order, mv);
 	std::string orderw = detail::update_order_and_check<Nw>(w.order, mw);
-	superbblas::bsr_krylov<ND, NI, Nv, Nw, T>(
-	  scalar * v.scalar / w.scalar, handle.get(), i.order.c_str(), d.order.c_str(), //
-	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const T**)&v_ptr,	//
+	superbblas::bsr_krylov<ND, NI, Nv, Nw, value_type>(
+	  scalar * v.scalar / w.scalar, handle.get(), i.order.c_str(), d.order.c_str(),	       //
+	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const value_type**)&v_ptr, //
 	  w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim, power_label,
-	  (T**)&w_ptr, //
+	  (value_type**)&w_ptr, //
 	  &data.ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
       }
 
@@ -5483,6 +5632,8 @@ namespace Chroma
     Tensor<N * 2, T> identity(const std::map<char, int>& dim, const remap& m,
 			      Maybe<std::string> order)
     {
+      using value_type = typename detail::base_type<T>::type;
+
       // Get the order for the rows
       std::string orows;
       if (order)
@@ -5507,16 +5658,15 @@ namespace Chroma
       Tensor<N * 2, T> t{orows + ocols, kvcoors<N * 2>(orows + ocols, tdim, 0, ThrowOnMissing),
 			 OnHost, OnMaster};
       t.set_zero();
-      T* p = t.data();
+      value_type* p = t.data();
       if (t.getLocal())
       {
 	for (unsigned int i = 0, vol = detail::volume(dim, orows); i < vol; ++i)
-	  p[vol * i + i] = T{1};
+	  p[vol * i + i] = value_type{1};
       }
 
       return t;
     }
-
 
     ///
     /// Operators
@@ -6289,6 +6439,8 @@ namespace Chroma
       cloneUnblockedOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power = 1,
 				       ColOrdering coBlk = RowMajor, const std::string& prefix = "")
       {
+	using value_type = typename detail::base_type<COMPLEX>::type;
+
 	log(1, "starting cloneUnblockedOperatorToSpTensor");
 
 	Tracker _t(std::string("clone unblocked operator ") + prefix);
@@ -6373,7 +6525,7 @@ namespace Chroma
 	{
 	  // Extracting the proving vector
 	  auto t_l = colors.template transformWithCPUFun<COMPLEX>(
-	    [&](float site_color) { return site_color == color ? COMPLEX{1} : COMPLEX{0}; });
+	    [&](float site_color) { return site_color == color ? value_type{1} : value_type{0}; });
 
 	  // Skip empty masks
 	  // NOTE: the call to split_dimension add a fake dimension that acts as columns
@@ -6388,7 +6540,7 @@ namespace Chroma
 
 	  // Construct an indicator tensor where all blocking dimensions but only the nodes colored `color` are copied
 	  auto color_mask = t_l.template transformWithCPUFun<float>(
-	    [](const COMPLEX& t) { return (float)std::real(t); });
+	    [](const value_type& t) { return (float)std::real(t); });
 	  auto sel_x_even =
 	    contract<NOp + Nblk>(contract<NOp>(color_mask, even_x_mask, ""), ones_blk, "");
 	  auto sel_x_odd =
@@ -6688,9 +6840,10 @@ namespace Chroma
 
     template <std::size_t N, typename T,
 	      typename std::enable_if<!detail::is_complex<T>::value, bool>::type = true>
-    void urand(Tensor<N, T> t, T a = 0, T b = 1)
+    void urand(Tensor<N, T> t, typename detail::base_type<T>::type a = 0,
+	       typename detail::base_type<T>::type b = 1)
     {
-      std::uniform_real_distribution<T> d(a, b);
+      std::uniform_real_distribution<typename detail::base_type<T>::type> d(a, b);
       t.fillWithCPUFuncNoArgs([&]() { return d(detail::getSeed()); }, false);
     }
 
@@ -6716,7 +6869,7 @@ namespace Chroma
 	      typename std::enable_if<!detail::is_complex<T>::value, bool>::type = true>
     void nrand(Tensor<N, T> t)
     {
-      std::normal_distribution<T> d{};
+      std::normal_distribution<typename detail::base_type<T>::type> d{};
       t.fillWithCPUFuncNoArgs([&]() { return d(detail::getSeed()); }, false);
     }
 
@@ -6790,7 +6943,7 @@ namespace Chroma
 	auto r_eo = r.split_dimension('y', "Yy", maxY)
 		      .split_dimension('z', "Zz", maxZ)
 		      .split_dimension('t', "Tt", maxT);
-		      //.make_writing_nonatomic();
+	//.make_writing_nonatomic();
 	while (len < 0)
 	  len += dims.at('x') * maxX;
 	for (int T = 0; T < maxT; ++T)
@@ -7160,8 +7313,8 @@ namespace Chroma
       // Auxiliary structure passed to PRIMME's matvec
 
       struct OperatorAux {
-	const Operator<Nd + 2, ComplexD> op;	       // Operator in cxyztX
-	const DeviceHost primme_dev;		       // where primme allocations are
+	const Operator<Nd + 3, double> op; // Operator in cxyztX
+	const DeviceHost primme_dev;	   // where primme allocations are
       };
 
       // Wrapper for PRIMME of `LaplacianOperator`
@@ -7183,12 +7336,13 @@ namespace Chroma
 	    throw std::runtime_error("We cannot play with the leading dimensions");
 
 	  OperatorAux& opaux = *(OperatorAux*)primme->matrix;
-	  const std::string order(opaux.op.d.order + std::string("n"));
+	  const std::string order(
+	    std::string(opaux.op.d.order.begin() + 1, opaux.op.d.order.end()) + std::string("n"));
 	  Coor<Nd + 3> size = latticeSize<Nd + 3>(order, {{'n', *blockSize}, {'t', 1}});
 	  Tensor<Nd + 3, ComplexD> tx(order, size, opaux.primme_dev, OnEveryone, (ComplexD*)x);
 	  Tensor<Nd + 3, ComplexD> ty(order, size, opaux.primme_dev, OnEveryone, (ComplexD*)y);
 	  assert(tx.getLocal().volume() == primme->nLocal * (*blockSize));
-	  opaux.op(tx, ty);
+	  opaux.op(tx.toFakeReal('.').cast<double>(), ty.toFakeReal('.').cast<double>());
 	  assert(ty.allocation->pending_operations.size() == 0);
 	  *ierr = 0;
 	} catch (...)
@@ -7259,13 +7413,17 @@ namespace Chroma
 	  // Create an efficient representation of the laplacian operator
 	  std::string order("cxyztX");
 	  auto eg = Tensor<Nd + 2, ComplexD>(order, latticeSize<Nd + 2>(order, {{'t', 1}}),
-					     OnDefaultDevice, OnEveryone).make_eg();
+					     OnDefaultDevice, OnEveryone)
+		      .make_eg()
+		      .toFakeReal('.')
+		      .cast<double>();
 	  OperatorLayout op_layout =
 	    ((from_tslice + t) % 2 == 0 ? XEvenOddLayout : XEvenOddLayoutZeroOdd);
 	  auto laplacianOp = Chroma::SB::detail::cloneOperator(
-	    Operator<Nd + 2, ComplexD>{
-	      [&](Tensor<Nd + 3, Complex> x, Tensor<Nd + 3, Complex> y) {
-		LaplacianOperator(ut, from_tslice + t, y, x);
+	    Operator<Nd + 3, double>{
+	      [&](Tensor<Nd + 4, double> x, Tensor<Nd + 4, double> y) {
+		LaplacianOperator(ut, from_tslice + t, y.toFakeReal('.').toComplex(),
+				  x.toFakeReal('.').toComplex());
 	      },
 	      eg, eg, nullptr, "", op_layout, op_layout,
 	      detail::getNeighbors(eg.kvdim(), 1 /* near-neighbors links only */, op_layout),
@@ -7282,8 +7440,8 @@ namespace Chroma
 	  primme_initialize(&primme);
 
 	  // Get the global and local size of evec
-	  std::size_t n = eg.volume();
-	  std::size_t nLocal = eg.getLocal().volume();
+	  std::size_t n = eg.volume() / 2;
+	  std::size_t nLocal = eg.getLocal().volume() / 2;
 
 	  if (n_colorvecs > n)
 	  {
@@ -7328,7 +7486,8 @@ namespace Chroma
 	  // Allocate space for converged Ritz values and residual norms
 	  std::vector<double> evals(primme.numEvals);
 	  std::vector<double> rnorms(primme.numEvals);
-	  const std::string evecs_order(eg.order + std::string("n"));
+	  const std::string evecs_order(std::string(eg.order.begin() + 1, eg.order.end()) +
+					std::string("n"));
 	  Tensor<Nd + 3, ComplexD> evecs(
 	    evecs_order, latticeSize<Nd + 3>(evecs_order, {{'n', primme.numEvals}, {'t', 1}}),
 	    primme_dev, OnEveryone);
