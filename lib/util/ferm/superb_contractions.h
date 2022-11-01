@@ -7338,7 +7338,7 @@ namespace Chroma
 	  OperatorAux& opaux = *(OperatorAux*)primme->matrix;
 	  const std::string order(
 	    std::string(opaux.op.d.order.begin() + 1, opaux.op.d.order.end()) + std::string("n"));
-	  Coor<Nd + 3> size = latticeSize<Nd + 3>(order, {{'n', *blockSize}, {'t', 1}});
+	  Coor<Nd + 3> size = latticeSize<Nd + 3>(order, {{'n', *blockSize}, {'t', 1}, {'c', 4}});
 	  Tensor<Nd + 3, ComplexD> tx(order, size, opaux.primme_dev, OnEveryone, (ComplexD*)x);
 	  Tensor<Nd + 3, ComplexD> ty(order, size, opaux.primme_dev, OnEveryone, (ComplexD*)y);
 	  assert(tx.getLocal().volume() == primme->nLocal * (*blockSize));
@@ -7410,20 +7410,31 @@ namespace Chroma
 	  DeviceHost primme_dev = OnHost;
 #    endif
 
+	  // Work with 4 colours to get a power of two size on the operator block size.
+	  // The operator will treat the extra directions by scaling them to an arbitrary number, fake_val.
+	  // In this way, the original eigenvectors won't have support on the extra directions.
+	  double fake_val = -20;
+
 	  // Create an efficient representation of the laplacian operator
 	  std::string order("cxyztX");
-	  auto eg = Tensor<Nd + 2, ComplexD>(order, latticeSize<Nd + 2>(order, {{'t', 1}}),
-					     OnDefaultDevice, OnEveryone)
-		      .make_eg()
-		      .toFakeReal('.')
-		      .cast<double>();
+	  auto eg =
+	    Tensor<Nd + 2, ComplexD>(order, latticeSize<Nd + 2>(order, {{'t', 1}, {'c', 4}}),
+				     OnDefaultDevice, OnEveryone)
+	      .make_eg()
+	      .toFakeReal('.')
+	      .cast<double>();
 	  OperatorLayout op_layout =
 	    ((from_tslice + t) % 2 == 0 ? XEvenOddLayout : XEvenOddLayoutZeroOdd);
 	  auto laplacianOp = Chroma::SB::detail::cloneOperator(
 	    Operator<Nd + 3, double>{
 	      [&](Tensor<Nd + 4, double> x, Tensor<Nd + 4, double> y) {
-		LaplacianOperator(ut, from_tslice + t, y.toFakeReal('.').toComplex(),
-				  x.toFakeReal('.').toComplex());
+		y.set(0);
+		x.kvslice_from_size({{'c', 3}}, {{'c', 1}})
+		  .scale(fake_val)
+		  .copyTo(y.kvslice_from_size({{'c', 3}}, {{'c', 1}}));
+		LaplacianOperator(ut, from_tslice + t,
+				  y.toFakeReal('.').toComplex(false).kvslice_from_size({}, {{'c', 3}}),
+				  x.toFakeReal('.').toComplex().kvslice_from_size({}, {{'c', 3}}));
 	      },
 	      eg, eg, nullptr, "", op_layout, op_layout,
 	      detail::getNeighbors(eg.kvdim(), 1 /* near-neighbors links only */, op_layout),
@@ -7489,7 +7500,7 @@ namespace Chroma
 	  const std::string evecs_order(std::string(eg.order.begin() + 1, eg.order.end()) +
 					std::string("n"));
 	  Tensor<Nd + 3, ComplexD> evecs(
-	    evecs_order, latticeSize<Nd + 3>(evecs_order, {{'n', primme.numEvals}, {'t', 1}}),
+	    evecs_order, latticeSize<Nd + 3>(evecs_order, {{'n', primme.numEvals}, {'t', 1}, {'c', 4}}),
 	    primme_dev, OnEveryone);
 	  assert(evecs.getLocal().volume() == primme.nLocal * primme.numEvals);
 #    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
@@ -7526,14 +7537,20 @@ namespace Chroma
 	  // Cleanup
 	  primme_free(&primme);
 
+	  // Check that no returned eigenvalue is fake
+	  for (double val : evals)
+	    if (val < fake_val + 0.1)
+	      throw std::runtime_error("fake_val should be smaller");
+
 	  // Check the residuals, |laplacian*v-lambda*v|_2<=|laplacian|*tol
+	  auto evecs_ = evecs.kvslice_from_size({}, {{'c', 3}});
 	  if (evals.size() > 0)
 	  {
-	    auto r = evecs.like_this();
-	    LaplacianOperator(ut, from_tslice + t, r, evecs);
+	    auto r = evecs_.like_this();
+	    LaplacianOperator(ut, from_tslice + t, r, evecs_);
 	    std::vector<std::complex<double>> evals_cmpl(evals.begin(), evals.end());
 	    contract<Nd + 3, Nd + 3, 1, ComplexD>(
-	      evecs, asTensorView(evals_cmpl).rename_dims({{'i', 'n'}}).scale(-1), "", AddTo, r);
+	      evecs_, asTensorView(evals_cmpl).rename_dims({{'i', 'n'}}).scale(-1), "", AddTo, r);
 	    auto rnorm = norm<1>(r, "n");
 	    for (int i = 0, vol = rnorm.volume(); i < vol; ++i)
 	    {
@@ -7546,7 +7563,7 @@ namespace Chroma
 	  }
 
 	  // Copy evecs into all_evecs
-	  evecs.copyTo(all_evecs.kvslice_from_size({{'t', t}}, {{'t', 1}}));
+	  evecs_.copyTo(all_evecs.kvslice_from_size({{'t', t}}, {{'t', 1}}));
 	  all_evals.push_back(evals);
 	}
 
