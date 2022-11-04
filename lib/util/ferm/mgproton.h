@@ -89,48 +89,34 @@ namespace Chroma
       /// Returns max ||I - C||_F, which is a heuristic of the orthogonality level of C=V^\dagger*V
       /// \param C: matrix to test
       /// \param order_t: dimension labels that do not participate in the orthogonalization
-      /// \param order_rows: dimension labels that are the rows of the matrices V and W
       /// \param order_cols: dimension labels that are the columns of the matrices V and W
+      /// \param m_to_rows: map from columns to the alternative label for columns
 
-      template <std::size_t Nrows, std::size_t Ncols, std::size_t N, typename COMPLEX>
+      template <std::size_t Ncols, std::size_t N, typename COMPLEX>
       double ortho_level(Tensor<N, COMPLEX> C, const std::string& order_t,
-			 const std::string& order_rows, const std::string& order_cols)
+			 const std::string& order_cols, const remap& m_to_rows)
       {
 	// Check Nrows
-	if (order_rows.size() != Nrows)
-	  throw std::runtime_error("ortho_level: invalid template argument `Nrows`");
 	if (order_cols.size() != Ncols)
 	  throw std::runtime_error("ortho_level: invalid template argument `Ncols`");
 
 	// Check that the matrix is square
+	std::string order_rows = detail::update_order(order_cols, m_to_rows);
 	auto dim = C.kvdim();
 	std::size_t m = volume(dim, order_rows);
 	if (m != volume(dim, order_cols))
 	  throw std::runtime_error("ortho_level: the input tensor is not square");
 
-	// Construct the identity
-	auto t = C.template like_this<Nrows + Ncols>(order_rows + order_cols, {}, OnHost, OnMaster);
-	t.set_zero();
-	COMPLEX* t_data = t.data();
-	if (t.getLocal())
-	{
-	  for (std::size_t i = 0; i < m; ++i)
-	    t_data[i * m + i] = COMPLEX{1};
-	}
-	auto tones = C.template like_this<N - Nrows - Ncols>(order_t, {}, OnHost, OnMaster);
-	tones.set(COMPLEX{1});
-	auto I = contract<N>(t.make_sure(none, OnDefaultDevice),
-			     tones.make_sure(none, OnDefaultDevice), "");
-
 	// Compute ||I - C||_F^2
-	C.scale(-1).addTo(I);
-	auto fnorm2 = contract<N - Nrows - Ncols>(I.conj(), I, order_rows + order_cols);
+	C = C.clone();
+	identity<N, COMPLEX>(dim, m_to_rows, OnMaster).scale(-1).addTo(C);
+	auto fnorm2 = contract<N - Ncols * 2>(C.conj(), C, order_rows + order_cols, OnHost,
+					      OnEveryoneReplicated);
 
-	// Return the square root
+	// Return the largest square root
 	double tol = 0;
-	fnorm2.make_sure(none, OnHost, OnEveryoneReplicated)
-	  .foreachWithCPUFun(
-	    [&](const COMPLEX& t) { tol = std::max(tol, (double)std::sqrt(std::real(t))); });
+	fnorm2.foreachWithCPUFun(
+	  [&](const COMPLEX& t) { tol = std::max(tol, (double)std::sqrt(std::real(t))); });
 	return tol;
       }
     }
@@ -180,8 +166,8 @@ namespace Chroma
 		   AddTo, W);
 
 	// Compute Wa'*W and the orthogonality level of the basis
-	auto C = contract<Nt + 2 * Ncols>(Wa.conj(), W, order_rows);
-	l = detail::ortho_level<Ncols, Ncols>(C, order_t, Wacorder, Wcorder);
+	auto C = contract<Nt + 2 * Ncols>(Wa.conj(), W, order_rows, none, OnEveryoneReplicated);
+	l = detail::ortho_level<Ncols>(C, order_t, Wcorder, Wac);
 	if (verb >= Detailed)
 	  QDPIO::cout << prefix << " ortho #its: " << i << " |I-V'*V|_F: " << detail::tostr(l)
 		      << std::endl;
@@ -195,7 +181,6 @@ namespace Chroma
 	  throw std::runtime_error("ortho: failing in orthonormalizing the basis");
 
 	// W = W/chol(Wa'*W), where Wa'*W has dimensions (rows,cols)=(Wacorder,Wcorder)
-	C = C.make_sure(none, none, OnEveryoneReplicated);
 	cholInv<NW, Nt + 2 * Ncols, NW, COMPLEX>(std::move(C), Wacorder, Wcorder, Wa, Wacorder,
 						 CopyTo, W);
 	++i;
@@ -1286,24 +1271,23 @@ namespace Chroma
 			 .template reshape_dimensions<NOp>(
 			   {{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, blk, true)
 			 .make_eg();
-	  auto blk_op =
-	    Operator<NOp, COMPLEX>{
-	      [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		auto x0 = x.template reshape_dimensions<NOp + 1>(
-		  {{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, dim, true);
-		auto y0 = op(std::move(x0));
-		y0.template reshape_dimensions<NOp + 1>({{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}},
-							blk, true)
-		  .copyTo(y);
-	      },
-	      new_d,
-	      new_i,
-	      nullptr,
-	      op.order_t,
-	      op.domLayout == EvensOnlyLayout ? NaturalLayout : op.domLayout,
-	      op.imgLayout == EvensOnlyLayout ? NaturalLayout : op.imgLayout,
-	      getNeighborsAfterBlocking(blk_u, op.d.kvdim(), op.neighbors, op.imgLayout),
-	      op.preferred_col_ordering};
+	  auto blk_op = Operator<NOp, COMPLEX>{
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      auto x0 = x.template reshape_dimensions<NOp + 1>(
+		{{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}}, dim, true);
+	      auto y0 = op(std::move(x0));
+	      y0.template reshape_dimensions<NOp + 1>({{"1y", "1y"}, {"2z", "2z"}, {"3t", "3t"}},
+						      blk, true)
+		.copyTo(y);
+	    },
+	    new_d,
+	    new_i,
+	    nullptr,
+	    op.order_t,
+	    op.domLayout == EvensOnlyLayout ? NaturalLayout : op.domLayout,
+	    op.imgLayout == EvensOnlyLayout ? NaturalLayout : op.imgLayout,
+	    getNeighborsAfterBlocking(blk_u, op.d.kvdim(), op.neighbors, op.imgLayout),
+	    op.preferred_col_ordering};
 
 	  Tensor<NOp + 6, COMPLEX> opDiag =
 	    getBlockDiag<NOp + 6>(blk_op, blk_rows, m_blk, ConsiderBlockingDense);

@@ -377,9 +377,9 @@ namespace Chroma
     // Return the equivalent value of the coordinate `v` in the interval [0, dim[ for a periodic
     // dimension with length `dim`.
 
-    inline int normalize_coor(int v, int dim)
+    inline int normalize_coor(int coor, int dim)
     {
-      return (v + dim * (v < 0 ? -v / dim + 1 : 0)) % dim;
+      return (dim == 0 ? 0 : (coor + dim * (coor < 0 ? -coor / dim + 1 : 0)) % dim);
     }
 
     // Return the equivalent value of the coordinate `v` in the interval [0, dim[ for a periodic
@@ -1160,42 +1160,36 @@ namespace Chroma
 	/// Make a partition compatible with a given one
 
 	template <std::size_t N1>
-	TensorPartition<N> make_compatible(const std::string& o0, const TensorPartition<N1>& t,
-					   const std::string& o1,
-					   const std::string& labelsToCompare) const
+	TensorPartition<N1> make_compatible(const std::string& o, const std::string& o1,
+					    const Coor<N1>& new_dim,
+					    const std::string& labelsToCompare) const
 	{
-	  if (t.p.size() != p.size())
-	    throw std::runtime_error(
-	      "make_compatible: the given partition should have the same number of elemens");
-
-	  if (o0.size() != N || o1.size() != N1)
+	  if (o.size() != N || o1.size() != N1)
 	    throw std::runtime_error(
 	      "make_compatible: one the given orders does not match the expected length");
 
-	  typename TensorPartition<N>::PartitionStored r = p;
+	  typename TensorPartition<N1>::PartitionStored r(
+	    p.size(), std::array<Coor<N1>, 2>{Coor<N1>{{}}, new_dim});
 	  for (unsigned int i = 0; i < p.size(); ++i)
 	  {
-	    std::map<char, std::array<int, 2>> mfs1;
 	    for (unsigned int j = 0; j < N1; ++j)
+	    {
 	      if (std::find(labelsToCompare.begin(), labelsToCompare.end(), o1[j]) !=
 		  labelsToCompare.end())
-		mfs1[o1[j]] = {{t.p[i][0][j], t.p[i][1][j]}};
-	    for (unsigned int j = 0; j < N; ++j)
-	    {
-	      if (mfs1.count(o0[j]) == 0)
-		continue;
-	      auto fs1 = mfs1.at(o0[j]);
-	      r[i][0][j] = fs1[0];
-	      r[i][1][j] = fs1[1];
+	      {
+		int j0 = std::find(o.begin(), o.end(), o1[j]) - o.begin();
+		r[i][0][j] = p[i][0][j0];
+		r[i][1][j] = p[i][1][j0];
+	      }
+	      if (superbblas::detail::volume(r[i][1]) == 0)
+		r[i] = std::array<Coor<N1>, 2>{Coor<N1>{{}}, Coor<N1>{{}}};
 	    }
-	    if (superbblas::detail::volume(r[i][1]) == 0)
-	      r[i] = std::array<Coor<N>, 2>{Coor<N>{{}}, Coor<N>{{}}};
 	  }
-	  TensorPartition<N> new_t{dim, r, isLocal};
+	  TensorPartition<N1> new_t{new_dim, r, isLocal};
 
 	  // TODO: Fusing different tensor partitions isn't trivial. If both partitions differ in the number of
 	  // active processes (processes with nonzero support), then the current implementation will fail
-	  if (!new_t.is_compatible(o0, t, o1, labelsToCompare))
+	  if (!is_compatible(o, new_t, o1, labelsToCompare))
 	    throw std::runtime_error("make_compatible is broken and you hit a corner case");
 
 	  return new_t;
@@ -2563,9 +2557,8 @@ namespace Chroma
 	    same_dim_labels.push_back(c);
 	return Tensor<Nn, Tn>(new_order_, new_dim, new_dev.getSome(getDev()), dist,
 			      std::make_shared<detail::TensorPartition<Nn>>(
-				detail::TensorPartition<Nn>(new_order_, new_dim, dist)
-				  .make_compatible(new_order_, p->get_subpartition(from, size),
-						   order, same_dim_labels)),
+				p->get_subpartition(from, size)
+				  .make_compatible(order, new_order_, new_dim, same_dim_labels)),
 			      false /* unordered_writing */, complexLabel);
       }
 
@@ -3210,7 +3203,8 @@ namespace Chroma
       template <typename Tv>
       bool is_distributed_like(Tensor<N, Tv> v) const
       {
-	return from == v.from && size == v.size && dim == v.dim && p->p == v.p->p;
+	return order == v.order && from == v.from && size == v.size && dim == v.dim &&
+	       p->p == v.p->p;
       }
 
       /// Return whether the given tensor has the same distribution as this one
@@ -3328,45 +3322,54 @@ namespace Chroma
 	  bool v_has_new_size = false, w_has_new_size = false;
 	  for (unsigned int i = 0; i < N; ++i)
 	  {
+	    new_size[order[i]] = std::max(size[i], wsize[i]);
 	    if (size[i] != wsize[i])
 	    {
-	      new_size[order[i]] = std::max(size[i], wsize[i]);
 	      v_has_new_size |= new_size[order[i]] != size[i];
 	      w_has_new_size |= new_size[order[i]] != wsize[i];
 	    }
 	  }
-	  if (new_size.size() > 0)
+	  for (const auto& it : m.kvdim())
+	    if (new_size.count(it.first) == 0)
+	      new_size[it.first] = it.second;
+	  for (const auto& it : w.kvdim())
+	    if (new_size.count(it.first) == 0)
+	      new_size[it.first] = it.second;
+	  for (const auto& it : wm.kvdim())
+	    if (new_size.count(it.first) == 0)
+	      new_size[it.first] = it.second;
+	  if (v_has_new_size || w_has_new_size)
 	  {
 	    auto v0 = *this;
 	    auto w0 = w;
 	    auto m0 = m;
-	    auto wm0 = wm, wm0_sliced = wm;
+	    auto wm0 = wm;
 	    if (v_has_new_size)
 	    {
-	      v0 = like_this(none, new_size);
+	      v0 = w_has_new_size ? make_compatible(none, new_size)
+				  : w0.template make_compatible<N, T>(order, new_size);
 	      copyTo(v0);
 	      if (m)
 	      {
-		m0 = m.like_this(none, new_size);
+		m0 = v0.template make_compatible<Nm, Tm>(m.order, new_size);
 		m0.set_zero();
 		m.copyTo(m0);
 	      }
 	    }
 	    if (w_has_new_size)
 	    {
-	      w0 = w.like_this(none, new_size);
+	      w0 = v0.template make_compatible<Nw, Tw>(w.order, new_size);
 	      w.copyTo(w0);
 	      if (wm)
 	      {
-		wm0 = wm.like_this(none, new_size);
+		wm0 = w0.template make_compatible<Nwm, Twm>(wm.order, new_size);
 		wm0.set_zero();
 		wm.copyTo(wm0);
-		wm0_sliced = wm0.kvslice_from_size({}, w.kvdim());
 	      }
 	    }
 	    v0.doAction(action, w0, m0, wm0);
 	    if (w_has_new_size)
-	      w0.kvslice_from_size({}, w.kvdim()).doAction(CopyTo, w, wm0_sliced, wm);
+	      w0.kvslice_from_size({}, w.kvdim()).doAction(CopyTo, w);
 	    return;
 	  }
 	}
@@ -3412,12 +3415,29 @@ namespace Chroma
 	  m1ptr = m1.data();
 	}
 
+	// Get the pointers to data
 	value_type* ptr = data();
 	typename decltype(w)::value_type* w_ptr = w.data_for_writing();
-	MPI_Comm comm =
-	  ((dist == OnMaster && w.dist == OnMaster) || dist == Local ? MPI_COMM_SELF
-								     : MPI_COMM_WORLD);
-	if (dist != OnMaster || w.dist != OnMaster || Layout::nodeNumber() == 0)
+
+	// Shortcuts for who is involved in the operation
+	bool do_operation = true;
+	MPI_Comm comm = MPI_COMM_WORLD;
+	// a) if the origin and destination tensors have full support on the master node
+	// and the destination tensor is only supported on the master node, the operation
+	// only happens on the master node
+	if ((dist == OnMaster || dist == OnEveryoneReplicated) && w.dist == OnMaster)
+	{
+	  do_operation = Layout::nodeNumber() == 0;
+	  comm = MPI_COMM_SELF;
+	}
+	// b) if the origin and destination tensors are replicated on every node or they are
+	// local, the operation happens locally on each node
+	else if ((dist == OnEveryoneReplicated && w.dist == OnEveryoneReplicated) || dist == Local)
+	{
+	  comm = MPI_COMM_SELF;
+	}
+
+	if (do_operation)
 	{
 	  superbblas::Request req;
 	  superbblas::copy<N, Nw>(
@@ -4076,6 +4096,8 @@ namespace Chroma
     /// \param r: optional given tensor where to put the resulting contraction
     /// \param mr: map from the given `r` to the labels of the contraction
     /// \param beta: scale on `r` if the `action` in `AddTo`
+    /// \param dev: device for the resulting tensor if `action` isn't given
+    /// \param dist: distribution of the resulting tensor if `action` isn't given
     ///
     /// Example:
     ///
@@ -4092,10 +4114,15 @@ namespace Chroma
     Tensor<Nr, T>
     contract(const Tensor<Nv, T>& v, Tensor<Nw, T> w, const std::string& labels_to_contract,
 	     Maybe<Action> action = none, Tensor<Nr, T> r = Tensor<Nr, T>{}, const remap& mr = {},
-	     typename detail::base_type<T>::type beta = typename detail::base_type<T>::type{1})
+	     typename detail::base_type<T>::type beta = typename detail::base_type<T>::type{1},
+	     Maybe<DeviceHost> dev = none, Maybe<Distribution> dist = none)
     {
+      // Check arguments
       if (action.hasSome() != (bool)r)
-	throw std::runtime_error("Invalid default value");
+	throw std::runtime_error("contract: invalid argument, if `action` is given, `r` should be given also");
+      if ((dev.hasSome() || dist.hasSome()) && action.hasSome())
+	throw std::runtime_error(
+	  "contract: invalid argument, if `action` is given, `dev` and `dist` shouldn't be given");
 
       // Compute the labels of the output tensor: v.order + w.order - labels_to_contract
       std::string rorder = detail::union_dimensions(v.order, w.order, labels_to_contract);
@@ -4109,7 +4136,9 @@ namespace Chroma
       Tensor<Nr, T> r0;
       if (!r)
       {
-	r0 = v.template like_this<Nr>(rorder, w.kvdim());
+	r0 = (dev.hasSome() || dist.hasSome())
+	       ? v.template like_this<Nr>(rorder, w.kvdim(), dev, dist)
+	       : v.template make_compatible<Nr>(rorder, w.kvdim());
 	beta = 0;
       }
       else
@@ -4125,6 +4154,28 @@ namespace Chroma
       r0.contract(v, {}, NotConjugate, w, {}, NotConjugate, mr, beta);
 
       return r0;
+    }
+
+    /// Contract some dimension of the given tensors
+    /// \param v: one tensor to contract
+    /// \param w: the other tensor to contract
+    /// \param labels_to_contract: labels dimensions to contract from `v` and `w`
+    /// \param dev: device for the resulting tensor
+    /// \param dist: distribution of the resulting tensor
+    ///
+    /// Example:
+    ///
+    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("Ss", {{Ns,Ns}});
+    ///   Tensor<2,Complex> r0 = contract<2>(t, q, "s"); // r0 dims are "cS"
+    ///   Tensor<3,Complex> r1 = contract<3>(t, q, ""); // r1 dims are "csS"
+    ///   Tensor<3,Complex> r2 = contract<3>(t, q, "", OnMaster); // r2 is supported on master
+
+    template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
+    Tensor<Nr, T> contract(const Tensor<Nv, T>& v, Tensor<Nw, T> w,
+			   const std::string& labels_to_contract, Maybe<DeviceHost> dev,
+			   Maybe<Distribution> dist)
+    {
+      return contract<Nr>(v, w, labels_to_contract, none, {}, {}, 0, dev, dist);
     }
 
     /// Do the Kronecker product of two tensors
@@ -4177,7 +4228,7 @@ namespace Chroma
       // If the output tensor is not given create a new one
       if (!r)
       {
-	auto r0 = v.template like_this<Nr>(rorder, rdims);
+	auto r0 = v.template make_compatible<Nr>(rorder, rdims);
 	k.rename_dims(k_m).copyTo(r0);
 	return r0;
       }
@@ -4222,7 +4273,7 @@ namespace Chroma
 	order_t.hasSome() ? order_t.getSome() : detail::remove_dimensions(v.order, rorder);
 
       // Allocate the output on the host and spread the result to every process
-      auto r = contract<Nr>(v.conj(), v, rorder).make_sure(torder, OnHost, OnEveryoneReplicated);
+      auto r = contract<Nr>(v.conj(), v, rorder, OnHost, OnEveryoneReplicated).reorder(torder);
 
       // Do the square root and return the result
       using Treal = typename detail::real_type<T>::type;
@@ -4822,6 +4873,8 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "SpTensor::kvslice_from_size: unsupported slicing on blocked dimensions");
 
+	// We aren't free to redistribute `d` and `i`, because the support of the domain
+	// in each process depends on the image support
 	auto new_d = d.kvslice_from_size(dom_kvfrom, dom_kvsize).make_eg();
 	auto new_i = i.kvslice_from_size(img_kvfrom, img_kvsize).make_eg();
 
@@ -4830,15 +4883,23 @@ namespace Chroma
 	auto new_ii = ii_slice.make_compatible(none, {}, OnHost);
 	new_ii.set_zero();
 	auto jj_slice = jj.kvslice_from_size(img_kvfrom, img_kvsize).cloneOn(OnHost);
-	auto new_jj = jj_slice.template make_compatible<NI + 1, float>(
+	auto new_jj = jj_slice.make_compatible(none, {}, OnHost);
+	auto new_jj_mask = jj_slice.template make_compatible<NI + 1, float>(
 	  detail::remove_dimensions(jj_slice.order, "~"), {}, OnHost);
-	new_jj.set_zero();
+	new_jj_mask.set_zero();
 	unsigned int num_neighbors = jj.kvdim().at('u');
+
 	if (ii_slice.isSubtensor() || new_ii.isSubtensor() || jj_slice.isSubtensor() ||
-	    new_jj.isSubtensor())
+	    new_jj.isSubtensor() || new_jj_mask.isSubtensor())
 	{
 	  throw std::runtime_error("This shouldn't happen");
 	}
+	if (!ii_slice.is_compatible(jj_slice) || !ii_slice.is_compatible(new_ii) ||
+	    !ii_slice.is_compatible(new_jj) || !ii_slice.is_compatible(new_jj_mask))
+	{
+	  throw std::runtime_error("kvslice_from_size: hit corner case, sorry");
+	}
+
 	{
 	  Coor<ND> from_dom = kvcoors<ND>(d.order, dom_kvfrom);
 	  std::map<char, int> updated_dom_kvsize = d.kvdim();
@@ -4852,7 +4913,9 @@ namespace Chroma
 	  auto new_ii_local = new_ii.getLocal();
 	  int* new_ii_ptr = new_ii_local.data();
 	  auto new_jj_local = new_jj.getLocal();
-	  float* new_jj_ptr = new_jj_local.data();
+	  int* new_jj_ptr = new_jj_local.data();
+	  auto new_jj_mask_local = new_jj_mask.getLocal();
+	  float* new_jj_mask_ptr = new_jj_mask_local.data();
 	  Coor<ND> size_nnz = d.size;
 	  for (unsigned int i = nblockd; i < ND; ++i)
 	    size_nnz[i] = 1;
@@ -4868,8 +4931,12 @@ namespace Chroma
 					       lsize);
 	      if (superbblas::detail::volume(lsize) == 0)
 		continue;
+
+	      using superbblas::detail::operator-;
+	      Coor<ND> new_from_nnz = normalize_coor(from_nnz - from_dom, size_dom);
+	      std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_ii_ptr[i]) * ND);
 	      new_ii_ptr[i]++;
-	      new_jj_ptr[j] = 1;
+	      new_jj_mask_ptr[j] = 1;
 	    }
 	    if (i > 0 && new_ii_ptr[i] != new_ii_ptr[0])
 	      throw std::runtime_error("SpTensor::kvslice_from_size: unsupported slices ending up "
@@ -4877,6 +4944,9 @@ namespace Chroma
 	  }
 
 	  // Make sure that all nodes with support have the same number of neighbors
+	  if (Layout::nodeNumber() == 0 && new_ii_local.volume() == 0)
+	    throw std::runtime_error("kvslice_from_size: unsupported distribution, master process "
+				     "should have support on the origin tensor");
 	  if (new_ii_local.volume() > 0)
 	    num_neighbors = new_ii_ptr[0];
 	  int global_num_neighbors = broadcast(num_neighbors);
@@ -4888,17 +4958,7 @@ namespace Chroma
 	// Create the returning tensor
 	SpTensor<ND, NI, T> r{new_d, new_i, nblockd, nblocki, num_neighbors, isImgFastInBlock};
 	new_ii.copyTo(r.ii);
-
-	auto jj_mask = jj.create_mask();
-	jj_mask.set_zero();
-	std::vector<float> ones_tilde(ND, 1);
-	contract<ND + 2>(new_jj, asTensorView(ones_tilde).rename_dims({{'i', '~'}}), "")
-	  .copyTo(jj_mask.kvslice_from_size(img_kvfrom, img_kvsize));
-	auto r_jj_mask = r.jj.create_mask();
-	r_jj_mask.set(1);
-	jj.kvslice_from_size(img_kvfrom, img_kvsize)
-	  .copyToWithMask(r.jj, jj_mask.kvslice_from_size(img_kvfrom, img_kvsize), r_jj_mask,
-			  jj.order);
+	new_jj.kvslice_from_size({}, {{'u', num_neighbors}}).copyTo(r.jj);
 
 	auto data_mask = data.create_mask();
 	data_mask.set_zero();
@@ -4911,13 +4971,14 @@ namespace Chroma
 	auto data_blk =
 	  data.template like_this<NI + ND, float>("%", '%', "u", blk_m, none, OnEveryoneReplicated);
 	data_blk.set(1);
-	kronecker<NI + ND + 1>(new_jj, data_blk)
+	kronecker<NI + ND + 1>(new_jj_mask, data_blk)
 	  .copyTo(data_mask.kvslice_from_size(img_kvfrom, img_kvsize));
 	auto r_data_mask = r.data.create_mask();
 	r_data_mask.set(1);
+	r.data.set(detail::NaN<T>::get());
 	data.kvslice_from_size(img_kvfrom, img_kvsize)
 	  .copyToWithMask(r.data, data_mask.kvslice_from_size(img_kvfrom, img_kvsize), r_data_mask,
-			  data.order);
+			  "u");
 
 	if (is_constructed())
 	  r.construct();
@@ -5624,45 +5685,48 @@ namespace Chroma
 
     /// Return an identity matrix
     /// \param dim: length for each of the row dimensions
-    /// \param m: labels map from the row to the column dimensions
-    /// \param order: order of the rows for the returned tensor
-    /// \return: tensor with ordering `order`+`m[order]`
+    /// \param m: labels map from the row to the column dimensions and other dimensions
 
     template <std::size_t N, typename T>
-    Tensor<N * 2, T> identity(const std::map<char, int>& dim, const remap& m,
-			      Maybe<std::string> order)
+    Tensor<N, T> identity(const std::map<char, int>& dim, const remap& m,
+			  const Distribution& dist = OnMaster)
     {
       using value_type = typename detail::base_type<T>::type;
 
+      // For now it only supports OnMaster and OnEveryoneReplicated distributions
+      if (dist != OnMaster && dist != OnEveryoneReplicated && dist != Local)
+	throw std::runtime_error("identity: unsupported distribution");
+
       // Get the order for the rows
       std::string orows;
-      if (order)
-      {
-	orows = order.getSome();
-      }
-      else
-      {
-	for (const auto& it : dim)
-	  orows.push_back(it.first);
-      }
+      for (const auto& it : m)
+	orows.push_back(it.first);
 
       // Get the order for the columns
       std::string ocols = detail::update_order(orows, m);
 
+      // Get the extra dimensions
+      std::string ot;
+      for (const auto& it : dim)
+	if (m.count(it.first) == 0)
+	  ot.push_back(it.first);
+      ot = detail::remove_dimensions(ot, ocols);
+
       // Get the dimensions of the returned tensor
       std::map<char, int> tdim = dim;
-      for (const auto& it : dim)
-	tdim[m.at(it.first)] = it.second;
+      for (const auto& it : m)
+	tdim[it.second] = dim.at(it.first);
 
       // Create the identity tensor
-      Tensor<N * 2, T> t{orows + ocols, kvcoors<N * 2>(orows + ocols, tdim, 0, ThrowOnMissing),
-			 OnHost, OnMaster};
+      Tensor<N, T> t{orows + ocols + ot, kvcoors<N>(orows + ocols + ot, tdim, 0, ThrowOnMissing),
+		     OnHost, dist};
       t.set_zero();
       value_type* p = t.data();
       if (t.getLocal())
       {
-	for (unsigned int i = 0, vol = detail::volume(dim, orows); i < vol; ++i)
-	  p[vol * i + i] = value_type{1};
+	for (unsigned int j = 0, tvol = ot.size() == 0 ? 1 : detail::volume(dim, ot); j < tvol; ++j)
+	  for (unsigned int i = 0, vol = detail::volume(dim, orows); i < vol; ++i)
+	    p[vol * vol * j + vol * i + i] = value_type{1};
       }
 
       return t;
@@ -6477,8 +6541,14 @@ namespace Chroma
 	// columns the domain blocking dimensions
 
 	constexpr int Nblk = NOp - Nd - 1;
-	auto t_blk = identity<Nblk, COMPLEX>(blki, rd, dense_labels)
-		       .make_sure(none, none, OnEveryoneReplicated);
+	std::map<char, int> blki_id;
+	for (char c : dense_labels)
+	  blki_id[c] = blki[c];
+	remap rd_id;
+	for (char c : dense_labels)
+	  rd_id[c] = rd[c];
+	auto t_blk =
+	  identity<Nblk * 2, COMPLEX>(blki_id, rd_id).make_sure(none, none, OnEveryoneReplicated);
 
 	// Compute the coloring
 	auto t_ = getColors<NOp>(i.kvdim(), op.imgLayout, op.neighbors, power);
@@ -7741,8 +7811,9 @@ namespace Chroma
 	  // Therefore, phi[i] = (colorvecs_s3t[i]^\dagger * colorvecs_s3t[i]) / (colorvecs_s3t[i]^\dagger * colorvecs[i])
 
 	  auto ip = contract<2>(colorvecs_s3t.conj(), colorvecs,
-				detail::remove_dimensions(colorvecs.order, "nt"))
-		      .make_sure("nt", OnHost, OnEveryoneReplicated);
+				detail::remove_dimensions(colorvecs.order, "nt"), OnHost,
+				OnEveryoneReplicated)
+		      .reorder("nt");
 
 	  auto phi = ip.like_this();
 	  for (int t = 0; t < n_tslices; ++t)
