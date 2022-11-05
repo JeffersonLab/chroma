@@ -230,7 +230,7 @@ namespace Chroma
     /// In FGMRES, it just happens that Z_0 = prec * r and Z_i = prec * U_{i-1} if i>0.
 
     template <std::size_t NOp, typename COMPLEX>
-    void fgmres(const Operator<NOp, COMPLEX>& op, Maybe<Operator<NOp, COMPLEX>> prec,
+    void fgmres(const Operator<NOp, COMPLEX>& op, Operator<NOp, COMPLEX> prec,
 		const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX>& y,
 		unsigned int max_basis_size, double tol, unsigned int max_its = 0,
 		bool error_if_not_converged = true, unsigned int ortho_each_its = 0,
@@ -264,7 +264,7 @@ namespace Chroma
 
       // Check that the operator and the preconditioner are compatible with the input and output vectors
       if (!op.d.is_compatible(x) || !op.d.is_compatible(y) ||
-	  (prec && !prec.getSome().d.is_compatible(op.d)))
+	  (prec && !prec.d.is_compatible(op.d)))
 	throw std::runtime_error("Either the input or the output vector isn't compatible with the "
 				 "operator or de the preconditioner");
 
@@ -325,13 +325,13 @@ namespace Chroma
 	  std::min(std::min(max_basis_size - ires, ortho_each_its), max_its - it);
 
 	// Expand the search subspace from residual
-	if (prec.hasSome())
+	if (prec)
 	{
 	  for (unsigned int i = 0; i < expansion_size; ++i)
 	  {
 	    // Z(:,ires+i) = prec * U(:,ires+i-1)
-	    prec.getSome()(i == 0 ? r_Vc : U.kvslice_from_size({{Vc, ires + i - 1}}, {{Vc, 1}}),
-			   Z.kvslice_from_size({{Vc, ires + i}}, {{Vc, 1}}));
+	    prec(i == 0 ? r_Vc : U.kvslice_from_size({{Vc, ires + i - 1}}, {{Vc, 1}}),
+		 Z.kvslice_from_size({{Vc, ires + i}}, {{Vc, 1}}));
 	    nprecs += num_cols;
 
 	    // U(:,ires+i) = op * Z(:,ires+i)
@@ -453,6 +453,181 @@ namespace Chroma
 		    << " precs: " << nprecs << std::endl;
     }
 
+    /// Solve iteratively op * y = x using BICGSTAB
+    /// \param op: problem matrix
+    /// \param x: input right-hand-sides
+    /// \param y: the solution vectors
+    /// \param tol: maximum tolerance
+    /// \param max_its: maximum number of iterations
+    /// \param error_if_not_converged: throw an error if the tolerance was not satisfied
+    /// \param max_residual_updates: recompute residual vector every this number of restarts
+    /// \param passing_initial_guess: whether `y` contains a solution guess
+    /// \param verb: verbosity level
+    /// \param prefix: prefix printed before every line
+
+    template <std::size_t NOp, typename COMPLEX>
+    void bicgstab(const Operator<NOp, COMPLEX>& op, const Tensor<NOp + 1, COMPLEX>& x,
+		  Tensor<NOp + 1, COMPLEX>& y, double tol, unsigned int max_its = 0,
+		  bool error_if_not_converged = true, unsigned int max_residual_updates = 0,
+		  bool passing_initial_guess = false, Verbosity verb = NoOutput,
+		  std::string prefix = "")
+    {
+      detail::log(1, prefix + " starting bicgstab");
+
+      // TODO: add optimizations for multiple operators
+      if (op.order_t.size() > 0)
+	throw std::runtime_error("Not implemented");
+
+      // Check options
+      if (max_its == 0 && tol <= 0)
+	throw std::runtime_error("fgmres: please give a stopping criterion, either a tolerance or "
+				 "a maximum number of iterations");
+      if (max_its == 0)
+	max_its = std::numeric_limits<unsigned int>::max();
+      if (max_residual_updates == 0)
+	max_residual_updates = (std::is_same<COMPLEX, double>::value ||
+				std::is_same<COMPLEX, std::complex<double>>::value)
+				 ? 4
+				 : 2;
+
+      // Check that the operator is compatible with the input and output vectors
+      if (!op.d.is_compatible(x) || !op.d.is_compatible(y))
+	throw std::runtime_error("Either the input or the output vector isn't compatible with the "
+				 "operator");
+
+      // Get an unused label for the search subspace columns
+      std::string order_cols = detail::remove_dimensions(x.order, op.i.order);
+      std::string order_rows = detail::remove_dimensions(op.d.order, op.order_t);
+      std::size_t num_cols = x.volume(order_cols);
+
+      // Counting op applications
+      unsigned int nops = 0;
+
+      // Compute residual, r = op * y - x
+      Tensor<NOp + 1, COMPLEX> rj;
+      if (passing_initial_guess)
+      {
+	rj = op(y).scale(-1);
+	nops += num_cols;
+      }
+      else
+      {
+	rj = op.i.template like_this<NOp + 1>(
+	  op.preferred_col_ordering == ColumnMajor ? std::string("%") + order_cols
+						   : order_cols + std::string("%"),
+	  '%', "", {{order_cols[0], x.kvdim().at(order_cols[0])}});
+
+	rj.set_zero();
+	y.set_zero();
+      }
+      x.addTo(rj);
+      auto normr0 = norm<1>(rj, op.order_t + order_cols); // type std::vector<real of T>
+      if (max(normr0) == 0)
+	return;
+
+      // Choose an arbitrary vector that isn't orthogonal to r
+      auto r0_star = rj.clone();
+
+      // Do the iterations
+      auto normr = normr0.clone();	 ///< residual norms
+      unsigned int it = 0;		 ///< iteration number
+      double max_tol = HUGE_VAL;	 ///< maximum residual norm
+      unsigned int residual_updates = 0; ///< number of residual updates
+      auto pj = rj.clone();		 ///< p0 = r0
+      for (it = 0; it < max_its;)
+      {
+	// alpha_j = (r0*' * rj) / (r0*' * Apj)
+	auto Apj = op(pj);
+	nops += num_cols;
+	auto r0s_rj = contract<1>(rj, r0_star.conj(), order_rows);
+	auto alpha_j = div(r0s_rj, contract<1>(Apj, r0_star.conj(), order_rows));
+
+	// sj = rj - alpha_j * Apj
+	auto sj = rj.clone();
+	contract<NOp + 1>(Apj, alpha_j, "").scale(-1).addTo(sj);
+
+	// omega_j = (sj' * Asj) / (Asj' * Asj)
+	auto Asj = op(sj);
+	nops += num_cols;
+	auto omega_j =
+	  div(contract<1>(Asj, sj.conj(), order_rows), contract<1>(Asj, Asj.conj(), order_rows));
+
+	// y = y + alpha_j * pj + omega_j * sj
+	contract<NOp + 1>(pj, alpha_j, "").addTo(y);
+	contract<NOp + 1>(sj, omega_j, "").addTo(y);
+
+	// r_{j+1} = sj - omega_j * Asj
+	rj = sj;
+	contract<NOp+1>(Asj, omega_j, "").scale(-1).addTo(rj);
+
+	// beta_j = (r0*' * r_{j+1}) / (r0*' * rj) * (alpha_j / omega_j)
+	auto beta_j =
+	  mult(div(contract<1>(rj, r0_star.conj(), order_rows), r0s_rj), div(alpha_j, omega_j));
+
+	// p_{j+1} = r_{j+1} + beta_j * (pj - omega_j * Apj)
+	contract<NOp+1>(Apj, omega_j, "").scale(-1).addTo(pj);
+	pj = contract<NOp+1>(pj, beta_j, "");
+	rj.addTo(pj);
+	
+	// Compute the norm
+	auto normr = norm<1>(rj, op.order_t + order_cols);
+
+	// Check final residual
+	if (superbblas::getDebugLevel() > 0)
+	{
+	  auto rd = rj.like_this();
+	  op(y, rd); // rd = op(y)
+	  nops += num_cols;
+	  x.scale(-1).addTo(rd);
+	  rj.addTo(rd);
+	  auto normrd = norm<1>(rd, op.order_t + order_cols);
+	  double max_tol_d = 0;
+	  for (int i = 0, vol = normr.volume(); i < vol; ++i)
+	    max_tol_d = std::max(max_tol_d, (double)normrd.get({{i}}) / normr.get({{i}}));
+	  QDPIO::cout << prefix
+		      << " MGPROTON FGMRES error in residual vector: " << detail::tostr(max_tol_d)
+		      << std::endl;
+	}
+
+	// Get the worse tolerance
+	max_tol = 0;
+	for (int i = 0, vol = normr.volume(); i < vol; ++i)
+	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
+
+	// Report iteration
+	if (verb >= Detailed)
+	  QDPIO::cout << prefix << " MGPROTON BICGSTAB iteration #its.: " << it
+		      << " max rel. residual: " << detail::tostr(max_tol, 2) << std::endl;
+
+	// Increase iterator counter
+	++it;
+
+	// Stop if the residual tolerance is satisfied
+	if (max_tol <= tol)
+	  break;
+      }
+
+      // Check final residual
+      if (error_if_not_converged)
+      {
+	op(y, rj); // r = op(y)
+	nops += num_cols;
+	x.scale(-1).addTo(rj);
+	auto normr = norm<1>(rj, op.order_t + order_cols);
+	max_tol = 0;
+	for (int i = 0, vol = normr.volume(); i < vol; ++i)
+	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
+	if (tol > 0 && max_tol > tol)
+	  throw std::runtime_error("fgmres didn't converged and you ask for checking the error");
+      }
+
+      // Report iteration
+      if (verb >= JustSummary)
+	QDPIO::cout << prefix << " MGPROTON FGMRES summary #its.: " << it
+		    << " max rel. residual: " << detail::tostr(max_tol, 2) << " matvecs: " << nops
+		    << std::endl;
+    }
+
     template <std::size_t NOp, typename COMPLEX>
     Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
 				     const Operator<NOp, COMPLEX>& prec = Operator<NOp, COMPLEX>(),
@@ -490,15 +665,15 @@ namespace Chroma
       {
 
 	// Get preconditioner
-	Maybe<Operator<NOp, COMPLEX>> prec = none;
+	Operator<NOp, COMPLEX> prec;
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
 	if (precOps && prec_)
 	  throw std::runtime_error(
 	    "getFGMRESSolver: invalid `prec` tag: the solver got a preconditioner already");
 	if (precOps)
-	  prec = Maybe<Operator<NOp, COMPLEX>>(getSolver(op, precOps.getSome()));
+	  prec = getSolver(op, precOps.getSome());
 	else if (prec_)
-	  prec = Maybe<Operator<NOp, COMPLEX>>(prec_);
+	  prec = prec_;
 
 	// Get the remainder options
 	unsigned int max_basis_size = getOption<unsigned int>(ops, "max_basis_size", 0);
@@ -523,6 +698,69 @@ namespace Chroma
 		      fgmres(op, prec, x, y, max_basis_size, tol, max_its, error_if_not_converged,
 			     ortho_each_its, max_residual_updates, false /* no init guess */, verb,
 			     prefix);
+		    },
+		    'n');
+		},
+		op.i,
+		op.d,
+		nullptr,
+		op.order_t,
+		op.imgLayout,
+		op.domLayout,
+		DenseOperator(),
+		op.preferred_col_ordering};
+      }
+
+      /// Returns a BICGSTAB solver
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver from `solvers` and influence the solver construction
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getBicgstabSolver(Operator<NOp, COMPLEX> op, const Options& ops,
+					       Operator<NOp, COMPLEX> prec_)
+      {
+	// Get preconditioner
+	Operator<NOp, COMPLEX> prec;
+	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
+	if (precOps && prec_)
+	  throw std::runtime_error(
+	    "getFGMRESSolver: invalid `prec` tag: the solver got a preconditioner already");
+	if (precOps)
+	  prec = getSolver(op, precOps.getSome());
+	else if (prec_)
+	  prec = prec_;
+
+	// Get the remainder options
+	double tol = getOption<double>(ops, "tol", 0.0);
+	unsigned int max_its = getOption<unsigned int>(ops, "max_its", 0);
+	if (max_its == 0 && tol <= 0)
+	  ops.throw_error("set either `tol` or `max_its`");
+	bool error_if_not_converged = getOption<bool>(ops, "error_if_not_converged", true);
+	unsigned int max_residual_updates = getOption<unsigned int>(ops, "max_residual_updates", 0);
+	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
+	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+
+	// use left preconditioning if given
+	Operator<NOp, COMPLEX> prec_op;
+	if (prec)
+	  prec_op = Operator<NOp, COMPLEX>{
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) { op(prec(x), y); },
+	    op.i, op.d, nullptr, op};
+
+	// Return the solver
+	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		  Tracker _t(std::string("bicgstab ") + prefix);
+		  _t.cost = x.kvdim().at('n');
+		  foreachInChuncks(
+		    x, y, max_simultaneous_rhs,
+		    [=](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
+		      if (prec)
+			bicgstab(prec_op, prec(x), y, tol, max_its, error_if_not_converged,
+				 max_residual_updates, false /* no init guess */, verb, prefix);
+		      else
+			bicgstab(op, x, y, tol, max_its, error_if_not_converged,
+				 max_residual_updates, false /* no init guess */, verb, prefix);
 		    },
 		    'n');
 		},
@@ -1746,20 +1984,18 @@ namespace Chroma
     Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
 				     const Operator<NOp, COMPLEX>& prec, SolverSpace solverSpace)
     {
-      enum SolverType { FGMRES, MG, EO, BJ, IGD, DDAG, G5, BLOCKING, CASTING };
-      static const std::map<std::string, SolverType> solverTypeMap{{"fgmres", FGMRES},
-								   {"mg", MG},
-								   {"eo", EO},
-								   {"bj", BJ},
-								   {"igd", IGD},
-								   {"g5", G5},
-								   {"blocking", BLOCKING},
-								   {"casting", CASTING}};
+      enum SolverType { FGMRES, BICGSTAB, MG, EO, BJ, IGD, DDAG, G5, BLOCKING, CASTING };
+      static const std::map<std::string, SolverType> solverTypeMap{
+	{"fgmres", FGMRES},  {"bicgstab", BICGSTAB}, {"mg", MG}, {"eo", EO},
+	{"bj", BJ},	     {"igd", IGD},	     {"g5", G5}, {"blocking", BLOCKING},
+	{"casting", CASTING}};
       SolverType solverType = getOption<SolverType>(ops, "type", solverTypeMap);
       switch (solverType)
       {
       case FGMRES: // flexible GMRES
 	return detail::getFGMRESSolver(op, ops, prec);
+      case BICGSTAB: // bicgstab
+	return detail::getBicgstabSolver(op, ops, prec);
       case MG: // Multigrid
 	return detail::getMGPrec(op, ops, prec, solverSpace);
       case EO: // even-odd Schur preconditioner

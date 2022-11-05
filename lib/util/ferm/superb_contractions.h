@@ -4420,6 +4420,50 @@ namespace Chroma
       return r0;
     }
 
+    /// Elementwise division
+    /// \param v: numerator
+    /// \param w: denominator
+
+    template <std::size_t N, typename T>
+    Tensor<N, T> div(const Tensor<N, T>& v, const Tensor<N, T>& w)
+    {
+      auto r = v.cloneOn(OnHost);
+      auto w0 = r.make_compatible();
+      w.copyTo(w0);
+      auto r_local = r.getLocal();
+      auto w0_local = w0.getLocal();
+      if (r_local)
+      {
+	auto rptr = r_local.data();
+	auto w0ptr = w0_local.data();
+	for (std::size_t i = 0, vol = r_local.volume(); i < vol; ++i)
+	  rptr[i] = rptr[i] / (w0ptr[i] * w0_local.scalar);
+      }
+      return r;
+    }
+
+    /// Elementwise product
+    /// \param v: numerator
+    /// \param w: denominator
+
+    template <std::size_t N, typename T>
+    Tensor<N, T> mult(const Tensor<N, T>& v, const Tensor<N, T>& w)
+    {
+      auto r = v.cloneOn(OnHost);
+      auto w0 = r.make_compatible();
+      w.copyTo(w0);
+      auto r_local = r.getLocal();
+      auto w0_local = w0.getLocal();
+      if (r_local)
+      {
+	auto rptr = r_local.data();
+	auto w0ptr = w0_local.data();
+	for (std::size_t i = 0, vol = r_local.volume(); i < vol; ++i)
+	  rptr[i] = rptr[i] * w0ptr[i] * w0_local.scalar;
+      }
+      return r;
+    }
+
     template <typename T>
     void* getQDPPtr(const T& t)
     {
