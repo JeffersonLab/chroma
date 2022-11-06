@@ -1142,6 +1142,16 @@ namespace Chroma
 	  return (isLocal ? 0 : Layout::nodeNumber());
 	}
 
+	/// Return the maximum local volume supported supported by a process
+
+	std::size_t maxLocalVolume() const
+	{
+	  std::size_t maxLocalVol = 0;
+	  for (const auto &it: p)
+	    maxLocalVol = std::max(maxLocalVol, superbblas::detail::volume(it[1]));
+	  return maxLocalVol;
+	}
+
 	/// Return whether other partition is compatible with this one
 
 	template <std::size_t N0>
@@ -1710,7 +1720,7 @@ namespace Chroma
 	/// \param ctx: context of the allocation
 
 	Allocation(std::size_t n, const std::shared_ptr<superbblas::Context>& ctx)
-	  : ptr(superbblas::allocate<T>(n, *ctx)), ctx(ctx), destroy_ptr(true)
+	  : ptr(superbblas::allocate<T>(n, *ctx)), ctx(ctx), destroy_ptr(n > 0)
 	{
 	}
 
@@ -2662,7 +2672,8 @@ namespace Chroma
       Tensor<N, T> make_eg() const
       {
 	return Tensor<N, T>(
-	  order, size, {},
+	  order, size,
+	  std::make_shared<Allocation>(Allocation(std::size_t(0), detail::getContext(getDev()))),
 	  std::make_shared<detail::TensorPartition<N>>(p->get_subpartition(from, size)), dist, {{}},
 	  size, value_type{1}, false /* not conjugate */, true /* is eg */,
 	  false /* ordered writing */, complexLabel);
@@ -7518,16 +7529,17 @@ namespace Chroma
 		      .template make_sure<ComplexD>("ijxyztX");
 	  }
 
-#    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
-	  DeviceHost primme_dev = OnDefaultDevice;
-#    else
+	  // If the 3D laplacian operator is big enough, run it on device
 	  DeviceHost primme_dev = OnHost;
+#    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
+	  if (ut[0].p->maxLocalVolume() * 7 * sizeof(double) * 2 / 1024 / 1024 >= 32 /*MB*/)
+	    primme_dev = OnDefaultDevice;
 #    endif
 
 	  // Create an efficient representation of the laplacian operator
 	  std::string order("cxyztX");
 	  auto eg = Tensor<Nd + 2, ComplexD>(order, latticeSize<Nd + 2>(order, {{'t', 1}}),
-					     OnDefaultDevice, OnEveryone)
+					     primme_dev, OnEveryone)
 		      .make_eg()
 		      .toFakeReal('.')
 		      .cast<double>();
@@ -7607,15 +7619,22 @@ namespace Chroma
 	    primme_dev, OnEveryone);
 	  assert(evecs.getLocal().volume() == primme.nLocal * primme.numEvals);
 #    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
-	  primme.queue = &*detail::getMagmaContext();
+	  if (primme_dev == OnDefaultDevice)
+	    primme.queue = &*detail::getMagmaContext();
 #    endif
 
 	  // Call primme
+	  int ret;
 #    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
-	  int ret = magma_zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
-#    else
-	  int ret = zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
+	  if (primme_dev == OnDefaultDevice)
+	  {
+	    ret = magma_zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
+	  }
+	  else
 #    endif
+	  {
+	    ret = zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
+	  }
 
 	  if (primme.procID == 0)
 	  {
