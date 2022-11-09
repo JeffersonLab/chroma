@@ -1015,7 +1015,10 @@ namespace Chroma
       template <std::size_t NOp, typename COMPLEX>
       static std::map<std::string, Operator<NOp, COMPLEX>>& getProlongatorCache()
       {
-	static std::map<std::string, Operator<NOp, COMPLEX>> m;
+	static std::map<std::string, Operator<NOp, COMPLEX>> m = [] {
+	  getDestroyList().push_back([] { getProlongatorCache<NOp, COMPLEX>().clear(); });
+	  return std::map<std::string, Operator<NOp, COMPLEX>>{};
+	}();
 	return m;
       }
 
@@ -1152,9 +1155,6 @@ namespace Chroma
 	  DenseOperator(),
 	  op.preferred_col_ordering};
       }
-
-      /// Destroy function
-      using DestroyFun = std::function<void()>;
 
       /// Return a list of destroy callbacks after setting a solver
 
