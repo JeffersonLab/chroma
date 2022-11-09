@@ -842,7 +842,8 @@ namespace Chroma
       inline std::shared_ptr<superbblas::Context>& getCpuContext()
       {
 	static std::shared_ptr<superbblas::Context> cpuctx;
-	if (!cpuctx) {
+	if (!cpuctx)
+	{
 	  cpuctx = std::make_shared<superbblas::Context>(superbblas::createCpuContext());
 	  getDestroyList().push_back([] { getCpuContext().reset(); });
 	}
@@ -1170,7 +1171,7 @@ namespace Chroma
 	std::size_t maxLocalVolume() const
 	{
 	  std::size_t maxLocalVol = 0;
-	  for (const auto &it: p)
+	  for (const auto& it : p)
 	    maxLocalVol = std::max(maxLocalVol, superbblas::detail::volume(it[1]));
 	  return maxLocalVol;
 	}
@@ -3248,7 +3249,8 @@ namespace Chroma
 
 	value_type* ptr = data_for_writing();
 	MPI_Comm comm = (dist == OnMaster || dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
-	if (dist != OnMaster || Layout::nodeNumber() == 0) {
+	if (dist != OnMaster || Layout::nodeNumber() == 0)
+	{
 	  superbblas::copy<N, N>(value_type{0}, p->p.data(), 1, order.c_str(), from, size, dim,
 				 (const value_type**)&ptr, nullptr, &ctx(), p->p.data(), 1,
 				 order.c_str(), from, dim, &ptr, nullptr, &ctx(), comm,
@@ -4194,7 +4196,8 @@ namespace Chroma
     {
       // Check arguments
       if (action.hasSome() != (bool)r)
-	throw std::runtime_error("contract: invalid argument, if `action` is given, `r` should be given also");
+	throw std::runtime_error(
+	  "contract: invalid argument, if `action` is given, `r` should be given also");
       if ((dev.hasSome() || dist.hasSome()) && action.hasSome())
 	throw std::runtime_error(
 	  "contract: invalid argument, if `action` is given, `dev` and `dist` shouldn't be given");
@@ -7506,8 +7509,8 @@ namespace Chroma
       // Auxiliary structure passed to PRIMME's matvec
 
       struct OperatorAux {
-	const Operator<Nd + 3, double> op; // Operator in cxyztX
-	const DeviceHost primme_dev;	   // where primme allocations are
+	const Operator<Nd + 2, ComplexD> op; // Operator in cxyztX
+	const DeviceHost primme_dev;	     // where primme allocations are
       };
 
       // Wrapper for PRIMME of `LaplacianOperator`
@@ -7529,13 +7532,12 @@ namespace Chroma
 	    throw std::runtime_error("We cannot play with the leading dimensions");
 
 	  OperatorAux& opaux = *(OperatorAux*)primme->matrix;
-	  const std::string order(
-	    std::string(opaux.op.d.order.begin() + 1, opaux.op.d.order.end()) + std::string("n"));
+	  const std::string order(opaux.op.d.order + std::string("n"));
 	  Coor<Nd + 3> size = latticeSize<Nd + 3>(order, {{'n', *blockSize}, {'t', 1}});
 	  Tensor<Nd + 3, ComplexD> tx(order, size, opaux.primme_dev, OnEveryone, (ComplexD*)x);
 	  Tensor<Nd + 3, ComplexD> ty(order, size, opaux.primme_dev, OnEveryone, (ComplexD*)y);
 	  assert(tx.getLocal().volume() == primme->nLocal * (*blockSize));
-	  opaux.op(tx.toFakeReal('.').cast<double>(), ty.toFakeReal('.').cast<double>());
+	  opaux.op(tx, ty);
 	  assert(ty.allocation->pending_operations.size() == 0);
 	  *ierr = 0;
 	} catch (...)
@@ -7600,24 +7602,20 @@ namespace Chroma
 	  // If the 3D laplacian operator is big enough, run it on device
 	  DeviceHost primme_dev = OnHost;
 #    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
-	  if (ut[0].p->maxLocalVolume() * 7 * sizeof(double) * 2 / 1024 / 1024 >= 32 /*MB*/)
-	    primme_dev = OnDefaultDevice;
+	  primme_dev = OnDefaultDevice;
 #    endif
 
 	  // Create an efficient representation of the laplacian operator
 	  std::string order("cxyztX");
 	  auto eg = Tensor<Nd + 2, ComplexD>(order, latticeSize<Nd + 2>(order, {{'t', 1}}),
 					     primme_dev, OnEveryone)
-		      .make_eg()
-		      .toFakeReal('.')
-		      .cast<double>();
+		      .make_eg();
 	  OperatorLayout op_layout =
 	    ((from_tslice + t) % 2 == 0 ? XEvenOddLayout : XEvenOddLayoutZeroOdd);
 	  auto laplacianOp = Chroma::SB::detail::cloneOperator(
-	    Operator<Nd + 3, double>{
-	      [&](Tensor<Nd + 4, double> x, Tensor<Nd + 4, double> y) {
-		LaplacianOperator(ut, from_tslice + t, y.toFakeReal('.').toComplex(),
-				  x.toFakeReal('.').toComplex());
+	    Operator<Nd + 2, ComplexD>{
+	      [&](Tensor<Nd + 3, ComplexD> x, Tensor<Nd + 3, ComplexD> y) {
+		LaplacianOperator(ut, from_tslice + t, y, x);
 	      },
 	      eg, eg, nullptr, "", op_layout, op_layout,
 	      detail::getNeighbors(eg.kvdim(), 1 /* near-neighbors links only */, op_layout),
@@ -7634,8 +7632,8 @@ namespace Chroma
 	  primme_initialize(&primme);
 
 	  // Get the global and local size of evec
-	  std::size_t n = eg.volume() / 2;
-	  std::size_t nLocal = eg.getLocal().volume() / 2;
+	  std::size_t n = eg.volume();
+	  std::size_t nLocal = eg.getLocal().volume();
 
 	  if (n_colorvecs > n)
 	  {
@@ -7680,8 +7678,7 @@ namespace Chroma
 	  // Allocate space for converged Ritz values and residual norms
 	  std::vector<double> evals(primme.numEvals);
 	  std::vector<double> rnorms(primme.numEvals);
-	  const std::string evecs_order(std::string(eg.order.begin() + 1, eg.order.end()) +
-					std::string("n"));
+	  const std::string evecs_order(eg.order + std::string("n"));
 	  Tensor<Nd + 3, ComplexD> evecs(
 	    evecs_order, latticeSize<Nd + 3>(evecs_order, {{'n', primme.numEvals}, {'t', 1}}),
 	    primme_dev, OnEveryone);
