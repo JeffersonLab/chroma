@@ -2116,6 +2116,18 @@ namespace Chroma
 	return superbblas::detail::volume(size);
       }
 
+      /// Return the number of local elements in the tensor to this process
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   t.localVolume(); // is Nc*Ns if t replicated among all processes
+
+      std::size_t localVolume() const
+      {
+	return p->localVolume();
+      }
+
       /// Return the product of the size for each given label
       ///
       /// Example:
@@ -7633,7 +7645,7 @@ namespace Chroma
 
 	  // Get the global and local size of evec
 	  std::size_t n = eg.volume();
-	  std::size_t nLocal = eg.getLocal().volume();
+	  std::size_t nLocal = eg.localVolume();
 
 	  if (n_colorvecs > n)
 	  {
@@ -7682,7 +7694,7 @@ namespace Chroma
 	  Tensor<Nd + 3, ComplexD> evecs(
 	    evecs_order, latticeSize<Nd + 3>(evecs_order, {{'n', primme.numEvals}, {'t', 1}}),
 	    primme_dev, OnEveryone);
-	  assert(evecs.getLocal().volume() == primme.nLocal * primme.numEvals);
+	  assert(evecs.localVolume() == primme.nLocal * primme.numEvals);
 #    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
 	  if (primme_dev == OnDefaultDevice)
 	    primme.queue = &*detail::getMagmaContext();
