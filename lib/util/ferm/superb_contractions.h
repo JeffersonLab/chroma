@@ -796,9 +796,20 @@ namespace Chroma
 	return {Success, r};
       }
 
+      /// Destroy function
+      using DestroyFun = std::function<void()>;
+
+      /// Return a list of destroy callbacks to execute just before finishing chroma
+
+      inline std::vector<DestroyFun>& getDestroyList()
+      {
+	static std::vector<DestroyFun> list;
+	return list;
+      }
+
 #  if defined(BUILD_MAGMA)
       // Return a MAGMA context
-      inline std::shared_ptr<magma_queue_t> getMagmaContext(Maybe<int> device = none)
+      inline const std::shared_ptr<magma_queue_t>& getMagmaContext(Maybe<int> device = none)
       {
 	static std::shared_ptr<magma_queue_t> queue;
 	if (!queue)
@@ -816,111 +827,124 @@ namespace Chroma
 #    endif
 	  }
 	  magma_init();
-	  magma_queue_t q;
-	  magma_queue_create(dev, &q);
-	  queue = std::make_shared<magma_queue_t>(q);
+	  queue = std::shared_ptr<magma_queue_t>(new magma_queue_t, [](magma_queue_t* p) {
+	    magma_queue_destroy(p);
+	    delete p;
+	  });
+	  magma_queue_create(dev, &*queue);
+	  getDestroyList().push_back([] { getMagmaContext().reset(); });
 	}
 	return queue;
       }
 #  endif
 
+      // Get the cpu context
+      inline std::shared_ptr<superbblas::Context>& getCpuContext()
+      {
+	static std::shared_ptr<superbblas::Context> cpuctx;
+	if (!cpuctx)
+	{
+	  cpuctx = std::make_shared<superbblas::Context>(superbblas::createCpuContext());
+	  getDestroyList().push_back([] { getCpuContext().reset(); });
+	}
+	return cpuctx;
+      }
+
       // Return a context on either the host or the device
-      inline std::shared_ptr<superbblas::Context> getContext(DeviceHost dev)
+      inline std::shared_ptr<superbblas::Context>& getGpuContext()
       {
 	// Creating GPU context can be expensive; so do it once
 	static std::shared_ptr<superbblas::Context> cudactx;
-	static std::shared_ptr<superbblas::Context> cpuctx;
-	if (!cpuctx)
-	  cpuctx = std::make_shared<superbblas::Context>(superbblas::createCpuContext());
 
-	switch (dev)
-	{
-	case OnHost: return cpuctx;
-	case OnDefaultDevice:
 #  ifdef SUPERBBLAS_USE_GPU
-	  if (!cudactx)
-	  {
+	if (!cudactx)
+	{
 
-	    int dev = -1;
+	  int dev = -1;
 #    if defined(QDP_IS_QDPJIT)
-	    // When using QDP-JIT, the GPU device to use is already selected
+	  // When using QDP-JIT, the GPU device to use is already selected
 #      ifdef SUPERBBLAS_USE_CUDA
-	    superbblas::detail::cudaCheck(cudaGetDevice(&dev));
+	  superbblas::detail::cudaCheck(cudaGetDevice(&dev));
 #      elif defined(SUPERBBLAS_USE_HIP)
-	    superbblas::detail::hipCheck(hipGetDevice(&dev));
+	  superbblas::detail::hipCheck(hipGetDevice(&dev));
 #      else
 #	error unsupported GPU platform
 #      endif
 #    else
-	    // When not using QDP-JIT, select the GPU device based on either the local
-	    // MPI rank or the global MPI rank and assuming that consecutive MPI ranks
-	    // tends to be on the same node.
-	    const char* l = std::getenv("SB_NUM_GPUS_ON_NODE");
+	  // When not using QDP-JIT, select the GPU device based on either the local
+	  // MPI rank or the global MPI rank and assuming that consecutive MPI ranks
+	  // tends to be on the same node.
+	  const char* l = std::getenv("SB_NUM_GPUS_ON_NODE");
+	  if (l)
+	  {
+	    dev = Layout::nodeNumber() % std::atoi(l);
+	  }
+	  else
+	  {
+	    const char* l = std::getenv("SLURM_LOCALID");
 	    if (l)
 	    {
-	      dev = Layout::nodeNumber() % std::atoi(l);
+	      dev = std::atoi(l);
 	    }
 	    else
 	    {
-	      const char* l = std::getenv("SLURM_LOCALID");
-	      if (l)
-	      {
-		dev = std::atoi(l);
-	      }
-	      else
-	      {
-		QDPIO::cerr << "Please set SB_NUM_GPUS_ON_NODE or SLURM_LOCALID" << std::endl;
-		QDP_abort(1);
-	      }
+	      QDPIO::cerr << "Please set SB_NUM_GPUS_ON_NODE or SLURM_LOCALID" << std::endl;
+	      QDP_abort(1);
 	    }
+	  }
 #    endif
 
 #    if defined(BUILD_MAGMA)
-	    // Force the creation of the queue before creating a superbblas context (otherwise cublas complains)
-	    getMagmaContext();
+	  // Force the creation of the queue before creating a superbblas context (otherwise cublas complains)
+	  getMagmaContext();
 #    endif
 
-	    // Workaround on a potential issue in qdp-jit: avoid passing through the pool allocator
+	  // Workaround on a potential issue in qdp-jit: avoid passing through the pool allocator
 #    if defined(QDP_IS_QDPJIT)
-	    if (jit_config_get_max_allocation() != 0)
-	    {
-	      cudactx = std::make_shared<superbblas::Context>(superbblas::createGpuContext(
-		dev,
+	  if (jit_config_get_max_allocation() != 0)
+	  {
+	    cudactx = std::make_shared<superbblas::Context>(superbblas::createGpuContext(
+	      dev,
 
-		// Make superbblas use the same memory allocator for gpu as any other qdp-jit lattice object
-		[](std::size_t size, superbblas::platform plat) -> void* {
-		  if (size == 0)
-		    return nullptr;
-		  if (plat == superbblas::CPU)
-		    return malloc(size);
-		  void* ptr = nullptr;
-		  QDP_get_global_cache().addDeviceStatic(&ptr, size, true);
-		  assert(superbblas::detail::getPtrDevice(ptr) >= 0);
-		  return ptr;
-		},
+	      // Make superbblas use the same memory allocator for gpu as any other qdp-jit lattice object
+	      [](std::size_t size, superbblas::platform plat) -> void* {
+		if (size == 0)
+		  return nullptr;
+		if (plat == superbblas::CPU)
+		  return malloc(size);
+		void* ptr = nullptr;
+		QDP_get_global_cache().addDeviceStatic(&ptr, size, true);
+		assert(superbblas::detail::getPtrDevice(ptr) >= 0);
+		return ptr;
+	      },
 
-		// The corresponding deallocator
-		[](void* ptr, superbblas::platform plat) {
-		  if (ptr == nullptr)
-		    return;
-		  if (plat == superbblas::CPU)
-		    free(ptr);
-		  else
-		    QDP_get_global_cache().signoffViaPtr(ptr);
-		}));
-	    }
-	    else
-#    endif // defined(QDP_IS_QDPJIT)
-	    {
-	      cudactx = std::make_shared<superbblas::Context>(superbblas::createGpuContext(dev));
-	    }
+	      // The corresponding deallocator
+	      [](void* ptr, superbblas::platform plat) {
+		if (ptr == nullptr)
+		  return;
+		if (plat == superbblas::CPU)
+		  free(ptr);
+		else
+		  QDP_get_global_cache().signoffViaPtr(ptr);
+	      }));
 	  }
-	  return cudactx;
-#  else	 // SUPERBBLAS_USE_GPU
-	  return cpuctx;
-#  endif // SUPERBBLAS_USE_GPU
+	  else
+#    endif // defined(QDP_IS_QDPJIT)
+	  {
+	    cudactx = std::make_shared<superbblas::Context>(superbblas::createGpuContext(dev));
+	  }
+	  getDestroyList().push_back([] { getGpuContext().reset(); });
 	}
-	throw std::runtime_error("Unsupported `DeviceHost`");
+	return cudactx;
+#  else	 // SUPERBBLAS_USE_GPU
+	return getCpuContext();
+#  endif // SUPERBBLAS_USE_GPU
+      }
+
+      // Return a context on either the host or the device
+      inline const std::shared_ptr<superbblas::Context>& getContext(DeviceHost dev)
+      {
+	return dev == OnHost ? getCpuContext() : getGpuContext();
       }
 
       /// Return if two devices are the same
@@ -1140,6 +1164,16 @@ namespace Chroma
 	int MpiProcRank() const
 	{
 	  return (isLocal ? 0 : Layout::nodeNumber());
+	}
+
+	/// Return the maximum local volume supported supported by a process
+
+	std::size_t maxLocalVolume() const
+	{
+	  std::size_t maxLocalVol = 0;
+	  for (const auto& it : p)
+	    maxLocalVol = std::max(maxLocalVol, superbblas::detail::volume(it[1]));
+	  return maxLocalVol;
 	}
 
 	/// Return whether other partition is compatible with this one
@@ -1710,7 +1744,7 @@ namespace Chroma
 	/// \param ctx: context of the allocation
 
 	Allocation(std::size_t n, const std::shared_ptr<superbblas::Context>& ctx)
-	  : ptr(superbblas::allocate<T>(n, *ctx)), ctx(ctx), destroy_ptr(true)
+	  : ptr(superbblas::allocate<T>(n, *ctx)), ctx(ctx), destroy_ptr(n > 0)
 	{
 	}
 
@@ -2136,6 +2170,15 @@ namespace Chroma
 	return true;
       }
 
+      /// Return the allocation is managed by superbblas
+
+      bool is_managed() const
+      {
+	if (!allocation)
+	  return true;
+	return allocation->destroy_ptr;
+      }
+
       /// Return the pointer to the first local element
       /// NOTE: there will be no pending writing operations
 
@@ -2143,6 +2186,12 @@ namespace Chroma
       {
 	if (!allocation)
 	  return nullptr;
+
+	// If the pointer isn't managed by supperbblas, it may be managed by Chroma
+	// and we make sure that all operations from Chroma side are finished
+	if (!is_managed())
+	  superbblas::syncLegacyStream(ctx());
+
 	return (value_type*)allocation->data();
       }
 
@@ -2153,8 +2202,15 @@ namespace Chroma
       {
 	if (!allocation)
 	  return nullptr;
+
+	// If the pointer isn't managed by supperbblas, it may be managed by Chroma
+	// and we make sure that all operations from Chroma side are finished
+	if (!allocation->destroy_ptr)
+	  superbblas::syncLegacyStream(ctx());
+
 	if (unordered_writing)
 	  return (value_type*)allocation->ptr;
+
 	return (value_type*)allocation->data();
       }
 
@@ -2662,7 +2718,8 @@ namespace Chroma
       Tensor<N, T> make_eg() const
       {
 	return Tensor<N, T>(
-	  order, size, {},
+	  order, size,
+	  std::make_shared<Allocation>(Allocation(std::size_t(0), detail::getContext(getDev()))),
 	  std::make_shared<detail::TensorPartition<N>>(p->get_subpartition(from, size)), dist, {{}},
 	  size, value_type{1}, false /* not conjugate */, true /* is eg */,
 	  false /* ordered writing */, complexLabel);
@@ -3193,10 +3250,15 @@ namespace Chroma
 	value_type* ptr = data_for_writing();
 	MPI_Comm comm = (dist == OnMaster || dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	if (dist != OnMaster || Layout::nodeNumber() == 0)
+	{
 	  superbblas::copy<N, N>(value_type{0}, p->p.data(), 1, order.c_str(), from, size, dim,
 				 (const value_type**)&ptr, nullptr, &ctx(), p->p.data(), 1,
 				 order.c_str(), from, dim, &ptr, nullptr, &ctx(), comm,
 				 superbblas::FastToSlow, superbblas::Copy);
+	  // Force synchronization in superbblas stream if the allocation isn't managed by superbblas
+	  if (!is_managed())
+	    superbblas::sync(ctx());
+	}
       }
 
       /// Return whether the given tensor has the same distribution as this one
@@ -3446,6 +3508,9 @@ namespace Chroma
 	    w.order.c_str(), w.from, w.dim, &w_ptr, (const float**)&m1ptr, &w.ctx(), comm,
 	    superbblas::FastToSlow, action == CopyTo ? superbblas::Copy : superbblas::Add, &req);
 	  w.allocation->append_pending_operation(req);
+	  // Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
+	  if (!w.is_managed())
+	    superbblas::sync(w.ctx());
 	}
       }
 
@@ -3547,6 +3612,10 @@ namespace Chroma
 	  w.p->p.data(), w.dim, 1, orderw_.c_str(), conjw_, (const value_type**)&w_ptr, &w.ctx(), //
 	  detail::cond_conj(conjugate, beta), p->p.data(), dim, 1, order_.c_str(), &ptr, &ctx(),
 	  MPI_COMM_WORLD, superbblas::FastToSlow);
+
+	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
+	if (!is_managed())
+	  superbblas::sync(ctx());
       }
 
       /// Compute the Cholesky factor of `v' and contract its inverse with `w`
@@ -3583,7 +3652,7 @@ namespace Chroma
 	  w = w.clone();
 	if (isSubtensor() || getDev() != v.getDev())
 	{
-	  Tensor<N, T> aux = like_this(none, {}, v.getDev());
+	  Tensor<N, T> aux = make_compatible(none, {}, v.getDev());
 	  aux.cholInv(v, order_rows, order_cols, w);
 	  aux.copyTo(*this);
 	  return;
@@ -3619,6 +3688,10 @@ namespace Chroma
 	  &v.ctx(),									  //
 	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr, &w.ctx(), //
 	  p->p.data(), dim, 1, order.c_str(), &ptr, &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
+
+	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
+	if (!is_managed())
+	  superbblas::sync(ctx());
       }
 
       /// Solve the linear systems within tensor `v' and right-hand-sides `w`
@@ -3655,7 +3728,7 @@ namespace Chroma
 	  w = w.clone();
 	if (isSubtensor() || getDev() != v.getDev())
 	{
-	  Tensor<N, T> aux = like_this(none, {}, v.getDev());
+	  Tensor<N, T> aux = make_compatible(none, {}, v.getDev());
 	  aux.solve(v, order_rows, order_cols, w);
 	  aux.copyTo(*this);
 	  return;
@@ -3691,6 +3764,10 @@ namespace Chroma
 	  &v.ctx(),									  //
 	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr, &w.ctx(), //
 	  p->p.data(), dim, 1, order.c_str(), &ptr, &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
+
+	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
+	if (!is_managed())
+	  superbblas::sync(ctx());
       }
 
       /// Return a view of this tensor where the elements are scaled by the given argument
@@ -4119,7 +4196,8 @@ namespace Chroma
     {
       // Check arguments
       if (action.hasSome() != (bool)r)
-	throw std::runtime_error("contract: invalid argument, if `action` is given, `r` should be given also");
+	throw std::runtime_error(
+	  "contract: invalid argument, if `action` is given, `r` should be given also");
       if ((dev.hasSome() || dist.hasSome()) && action.hasSome())
 	throw std::runtime_error(
 	  "contract: invalid argument, if `action` is given, `dev` and `dist` shouldn't be given");
@@ -5296,6 +5374,10 @@ namespace Chroma
 	  w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim, power_label,
 	  (value_type**)&w_ptr, //
 	  &data.ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
+
+	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
+	if (!w.is_managed())
+	  superbblas::sync(data.ctx());
       }
 
       void print(const std::string& name) const
@@ -7427,8 +7509,8 @@ namespace Chroma
       // Auxiliary structure passed to PRIMME's matvec
 
       struct OperatorAux {
-	const Operator<Nd + 3, double> op; // Operator in cxyztX
-	const DeviceHost primme_dev;	   // where primme allocations are
+	const Operator<Nd + 2, ComplexD> op; // Operator in cxyztX
+	const DeviceHost primme_dev;	     // where primme allocations are
       };
 
       // Wrapper for PRIMME of `LaplacianOperator`
@@ -7450,13 +7532,12 @@ namespace Chroma
 	    throw std::runtime_error("We cannot play with the leading dimensions");
 
 	  OperatorAux& opaux = *(OperatorAux*)primme->matrix;
-	  const std::string order(
-	    std::string(opaux.op.d.order.begin() + 1, opaux.op.d.order.end()) + std::string("n"));
+	  const std::string order(opaux.op.d.order + std::string("n"));
 	  Coor<Nd + 3> size = latticeSize<Nd + 3>(order, {{'n', *blockSize}, {'t', 1}});
 	  Tensor<Nd + 3, ComplexD> tx(order, size, opaux.primme_dev, OnEveryone, (ComplexD*)x);
 	  Tensor<Nd + 3, ComplexD> ty(order, size, opaux.primme_dev, OnEveryone, (ComplexD*)y);
 	  assert(tx.getLocal().volume() == primme->nLocal * (*blockSize));
-	  opaux.op(tx.toFakeReal('.').cast<double>(), ty.toFakeReal('.').cast<double>());
+	  opaux.op(tx, ty);
 	  assert(ty.allocation->pending_operations.size() == 0);
 	  *ierr = 0;
 	} catch (...)
@@ -7518,26 +7599,23 @@ namespace Chroma
 		      .template make_sure<ComplexD>("ijxyztX");
 	  }
 
-#    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
-	  DeviceHost primme_dev = OnDefaultDevice;
-#    else
+	  // If the 3D laplacian operator is big enough, run it on device
 	  DeviceHost primme_dev = OnHost;
+#    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
+	  primme_dev = OnDefaultDevice;
 #    endif
 
 	  // Create an efficient representation of the laplacian operator
 	  std::string order("cxyztX");
 	  auto eg = Tensor<Nd + 2, ComplexD>(order, latticeSize<Nd + 2>(order, {{'t', 1}}),
-					     OnDefaultDevice, OnEveryone)
-		      .make_eg()
-		      .toFakeReal('.')
-		      .cast<double>();
+					     primme_dev, OnEveryone)
+		      .make_eg();
 	  OperatorLayout op_layout =
 	    ((from_tslice + t) % 2 == 0 ? XEvenOddLayout : XEvenOddLayoutZeroOdd);
 	  auto laplacianOp = Chroma::SB::detail::cloneOperator(
-	    Operator<Nd + 3, double>{
-	      [&](Tensor<Nd + 4, double> x, Tensor<Nd + 4, double> y) {
-		LaplacianOperator(ut, from_tslice + t, y.toFakeReal('.').toComplex(),
-				  x.toFakeReal('.').toComplex());
+	    Operator<Nd + 2, ComplexD>{
+	      [&](Tensor<Nd + 3, ComplexD> x, Tensor<Nd + 3, ComplexD> y) {
+		LaplacianOperator(ut, from_tslice + t, y, x);
 	      },
 	      eg, eg, nullptr, "", op_layout, op_layout,
 	      detail::getNeighbors(eg.kvdim(), 1 /* near-neighbors links only */, op_layout),
@@ -7554,8 +7632,8 @@ namespace Chroma
 	  primme_initialize(&primme);
 
 	  // Get the global and local size of evec
-	  std::size_t n = eg.volume() / 2;
-	  std::size_t nLocal = eg.getLocal().volume() / 2;
+	  std::size_t n = eg.volume();
+	  std::size_t nLocal = eg.getLocal().volume();
 
 	  if (n_colorvecs > n)
 	  {
@@ -7600,22 +7678,28 @@ namespace Chroma
 	  // Allocate space for converged Ritz values and residual norms
 	  std::vector<double> evals(primme.numEvals);
 	  std::vector<double> rnorms(primme.numEvals);
-	  const std::string evecs_order(std::string(eg.order.begin() + 1, eg.order.end()) +
-					std::string("n"));
+	  const std::string evecs_order(eg.order + std::string("n"));
 	  Tensor<Nd + 3, ComplexD> evecs(
 	    evecs_order, latticeSize<Nd + 3>(evecs_order, {{'n', primme.numEvals}, {'t', 1}}),
 	    primme_dev, OnEveryone);
 	  assert(evecs.getLocal().volume() == primme.nLocal * primme.numEvals);
 #    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
-	  primme.queue = &*detail::getMagmaContext();
+	  if (primme_dev == OnDefaultDevice)
+	    primme.queue = &*detail::getMagmaContext();
 #    endif
 
 	  // Call primme
+	  int ret;
 #    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
-	  int ret = magma_zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
-#    else
-	  int ret = zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
+	  if (primme_dev == OnDefaultDevice)
+	  {
+	    ret = magma_zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
+	  }
+	  else
 #    endif
+	  {
+	    ret = zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
+	  }
 
 	  if (primme.procID == 0)
 	  {
@@ -9034,6 +9118,23 @@ namespace Chroma
 	  }
 	}
       }
+    }
+
+    /// Call the destroy list and clean superbblas cache
+
+    inline void finish()
+    {
+      // Show performance reports
+      superbblas::reportTimings(QDPIO::cout);
+      superbblas::reportCacheUsage(QDPIO::cout);
+
+      // Clear internal superbblas caches
+      superbblas::clearCaches();
+
+      // Call the destroy list
+      for (const auto& f : detail::getDestroyList())
+	f();
+      detail::getDestroyList().clear();
     }
 
     /// Return the smallest interval containing the union of two intervals

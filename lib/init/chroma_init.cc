@@ -393,11 +393,8 @@ namespace Chroma
 #endif
 
 #ifdef BUILD_SB
-    superbblas::reportTimings(QDPIO::cout);
-    superbblas::reportCacheUsage(QDPIO::cout);
-
-    // Clear internal superbblas caches
-    superbblas::clearCaches();
+    // Call superbblas finisher
+    SB::finish();
 #endif
 
     if (! QDP_isInitialized())
