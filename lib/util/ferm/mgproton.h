@@ -214,6 +214,32 @@ namespace Chroma
 	return !sp && fop_tconj;
       }
 
+      /// Return compatible domain tensors
+      /// \param col_order: order for the columns
+      /// \param m: column dimension size
+
+      template <std::size_t N>
+      Tensor<N, COMPLEX> make_compatible_dom(const std::string& col_order,
+                                             const std::map<char, int>& m)
+      {
+        return d.template like_this<N, COMPLEX>(
+          preferred_col_ordering == ColumnMajor ? std::string("%") + col_order : col_order + "%",
+          '%', "", m);
+      }
+
+      /// Return compatible image tensors
+      /// \param col_order: order for the columns
+      /// \param m: column dimension size
+
+      template <std::size_t N>
+      Tensor<N, COMPLEX> make_compatible_img(const std::string& col_order,
+                                             const std::map<char, int>& m)
+      {
+        return i.template like_this<N, COMPLEX>(
+          preferred_col_ordering == ColumnMajor ? std::string("%") + col_order : col_order + "%",
+          '%', "", m);
+      }
+
       /// Apply the operator
       template <std::size_t N, typename T>
       Tensor<N, T> operator()(const Tensor<N, T>& t) const
@@ -1861,6 +1887,19 @@ namespace Chroma
 		op.preferred_col_ordering};
       }
 
+      /// Return a cache for the prolongators
+      /// NOTE: this one isn't destroyed by `cleanEvenOddOperatorsCache`
+
+      template <std::size_t NOp, typename COMPLEX>
+      static std::map<std::string, Operator<NOp, COMPLEX>>& getProlongatorCache()
+      {
+	static std::map<std::string, Operator<NOp, COMPLEX>> m = [] {
+	  getDestroyList().push_back([] { getProlongatorCache<NOp, COMPLEX>().clear(); });
+	  return std::map<std::string, Operator<NOp, COMPLEX>>{};
+	}();
+	return m;
+      }
+
       /// Returns a MG preconditioner.
       ///
       /// It returns an approximation of Op^{-1} = Op^{-1}*Q + Op^{-1}(I-Q), where Q is a projector
@@ -1907,9 +1946,23 @@ namespace Chroma
 	const Operator<NOp, COMPLEX> nullSolver =
 	  getSolver(op, getOptions(ops, "solver_null_vecs"));
 	bool do_chirality_splitting = getOption<bool>(ops, "chirality_splitting", true);
-	const Operator<NOp, COMPLEX> V =
-	  getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, do_chirality_splitting,
-			   nullSolver, solverSpace);
+
+	// Grab the prolongator from cache if the user name it
+	Operator<NOp, COMPLEX> V;
+	std::string prolongator_id = getOption<std::string>(ops, "prolongator_id", "");
+	if (prolongator_id.size() == 0 ||
+	    getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0)
+	{
+	  V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking,
+			       do_chirality_splitting, nullSolver, solverSpace);
+	  if (prolongator_id.size() > 0)
+	    getProlongatorCache<NOp, COMPLEX>()[prolongator_id] = V;
+	}
+	else
+	{
+	  QDPIO::cout << "Found prolongator for id " << prolongator_id << std::endl;
+	  V = getProlongatorCache<NOp, COMPLEX>().at(prolongator_id);
+	}
 
 	// Compute the coarse operator, either V' * op * V or V' * op * g5 * V
 	unsigned int create_coarse_max_rhs =
@@ -1996,11 +2049,8 @@ namespace Chroma
       inline void cleanEvenOddOperatorsCache()
       {
 	// Destroy in reverse order to the allocated one
-	while (getEvenOddOperatorsCacheDestroyList().size() > 0)
-	{
-	  getEvenOddOperatorsCacheDestroyList().back()();
-	  getEvenOddOperatorsCacheDestroyList().pop_back();
-	}
+	for (const auto& f : getEvenOddOperatorsCacheDestroyList())
+	  f();
       }
 
       /// Tuple storing the operator even-odd and odd-even parts and the block diagonal
@@ -2900,27 +2950,6 @@ namespace Chroma
 	/// \param xml_str: the xml string to replace the mass in
 	/// \param mq: the new mass
 
-      namespace {	
-      void shiftQuarkMass(std::string& xml_str, const Real& mq)
-      {
-
-      //delimiter is the opening/close  mass tag
-      std::string open_tag = "<Mass>";
-      std::string close_tag = "</Mass>";
-      auto o_pos = xml_str.find(open_tag);
-      auto c_pos = xml_str.find(close_tag);
-      if(o_pos == std::string::npos){
-        return;
-      }else{
-      //std::string mq0_str = std::to_string(toDouble(m_q0));
-      std::string new_mq = std::to_string(toDouble(mq));
-      int m_q0_size = c_pos - (o_pos + open_tag.size());
-      xml_str.replace(o_pos+open_tag.size(), m_q0_size, new_mq);
-      }
-
-      }
-      }
-
     /// Either a Chroma solver or a superb solver
     struct ChimeraSolver {
       /// Action type
@@ -3005,6 +3034,15 @@ namespace Chroma
 
     /// Either a Chroma solver or a superb solver
     struct ShiftedChimeraSolver {
+
+      /// fermion Action xml
+      GroupXML_t fermActXml;
+
+      /// inversion parameters XML
+      GroupXML_t invParamXml;
+
+      multi1d<LatticeColorMatrix> links;
+
       /// Action type
       using Action = Handle<
 	FermionAction<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>;
@@ -3032,29 +3070,33 @@ namespace Chroma
 	  /// \param mq: the quark mass (may be mq = m_0 + \sigma)
 
       ShiftedChimeraSolver(GroupXML_t& fermAction, GroupXML_t& invParam,
-		    const multi1d<LatticeColorMatrix>& u, const Real& mq)
+			   const multi1d<LatticeColorMatrix>& u)
       {
 	
-	//shift the quark mass in the fermAction and invParams
-	shiftQuarkMass(fermAction.xml, mq);
-	shiftQuarkMass(invParam.xml, mq); //if the inverter requires it
+	//set the structs fermion action xml
+	fermActXml = fermAction;
+	//set the structs invparam xml
+	invParamXml = invParam;
+
+	//set the structs gauge links
+	links = u;
 	
 	// Initialize fermion action and state
-	std::istringstream xml_s(fermAction.xml);
+	std::istringstream xml_s(fermActXml.xml);
 	XMLReader fermacttop(xml_s);
-	QDPIO::cout << "FermAct = " << fermAction.id << std::endl;
-	S = TheFermionActionFactory::Instance().createObject(fermAction.id, fermacttop,
-							     fermAction.path);
-	state = S->createState(u);
+	QDPIO::cout << "FermAct = " << fermActXml.id << std::endl;
+	S = TheFermionActionFactory::Instance().createObject(fermActXml.id, fermacttop,
+							     fermActXml.path);
+	state = S->createState(links);
 
 	// If the inverter is MGPROTON, use this infrastructure
-	if (invParam.id == std::string("MGPROTON"))
+	if (invParamXml.id == std::string("MGPROTON"))
 	{
 	  QDPIO::cout << "Setting up MGPROTON invertor..." << std::endl;
 	  Tracker _t("setup mgproton");
 
 	  // Parse XML with the inverter options
-	  std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(invParam.xml));
+	  std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(invParamXml.xml));
 
 	  // Clone the matvec
 	  LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
@@ -3082,7 +3124,82 @@ namespace Chroma
 	}
 	else
 	{
-	  PP = S->qprop(state, invParam);
+	  PP = S->qprop(state, invParamXml);
+	}
+      }
+
+      //function to overwrite the xml string with new mass
+      void shiftQuarkMass(std::string& xml_str, const Real& mq)
+      {
+
+	//delimiter is the opening/close  mass tag
+	std::string open_tag = "<Mass>";
+	std::string close_tag = "</Mass>";
+	auto o_pos = xml_str.find(open_tag);
+	auto c_pos = xml_str.find(close_tag);
+	if (o_pos == std::string::npos)
+	{
+	  return;
+	}
+	else
+	{
+	  std::string new_mq = std::to_string(toDouble(mq));
+	  int m_q0_size = c_pos - (o_pos + open_tag.size());
+	  xml_str.replace(o_pos + open_tag.size(), m_q0_size, new_mq);
+	}
+      }
+
+      //function to recompute the solver if it is being shifted
+      //hopefully this works if the prolongators have already been computed
+      void shiftSolver(const Real& mq)
+      {
+
+	shiftQuarkMass(fermActXml.xml, mq);
+	shiftQuarkMass(invParamXml.xml, mq); //if the solver needs it
+
+	std::istringstream xml_s(fermActXml.xml);
+	XMLReader fermacttop(xml_s);
+	QDPIO::cout << "FermAct = " << fermActXml.id << std::endl;
+	S = TheFermionActionFactory::Instance().createObject(fermActXml.id, fermacttop,
+							     fermActXml.path);
+	state = S->createState(links);
+
+	// If the inverter is MGPROTON, use this infrastructure
+	if (invParamXml.id == std::string("MGPROTON"))
+	{
+	  QDPIO::cout << "Setting up MGPROTON invertor..." << std::endl;
+	  Tracker _t("setup mgproton");
+
+	  // Parse XML with the inverter options
+	  std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(invParamXml.xml));
+
+	  // Clone the matvec
+	  LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
+	  ColOrdering co = getOption<ColOrdering>(*ops, "InvertParam/operator_ordering",
+						  getColOrderingMap(), ColumnMajor);
+	  ColOrdering co_blk = getOption<ColOrdering>(*ops, "InvertParam/operator_block_ordering",
+						      getColOrderingMap(), RowMajor);
+	  Operator<Nd + 7, Complex> linOp =
+	    detail::cloneOperator(asOperatorView(*fLinOp), co, co_blk,
+				  detail::ConsiderBlockingSparse, "chroma's operator");
+
+	  // Destroy chroma objects
+	  delete fLinOp;
+	  state = State();
+	  S = Action();
+
+	  // Construct the solver. Hopefully the prolongator  is already set so this should work!
+	  op = Maybe<Operator<Nd + 7, Complex>>(getSolver(linOp, getOptions(*ops, "InvertParam")));
+
+	  // Clean cache of operators
+	  detail::cleanEvenOddOperatorsCache();
+
+	  QDPIO::cout << "MGPROTON invertor ready; setup time: "
+		      << detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;
+	}
+	else
+	{
+	  PP = S->qprop(state, invParamXml);
 	}
       }
     };
@@ -3162,52 +3279,28 @@ namespace Chroma
 	return psi;
       }
 
-    template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-    Tensor<Nd + 4, COMPLEX_OUT> doInversion(const SystemSolver<LatticeFermion>& PP, const std::vector<std::shared_ptr<LatticeFermion>>& chi,
-                                            const std::string& order_out = "cxyzXnst")
+      /// Apply the inverse to LatticeFermion tensors
+      /// \param sol: invertor, "linear" operator in cs0123xyztX
+      /// \param chi: spin-color lattice tensor, csxyztXn
+      /// \param max_rhs: maximum number of vectors solved at once
+      /// \return: tensor with the same labels as the input
+
+      template <std::size_t N, typename COMPLEX_CHI, typename COMPLEX_OUT>
+      Tensor<N, COMPLEX_OUT> doInversion(const Operator<Nd + 7, COMPLEX_OUT>& op,
+					 const Tensor<N, COMPLEX_CHI>& chi, int max_rhs)
     {
-	const int nv = chi.size();
-	Tensor<Nd + 4, COMPLEX_OUT> psi(
-            order_out, latticeSize<Nd + 4>(order_out, {{'n', nv}, {'s', Ns}}));
-	std::vector<std::shared_ptr<LatticeFermion>> quark_solns(nv);
-	for (int i = 0; i < nv; ++i){
-		quark_solns[i].reset(new LatticeFermion); *quark_solns[i] = zero;
-	}
-	
-	 std::vector<SystemSolverResults_t> res =
-              PP(quark_solns, std::vector<std::shared_ptr<const LatticeFermion>>(chi.begin(), chi.end()));
+	// Get the columns labels, which are the ones not contracted with the operator
+	std::string order_cols = remove_dimensions(chi.order, op.i.order);
 
-	for (int i = 0; i < nv; ++i) {
-		asTensorView(*quark_solns[i]).copyTo(psi.kvslice_from_size({{'n', i}}, {{'n', 1}}));
-	}
-
-	return psi;
-    }
-
-    template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-    Tensor<Nd + 4, COMPLEX_OUT> doInversion(const SystemSolver<LatticeFermion>& PP, Tensor<Nd + 4, COMPLEX_OUT> chi,
-                                            const std::string& order_out = "cxyzXnst")
-
-    {
-	const int nv = chi.kvdim()['n'];
-	Tensor<Nd + 4, COMPLEX_OUT> psi(
-            order_out, latticeSize<Nd + 4>(order_out, {{'n', nv}, {'s', Ns}}));
-	std::vector<std::shared_ptr<LatticeFermion>> quark_solns(nv), chis(nv);
-	for (int i = 0; i < nv; ++i){
-		quark_solns[i].reset(new LatticeFermion); *quark_solns[i] = zero;
-		chis[i].reset(new LatticeFermion); *chis[i] = zero;
-		chi.copyTo(SB::asTensorView(*chis[i]).kvslice_from_size({{'n', i}}, {{'n', 1}}));
-	}
-
-	std::vector<SystemSolverResults_t> res =
-              PP(quark_solns, std::vector<std::shared_ptr<const LatticeFermion>>(chis.begin(), chis.end()));	
-
-	for (int i = 0; i < nv; ++i) {
-             asTensorView(*quark_solns[i]).copyTo(psi.kvslice_from_size({{'n', i}}, {{'n', 1}}));
-        }
-
-        return psi;
-
+	// Create tensors with full support on the lattice
+	auto x0 = chi.template reshape_dimensions<Nd + 8>(
+	  {{"x", "0x"}, {"y", "1y"}, {"z", "2z"}, {"t", "3t"}, {order_cols, "n"}},
+	  {{'0', 1}, {'1', 1}, {'2', 1}, {'3', 0}}, true);
+	auto y0 = x0.like_this();
+	foreachInChuncks(
+	  x0, y0, max_rhs,
+	  [=](Tensor<Nd + 8, COMPLEX_CHI> x, Tensor<Nd + 8, COMPLEX_CHI> y) { op(x, y); });
+	return y0.template reshape_dimensions<N, COMPLEX_OUT>({{"n", order_cols}});
     }
 
       /// Apply the inverse to LatticeColorVec tensors for a list of spins
@@ -3270,20 +3363,87 @@ namespace Chroma
 
 	return psi;
       }
-    //}
 
-	template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-	Tensor<Nd + 4, COMPLEX_OUT> doInversion(const Operator<Nd + 7, COMPLEX_OUT>& op,
-   					        const Tensor<Nd + 4, COMPLEX_CHI> chi, const std::string& order_out = "cxyzXnst")
+      /// Apply the inverse to a list of LatticeFermions
+      /// \param PP: invertor
+      /// \param chi: lattice spin-color field tensor, csxyztX
+      /// \param max_rhs: maximum number of vectors solved at once
+      /// \return:
+      template <typename COMPLEX, std::size_t N>
+      Tensor<N, COMPLEX> doInversion(const SystemSolver<LatticeFermion>& PP,
+				     const Tensor<N, COMPLEX>& chi, int max_rhs)
+      {
+	detail::check_order_contains(chi.order, "csxyztX");
+	std::string n_order = detail::remove_dimensions(chi.order, "csxyztX");
+	Coor<N - 7> n_dim = latticeSize<N - 7>(n_order, chi.kvdim());
+	int n_vol = (N == 7 ? 1 : superbblas::detail::volume(n_dim));
+
+	Tensor<N, COMPLEX> r = chi.like_this(); // output tensor
+	int max_step = std::max(1, std::max(n_vol, max_rhs));
+
+	// Quick exit
+	if (n_vol == 0)
+	  return r;
+
+	if (N == 7)
 	{
+	  // For a single vector
+	  LatticeFermion chi0, psi0;
+	  chi.copyTo(asTensorView(chi0));
+	  SystemSolverResults_t res = PP(psi0, chi0);
+	  asTensorView(psi0).copyTo(r);
+	}
+	else
+	{
+	  // Auxiliary LatticeFermion
+	  std::vector<std::shared_ptr<LatticeFermion>> chis(max_step), quark_solns(max_step);
+	  for (int col = 0; col < max_step; col++)
+	    chis[col].reset(new LatticeFermion);
+	  for (int col = 0; col < max_step; col++)
+	    quark_solns[col].reset(new LatticeFermion);
+
+	  Coor<N - 7> n_strides = detail::get_strides<N - 7>(n_dim, superbblas::FastToSlow);
+	  for (int n0 = 0, n_step = std::min(max_rhs, n_vol); n0 < n_vol;
+	       n0 += n_step, n_step = std::min(n_step, n_vol - n0))
+	  {
+	    for (int n = n0, col = 0; col < n_step; ++n, ++col)
+	{
+	      // Get the field to copy from the tensor chi
+	      Coor<N - 7> ni = detail::index2coor<N - 7>(n, n_dim, n_strides);
+	      std::map<char, int> from{}, size{};
+	      for (int d = 0; d < N - 7; ++d)
+		from[n_order[d]] = ni[d], size[n_order[d]] = 1;
 	   	
-	 //solve  
-	 return op(chi);
+	      // Copy the field into a LatticeFermion
+	      chi.kvslice_from_size(from, size).copyTo(asTensorView(*chis[col]));
 							  
+	      *quark_solns[col] = zero;
 	}
 
+	    // Solve
+	    std::vector<SystemSolverResults_t> res =
+	      PP(std::vector<std::shared_ptr<LatticeFermion>>(quark_solns.begin(),
+							      quark_solns.begin() + n_step),
+		 std::vector<std::shared_ptr<const LatticeFermion>>(chis.begin(),
+								    chis.begin() + n_step));
+
+	    for (int n = n0, col = 0; col < n_step; ++n, ++col)
+	    {
+	      // Get the field to copy from the tensor chi
+	      Coor<N - 7> ni = detail::index2coor<N - 7>(n, n_dim, n_strides);
+	      std::map<char, int> from{}, size{};
+	      for (int d = 0; d < N - 7; ++d)
+		from[n_order[d]] = ni[d], size[n_order[d]] = 1;
+
+	      // Copy from LatticeFermion to the output tensor
+	      asTensorView(*quark_solns[col]).copyTo(r.kvslice_from_size(from, size));
+	    }
+	  }
       }
 
+	return r;
+      }
+    }
 
     /// Apply the inverse to LatticeColorVec tensors for a list of spins
     /// \param PP: invertor
@@ -3299,7 +3459,8 @@ namespace Chroma
     ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
 
     template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-    Tensor<Nd + 5, COMPLEX_OUT> doInversion(const ChimeraSolver& sol, const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
+    Tensor<Nd + 5, COMPLEX_OUT>
+    doInversion(const ChimeraSolver& sol, const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
 			                    int first_tslice_out, int n_tslice_out, const std::vector<int>& spin_sources,
 		                            int max_rhs, const std::string& order_out = "cSxyztXns")
     {
@@ -3332,68 +3493,162 @@ namespace Chroma
       return r;
     }
 
+    /// Apply the inverse to a list of LatticeFermions
+    /// \param sol: Chimera invertor
+    /// \param chi: lattice spin-color tensor, at least dimensions csxyztX
+    /// \param max_rhs: maximum number of vectors solved at once
+    /// \param conjugate: whether to apply the invertor transpose-conjugate
+    /// \return: tensor with the same ordering as `chi`.
 	
-	/// Apply the inverse to a LatticeFermion
-	/// \param sol: the ChimeraSolver -> inverter
-	/// \param chi: the right hand sides to apply the inverse to
-	/// \param order_out: coordinate order of the the output tensor, 'cxyzXnst'
-	/// \return: tensor 'cxyzXnst'
-	
-    template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-    Tensor<Nd + 4, COMPLEX_OUT> doInversion(const ShiftedChimeraSolver& sol, const std::vector<std::shared_ptr<LatticeFermion>>& chi,
-					    const std::string& order_out = "cxyzXnst")
+    template <std::size_t N, typename COMPLEX_CHI, typename COMPLEX_OUT>
+    Tensor<N, COMPLEX_OUT> doInversion(const ChimeraSolver& sol, const Tensor<N, COMPLEX_CHI>& chi,
+				       int max_rhs = 0, Conjugation conj = NotConjugate)
     {
-
-	  const int nv = chi.size();
-	  Tensor<Nd + 4, COMPLEX_OUT> chis(order_out, latticeSize<Nd + 4>(order_out, {{'n', nv}, {'s', Ns}}));
-	  for (int i = 0; i < nv; ++i) {
-		  asTensorView(*chi[i]).copyTo(chis.kvslice_from_size({{'n', i}}, {{'n', 1}}));
-	  }
+      detail::check_order_contains(chi.order, "csxyztX");
+      const int num_vecs =
+	(N == 7 ? 1 : detail::volume(chi.kvdim(), detail::remove_dimensions(chi.order, "csxyztX")));
 	  
       StopWatch snarss1;
       snarss1.reset();
       snarss1.start();
 
-      Tensor<Nd + 4, COMPLEX_OUT> r;
-      if (sol.op.hasSome()){
-	QDPIO::cout << "Starting inversions" << std::endl;
-	r = detail::doInversion<COMPLEX_CHI, COMPLEX_OUT>(sol.op.getSome(), chis, order_out);
-      }else{
-	QDPIO::cout << "Starting inversions" << std::endl;
-	r = detail::doInversion<COMPLEX_CHI, COMPLEX_OUT>(*sol.PP, chis, order_out);
+      // Multiply the input by g5 if applied conjugate
+      Tensor<2, COMPLEX_CHI> g5;
+      if (conj == Conjugate)
+      {
+	g5 = Gamma(Ns * Ns - 1).cloneOn<COMPLEX_CHI>(chi.getDev());
+	chi.contract(chi, {}, NotConjugate, g5, {{'j', 's'}}, NotConjugate, {{'s', 'i'}});
       }
+
+      Tensor<N, COMPLEX_OUT> r;
+      if (sol.op.hasSome())
+	r = detail::doInversion<N, COMPLEX_CHI, COMPLEX_OUT>(sol.op.getSome(), chi, max_rhs);
+      else
+	r = detail::doInversion<N, COMPLEX_CHI, COMPLEX_OUT>(*sol.PP, chi, max_rhs);
+
+      // Multiply the input by g5 if applied conjugate
+      if (conj == Conjugate)
+      {
+	r.contract(r, {}, NotConjugate, g5, {{'j', 's'}}, NotConjugate, {{'s', 'i'}});
+      }
+
       snarss1.stop();
-      QDPIO::cout << "Time to compute inversions for " << nv << " right hand sides" << std::endl;
-		  //<< " spin sources and " << num_vecs
-		  //<< " colorvecs : " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+      QDPIO::cout << "Time to compute " << num_vecs << " inversions: " << snarss1.getTimeInSeconds()
+		  << " secs" << std::endl;
 
       return r;
     }
 
-    template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-    Tensor<Nd + 4, COMPLEX_OUT> doInversion(const ShiftedChimeraSolver& sol, const Tensor<Nd + 4, COMPLEX_OUT>  chi,
-                                  	    const std::string& order_out = "cxyzXnst")
+    /// Multiple spin-color lattice fields
+
+    using MultipleLatticeFermions = std::vector<std::shared_ptr<LatticeFermion>>;
+    using ConstMultipleLatticeFermions = std::vector<std::shared_ptr<const LatticeFermion>>;
+
+    /// Apply the inverse to a list of LatticeFermions
+    /// \param sol: Chimera invertor
+    /// \param psis: output lattice spin-color tensor, at least dimensions csxyztX
+    /// \param chis: input lattice spin-color tensor, at least dimensions csxyztX
+    /// \param max_rhs: maximum number of vectors solved at once
+
+    inline void doInversion(const ChimeraSolver& sol, MultipleLatticeFermions& psis,
+			    const ConstMultipleLatticeFermions& chis, int max_rhs = 0)
     {
-      const int nv = chi.kvdim()['n']; 
-      detail::check_order_contains(order_out, "cxyzXnst");
       StopWatch snarss1;
       snarss1.reset();
       snarss1.start();
 
-      Tensor<Nd + 4, COMPLEX_OUT> r;
-      if (sol.op.hasSome()){
-	QDPIO::cout << "Starting inversions" << std::endl;
-        r = detail::doInversion<COMPLEX_CHI, COMPLEX_OUT>(sol.op.getSome(), chi, order_out);
-      }else{
-	QDPIO::cout << "Starting inversions" << std::endl;
-        r = detail::doInversion<COMPLEX_CHI, COMPLEX_OUT>(*sol.PP, chi, order_out);
-      }
-      snarss1.stop();
-      QDPIO::cout << "Time to compute inversions for " << nv << " right hand sides" << std::endl;
+      if (max_rhs <= 0)
+	max_rhs = chis.size();
 
-      return r;
+      // Do the inversion
+      if (sol.op.hasSome())
+      {
+	auto op = sol.op.getSome();
+	auto tchi = op.template make_compatible_dom<Nd + 8>("n", {{'n', max_rhs}});
+	auto tpsi = op.template make_compatible_img<Nd + 8>("n", {{'n', max_rhs}});
+	for (int i = 0, n = std::min(max_rhs, (int)chis.size()); i < chis.size();
+	     i += n, n = std::min((int)chis.size() - i, max_rhs))
+	{
+	  // Adjust the size of tchi and tpsi to n
+	  auto this_tchi = tchi.kvslice_from_size({{'n', 0}}, {{'n', n}});
+	  auto this_tpsi = tpsi.kvslice_from_size({{'n', 0}}, {{'n', n}});
+
+	  // Copy chis into this_tchi
+	  for (int j = 0; j < n; ++j)
+	    asTensorView(*chis[i + j]).copyTo(this_tchi.kvslice_from_size({{'n', j}}, {{'n', 1}}));
+
+	  // Do the inversion: this_tpsi = D^{-1} * this_tchi
+	  op(this_tchi, this_tpsi);
+
+	  // Copy the solution into psis
+	  for (int j = 0; j < n; ++j)
+	    this_tpsi.kvslice_from_size({{'n', j}}, {{'n', 1}}).copyTo(asTensorView(*psis[i + j]));
+	}
+      }
+      else
+      {
+	for (int i = 0, n = std::min(max_rhs, (int)chis.size()); i < chis.size();
+	     i += n, n = std::min((int)chis.size() - i, max_rhs))
+	{
+	  (*sol.PP)(MultipleLatticeFermions(psis.begin() + i, psis.begin() + i + n),
+		    ConstMultipleLatticeFermions(chis.begin() + i, chis.begin() + i + n));
+      }
+      }
+
+      snarss1.stop();
+      QDPIO::cout << "Time to compute " << chis.size()
+		  << " inversions: " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+    }
+
+    inline void doInversion(const ShiftedChimeraSolver& sol, MultipleLatticeFermions& psis,
+			    const ConstMultipleLatticeFermions& chis, int max_rhs = 0)
+    {
+      StopWatch snarss1;
+      snarss1.reset();
+      snarss1.start();
+
+      if (max_rhs <= 0)
+	max_rhs = chis.size();
+
+      // Do the inversion
+      if (sol.op.hasSome())
+      {
+	auto op = sol.op.getSome();
+	auto tchi = op.template make_compatible_dom<Nd + 8>("n", {{'n', max_rhs}});
+	auto tpsi = op.template make_compatible_img<Nd + 8>("n", {{'n', max_rhs}});
+	for (int i = 0, n = std::min(max_rhs, (int)chis.size()); i < chis.size();
+	     i += n, n = std::min((int)chis.size() - i, max_rhs))
+	{
+	  // Adjust the size of tchi and tpsi to n
+	  auto this_tchi = tchi.kvslice_from_size({{'n', 0}}, {{'n', n}});
+	  auto this_tpsi = tpsi.kvslice_from_size({{'n', 0}}, {{'n', n}});
+
+	  // Copy chis into this_tchi
+	  for (int j = 0; j < n; ++j)
+	    asTensorView(*chis[i + j]).copyTo(this_tchi.kvslice_from_size({{'n', j}}, {{'n', 1}}));
+
+	  // Do the inversion: this_tpsi = D^{-1} * this_tchi
+	  op(this_tchi, this_tpsi);
+
+	  // Copy the solution into psis
+	  for (int j = 0; j < n; ++j)
+	    this_tpsi.kvslice_from_size({{'n', j}}, {{'n', 1}}).copyTo(asTensorView(*psis[i + j]));
+	}
+      }
+      else
+      {
+	for (int i = 0, n = std::min(max_rhs, (int)chis.size()); i < chis.size();
+	     i += n, n = std::min((int)chis.size() - i, max_rhs))
+	{
+	  (*sol.PP)(MultipleLatticeFermions(psis.begin() + i, psis.begin() + i + n),
+		    ConstMultipleLatticeFermions(chis.begin() + i, chis.begin() + i + n));
+	}
     }
 	
+      snarss1.stop();
+      QDPIO::cout << "Time to compute " << chis.size()
+		  << " inversions: " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+    }
   }
 }
 

@@ -675,9 +675,10 @@ namespace Chroma
       //
       // Initialize fermion action
       //
+      SB::ChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u};
+
       std::istringstream  xml_s(params.param.prop.fermact.xml);
       XMLReader  fermacttop(xml_s);
-      QDPIO::cout << "FermAct = " << params.param.prop.fermact.id << std::endl;
 
       Handle< FermionAction<T,P,Q> >
 	      S_f(TheFermionActionFactory::Instance().createObject(params.param.prop.fermact.id,
@@ -686,8 +687,6 @@ namespace Chroma
 
       Handle< FermState<T,P,Q> > state(S_f->createState(u));
 
-      Handle< SystemSolver<LatticeFermion> > PP = S_f->qprop(state,
-							       params.param.prop.invParam);
       Handle< Projector<LatticeFermion> > proj = S_f->projector(state, params.param.projParam); 
 
       // Initialize the slow Fourier transform phases
@@ -776,7 +775,9 @@ namespace Chroma
             }
           }
 
-          (*PP)(v_psi, std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
+	  SB::doInversion(
+	    PP, v_psi,
+	    std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
           proj->VUAObliqueProjector(v_q, std::vector<std::shared_ptr<const LatticeFermion>>(v_psi.begin(), v_psi.end()));
           for (int i=0; i<v_psi.size(); ++i)
             *v_q[i] = *v_psi[i] - *v_q[i]; // q <= (I - V*inv(U'*AV*)*U'*A)*quark_soln

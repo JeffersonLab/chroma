@@ -456,6 +456,7 @@ namespace Chroma
 	    ValPropElementalOperator_t val;
 	    val.mat.resize(num_vecs, num_vecs);
 	    val.mat = zero;
+	    auto local_elems = elems.getLocal();
 	    for (int i_tslice = 0; i_tslice < num_tslices; ++i_tslice)
 	    {
 	      for (int spin_sink = 0; spin_sink < Ns; ++spin_sink)
@@ -466,13 +467,13 @@ namespace Chroma
 		key.spin_src = spin_source;
 		key.spin_snk = spin_sink;
 		key.mass_label = params.param.contract.mass_label;
-		if (Layout::nodeNumber() == 0)
+		if (local_elems)
 		{
 		  for (int colorvec_sink = 0; colorvec_sink < num_vecs; ++colorvec_sink)
 		  {
 		    for (int colorvec_source = 0; colorvec_source < num_vecs; ++colorvec_source)
 		    {
-		      std::complex<REAL> e = elems.get(
+		      std::complex<REAL> e = local_elems.get(
 			{colorvec_sink, colorvec_source, spin_sink, 0, i_tslice});
 		      val.mat(colorvec_sink, colorvec_source).elem().elem().elem() =
 			RComplex<REAL64>(e.real(), e.imag());

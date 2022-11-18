@@ -9,7 +9,7 @@
 #include <utility>
 #include <numeric>
 #include <boost/math/interpolators/pchip.hpp>
-#include <boost/math/interpolators/pchip_matlab.hpp>
+#include "pchip_matlab.hpp"
 
 namespace Chroma {
 //Interface for accessing interpolation data
