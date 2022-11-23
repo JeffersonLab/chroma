@@ -76,7 +76,7 @@ namespace Chroma
     {
       std::stringstream os;
 
-      os << s1.left_lorentz << s1.right_lorentz << s1.disp_list << s1.mom;
+      os << s1.smear << s1.left_lorentz << s1.right_lorentz << s1.disp_list << s1.mom;
 
       return os.str();
     }
@@ -95,6 +95,7 @@ namespace Chroma
   std::ostream& operator<<(std::ostream& os, const KeyFSqDiscoOperator_t& d)
   {
     os << "KeyFSqDiscoOperator_t:"
+       << " smear= " << d.smear
        << " left_lorentz= " << d.left_lorentz
        << " right_lorentz= " << d.right_lorentz
        << " disp_list= " << d.disp_list
@@ -110,6 +111,7 @@ namespace Chroma
   {
     XMLReader paramtop(xml, path);
 
+    read(paramtop, "smear", param.smear);
     read(paramtop, "left_lorentz", param.left_lorentz);
     read(paramtop, "right_lorentz", param.right_lorentz);
     read(paramtop, "disp_list", param.disp_list);
@@ -121,6 +123,7 @@ namespace Chroma
   {
     push(xml, path);
     
+    write(xml, "smear", param.smear);
     write(xml, "left_lorentz", param.left_lorentz);
     write(xml, "right_lorentz", param.right_lorentz);
     write(xml, "disp_list", param.disp_list);
@@ -142,6 +145,7 @@ namespace Chroma
   //! KeyOperator reader    
   void read(BinaryReader& bin, KeyFSqDiscoOperator_t& d)
   {
+    readDesc(bin,d.smear);
     read(bin,d.left_lorentz);
     read(bin,d.right_lorentz);
     read(bin,d.disp_list);
@@ -151,6 +155,7 @@ namespace Chroma
   //! KeyOperator writer
   void write(BinaryWriter& bin, const KeyFSqDiscoOperator_t& d)
   {
+    writeDesc(bin,d.smear);
     write(bin,d.left_lorentz);
     write(bin,d.right_lorentz);
     write(bin,d.disp_list);

@@ -18,6 +18,7 @@ namespace Chroma
   //! tr(F^2) disco operator
   struct KeyFSqDiscoOperator_t
   {
+    std::string        smear;          /*!< A smearing label */
     std::vector<int>   left_lorentz;   /*!< Lorentz index pairs of left F_munu */
     std::vector<int>   right_lorentz;  /*!< Lorentz index pairs of right F_munu */
     std::vector<int>   disp_list;      /*!< Displacement dirs of right F_munu */
