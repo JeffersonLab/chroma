@@ -551,7 +551,8 @@ namespace Chroma
       RealT ff = param.anisoParam.anisoP ? param.anisoParam.nu / param.anisoParam.xi_0 : Real(1);
       diag_mass = 1 + (Nd-1)*ff + param.Mass;
     }
-    
+
+
     /* Calculate F(mu,nu) */
     multi1d<U> f;
     mesField(f, u);
@@ -859,6 +860,7 @@ namespace Chroma
     U f4 = f[4] * getCloverCoeff(1,3);
     U f5 = f[5] * getCloverCoeff(2,3);    
 
+    
     //QDPIO::cout << "PTX Clover make "  << (void*)this << "\n";
     //std::cout << "PTX Clover make "  << (void*)this << "\n";
     static JitFunction function;
@@ -986,7 +988,7 @@ namespace Chroma
 
     workgroupGuard.check(r_idx_thread);
 
-    llvm::Value* r_idx = llvm_array_type_indirection( p_site_table , r_idx_thread );
+    llvm::Value* r_idx = llvm_array_type_indirection<int>( p_site_table , r_idx_thread );
 
     auto tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced,r_idx);
     auto tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
@@ -1304,7 +1306,7 @@ namespace Chroma
 
     workgroupGuard.check(r_idx_thread);
 
-    llvm::Value* r_idx = llvm_array_type_indirection( p_site_table , r_idx_thread );
+    llvm::Value* r_idx = llvm_array_type_indirection<int>( p_site_table , r_idx_thread );
 
     llvm::Value * r_mat    = llvm_derefParam( p_mat );
 
@@ -1711,7 +1713,7 @@ namespace Chroma
 
     workgroupGuard.check(r_idx_thread);
 
-    llvm::Value* r_idx = llvm_array_type_indirection( p_site_table , r_idx_thread );
+    llvm::Value* r_idx = llvm_array_type_indirection<int>( p_site_table , r_idx_thread );
 
     auto chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
     psi_r.setup( psi_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
