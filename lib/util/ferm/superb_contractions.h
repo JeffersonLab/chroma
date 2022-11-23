@@ -809,7 +809,7 @@ namespace Chroma
 
 #  if defined(BUILD_MAGMA)
       // Return a MAGMA context
-      inline const std::shared_ptr<magma_queue_t>& getMagmaContext(Maybe<int> device = none)
+      inline std::shared_ptr<magma_queue_t>& getMagmaContext(Maybe<int> device = none)
       {
 	static std::shared_ptr<magma_queue_t> queue;
 	if (!queue)
@@ -828,7 +828,7 @@ namespace Chroma
 	  }
 	  magma_init();
 	  queue = std::shared_ptr<magma_queue_t>(new magma_queue_t, [](magma_queue_t* p) {
-	    magma_queue_destroy(p);
+	    magma_queue_destroy(*p);
 	    delete p;
 	  });
 	  magma_queue_create(dev, &*queue);
