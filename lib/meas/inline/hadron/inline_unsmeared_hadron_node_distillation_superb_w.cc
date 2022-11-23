@@ -861,9 +861,8 @@ namespace Chroma
 	  Params::Param_t::SinkSource_t ss;
 	  ss.t_sink = snk % Lt;
 	  ss.t_source = it.first % Lt;
-	  int tdisp = it.first - params.param.contract.alt_t_start;
-	  ss.Nt_backward = -tdisp;
-	  ss.Nt_forward = tdisp + params.param.contract.alt_Nt_forward;
+	  ss.Nt_backward = it.first - params.param.contract.alt_t_start;
+	  ss.Nt_forward = params.param.contract.alt_Nt_forward - ss.Nt_backward;
 	  params.param.sink_source_pairs.push_back(ss);
 	  cache_tslice[ss.t_source] = cache_tslice[ss.t_sink] = true;
 	}
@@ -1171,9 +1170,6 @@ namespace Chroma
 	  int first_tslice_active = t_source - sink_source.Nt_backward;
 	  int num_tslices_active =
 	    std::min(sink_source.Nt_backward + std::max(sink_source.Nt_forward, 1), Lt);
-	  // Don't compute tslices beyond t_sink
-	  num_tslices_active =
-	    std::min(num_tslices_active, SB::normalize_coor(t_sink - t_source, Lt) + 2);
 	  // Make the number of time-slices even; required by SB::doMomGammaDisp_contractions
 	  num_tslices_active = std::min(num_tslices_active + num_tslices_active % 2, Lt);
 

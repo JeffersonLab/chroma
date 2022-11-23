@@ -39,12 +39,13 @@ namespace Chroma
 	};
 
 	bool                    use_derivP;		/*!< Use derivatives */
+	int                     mom2_min;               /*!< (mom)^2 >= mom2_min */
 	int                     mom2_max;               /*!< (mom)^2 <= mom2_max */
 	int                     displacement_length;    /*!< Displacement length for creat. and annih. ops */
 	int                     num_vecs;               /*!< Number of color vectors to use */
 	int                     decay_dir;              /*!< Decay direction */
 	multi1d<Displacement_t> displacement_list;      /*!< Array of displacements list to generate */
-	std::vector< multi1d<int>>  mom_list;           /*!< Alternative array of momenta to generate */
+	std::vector<std::vector<int>>  mom_list;        /*!< Alternative array of momenta to generate */
 	GroupXML_t              link_smearing;          /*!< link smearing xml */
 	int			Nt_forward;		/*!< Nt_forward */
 	int			t_source;		/*!< t_source */
