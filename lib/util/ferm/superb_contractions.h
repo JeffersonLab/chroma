@@ -5383,7 +5383,7 @@ namespace Chroma
 	superbblas::bsr_krylov<ND, NI, Nv, Nw, value_type>(
 	  scalar * v.scalar / w.scalar, handle.get(), i.order.c_str(), d.order.c_str(),	       //
 	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const value_type**)&v_ptr, //
-	  w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim, power_label,
+	  T{0}, w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim, power_label,
 	  (value_type**)&w_ptr, //
 	  &data.ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
 
@@ -5752,6 +5752,8 @@ namespace Chroma
 				       order.c_str(), from, size, w.p->p.data(), 1, w.order.c_str(),
 				       w.from, w.dim, &w_ptr, &w.ctx(), comm,
 				       superbblas::FastToSlow, superbblas::Copy);
+	if (!w.is_managed())
+	  superbblas::sync(w.ctx());
       }
     };
 
