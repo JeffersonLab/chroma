@@ -686,7 +686,7 @@ namespace Chroma
 
     std::vector<QDPCache::ArgKey> ids;
     workgroupGuardExec.check(ids);
-    //ids.push_back( s.getIdSiteTable() );
+    ids.push_back( all.getIdSiteTable() );
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
       ids.push_back( addr_leaf.ids[i] );
     jit_launch(function,th_count,ids);
@@ -713,6 +713,7 @@ namespace Chroma
     llvm_start_new_function("make_clov",__PRETTY_FUNCTION__ );
 
     WorkgroupGuard workgroupGuard;
+    ParamRef p_site_table = llvm_add_param<int*>();
 
     ParamLeafScalar param_leaf;
     
@@ -733,9 +734,10 @@ namespace Chroma
     typedef typename LeafFunctor<Y, ParamLeafScalar>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
 
-    llvm::Value* r_idx = llvm_thread_idx();
+    llvm::Value* r_idx_thread = llvm_thread_idx();
 
-    workgroupGuard.check(r_idx);
+    workgroupGuard.check(r_idx_thread);
+    llvm::Value* r_idx = llvm_array_type_indirection<int>( p_site_table , r_idx_thread );
 
     auto f0_j = f0_jit.elem(JitDeviceLayout::Coalesced , r_idx );
     auto f1_j = f1_jit.elem(JitDeviceLayout::Coalesced , r_idx );
