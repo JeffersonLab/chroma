@@ -1651,6 +1651,9 @@ namespace Chroma
 	  return s;
 	}
 
+	template <typename Ostream, typename T, std::size_t N>
+	Ostream& operator<<(Ostream& s, const std::array<T, N>& o);
+
 	template <typename Ostream, typename T>
 	Ostream& operator<<(Ostream& s, const std::vector<T>& o)
 	{
