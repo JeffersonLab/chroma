@@ -309,12 +309,29 @@ namespace Chroma
 #    endif
 #  endif // BUILD_CUDA
 
+#elif defined(BUILD_SB) && defined(SUPERBBLAS_USE_GPU)
+    // Get device to run
+    int gpu_device = SB::detail::getGpuContext()->device;
+
+#  if defined(BUILD_MAGMA)
+    // Initialize MAGMA before anything else
+    SB::detail::getMagmaContext(gpu_device);
+#  endif
+
+#  ifdef BUILD_QUDA
+    setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
+    QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << gpu_device << ")"
+		<< std::endl;
+    initQudaDevice(gpu_device);
+    initQudaMemory();
+#  endif
+
 #else // defined QDP_IS_QDPJIT
 #  ifdef BUILD_QUDA
-   {
-     std::cout << "Initializing QUDA with initQuda(-1)" <<  std::endl;
-     initQuda(-1);
-   }
+    {
+      std::cout << "Initializing QUDA with initQuda(-1)" << std::endl;
+      initQuda(-1);
+    }
 #  endif
 #endif
 
