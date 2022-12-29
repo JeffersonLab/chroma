@@ -207,6 +207,8 @@ if( Chroma_ENABLE_SUPERBBLAS )
 
   if( QDP_BACKEND_ROCM )
      find_package(hipBLAS REQUIRED)
+     find_package(hipSPARSE REQUIRED)
+     find_package(hipSOLVER REQUIRED)
   endif()
   if( Chroma_ENABLE_CUDA )
      find_package(CUDAToolkit REQUIRED)
