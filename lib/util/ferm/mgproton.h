@@ -707,7 +707,8 @@ namespace Chroma
 		op.imgLayout,
 		op.domLayout,
 		DenseOperator(),
-		op.preferred_col_ordering};
+		op.preferred_col_ordering,
+		false /* no Kronecker blocking */};
       }
 
       /// Returns a BICGSTAB solver
@@ -770,7 +771,8 @@ namespace Chroma
 		op.imgLayout,
 		op.domLayout,
 		DenseOperator(),
-		op.preferred_col_ordering};
+		op.preferred_col_ordering,
+		false /* no Kronecker blocking */};
       }
 
       /// Returns the \gamma_5 for a given number of spins
@@ -1006,7 +1008,8 @@ namespace Chroma
 		nv_blk_eo_dim.at('X') == 2 ? XEvenOddLayout : NaturalLayout,
 		op.imgLayout,
 		getNeighborsAfterBlocking(mg_blocking, op.d.kvdim(), op.neighbors, op.imgLayout),
-		op.preferred_col_ordering};
+		op.preferred_col_ordering,
+		false /* no Kronecker blocking */};
       }
 
       /// Return a cache for the prolongators
@@ -1114,7 +1117,7 @@ namespace Chroma
 			       });
 	    },
 	    V.d, V.d, nullptr, op.order_t, V.domLayout, V.domLayout, V.neighbors,
-	    op.preferred_col_ordering},
+	    op.preferred_col_ordering, false /* no Kronecker blocking */},
 	  co, co_blk, ConsiderBlockingSparse, "coarse");
 
 	// Get the solver for the projector
@@ -1153,7 +1156,8 @@ namespace Chroma
 	  op.imgLayout,
 	  op.domLayout,
 	  DenseOperator(),
-	  op.preferred_col_ordering};
+	  op.preferred_col_ordering,
+	  false /* no Kronecker blocking */};
       }
 
       /// Return a list of destroy callbacks after setting a solver
@@ -1325,7 +1329,8 @@ namespace Chroma
 	  EvensOnlyLayout,
 	  EvensOnlyLayout,
 	  getNeighbors(op.i.kvdim(), max_dist_neighbors_opA, EvensOnlyLayout),
-	  op.preferred_col_ordering};
+	  op.preferred_col_ordering,
+	  false /* no Kronecker blocking */};
 
 	// Get preconditioner
 	auto precOps = getOptionsMaybe(ops, "prec_ee");
@@ -1406,7 +1411,8 @@ namespace Chroma
 	  op.imgLayout,
 	  op.domLayout,
 	  DenseOperator(),
-	  op.preferred_col_ordering};
+	  op.preferred_col_ordering,
+	  false /* no Kronecker blocking */};
 
 	// Do a test
 	if (superbblas::getDebugLevel() > 0)
@@ -1525,7 +1531,8 @@ namespace Chroma
 	    op.domLayout == EvensOnlyLayout ? NaturalLayout : op.domLayout,
 	    op.imgLayout == EvensOnlyLayout ? NaturalLayout : op.imgLayout,
 	    getNeighborsAfterBlocking(blk_u, op.d.kvdim(), op.neighbors, op.imgLayout),
-	    op.preferred_col_ordering};
+	    op.preferred_col_ordering,
+	    op.is_kronecker()};
 
 	  Tensor<NOp + 6, COMPLEX> opDiag =
 	    getBlockDiag<NOp + 6>(blk_op, blk_rows, m_blk, ConsiderBlockingDense);
@@ -1586,7 +1593,8 @@ namespace Chroma
 	    NaturalLayout,
 	    NaturalLayout,
 	    getNeighborsAfterBlocking(blk_u, op.d.kvdim(), op.neighbors, op.imgLayout),
-	    op.preferred_col_ordering};
+	    op.preferred_col_ordering,
+	    op.is_kronecker()};
 
 	  Tensor<NOp + 7, COMPLEX> opDiag =
 	    getBlockDiag<NOp + 7>(blk_op, blk_rows, m_blk, ConsiderBlockingDense);
@@ -1863,7 +1871,8 @@ namespace Chroma
 	  solver.imgLayout,
 	  solver.domLayout,
 	  DenseOperator(),
-	  solver.preferred_col_ordering};
+	  solver.preferred_col_ordering,
+	  false /* no Kronecker form */};
       }
 
       /// Returns the conjugate transpose of an operator
@@ -1935,7 +1944,8 @@ namespace Chroma
 		op.domLayout,
 		op.imgLayout,
 		getNeighbors(op.d.kvdim(), 0, op.domLayout),
-		op.preferred_col_ordering};
+		op.preferred_col_ordering,
+		op.is_kronecker()};
       }
 
       /// Returns a solver with possible different precision than the operator's
@@ -2016,7 +2026,7 @@ namespace Chroma
     }
 
     /// Return an Operator that wraps up a LinearOperator<LatticeFermion>
-    inline Operator<Nd + 7, Complex> asOperatorView(const LinearOperator<LatticeFermion>& linOp)
+    inline Operator<Nd + 7, Complex> asOperatorView(const LinearOperator<LatticeFermion>& linOp, bool use_kron_format = true)
     {
       LatticeFermion a;
       auto d = asTensorView(a).toComplex();
@@ -2053,7 +2063,8 @@ namespace Chroma
 	XEvenOddLayout,
 	XEvenOddLayout,
 	detail::getNeighbors(dim, 1 /* near-neighbors links only */, XEvenOddLayout),
-	ColumnMajor // preferred ordering
+	ColumnMajor, // preferred ordering
+	use_kron_format /* has a Kronecker form */
       };
     }
 

@@ -2479,6 +2479,46 @@ namespace Chroma
 	return r.make_sure(none, getDev());
       }
 
+      /// Return the coordinates of the first element returning true by the given function
+      /// \param func: function (value_type) -> bool
+
+      template <typename Func>
+      Maybe<Coor<N>> find(Func func) const
+      {
+	if (is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
+	using superbblas::detail::operator+;
+
+	auto t_ = make_sure(none, OnHost, OnMaster);
+	auto t = isSubtensor() ? t_.cloneOn(OnHost) : t_;
+	assert(!t.isSubtensor());
+	std::size_t vol = t.getLocal().volume();
+	value_type* tptr = t.data();
+	/// Number of elements in each direction for the local part
+	Coor<N> local_size = t.getLocal().size;
+	/// Stride for the local volume
+	Stride<N> local_stride =
+	  superbblas::detail::get_strides<std::size_t>(local_size, superbblas::FastToSlow);
+	/// Coordinates of first elements stored locally
+	Coor<N> local_from = t.p->localFrom();
+
+	Maybe<Coor<N>> r = none;
+	for (std::size_t i = 0; i < vol; ++i)
+	{
+	  if (func(tptr[i]))
+	  {
+	    // Get the global coordinates
+	    Coor<N> c = normalize_coor(
+	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
+	    r = Maybe<Coor<N>>(c);
+	    break;
+	  }
+	}
+
+	return broadcast(r);
+      }
+
       /// Apply the function to each tensor element
       /// \param func: function value_type -> void
       /// \param threaded: whether to run threaded
@@ -4133,7 +4173,7 @@ namespace Chroma
 	return;
 
       // Make sure that v is distributed as w
-      if (!w.isDistributedAs(v))
+      if (!w.isDistributedAs(v, "xyztX"))
       {
 	auto v_ = w.template make_compatible<Nv, Tv>(v.order, v.kvdim());
 	v.copyTo(v_);
@@ -4698,10 +4738,43 @@ namespace Chroma
       return dest[0];
     }
 
+    /// Broadcast a string from process zero
+    template <std::size_t N>
+    Coor<N> broadcast(const Coor<N>& c)
+    {
+      std::vector<int> v(c.begin(), c.end()), dest(N);
+      asTensorView(v, OnMaster).copyTo(asTensorView(dest));
+      Coor<N> r;
+      std::copy_n(dest.begin(), N, r.begin());
+      return r;
+    }
+
+    /// Broadcast a string from process zero
+    template <typename T>
+    Maybe<T> broadcast(const Maybe<T>& c)
+    {
+      int has_something = broadcast(c.hasSome() ? 1 : 0);
+      if (has_something == 1)
+	return Maybe<T>(broadcast(c ? c.getSome() : T{}));
+      return none;
+    }
+
     /// Class for operating sparse tensors
     /// \tparam ND: number of domain dimensions
     /// \tparam NI: number of image dimensions
     /// \tparam T: datatype
+    ///
+    /// The class may support several variants of Column Sparse Row (CSR) format for representing
+    /// sparse matrices, but for now only Block Sparse Row (BSR) with the same number of nonzeros
+    /// on all rows is supported. Superbblas has some support for blocked ELL (BSR but with a negative
+    /// column index for the unused blocks in a row), but most of the methods of this class aren't ready
+    /// for that.
+    ///
+    /// Besides, this class implements an extension of the BSR in which the nonzero blocks are the result
+    /// of the tensor product of two matrices one of them being constant among all edges on the same
+    /// direction. This extension is referred as BSR Kronecker. When `kron_data` is given, the nonzeros
+    /// should be ordered such that the nonzero blocks with the same `u` label are multiplied by the nonzero
+    /// block in `kron_data` with that `u`.
 
     template <std::size_t ND, std::size_t NI, typename T>
     struct SpTensor {
@@ -4713,30 +4786,51 @@ namespace Chroma
       Tensor<NI, T> i;		   ///< Tensor example for the image
       Coor<ND> blkd;		   ///< blocking for the domain
       Coor<NI> blki;		   ///< blocking for the image
+      Coor<ND> krond;		   ///< Kronecker blocking for the domain
+      Coor<NI> kroni;		   ///< Kronecker blocking for the image
       Tensor<NI, int> ii;	   ///< Number of blocks in each row
       Tensor<NI + 2, int> jj;	   ///< Coordinate of the first element on each block
       Tensor<NI + ND + 1, T> data; ///< Nonzero values
+      Tensor<NI + ND + 1, T> kron; ///< Nonzero values for the Kronecker values
       std::shared_ptr<superbblas::BSR_handle> handle; ///< suparbblas sparse tensor handle
       value_type scalar;			      ///< Scalar factor of the tensor
       bool isImgFastInBlock;			      ///< whether the BSR blocks are in row-major
       unsigned int nblockd;			      ///< Number of blocked domain dimensions
       unsigned int nblocki;			      ///< Number of blocked image dimensions
+      unsigned int nkrond;			      ///< Number of Kronecker blocked domain dimensions
+      unsigned int nkroni;			      ///< Number of Kronecker blocked image dimensions
 
-      /// Low-level constructor
-      SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, Coor<ND> blkd, Coor<NI> blki, Tensor<NI, int> ii,
-	       Tensor<NI + 2, int> jj, Tensor<NI + ND + 1, T> data, value_type scalar,
-	       bool isImgFastInBlock, unsigned int nblockd, unsigned int nblocki)
+      /// Low-level constructor with the Kronecker BSR extension
+      SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, Coor<ND> blkd, Coor<NI> blki, Coor<ND> krond,
+	       Coor<NI> kroni, Tensor<NI, int> ii, Tensor<NI + 2, int> jj,
+	       Tensor<NI + ND + 1, T> data, Tensor<NI + ND + 1, T> kron_data, value_type scalar,
+	       bool isImgFastInBlock, unsigned int nblockd, unsigned int nblocki,
+	       unsigned int nkrond, unsigned int nkroni)
 	: d(d.make_eg()),
 	  i(i.make_eg()),
 	  blkd(blkd),
 	  blki(blki),
+	  krond(krond),
+	  kroni(kroni),
 	  ii(ii),
 	  jj(jj),
 	  data(data),
+	  kron(kron_data),
 	  scalar(scalar),
 	  isImgFastInBlock(isImgFastInBlock),
 	  nblockd(nblockd),
-	  nblocki(nblocki)
+	  nblocki(nblocki),
+	  nkrond(nkrond),
+	  nkroni(nkroni)
+      {
+      }
+
+      /// Low-level constructor without the Kronecker BSR extension
+      SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, Coor<ND> blkd, Coor<NI> blki, Tensor<NI, int> ii,
+	       Tensor<NI + 2, int> jj, Tensor<NI + ND + 1, T> data, value_type scalar,
+	       bool isImgFastInBlock, unsigned int nblockd, unsigned int nblocki)
+	: SpTensor(d, i, blkd, blki, detail::ones<ND>(), detail::ones<NI>(), ii, jj, data,
+		   Tensor<NI + ND + 1, T>(), scalar, isImgFastInBlock, nblockd, nblocki, 0, 0)
       {
       }
 
@@ -4768,13 +4862,16 @@ namespace Chroma
       /// \param num_neighbors: number of nonzeros for each blocked row
 
       SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, unsigned int nblockd, unsigned int nblocki,
-	       unsigned int num_neighbors, bool isImgFastInBlock = false)
+	       unsigned int nkrond, unsigned int nkroni, unsigned int num_neighbors,
+	       bool isImgFastInBlock = false)
 	: d{d.make_eg()},
 	  i{i.make_eg()},
 	  scalar{value_type{1}},
 	  isImgFastInBlock{isImgFastInBlock},
 	  nblockd(nblockd),
-	  nblocki(nblocki)
+	  nblocki(nblocki),
+	  nkrond(nkrond),
+	  nkroni(nkroni)
       {
 	// Check that the examples are on the same device
 	if (d.getDev() != i.getDev())
@@ -4787,18 +4884,24 @@ namespace Chroma
 	// Check that the domain and image labels are different and do not contain `u` or `~`
 	detail::check_order<NI + ND + 2>(i.order + d.order + std::string("u~"));
 
-	// Check the blocking
-	blkd = kvcoors<ND>(d.order, d.kvdim());
+	// Get the blocking and the Kronecker blocking
+	krond = blkd = kvcoors<ND>(d.order, d.kvdim());
 	for (unsigned int i = nblockd; i < ND; ++i)
 	  blkd[i] = 1;
-	blki = kvcoors<NI>(i.order, i.kvdim());
+	kroni = blki = kvcoors<NI>(i.order, i.kvdim());
 	for (unsigned int i = nblocki; i < NI; ++i)
 	  blki[i] = 1;
+	for (unsigned int i = 0; i < ND; ++i)
+	  if (i < nblockd || i >= nblockd + nkrond)
+	    krond[i] = 1;
+	for (unsigned int i = 0; i < NI; ++i)
+	  if (i < nblocki || i >= nblocki + nkroni)
+	    kroni[i] = 1;
 
 	// Create the tensor containing the number of neighbors for each blocking
 	std::map<char, int> nonblki;
 	for (unsigned int j = 0; j < NI; ++j)
-	  nonblki[i.order[j]] = i.size[j] / blki[j];
+	  nonblki[i.order[j]] = i.size[j] / blki[j] / kroni[j];
 	ii = i.template make_compatible<NI, int>(none, nonblki);
 	ii.set(num_neighbors);
 
@@ -4809,19 +4912,35 @@ namespace Chroma
 	// Compute the data dimensions as
 	//   image_blocked_dims + domain_dims + u + image_nonblocked_dims, for isImgFastInBlock
 	//   domain_blocked_dims + image_blocked_dims + u + image_nonblockd_dims otherwise
-	std::map<char, int> data_dims = i.kvdim();
+	std::map<char, int> data_dims;
+	for (unsigned int j = 0; j < NI; ++j)
+	  data_dims[i.order[j]] = i.size[j] / kroni[j];
 	for (unsigned int i = 0; i < ND; ++i)
 	  data_dims[d.order[i]] = blkd[i];
 	data_dims['u'] = num_neighbors;
 	std::string data_order =
-	  (isImgFastInBlock ? std::string(i.order.begin(), i.order.begin() + nblocki) + d.order
-			    : std::string(d.order.begin(), d.order.begin() + nblockd) +
-				std::string(i.order.begin(), i.order.begin() + nblocki) +
-				std::string(d.order.begin() + nblockd, d.order.end())) +
-	  std::string("u") + std::string(i.order.begin() + nblocki, i.order.end());
+	  (isImgFastInBlock
+	     ? std::string(i.order.begin(), i.order.begin() + nblocki + nkroni) + d.order
+	     : std::string(d.order.begin(), d.order.begin() + nblockd + nkrond) +
+		 std::string(i.order.begin(), i.order.begin() + nblocki + nkroni) +
+		 std::string(d.order.begin() + nblockd + nkrond, d.order.end())) +
+	  std::string("u") + std::string(i.order.begin() + nblocki + nkroni, i.order.end());
 	data = ii.template make_compatible<NI + ND + 1, T>(data_order, data_dims);
 
-	std::string nonblock_img_labels(i.order.begin() + nblocki, i.order.end());
+	// Compute the Kronecker dimensions as `data`
+	if (nkrond + nkroni > 0)
+	{
+	  std::map<char, int> kron_dims;
+	  for (unsigned int i = 0; i < ND; ++i)
+	    kron_dims[d.order[i]] = krond[i];
+	  for (unsigned int j = 0; j < NI; ++j)
+	    kron_dims[i.order[j]] = kroni[j];
+	  kron_dims['u'] = num_neighbors;
+	  std::string kron_order = data_order;
+	  kron = data.like_this(kron_order, kron_dims, none, OnEveryoneReplicated);
+	}
+
+	std::string nonblock_img_labels(i.order.begin() + nblocki + nkroni, i.order.end());
 	if (!ii.isDistributedAs(this->i, nonblock_img_labels) ||
 	    !ii.isDistributedAs(jj, nonblock_img_labels) ||
 	    !ii.isDistributedAs(data, nonblock_img_labels))
@@ -4831,7 +4950,17 @@ namespace Chroma
 
       /// Empty constructor
 
-      SpTensor() : blki{{}}, blkd{{}}, scalar{0}, isImgFastInBlock{false}, nblockd{0}, nblocki{0}
+      SpTensor()
+	: blki{{}},
+	  blkd{{}},
+	  kroni{{}},
+	  krond{{}},
+	  scalar{0},
+	  isImgFastInBlock{false},
+	  nblockd{0},
+	  nblocki{0},
+	  nkrond{0},
+	  nkroni{0}
       {
       }
 
@@ -4840,6 +4969,13 @@ namespace Chroma
       explicit operator bool() const noexcept
       {
 	return (bool)d;
+      }
+
+      /// Return whether the sparse tensor has Kronecker form
+
+      bool is_kronecker() const noexcept
+      {
+	return (bool)kron;
       }
 
       /// Construct the sparse operator
@@ -4854,7 +4990,7 @@ namespace Chroma
 	    return (t - localFrom[c[0]] + domDim[c[0]]) % domDim[c[0]];
 	  });
 
-	std::string nonblock_img_labels(i.order.begin() + nblocki, i.order.end());
+	std::string nonblock_img_labels(i.order.begin() + nblocki + nkroni, i.order.end());
 	if (!ii.isDistributedAs(this->i, nonblock_img_labels) ||
 	    !ii.isDistributedAs(localjj, nonblock_img_labels) ||
 	    !ii.isDistributedAs(data, nonblock_img_labels))
@@ -4868,10 +5004,21 @@ namespace Chroma
 	      nullptr)
 	  throw std::runtime_error("Ups! Look into this");
 	const value_type* ptr = data.data();
+	const value_type* kron_ptr = kron.data();
 	superbblas::BSR_handle* bsr = nullptr;
-	superbblas::create_bsr<ND, NI, value_type>(
-	  i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd, isImgFastInBlock, &iiptr,
-	  &jjptr, &ptr, &data.ctx(), MPI_COMM_WORLD, superbblas::FastToSlow, &bsr);
+	if (nkrond == 0 && nkroni == 0)
+	{
+	  superbblas::create_bsr<ND, NI, value_type>(
+	    i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd, isImgFastInBlock, &iiptr,
+	    &jjptr, &ptr, &data.ctx(), MPI_COMM_WORLD, superbblas::FastToSlow, &bsr);
+	}
+	else
+	{
+	  superbblas::create_kron_bsr<ND, NI, value_type>(
+	    i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd, kroni, krond,
+	    isImgFastInBlock, &iiptr, &jjptr, &ptr, &kron_ptr, &data.ctx(), MPI_COMM_WORLD,
+	    superbblas::FastToSlow, &bsr);
+	}
 	handle = std::shared_ptr<superbblas::BSR_handle>(
 	  bsr, [=](superbblas::BSR_handle* bsr) { destroy_bsr(bsr); });
       }
@@ -4904,10 +5051,10 @@ namespace Chroma
 	std::string::size_type d_pos = d.order.find(dom_dim_label);
 	std::string::size_type i_pos = i.order.find(img_dim_label);
 
-	if (blkd[d_pos] > 1 && blkd[d_pos] % dom_step != 0)
+	if (blkd[d_pos] > 1 && (blkd[d_pos] % dom_step != 0 || krond[d_pos] % dom_step != 0))
 	  throw std::runtime_error(
 	    "split_dimension: invalid `dom_step`, it should divide the block size");
-	if (blki[i_pos] > 1 && blki[i_pos] % img_step != 0)
+	if (blki[i_pos] > 1 && (blki[i_pos] % img_step != 0 || kroni[i_pos] % img_step != 0))
 	  throw std::runtime_error(
 	    "split_dimension: invalid `img_step`, it should divide the block size");
 
@@ -4935,6 +5082,8 @@ namespace Chroma
 				      new_i,
 				      nblockd + (d_pos < nblockd ? 1 : 0),
 				      nblocki + (i_pos < nblocki ? 1 : 0),
+				      nkrond + (nblockd <= d_pos && d_pos < nblockd+nkrond ? 1 : 0),
+				      nkroni + (nblocki <= i_pos && i_pos < nblocki+nkroni ? 1 : 0),
 				      (unsigned int)jj.kvdim().at('u'),
 				      isImgFastInBlock};
 
@@ -4964,6 +5113,13 @@ namespace Chroma
 	data.split_dimension(dom_dim_label, dom_new_labels, dom_step)
 	  .split_dimension(img_dim_label, img_new_labels, img_step)
 	  .copyTo(r.data);
+
+	if (kron)
+	{
+	  kron.split_dimension(dom_dim_label, dom_new_labels, dom_step)
+	    .split_dimension(img_dim_label, img_new_labels, img_step)
+	    .copyTo(r.kron);
+	}
 
 	if (is_constructed())
 	  r.construct();
@@ -5037,6 +5193,9 @@ namespace Chroma
 	  throw std::runtime_error("kvslice_from_size: hit corner case, sorry");
 	}
 
+	Tensor<1, float> dirs("u", {(int)num_neighbors}, OnHost, OnMaster);
+	dirs.set_zero();
+	auto dirs_local = dirs.getLocal();
 	{
 	  Coor<ND> from_dom = kvcoors<ND>(d.order, dom_kvfrom);
 	  std::map<char, int> updated_dom_kvsize = d.kvdim();
@@ -5054,7 +5213,10 @@ namespace Chroma
 	  auto new_jj_mask_local = new_jj_mask.getLocal();
 	  float* new_jj_mask_ptr = new_jj_mask_local.data();
 	  Coor<ND> size_nnz = d.size;
-	  for (unsigned int i = nblockd; i < ND; ++i)
+	  Tensor<1, float> dirs_global("u", {(int)num_neighbors}, OnHost, OnMaster);
+	  dirs_global.set_zero();
+	  auto dirs_local = dirs_global.getLocal();
+	  for (unsigned int i = nblockd+nkrond; i < ND; ++i)
 	    size_nnz[i] = 1;
 	  for (std::size_t i = 0, i_acc = 0, i1 = new_ii_local.volume(); i < i1;
 	       i_acc += ii_slice_ptr[i], ++i)
@@ -5074,6 +5236,7 @@ namespace Chroma
 	      std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_ii_ptr[i]) * ND);
 	      new_ii_ptr[i]++;
 	      new_jj_mask_ptr[j] = 1;
+	      if (dirs_local) dirs_local.data()[j - i_acc] = 1;
 	    }
 	    if (i > 0 && new_ii_ptr[i] != new_ii_ptr[0])
 	      throw std::runtime_error("SpTensor::kvslice_from_size: unsupported slices ending up "
@@ -5090,10 +5253,13 @@ namespace Chroma
 	  if (new_ii_local.volume() > 0 && global_num_neighbors != num_neighbors)
 	    throw std::runtime_error("SpTensor::kvslice_from_size: unsupported distribution");
 	  num_neighbors = global_num_neighbors;
+
+	  dirs = dirs_global.make_sure(none, OnDefaultDevice, OnEveryoneReplicated);
 	}
 
 	// Create the returning tensor
-	SpTensor<ND, NI, T> r{new_d, new_i, nblockd, nblocki, num_neighbors, isImgFastInBlock};
+	SpTensor<ND, NI, T> r{new_d,  new_i,  nblockd,	     nblocki,
+			      nkrond, nkroni, num_neighbors, isImgFastInBlock};
 	new_ii.copyTo(r.ii);
 	new_jj.kvslice_from_size({}, {{'u', num_neighbors}}).copyTo(r.jj);
 
@@ -5116,6 +5282,29 @@ namespace Chroma
 	data.kvslice_from_size(img_kvfrom, img_kvsize)
 	  .copyToWithMask(r.data, data_mask.kvslice_from_size(img_kvfrom, img_kvsize), r_data_mask,
 			  "u");
+
+	if (kron)
+	{
+	  auto kron_mask = kron.create_mask();
+	  kron_mask.set_zero();
+	  std::map<char, int> blk_m;
+	  auto kron_dim = kron.kvdim();
+	  for (unsigned int i = 0; i < ND; ++i)
+	    blk_m[d.order[i]] = kron_dim.at(d.order[i]);
+	  for (unsigned int i = 0; i < NI; ++i)
+	    blk_m[this->i.order[i]] = (nblocki <= i && i < nblocki+nkroni ? data_dim.at(this->i.order[i]) : 1);
+	  auto kron_blk = kron.template like_this<NI + ND, float>("%", '%', "u", blk_m, none,
+								  OnEveryoneReplicated);
+	  kron_blk.set(1);
+	  kronecker<NI + ND + 1>(dirs, kron_blk)
+	    .copyTo(kron_mask.kvslice_from_size(img_kvfrom, img_kvsize));
+	  auto r_kron_mask = r.kron.create_mask();
+	  r_kron_mask.set(1);
+	  r.kron.set(detail::NaN<T>::get());
+	  kron.kvslice_from_size(img_kvfrom, img_kvsize)
+	    .copyToWithMask(r.kron, kron_mask.kvslice_from_size(img_kvfrom, img_kvsize),
+			    r_kron_mask, "u");
+	}
 
 	if (is_constructed())
 	  r.construct();
@@ -5169,6 +5358,8 @@ namespace Chroma
 	  detail::to_sb_order<NI>(i.order), detail::to_sb_order<NI>(new_img_order0));
 	auto new_blkd = superbblas::detail::reorder_coor(blkd, d_perm);
 	auto new_blki = superbblas::detail::reorder_coor(blki, i_perm);
+	auto new_krond = superbblas::detail::reorder_coor(krond, d_perm);
+	auto new_kroni = superbblas::detail::reorder_coor(kroni, i_perm);
 
 	// Check the blocking
 	for (unsigned int i = 0; i < ND; ++i)
@@ -5177,6 +5368,16 @@ namespace Chroma
 				     "and nonblocking dimensions");
 	for (unsigned int i = 0; i < NI; ++i)
 	  if ((i < nblocki && new_blki[i] != new_i.size[i]) || (i >= nblocki && new_blki[i] != 1))
+	    throw std::runtime_error("reorder: invalid image reordering, it is mixing blocking "
+				     "and nonblocking dimensions");
+	for (unsigned int i = 0; i < ND; ++i)
+	  if ((i >= nblockd && i < nblockd + nkrond && new_krond[i] != new_d.size[i]) ||
+	      ((i < nblockd || i >= nblockd + nkrond) && new_krond[i] != 1))
+	    throw std::runtime_error("reorder: invalid domain reordering, it is mixing blocking "
+				     "and nonblocking dimensions");
+	for (unsigned int i = 0; i < NI; ++i)
+	  if ((i >= nblocki && i < nblocki + nkroni && new_kroni[i] != new_i.size[i]) ||
+	      ((i < nblocki || i >= nblocki + nkroni) && new_kroni[i] != 1))
 	    throw std::runtime_error("reorder: invalid image reordering, it is mixing blocking "
 				     "and nonblocking dimensions");
 
@@ -5199,15 +5400,17 @@ namespace Chroma
 
 	std::string data_order =
 	  (isImgFastInBlock
-	     ? std::string(new_i.order.begin(), new_i.order.begin() + nblocki) + new_d.order
-	     : std::string(new_d.order.begin(), new_d.order.begin() + nblockd) +
-		 std::string(new_i.order.begin(), new_i.order.begin() + nblocki) +
-		 std::string(new_d.order.begin() + nblockd, new_d.order.end())) +
-	  std::string("u") + std::string(new_i.order.begin() + nblocki, new_i.order.end());
+	     ? std::string(new_i.order.begin(), new_i.order.begin() + nblocki + nkroni) + new_d.order
+	     : std::string(new_d.order.begin(), new_d.order.begin() + nblockd + nkrond) +
+		 std::string(new_i.order.begin(), new_i.order.begin() + nblocki + nkroni) +
+		 std::string(new_d.order.begin() + nblockd + nkrond, new_d.order.end())) +
+	  std::string("u") + std::string(new_i.order.begin() + nblocki + nkrond, new_i.order.end());
 	auto new_data = data.reorder(data_order);
+	auto new_kron = kron ? kron.reorder(data_order) : kron;
 
-	SpTensor<ND, NI, T> r(new_d, new_i, new_blkd, new_blki, new_ii, new_jj, new_data, scalar,
-			      isImgFastInBlock, nblockd, nblocki);
+	SpTensor<ND, NI, T> r(new_d, new_i, new_blkd, new_blki, new_krond, new_kroni, new_ii,
+			      new_jj, new_data, new_kron, scalar, isImgFastInBlock, nblockd,
+			      nblocki, nkrond, nkroni);
 	if (is_constructed())
 	  r.construct();
 
@@ -5230,9 +5433,15 @@ namespace Chroma
 	auto new_i = i.toFakeReal(i_complexLabel);
 
 	// Create the returning tensor
-	SpTensor<ND + 1, NI + 1, newT> r{
-	  new_d,	   new_i, nblockd + 1, nblocki + 1, (unsigned int)jj.kvdim().at('u'),
-	  isImgFastInBlock};
+	bool is_kron = (nkrond > 0 || nkroni > 0);
+	SpTensor<ND + 1, NI + 1, newT> r{new_d,
+					 new_i,
+					 nblockd + 1,
+					 nblocki + 1,
+					 is_kron ? nkrond + 1 : 0,
+					 is_kron ? nkroni + 1 : 0,
+					 (unsigned int)jj.kvdim().at('u'),
+					 isImgFastInBlock};
 
 	// Copy the data to the new tensor
 	// a) same number of nonzeros per row
@@ -5254,6 +5463,23 @@ namespace Chroma
 	data0.kvslice_from_size({{d_complexLabel, 1}}, {{d_complexLabel, 1}})
 	  .copyTo(r.data.kvslice_from_size({{i_complexLabel, 1}},
 					   {{d_complexLabel, 1}, {i_complexLabel, 1}}));
+	// d) each element in kron xr+xi*i -> [xr  -xi; xi  xr]
+	if (kron)
+	{
+	  auto kron0 = kron.toFakeReal(d_complexLabel);
+	  kron0.kvslice_from_size({}, {{d_complexLabel, 1}})
+	    .copyTo(r.kron.kvslice_from_size({}, {{d_complexLabel, 1}, {i_complexLabel, 1}}));
+	  kron0.kvslice_from_size({}, {{d_complexLabel, 1}})
+	    .copyTo(r.kron.kvslice_from_size({{d_complexLabel, 1}, {i_complexLabel, 1}},
+					     {{d_complexLabel, 1}, {i_complexLabel, 1}}));
+	  kron0.kvslice_from_size({{d_complexLabel, 1}}, {{d_complexLabel, 1}})
+	    .scale(-1)
+	    .copyTo(r.kron.kvslice_from_size({{d_complexLabel, 1}},
+					     {{d_complexLabel, 1}, {i_complexLabel, 1}}));
+	  kron0.kvslice_from_size({{d_complexLabel, 1}}, {{d_complexLabel, 1}})
+	    .copyTo(r.kron.kvslice_from_size({{i_complexLabel, 1}},
+					     {{d_complexLabel, 1}, {i_complexLabel, 1}}));
+	}
 
 	if (is_constructed())
 	  r.construct();
@@ -5288,13 +5514,21 @@ namespace Chroma
 	auto new_i = i.extend_support(mi);
 
 	// Create the returning tensor
-	SpTensor<ND, NI, T> r{
-	  new_d, new_i, nblockd, nblocki, (unsigned int)jj.kvdim().at('u'), isImgFastInBlock};
+	SpTensor<ND, NI, T> r{new_d,
+			      new_i,
+			      nblockd,
+			      nblocki,
+			      nkrond,
+			      nkroni,
+			      (unsigned int)jj.kvdim().at('u'),
+			      isImgFastInBlock};
 
 	// Populate the new tensor
 	ii.copyTo(r.ii);
 	jj.copyTo(r.jj);
 	data.copyTo(r.data);
+	if (kron)
+	  kron.copyTo(r.kron);
 
 	if (is_constructed())
 	  r.construct();
@@ -5402,19 +5636,62 @@ namespace Chroma
 	auto ii_host = ii.make_sure(none, OnHost, OnMaster).getLocal();
 	auto jj_host = jj.make_sure(none, OnHost, OnMaster).getLocal();
 	auto data_host = data.make_sure(none, OnHost, OnMaster).getLocal();
+	auto kron_host = kron.make_sure(none, OnHost, OnMaster).getLocal();
+	assert(!ii_host.isSubtensor() && !jj_host.isSubtensor() && !data_host.isSubtensor() &&
+	       !kron_host.isSubtensor());
+
+	std::size_t volblki = superbblas::detail::volume(blki);
+	std::size_t volblkj = superbblas::detail::volume(blkd);
+	std::size_t volkroni = superbblas::detail::volume(kroni);
+	std::size_t volkronj = superbblas::detail::volume(krond);
+	std::size_t volbi = volblki * volkroni;
+	std::size_t volbj = volblkj * volkronj;
+
+	auto ii_host_ptr = ii_host.data();
+	auto jj_host_ptr = jj_host.data();
+	auto data_host_ptr = data_host.data();
+	auto kron_host_ptr = kron_host.data();
+
+	// Print general tensor description in a matlab comment
+	if (ii_host)
+	  ss << "% " << repr() << std::endl;
+
+	// If using the Kronecker format, reconstruct the nonzeros explicitly
+	if (kron_host)
+	{
+	  // Print the Kronecker tensor (the spin-spin tensors)
+	  int num_neighbors = data.kvdim().at('u');
+	  ss << name << "_kron=reshape([";
+	  for (std::size_t i = 0, kron_vol = kron_host.volume(); i < kron_vol; ++i)
+	    detail::repr::operator<<(ss << " ", kron_host_ptr[i]);
+	  ss << "], [" << (isImgFastInBlock ? volkroni : volkronj) << " "
+	     << (isImgFastInBlock ? volkronj : volkroni) << " " << num_neighbors << "]);"
+	     << std::endl;
+
+	  // Print the data (the color-color tensors)
+	  std::size_t numblks = data.volume() / volblki / volblkj;
+	  ss << name << "_data0=reshape([";
+	  for (std::size_t i = 0, data_vol = data_host.volume(); i < data_vol; ++i)
+	    detail::repr::operator<<(ss << " ", data_host_ptr[i]);
+	  ss << "], [" << (isImgFastInBlock ? volblki : volblkj) << " "
+	     << (isImgFastInBlock ? volblkj : volblki) << " " << numblks << "]);" << std::endl;
+
+	  // Preallocate and populate data in explicit format (no Kronecker format)
+	  ss << name << "_data=zeros([" << (isImgFastInBlock ? volbi : volbj) << " "
+	     << (isImgFastInBlock ? volbj : volbi) << " " << numblks << "]);" << std::endl;
+	  ss << "for i=1:" << numblks << std::endl;
+	  ss << "  " << name << "_data(:,:,i)=kron(squeeze(" << name << "_kron(:,:,mod(i-1,"
+	     << num_neighbors << ")+1)), squeeze(" << name << "_data0(:,:,i)));" << std::endl;
+	  ss << "end" << std::endl;
+	}
 
 	// Only master node prints
 	if (ii_host)
 	{
-	  assert(!ii_host.isSubtensor() && !jj_host.isSubtensor() && !data_host.isSubtensor());
-
-	  ss << "% " << repr() << std::endl;
+	  // Print for non-Kronecker variant
 	  ss << name << "=sparse([";
 
 	  // Print the row indices
-	  std::size_t volblki = superbblas::detail::volume(blki);
-	  std::size_t volblkj = superbblas::detail::volume(blkd);
-	  auto ii_host_ptr = ii_host.data();
 	  for (std::size_t i = 0, iivol = ii_host.volume(); i < iivol; ++i)
 	  {
 	    for (unsigned int neighbor = 0, num_neighbors = ii_host_ptr[i];
@@ -5422,22 +5699,21 @@ namespace Chroma
 	    {
 	      if (isImgFastInBlock)
 	      {
-		for (unsigned int bj = 0; bj < volblkj; ++bj)
-		  for (unsigned int bi = 0; bi < volblki; ++bi)
-		    ss << " " << i * volblki + bi + 1;
+		for (unsigned int bj = 0; bj < volbj; ++bj)
+		  for (unsigned int bi = 0; bi < volbi; ++bi)
+		    ss << " " << i * volbi + bi + 1;
 	      }
 	      else
 	      {
-		for (unsigned int bi = 0; bi < volblki; ++bi)
-		  for (unsigned int bj = 0; bj < volblkj; ++bj)
-		    ss << " " << i * volblki + bi + 1;
+		for (unsigned int bi = 0; bi < volbi; ++bi)
+		  for (unsigned int bj = 0; bj < volbj; ++bj)
+		    ss << " " << i * volbi + bi + 1;
 	      }
 	    }
 	  }
 	  ss << "], [";
 
 	  // Print the column indices
-	  auto jj_host_ptr = jj_host.data();
 	  Stride<ND> dstrides =
 	    superbblas::detail::get_strides<std::size_t>(d.size, superbblas::FastToSlow);
 	  for (std::size_t j = 0, jjvol = jj_host.volume(); j < jjvol; j += ND)
@@ -5447,24 +5723,33 @@ namespace Chroma
 	    auto j_idx = superbblas::detail::coor2index(j_coor, d.size, dstrides);
 	    if (isImgFastInBlock)
 	    {
-	      for (unsigned int bj = 0; bj < volblkj; ++bj)
-		for (unsigned int bi = 0; bi < volblki; ++bi)
+	      for (unsigned int bj = 0; bj < volbj; ++bj)
+		for (unsigned int bi = 0; bi < volbi; ++bi)
 		  ss << " " << j_idx + bj + 1;
 	    }
 	    else
 	    {
-	      for (unsigned int bi = 0; bi < volblki; ++bi)
-		for (unsigned int bj = 0; bj < volblkj; ++bj)
+	      for (unsigned int bi = 0; bi < volbi; ++bi)
+		for (unsigned int bj = 0; bj < volbj; ++bj)
 		  ss << " " << j_idx + bj + 1;
 	    }
 	  }
-	  ss << "], [";
+	  ss << "], ";
 
-	  // Print the values
-	  auto data_host_ptr = data_host.data();
-	  for (std::size_t i = 0, data_vol = data_host.volume(); i < data_vol; ++i)
-	    detail::repr::operator<<(ss << " ", data_host_ptr[i]);
-	  ss << "]);" << std::endl;
+	  if (!kron)
+	  {
+	    ss << "[";
+
+	    // Print the data values
+	    for (std::size_t i = 0, data_vol = data_host.volume(); i < data_vol; ++i)
+	      detail::repr::operator<<(ss << " ", data_host_ptr[i]);
+	    ss << "]";
+	  }
+	  else
+	  {
+	    ss << name << "_data(:)";
+	  }
+	  ss << ");" << std::endl;
 	}
 
 	detail::log(1, ss.str());
@@ -5489,13 +5774,18 @@ namespace Chroma
 			      i.template cast<Q>(),
 			      blkd,
 			      blki,
+			      krond,
+			      kroni,
 			      ii,
 			      jj,
 			      data.template cast<Q>(),
+			      kron.template cast<Q>(),
 			      (Q)scalar,
 			      isImgFastInBlock,
 			      nblockd,
-			      nblocki};
+			      nblocki,
+			      nkrond,
+			      nkroni};
 	if (is_constructed())
 	  r.construct();
 	return r;
@@ -5923,6 +6213,11 @@ namespace Chroma
 
     using NaturalNeighbors = std::vector<std::map<char, int>>;
 
+    /// Matrix to contract on each direction
+
+    template <typename T>
+    using SpinMatrixDir = std::map<std::map<char, int>, Tensor<2, T>>;
+
     /// Special value to indicate that the operator is dense
 
     inline const NaturalNeighbors& DenseOperator()
@@ -5960,6 +6255,8 @@ namespace Chroma
       remap rd;
       /// Operator maximum power support (optional)
       unsigned int max_power;
+      /// Whether the spin-color block nonzeros are the tensor product of spin-spin and color-color matrices
+      bool kron;
       /// Identity
       std::shared_ptr<std::string> id;
 
@@ -5972,7 +6269,7 @@ namespace Chroma
       Operator(const OperatorFun<NOp, COMPLEX>& fop, Tensor<NOp, COMPLEX> d, Tensor<NOp, COMPLEX> i,
 	       const OperatorFun<NOp, COMPLEX>& fop_tconj, const std::string& order_t,
 	       OperatorLayout domLayout, OperatorLayout imgLayout, NaturalNeighbors neighbors,
-	       ColOrdering preferred_col_ordering, const std::string& id = "")
+	       ColOrdering preferred_col_ordering, bool kron, const std::string& id = "")
 	: fop(fop),
 	  d(d),
 	  i(i),
@@ -5985,6 +6282,7 @@ namespace Chroma
 	  sp{},
 	  rd{},
 	  max_power{0},
+	  kron(kron),
 	  id(std::make_shared<std::string>(id))
       {
       }
@@ -6006,6 +6304,7 @@ namespace Chroma
 	  sp{sp},
 	  rd{rd},
 	  max_power{max_power},
+	  kron(sp.is_kronecker()),
 	  id(std::make_shared<std::string>(id))
       {
       }
@@ -6026,6 +6325,7 @@ namespace Chroma
 	  sp{},
 	  rd{},
 	  max_power{0},
+	  kron(op.is_kronecker()),
 	  id(std::make_shared<std::string>(id))
       {
       }
@@ -6042,13 +6342,19 @@ namespace Chroma
 	if (sp || !fop_tconj)
 	  throw std::runtime_error("Operator does not have conjugate transpose form");
 	return {
-	  fop_tconj, i, d, fop, order_t, imgLayout, domLayout, neighbors, preferred_col_ordering};
+	  fop_tconj, i, d, fop, order_t, imgLayout, domLayout, neighbors, preferred_col_ordering, kron};
       }
 
       /// Return whether the operator has transpose conjugate
       bool has_tconj() const
       {
 	return !sp && fop_tconj;
+      }
+
+      /// Return whether the spin-color nonzero blocks are the tensor product of two matrices
+      bool is_kronecker() const
+      {
+	return sp ? sp.is_kronecker() : kron;
       }
 
       /// Return compatible domain tensors
@@ -6196,7 +6502,7 @@ namespace Chroma
 	    d.template cast<T>(), i.template cast<T>(),
 	    op_tconj ? [=](const Tensor<NOp + 1, T>& x, Tensor<NOp + 1, T> y) { op_tconj(x, y); }
 		     : OperatorFun<NOp, T>{},
-	    order_t, domLayout, imgLayout, neighbors, preferred_col_ordering);
+	    order_t, domLayout, imgLayout, neighbors, preferred_col_ordering, is_kronecker());
 	}
       }
 
@@ -6267,7 +6573,7 @@ namespace Chroma
 	      op_tconj(x0, y0);
 	      y0.kvslice_from_size(dom_kvfrom, dom_kvsize).copyTo(y);
             } : OperatorFun<NOp, COMPLEX>{},
-	    order_t, new_domLayout, new_imgLayout, neighbors, preferred_col_ordering);
+	    order_t, new_domLayout, new_imgLayout, neighbors, preferred_col_ordering, is_kronecker());
 	}
       }
     };
@@ -6639,6 +6945,14 @@ namespace Chroma
       /// \param coBlk: ordering of the nonzero blocks of the sparse operator
       /// \return: a pair of a sparse tensor and a remap; the sparse tensor has the same image
       ///          labels as the given operator and domain labels are indicated by the returned remap.
+      ///
+      /// NOTE: Encoding the Dirac-Wilson with the clover term into the Kronecker format gets convoluted.
+      /// We treat differently the block-diagonal (the self direction) from the others (the x,y,z,t directions).
+      /// The nonzeros of the latter directions are the addition of two matrices which are the result of
+      /// the tensor product of a 4x4 (spin matrix) and a 3x3 (color matrix). One of the spin matrices is
+      /// is the identity always and the other is the same for all nonzeros in a direction. The block-diagonal
+      /// doesn't follow this pattern but it is block diagonal on the chirality, that is, there are nonzeros only
+      /// for the combination of spin i,j such that floor(i/2) == floor(j/2).
 
       template <std::size_t NOp, typename COMPLEX,
 		typename std::enable_if<(NOp >= Nd + 1), bool>::type = true>
@@ -6665,13 +6979,24 @@ namespace Chroma
 	if (op.order_t.size() > 0)
 	  throw std::runtime_error("Not implemented");
 
-	// Create the ordering for the domain and the image where the dense dimensions indices run faster than the sparse dimensions
+	// The spin label if the spin-color matrices are the tensor product of a spin matrix
+	// and a color matrix
+        char kronecker_label = op.is_kronecker() ? 's' : 0;
+
+	// Create the ordering for the domain and the image where the dense dimensions indices run faster than the sparse dimensions.
+	// If using Kronecker variant, the Kronecker label (the spin) runs the slowest of the dense labels.
 	// NOTE: assuming that x,y,z,t are the only sparse dimensions; X remains sparse
 	std::string sparse_labels("xyztX");
 	std::string dense_labels = remove_dimensions(op.i.order, sparse_labels);
+	if (kronecker_label)
+	{
+	  dense_labels = remove_dimensions(dense_labels, std::string(1, kronecker_label)) +
+			 std::string(1, kronecker_label);
+	}
 	remap rd = getNewLabels(op.d.order, op.i.order + "u~0123");
-	auto i =
-	  op.i.reorder("%xyztX", '%').like_this(none, {}, OnDefaultDevice, OnEveryone).make_eg();
+	auto i = op.i.reorder(dense_labels + std::string("xyztX"))
+		   .like_this(none, {}, OnDefaultDevice, OnEveryone)
+		   .make_eg();
 
 	// Get the blocking for the domain and the image
 	std::map<char, int> blkd, blki;
@@ -6679,6 +7004,10 @@ namespace Chroma
 	  blki[it.first] = (is_in(dense_labels, it.first) ? it.second : 1);
 	for (const auto& it : blki)
 	  blkd[rd.at(it.first)] = it.second;
+
+	// Check that the Kroneker label is a dense label if given
+	if (kronecker_label != 0 && std::find(dense_labels.begin(), dense_labels.end(), kronecker_label) == dense_labels.end())
+	  throw std::runtime_error("The Kronecker label should be a blocking label");
 
 	// Construct the probing vectors, which they have as the rows the domain labels and as
 	// columns the domain blocking dimensions
@@ -6714,6 +7043,58 @@ namespace Chroma
 	  for (const auto& it : op.neighbors)
 	    neighbors.push_back(kvcoors<Nd>("xyzt", it, 0));
 	}
+	else
+	  throw std::runtime_error("Unsupported power");
+
+	// Extend directions in case of using the Kronecker form
+	if (kronecker_label != 0 && i.kvdim().at(kronecker_label) != 4)
+	  throw std::runtime_error(
+	    "Unsupported extraction of the Kronecker format from this operator");
+	std::vector<Tensor<2, COMPLEX>> spin_matrix;
+	if (kronecker_label != 0)
+	{
+	  std::vector<Coor<Nd>> new_neighbors;
+	  int spin = i.kvdim().at(kronecker_label);
+	  for (const auto& dir : neighbors)
+	  {
+	    if (dir == Coor<Nd>{{}})
+	    {
+	      // If self direction, create a single matrix on each combination of spins
+	      // with the same chirality
+
+	      for (int s = 0; s < spin * spin; ++s)
+	      {
+		int si = s % spin, sj = s / spin;
+		if (si / 2 == sj / 2)
+		{
+		  Tensor<2, COMPLEX> mat(std::string(1, kronecker_label) +
+					   std::string(1, rd.at(kronecker_label)),
+					 {{spin, spin}}, OnHost, OnEveryoneReplicated);
+		  mat.set_zero();
+		  mat.set({{si, sj}}, 1);
+		  new_neighbors.push_back(dir);
+		  spin_matrix.push_back(mat);
+		}
+	      }
+	    }
+	    else
+	    {
+	      // For the remaining directions, we capture the spin block diagonal on the first term
+	      // and put an empty matrix on the second term so that will be guess further down
+	      Tensor<2, COMPLEX> mat(std::string(1, kronecker_label) +
+				       std::string(1, rd.at(kronecker_label)),
+				     {{spin, spin}}, OnHost, OnEveryoneReplicated);
+	      mat.set_zero();
+	      for (int s = 0; s < spin; ++s)
+		mat.set({{s, s}}, 1);
+	      new_neighbors.push_back(dir);
+	      spin_matrix.push_back(mat);
+	      new_neighbors.push_back(dir);
+	      spin_matrix.push_back(Tensor<2, COMPLEX>());
+	    }
+	  }
+	  neighbors = new_neighbors;
+	}
 
 	// Create masks for the elements with even natural x coordinate and with odd natural x coordinate
 	auto even_x_mask = getXOddityMask<NOp>(0, i, op.imgLayout);
@@ -6729,11 +7110,19 @@ namespace Chroma
 					  {'z', max_dist_neighbors},
 					  {'t', max_dist_neighbors}}))
 	    .rename_dims(rd);
-	SpTensor<NOp, NOp, COMPLEX> sop{
-	  d_sop, i, Nblk, Nblk, (unsigned int)neighbors.size(), coBlk == ColumnMajor};
+	const unsigned int Nkron = kronecker_label == 0 ? 0u : 1u;
+	SpTensor<NOp, NOp, COMPLEX> sop{d_sop,
+					i,
+					Nblk - Nkron,
+					Nblk - Nkron,
+					Nkron,
+					Nkron,
+					(unsigned int)neighbors.size(),
+					coBlk == ColumnMajor};
 
 	// Extract the nonzeros with probing
 	sop.data.set_zero(); // all values may not be populated when using blocking
+	std::vector<std::map<char, int>> nonzero_spins;
 	for (unsigned int color = 0; color < num_colors; ++color)
 	{
 	  // Extracting the proving vector
@@ -6751,6 +7140,117 @@ namespace Chroma
 	  // Compute the matvecs
 	  auto mv = op(std::move(probs));
 
+	  // Heuristic to get a nonzero spins when is kronecker
+	  if (kronecker_label != 0 and nonzero_spins.size() == 0)
+	  {
+	    // Take a source
+	    auto source_coor = colors.find([&](float site_color) { return site_color == color; }).getSome();
+	    std::map<char, int> source;
+	    for (std::size_t i = 0; i < colors.order.size(); ++i)
+	      if (is_in("xyztX", colors.order[i]))
+		source[colors.order[i]] = source_coor[i];
+
+	    // Chose a dense label that is not the spin
+	    char color_label = 0;
+	    for (char c : dense_labels)
+	    {
+	      if (c != kronecker_label)
+	      {
+		color_label = c;
+		break;
+	      }
+	    }
+
+	    // Find the spin values for each direction
+	    sop.kron.set_zero();
+	    for (int mu = 0; mu < neighbors.size(); ++mu)
+	    {
+	      if (!spin_matrix[mu])
+	      {
+		// site = source + neighbors[mu], where the latter is in natural coordinates
+		const auto& coor_dir = neighbors[mu];
+		int sumdir = std::accumulate(coor_dir.begin(), coor_dir.end(), int{0});
+		std::map<char, int> site{{'X', source['X'] + sumdir},
+					 {'x', (source['x'] * real_maxX + coor_dir[0]) / real_maxX},
+					 {'y', source['y'] + coor_dir[1]},
+					 {'z', source['z'] + coor_dir[2]},
+					 {'t', source['t'] + coor_dir[3]}};
+		auto site_size = blki;
+		for (char c : dense_labels)
+		  site_size[rd[c]] = blki[c];
+
+		auto site_data = mv.kvslice_from_size(site, site_size)
+				   .make_sure(none, OnHost, OnEveryoneReplicated);
+
+		// Search for a nonzero element, we take the largest.
+		// NOTE: don't take from spin block diagonal matrix, those nonzeros are captured already
+		int s_ref = 0, c_ref = 0;
+		double val_ref = 0;
+		for (int s = 0; s < blki[kronecker_label] * blki[kronecker_label]; ++s)
+		{
+		  if (s % blki[kronecker_label] == s / blki[kronecker_label])
+		    continue;
+		  for (int c = 0; c < blki[color_label] * blki[color_label]; ++c)
+		  {
+		    double val = std::norm(site_data.get(kvcoors<NOp + Nblk>(
+		      site_data.order, {{kronecker_label, s % blki[kronecker_label]},
+					{rd[kronecker_label], s / blki[kronecker_label]},
+					{color_label, c % blki[color_label]},
+					{rd.at(color_label), c / blki[color_label]}})));
+		    if (val > val_ref)
+		    {
+		      s_ref = s;
+		      c_ref = c;
+		      val_ref = val;
+		    }
+		  }
+		}
+		nonzero_spins.push_back({{kronecker_label, s_ref % blki[kronecker_label]},
+					 {rd[kronecker_label], s_ref / blki[kronecker_label]}});
+
+		// Get the values
+		auto val0 = site_data.get(kvcoors<NOp + Nblk>(
+		  site_data.order, {{kronecker_label, s_ref % blki[kronecker_label]},
+				    {rd[kronecker_label], s_ref / blki[kronecker_label]},
+				    {color_label, c_ref % blki[color_label]},
+				    {rd.at(color_label), c_ref / blki[color_label]}}));
+		for (int s = 0; s < blki[kronecker_label] * blki[kronecker_label]; ++s)
+		{
+		  if (s % blki[kronecker_label] == s / blki[kronecker_label])
+		    continue;
+		  sop.kron.set(
+		    kvcoors<NOp * 2 + 1>(sop.kron.order,
+					 {{kronecker_label, s % blki[kronecker_label]},
+					  {rd[kronecker_label], s / blki[kronecker_label]},
+					  {'u', mu}}),
+		    site_data.get(kvcoors<NOp + Nblk>(
+		      site_data.order, {{kronecker_label, s % blki[kronecker_label]},
+					{rd[kronecker_label], s / blki[kronecker_label]},
+					{color_label, c_ref % blki[color_label]},
+					{rd.at(color_label), c_ref / blki[color_label]}})) /
+		      val0);
+		}
+	      }
+	      else
+	      {
+		// Copy the know spin matrix into sop.kron
+		spin_matrix[mu].copyTo(sop.kron.kvslice_from_size({{'u', mu}}, {{'u', 1}}));
+
+		// Set as the reference spin, the first nonzero
+		for (int s = 0; s < blki[kronecker_label] * blki[kronecker_label]; ++s)
+		{
+		  if (std::norm(spin_matrix[mu].get(
+			{{s % blki[kronecker_label], s / blki[kronecker_label]}})) > 0)
+		  {
+		    nonzero_spins.push_back({{kronecker_label, s % blki[kronecker_label]},
+					     {rd[kronecker_label], s / blki[kronecker_label]}});
+		    break;
+		  }
+		}
+	      }
+	    }
+	  }
+
 	  // Construct an indicator tensor where all blocking dimensions but only the nodes colored `color` are copied
 	  auto color_mask = t_l.template transformWithCPUFun<float>(
 	    [](const value_type& t) { return (float)std::real(t); });
@@ -6761,8 +7261,21 @@ namespace Chroma
 
 	  // Populate the nonzeros by copying pieces from `mv` into sop.data. We want to copy only the
 	  // nonzeros in `mv`, which are `neighbors` away from the nonzeros of `probs`.
-	  latticeCopyToWithMask(mv, sop.data, 'u', neighbors, {{'X', real_maxX}}, sel_x_even,
-				sel_x_odd);
+	  if (kronecker_label == 0)
+	  {
+	    latticeCopyToWithMask(mv, sop.data, 'u', neighbors, {{'X', real_maxX}}, sel_x_even,
+				  sel_x_odd);
+	  }
+	  else
+	  {
+	    std::map<char, int> single_spin{{kronecker_label, 1}, {rd[kronecker_label], 1}};
+	    for (int dir = 0; dir < neighbors.size(); ++dir)
+	      latticeCopyToWithMask(mv.kvslice_from_size(nonzero_spins[dir], single_spin),
+				    sop.data.kvslice_from_size({{'u', dir}}, {{'u', 1}}), 'u',
+				    std::vector<Coor<Nd>>(1, neighbors[dir]), {{'X', real_maxX}},
+				    sel_x_even.kvslice_from_size(nonzero_spins[dir], single_spin),
+				    sel_x_odd.kvslice_from_size(nonzero_spins[dir], single_spin));
+	  }
 	}
 
 	// Populate the coordinate of the columns, that is, to give the domain coordinates of first nonzero in each
@@ -6848,7 +7361,8 @@ namespace Chroma
 	  op.domLayout,
 	  op.imgLayout,
 	  op.neighbors,
-	  coBlk};
+	  coBlk,
+	  op.is_kronecker()};
 
 	// Get a sparse tensor representation of the operator
 	unsigned int op_dist = getFurthestNeighborDistance(op);
@@ -6929,6 +7443,7 @@ namespace Chroma
 	// Construct the operator to return
 	Operator<NOp, COMPLEX> rop{sop,	       rd,	     power,	   sop.i,	 sop.i,
 				   op.order_t, op.domLayout, op.imgLayout, op.neighbors, co};
+	sop.print("a");
 
 	// Skip tests if power < op_dist
 	if (power < op_dist)
@@ -7636,7 +8151,7 @@ namespace Chroma
 	      },
 	      eg, eg, nullptr, "", op_layout, op_layout,
 	      detail::getNeighbors(eg.kvdim(), 1 /* near-neighbors links only */, op_layout),
-	      ColumnMajor},
+	      ColumnMajor, false /* no kronecker op */},
 	    ColumnMajor, RowMajor, Chroma::SB::detail::ConsiderBlockingDense, "laplacian");
 
 	  // Create an auxiliary struct for the PRIMME's matvec
