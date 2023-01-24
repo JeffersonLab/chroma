@@ -2072,10 +2072,9 @@ endforeach()
 
 set(Chroma_CXX_STANDARD "17")
 if (QDP_IS_QDPJIT)
-  if(QDP_PROP_OPT)
-	  set(Chroma_CXX_STANDARD "20")
-  endif()
+  set(Chroma_CXX_STANDARD "20")
 endif()
+
 set_target_properties( chromalib PROPERTIES CXX_STANDARD ${Chroma_CXX_STANDARD} )
 set_target_properties( chromalib PROPERTIES CXX_EXTENSIONS OFF )
  
