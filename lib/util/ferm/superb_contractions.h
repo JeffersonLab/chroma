@@ -819,9 +819,9 @@ namespace Chroma
 	  if (dev < 0)
 	  {
 #    ifdef SUPERBBLAS_USE_CUDA
-	    superbblas::detail::cudaCheck(cudaGetDevice(&dev));
+	    superbblas::detail::gpuCheck(cudaGetDevice(&dev));
 #    elif defined(SUPERBBLAS_USE_HIP)
-	    superbblas::detail::hipCheck(hipGetDevice(&dev));
+	    superbblas::detail::gpuCheck(hipGetDevice(&dev));
 #    else
 #      error superbblas was not build with support for GPUs
 #    endif
@@ -864,9 +864,9 @@ namespace Chroma
 #    if defined(QDP_IS_QDPJIT)
 	  // When using QDP-JIT, the GPU device to use is already selected
 #      ifdef SUPERBBLAS_USE_CUDA
-	  superbblas::detail::cudaCheck(cudaGetDevice(&dev));
+	  superbblas::detail::gpuCheck(cudaGetDevice(&dev));
 #      elif defined(SUPERBBLAS_USE_HIP)
-	  superbblas::detail::hipCheck(hipGetDevice(&dev));
+	  superbblas::detail::gpuCheck(hipGetDevice(&dev));
 #      else
 #	error unsupported GPU platform
 #      endif
@@ -903,36 +903,31 @@ namespace Chroma
 #    if defined(QDP_IS_QDPJIT)
 	  if (jit_config_get_max_allocation() != 0)
 	  {
-	    cudactx = std::make_shared<superbblas::Context>(superbblas::createGpuContext(
-	      dev,
+	    // Make superbblas use the same memory allocator for gpu as any other qdp-jit lattice object
+	    superbblas::getCustomAllocator() = [](std::size_t size,
+						  superbblas::platform plat) -> void* {
+	      if (size == 0)
+		return nullptr;
+	      if (plat == superbblas::CPU)
+		return malloc(size);
+	      void* ptr = nullptr;
+	      QDP_get_global_cache().addDeviceStatic(&ptr, size, true);
+	      assert(superbblas::detail::getPtrDevice(ptr) >= 0);
+	      return ptr;
+	    };
 
-	      // Make superbblas use the same memory allocator for gpu as any other qdp-jit lattice object
-	      [](std::size_t size, superbblas::platform plat) -> void* {
-		if (size == 0)
-		  return nullptr;
-		if (plat == superbblas::CPU)
-		  return malloc(size);
-		void* ptr = nullptr;
-		QDP_get_global_cache().addDeviceStatic(&ptr, size, true);
-		assert(superbblas::detail::getPtrDevice(ptr) >= 0);
-		return ptr;
-	      },
-
-	      // The corresponding deallocator
-	      [](void* ptr, superbblas::platform plat) {
-		if (ptr == nullptr)
-		  return;
-		if (plat == superbblas::CPU)
-		  free(ptr);
-		else
-		  QDP_get_global_cache().signoffViaPtr(ptr);
-	      }));
+	    // The corresponding deallocator
+	    superbblas::getCustomDeallocator() = [](void* ptr, superbblas::platform plat) {
+	      if (ptr == nullptr)
+		return;
+	      if (plat == superbblas::CPU)
+		free(ptr);
+	      else
+		QDP_get_global_cache().signoffViaPtr(ptr);
+	    };
 	  }
-	  else
 #    endif // defined(QDP_IS_QDPJIT)
-	  {
-	    cudactx = std::make_shared<superbblas::Context>(superbblas::createGpuContext(dev));
-	  }
+	  cudactx = std::make_shared<superbblas::Context>(superbblas::createGpuContext(dev));
 	  getDestroyList().push_back([] { getGpuContext().reset(); });
 	}
 	return cudactx;
@@ -2294,9 +2289,6 @@ namespace Chroma
 
       void set(Coor<N> coor, value_type v)
       {
-	if (ctx().plat != superbblas::CPU)
-	  throw std::runtime_error(
-	    "Unsupported to `get` elements from tensors not stored on the host");
 	if (dist != OnEveryoneReplicated && dist != Local)
 	  throw std::runtime_error(
 	    "Unsupported to `set` elements on a distributed tensor; change the distribution to "
@@ -2304,12 +2296,20 @@ namespace Chroma
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	// coor[i] = coor[i] + from[i]
-	for (unsigned int i = 0; i < N; ++i)
-	  coor[i] = normalize_coor(normalize_coor(coor[i], size[i]) + from[i], dim[i]);
+	if (ctx().plat == superbblas::CPU)
+	{
+	  // coor[i] = coor[i] + from[i]
+	  for (unsigned int i = 0; i < N; ++i)
+	    coor[i] = normalize_coor(normalize_coor(coor[i], size[i]) + from[i], dim[i]);
 
-	data_for_writing()[detail::coor2index<N>(coor, dim, strides)] =
-	  detail::cond_conj(conjugate, v) / scalar;
+	  data_for_writing()[detail::coor2index<N>(coor, dim, strides)] =
+	    detail::cond_conj(conjugate, v) / scalar;
+	}
+	else
+	{
+	  Tensor<1, T>(std::string(1, order[0]), Coor<1>{1}, OnHost, OnEveryoneReplicated, &v)
+	    .copyTo(this->slice_from_size(coor, superbblas::detail::ones<N>()));
+	}
       }
 
       /// Modify the content this tensor with the result of a function on each element
@@ -4797,8 +4797,8 @@ namespace Chroma
       bool isImgFastInBlock;			      ///< whether the BSR blocks are in row-major
       unsigned int nblockd;			      ///< Number of blocked domain dimensions
       unsigned int nblocki;			      ///< Number of blocked image dimensions
-      unsigned int nkrond;			      ///< Number of Kronecker blocked domain dimensions
-      unsigned int nkroni;			      ///< Number of Kronecker blocked image dimensions
+      unsigned int nkrond; ///< Number of Kronecker blocked domain dimensions
+      unsigned int nkroni; ///< Number of Kronecker blocked image dimensions
 
       /// Low-level constructor with the Kronecker BSR extension
       SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, Coor<ND> blkd, Coor<NI> blki, Coor<ND> krond,
@@ -5078,14 +5078,15 @@ namespace Chroma
 	new_blki[i_pos + 1] /= new_blki_pos;
 
 	// Create the returning tensor
-	SpTensor<ND + 1, NI + 1, T> r{new_d,
-				      new_i,
-				      nblockd + (d_pos < nblockd ? 1 : 0),
-				      nblocki + (i_pos < nblocki ? 1 : 0),
-				      nkrond + (nblockd <= d_pos && d_pos < nblockd+nkrond ? 1 : 0),
-				      nkroni + (nblocki <= i_pos && i_pos < nblocki+nkroni ? 1 : 0),
-				      (unsigned int)jj.kvdim().at('u'),
-				      isImgFastInBlock};
+	SpTensor<ND + 1, NI + 1, T> r{
+	  new_d,
+	  new_i,
+	  nblockd + (d_pos < nblockd ? 1 : 0),
+	  nblocki + (i_pos < nblocki ? 1 : 0),
+	  nkrond + (nblockd <= d_pos && d_pos < nblockd + nkrond ? 1 : 0),
+	  nkroni + (nblocki <= i_pos && i_pos < nblocki + nkroni ? 1 : 0),
+	  (unsigned int)jj.kvdim().at('u'),
+	  isImgFastInBlock};
 
 	ii.split_dimension(img_dim_label, img_new_labels, img_step).copyTo(r.ii);
 	auto new_jj = r.jj.make_compatible(none, {}, OnHost);
@@ -5216,7 +5217,7 @@ namespace Chroma
 	  Tensor<1, float> dirs_global("u", {(int)num_neighbors}, OnHost, OnMaster);
 	  dirs_global.set_zero();
 	  auto dirs_local = dirs_global.getLocal();
-	  for (unsigned int i = nblockd+nkrond; i < ND; ++i)
+	  for (unsigned int i = nblockd + nkrond; i < ND; ++i)
 	    size_nnz[i] = 1;
 	  for (std::size_t i = 0, i_acc = 0, i1 = new_ii_local.volume(); i < i1;
 	       i_acc += ii_slice_ptr[i], ++i)
@@ -5236,7 +5237,8 @@ namespace Chroma
 	      std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_ii_ptr[i]) * ND);
 	      new_ii_ptr[i]++;
 	      new_jj_mask_ptr[j] = 1;
-	      if (dirs_local) dirs_local.data()[j - i_acc] = 1;
+	      if (dirs_local)
+		dirs_local.data()[j - i_acc] = 1;
 	    }
 	    if (i > 0 && new_ii_ptr[i] != new_ii_ptr[0])
 	      throw std::runtime_error("SpTensor::kvslice_from_size: unsupported slices ending up "
@@ -5292,7 +5294,8 @@ namespace Chroma
 	  for (unsigned int i = 0; i < ND; ++i)
 	    blk_m[d.order[i]] = kron_dim.at(d.order[i]);
 	  for (unsigned int i = 0; i < NI; ++i)
-	    blk_m[this->i.order[i]] = (nblocki <= i && i < nblocki+nkroni ? data_dim.at(this->i.order[i]) : 1);
+	    blk_m[this->i.order[i]] =
+	      (nblocki <= i && i < nblocki + nkroni ? data_dim.at(this->i.order[i]) : 1);
 	  auto kron_blk = kron.template like_this<NI + ND, float>("%", '%', "u", blk_m, none,
 								  OnEveryoneReplicated);
 	  kron_blk.set(1);
@@ -5400,7 +5403,8 @@ namespace Chroma
 
 	std::string data_order =
 	  (isImgFastInBlock
-	     ? std::string(new_i.order.begin(), new_i.order.begin() + nblocki + nkroni) + new_d.order
+	     ? std::string(new_i.order.begin(), new_i.order.begin() + nblocki + nkroni) +
+		 new_d.order
 	     : std::string(new_d.order.begin(), new_d.order.begin() + nblockd + nkrond) +
 		 std::string(new_i.order.begin(), new_i.order.begin() + nblocki + nkroni) +
 		 std::string(new_d.order.begin() + nblockd + nkrond, new_d.order.end())) +
@@ -6342,7 +6346,8 @@ namespace Chroma
 	if (sp || !fop_tconj)
 	  throw std::runtime_error("Operator does not have conjugate transpose form");
 	return {
-	  fop_tconj, i, d, fop, order_t, imgLayout, domLayout, neighbors, preferred_col_ordering, kron};
+	  fop_tconj, i, d, fop, order_t, imgLayout, domLayout, neighbors, preferred_col_ordering,
+	  kron};
       }
 
       /// Return whether the operator has transpose conjugate
@@ -6981,7 +6986,7 @@ namespace Chroma
 
 	// The spin label if the spin-color matrices are the tensor product of a spin matrix
 	// and a color matrix
-        char kronecker_label = op.is_kronecker() ? 's' : 0;
+	char kronecker_label = op.is_kronecker() ? 's' : 0;
 
 	// Create the ordering for the domain and the image where the dense dimensions indices run faster than the sparse dimensions.
 	// If using Kronecker variant, the Kronecker label (the spin) runs the slowest of the dense labels.
@@ -7006,7 +7011,8 @@ namespace Chroma
 	  blkd[rd.at(it.first)] = it.second;
 
 	// Check that the Kroneker label is a dense label if given
-	if (kronecker_label != 0 && std::find(dense_labels.begin(), dense_labels.end(), kronecker_label) == dense_labels.end())
+	if (kronecker_label != 0 && std::find(dense_labels.begin(), dense_labels.end(),
+					      kronecker_label) == dense_labels.end())
 	  throw std::runtime_error("The Kronecker label should be a blocking label");
 
 	// Construct the probing vectors, which they have as the rows the domain labels and as
@@ -7144,7 +7150,8 @@ namespace Chroma
 	  if (kronecker_label != 0 and nonzero_spins.size() == 0)
 	  {
 	    // Take a source
-	    auto source_coor = colors.find([&](float site_color) { return site_color == color; }).getSome();
+	    auto source_coor =
+	      colors.find([&](float site_color) { return site_color == color; }).getSome();
 	    std::map<char, int> source;
 	    for (std::size_t i = 0; i < colors.order.size(); ++i)
 	      if (is_in("xyztX", colors.order[i]))
@@ -7443,7 +7450,6 @@ namespace Chroma
 	// Construct the operator to return
 	Operator<NOp, COMPLEX> rop{sop,	       rd,	     power,	   sop.i,	 sop.i,
 				   op.order_t, op.domLayout, op.imgLayout, op.neighbors, co};
-	sop.print("a");
 
 	// Skip tests if power < op_dist
 	if (power < op_dist)
