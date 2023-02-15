@@ -825,13 +825,13 @@ namespace Chroma
 	const std::string prefix = "block diag";
 	if (blockingAsSparseDimensions == ConsiderBlockingSparse)
 	{
-	  auto t = cloneOperatorToSpTensor(op, power, coBlk, prefix);
+	  auto t = cloneOperatorToSpTensor(op, power, coBlk, false, prefix);
 	  sop = t.first;
 	  rd = t.second;
 	}
 	else
 	{
-	  auto t = cloneUnblockedOperatorToSpTensor(op, power, coBlk, prefix);
+	  auto t = cloneUnblockedOperatorToSpTensor(op, power, coBlk, false, prefix);
 	  sop = t.first;
 	  rd = t.second;
 	}

@@ -1742,7 +1742,7 @@ namespace Chroma
 	/// \param ctx: context of the allocation
 
 	Allocation(std::size_t n, const std::shared_ptr<superbblas::Context>& ctx)
-	  : ptr(superbblas::allocate<T>(n, *ctx)), ctx(ctx), destroy_ptr(n > 0)
+	  : ptr(superbblas::allocate<T>(n, *ctx)), ctx(ctx), destroy_ptr(true)
 	{
 	}
 
@@ -5243,6 +5243,13 @@ namespace Chroma
 	    if (i > 0 && new_ii_ptr[i] != new_ii_ptr[0])
 	      throw std::runtime_error("SpTensor::kvslice_from_size: unsupported slices ending up "
 				       "in different number of nonzero values in each row");
+	    if (i > 0 && kron)
+	    {
+	      for (unsigned int j = i_acc, j1 = i_acc + ii_slice_ptr[i]; j < j1; ++j)
+		if (new_jj_mask_ptr[j] != new_jj_mask_ptr[j - i_acc])
+		  throw std::runtime_error("SpTensor::kvslice_from_size unsupported slices ending "
+					   "up in selecting different directions for each row");
+	    }
 	  }
 
 	  // Make sure that all nodes with support have the same number of neighbors
@@ -5289,13 +5296,8 @@ namespace Chroma
 	{
 	  auto kron_mask = kron.create_mask();
 	  kron_mask.set_zero();
-	  std::map<char, int> blk_m;
-	  auto kron_dim = kron.kvdim();
-	  for (unsigned int i = 0; i < ND; ++i)
-	    blk_m[d.order[i]] = kron_dim.at(d.order[i]);
-	  for (unsigned int i = 0; i < NI; ++i)
-	    blk_m[this->i.order[i]] =
-	      (nblocki <= i && i < nblocki + nkroni ? data_dim.at(this->i.order[i]) : 1);
+	  auto blk_m = kron.kvdim();
+	  blk_m.erase('u');
 	  auto kron_blk = kron.template like_this<NI + ND, float>("%", '%', "u", blk_m, none,
 								  OnEveryoneReplicated);
 	  kron_blk.set(1);
@@ -6948,6 +6950,7 @@ namespace Chroma
       /// \param power: maximum distance to recover the nonzeros:
       ///               0, block diagonal; 1: near-neighbors...
       /// \param coBlk: ordering of the nonzero blocks of the sparse operator
+      /// \param useKronFormat: whether to create a Kronecker BSR variant if the given operator is in that format
       /// \return: a pair of a sparse tensor and a remap; the sparse tensor has the same image
       ///          labels as the given operator and domain labels are indicated by the returned remap.
       ///
@@ -6963,7 +6966,8 @@ namespace Chroma
 		typename std::enable_if<(NOp >= Nd + 1), bool>::type = true>
       std::pair<SpTensor<NOp, NOp, COMPLEX>, remap>
       cloneUnblockedOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power = 1,
-				       ColOrdering coBlk = RowMajor, const std::string& prefix = "")
+				       ColOrdering coBlk = RowMajor, bool useKronFormat = true,
+				       const std::string& prefix = "")
       {
 	using value_type = typename detail::base_type<COMPLEX>::type;
 
@@ -6986,7 +6990,7 @@ namespace Chroma
 
 	// The spin label if the spin-color matrices are the tensor product of a spin matrix
 	// and a color matrix
-	char kronecker_label = op.is_kronecker() ? 's' : 0;
+	char kronecker_label = op.is_kronecker() && useKronFormat ? 's' : 0;
 
 	// Create the ordering for the domain and the image where the dense dimensions indices run faster than the sparse dimensions.
 	// If using Kronecker variant, the Kronecker label (the spin) runs the slowest of the dense labels.
@@ -7336,6 +7340,7 @@ namespace Chroma
       /// \param power: maximum distance to recover the nonzeros:
       ///               0, block diagonal; 1: near-neighbors...
       /// \param coBlk: ordering of the nonzero blocks of the sparse operator
+      /// \param useKronFormat: whether to create a Kronecker BSR variant if the given operator is in that format
       /// \return: a pair of a sparse tensor and a remap; the sparse tensor has the same image
       ///          labels as the given operator and domain labels are indicated by the returned remap.
 
@@ -7343,7 +7348,8 @@ namespace Chroma
 		typename std::enable_if<(NOp > 9), bool>::type = true>
       std::pair<SpTensor<NOp, NOp, COMPLEX>, remap>
       cloneOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power,
-			      ColOrdering coBlk = RowMajor, const std::string& prefix = "")
+			      ColOrdering coBlk = RowMajor, bool useKronFormat = true,
+			      const std::string& prefix = "")
       {
 	Tracker _t(std::string("clone blocked operator ") + prefix);
 
@@ -7377,8 +7383,8 @@ namespace Chroma
 	  throw std::runtime_error("cloneOperatorToSpTensor: invalid power value, it isn't "
 				   "divisible by the furthest neighbor distance");
 	auto opdims = op.i.kvdim();
-	auto t =
-	  cloneUnblockedOperatorToSpTensor(unblocked_op, std::min(power, op_dist), coBlk, prefix);
+	auto t = cloneUnblockedOperatorToSpTensor(unblocked_op, std::min(power, op_dist), coBlk,
+						  useKronFormat, prefix);
 	remap rd = t.second;
 	for (const auto& it :
 	     detail::getNewLabels("0123", op.d.order + op.i.order + "0123" + t.first.d.order))
@@ -7405,7 +7411,8 @@ namespace Chroma
 		typename std::enable_if<(NOp <= 9), bool>::type = true>
       std::pair<SpTensor<NOp, NOp, COMPLEX>, remap>
       cloneOperatorToSpTensor(const Operator<NOp, COMPLEX>& op, unsigned int power,
-			      ColOrdering coBlk = RowMajor, const std::string& prefix = "")
+			      ColOrdering coBlk = RowMajor, bool = true,
+			      const std::string& prefix = "")
       {
 	throw std::runtime_error("trying to clone an unblock operator with a blocking function");
       }
@@ -7436,13 +7443,15 @@ namespace Chroma
 	SpTensor<NOp, NOp, COMPLEX> sop;
 	if (blockingAsSparseDimensions == ConsiderBlockingSparse)
 	{
-	  auto t = cloneOperatorToSpTensor(op, power, coBlk, prefix);
+	  auto t = cloneOperatorToSpTensor(op, power, coBlk, true /* use Kron format if possible */,
+					   prefix);
 	  sop = t.first;
 	  rd = t.second;
 	}
 	else
 	{
-	  auto t = cloneUnblockedOperatorToSpTensor(op, power, coBlk, prefix);
+	  auto t = cloneUnblockedOperatorToSpTensor(op, power, coBlk,
+						    true /* use Kron format if possible */, prefix);
 	  sop = t.first;
 	  rd = t.second;
 	}
