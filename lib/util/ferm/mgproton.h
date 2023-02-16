@@ -121,6 +121,14 @@ namespace Chroma
       }
     }
 
+    /// Whether to check orthogonalization level, used by `ortho`
+
+    enum class CheckOrthoLevel
+    {
+      dontCheckOrthoLevel,
+      doCheckOrthoLevel
+    };
+
     /// Orthonormalize W against V, W_out <- (I-V*V')*W_in*R, with R such that W_out'*W_out = I,
     /// for each combination of values of the order_t dimensions, or once if it is empty.
     /// \param V: orthogonal matrix to orthogonalize against
@@ -128,12 +136,22 @@ namespace Chroma
     /// \param order_t: dimension labels that do not participate in the orthogonalization
     /// \param order_rows: dimension labels that are the rows of the matrices V and W
     /// \param order_cols: dimension labels that are the columns of the matrices V and W
+    /// \param max_its: maximum number of iterations
+    /// \param checkOrthoLevel: whether to stop earlier if the orthogonality level is good enough
+    /// \param verb: verbosity level
+    /// \param prefix: prefix for logging
+    ///
+    /// NOTE: ortho is mostly used to normalize vectors, that is, tensors whose columns are
+    /// aren't distributed. The function that checks the orthogonality level assumes that,
+    /// and it's very inefficient when columns are distributed.
 
     template <std::size_t Nrows, std::size_t Ncols, std::size_t NV, typename COMPLEX,
 	      std::size_t NW>
     void ortho(Tensor<NV, COMPLEX> V, Tensor<NW, COMPLEX> W, const std::string& order_t,
 	       const std::string& order_rows, const std::string& order_cols,
-	       unsigned int max_its = 4, Verbosity verb = NoOutput, const std::string& prefix = "")
+	       unsigned int max_its = 4,
+	       CheckOrthoLevel checkOrthoLevel = CheckOrthoLevel::doCheckOrthoLevel,
+	       Verbosity verb = NoOutput, const std::string& prefix = "")
     {
       // Check Nrows
       if (order_rows.size() != Nrows)
@@ -166,16 +184,29 @@ namespace Chroma
 		   AddTo, W);
 
 	// Compute Wa'*W and the orthogonality level of the basis
-	auto C = contract<Nt + 2 * Ncols>(Wa.conj(), W, order_rows, none, OnEveryoneReplicated);
-	l = detail::ortho_level<Ncols>(C, order_t, Wcorder, Wac);
-	if (verb >= Detailed)
-	  QDPIO::cout << prefix << " ortho #its: " << i << " |I-V'*V|_F: " << detail::tostr(l)
-		      << std::endl;
+	Tensor<Nt + 2 * Ncols, COMPLEX> C;
+	if (checkOrthoLevel == CheckOrthoLevel::doCheckOrthoLevel)
+	{
+	  C = contract<Nt + 2 * Ncols>(Wa.conj(), W, order_rows, none, OnEveryoneReplicated);
+	  l = detail::ortho_level<Ncols>(C, order_t, Wcorder, Wac);
 
-	// If ||I-C|| < 1, then the basis has no linear dependencies; the conditioning of the basis is
-	// also related to that norm, but we choose an arbitrary close but smaller value than one.
-	if (l < 0.7)
-	  break;
+	  if (verb >= Detailed)
+	    QDPIO::cout << prefix << " ortho #its: " << i << " |I-V'*V|_F: " << detail::tostr(l)
+			<< std::endl;
+
+	  // If ||I-C|| < 1, then the basis has no linear dependencies; the conditioning of the basis is
+	  // also related to that norm, but we choose an arbitrary close but smaller value than one.
+	  if (l < 0.7)
+	    break;
+	}
+	else
+	{
+	  C = contract<Nt + 2 * Ncols>(Wa.conj(), W, order_rows, none);
+
+	  if (verb >= Detailed)
+	    QDPIO::cout << prefix << " ortho #its: " << i << " (no checking ortho level)"
+			<< std::endl;
+	}
 
 	if (i >= max_its)
 	  throw std::runtime_error("ortho: failing in orthonormalizing the basis");
@@ -183,12 +214,22 @@ namespace Chroma
 	// W = W/chol(Wa'*W), where Wa'*W has dimensions (rows,cols)=(Wacorder,Wcorder)
 	cholInv<NW, Nt + 2 * Ncols, NW, COMPLEX>(std::move(C), Wacorder, Wcorder, Wa, Wacorder,
 						 CopyTo, W);
+
 	++i;
+
+	// Stop by number of iterations when don't checking orthogonality level
+	if (checkOrthoLevel == CheckOrthoLevel::dontCheckOrthoLevel && i >= max_its)
+	  break;
       }
 
       if (verb >= JustSummary)
+      {
 	QDPIO::cout << prefix << " ortho summary rank: " << detail::volume(W.kvdim(), Wcorder)
-		    << " #its: " << i << " |I-V'*V|_F: " << detail::tostr(l) << std::endl;
+		    << " #its: " << i;
+	if (checkOrthoLevel == CheckOrthoLevel::doCheckOrthoLevel)
+	  QDPIO::cout << " |I-V'*V|_F: " << detail::tostr(l);
+	QDPIO::cout << std::endl;
+      }
     }
 
     /// Orthonormalize W, W_out <- W_in*R, with R such that W_out'*W_out = I,
@@ -197,14 +238,24 @@ namespace Chroma
     /// \param order_t: dimension labels that do not participate in the orthogonalization
     /// \param order_rows: dimension labels that are the rows of the matrices V and W
     /// \param order_cols: dimension labels that are the columns of the matrices V and W
+    /// \param max_its: maximum number of iterations
+    /// \param checkOrthoLevel: whether to stop earlier if the orthogonality level is good enough
+    /// \param verb: verbosity level
+    /// \param prefix: prefix for logging
+    ///
+    /// NOTE: ortho is mostly used to normalize vectors, that is, tensors whose columns are
+    /// aren't distributed. The function that checks the orthogonality level assumes that,
+    /// and it's very inefficient when columns are distributed.
+
 
     template <std::size_t Nrows, std::size_t Ncols, std::size_t NW, typename COMPLEX>
     void ortho(Tensor<NW, COMPLEX> W, const std::string& order_t, const std::string& order_rows,
-	       const std::string& order_cols, unsigned int max_its = 4, Verbosity verb = NoOutput,
-	       const std::string& prefix = "")
+	       const std::string& order_cols, unsigned int max_its = 4,
+	       CheckOrthoLevel checkOrthoLevel = CheckOrthoLevel::doCheckOrthoLevel,
+	       Verbosity verb = NoOutput, const std::string& prefix = "")
     {
       ortho<Nrows, Ncols, NW, COMPLEX, NW>(Tensor<NW, COMPLEX>{}, W, order_t, order_rows,
-					   order_cols, max_its, verb, prefix);
+					   order_cols, max_its, checkOrthoLevel, verb, prefix);
     }
 
     /// Solve iteratively op * y = x using FGMRES
@@ -360,8 +411,8 @@ namespace Chroma
 	auto Up = U.kvslice_from_size({}, {{Vc, basis_size}});
 	auto Uo = Up.rename_dims({{Vc, Vac}});
 	Uo = Uo.clone();
-	ortho<NOp, 1>(Uo, op.order_t + order_cols, order_rows, std::string(1, Vac), 4, verb,
-		      prefix);
+	ortho<NOp, 1>(Uo, op.order_t + order_cols, order_rows, std::string(1, Vac), 4,
+		      CheckOrthoLevel::doCheckOrthoLevel, verb, prefix);
 
 	// Restrict to Uo: [x_rt H_rt] = Uo'*U = Uo'*[r Up]
 	auto x_rt = contract<2>(Uo.conj(), r, order_rows);
@@ -959,7 +1010,9 @@ namespace Chroma
 	  throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
 
 	// Do the orthogonalization on each block and chirality
-	ortho<6, 1>(nv_blk, "X0123xyzts", "WYZTSC", "c", 4, JustSummary, "prolongator");
+	// NOTE: don't check the orthogonality level, it will replicate the inner products on all processes
+	ortho<6, 1>(nv_blk, "X0123xyzts", "WYZTSC", "c", 4, CheckOrthoLevel::dontCheckOrthoLevel,
+		    JustSummary, "prolongator");
 
 	// Return the operator
 	auto nv_blk_eo_dim = nv_blk.kvdim();
