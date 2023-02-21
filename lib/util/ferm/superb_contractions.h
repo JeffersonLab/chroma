@@ -7075,16 +7075,13 @@ namespace Chroma
 	      for (int s = 0; s < spin * spin; ++s)
 	      {
 		int si = s % spin, sj = s / spin;
-		if (si / 2 == sj / 2)
-		{
-		  Tensor<2, COMPLEX> mat(std::string(1, kronecker_label) +
-					   std::string(1, rd.at(kronecker_label)),
-					 {{spin, spin}}, OnHost, OnEveryoneReplicated);
-		  mat.set_zero();
-		  mat.set({{si, sj}}, 1);
-		  new_neighbors.push_back(dir);
-		  spin_matrix.push_back(mat);
-		}
+		Tensor<2, COMPLEX> mat(std::string(1, kronecker_label) +
+					 std::string(1, rd.at(kronecker_label)),
+				       {{spin, spin}}, OnHost, OnEveryoneReplicated);
+		mat.set_zero();
+		mat.set({{si, sj}}, 1);
+		new_neighbors.push_back(dir);
+		spin_matrix.push_back(mat);
 	      }
 	    }
 	    else
@@ -7225,6 +7222,9 @@ namespace Chroma
 				    {rd[kronecker_label], s_ref / blki[kronecker_label]},
 				    {color_label, c_ref % blki[color_label]},
 				    {rd.at(color_label), c_ref / blki[color_label]}}));
+		// TODO: consider removing the direction instead
+		if (std::norm(val0) == 0)
+		  val0 = COMPLEX{1};
 		for (int s = 0; s < blki[kronecker_label] * blki[kronecker_label]; ++s)
 		{
 		  if (s % blki[kronecker_label] == s / blki[kronecker_label])

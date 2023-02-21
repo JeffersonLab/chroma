@@ -907,6 +907,12 @@ namespace Chroma
 	return r;
       }
 
+      enum class SpinSplitting {
+	None,	   // one spin output
+	Chirality, // two spin output
+	Full	   // four spin output (homoiconic coarse operator)
+      };
+
       /// Returns the prolongator constructed from
       /// \param solvers: map of solvers
       /// \param op: operator to make the inverse of
@@ -917,7 +923,7 @@ namespace Chroma
       getMGProlongator(const Operator<NOp, COMPLEX>& op, unsigned int num_null_vecs,
 		       const std::map<char, unsigned int>& mg_blocking,
 		       const std::map<char, unsigned int>& layout_blocking,
-		       bool do_chirality_splitting, const Operator<NOp, COMPLEX>& null_solver,
+		       SpinSplitting spin_splitting, const Operator<NOp, COMPLEX>& null_solver,
 		       SolverSpace solverSpace)
       {
 	detail::log(1, "starting getMGProlongator");
@@ -936,7 +942,16 @@ namespace Chroma
 	    throw std::runtime_error("The operator dimensions are not divisible by the blocking");
 	}
 
-	// Solve Ax=0 with random initial guesses
+	// Check that there is enough spins to do splitting
+	int ns = opdims.at('s');
+	if (ns != 1 && ns != 2 && ns != Ns)
+	  throw std::runtime_error("Error in getMGProlongator: Unsupported spin number");
+	if (ns == 1)
+	  spin_splitting = SpinSplitting::None;
+	if (ns == 2 && spin_splitting != SpinSplitting::None)
+	  spin_splitting = SpinSplitting::Full;
+
+	// Create the random initial guesses to be used in solving Ax=0
 	auto b = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
 	if (solverSpace == FullSpace)
 	{
@@ -947,15 +962,26 @@ namespace Chroma
 	  b.set_zero();
 	  nrand(b.kvslice_from_size({}, {{'X', 1}}));
 	}
+
+	// If using full spin splitting, we try to make the values the same across different
+	// spin components so that the coarse operator links are also the tensor product of a
+	// spin matrix and a color matrix. This will be enforced latter, for now this will
+	// promote that the solution vector values will be also the same across different spin
+	// indices
+	if (spin_splitting == SpinSplitting::Full)
+	{
+	  for (int s = 1; s < ns; ++s)
+	    b.kvslice_from_size({{'s', 0}}, {{'s', 1}})
+	      .copyTo(b.kvslice_from_size({{'s', s}}, {{'s', 1}}));
+	}
+
+	// Solve Ax=0 with the random initial guesses
 	auto nv = null_solver(op(b));
 	b.scale(-1).addTo(nv);
 
 	// Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
-	int ns = opdims.at('s');
-	if (ns != 1 && ns != 2 && ns != Ns)
-	  throw std::runtime_error("Error in getMGProlongator: Unsupported spin number");
 	auto nv2 = nv;
-	if (ns > 1 && do_chirality_splitting)
+	if (spin_splitting == SpinSplitting::Chirality)
 	{
 	  nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
 	  auto g5 = getGamma5<COMPLEX>(ns, OnHost), g5pos = g5.cloneOn(OnHost),
@@ -968,6 +994,14 @@ namespace Chroma
 	    .contract(g5pos, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
 	  nv2.kvslice_from_size({{'n', num_null_vecs}}, {{'n', num_null_vecs}})
 	    .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
+	}
+	else if (spin_splitting == SpinSplitting::Full)
+	{
+	  // Enforce the values to be the same across different spins so that the coarse operator links
+	  // are also the tensor product of a spin matrix and a color matrix
+	  for (int s = 1; s < ns; ++s)
+	    nv2.kvslice_from_size({{'s', 0}}, {{'s', 1}})
+	      .copyTo(nv2.kvslice_from_size({{'s', s}}, {{'s', 1}}));
 	}
 
 	// If the blocking in x isn't divisible by X, then work on natural ordering
@@ -984,14 +1018,32 @@ namespace Chroma
 	// and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
 	// have the remaining
 
+	std::map<std::string, std::string> m_blk, m_blk_rev, m_blk_nv;
+	std::string contract_labels;
+	bool use_full_spin_splitting = (ns == 4 && spin_splitting == SpinSplitting::Full);
+	if (spin_splitting == SpinSplitting::Full)
+	{
+	  m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"},
+		      {"n", "c"},      {"c", "C"},    {"s", "sS"}};
+	  m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
+		   {"3t", "T3t"},   {"c", "C"},	   {"s", "sS"}};
+	  m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"},
+		       {"T3t", "3t"},	{"C", "c"},    {"sS", "s"}};
+	  contract_labels = "WYZTSC";
+	}
+	else
+	{
+	  m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"},
+		      {"n", "cs"},     {"c", "C"},    {"s", "S"}};
+	  m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
+		   {"3t", "T3t"},   {"c", "C"},	   {"s", "S"}};
+	  m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"},
+		       {"T3t", "3t"},	{"C", "c"},    {"S", "s"}};
+	  contract_labels = "WYZTSC";
+	}
+
 	auto nv_blk = nv2.template reshape_dimensions<NOp + 1 + 5>(
-	  {{"X0x", "WX0x"},
-	   {"1y", "Y1y"},
-	   {"2z", "Z2z"},
-	   {"3t", "T3t"},
-	   {"n", "cs"},
-	   {"c", "C"},
-	   {"s", "S"}},
+	  m_blk_nv,
 	  {{'X', 1}, // we don't do even-odd layout on the coarse operator space
 	   {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
 	   {'Y', mg_blocking.at('y')},
@@ -1001,8 +1053,7 @@ namespace Chroma
 	   {'1', layout_blocking.at('y')},
 	   {'2', layout_blocking.at('z')},
 	   {'3', layout_blocking.at('t')},
-	   {'c', num_null_vecs},
-	   {'s', nv2.kvdim()['n'] / num_null_vecs}},
+	   {'c', num_null_vecs}},
 	  true);
 
 	// User even-odd ordering for nv_blk
@@ -1025,44 +1076,68 @@ namespace Chroma
 	  nv_blk_eo_dim['X'] = 2;
 	}
 	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
-	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		  auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
-			      .template reshape_dimensions<NOp + 1>({{"WX0x", "X0x"},
-								     {"Y1y", "1y"},
-								     {"Z2z", "2z"},
-								     {"T3t", "3t"},
-								     {"C", "c"},
-								     {"S", "s"}},
-								    opdims, true);
-		  if (not x_blocking_divide_X)
-		    toEvenOddOrdering(y0).copyTo(y);
-		  else
-		    y0.copyTo(y);
-		},
-		d,
-		i,
-		[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		  auto x0 = x;
-		  if (not x_blocking_divide_X)
-		    x0 = toNaturalOrdering(x);
-		  auto x_blk = x0.template reshape_dimensions<NOp + 1 + 4>({{"X0x", "WX0x"},
-									    {"1y", "Y1y"},
-									    {"2z", "Z2z"},
-									    {"3t", "T3t"},
-									    {"c", "C"},
-									    {"s", "S"}},
-									   nv_blk.kvdim(), true);
-		  if (nv_blk_eo_dim.at('X') == 1)
-		    contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC", CopyTo, y);
-		  else
-		    toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC")).copyTo(y);
-		},
-		op.order_t,
-		nv_blk_eo_dim.at('X') == 2 ? XEvenOddLayout : NaturalLayout,
-		op.imgLayout,
-		getNeighborsAfterBlocking(mg_blocking, op.d.kvdim(), op.neighbors, op.imgLayout),
-		op.preferred_col_ordering,
-		false /* no Kronecker blocking */};
+	if (spin_splitting != SpinSplitting::Full)
+	{
+	  return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		    auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
+				.template reshape_dimensions<NOp + 1>(m_blk_rev, opdims, true);
+		    if (not x_blocking_divide_X)
+		      toEvenOddOrdering(y0).copyTo(y);
+		    else
+		      y0.copyTo(y);
+		  },
+		  d,
+		  i,
+		  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		    auto x0 = x;
+		    if (not x_blocking_divide_X)
+		      x0 = toNaturalOrdering(x);
+		    auto x_blk =
+		      x0.template reshape_dimensions<NOp + 1 + 4>(m_blk, nv_blk.kvdim(), true);
+		    if (nv_blk_eo_dim.at('X') == 1)
+		      contract<NOp + 1>(nv_blk.conj(), x_blk, contract_labels, CopyTo, y);
+		    else
+		      toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, contract_labels))
+			.copyTo(y);
+		  },
+		  op.order_t,
+		  nv_blk_eo_dim.at('X') == 2 ? XEvenOddLayout : NaturalLayout,
+		  op.imgLayout,
+		  getNeighborsAfterBlocking(mg_blocking, op.d.kvdim(), op.neighbors, op.imgLayout),
+		  op.preferred_col_ordering,
+		  false /* no Kronecker format */};
+	}
+	else
+	{
+	  return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		    auto y0 = contract<NOp + 1 + 5>(nv_blk, toNaturalOrdering(x), "c")
+				.template reshape_dimensions<NOp + 1>(m_blk_rev, opdims, true);
+		    if (not x_blocking_divide_X)
+		      toEvenOddOrdering(y0).copyTo(y);
+		    else
+		      y0.copyTo(y);
+		  },
+		  d,
+		  i,
+		  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		    auto x0 = x;
+		    if (not x_blocking_divide_X)
+		      x0 = toNaturalOrdering(x);
+		    auto x_blk =
+		      x0.template reshape_dimensions<NOp + 1 + 5>(m_blk, nv_blk.kvdim(), true);
+		    if (nv_blk_eo_dim.at('X') == 1)
+		      contract<NOp + 1>(nv_blk.conj(), x_blk, contract_labels, CopyTo, y);
+		    else
+		      toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, contract_labels))
+			.copyTo(y);
+		  },
+		  op.order_t,
+		  nv_blk_eo_dim.at('X') == 2 ? XEvenOddLayout : NaturalLayout,
+		  op.imgLayout,
+		  getNeighborsAfterBlocking(mg_blocking, op.d.kvdim(), op.neighbors, op.imgLayout),
+		  op.preferred_col_ordering,
+		  true /* using Kronecker format */};
+	}
       }
 
       /// Return a cache for the prolongators
@@ -1123,7 +1198,12 @@ namespace Chroma
 						     {'t', layout_blocking_v[3]}};
 	const Operator<NOp, COMPLEX> nullSolver =
 	  getSolver(op, getOptions(ops, "solver_null_vecs"));
-	bool do_chirality_splitting = getOption<bool>(ops, "chirality_splitting", true);
+	static const std::map<std::string, SpinSplitting> m_spin_splitting{
+	  {"none", SpinSplitting::None},
+	  {"chirality_splitting", SpinSplitting::Chirality},
+	  {"full", SpinSplitting::Full}};
+	SpinSplitting spin_splitting = getOption<SpinSplitting>(
+	  ops, "spin_splitting", m_spin_splitting, SpinSplitting::Chirality);
 
 	// Grab the prolongator from cache if the user name it
 	Operator<NOp, COMPLEX> V;
@@ -1131,8 +1211,8 @@ namespace Chroma
 	if (prolongator_id.size() == 0 ||
 	    getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0)
 	{
-	  V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking,
-			       do_chirality_splitting, nullSolver, solverSpace);
+	  V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, spin_splitting,
+			       nullSolver, solverSpace);
 	  if (prolongator_id.size() > 0)
 	    getProlongatorCache<NOp, COMPLEX>()[prolongator_id] = V;
 	}
@@ -1156,7 +1236,7 @@ namespace Chroma
 	    [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	      foreachInChuncks(x, y, create_coarse_max_rhs,
 			       [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
-				 if (do_chirality_splitting || ns == 1)
+				 if (spin_splitting != SpinSplitting::None || ns == 1)
 				 {
 				   V.tconj()(op(V(x)), y);
 				 }
@@ -1170,7 +1250,7 @@ namespace Chroma
 			       });
 	    },
 	    V.d, V.d, nullptr, op.order_t, V.domLayout, V.domLayout, V.neighbors,
-	    op.preferred_col_ordering, false /* no Kronecker blocking */},
+	    op.preferred_col_ordering, V.is_kronecker()},
 	  co, co_blk, ConsiderBlockingSparse, "coarse");
 
 	// Get the solver for the projector
@@ -1185,7 +1265,7 @@ namespace Chroma
 	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	    // x0 = g5 * x if !do_chirality_splitting && ns > 1
 	    auto x0 = x;
-	    if (!do_chirality_splitting && ns > 1)
+	    if (spin_splitting == SpinSplitting::None && ns > 1)
 	    {
 	      x0 =
 		contract<NOp + 1>(g5.rename_dims({{'j', 's'}}), x, "s").rename_dims({{'i', 's'}});
