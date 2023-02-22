@@ -948,8 +948,6 @@ namespace Chroma
 	  throw std::runtime_error("Error in getMGProlongator: Unsupported spin number");
 	if (ns == 1)
 	  spin_splitting = SpinSplitting::None;
-	if (ns == 2 && spin_splitting != SpinSplitting::None)
-	  spin_splitting = SpinSplitting::Full;
 
 	// Create the random initial guesses to be used in solving Ax=0
 	auto b = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
@@ -963,22 +961,14 @@ namespace Chroma
 	  nrand(b.kvslice_from_size({}, {{'X', 1}}));
 	}
 
-	// If using full spin splitting, we try to make the values the same across different
-	// spin components so that the coarse operator links are also the tensor product of a
-	// spin matrix and a color matrix. This will be enforced latter, for now this will
-	// promote that the solution vector values will be also the same across different spin
-	// indices
-	if (spin_splitting == SpinSplitting::Full)
-	{
-	  for (int s = 1; s < ns; ++s)
-	    b.kvslice_from_size({{'s', 0}}, {{'s', 1}})
-	      .copyTo(b.kvslice_from_size({{'s', s}}, {{'s', 1}}));
-	}
-
 	// Solve Ax=0 with the random initial guesses
 	auto nv = null_solver(op(b));
 	b.scale(-1).addTo(nv);
+        b.release();
 
+
+	if (spin_splitting != SpinSplitting::Full)
+	{
 	// Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
 	auto nv2 = nv;
 	if (spin_splitting == SpinSplitting::Chirality)
@@ -995,89 +985,57 @@ namespace Chroma
 	  nv2.kvslice_from_size({{'n', num_null_vecs}}, {{'n', num_null_vecs}})
 	    .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
 	}
-	else if (spin_splitting == SpinSplitting::Full)
-	{
-	  // Enforce the values to be the same across different spins so that the coarse operator links
-	  // are also the tensor product of a spin matrix and a color matrix
-	  for (int s = 1; s < ns; ++s)
-	    nv2.kvslice_from_size({{'s', 0}}, {{'s', 1}})
-	      .copyTo(nv2.kvslice_from_size({{'s', s}}, {{'s', 1}}));
-	}
+	nv.release();
 
-	// If the blocking in x isn't divisible by X, then work on natural ordering
-	if (not x_blocking_divide_X)
-	{
-	  nv2 = toNaturalOrdering(nv2);
-	  opdims['x'] *= X;
-	  opdims['X'] = 1;
-	}
+	  // Do the blocking, which encompasses the following transformations:
+	  //  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
+	  // where output X is a singlet dimension, and W,Y,Z, and T have size mg_blocking,
+	  // and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
+	  // have the remaining
 
-	// Do the blocking, which encompasses the following transformations:
-	//  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
-	// where output X is a singlet dimension, and W,Y,Z, and T have size mg_blocking,
-	// and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
-	// have the remaining
-
-	std::map<std::string, std::string> m_blk, m_blk_rev, m_blk_nv;
-	std::string contract_labels;
-	bool use_full_spin_splitting = (ns == 4 && spin_splitting == SpinSplitting::Full);
-	if (spin_splitting == SpinSplitting::Full)
-	{
-	  m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"},
-		      {"n", "c"},      {"c", "C"},    {"s", "sS"}};
-	  m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
-		   {"3t", "T3t"},   {"c", "C"},	   {"s", "sS"}};
-	  m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"},
-		       {"T3t", "3t"},	{"C", "c"},    {"sS", "s"}};
-	  contract_labels = "WYZTSC";
-	}
-	else
-	{
+	  std::map<std::string, std::string> m_blk, m_blk_rev, m_blk_nv;
 	  m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"},
 		      {"n", "cs"},     {"c", "C"},    {"s", "S"}};
 	  m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
 		   {"3t", "T3t"},   {"c", "C"},	   {"s", "S"}};
 	  m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"},
 		       {"T3t", "3t"},	{"C", "c"},    {"S", "s"}};
-	  contract_labels = "WYZTSC";
-	}
 
-	auto nv_blk = nv2.template reshape_dimensions<NOp + 1 + 5>(
-	  m_blk_nv,
-	  {{'X', 1}, // we don't do even-odd layout on the coarse operator space
-	   {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
-	   {'Y', mg_blocking.at('y')},
-	   {'Z', mg_blocking.at('z')},
-	   {'T', mg_blocking.at('t')},
-	   {'0', layout_blocking.at('x')},
-	   {'1', layout_blocking.at('y')},
-	   {'2', layout_blocking.at('z')},
-	   {'3', layout_blocking.at('t')},
-	   {'c', num_null_vecs}},
-	  true);
+	  auto nv_blk = nv2.template reshape_dimensions<NOp + 1 + 5>(
+	    m_blk_nv,
+	    {{'X', 1}, // we don't do even-odd layout on the coarse operator space
+	     {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
+	     {'Y', mg_blocking.at('y')},
+	     {'Z', mg_blocking.at('z')},
+	     {'T', mg_blocking.at('t')},
+	     {'0', layout_blocking.at('x')},
+	     {'1', layout_blocking.at('y')},
+	     {'2', layout_blocking.at('z')},
+	     {'3', layout_blocking.at('t')},
+	     {'c', num_null_vecs}},
+	    true);
+	  nv2.release();
 
-	// User even-odd ordering for nv_blk
-	if (nv_blk.kvdim().at('0') != 1)
-	  throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
+	  // User even-odd ordering for nv_blk
+	  if (nv_blk.kvdim().at('0') != 1)
+	    throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
 
-	// Do the orthogonalization on each block and chirality
-	// NOTE: don't check the orthogonality level, it will replicate the inner products on all processes
-	ortho<6, 1>(nv_blk, "X0123xyzts", "WYZTSC", "c", 4, CheckOrthoLevel::dontCheckOrthoLevel,
-		    JustSummary, "prolongator");
+	  // Do the orthogonalization on each block and chirality
+	  // NOTE: don't check the orthogonality level, it will replicate the inner products on all processes
+	  ortho<6, 1>(nv_blk, "X0123xyzts", "WYZTSC", "c", 4, CheckOrthoLevel::dontCheckOrthoLevel,
+		      JustSummary, "prolongator");
 
-	// Return the operator
-	auto nv_blk_eo_dim = nv_blk.kvdim();
-	if (X == 2 && nv_blk_eo_dim.at('x') % 2 == 0 &&
-	    (nv_blk_eo_dim.at('y') == 1 || nv_blk_eo_dim.at('y') % 2 == 0) &&
-	    (nv_blk_eo_dim.at('z') == 1 || nv_blk_eo_dim.at('z') % 2 == 0) &&
-	    (nv_blk_eo_dim.at('t') == 1 || nv_blk_eo_dim.at('t') % 2 == 0))
-	{
-	  nv_blk_eo_dim['x'] /= 2;
-	  nv_blk_eo_dim['X'] = 2;
-	}
-	Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
-	if (spin_splitting != SpinSplitting::Full)
-	{
+	  // Return the operator
+	  auto nv_blk_eo_dim = nv_blk.kvdim();
+	  if (X == 2 && nv_blk_eo_dim.at('x') % 2 == 0 &&
+	      (nv_blk_eo_dim.at('y') == 1 || nv_blk_eo_dim.at('y') % 2 == 0) &&
+	      (nv_blk_eo_dim.at('z') == 1 || nv_blk_eo_dim.at('z') % 2 == 0) &&
+	      (nv_blk_eo_dim.at('t') == 1 || nv_blk_eo_dim.at('t') % 2 == 0))
+	  {
+	    nv_blk_eo_dim['x'] /= 2;
+	    nv_blk_eo_dim['X'] = 2;
+	  }
+	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
 	  return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		    auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
 				.template reshape_dimensions<NOp + 1>(m_blk_rev, opdims, true);
@@ -1095,9 +1053,9 @@ namespace Chroma
 		    auto x_blk =
 		      x0.template reshape_dimensions<NOp + 1 + 4>(m_blk, nv_blk.kvdim(), true);
 		    if (nv_blk_eo_dim.at('X') == 1)
-		      contract<NOp + 1>(nv_blk.conj(), x_blk, contract_labels, CopyTo, y);
+		      contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC", CopyTo, y);
 		    else
-		      toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, contract_labels))
+		      toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC"))
 			.copyTo(y);
 		  },
 		  op.order_t,
@@ -1109,8 +1067,57 @@ namespace Chroma
 	}
 	else
 	{
+	  // Do the blocking, which encompasses the following transformations:
+	  //  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
+	  // where output X is a singlet dimension, and W,Y,Z, and T have size mg_blocking,
+	  // and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
+	  // have the remaining.
+	  // Also, enforce the values to be the same across different spins so that the coarse operator links
+	  // are also the tensor product of a spin matrix and a color matrix
+
+	  std::map<std::string, std::string> m_blk, m_blk_rev, m_blk_nv;
+	  m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
+		      {"3t", "T3t"},   {"ns", "c"},   {"c", "C"}};
+	  m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"}, {"c", "C"}};
+	  m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"}, {"T3t", "3t"}, {"C", "c"}};
+
+	  auto nv_blk = nv.template reshape_dimensions<NOp + 4>(
+	    m_blk_nv,
+	    {{'X', 1}, // we don't do even-odd layout on the coarse operator space
+	     {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
+	     {'Y', mg_blocking.at('y')},
+	     {'Z', mg_blocking.at('z')},
+	     {'T', mg_blocking.at('t')},
+	     {'0', layout_blocking.at('x')},
+	     {'1', layout_blocking.at('y')},
+	     {'2', layout_blocking.at('z')},
+	     {'3', layout_blocking.at('t')},
+	     {'c', num_null_vecs * ns}},
+	    true);
+	  nv.release();
+
+	  // User even-odd ordering for nv_blk
+	  if (nv_blk.kvdim().at('0') != 1)
+	    throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
+
+	  // Do the orthogonalization on each block and chirality
+	  // NOTE: don't check the orthogonality level, it will replicate the inner products on all processes
+	  ortho<5, 1>(nv_blk, "X0123xyzt", "WYZTC", "c", 4, CheckOrthoLevel::dontCheckOrthoLevel,
+		      JustSummary, "prolongator");
+
+	  // Return the operator
+	  auto nv_blk_eo_dim = nv_blk.kvdim();
+	  if (X == 2 && nv_blk_eo_dim.at('x') % 2 == 0 &&
+	      (nv_blk_eo_dim.at('y') == 1 || nv_blk_eo_dim.at('y') % 2 == 0) &&
+	      (nv_blk_eo_dim.at('z') == 1 || nv_blk_eo_dim.at('z') % 2 == 0) &&
+	      (nv_blk_eo_dim.at('t') == 1 || nv_blk_eo_dim.at('t') % 2 == 0))
+	  {
+	    nv_blk_eo_dim['x'] /= 2;
+	    nv_blk_eo_dim['X'] = 2;
+	  }
+	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
 	  return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		    auto y0 = contract<NOp + 1 + 5>(nv_blk, toNaturalOrdering(x), "c")
+		    auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "c")
 				.template reshape_dimensions<NOp + 1>(m_blk_rev, opdims, true);
 		    if (not x_blocking_divide_X)
 		      toEvenOddOrdering(y0).copyTo(y);
@@ -1124,12 +1131,11 @@ namespace Chroma
 		    if (not x_blocking_divide_X)
 		      x0 = toNaturalOrdering(x);
 		    auto x_blk =
-		      x0.template reshape_dimensions<NOp + 1 + 5>(m_blk, nv_blk.kvdim(), true);
+		      x0.template reshape_dimensions<NOp + 1 + 4>(m_blk, nv_blk.kvdim(), true);
 		    if (nv_blk_eo_dim.at('X') == 1)
-		      contract<NOp + 1>(nv_blk.conj(), x_blk, contract_labels, CopyTo, y);
+		      contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTC", CopyTo, y);
 		    else
-		      toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, contract_labels))
-			.copyTo(y);
+		      toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTC")).copyTo(y);
 		  },
 		  op.order_t,
 		  nv_blk_eo_dim.at('X') == 2 ? XEvenOddLayout : NaturalLayout,
