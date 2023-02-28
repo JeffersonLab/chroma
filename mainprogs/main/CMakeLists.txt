@@ -32,9 +32,7 @@ foreach( EXEC ${ChromaMain_EXECUTABLES})
   add_executable( ${EXEC} ${EXEC}.cc )
 
   if (QDP_IS_QDPJIT)
-    if(QDP_PROP_OPT)
-      set_target_properties( ${EXEC} PROPERTIES CXX_STANDARD 20 )
-    endif()
+    set_target_properties( ${EXEC} PROPERTIES CXX_STANDARD 20 )
 
     if( QDP_BACKEND_L0 )
       find_package(PkgConfig REQUIRED)

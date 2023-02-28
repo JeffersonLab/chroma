@@ -93,9 +93,7 @@ foreach( EXEC ${ChromaSingleExecs})
   add_executable( ${EXEC} ${EXEC}.cc )
 
   if (QDP_IS_QDPJIT)
-    if(QDP_PROP_OPT)
-      set_target_properties( ${EXEC} PROPERTIES CXX_STANDARD 20 )
-    endif()
+    set_target_properties( ${EXEC} PROPERTIES CXX_STANDARD 20 )
     
     if( QDP_BACKEND_L0 )
       find_package(PkgConfig REQUIRED)
@@ -123,9 +121,7 @@ add_executable(t_symm_prec
 	)
 
 if (QDP_IS_QDPJIT)
-  if(QDP_PROP_OPT)
-    set_target_properties( t_symm_prec PROPERTIES CXX_STANDARD 20 )
-  endif()
+  set_target_properties( t_symm_prec PROPERTIES CXX_STANDARD 20 )
     
   if( QDP_BACKEND_L0 )
     find_package(PkgConfig REQUIRED)
@@ -147,9 +143,7 @@ add_executable(t_inv_fgmres_dr
 	)
 
 if (QDP_IS_QDPJIT)
-  if(QDP_PROP_OPT)
-    set_target_properties( t_inv_fgmres_dr PROPERTIES CXX_STANDARD 20 )
-  endif()
+  set_target_properties( t_inv_fgmres_dr PROPERTIES CXX_STANDARD 20 )
     
   if( QDP_BACKEND_L0 )
     find_package(PkgConfig REQUIRED)

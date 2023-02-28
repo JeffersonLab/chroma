@@ -769,7 +769,8 @@ nobase_include_HEADERS += \
 	util/ferm/crc48.h \
 	util/ferm/distillution_noise.h \
         util/ferm/spin_rep.h \
-        util/ferm/twoquark_contract_ops.h
+        util/ferm/twoquark_contract_ops.h \
+	util/ferm/unsmeared_fsq_disco.h
 
 #	actions/ferm/fermacts/flic_fermact_params_w.h
 #	actions/ferm/fermacts/eoprec_flic_fermact_w.h
@@ -1755,7 +1756,8 @@ libchroma_a_SOURCES += \
 	util/ferm/map_obj/map_obj_aggregate_w.cc \
 	util/ferm/map_obj/map_obj_memory_w.cc \
 	util/ferm/map_obj/map_obj_disk_w.cc \
-	util/ferm/map_obj/map_obj_null_w.cc
+	util/ferm/map_obj/map_obj_null_w.cc \
+	util/ferm/unsmeared_fsq_disco.cc
 
 
 # Taken out for now
