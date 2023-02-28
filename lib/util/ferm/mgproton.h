@@ -966,26 +966,25 @@ namespace Chroma
 	b.scale(-1).addTo(nv);
         b.release();
 
-
 	if (spin_splitting != SpinSplitting::Full)
 	{
-	// Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
-	auto nv2 = nv;
-	if (spin_splitting == SpinSplitting::Chirality)
-	{
-	  nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
-	  auto g5 = getGamma5<COMPLEX>(ns, OnHost), g5pos = g5.cloneOn(OnHost),
-	       g5neg = g5.cloneOn(OnHost);
-	  for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
-	    g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
-	  for (int i = 0; i < ns; ++i) // make diagonal entries of gneg all negative or zero
-	    g5neg.set({{i, i}}, g5.get({{i, i}}) - COMPLEX{1});
-	  nv2.kvslice_from_size({}, {{'n', num_null_vecs}})
-	    .contract(g5pos, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
-	  nv2.kvslice_from_size({{'n', num_null_vecs}}, {{'n', num_null_vecs}})
-	    .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
-	}
-	nv.release();
+	  // Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
+	  auto nv2 = nv;
+	  if (spin_splitting == SpinSplitting::Chirality)
+	  {
+	    nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
+	    auto g5 = getGamma5<COMPLEX>(ns, OnHost), g5pos = g5.cloneOn(OnHost),
+		 g5neg = g5.cloneOn(OnHost);
+	    for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
+	      g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
+	    for (int i = 0; i < ns; ++i) // make diagonal entries of gneg all negative or zero
+	      g5neg.set({{i, i}}, g5.get({{i, i}}) - COMPLEX{1});
+	    nv2.kvslice_from_size({}, {{'n', num_null_vecs}})
+	      .contract(g5pos, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
+	    nv2.kvslice_from_size({{'n', num_null_vecs}}, {{'n', num_null_vecs}})
+	      .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
+	  }
+	  nv.release();
 
 	  // Do the blocking, which encompasses the following transformations:
 	  //  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
@@ -1036,34 +1035,33 @@ namespace Chroma
 	    nv_blk_eo_dim['X'] = 2;
 	  }
 	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
-	  return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		    auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
-				.template reshape_dimensions<NOp + 1>(m_blk_rev, opdims, true);
-		    if (not x_blocking_divide_X)
-		      toEvenOddOrdering(y0).copyTo(y);
-		    else
-		      y0.copyTo(y);
-		  },
-		  d,
-		  i,
-		  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		    auto x0 = x;
-		    if (not x_blocking_divide_X)
-		      x0 = toNaturalOrdering(x);
-		    auto x_blk =
-		      x0.template reshape_dimensions<NOp + 1 + 4>(m_blk, nv_blk.kvdim(), true);
-		    if (nv_blk_eo_dim.at('X') == 1)
-		      contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC", CopyTo, y);
-		    else
-		      toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC"))
-			.copyTo(y);
-		  },
-		  op.order_t,
-		  nv_blk_eo_dim.at('X') == 2 ? XEvenOddLayout : NaturalLayout,
-		  op.imgLayout,
-		  getNeighborsAfterBlocking(mg_blocking, op.d.kvdim(), op.neighbors, op.imgLayout),
-		  op.preferred_col_ordering,
-		  false /* no Kronecker format */};
+	  return {
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
+			  .template reshape_dimensions<NOp + 1>(m_blk_rev, opdims, true);
+	      if (not x_blocking_divide_X)
+		toEvenOddOrdering(y0).copyTo(y);
+	      else
+		y0.copyTo(y);
+	    },
+	    d,
+	    i,
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      auto x0 = x;
+	      if (not x_blocking_divide_X)
+		x0 = toNaturalOrdering(x);
+	      auto x_blk = x0.template reshape_dimensions<NOp + 1 + 4>(m_blk, nv_blk.kvdim(), true);
+	      if (nv_blk_eo_dim.at('X') == 1)
+		contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC", CopyTo, y);
+	      else
+		toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC")).copyTo(y);
+	    },
+	    op.order_t,
+	    nv_blk_eo_dim.at('X') == 2 ? XEvenOddLayout : NaturalLayout,
+	    op.imgLayout,
+	    getNeighborsAfterBlocking(mg_blocking, op.d.kvdim(), op.neighbors, op.imgLayout),
+	    op.preferred_col_ordering,
+	    false /* no Kronecker format */};
 	}
 	else
 	{

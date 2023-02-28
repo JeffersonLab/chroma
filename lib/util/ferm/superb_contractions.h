@@ -3836,7 +3836,7 @@ namespace Chroma
 	return Tensor<N, T>(*this, scalar * detail::cond_conj(conjugate, s), conjugate);
       }
 
-      /// Return a view of this tensor where the elements are conjuated
+      /// Return a view of this tensor where the elements are conjugated
       /// \return: a new view (it doesn't create a copy of the tensor)
 
       Tensor<N, T> conj() const
