@@ -531,7 +531,7 @@ namespace Chroma
 
       // Check options
       if (max_its == 0 && tol <= 0)
-	throw std::runtime_error("fgmres: please give a stopping criterion, either a tolerance or "
+	throw std::runtime_error("bicgstab: please give a stopping criterion, either a tolerance or "
 				 "a maximum number of iterations");
       if (max_its == 0)
 	max_its = std::numeric_limits<unsigned int>::max();
@@ -636,7 +636,7 @@ namespace Chroma
 	  for (int i = 0, vol = normr.volume(); i < vol; ++i)
 	    max_tol_d = std::max(max_tol_d, (double)normrd.get({{i}}) / normr.get({{i}}));
 	  QDPIO::cout << prefix
-		      << " MGPROTON FGMRES error in residual vector: " << detail::tostr(max_tol_d)
+		      << " MGPROTON BICGSTAB error in residual vector: " << detail::tostr(max_tol_d)
 		      << std::endl;
 	}
 
@@ -669,12 +669,12 @@ namespace Chroma
 	for (int i = 0, vol = normr.volume(); i < vol; ++i)
 	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
 	if (tol > 0 && max_tol > tol)
-	  throw std::runtime_error("fgmres didn't converged and you ask for checking the error");
+	  throw std::runtime_error("bicgstab didn't converged and you ask for checking the error");
       }
 
       // Report iteration
       if (verb >= JustSummary)
-	QDPIO::cout << prefix << " MGPROTON FGMRES summary #its.: " << it
+	QDPIO::cout << prefix << " MGPROTON BICGSTAB summary #its.: " << it
 		    << " max rel. residual: " << detail::tostr(max_tol, 2) << " matvecs: " << nops
 		    << std::endl;
     }
@@ -953,7 +953,7 @@ namespace Chroma
 	auto b = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
 	if (solverSpace == FullSpace)
 	{
-	  nrand(b);
+	nrand(b);
 	}
 	else
 	{
@@ -966,6 +966,13 @@ namespace Chroma
 	b.scale(-1).addTo(nv);
         b.release();
 
+	Operator<NOp, COMPLEX> V;
+	auto opdims_nat = opdims;
+	if (opdims_nat.at('X') != 1)
+	{
+	  opdims_nat['x'] *= opdims_nat['X'];
+	  opdims_nat['X'] = 1;
+	}
 	if (spin_splitting != SpinSplitting::Full)
 	{
 	  // Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
@@ -1000,6 +1007,8 @@ namespace Chroma
 	  m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"},
 		       {"T3t", "3t"},	{"C", "c"},    {"S", "s"}};
 
+	  if (!x_blocking_divide_X)
+	    nv2 = toNaturalOrdering(nv2);
 	  auto nv_blk = nv2.template reshape_dimensions<NOp + 1 + 5>(
 	    m_blk_nv,
 	    {{'X', 1}, // we don't do even-odd layout on the coarse operator space
@@ -1035,11 +1044,12 @@ namespace Chroma
 	    nv_blk_eo_dim['X'] = 2;
 	  }
 	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
-	  return {
+	  V = Operator<NOp, COMPLEX>{
 	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	      auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
-			  .template reshape_dimensions<NOp + 1>(m_blk_rev, opdims, true);
-	      if (not x_blocking_divide_X)
+			  .template reshape_dimensions<NOp + 1>(
+			    m_blk_rev, x_blocking_divide_X ? opdims : opdims_nat, true);
+	      if (!x_blocking_divide_X)
 		toEvenOddOrdering(y0).copyTo(y);
 	      else
 		y0.copyTo(y);
@@ -1047,9 +1057,7 @@ namespace Chroma
 	    d,
 	    i,
 	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-	      auto x0 = x;
-	      if (not x_blocking_divide_X)
-		x0 = toNaturalOrdering(x);
+	      auto x0 = x_blocking_divide_X ? x : toNaturalOrdering(x);
 	      auto x_blk = x0.template reshape_dimensions<NOp + 1 + 4>(m_blk, nv_blk.kvdim(), true);
 	      if (nv_blk_eo_dim.at('X') == 1)
 		contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTSC", CopyTo, y);
@@ -1079,6 +1087,8 @@ namespace Chroma
 	  m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"}, {"c", "C"}};
 	  m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"}, {"T3t", "3t"}, {"C", "c"}};
 
+	  if (!x_blocking_divide_X)
+	    nv2 = toNaturalOrdering(nv2);
 	  auto nv_blk = nv.template reshape_dimensions<NOp + 4>(
 	    m_blk_nv,
 	    {{'X', 1}, // we don't do even-odd layout on the coarse operator space
@@ -1114,34 +1124,85 @@ namespace Chroma
 	    nv_blk_eo_dim['X'] = 2;
 	  }
 	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
-	  return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		    auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "c")
-				.template reshape_dimensions<NOp + 1>(m_blk_rev, opdims, true);
-		    if (not x_blocking_divide_X)
-		      toEvenOddOrdering(y0).copyTo(y);
-		    else
-		      y0.copyTo(y);
-		  },
-		  d,
-		  i,
-		  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		    auto x0 = x;
-		    if (not x_blocking_divide_X)
-		      x0 = toNaturalOrdering(x);
-		    auto x_blk =
-		      x0.template reshape_dimensions<NOp + 1 + 4>(m_blk, nv_blk.kvdim(), true);
-		    if (nv_blk_eo_dim.at('X') == 1)
-		      contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTC", CopyTo, y);
-		    else
-		      toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTC")).copyTo(y);
-		  },
-		  op.order_t,
-		  nv_blk_eo_dim.at('X') == 2 ? XEvenOddLayout : NaturalLayout,
-		  op.imgLayout,
-		  getNeighborsAfterBlocking(mg_blocking, op.d.kvdim(), op.neighbors, op.imgLayout),
-		  op.preferred_col_ordering,
-		  true /* using Kronecker format */};
+	  V = Operator<NOp, COMPLEX>{
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "c")
+			  .template reshape_dimensions<NOp + 1>(
+			    m_blk_rev, x_blocking_divide_X ? opdims : opdims_nat, true);
+	      if (!x_blocking_divide_X)
+		toEvenOddOrdering(y0).copyTo(y);
+	      else
+		y0.copyTo(y);
+	    },
+	    d,
+	    i,
+	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	      auto x0 = x_blocking_divide_X ? x : toNaturalOrdering(x);
+	      auto x_blk = x0.template reshape_dimensions<NOp + 1 + 4>(m_blk, nv_blk.kvdim(), true);
+	      if (nv_blk_eo_dim.at('X') == 1)
+		contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTC", CopyTo, y);
+	      else
+		toEvenOddOrdering(contract<NOp + 1>(nv_blk.conj(), x_blk, "WYZTC")).copyTo(y);
+	    },
+	    op.order_t,
+	    nv_blk_eo_dim.at('X') == 2 ? XEvenOddLayout : NaturalLayout,
+	    op.imgLayout,
+	    getNeighborsAfterBlocking(mg_blocking, op.d.kvdim(), op.neighbors, op.imgLayout),
+	    op.preferred_col_ordering,
+	    true /* using Kronecker format */};
 	}
+
+	// Test that the transpose of the prolongator is consistent
+	{
+	  auto xd = V.template make_compatible_dom<NOp + 2>("nk", {{'n', 4}, {'k', 1}});
+	  auto xi = V.template make_compatible_img<NOp + 1>("m", {{'m', 4}});
+	  nrand(xd);
+	  nrand(xi);
+	  auto xid = contract<3>(xi.conj(), V(xd), V.i.order).make_sure(none, OnHost, OnMaster);
+	  auto xdi =
+	    contract<3>(xd.conj(), V.tconj()(xi), V.d.order).make_sure(none, OnHost, OnMaster);
+	  xid.conj().scale(-1).addTo(xdi);
+	  double err = std::fabs(norm<1>(xdi, "k").get(Coor<1>{0}));
+	  double rel = std::fabs(norm<1>(xid, "k").get(Coor<1>{0}));
+	  if (err > rel * 1e-4)
+	    throw std::runtime_error("The prolongator has an inconsistent transpose");
+	}
+
+	return V;
+      }
+
+      /// Return a list of destroy callbacks after setting a solver
+
+      inline std::vector<DestroyFun>& getEvenOddOperatorsCacheDestroyList()
+      {
+	static std::vector<DestroyFun> list;
+	return list;
+      }
+
+      /// Call the destroy callbacks set up in `getEvenOddOperatorsCacheDestroyList`
+      inline void cleanEvenOddOperatorsCache()
+      {
+	for (const auto& f : getEvenOddOperatorsCacheDestroyList())
+	  f();
+      }
+
+      /// Tuple storing the operator even-odd and odd-even parts and the block diagonal
+
+      template <std::size_t NOp, typename COMPLEX>
+      using EvenOddOperatorParts =
+	std::tuple<Operator<NOp, COMPLEX>, Operator<NOp, COMPLEX>, Tensor<NOp + 2, COMPLEX>>;
+
+      /// Return the cache of block diagonals for even-odd operators generated by getEvenOddPrec
+
+      template <std::size_t NOp, typename COMPLEX>
+      std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>>& getEvenOddOperatorsPartsCache()
+      {
+	static std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>> m = []() {
+	  getEvenOddOperatorsCacheDestroyList().push_back(
+	    []() { getEvenOddOperatorsPartsCache<NOp, COMPLEX>().clear(); });
+	  return std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>>{};
+	}();
+	return m;
       }
 
       /// Return a cache for the prolongators
@@ -1200,6 +1261,7 @@ namespace Chroma
 						     {'y', layout_blocking_v[1]},
 						     {'z', layout_blocking_v[2]},
 						     {'t', layout_blocking_v[3]}};
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
 	const Operator<NOp, COMPLEX> nullSolver =
 	  getSolver(op, getOptions(ops, "solver_null_vecs"));
 	static const std::map<std::string, SpinSplitting> m_spin_splitting{
@@ -1264,9 +1326,12 @@ namespace Chroma
 	// Get the solver for the smoother
 	const Operator<NOp, COMPLEX> opSolver = getSolver(op, getOptions(ops, "solver_smoother"));
 
-	// Return the solver
-	return {
-	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	OperatorFun<NOp, COMPLEX> solver;
+	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
+	{
+	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("mg solver ") + prefix);
+
 	    // x0 = g5 * x if !do_chirality_splitting && ns > 1
 	    auto x0 = x;
 	    if (spin_splitting == SpinSplitting::None && ns > 1)
@@ -1285,50 +1350,54 @@ namespace Chroma
 	    // y = y1 + solver(Op, x1)
 	    opSolver(std::move(x1), y);
 	    y0.addTo(y);
-	  },
-	  op.i,
-	  op.d,
-	  nullptr,
-	  op.order_t,
-	  op.imgLayout,
-	  op.domLayout,
-	  DenseOperator(),
-	  op.preferred_col_ordering,
-	  false /* no Kronecker blocking */};
-      }
+	  };
+	} else {
+	  // Get the block diagonal of the operator with rows cs and columns CS
+	  remap m_sc{{'s', 'S'}, {'c', 'C'}};
+	  auto t = getEvenOddOperatorsPartsCache<NOp, COMPLEX>().at(op.id.get());
+	  Operator<NOp, COMPLEX> op_eo = std::get<0>(t);
+	  Operator<NOp, COMPLEX> op_oe = std::get<1>(t);
+	  Tensor<NOp + 2, COMPLEX> opDiag = std::get<2>(t);
+	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("mg solver ") + prefix);
 
-      /// Return a list of destroy callbacks after setting a solver
+	    // x0 = g5 * x if !do_chirality_splitting && ns > 1
+	    auto x0 = x;
+	    if (spin_splitting == SpinSplitting::None && ns > 1)
+	    {
+	      x0 =
+		contract<NOp + 1>(g5.rename_dims({{'j', 's'}}), x, "s").rename_dims({{'i', 's'}});
+	    }
 
-      inline std::vector<DestroyFun>& getEvenOddOperatorsCacheDestroyList()
-      {
-	static std::vector<DestroyFun> list;
-	return list;
-      }
+	    // y0 = V*solver(V'*Op*V, V'x0)
+	    auto y0 = V(coarseSolver(V.tconj()(x0)));
 
-      /// Call the destroy callbacks set up in `getEvenOddOperatorsCacheDestroyList`
-      inline void cleanEvenOddOperatorsCache()
-      {
-	for (const auto& f : getEvenOddOperatorsCacheDestroyList())
-	  f();
-      }
+	    // x1_ee = x - op*y0
+	    auto y0m = y0.scale(-1);
+	    auto x1 = x.clone();
+	    contract(opDiag, y0m.rename_dims(m_sc), "CS", AddTo, x1);
+	    op_oe(y0m.kvslice_from_size({{'X', 0}}, {{'X', 1}}))
+	      .addTo(x1.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+	    op_eo(y0m.kvslice_from_size({{'X', 1}}, {{'X', 1}}))
+	      .addTo(x1.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
 
-      /// Tuple storing the operator even-odd and odd-even parts and the block diagonal
+	    // y = y1 + solver(Op, x1)
+	    opSolver(std::move(x1), y);
+	    y0.addTo(y);
+	  };
+	}
 
-      template <std::size_t NOp, typename COMPLEX>
-      using EvenOddOperatorParts =
-	std::tuple<Operator<NOp, COMPLEX>, Operator<NOp, COMPLEX>, Tensor<NOp + 2, COMPLEX>>;
-
-      /// Return the cache of block diagonals for even-odd operators generated by getEvenOddPrec
-
-      template <std::size_t NOp, typename COMPLEX>
-      std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>>& getEvenOddOperatorsPartsCache()
-      {
-	static std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>> m = []() {
-	  getEvenOddOperatorsCacheDestroyList().push_back(
-	    []() { getEvenOddOperatorsPartsCache<NOp, COMPLEX>().clear(); });
-	  return std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>>{};
-	}();
-	return m;
+	// Return the solver
+	return {solver,
+		op.i,
+		op.d,
+		nullptr,
+		op.order_t,
+		op.imgLayout,
+		op.domLayout,
+		DenseOperator(),
+		op.preferred_col_ordering,
+		false /* no Kronecker blocking */};
       }
 
       /// Returns an even-odd preconditioner.
@@ -1381,6 +1450,7 @@ namespace Chroma
 	  throw std::runtime_error("getEvenOddPrec: unsupported input preconditioner");
 
 	bool use_Aee_prec = getOption<bool>(ops, "use_Aee_prec", false);
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
 	// Get the block diagonal of the operator with rows cs and columns CS
 	remap m_sc{{'s', 'S'}, {'c', 'C'}};
@@ -1417,6 +1487,8 @@ namespace Chroma
 	      [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		foreachInChuncks(x, y, create_operator_max_rhs,
 				 [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
+				   Tracker _t(std::string("eo matvec Aee_prec ") + prefix);
+
 				   // y = x
 				   x.copyTo(y);
 
@@ -1443,6 +1515,8 @@ namespace Chroma
 	      [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		foreachInChuncks(x, y, create_operator_max_rhs,
 				 [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
+				   Tracker _t(std::string("eo matvec ") + prefix);
+
 				   // y = Op_ee * x
 				   contract(opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
 					    x.rename_dims(m_sc), "CS", CopyTo, y);
@@ -1480,6 +1554,8 @@ namespace Chroma
 	  {
 	    prec_ee = Operator<NOp, COMPLEX>{
 	      [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		Tracker _t(std::string("eo prec_ee ") + prefix);
+
 		// y = Op_ee * prec_ee0(x)
 		contract(opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
 			 prec_ee0(x).rename_dims(m_sc), "CS", CopyTo, y);
@@ -1498,6 +1574,8 @@ namespace Chroma
 	// Create the solver
 	Operator<NOp, COMPLEX> rop{
 	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("eo solver ") + prefix);
+
 	    // be = x_e - Op_eo*Op_oo^{-1}*x_o
 	    Tensor<NOp + 1, COMPLEX> be;
 	    if (solverSpace == FullSpace)
@@ -1518,6 +1596,8 @@ namespace Chroma
 	    }
 
 	    // Solve opA * y_e = be
+	    if (solverSpace != FullSpace)
+	      y.set_zero();
 	    auto ye = y.kvslice_from_size({{'X', 0}}, {{'X', 1}});
 	    solver(be, ye);
 
