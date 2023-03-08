@@ -1088,7 +1088,7 @@ namespace Chroma
 	  m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"}, {"T3t", "3t"}, {"C", "c"}};
 
 	  if (!x_blocking_divide_X)
-	    nv2 = toNaturalOrdering(nv2);
+	    nv = toNaturalOrdering(nv);
 	  auto nv_blk = nv.template reshape_dimensions<NOp + 4>(
 	    m_blk_nv,
 	    {{'X', 1}, // we don't do even-odd layout on the coarse operator space
