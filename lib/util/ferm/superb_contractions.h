@@ -1822,7 +1822,7 @@ namespace Chroma
       Coor<N> from;	      ///< First active coordinate in the tensor
       Coor<N> size;	      ///< Number of active coordinates on each dimension
       Stride<N> strides;      ///< Displacement for the next element along every direction
-      value_type scalar;      ///< Scalar factor of the tensor
+      value_type scalar;      ///< Scalar factor of the tensor for unconjugated
       bool conjugate;	      ///< Whether the values are implicitly conjugated
       bool eg;		      ///< Whether this tensor is an example
       bool unordered_writing; ///< Whether to allow execution of writing operations
@@ -2506,7 +2506,7 @@ namespace Chroma
 	Maybe<Coor<N>> r = none;
 	for (std::size_t i = 0; i < vol; ++i)
 	{
-	  if (func(tptr[i]))
+	  if (func(detail::cond_conj(t.conjugate, tptr[i])))
 	  {
 	    // Get the global coordinates
 	    Coor<N> c = normalize_coor(
@@ -2540,12 +2540,12 @@ namespace Chroma
 #    pragma omp parallel for schedule(static)
 #  endif
 	  for (std::size_t i = 0; i < vol; ++i)
-	    func(tptr[i]);
+	    func(detail::cond_conj(t.conjugate, tptr[i]));
 	}
 	else
 	{
 	  for (std::size_t i = 0; i < vol; ++i)
-	    func(tptr[i]);
+	    func(detail::cond_conj(t.conjugate, tptr[i]));
 	}
       }
 
@@ -2955,6 +2955,43 @@ namespace Chroma
       {
 	(void)allow_cloning;
 	return *this;
+      }
+
+      /// Return a copy of the tensor with the values conjugated if the tensor is implicitly conjugated
+
+      template <typename U = T>
+      typename std::enable_if<!detail::is_diycomplex<U>::value && detail::is_complex<U>::value,
+			      Tensor<N, T>>::type
+      make_conjugate_explicit() const
+      {
+	if (!conjugate) return *this;
+	return toFakeReal().make_conjugate_explicit().toComplex();
+      }
+
+      template <typename U = T>
+      typename std::enable_if<detail::is_diycomplex<U>::value && !detail::is_complex<U>::value,
+			      Tensor<N, T>>::type
+      make_conjugate_explicit() const
+      {
+	if (!conjugate) return *this;
+	auto t = make_compatible();
+	auto this_unconj = conj();
+	auto old_scalar = this_unconj.scalar;
+	this_unconj.scalar = value_type{1};
+	this_unconj.kvslice_from_size({{complexLabel, 0}}, {{complexLabel, 1}})
+	  .copyTo(t.kvslice_from_size({{complexLabel, 0}}, {{complexLabel, 1}}));
+	this_unconj.kvslice_from_size({{complexLabel, 1}}, {{complexLabel, 1}}).scale(-1)
+	  .copyTo(t.kvslice_from_size({{complexLabel, 1}}, {{complexLabel, 1}}));
+	return t.scale(old_scalar);
+      }
+
+      template <typename U = T>
+      typename std::enable_if<!detail::is_diycomplex<U>::value && !detail::is_complex<U>::value,
+			      Tensor<N, T>>::type
+      make_conjugate_explicit() const
+      {
+	if (!conjugate) return *this;
+	return conj();
       }
 
       /// Split a dimension into another dimensions
@@ -3405,9 +3442,14 @@ namespace Chroma
 	  throw std::runtime_error(
 	    "Not allowed to add to a tensor whose implicit scalar factor is not one");
 
-	if (conjugate != w.conjugate)
-	  throw std::runtime_error(
-	    "Not allowed to copy or add tensor with different implicit conjugacy");
+	if (conjugate != w.conjugate &&
+	    (detail::is_complex<T>::value || detail::is_diycomplex<T>::value))
+	{
+	  auto this_conj = (conjugate ? *this : conj()).make_conjugate_explicit();
+	  auto new_this = (conjugate ? this_conj : this_conj.conj());
+	  new_this.doAction(action, w, m, wm, uneven_mask_labels);
+	  return;
+	}
 
 	bool some_is_local =
 	  dist == Local || w.dist == Local || (m && m.dist == Local) || (wm && wm.dist == Local);
@@ -3843,6 +3885,8 @@ namespace Chroma
       {
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
+
+	// NOTE: don't conjugate `scalar`: it's a value associated to the allocation, NOT the view
 	return Tensor<N, T>(*this, scalar, !conjugate);
       }
 
@@ -4570,7 +4614,8 @@ namespace Chroma
 	auto rptr = r_local.data();
 	auto w0ptr = w0_local.data();
 	for (std::size_t i = 0, vol = r_local.volume(); i < vol; ++i)
-	  rptr[i] = rptr[i] / (w0ptr[i] * w0_local.scalar);
+	  rptr[i] = rptr[i] / detail::cond_conj(r_local.conjugate != w0_local.conjugate,
+					     w0ptr[i] * w0_local.scalar);
       }
       return r;
     }
@@ -4592,7 +4637,8 @@ namespace Chroma
 	auto rptr = r_local.data();
 	auto w0ptr = w0_local.data();
 	for (std::size_t i = 0, vol = r_local.volume(); i < vol; ++i)
-	  rptr[i] = rptr[i] * w0ptr[i] * w0_local.scalar;
+	  rptr[i] = rptr[i] * detail::cond_conj(r_local.conjugate != w0_local.conjugate,
+						w0ptr[i] * w0_local.scalar);
       }
       return r;
     }
