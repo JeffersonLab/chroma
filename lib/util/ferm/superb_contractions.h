@@ -7149,7 +7149,161 @@ namespace Chroma
 	  neighbors = new_neighbors;
 	}
 
-	// Create masks for the elements with even natural x coordinate and with odd natural x coordinate
+        // Chose a dense label that is not the spin
+        const char color_label = 'c';
+
+        // Extract the kronecker values with probing
+	Tensor<3, COMPLEX> kron;
+	std::vector<std::map<char, int>> nonzero_spins;
+	if (kronecker_label != 0)
+	{
+	  unsigned int color = 0;
+
+	  // Extracting the proving vector
+	  auto t_l = colors.template transformWithCPUFun<COMPLEX>(
+	    [&](float site_color) { return site_color == color ? value_type{1} : value_type{0}; });
+
+	  // Skip empty masks
+	  // NOTE: the call to split_dimension add a fake dimension that acts as columns
+	  if (std::norm(norm<1>(t_l.split_dimension('X', "Xn", maxX), "n").get({{0}})) == 0)
+	    throw std::runtime_error("Ups! We should do something more sophisticated here");
+
+	  // Contracting the proving vector with the blocking components
+	  auto site_size = blki;
+	  for (char c : dense_labels)
+	    site_size[rd[c]] = (c == kronecker_label ? blki[c] : 1);
+
+	  // Compute the matvecs
+	  auto mv =
+	    op(contract<NOp + Nblk>(t_l, t_blk.kvslice_from_size({}, {{rd[color_label], 1}}), ""));
+
+	  // Take a source
+          auto source_coor =
+              colors.find([&](float site_color) { return site_color == color; })
+                  .getSome();
+          std::map<char, int> source;
+          for (std::size_t i = 0; i < colors.order.size(); ++i)
+            if (is_in("xyztX", colors.order[i]))
+              source[colors.order[i]] = source_coor[i];
+
+          // Find the spin values for each direction
+          std::string kron_order(3, 0);
+          kron_order[0] = kronecker_label;
+          kron_order[1] = rd[kronecker_label];
+          kron_order[2] = 'u';
+          kron = Tensor<3, COMPLEX>(kron_order,
+                                    Coor<3>{blki[kronecker_label],
+                                            blki[kronecker_label],
+                                            (int)neighbors.size()},
+                                    OnDefaultDevice, OnEveryoneReplicated);
+          kron.set_zero();
+          for (int mu = 0; mu < neighbors.size(); ++mu) {
+	    // site = source + neighbors[mu], where the latter is in natural
+	    // coordinates
+	    const auto& coor_dir = neighbors[mu];
+	    int sumdir = std::accumulate(coor_dir.begin(), coor_dir.end(), int{0});
+	    std::map<char, int> site{{'X', source['X'] + sumdir},
+				     {'x', (source['x'] * real_maxX + coor_dir[0]) / real_maxX},
+				     {'y', source['y'] + coor_dir[1]},
+				     {'z', source['z'] + coor_dir[2]},
+				     {'t', source['t'] + coor_dir[3]}};
+	    auto site_size = blki;
+	    for (char c : dense_labels)
+	      site_size[rd[c]] = (c == kronecker_label ? blki[c] : 1);
+
+	    auto site_data =
+	      mv.kvslice_from_size(site, site_size).make_sure(none, OnHost, OnEveryoneReplicated);
+
+            if (!spin_matrix[mu]) {
+              // Search for a nonzero element, we take the largest.
+              // NOTE: don't take from spin block diagonal matrix, those
+              // nonzeros are captured already
+              auto spin_vals =
+                  norm<2>(site_data, std::string(1, kronecker_label) +
+                                         std::string(1, rd[kronecker_label]));
+              int s_ref = 0;
+              double val_ref = 0;
+              for (int s = 0; s < blki[kronecker_label] * blki[kronecker_label];
+                   ++s) {
+                if (s % blki[kronecker_label] == s / blki[kronecker_label])
+                  continue;
+		double val = spin_vals.get(
+		  kvcoors<2>(spin_vals.order, {{kronecker_label, s % blki[kronecker_label]},
+					       {rd[kronecker_label], s / blki[kronecker_label]}}));
+		if (val > val_ref) {
+                  s_ref = s;
+                  val_ref = val;
+                }
+              }
+
+              // If the direction is empty, remove it!
+              if (val_ref == 0) {
+                neighbors.erase(neighbors.begin() + mu);
+                spin_matrix.erase(spin_matrix.begin() + mu);
+                mu--;
+                continue;
+              }
+
+              nonzero_spins.push_back(
+                  {{kronecker_label, s_ref % blki[kronecker_label]},
+                   {rd[kronecker_label], s_ref / blki[kronecker_label]}});
+
+              // Get the values
+	      auto val0 = site_data.get(kvcoors<NOp + Nblk>(
+		site_data.order, {{kronecker_label, s_ref % blki[kronecker_label]},
+				  {rd[kronecker_label], s_ref / blki[kronecker_label]},
+				  {color_label, 0},
+				  {rd.at(color_label), 0}}));
+
+	      for (int s = 0; s < blki[kronecker_label] * blki[kronecker_label];
+                   ++s) {
+                if (s % blki[kronecker_label] == s / blki[kronecker_label])
+                  continue;
+		kron.set(kvcoors<3>(kron.order, {{kronecker_label, s % blki[kronecker_label]},
+						 {rd[kronecker_label], s / blki[kronecker_label]},
+						 {'u', mu}}),
+			 site_data.get(kvcoors<NOp + Nblk>(
+			   site_data.order, {{kronecker_label, s % blki[kronecker_label]},
+					     {rd[kronecker_label], s / blki[kronecker_label]},
+					     {color_label, 0},
+					     {rd.at(color_label), 0}})) /
+			   val0);
+	      }
+            } else {
+	      if (std::norm(
+		    norm<1>(contract<NOp + Nblk + 1>(spin_matrix[mu].template reshape_dimensions<3>(
+						       {{"s", "su"}}, {{'u', 1}}),
+						     site_data, ""),
+			    "u")
+		      .get(Coor<1>{0})) == 0)
+	      {
+		neighbors.erase(neighbors.begin() + mu);
+                spin_matrix.erase(spin_matrix.begin() + mu);
+                mu--;
+                continue;
+	      }
+
+	      // Copy the know spin matrix into sop.kron
+              spin_matrix[mu].copyTo(
+                  kron.kvslice_from_size({{'u', mu}}, {{'u', 1}}));
+
+              // Set as the reference spin, the first nonzero
+              for (int s = 0; s < blki[kronecker_label] * blki[kronecker_label];
+                   ++s) {
+                if (std::norm(spin_matrix[mu].get(
+                        {{s % blki[kronecker_label],
+                          s / blki[kronecker_label]}})) > 0) {
+                  nonzero_spins.push_back(
+                      {{kronecker_label, s % blki[kronecker_label]},
+                       {rd[kronecker_label], s / blki[kronecker_label]}});
+                  break;
+                }
+              }
+            }
+	  }
+        }
+
+        // Create masks for the elements with even natural x coordinate and with odd natural x coordinate
 	auto even_x_mask = getXOddityMask<NOp>(0, i, op.imgLayout);
 	auto odd_x_mask = getXOddityMask<NOp>(1, i, op.imgLayout);
 	auto ones_blk = t_blk.template like_this<Nblk * 2, float>();
@@ -7173,169 +7327,73 @@ namespace Chroma
 					(unsigned int)neighbors.size(),
 					coBlk == ColumnMajor};
 
+	// Copy the kronecker values
+	if (kronecker_label != 0)
+	{
+	  kron.kvslice_from_size({}, {{'u', neighbors.size()}}).copyTo(sop.kron);
+	}
+
 	// Extract the nonzeros with probing
 	sop.data.set_zero(); // all values may not be populated when using blocking
-	std::vector<std::map<char, int>> nonzero_spins;
 	for (unsigned int color = 0; color < num_colors; ++color)
 	{
-	  // Extracting the proving vector
+	  // Generate the proving vectors for the given color
 	  auto t_l = colors.template transformWithCPUFun<COMPLEX>(
 	    [&](float site_color) { return site_color == color ? value_type{1} : value_type{0}; });
 
 	  // Skip empty masks
 	  // NOTE: the call to split_dimension add a fake dimension that acts as columns
-	  if (std::norm(norm<1>(t_l.split_dimension('X', "Xn", maxX), "n").get({{0}})) == 0)
-	    continue;
+          if (std::norm(norm<1>(t_l.split_dimension('X', "Xn", maxX), "n")
+                            .get({{0}})) == 0)
+            continue;
 
-	  // Contracting the proving vector with the blocking components
-	  auto probs = contract<NOp + Nblk>(t_l, t_blk, "");
+          for (int color_idx = 0; color_idx < blki[color_label]; ++color_idx) {
+            std::map<char, int> colorFrom{{rd[color_label], color_idx}};
+            std::map<char, int> colorSize{{rd[color_label], 1}};
 
-	  // Compute the matvecs
-	  auto mv = op(std::move(probs));
+            // Contracting the proving vector with the blocking components
+	    auto probs =
+	      contract<NOp + Nblk>(t_l, t_blk.kvslice_from_size(colorFrom, colorSize), "");
 
-	  // Heuristic to get a nonzero spins when is kronecker
-	  if (kronecker_label != 0 and nonzero_spins.size() == 0)
-	  {
-	    // Take a source
-	    auto source_coor =
-	      colors.find([&](float site_color) { return site_color == color; }).getSome();
-	    std::map<char, int> source;
-	    for (std::size_t i = 0; i < colors.order.size(); ++i)
-	      if (is_in("xyztX", colors.order[i]))
-		source[colors.order[i]] = source_coor[i];
+	    // Compute the matvecs
+            auto mv = op(std::move(probs));
 
-	    // Chose a dense label that is not the spin
-	    char color_label = 0;
-	    for (char c : dense_labels)
-	    {
-	      if (c != kronecker_label)
-	      {
-		color_label = c;
-		break;
-	      }
-	    }
+            // Construct an indicator tensor where all blocking dimensions but
+            // only the nodes colored `color` are copied
+            auto color_mask = t_l.template transformWithCPUFun<float>(
+                [](const value_type &t) { return (float)std::real(t); });
+            auto sel_x_even = contract<NOp + Nblk>(
+                contract<NOp>(color_mask, even_x_mask, ""),
+                ones_blk.kvslice_from_size(colorFrom, colorSize), "");
+            auto sel_x_odd = contract<NOp + Nblk>(
+                contract<NOp>(color_mask, odd_x_mask, ""),
+                ones_blk.kvslice_from_size(colorFrom, colorSize), "");
 
-	    // Find the spin values for each direction
-	    sop.kron.set_zero();
-	    for (int mu = 0; mu < neighbors.size(); ++mu)
-	    {
-	      if (!spin_matrix[mu])
-	      {
-		// site = source + neighbors[mu], where the latter is in natural coordinates
-		const auto& coor_dir = neighbors[mu];
-		int sumdir = std::accumulate(coor_dir.begin(), coor_dir.end(), int{0});
-		std::map<char, int> site{{'X', source['X'] + sumdir},
-					 {'x', (source['x'] * real_maxX + coor_dir[0]) / real_maxX},
-					 {'y', source['y'] + coor_dir[1]},
-					 {'z', source['z'] + coor_dir[2]},
-					 {'t', source['t'] + coor_dir[3]}};
-		auto site_size = blki;
-		for (char c : dense_labels)
-		  site_size[rd[c]] = blki[c];
+            // Populate the nonzeros by copying pieces from `mv` into sop.data.
+            // We want to copy only the nonzeros in `mv`, which are `neighbors`
+            // away from the nonzeros of `probs`.
+            auto sop_data = sop.data.kvslice_from_size(colorFrom, colorSize);
+            if (kronecker_label == 0) {
+              latticeCopyToWithMask(mv, sop_data, 'u', neighbors,
+                                    {{'X', real_maxX}}, sel_x_even, sel_x_odd);
+            } else {
+              std::map<char, int> single_spin{{kronecker_label, 1},
+                                              {rd[kronecker_label], 1}};
+              for (int dir = 0; dir < neighbors.size(); ++dir)
+                latticeCopyToWithMask(
+                    mv.kvslice_from_size(nonzero_spins[dir], single_spin),
+                    sop_data.kvslice_from_size({{'u', dir}}, {{'u', 1}}), 'u',
+                    std::vector<Coor<Nd>>(1, neighbors[dir]),
+                    {{'X', real_maxX}},
+                    sel_x_even.kvslice_from_size(nonzero_spins[dir],
+                                                 single_spin),
+                    sel_x_odd.kvslice_from_size(nonzero_spins[dir],
+                                                single_spin));
+            }
+          }
+        }
 
-		auto site_data = mv.kvslice_from_size(site, site_size)
-				   .make_sure(none, OnHost, OnEveryoneReplicated);
-
-		// Search for a nonzero element, we take the largest.
-		// NOTE: don't take from spin block diagonal matrix, those nonzeros are captured already
-		int s_ref = 0, c_ref = 0;
-		double val_ref = 0;
-		for (int s = 0; s < blki[kronecker_label] * blki[kronecker_label]; ++s)
-		{
-		  if (s % blki[kronecker_label] == s / blki[kronecker_label])
-		    continue;
-		  for (int c = 0; c < blki[color_label] * blki[color_label]; ++c)
-		  {
-		    double val = std::norm(site_data.get(kvcoors<NOp + Nblk>(
-		      site_data.order, {{kronecker_label, s % blki[kronecker_label]},
-					{rd[kronecker_label], s / blki[kronecker_label]},
-					{color_label, c % blki[color_label]},
-					{rd.at(color_label), c / blki[color_label]}})));
-		    if (val > val_ref)
-		    {
-		      s_ref = s;
-		      c_ref = c;
-		      val_ref = val;
-		    }
-		  }
-		}
-		nonzero_spins.push_back({{kronecker_label, s_ref % blki[kronecker_label]},
-					 {rd[kronecker_label], s_ref / blki[kronecker_label]}});
-
-		// Get the values
-		auto val0 = site_data.get(kvcoors<NOp + Nblk>(
-		  site_data.order, {{kronecker_label, s_ref % blki[kronecker_label]},
-				    {rd[kronecker_label], s_ref / blki[kronecker_label]},
-				    {color_label, c_ref % blki[color_label]},
-				    {rd.at(color_label), c_ref / blki[color_label]}}));
-		// TODO: consider removing the direction instead
-		if (std::norm(val0) == 0)
-		  val0 = COMPLEX{1};
-		for (int s = 0; s < blki[kronecker_label] * blki[kronecker_label]; ++s)
-		{
-		  if (s % blki[kronecker_label] == s / blki[kronecker_label])
-		    continue;
-		  sop.kron.set(
-		    kvcoors<NOp * 2 + 1>(sop.kron.order,
-					 {{kronecker_label, s % blki[kronecker_label]},
-					  {rd[kronecker_label], s / blki[kronecker_label]},
-					  {'u', mu}}),
-		    site_data.get(kvcoors<NOp + Nblk>(
-		      site_data.order, {{kronecker_label, s % blki[kronecker_label]},
-					{rd[kronecker_label], s / blki[kronecker_label]},
-					{color_label, c_ref % blki[color_label]},
-					{rd.at(color_label), c_ref / blki[color_label]}})) /
-		      val0);
-		}
-	      }
-	      else
-	      {
-		// Copy the know spin matrix into sop.kron
-		spin_matrix[mu].copyTo(sop.kron.kvslice_from_size({{'u', mu}}, {{'u', 1}}));
-
-		// Set as the reference spin, the first nonzero
-		for (int s = 0; s < blki[kronecker_label] * blki[kronecker_label]; ++s)
-		{
-		  if (std::norm(spin_matrix[mu].get(
-			{{s % blki[kronecker_label], s / blki[kronecker_label]}})) > 0)
-		  {
-		    nonzero_spins.push_back({{kronecker_label, s % blki[kronecker_label]},
-					     {rd[kronecker_label], s / blki[kronecker_label]}});
-		    break;
-		  }
-		}
-	      }
-	    }
-	  }
-
-	  // Construct an indicator tensor where all blocking dimensions but only the nodes colored `color` are copied
-	  auto color_mask = t_l.template transformWithCPUFun<float>(
-	    [](const value_type& t) { return (float)std::real(t); });
-	  auto sel_x_even =
-	    contract<NOp + Nblk>(contract<NOp>(color_mask, even_x_mask, ""), ones_blk, "");
-	  auto sel_x_odd =
-	    contract<NOp + Nblk>(contract<NOp>(color_mask, odd_x_mask, ""), ones_blk, "");
-
-	  // Populate the nonzeros by copying pieces from `mv` into sop.data. We want to copy only the
-	  // nonzeros in `mv`, which are `neighbors` away from the nonzeros of `probs`.
-	  if (kronecker_label == 0)
-	  {
-	    latticeCopyToWithMask(mv, sop.data, 'u', neighbors, {{'X', real_maxX}}, sel_x_even,
-				  sel_x_odd);
-	  }
-	  else
-	  {
-	    std::map<char, int> single_spin{{kronecker_label, 1}, {rd[kronecker_label], 1}};
-	    for (int dir = 0; dir < neighbors.size(); ++dir)
-	      latticeCopyToWithMask(mv.kvslice_from_size(nonzero_spins[dir], single_spin),
-				    sop.data.kvslice_from_size({{'u', dir}}, {{'u', 1}}), 'u',
-				    std::vector<Coor<Nd>>(1, neighbors[dir]), {{'X', real_maxX}},
-				    sel_x_even.kvslice_from_size(nonzero_spins[dir], single_spin),
-				    sel_x_odd.kvslice_from_size(nonzero_spins[dir], single_spin));
-	  }
-	}
-
-	// Populate the coordinate of the columns, that is, to give the domain coordinates of first nonzero in each
+        // Populate the coordinate of the columns, that is, to give the domain coordinates of first nonzero in each
 	// BSR nonzero block. Assume that we are processing nonzeros block for the image coordinate `c` on the
 	// direction `dir`, that is, the domain coordinates will be (cx-dirx,cy-diry,cz-dirz,dt-dirt) in natural
 	// coordinates. But we get the image coordinate `c` in even-odd coordinate, (cX,cx,cy,cz,ct), which has the
@@ -7437,7 +7495,7 @@ namespace Chroma
 	  rd[it.first] = it.second;
 	int max_op_power = (op_dist == 0 ? 0 : std::max(power / op_dist, 1u) - 1u);
 	std::map<char, int> m_power{};
-	for (char c : std::string("xyzt") + update_order("xyzt", rd))
+	for (char c : update_order("xyzt", rd))
 	  m_power[c] = max_op_power;
 	auto sop = t.first.extend_support(m_power)
 		     .split_dimension(rd['x'], update_order("0x", rd), opdim.at('0'), 'x', "0x",
