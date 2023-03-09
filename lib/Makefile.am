@@ -870,8 +870,15 @@ nobase_include_HEADERS += \
 	meas/inline/glue/inline_glue_diag_matelem_colorvec.h \
 	meas/inline/glue/inline_glueball_ops.h \
 	meas/inline/glue/inline_wilson_flow.h \
+	meas/inline/glue/inline_gluon_fraction_OA.h\
+	meas/inline/glue/inline_gluon_fraction_OB.h\
+	meas/inline/glue/inline_gluon_cc.h \
+	meas/inline/glue/inline_gluon_npr.h \
+	meas/inline/glue/inline_gluon_pdf.h \
 	meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
+	meas/inline/hadron/inline_meson_da_db_w.h \
+	meas/inline/hadron/inline_mesonspec_db_w.h \
 	meas/inline/hadron/inline_hadron_contract.h \
 	meas/inline/hadron/inline_gauge_transf_obj.h \
 	meas/inline/hadron/inline_rotate_spin_w.h \
@@ -1798,9 +1805,16 @@ libchroma_a_SOURCES += \
 	meas/inline/glue/inline_glue_diag_matelem_colorvec.cc \
 	meas/inline/glue/inline_glueball_ops.cc \
 	meas/inline/glue/inline_wilson_flow.cc \
+	meas/inline/glue/inline_gluon_fraction_OA.cc\
+	meas/inline/glue/inline_gluon_fraction_OB.cc \
+	meas/inline/glue/inline_gluon_cc.cc \
+	meas/inline/glue/inline_gluon_pdf.cc \
+	meas/inline/glue/inline_gluon_npr.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
 	meas/inline/hadron/inline_gauge_transf_obj.cc \
+	meas/inline/hadron/inline_meson_da_db_w.cc \
+	meas/inline/hadron/inline_mesonspec_db_w.cc \
 	meas/inline/hadron/inline_rotate_spin_w.cc \
 	meas/inline/hadron/inline_apply_fermstate_w.cc \
 	meas/inline/hadron/inline_make_source_w.cc \

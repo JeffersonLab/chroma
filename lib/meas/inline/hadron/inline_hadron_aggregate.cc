@@ -88,6 +88,12 @@
 #include "meas/inline/hadron/inline_stoch_group_meson_w.h"
 #include "meas/inline/hadron/inline_gauge_transf_obj.h"
 #include "meas/inline/hadron/inline_rotate_spin_w.h"
+
+
+#include "meas/inline/hadron/inline_meson_da_db_w.h"
+#include "meas/inline/hadron/inline_mesonspec_db_w.h"
+
+
 //#include "meas/inline/hadron/inline_stoch_laph_quark_w.h"
 //#include "meas/inline/hadron/inline_stoch_laph_baryon_w.h"
 
@@ -95,6 +101,7 @@
 
 // Grab all fermacts to make sure they are registered
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
+
 
 namespace Chroma
 {
@@ -214,6 +221,14 @@ namespace Chroma
 	success &= InlineStochHadronEnv::registerAll();
 	success &= InlineStochGroupBaryonEnv::registerAll();
 	success &= InlineStochGroupMesonEnv::registerAll();
+
+
+
+
+	success &= InlineMesDAEnv::registerAll();
+
+
+
 //	success &= InlineStochLaphQuarkEnv::registerAll();
 //	success &= InlineStochLaphBaryonEnv::registerAll();
 
