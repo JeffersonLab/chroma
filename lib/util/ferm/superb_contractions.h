@@ -3667,7 +3667,9 @@ namespace Chroma
 	if (is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	// If either v or w is on OnDevice, force both to be on device
+	// NOTE: Superbblas tensor contraction is shit and does not deal with contracting a host and
+	// device tensor (for now)
+	// a) If either v or w is on OnDevice, force both to be on device
 	if (v.ctx().plat != w.ctx().plat)
 	{
 	  if (v.getDev() != OnDefaultDevice)
@@ -3676,13 +3678,8 @@ namespace Chroma
 	    w = w.cloneOn(OnDefaultDevice);
 	}
 
-	// Superbblas tensor contraction is shit and those not deal with subtensors or contracting a host and
-	// device tensor (for now)
-	if (v.isSubtensor())
-	  v = v.clone();
-	if (w.isSubtensor())
-	  w = w.clone();
-	if (isSubtensor() || getDev() != v.getDev())
+	// b) Do arrangements if the input tensors are on a different device than the result tensor
+	if (getDev() != v.getDev())
 	{
 	  Tensor<N, T> aux =
 	    std::norm(beta) == 0 ? like_this(none, {}, v.getDev()) : cloneOn(v.getDev());
@@ -3704,11 +3701,13 @@ namespace Chroma
 	bool conjv_ = (((conjv == Conjugate) xor v.conjugate) xor conjugate);
 	bool conjw_ = (((conjw == Conjugate) xor w.conjugate) xor conjugate);
 	superbblas::contraction<Nv, Nw, N>(
-	  detail::cond_conj(conjv_, v.scalar) * detail::cond_conj(conjw_, w.scalar) / scalar,	  //
-	  v.p->p.data(), v.dim, 1, orderv_.c_str(), conjv_, (const value_type**)&v_ptr, &v.ctx(), //
-	  w.p->p.data(), w.dim, 1, orderw_.c_str(), conjw_, (const value_type**)&w_ptr, &w.ctx(), //
-	  detail::cond_conj(conjugate, beta), p->p.data(), dim, 1, order_.c_str(), &ptr, &ctx(),
-	  MPI_COMM_WORLD, superbblas::FastToSlow);
+	  detail::cond_conj(conjv_, v.scalar) * detail::cond_conj(conjw_, w.scalar) / scalar, //
+	  v.p->p.data(), v.from, v.size, v.dim, 1, orderv_.c_str(), conjv_,
+	  (const value_type**)&v_ptr, &v.ctx(), //
+	  w.p->p.data(), w.from, w.size, w.dim, 1, orderw_.c_str(), conjw_,
+	  (const value_type**)&w_ptr, &w.ctx(), //
+	  detail::cond_conj(conjugate, beta), p->p.data(), from, size, dim, 1, order_.c_str(), &ptr,
+	  &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
@@ -9776,8 +9775,12 @@ namespace Chroma
     inline void finish()
     {
       // Show performance reports
-      superbblas::reportTimings(QDPIO::cout);
-      superbblas::reportCacheUsage(QDPIO::cout);
+      // NOTE: QDPIO::cout doesn't support iomanip format declarations, so use std::cout on master node instead
+      if (Layout::nodeNumber() == 0)
+      {
+	superbblas::reportTimings(std::cout);
+	superbblas::reportCacheUsage(std::cout);
+      }
 
       // Clear internal superbblas caches
       superbblas::clearCaches();
