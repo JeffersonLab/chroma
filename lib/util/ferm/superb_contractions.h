@@ -3790,6 +3790,37 @@ namespace Chroma
 	  superbblas::sync(ctx());
       }
 
+      /// Compute the inverse of `v'
+      /// \param v: tensor to compute the Cholesky factor
+      /// \param order_rows: labels that are rows of the matrices to factor
+      /// \param order_cols: labels that are columns of the matrices to factor
+      /// \param w: the other tensor to contract
+
+      template <std::size_t Nv>
+      void inv(Tensor<Nv, T> v, const std::string& order_rows, const std::string& order_cols)
+      {
+	if (is_eg() || v.is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
+	if (isSubtensor() || scalar != T{1} || conjugate)
+	{
+	  Tensor<N, T> aux = make_compatible();
+	  aux.inv(v, order_rows, order_cols);
+	  aux.copyTo(*this);
+	  return;
+	}
+
+	v.copyTo(*this);
+	value_type* ptr = data_for_writing();
+	superbblas::inversion<Nv>(p->p.data(), dim, 1, order.c_str(), &ptr, order_rows.c_str(),
+				  order_cols.c_str(), &ctx(), MPI_COMM_WORLD,
+				  superbblas::FastToSlow);
+
+	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
+	if (!is_managed())
+	  superbblas::sync(ctx());
+      }
+
       /// Solve the linear systems within tensor `v' and right-hand-sides `w`
       /// \param v: tensor to compute the Cholesky factor
       /// \param order_rows: labels that are rows of the matrices to factor
@@ -4263,6 +4294,68 @@ namespace Chroma
       }	  // mu
     }
 
+    /// Return an identity matrix
+    /// \param dim: length for each of the row dimensions
+    /// \param m: labels map from the row to the column dimensions and other dimensions
+
+    template <std::size_t N, typename T>
+    Tensor<N, T> identity(const std::map<char, int>& dim, const remap& m,
+			  const Distribution& dist = OnEveryone)
+    {
+      using value_type = typename detail::base_type<T>::type;
+
+      // Get the order for the rows
+      std::string orows;
+      for (const auto& it : m)
+	orows.push_back(it.first);
+
+      // Get the order for the columns
+      std::string ocols = detail::update_order(orows, m);
+
+      // Get the extra dimensions
+      std::string ot;
+      for (const auto& it : dim)
+	if (m.count(it.first) == 0)
+	  ot.push_back(it.first);
+      ot = detail::remove_dimensions(ot, ocols);
+
+      // Get the dimensions of the identity tensor
+      std::map<char, int> iden_dim;
+      for (const auto& it : dim) {
+	iden_dim[it.first] = (detail::is_in(ot, it.first) ? 1 : it.second);
+	if (detail::is_in(orows, it.first)) iden_dim[m.at(it.first)] = it.second;
+      }
+
+      // Create the identity tensor
+      const std::string order = orows + ocols + ot;
+      Tensor<N, T> iden{order, kvcoors<N>(order, iden_dim, 0, ThrowOnMissing), OnHost,
+		     OnEveryoneReplicated};
+      iden.set_zero();
+      if (iden.getLocal())
+      {
+	value_type* p = iden.getLocal().data();
+	for (unsigned int i = 0, vol = detail::volume(dim, orows); i < vol; ++i)
+	  p[vol * i + i] = value_type{1};
+      }
+
+      // Get the dimensions of the returned tensor
+      std::map<char, int> t_dim;
+      for (const auto& it : dim) {
+	t_dim[it.first] = (!detail::is_in(ot, it.first) ? 1 : it.second);
+	if (detail::is_in(orows, it.first)) t_dim[m.at(it.first)] = 1;
+      }
+      Tensor<N, T> t{order, kvcoors<N>(order, t_dim, 0, ThrowOnMissing), OnDefaultDevice, dist};
+      t.set(1);
+
+      std::map<char, int> r_dim = dim;
+      for (const auto& it : dim)
+	if (detail::is_in(orows, it.first)) r_dim[m.at(it.first)] = it.second;
+      Tensor<N, T> r{order, kvcoors<N>(order, r_dim, 0, ThrowOnMissing), OnDefaultDevice, dist};
+
+      kronecker(t, iden, r);
+      return r;
+    }
+
     /// Contract some dimension of the given tensors
     /// \param v: one tensor to contract
     /// \param w: the other tensor to contract
@@ -4352,6 +4445,49 @@ namespace Chroma
 			   Maybe<Distribution> dist)
     {
       return contract<Nr>(v, w, labels_to_contract, none, {}, {}, 0, dev, dist);
+    }
+
+    /// Contract some dimension of the given tensors
+    /// \param v: one tensor to contract
+    /// \param w: the other tensor to contract
+    /// \param labels_to_contract: map of labels dimensions to contract from `v` to `w`
+    /// \param action: either to copy or add to the given output tensor if given
+    /// \param r: optional given tensor where to put the resulting contraction
+    /// \param mr: map from the given `r` to the labels of the contraction
+    /// \param beta: scale on `r` if the `action` in `AddTo`
+    /// \param dev: device for the resulting tensor if `action` isn't given
+    /// \param dist: distribution of the resulting tensor if `action` isn't given
+    ///
+    /// Example:
+    ///
+    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("St", {{Ns,Ns}});
+    ///   Tensor<2,Complex> r0 = contract<2>(t, q, {{'s','t'}}); // r0 dims are "cS"
+    ///   Tensor<2,Complex> r2("cS", {{Nc,Ns}});
+    ///   contract<2>(t, q, {{'s','t'}}, CopyTo, r2); // r2 = q * s
+    ///   Tensor<2,Complex> r3("cs", {{Nc,Ns}});
+    ///   contract<2>(t, q, {{'s','t'}}, CopyTo, r3, {{'s','S'}}); // r2 = q * s
+    ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), {{'s','t'}}, CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
+
+    template <std::size_t Nr, std::size_t Nv, std::size_t Nw, typename T>
+    Tensor<Nr, T>
+    contract(const Tensor<Nv, T>& v, Tensor<Nw, T> w, const remap& labels_to_contract,
+	     Maybe<Action> action = none, Tensor<Nr, T> r = Tensor<Nr, T>{}, const remap& mr = {},
+	     typename detail::base_type<T>::type beta = typename detail::base_type<T>::type{1},
+	     Maybe<DeviceHost> dev = none, Maybe<Distribution> dist = none)
+    {
+      // Remap the labels to contract from v and w
+      std::string labels_to_contract_v;
+      for (const auto& it : labels_to_contract)
+	labels_to_contract_v.push_back(it.first);
+      remap mv = detail::getNewLabels(labels_to_contract_v, v.order + w.order);
+      remap mw;
+      for (const auto it : mv)
+	mw[labels_to_contract.at(it.first)] = it.second;
+      std::string labels_to_contract_str;
+      for (const auto it : mv)
+	labels_to_contract_str.push_back(it.second);
+      return contract(v.rename_dims(mv), w.rename_dims(mw), labels_to_contract_str, action, r, mr,
+		      beta, dev, dist);
     }
 
     /// Do the Kronecker product of two tensors
@@ -4590,6 +4726,58 @@ namespace Chroma
 	auto eps = std::sqrt(std::numeric_limits<typename detail::real_type<T>::type>::epsilon());
 	if (err > eps)
 	  throw std::runtime_error(std::string("solve: too much error in dense solution, ") +
+				   detail::tostr(err));
+      }
+
+      return r0;
+    }
+
+    /// Invert the matrices
+    /// \param v: tensor to compute the inversion
+    /// \param order_rows: labels that are rows of the matrices to factor
+    /// \param order_cols: labels that are columns of the matrices to factor
+    /// \param r: optional given tensor where to put the resulting contraction
+
+    template <std::size_t N, typename T>
+    Tensor<N, T> inv(const Tensor<N, T>& v, const std::string& order_rows,
+		       const std::string& order_cols, Tensor<N, T> r = {})
+    {
+      if (r && detail::union_dimensions(v.order, r.order) != v.order)
+	throw std::runtime_error("inv: The given output tensor has an unexpected ordering");
+      if (order_rows.size() != order_cols.size())
+	throw std::runtime_error("inv: unsupported ordering for the matrix");
+
+      // If the output tensor is not given create a new one
+      Tensor<N, T> r0;
+      if (!r)
+      {
+	r0 = v.make_compatible();
+      }
+      else
+      {
+	r0 = r;
+      }
+
+      // Compute the solution
+      r0.inv(v, order_rows, order_cols);
+
+      // Check the solution
+      if (superbblas::getDebugLevel() > 0)
+      {
+	remap m{};
+	for (unsigned int i = 0; i < order_rows.size(); ++i)
+	  m[order_rows[i]] = order_cols[i];
+	auto dim = v.kvdim();
+	char c = detail::get_free_label(v.order);
+	dim[c] = 1;
+	auto res = identity<N + 1, T>(dim, m).scale(-1);
+	contract<N + 1>(v, r0.split_dimension(order_rows[0], std::string({c, order_rows[0]}), 1), m,
+			AddTo, res);
+	auto err = norm<1>(res, std::string(1, c)).get({0});
+	QDPIO::cout << "inv error: " << detail::tostr(err) << std::endl;
+	auto eps = std::sqrt(std::numeric_limits<typename detail::real_type<T>::type>::epsilon());
+	if (err > eps)
+	  throw std::runtime_error(std::string("inv: too much error in dense solution, ") +
 				   detail::tostr(err));
       }
 
@@ -6165,55 +6353,6 @@ namespace Chroma
       }
 
       return r.make_sure(none, dev);
-    }
-
-    /// Return an identity matrix
-    /// \param dim: length for each of the row dimensions
-    /// \param m: labels map from the row to the column dimensions and other dimensions
-
-    template <std::size_t N, typename T>
-    Tensor<N, T> identity(const std::map<char, int>& dim, const remap& m,
-			  const Distribution& dist = OnMaster)
-    {
-      using value_type = typename detail::base_type<T>::type;
-
-      // For now it only supports OnMaster and OnEveryoneReplicated distributions
-      if (dist != OnMaster && dist != OnEveryoneReplicated && dist != Local)
-	throw std::runtime_error("identity: unsupported distribution");
-
-      // Get the order for the rows
-      std::string orows;
-      for (const auto& it : m)
-	orows.push_back(it.first);
-
-      // Get the order for the columns
-      std::string ocols = detail::update_order(orows, m);
-
-      // Get the extra dimensions
-      std::string ot;
-      for (const auto& it : dim)
-	if (m.count(it.first) == 0)
-	  ot.push_back(it.first);
-      ot = detail::remove_dimensions(ot, ocols);
-
-      // Get the dimensions of the returned tensor
-      std::map<char, int> tdim = dim;
-      for (const auto& it : m)
-	tdim[it.second] = dim.at(it.first);
-
-      // Create the identity tensor
-      Tensor<N, T> t{orows + ocols + ot, kvcoors<N>(orows + ocols + ot, tdim, 0, ThrowOnMissing),
-		     OnHost, dist};
-      t.set_zero();
-      value_type* p = t.data();
-      if (t.getLocal())
-      {
-	for (unsigned int j = 0, tvol = ot.size() == 0 ? 1 : detail::volume(dim, ot); j < tvol; ++j)
-	  for (unsigned int i = 0, vol = detail::volume(dim, orows); i < vol; ++i)
-	    p[vol * vol * j + vol * i + i] = value_type{1};
-      }
-
-      return t;
     }
 
     ///
