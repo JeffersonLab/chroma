@@ -654,7 +654,9 @@ list(APPEND ChromaLIB_HEADERS
 	actions/ferm/linop/lwldslash_3d_qdp_w.h
 	actions/ferm/linop/clover_term_w.h
 	actions/ferm/linop/clover_term_base_w.h
+	actions/ferm/linop/exp_clover_term_base_w.h
 	actions/ferm/linop/clover_term_qdp_w.h
+	actions/ferm/linop/exp_clover_term_qdp_w.h
 	actions/ferm/linop/eoprec_clover_linop_w.h
 	actions/ferm/linop/seoprec_clover_linop_w.h
 	actions/ferm/linop/shifted_linop_w.h
