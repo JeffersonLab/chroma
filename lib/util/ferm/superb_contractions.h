@@ -1725,8 +1725,11 @@ namespace Chroma
       /// Data allocation
       template <typename T>
       struct Allocation {
-	/// Allocation
+	/// Allocation unmanaged (may be null)
 	T* ptr;
+
+	/// Allocation managed (may be empty)
+	std::shared_ptr<char> ptr_managed;
 
 	/// Context of the allocation
 	std::shared_ptr<superbblas::Context> ctx;
@@ -1734,15 +1737,12 @@ namespace Chroma
 	/// Unfinished operations on the allocation
 	std::vector<superbblas::Request> pending_operations;
 
-	/// Deallocate the pointer on destruction
-	bool destroy_ptr;
-
 	/// Allocate n elements of type T with the given context
 	/// \param n: number of elements to allocate
 	/// \param ctx: context of the allocation
 
 	Allocation(std::size_t n, const std::shared_ptr<superbblas::Context>& ctx)
-	  : ptr(superbblas::allocate<T>(n, *ctx)), ctx(ctx), destroy_ptr(true)
+	  : ptr(nullptr), ptr_managed(superbblas::allocate_from_cache<T>(n, *ctx)), ctx(ctx)
 	{
 	}
 
@@ -1751,7 +1751,7 @@ namespace Chroma
 	/// \param ctx: context of the allocation
 
 	Allocation(T* ptr, const std::shared_ptr<superbblas::Context>& ctx)
-	  : ptr(ptr), ctx(ctx), destroy_ptr(false)
+	  : ptr(ptr), ctx(ctx)
 	{
 	}
 
@@ -1760,16 +1760,28 @@ namespace Chroma
 	~Allocation()
 	{
 	  finish_pending_operations();
-	  if (destroy_ptr)
-	    superbblas::deallocate(ptr, *ctx);
+	}
+
+	/// Return whether the pointer is managed by superbblas
+	bool is_managed() const
+	{
+	  return bool(ptr_managed);
 	}
 
 	/// Return the pointer
+	T* get_ptr() const
+	{
+	  if (ptr_managed)
+	    return (T*)ptr_managed.get();
+	  return ptr;
+	}
+
+	/// Return the pointer after finishing the pending operations
 
 	T* data()
 	{
 	  finish_pending_operations();
-	  return ptr;
+	  return get_ptr();
 	}
 
 	/// Append a pending operation
@@ -1780,7 +1792,7 @@ namespace Chroma
 
 	void append_pending_operation(const superbblas::Request& req)
 	{
-	  if (destroy_ptr)
+	  if (ptr_managed)
 	  {
 	    if (req)
 	      pending_operations.push_back(req);
@@ -2186,7 +2198,7 @@ namespace Chroma
       {
 	if (!allocation)
 	  return true;
-	return allocation->destroy_ptr;
+	return allocation->is_managed();
       }
 
       /// Return the pointer to the first local element
@@ -2215,11 +2227,11 @@ namespace Chroma
 
 	// If the pointer isn't managed by supperbblas, it may be managed by Chroma
 	// and we make sure that all operations from Chroma side are finished
-	if (!allocation->destroy_ptr)
+	if (!allocation->is_managed())
 	  superbblas::syncLegacyStream(ctx());
 
 	if (unordered_writing)
-	  return (value_type*)allocation->ptr;
+	  return (value_type*)allocation->get_ptr();
 
 	return (value_type*)allocation->data();
       }
@@ -8327,7 +8339,6 @@ namespace Chroma
 	  Tensor<Nd + 3, ComplexD> ty(order, size, opaux.primme_dev, OnEveryone, (ComplexD*)y);
 	  assert(tx.getLocal().volume() == primme->nLocal * (*blockSize));
 	  opaux.op(tx, ty);
-	  assert(ty.allocation->pending_operations.size() == 0);
 	  *ierr = 0;
 	} catch (...)
 	{
