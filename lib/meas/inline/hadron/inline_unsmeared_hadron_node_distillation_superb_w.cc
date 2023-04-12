@@ -24,8 +24,6 @@
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/superb_contractions.h"
 #include "util/ferm/transf.h"
-#include "util/ft/sftmom.h"
-#include "util/ft/time_slice_set.h"
 #include "util/info/proginfo.h"
 
 #include "meas/inline/io/named_objmap.h"
@@ -760,7 +758,7 @@ namespace Chroma
       QDPIO::cout << "Parse momentum list" << std::endl;
       
       // Possible momenta, gammas, and displacements
-      multi2d<int> moms;
+      SB::CoorMoms moms;
       std::vector<int> gammas;
       std::vector<std::vector<int>> disps;
 
@@ -801,18 +799,7 @@ namespace Chroma
           QDP_abort(1);
         }
 
-        int num_mom = moms_set.size();
-        int mom_size = Nd - 1;
-        QDPIO::cout << name << ": num_mom= " << num_mom
-                    << "  mom_size= " << mom_size << std::endl;
-        moms.resize(num_mom, mom_size);
-        int i = 0;
-        for (const auto &it : moms_set) {
-          for (unsigned int j = 0; j < Nd - 1; ++j)
-            moms[i][j] = it[j];
-          i++;
-        }
-
+	moms = SB::CoorMoms(moms_set.begin(), moms_set.end());
         disps.resize(disps_set.size());
         std::copy(disps_set.begin(), disps_set.end(), disps.begin());
         gammas.resize(gammas_set.size());
@@ -834,11 +821,6 @@ namespace Chroma
 	if (std::fabs(phase[i] - params.param.contract.phase[i]) > 0)
 	  std::runtime_error("phase should be integer");
       }
-
-      //
-      // Initialize the slow Fourier transform phases
-      //
-      SftMom phases(moms, params.param.contract.decay_dir);
 
       //
       // Capture maximum number of vecs
@@ -959,7 +941,7 @@ namespace Chroma
       for (const auto& sink_source : params.param.sink_source_pairs)
 	max_tslices =
 	  std::max(max_tslices, (std::size_t)sink_source.Nt_backward + sink_source.Nt_forward + 1);
-      std::size_t num_keys_gp4 = phases.numMom() * gammas.size() * disps.size() * max_tslices *
+      std::size_t num_keys_gp4 = moms.size() * gammas.size() * disps.size() * max_tslices *
 				 params.param.sink_source_pairs.size();
       for (auto& db : qdp_db)
 	db.setNumberBuckets(num_keys_gp4 * num_vecs * 2);
@@ -1072,10 +1054,10 @@ namespace Chroma
 	write(metadata_xml, "Config_info", gauge_xml);
 	write(metadata_xml, "tensorOrder", qdp5_order);
 	write(metadata_xml, "displacements", disps);
-	std::vector<multi1d<int>>  moms;
-	for (int i = 0; i < phases.numMom(); ++i)
-	  moms.push_back(phases.numToMom(i));
-	write(metadata_xml, "moms", moms);
+	std::vector<multi1d<int>>  moms0;
+	for (int i = 0; i < moms.size(); ++i)
+	  moms0.push_back(SB::tomulti1d(moms[i]));
+	write(metadata_xml, "moms", moms0);
 	write(metadata_xml, "mass_label", params.param.contract.mass_label);
 	write(metadata_xml, "gammas", gammas);
 	write(metadata_xml, "eigen_phase", params.param.contract.phase);
@@ -1152,7 +1134,7 @@ namespace Chroma
 	// Maximum number of momenta contracted at once
 	int max_moms_in_contraction = params.param.contract.max_moms_in_contraction;
 	if (max_moms_in_contraction <= 0)
-	  max_moms_in_contraction = phases.numMom();
+	  max_moms_in_contraction = moms.size();
 
 	// Set place for doing the contractions
 	SB::DeviceHost dev =
@@ -1238,9 +1220,9 @@ namespace Chroma
 	       tfrom < num_tslices_active; tfrom += tsize,
 		   tsize = std::min(max_tslices_in_contraction, num_tslices_active - tfrom))
 	  {
-	    for (int mfrom = 0, msize = std::min(max_moms_in_contraction, phases.numMom());
-		 mfrom < phases.numMom();
-		 mfrom += msize, msize = std::min(max_moms_in_contraction, phases.numMom() - mfrom))
+	    for (int mfrom = 0, msize = std::min(max_moms_in_contraction, (int)moms.size());
+		 mfrom < moms.size();
+		 mfrom += msize, msize = std::min(max_moms_in_contraction, (int)moms.size() - mfrom))
 	    {
 
 	      StopWatch snarss1;
@@ -1252,7 +1234,7 @@ namespace Chroma
 		invSource.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
 	      SB::Tensor<Nd + 5, SB::Complex> this_invSink =
 		invSink.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
-	      if (tfrom + tsize >= num_tslices_active && mfrom + msize >= phases.numMom())
+	      if (tfrom + tsize >= num_tslices_active && mfrom + msize >= moms.size())
 	      {
 		invSource.release();
 		invSink.release();
@@ -1260,7 +1242,7 @@ namespace Chroma
 	      std::pair<SB::Tensor<8, SB::Complex>, std::vector<int>> r =
 		SB::doMomGammaDisp_contractions<8>(
 		  u, std::move(this_invSink), std::move(this_invSource),
-		  first_tslice_active + tfrom, phases, mfrom, msize, gamma_mats, disps,
+		  first_tslice_active + tfrom, moms, mfrom, msize, gamma_mats, disps,
 		  params.param.contract.use_derivP, order_out, SB::none, dev);
 
 	      // Premultiply by g5, again; see above commit about this
@@ -1341,7 +1323,7 @@ namespace Chroma
 			      key.key().colorvec_src = n;
 			      key.key().gamma = gammas[g];
 			      key.key().displacement = disps[disps_perm[d]];
-			      key.key().mom = phases.numToMom(mfrom + mom);
+			      key.key().mom = SB::tomulti1d(moms[mfrom + mom]);
 			      key.key().mass = params.param.contract.mass_label;
 
 			      qdp_db[use_multiple_writers ? mfrom + mom : 0].insert(key, val);
@@ -1382,7 +1364,7 @@ namespace Chroma
 			    key.key().t_source = t_source;
 			    key.key().g = gammas[g];
 			    key.key().displacement = disps[disps_perm[d]];
-			    key.key().mom = phases.numToMom(mfrom + mom);
+			    key.key().mom = SB::tomulti1d(moms[mfrom + mom]);
 			    key.key().mass = params.param.contract.mass_label;
 
 			    qdp4_db[use_multiple_writers ? mfrom + mom : 0].insert(key, val);

@@ -33,12 +33,9 @@ namespace Chroma
       struct Param_t
       {
 	int max_path_length ; /*! maximum displacement path */
-	int p2_max ; /*! maximum p2  */
-        multi2d<int> p_list; //Instead of a max momentum, a list is possible as an input.
-        int p_num;  //Maximum number of momenta in the file.
-	std::string p_file; //Name of file that contains list of momenta.
-        bool use_p_list; //A boolean that keeps track of which momentum structure to pass to the fourier transform.
-	bool multifile_write; //A boolean that switches between new and old code for writing to multiple databases,
+	int mom2_min;               /*!< (mom)^2 >= mom2_min */
+	int mom2_max;               /*!< (mom)^2 <= mom2_max */
+	std::vector<std::vector<int>>  mom_list;        /*!< Alternative array of momenta to generate */
 	std::string mass_label ; /*! a std::string flag maybe used in analysis*/
         int max_rhs;            /*! maximum number of linear systems solved simultaneously */
 	ChromaProp_t prop;

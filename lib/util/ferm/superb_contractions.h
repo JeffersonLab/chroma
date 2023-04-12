@@ -23,7 +23,6 @@
 #  include "qdp_map_obj_disk_multiple.h"
 #  include "superbblas.h"
 #  include "util/ferm/key_timeslice_colorvec.h"
-#  include "util/ft/sftmom.h"
 #  include <algorithm>
 #  include <array>
 #  include <chrono>
@@ -4054,48 +4053,6 @@ namespace Chroma
     template <typename COMPLEX = Complex>
     using Moms = std::pair<Tensor<Nd + 2, COMPLEX>, std::vector<Coor<3>>>;
 
-    /// Copy several momenta into a single tensor
-    /// \param decay_dir: something that should be three
-    /// \param moms: momenta to apply
-    /// \param first_mom: first momentum to extract
-    /// \param num_moms: number of momenta to extract
-    /// \param first_tslice: first time-slice to extract
-    /// \param num_tslice: number of time-slices to extract
-    /// \param order_out: coordinate order of the output tensor, a permutation of mxyzXt
-    /// \return: the tensor with the momenta
-
-    template <typename COMPLEX = Complex>
-    Moms<COMPLEX> getMoms(int decay_dir, const SftMom& moms, Maybe<int> first_mom = none,
-			  Maybe<int> num_moms = none, Maybe<Index> first_tslice = none,
-			  Maybe<int> num_tslices = none, const std::string& order_out = "mxyzXt")
-    {
-      // Copy moms into a single tensor
-      const int Nt = Layout::lattSize()[decay_dir];
-      int tfrom = first_tslice.getSome(0);	   // first tslice to extract
-      int tsize = num_tslices.getSome(Nt);	   // number of tslices to extract
-      int mfrom = first_mom.getSome(0);		   // first momentum to extract
-      int msize = num_moms.getSome(moms.numMom()); // number of momenta to extract
-
-      Tensor<Nd + 2, COMPLEX> momst(order_out,
-				    latticeSize<Nd + 2>(order_out, {{'t', tsize}, {'m', msize}}));
-      for (unsigned int mom = 0; mom < msize; ++mom)
-      {
-	asTensorView(moms[mfrom + mom])
-	  .kvslice_from_size({{'t', tfrom}}, {{'t', tsize}})
-	  .copyTo(momst.kvslice_from_size({{'m', mom}}, {{'m', 1}}));
-      }
-
-      // Create mom_list
-      std::vector<Coor<Nd - 1>> mom_list(msize);
-      for (unsigned int mom = 0; mom < msize; ++mom)
-      {
-	for (unsigned int i = 0; i < 3; ++i)
-	  mom_list[mom][i] = moms.numToMom(mfrom + mom)[i];
-      }
-
-      return {momst, mom_list};
-    }
-
     /// Contract two LatticeFermion with different momenta, gammas, and displacements.
     /// \param leftconj: left lattice fermion tensor, cxyzXNQqt
     /// \param right: right lattice fermion tensor, cxyzXnSst
@@ -4116,7 +4073,7 @@ namespace Chroma
     template <std::size_t Nout, std::size_t Nleft, std::size_t Nright, typename COMPLEX>
     std::pair<Tensor<Nout, COMPLEX>, std::vector<int>> doMomGammaDisp_contractions(
       const multi1d<LatticeColorMatrix>& u, Tensor<Nleft, COMPLEX> leftconj,
-      Tensor<Nright, COMPLEX> right, Index first_tslice, const SftMom& moms, int first_mom,
+      Tensor<Nright, COMPLEX> right, Index first_tslice, const CoorMoms& moms, int first_mom,
       Maybe<int> num_moms, const std::vector<Tensor<2, COMPLEX>>& gammas,
       const std::vector<std::vector<int>>& disps, bool deriv,
       const std::string& order_out = "gmNndsqt", Maybe<int> max_active_tslices = none,
@@ -4143,8 +4100,8 @@ namespace Chroma
       detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps);
 
       // Number of moments to apply
-      int numMom = num_moms.getSome(moms.numMom());
-      if (first_mom + numMom > moms.numMom())
+      int numMom = num_moms.getSome(moms.size());
+      if (first_mom + numMom > moms.size())
 	throw std::runtime_error("Invalid range of momenta");
 
       // Allocate output tensor
@@ -4161,12 +4118,8 @@ namespace Chroma
       Tensor<Nout, COMPLEX> r(order_out, kvcoors<Nout>(order_out, r_size));
 
       // Create mom_list
-      std::vector<Coor<Nd - 1>> mom_list(numMom);
-      for (unsigned int mom = 0; mom < numMom; ++mom)
-      {
-	for (unsigned int i = 0; i < Nd - 1; ++i)
-	  mom_list[mom][i] = moms.numToMom(first_mom + mom)[i];
-      }
+      std::vector<Coor<Nd - 1>> mom_list(moms.begin() + first_mom,
+					 moms.begin() + first_mom + numMom);
 
       // Copy all gammas into a single tensor
       Tensor<3, COMPLEX> gammast("gQS", {(Index)gammas.size(), Ns, Ns}, dev, OnEveryoneReplicated);
@@ -4196,11 +4149,11 @@ namespace Chroma
 	std::string momst_order = "mxyzXt";
 	Tensor<Nd + 2, COMPLEX> momst(
 	  momst_order, latticeSize<Nd + 2>(momst_order, {{'t', tsize}, {'m', numMom}}), dev);
-	for (unsigned int mom = 0; mom < numMom; ++mom)
+	for (int m = 0; m < numMom; ++m)
 	{
-	  asTensorView(moms[first_mom + mom])
-	    .kvslice_from_size({{'t', tfrom + first_tslice}}, {{'t', tsize}})
-	    .copyTo(momst.kvslice_from_size({{'m', mom}}, {{'m', 1}}));
+	  ns_getColorvecs::getPhase<COMPLEX>(moms[first_mom + m], first_tslice + tfrom, tsize,
+					     momst.getDev())
+	    .copyTo(momst.kvslice_from_size({{'m', m}}, {{'m', 1}}));
 	}
 
 	// Apply momenta conjugated to the left tensor and rename the spin components s and Q to q and Q,
