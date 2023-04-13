@@ -264,6 +264,8 @@ namespace Chroma
     void write(BinaryWriter& bin, const ValOperator_t& d)
     {
       SB::Tensor<1, SB::ComplexD> t = d;
+      int n = t.volume();
+      write(bin, n);
       write(bin, t);
     }
 
