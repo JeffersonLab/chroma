@@ -10,6 +10,7 @@
 
 #include "chromabase.h"
 
+#include <array>
 #include <vector>
 
 namespace Chroma
