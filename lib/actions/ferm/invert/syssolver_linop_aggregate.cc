@@ -18,6 +18,7 @@
 #include "actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_cg_clover.h"
 #include "actions/ferm/invert/syssolver_linop_fgmres_dr.h"
+#include "actions/ferm/invert/projector_random.h"
 
 
 #include "chroma_config.h"
@@ -84,6 +85,7 @@ namespace Chroma
 	success &= LinOpSysSolverReliableIBiCGStabCloverEnv::registerAll();
 	success &= LinOpSysSolverReliableCGCloverEnv::registerAll();
 	success &= LinOpSysSolverFGMRESDREnv::registerAll();
+	success &= ProjectorRandomEnv::registerAll();
 
 #ifdef BUILD_QUDA
 	success &= LinOpSysSolverQUDACloverEnv::registerAll();
