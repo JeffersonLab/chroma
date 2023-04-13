@@ -326,7 +326,7 @@ namespace Chroma
 
       // Construct a vector with the desired contractions
       std::vector<std::vector<int>> disps;
-      disps.push_back(std::vector<int>(1, 0)); // no displacement
+      disps.push_back(std::vector<int>()); // no displacement
       for (int i = 1; i <= max_path_length; ++i)
 	disps.push_back(std::vector<int>(i, 3)); // displacements on positive z-dir
       for (int i = 1; i <= max_path_length; ++i)
@@ -354,6 +354,12 @@ namespace Chroma
 
       const std::vector<int>& disps_perm = r.second;
 
+      // Normalize paths: replace empty by [0]
+      std::vector<std::vector<int>> norm_disps;
+      norm_disps.reserve(disps.size());
+      for (const auto& it : disps)
+	norm_disps.push_back(it.size() == 0 ? std::vector<int>(1) : it);
+
       // Do the update only on the master node
       if (con)
       {
@@ -363,7 +369,7 @@ namespace Chroma
 	  {
 	    for (int t = 0; t < Nt; ++t)
 	    {
-	      MesonKey k{t, disps[disps_perm[d]], mom_list[mom]};
+	      MesonKey k{t, norm_disps[disps_perm[d]], mom_list[mom]};
 
 	      auto it = db.find(k);
 	      if (it == db.end())
