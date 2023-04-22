@@ -429,16 +429,19 @@ namespace Chroma
       if (num_noise <= 1)
 	return;
 
+      // Average the stats over all t_slice and absolute momenta and absolute displacement
       const int Nt = Layout::lattSize()[3];
       TracesVariance dbmean_avg(dbmean.size()), dbdet_avg(dbmean.size()), dbvar_avg(dbmean.size());
       MesonMap<unsigned int> avg_n; // number of averaged values
       for (const auto& it : dbvar)
       {
-	// Average over t_slice and forward/backward directions
+	// Average over t_slice, forward/backward directions, and absolute momenta
 	MesonKey key = it.first;
 	key.t_slice = 0;
 	for (int k = 0; k < it.first.disp.size(); k++)
 	  key.disp[k] = abs(it.first.disp[k]);
+	for (int k = 0; k < it.first.mom.size(); k++)
+	  key.mom[k] = abs(it.first.mom[k]);
 
 	// Update dbvar_avg
 	// Compute the variance as E[x^2] - E[x]^2
@@ -492,15 +495,30 @@ namespace Chroma
 	    itbo.first->second[i] += val[i];
 	}
       }
+
+      // Order the keys by momenta and displacement
+      std::vector<MesonKey> keys;
+      keys.reserve(dbvar_avg.size());
       for (const auto& it : dbvar_avg)
+	keys.push_back(it.first);
+      std::sort(keys.begin(), keys.end(), [=](const MesonKey& a, const MesonKey& b) {
+	auto a_mom = std::vector<int>(a.mom.begin(), a.mom.end());
+	auto b_mom = std::vector<int>(b.mom.begin(), b.mom.end());
+	return (a_mom < b_mom || (a_mom == b_mom &&			// compare mom
+				  (a.disp < b.disp || a.disp == b.disp) // compare disp
+				  ));
+      });
+
+      // Print the stats
+      for (const auto& key : keys)
       {
-	const unsigned int n = avg_n[it.first];
+	const unsigned int n = avg_n[key];
 	QDPIO::cout << "DISCO VARIANCE with " << num_noise
-		    << " noise vectors key: disp = " << SB::tomulti1d(it.first.disp)
-		    << " mom = " << SB::tomulti1d(it.first.mom) << "   val: " << std::endl;
+		    << " noise vectors key: disp = " << SB::tomulti1d(key.disp)
+		    << " mom = " << SB::tomulti1d(key.mom) << "   val: " << std::endl;
 	for (int i = 0; i < Ns * Ns; i++)
-	  QDPIO::cout << "Gamma[" << i << "]: avg_det = " << dbdet_avg[it.first][i] / n
-		      << " avg = " << dbmean_avg[it.first][i] / n << "   var = " << it.second[i] / n
+	  QDPIO::cout << "Gamma[" << i << "]: avg_det = " << dbdet_avg[key][i] / n
+		      << " avg = " << dbmean_avg[key][i] / n << "   var = " << dbvar_avg[key][i] / n
 		      << std::endl;
       }
     }
