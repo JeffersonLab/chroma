@@ -679,6 +679,173 @@ namespace Chroma
 		    << std::endl;
     }
 
+    /// Solve iteratively op * y = x using Minimal Residual (valid for positive definite linear systems)
+    /// \param op: problem matrix
+    /// \param x: input right-hand-sides
+    /// \param y: the solution vectors
+    /// \param tol: maximum tolerance
+    /// \param max_its: maximum number of iterations
+    /// \param error_if_not_converged: throw an error if the tolerance was not satisfied
+    /// \param max_residual_updates: recompute residual vector every this number of restarts
+    /// \param passing_initial_guess: whether `y` contains a solution guess
+    /// \param verb: verbosity level
+    /// \param prefix: prefix printed before every line
+    ///
+    /// Method:
+    /// r = b - A * x  // compute initial residual
+    /// while |r| > |b|*tol
+    ///   kr = prec * r
+    ///   p = A * kr
+    ///   alpha = (p' * r) / (p' * p)
+    ///   x = x + kr * alpha
+    ///   r = r - p * alpha
+    /// end
+
+    template <std::size_t NOp, typename COMPLEX>
+    void mr(const Operator<NOp, COMPLEX>& op, const Operator<NOp, COMPLEX>& prec,
+	    const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX>& y, double tol,
+	    unsigned int max_its = 0, bool error_if_not_converged = true,
+	    unsigned int max_residual_updates = 0, bool passing_initial_guess = false,
+	    Verbosity verb = NoOutput, std::string prefix = "")
+    {
+      detail::log(1, prefix + " starting minimal residual");
+
+      // TODO: add optimizations for multiple operators
+      if (op.order_t.size() > 0)
+	throw std::runtime_error("Not implemented");
+
+      // Check options
+      if (max_its == 0 && tol <= 0)
+	throw std::runtime_error("mr: please give a stopping criterion, either a tolerance or "
+				 "a maximum number of iterations");
+      if (max_its == 0)
+	max_its = std::numeric_limits<unsigned int>::max();
+      if (max_residual_updates == 0)
+	max_residual_updates = (std::is_same<COMPLEX, double>::value ||
+				std::is_same<COMPLEX, std::complex<double>>::value)
+				 ? 4
+				 : 2;
+
+      // Check that the operator is compatible with the input and output vectors
+      if (!op.d.is_compatible(x) || !op.d.is_compatible(y))
+	throw std::runtime_error("mr: Either the input or the output vector isn't compatible with the "
+				 "operator");
+
+      // Get an unused label for the search subspace columns
+      std::string order_cols = detail::remove_dimensions(x.order, op.i.order);
+      std::string order_rows = detail::remove_dimensions(op.d.order, op.order_t);
+      std::size_t num_cols = x.volume(order_cols);
+
+      // Counting op applications
+      unsigned int nops = 0, nprecs = 0;
+
+      // Compute residual, r = x - op * y
+      Tensor<NOp + 1, COMPLEX> r;
+      if (passing_initial_guess)
+      {
+	r = op(y).scale(-1);
+	nops += num_cols;
+      }
+      else
+      {
+	r = op.template make_compatible_img<NOp + 1>(order_cols, x.kvdim());
+	r.set_zero();
+	y.set_zero();
+      }
+      x.addTo(r);
+      auto normr0 = norm<1>(r, op.order_t + order_cols); // type std::vector<real of T>
+      if (max(normr0) == 0)
+	return;
+
+      // Do the iterations
+      auto normr = normr0.clone();	  ///< residual norms
+      unsigned int it = 0;		  ///< iteration number
+      double max_tol = HUGE_VAL;	  ///< maximum residual norm
+      unsigned int residual_updates = 0;  ///< number of residual updates
+      auto p = r.like_this();		  ///< p will hold A * prec * r
+      auto kr = prec ? r.like_this() : r; ///< p will hold prec * r
+      for (it = 0; it < max_its;)
+      {
+	// kr = prec * r
+	if (prec)
+	{
+	  prec(r, kr);
+	  nprecs += num_cols;
+	}
+
+	// p = A * kr
+	op(kr, p);
+	nops += num_cols;
+
+	// alpha = (p' * r) / (p' * p)
+	auto alpha =
+	  div(contract<1>(r, p.conj(), order_rows), contract<1>(p, p.conj(), order_rows));
+
+	// y = y + alpha * kr
+	contract<NOp + 1>(kr, alpha, "", AddTo, y);
+
+	// r = r - alpha * p
+	contract<NOp + 1>(p.scale(-1), alpha, "", AddTo, r);
+
+	// Compute the norm
+	auto normr = norm<1>(r, op.order_t + order_cols);
+
+	// Check final residual
+	if (superbblas::getDebugLevel() > 0)
+	{
+	  auto rd = r.like_this();
+	  op(y, rd); // rd = op(y)
+	  nops += num_cols;
+	  x.scale(-1).addTo(rd);
+	  r.addTo(rd);
+	  auto normrd = norm<1>(rd, op.order_t + order_cols);
+	  double max_tol_d = 0;
+	  for (int i = 0, vol = normr.volume(); i < vol; ++i)
+	    max_tol_d = std::max(max_tol_d, (double)normrd.get({{i}}) / normr.get({{i}}));
+	  QDPIO::cout << prefix
+		      << " MGPROTON MR error in residual vector: " << detail::tostr(max_tol_d)
+		      << std::endl;
+	}
+
+	// Get the worse tolerance
+	max_tol = 0;
+	for (int i = 0, vol = normr.volume(); i < vol; ++i)
+	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
+
+	// Report iteration
+	if (verb >= Detailed)
+	  QDPIO::cout << prefix << " MGPROTON MR iteration #its.: " << it
+		      << " max rel. residual: " << detail::tostr(max_tol, 2) << std::endl;
+
+	// Increase iterator counter
+	++it;
+
+	// Stop if the residual tolerance is satisfied
+	if (max_tol <= tol)
+	  break;
+      }
+
+      // Check final residual
+      if (error_if_not_converged)
+      {
+	op(y, r); // r = op(y)
+	nops += num_cols;
+	x.scale(-1).addTo(r);
+	auto normr = norm<1>(r, op.order_t + order_cols);
+	max_tol = 0;
+	for (int i = 0, vol = normr.volume(); i < vol; ++i)
+	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
+	if (tol > 0 && max_tol > tol)
+	  throw std::runtime_error("mr didn't converged and you ask for checking the error");
+      }
+
+      // Report iteration
+      if (verb >= JustSummary)
+	QDPIO::cout << prefix << " MGPROTON MR summary #its.: " << it
+		    << " max rel. residual: " << detail::tostr(max_tol, 2) << " matvecs: " << nops
+		    << " precs: " << nprecs << std::endl;
+    }
+
     template <std::size_t NOp, typename COMPLEX>
     Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
 				     const Operator<NOp, COMPLEX>& prec = Operator<NOp, COMPLEX>(),
@@ -741,7 +908,7 @@ namespace Chroma
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		  Tracker _t(std::string("fgmres ") + prefix);
-		  _t.cost = x.kvdim().at('n');
+		  _t.arity = x.kvdim().at('n');
 		  foreachInChuncks(
 		    x, y, max_simultaneous_rhs,
 		    [=](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
@@ -802,7 +969,7 @@ namespace Chroma
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		  Tracker _t(std::string("bicgstab ") + prefix);
-		  _t.cost = x.kvdim().at('n');
+		  _t.arity = x.kvdim().at('n');
 		  foreachInChuncks(
 		    x, y, max_simultaneous_rhs,
 		    [=](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
@@ -825,6 +992,60 @@ namespace Chroma
 		op.preferred_col_ordering,
 		false /* no Kronecker blocking */};
       }
+
+      /// Returns a MR solver
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver from `solvers` and influence the solver construction
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getMRSolver(Operator<NOp, COMPLEX> op, const Options& ops,
+					 Operator<NOp, COMPLEX> prec_)
+      {
+	// Get preconditioner
+	Operator<NOp, COMPLEX> prec;
+	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
+	if (precOps && prec_)
+	  throw std::runtime_error(
+	    "getFGMRESSolver: invalid `prec` tag: the solver got a preconditioner already");
+	if (precOps)
+	  prec = getSolver(op, precOps.getSome());
+	else if (prec_)
+	  prec = prec_;
+
+	// Get the remainder options
+	double tol = getOption<double>(ops, "tol", 0.0);
+	unsigned int max_its = getOption<unsigned int>(ops, "max_its", 0);
+	if (max_its == 0 && tol <= 0)
+	  ops.throw_error("set either `tol` or `max_its`");
+	bool error_if_not_converged = getOption<bool>(ops, "error_if_not_converged", true);
+	unsigned int max_residual_updates = getOption<unsigned int>(ops, "max_residual_updates", 0);
+	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
+	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+
+	// Return the solver
+	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		  Tracker _t(std::string("mr ") + prefix);
+		  _t.arity = x.kvdim().at('n');
+		  foreachInChuncks(
+		    x, y, max_simultaneous_rhs,
+		    [=](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
+		      mr(op, prec, x, y, tol, max_its, error_if_not_converged, max_residual_updates,
+			 false /* no init guess */, verb, prefix);
+		    },
+		    'n');
+		},
+		op.i,
+		op.d,
+		nullptr,
+		op.order_t,
+		op.imgLayout,
+		op.domLayout,
+		DenseOperator(),
+		op.preferred_col_ordering,
+		false /* no Kronecker blocking */};
+      }
+
 
       /// Returns the \gamma_5 for a given number of spins
       /// \param ns: number of spins
@@ -2213,11 +2434,17 @@ namespace Chroma
     Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
 				     const Operator<NOp, COMPLEX>& prec, SolverSpace solverSpace)
     {
-      enum SolverType { FGMRES, BICGSTAB, MG, EO, BJ, IGD, DDAG, G5, BLOCKING, CASTING };
-      static const std::map<std::string, SolverType> solverTypeMap{
-	{"fgmres", FGMRES},  {"bicgstab", BICGSTAB}, {"mg", MG}, {"eo", EO},
-	{"bj", BJ},	     {"igd", IGD},	     {"g5", G5}, {"blocking", BLOCKING},
-	{"casting", CASTING}};
+      enum SolverType { FGMRES, BICGSTAB, MR, MG, EO, BJ, IGD, DDAG, G5, BLOCKING, CASTING };
+      static const std::map<std::string, SolverType> solverTypeMap{{"fgmres", FGMRES},
+								   {"bicgstab", BICGSTAB},
+								   {"mr", MR},
+								   {"mg", MG},
+								   {"eo", EO},
+								   {"bj", BJ},
+								   {"igd", IGD},
+								   {"g5", G5},
+								   {"blocking", BLOCKING},
+								   {"casting", CASTING}};
       SolverType solverType = getOption<SolverType>(ops, "type", solverTypeMap);
       switch (solverType)
       {
@@ -2225,6 +2452,8 @@ namespace Chroma
 	return detail::getFGMRESSolver(op, ops, prec);
       case BICGSTAB: // bicgstab
 	return detail::getBicgstabSolver(op, ops, prec);
+      case MR: // minimal residual
+	return detail::getMRSolver(op, ops, prec);
       case MG: // Multigrid
 	return detail::getMGPrec(op, ops, prec, solverSpace);
       case EO: // even-odd Schur preconditioner
@@ -2260,7 +2489,7 @@ namespace Chroma
 	[&, blkdim](Tensor<Nd + 8, Complex> x, Tensor<Nd + 8, Complex> y) {
 	  Tracker _t("chroma's matvec ");
 	  unsigned int n = x.kvdim().at('n');
-	  _t.cost = n;
+	  _t.arity = n;
 	  auto tx = x.template reshape_dimensions<Nd + 4>(
 	    {{"0x", "x"}, {"1y", "y"}, {"2z", "z"}, {"3t", "t"}}, {}, true);
 	  auto ty = tx.like_this();

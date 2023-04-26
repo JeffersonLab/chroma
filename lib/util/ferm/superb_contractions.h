@@ -6553,7 +6553,7 @@ namespace Chroma
 
       template <std::size_t N>
       Tensor<N, COMPLEX> make_compatible_dom(const std::string& col_order,
-					     const std::map<char, int>& m)
+					     const std::map<char, int>& m) const
       {
 	return d.template like_this<N, COMPLEX>(
 	  preferred_col_ordering == ColumnMajor ? std::string("%") + col_order : col_order + "%",
@@ -6566,7 +6566,7 @@ namespace Chroma
 
       template <std::size_t N>
       Tensor<N, COMPLEX> make_compatible_img(const std::string& col_order,
-					     const std::map<char, int>& m)
+					     const std::map<char, int>& m) const
       {
 	return i.template like_this<N, COMPLEX>(
 	  preferred_col_ordering == ColumnMajor ? std::string("%") + col_order : col_order + "%",
