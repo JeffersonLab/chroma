@@ -45,6 +45,11 @@
 #endif
 #endif
 
+
+#ifdef ARCH_PARSCALAR
+#include "qmp.h"
+#endif
+
 namespace Chroma 
 {
 
@@ -149,7 +154,11 @@ namespace Chroma
 		    << "   --chroma-i   [" << getXMLInputFileName() << "]  xml input file name\n"
 		    << "   -o           [" << getXMLOutputFileName() << "]  xml output file name\n"
 		    << "   --chroma-p   [" << getXMLOutputFileName() << "]  xml output file name\n"
-		    << "   -l           [" << getXMLLogFileName() << "]  xml log file name\n"
+		    
+#ifdef ARCH_PARSCALAR
+#include "qmp.h"
+#endif
+<< "   -l           [" << getXMLLogFileName() << "]  xml log file name\n"
 		    << "   --chroma-l   [" << getXMLLogFileName() << "]  xml log file name\n"
 		    << "   -cwd         [" << getCWD() << "]  xml working directory\n"
 		    << "   --chroma-cwd [" << getCWD() << "]  xml working directory\n"
@@ -271,6 +280,19 @@ namespace Chroma
 #    if defined(BUILD_MAGMA)
     SB::detail::getMagmaContext(cuda_device);
 #    endif
+
+
+		QDPIO::cout << "Calling initCommsGridQuda\n";
+#ifdef ARCH_PARSCALAR
+	  int ndim = QMP_get_logical_number_of_dimensions();
+		const int *dims = QMP_get_logical_dimensions();
+#else
+		int ndim=4;
+		const int dims[4]={1,1,1,1};
+#endif
+		QDPIO::cout << "calling initCommsGridQuda with ndim = " << ndim << " and geom=( " << dims[0] << ", "
+			<< dims[1] << ", " << dims[2] << ", " << dims[3] << " )\n";
+		initCommsGridQuda(ndim, dims, nullptr, nullptr);
 
     QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")"
 		<< std::endl;
