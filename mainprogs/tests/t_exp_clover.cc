@@ -29,7 +29,7 @@ public:
 
     TestEnvironment()
     {
-        const int nrow_in[4] = {4,4,4,8};
+        const int nrow_in[4] = {2,2,4,4};
         multi1d<int> nrow(4);
         nrow = nrow_in;
         Layout::setLattSize(nrow);

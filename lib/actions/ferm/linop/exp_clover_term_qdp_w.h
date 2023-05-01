@@ -3,84 +3,389 @@
  *  \brief Clover term linear operator
  */
 
-#ifndef __clover_term_qdp_w_h__
-#define __clover_term_qdp_w_h__
+#ifndef __exp_clover_term_qdp_w_h__
+#define __exp_clover_term_qdp_w_h__
 
-#include "state.h"
-#include "qdp_allocator.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
-#include "actions/ferm/linop/clover_term_base_w.h"
+#include "actions/ferm/linop/exp_clover_term_base_w.h"
 #include "meas/glue/mesfield.h"
+#include "qdp_allocator.h"
+#include "state.h"
 #include <complex>
-namespace Chroma 
-{ 
+#include <cmath>
+namespace Chroma
+{
 
-  //! Special structure used for triangular objects
-  template<typename R>
-  struct PrimitiveClovTriang
-  {
-    RScalar<R>   diag[2][2*Nc];
-    RComplex<R>  offd[2][2*Nc*Nc-Nc];
-  };
+  namespace {
+  
+    template<typename T>
+    struct ExpClovTriang {
 
-  template<typename R>
-  struct QUDAPackedClovSite {
-    R diag1[6];
-    R offDiag1[15][2];
-    R diag2[6];
-    R offDiag2[15][2];
-  };
+      /*!Powers of A: (A,A^2,A^3,A^4,A^5), with A[0]=A, and A[4]=A^5 */
+      PrimitiveClovTriang<T> A[5];  
 
+      /*! The exponentiated field */
+      PrimitiveClovTriang<T> Exp;
+
+      /*! Linear combination coefficients to generate the exponential */
+      RScalar<T> q[2][6];
+
+      /*! Coefficients for the force*/
+      RScalar<T> C[2][6][6];
+    };
+
+
+    /*! This accessor class allows me a convenient way to acces the
+        diagonal + lower diagonal storage for the hermitian matrix */
+    template<typename T, int block> 
+    struct ClovAccessor {
+      ClovAccessor(PrimitiveClovTriang<T>& t) : tri(t) {}
+
+      inline 
+      RComplex<T> operator()(int row, int col) const {  
+        RComplex<T> ret_val;
+        if ( row == col ) {
+          // Diagonal Piece: 
+          ret_val = tri.diag[block][row ];
+        }
+        else if ( row > col ) {
+          // Lower triangular portion
+          ret_val =  tri.offd[block][ (row *(row - 1))/ 2 + col ];
+        }
+        else if ( row < col ) { 
+          // Upper triangular portion: transpose ( row <-> col) and conjugate
+          ret_val =  conj(tri.offd[block][ (col*(col - 1))/ 2 + row ]);
+        }
+
+        return ret_val;
+      }
+  
+      inline 
+      void insert(int row, int col, const RComplex<T>& value)  {
+        if ( row == col ) {
+          // Diagonal piece -- must be real. 
+          tri.diag[block][ row ]=RScalar<T>(real(value));
+        }
+        else if ( row > col ) {
+          // Lower triangular portion
+          tri.offd[block][ (row*(row - 1))/ 2 + col ] = value;
+        }
+        else if ( row < col ) { 
+          // Upper triangular portion: transpose ( row <-> col) and conjugate
+          tri.offd[block][ (col*(col - 1))/ 2 + row ] = conj(value);
+        }
+      }
+  
+      private:
+        // A reference to the triangular storage
+        PrimitiveClovTriang<T>& tri;
+    };
+
+
+    template<typename T, int block> 
+    struct Traces {
+      Traces(ExpClovTriang<T>& E_) : E(E_) {}
+
+      // Simple mat mult routine
+      inline
+      void  multiply( ClovAccessor<T,block>& out, const ClovAccessor<T,block>& M1, const ClovAccessor<T,block>& M2)
+      {
+        RComplex<T> zip( RScalar<T>((T)0), RScalar<T>((T)0) );
+
+        // NB: We only need to compute the diagonal and lower diagonal 
+        // elements because the matrices are hermitiean. 
+        for(int row = 0; row < 6; ++row) {
+          for(int col=0; col <= row; ++col) {
+            // Pour row down column
+            RComplex<T> dotprod = zip;
+            for(int k=0; k < 6; ++k) {
+              dotprod += M1(row,k)*M2(k,col);
+            }
+            out.insert(row,col,dotprod);
+          }
+        }
+      }
+
+      inline
+      void traces( multi1d<RScalar<T>>& tr)  {
+        RComplex<T> zip( RScalar<T>((T)0), RScalar<T>((T)0) );
+        
+        // The first 5 will map onto the hither powers.
+        multi1d< Handle<ClovAccessor<T,block> > > M(6);
+        for(int i=0; i < 5; ++i) {
+          M[i] = new ClovAccessor<T,block>(E.A[i]);
+        }
+
+        // The 6th A will wrap a temporary -- since we don't need A^6 just its trace
+        PrimitiveClovTriang<T> tmp6;
+        M[5] = new ClovAccessor<T,block>( tmp6 );
+
+        // Compute A^2 to A^5
+        for(int i=1; i <=5; i++) {
+          multiply( *(M[i]), *(M[0]), *(M[i-1]));
+        }
+
+        // Sum up the traces
+        tr.resize(6);
+        for(int pow=0; pow < 6; pow++) {
+          tr[pow] = (T)0;
+          for(int i=0; i < 6; i++ ) {
+            tr[pow] += real((*M[pow])(i,i));
+          }
+        }
+      }
+    private:
+      ExpClovTriang<T>& E;
+    };
+
+
+
+    constexpr int N_exp_default=17;
+
+    template<typename REALT, int block>
+    inline
+    void siteApplicationBlock(RComplex<REALT>* __restrict__ cchi, const PrimitiveClovTriang<REALT>& tri_in , const RComplex<REALT>*  const __restrict__ ppsi)
+    {
+
+      if constexpr (block == 0 ) {
+        cchi[0] = tri_in.diag[0][0] * ppsi[0] + conj(tri_in.offd[0][0]) * ppsi[1] +
+            conj(tri_in.offd[0][1]) * ppsi[2] + conj(tri_in.offd[0][3]) * ppsi[3] +
+            conj(tri_in.offd[0][6]) * ppsi[4] + conj(tri_in.offd[0][10]) * ppsi[5];
+
+        cchi[1] = tri_in.diag[0][1] * ppsi[1] + tri_in.offd[0][0] * ppsi[0] +
+            conj(tri_in.offd[0][2]) * ppsi[2] + conj(tri_in.offd[0][4]) * ppsi[3] +
+            conj(tri_in.offd[0][7]) * ppsi[4] + conj(tri_in.offd[0][11]) * ppsi[5];
+
+        cchi[2] = tri_in.diag[0][2] * ppsi[2] + tri_in.offd[0][1] * ppsi[0] +
+            tri_in.offd[0][2] * ppsi[1] + conj(tri_in.offd[0][5]) * ppsi[3] +
+            conj(tri_in.offd[0][8]) * ppsi[4] + conj(tri_in.offd[0][12]) * ppsi[5];
+
+        cchi[3] = tri_in.diag[0][3] * ppsi[3] + tri_in.offd[0][3] * ppsi[0] +
+            tri_in.offd[0][4] * ppsi[1] + tri_in.offd[0][5] * ppsi[2] +
+            conj(tri_in.offd[0][9]) * ppsi[4] + conj(tri_in.offd[0][13]) * ppsi[5];
+
+        cchi[4] = tri_in.diag[0][4] * ppsi[4] + tri_in.offd[0][6] * ppsi[0] +
+            tri_in.offd[0][7] * ppsi[1] + tri_in.offd[0][8] * ppsi[2] +
+            tri_in.offd[0][9] * ppsi[3] + conj(tri_in.offd[0][14]) * ppsi[5];
+
+        cchi[5] = tri_in.diag[0][5] * ppsi[5] + tri_in.offd[0][10] * ppsi[0] +
+            tri_in.offd[0][11] * ppsi[1] + tri_in.offd[0][12] * ppsi[2] +
+            tri_in.offd[0][13] * ppsi[3] + tri_in.offd[0][14] * ppsi[4];
+      }
+      else {
+        cchi[6] = tri_in.diag[1][0] * ppsi[6] + conj(tri_in.offd[1][0]) * ppsi[7] +
+            conj(tri_in.offd[1][1]) * ppsi[8] + conj(tri_in.offd[1][3]) * ppsi[9] +
+            conj(tri_in.offd[1][6]) * ppsi[10] + conj(tri_in.offd[1][10]) * ppsi[11];
+
+        cchi[7] = tri_in.diag[1][1] * ppsi[7] + tri_in.offd[1][0] * ppsi[6] +
+            conj(tri_in.offd[1][2]) * ppsi[8] + conj(tri_in.offd[1][4]) * ppsi[9] +
+            conj(tri_in.offd[1][7]) * ppsi[10] + conj(tri_in.offd[1][11]) * ppsi[11];
+
+        cchi[8] = tri_in.diag[1][2] * ppsi[8] + tri_in.offd[1][1] * ppsi[6] +
+            tri_in.offd[1][2] * ppsi[7] + conj(tri_in.offd[1][5]) * ppsi[9] +
+            conj(tri_in.offd[1][8]) * ppsi[10] + conj(tri_in.offd[1][12]) * ppsi[11];
+
+        cchi[9] = tri_in.diag[1][3] * ppsi[9] + tri_in.offd[1][3] * ppsi[6] +
+            tri_in.offd[1][4] * ppsi[7] + tri_in.offd[1][5] * ppsi[8] +
+            conj(tri_in.offd[1][9]) * ppsi[10] + conj(tri_in.offd[1][13]) * ppsi[11];
+
+        cchi[10] = tri_in.diag[1][4] * ppsi[10] + tri_in.offd[1][6] * ppsi[6] +
+            tri_in.offd[1][7] * ppsi[7] + tri_in.offd[1][8] * ppsi[8] +
+            tri_in.offd[1][9] * ppsi[9] + conj(tri_in.offd[1][14]) * ppsi[11];
+
+        cchi[11] = tri_in.diag[1][5] * ppsi[11] + tri_in.offd[1][10] * ppsi[6] +
+            tri_in.offd[1][11] * ppsi[7] + tri_in.offd[1][12] * ppsi[8] +
+            tri_in.offd[1][13] * ppsi[9] + tri_in.offd[1][14] * ppsi[10];
+      }
+    }
+
+
+    template<typename T>
+    inline
+    void siteExponentiate(ExpClovTriang<T>& tri_in)
+    {
+      RComplex<T> zip( RScalar<T>((T)0), RScalar<T>((T)0) );
+      for(int block=0; block < 2; ++block) {
+        // q0 * I -- no offdiag piece in I
+
+        for(int i=0; i < 6; ++i) {
+          tri_in.Exp.diag[block][i] = tri_in.q[block][0];
+        }
+
+        for(int ord=1; ord <= 5; ++ord) {
+          for(int i=0; i < 6; ++i) {
+            tri_in.Exp.diag[block][i] += tri_in.q[block][ord]*tri_in.A[ord-1].diag[block][i];
+          }
+        }
+
+        for(int i=0; i < 15; ++i) {
+          tri_in.Exp.offd[block][i] = zip;
+        }
+        for(int ord=1; ord <= 5; ++ord) {
+          for(int i=0; i < 15; ++i) {
+            tri_in.Exp.offd[block][i] += tri_in.q[block][ord]*tri_in.A[ord-1].offd[block][i];
+          }
+        }
+      }
+    }
+
+    template<typename REALT>
+    inline
+    void siteApplicationExp(RComplex<REALT>* __restrict__ cchi, const ExpClovTriang<REALT>& tri_in , const RComplex<REALT>*  const __restrict__ ppsi)
+    {
+
+      siteApplicationBlock<REALT,0>(cchi,tri_in.Exp,ppsi);
+      siteApplicationBlock<REALT,1>(cchi,tri_in.Exp,ppsi);
+     
+#if 0
+     // Accumulate exponential from stored powers of A
+     RComplex<REALT> tmp[12];
+      for(int i=0; i < 6; ++i) {
+        cchi[i] = tri_in.q[0][0]*ppsi[i];
+      }
+      for(int pow=1; pow <=5; pow++) {
+        siteApplicationBlock<REAL,0>(tmp,tri_in.A[pow-1],ppsi);
+        for(int i=0;i < 6; ++i) {
+          cchi[i] += tri_in.q[0][pow]*tmp[i];
+        }
+      }
+
+        
+      for(int i=6; i < 12; ++i) {
+        cchi[i] = tri_in.q[1][0]*ppsi[i];
+      }
+      for(int pow=1; pow <=5; pow++) {
+        siteApplicationBlock<REAL,1>(tmp,tri_in.A[pow-1],ppsi);
+        for(int i=6; i < 12; ++i) {
+          cchi[i] += tri_in.q[1][pow]*tmp[i];
+        }
+      }
+#endif
+
+#if 0 
+      // Accumulate exponential from only A
+      RComplex<REALT> tmp[12];
+      // Top block
+      // chi = psi 
+      for(int cspin=0; cspin < 6; ++cspin) {
+        cchi[ cspin ] = ppsi [ cspin ]; 
+      }
+
+      // Main loop:  chi = psi + q[i]/q[i-1] A chi
+      for(int pow=5; pow > 0; --pow) {
+        siteApplicationBlock<REALT,0>(tmp,tri_in.A[0],cchi);
+        for(int cspin = 0; cspin < 6; cspin++) {
+          cchi[cspin] = ppsi[cspin] + (tri_in.q[0][pow]/tri_in.q[0][pow-1])* tmp[cspin];
+        } 
+      }
+        
+      for(int cspin=0; cspin < 6; ++cspin) {
+        cchi[ cspin ] *= tri_in.q[0][0];
+      }
+
+      // Second Block
+      // chi = psi 
+      for(int cspin=6; cspin < 12; ++cspin) {
+        cchi[ cspin ] = ppsi [ cspin ]; 
+      }
+
+      // Main loop:  chi = psi + q[i]/q[i-1] A chi
+      for(int pow=5; pow > 0; --pow) {
+        siteApplicationBlock<REALT,1>(tmp,tri_in.A[0],cchi);
+        for(int cspin = 6; cspin < 12; cspin++) {
+          cchi[cspin] = ppsi[cspin] + (tri_in.q[1][pow]/tri_in.q[1][pow-1] )* tmp[cspin];
+        } 
+      }
+
+      for(int cspin=6; cspin < 12; ++cspin) {
+        cchi[ cspin ] *= tri_in.q[1][0];
+      }
+#endif
+
+    }
+
+    template<typename REALT>
+    inline
+    void siteApplicationPower(RComplex<REALT>* __restrict__ cchi, const ExpClovTriang<REALT>& tri_in , const RComplex<REALT>*  const __restrict__ ppsi, int power)
+    {
+      if ( power == 0 ) {
+        // Straight Copy
+        for(int i=0; i < 12; ++i) cchi[i] = ppsi[i];
+      }
+      else if (power < 6 ) { 
+        // Use precomputed Power
+        siteApplicationBlock<REALT,0>(cchi, tri_in.A[power-1], ppsi);
+        siteApplicationBlock<REALT,1>(cchi, tri_in.A[power-1], ppsi);
+      }
+      else {
+        // Higher powers, just construct as before.
+        RComplex<REALT> tmp[12];
+
+        siteApplicationBlock<REALT,0>(cchi, tri_in.A[4], ppsi);       
+        for(int p=power; p > 5 ; --p) {
+          for(int i=0; i < 6; ++i) tmp[i] = cchi[i];
+          siteApplicationBlock<REALT,0>(cchi, tri_in.A[0], tmp);
+        }
+
+        siteApplicationBlock<REALT,1>(cchi, tri_in.A[4], ppsi);
+        for(int p=power; p > 5; --p) {
+          for(int i=6; i < 12; ++i) tmp[i] = cchi[i];
+          siteApplicationBlock<REALT,1>(cchi, tri_in.A[0], tmp);
+        }
+      }
+
+    }
+
+
+  }
   // Reader/writers
   /*! \ingroup linop */
-
 
   //! Clover term
   /*!
    * \ingroup linop
    *
    */
-  template<typename T, typename U>
+  template <typename T, typename U, int N_exp=N_exp_default>
   class QDPExpCloverTermT : public ExpCloverTermBase<T, U>
   {
   public:
     // Typedefs to save typing
     typedef typename WordType<T>::Type_t REALT;
 
-    typedef OLattice< PScalar< PScalar< RScalar< typename WordType<T>::Type_t> > > > LatticeREAL;
-    typedef OScalar< PScalar< PScalar< RScalar<REALT> > > > RealT;
+    typedef OLattice<PScalar<PScalar<RScalar<typename WordType<T>::Type_t>>>> LatticeREAL;
+    typedef OScalar<PScalar<PScalar<RScalar<REALT>>>> RealT;
 
     //! Empty constructor. Must use create later
     QDPExpCloverTermT();
 
     //! No real need for cleanup here
-    ~QDPExpCloverTermT() {
-    	if ( tri != nullptr ) {
-    		QDP::Allocator::theQDPAllocator::Instance().free(tri);
-    	}
+    ~QDPExpCloverTermT() 
+    {
+      if (tri != nullptr)
+      {
+	      QDP::Allocator::theQDPAllocator::Instance().free(tri);
+      }
     }
 
     //! Creation routine
-    void create(Handle< FermState<T, multi1d<U>, multi1d<U> > > fs,
-		const CloverFermActParams& param_);
+    void create(Handle<FermState<T, multi1d<U>, multi1d<U>>> fs, const CloverFermActParams& param_);
 
-    virtual void create(Handle< FermState<T, multi1d<U>, multi1d<U> > > fs,
-			const CloverFermActParams& param_,
-			const QDPExpCloverTermT<T,U>& from_);
+    virtual void create(Handle<FermState<T, multi1d<U>, multi1d<U>>> fs,
+		const CloverFermActParams& param_, const QDPExpCloverTermT<T, U>& from_);
 
-    //! Computes the inverse of the term on cb using Cholesky
+ //! Computes the inverse of the term on cb using Cholesky
     /*!
      * \param cb   checkerboard of work (Read)
      */
-    void choles(int cb);
+    void choles(int cb) override;
 
     //! Computes the inverse of the term on cb using Cholesky
     /*!
      * \param cb   checkerboard of work (Read)
      * \return logarithm of the determinant  
      */
-    Double cholesDet(int cb) const ;
-
+    Double cholesDet(int cb) const override;
     /**
      * Apply a dslash
      *
@@ -98,29 +403,42 @@ namespace Chroma
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
      */
-    void apply (T& chi, const T& psi, enum PlusMinus isign, int cb) const;
+
+    void fillRefDiag(Real diag);
+
+    // Reference exponential using old fashioned taylor expansion
+    void applyRef(T& chi, const T& psi, enum PlusMinus isign, int N=N_exp) const;
+
+    // Appl;y a power of a matrix from A^0 to A^5
+    void applyPowerSite(T& chi, const T& psi, enum PlusMinus isign, int site, int power=1) const;
 
 
-    void applySite(T& chi, const T& psi, enum PlusMinus isign, int site) const;
+    // Appl;y a power of a matrix from A^0 to A^5
+    void applyPower(T& chi, const T& psi, enum PlusMinus isign, int cb, int power=1) const;
 
-#ifdef BUILD_QPHIX
-    // Access the clover tri-buffer for packing
-    const PrimitiveClovTriang<REALT>* getTriBuffer() const {
-      return tri;
+    // Apply exponential operator
+    void apply(T& chi, const T& psi, enum PlusMinus isign, int cb) const override;
+
+    // Apply exponential operator at a site
+    void applySite(T& chi, const T& psi, enum PlusMinus isign, int site) const override;
+
+    inline 
+    void applyUnexp(T& chi, const T&psi, enum PlusMinus isign, int cb) const { 
+      applyPower(chi, psi, isign, cb, 1); // Explicily apply just the clover term.
     }
-#endif
-
+    
     //! Calculates Tr_D ( Gamma_mat L )
-    void triacntr(U& B, int mat, int cb) const;
+    void triacntr(U& B, int mat, int cb) const override;
 
     //! Return the fermion BC object for this linear operator
-    const FermBC<T, multi1d<U>, multi1d<U> >& getFermBC() const {return *fbc;}
+    const FermBC<T, multi1d<U>, multi1d<U>>& getFermBC() const override
+    {
+      return *fbc;
+    }
 
     //! PACK UP the Clover term for QUDA library:
-    void packForQUDA(multi1d<QUDAPackedClovSite<REALT> >& quda_pack, int cb) const; 
-
-
-      
+    void packForQUDA(multi1d<QUDAPackedClovSite<REALT>>& quda_pack, int cb) const ;
+   void tracePowers();
   protected:
     //! Create the clover term on cb
     /*!
@@ -129,45 +447,54 @@ namespace Chroma
      */
     void makeClov(const multi1d<U>& f, const RealT& diag_mass);
 
+
+    //void tracePowers();
+
+    //! Compute the approximation coefficient
+    void exponentiate();
+
     //! Invert the clover term on cb
     void chlclovms(LatticeREAL& log_diag, int cb);
     void ldagdlinv(LatticeREAL& tr_log_diag, int cb);
 
     //! Get the u field
-    const multi1d<U>& getU() const {return u;}
+    const multi1d<U>& getU() const override
+    {
+      return u;
+    }
 
     //! Calculates Tr_D ( Gamma_mat L )
-    Real getCloverCoeff(int mu, int nu) const;
+    Real getCloverCoeff(int mu, int nu) const override;
 
   private:
-			Handle< FermBC<T,multi1d<U>,multi1d<U> > >      fbc;
-    multi1d<U>  u;
-    CloverFermActParams          param;
-    LatticeREAL                  tr_log_diag_; // Fill this out during create
-                                                  // but save the global sum until needed.
-    multi1d<bool> choles_done;   // Keep note of whether the decomposition has been done
-                                 // on a particular checkerboard. 
+    Handle<FermBC<T, multi1d<U>, multi1d<U>>> fbc;
+    multi1d<U> u;
+    CloverFermActParams param;
+    LatticeREAL tr_log_diag_;  // Fill this out during create
+			       // but save the global sum until needed.
+    multi1d<bool> choles_done; // Keep note of whether the decomposition has been done
+			       // on a particular checkerboard.
 
-    PrimitiveClovTriang<REALT>*  tri;
-    
+    ExpClovTriang<REALT>* tri;
+
   };
 
 
-   // Empty constructor. Must use create later
-  template<typename T, typename U>
-  QDPExpCloverTermT<T,U>::QDPExpCloverTermT() {
-	  // Always allocate on construction
-	  int nodeSites = Layout::sitesOnNode();
-	  tri = (PrimitiveClovTriang<REALT>*)QDP::Allocator::theQDPAllocator::Instance().allocate(nodeSites*sizeof(PrimitiveClovTriang<REALT>),
-			  	  QDP::Allocator::DEFAULT);
-
+  // Empty constructor. Must use create later
+  template <typename T, typename U, int N_exp>
+  QDPExpCloverTermT<T, U, N_exp>::QDPExpCloverTermT()
+  {
+    // Always allocate on construction
+    int nodeSites = Layout::sitesOnNode();
+    tri = (ExpClovTriang<REALT>*)QDP::Allocator::theQDPAllocator::Instance().allocate(
+      nodeSites * sizeof(ExpClovTriang<REALT>), QDP::Allocator::DEFAULT);
   }
 
   // Now copy
-  template<typename T, typename U>
-  void QDPExpCloverTermT<T,U>::create(Handle< FermState<T,multi1d<U>,multi1d<U> > > fs,
-				   const CloverFermActParams& param_,
-				   const QDPExpCloverTermT<T,U>& from)
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::create(Handle<FermState<T, multi1d<U>, multi1d<U>>> fs,
+				       const CloverFermActParams& param_,
+				       const QDPExpCloverTermT<T, U>& from)
   {
 #ifndef QDP_IS_QDPJIT
     START_CODE();
@@ -176,208 +503,212 @@ namespace Chroma
     u = fs->getLinks();
     fbc = fs->getFermBC();
     param = param_;
-    
+
     // Sanity check
-    if (fbc.operator->() == 0) {
+    if (fbc.operator->() == 0)
+    {
       QDPIO::cerr << "QDPCloverTerm: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
-    
-    {
-      RealT ff = param.anisoParam.anisoP ? Real(1) / param.anisoParam.xi_0 : Real(1);
-      param.clovCoeffR *= Real(0.5) * ff;
-      param.clovCoeffT *= Real(0.5);
-    }
-    
+
     //
-    // Yuk. Some bits of knowledge of the dslash term are buried in the 
-    // effective mass term. They show up here. If I wanted some more 
+    // Yuk. Some bits of knowledge of the dslash term are buried in the
+    // effective mass term. They show up here. If I wanted some more
     // complicated dslash then this will have to be fixed/adjusted.
     //
     RealT diag_mass;
     {
       RealT ff = param.anisoParam.anisoP ? param.anisoParam.nu / param.anisoParam.xi_0 : Real(1);
-      diag_mass = 1 + (Nd-1)*ff + param.Mass;
+      diag_mass = 1 + (Nd - 1) * ff + param.Mass;
     }
-    
-    
+
+    {
+      RealT ff = param.anisoParam.anisoP ? Real(1) / param.anisoParam.xi_0 : Real(1);
+      param.clovCoeffR *= Real(0.5) * ff / diag_mass;
+      param.clovCoeffT *= Real(0.5) / diag_mass;
+    }
+
     /* Calculate F(mu,nu) */
     //multi1d<LatticeColorMatrix> f;
     //mesField(f, u);
     //makeClov(f, diag_mass);
-    
+
     choles_done.resize(rb.numSubsets());
-    for(int i=0; i < rb.numSubsets(); i++) {
+    for (int i = 0; i < rb.numSubsets(); i++)
+    {
       choles_done[i] = from.choles_done[i];
     }
-    
+
     // This is for the whole lattice (LatticeReal)
     tr_log_diag_ = from.tr_log_diag_;
-    
 
     int nodeSites = Layout::sitesOnNode();
     // Deep copy.
-#pragma omp parallel for
-    for(int site=0; site < nodeSites;++site) {
-    	for(int block=0; block < 2; ++block) {
-    		for(int d=0; d < 6; ++d) {
-    			tri[site].diag[block][d] = from.tri[site].diag[block][d];
-    		}
-    		for(int od=0; od < 15; ++od) {
-    			tri[site].offd[block][od] = from.tri[site].offd[block][od];
-    		}
-    	}
+#  pragma omp parallel for
+    for (int site = 0; site < nodeSites; ++site) {
+    
+      for (int block = 0; block < 2; ++block) {
+        for(int pow = 0; pow < 5; ++pow) {
+      	  for (int d = 0; d < 6; ++d) {
+	          tri[site].A[pow].diag[block][d] = from.tri[site].A[pow].diag[block][d];
+	        }
+	        for (int od = 0; od < 15; ++od) {
+      	    tri[site].A[pow].offd[block][od] = from.tri[site].A[pow].offd[block][od];
+	        }
+        }
+
+        for (int d = 0; d < 6; ++d) {
+	        tri[site].Exp.diag[block][d] = from.tri[site].Exp.diag[block][d];
+        }
+	      for (int od = 0; od < 15; ++od) {
+      	  tri[site].Exp.offd[block][od] = from.tri[site].Exp.offd[block][od];
+	      }
+
+        // The exponentiation coefficients
+        for(int i=0; i < 6; ++i) {
+          tri[site].q[block][i] = from.tri[site].q[block][i];
+        }
+
+        // The force coefficients 
+        for(int i=0; i < 6; ++i) {
+          for(int j=0; j < 6; ++j) {
+            tri[site].C[block][i][j] = from.tri[site].C[block][i][j];
+          }
+        }
+      } // End site loop
     }
 
-
-    END_CODE();  
+    END_CODE();
 #endif
   }
 
-
   //! Creation routine
-  template<typename T, typename U>
-  void QDPExpCloverTermT<T,U>::create(Handle< FermState<T,multi1d<U>,multi1d<U> > > fs,
-				   const CloverFermActParams& param_)
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::create(Handle<FermState<T, multi1d<U>, multi1d<U>>> fs,
+				       const CloverFermActParams& param_)
   {
 #ifndef QDP_IS_QDPJIT
     START_CODE();
-   
+
     u.resize(Nd);
-    
+
     u = fs->getLinks();
     fbc = fs->getFermBC();
     param = param_;
-    
+
     // Sanity check
-    if (fbc.operator->() == 0) {
+    if (fbc.operator->() == 0)
+    {
       QDPIO::cerr << "QDPCloverTerm: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
-    {
-      RealT ff = param.anisoParam.anisoP ? Real(1) / param.anisoParam.xi_0 : Real(1);
-      param.clovCoeffR *= RealT(0.5) * ff;
-      param.clovCoeffT *= RealT(0.5);
-    }
-    
     //
-    // Yuk. Some bits of knowledge of the dslash term are buried in the 
-    // effective mass term. They show up here. If I wanted some more 
+    // Yuk. Some bits of knowledge of the dslash term are buried in the
+    // effective mass term. They show up here. If I wanted some more
     // complicated dslash then this will have to be fixed/adjusted.
     //
     RealT diag_mass;
     {
       RealT ff = param.anisoParam.anisoP ? param.anisoParam.nu / param.anisoParam.xi_0 : Real(1);
-      diag_mass = 1 + (Nd-1)*ff + param.Mass;
+      diag_mass = 1 + (Nd - 1) * ff + param.Mass;
     }
-    
+
+    {
+      RealT ff = param.anisoParam.anisoP ? Real(1) / param.anisoParam.xi_0 : Real(1);
+      param.clovCoeffR *= RealT(0.5) * ff / diag_mass;
+      param.clovCoeffT *= RealT(0.5) / diag_mass;
+    }
+
     /* Calculate F(mu,nu) */
     multi1d<U> f;
     mesField(f, u);
     makeClov(f, diag_mass);
-    
+    tracePowers();
 
     choles_done.resize(rb.numSubsets());
-    for(int i=0; i < rb.numSubsets(); i++) {
+    for (int i = 0; i < rb.numSubsets(); i++)
+    {
       choles_done[i] = false;
     }
-    
 
     END_CODE();
 #endif
   }
 
 
-  /*
-   * MAKCLOV 
-   *
-   *  In this routine, MAKCLOV calculates
+  namespace QDPExpCloverEnv
+  {
 
-   *    1 - (1/4)*sigma(mu,nu) F(mu,nu)
+    template<typename U>
+    struct FillRefArg {
+      typedef typename WordType<U>::Type_t REALT;
+      typedef OScalar<PScalar<PScalar<RScalar<REALT>>>> RealT;
+      const REALT& ref_val;
+      ExpClovTriang<REALT>* tri;
+    };
 
-   *  using F from mesfield
+    /* This is the extracted site loop for makeClover */
+    template <typename U>
+    inline void fillRefLoop(int lo, int hi, int myId, FillRefArg<U>* a)
+    {
+#ifndef QDP_IS_QDPJIT
+      typedef typename FillRefArg<U>::RealT RealT;
+      typedef typename FillRefArg<U>::REALT REALT;
 
-   *    F(mu,nu) =  (1/4) sum_p (1/2) [ U_p(x) - U^dag_p(x) ]
+      const REALT ref_val = a->ref_val;
+      ExpClovTriang<REALT>* tri = a->tri;
 
-   *  using basis of SPPROD and stores in a lower triangular matrix
-   *  (no diagonal) plus real diagonal
+      // SITE LOOP STARTS HERE
+      for (int site = lo; site < hi; ++site) {
+  	    for (int chiral = 0; chiral < 2; chiral++)  {
+      	  for (int diag_index = 0; diag_index < 2 * Nc; diag_index++) {
+	        
+	          tri[site].A[0].diag[chiral][diag_index] = RScalar<REALT>(ref_val);
+	        }
 
-   *  where
-   *    U_1 = u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)
-   *    U_2 = u(x,nu)*u_dag(x-mu+nu,mu)*u_dag(x-mu,nu)*u(x-mu,mu)
-   *    U_3 = u_dag(x-mu,mu)*u_dag(x-mu-nu,nu)*u(x-mu-nu,mu)*u(x-nu,nu)
-   *    U_4 = u_dag(x-nu,nu)*u(x-nu,mu)*u(x-nu+mu,nu)*u_dag(x,mu)
+          for ( int offdiag_index =0; offdiag_index < 15; offdiag_index++ ) {
+            tri[site].A[0].offd[chiral][offdiag_index].real()=0;
+            tri[site].A[0].offd[chiral][offdiag_index].imag()=0;
+          }
 
-   *  and
+	      }
+      }
+#endif
+    }
+      
+  } /* end namespace */
 
-   *         | sigF(1)   sigF(3)     0         0     |
-   *  sigF = | sigF(5)  -sigF(1)     0         0     |
-   *         |   0         0      -sigF(0)  -sigF(2) |
-   *         |   0         0      -sigF(4)   sigF(0) |
-   *  where
-   *    sigF(i) is a color matrix
+ template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::fillRefDiag( Real ref_val )
+  {
+#ifndef QDP_IS_QDPJIT
+    START_CODE();
 
-   *  sigF(0) = i*(ClovT*E_z + ClovR*B_z)
-   *          = i*(ClovT*F(3,2) + ClovR*F(1,0))
-   *  sigF(1) = i*(ClovT*E_z - ClovR*B_z)
-   *          = i*(ClovT*F(3,2) - ClovR*F(1,0))
-   *  sigF(2) = i*(E_+ + B_+)
-   *  sigF(3) = i*(E_+ - B_+)
-   *  sigF(4) = i*(E_- + B_-)
-   *  sigF(5) = i*(E_- - B_-)
-   *  i*E_+ = (i*ClovT*E_x - ClovT*E_y)
-   *        = (i*ClovT*F(3,0) - ClovT*F(3,1))
-   *  i*E_- = (i*ClovT*E_x + ClovT*E_y)
-   *        = (i*ClovT*F(3,0) + ClovT*F(3,1))
-   *  i*B_+ = (i*ClovR*B_x - ClovR*B_y)
-   *        = (i*ClovR*F(2,1) + ClovR*F(2,0))
-   *  i*B_- = (i*ClovR*B_x + ClovR*B_y)
-   *        = (i*ClovR*F(2,1) - ClovR*F(2,0))
+    if (Ns != 4)
+    {
+      QDPIO::cerr << __func__ << ": CloverTerm::apply requires Ns==4" << std::endl;
+      QDP_abort(1);
+    }
 
-   *  NOTE: I am using  i*F  of the usual F defined by UKQCD, Heatlie et.al.
+    QDPExpCloverEnv::FillRefArg<U> arg = {toDouble(ref_val), tri};
+    int num_sites = all.siteTable().size();
 
-   *  NOTE: the above definitions assume that the time direction, t_dir,
-   *        is 3. In general F(k,j) is multiplied with ClovT if either
-   *        k=t_dir or j=t_dir, and with ClovR otherwise.
-
-   *+++
-   *  Here are some notes on the origin of this routine. NOTE, ClovCoeff or u0
-   *  are not actually used in MAKCLOV.
-   *
-   *  The clover mass term is suppose to act on a std::vector like
-   *
-   *  chi = (1 - (ClovCoeff/u0^3) * kappa/4 * sum_mu sum_nu F(mu,nu)*sigma(mu,nu)) * psi
-
-   *  Definitions used here (NOTE: no "i")
-   *   sigma(mu,nu) = gamma(mu)*gamma(nu) - gamma(nu)*gamma(mu)
-   *                = 2*gamma(mu)*gamma(nu)   for mu != nu
-   *       
-   *   chi = sum_mu sum_nu F(mu,nu)*gamma(mu)*gamma(nu)*psi   for mu < nu
-   *       = (1/2) * sum_mu sum_nu F(mu,nu)*gamma(mu)*gamma(nu)*psi   for mu != nu
-   *       = (1/4) * sum_mu sum_nu F(mu,nu)*sigma(mu,nu)*psi
-   *
-   *
-   * chi = (1 - (ClovCoeff/u0^3) * kappa/4 * sum_mu sum_nu F(mu,nu)*sigma(mu,nu)) * psi
-   *     = psi - (ClovCoeff/u0^3) * kappa * chi
-   *     == psi - kappa * chi
-   *
-   *  We have absorbed ClovCoeff/u0^3 into kappa. A u0 was previously absorbed into kappa
-   *  for compatibility to ancient conventions. 
-   *---
-
-   * Arguments:
-   *  \param f         field strength tensor F(cb,mu,nu)        (Read)
-   *  \param diag_mass effective mass term                      (Read)
-   */
+    // The dispatch function is at the end of the file
+    // ought to work for non-threaded targets too...
+    dispatch_to_threads(num_sites, arg, QDPExpCloverEnv::fillRefLoop<U>);
+    END_CODE();
+#endif
+  }
 
   /*Threaded this. It needs a QMT arg struct and I've extracted the site loop */
-  namespace QDPExpCloverEnv { 
-    
-    template<typename U>
+  namespace QDPExpCloverEnv
+  {
+
+    template <typename U>
     struct QDPCloverMakeClovArg {
       typedef typename WordType<U>::Type_t REALT;
-      typedef OScalar< PScalar< PScalar< RScalar<REALT> > > > RealT;
+      typedef OScalar<PScalar<PScalar<RScalar<REALT>>>> RealT;
       const RealT& diag_mass;
       const U& f0;
       const U& f1;
@@ -385,186 +716,176 @@ namespace Chroma
       const U& f3;
       const U& f4;
       const U& f5;
-      PrimitiveClovTriang < REALT >* tri;
+      ExpClovTriang<REALT>* tri;
     };
-    
-    
+
     /* This is the extracted site loop for makeClover */
-    template<typename U>
-    inline 
-    void makeClovSiteLoop(int lo, int hi, int myId, QDPCloverMakeClovArg<U> *a)
+    template <typename U>
+    inline void makeClovSiteLoop(int lo, int hi, int myId, QDPCloverMakeClovArg<U>* a)
     {
 #ifndef QDP_IS_QDPJIT
       typedef typename QDPCloverMakeClovArg<U>::RealT RealT;
       typedef typename QDPCloverMakeClovArg<U>::REALT REALT;
-      
+
       const RealT& diag_mass = a->diag_mass;
-      const U& f0=a->f0;
-      const U& f1=a->f1;
-      const U& f2=a->f2;
-      const U& f3=a->f3;
-      const U& f4=a->f4;
-      const U& f5=a->f5;
-      PrimitiveClovTriang < REALT >* tri=a->tri;
+      const U& f0 = a->f0;
+      const U& f1 = a->f1;
+      const U& f2 = a->f2;
+      const U& f3 = a->f3;
+      const U& f4 = a->f4;
+      const U& f5 = a->f5;
+      ExpClovTriang<REALT>* tri = a->tri;
+      const int power=1;
 
       // SITE LOOP STARTS HERE
-      for(int site = lo; site < hi; ++site)  {
-	/*# Construct diagonal */
-	
-	for(int jj = 0; jj < 2; jj++) {
-	  
-	  for(int ii = 0; ii < 2*Nc; ii++) {
-	    
-	    tri[site].diag[jj][ii] = diag_mass.elem().elem().elem();
-	  }
-	}
-	
-       
+      for (int site = lo; site < hi; ++site) {
+  	    for (int jj = 0; jj < 2; jj++)  {
+	        for (int ii = 0; ii < 2 * Nc; ii++) {
+	          tri[site].A[0].diag[jj][ii] = 0;
+	        }
+	      }
 
-	RComplex<REALT> E_minus;
-	RComplex<REALT> B_minus;
-	RComplex<REALT> ctmp_0;
-	RComplex<REALT> ctmp_1;
-	RScalar<REALT> rtmp_0;
-	RScalar<REALT> rtmp_1;
-	
-	for(int i = 0; i < Nc; ++i) {
-	  
-	  /*# diag_L(i,0) = 1 - i*diag(E_z - B_z) */
-	  /*#             = 1 - i*diag(F(3,2) - F(1,0)) */
-	  ctmp_0 = f5.elem(site).elem().elem(i,i);
-	  ctmp_0 -= f0.elem(site).elem().elem(i,i);
-	  rtmp_0 = imag(ctmp_0);
-	  tri[site].diag[0][i] += rtmp_0;
-	  
-	  /*# diag_L(i+Nc,0) = 1 + i*diag(E_z - B_z) */
-	  /*#                = 1 + i*diag(F(3,2) - F(1,0)) */
-	  tri[site].diag[0][i+Nc] -= rtmp_0;
-	  
-	  /*# diag_L(i,1) = 1 + i*diag(E_z + B_z) */
-	  /*#             = 1 + i*diag(F(3,2) + F(1,0)) */
-	  ctmp_1 = f5.elem(site).elem().elem(i,i);
-	  ctmp_1 += f0.elem(site).elem().elem(i,i);
-	  rtmp_1 = imag(ctmp_1);
-	  tri[site].diag[1][i] -= rtmp_1;
-	  
-	  /*# diag_L(i+Nc,1) = 1 - i*diag(E_z + B_z) */
-	  /*#                = 1 - i*diag(F(3,2) + F(1,0)) */
-	  tri[site].diag[1][i+Nc] += rtmp_1;
-	}
-	
-	/*# Construct lower triangular portion */
-	/*# Block diagonal terms */
-	for(int i = 1; i < Nc; ++i) {
-	  
-	  for(int j = 0; j < i; ++j) {
-	    
-	    int elem_ij  = i*(i-1)/2 + j;
-	    int elem_tmp = (i+Nc)*(i+Nc-1)/2 + j+Nc;
-	    
-	    /*# L(i,j,0) = -i*(E_z - B_z)[i,j] */
-	    /*#          = -i*(F(3,2) - F(1,0)) */
-	    ctmp_0 = f0.elem(site).elem().elem(i,j);
-	    ctmp_0 -= f5.elem(site).elem().elem(i,j);
-	    tri[site].offd[0][elem_ij] = timesI(ctmp_0);
-	    
-	    /*# L(i+Nc,j+Nc,0) = +i*(E_z - B_z)[i,j] */
-	    /*#                = +i*(F(3,2) - F(1,0)) */
-	    tri[site].offd[0][elem_tmp] = -tri[site].offd[0][elem_ij];
-	    
-	    /*# L(i,j,1) = i*(E_z + B_z)[i,j] */
-	    /*#          = i*(F(3,2) + F(1,0)) */
-	    ctmp_1 = f5.elem(site).elem().elem(i,j);
-	    ctmp_1 += f0.elem(site).elem().elem(i,j);
-	    tri[site].offd[1][elem_ij] = timesI(ctmp_1);
-	    
-	    /*# L(i+Nc,j+Nc,1) = -i*(E_z + B_z)[i,j] */
-	    /*#                = -i*(F(3,2) + F(1,0)) */
-	    tri[site].offd[1][elem_tmp] = -tri[site].offd[1][elem_ij];
-	  }
-	}
-	
-	/*# Off-diagonal */
-	for(int i = 0; i < Nc; ++i) {
-	  
-	  for(int j = 0; j < Nc; ++j) {
-	    
-	    // Flipped index
-	    // by swapping i <-> j. In the past i would run slow
-	    // and now j runs slow
-	    int elem_ij  = (i+Nc)*(i+Nc-1)/2 + j;
-	    
-	    /*# i*E_- = (i*E_x + E_y) */
-	    /*#       = (i*F(3,0) + F(3,1)) */
-	    E_minus = timesI(f2.elem(site).elem().elem(i,j));
-	    E_minus += f4.elem(site).elem().elem(i,j);
-	    
-	    /*# i*B_- = (i*B_x + B_y) */
-	    /*#       = (i*F(2,1) - F(2,0)) */
-	    B_minus = timesI(f3.elem(site).elem().elem(i,j));
-	    B_minus -= f1.elem(site).elem().elem(i,j);
-	    
-	    /*# L(i+Nc,j,0) = -i*(E_- - B_-)  */
-	    tri[site].offd[0][elem_ij] = B_minus - E_minus;
-	    
-	    /*# L(i+Nc,j,1) = +i*(E_- + B_-)  */
-	    tri[site].offd[1][elem_ij] = E_minus + B_minus;
-	  }
-	}
-      } /* End Site loop */
+	      RComplex<REALT> E_minus;
+	      RComplex<REALT> B_minus;
+	      RComplex<REALT> ctmp_0;
+	      RComplex<REALT> ctmp_1;
+	      RScalar<REALT> rtmp_0;
+	      RScalar<REALT> rtmp_1;
+
+	      for (int i = 0; i < Nc; ++i) {
+
+      		/*# diag_L(i,0) = 1 - i*diag(E_z - B_z) */
+		      /*#             = 1 - i*diag(F(3,2) - F(1,0)) */
+	    	ctmp_0 = f5.elem(site).elem().elem(i, i);
+		    ctmp_0 -= f0.elem(site).elem().elem(i, i);
+	    	rtmp_0 = imag(ctmp_0);
+	    	tri[site].A[0].diag[0][i] += rtmp_0;
+
+		    /*# diag_L(i+Nc,0) = 1 + i*diag(E_z - B_z) */
+		    /*#                = 1 + i*diag(F(3,2) - F(1,0)) */
+	    	tri[site].A[0].diag[0][i + Nc] -= rtmp_0;
+
+		    /*# diag_L(i,1) = 1 + i*diag(E_z + B_z) */
+	    	/*#             = 1 + i*diag(F(3,2) + F(1,0)) */
+	    	ctmp_1 = f5.elem(site).elem().elem(i, i);
+	    	ctmp_1 += f0.elem(site).elem().elem(i, i);
+		    rtmp_1 = imag(ctmp_1);
+		    tri[site].A[0].diag[1][i] -= rtmp_1;
+
+		    /*# diag_L(i+Nc,1) = 1 - i*diag(E_z + B_z) */
+		    /*#                = 1 - i*diag(F(3,2) + F(1,0)) */
+		    tri[site].A[0].diag[1][i + Nc] += rtmp_1;
+	    }
+
+	    /*# Construct lower triangular portion */
+	    /*# Block diagonal terms */
+	    for (int i = 1; i < Nc; ++i) {
+    		for (int j = 0; j < i; ++j) {
+
+  	  	  int elem_ij = i * (i - 1) / 2 + j;
+	    	  int elem_tmp = (i + Nc) * (i + Nc - 1) / 2 + j + Nc;
+
+		      /*# L(i,j,0) = -i*(E_z - B_z)[i,j] */
+		      /*#          = -i*(F(3,2) - F(1,0)) */
+          ctmp_0 = f0.elem(site).elem().elem(i, j);
+          ctmp_0 -= f5.elem(site).elem().elem(i, j);
+          tri[site].A[0].offd[0][elem_ij] = timesI(ctmp_0);
+
+          /*# L(i+Nc,j+Nc,0) = +i*(E_z - B_z)[i,j] */
+          /*#                = +i*(F(3,2) - F(1,0)) */
+          tri[site].A[0].offd[0][elem_tmp] = -tri[site].A[0].offd[0][elem_ij];
+
+          /*# L(i,j,1) = i*(E_z + B_z)[i,j] */
+          /*#          = i*(F(3,2) + F(1,0)) */
+          ctmp_1 = f5.elem(site).elem().elem(i, j);
+          ctmp_1 += f0.elem(site).elem().elem(i, j);
+          tri[site].A[0].offd[1][elem_ij] = timesI(ctmp_1);
+
+          /*# L(i+Nc,j+Nc,1) = -i*(E_z + B_z)[i,j] */
+          /*#                = -i*(F(3,2) + F(1,0)) */
+          tri[site].A[0].offd[1][elem_tmp] = -tri[site].A[0].offd[1][elem_ij];
+        }
+	    }
+
+	    /*# Off-diagonal */
+	    for (int i = 0; i < Nc; ++i) {
+        for (int j = 0; j < Nc; ++j) {
+
+          // Flipped index
+          // by swapping i <-> j. In the past i would run slow
+          // and now j runs slow
+          int elem_ij = (i + Nc) * (i + Nc - 1) / 2 + j;
+
+          /*# i*E_- = (i*E_x + E_y) */
+          /*#       = (i*F(3,0) + F(3,1)) */
+          E_minus = timesI(f2.elem(site).elem().elem(i, j));
+          E_minus += f4.elem(site).elem().elem(i, j);
+
+          /*# i*B_- = (i*B_x + B_y) */
+          /*#       = (i*F(2,1) - F(2,0)) */
+          B_minus = timesI(f3.elem(site).elem().elem(i, j));
+          B_minus -= f1.elem(site).elem().elem(i, j);
+
+          /*# L(i+Nc,j,0) = -i*(E_- - B_-)  */
+          tri[site].A[0].offd[0][elem_ij] = B_minus - E_minus;
+
+          /*# L(i+Nc,j,1) = +i*(E_- + B_-)  */
+          tri[site].A[0].offd[1][elem_ij] = E_minus + B_minus;
+        }
+	    }
+    } /* End Site loop */
 #endif
-    } /* Function */
-  }
-  
+  } /* Function */
+}
+
   /* This now just sets up and dispatches... */
-  template<typename T, typename U>
-  void QDPExpCloverTermT<T,U>::makeClov(const multi1d<U>& f, const RealT& diag_mass)
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::makeClov(const multi1d<U>& f, const RealT& diag_mass)
   {
     START_CODE();
-    
-    if ( Nd != 4 ){
+
+    if (Nd != 4)
+    {
       QDPIO::cerr << __func__ << ": expecting Nd==4" << std::endl;
       QDP_abort(1);
     }
-    
-    if ( Ns != 4 ){
+
+    if (Ns != 4)
+    {
       QDPIO::cerr << __func__ << ": expecting Ns==4" << std::endl;
       QDP_abort(1);
     }
-  
-    U f0 = f[0] * getCloverCoeff(0,1);
-    U f1 = f[1] * getCloverCoeff(0,2);
-    U f2 = f[2] * getCloverCoeff(0,3);
-    U f3 = f[3] * getCloverCoeff(1,2);
-    U f4 = f[4] * getCloverCoeff(1,3);
-    U f5 = f[5] * getCloverCoeff(2,3);    
+
+    U f0 = f[0] * getCloverCoeff(0, 1);
+    U f1 = f[1] * getCloverCoeff(0, 2);
+    U f2 = f[2] * getCloverCoeff(0, 3);
+    U f3 = f[3] * getCloverCoeff(1, 2);
+    U f4 = f[4] * getCloverCoeff(1, 3);
+    U f5 = f[5] * getCloverCoeff(2, 3);
 
     const int nodeSites = QDP::Layout::sitesOnNode();
-    QDPExpCloverEnv::QDPCloverMakeClovArg<U> arg = {diag_mass, f0,f1,f2,f3,f4,f5,tri };
+    QDPExpCloverEnv::QDPCloverMakeClovArg<U> arg = {diag_mass, f0, f1, f2, f3, f4, f5, tri};
     dispatch_to_threads(nodeSites, arg, QDPExpCloverEnv::makeClovSiteLoop<U>);
-              
 
     END_CODE();
   }
-  
 
   //! Invert
   /*!
    * Computes the inverse of the term on cb using Cholesky
    */
-  template<typename T, typename U>
-  void QDPExpCloverTermT<T,U>::choles(int cb)
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::choles(int cb)
   {
     START_CODE();
 
     // When you are doing the cholesky - also fill out the trace_log_diag piece)
     // chlclovms(tr_log_diag_, cb);
     // Switch to LDL^\dag inversion
-    ldagdlinv(tr_log_diag_,cb);
+    ldagdlinv(tr_log_diag_, cb);
 
     END_CODE();
   }
-
 
   //! Invert
   /*!
@@ -572,254 +893,361 @@ namespace Chroma
    *
    * \return logarithm of the determinant  
    */
-  template<typename T, typename U>
-  Double QDPExpCloverTermT<T,U>::cholesDet(int cb) const
+  template <typename T, typename U, int N_exp>
+  Double QDPExpCloverTermT<T, U, N_exp>::cholesDet(int cb) const
   {
 #ifndef QDP_IS_QDPJIT
     START_CODE();
 
-    if( choles_done[cb] == false ) 
+    if (choles_done[cb] == false)
     {
-      QDPIO::cout << __func__ << ": Error: you have not done the Cholesky.on this operator on this subset" << std::endl;
+      QDPIO::cout << __func__
+		  << ": Error: you have not done the Cholesky.on this operator on this subset"
+		  << std::endl;
       QDPIO::cout << "You sure you should not be asking invclov?" << std::endl;
       QDP_abort(1);
     }
-
-
     END_CODE();
 
     // Need to thread generic sums in QDP++?
     // Need to thread generic norm2() in QDP++?
-
-
     return sum(tr_log_diag_, rb[cb]);
 #else
     assert(!"ni");
-    Double ret=0.;
+    Double ret = 0.;
     return ret;
 #endif
   }
 
-  namespace QDPExpCloverEnv { 
-    template<typename U>
-    struct LDagDLInvArgs { 
+  namespace QDPExpCloverEnv
+  {
+
+    template <typename U>
+    struct LDagDLInvArgs {
       typedef typename WordType<U>::Type_t REALT;
-      typedef OScalar< PScalar< PScalar< RScalar<REALT> > > > RealT;
-      typedef OLattice< PScalar< PScalar< RScalar<REALT> > > > LatticeRealT;
+      typedef OScalar<PScalar<PScalar<RScalar<REALT>>>> RealT;
+      typedef OLattice<PScalar<PScalar<RScalar<REALT>>>> LatticeRealT;
       LatticeRealT& tr_log_diag;
-      PrimitiveClovTriang<REALT>* tri;
+      ExpClovTriang<REALT>* tri;
       int cb;
     };
 
-    template<typename U>
-    inline 
-    void LDagDLInvSiteLoop(int lo, int hi, int myId, LDagDLInvArgs<U>* a) 
+    template <typename U>
+    inline void LDagDLInvSiteLoop(int lo, int hi, int myId, LDagDLInvArgs<U>* a)
     {
       typedef typename LDagDLInvArgs<U>::REALT REALT;
       typedef typename LDagDLInvArgs<U>::RealT RealT;
       typedef typename LDagDLInvArgs<U>::LatticeRealT LatticeRealT;
 
       LatticeRealT& tr_log_diag = a->tr_log_diag;
-      PrimitiveClovTriang < REALT>* tri = a->tri;
+      ExpClovTriang<REALT>* tri = a->tri;
       int cb = a->cb;
-      
-      
-      RScalar<REALT> zip=0;
-      int N = 2*Nc;
-      
+
+      RScalar<REALT> zip = 0;
+      int N = 2 * Nc;
+
       // Loop through the sites.
-      for(int ssite=lo; ssite < hi; ++ssite)  {
+      for (int ssite = lo; ssite < hi; ++ssite) {
 
-	int site = rb[cb].siteTable()[ssite];
-	
-	int site_neg_logdet=0;
-	// Loop through the blocks on the site.
-	for(int block=0; block < 2; block++) { 
-	  
-	  // Triangular storage 
-	  RScalar<REALT> inv_d[6] QDP_ALIGN16;
-	  RComplex<REALT> inv_offd[15] QDP_ALIGN16;
-	  RComplex<REALT> v[6] QDP_ALIGN16;
-	  RScalar<REALT>  diag_g[6] QDP_ALIGN16;
-	  // Algorithm 4.1.2 LDL^\dagger Decomposition
-	  // From Golub, van Loan 3rd ed, page 139
-	  for(int i=0; i < N; i++) { 
-	    inv_d[i] = tri[site].diag[block][i];
-	  }
-	  
-	  for(int i=0; i < 15; i++) { 
-	    inv_offd[i]  =tri[site].offd[block][i];
-	  }
-	  
-	  for(int j=0; j < N; ++j) { 
-	    
-	    // Compute v(0:j-1)
-	    //
-	    // for i=0:j-2
-	    //   v(i) = A(j,i) A(i,i)
-	    // end
-	    
-	    
-	    for(int i=0; i < j; i++) { 
-	      int elem_ji = j*(j-1)/2 + i;
-	      
-	      RComplex<REALT> A_ii = cmplx( inv_d[i], zip );
-	      v[i] = A_ii*adj(inv_offd[elem_ji]);
-	    }
-	    
-	    // v(j) = A(j,j) - A(j, 0:j-2) v(0:j-2)
-	    //                 ^ This is done with a loop over k ie:
-	    //
-	    // v(j) = A(j,j) - sum_k A*(j,k) v(k)     k=0...j-2
-	    //
-	    //      = A(j,j) - sum_k A*(j,k) A(j,k) A(k,k)
-	    //      = A(j,j) - sum_k | A(j,k) |^2 A(k,k)
-	    
-	    v[j] = cmplx(inv_d[j],zip);
-	    
-	    for(int k=0; k < j; k++) { 
-	      int elem_jk = j*(j-1)/2 + k;
-	      v[j] -= inv_offd[elem_jk]*v[k];
-	    }
-	    
-	    
-	    // At this point in time v[j] has to be real, since
-	    // A(j,j) is from diag ie real and all | A(j,k) |^2 is real
-	    // as is A(k,k)
-	    
-	    // A(j,j) is the diagonal element - so store it.
-	    inv_d[j] = real( v[j] );
-	    
-	    // Last line of algorithm:
-	    // A( j+1 : n, j) = ( A(j+1:n, j) - A(j+1:n, 1:j-1)v(1:k-1) ) / v(j)
-	    //
-	    // use k as first colon notation and l as second so
-	    // 
-	    // for k=j+1 < n-1
-	    //      A(k,j) = A(k,j) ;
-	    //      for l=0 < j-1
-	    //         A(k,j) -= A(k, l) v(l)
-	    //      end
-	    //      A(k,j) /= v(j);
-	    //
-	    for(int k=j+1; k < N; k++) { 
-	      int elem_kj = k*(k-1)/2 + j;
-	      for(int l=0; l < j; l++) { 
-		int elem_kl = k*(k-1)/2 + l;
-		inv_offd[elem_kj] -= inv_offd[elem_kl] * v[l];
-	      }
-	      inv_offd[elem_kj] /= v[j];
-	    }
-	  }
-	  
-	  // Now fix up the inverse
-	  RScalar<REALT> one;
-	  one.elem() = (REALT)1;
-	  
-	  for(int i=0; i < N; i++) { 
-	    diag_g[i] = one/inv_d[i];
-	    
-	    // Compute the trace log
-	    // NB we are always doing trace log | A | 
-	    // (because we are always working with actually A^\dagger A
-	    //  even in one flavour case where we square root)
-	    tr_log_diag.elem(site).elem().elem().elem() += log(fabs(inv_d[i].elem()));
-	    // However, it is worth counting just the no of negative logdets
-	    // on site
-	    if( inv_d[i].elem() < 0 ) { 
-	      site_neg_logdet++;
-	    }
-	  }
-	  // Now we need to invert the L D L^\dagger 
-	  // We can do this by solving:
-	  //
-	  //  L D L^\dagger M^{-1} = 1   
-	  //
-	  // This can be done by solving L D X = 1  (X = L^\dagger M^{-1})
-	  //
-	  // Then solving L^\dagger M^{-1} = X
-	  //
-	  // LD is lower diagonal and so X will also be lower diagonal.
-	  // LD X = 1 can be solved by forward substitution.
-	  //
-	  // Likewise L^\dagger is strictly upper triagonal and so
-	  // L^\dagger M^{-1} = X can be solved by forward substitution.
-	  RComplex<REALT> sum;
-	  for(int k = 0; k < N; ++k) {
+      	int site = rb[cb].siteTable()[ssite]; 
 
-	    for(int i = 0; i < k; ++i) {
-	      zero_rep(v[i]);
-	    }
-	    
-	    /*# Forward substitution */
-	    
-	    // The first element is the inverse of the diagonal
-	    v[k] = cmplx(diag_g[k],zip);
-	    
-	    for(int i = k+1; i < N; ++i) {
-	      zero_rep(v[i]);
-	      
-	      for(int j = k; j < i; ++j) {
-		int elem_ij = i*(i-1)/2+j;	
-		
-		// subtract l_ij*d_j*x_{kj}
-		v[i] -= inv_offd[elem_ij] *inv_d[j]*v[j];
-		
-	      }
-	      
-	      // scale out by 1/d_i
-	      v[i] *= diag_g[i];
-	    }
-	    
-	    /*# Backward substitution */
-	    // V[N-1] remains unchanged
-	    // Start from V[N-2]
-	    
-	    for(int i = N-2; (int)i >= (int)k; --i) {
-	      for(int j = i+1; j < N; ++j) {
-		int elem_ji = j*(j-1)/2 + i;
-		// Subtract terms of typ (l_ji)*x_kj
-		v[i] -= adj(inv_offd[elem_ji]) * v[j];
-	      }
-	    }
-	    
-	    /*# Overwrite column k of invcl.offd */
-	    inv_d[k] = real(v[k]);
-	    for(int i = k+1; i < N; ++i) {
+	      int site_neg_logdet = 0;
+	      // Loop through the blocks on the site.
+	      for (int block = 0; block < 2; block++) {
 
-	      int elem_ik = i*(i-1)/2+k;
-	      inv_offd[elem_ik] = v[i];
-	    }
-	  }
-	  
-	  
-	  // Overwrite original data
-	  for(int i=0; i < N; i++) { 
-	    tri[site].diag[block][i] = inv_d[i];
-	  }
-	  for(int i=0; i < 15; i++) { 
-	    tri[site].offd[block][i] = inv_offd[i];
-	  }
-	}
-	
-	if( site_neg_logdet != 0 ) { 
-	  // Report if site has any negative terms. (-ve def)
-	  std::cout << "WARNING: found " << site_neg_logdet
-		    << " negative eigenvalues in Clover DET at site: " << site << std::endl;
-	}
-      }/* End Site Loop */
-    } /* End Function */
-  } /* End Namespace */
+          // Triangular storage
+          RScalar<REALT> inv_d[6] QDP_ALIGN16;
+          RComplex<REALT> inv_offd[15] QDP_ALIGN16;
+          RComplex<REALT> v[6] QDP_ALIGN16;
+          RScalar<REALT> diag_g[6] QDP_ALIGN16;
+          // Algorithm 4.1.2 LDL^\dagger Decomposition
+          // From Golub, van Loan 3rd ed, page 139
+          for (int i = 0; i < N; i++)	 {
+            inv_d[i] = tri[site].A[0].diag[block][i];
+          }
+
+          for (int i = 0; i < 15; i++)	  {
+            inv_offd[i] = tri[site].A[0].offd[block][i];
+          }
+
+          for (int j = 0; j < N; ++j)	  {
+
+            // Compute v(0:j-1)
+            //
+            // for i=0:j-2
+            //   v(i) = A(j,i) A(i,i)
+            // end
+
+            for (int i = 0; i < j; i++)	{
+              int elem_ji = j * (j - 1) / 2 + i;
+
+              RComplex<REALT> A_ii = cmplx(inv_d[i], zip);
+              v[i] = A_ii * adj(inv_offd[elem_ji]);
+            }
+
+            // v(j) = A(j,j) - A(j, 0:j-2) v(0:j-2)
+            //                 ^ This is done with a loop over k ie:
+            //
+            // v(j) = A(j,j) - sum_k A*(j,k) v(k)     k=0...j-2
+            //
+            //      = A(j,j) - sum_k A*(j,k) A(j,k) A(k,k)
+            //      = A(j,j) - sum_k | A(j,k) |^2 A(k,k)
+
+            v[j] = cmplx(inv_d[j], zip);
+
+            for (int k = 0; k < j; k++) {
+              int elem_jk = j * (j - 1) / 2 + k;
+              v[j] -= inv_offd[elem_jk] * v[k];
+            }
+
+            // At this point in time v[j] has to be real, since
+            // A(j,j) is from diag ie real and all | A(j,k) |^2 is real
+            // as is A(k,k)
+
+            // A(j,j) is the diagonal element - so store it.
+            inv_d[j] = real(v[j]);
+
+            // Last line of algorithm:
+            // A( j+1 : n, j) = ( A(j+1:n, j) - A(j+1:n, 1:j-1)v(1:k-1) ) / v(j)
+            //
+            // use k as first colon notation and l as second so
+            //
+            // for k=j+1 < n-1
+            //      A(k,j) = A(k,j) ;
+            //      for l=0 < j-1
+            //         A(k,j) -= A(k, l) v(l)
+            //      end
+            //      A(k,j) /= v(j);
+            //
+            for (int k = j + 1; k < N; k++)	 {
+              int elem_kj = k * (k - 1) / 2 + j;
+              for (int l = 0; l < j; l++) {
+                int elem_kl = k * (k - 1) / 2 + l;
+                inv_offd[elem_kj] -= inv_offd[elem_kl] * v[l];
+              }
+              inv_offd[elem_kj] /= v[j];
+            }
+	        }
+
+          // Now fix up the inverse
+          RScalar<REALT> one;
+          one.elem() = (REALT)1;
+
+          for (int i = 0; i < N; i++) {
+            diag_g[i] = one / inv_d[i];
+
+            // Compute the trace log
+            // NB we are always doing trace log | A |
+            // (because we are always working with actually A^\dagger A
+            //  even in one flavour case where we square root)
+            tr_log_diag.elem(site).elem().elem().elem() += log(fabs(inv_d[i].elem()));
+            // However, it is worth counting just the no of negative logdets
+            // on site
+            if (inv_d[i].elem() < 0) {
+              site_neg_logdet++;
+            }
+          }
+          // Now we need to invert the L D L^\dagger
+          // We can do this by solving:
+          //
+          //  L D L^\dagger M^{-1} = 1
+          //
+          // This can be done by solving L D X = 1  (X = L^\dagger M^{-1})
+          //
+          // Then solving L^\dagger M^{-1} = X
+          //
+          // LD is lower diagonal and so X will also be lower diagonal.
+          // LD X = 1 can be solved by forward substitution.
+          //
+          // Likewise L^\dagger is strictly upper triagonal and so
+          // L^\dagger M^{-1} = X can be solved by forward substitution.
+      	  RComplex<REALT> sum;
+          for (int k = 0; k < N; ++k) {
+            for (int i = 0; i < k; ++i) {
+              zero_rep(v[i]);
+            }
+
+            /*# Forward substitution */
+
+            // The first element is the inverse of the diagonal
+            v[k] = cmplx(diag_g[k], zip);
+
+            for (int i = k + 1; i < N; ++i) {
+	            zero_rep(v[i]);
+
+      	      for (int j = k; j < i; ++j) {
+		            int elem_ij = i * (i - 1) / 2 + j;
+
+		            // subtract l_ij*d_j*x_{kj}
+		            v[i] -= inv_offd[elem_ij] * inv_d[j] * v[j];
+	            }
+
+      	      // scale out by 1/d_i
+	            v[i] *= diag_g[i];
+	          }
+
+	          /*# Backward substitution */
+	          // V[N-1] remains unchanged
+	          // Start from V[N-2]
+
+	          for (int i = N - 2; (int)i >= (int)k; --i) {
+	            for (int j = i + 1; j < N; ++j) {
+		            int elem_ji = j * (j - 1) / 2 + i;
+		            // Subtract terms of typ (l_ji)*x_kj
+		            v[i] -= adj(inv_offd[elem_ji]) * v[j];
+	            }
+	          }
+
+	          /*# Overwrite column k of invcl.offd */
+	          inv_d[k] = real(v[k]);
+	          for (int i = k + 1; i < N; ++i) {
+
+      	      int elem_ik = i * (i - 1) / 2 + k;  
+	            inv_offd[elem_ik] = v[i];
+	          }
+	        } 
+
+	        // Overwrite original data
+	        for (int i = 0; i < N; i++) {
+      	    tri[site].A[0].diag[block][i] = inv_d[i];
+	        }
+      	  for (int i = 0; i < 15; i++) {
+	          tri[site].A[0].offd[block][i] = inv_offd[i];
+	        }
+	      }
+
+	      if (site_neg_logdet != 0) {
+	        // Report if site has any negative terms. (-ve def)
+	        std::cout << "WARNING: found " << site_neg_logdet
+		        << " negative eigenvalues in Clover DET at site: " << site << std::endl;
+	      }
+      } /* End Site Loop */
+    }	/* End Function */
+  
+
+    template <typename U>
+    struct TracePowersArgs {
+      typedef typename WordType<U>::Type_t REALT;
+      typedef OScalar<PScalar<PScalar<RScalar<REALT>>>> RealT;
+      typedef OLattice<PScalar<PScalar<RScalar<REALT>>>> LatticeRealT;
+    
+      ExpClovTriang<REALT>* tri;
+      int cb;
+    };
+
+    template <typename U, int N_exp>
+    inline void TracePowerSiteLoop(int lo, int hi, int myId, TracePowersArgs<U>* a)
+    {
+      typedef typename LDagDLInvArgs<U>::REALT REALT;
+      typedef typename LDagDLInvArgs<U>::RealT RealT;
+      typedef typename LDagDLInvArgs<U>::LatticeRealT LatticeRealT;
+
+      ExpClovTriang<REALT>* tri = a->tri;
+      int cb = a->cb;
+
+      RScalar<REALT> zip = 0;
+   
+
+      // Loop through the sites.
+      for (int ssite = lo; ssite < hi; ++ssite) {
+
+      	int site = rb[cb].siteTable()[ssite]; 
+	     
+        // Compute the q-s for the block
+        REALT tab[2][N_exp+1][6] = {0};
+        for(int block =0; block < 2; ++block) {
+          constexpr int upper = N_exp + 1 < 6 ? N_exp+1 : 6;
+          for(int i=0; i < upper; ++i) {
+              tab[block][i][i] = (REALT)1;
+          }
+        }
+              
+        
+        Traces<REALT,0> tr0(tri[site]);
+        Traces<REALT,1> tr1(tri[site]);
+
+        multi1d<RScalar<REALT>> trace0(6);
+        multi1d<RScalar<REALT>> trace1(6);
+        tr0.traces( trace0 );
+        tr1.traces( trace1 );
+
+          /*
+          trace[1][0] = toDouble(tr1.trace());
+          trace[1][1] = toDouble(tr1.trace2());
+          trace[1][2] = toDouble(tr1.trace3());
+          trace[1][3] = toDouble(tr1.trace4());
+          trace[1][4] = toDouble(tr1.trace5());
+          trace[1][5] = toDouble(tr1.trace6());
+          */
+        if( N_exp + 1 > 6  ) {
+          REALT trace[2][6];
+          for(int i=0; i < 6; ++i) trace[0][i] = toDouble(trace0[i]);
+          for(int i=0; i < 6; ++i) trace[1][i] = toDouble(trace1[i]);
+         
+     
+          for(int block=0; block < 2; ++block) {
+            REALT p[5];
+            p[4] = ((REALT)1/(REALT)2) *trace[block][1];      // (1/2) Tr A^2 
+            p[3] = ((REALT)1/(REALT)3) *trace[block][2];      // (1/3) Tr A^3
+            p[2] = ((REALT)1/(REALT)4) *trace[block][3]
+                  - ((REALT)1/(REALT)8) *trace[block][1]*trace[block][1];  // (1/4) Tr A^4 - (1/8) (Tr A^2)^2
+
+            p[1] = ((REALT)1/(REALT)5) *trace[block][4]
+                  -((REALT)1/(REALT)6) * trace[block][2]*trace[block][1];      // (1/5) Tr A^5 - (1/6) Tr A^3 Tr A^2 
+
+
+            p[0] = ((REALT)1/(REALT)6) * trace[block][5]               // (1/6) Tr A^6 - (1/8) Tr A^4 Tr A^2
+                -((REALT)1/(REALT)8) * trace[block][3]*trace[block][1]     //     - (1/18) [ Tr A^3 ]^2
+                -((REALT)1/(REALT)18)* trace[block][2]*trace[block][2]   //     + (1/48) [ Tr A^2 ]^3
+                +((REALT)1/(REALT)48)* trace[block][1]*trace[block][1]*trace[block][1];
+          
+
+            // Row 6            
+            for(int i=0; i < 5; ++i) tab[block][6][i] = p[i];
+
+            // Row 7+
+            for(int row = 7; row <= N_exp; ++row) {
+              for(int i=0; i < 5; i++) {
+                for(int j=0; j < 6; j++) { 
+                  tab[block][row][j] += p[i]*tab[block][row-6+i][j];
+                }
+              }
+            }
+          } // Blocks
+        } // N_exp + 1 > 
+
+        // Sum into the q
+        for(int block = 0; block < 2; ++block) {
+          // Row 0
+          for(int i=0; i < 6; i++) {
+            tri[site].q[block][i] = RScalar<REALT>(tab[block][0][i]);
+          }
+          
+          unsigned long fact = 1;
+          for(unsigned int row=1; row <= N_exp; ++row) {
+            fact *= (unsigned long)row;
+            for(int i=0; i < 6; i++) {
+              tri[site].q[block][i] += RScalar<REALT>(tab[block][row][i]/(REALT)(fact));
+            }
+          }
+        }
+
+        // Assemble te exponential from the q-s and powers of A.
+        siteExponentiate(tri[site]);
+      } /* End Site Loop */
+    }	/* End Function */
+  
+  }	/* End Namespace */
 
 
   /*! An LDL^\dag decomposition and inversion? */
-  template<typename T, typename U>
-  void QDPExpCloverTermT<T,U>::ldagdlinv(LatticeREAL& tr_log_diag, int cb)
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::ldagdlinv(LatticeREAL& tr_log_diag, int cb)
   {
 #ifndef QDP_IS_QDPJIT
     START_CODE();
 
-    if ( 2*Nc < 3 )
+    if (2 * Nc < 3)
     {
       QDPIO::cerr << __func__ << ": Matrix is too small" << std::endl;
       QDP_abort(1);
@@ -828,18 +1256,46 @@ namespace Chroma
     // Zero trace log
     tr_log_diag[rb[cb]] = zero;
 
-    QDPExpCloverEnv::LDagDLInvArgs<U> a = { tr_log_diag, tri, cb };
+    QDPExpCloverEnv::LDagDLInvArgs<U> a = {tr_log_diag, tri, cb};
     int num_site_table = rb[cb].numSiteTable();
     dispatch_to_threads(num_site_table, a, QDPExpCloverEnv::LDagDLInvSiteLoop<U>);
 
-    
     // This comes from the days when we used to do Cholesky
     choles_done[cb] = true;
 
     END_CODE();
 #endif
   }
- 
+
+  /* This now just sets up and dispatches... */
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::tracePowers()
+  {
+    START_CODE();
+
+    if (Nd != 4)
+    {
+      QDPIO::cerr << __func__ << ": expecting Nd==4" << std::endl;
+      QDP_abort(1);
+    }
+
+    if (Ns != 4)
+    {
+      QDPIO::cerr << __func__ << ": expecting Ns==4" << std::endl;
+      QDP_abort(1);
+    }
+
+    for(int cb=0; cb < 2; ++cb) {
+      const int num_sites = rb[cb].siteTable().size();
+      QDPExpCloverEnv::TracePowersArgs<U> arg = {tri,cb};
+      dispatch_to_threads(num_sites, arg, QDPExpCloverEnv::TracePowerSiteLoop<U,N_exp>);
+    }
+    END_CODE();
+  }
+
+
+
+
   /*! CHLCLOVMS - Cholesky decompose the clover mass term and uses it to
    *              compute  lower(A^-1) = lower((L.L^dag)^-1)
    *              Adapted from Golub and Van Loan, Matrix Computations, 2nd, Sec 4.2.4
@@ -850,185 +1306,6 @@ namespace Chroma
    * \param logdet       logarithm of the determinant        (Write)
    * \param cb           checkerboard of work                (Read)
    */
-
-  namespace QDPExpCloverEnv { 
-
-    template<typename U>
-    inline 
-    void cholesSiteLoop(int lo, int hi, int myId, LDagDLInvArgs<U>* a)
-    {
-      typedef typename LDagDLInvArgs<U>::REALT REALT;
-      typedef typename LDagDLInvArgs<U>::RealT RealT;
-      typedef typename LDagDLInvArgs<U>::LatticeRealT LatticeRealT;
-
-      LatticeRealT& tr_log_diag = a->tr_log_diag;
-      PrimitiveClovTriang <REALT>* tri = a->tri;
-      int cb = a->cb;
-      
-      int n = 2*Nc;
-      /*# Cholesky decompose  A = L.L^dag */
-      /*# NOTE!!: I can store this matrix in  invclov, but will need a */
-      /*#   temporary  diag */
-      for(int ssite=lo; ssite < hi; ++ssite)  {
-	int site = rb[cb].siteTable()[ssite];
-
-	PrimitiveClovTriang<REALT>  invcl;
-
-	multi1d< RScalar<REALT> > diag_g(n);
-	multi1d< RComplex<REALT> > v1(n);
-	RComplex<REALT> sum;
-	RScalar<REALT> one;
-	RScalar<REALT> zero;
-	RScalar<REALT> lrtmp;
-	
-	one = 1;
-	zero = 0;
-  
-	for(int s = 0; s < 2; ++s) {
-	  
-	  int elem_jk = 0;
-	  int elem_ij;
-	  
-	  for(int j = 0; j <  n; ++j) {
-
-	    /*# Multiply clover mass term against basis std::vector.  */
-	    /*# Actually, I need a column of the lower triang matrix clov. */
-	    v1[j] = cmplx(tri[site].diag[s][j],zero);
-    
-	    elem_ij = elem_jk + 2*j;
-	    
-	    for(int i = j+1; i < n; ++i) {
-	      v1[i] = tri[site].offd[s][elem_ij];
-	      elem_ij += i;
-	    }
-      
-	    /*# Back to cholesky */
-	    /*# forward substitute */
-	    for(int k = 0; k < j; ++k) {
-
-	      int elem_ik = elem_jk;
-	
-	      for(int i = j; i < n; ++i) {
-		
-		v1[i] -= adj(invcl.offd[s][elem_jk]) * invcl.offd[s][elem_ik];
-		elem_ik += i;
-	      }
-	      elem_jk++;
-	    }
-
-	    /*# The diagonal is (should be!!) real and positive */
-	    diag_g[j] = real(v1[j]);
-	  
-	    /*#+ */
-	    /*# Squeeze in computation of the trace log of the diagonal term */
-	    /*#- */
-	    if ( diag_g[j].elem() > 0 ) {
-	      
-	      lrtmp = log(diag_g[j]);
-	    }
-	    else {
-
-	      // Make sure any node can print this message
-	      std::cerr << "Clover term has negative diagonal element: "
-		   << "diag_g[" << j << "]= " << diag_g[j] 
-		   << " at site: " << site << std::endl;
-	      QDP_abort(1);
-	    }
-
-	    tr_log_diag.elem(site).elem().elem() += lrtmp;
-	  
-	    diag_g[j] = sqrt(diag_g[j]);
-	    diag_g[j] = one / diag_g[j];
-      
-	    /*# backward substitute */
-	    elem_ij = elem_jk + j;
-	    for(int i = j+1; i < n; ++i) {
-
-	      invcl.offd[s][elem_ij] = v1[i] * diag_g[j];
-	      elem_ij += i;
-	    }
-	  }
-
-	  /*# Use forward and back substitution to construct  invcl.offd = lower(A^-1) */
-	  for(int k = 0; k < n; ++k) {
-
-	    for(int i = 0; i < k; ++i)
-	      zero_rep(v1[i]);
-	  
-	    /*# Forward substitution */
-	    v1[k] = cmplx(diag_g[k],zero);
-      
-	    for(int i = k+1; i < n; ++i) {
-	  
-	      zero_rep(sum);
-	      elem_ij = i*(i-1)/2+k;	
-	      for(int j = k; j < i; ++j) {
-
-		sum -= invcl.offd[s][elem_ij] * v1[j];
-		elem_ij++;
-	      }
-	
-	      v1[i] = sum * diag_g[i];
-	    }
-      
-	    /*# Backward substitution */
-	    v1[n-1] = v1[n-1] * diag_g[n-1];
-     
-	    for(int i = n-2; (int)i >= (int)k; --i) {
-
-	      sum = v1[i];
-	    
-	      int elem_ji = ((i+1)*i)/2+i;
-	      for(int j = i+1; j < n; ++j) {
-
-		sum -= adj(invcl.offd[s][elem_ji]) * v1[j];
-		elem_ji += j;
-	      }
-	      v1[i] = sum * diag_g[i];
-	    }
-
-	    /*# Overwrite column k of invcl.offd */
-	    invcl.diag[s][k] = real(v1[k]);
-
-	    int elem_ik = ((k+1)*k)/2+k;
-      
-	    for(int i = k+1; i < n; ++i) {
-
-	      invcl.offd[s][elem_ik] = v1[i];
-	      elem_ik += i;
-	    }
-	  }
-	}
-
-	// Overwrite original element
-	tri[site] = invcl;
-      }
-    } // End function
-
-  } // End Namespace
-
-
-  template<typename T, typename U>
-  void QDPExpCloverTermT<T,U>::chlclovms(LatticeREAL& tr_log_diag, int cb)
-  {
-#ifndef QDP_IS_QDPJIT
-    START_CODE();
-
-    if ( 2*Nc < 3 )
-    {
-      QDPIO::cerr << __func__ << ": Matrix is too small" << std::endl;
-      QDP_abort(1);
-    }
-  
-    tr_log_diag = zero;
-    QDPExpCloverEnv::LDagDLInvArgs<U> a = { tr_log_diag, tri, cb};
-    dispatch_to_threads(rb[cb].numSiteTable(), a, QDPExpCloverEnv::cholesSiteLoop<U>);
-    
-    choles_done[cb] = true;
-    END_CODE();
-#endif
-  }
-
 
 
   /**
@@ -1048,118 +1325,268 @@ namespace Chroma
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
    * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
    */
-  template<typename T, typename U>
-  void QDPExpCloverTermT<T,U>::applySite(T& chi, const T& psi, 
-			    enum PlusMinus isign, int site) const
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::applyPowerSite(T& chi, const T& psi, enum PlusMinus isign,
+					  int site, int power) const
   {
 #ifndef QDP_IS_QDPJIT
     START_CODE();
 
-    if ( Ns != 4 )
+
+    if (Ns != 4)
     {
       QDPIO::cerr << __func__ << ": CloverTerm::applySite requires Ns==4" << std::endl;
       QDP_abort(1);
     }
 
-    int n = 2*Nc;
+    RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
+    const RComplex<REALT>* const ppsi = (const RComplex<REALT>* const)&(psi.elem(site).elem(0).elem(0));
+
+
+    siteApplicationPower<REALT>(cchi, tri, ppsi, power);
+ 
+    END_CODE();
+#endif
+  }
+
+  /**
+   * Apply a dslash
+   *
+   * Performs the operation
+   *
+   *  chi <-   (L + D + L^dag) . psi
+   *
+   * where
+   *   L       is a lower triangular matrix
+   *   D       is the real diagonal. (stored together in type TRIANG)
+   *
+   * Arguments:
+   * \param chi     result                                      (Write)
+   * \param psi     source                                      (Read)
+   * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
+   */
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::applySite(T& chi, const T& psi, enum PlusMinus isign,
+					  int site) const 
+  {
+#ifndef QDP_IS_QDPJIT
+    START_CODE();
+
+    if (Ns != 4)
+    {
+      QDPIO::cerr << __func__ << ": CloverTerm::applySite requires Ns==4" << std::endl;
+      QDP_abort(1);
+    }
 
     RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
-    const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));
+    const RComplex<REALT>* const ppsi = (const RComplex<REALT>* const)&(psi.elem(site).elem(0).elem(0));   
+    siteApplicationExp(cchi, tri[site], ppsi);
+    END_CODE();
+#endif
+  }
 
 
-    cchi[ 0] = tri[site].diag[0][ 0]  * ppsi[ 0]
-      +   conj(tri[site].offd[0][ 0]) * ppsi[ 1]
-      +   conj(tri[site].offd[0][ 1]) * ppsi[ 2]
-      +   conj(tri[site].offd[0][ 3]) * ppsi[ 3]
-      +   conj(tri[site].offd[0][ 6]) * ppsi[ 4]
-      +   conj(tri[site].offd[0][10]) * ppsi[ 5];
-    
-    cchi[ 1] = tri[site].diag[0][ 1]  * ppsi[ 1]
-      +        tri[site].offd[0][ 0]  * ppsi[ 0]
-      +   conj(tri[site].offd[0][ 2]) * ppsi[ 2]
-      +   conj(tri[site].offd[0][ 4]) * ppsi[ 3]
-      +   conj(tri[site].offd[0][ 7]) * ppsi[ 4]
-      +   conj(tri[site].offd[0][11]) * ppsi[ 5];
-    
-    cchi[ 2] = tri[site].diag[0][ 2]  * ppsi[ 2]
-      +        tri[site].offd[0][ 1]  * ppsi[ 0]
-      +        tri[site].offd[0][ 2]  * ppsi[ 1]
-      +   conj(tri[site].offd[0][ 5]) * ppsi[ 3]
-      +   conj(tri[site].offd[0][ 8]) * ppsi[ 4]
-      +   conj(tri[site].offd[0][12]) * ppsi[ 5];
-    
-    cchi[ 3] = tri[site].diag[0][ 3]  * ppsi[ 3]
-      +        tri[site].offd[0][ 3]  * ppsi[ 0]
-      +        tri[site].offd[0][ 4]  * ppsi[ 1]
-      +        tri[site].offd[0][ 5]  * ppsi[ 2]
-      +   conj(tri[site].offd[0][ 9]) * ppsi[ 4]
-      +   conj(tri[site].offd[0][13]) * ppsi[ 5];
-    
-    cchi[ 4] = tri[site].diag[0][ 4]  * ppsi[ 4]
-      +        tri[site].offd[0][ 6]  * ppsi[ 0]
-      +        tri[site].offd[0][ 7]  * ppsi[ 1]
-      +        tri[site].offd[0][ 8]  * ppsi[ 2]
-      +        tri[site].offd[0][ 9]  * ppsi[ 3]
-      +   conj(tri[site].offd[0][14]) * ppsi[ 5];
-    
-    cchi[ 5] = tri[site].diag[0][ 5]  * ppsi[ 5]
-      +        tri[site].offd[0][10]  * ppsi[ 0]
-      +        tri[site].offd[0][11]  * ppsi[ 1]
-      +        tri[site].offd[0][12]  * ppsi[ 2]
-      +        tri[site].offd[0][13]  * ppsi[ 3]
-      +        tri[site].offd[0][14]  * ppsi[ 4];
-    
-    cchi[ 6] = tri[site].diag[1][ 0]  * ppsi[ 6]
-      +   conj(tri[site].offd[1][ 0]) * ppsi[ 7]
-      +   conj(tri[site].offd[1][ 1]) * ppsi[ 8]
-      +   conj(tri[site].offd[1][ 3]) * ppsi[ 9]
-      +   conj(tri[site].offd[1][ 6]) * ppsi[10]
-      +   conj(tri[site].offd[1][10]) * ppsi[11];
-    
-    cchi[ 7] = tri[site].diag[1][ 1]  * ppsi[ 7]
-      +        tri[site].offd[1][ 0]  * ppsi[ 6]
-      +   conj(tri[site].offd[1][ 2]) * ppsi[ 8]
-      +   conj(tri[site].offd[1][ 4]) * ppsi[ 9]
-      +   conj(tri[site].offd[1][ 7]) * ppsi[10]
-      +   conj(tri[site].offd[1][11]) * ppsi[11];
-    
-    cchi[ 8] = tri[site].diag[1][ 2]  * ppsi[ 8]
-      +        tri[site].offd[1][ 1]  * ppsi[ 6]
-      +        tri[site].offd[1][ 2]  * ppsi[ 7]
-      +   conj(tri[site].offd[1][ 5]) * ppsi[ 9]
-      +   conj(tri[site].offd[1][ 8]) * ppsi[10]
-      +   conj(tri[site].offd[1][12]) * ppsi[11];
-    
-    cchi[ 9] = tri[site].diag[1][ 3]  * ppsi[ 9]
-      +        tri[site].offd[1][ 3]  * ppsi[ 6]
-      +        tri[site].offd[1][ 4]  * ppsi[ 7]
-      +        tri[site].offd[1][ 5]  * ppsi[ 8]
-      +   conj(tri[site].offd[1][ 9]) * ppsi[10]
-      +   conj(tri[site].offd[1][13]) * ppsi[11];
-    
-    cchi[10] = tri[site].diag[1][ 4]  * ppsi[10]
-      +        tri[site].offd[1][ 6]  * ppsi[ 6]
-      +        tri[site].offd[1][ 7]  * ppsi[ 7]
-      +        tri[site].offd[1][ 8]  * ppsi[ 8]
-      +        tri[site].offd[1][ 9]  * ppsi[ 9]
-      +   conj(tri[site].offd[1][14]) * ppsi[11];
-    
-    cchi[11] = tri[site].diag[1][ 5]  * ppsi[11]
-      +        tri[site].offd[1][10]  * ppsi[ 6]
-      +        tri[site].offd[1][11]  * ppsi[ 7]
-      +        tri[site].offd[1][12]  * ppsi[ 8]
-      +        tri[site].offd[1][13]  * ppsi[ 9]
-      +        tri[site].offd[1][14]  * ppsi[10];
+  //! Returns the appropriate clover coefficient for indices mu and nu
+  template <typename T, typename U, int N_exp>
+  Real QDPExpCloverTermT<T, U, N_exp>::getCloverCoeff(int mu, int nu) const
+  {
+    START_CODE();
 
+    if (param.anisoParam.anisoP)
+    {
+      if (mu == param.anisoParam.t_dir || nu == param.anisoParam.t_dir)
+      {
+	return param.clovCoeffT;
+      }
+      else
+      {
+	// Otherwise return the spatial coeff
+	return param.clovCoeffR;
+      }
+    }
+    else
+    {
+      // If there is no anisotropy just return the spatial one, it will
+      // be the same as the temporal one
+      return param.clovCoeffR;
+    }
+
+    END_CODE();
+  }
+
+  namespace QDPExpCloverEnv
+  {
+    template <typename T>
+    struct ApplyPowerArgs {
+      typedef typename WordType<T>::Type_t REALT;
+      T& chi;
+      const T& psi;
+      const ExpClovTriang<REALT>* tri;
+      int cb;
+      int power=1;
+    };
+
+    template <typename T>
+    void applySitePowerLoop(int lo, int hi, int MyId, ApplyPowerArgs<T>* arg)
+    {
+#ifndef QDP_IS_QDPJIT
+      // This is essentially the body of the previous "Apply"
+      // but now the args are handed in through user arg struct...
+
+      START_CODE();
+
+      typedef typename WordType<T>::Type_t REALT;
+      // Unwrap the args...
+      T& chi = arg->chi;
+      const T& psi = arg->psi;
+      const ExpClovTriang<REALT>* tri = arg->tri;
+      int cb = arg->cb;
+      int power = arg->power;
+      const int n = 2 * Nc;
+
+      for (int ssite = lo; ssite < hi; ++ssite) {
+
+      	int site = rb[cb].siteTable()[ssite]; 
+
+        RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
+        
+        const RComplex<REALT>* const ppsi = (const RComplex<REALT>* const)&(psi.elem(site).elem(0).elem(0));   
+        
+        siteApplicationPower<REALT>(cchi, tri[site], ppsi, power);
+      }
+      END_CODE();
+  #endif
+    } // Function
+
+    template <typename T>
+    struct ApplyArgs {
+      typedef typename WordType<T>::Type_t REALT;
+      T& chi;
+      const T& psi;
+      const ExpClovTriang<REALT>* tri;
+      int cb;
+    };
+
+    template <typename T>
+    void applySiteLoop(int lo, int hi, int MyId, ApplyArgs<T>* arg)
+    {
+#ifndef QDP_IS_QDPJIT
+      // This is essentially the body of the previous "Apply"
+      // but now the args are handed in through user arg struct...
+
+      START_CODE();
+
+      typedef typename WordType<T>::Type_t REALT;
+      // Unwrap the args...
+      T& chi = arg->chi;
+      const T& psi = arg->psi;
+      const ExpClovTriang<REALT>* tri = arg->tri;
+      int cb = arg->cb;
+      const int n = 2 * Nc;
+
+      for (int ssite = lo; ssite < hi; ++ssite) {
+
+      	int site = rb[cb].siteTable()[ssite]; 
+        RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
+        const RComplex<REALT>* const ppsi = (const RComplex<REALT>* const)&(psi.elem(site).elem(0).elem(0));   
+        
+        siteApplicationExp<REALT>(cchi, tri[site], ppsi);
+      }
+      END_CODE();
+  #endif
+    } // Function
+  }   // Namespace
+
+
+  template<typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::applyRef(T& chi, const T& psi, enum PlusMinus isign, int N) const
+  {
+      chi=psi;
+      T tmp;
+      for(int j=N; j > 1; --j) 
+      {
+          for(int cb=0; cb < 2;++cb)
+            (*this).applyPower(tmp,chi,isign,cb,1);  // M^1 chi
+          tmp /= Real(j);                // (1/N) M chi
+          chi = psi + tmp;               // ( psi + (1/N)M chi)
+      }
+      for(int cb=0; cb < 2; ++cb)
+        (*this).applyPower(tmp,chi,isign,cb,1);  // M chi
+      
+      chi = psi + tmp;               // psi + M chi
+      (*this).getFermBC().modifyF(chi);
+  }
+  /**
+   * Apply a dslash
+   *
+   * Performs the operation
+   *
+   *  chi <-   (L + D + L^dag) . psi
+   *
+   * where
+   *   L       is a lower triangular matrix
+   *   D       is the real diagonal. (stored together in type TRIANG)
+   *
+   * Arguments:
+   * \param chi     result                                      (Write)
+   * \param psi     source                                      (Read)
+   * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
+   */
+  
+
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::applyPower(T& chi, const T& psi, enum PlusMinus isign, int cb, int power) const
+  {
+#ifndef QDP_IS_QDPJIT
+    START_CODE();
+
+    if (Ns != 4)
+    {
+      QDPIO::cerr << __func__ << ": CloverTerm::apply requires Ns==4" << std::endl;
+      QDP_abort(1);
+    }
+
+    QDPExpCloverEnv::ApplyPowerArgs<T> arg = {chi, psi, tri, cb, power};
+    int num_sites = rb[cb].siteTable().size();
+
+    // The dispatch function is at the end of the file
+    // ought to work for non-threaded targets too...
+    dispatch_to_threads(num_sites, arg, QDPExpCloverEnv::applySitePowerLoop<T>);
+    (*this).getFermBC().modifyF(chi, QDP::rb[cb]);
+
+    END_CODE();
+#endif
+  }
+
+  
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::apply(T& chi, const T& psi, enum PlusMinus isign, int cb) const
+  {
+#ifndef QDP_IS_QDPJIT
+    START_CODE();
+
+    if (Ns != 4)
+    {
+      QDPIO::cerr << __func__ << ": CloverTerm::apply requires Ns==4" << std::endl;
+      QDP_abort(1);
+    }
+
+    QDPExpCloverEnv::ApplyArgs<T> arg = {chi, psi, tri, cb};
+    int num_sites = rb[cb].siteTable().size();
+
+    // The dispatch function is at the end of the file
+    // ought to work for non-threaded targets too...
+    dispatch_to_threads(num_sites, arg, QDPExpCloverEnv::applySiteLoop<T>);
+    (*this).getFermBC().modifyF(chi, QDP::rb[cb]);
 
     END_CODE();
 #endif
   }
 
 
-
-
-  //! TRIACNTR 
+    //! TRIACNTR
   /*! 
    * \ingroup linop
    *
@@ -1192,33 +1619,35 @@ namespace Chroma
    *  \param mat       label of the Gamma matrix          (Read)
    */
 
-  namespace QDPExpCloverEnv { 
-    template<typename U>
+  namespace QDPExpCloverEnv
+  {
+    template <typename U>
     struct TriaCntrArgs {
       typedef typename WordType<U>::Type_t REALT;
-      
+
       U& B;
-      const PrimitiveClovTriang< REALT >* tri;
+      const ExpClovTriang<REALT>* tri;
       int mat;
       int cb;
     };
-  
-    template<typename U>
-    inline 
-    void triaCntrSiteLoop(int lo, int hi, int myId, TriaCntrArgs<U>* a)
+
+    template <typename U>
+    inline void triaCntrSiteLoop(int lo, int hi, int myId, TriaCntrArgs<U>* a)
     {
       typedef typename WordType<U>::Type_t REALT;
       U& B = a->B;
-      const PrimitiveClovTriang< REALT >* tri = a->tri;
+      const ExpClovTriang<REALT>* tri = a->tri;
       int mat = a->mat;
-      int cb  = a->cb;
-      
-      for(int ssite=lo; ssite < hi; ++ssite) {
-	
+      int cb = a->cb;
+
+      for (int ssite = lo; ssite < hi; ++ssite)
+      {
+
 	int site = rb[cb].siteTable()[ssite];
-	
-	switch( mat ){
-	  
+
+	switch (mat)
+	{
+
 	case 0:
 	  /*# gamma(   0)   1  0  0  0            # ( 0000 )  --> 0 */
 	  /*#               0  1  0  0 */
@@ -1229,185 +1658,194 @@ namespace Chroma
 	    RComplex<REALT> lctmp0;
 	    RScalar<REALT> lr_zero0;
 	    RScalar<REALT> lrtmp0;
-	    
+
 	    lr_zero0 = 0;
-	    
-	    for(int i0 = 0; i0 < Nc; ++i0) {
-	      
-	      lrtmp0 = tri[site].diag[0][i0];
-	      lrtmp0 += tri[site].diag[0][i0+Nc];
-	      lrtmp0 += tri[site].diag[1][i0];
-	      lrtmp0 += tri[site].diag[1][i0+Nc];
-	      B.elem(site).elem().elem(i0,i0) = cmplx(lrtmp0,lr_zero0);
+
+	    for (int i0 = 0; i0 < Nc; ++i0)
+	    {
+
+	      lrtmp0 = tri[site].A[0].diag[0][i0];
+	      lrtmp0 += tri[site].A[0].diag[0][i0 + Nc];
+	      lrtmp0 += tri[site].A[0].diag[1][i0];
+	      lrtmp0 += tri[site].A[0].diag[1][i0 + Nc];
+	      B.elem(site).elem().elem(i0, i0) = cmplx(lrtmp0, lr_zero0);
 	    }
-	    
+
 	    /*# From lower triangular portion */
 	    int elem_ij0 = 0;
-	    for(int i0 = 1; i0 < Nc; ++i0) {
-	      
-	      int elem_ijb0 = (i0+Nc)*(i0+Nc-1)/2 + Nc;
-	      
-	      for(int j0 = 0; j0 < i0; ++j0) {
-		
-		lctmp0 = tri[site].offd[0][elem_ij0];
-		lctmp0 += tri[site].offd[0][elem_ijb0];
-		lctmp0 += tri[site].offd[1][elem_ij0];
-		lctmp0 += tri[site].offd[1][elem_ijb0];
-		
-		B.elem(site).elem().elem(j0,i0) = lctmp0;
-		B.elem(site).elem().elem(i0,j0) = adj(lctmp0);
-		
-		
+	    for (int i0 = 1; i0 < Nc; ++i0)
+	    {
+
+	      int elem_ijb0 = (i0 + Nc) * (i0 + Nc - 1) / 2 + Nc;
+
+	      for (int j0 = 0; j0 < i0; ++j0)
+	      {
+
+		lctmp0 = tri[site].A[0].offd[0][elem_ij0];
+		lctmp0 += tri[site].A[0].offd[0][elem_ijb0];
+		lctmp0 += tri[site].A[0].offd[1][elem_ij0];
+		lctmp0 += tri[site].A[0].offd[1][elem_ijb0];
+
+		B.elem(site).elem().elem(j0, i0) = lctmp0;
+		B.elem(site).elem().elem(i0, j0) = adj(lctmp0);
+
 		elem_ij0++;
 		elem_ijb0++;
 	      }
 	    }
 	  }
-	  
+
 	  break;
-	  
+
 	case 3:
 	  /*# gamma(  12)  -i  0  0  0            # ( 0011 )  --> 3 */
 	  /*#               0  i  0  0 */
 	  /*#               0  0 -i  0 */
 	  /*#               0  0  0  i */
 	  /*# From diagonal part */
-	  
+
 	  {
 	    RComplex<REALT> lctmp3;
 	    RScalar<REALT> lr_zero3;
 	    RScalar<REALT> lrtmp3;
-	    
+
 	    lr_zero3 = 0;
-	    
-	    for(int i3 = 0; i3 < Nc; ++i3) {
-	      
-	      lrtmp3 = tri[site].diag[0][i3+Nc];
-	      lrtmp3 -= tri[site].diag[0][i3];
-	      lrtmp3 -= tri[site].diag[1][i3];
-	      lrtmp3 += tri[site].diag[1][i3+Nc];
-	      B.elem(site).elem().elem(i3,i3) = cmplx(lr_zero3,lrtmp3);
+
+	    for (int i3 = 0; i3 < Nc; ++i3)
+	    {
+
+	      lrtmp3 = tri[site].A[0].diag[0][i3 + Nc];
+	      lrtmp3 -= tri[site].A[0].diag[0][i3];
+	      lrtmp3 -= tri[site].A[0].diag[1][i3];
+	      lrtmp3 += tri[site].A[0].diag[1][i3 + Nc];
+	      B.elem(site).elem().elem(i3, i3) = cmplx(lr_zero3, lrtmp3);
 	    }
-	    
+
 	    /*# From lower triangular portion */
 	    int elem_ij3 = 0;
-	    for(int i3 = 1; i3 < Nc; ++i3) {
-	      
-	      int elem_ijb3 = (i3+Nc)*(i3+Nc-1)/2 + Nc;
-	      
-	      for(int j3 = 0; j3 < i3; ++j3) {
-		
-		lctmp3 = tri[site].offd[0][elem_ijb3];
-		lctmp3 -= tri[site].offd[0][elem_ij3];
-		lctmp3 -= tri[site].offd[1][elem_ij3];
-		lctmp3 += tri[site].offd[1][elem_ijb3];
-		
-		B.elem(site).elem().elem(j3,i3) = timesI(adj(lctmp3));
-		B.elem(site).elem().elem(i3,j3) = timesI(lctmp3);
-		
+	    for (int i3 = 1; i3 < Nc; ++i3)
+	    {
+
+	      int elem_ijb3 = (i3 + Nc) * (i3 + Nc - 1) / 2 + Nc;
+
+	      for (int j3 = 0; j3 < i3; ++j3)
+	      {
+
+		lctmp3 = tri[site].A[0].offd[0][elem_ijb3];
+		lctmp3 -= tri[site].A[0].offd[0][elem_ij3];
+		lctmp3 -= tri[site].A[0].offd[1][elem_ij3];
+		lctmp3 += tri[site].A[0].offd[1][elem_ijb3];
+
+		B.elem(site).elem().elem(j3, i3) = timesI(adj(lctmp3));
+		B.elem(site).elem().elem(i3, j3) = timesI(lctmp3);
+
 		elem_ij3++;
 		elem_ijb3++;
 	      }
 	    }
 	  }
 	  break;
-	  
+
 	case 5:
 	  /*# gamma(  13)   0 -1  0  0            # ( 0101 )  --> 5 */
 	  /*#               1  0  0  0 */
 	  /*#               0  0  0 -1 */
 	  /*#               0  0  1  0 */
-	  
+
 	  {
-	    
+
 	    RComplex<REALT> lctmp5;
 	    RScalar<REALT> lrtmp5;
-	    
-	    for(int i5 = 0; i5 < Nc; ++i5) {
-	      
-	      int elem_ij5 = (i5+Nc)*(i5+Nc-1)/2;
-	      
-	      for(int j5 = 0; j5 < Nc; ++j5) {
-		
-		int elem_ji5 = (j5+Nc)*(j5+Nc-1)/2 + i5;
-		
-		
-		lctmp5 = adj(tri[site].offd[0][elem_ji5]);
-		lctmp5 -= tri[site].offd[0][elem_ij5];
-		lctmp5 += adj(tri[site].offd[1][elem_ji5]);
-		lctmp5 -= tri[site].offd[1][elem_ij5];
-		
-		
-		B.elem(site).elem().elem(i5,j5) = lctmp5;
-		
+
+	    for (int i5 = 0; i5 < Nc; ++i5)
+	    {
+
+	      int elem_ij5 = (i5 + Nc) * (i5 + Nc - 1) / 2;
+
+	      for (int j5 = 0; j5 < Nc; ++j5)
+	      {
+
+		int elem_ji5 = (j5 + Nc) * (j5 + Nc - 1) / 2 + i5;
+
+		lctmp5 = adj(tri[site].A[0].offd[0][elem_ji5]);
+		lctmp5 -= tri[site].A[0].offd[0][elem_ij5];
+		lctmp5 += adj(tri[site].A[0].offd[1][elem_ji5]);
+		lctmp5 -= tri[site].A[0].offd[1][elem_ij5];
+
+		B.elem(site).elem().elem(i5, j5) = lctmp5;
+
 		elem_ij5++;
 	      }
 	    }
 	  }
 	  break;
-	  
+
 	case 6:
 	  /*# gamma(  23)   0 -i  0  0            # ( 0110 )  --> 6 */
 	  /*#              -i  0  0  0 */
 	  /*#               0  0  0 -i */
 	  /*#               0  0 -i  0 */
-	  
+
 	  {
 	    RComplex<REALT> lctmp6;
 	    RScalar<REALT> lrtmp6;
-	    
-	    for(int i6 = 0; i6 < Nc; ++i6) {
-	      
-	      int elem_ij6 = (i6+Nc)*(i6+Nc-1)/2;
-	      
-	      for(int j6 = 0; j6 < Nc; ++j6) {
-		
-		int elem_ji6 = (j6+Nc)*(j6+Nc-1)/2 + i6;
-		
-		lctmp6 = adj(tri[site].offd[0][elem_ji6]);
-		lctmp6 += tri[site].offd[0][elem_ij6];
-		lctmp6 += adj(tri[site].offd[1][elem_ji6]);
-		lctmp6 += tri[site].offd[1][elem_ij6];
-		
-		B.elem(site).elem().elem(i6,j6) = timesMinusI(lctmp6);
-		
+
+	    for (int i6 = 0; i6 < Nc; ++i6)
+	    {
+
+	      int elem_ij6 = (i6 + Nc) * (i6 + Nc - 1) / 2;
+
+	      for (int j6 = 0; j6 < Nc; ++j6)
+	      {
+
+		int elem_ji6 = (j6 + Nc) * (j6 + Nc - 1) / 2 + i6;
+
+		lctmp6 = adj(tri[site].A[0].offd[0][elem_ji6]);
+		lctmp6 += tri[site].A[0].offd[0][elem_ij6];
+		lctmp6 += adj(tri[site].A[0].offd[1][elem_ji6]);
+		lctmp6 += tri[site].A[0].offd[1][elem_ij6];
+
+		B.elem(site).elem().elem(i6, j6) = timesMinusI(lctmp6);
+
 		elem_ij6++;
 	      }
 	    }
 	  }
 	  break;
-	  
+
 	case 9:
 	  /*# gamma(  14)   0  i  0  0            # ( 1001 )  --> 9 */
 	  /*#               i  0  0  0 */
 	  /*#               0  0  0 -i */
 	  /*#               0  0 -i  0 */
-	  
+
 	  {
 	    RComplex<REALT> lctmp9;
 	    RScalar<REALT> lrtmp9;
-	    
-	    for(int i9 = 0; i9 < Nc; ++i9) {
-	      
-	      int elem_ij9 = (i9+Nc)*(i9+Nc-1)/2;
-	      
-	      for(int j9 = 0; j9 < Nc; ++j9) {
-		
-		int elem_ji9 = (j9+Nc)*(j9+Nc-1)/2 + i9;
-		
-		lctmp9 = adj(tri[site].offd[0][elem_ji9]);
-		lctmp9 += tri[site].offd[0][elem_ij9];
-		lctmp9 -= adj(tri[site].offd[1][elem_ji9]);
-		lctmp9 -= tri[site].offd[1][elem_ij9];
-		
-		B.elem(site).elem().elem(i9,j9) = timesI(lctmp9);
-		
+
+	    for (int i9 = 0; i9 < Nc; ++i9)
+	    {
+
+	      int elem_ij9 = (i9 + Nc) * (i9 + Nc - 1) / 2;
+
+	      for (int j9 = 0; j9 < Nc; ++j9)
+	      {
+
+		int elem_ji9 = (j9 + Nc) * (j9 + Nc - 1) / 2 + i9;
+
+		lctmp9 = adj(tri[site].A[0].offd[0][elem_ji9]);
+		lctmp9 += tri[site].A[0].offd[0][elem_ij9];
+		lctmp9 -= adj(tri[site].A[0].offd[1][elem_ji9]);
+		lctmp9 -= tri[site].A[0].offd[1][elem_ij9];
+
+		B.elem(site).elem().elem(i9, j9) = timesI(lctmp9);
+
 		elem_ij9++;
 	      }
 	    }
 	  }
 	  break;
-	  
+
 	case 10:
 	  /*# gamma(  24)   0 -1  0  0            # ( 1010 )  --> 10 */
 	  /*#               1  0  0  0 */
@@ -1416,28 +1854,30 @@ namespace Chroma
 	  {
 	    RComplex<REALT> lctmp10;
 	    RScalar<REALT> lrtmp10;
-	    
-	    for(int i10 = 0; i10 < Nc; ++i10) {
-	      
-	      int elem_ij10 = (i10+Nc)*(i10+Nc-1)/2;
-	      
-	      for(int j10 = 0; j10 < Nc; ++j10) {
-		
-		int elem_ji10 = (j10+Nc)*(j10+Nc-1)/2 + i10;
-		
-		lctmp10 = adj(tri[site].offd[0][elem_ji10]);
-		lctmp10 -= tri[site].offd[0][elem_ij10];
-		lctmp10 -= adj(tri[site].offd[1][elem_ji10]);
-		lctmp10 += tri[site].offd[1][elem_ij10];
-		
-		B.elem(site).elem().elem(i10,j10) = lctmp10;
-		
+
+	    for (int i10 = 0; i10 < Nc; ++i10)
+	    {
+
+	      int elem_ij10 = (i10 + Nc) * (i10 + Nc - 1) / 2;
+
+	      for (int j10 = 0; j10 < Nc; ++j10)
+	      {
+
+		int elem_ji10 = (j10 + Nc) * (j10 + Nc - 1) / 2 + i10;
+
+		lctmp10 = adj(tri[site].A[0].offd[0][elem_ji10]);
+		lctmp10 -= tri[site].A[0].offd[0][elem_ij10];
+		lctmp10 -= adj(tri[site].A[0].offd[1][elem_ji10]);
+		lctmp10 += tri[site].A[0].offd[1][elem_ij10];
+
+		B.elem(site).elem().elem(i10, j10) = lctmp10;
+
 		elem_ij10++;
 	      }
 	    }
 	  }
 	  break;
-	
+
 	case 12:
 	  /*# gamma(  34)   i  0  0  0            # ( 1100 )  --> 12 */
 	  /*#               0 -i  0  0 */
@@ -1445,793 +1885,162 @@ namespace Chroma
 	  /*#               0  0  0  i */
 	  /*# From diagonal part */
 	  {
-	    
+
 	    RComplex<REALT> lctmp12;
 	    RScalar<REALT> lr_zero12;
 	    RScalar<REALT> lrtmp12;
-	    
+
 	    lr_zero12 = 0;
-	    
-	    for(int i12 = 0; i12 < Nc; ++i12) {
-	      
-	      lrtmp12 = tri[site].diag[0][i12];
-	      lrtmp12 -= tri[site].diag[0][i12+Nc];
-	      lrtmp12 -= tri[site].diag[1][i12];
-	      lrtmp12 += tri[site].diag[1][i12+Nc];
-	      B.elem(site).elem().elem(i12,i12) = cmplx(lr_zero12,lrtmp12);
+
+	    for (int i12 = 0; i12 < Nc; ++i12)
+	    {
+
+	      lrtmp12 = tri[site].A[0].diag[0][i12];
+	      lrtmp12 -= tri[site].A[0].diag[0][i12 + Nc];
+	      lrtmp12 -= tri[site].A[0].diag[1][i12];
+	      lrtmp12 += tri[site].A[0].diag[1][i12 + Nc];
+	      B.elem(site).elem().elem(i12, i12) = cmplx(lr_zero12, lrtmp12);
 	    }
-	    
+
 	    /*# From lower triangular portion */
 	    int elem_ij12 = 0;
-	    for(int i12 = 1; i12 < Nc; ++i12) {
-	      
-	      int elem_ijb12 = (i12+Nc)*(i12+Nc-1)/2 + Nc;
-	      
-	      for(int j12 = 0; j12 < i12; ++j12) {
-		
-		lctmp12 = tri[site].offd[0][elem_ij12];
-		lctmp12 -= tri[site].offd[0][elem_ijb12];
-		lctmp12 -= tri[site].offd[1][elem_ij12];
-		lctmp12 += tri[site].offd[1][elem_ijb12];
-		
-		B.elem(site).elem().elem(i12,j12) = timesI(lctmp12);
-		B.elem(site).elem().elem(j12,i12) = timesI(adj(lctmp12));
-		
+	    for (int i12 = 1; i12 < Nc; ++i12)
+	    {
+
+	      int elem_ijb12 = (i12 + Nc) * (i12 + Nc - 1) / 2 + Nc;
+
+	      for (int j12 = 0; j12 < i12; ++j12)
+	      {
+
+		lctmp12 = tri[site].A[0].offd[0][elem_ij12];
+		lctmp12 -= tri[site].A[0].offd[0][elem_ijb12];
+		lctmp12 -= tri[site].A[0].offd[1][elem_ij12];
+		lctmp12 += tri[site].A[0].offd[1][elem_ijb12];
+
+		B.elem(site).elem().elem(i12, j12) = timesI(lctmp12);
+		B.elem(site).elem().elem(j12, i12) = timesI(adj(lctmp12));
+
 		elem_ij12++;
 		elem_ijb12++;
 	      }
 	    }
 	  }
 	  break;
-	  
-	default:
-	  QDPIO::cout << __func__ << ": invalid Gamma matrix int" << std::endl;
-	  QDP_abort(1);
-	}
-	
-      } // END Site Loop
-    } // End Function
-  } // End Namespace
 
-   
-  template<typename T, typename U>
-  void QDPExpCloverTermT<T,U>::triacntr(U& B, int mat, int cb) const
+	default: QDPIO::cout << __func__ << ": invalid Gamma matrix int" << std::endl; QDP_abort(1);
+	}
+
+      } // END Site Loop
+    }	// End Function
+  }	// End Namespace
+
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U,N_exp>::triacntr(U& B, int mat, int cb) const
   {
 #ifndef QDP_IS_QDPJIT
     START_CODE();
 
     B = zero;
 
-    if ( mat < 0  ||  mat > 15 )
+    if (mat < 0 || mat > 15)
     {
       QDPIO::cerr << __func__ << ": Gamma out of range: mat = " << mat << std::endl;
       QDP_abort(1);
     }
 
-    QDPExpCloverEnv::TriaCntrArgs<U> a = { B, tri, mat, cb };
-    dispatch_to_threads(rb[cb].numSiteTable(), a, 
-			QDPExCloverEnv::triaCntrSiteLoop<U>);
+    QDPExpCloverEnv::TriaCntrArgs<U> a = {B, tri, mat, cb};
+    dispatch_to_threads(rb[cb].numSiteTable(), a, QDPExpCloverEnv::triaCntrSiteLoop<U>);
 
     END_CODE();
 #endif
   }
 
-  //! Returns the appropriate clover coefficient for indices mu and nu
-  template<typename T, typename U>
-  Real
-  QDPExpCloverTermT<T,U>::getCloverCoeff(int mu, int nu) const 
-  { 
-    START_CODE();
 
-    if( param.anisoParam.anisoP )  {
-      if (mu==param.anisoParam.t_dir || nu == param.anisoParam.t_dir) { 
-	return param.clovCoeffT;
-      }
-      else { 
-	// Otherwise return the spatial coeff
-	return param.clovCoeffR;
-      }
-    }
-    else { 
-      // If there is no anisotropy just return the spatial one, it will
-      // be the same as the temporal one
-      return param.clovCoeffR; 
-    } 
-    
-    END_CODE();
-  }
-
-
-  namespace QDPExpCloverEnv { 
-
-    template<typename T>
-    struct ApplyArgs {
-       typedef typename WordType<T>::Type_t REALT;
-      T& chi;
-      const T& psi;
-      const PrimitiveClovTriang<REALT>* tri;
+  namespace QDPExpCloverEnv
+  {
+    template <typename R>
+    struct QUDAPackArgs {
       int cb;
+      multi1d<QUDAPackedClovSite<R>>& quda_array;
+      const ExpClovTriang<R>* tri;
     };
 
-
-    template<typename T>
-    void applySiteLoop(int lo, int hi, int MyId,
-		       ApplyArgs<T>* arg)
-      
+    template <typename R>
+    void qudaPackSiteLoop(int lo, int hi, int myId, QUDAPackArgs<R>* a)
     {
-      
-      // This is essentially the body of the previous "Apply"
-      // but now the args are handed in through user arg struct...
-      
-      START_CODE();
+      int cb = a->cb;
+      int Ns2 = Ns / 2;
 
-      typedef typename WordType<T>::Type_t REALT;
-      // Unwrap the args...
-      T& chi=arg->chi;
-      const T& psi=arg->psi;
-      const PrimitiveClovTriang<REALT>* tri = arg->tri;
-      int cb = arg->cb;
-      
+      multi1d<QUDAPackedClovSite<R>>& quda_array = a->quda_array;
+      const ExpClovTriang<R>* tri = a->tri;
 
-      const int n = 2*Nc;
-      
-      const int* tab = rb[cb].siteTable().slice();
-      
-      // Now just loop from low to high sites...
-      for(int ssite=lo; ssite < hi; ++ssite)  {
-	
-    	  int site = tab[ssite];
-#define NEW
-#ifndef NEW
-    	  RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
-    	  const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));
-#else
-    	  std::complex<REALT>* cchi = (std::complex<REALT>*)&(chi.elem(site).elem(0).elem(0));
-    	  std::complex<REALT>* ppsi = (std::complex<REALT>*)&(psi.elem(site).elem(0).elem(0));
-    	  const REALT* const diag0 = (const REALT* const)(&(tri[site].diag[0][0].elem()));
-    	  const REALT* const diag1 = (const REALT* const)(&(tri[site].diag[1][0].elem()));
-    	  const std::complex<REALT>* const offdiag0  =
-    			  (const std::complex<REALT>* const)(&(tri[site].offd[0][0].real()));
-    	  const std::complex<REALT>* const offdiag1  =
-    			  (const std::complex<REALT>* const)(&(tri[site].offd[1][0].real()));
+      const int idtab[15] = {0, 1, 3, 6, 10, 2, 4, 7, 11, 5, 8, 12, 9, 13, 14};
 
-#endif
-#if 1
-#warning "Using unrolled clover term"
-      // Rolled version
-      for(int i = 0; i < n; ++i) {
-#ifndef NEW
-    	  cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
-    	  cchi[1*n+i] = tri[site].diag[1][i] * ppsi[1*n+i];
-#else
-    	  cchi[0*n+i] = diag0[i] * ppsi[0*n+i];
-    	  cchi[1*n+i] = diag1[i] * ppsi[1*n+i];
+      for (int ssite = lo; ssite < hi; ++ssite) {
+      
+	      int site = rb[cb].siteTable()[ssite];
+	      // First Chiral Block
+	      for (int i = 0; i < 6; i++) {
+      	  quda_array[site].diag1[i] = tri[site].Exp.diag[0][i].elem();
+	      }
 
-#endif
+      	int target_index = 0;
+
+	      for (int col = 0; col < Nc * Ns2 - 1; col++) {
+	        for (int row = col + 1; row < Nc * Ns2; row++) {
+
+    	      int source_index = row * (row - 1) / 2 + col;
+
+	          quda_array[site].offDiag1[target_index][0] = tri[site].Exp.offd[0][source_index].real();
+	          quda_array[site].offDiag1[target_index][1] = tri[site].Exp.offd[0][source_index].imag();
+	          target_index++;
+	        }
+	      }
+
+
+	      // Second Chiral Block
+	      for (int i = 0; i < 6; i++) {
+	        quda_array[site].diag2[i] = tri[site].Exp.diag[1][i].elem();
+	      }
+
+      	target_index = 0;
+	      for (int col = 0; col < Nc * Ns2 - 1; col++) {
+	        for (int row = col + 1; row < Nc * Ns2; row++) {
+
+      	    int source_index = row * (row - 1) / 2 + col;
+	          quda_array[site].offDiag2[target_index][0] = tri[site].Exp.offd[1][source_index].real();
+	          quda_array[site].offDiag2[target_index][1] = tri[site].Exp.offd[1][source_index].imag();
+	          target_index++;
+	        }
+	      }
       }
-
-      int kij = 0;  
-      for(int i = 0; i < n; ++i) {
-
-    	  for(int j = 0; j < i; j++) {
-#ifndef NEW
-    		  cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
-    		  cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
-    		  cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
-    		  cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
-#else
-    		  cchi[0*n+i] += offdiag0[kij] * ppsi[0*n+j];
-    		      		  cchi[0*n+j] += conj(offdiag0[kij]) * ppsi[0*n+i];
-    		      		  cchi[1*n+i] += offdiag1[kij] * ppsi[1*n+j];
-    		      		  cchi[1*n+j] += conj(offdiag1[kij]) * ppsi[1*n+i];
-#endif
-    		  kij++;
-    	  }
-
-      }
-#elif 0
-#warning "Using unrolled clover term - version 1"
-      // Unrolled version - basically copying the loop structure
-      cchi[ 0] = tri[site].diag[0][0] * ppsi[ 0];
-      cchi[ 1] = tri[site].diag[0][1] * ppsi[ 1];
-      cchi[ 2] = tri[site].diag[0][2] * ppsi[ 2];
-      cchi[ 3] = tri[site].diag[0][3] * ppsi[ 3];
-      cchi[ 4] = tri[site].diag[0][4] * ppsi[ 4];
-      cchi[ 5] = tri[site].diag[0][5] * ppsi[ 5];
-      cchi[ 6] = tri[site].diag[1][0] * ppsi[ 6];
-      cchi[ 7] = tri[site].diag[1][1] * ppsi[ 7];
-      cchi[ 8] = tri[site].diag[1][2] * ppsi[ 8];
-      cchi[ 9] = tri[site].diag[1][3] * ppsi[ 9];
-      cchi[10] = tri[site].diag[1][4] * ppsi[10];
-      cchi[11] = tri[site].diag[1][5] * ppsi[11];
-
-      // cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
-      cchi[ 1] += tri[site].offd[0][ 0] * ppsi[ 0];
-      cchi[ 2] += tri[site].offd[0][ 1] * ppsi[ 0];
-      cchi[ 2] += tri[site].offd[0][ 2] * ppsi[ 1];
-      cchi[ 3] += tri[site].offd[0][ 3] * ppsi[ 0];
-      cchi[ 3] += tri[site].offd[0][ 4] * ppsi[ 1];
-      cchi[ 3] += tri[site].offd[0][ 5] * ppsi[ 2];
-      cchi[ 4] += tri[site].offd[0][ 6] * ppsi[ 0];
-      cchi[ 4] += tri[site].offd[0][ 7] * ppsi[ 1];
-      cchi[ 4] += tri[site].offd[0][ 8] * ppsi[ 2];
-      cchi[ 4] += tri[site].offd[0][ 9] * ppsi[ 3];
-      cchi[ 5] += tri[site].offd[0][10] * ppsi[ 0];
-      cchi[ 5] += tri[site].offd[0][11] * ppsi[ 1];
-      cchi[ 5] += tri[site].offd[0][12] * ppsi[ 2];
-      cchi[ 5] += tri[site].offd[0][13] * ppsi[ 3];
-      cchi[ 5] += tri[site].offd[0][14] * ppsi[ 4];
-
-      // cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
-      cchi[ 0] += conj(tri[site].offd[0][ 0]) * ppsi[ 1];
-      cchi[ 0] += conj(tri[site].offd[0][ 1]) * ppsi[ 2];
-      cchi[ 1] += conj(tri[site].offd[0][ 2]) * ppsi[ 2];
-      cchi[ 0] += conj(tri[site].offd[0][ 3]) * ppsi[ 3];
-      cchi[ 1] += conj(tri[site].offd[0][ 4]) * ppsi[ 3];
-      cchi[ 2] += conj(tri[site].offd[0][ 5]) * ppsi[ 3];
-      cchi[ 0] += conj(tri[site].offd[0][ 6]) * ppsi[ 4];
-      cchi[ 1] += conj(tri[site].offd[0][ 7]) * ppsi[ 4];
-      cchi[ 2] += conj(tri[site].offd[0][ 8]) * ppsi[ 4];
-      cchi[ 3] += conj(tri[site].offd[0][ 9]) * ppsi[ 4];
-      cchi[ 0] += conj(tri[site].offd[0][10]) * ppsi[ 5];
-      cchi[ 1] += conj(tri[site].offd[0][11]) * ppsi[ 5];
-      cchi[ 2] += conj(tri[site].offd[0][12]) * ppsi[ 5];
-      cchi[ 3] += conj(tri[site].offd[0][13]) * ppsi[ 5];
-      cchi[ 4] += conj(tri[site].offd[0][14]) * ppsi[ 5];
-
-      // cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
-      cchi[ 7] += tri[site].offd[1][ 0] * ppsi[ 6];
-      cchi[ 8] += tri[site].offd[1][ 1] * ppsi[ 6];
-      cchi[ 8] += tri[site].offd[1][ 2] * ppsi[ 7];
-      cchi[ 9] += tri[site].offd[1][ 3] * ppsi[ 6];
-      cchi[ 9] += tri[site].offd[1][ 4] * ppsi[ 7];
-      cchi[ 9] += tri[site].offd[1][ 5] * ppsi[ 8];
-      cchi[10] += tri[site].offd[1][ 6] * ppsi[ 6];
-      cchi[10] += tri[site].offd[1][ 7] * ppsi[ 7];
-      cchi[10] += tri[site].offd[1][ 8] * ppsi[ 8];
-      cchi[10] += tri[site].offd[1][ 9] * ppsi[ 9];
-      cchi[11] += tri[site].offd[1][10] * ppsi[ 6];
-      cchi[11] += tri[site].offd[1][11] * ppsi[ 7];
-      cchi[11] += tri[site].offd[1][12] * ppsi[ 8];
-      cchi[11] += tri[site].offd[1][13] * ppsi[ 9];
-      cchi[11] += tri[site].offd[1][14] * ppsi[10];
-
-      // cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
-      cchi[ 6] += conj(tri[site].offd[1][ 0]) * ppsi[ 7];
-      cchi[ 6] += conj(tri[site].offd[1][ 1]) * ppsi[ 8];
-      cchi[ 7] += conj(tri[site].offd[1][ 2]) * ppsi[ 8];
-      cchi[ 6] += conj(tri[site].offd[1][ 3]) * ppsi[ 9];
-      cchi[ 7] += conj(tri[site].offd[1][ 4]) * ppsi[ 9];
-      cchi[ 8] += conj(tri[site].offd[1][ 5]) * ppsi[ 9];
-      cchi[ 6] += conj(tri[site].offd[1][ 6]) * ppsi[10];
-      cchi[ 7] += conj(tri[site].offd[1][ 7]) * ppsi[10];
-      cchi[ 8] += conj(tri[site].offd[1][ 8]) * ppsi[10];
-      cchi[ 9] += conj(tri[site].offd[1][ 9]) * ppsi[10];
-      cchi[ 6] += conj(tri[site].offd[1][10]) * ppsi[11];
-      cchi[ 7] += conj(tri[site].offd[1][11]) * ppsi[11];
-      cchi[ 8] += conj(tri[site].offd[1][12]) * ppsi[11];
-      cchi[ 9] += conj(tri[site].offd[1][13]) * ppsi[11];
-      cchi[10] += conj(tri[site].offd[1][14]) * ppsi[11];
-#elif 0
-#warning "Using unrolled clover term - version 2"
-      // Unrolled version - collect all LHS terms into 1 expression
-      cchi[ 0]  =      tri[site].diag[0][ 0]  * ppsi[ 0];
-      cchi[ 0] += conj(tri[site].offd[0][ 0]) * ppsi[ 1];
-      cchi[ 0] += conj(tri[site].offd[0][ 1]) * ppsi[ 2];
-      cchi[ 0] += conj(tri[site].offd[0][ 3]) * ppsi[ 3];
-      cchi[ 0] += conj(tri[site].offd[0][ 6]) * ppsi[ 4];
-      cchi[ 0] += conj(tri[site].offd[0][10]) * ppsi[ 5];
-
-      cchi[ 1]  = tri[site].diag[0][ 1]  * ppsi[ 1];
-      cchi[ 1] += tri[site].offd[0][ 0]  * ppsi[ 0];
-      cchi[ 1] += conj(tri[site].offd[0][ 2]) * ppsi[ 2];
-      cchi[ 1] += conj(tri[site].offd[0][ 4]) * ppsi[ 3];
-      cchi[ 1] += conj(tri[site].offd[0][ 7]) * ppsi[ 4];
-      cchi[ 1] += conj(tri[site].offd[0][11]) * ppsi[ 5];
-
-      cchi[ 2]  = tri[site].diag[0][ 2]  * ppsi[ 2];
-      cchi[ 2] += tri[site].offd[0][ 1]  * ppsi[ 0];
-      cchi[ 2] += tri[site].offd[0][ 2]  * ppsi[ 1];
-      cchi[ 2] += conj(tri[site].offd[0][ 5]) * ppsi[ 3];
-      cchi[ 2] += conj(tri[site].offd[0][ 8]) * ppsi[ 4];
-      cchi[ 2] += conj(tri[site].offd[0][12]) * ppsi[ 5];
-
-      cchi[ 3]  = tri[site].diag[0][ 3]  * ppsi[ 3];
-      cchi[ 3] += tri[site].offd[0][ 3]  * ppsi[ 0];
-      cchi[ 3] += tri[site].offd[0][ 4]  * ppsi[ 1];
-      cchi[ 3] += tri[site].offd[0][ 5]  * ppsi[ 2];
-      cchi[ 3] += conj(tri[site].offd[0][ 9]) * ppsi[ 4];
-      cchi[ 3] += conj(tri[site].offd[0][13]) * ppsi[ 5];
-
-      cchi[ 4]  = tri[site].diag[0][ 4]  * ppsi[ 4];
-      cchi[ 4] += tri[site].offd[0][ 6]  * ppsi[ 0];
-      cchi[ 4] += tri[site].offd[0][ 7]  * ppsi[ 1];
-      cchi[ 4] += tri[site].offd[0][ 8]  * ppsi[ 2];
-      cchi[ 4] += tri[site].offd[0][ 9]  * ppsi[ 3];
-      cchi[ 4] += conj(tri[site].offd[0][14]) * ppsi[ 5];
-
-      cchi[ 5]  = tri[site].diag[0][ 5]  * ppsi[ 5];
-      cchi[ 5] += tri[site].offd[0][10]  * ppsi[ 0];
-      cchi[ 5] += tri[site].offd[0][11]  * ppsi[ 1];
-      cchi[ 5] += tri[site].offd[0][12]  * ppsi[ 2];
-      cchi[ 5] += tri[site].offd[0][13]  * ppsi[ 3];
-      cchi[ 5] += tri[site].offd[0][14]  * ppsi[ 4];
-
-      cchi[ 6]  = tri[site].diag[1][ 0]  * ppsi[ 6];
-      cchi[ 6] += conj(tri[site].offd[1][ 0]) * ppsi[ 7];
-      cchi[ 6] += conj(tri[site].offd[1][ 1]) * ppsi[ 8];
-      cchi[ 6] += conj(tri[site].offd[1][ 3]) * ppsi[ 9];
-      cchi[ 6] += conj(tri[site].offd[1][ 6]) * ppsi[10];
-      cchi[ 6] += conj(tri[site].offd[1][10]) * ppsi[11];
-
-      cchi[ 7]  = tri[site].diag[1][ 1]  * ppsi[ 7];
-      cchi[ 7] += tri[site].offd[1][ 0]  * ppsi[ 6];
-      cchi[ 7] += conj(tri[site].offd[1][ 2]) * ppsi[ 8];
-      cchi[ 7] += conj(tri[site].offd[1][ 4]) * ppsi[ 9];
-      cchi[ 7] += conj(tri[site].offd[1][ 7]) * ppsi[10];
-      cchi[ 7] += conj(tri[site].offd[1][11]) * ppsi[11];
-
-      cchi[ 8]  = tri[site].diag[1][ 2]  * ppsi[ 8];
-      cchi[ 8] += tri[site].offd[1][ 1]  * ppsi[ 6];
-      cchi[ 8] += tri[site].offd[1][ 2]  * ppsi[ 7];
-      cchi[ 8] += conj(tri[site].offd[1][ 5]) * ppsi[ 9];
-      cchi[ 8] += conj(tri[site].offd[1][ 8]) * ppsi[10];
-      cchi[ 8] += conj(tri[site].offd[1][12]) * ppsi[11];
-
-      cchi[ 9]  = tri[site].diag[1][ 3]  * ppsi[ 9];
-      cchi[ 9] += tri[site].offd[1][ 3]  * ppsi[ 6];
-      cchi[ 9] += tri[site].offd[1][ 4]  * ppsi[ 7];
-      cchi[ 9] += tri[site].offd[1][ 5]  * ppsi[ 8];
-      cchi[ 9] += conj(tri[site].offd[1][ 9]) * ppsi[10];
-      cchi[ 9] += conj(tri[site].offd[1][13]) * ppsi[11];
-
-      cchi[10]  = tri[site].diag[1][ 4]  * ppsi[10];
-      cchi[10] += tri[site].offd[1][ 6]  * ppsi[ 6];
-      cchi[10] += tri[site].offd[1][ 7]  * ppsi[ 7];
-      cchi[10] += tri[site].offd[1][ 8]  * ppsi[ 8];
-      cchi[10] += tri[site].offd[1][ 9]  * ppsi[ 9];
-      cchi[10] += conj(tri[site].offd[1][14]) * ppsi[11];
-
-      cchi[11]  = tri[site].diag[1][ 5]  * ppsi[11];
-      cchi[11] += tri[site].offd[1][10]  * ppsi[ 6];
-      cchi[11] += tri[site].offd[1][11]  * ppsi[ 7];
-      cchi[11] += tri[site].offd[1][12]  * ppsi[ 8];
-      cchi[11] += tri[site].offd[1][13]  * ppsi[ 9];
-      cchi[11] += tri[site].offd[1][14]  * ppsi[10];
-#elif 0
-	// Unrolled version 3. 
-	// Took unrolled version 2 and wrote out in real() and imag() 
-	// parts. Rearranged so that all the reals follow each other
-	//  in the output so that we can write linearly
-
-
-	cchi[ 0].real()  = tri[site].diag[0][0].elem()  * ppsi[0].real();
-	cchi[ 0].real() += tri[site].offd[0][0].real()  * ppsi[1].real();
-	cchi[ 0].real() += tri[site].offd[0][0].imag()  * ppsi[1].imag();
-	cchi[ 0].real() += tri[site].offd[0][1].real()  * ppsi[2].real();
-	cchi[ 0].real() += tri[site].offd[0][1].imag()  * ppsi[2].imag();
-	cchi[ 0].real() += tri[site].offd[0][3].real()  * ppsi[3].real();
-	cchi[ 0].real() += tri[site].offd[0][3].imag()  * ppsi[3].imag();
-	cchi[ 0].real() += tri[site].offd[0][6].real()  * ppsi[4].real();
-	cchi[ 0].real() += tri[site].offd[0][6].imag()  * ppsi[4].imag();
-	cchi[ 0].real() += tri[site].offd[0][10].real() * ppsi[5].real();
-	cchi[ 0].real() += tri[site].offd[0][10].imag() * ppsi[5].imag();
-	
-	cchi[ 0].imag()  = tri[site].diag[0][0].elem()  * ppsi[ 0].imag();
-	cchi[ 0].imag() += tri[site].offd[0][0].real()  * ppsi[1].imag();
-	cchi[ 0].imag() -= tri[site].offd[0][0].imag()  * ppsi[1].real();
-	cchi[ 0].imag() += tri[site].offd[0][3].real()  * ppsi[3].imag();
-	cchi[ 0].imag() -= tri[site].offd[0][3].imag()  * ppsi[3].real();
-	cchi[ 0].imag() += tri[site].offd[0][1].real()  * ppsi[2].imag();
-	cchi[ 0].imag() -= tri[site].offd[0][1].imag()  * ppsi[2].real();
-	cchi[ 0].imag() += tri[site].offd[0][6].real()  * ppsi[4].imag();
-	cchi[ 0].imag() -= tri[site].offd[0][6].imag()  * ppsi[4].real();
-	cchi[ 0].imag() += tri[site].offd[0][10].real() * ppsi[5].imag();
-	cchi[ 0].imag() -= tri[site].offd[0][10].imag() * ppsi[5].real();
-	
-	
-	cchi[ 1].real()  = tri[site].diag[0][ 1].elem() * ppsi[ 1].real();
-	cchi[ 1].real() += tri[site].offd[0][ 0].real() * ppsi[ 0].real();
-	cchi[ 1].real() -= tri[site].offd[0][ 0].imag() * ppsi[ 0].imag();
-	cchi[ 1].real() += tri[site].offd[0][ 2].real() * ppsi[ 2].real();
-	cchi[ 1].real() += tri[site].offd[0][ 2].imag() * ppsi[ 2].imag();
-	cchi[ 1].real() += tri[site].offd[0][ 4].real() * ppsi[ 3].real();
-	cchi[ 1].real() += tri[site].offd[0][ 4].imag() * ppsi[ 3].imag();
-	cchi[ 1].real() += tri[site].offd[0][ 7].real() * ppsi[ 4].real();
-	cchi[ 1].real() += tri[site].offd[0][ 7].imag() * ppsi[ 4].imag();
-	cchi[ 1].real() += tri[site].offd[0][11].real() * ppsi[ 5].real();
-	cchi[ 1].real() += tri[site].offd[0][11].imag() * ppsi[ 5].imag();
-	
-	
-	cchi[ 1].imag()  = tri[site].diag[0][ 1].elem() * ppsi[ 1].imag();
-	cchi[ 1].imag() += tri[site].offd[0][ 0].real() * ppsi[ 0].imag();
-	cchi[ 1].imag() += tri[site].offd[0][ 0].imag() * ppsi[ 0].real();
-	cchi[ 1].imag() += tri[site].offd[0][ 2].real() * ppsi[ 2].imag();
-	cchi[ 1].imag() -= tri[site].offd[0][ 2].imag() * ppsi[ 2].real();
-	cchi[ 1].imag() += tri[site].offd[0][ 4].real() * ppsi[ 3].imag();
-	cchi[ 1].imag() -= tri[site].offd[0][ 4].imag() * ppsi[ 3].real();
-	cchi[ 1].imag() += tri[site].offd[0][ 7].real() * ppsi[ 4].imag();
-	cchi[ 1].imag() -= tri[site].offd[0][ 7].imag() * ppsi[ 4].real();
-	cchi[ 1].imag() += tri[site].offd[0][11].real() * ppsi[ 5].imag();
-	cchi[ 1].imag() -= tri[site].offd[0][11].imag() * ppsi[ 5].real();
-	
-	
-	cchi[ 2].real() = tri[site].diag[0][ 2].elem()  * ppsi[ 2].real();
-	cchi[ 2].real() += tri[site].offd[0][ 1].real() * ppsi[ 0].real();
-	cchi[ 2].real() -= tri[site].offd[0][ 1].imag() * ppsi[ 0].imag();
-	cchi[ 2].real() += tri[site].offd[0][ 2].real() * ppsi[ 1].real();
-	cchi[ 2].real() -= tri[site].offd[0][ 2].imag() * ppsi[ 1].imag();
-	cchi[ 2].real() += tri[site].offd[0][5].real()  * ppsi[ 3].real();
-	cchi[ 2].real() += tri[site].offd[0][5].imag()  * ppsi[ 3].imag();
-	cchi[ 2].real() += tri[site].offd[0][8].real()  * ppsi[ 4].real();
-	cchi[ 2].real() += tri[site].offd[0][8].imag()  * ppsi[ 4].imag();
-	cchi[ 2].real() += tri[site].offd[0][12].real() * ppsi[ 5].real();
-	cchi[ 2].real() += tri[site].offd[0][12].imag() * ppsi[ 5].imag();
-	
-	
-	cchi[ 2].imag() = tri[site].diag[0][ 2].elem()  * ppsi[ 2].imag();
-	cchi[ 2].imag() += tri[site].offd[0][ 1].real() * ppsi[ 0].imag();
-	cchi[ 2].imag() += tri[site].offd[0][ 1].imag() * ppsi[ 0].real();
-	cchi[ 2].imag() += tri[site].offd[0][ 2].real() * ppsi[ 1].imag();
-	cchi[ 2].imag() += tri[site].offd[0][ 2].imag() * ppsi[ 1].real();
-	cchi[ 2].imag() += tri[site].offd[0][5].real()  * ppsi[ 3].imag();
-	cchi[ 2].imag() -= tri[site].offd[0][5].imag()  * ppsi[ 3].real();
-	cchi[ 2].imag() += tri[site].offd[0][8].real()  * ppsi[ 4].imag();
-	cchi[ 2].imag() -= tri[site].offd[0][8].imag()  * ppsi[ 4].real();
-	cchi[ 2].imag() += tri[site].offd[0][12].real() * ppsi[ 5].imag();
-	cchi[ 2].imag() -= tri[site].offd[0][12].imag() * ppsi[ 5].real();
-	
-	
-	cchi[ 3].real()  = tri[site].diag[0][ 3].elem() * ppsi[ 3].real();
-	cchi[ 3].real() += tri[site].offd[0][ 3].real() * ppsi[ 0].real();
-	cchi[ 3].real() -= tri[site].offd[0][ 3].imag() * ppsi[ 0].imag();
-	cchi[ 3].real() += tri[site].offd[0][ 4].real() * ppsi[ 1].real();
-	cchi[ 3].real() -= tri[site].offd[0][ 4].imag() * ppsi[ 1].imag();
-	cchi[ 3].real() += tri[site].offd[0][ 5].real() * ppsi[ 2].real();
-	cchi[ 3].real() -= tri[site].offd[0][ 5].imag() * ppsi[ 2].imag();
-	cchi[ 3].real() += tri[site].offd[0][ 9].real() * ppsi[ 4].real();
-	cchi[ 3].real() += tri[site].offd[0][ 9].imag() * ppsi[ 4].imag();
-	cchi[ 3].real() += tri[site].offd[0][13].real() * ppsi[ 5].real();
-	cchi[ 3].real() += tri[site].offd[0][13].imag() * ppsi[ 5].imag();
-	
-	
-	cchi[ 3].imag()  = tri[site].diag[0][ 3].elem() * ppsi[ 3].imag();
-	cchi[ 3].imag() += tri[site].offd[0][ 3].real() * ppsi[ 0].imag();
-	cchi[ 3].imag() += tri[site].offd[0][ 3].imag() * ppsi[ 0].real();
-	cchi[ 3].imag() += tri[site].offd[0][ 4].real() * ppsi[ 1].imag();
-	cchi[ 3].imag() += tri[site].offd[0][ 4].imag() * ppsi[ 1].real();
-	cchi[ 3].imag() += tri[site].offd[0][ 5].real() * ppsi[ 2].imag();
-	cchi[ 3].imag() += tri[site].offd[0][ 5].imag() * ppsi[ 2].real();
-	cchi[ 3].imag() += tri[site].offd[0][ 9].real() * ppsi[ 4].imag();
-	cchi[ 3].imag() -= tri[site].offd[0][ 9].imag() * ppsi[ 4].real();
-	cchi[ 3].imag() += tri[site].offd[0][13].real() * ppsi[ 5].imag();
-	cchi[ 3].imag() -= tri[site].offd[0][13].imag() * ppsi[ 5].real();
-	
-	
-	cchi[ 4].real()  = tri[site].diag[0][ 4].elem() * ppsi[ 4].real();
-	cchi[ 4].real() += tri[site].offd[0][ 6].real() * ppsi[ 0].real();
-	cchi[ 4].real() -= tri[site].offd[0][ 6].imag() * ppsi[ 0].imag();
-	cchi[ 4].real() += tri[site].offd[0][ 7].real() * ppsi[ 1].real();
-	cchi[ 4].real() -= tri[site].offd[0][ 7].imag() * ppsi[ 1].imag();
-	cchi[ 4].real() += tri[site].offd[0][ 8].real() * ppsi[ 2].real();
-	cchi[ 4].real() -= tri[site].offd[0][ 8].imag() * ppsi[ 2].imag();
-	cchi[ 4].real() += tri[site].offd[0][ 9].real() * ppsi[ 3].real();
-	cchi[ 4].real() -= tri[site].offd[0][ 9].imag() * ppsi[ 3].imag();
-	cchi[ 4].real() += tri[site].offd[0][14].real() * ppsi[ 5].real();
-	cchi[ 4].real() += tri[site].offd[0][14].imag() * ppsi[ 5].imag();
-	
-	
-	cchi[ 4].imag()  = tri[site].diag[0][ 4].elem() * ppsi[ 4].imag();
-	cchi[ 4].imag() += tri[site].offd[0][ 6].real() * ppsi[ 0].imag();
-	cchi[ 4].imag() += tri[site].offd[0][ 6].imag() * ppsi[ 0].real();
-	cchi[ 4].imag() += tri[site].offd[0][ 7].real() * ppsi[ 1].imag();
-	cchi[ 4].imag() += tri[site].offd[0][ 7].imag() * ppsi[ 1].real();
-	cchi[ 4].imag() += tri[site].offd[0][ 8].real() * ppsi[ 2].imag();
-	cchi[ 4].imag() += tri[site].offd[0][ 8].imag() * ppsi[ 2].real();
-	cchi[ 4].imag() += tri[site].offd[0][ 9].real() * ppsi[ 3].imag();
-	cchi[ 4].imag() += tri[site].offd[0][ 9].imag() * ppsi[ 3].real();
-	cchi[ 4].imag() += tri[site].offd[0][14].real() * ppsi[ 5].imag();
-	cchi[ 4].imag() -= tri[site].offd[0][14].imag() * ppsi[ 5].real();
-	
-	
-	cchi[ 5].real()  = tri[site].diag[0][ 5].elem() * ppsi[ 5].real();
-	cchi[ 5].real() += tri[site].offd[0][10].real() * ppsi[ 0].real();
-	cchi[ 5].real() -= tri[site].offd[0][10].imag() * ppsi[ 0].imag();
-	cchi[ 5].real() += tri[site].offd[0][11].real() * ppsi[ 1].real();
-	cchi[ 5].real() -= tri[site].offd[0][11].imag() * ppsi[ 1].imag();
-	cchi[ 5].real() += tri[site].offd[0][12].real() * ppsi[ 2].real();
-	cchi[ 5].real() -= tri[site].offd[0][12].imag() * ppsi[ 2].imag();
-	cchi[ 5].real() += tri[site].offd[0][13].real() * ppsi[ 3].real();
-	cchi[ 5].real() -= tri[site].offd[0][13].imag() * ppsi[ 3].imag();
-	cchi[ 5].real() += tri[site].offd[0][14].real() * ppsi[ 4].real();
-	cchi[ 5].real() -= tri[site].offd[0][14].imag() * ppsi[ 4].imag();
-	
-	
-	cchi[ 5].imag()  = tri[site].diag[0][ 5].elem() * ppsi[ 5].imag();
-	cchi[ 5].imag() += tri[site].offd[0][10].real() * ppsi[ 0].imag();
-	cchi[ 5].imag() += tri[site].offd[0][10].imag() * ppsi[ 0].real();
-	cchi[ 5].imag() += tri[site].offd[0][11].real() * ppsi[ 1].imag();
-	cchi[ 5].imag() += tri[site].offd[0][11].imag() * ppsi[ 1].real();
-	cchi[ 5].imag() += tri[site].offd[0][12].real() * ppsi[ 2].imag();
-	cchi[ 5].imag() += tri[site].offd[0][12].imag() * ppsi[ 2].real();
-	cchi[ 5].imag() += tri[site].offd[0][13].real() * ppsi[ 3].imag();
-	cchi[ 5].imag() += tri[site].offd[0][13].imag() * ppsi[ 3].real();
-	cchi[ 5].imag() += tri[site].offd[0][14].real() * ppsi[ 4].imag();
-	cchi[ 5].imag() += tri[site].offd[0][14].imag() * ppsi[ 4].real();
-	
-	
-	cchi[ 6].real()  = tri[site].diag[1][0].elem()  * ppsi[6].real();
-	cchi[ 6].real() += tri[site].offd[1][0].real()  * ppsi[7].real();
-	cchi[ 6].real() += tri[site].offd[1][0].imag()  * ppsi[7].imag();
-	cchi[ 6].real() += tri[site].offd[1][1].real()  * ppsi[8].real();
-	cchi[ 6].real() += tri[site].offd[1][1].imag()  * ppsi[8].imag();
-	cchi[ 6].real() += tri[site].offd[1][3].real()  * ppsi[9].real();
-	cchi[ 6].real() += tri[site].offd[1][3].imag()  * ppsi[9].imag();
-	cchi[ 6].real() += tri[site].offd[1][6].real()  * ppsi[10].real();
-	cchi[ 6].real() += tri[site].offd[1][6].imag()  * ppsi[10].imag();
-	cchi[ 6].real() += tri[site].offd[1][10].real() * ppsi[11].real();
-	cchi[ 6].real() += tri[site].offd[1][10].imag() * ppsi[11].imag();
-	
-	cchi[ 6].imag()  = tri[site].diag[1][0].elem()  * ppsi[6].imag();
-	cchi[ 6].imag() += tri[site].offd[1][0].real()  * ppsi[7].imag();
-	cchi[ 6].imag() -= tri[site].offd[1][0].imag()  * ppsi[7].real();
-	cchi[ 6].imag() += tri[site].offd[1][1].real()  * ppsi[8].imag();
-	cchi[ 6].imag() -= tri[site].offd[1][1].imag()  * ppsi[8].real();
-	cchi[ 6].imag() += tri[site].offd[1][3].real()  * ppsi[9].imag();
-	cchi[ 6].imag() -= tri[site].offd[1][3].imag()  * ppsi[9].real();
-	cchi[ 6].imag() += tri[site].offd[1][6].real()  * ppsi[10].imag();
-	cchi[ 6].imag() -= tri[site].offd[1][6].imag()  * ppsi[10].real();
-	cchi[ 6].imag() += tri[site].offd[1][10].real() * ppsi[11].imag();
-	cchi[ 6].imag() -= tri[site].offd[1][10].imag() * ppsi[11].real();
-	
-	
-	cchi[ 7].real()  = tri[site].diag[1][ 1].elem()  * ppsi[ 7].real();
-	cchi[ 7].real() += tri[site].offd[1][ 0].real()  * ppsi[ 6].real();
-	cchi[ 7].real() -= tri[site].offd[1][ 0].imag()  * ppsi[ 6].imag();
-	cchi[ 7].real() += tri[site].offd[1][ 2].real()  * ppsi[ 8].real();
-	cchi[ 7].real() += tri[site].offd[1][ 2].imag()  * ppsi[ 8].imag();
-	cchi[ 7].real() += tri[site].offd[1][ 4].real()  * ppsi[ 9].real();
-	cchi[ 7].real() += tri[site].offd[1][ 4].imag()  * ppsi[ 9].imag();
-	cchi[ 7].real() += tri[site].offd[1][ 7].real()  * ppsi[10].real();
-	cchi[ 7].real() += tri[site].offd[1][ 7].imag()  * ppsi[10].imag();
-	cchi[ 7].real() += tri[site].offd[1][11].real()  * ppsi[11].real();
-	cchi[ 7].real() += tri[site].offd[1][11].imag()  * ppsi[11].imag();
-	
-	cchi[ 7].imag()  = tri[site].diag[1][ 1].elem()  * ppsi[ 7].imag();
-	cchi[ 7].imag() += tri[site].offd[1][ 0].real()  * ppsi[ 6].imag();
-	cchi[ 7].imag() += tri[site].offd[1][ 0].imag()  * ppsi[ 6].real();
-	cchi[ 7].imag() += tri[site].offd[1][ 2].real()  * ppsi[ 8].imag();
-	cchi[ 7].imag() -= tri[site].offd[1][ 2].imag()  * ppsi[ 8].real();
-	cchi[ 7].imag() += tri[site].offd[1][ 4].real()  * ppsi[ 9].imag();
-	cchi[ 7].imag() -= tri[site].offd[1][ 4].imag()  * ppsi[ 9].real();
-	cchi[ 7].imag() += tri[site].offd[1][ 7].real()  * ppsi[10].imag();
-	cchi[ 7].imag() -= tri[site].offd[1][ 7].imag()  * ppsi[10].real();
-	cchi[ 7].imag() += tri[site].offd[1][11].real()  * ppsi[11].imag();
-	cchi[ 7].imag() -= tri[site].offd[1][11].imag()  * ppsi[11].real();
-	
-	
-	cchi[ 8].real()  = tri[site].diag[1][ 2].elem()  * ppsi[ 8].real();
-	cchi[ 8].real() += tri[site].offd[1][ 1].real()  * ppsi[ 6].real();
-	cchi[ 8].real() -= tri[site].offd[1][ 1].imag()  * ppsi[ 6].imag();
-	cchi[ 8].real() += tri[site].offd[1][ 2].real()  * ppsi[ 7].real();
-	cchi[ 8].real() -= tri[site].offd[1][ 2].imag()  * ppsi[ 7].imag();
-	cchi[ 8].real() += tri[site].offd[1][5].real()   * ppsi[ 9].real();
-	cchi[ 8].real() += tri[site].offd[1][5].imag()   * ppsi[ 9].imag();
-	cchi[ 8].real() += tri[site].offd[1][8].real()   * ppsi[10].real();
-	cchi[ 8].real() += tri[site].offd[1][8].imag()   * ppsi[10].imag();
-	cchi[ 8].real() += tri[site].offd[1][12].real()  * ppsi[11].real();
-	cchi[ 8].real() += tri[site].offd[1][12].imag()  * ppsi[11].imag();
-	
-	cchi[ 8].imag() = tri[site].diag[1][ 2].elem()   * ppsi[ 8].imag();
-	cchi[ 8].imag() += tri[site].offd[1][ 1].real()  * ppsi[ 6].imag();
-	cchi[ 8].imag() += tri[site].offd[1][ 1].imag()  * ppsi[ 6].real();
-	cchi[ 8].imag() += tri[site].offd[1][ 2].real()  * ppsi[ 7].imag();
-	cchi[ 8].imag() += tri[site].offd[1][ 2].imag()  * ppsi[ 7].real();
-	cchi[ 8].imag() += tri[site].offd[1][5].real()   * ppsi[ 9].imag();
-	cchi[ 8].imag() -= tri[site].offd[1][5].imag()   * ppsi[ 9].real();
-	cchi[ 8].imag() += tri[site].offd[1][8].real()   * ppsi[10].imag();
-	cchi[ 8].imag() -= tri[site].offd[1][8].imag()   * ppsi[10].real();
-	cchi[ 8].imag() += tri[site].offd[1][12].real()  * ppsi[11].imag();
-	cchi[ 8].imag() -= tri[site].offd[1][12].imag()  * ppsi[11].real();
-	
-	
-	cchi[ 9].real()  = tri[site].diag[1][ 3].elem()  * ppsi[ 9].real();
-	cchi[ 9].real() += tri[site].offd[1][ 3].real()  * ppsi[ 6].real();
-	cchi[ 9].real() -= tri[site].offd[1][ 3].imag()  * ppsi[ 6].imag();
-	cchi[ 9].real() += tri[site].offd[1][ 4].real()  * ppsi[ 7].real();
-	cchi[ 9].real() -= tri[site].offd[1][ 4].imag()  * ppsi[ 7].imag();
-	cchi[ 9].real() += tri[site].offd[1][ 5].real()  * ppsi[ 8].real();
-	cchi[ 9].real() -= tri[site].offd[1][ 5].imag()  * ppsi[ 8].imag();
-	cchi[ 9].real() += tri[site].offd[1][ 9].real()  * ppsi[10].real();
-	cchi[ 9].real() += tri[site].offd[1][ 9].imag()  * ppsi[10].imag();
-	cchi[ 9].real() += tri[site].offd[1][13].real()  * ppsi[11].real();
-	cchi[ 9].real() += tri[site].offd[1][13].imag()  * ppsi[11].imag();
-	
-	cchi[ 9].imag()  = tri[site].diag[1][ 3].elem()  * ppsi[ 9].imag();
-	cchi[ 9].imag() += tri[site].offd[1][ 3].real()  * ppsi[ 6].imag();
-	cchi[ 9].imag() += tri[site].offd[1][ 3].imag()  * ppsi[ 6].real();
-	cchi[ 9].imag() += tri[site].offd[1][ 4].real()  * ppsi[ 7].imag();
-	cchi[ 9].imag() += tri[site].offd[1][ 4].imag()  * ppsi[ 7].real();
-	cchi[ 9].imag() += tri[site].offd[1][ 5].real()  * ppsi[ 8].imag();
-	cchi[ 9].imag() += tri[site].offd[1][ 5].imag()  * ppsi[ 8].real();
-	cchi[ 9].imag() += tri[site].offd[1][ 9].real()  * ppsi[10].imag();
-	cchi[ 9].imag() -= tri[site].offd[1][ 9].imag()  * ppsi[10].real();
-	cchi[ 9].imag() += tri[site].offd[1][13].real()  * ppsi[11].imag();
-	cchi[ 9].imag() -= tri[site].offd[1][13].imag()  * ppsi[11].real();
-	
-	
-	cchi[10].real()  = tri[site].diag[1][ 4].elem()  * ppsi[10].real();
-	cchi[10].real() += tri[site].offd[1][ 6].real()  * ppsi[ 6].real();
-	cchi[10].real() -= tri[site].offd[1][ 6].imag()  * ppsi[ 6].imag();
-	cchi[10].real() += tri[site].offd[1][ 7].real()  * ppsi[ 7].real();
-	cchi[10].real() -= tri[site].offd[1][ 7].imag()  * ppsi[ 7].imag();
-	cchi[10].real() += tri[site].offd[1][ 8].real()  * ppsi[ 8].real();
-	cchi[10].real() -= tri[site].offd[1][ 8].imag()  * ppsi[ 8].imag();
-	cchi[10].real() += tri[site].offd[1][ 9].real()  * ppsi[ 9].real();
-	cchi[10].real() -= tri[site].offd[1][ 9].imag()  * ppsi[ 9].imag();
-	cchi[10].real() += tri[site].offd[1][14].real()  * ppsi[11].real();
-	cchi[10].real() += tri[site].offd[1][14].imag()  * ppsi[11].imag();
-	
-	cchi[10].imag()  = tri[site].diag[1][ 4].elem()  * ppsi[10].imag();
-	cchi[10].imag() += tri[site].offd[1][ 6].real()  * ppsi[ 6].imag();
-	cchi[10].imag() += tri[site].offd[1][ 6].imag()  * ppsi[ 6].real();
-	cchi[10].imag() += tri[site].offd[1][ 7].real()  * ppsi[ 7].imag();
-	cchi[10].imag() += tri[site].offd[1][ 7].imag()  * ppsi[ 7].real();
-	cchi[10].imag() += tri[site].offd[1][ 8].real()  * ppsi[ 8].imag();
-	cchi[10].imag() += tri[site].offd[1][ 8].imag()  * ppsi[ 8].real();
-	cchi[10].imag() += tri[site].offd[1][ 9].real()  * ppsi[ 9].imag();
-	cchi[10].imag() += tri[site].offd[1][ 9].imag()  * ppsi[ 9].real();
-	cchi[10].imag() += tri[site].offd[1][14].real()  * ppsi[11].imag();
-	cchi[10].imag() -= tri[site].offd[1][14].imag()  * ppsi[11].real();
-	
-	
-	cchi[11].real()  = tri[site].diag[1][ 5].elem()  * ppsi[11].real();
-	cchi[11].real() += tri[site].offd[1][10].real()  * ppsi[ 6].real();
-	cchi[11].real() -= tri[site].offd[1][10].imag()  * ppsi[ 6].imag();
-	cchi[11].real() += tri[site].offd[1][11].real()  * ppsi[ 7].real();
-	cchi[11].real() -= tri[site].offd[1][11].imag()  * ppsi[ 7].imag();
-	cchi[11].real() += tri[site].offd[1][12].real()  * ppsi[ 8].real();
-	cchi[11].real() -= tri[site].offd[1][12].imag()  * ppsi[ 8].imag();
-	cchi[11].real() += tri[site].offd[1][13].real()  * ppsi[ 9].real();
-	cchi[11].real() -= tri[site].offd[1][13].imag()  * ppsi[ 9].imag();
-	cchi[11].real() += tri[site].offd[1][14].real()  * ppsi[10].real();
-	cchi[11].real() -= tri[site].offd[1][14].imag()  * ppsi[10].imag();
-	
-	cchi[11].imag()  = tri[site].diag[1][ 5].elem()  * ppsi[11].imag();
-	cchi[11].imag() += tri[site].offd[1][10].real()  * ppsi[ 6].imag();
-	cchi[11].imag() += tri[site].offd[1][10].imag()  * ppsi[ 6].real();
-	cchi[11].imag() += tri[site].offd[1][11].real()  * ppsi[ 7].imag();
-	cchi[11].imag() += tri[site].offd[1][11].imag()  * ppsi[ 7].real();
-	cchi[11].imag() += tri[site].offd[1][12].real()  * ppsi[ 8].imag();
-	cchi[11].imag() += tri[site].offd[1][12].imag()  * ppsi[ 8].real();
-	cchi[11].imag() += tri[site].offd[1][13].real()  * ppsi[ 9].imag();
-	cchi[11].imag() += tri[site].offd[1][13].imag()  * ppsi[ 9].real();
-	cchi[11].imag() += tri[site].offd[1][14].real()  * ppsi[10].imag();
-	cchi[11].imag() += tri[site].offd[1][14].imag()  * ppsi[10].real();
-#endif
-      }
-
-      END_CODE();
-    }// Function
-  } // Namespace 
-
-  /**
-   * Apply a dslash
-   *
-   * Performs the operation
-   *
-   *  chi <-   (L + D + L^dag) . psi
-   *
-   * where
-   *   L       is a lower triangular matrix
-   *   D       is the real diagonal. (stored together in type TRIANG)
-   *
-   * Arguments:
-   * \param chi     result                                      (Write)
-   * \param psi     source                                      (Read)
-   * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
-   */
-  template<typename T, typename U>
-  void QDPExpCloverTermT<T,U>::apply(T& chi, const T& psi, 
-			    enum PlusMinus isign, int cb) const
-  {
-#ifndef QDP_IS_QDPJIT
-    START_CODE();
-    
-    if ( Ns != 4 ) {
-      QDPIO::cerr << __func__ << ": CloverTerm::apply requires Ns==4" << std::endl;
-      QDP_abort(1);
     }
+  }
 
-    QDPExpCloverEnv::ApplyArgs<T> arg = { chi,psi,tri,cb };
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::packForQUDA(
+    multi1d<QUDAPackedClovSite<typename WordType<T>::Type_t>>& quda_array, int cb) const
+  {
+    typedef typename WordType<T>::Type_t REALT;
     int num_sites = rb[cb].siteTable().size();
 
-    // The dispatch function is at the end of the file
-    // ought to work for non-threaded targets too...
-    dispatch_to_threads(num_sites, arg, QDPExpCloverEnv::applySiteLoop<T>);
-    (*this).getFermBC().modifyF(chi, QDP::rb[cb]);
-
-    END_CODE();
-#endif
+    QDPExpCloverEnv::QUDAPackArgs<REALT> args = {cb, quda_array, tri};
+    dispatch_to_threads(num_sites, args, QDPExpCloverEnv::qudaPackSiteLoop<REALT>);
   }
 
 
-  namespace QDPExpCloverEnv {
-    template<typename R> 
-    struct QUDAPackArgs { 
-      int cb;
-      multi1d< QUDAPackedClovSite<R> >& quda_array;
-      const PrimitiveClovTriang< R >* tri;
-    };
-    
-    template<typename R>
-    void qudaPackSiteLoop(int lo, int hi, int myId, QUDAPackArgs<R>* a) {
-      int cb = a->cb;
-      int Ns2 = Ns/2;
-
-      multi1d< QUDAPackedClovSite<R> >& quda_array = a->quda_array;
-      const PrimitiveClovTriang< R >* tri=a->tri;
-
-      const int idtab[15]={0,1,3,6,10,2,4,7,11,5,8,12,9,13,14};
-
-      for(int ssite=lo; ssite < hi; ++ssite) {
-	int site = rb[cb].siteTable()[ssite];
-	// First Chiral Block
-	for(int i=0; i < 6; i++) { 
-	  quda_array[site].diag1[i] = tri[site].diag[0][i].elem();
-	}
-
-	int target_index=0;
-	
-	for(int col=0; col < Nc*Ns2-1; col++) { 
-	  for(int row=col+1; row < Nc*Ns2; row++) {
-
-	    int source_index = row*(row-1)/2 + col;
-
-	    quda_array[site].offDiag1[target_index][0] = tri[site].offd[0][source_index].real();
-	    quda_array[site].offDiag1[target_index][1] = tri[site].offd[0][source_index].imag();
-	    target_index++;
-	  }
-	}
-	// Second Chiral Block
-	for(int i=0; i < 6; i++) { 
-	  quda_array[site].diag2[i] = tri[site].diag[1][i].elem();
-	}
-
-	target_index=0;
-	for(int col=0; col < Nc*Ns2-1; col++) { 
-	  for(int row=col+1; row < Nc*Ns2; row++) {
-
-	    int source_index = row*(row-1)/2 + col;
-	    quda_array[site].offDiag2[target_index][0] = tri[site].offd[1][source_index].real();
-	    quda_array[site].offDiag2[target_index][1] = tri[site].offd[1][source_index].imag();
-	    target_index++;
-	  }
-	}
-      }
-    }
-  }
-
-  template<typename T, typename U>
-  void QDPExpCloverTermT<T,U>::packForQUDA(multi1d<QUDAPackedClovSite<typename WordType<T>::Type_t> >& quda_array, int cb) const
-    {
-      typedef typename WordType<T>::Type_t REALT;
-      int num_sites = rb[cb].siteTable().size();
-
-      QDPECloverEnv::QUDAPackArgs<REALT> args = { cb, quda_array,tri };
-      dispatch_to_threads(num_sites, args, QDPECloverEnv::qudaPackSiteLoop<REALT>);
 
 
-      
-    }  
+ 
 
+  template<int N=N_exp_default>
+  using QDPExpCloverTerm = QDPExpCloverTermT<LatticeFermion, LatticeColorMatrix, N >;
 
+  template<int N=N_exp_default>
+  using QDPExpCloverTermF = QDPExpCloverTermT<LatticeFermionF, LatticeColorMatrixF, N >;
 
-  typedef QDPExpCloverTermT<LatticeFermion, LatticeColorMatrix> QDPExpCloverTerm;
-  typedef QDPExpCloverTermT<LatticeFermionF, LatticeColorMatrixF> QDPExpCloverTermF;
-  typedef QDPExpCloverTermT<LatticeFermionD, LatticeColorMatrixD> QDPExpCloverTermD;
+  template<int N=N_exp_default>
+  using  QDPExpCloverTermD = QDPExpCloverTermT<LatticeFermionD, LatticeColorMatrixD, N >;
 } // End Namespace Chroma
-
 
 #endif
