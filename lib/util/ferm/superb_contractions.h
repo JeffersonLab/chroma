@@ -98,8 +98,10 @@ namespace Chroma
     static const Distribution OnEveryoneAsChroma("__OnEveryonAsChroma__");
     /// All nodes have a copy of the tensor
     static const Distribution OnEveryoneReplicated("__OnEveryoneReplicated__");
-    /// Non-collective
+    /// Local (single process) and non-collective
     static const Distribution Local("");
+    /// Only the local process has support and non-collective 
+    static const Distribution Glocal("__glocal__");
 
     /// Whether complex conjugate the elements before contraction (see Tensor::contract)
     enum Conjugation { NotConjugate, Conjugate };
@@ -1047,7 +1049,7 @@ namespace Chroma
       /// Return whether the tensor isn't local or on master or replicated
       inline bool isDistributedOnEveryone(const Distribution& dist)
       {
-	return dist != OnMaster && dist != OnEveryoneReplicated && dist != Local;
+	return dist != OnMaster && dist != OnEveryoneReplicated && dist != Local && dist != Glocal;
       }
 
       /// Stores the subtensor supported on each node (used by class Tensor)
@@ -1084,6 +1086,10 @@ namespace Chroma
 	  {
 	    p = local(dim);
 	    isLocal = true;
+	  }
+	  else if (dist == Glocal)
+	  {
+	    throw std::runtime_error("TensorPartition: unsupported distribution");
 	  }
 	  else
 	  {
@@ -1358,6 +1364,15 @@ namespace Chroma
 	{
 	  return TensorPartition<N>{
 	    localSize(), PartitionStored(1, superbblas::PartitionItem<N>{{{}, localSize()}}), true};
+	}
+
+	/// Return a partition with the local portion of the tensor
+
+	TensorPartition<N> get_glocal_partition() const
+	{
+	  PartitionStored r(p.size());
+	  r[MpiProcRank()] = p[MpiProcRank()];
+	  return TensorPartition<N>{dim, r, isLocal};
 	}
 
 	/// Return a copy of this tensor with a compatible distribution to be contracted with the given tensor
@@ -1799,6 +1814,8 @@ namespace Chroma
 	}
       };
     }
+
+    enum CopyingTrash { dontCopyingTrash, doCopyingTrash };
 
     /// Class for operating dense tensors
 
@@ -2674,6 +2691,32 @@ namespace Chroma
 
       /// Return a tensor on the same device and following the same distribution
       /// \param new_order: dimension labels of the new tensor
+      /// \param remaining_char: placeholder for the remaining dimensions
+      /// \param kvsize: override the length of the given dimensions
+      /// \param new_dev: device
+      /// \param new_dist: distribution
+      ///
+      /// Example:
+      ///
+      ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+      ///   // Create a new tensor as a collection of three `t` tensors
+      ///   Tensor<3,Complex> q = t.make_compatible<3>("%n", '%', "", {{'n',3}});
+      ///   // Create a tensor like q but without the dimension c
+      ///   Tensor<2,Complex> v = q.make_compatible<2>("%", '%', "c");
+
+      template <std::size_t Nn = N, typename Tn = T>
+      Tensor<Nn, Tn>
+      make_compatible(const std::string& new_order, char remaining_char,
+		const std::string& remove_dims = "", const std::map<char, int>& kvsize = {},
+		Maybe<DeviceHost> new_dev = none) const
+      {
+	return make_compatible<Nn, Tn>(
+	  detail::remove_dimensions(get_order_for_reorder(new_order, remaining_char), remove_dims),
+	  kvsize, new_dev);
+      }
+
+      /// Return a tensor on the same device and following the same distribution
+      /// \param new_order: dimension labels of the new tensor
       /// \param kvsize: override the length of the given dimensions
       /// \param new_dev: device
       /// \param new_dist: distribution
@@ -2755,7 +2798,8 @@ namespace Chroma
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	Tensor<N, Tn> r = like_this<N, Tn>(none, {}, new_dev);
+	Tensor<N, Tn> r = dist != Glocal ? like_this<N, Tn>(none, {}, new_dev)
+					 : make_compatible<N, Tn>(none, {}, new_dev);
 	r.conjugate = conjugate;
 	copyTo(r);
 	return r;
@@ -3332,6 +3376,22 @@ namespace Chroma
 			    conjugate, eg, false /* ordered writing */, complexLabel);
       }
 
+      /// Return the local support of this tensor as a subset of the global tensor
+      Tensor<N, T> getGlocal() const
+      {
+	// Shortcut for empty and local tensors
+	if (!*this || dist == Glocal || dist == Local)
+	  return *this;
+
+	// Finish writing operations: local tensor will not be able to finish pending writing operations
+	data();
+
+	return Tensor<N, T>(order, dim, allocation,
+			    std::make_shared<detail::TensorPartition<N>>(p->get_glocal_partition()),
+			    Glocal, from, size, scalar, conjugate, eg,
+			    false /* ordered writing */, complexLabel);
+      }
+
       /// Set zero
       void set_zero()
       {
@@ -3339,13 +3399,15 @@ namespace Chroma
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	value_type* ptr = data_for_writing();
-	MPI_Comm comm = (dist == OnMaster || dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm =
+	  (dist == OnMaster || dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	if (dist != OnMaster || Layout::nodeNumber() == 0)
 	{
-	  superbblas::copy<N, N>(value_type{0}, p->p.data(), 1, order.c_str(), from, size, dim,
-				 (const value_type**)&ptr, nullptr, &ctx(), p->p.data(), 1,
-				 order.c_str(), from, dim, &ptr, nullptr, &ctx(), comm,
-				 superbblas::FastToSlow, superbblas::Copy);
+	  superbblas::copy<N, N>(value_type{0}, p->p.data() + p_disp, 1, order.c_str(), from, size,
+				 dim, (const value_type**)&ptr, nullptr, &ctx(),
+				 p->p.data() + p_disp, 1, order.c_str(), from, dim, &ptr, nullptr,
+				 &ctx(), comm, superbblas::FastToSlow, superbblas::Copy);
 	  // Force synchronization in superbblas stream if the allocation isn't managed by superbblas
 	  if (!is_managed())
 	    superbblas::sync(ctx());
@@ -3423,7 +3485,8 @@ namespace Chroma
 		typename std::enable_if<
 		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
       void doAction(Action action, Tensor<Nw, Tw> w, Tensor<Nm, Tm> m = {},
-		    Tensor<Nwm, Twm> wm = {}, const std::string& uneven_mask_labels = "") const
+		    Tensor<Nwm, Twm> wm = {}, const std::string& uneven_mask_labels = "",
+		    CopyingTrash copying_trash = dontCopyingTrash) const
       {
 	if (is_eg() || w.is_eg() || (m && m.is_eg()) || (wm && wm.is_eg()))
 	  throw std::runtime_error("Invalid operation from an example tensor");
@@ -3506,7 +3569,7 @@ namespace Chroma
 	    {
 	      v0 = w_has_new_size ? make_compatible(none, new_size)
 				  : w0.template make_compatible<N, T>(order, new_size);
-	      copyTo(v0);
+	      copyTo(v0, doCopyingTrash);
 	      if (m)
 	      {
 		m0 = v0.template make_compatible<Nm, Tm>(m.order, new_size);
@@ -3517,7 +3580,7 @@ namespace Chroma
 	    if (w_has_new_size)
 	    {
 	      w0 = v0.template make_compatible<Nw, Tw>(w.order, new_size);
-	      w.copyTo(w0);
+	      w.copyTo(w0, doCopyingTrash);
 	      if (wm)
 	      {
 		wm0 = w0.template make_compatible<Nwm, Twm>(wm.order, new_size);
@@ -3579,6 +3642,7 @@ namespace Chroma
 
 	// Shortcuts for who is involved in the operation
 	bool do_operation = true;
+	int p_disp = 0;
 	MPI_Comm comm = MPI_COMM_WORLD;
 	// a) if the origin and destination tensors have full support on the master node
 	// and the destination tensor is only supported on the master node, the operation
@@ -3594,15 +3658,22 @@ namespace Chroma
 	{
 	  comm = MPI_COMM_SELF;
 	}
+	// c) any is glocal
+	if (dist == Glocal || w.dist == Glocal) {
+	  comm = MPI_COMM_SELF;
+	  p_disp = p->MpiProcRank();
+	}
 
 	if (do_operation)
 	{
 	  superbblas::Request req;
-	  superbblas::copy<N, Nw>(
-	    detail::safe_div<value_type>(scalar, w.scalar), p->p.data(), 1, order.c_str(), from,
-	    size, dim, (const value_type**)&ptr, (const float**)&m0ptr, &ctx(), w.p->p.data(), 1,
-	    w.order.c_str(), w.from, w.dim, &w_ptr, (const float**)&m1ptr, &w.ctx(), comm,
-	    superbblas::FastToSlow, action == CopyTo ? superbblas::Copy : superbblas::Add, &req);
+	  superbblas::copy<N, Nw>(detail::safe_div<value_type>(scalar, w.scalar),
+				  p->p.data() + p_disp, 1, order.c_str(), from, size, dim,
+				  (const value_type**)&ptr, (const float**)&m0ptr, &ctx(),
+				  w.p->p.data() + p_disp, 1, w.order.c_str(), w.from, w.dim, &w_ptr,
+				  (const float**)&m1ptr, &w.ctx(), comm, superbblas::FastToSlow,
+				  action == CopyTo ? superbblas::Copy : superbblas::Add,
+				  &req /*, copying_trash == doCopyingTrash*/);
 	  w.allocation->append_pending_operation(req);
 	  // Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	  if (!w.is_managed())
@@ -3612,9 +3683,9 @@ namespace Chroma
 
       /// Copy this tensor into the given one
       template <std::size_t Nw, typename Tw>
-      void copyTo(Tensor<Nw, Tw> w) const
+      void copyTo(Tensor<Nw, Tw> w, CopyingTrash copying_trash = dontCopyingTrash) const
       {
-	doAction(CopyTo, w);
+	doAction(CopyTo, w, {}, {}, "", copying_trash);
       }
 
       /// Copy this tensor into the given one but only the elements where the mask is nonzero
@@ -3687,10 +3758,14 @@ namespace Chroma
 	  return;
 	}
 
-	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
-	  throw std::runtime_error(
-	    "One of the contracted tensors or the output tensor is local and others are not!");
+	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local) ||
+	    (v.dist == Glocal) != (w.dist == Glocal) || (w.dist == Glocal) != (dist == Glocal))
+	  throw std::runtime_error("contract: one of the contracted tensors or the output tensor "
+				   "is local/glocal and others are not!");
 
+	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
+	
 	value_type* v_ptr = v.data();
 	value_type* w_ptr = w.data();
 	value_type* ptr = std::norm(beta) == 0 ? data_for_writing() : data();
@@ -3701,12 +3776,12 @@ namespace Chroma
 	bool conjw_ = (((conjw == Conjugate) xor w.conjugate) xor conjugate);
 	superbblas::contraction<Nv, Nw, N>(
 	  detail::cond_conj(conjv_, v.scalar) * detail::cond_conj(conjw_, w.scalar) / scalar, //
-	  v.p->p.data(), v.from, v.size, v.dim, 1, orderv_.c_str(), conjv_,
+	  v.p->p.data() + p_disp, v.from, v.size, v.dim, 1, orderv_.c_str(), conjv_,
 	  (const value_type**)&v_ptr, &v.ctx(), //
-	  w.p->p.data(), w.from, w.size, w.dim, 1, orderw_.c_str(), conjw_,
+	  w.p->p.data() + p_disp, w.from, w.size, w.dim, 1, orderw_.c_str(), conjw_,
 	  (const value_type**)&w_ptr, &w.ctx(), //
-	  detail::cond_conj(conjugate, beta), p->p.data(), from, size, dim, 1, order_.c_str(), &ptr,
-	  &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
+	  detail::cond_conj(conjugate, beta), p->p.data() + p_disp, from, size, dim, 1,
+	  order_.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
@@ -4400,11 +4475,23 @@ namespace Chroma
       if ((bool)r && detail::union_dimensions(rorder, r.order) != rorder)
 	throw std::runtime_error("contract: The given output tensor has an unexpected ordering");
 
+      // If any of the input tensors is glocal, make sure both are
+      if ((v.dist == Glocal) != (w.dist == Glocal))
+      {
+	Tensor<Nv, T> v0 = v;
+	Tensor<Nw, T> w0 = w;
+	if (v.dist != Glocal)
+	  v0 = v.getGlocal();
+	if (w.dist != Glocal)
+	  w0 = w.getGlocal();
+	return contract(v0, w0, labels_to_contract, action, r, mr, beta, dev, dist);
+      }
+
       // If the output tensor is not given create a new one
       Tensor<Nr, T> r0;
       if (!r)
       {
-	r0 = (dev.hasSome() || dist.hasSome())
+	r0 = (v.dist != Glocal && (dev.hasSome() || dist.hasSome()))
 	       ? v.template like_this<Nr>(rorder, w.kvdim(), dev, dist)
 	       : v.template make_compatible<Nr>(rorder, w.kvdim());
 	beta = 0;
@@ -4592,23 +4679,6 @@ namespace Chroma
 	[](const typename detail::base_type<T>::type& t) { return std::sqrt(std::real(t)); });
     }
 
-    /// Compute the maximum for a small tensor
-    /// \param v: tensor
-
-    template <std::size_t N, typename T>
-    typename detail::base_type<T>::type max(Tensor<N, T> v)
-    {
-      using value_type = typename detail::base_type<T>::type;
-      v = v.make_sure(none, OnHost, OnEveryoneReplicated);
-      if (v.isSubtensor())
-	v = v.clone();
-      value_type r = std::numeric_limits<value_type>::min();
-      value_type* p = v.data();
-      for (unsigned int i = 0, vol = v.volume(); i < vol; ++i)
-	r = std::max(r, p[i]);
-      return r;
-    }
-
     /// Compute the Cholesky factor of `v' and contract its inverse with `w`
     /// \param v: tensor to compute the Cholesky factor
     /// \param order_rows: labels that are rows of the matrices to factor
@@ -4790,7 +4860,8 @@ namespace Chroma
     template <std::size_t N, typename T>
     Tensor<N, T> div(const Tensor<N, T>& v, const Tensor<N, T>& w)
     {
-      auto r = v.cloneOn(OnHost);
+      auto r = v.make_compatible(none, {}, OnHost);
+      v.copyTo(r);
       auto w0 = r.make_compatible();
       w.copyTo(w0);
       auto r_local = r.getLocal();
@@ -4799,10 +4870,35 @@ namespace Chroma
       {
 	auto rptr = r_local.data();
 	auto w0ptr = w0_local.data();
-	for (std::size_t i = 0, vol = r_local.volume(); i < vol; ++i)
-	  rptr[i] = rptr[i] / detail::cond_conj(r_local.conjugate != w0_local.conjugate,
-					     w0ptr[i] * w0_local.scalar);
+	for (std::size_t i = 0, vol = r_local.volume(); i < vol; ++i) {
+	  auto w0i =
+	    detail::cond_conj(r_local.conjugate != w0_local.conjugate, w0ptr[i] * w0_local.scalar);
+	  rptr[i] = std::norm(w0i) == 0 ? T{0} : rptr[i] / w0i;
+	}
       }
+      return r;
+    }
+
+    /// Compute the maximum for a small tensor
+    /// \param v: tensor
+
+    template <std::size_t N, typename T>
+    typename detail::base_type<T>::type
+    max(Tensor<N, T> v, typename detail::base_type<T>::type init =
+			  std::numeric_limits<typename detail::base_type<T>::type>::min())
+    {
+      using value_type = typename detail::base_type<T>::type;
+      if (v.dist != Glocal && v.dist != Local)
+	v = v.make_sure(none, OnHost, OnEveryoneReplicated);
+      else
+	v = v.make_sure(none, OnHost);
+      if (v.isSubtensor())
+	v = v.clone();
+      value_type r = init;
+      v = v.getLocal();
+      value_type* p = v.data();
+      for (unsigned int i = 0, vol = v.volume(); i < vol; ++i)
+	r = std::max(r, p[i]);
       return r;
     }
 
@@ -4813,7 +4909,8 @@ namespace Chroma
     template <std::size_t N, typename T>
     Tensor<N, T> mult(const Tensor<N, T>& v, const Tensor<N, T>& w)
     {
-      auto r = v.cloneOn(OnHost);
+      auto r = v.make_compatible(none, {}, OnHost);
+      v.copyTo(r);
       auto w0 = r.make_compatible();
       w.copyTo(w0);
       auto r_local = r.getLocal();
@@ -5213,6 +5310,11 @@ namespace Chroma
       /// Construct the sparse operator
       void construct()
       {
+	if ((ii.dist != OnEveryone && ii.dist != OnEveryoneAsChroma && ii.dist != Local) ||
+	    ii.dist != jj.dist || ii.dist != data.dist ||
+	    (kron && kron.dist != OnEveryoneReplicated))
+	  throw std::runtime_error("SpTensor::construct: unexpected distribution of the data");
+
 	// Superbblas needs the column coordinates to be local
 	// Remove the local domain coordinates to jj
 	const auto localFrom = d.p->localFrom();
@@ -5237,22 +5339,86 @@ namespace Chroma
 	  throw std::runtime_error("Ups! Look into this");
 	const value_type* ptr = data.data();
 	const value_type* kron_ptr = kron.data();
+	MPI_Comm comm = (ii.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	superbblas::BSR_handle* bsr = nullptr;
 	if (nkrond == 0 && nkroni == 0)
 	{
 	  superbblas::create_bsr<ND, NI, value_type>(
 	    i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd, isImgFastInBlock, &iiptr,
-	    &jjptr, &ptr, &data.ctx(), MPI_COMM_WORLD, superbblas::FastToSlow, &bsr);
+	    &jjptr, &ptr, &data.ctx(), comm, superbblas::FastToSlow, &bsr);
 	}
 	else
 	{
 	  superbblas::create_kron_bsr<ND, NI, value_type>(
 	    i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd, kroni, krond,
-	    isImgFastInBlock, &iiptr, &jjptr, &ptr, &kron_ptr, &data.ctx(), MPI_COMM_WORLD,
+	    isImgFastInBlock, &iiptr, &jjptr, &ptr, &kron_ptr, &data.ctx(), comm,
 	    superbblas::FastToSlow, &bsr);
 	}
 	handle = std::shared_ptr<superbblas::BSR_handle>(
 	  bsr, [=](superbblas::BSR_handle* bsr) { destroy_bsr(bsr); });
+      }
+
+      /// Return a local support of the tensor
+
+      SpTensor<ND, NI, T> getLocal() const
+      {
+	// Shortcut for empty and local tensors
+	if (!*this || ii.dist == Local)
+	  return *this;
+
+	// Create the returning tensor
+	SpTensor<ND, NI, T> r{d.getLocal(),
+			      i.getLocal(),
+			      nblockd,
+			      nblocki,
+			      nkrond,
+			      nkroni,
+			      (unsigned int)jj.kvdim().at('u'),
+			      isImgFastInBlock};
+
+	r.ii = ii.getLocal();
+	const auto localFrom = d.p->localFrom();
+	const auto domDim = d.dim;
+	r.jj = jj.getLocal().template transformWithCPUFunWithCoor<int>(
+	  [&](const Coor<NI + 2>& c, const int& t) {
+	    return (t - localFrom[c[0]] + domDim[c[0]]) % domDim[c[0]];
+	  });
+	r.data = data.getLocal();
+	r.kron = kron.getLocal();
+
+	if (is_constructed())
+	  r.construct();
+
+	return r;
+      }
+
+      /// Return a local support of the tensor
+
+      SpTensor<ND, NI, T> getGlocal() const
+      {
+	// Shortcut for empty and local tensors
+	if (!*this || ii.dist == Local)
+	  return *this;
+
+	// Create the returning tensor
+	SpTensor<ND, NI, T> r{d.getGlocal(),
+			      i.getGlocal(),
+			      nblockd,
+			      nblocki,
+			      nkrond,
+			      nkroni,
+			      (unsigned int)jj.kvdim().at('u'),
+			      isImgFastInBlock};
+
+	r.ii = ii.getGlocal();
+	r.jj = jj.getGlocal();
+	r.data = data.getGlocal();
+	r.kron = kron.getGlocal();
+
+	if (is_constructed())
+	  r.construct();
+
+	return r;
       }
 
       /// Split a dimension into another dimensions
@@ -5831,14 +5997,10 @@ namespace Chroma
 	}
 
 	// Check unsupported distributions for contraction
-	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (data.dist == Local))
-	  throw std::runtime_error(
-	    "One of the contracted tensors or the output tensor is local and others are not!");
-
-	if ((v.dist == OnMaster && detail::isDistributedOnEveryone(w.dist)) ||
-	    (detail::isDistributedOnEveryone(v.dist) && w.dist == OnMaster))
-	  throw std::runtime_error("Incompatible layout for contractions: one of the tensors is on "
-				   "the master node and the other is distributed");
+	if ((v.dist == Local) != (w.dist == Local) || (v.dist == Glocal) != (w.dist == Glocal) ||
+	    (v.dist != Local && data.dist == Local))
+	  throw std::runtime_error("contractWith: One of the contracted tensors or the output "
+				   "tensor is local and others are not!");
 
 	// We don't support conjugacy for now
 	if (v.conjugate || w.conjugate)
@@ -5860,7 +6022,8 @@ namespace Chroma
 	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const value_type**)&v_ptr, //
 	  T{0}, w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim, power_label,
 	  (value_type**)&w_ptr, //
-	  &data.ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
+	  &data.ctx(), v.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD, superbblas::FastToSlow,
+	  nullptr, v.dist == Glocal);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!w.is_managed())
@@ -6519,6 +6682,15 @@ namespace Chroma
       {
       }
 
+      /// Return the local support of this tensor as a subset of the global tensor
+      Operator<NOp, COMPLEX> getGlocal() const
+      {
+	return fop ? Operator<NOp, COMPLEX>{fop, d.getGlocal(), i.getGlocal(), fop_tconj, *this}
+		   : Operator<NOp, COMPLEX>{
+		       sp,	rd,	   max_power, d.getGlocal(), i.getGlocal(),
+		       order_t, domLayout, imgLayout, neighbors,     preferred_col_ordering};
+      }
+
       /// Return whether the operator is not empty
       explicit operator bool() const noexcept
       {
@@ -6551,11 +6723,11 @@ namespace Chroma
       /// \param col_order: order for the columns
       /// \param m: column dimension size
 
-      template <std::size_t N>
-      Tensor<N, COMPLEX> make_compatible_dom(const std::string& col_order,
-					     const std::map<char, int>& m) const
+      template <std::size_t N, typename T = COMPLEX>
+      Tensor<N, T> make_compatible_dom(const std::string& col_order,
+				       const std::map<char, int>& m) const
       {
-	return d.template like_this<N, COMPLEX>(
+	return d.template make_compatible<N, T>(
 	  preferred_col_ordering == ColumnMajor ? std::string("%") + col_order : col_order + "%",
 	  '%', "", m);
       }
@@ -6564,11 +6736,11 @@ namespace Chroma
       /// \param col_order: order for the columns
       /// \param m: column dimension size
 
-      template <std::size_t N>
-      Tensor<N, COMPLEX> make_compatible_img(const std::string& col_order,
-					     const std::map<char, int>& m) const
+      template <std::size_t N, typename T = COMPLEX>
+      Tensor<N, T> make_compatible_img(const std::string& col_order,
+				       const std::map<char, int>& m) const
       {
-	return i.template like_this<N, COMPLEX>(
+	return i.template make_compatible<N, T>(
 	  preferred_col_ordering == ColumnMajor ? std::string("%") + col_order : col_order + "%",
 	  '%', "", m);
       }
@@ -6583,9 +6755,9 @@ namespace Chroma
 	if (sp)
 	{
 	  remap mcols = detail::getNewLabels(cols, sp.d.order + sp.i.order);
-	  auto y = i.template like_this<N, T>(
-	    preferred_col_ordering == ColumnMajor ? std::string("%") + cols : cols + "%", '%', "",
-	    t.kvdim());
+	  auto y = make_compatible_img<N, T>(cols, t.kvdim());
+	  if (t.dist == Glocal)
+	    y = y.getGlocal();
 	  sp.contractWith(t.rename_dims(mcols), rd, y.rename_dims(mcols), {});
 	  return y;
 	}
@@ -6593,8 +6765,9 @@ namespace Chroma
 	{
 	  auto x =
 	    t.template collapse_dimensions<NOp + 1>(cols, 'n', true).template make_sure<COMPLEX>();
-	  auto y = i.template like_this<NOp + 1>(
-	    preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "", {{'n', x.kvdim()['n']}});
+	  auto y = make_compatible_img<NOp + 1>("n", {{'n', x.kvdim()['n']}});
+	  if (t.dist == Glocal)
+	    y = y.getGlocal();
 	  fop(x, y);
 	  return y.template split_dimension<N>('n', cols, t.kvdim()).template make_sure<T>();
 	}

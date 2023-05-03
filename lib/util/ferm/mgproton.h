@@ -325,6 +325,8 @@ namespace Chroma
       std::string order_cols = detail::remove_dimensions(x.order, op.i.order);
       std::string order_rows = detail::remove_dimensions(op.d.order, op.order_t);
       std::size_t num_cols = x.volume(order_cols);
+      if (num_cols == 0)
+	return;
 
       // Counting op and prec applications
       unsigned int nops = 0, nprecs = 0;
@@ -338,11 +340,7 @@ namespace Chroma
       }
       else
       {
-	r = op.i.template like_this<NOp + 1>(
-	  op.preferred_col_ordering == ColumnMajor ? std::string("%") + order_cols
-						   : order_cols + std::string("%"),
-	  '%', "", {{order_cols[0], x.kvdim().at(order_cols[0])}});
-
+	r = op.template make_compatible_img<NOp + 1>(order_cols, x.kvdim());
 	r.set_zero();
 	y.set_zero();
       }
@@ -353,13 +351,11 @@ namespace Chroma
 
       // Allocate the search subspace U (onto the left singular space), and
       // Z (onto the right singular space)
-      auto U = r.template like_this<NOp + 2>(op.preferred_col_ordering == ColumnMajor
-					       ? std::string("%") + std::string(1, Vc)
-					       : std::string(1, Vc) + std::string("%"),
-					     '%', "", {{Vc, max_basis_size}});
+      auto U = r.template make_compatible<NOp + 2>(std::string({'%', Vc}), '%', "",
+						   {{Vc, max_basis_size}});
 
       // Allocate the search subspace Z (onto the right singular space)
-      auto Z = U.like_this();
+      auto Z = U.make_compatible();
 
       // Extend r with Vc
       auto r_Vc = r.append_dimension(Vc);
@@ -449,24 +445,20 @@ namespace Chroma
 	// Check final residual
 	if (superbblas::getDebugLevel() > 0)
 	{
-	  auto rd = r.like_this();
+	  auto rd = r.make_compatible();
 	  op(y, rd); // rd = op(y)
 	  nops += num_cols;
 	  x.scale(-1).addTo(rd);
 	  r.scale(-1).addTo(rd);
 	  auto normrd = norm<1>(rd, op.order_t + order_cols);
-	  double max_tol_d = 0;
-	  for (int i = 0, vol = normr.volume(); i < vol; ++i)
-	    max_tol_d = std::max(max_tol_d, (double)normrd.get({{i}}) / normr.get({{i}}));
+	  double max_tol_d = max(div(normrd, normr));
 	  QDPIO::cout << prefix
 		      << " MGPROTON FGMRES error in residual vector: " << detail::tostr(max_tol_d)
 		      << std::endl;
 	}
 
 	// Get the worse tolerance
-	max_tol = 0;
-	for (int i = 0, vol = normr.volume(); i < vol; ++i)
-	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
+	max_tol = max(div(normr, normr0));
 
 	// Report iteration
 	if (verb >= Detailed)
@@ -490,9 +482,7 @@ namespace Chroma
 	nops += num_cols;
 	x.scale(-1).addTo(r);
 	auto normr = norm<1>(r, op.order_t + order_cols);
-	max_tol = 0;
-	for (int i = 0, vol = normr.volume(); i < vol; ++i)
-	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
+	max_tol = max(div(normr, normr0));
 	if (tol > 0 && max_tol > tol)
 	  throw std::runtime_error("fgmres didn't converged and you ask for checking the error");
       }
@@ -550,6 +540,8 @@ namespace Chroma
       std::string order_cols = detail::remove_dimensions(x.order, op.i.order);
       std::string order_rows = detail::remove_dimensions(op.d.order, op.order_t);
       std::size_t num_cols = x.volume(order_cols);
+      if (num_cols == 0)
+	return;
 
       // Counting op applications
       unsigned int nops = 0;
@@ -563,11 +555,7 @@ namespace Chroma
       }
       else
       {
-	rj = op.i.template like_this<NOp + 1>(
-	  op.preferred_col_ordering == ColumnMajor ? std::string("%") + order_cols
-						   : order_cols + std::string("%"),
-	  '%', "", {{order_cols[0], x.kvdim().at(order_cols[0])}});
-
+	rj = op.template make_compatible_img<NOp + 1>(order_cols, x.kvdim());
 	rj.set_zero();
 	y.set_zero();
       }
@@ -626,24 +614,20 @@ namespace Chroma
 	// Check final residual
 	if (superbblas::getDebugLevel() > 0)
 	{
-	  auto rd = rj.like_this();
+	  auto rd = rj.make_compatible();
 	  op(y, rd); // rd = op(y)
 	  nops += num_cols;
 	  x.scale(-1).addTo(rd);
 	  rj.addTo(rd);
 	  auto normrd = norm<1>(rd, op.order_t + order_cols);
-	  double max_tol_d = 0;
-	  for (int i = 0, vol = normr.volume(); i < vol; ++i)
-	    max_tol_d = std::max(max_tol_d, (double)normrd.get({{i}}) / normr.get({{i}}));
+	  double max_tol_d = max(div(normrd, normr));
 	  QDPIO::cout << prefix
 		      << " MGPROTON BICGSTAB error in residual vector: " << detail::tostr(max_tol_d)
 		      << std::endl;
 	}
 
 	// Get the worse tolerance
-	max_tol = 0;
-	for (int i = 0, vol = normr.volume(); i < vol; ++i)
-	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
+	max_tol = max(div(normr, normr0));
 
 	// Report iteration
 	if (verb >= Detailed)
@@ -665,9 +649,7 @@ namespace Chroma
 	nops += num_cols;
 	x.scale(-1).addTo(rj);
 	auto normr = norm<1>(rj, op.order_t + order_cols);
-	max_tol = 0;
-	for (int i = 0, vol = normr.volume(); i < vol; ++i)
-	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
+	max_tol = max(div(normr, normr0));
 	if (tol > 0 && max_tol > tol)
 	  throw std::runtime_error("bicgstab didn't converged and you ask for checking the error");
       }
@@ -735,6 +717,8 @@ namespace Chroma
       std::string order_cols = detail::remove_dimensions(x.order, op.i.order);
       std::string order_rows = detail::remove_dimensions(op.d.order, op.order_t);
       std::size_t num_cols = x.volume(order_cols);
+      if (num_cols == 0)
+	return;
 
       // Counting op applications
       unsigned int nops = 0, nprecs = 0;
@@ -762,8 +746,8 @@ namespace Chroma
       unsigned int it = 0;		  ///< iteration number
       double max_tol = HUGE_VAL;	  ///< maximum residual norm
       unsigned int residual_updates = 0;  ///< number of residual updates
-      auto p = r.like_this();		  ///< p will hold A * prec * r
-      auto kr = prec ? r.like_this() : r; ///< p will hold prec * r
+      auto p = r.make_compatible();	  ///< p will hold A * prec * r
+      auto kr = prec ? r.make_compatible() : r; ///< p will hold prec * r
       for (it = 0; it < max_its;)
       {
 	// kr = prec * r
@@ -771,6 +755,7 @@ namespace Chroma
 	{
 	  prec(r, kr);
 	  nprecs += num_cols;
+	  auto normkr = norm<1>(kr, op.order_t + order_cols);
 	}
 
 	// p = A * kr
@@ -793,24 +778,19 @@ namespace Chroma
 	// Check final residual
 	if (superbblas::getDebugLevel() > 0)
 	{
-	  auto rd = r.like_this();
+	  auto rd = r.make_compatible();
 	  op(y, rd); // rd = op(y)
 	  nops += num_cols;
 	  x.scale(-1).addTo(rd);
 	  r.addTo(rd);
-	  auto normrd = norm<1>(rd, op.order_t + order_cols);
-	  double max_tol_d = 0;
-	  for (int i = 0, vol = normr.volume(); i < vol; ++i)
-	    max_tol_d = std::max(max_tol_d, (double)normrd.get({{i}}) / normr.get({{i}}));
+	  auto max_norm = max(div(norm<1>(rd, op.order_t + order_cols), normr));
 	  QDPIO::cout << prefix
-		      << " MGPROTON MR error in residual vector: " << detail::tostr(max_tol_d)
+		      << " MGPROTON MR error in residual vector: " << detail::tostr(max_norm)
 		      << std::endl;
 	}
 
 	// Get the worse tolerance
-	max_tol = 0;
-	for (int i = 0, vol = normr.volume(); i < vol; ++i)
-	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
+	max_tol = max(div(normr, normr0));
 
 	// Report iteration
 	if (verb >= Detailed)
@@ -832,9 +812,7 @@ namespace Chroma
 	nops += num_cols;
 	x.scale(-1).addTo(r);
 	auto normr = norm<1>(r, op.order_t + order_cols);
-	max_tol = 0;
-	for (int i = 0, vol = normr.volume(); i < vol; ++i)
-	  max_tol = std::max(max_tol, (double)normr.get({{i}}) / normr0.get({{i}}));
+	max_tol = max(div(normr, normr0));
 	if (tol > 0 && max_tol > tol)
 	  throw std::runtime_error("mr didn't converged and you ask for checking the error");
       }
@@ -1006,7 +984,7 @@ namespace Chroma
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
 	if (precOps && prec_)
 	  throw std::runtime_error(
-	    "getFGMRESSolver: invalid `prec` tag: the solver got a preconditioner already");
+	    "getMRSolver: invalid `prec` tag: the solver got a preconditioner already");
 	if (precOps)
 	  prec = getSolver(op, precOps.getSome());
 	else if (prec_)
@@ -1115,7 +1093,7 @@ namespace Chroma
 	auto dims = op.d.kvdim();
 	for (const auto& it : m)
 	  dims[it.second] = dims[it.first];
-	Tensor<N, COMPLEX> r = op.d.template like_this<N>(order, dims);
+	Tensor<N, COMPLEX> r = op.d.template make_compatible<N>(order, dims);
 
 	// Copy the blocks
 	remap m_cols = getNewLabels(cols, sop.data.order);
@@ -1171,7 +1149,7 @@ namespace Chroma
 	  spin_splitting = SpinSplitting::None;
 
 	// Create the random initial guesses to be used in solving Ax=0
-	auto b = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
+	auto b = op.d.template make_compatible<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
 	if (solverSpace == FullSpace)
 	{
 	nrand(b);
@@ -1200,7 +1178,7 @@ namespace Chroma
 	  auto nv2 = nv;
 	  if (spin_splitting == SpinSplitting::Chirality)
 	  {
-	    nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
+	    nv2 = nv.make_compatible(none, {{'n', num_null_vecs * 2}});
 	    auto g5 = getGamma5<COMPLEX>(ns, OnHost), g5pos = g5.cloneOn(OnHost),
 		 g5neg = g5.cloneOn(OnHost);
 	    for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
@@ -1264,7 +1242,7 @@ namespace Chroma
 	    nv_blk_eo_dim['x'] /= 2;
 	    nv_blk_eo_dim['X'] = 2;
 	  }
-	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
+	  Tensor<NOp, COMPLEX> d = op.d.make_compatible(none, nv_blk_eo_dim), i = op.i;
 	  V = Operator<NOp, COMPLEX>{
 	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	      auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
@@ -1344,7 +1322,7 @@ namespace Chroma
 	    nv_blk_eo_dim['x'] /= 2;
 	    nv_blk_eo_dim['X'] = 2;
 	  }
-	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
+	  Tensor<NOp, COMPLEX> d = op.d.make_compatible(none, nv_blk_eo_dim), i = op.i;
 	  V = Operator<NOp, COMPLEX>{
 	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	      auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "c")
@@ -1804,7 +1782,7 @@ namespace Chroma
 	    Tensor<NOp + 1, COMPLEX> be;
 	    if (solverSpace == FullSpace)
 	    {
-	      be = solver.d.template like_this<NOp + 1>(
+	      be = solver.d.template make_compatible<NOp + 1>(
 		solver.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
 		{{'n', x.kvdim().at('n')}});
 	      x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
@@ -1858,7 +1836,7 @@ namespace Chroma
 	// Do a test
 	if (superbblas::getDebugLevel() > 0)
 	{
-	  auto x = op.d.template like_this<NOp + 1>("%n", '%', "", {{'n', 2}});
+	  auto x = op.d.template make_compatible<NOp + 1>("%n", '%', "", {{'n', 2}});
 	  urand(x, -1, 1);
 	  auto y = op(rop(x));
 	  x.scale(-1).addTo(y);
@@ -1871,6 +1849,42 @@ namespace Chroma
 	}
 
 	return rop;
+      }
+
+      /// Returns an approximation of the inverse of the domains local to the processes
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+      /// \param prec_: preconditioner
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getDomainDecompositionPrec(Operator<NOp, COMPLEX> op,
+							const Options& ops,
+							Operator<NOp, COMPLEX> prec_)
+      {
+	if (prec_)
+	  throw std::runtime_error("getDomainDecompositionPrec: unsupported input preconditioner");
+
+	// Get options
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+
+	// Get the local operator and make the solver
+	auto local_op = op.getGlocal();
+	const Operator<NOp, COMPLEX> solver = getSolver(local_op, getOptions(ops, "solver"));
+
+	// Return the solver
+	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		  solver(x.getGlocal(), y.getGlocal());
+		},
+		op.i,
+		op.d,
+		nullptr,
+		op.order_t,
+		op.imgLayout,
+		op.domLayout,
+		DenseOperator(),
+		op.preferred_col_ordering,
+		false /* no Kronecker blocking */};
       }
 
       /// Returns the inverse of the block diagonal
@@ -2434,12 +2448,13 @@ namespace Chroma
     Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
 				     const Operator<NOp, COMPLEX>& prec, SolverSpace solverSpace)
     {
-      enum SolverType { FGMRES, BICGSTAB, MR, MG, EO, BJ, IGD, DDAG, G5, BLOCKING, CASTING };
+      enum SolverType { FGMRES, BICGSTAB, MR, MG, EO, DD, BJ, IGD, DDAG, G5, BLOCKING, CASTING };
       static const std::map<std::string, SolverType> solverTypeMap{{"fgmres", FGMRES},
 								   {"bicgstab", BICGSTAB},
 								   {"mr", MR},
 								   {"mg", MG},
 								   {"eo", EO},
+								   {"dd", DD},
 								   {"bj", BJ},
 								   {"igd", IGD},
 								   {"g5", G5},
@@ -2458,6 +2473,8 @@ namespace Chroma
 	return detail::getMGPrec(op, ops, prec, solverSpace);
       case EO: // even-odd Schur preconditioner
 	return detail::getEvenOddPrec(op, ops, prec, solverSpace);
+      case DD: // domain decomposition with domains local to processes
+	return detail::getDomainDecompositionPrec(op, ops, prec);
       case BJ: // block Jacobi
 	return detail::getBlockJacobi(op, ops, prec);
       case IGD: // inexact Generalized Davidson
@@ -2492,7 +2509,7 @@ namespace Chroma
 	  _t.arity = n;
 	  auto tx = x.template reshape_dimensions<Nd + 4>(
 	    {{"0x", "x"}, {"1y", "y"}, {"2z", "z"}, {"3t", "t"}}, {}, true);
-	  auto ty = tx.like_this();
+	  auto ty = tx.make_compatible();
 	  LatticeFermion x0, y0;
 	  for (unsigned int i = 0; i < n; ++i)
 	  {
@@ -2691,7 +2708,7 @@ namespace Chroma
 	auto x0 = chi.template reshape_dimensions<Nd + 8>(
 	  {{"x", "0x"}, {"y", "1y"}, {"z", "2z"}, {"t", "3t"}, {order_cols, "n"}},
 	  {{'0', 1}, {'1', 1}, {'2', 1}, {'3', 0}}, true);
-	auto y0 = x0.like_this();
+	auto y0 = x0.make_compatible();
 	foreachInChuncks(
 	  x0, y0, max_rhs,
 	  [=](Tensor<Nd + 8, COMPLEX_CHI> x, Tensor<Nd + 8, COMPLEX_CHI> y) { op(x, y); });
@@ -2728,7 +2745,7 @@ namespace Chroma
 
 	// Create tensors with full support on the lattice
 	int max_step = std::max(num_vecs, max_rhs);
-	auto aux = chi.template like_this<Nd + 8>(
+	auto aux = chi.template make_compatible<Nd + 8>(
 	  op.preferred_col_ordering == ColumnMajor ? "0123csxyztXn" : "0123ncsxyztX",
 	  {{'n', max_step},
 	   {'t', Layout::lattSize()[3]},
@@ -2773,7 +2790,7 @@ namespace Chroma
 	Coor<N - 7> n_dim = latticeSize<N - 7>(n_order, chi.kvdim());
 	int n_vol = (N == 7 ? 1 : superbblas::detail::volume(n_dim));
 
-	Tensor<N, COMPLEX> r = chi.like_this(); // output tensor
+	Tensor<N, COMPLEX> r = chi.make_compatible(); // output tensor
 	int max_step = std::max(1, std::max(n_vol, max_rhs));
 
 	// Quick exit
