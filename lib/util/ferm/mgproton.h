@@ -1149,10 +1149,10 @@ namespace Chroma
 	  spin_splitting = SpinSplitting::None;
 
 	// Create the random initial guesses to be used in solving Ax=0
-	auto b = op.d.template make_compatible<NOp + 1>("%n", '%', "", {{'n', num_null_vecs}});
+	auto b = op.template make_compatible_img<NOp + 1>("n", {{'n', num_null_vecs}});
 	if (solverSpace == FullSpace)
 	{
-	nrand(b);
+	  nrand(b);
 	}
 	else
 	{
@@ -1178,7 +1178,7 @@ namespace Chroma
 	  auto nv2 = nv;
 	  if (spin_splitting == SpinSplitting::Chirality)
 	  {
-	    nv2 = nv.make_compatible(none, {{'n', num_null_vecs * 2}});
+	    nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
 	    auto g5 = getGamma5<COMPLEX>(ns, OnHost), g5pos = g5.cloneOn(OnHost),
 		 g5neg = g5.cloneOn(OnHost);
 	    for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
@@ -1242,7 +1242,7 @@ namespace Chroma
 	    nv_blk_eo_dim['x'] /= 2;
 	    nv_blk_eo_dim['X'] = 2;
 	  }
-	  Tensor<NOp, COMPLEX> d = op.d.make_compatible(none, nv_blk_eo_dim), i = op.i;
+	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
 	  V = Operator<NOp, COMPLEX>{
 	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	      auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
@@ -1322,7 +1322,7 @@ namespace Chroma
 	    nv_blk_eo_dim['x'] /= 2;
 	    nv_blk_eo_dim['X'] = 2;
 	  }
-	  Tensor<NOp, COMPLEX> d = op.d.make_compatible(none, nv_blk_eo_dim), i = op.i;
+	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
 	  V = Operator<NOp, COMPLEX>{
 	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	      auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "c")
