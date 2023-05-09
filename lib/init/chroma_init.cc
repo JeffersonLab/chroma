@@ -276,11 +276,6 @@ namespace Chroma
 #    endif
     setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
 
-    // Initialize MAGMA before anything else
-#    if defined(BUILD_MAGMA)
-    SB::detail::getMagmaContext(cuda_device);
-#    endif
-
 
 		QDPIO::cout << "Calling initCommsGridQuda\n";
 #ifdef ARCH_PARSCALAR
@@ -316,11 +311,6 @@ namespace Chroma
     QDP_initialize_QMP(argc, argv);
 #    ifdef QDP_USE_COMM_SPLIT_INIT
     QDP_setGPUCommSplit();
-#    endif
-
-    // Initialize MAGMA before anything else
-#    if defined(BUILD_MAGMA)
-    SB::detail::getMagmaContext(dev);
 #    endif
 
     QDPIO::cout << "Initializing start GPUs" << std::endl;
