@@ -45,6 +45,11 @@
 #endif
 #endif
 
+
+#ifdef ARCH_PARSCALAR
+#include "qmp.h"
+#endif
+
 namespace Chroma 
 {
 
@@ -267,10 +272,17 @@ namespace Chroma
 #    endif
     setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
 
-    // Initialize MAGMA before anything else
-#    if defined(BUILD_MAGMA)
-    SB::detail::getMagmaContext(cuda_device);
+    QDPIO::cout << "Calling initCommsGridQuda\n";
+#    ifdef ARCH_PARSCALAR
+    int ndim = QMP_get_logical_number_of_dimensions();
+    const int* dims = QMP_get_logical_dimensions();
+#    else
+    int ndim = 4;
+    const int dims[4] = {1, 1, 1, 1};
 #    endif
+    QDPIO::cout << "calling initCommsGridQuda with ndim = " << ndim << " and geom=( " << dims[0]
+		<< ", " << dims[1] << ", " << dims[2] << ", " << dims[3] << " )\n";
+    initCommsGridQuda(ndim, dims, nullptr, nullptr);
 
     QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")"
 		<< std::endl;
@@ -296,11 +308,6 @@ namespace Chroma
     QDP_setGPUCommSplit();
 #    endif
 
-    // Initialize MAGMA before anything else
-#    if defined(BUILD_MAGMA)
-    SB::detail::getMagmaContext(dev);
-#    endif
-
     QDPIO::cout << "Initializing start GPUs" << std::endl;
 #    ifdef QDP_FIX_GPU_SETTING
     QDP_startGPU(dev);
@@ -312,11 +319,6 @@ namespace Chroma
 #elif defined(BUILD_SB) && defined(SUPERBBLAS_USE_GPU)
     // Get device to run
     int gpu_device = SB::detail::getGpuContext()->device;
-
-#  if defined(BUILD_MAGMA)
-    // Initialize MAGMA before anything else
-    SB::detail::getMagmaContext(gpu_device);
-#  endif
 
 #  ifdef BUILD_QUDA
     setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);

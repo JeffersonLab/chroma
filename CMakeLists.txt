@@ -28,7 +28,6 @@ option(Chroma_ENABLE_LAPACK "Enable Lapack Binding in QDPLapack" OFF)
 option(Chroma_ENABLE_OPENMP "Enable OpenMP" OFF)
 option(Chroma_ENABLE_SUPERBBLAS  "Enable tasks using Superbblas" OFF)
 option(Chroma_ENABLE_PRIMME  "Build with PRIMME" OFF)
-option(Chroma_ENABLE_MAGMA  "Build with MAGMA" OFF)
 option(Chroma_ENABLE_CUDA  "Build with CUDA" OFF)
 option(Chroma_ENABLE_ROCM  "Build with ROCM" OFF)
 set(BLAS_SUFFIX_LINK_FLAGS "" CACHE STRING "Extra linking flags placed after BLAS")
@@ -55,7 +54,6 @@ option(Chroma_USE_MGPROTO "Use the MGProto Multigrid solver" OFF)
 
 set(SUPERBBLAS_DIR "" CACHE PATH "path to superbblas installation")
 set(PRIMME_DIR "" CACHE PATH "path to PRIMME installation")
-set(MAGMA_DIR "" CACHE PATH "path to MAGMA installation")
 
 ##################
 # End of Options
@@ -222,12 +220,6 @@ if( Chroma_ENABLE_SUPERBBLAS )
   endif()
 
   set(BUILD_SB 1)
-
-  # Deal with MAGMA
-  if( Chroma_ENABLE_MAGMA )
-    message(STATUS "Enabling MAGMA")
-    set(BUILD_MAGMA 1)
-  endif()
 
   # Deal with PRIMME
   if( Chroma_ENABLE_PRIMME )

@@ -48,10 +48,6 @@
 #    include <primme.h>
 #  endif
 
-#  if defined(BUILD_MAGMA)
-#    include "magma_v2.h"
-#  endif
-
 namespace Chroma
 {
 
@@ -808,37 +804,6 @@ namespace Chroma
 	return list;
       }
 
-#  if defined(BUILD_MAGMA)
-      // Return a MAGMA context
-      inline std::shared_ptr<magma_queue_t>& getMagmaContext(Maybe<int> device = none)
-      {
-	static std::shared_ptr<magma_queue_t> queue;
-	if (!queue)
-	{
-	  // Start MAGMA and create a queue
-	  int dev = device.getSome(-1);
-	  if (dev < 0)
-	  {
-#    ifdef SUPERBBLAS_USE_CUDA
-	    superbblas::detail::gpuCheck(cudaGetDevice(&dev));
-#    elif defined(SUPERBBLAS_USE_HIP)
-	    superbblas::detail::gpuCheck(hipGetDevice(&dev));
-#    else
-#      error superbblas was not build with support for GPUs
-#    endif
-	  }
-	  magma_init();
-	  queue = std::shared_ptr<magma_queue_t>(new magma_queue_t, [](magma_queue_t* p) {
-	    magma_queue_destroy(*p);
-	    delete p;
-	  });
-	  magma_queue_create(dev, &*queue);
-	  getDestroyList().push_back([] { getMagmaContext().reset(); });
-	}
-	return queue;
-      }
-#  endif
-
       // Get the cpu context
       inline std::shared_ptr<superbblas::Context>& getCpuContext()
       {
@@ -893,11 +858,6 @@ namespace Chroma
 	      QDP_abort(1);
 	    }
 	  }
-#    endif
-
-#    if defined(BUILD_MAGMA)
-	  // Force the creation of the queue before creating a superbblas context (otherwise cublas complains)
-	  getMagmaContext();
 #    endif
 
 	  // Workaround on a potential issue in qdp-jit: avoid passing through the pool allocator
@@ -3342,12 +3302,13 @@ namespace Chroma
 		typename std::enable_if<
 		  detail::is_complex<T>::value != detail::is_complex<Tw>::value, bool>::type = true>
       void doAction(Action action, Tensor<Nw, Tw> w, Tensor<Nm, Tm> m = {},
-		    Tensor<Nwm, Twm> wm = {}, const std::string& uneven_mask_labels = "") const
+		    Tensor<Nwm, Twm> wm = {}, const std::string& uneven_mask_labels = "",
+		    CopyingTrash copying_trash = dontCopyingTrash) const
       {
 	if (m || wm)
 	  throw std::runtime_error(
 	    "doAction: unsupported mixing real and complex types with masks");
-	toFakeReal().doAction(action, w.toFakeReal());
+	toFakeReal().doAction(action, w.toFakeReal(), {}, {}, uneven_mask_labels, dontCopyingTrash);
       }
 
       /// Return the local support of this tensor
@@ -8442,7 +8403,6 @@ namespace Chroma
 				      });
       }
 
-      // NOTE: for now, the GPU version requires MAGMA
 #  if defined(BUILD_PRIMME)
 
       // Apply the laplacian operator on the spatial dimensions
@@ -8500,6 +8460,9 @@ namespace Chroma
 	  assert(tx.getLocal().volume() == primme->nLocal * (*blockSize));
 	  opaux.op(tx, ty);
 	  assert(ty.allocation->pending_operations.size() == 0);
+	  // Make sure cublas/hipblas handle operates on legacy stream for primme
+	  superbblas::detail::gpuBlasCheck(SUPERBBLAS_GPUBLAS_SYMBOL(SetStream)(
+	    *(superbblas::detail::GpuBlasHandle*)primme->queue, 0));
 	  *ierr = 0;
 	} catch (...)
 	{
@@ -8562,7 +8525,7 @@ namespace Chroma
 
 	  // If the 3D laplacian operator is big enough, run it on device
 	  DeviceHost primme_dev = OnHost;
-#    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
+#    if defined(SUPERBBLAS_USE_GPU)
 	  primme_dev = OnDefaultDevice;
 #    endif
 
@@ -8644,17 +8607,21 @@ namespace Chroma
 	    evecs_order, latticeSize<Nd + 3>(evecs_order, {{'n', primme.numEvals}, {'t', 1}}),
 	    primme_dev, OnEveryone);
 	  assert(evecs.localVolume() == primme.nLocal * primme.numEvals);
-#    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
-	  if (primme_dev == OnDefaultDevice)
-	    primme.queue = &*detail::getMagmaContext();
+#    if defined(SUPERBBLAS_USE_GPU)
+	  superbblas::detail::GpuBlasHandle gpublas_handle =
+	    superbblas::detail::getGpuBlasHandle(evecs.ctx().toGpu(0));
+	  primme.queue = &gpublas_handle;
+	  // Make sure cublas/hipblas handle operates on legacy stream for primme
+	  superbblas::detail::gpuBlasCheck(SUPERBBLAS_GPUBLAS_SYMBOL(SetStream)(gpublas_handle, 0));
 #    endif
+
 
 	  // Call primme
 	  int ret;
-#    if defined(SUPERBBLAS_USE_CUDA) && defined(BUILD_MAGMA)
+#    if defined(SUPERBBLAS_USE_GPU)
 	  if (primme_dev == OnDefaultDevice)
 	  {
-	    ret = magma_zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
+	    ret = cublas_zprimme(evals.data(), evecs.data(), rnorms.data(), &primme);
 	  }
 	  else
 #    endif
