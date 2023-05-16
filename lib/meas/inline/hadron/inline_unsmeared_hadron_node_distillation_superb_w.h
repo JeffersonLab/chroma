@@ -75,7 +75,8 @@ namespace Chroma
 	  bool                      use_genprop4_format;    /*!< Use the efficient genprop4 format instead of the traditional one */
 	  bool                      use_genprop5_format;    /*!< Use the superb format instead of the traditional one */
 	  bool                      use_multiple_writers;   /*!< Whether several processes are going to write down the elementals on separate files */
-	  multi1d<float>            phase;                   /*!< Phase to apply to colorvecs */
+	  std::vector<float>        quarkPhase;              /*!< Phase to apply to the right colorvecs (quarks) */
+	  std::vector<float>        aQuarkPhase;             /*!< Phase to apply to the left colorvecs (antiquarks) */
 	};
 
 	std::vector<KeySolnProp_t>  prop_sources;           /*!< Sources */

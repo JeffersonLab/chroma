@@ -122,7 +122,6 @@ namespace Chroma
       else
       {
 	param.quarkPhase.resize(Nd - 1);
-	param.aQuarkPhase.resize(Nd - 1);
       }
 
       if (paramtop.count("aQuarkPhase") == 1)
@@ -159,8 +158,8 @@ namespace Chroma
       write(xml, "Nt_forward", param.Nt_forward);
       write(xml, "max_tslices_in_contraction", param.max_tslices_in_contraction);
       write(xml, "max_moms_in_contraction", param.max_moms_in_contraction);
-      //write(xml, "quarkPhase", param.quarkPhase);
-      //write(xml, "aQuarkPhase", param.aQuarkPhase);
+      write(xml, "quarkPhase", SB::tomulti1d(param.quarkPhase));
+      write(xml, "aQuarkPhase", SB::tomulti1d(param.aQuarkPhase));
       xml << param.link_smearing.xml;
 
       pop(xml);
