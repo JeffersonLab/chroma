@@ -297,3 +297,34 @@ TEST_F(ExpClovFixture, CheckExp)
 	ASSERT_LT( toDouble(normdiff), 1.0e-14);
 	
 }
+
+TEST_F(ExpClovFixture, CheckExpInv)
+{
+    LatticeFermion src, res, res2, dummy, diff;
+	gaussian(src);
+	res = zero;
+	res2 = zero;
+	
+	LatticeReal tr_Minv;
+	
+	//eclov.choles(0);
+	//eclov.choles(1);
+
+	// We will be going for an exponential in the end:
+	// 
+	// so: 
+	//  exp(x) = (diag mass)[ 1 + E + 1/2 E^2 + .... ]
+	// 
+	//  First test: (diag mass)[ 1 + E ] = regular clover term.
+	for( int cb=0; cb < 2; ++cb ) {
+		eclov.apply(res,src, PLUS, cb);
+		eclov.applyInv(res2,res, PLUS, cb);
+	}
+		
+	diff = res2 - src;
+	Double normdiff = sqrt( norm2(diff)/norm2(src) );
+	QDPIO::cout << "Diff  = " << normdiff << "\n";
+
+	ASSERT_LT( toDouble(normdiff), 1.0e-14);
+	
+}
