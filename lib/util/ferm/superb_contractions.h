@@ -1012,6 +1012,22 @@ namespace Chroma
 	return dist != OnMaster && dist != OnEveryoneReplicated && dist != Local && dist != Glocal;
       }
 
+      /// Return whether the tensor isn't local or on master or replicated
+      inline Distribution compatible_replicated_distribution(const Distribution& dist)
+      {
+	if (dist == Local || dist == Glocal)
+	  return dist;
+	return OnEveryoneReplicated;
+      }
+
+      /// Return whether the tensor isn't local or on master or replicated
+      inline Distribution compatible_oneveryone_distribution(const Distribution& dist)
+      {
+	if (dist == Local || dist == Glocal)
+	  return dist;
+	return OnEveryone;
+      }
+
       /// Stores the subtensor supported on each node (used by class Tensor)
       template <std::size_t N>
       struct TensorPartition {
@@ -1049,7 +1065,7 @@ namespace Chroma
 	  }
 	  else if (dist == Glocal)
 	  {
-	    throw std::runtime_error("TensorPartition: unsupported distribution");
+	    p = all_tensor_glocal(dim);
 	  }
 	  else
 	  {
@@ -1400,11 +1416,22 @@ namespace Chroma
 	static PartitionStored all_tensor_replicated(Coor<N> dim)
 	{
 	  int nprocs = Layout::numNodes();
-	  // Set the first coordinate of the tensor supported on each prop to zero and the size
-	  // to dim
+	  // Set the range size to given dim
 	  PartitionStored fs(nprocs);
 	  for (auto& it : fs)
 	    it[1] = dim;
+	  return fs;
+	}
+
+	/// Return a partitioning where only the current node has support for the tensor
+	/// \param dim: dimension size for the tensor
+
+	static PartitionStored all_tensor_glocal(Coor<N> dim)
+	{
+	  int nprocs = Layout::numNodes();
+	  // Set the first coordinate of the tensor supported on each prop to zero and the size
+	  PartitionStored fs(nprocs);
+	  fs[Layout::nodeNumber()][1] = dim;
 	  return fs;
 	}
 
@@ -4364,7 +4391,7 @@ namespace Chroma
       // Create the identity tensor
       const std::string order = orows + ocols + ot;
       Tensor<N, T> iden{order, kvcoors<N>(order, iden_dim, 0, ThrowOnMissing), OnHost,
-		     OnEveryoneReplicated};
+			detail::compatible_replicated_distribution(dist)};
       iden.set_zero();
       if (iden.getLocal())
       {
@@ -4632,7 +4659,9 @@ namespace Chroma
 	order_t.hasSome() ? order_t.getSome() : detail::remove_dimensions(v.order, rorder);
 
       // Allocate the output on the host and spread the result to every process
-      auto r = contract<Nr>(v.conj(), v, rorder, OnHost, OnEveryoneReplicated).reorder(torder);
+      auto r = contract<Nr>(v.conj(), v, rorder, OnHost,
+			    detail::compatible_replicated_distribution(v.dist))
+		 .reorder(torder);
 
       // Do the square root and return the result
       using Treal = typename detail::real_type<T>::type;
@@ -4849,10 +4878,7 @@ namespace Chroma
 			  std::numeric_limits<typename detail::base_type<T>::type>::min())
     {
       using value_type = typename detail::base_type<T>::type;
-      if (v.dist != Glocal && v.dist != Local)
-	v = v.make_sure(none, OnHost, OnEveryoneReplicated);
-      else
-	v = v.make_sure(none, OnHost);
+      v = v.make_sure(none, OnHost, detail::compatible_replicated_distribution(v.dist));
       if (v.isSubtensor())
 	v = v.clone();
       value_type r = init;
@@ -5227,7 +5253,8 @@ namespace Chroma
 	    kron_dims[i.order[j]] = kroni[j];
 	  kron_dims['u'] = num_neighbors;
 	  std::string kron_order = data_order;
-	  kron = data.like_this(kron_order, kron_dims, none, OnEveryoneReplicated);
+	  kron = data.like_this(kron_order, kron_dims, none,
+				detail::compatible_replicated_distribution(data.dist));
 	}
 
 	std::string nonblock_img_labels(i.order.begin() + nblocki + nkroni, i.order.end());
@@ -5273,7 +5300,7 @@ namespace Chroma
       {
 	if ((ii.dist != OnEveryone && ii.dist != OnEveryoneAsChroma && ii.dist != Local) ||
 	    ii.dist != jj.dist || ii.dist != data.dist ||
-	    (kron && kron.dist != OnEveryoneReplicated))
+	    (kron && kron.dist != detail::compatible_replicated_distribution(ii.dist)))
 	  throw std::runtime_error("SpTensor::construct: unexpected distribution of the data");
 
 	// Superbblas needs the column coordinates to be local
@@ -5622,7 +5649,8 @@ namespace Chroma
 	    throw std::runtime_error("SpTensor::kvslice_from_size: unsupported distribution");
 	  num_neighbors = global_num_neighbors;
 
-	  dirs = dirs_global.make_sure(none, OnDefaultDevice, OnEveryoneReplicated);
+	  dirs = dirs_global.make_sure(none, OnDefaultDevice,
+				       detail::compatible_replicated_distribution(i.dist));
 	}
 
 	// Create the returning tensor
@@ -5639,8 +5667,8 @@ namespace Chroma
 	  blk_m[d.order[i]] = data_dim.at(d.order[i]);
 	for (unsigned int i = 0; i < NI; ++i)
 	  blk_m[this->i.order[i]] = (i < nblocki ? data_dim.at(this->i.order[i]) : 1);
-	auto data_blk =
-	  data.template like_this<NI + ND, float>("%", '%', "u", blk_m, none, OnEveryoneReplicated);
+	auto data_blk = data.template like_this<NI + ND, float>(
+	  "%", '%', "u", blk_m, none, detail::compatible_replicated_distribution(new_d.dist));
 	data_blk.set(1);
 	kronecker<NI + ND + 1>(new_jj_mask, data_blk)
 	  .copyTo(data_mask.kvslice_from_size(img_kvfrom, img_kvsize));
@@ -5657,8 +5685,8 @@ namespace Chroma
 	  kron_mask.set_zero();
 	  auto blk_m = kron.kvdim();
 	  blk_m.erase('u');
-	  auto kron_blk = kron.template like_this<NI + ND, float>("%", '%', "u", blk_m, none,
-								  OnEveryoneReplicated);
+	  auto kron_blk = kron.template like_this<NI + ND, float>(
+	    "%", '%', "u", blk_m, none, detail::compatible_replicated_distribution(new_d.dist));
 	  kron_blk.set(1);
 	  kronecker<NI + ND + 1>(dirs, kron_blk)
 	    .copyTo(kron_mask.kvslice_from_size(img_kvfrom, img_kvsize));
@@ -6425,7 +6453,8 @@ namespace Chroma
     Tensor<N, COMPLEX> fillLatticeField(const std::string& order, const std::map<char, int>& from,
 					const std::map<char, int>& size,
 					const std::map<char, int>& dim, DeviceHost dev, Func func,
-					bool zero_is_even = true)
+					bool zero_is_even = true,
+					const Distribution& dist = OnEveryone)
     {
       using superbblas::detail::operator+;
 
@@ -6442,7 +6471,7 @@ namespace Chroma
       Coor<N> from_c = kvcoors<N>(order, from);
 
       // Populate the tensor on CPU
-      Tensor<N, COMPLEX> r(order, size_c, OnHost);
+      Tensor<N, COMPLEX> r(order, size_c, OnHost, dist);
       Coor<N> local_latt_size = r.p->localSize(); // local dimensions for xyztX
       Stride<N> stride =
 	superbblas::detail::get_strides<std::size_t>(local_latt_size, superbblas::FastToSlow);
@@ -7062,7 +7091,8 @@ namespace Chroma
       template <std::size_t N>
       std::pair<Tensor<N, float>, std::size_t>
       getColors(const std::map<char, int>& dim, OperatorLayout layout,
-		const NaturalNeighbors& neighbors, unsigned int power)
+		const NaturalNeighbors& neighbors, unsigned int power,
+		const Distribution& dist = OnEveryone)
       {
 	// Unsupported other powers than zero or one
 	unsigned int max_dist_neighbors = getFurthestNeighborDistance(neighbors, dim, layout);
@@ -7090,7 +7120,7 @@ namespace Chroma
 		   [&](Coor<N - 1> c) {
 		     return (float)coloring.getColor({{c[0], c[1], c[2], c[3]}});
 		   },
-		   layout == XEvenOddLayout)
+		   layout == XEvenOddLayout, dist)
 		   .kvslice_from_size({}, {{'X', dim.at('X')}});
 
 	return {t, coloring.numColors()};
@@ -7170,8 +7200,8 @@ namespace Chroma
 	for (auto& it : dim_dense)
 	  if (is_in("xyztX", it.first))
 	    it.second = 1;
-	auto r_dense = t.template like_this<N - 5, float>("%", '%', "xyztX", dim_dense, none,
-							  OnEveryoneReplicated);
+	auto r_dense = t.template like_this<N - 5, float>(
+	  "%", '%', "xyztX", dim_dense, none, compatible_replicated_distribution(t.dist));
 	r_dense.set(1);
 
 	// Contract both to create the output tensor
@@ -7320,9 +7350,10 @@ namespace Chroma
 			 std::string(1, kronecker_label);
 	}
 	remap rd = getNewLabels(op.d.order, op.i.order + "u~0123");
-	auto i = op.i.reorder(dense_labels + std::string("xyztX"))
-		   .like_this(none, {}, OnDefaultDevice, OnEveryone)
-		   .make_eg();
+	auto i =
+	  op.i.reorder(dense_labels + std::string("xyztX"))
+	    .like_this(none, {}, OnDefaultDevice, compatible_oneveryone_distribution(op.i.dist))
+	    .make_eg();
 
 	// Get the blocking for the domain and the image
 	std::map<char, int> blkd, blki;
@@ -7346,11 +7377,10 @@ namespace Chroma
 	remap rd_id;
 	for (char c : dense_labels)
 	  rd_id[c] = rd[c];
-	auto t_blk =
-	  identity<Nblk * 2, COMPLEX>(blki_id, rd_id).make_sure(none, none, OnEveryoneReplicated);
+	auto t_blk = identity<Nblk * 2, COMPLEX>(blki_id, rd_id, i.dist);
 
 	// Compute the coloring
-	auto t_ = getColors<NOp>(i.kvdim(), op.imgLayout, op.neighbors, power);
+	auto t_ = getColors<NOp>(i.kvdim(), op.imgLayout, op.neighbors, power, i.dist);
 	Tensor<NOp, float> colors = t_.first;
 	unsigned int num_colors = t_.second;
 
@@ -7392,9 +7422,9 @@ namespace Chroma
 	      for (int s = 0; s < spin * spin; ++s)
 	      {
 		int si = s % spin, sj = s / spin;
-		Tensor<2, COMPLEX> mat(std::string(1, kronecker_label) +
-					 std::string(1, rd.at(kronecker_label)),
-				       {{spin, spin}}, OnHost, OnEveryoneReplicated);
+		Tensor<2, COMPLEX> mat(
+		  std::string(1, kronecker_label) + std::string(1, rd.at(kronecker_label)),
+		  {{spin, spin}}, OnHost, compatible_replicated_distribution(i.dist));
 		mat.set_zero();
 		mat.set({{si, sj}}, 1);
 		new_neighbors.push_back(dir);
@@ -7405,9 +7435,9 @@ namespace Chroma
 	    {
 	      // For the remaining directions, we capture the spin block diagonal on the first term
 	      // and put an empty matrix on the second term so that will be guess further down
-	      Tensor<2, COMPLEX> mat(std::string(1, kronecker_label) +
-				       std::string(1, rd.at(kronecker_label)),
-				     {{spin, spin}}, OnHost, OnEveryoneReplicated);
+	      Tensor<2, COMPLEX> mat(
+		std::string(1, kronecker_label) + std::string(1, rd.at(kronecker_label)),
+		{{spin, spin}}, OnHost, compatible_replicated_distribution(i.dist));
 	      mat.set_zero();
 	      for (int s = 0; s < spin; ++s)
 		mat.set({{s, s}}, 1);
@@ -7462,12 +7492,11 @@ namespace Chroma
           kron_order[0] = kronecker_label;
           kron_order[1] = rd[kronecker_label];
           kron_order[2] = 'u';
-          kron = Tensor<3, COMPLEX>(kron_order,
-                                    Coor<3>{blki[kronecker_label],
-                                            blki[kronecker_label],
-                                            (int)neighbors.size()},
-                                    OnDefaultDevice, OnEveryoneReplicated);
-          kron.set_zero();
+	  kron = Tensor<3, COMPLEX>(
+	    kron_order,
+	    Coor<3>{blki[kronecker_label], blki[kronecker_label], (int)neighbors.size()},
+	    OnDefaultDevice, compatible_replicated_distribution(i.dist));
+	  kron.set_zero();
           for (int mu = 0; mu < neighbors.size(); ++mu) {
 	    // site = source + neighbors[mu], where the latter is in natural
 	    // coordinates
@@ -7482,10 +7511,10 @@ namespace Chroma
 	    for (char c : dense_labels)
 	      site_size[rd[c]] = (c == kronecker_label ? blki[c] : 1);
 
-	    auto site_data =
-	      mv.kvslice_from_size(site, site_size).make_sure(none, OnHost, OnEveryoneReplicated);
+	    auto site_data = mv.kvslice_from_size(site, site_size)
+			       .make_sure(none, OnHost, compatible_replicated_distribution(i.dist));
 
-            if (!spin_matrix[mu]) {
+	    if (!spin_matrix[mu]) {
               // Search for a nonzero element, we take the largest.
               // NOTE: don't take from spin block diagonal matrix, those
               // nonzeros are captured already
@@ -8455,14 +8484,16 @@ namespace Chroma
 	  OperatorAux& opaux = *(OperatorAux*)primme->matrix;
 	  const std::string order(opaux.op.d.order + std::string("n"));
 	  Coor<Nd + 3> size = latticeSize<Nd + 3>(order, {{'n', *blockSize}, {'t', 1}});
-	  Tensor<Nd + 3, ComplexD> tx(order, size, opaux.primme_dev, OnEveryone, (ComplexD*)x);
-	  Tensor<Nd + 3, ComplexD> ty(order, size, opaux.primme_dev, OnEveryone, (ComplexD*)y);
+	  Tensor<Nd + 3, ComplexD> tx(order, size, opaux.primme_dev, opaux.op.i.dist, (ComplexD*)x);
+	  Tensor<Nd + 3, ComplexD> ty(order, size, opaux.primme_dev, opaux.op.i.dist, (ComplexD*)y);
 	  assert(tx.getLocal().volume() == primme->nLocal * (*blockSize));
 	  opaux.op(tx, ty);
 	  assert(ty.allocation->pending_operations.size() == 0);
+#    if defined(SUPERBBLAS_USE_GPU)
 	  // Make sure cublas/hipblas handle operates on legacy stream for primme
 	  superbblas::detail::gpuBlasCheck(SUPERBBLAS_GPUBLAS_SYMBOL(SetStream)(
 	    *(superbblas::detail::GpuBlasHandle*)primme->queue, 0));
+#    endif
 	  *ierr = 0;
 	} catch (...)
 	{
@@ -8507,33 +8538,42 @@ namespace Chroma
 	detail::check_order_contains(order, "cxyztXn");
 	Tensor<Nd + 3, ComplexD> all_evecs(
 	  order, latticeSize<Nd + 3>(order, {{'n', n_colorvecs}, {'t', n_tslices}}),
-	  OnDefaultDevice, OnEveryone);
-	std::vector<std::vector<double>> all_evals;
+	  OnDefaultDevice, "t");
+	Tensor<2, double> all_evals(
+	  "nt", latticeSize<2>("nt", {{'n', n_colorvecs}, {'t', n_tslices}}), OnDefaultDevice, "t");
+
+	// Distribute ut only on the t direction
+	std::vector<Tensor<Nd + 3, ComplexD>> ut_global(Nd);
+	for (unsigned int d = 0; d < Nd - 1; d++)
+	{
+	  ut_global[d] = asTensorView(u[d])
+			   .kvslice_from_size({{'t', from_tslice}}, {{'t', n_tslices}})
+			   .toComplex()
+			   .template make_sure<ComplexD>("ijxyztX", none, "t");
+	}
+
+	// If the 3D laplacian operator is big enough, run it on device
+	DeviceHost primme_dev = OnHost;
+#    if defined(SUPERBBLAS_USE_GPU)
+	primme_dev = OnDefaultDevice;
+#    endif
 
 	for (Index t = 0; t < n_tslices; ++t)
 	{
-	  // Make a copy of the time-slicing of u[d] also supporting left and right
+	  // Distribute ut only on the t direction
 	  std::vector<Tensor<Nd + 3, ComplexD>> ut(Nd);
 	  for (unsigned int d = 0; d < Nd - 1; d++)
 	  {
-	    ut[d] = asTensorView(u[d])
-		      .kvslice_from_size({{'t', from_tslice + t}}, {{'t', 1}})
-		      .toComplex()
-		      .clone()
-		      .template make_sure<ComplexD>("ijxyztX");
+	    ut[d] = ut_global[d].kvslice_from_size({{'t', t}}, {{'t', 1}}).getLocal();
 	  }
 
-	  // If the 3D laplacian operator is big enough, run it on device
-	  DeviceHost primme_dev = OnHost;
-#    if defined(SUPERBBLAS_USE_GPU)
-	  primme_dev = OnDefaultDevice;
-#    endif
+	  if (!ut[0])
+	    continue;
 
 	  // Create an efficient representation of the laplacian operator
 	  std::string order("cxyztX");
-	  auto eg = Tensor<Nd + 2, ComplexD>(order, latticeSize<Nd + 2>(order, {{'t', 1}}),
-					     primme_dev, OnEveryone)
-		      .make_eg();
+	  auto eg =
+	    ut[0].template like_this<Nd + 2>(order, {{'c', Nc}}, primme_dev, none).make_eg();
 	  OperatorLayout op_layout =
 	    ((from_tslice + t) % 2 == 0 ? XEvenOddLayout : XEvenOddLayoutZeroOdd);
 	  auto laplacianOp = Chroma::SB::detail::cloneOperator(
@@ -8574,12 +8614,6 @@ namespace Chroma
 	  primme.eps = 1e-9;
 	  primme.target = primme_largest;
 
-	  // Set parallel settings
-	  primme.nLocal = nLocal;
-	  primme.numProcs = QDP::Layout::numNodes();
-	  primme.procID = QDP::Layout::nodeNumber();
-	  primme.globalSumReal = primmeGlobalSum;
-
 	  // No preconditioner for my matrix
 	  primme.matrixMatvec = primmeMatvec;
 	  primme.matrix = &opaux;
@@ -8590,7 +8624,7 @@ namespace Chroma
 	    primme.maxBasisSize = 64;
 	    primme.maxBlockSize = 4;
 	  }
-	  primme.ldOPs = primme.nLocal;
+	  primme.ldOPs = n;
 
 	  // Should set lots of defaults
 	  if (primme_set_method(PRIMME_DEFAULT_MIN_TIME, &primme) < 0)
@@ -8605,8 +8639,8 @@ namespace Chroma
 	  const std::string evecs_order(eg.order + std::string("n"));
 	  Tensor<Nd + 3, ComplexD> evecs(
 	    evecs_order, latticeSize<Nd + 3>(evecs_order, {{'n', primme.numEvals}, {'t', 1}}),
-	    primme_dev, OnEveryone);
-	  assert(evecs.localVolume() == primme.nLocal * primme.numEvals);
+	    primme_dev, eg.dist);
+	  assert(evecs.localVolume() == primme.n * primme.numEvals);
 #    if defined(SUPERBBLAS_USE_GPU)
 	  superbblas::detail::GpuBlasHandle gpublas_handle =
 	    superbblas::detail::getGpuBlasHandle(evecs.ctx().toGpu(0));
@@ -8614,7 +8648,6 @@ namespace Chroma
 	  // Make sure cublas/hipblas handle operates on legacy stream for primme
 	  superbblas::detail::gpuBlasCheck(SUPERBBLAS_GPUBLAS_SYMBOL(SetStream)(gpublas_handle, 0));
 #    endif
-
 
 	  // Call primme
 	  int ret;
@@ -8659,7 +8692,8 @@ namespace Chroma
 	    LaplacianOperator(ut, from_tslice + t, r, evecs);
 	    std::vector<std::complex<double>> evals_cmpl(evals.begin(), evals.end());
 	    contract<Nd + 3, Nd + 3, 1, ComplexD>(
-	      evecs, asTensorView(evals_cmpl).rename_dims({{'i', 'n'}}).scale(-1), "", AddTo, r);
+	      evecs, asTensorView(evals_cmpl, Local).rename_dims({{'i', 'n'}}).scale(-1), "", AddTo,
+	      r);
 	    auto rnorm = norm<1>(r, "n");
 	    for (int i = 0, vol = rnorm.volume(); i < vol; ++i)
 	    {
@@ -8672,11 +8706,23 @@ namespace Chroma
 	  }
 
 	  // Copy evecs into all_evecs
-	  evecs.copyTo(all_evecs.kvslice_from_size({{'t', t}}, {{'t', 1}}));
-	  all_evals.push_back(evals);
+	  evecs.copyTo(all_evecs.kvslice_from_size({{'t', t}}, {{'t', 1}}).getLocal());
+	  asTensorView(evals, Local)
+	    .rename_dims({{'i', 'n'}})
+	    .copyTo(all_evals.kvslice_from_size({{'t', t}}, {{'t', 1}}).getLocal());
 	}
 
-	return {all_evecs, all_evals};
+	// Broadcast all_evals to everyone
+	std::vector<std::vector<double>> all_evals_r;
+	for (int t = 0; t < n_tslices; ++t)
+	{
+	  std::vector<double> evals(n_colorvecs);
+	  all_evals.kvslice_from_size({{'t', t}}, {{'t', 1}})
+	    .copyTo(asTensorView(evals).rename_dims({{'i', 'n'}}));
+	  all_evals_r.push_back(evals);
+	}
+
+	return {all_evecs.make_sure(none, none, OnEveryone), all_evals_r};
       }
 #  else	 // BUILD_PRIMME
       inline std::pair<Tensor<Nd + 3, ComplexD>, std::vector<std::vector<double>>>
@@ -10113,7 +10159,7 @@ namespace Chroma
 
     inline CoorMoms getMomenta(int min_mom2, int max_mom2)
     {
-      static_assert(Nd == 4);
+      static_assert(Nd == 4, "Unsupported number of dimensions");
       int max_component = (int)std::sqrt((float)max_mom2) + 1;
       CoorMoms r;
       for (int i = -max_component; i <= max_component; ++i)
@@ -10136,7 +10182,7 @@ namespace Chroma
 
     inline CoorMoms getMomenta(const std::vector<std::vector<int>>& v)
     {
-      static_assert(Nd == 4);
+      static_assert(Nd == 4, "Unsupported number of dimensions");
       CoorMoms r;
       for (const auto vi : v)
       {
