@@ -9109,12 +9109,11 @@ namespace Chroma
     ///        match the computed ones, they are the ones stored; this guarantee that the
     ///        that given smearing options were used to generate the colorvecs in `colorvec_file_src`
 
-    inline void
-    createColorvecStorage(const std::string& colorvec_file, GroupXML_t link_smear,
-			  const multi1d<LatticeColorMatrix>& u, int from_tslice, int n_tslices,
-			  int n_colorvecs, bool use_s3t_storage = false, bool fingerprint = false,
-			  Coor<Nd - 1> phase = {{}},
-			  const Maybe<std::vector<std::string>>& colorvec_file_src = none)
+    inline void createColorvecStorage(
+      const std::string& colorvec_file, GroupXML_t link_smear, const multi1d<LatticeColorMatrix>& u,
+      int from_tslice, int n_tslices, int n_colorvecs, bool use_s3t_storage = false,
+      bool fingerprint = false, Coor<Nd - 1> phase = {{}},
+      const Maybe<std::vector<std::string>>& colorvec_file_src = none, int max_tslices = 0)
     {
       // Check input
       const int Nt = Layout::lattSize()[3];
@@ -9226,75 +9225,87 @@ namespace Chroma
       if (colorvec_file_src.getSome({}).size() > 0)
 	colorvecsSto = openColorvecStorage(colorvec_file_src.getSome());
 
-      for (int i_tslice = 0; i_tslice < n_tslices; ++i_tslice, from_tslice = (from_tslice + 1) % Nt)
+      if (max_tslices == 0)
+	max_tslices = std::min(n_tslices, Layout::numNodes());
+      for (int i_tslice = 0, from_tslice0 = from_tslice,
+	       n_tslices0 = std::min(n_tslices, max_tslices);
+	   i_tslice < n_tslices;
+	   i_tslice += n_tslices0, from_tslice0 = (from_tslice + i_tslice) % Nt,
+	       n_tslices0 = std::min(n_tslices - i_tslice, max_tslices))
       {
 	// Compute colorvecs
 	std::string order = "cxyzXtn";
 	auto colorvecs_and_evals =
-	  ns_getColorvecs::computeColorvecs(u_smr, from_tslice, 1, n_colorvecs, order);
+	  ns_getColorvecs::computeColorvecs(u_smr, from_tslice0, n_tslices0, n_colorvecs, order);
 	auto colorvecs = colorvecs_and_evals.first;
 
 	// Read the eigenvectors from another source if indicated
 	if (colorvec_file_src.getSome({}).size() > 0)
 	{
 	  auto colorvecs_src =
-	    getColorvecs<ComplexD>(colorvecsSto, u, 3, from_tslice, 1, n_colorvecs);
+	    getColorvecs<ComplexD>(colorvecsSto, u, 3, from_tslice0, n_tslices0, n_colorvecs);
 
-	  Tensor<2, ComplexD> ip("nt", Coor<2>{n_colorvecs, 1}, OnHost, OnEveryoneReplicated);
+	  Tensor<2, ComplexD> ip("nt", Coor<2>{n_colorvecs, n_tslices0}, OnHost,
+				 OnEveryoneReplicated);
 	  ip.contract(colorvecs, {}, Conjugate, colorvecs_src, {}, NotConjugate);
-	  for (int n = 0; n < n_colorvecs; ++n)
-	    if (std::fabs(std::fabs(ip.get({n, 0})) - 1) > 1e-4)
-	      throw std::runtime_error(
-		"The given colorvec does not correspond to current gates field and smearing");
+	  for (int t = 0; t < n_tslices0; ++t)
+	    for (int n = 0; n < n_colorvecs; ++n)
+	      if (std::fabs(std::fabs(ip.get({n, t})) - 1) > 1e-4)
+		throw std::runtime_error(
+		  "The given colorvec does not correspond to current gates field and smearing");
 	  colorvecs = colorvecs_src;
 	}
 
 	// Phase colorvecs
-	colorvecs = phaseColorvecs(colorvecs, from_tslice, phase);
+	colorvecs = phaseColorvecs(colorvecs, from_tslice0, phase);
 
-	// Compute the permutation from natural ordering to red-black
-	std::vector<Index> perm = ns_getColorvecs::getPermFromNatToRB(from_tslice);
-
-	// Store the colorvecs in natural order (not in red-black ordering)
-	if (!use_s3t_storage)
+	for (int t = 0; t < n_tslices0; ++t)
 	{
-	  // Allocate a single time slice colorvec in natural ordering, as colorvec are stored
-	  Tensor<Nd, ComplexF> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
-				    OnHost, OnMaster);
+	  // Compute the permutation from natural ordering to red-black
+	  int t0 = (from_tslice0 + t) % Nt;
+	  std::vector<Index> perm = ns_getColorvecs::getPermFromNatToRB(t0);
 
-	  // Allocate a single time slice colorvec in case of using RB ordering
-	  Tensor<Nd + 1, ComplexF> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
-
-	  for (int n = 0; n < n_colorvecs; ++n)
+	  // Store the colorvecs in natural order (not in red-black ordering)
+	  if (!use_s3t_storage)
 	  {
-	    KeyTimeSliceColorVec_t time_key;
-	    time_key.t_slice = from_tslice;
-	    time_key.colorvec = n;
-	    colorvecs.kvslice_from_size({{'t', 0}, {'n', n}}, {{'t', 1}, {'n', 1}}).copyTo(trb);
-	    ns_getColorvecs::toNat(perm, trb, tnat);
-	    mod.insert(time_key, tnat);
+	    // Allocate a single time slice colorvec in natural ordering, as colorvec are stored
+	    Tensor<Nd, ComplexF> tnat(
+	      "cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}), OnHost, OnMaster);
+
+	    // Allocate a single time slice colorvec in case of using RB ordering
+	    Tensor<Nd + 1, ComplexF> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
+
+	    for (int n = 0; n < n_colorvecs; ++n)
+	    {
+	      KeyTimeSliceColorVec_t time_key;
+	      time_key.t_slice = t0;
+	      time_key.colorvec = n;
+	      colorvecs.kvslice_from_size({{'t', t}, {'n', n}}, {{'t', 1}, {'n', 1}}).copyTo(trb);
+	      ns_getColorvecs::toNat(perm, trb, tnat);
+	      mod.insert(time_key, tnat);
+	    }
 	  }
-	}
-	else
-	{
-	  // Allocate a single time slice colorvec in natural ordering, as colorvec are stored
-	  Tensor<Nd, ComplexD> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
-				    OnHost, OnMaster);
-
-	  // Allocate a single time slice colorvec in case of using RB ordering
-	  Tensor<Nd + 1, ComplexD> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
-
-	  std::map<char, int> colorvec_size{};
-	  if (fingerprint)
-	    colorvec_size = std::map<char, int>{
-	      {'x', fingerprint_dim[0]}, {'y', fingerprint_dim[1]}, {'z', fingerprint_dim[2]}};
-
-	  for (int n = 0; n < n_colorvecs; ++n)
+	  else
 	  {
-	    colorvecs.kvslice_from_size({{'t', 0}, {'n', n}}, {{'t', 1}, {'n', 1}}).copyTo(trb);
-	    ns_getColorvecs::toNat(perm, trb, tnat);
-	    sto.kvslice_from_size({{'t', from_tslice}, {'n', n}}, {{'t', 1}, {'n', 1}})
-	      .copyFrom(tnat.kvslice_from_size({}, colorvec_size));
+	    // Allocate a single time slice colorvec in natural ordering, as colorvec are stored
+	    Tensor<Nd, ComplexD> tnat(
+	      "cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}), OnHost, OnMaster);
+
+	    // Allocate a single time slice colorvec in case of using RB ordering
+	    Tensor<Nd + 1, ComplexD> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
+
+	    std::map<char, int> colorvec_size{};
+	    if (fingerprint)
+	      colorvec_size = std::map<char, int>{
+		{'x', fingerprint_dim[0]}, {'y', fingerprint_dim[1]}, {'z', fingerprint_dim[2]}};
+
+	    for (int n = 0; n < n_colorvecs; ++n)
+	    {
+	      colorvecs.kvslice_from_size({{'t', t}, {'n', n}}, {{'t', 1}, {'n', 1}}).copyTo(trb);
+	      ns_getColorvecs::toNat(perm, trb, tnat);
+	      sto.kvslice_from_size({{'t', t0}, {'n', n}}, {{'t', 1}, {'n', 1}})
+		.copyFrom(tnat.kvslice_from_size({}, colorvec_size));
+	    }
 	  }
 	}
       }
