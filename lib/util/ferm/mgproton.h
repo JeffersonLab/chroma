@@ -1856,6 +1856,13 @@ namespace Chroma
       /// \param op: operator to make the inverse of
       /// \param ops: options to select the solver and the null-vectors creation
       /// \param prec_: preconditioner
+      ///
+      /// By default (`with_correction` being false), the solver returns D^{-1}*x,
+      /// where D is the local part of the operator. If asking for extra correction,
+      /// `with_correciton` being true, then  the solver returns instead:
+      ///
+      ///    A^{-1} = (A - D + D)^{-1} = (I - (I - D^{-1}*A))^{-1}*D^{-1}
+      ///           \approx (2*I - D^{-1}*A)*D^{-1}
 
       template <std::size_t NOp, typename COMPLEX>
       Operator<NOp, COMPLEX> getDomainDecompositionPrec(Operator<NOp, COMPLEX> op,
@@ -1866,6 +1873,7 @@ namespace Chroma
 	  throw std::runtime_error("getDomainDecompositionPrec: unsupported input preconditioner");
 
 	// Get options
+	bool with_correction = getOption<bool>(ops, "with_correction", false);
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
 	// Get the local operator and make the solver
@@ -1873,18 +1881,41 @@ namespace Chroma
 	const Operator<NOp, COMPLEX> solver = getSolver(local_op, getOptions(ops, "solver"));
 
 	// Return the solver
-	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		  solver(x.getGlocal(), y.getGlocal());
-		},
-		op.i,
-		op.d,
-		nullptr,
-		op.order_t,
-		op.imgLayout,
-		op.domLayout,
-		DenseOperator(),
-		op.preferred_col_ordering,
-		false /* no Kronecker blocking */};
+	if (!with_correction)
+	  return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		    // y = D^{-1}*x
+		    solver(x.getGlocal(), y.getGlocal());
+		  },
+		  op.i,
+		  op.d,
+		  nullptr,
+		  op.order_t,
+		  op.imgLayout,
+		  op.domLayout,
+		  DenseOperator(),
+		  op.preferred_col_ordering,
+		  false /* no Kronecker blocking */};
+	else
+	  return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		    // y0 = D^{-1}*x
+		    auto y0 = y.make_compatible();
+		    solver(x.getGlocal(), y0.getGlocal());
+		    // y1 = A*y0
+		    auto y1 = op(y0);
+		    // y = -D^{-1}*y1
+		    solver(y1.scale(-1).getGlocal(), y.getGlocal());
+		    // y += 2*y0
+		    y0.scale(2).addTo(y);
+		  },
+		  op.i,
+		  op.d,
+		  nullptr,
+		  op.order_t,
+		  op.imgLayout,
+		  op.domLayout,
+		  DenseOperator(),
+		  op.preferred_col_ordering,
+		  false /* no Kronecker blocking */};
       }
 
       /// Returns the inverse of the block diagonal
