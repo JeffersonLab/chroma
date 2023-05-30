@@ -102,7 +102,7 @@ namespace Chroma
       if (paramtop.count("phase") == 1)
       {
 	read(paramtop, "phase", param.quarkPhase);
-	if (paramtop.count("quarkPhase") == 1 || paramtop.count("quarkPhase") == 1)
+	if (paramtop.count("quarkPhase") == 1 || paramtop.count("aQuarkPhase") == 1)
 	{
 	  QDPIO::cerr << "Error: please don't give the tag `phase' and either `quarkPhase' or "
 			 "`aQuarkPhase'"
