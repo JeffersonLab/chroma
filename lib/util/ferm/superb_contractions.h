@@ -3762,6 +3762,7 @@ namespace Chroma
 	std::string order_ = detail::update_order_and_check<N>(order, mr);
 	bool conjv_ = (((conjv == Conjugate) xor v.conjugate) xor conjugate);
 	bool conjw_ = (((conjw == Conjugate) xor w.conjugate) xor conjugate);
+	superbblas::Request req;
 	superbblas::contraction<Nv, Nw, N>(
 	  detail::cond_conj(conjv_, v.scalar) * detail::cond_conj(conjw_, w.scalar) / scalar, //
 	  v.p->p.data() + p_disp, v.from, v.size, v.dim, 1, orderv_.c_str(), conjv_,
@@ -3769,7 +3770,8 @@ namespace Chroma
 	  w.p->p.data() + p_disp, w.from, w.size, w.dim, 1, orderw_.c_str(), conjw_,
 	  (const value_type**)&w_ptr, &w.ctx(), //
 	  detail::cond_conj(conjugate, beta), p->p.data() + p_disp, from, size, dim, 1,
-	  order_.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow);
+	  order_.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow, &req);
+	allocation->append_pending_operation(req);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
