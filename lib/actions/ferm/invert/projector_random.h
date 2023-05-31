@@ -30,11 +30,12 @@ namespace Chroma
      */
     ProjectorRandom(Handle<LinearOperator<T>> A_) : A(A_)
     {
-      random(v);
-      v = v / sqrt(norm2(v, A->subset()));
-      (*A)(u, v, PLUS);
-      l = sqrt(norm2(u, A->subset()));
-      u = u / l;
+      T u0 = zero, v0 = zero;
+      random(v0, A->subset());
+      v = v0 / sqrt(norm2(v0, A->subset()));
+      (*A)(u0, v, PLUS);
+      l = sqrt(norm2(u0, A->subset()));
+      u = u0 / l;
     }
 
     //! Destructor is automatic
@@ -48,20 +49,21 @@ namespace Chroma
 
     //! Apply the oblique projector A*V*inv(U^H*A*V)*U^H
     /*! 
-    	   *! Returns A*V*inv(U^H*A*V)*U^H*chi = psi
-    	   */
-    void AVUObliqueProjector(Ts& psi, const_Ts& chi) const override {
+     *! Returns A*V*inv(U^H*A*V)*U^H*chi = psi
+     */
+    void AVUObliqueProjector(Ts& psi, const_Ts& chi) const override
+    {
       for (int i = 0; i < psi.size(); ++i)
       {
-	// Return u * (v^* * chi) / l
-	*psi[i] = u * (innerProduct(v, *chi[i]) / l);
+	// Return u * (u^* * chi)
+	*psi[i] = u * innerProduct(u, *chi[i], A->subset());
       }
     }
 
     //! Apply the oblique projector V*inv(U^H*A*V)*U^H*A
     /*! 
-    	   * Returns V*inv(U^H*A*V)*U^H*A*chi = psi
-    	   */
+     * Returns V*inv(U^H*A*V)*U^H*A*chi = psi
+     */
     void VUAObliqueProjector(Ts& psi, const_Ts& chi) const override
     {
       for (int i = 0; i < psi.size(); ++i)
@@ -69,7 +71,7 @@ namespace Chroma
 	T A_chi = zero;
 	(*A)(A_chi, *chi[i], PLUS);
 	// Return v * (u^* A * chi) / l
-	*psi[i] = v * (innerProduct(u, A_chi) / l);
+	*psi[i] = v * (innerProduct(u, A_chi, A->subset()) / l);
       }
     }
 
