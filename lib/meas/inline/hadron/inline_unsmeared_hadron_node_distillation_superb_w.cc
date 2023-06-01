@@ -160,6 +160,12 @@ namespace Chroma
       read(inputtop, "mass_label", input.mass_label);
       read(inputtop, "num_tries", input.num_tries);
 
+      input.do_summation = false;
+      if (inputtop.count("do_summation") == 1)
+      {
+	read(inputtop, "do_summation", input.do_summation);
+      }
+
       input.max_rhs = 8;
       if( inputtop.count("max_rhs") == 1 ) {
         read(inputtop, "max_rhs", input.max_rhs);
@@ -876,8 +882,17 @@ namespace Chroma
 	  Params::Param_t::SinkSource_t ss;
 	  ss.t_sink = snk % Lt;
 	  ss.t_source = it.first % Lt;
-	  ss.Nt_backward = it.first - params.param.contract.alt_t_start;
-	  ss.Nt_forward = params.param.contract.alt_Nt_forward - ss.Nt_backward;
+	  if (!params.param.contract.do_summation)
+	  {
+	    ss.Nt_backward = it.first - params.param.contract.alt_t_start;
+	    ss.Nt_forward = params.param.contract.alt_Nt_forward - ss.Nt_backward;
+	  }
+	  else
+	  {
+	    // Compute from src+1 up to snk-1
+	    ss.Nt_backward = -1;
+	    ss.Nt_forward = std::max(SB::normalize_coor(ss.t_sink - ss.t_source, Lt) + 1 - 2, 0);
+	  }
 	  params.param.sink_source_pairs.push_back(ss);
 	  cache_tslice[ss.t_source] = cache_tslice[ss.t_sink] = true;
 	}
@@ -890,11 +905,18 @@ namespace Chroma
       std::vector<FromSize> active_tslices_source(Lt), active_tslices_sink0(Lt);
       std::vector<FromSize>& active_tslices_sink =
 	  negSinkPhase == sourcePhase ? active_tslices_source : active_tslices_sink0;
-      for (const auto& it : params.param.sink_source_pairs)
+      for (auto& it : params.param.sink_source_pairs)
       {
 	// Check t_source and t_sink
 	if (it.t_source < 0 || it.t_sink < 0)
 	  throw std::runtime_error("Invalid source or sink on SinkSourcePairs");
+
+	if (params.param.contract.do_summation)
+	{
+	  // Compute from src+1 up to snk-1
+	  it.Nt_backward = -1;
+	  it.Nt_forward = std::max(SB::normalize_coor(it.t_sink - it.t_source, Lt) + 1 - 2, 0);
+	}
 
 	int num_tslices_active = it.Nt_backward + it.Nt_forward + 1;
 	// Make the number of time-slices even; required by SB::doMomGammaDisp_contractions
@@ -1152,10 +1174,19 @@ namespace Chroma
 
 	// Maximum number of tslices contracted at once (it has to be even)
 	int max_tslices_in_contraction = params.param.contract.max_tslices_in_contraction;
-	if (max_tslices_in_contraction <= 0)
+	if (!params.param.contract.do_summation)
+	{
+	  if (max_tslices_in_contraction <= 0)
+	    max_tslices_in_contraction = Lt;
+	  max_tslices_in_contraction =
+	    max_tslices_in_contraction + (max_tslices_in_contraction % 2);
+	  max_tslices_in_contraction = std::min(Lt, max_tslices_in_contraction);
+	}
+	else
+	{
+	  // When doing summation, compute all middle time slices at once
 	  max_tslices_in_contraction = Lt;
-	max_tslices_in_contraction = max_tslices_in_contraction + (max_tslices_in_contraction % 2);
-	max_tslices_in_contraction = std::min(Lt, max_tslices_in_contraction);
+	}
 
 	// Maximum number of momenta contracted at once
 	int max_moms_in_contraction = params.param.contract.max_moms_in_contraction;
@@ -1175,9 +1206,12 @@ namespace Chroma
 	  swatch.reset();
 	  swatch.start();
 
-	  int first_tslice_active = t_source - sink_source.Nt_backward;
-	  int num_tslices_active =
+	  int first_tslice_active; // first middle time-slice to compute
+	  int num_tslices_active; // number of middle time-slices to compute
+	  first_tslice_active = t_source - sink_source.Nt_backward;
+	  num_tslices_active =
 	    std::min(sink_source.Nt_backward + std::max(sink_source.Nt_forward, 1), Lt);
+
 	  // Make the number of time-slices even; required by SB::doMomGammaDisp_contractions
 	  num_tslices_active = std::min(num_tslices_active + num_tslices_active % 2, Lt);
 
@@ -1271,7 +1305,7 @@ namespace Chroma
 		  first_tslice_active + tfrom, moms, mfrom, msize, gamma_mats, disps,
 		  params.param.contract.use_derivP, order_out, SB::none, dev);
 
-	      // Premultiply by g5, again; see above commit about this
+	      // Premultiply by g5, again; see above comment about this
 	      SB::Tensor<8, SB::Complex> g5_con = r.first.like_this(
 		"qgmNndst", {}, SB::OnHost, use_multiple_writers ? SB::OnEveryone : SB::OnMaster);
 	      g5_con.contract(SB::Gamma<SB::Complex>(g5, SB::OnDefaultDevice), {}, SB::NotConjugate,
@@ -1283,6 +1317,29 @@ namespace Chroma
 			  << " tslices from t= " << (first_tslice_active + tfrom) % Lt << " and "
 			  << msize << " momenta from momentum " << mfrom << " : "
 			  << snarss1.getTimeInSeconds() << " secs" << std::endl;
+
+	      //
+	      // Do summation over all time slices between t_source+1 and t_sink-1
+	      //
+
+	      if (params.param.contract.do_summation)
+	      {
+		auto s = g5_con.like_this(SB::none, {{'t', 1}});
+		s.set_zero();
+		bool something_was_sum_up = false;
+		for (int t = 0; t < tsize; ++t)
+		{
+		  if (SB::normalize_coor(tfrom + first_tslice_active + t - (t_source + 1), Lt) <
+		      SB::normalize_coor(t_sink - 1 - (t_source + 1), Lt))
+		  {
+		    g5_con.kvslice_from_size({{'t', t}}, {{'t', 1}}).addTo(s);
+		    something_was_sum_up = true;
+		  }
+		}
+		if (!something_was_sum_up)
+		  continue;
+		g5_con = s;
+	      }
 
 	      //
 	      // Write the elementals
@@ -1302,11 +1359,14 @@ namespace Chroma
 		}
 
 		qdp5_db
-		  .kvslice_from_size({{'m', mfrom},
-				      {'t', (tfrom + first_tslice_active) % Lt},
-				      {'p', t_source},
-				      {'P', t_sink}},
-				     {{'p', 1}, {'P', 1}})
+		  .kvslice_from_size(
+		    {{'m', mfrom},
+		     {'t', (!params.param.contract.do_summation ? tfrom + first_tslice_active
+								: t_source + 1) %
+			     Lt},
+		     {'p', t_source},
+		     {'P', t_sink}},
+		    {{'p', 1}, {'P', 1}})
 		  .copyFrom(g5_con_rearrange_d);
 	      }
 	      else
@@ -1322,7 +1382,7 @@ namespace Chroma
 		  LocalSerialDBData<ValUnsmearedMesonElementalOperator_t> val;
 		  val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
 
-		  for (int t = 0; t < tsize; ++t)
+		  for (int t = 0, tsize0 = g5_con.kvdim().at('t'); t < tsize0; ++t)
 		  {
 		    for (int g = 0; g < gammas.size(); ++g)
 		    {
@@ -1344,7 +1404,10 @@ namespace Chroma
 
 			      key.key().derivP = params.param.contract.use_derivP;
 			      key.key().t_sink = t_sink;
-			      key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
+			      key.key().t_slice = (!params.param.contract.do_summation
+						     ? t + tfrom + first_tslice_active
+						     : t_source + 1) %
+						  Lt;
 			      key.key().t_source = t_source;
 			      key.key().colorvec_src = n;
 			      key.key().gamma = gammas[g];
@@ -1367,7 +1430,7 @@ namespace Chroma
 		  LocalSerialDBData<ValGenProp4ElementalOperator_t> val;
 		  val.data() = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
 
-		  for (int t = 0; t < tsize; ++t)
+		  for (int t = 0, tsize0 = g5_con.kvdim().at('t'); t < tsize0; ++t)
 		  {
 		    for (int g = 0; g < gammas.size(); ++g)
 		    {
@@ -1386,7 +1449,10 @@ namespace Chroma
 			    g5_con_t.copyTo(val.data());
 
 			    key.key().t_sink = t_sink;
-			    key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
+			    key.key().t_slice =
+			      (!params.param.contract.do_summation ? t + tfrom + first_tslice_active
+								   : t_source + 1) %
+			      Lt;
 			    key.key().t_source = t_source;
 			    key.key().g = gammas[g];
 			    key.key().displacement = disps[disps_perm[d]];
