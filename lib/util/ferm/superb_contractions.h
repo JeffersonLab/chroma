@@ -46,6 +46,9 @@
 
 #  ifdef BUILD_PRIMME
 #    include <primme.h>
+#    if defined(SUPERBBLAS_USE_HIP)
+#      include <hipblas.h>
+#    endif
 #  endif
 
 namespace Chroma
@@ -8458,6 +8461,19 @@ namespace Chroma
 	}
       }
 
+#    if defined(SUPERBBLAS_USE_CUDA)
+      void inline gpuBlasCheck(cublasStatus_t s)
+      {
+	superbblas::detail::gpuBlasCheck(s);
+      }
+#    elif defined(SUPERBBLAS_USE_HIP)
+      void inline gpuBlasCheck(hipblasStatus_t s)
+      {
+	if (s != HIPBLAS_STATUS_SUCCESS)
+	  throw std::runtime_error("hipblas error");
+      }
+#    endif
+
       // Auxiliary structure passed to PRIMME's matvec
 
       struct OperatorAux {
@@ -8491,10 +8507,9 @@ namespace Chroma
 	  assert(tx.getLocal().volume() == primme->nLocal * (*blockSize));
 	  opaux.op(tx, ty);
 	  assert(ty.allocation->pending_operations.size() == 0);
-#    if defined(SUPERBBLAS_USE_GPU)
-	  // Make sure cublas/hipblas handle operates on legacy stream for primme
-	  superbblas::detail::gpuBlasCheck(SUPERBBLAS_GPUBLAS_SYMBOL(SetStream)(
-	    *(superbblas::detail::GpuBlasHandle*)primme->queue, 0));
+#    if defined(SUPERBBLAS_USE_CUDA)
+	  // Make sure cublas handle operates on legacy stream for primme
+	  gpuBlasCheck(cublasSetStream(*(superbblas::detail::GpuBlasHandle*)primme->queue, 0));
 #    endif
 	  *ierr = 0;
 	} catch (...)
@@ -8558,6 +8573,10 @@ namespace Chroma
 	DeviceHost primme_dev = OnHost;
 #    if defined(SUPERBBLAS_USE_GPU)
 	primme_dev = OnDefaultDevice;
+#    endif
+#    if defined(SUPERBBLAS_USE_HIP)
+	hipblasHandle_t gpublas_handle;
+	gpuBlasCheck(hipblasCreate(&gpublas_handle));
 #    endif
 
 	for (Index t = 0; t < n_tslices; ++t)
@@ -8644,11 +8663,14 @@ namespace Chroma
 	    primme_dev, eg.dist);
 	  assert(evecs.localVolume() == primme.n * primme.numEvals);
 #    if defined(SUPERBBLAS_USE_GPU)
+#      if defined(SUPERBBLAS_USE_CUDA)
 	  superbblas::detail::GpuBlasHandle gpublas_handle =
 	    superbblas::detail::getGpuBlasHandle(evecs.ctx().toGpu(0));
+	  // Make sure cublas handle operates on legacy stream for primme
+	  gpuBlasCheck(cublasSetStream(gpublas_handle, 0));
+
+#      endif
 	  primme.queue = &gpublas_handle;
-	  // Make sure cublas/hipblas handle operates on legacy stream for primme
-	  superbblas::detail::gpuBlasCheck(SUPERBBLAS_GPUBLAS_SYMBOL(SetStream)(gpublas_handle, 0));
 #    endif
 
 	  // Call primme
@@ -8713,6 +8735,10 @@ namespace Chroma
 	    .rename_dims({{'i', 'n'}})
 	    .copyTo(all_evals.kvslice_from_size({{'t', t}}, {{'t', 1}}).getLocal());
 	}
+
+#    if defined(SUPERBBLAS_USE_HIP)
+	gpuBlasCheck(hipblasDestroy(gpublas_handle));
+#    endif
 
 	// Broadcast all_evals to everyone
 	std::vector<std::vector<double>> all_evals_r;
