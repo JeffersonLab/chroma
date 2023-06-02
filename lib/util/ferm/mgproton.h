@@ -1782,13 +1782,11 @@ namespace Chroma
 	    Tensor<NOp + 1, COMPLEX> be;
 	    if (solverSpace == FullSpace)
 	    {
-	      be = solver.d.template make_compatible<NOp + 1>(
-		solver.preferred_col_ordering == ColumnMajor ? "%n" : "n%", '%', "",
-		{{'n', x.kvdim().at('n')}});
+	      be = solver.template make_compatible_img<NOp + 1>("n", {{'n', x.kvdim().at('n')}});
 	      x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
-	      op_eo(solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		      opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS",
-		      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc), "CS"))
+	      op_eo(contract<NOp + 1>(opInvDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}),
+				      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc),
+				      "CS"))
 		.scale(-1)
 		.addTo(be);
 	    }
@@ -1806,9 +1804,8 @@ namespace Chroma
 	    // Do y_e = Op_ee^{-1} y_e if use_Aee_prec
 	    if (use_Aee_prec)
 	    {
-	      solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}), "cs", "CS", ye.rename_dims(m_sc),
-		"CS")
+	      contract<NOp + 1>(opInvDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
+				ye.rename_dims(m_sc), "CS")
 		.copyTo(ye);
 	    }
 
@@ -1818,9 +1815,9 @@ namespace Chroma
 	      auto yo0 = be;
 	      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
 	      op_oe(ye).scale(-1).addTo(yo0);
-	      solve<2, NOp + 1, NOp + 2, NOp + 1, COMPLEX>(
-		opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}), "cs", "CS", yo0.rename_dims(m_sc),
-		"CS", CopyTo, y.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+	      contract<NOp + 1>(opInvDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}),
+				yo0.rename_dims(m_sc), "CS", CopyTo,
+				y.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
 	    }
 	  },
 	  op.i,
@@ -1836,7 +1833,7 @@ namespace Chroma
 	// Do a test
 	if (superbblas::getDebugLevel() > 0)
 	{
-	  auto x = op.d.template make_compatible<NOp + 1>("%n", '%', "", {{'n', 2}});
+	  auto x = op.template make_compatible_img<NOp + 1>("n", {{'n', 2}});
 	  urand(x, -1, 1);
 	  auto y = op(rop(x));
 	  x.scale(-1).addTo(y);
