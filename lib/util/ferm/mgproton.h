@@ -55,17 +55,6 @@ namespace Chroma
 
     namespace detail
     {
-      /// Return the inverse map
-      /// \param map: from domain labels to image labels
-
-      inline remap reverse(const remap& map)
-      {
-	remap o;
-	for (const auto& it : map)
-	  o.insert({it.second, it.first});
-	return o;
-      }
-
       /// Check that the common dimensions have the same size
       /// \param V: tensor to check
       /// \param W: other tensor to check
@@ -824,6 +813,222 @@ namespace Chroma
 		    << " precs: " << nprecs << std::endl;
     }
 
+   /// Solve iteratively op * y = x using Generalized Conjugate Residual
+   /// \param op: problem matrix
+   /// \param x: input right-hand-sides
+   /// \param y: the solution vectors
+   /// \param tol: maximum tolerance
+   /// \param max_its: maximum number of iterations
+   /// \param error_if_not_converged: throw an error if the tolerance was not satisfied
+   /// \param max_residual_updates: recompute residual vector every this number of restarts
+   /// \param passing_initial_guess: whether `y` contains a solution guess
+   /// \param verb: verbosity level
+   /// \param prefix: prefix printed before every line
+   ///
+   /// Method:
+   /// r = b - A * x  // compute initial residual
+   /// P = AP = []
+   /// while |r| > |b|*tol
+   ///   kr = prec * r
+   ///   Akr = A * kr
+   ///   beta = (AP' * AP)\(AP' * Akr)
+   ///   p = (I - P/(P'A'AP)*P'A'A) * prec * r = kr - P * beta
+   ///   Ap = A * p = Akr - AP * beta
+   ///   alpha = (Ap' * r) / (Ap' * Ap)
+   ///   x = x + p * alpha
+   ///   r = r - Ap * alpha
+   ///   P = [P p]
+   ///   AP = [AP Ap]
+   /// end
+
+    template <std::size_t NOp, typename COMPLEX>
+    void gcr(const Operator<NOp, COMPLEX>& op, const Operator<NOp, COMPLEX>& prec,
+	     const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX>& y,
+	     unsigned int max_basis_size, double tol, unsigned int max_its = 0,
+	     bool error_if_not_converged = true, unsigned int max_residual_updates = 0,
+	     bool passing_initial_guess = false, Verbosity verb = NoOutput, std::string prefix = "")
+    {
+      detail::log(1, prefix + " starting minimal residual");
+
+      // TODO: add optimizations for multiple operators
+      if (op.order_t.size() > 0)
+	throw std::runtime_error("Not implemented");
+
+      // Check options
+      if (max_its == 0 && tol <= 0)
+	throw std::runtime_error("mr: please give a stopping criterion, either a tolerance or "
+				 "a maximum number of iterations");
+      if (max_its == 0)
+	max_its = std::numeric_limits<unsigned int>::max();
+      if (max_residual_updates == 0)
+	max_residual_updates = (std::is_same<COMPLEX, double>::value ||
+				std::is_same<COMPLEX, std::complex<double>>::value)
+				 ? 4
+				 : 2;
+
+      // Check that the operator is compatible with the input and output vectors
+      if (!op.d.is_compatible(x) || !op.d.is_compatible(y))
+	throw std::runtime_error("mr: Either the input or the output vector isn't compatible with the "
+				 "operator");
+
+      // Get an unused label for the search subspace columns
+      char Vc = detail::get_free_label(x.order);
+      std::string order_cols = detail::remove_dimensions(x.order, op.i.order);
+      std::string order_rows = detail::remove_dimensions(op.d.order, op.order_t);
+      std::size_t num_cols = x.volume(order_cols);
+      if (num_cols == 0)
+	return;
+
+      // Counting op applications
+      unsigned int nops = 0, nprecs = 0;
+
+      // Compute residual, r = x - op * y
+      Tensor<NOp + 1, COMPLEX> r;
+      if (passing_initial_guess)
+      {
+	r = op(y).scale(-1);
+	nops += num_cols;
+      }
+      else
+      {
+	r = op.template make_compatible_img<NOp + 1>(order_cols, x.kvdim());
+	r.set_zero();
+	y.set_zero();
+      }
+      x.addTo(r);
+      auto normr0 = norm<1>(r, op.order_t + order_cols); // type std::vector<real of T>
+      if (max(normr0) == 0)
+	return;
+
+      // Allocate the search subspace P (onto the left singular space), and
+      // AP (= op * P)
+      auto P = r.template make_compatible<NOp + 2>(std::string({'%', Vc}), '%', "",
+						   {{Vc, max_basis_size}});
+      auto AP = P.make_compatible();
+
+      // Do the iterations
+      auto normr = normr0.clone();	  ///< residual norms
+      unsigned int it = 0;		  ///< iteration number
+      double max_tol = HUGE_VAL;	  ///< maximum residual norm
+      unsigned int residual_updates = 0;  ///< number of residual updates
+      auto p = r.make_compatible();	  ///< p will hold the next column in P
+      auto Ap = r.make_compatible();	  ///< Ap will hold the next column in AP
+      auto kr = prec ? r.make_compatible() : r; ///< p will hold prec * r
+      auto Akr = r.make_compatible();	  ///< Akr will hold A * kr
+      unsigned int active_P = 0;		///< number of active columns in P and AP
+      auto AP_norm2 = P.template like_this<2>(order_cols + std::string{Vc}, {}, none,
+					      detail::compatible_replicated_distribution(P.dist));
+      for (it = 0; it < max_its;)
+      {
+	// kr = prec * r
+	if (prec)
+	{
+	  prec(r, kr);
+	  nprecs += num_cols;
+	  auto normkr = norm<1>(kr, op.order_t + order_cols);
+	}
+
+	// Akr = A * kr
+	op(kr, Akr);
+	nops += num_cols;
+
+	if (active_P > 0)
+	{
+	  auto P_act = P.kvslice_from_size({}, {{Vc, active_P}});
+	  auto AP_act = AP.kvslice_from_size({}, {{Vc, active_P}});
+	  auto AP_norm2_act = AP_norm2.kvslice_from_size({}, {{Vc, active_P}});
+
+	  // beta = (AP' * Akr) / AP_norm2
+	  auto beta = div(contract<2>(Akr, AP_act.conj(), order_rows), AP_norm2_act);
+
+	  // p = kr - P * beta
+	  kr.copyTo(p);
+	  contract<NOp + 1>(P_act, beta.scale(-1), std::string{Vc}, AddTo, p);
+
+	  // Ap = Akr - AP * beta
+	  Akr.copyTo(Ap);
+	  contract<NOp + 1>(AP_act, beta.scale(-1), std::string{Vc}, AddTo, Ap);
+	}
+	else
+	{
+	  kr.copyTo(p);
+	  Akr.copyTo(Ap);
+	}
+
+	// alpha = (Ap' * r) / (Ap' * Ap)
+	auto alpha =
+	  div(contract<1>(r, Ap.conj(), order_rows), contract<1>(Ap, Ap.conj(), order_rows));
+
+	// y = y + alpha * p
+	contract<NOp + 1>(p, alpha, "", AddTo, y);
+
+	// r = r - alpha * Ap
+	contract<NOp + 1>(Ap.scale(-1), alpha, "", AddTo, r);
+
+	// Compute the norm
+	auto normr = norm<1>(r, op.order_t + order_cols);
+
+	// Check final residual
+	if (superbblas::getDebugLevel() > 0)
+	{
+	  auto rd = r.make_compatible();
+	  op(y, rd); // rd = op(y)
+	  nops += num_cols;
+	  x.scale(-1).addTo(rd);
+	  r.addTo(rd);
+	  auto max_norm = max(div(norm<1>(rd, op.order_t + order_cols), normr));
+	  QDPIO::cout << prefix
+		      << " MGPROTON GCR error in residual vector: " << detail::tostr(max_norm)
+		      << std::endl;
+	}
+
+	// Get the worse tolerance
+	max_tol = max(div(normr, normr0));
+
+	// Report iteration
+	if (verb >= Detailed)
+	  QDPIO::cout << prefix << " MGPROTON GCR iteration #its.: " << it
+		      << " max rel. residual: " << detail::tostr(max_tol, 2) << std::endl;
+
+	// Increase iterator counter
+	++it;
+
+	// Stop if the residual tolerance is satisfied
+	if (max_tol <= tol)
+	  break;
+
+      	// Update P, AP, and AP_norm2
+	if (active_P >= max_basis_size)
+	  active_P = 1;
+	else
+	  ++active_P;
+	auto P_new = P.kvslice_from_size({{Vc, active_P - 1}}, {{Vc, 1}});
+	auto AP_new = AP.kvslice_from_size({{Vc, active_P - 1}}, {{Vc, 1}});
+	p.copyTo(P_new);
+	Ap.copyTo(AP_new);
+	contract<2>(AP_new.conj(), AP_new, order_rows, CopyTo,
+		    AP_norm2.kvslice_from_size({{Vc, active_P - 1}}, {{Vc, 1}}));
+      }
+
+      // Check final residual
+      if (error_if_not_converged)
+      {
+	op(y, r); // r = op(y)
+	nops += num_cols;
+	x.scale(-1).addTo(r);
+	auto normr = norm<1>(r, op.order_t + order_cols);
+	max_tol = max(div(normr, normr0));
+	if (tol > 0 && max_tol > tol)
+	  throw std::runtime_error("gcr didn't converged and you ask for checking the error");
+      }
+
+      // Report iteration
+      if (verb >= JustSummary)
+	QDPIO::cout << prefix << " MGPROTON GCR summary #its.: " << it
+		    << " max rel. residual: " << detail::tostr(max_tol, 2) << " matvecs: " << nops
+		    << " precs: " << nprecs << std::endl;
+    }
+
     template <std::size_t NOp, typename COMPLEX>
     Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
 				     const Operator<NOp, COMPLEX>& prec = Operator<NOp, COMPLEX>(),
@@ -1024,6 +1229,59 @@ namespace Chroma
 		false /* no Kronecker blocking */};
       }
 
+      /// Returns a GCR solver
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver from `solvers` and influence the solver construction
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getGCRSolver(Operator<NOp, COMPLEX> op, const Options& ops,
+					  Operator<NOp, COMPLEX> prec_)
+      {
+	// Get preconditioner
+	Operator<NOp, COMPLEX> prec;
+	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
+	if (precOps && prec_)
+	  throw std::runtime_error(
+	    "getMRSolver: invalid `prec` tag: the solver got a preconditioner already");
+	if (precOps)
+	  prec = getSolver(op, precOps.getSome());
+	else if (prec_)
+	  prec = prec_;
+
+	// Get the remainder options
+	unsigned int max_basis_size = getOption<unsigned int>(ops, "max_basis_size", 0);
+	double tol = getOption<double>(ops, "tol", 0.0);
+	unsigned int max_its = getOption<unsigned int>(ops, "max_its", 0);
+	if (max_its == 0 && tol <= 0)
+	  ops.throw_error("set either `tol` or `max_its`");
+	bool error_if_not_converged = getOption<bool>(ops, "error_if_not_converged", true);
+	unsigned int max_residual_updates = getOption<unsigned int>(ops, "max_residual_updates", 0);
+	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
+	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+
+	// Return the solver
+	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+		  Tracker _t(std::string("mr ") + prefix);
+		  _t.arity = x.kvdim().at('n');
+		  foreachInChuncks(
+		    x, y, max_simultaneous_rhs,
+		    [=](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
+		      gcr(op, prec, x, y, max_basis_size, tol, max_its, error_if_not_converged,
+			  max_residual_updates, false /* no init guess */, verb, prefix);
+		    },
+		    'n');
+		},
+		op.i,
+		op.d,
+		nullptr,
+		op.order_t,
+		op.imgLayout,
+		op.domLayout,
+		DenseOperator(),
+		op.preferred_col_ordering,
+		false /* no Kronecker blocking */};
+      }
 
       /// Returns the \gamma_5 for a given number of spins
       /// \param ns: number of spins
@@ -2476,10 +2734,25 @@ namespace Chroma
     Operator<NOp, COMPLEX> getSolver(const Operator<NOp, COMPLEX>& op, const Options& ops,
 				     const Operator<NOp, COMPLEX>& prec, SolverSpace solverSpace)
     {
-      enum SolverType { FGMRES, BICGSTAB, MR, MG, EO, DD, BJ, IGD, DDAG, G5, BLOCKING, CASTING };
+      enum SolverType {
+	FGMRES,
+	BICGSTAB,
+	MR,
+	GCR,
+	MG,
+	EO,
+	DD,
+	BJ,
+	IGD,
+	DDAG,
+	G5,
+	BLOCKING,
+	CASTING
+      };
       static const std::map<std::string, SolverType> solverTypeMap{{"fgmres", FGMRES},
 								   {"bicgstab", BICGSTAB},
 								   {"mr", MR},
+								   {"gcr", GCR},
 								   {"mg", MG},
 								   {"eo", EO},
 								   {"dd", DD},
@@ -2497,6 +2770,8 @@ namespace Chroma
 	return detail::getBicgstabSolver(op, ops, prec);
       case MR: // minimal residual
 	return detail::getMRSolver(op, ops, prec);
+      case GCR: // generalized conjugate residual
+	return detail::getGCRSolver(op, ops, prec);
       case MG: // Multigrid
 	return detail::getMGPrec(op, ops, prec, solverSpace);
       case EO: // even-odd Schur preconditioner

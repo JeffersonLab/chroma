@@ -415,6 +415,17 @@ namespace Chroma
 	return r;
       }
 
+      /// Return the inverse map
+      /// \param map: from domain labels to image labels
+
+      inline remap reverse(const remap& map)
+      {
+	remap o;
+	for (const auto& it : map)
+	  o.insert({it.second, it.first});
+	return o;
+      }
+
       // Throw an error if `order` does not contain a label in `should_contain`
       inline void check_order_contains(const std::string& order, const std::string& should_contain)
       {
