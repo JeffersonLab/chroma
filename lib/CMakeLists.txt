@@ -2044,7 +2044,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
 
   if( QDP_BACKEND_ROCM OR Chroma_ENABLE_ROCM)
      target_compile_options(chromalib PUBLIC ${HIP_CPP_CONFIG})
-     target_link_libraries(superbblas INTERFACE roc::hipblas roc::hipsparse roc::hipsolver)
+     target_link_libraries(superbblas INTERFACE roc::hipblas roc::hipsparse roc::hipsolver roc::rocblas roc::rocsolver)
   endif()
   if( QDP_BACKEND_CUDA OR Chroma_ENABLE_CUDA)
     target_link_libraries(superbblas INTERFACE CUDA::cublas CUDA::cublasLt CUDA::cusparse CUDA::cusolver CUDA::cudart)
