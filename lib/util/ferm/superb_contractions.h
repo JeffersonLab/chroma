@@ -5091,6 +5091,28 @@ namespace Chroma
       return none;
     }
 
+    /// Return a tensor with local support; the first dimension is the process index
+    template <typename T, std::size_t N>
+    Tensor<N, T> local_support_tensor(const std::string& order, Coor<N - 1> dim,
+				      DeviceHost dev = OnDefaultDevice)
+    {
+	char proc_label = detail::get_free_label(order);
+	std::string this_order = std::string{proc_label} + order;
+	auto this_dim = detail::insert_coor(dim, 0, Layout::numNodes());
+	return Tensor<N, T>(this_order, this_dim, dev, std::string{proc_label},
+			    std::make_shared<detail::TensorPartition<N>>(detail::TensorPartition<N>(
+			      this_order, this_dim, std::string{proc_label})),
+			    false /*= unordered_writing */, 0 /* no complexLabel*/);
+    }
+
+    /// Broadcast a string from process zero
+    inline int global_max(int s)
+    {
+	auto r = local_support_tensor<int, 2>("i", {1}, OnHost);
+	r.getLocal().set({{0, 0}}, s);
+	return max(r.make_sure(none, none, OnEveryoneReplicated));
+    }
+
     /// Class for operating sparse tensors
     /// \tparam ND: number of domain dimensions
     /// \tparam NI: number of image dimensions
@@ -5744,6 +5766,318 @@ namespace Chroma
 	return r;
       }
 
+      /// Return a slice of the tensor starting at coordinate `dom_kvfrom`, `img_kvfrom` and taking
+      /// `dom_kvsize`, `img_kvsize` elements in each direction. The missing dimensions in `*_kvfrom`
+      /// are set to zero and the missing directions in `*_kvsize` are set to the size of the tensor.
+      ///
+      /// \param f: f(dom_coor, img_coor) return whether the nonzero block starting at the given blocks
+      ///           will be on the returning matrix.
+      /// \param dom_kvfrom: dictionary with the index of the first element in each domain direction
+      /// \param dom_kvsize: dictionary with the number of elements in each domain direction
+      /// \param img_kvfrom: dictionary with the index of the first element in each domain direction
+      /// \param img_kvsize: dictionary with the number of elements in each domain direction
+      /// \return: a copy of the tensor
+
+      template <typename F>
+      SpTensor<ND, NI, T>
+      kvslice_from_size_no_test(const F& f, const std::map<char, int>& dom_kvfrom = {},
+				const std::map<char, int>& dom_kvsize = {},
+				const std::map<char, int>& img_kvfrom = {},
+				const std::map<char, int>& img_kvsize = {}) const
+      {
+	// Check that we aren't slicing the blocking dimensions
+	bool fail = false;
+	std::string o_blk_d = std::string(d.order.begin(), d.order.begin() + nblockd);
+	for (auto& it : dom_kvfrom)
+	  if (detail::is_in(o_blk_d, it.first) && it.second != 0)
+	    fail = true;
+	auto dim_d = d.kvdim();
+	for (auto& it : dom_kvsize)
+	  if (detail::is_in(o_blk_d, it.first) && it.second != dim_d.at(it.first))
+	    fail = true;
+
+	std::string o_blk_i = std::string(i.order.begin(), i.order.begin() + nblocki);
+	for (auto& it : img_kvfrom)
+	  if (detail::is_in(o_blk_i, it.first) && it.second != 0)
+	    fail = true;
+	auto dim_i = i.kvdim();
+	for (auto& it : img_kvsize)
+	  if (detail::is_in(o_blk_i, it.first) && it.second != dim_i.at(it.first))
+	    fail = true;
+
+	if (fail)
+	  throw std::runtime_error(
+	    "SpTensor::kvslice_from_size: unsupported slicing on blocked dimensions");
+
+	// We aren't free to redistribute `d` and `i`, because the support of the domain
+	// in each process depends on the image support
+	auto new_d = d.kvslice_from_size(dom_kvfrom, dom_kvsize).make_eg();
+	auto new_i = i.kvslice_from_size(img_kvfrom, img_kvsize).make_eg();
+
+	// Get the nonzeros in the slice
+	auto ii_slice = ii.kvslice_from_size(img_kvfrom, img_kvsize).cloneOn(OnHost);
+	auto new_ii = ii_slice.make_compatible(none, {}, OnHost);
+	new_ii.set_zero();
+	auto jj_slice = jj.kvslice_from_size(img_kvfrom, img_kvsize).cloneOn(OnHost);
+	auto new_jj = jj_slice.make_compatible(none, {}, OnHost);
+	new_jj.set_zero();
+	auto new_jj_mask = jj_slice.template make_compatible<NI + 1, float>(
+	  detail::remove_dimensions(jj_slice.order, "~"), {}, OnHost);
+	new_jj_mask.set_zero();
+	unsigned int num_neighbors = jj.kvdim().at('u');
+
+	if (ii_slice.isSubtensor() || new_ii.isSubtensor() || jj_slice.isSubtensor() ||
+	    new_jj.isSubtensor() || new_jj_mask.isSubtensor())
+	{
+	  throw std::runtime_error("This shouldn't happen");
+	}
+	if (!ii_slice.is_compatible(jj_slice) || !ii_slice.is_compatible(new_ii) ||
+	    !ii_slice.is_compatible(new_jj) || !ii_slice.is_compatible(new_jj_mask))
+	{
+	  throw std::runtime_error("kvslice_from_size: hit corner case, sorry");
+	}
+
+	Tensor<1, float> dirs("u", {(int)num_neighbors}, OnHost,
+			      detail::compatible_replicated_distribution(i.dist));
+	auto next_jj_mask = new_jj_mask;
+	{
+	  Coor<ND> from_dom = kvcoors<ND>(d.order, dom_kvfrom);
+	  std::map<char, int> updated_dom_kvsize = d.kvdim();
+	  for (const auto& it : dom_kvsize)
+	    updated_dom_kvsize[it.first] = it.second;
+	  Coor<ND> size_dom = kvcoors<ND>(d.order, updated_dom_kvsize);
+	  auto ii_slice_local = ii_slice.getLocal();
+	  int* ii_slice_ptr = ii_slice_local.data();
+	  auto jj_slice_local = jj_slice.getLocal();
+	  int* jj_slice_ptr = jj_slice_local.data();
+	  auto new_ii_local = new_ii.getLocal();
+	  int* new_ii_ptr = new_ii_local.data();
+	  auto new_jj_local = new_jj.getLocal();
+	  int* new_jj_ptr = new_jj_local.data();
+	  auto new_jj_mask_local = new_jj_mask.getLocal();
+	  float* new_jj_mask_ptr = new_jj_mask_local.data();
+	  Coor<ND> size_nnz = d.size;
+	  for (unsigned int i = nblockd + nkrond; i < ND; ++i)
+	    size_nnz[i] = 1;
+	  auto dirs_global =
+	    local_support_tensor<float, 2>("u", Coor<1>{(int)num_neighbors}, OnHost);
+	  dirs_global.set_zero();
+	  auto dirs_global_local = dirs_global.getLocal();
+	  int max_nnz_per_row = 0;
+	  Coor<NI> from_img = kvcoors<NI>(i.order, img_kvfrom);
+	  Coor<NI> local_img_size = new_ii_local.size;
+	  for (int i = 0; i < nblocki + nkroni; ++i)
+	    local_img_size[i] = 1;
+	  Stride<NI> img_local_stride =
+	    superbblas::detail::get_strides<std::size_t>(local_img_size, superbblas::FastToSlow);
+
+	  // Find the maximum number of nonzeros per row and the active directions
+	  // in case of using the Kronecker format
+	  for (std::size_t i = 0, i_acc = 0, i1 = new_ii_local.volume(); i < i1;
+	       i_acc += ii_slice_ptr[i], ++i)
+	  {
+	    using superbblas::detail::operator+;
+	    Coor<NI> row_global_coor = normalize_coor(
+	      superbblas::detail::index2coor(i, local_img_size, img_local_stride) + from_img,
+	      this->i.dim);
+
+	    int nnz_per_row = 0;
+	    for (unsigned int j = i_acc, j1 = i_acc + ii_slice_ptr[i]; j < j1; ++j)
+	    {
+	      Coor<ND> from_nnz;
+	      std::copy_n(jj_slice_ptr + j * ND, ND, from_nnz.begin());
+	      Coor<ND> lfrom, lsize;
+	      superbblas::detail::intersection(from_dom, size_dom, from_nnz, size_nnz, d.dim, lfrom,
+					       lsize);
+	      if (superbblas::detail::volume(lsize) == 0 || !f(lfrom, row_global_coor))
+		continue;
+
+	      dirs_global_local.data()[j - i_acc] = 1;
+	      nnz_per_row++;
+	    }
+	    max_nnz_per_row = std::max(max_nnz_per_row, nnz_per_row);
+	  }
+
+	  std::vector<int> new_dirs_idx(num_neighbors);
+	  if (!kron)
+	  {
+	    // Get the maximum number of nonzeros in a row
+	    max_nnz_per_row = global_max(max_nnz_per_row);
+	  }
+	  else
+	  {
+	    // Gather the directions present in all processes, and update `global_dirs_local` such that
+	    // the direction is present if it is on some process.
+	    auto dirs_collective =
+	      dirs_global.make_sure(none, none, detail::compatible_replicated_distribution(i.dist));
+	    dirs.set_zero();
+	    for (int i = 0; i < num_neighbors; ++i)
+	      for (int proc = 0; proc < Layout::numNodes(); ++proc)
+		if (dirs_collective.data()[proc + i * Layout::numNodes()] > 0)
+		  dirs.data()[i] = 1;
+
+	    // Map the old direction indices into the new directions, and count the maximum number
+	    // of nonzeros per rows as the total amount of different directions
+	    max_nnz_per_row = 0;
+	    for (int i = 0; i < num_neighbors; ++i)
+	      if (dirs.data()[i] > 0)
+		new_dirs_idx[i] = max_nnz_per_row++;
+	  }
+
+	  // Collect the nonzeros
+	  next_jj_mask = new_jj_mask.make_compatible(none, {{'u', max_nnz_per_row}});
+	  next_jj_mask.set_zero();
+	  auto next_jj_mask_local = next_jj_mask.getLocal();
+	  float* next_jj_mask_ptr = next_jj_mask_local.data();
+	  for (std::size_t i = 0, i_acc = 0, i1 = new_ii_local.volume(); i < i1;
+	       i_acc += ii_slice_ptr[i], ++i)
+	  {
+	    using superbblas::detail::operator+;
+	    Coor<NI> row_global_coor = normalize_coor(
+	      superbblas::detail::index2coor(i, local_img_size, img_local_stride) + from_img,
+	      this->i.dim);
+
+	    unsigned int new_nnz_in_row = 0;
+	    for (unsigned int j = i_acc, j1 = i_acc + ii_slice_ptr[i]; j < j1; ++j)
+	    {
+	      Coor<ND> from_nnz;
+	      std::copy_n(jj_slice_ptr + j * ND, ND, from_nnz.begin());
+	      Coor<ND> lfrom, lsize;
+	      superbblas::detail::intersection(from_dom, size_dom, from_nnz, size_nnz, d.dim, lfrom,
+					       lsize);
+	      if (superbblas::detail::volume(lsize) == 0 || !f(lfrom, row_global_coor))
+	      {
+		// If using Kronecker format and the direction is active on the new matrix, don't jump to next iteration,
+		// although the nonzero doesn't belong to the new matrix
+		if (!kron || dirs.data()[j - i_acc] == 0)
+		  continue;
+	      }
+	      else
+	      {
+		// Copy the coordinates of the nonzero to new matrix
+		using superbblas::detail::operator-;
+		Coor<ND> new_from_nnz = normalize_coor(from_nnz - from_dom, size_dom);
+		std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_nnz_in_row) * ND);
+		new_jj_mask_ptr[j] = 1;
+		next_jj_mask_ptr[max_nnz_per_row * i + new_dirs_idx[j - i_acc]] = 1;
+	      }
+	      new_nnz_in_row++;
+	    }
+	    new_ii_ptr[i] = max_nnz_per_row;
+	  }
+
+	  num_neighbors = max_nnz_per_row;
+	}
+
+	// Create the returning tensor
+	SpTensor<ND, NI, T> r{new_d,  new_i,  nblockd,	     nblocki,
+			      nkrond, nkroni, num_neighbors, isImgFastInBlock};
+	new_ii.copyTo(r.ii);
+	new_jj.kvslice_from_size({}, {{'u', num_neighbors}}).copyTo(r.jj);
+
+	auto data_mask = data.create_mask();
+	data_mask.set_zero();
+	std::map<char, int> blk_m;
+	auto data_dim = data.kvdim();
+	for (unsigned int i = 0; i < ND; ++i)
+	  blk_m[d.order[i]] = data_dim.at(d.order[i]);
+	for (unsigned int i = 0; i < NI; ++i)
+	  blk_m[this->i.order[i]] = (i < nblocki ? data_dim.at(this->i.order[i]) : 1);
+	auto data_blk = data.template like_this<NI + ND, float>(
+	  "%", '%', "u", blk_m, none, detail::compatible_replicated_distribution(new_d.dist));
+	data_blk.set(1);
+	kronecker<NI + ND + 1>(new_jj_mask, data_blk)
+	  .copyTo(data_mask.kvslice_from_size(img_kvfrom, img_kvsize));
+	auto r_data_mask = r.data.create_mask();
+	kronecker<NI + ND + 1>(next_jj_mask, data_blk).copyTo(r_data_mask);
+	r.data.set_zero();
+	data.kvslice_from_size(img_kvfrom, img_kvsize)
+	  .copyToWithMask(r.data, data_mask.kvslice_from_size(img_kvfrom, img_kvsize), r_data_mask,
+			  "u");
+
+	if (kron)
+	{
+	  auto kron_mask = kron.create_mask();
+	  kron_mask.set_zero();
+	  auto blk_m = kron.kvdim();
+	  blk_m.erase('u');
+	  auto kron_blk = kron.template like_this<NI + ND, float>(
+	    "%", '%', "u", blk_m, none, detail::compatible_replicated_distribution(new_d.dist));
+	  kron_blk.set(1);
+	  kronecker<NI + ND + 1>(dirs, kron_blk)
+	    .copyTo(kron_mask.kvslice_from_size(img_kvfrom, img_kvsize));
+	  auto r_kron_mask = r.kron.create_mask();
+	  r_kron_mask.set(1);
+	  r.kron.set(detail::NaN<T>::get());
+	  kron.kvslice_from_size(img_kvfrom, img_kvsize)
+	    .copyToWithMask(r.kron, kron_mask.kvslice_from_size(img_kvfrom, img_kvsize),
+			    r_kron_mask, "u");
+	}
+
+	if (is_constructed())
+	  r.construct();
+
+	return r;
+      }
+
+      /// Return a slice of the tensor starting at coordinate `dom_kvfrom`, `img_kvfrom` and taking
+      /// `dom_kvsize`, `img_kvsize` elements in each direction. The missing dimensions in `*_kvfrom`
+      /// are set to zero and the missing directions in `*_kvsize` are set to the size of the tensor.
+      ///
+      /// \param f: f(dom_coor, img_coor) returns whether the nonzero block starting at the given
+      ///           coordinates will be on the returning matrix.
+      /// \param dom_kvfrom: dictionary with the index of the first element in each domain direction
+      /// \param dom_kvsize: dictionary with the number of elements in each domain direction
+      /// \param img_kvfrom: dictionary with the index of the first element in each domain direction
+      /// \param img_kvsize: dictionary with the number of elements in each domain direction
+      /// \return: a copy of the tensor
+
+      template <typename F>
+      SpTensor<ND, NI, T> kvslice_from_size(const F& f, const std::map<char, int>& dom_kvfrom = {},
+					    const std::map<char, int>& dom_kvsize = {},
+					    const std::map<char, int>& img_kvfrom = {},
+					    const std::map<char, int>& img_kvsize = {}) const
+      {
+	// Do the slice
+	auto r = kvslice_from_size_no_test(f, dom_kvfrom, dom_kvsize, img_kvfrom, img_kvsize);
+
+	// Do a test
+	if (superbblas::getDebugLevel() > 0)
+	{
+	  // Do the slice
+	  auto rcomp = kvslice_from_size_no_test(
+	    [=](const Coor<ND>& cdom, const Coor<NI>& cimg) { return !f(cdom, cimg); }, dom_kvfrom,
+	    dom_kvsize, img_kvfrom, img_kvsize);
+
+	  auto x0 = d.template like_this<ND + 1>("%n", '%', "", {{'n', 2}});
+	  x0.set_zero();
+	  urand(x0.kvslice_from_size(dom_kvfrom, dom_kvsize), -1, 1);
+	  auto y0 = i.template like_this<NI + 1>("%n", '%', "", {{'n', 2}});
+	  contractWith(x0, {}, y0, {});
+	  y0 = y0.kvslice_from_size(img_kvfrom, img_kvsize);
+
+	  auto y = r.i.template like_this<NI + 1>("%n", '%', "", {{'n', 2}});
+	  if (!is_constructed())
+	    r.construct();
+	  r.contractWith(x0.kvslice_from_size(dom_kvfrom, dom_kvsize), {}, y, {});
+	  auto ycomp = rcomp.i.template like_this<NI + 1>("%n", '%', "", {{'n', 2}});
+	  if (!is_constructed())
+	    rcomp.construct();
+	  rcomp.contractWith(x0.kvslice_from_size(dom_kvfrom, dom_kvsize), {}, ycomp, {});
+	  ycomp.addTo(y);
+
+	  y0.scale(-1).addTo(y);
+	  auto norm0 = norm<1>(y0, "n");
+	  auto normdiff = norm<1>(y, "n");
+	  double max_err = 0;
+	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
+	    max_err = std::max(max_err, (double)normdiff.get({{i}}) / norm0.get({{i}}));
+	  QDPIO::cout << "kvslice_from_size error: " << detail::tostr(max_err) << std::endl;
+	}
+
+	return r;
+      }
+
       /// Reorder the domain and image orders
       /// \param new_dom_order: new ordering for the domain
       /// \param new_img_order: new ordering for the image
@@ -6197,6 +6531,40 @@ namespace Chroma
 	return r;
       }
     };
+
+    /// Return a sparse identity matrix with the same dimensions as the given one
+    /// \param sp: sparse matrix given
+    /// \param m: map from rows (image) to columns (domain)
+
+    template <std::size_t ND, std::size_t NI, typename T>
+    SpTensor<ND, NI, T> getSparseIdentity(const SpTensor<ND, NI, T>& sp, const remap& m)
+    {
+      SpTensor<ND, NI, T> r(sp.d, sp.i, sp.nblockd, sp.nblocki, sp.nkrond, sp.nkroni, 1,
+			    sp.isImgFastInBlock);
+      r.ii.set(1);
+      int tilde_pos = std::find(r.jj.order.begin(), r.jj.order.end(), '~') - r.jj.order.begin();
+      int u_pos = std::find(r.jj.order.begin(), r.jj.order.end(), 'u') - r.jj.order.begin();
+      if (tilde_pos != 0 || u_pos != 1)
+	throw std::runtime_error("getSparseIdentity: unsupported ordering");
+      std::array<int, ND> perm;
+      const auto rev_m = detail::reverse(m);
+      for (unsigned int i = 0; i < ND; ++i)
+	perm[i] =
+	  std::find(r.i.order.begin(), r.i.order.end(), rev_m.at(r.d.order[i])) - r.i.order.begin();
+      r.jj.fillCpuFunCoor([&](const Coor<NI + 2>& c) { return c[perm[c[tilde_pos]] + 2]; });
+
+      // Remove nonblocking dimensions from m
+      auto m_nonblk = m;
+      for (int i = sp.nblocki + sp.nkroni; i < NI; ++i)
+	m_nonblk.erase(sp.i.order[i]);
+
+      identity<ND + NI + 1, T>(r.data.kvdim(), m_nonblk).copyTo(r.data);
+      if (r.kron)
+	identity<ND + NI + 1, T>(r.kron.kvdim(), m_nonblk).copyTo(r.kron);
+
+      r.construct();
+      return r;
+    }
 
     template <std::size_t N, typename T>
     struct StorageTensor {
@@ -6943,6 +7311,84 @@ namespace Chroma
 	      y0.kvslice_from_size(dom_kvfrom, dom_kvsize).copyTo(y);
             } : OperatorFun<NOp, COMPLEX>{},
 	    order_t, new_domLayout, new_imgLayout, neighbors, preferred_col_ordering, is_kronecker());
+	}
+      }
+
+      /// Return a slice of the tensor starting at coordinate `dom_kvfrom`, `img_kvfrom` and taking
+      /// `dom_kvsize`, `img_kvsize` elements in each direction. The missing dimensions in `*_kvfrom`
+      /// are set to zero and the missing directions in `*_kvsize` are set to the size of the tensor.
+      ///
+      /// \param f: f(dom_coor, img_coor) returns whether the nonzero block starting at the given
+      ///           coordinates will be on the returning matrix.
+      /// \param dom_kvfrom: dictionary with the index of the first element in each domain direction
+      /// \param dom_kvsize: dictionary with the number of elements in each domain direction
+      /// \param img_kvfrom: dictionary with the index of the first element in each domain direction
+      /// \param img_kvsize: dictionary with the number of elements in each domain direction
+      /// \return: a copy of the tensor or an implicit operator
+
+      template <typename F>
+      Operator<NOp, COMPLEX> kvslice_from_size(const F& f,
+					       const std::map<char, int>& dom_kvfrom = {},
+					       const std::map<char, int>& dom_kvsize = {},
+					       const std::map<char, int>& img_kvfrom = {},
+					       const std::map<char, int>& img_kvsize = {}) const
+      {
+	if (!*this)
+	  return {};
+
+	if (!sp)
+	  throw std::runtime_error(
+	    "Operator::kvslice_from_size: unsupported on implicit operators");
+
+	// Update the eg layouts and the data layouts
+	auto new_d = d.kvslice_from_size(dom_kvfrom, dom_kvsize);
+	auto new_i = i.kvslice_from_size(img_kvfrom, img_kvsize);
+	OperatorLayout new_domLayout =
+	  (new_d.kvdim().at('X') != d.kvdim().at('X') && detail::isEvenOddLayout(domLayout)
+	     ? EvensOnlyLayout
+	     : domLayout);
+	OperatorLayout new_imgLayout =
+	  (new_i.kvdim().at('X') != i.kvdim().at('X') && detail::isEvenOddLayout(imgLayout)
+	     ? EvensOnlyLayout
+	     : imgLayout);
+	return Operator<NOp, COMPLEX>(sp.kvslice_from_size(f, detail::update_kvcoor(dom_kvfrom, rd),
+							   detail::update_kvcoor(dom_kvsize, rd),
+							   img_kvfrom, img_kvsize),
+				      rd, max_power, new_d, new_i, order_t, new_domLayout,
+				      new_imgLayout, neighbors, preferred_col_ordering);
+      }
+
+      /// Return an identity operator with the same dimensions as this operator
+
+      Operator<NOp, COMPLEX> get_identiy() const
+      {
+	NaturalNeighbors self(1, std::map<char, int>{});
+	if (sp)
+	{
+	  return Operator<NOp, COMPLEX>{getSparseIdentity(sp, rd),
+					rd,
+					0 /* = max_power, local operator */,
+					d,
+					i,
+					order_t,
+					domLayout,
+					imgLayout,
+					self,
+					preferred_col_ordering};
+	}
+	else
+	{
+	  return Operator<NOp, COMPLEX>{
+	    [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) { x.copyTo(y); },
+	    d,
+	    i,
+	    [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) { x.copyTo(y); },
+	    order_t,
+	    domLayout,
+	    imgLayout,
+	    self,
+	    preferred_col_ordering,
+	    kron};
 	}
       }
     };

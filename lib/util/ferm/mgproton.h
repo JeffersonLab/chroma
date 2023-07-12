@@ -1871,7 +1871,7 @@ namespace Chroma
       ///                          [ 0         I          ]
       ///
       /// The matrix Op_oo^{-1} is block diagonal and is computed directly, while
-      /// (Op_ee-Op_eo*Op_oo^{-1}*Op_oe)^{-1} is approximate by an iterative solver. Note that
+      /// (Op_ee-Op_eo*Op_oo^{-1}*Op_oe)^{-1} is approximated by an iterative solver. Note that
       /// the residual norm while solving A_ee=Op_ee-Op_eo*Op_oo^{-1}*Op_oe is the same as the original
       /// residual norm. To prove that, notice that the global residual will be zero for the odds,
       /// and that the global residual for a solution x'_e of A_ee is
@@ -1879,7 +1879,7 @@ namespace Chroma
       /// therefore ||L^{-1}r|| = ||r|| because of the form of L, making
       ///   ||r|| = || A_e*x'_e - (b_e-Op_eo*Op_oo^{-1}*b_o) ||.
       ///
-      /// Notice that A_ee=Op_ee-Op_eo*Op_oo^{-1}*Op_oe is Op^{-1}_ee. So a way for preconditioning
+      /// Notice that A_ee^{-1} is Op^{-1}_ee. So a way for preconditioning
       /// the solution of A_ee is with a preconditioner on Op restricted to the even sites. The
       /// solver does that when options for `prec_ee' are given.
       ///
@@ -2101,6 +2101,192 @@ namespace Chroma
 	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
 	    max_err = std::max(max_err, (double)normdiff.get({{i}}) / normx.get({{i}}));
 	  QDPIO::cout << " eo prec error: " << detail::tostr(max_err) << std::endl;
+	}
+
+	return rop;
+      }
+
+      /// Returns a generic two domains preconditioner.
+      ///
+      /// It returns an approximation of Op^{-1} by splitting the rows and columns into the two
+      /// domains (islands, domains without holes, and sea, the domain which connect all the domains) and doing:
+      ///
+      ///  Op^{-1} = R^{-1} * A^{-1} * L^{-1} ->
+      ///
+      /// [ Op_ss Op_si ]^{-1} = [       I            0 ] * [ Op_ss-Op_si*Op_ii^{-1}*Op_is   0   ]^{-1} *
+      /// [ Op_is Op_ii ]        [ -Op_ii^{-1}*Op_is  I ]   [              0               Op_ii ]
+      ///
+      ///                        * [ I  -Op_si*Op_ii^{-1} ]
+      ///                          [ 0         I          ]
+      ///
+      /// The matrix Op_ii^{-1} is block diagonal, while
+      /// (Op_ss-Op_si*Op_ii^{-1}*Op_is)^{-1} should be close to Op_ss^{-1}. Note that
+      /// the residual norm while solving A_ss=Op_ss-Op_si*Op_ii^{-1}*Op_is is the same as the original
+      /// residual norm if the linear systems with Op_ii are solved exactly. See a prove in the comment of `getEvenOddPrec`.
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getHierarchicalPrec(Operator<NOp, COMPLEX> op, const Options& ops,
+						 Operator<NOp, COMPLEX> prec_)
+      {
+	auto dims = op.d.kvdim();
+
+	if (prec_)
+	  throw std::runtime_error("getHierarchicalPrec: unsupported input preconditioner");
+	if (!op.sp)
+	  throw std::runtime_error("getHierarchicalPrec: unsupported implicit operators");
+
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	int divisions = getOption<unsigned int>(ops, "divisions");
+	double land = getOption<double>(ops, "land");
+	if (land <= 0 || land >= 1)
+	  ops.getValue("land").throw_error("the value should be within the open interval (0, 1)");
+
+	// Function
+	int T = dims.at('t');
+	if (divisions > T)
+	  divisions = T;
+	// The i-th division starts at T / divisions * i + std::min(i, T % divisions).
+	const auto part_ith_starts = [&](int i) {
+	  return T / divisions * i + std::min(i, T % divisions);
+	};
+	// So all coordinates before division T % divisions have T / divisions + 1 elements,
+	// and the others have T / divisions elements.
+	int first_coor_within_small_partition = part_ith_starts(T % divisions);
+	int partition_size_large_partition = T / divisions + 1;
+	int partition_size_small_partition = T / divisions;
+	int land_size_with_large_partition =
+	  std::max(int(partition_size_large_partition * land), 1);
+	int land_size_with_small_partition =
+	  std::max(int(partition_size_small_partition * land), 1);
+	const auto is_island = [&](int c) {
+	  int disp, land_size;
+	  if (c < first_coor_within_small_partition)
+	  {
+	    disp = c - part_ith_starts(c / partition_size_large_partition);
+	    land_size = land_size_with_large_partition;
+	  }
+	  else
+	  {
+	    disp = c - part_ith_starts(c / partition_size_small_partition);
+	    land_size = land_size_with_small_partition;
+	  }
+	  return disp < land_size;
+	};
+
+	int t_idx_dom = std::find(op.d.order.begin(), op.d.order.end(), 't') - op.d.order.begin();
+	int t_idx_img = std::find(op.i.order.begin(), op.i.order.end(), 't') - op.i.order.begin();
+
+	// return whether the coordinate is image part: island, domain part: island
+	const auto is_island_island = [&](const Coor<NOp>& dom_coor, const Coor<NOp>& img_coor) {
+	  return is_island(dom_coor[t_idx_dom] % T) & is_island(img_coor[t_idx_img] % T);
+	};
+	// return whether the coordinate is image part: island, domain part: sea
+	const auto is_island_sea = [&](const Coor<NOp>& dom_coor, const Coor<NOp>& img_coor) {
+	  return !is_island(dom_coor[t_idx_dom] % T) & is_island(img_coor[t_idx_img] % T);
+	};
+	// return whether the coordinate is image part: sea, domain part: island
+	const auto is_sea_island = [&](const Coor<NOp>& dom_coor, const Coor<NOp>& img_coor) {
+	  return is_island(dom_coor[t_idx_dom] % T) & !is_island(img_coor[t_idx_img] % T);
+	};
+	// return whether the coordinate is image part: sea, domain part: sea
+	const auto is_sea_sea = [&](const Coor<NOp>& dom_coor, const Coor<NOp>& img_coor) {
+	  return !is_island(dom_coor[t_idx_dom] % T) & !is_island(img_coor[t_idx_img] % T);
+	};
+
+	// Get the block diagonal of the operator with rows cs and columns CS
+	Operator<NOp, COMPLEX> op_ss = op.kvslice_from_size(is_sea_sea);
+	Operator<NOp, COMPLEX> op_si = op.kvslice_from_size(is_sea_island);
+	Operator<NOp, COMPLEX> op_is = op.kvslice_from_size(is_island_sea);
+	Operator<NOp, COMPLEX> op_ii = op.kvslice_from_size(is_island_island);
+	Operator<NOp, COMPLEX> id_ii = op.get_identiy().kvslice_from_size(is_island_island);
+
+	// Get solvers for the island and the sea operators
+	const Operator<NOp, COMPLEX> solver_ss = getSolver(op_ss, getOptions(ops, "sea_solver"));
+	const Operator<NOp, COMPLEX> solver_ii = getSolver(op_ii, getOptions(ops, "land_solver"));
+
+	// Get solvers for inside opA
+	const auto solver_ss_schur_ops = getOptionsMaybe(ops, "sea_schur_solver");
+	const Operator<NOp, COMPLEX> solver_ss_schur =
+	  solver_ss_schur_ops ? getSolver(op_ss, solver_ss_schur_ops.getSome()) : solver_ss;
+	const auto solver_ii_schur_ops = getOptionsMaybe(ops, "land_schur_solver");
+	const Operator<NOp, COMPLEX> solver_ii_schur =
+	  solver_ii_schur_ops ? getSolver(op_ii, solver_ii_schur_ops.getSome()) : solver_ii;
+
+	unsigned int create_operator_max_rhs =
+	  getOption<unsigned int>(ops, "create_operator_max_rhs", 0);
+	ColOrdering co = getOption<ColOrdering>(ops, "operator_ordering", getColOrderingMap(),
+						op.preferred_col_ordering);
+	ColOrdering co_blk =
+	  getOption<ColOrdering>(ops, "operator_block_ordering", getColOrderingMap(), RowMajor);
+	unsigned int max_dist_neighbors_opA = 2;
+
+	// Do opA = I - Op_si * Op_ii^{-1} * Op_is * Op_ss^{-1}
+	Operator<NOp, COMPLEX> opA{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    foreachInChuncks(x, y, create_operator_max_rhs,
+			     [&](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
+			       Tracker _t(std::string("hierarchical matvec ") + prefix);
+
+			       // y = x
+			       x.copyTo(y);
+
+			       // y -= Op_si * Op_ii^{-1} * Op_is * Op_ss^{-1} * x
+			       op_si(solver_ii_schur(op_is(solver_ss_schur(x)))).scale(-1).addTo(y);
+			     });
+	  },
+	  op_ss.d, op_ss.i, nullptr, op_ss};
+	const auto solver_opA_ops = getOptionsMaybe(ops, "schur_solver");
+	const Operator<NOp, COMPLEX> opA_solver =
+	  solver_opA_ops ? getSolver(opA, solver_opA_ops.getSome()) : Operator<NOp, COMPLEX>{};
+
+	// Create the solver
+	Operator<NOp, COMPLEX> rop{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("hierarchical solver ") + prefix);
+
+	    // b_s = x_s - Op_si*Op_ii^{-1}*x_i = x - x_i - Op_si*Op_ii^{-1}*x_i
+	    auto x_i = id_ii(x);
+	    Tensor<NOp + 1, COMPLEX> b_s = op_si(solver_ii(x_i.scale(-1)));
+	    x.addTo(b_s);
+	    x_i.scale(-1).addTo(b_s);
+
+	    // y_s = opA^{-1} * b_s
+	    const auto y_s = opA_solver ? opA_solver(b_s) : b_s;
+
+	    // y = Op_ss^{-1} * y_s
+	    solver_ss(y_s, y);
+
+	    // y += Op_ii^{-1}*(-Op_is*y_s + x_i)
+	    op_is(y_s).scale(-1).addTo(x_i);
+	    solver_ii(x_i, y_s);
+	    y_s.addTo(y);
+	  },
+	  op.i,
+	  op.d,
+	  nullptr,
+	  op.order_t,
+	  op.imgLayout,
+	  op.domLayout,
+	  DenseOperator(),
+	  op.preferred_col_ordering,
+	  false /* no Kronecker blocking */};
+
+	// Do a test
+	if (superbblas::getDebugLevel() > 0)
+	{
+	  auto x = op.template make_compatible_img<NOp + 1>("n", {{'n', 2}});
+	  urand(x, -1, 1);
+	  auto y = op(rop(x));
+	  x.scale(-1).addTo(y);
+	  auto normx = norm<1>(x, "n");
+	  auto normdiff = norm<1>(y, "n");
+	  double max_err = 0;
+	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
+	    max_err = std::max(max_err, (double)normdiff.get({{i}}) / normx.get({{i}}));
+	  QDPIO::cout << " hierarchical prec error: " << detail::tostr(max_err) << std::endl;
 	}
 
 	return rop;
@@ -2741,6 +2927,7 @@ namespace Chroma
 	GCR,
 	MG,
 	EO,
+	HIE,
 	DD,
 	BJ,
 	IGD,
@@ -2749,18 +2936,10 @@ namespace Chroma
 	BLOCKING,
 	CASTING
       };
-      static const std::map<std::string, SolverType> solverTypeMap{{"fgmres", FGMRES},
-								   {"bicgstab", BICGSTAB},
-								   {"mr", MR},
-								   {"gcr", GCR},
-								   {"mg", MG},
-								   {"eo", EO},
-								   {"dd", DD},
-								   {"bj", BJ},
-								   {"igd", IGD},
-								   {"g5", G5},
-								   {"blocking", BLOCKING},
-								   {"casting", CASTING}};
+      static const std::map<std::string, SolverType> solverTypeMap{
+	{"fgmres", FGMRES}, {"bicgstab", BICGSTAB}, {"mr", MR},		 {"gcr", GCR}, {"mg", MG},
+	{"eo", EO},	    {"hie", HIE},	    {"dd", DD},		 {"bj", BJ},   {"igd", IGD},
+	{"g5", G5},	    {"blocking", BLOCKING}, {"casting", CASTING}};
       SolverType solverType = getOption<SolverType>(ops, "type", solverTypeMap);
       switch (solverType)
       {
@@ -2776,6 +2955,8 @@ namespace Chroma
 	return detail::getMGPrec(op, ops, prec, solverSpace);
       case EO: // even-odd Schur preconditioner
 	return detail::getEvenOddPrec(op, ops, prec, solverSpace);
+      case HIE: // hierarchical Schur preconditioner
+	return detail::getHierarchicalPrec(op, ops, prec);
       case DD: // domain decomposition with domains local to processes
 	return detail::getDomainDecompositionPrec(op, ops, prec);
       case BJ: // block Jacobi
