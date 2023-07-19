@@ -2111,8 +2111,6 @@ namespace Chroma
       /// It returns an approximation of Op^{-1} by splitting the rows and columns into the two
       /// domains (islands, domains without holes, and sea, the domain which connect all the domains) and doing:
       ///
-      ///  Op^{-1} = R^{-1} * A^{-1} * L^{-1} ->
-      ///
       /// [ Op_ss Op_si ]^{-1} = [       I            0 ] * [ Op_ss-Op_si*Op_ii^{-1}*Op_is   0   ]^{-1} *
       /// [ Op_is Op_ii ]        [ -Op_ii^{-1}*Op_is  I ]   [              0               Op_ii ]
       ///
@@ -2170,7 +2168,8 @@ namespace Chroma
 	  }
 	  else
 	  {
-	    disp = c - part_ith_starts(c / partition_size_small_partition);
+	    disp = c - part_ith_starts(T % divisions + (c - first_coor_within_small_partition) /
+							 partition_size_small_partition);
 	    land_size = land_size_with_small_partition;
 	  }
 	  return disp < land_size;
@@ -2259,8 +2258,8 @@ namespace Chroma
 	    // y = Op_ss^{-1} * y_s
 	    solver_ss(y_s, y);
 
-	    // y += Op_ii^{-1}*(-Op_is*y_s + x_i)
-	    op_is(y_s).scale(-1).addTo(x_i);
+	    // y += Op_ii^{-1}*(-Op_is*y + x_i)
+	    op_is(y).scale(-1).addTo(x_i);
 	    solver_ii(x_i, y_s);
 	    y_s.addTo(y);
 	  },
