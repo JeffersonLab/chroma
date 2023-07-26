@@ -2132,7 +2132,8 @@ namespace Chroma
       Operator<NOp, COMPLEX> getHierarchicalPrec(Operator<NOp, COMPLEX> op, const Options& ops,
 						 Operator<NOp, COMPLEX> prec_,
 						 LandSeaDomain land_sea_domain = All,
-						 int given_divisions = 0, double given_land = 0)
+						 std::array<unsigned int, 4> given_divisions = {},
+						 std::array<unsigned int, 4> given_land = {})
       {
 	auto dims = op.d.kvdim();
 
@@ -2142,108 +2143,172 @@ namespace Chroma
 	  throw std::runtime_error("getHierarchicalPrec: unsupported implicit operators");
 
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
-	int divisions =
-	  land_sea_domain == All ? getOption<unsigned int>(ops, "divisions") : given_divisions;
-	double land = land_sea_domain == All ? getOption<double>(ops, "land") : given_land;
-	if (land <= 0 || land >= 1)
-	  ops.getValue("land").throw_error("the value should be within the open interval (0, 1)");
+	auto divisions = land_sea_domain == All
+			   ? getOption<std::array<unsigned int, 4>>(ops, "divisions")
+			   : given_divisions;
+	auto land =
+	  land_sea_domain == All ? getOption<std::array<unsigned int, 4>>(ops, "land") : given_land;
+
+	// Check divisions and land
+	if (divisions == std::array<unsigned int, 4>{{}})
+	  ops.getValue("divisions").throw_error("the four values cannot be zero");
+	std::array<int, 4> latt_size{dims.at('x'), dims.at('y'), dims.at('z'), dims.at('t')};
+	for (std::size_t i = 0; i < 4; ++i)
+	  if (divisions[i] > latt_size[i])
+	    divisions[i] = latt_size[i];
+	for (std::size_t i = 0; i < 4; ++i) {
+	  if (divisions[i] == 0)
+	    continue;
+	  if (land[i] == 0 || land[i] >= latt_size[i] / divisions[i])
+	    ops.getValue("land").throw_error("values cannot be zero nor the total size of the divisision");
+	}
 
 	// Function
-	int T = dims.at('t');
-	if (divisions > T)
-	  divisions = T;
 	// The i-th division starts at T / divisions * i + std::min(i, T % divisions).
-	const auto part_ith_starts = [&](int i) {
-	  return T / divisions * i + std::min(i, T % divisions);
+	const auto part_ith_starts = [&](int i, int d) {
+	  return latt_size[d] / divisions[d] * i + std::min(i, latt_size[d] % (int)divisions[d]);
 	};
 	// So all coordinates before division T % divisions have T / divisions + 1 elements,
 	// and the others have T / divisions elements.
-	int first_coor_within_small_partition = part_ith_starts(T % divisions);
-	int partition_size_large_partition = T / divisions + 1;
-	int partition_size_small_partition = T / divisions;
-	int land_size_with_large_partition =
-	  std::max(int(partition_size_large_partition * land), 1);
-	int land_size_with_small_partition =
-	  std::max(int(partition_size_small_partition * land), 1);
-	const auto is_true_island = [&](int c) {
-	  int disp, land_size;
-	  if (c < first_coor_within_small_partition)
+	std::array<int, 4> first_coor_within_small_partition, partition_size_large_partition,
+	  partition_size_small_partition;
+	for (int d = 0; d < 4; ++d)
+	{
+	  if (divisions[d] == 0)
+	    continue;
+	  first_coor_within_small_partition[d] = part_ith_starts(latt_size[d] % divisions[d], d);
+	  partition_size_large_partition[d] = latt_size[d] / divisions[d] + 1;
+	  partition_size_small_partition[d] = latt_size[d] / divisions[d];
+	}
+
+	const auto is_true_island = [&](const std::array<int, 4>& coor) {
+	  // The coordinate is island if for all components is island
+	  for (int d = 0; d < 4; ++d)
 	  {
-	    disp = c - part_ith_starts(c / partition_size_large_partition);
-	    land_size = land_size_with_large_partition;
+	    if (divisions[d] == 0)
+	      continue;
+	    int c = coor[d], disp, land_size;
+	    if (c < first_coor_within_small_partition[d])
+	    {
+	      disp = c - part_ith_starts(c / partition_size_large_partition[d],d);
+	      land_size = land[d];
+	    }
+	    else
+	    {
+	      disp = c - part_ith_starts(latt_size[d] % divisions[d] +
+					   (c - first_coor_within_small_partition[d]) /
+					     partition_size_small_partition[d],
+					 d);
+	      land_size = land[d];
+	    }
+	    if (disp >= land_size)
+	      return false;
 	  }
-	  else
-	  {
-	    disp = c - part_ith_starts(T % divisions + (c - first_coor_within_small_partition) /
-							 partition_size_small_partition);
-	    land_size = land_size_with_small_partition;
-	  }
-	  return disp < land_size;
+	  return true;
 	};
 	// Border of the island
-	const auto is_coast = [&](int c) {
-	  int disp, land_size;
-	  if (c < first_coor_within_small_partition)
+	const auto is_coast = [&](const std::array<int, 4>& coor) {
+	  // The coordinate is land border if for all components is island and for some component is border
+	  bool r = false;
+	  for (int d = 0; d < 4; ++d)
 	  {
-	    disp = c - part_ith_starts(c / partition_size_large_partition);
-	    land_size = land_size_with_large_partition;
+	    if (divisions[d] == 0)
+	      continue;
+	    int c = coor[d], disp, land_size;
+	    if (c < first_coor_within_small_partition[d])
+	    {
+	      disp = c - part_ith_starts(c / partition_size_large_partition[d],d);
+	      land_size = land[d];
+	    }
+	    else
+	    {
+	      disp = c - part_ith_starts(latt_size[d] % divisions[d] +
+					   (c - first_coor_within_small_partition[d]) /
+					     partition_size_small_partition[d],
+					 d);
+	      land_size = land[d];
+	    }
+	    if (disp >= land_size)
+	      return false;
+	    if (disp == 0 || disp == land_size - 1)
+	      r = true;
 	  }
-	  else
-	  {
-	    disp = c - part_ith_starts(T % divisions + (c - first_coor_within_small_partition) /
-							 partition_size_small_partition);
-	    land_size = land_size_with_small_partition;
-	  }
-	  return disp == 0 || disp == land_size - 1;
+	  return r;
 	};
 
 	// Border of the sea
-	const auto is_littoral = [&](int c) {
-	  int disp, land_size, size;
-	  if (c < first_coor_within_small_partition)
+	const auto is_littoral = [&](const std::array<int, 4>& coor) {
+	  // The coordinate is sea border if for all components is sea and for some component is border
+	  bool r = false;
+	  for (int d = 0; d < 4; ++d)
 	  {
-	    disp = c - part_ith_starts(c / partition_size_large_partition);
-	    land_size = land_size_with_large_partition;
-	    size = T / divisions + 1;
+	    if (divisions[d] == 0)
+	      continue;
+	    int c = coor[d], disp, land_size, size;
+	    if (c < first_coor_within_small_partition[d])
+	    {
+	      disp = c - part_ith_starts(c / partition_size_large_partition[d],d);
+	      land_size = land[d];
+	      size = partition_size_large_partition[d];
+	    }
+	    else
+	    {
+	      disp = c - part_ith_starts(latt_size[d] % divisions[d] +
+					   (c - first_coor_within_small_partition[d]) /
+					     partition_size_small_partition[d],
+					 d);
+	      land_size = land[d];
+	      size = partition_size_small_partition[d];
+	    }
+	    if (disp < land_size)
+	      return false;
+	    if (disp == land_size || disp == size - 1)
+	      r = true;
 	  }
-	  else
-	  {
-	    disp = c - part_ith_starts(T % divisions + (c - first_coor_within_small_partition) /
-							 partition_size_small_partition);
-	    land_size = land_size_with_small_partition;
-	    size = T / divisions;
-	  }
-	  return disp == land_size || disp == size - 1;
+	  return r;
 	};
 
-	const auto is_island = [&](int c) {
+	std::array<char, 4> latt_labels{'x', 'y', 'z', 't'};
+	std::array<int, 4> idx_dom, idx_img;
+	for (std::size_t i = 0; i < 4; ++i)
+	{
+	  idx_dom[i] =
+	    std::find(op.d.order.begin(), op.d.order.end(), latt_labels[i]) - op.d.order.begin();
+	  idx_img[i] =
+	    std::find(op.i.order.begin(), op.i.order.end(), latt_labels[i]) - op.i.order.begin();
+	}
+	if (idx_dom != idx_img)
+	  throw std::runtime_error("getHierarchicalPrec: unsupported operator, it should have the "
+				   "same domain and image orderings");
+
+	const auto is_island = [&](const Coor<NOp>& op_coor) {
+	  std::array<int, 4> latt_coor;
+	  for (std::size_t i = 0; i < 4; ++i)
+	    latt_coor[i] = op_coor[idx_dom[i]];
 	  switch (land_sea_domain)
 	  {
-	  case All: return is_true_island(c);
-	  case Land: return is_coast(c);
-	  case Sea: return is_littoral(c);
+	  case All: return is_true_island(latt_coor);
+	  case Land: return is_coast(latt_coor);
+	  case Sea: return is_littoral(latt_coor);
 	  }
 	  return false; // avoid warning
 	};
 
-	int t_idx_dom = std::find(op.d.order.begin(), op.d.order.end(), 't') - op.d.order.begin();
-	int t_idx_img = std::find(op.i.order.begin(), op.i.order.end(), 't') - op.i.order.begin();
-
 	// return whether the coordinate is image part: island, domain part: island
 	const auto is_island_island = [&](const Coor<NOp>& dom_coor, const Coor<NOp>& img_coor) {
-	  return is_island(dom_coor[t_idx_dom] % T) & is_island(img_coor[t_idx_img] % T);
+	  return is_island(dom_coor) & is_island(img_coor);
 	};
 	// return whether the coordinate is image part: island, domain part: sea
 	const auto is_island_sea = [&](const Coor<NOp>& dom_coor, const Coor<NOp>& img_coor) {
-	  return !is_island(dom_coor[t_idx_dom] % T) & is_island(img_coor[t_idx_img] % T);
+	  return !is_island(dom_coor) & is_island(img_coor);
 	};
 	// return whether the coordinate is image part: sea, domain part: island
 	const auto is_sea_island = [&](const Coor<NOp>& dom_coor, const Coor<NOp>& img_coor) {
-	  return is_island(dom_coor[t_idx_dom] % T) & !is_island(img_coor[t_idx_img] % T);
+	  return is_island(dom_coor) & !is_island(img_coor);
 	};
 	// return whether the coordinate is image part: sea, domain part: sea
 	const auto is_sea_sea = [&](const Coor<NOp>& dom_coor, const Coor<NOp>& img_coor) {
-	  return !is_island(dom_coor[t_idx_dom] % T) & !is_island(img_coor[t_idx_img] % T);
+	  return !is_island(dom_coor) & !is_island(img_coor);
 	};
 
 	// Get the block diagonal of the operator with rows cs and columns CS
@@ -2352,9 +2417,9 @@ namespace Chroma
 	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
 	    max_err = std::max(max_err, (double)normdiff.get({{i}}) / normx.get({{i}}));
 	  QDPIO::cout << " hierarchical prec error: " << detail::tostr(max_err) << std::endl;
-	     }
+	}
 
-	     return rop;
+	return rop;
       }
 
       /// Returns an approximation of the inverse of the domains local to the processes
