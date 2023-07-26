@@ -1,8 +1,6 @@
 // -*- C++ -*-
 /*! \file                                                                    
- * \brief Multigrid prototype next
- *                                                                             
- * Hadron spectrum calculations utilities
+ * \brief Alternative self-contained XML parser and processing
  */
 
 #ifndef __INCLUDE_SUPERB_OPTIONS__
@@ -10,6 +8,9 @@
 
 #include "chromabase.h"
 #include "util/ferm/superb_contractions.h"
+#include <algorithm>
+#include <array>
+#include <vector>
 
 #ifdef BUILD_SB
 namespace Chroma
@@ -18,7 +19,8 @@ namespace Chroma
   namespace SB
   {
 
-    namespace detail {
+    namespace detail
+    {
       /// Return the previous lines up this one
       /// \param file: content
       /// \param char_num: character index of the last line to print
@@ -83,13 +85,12 @@ namespace Chroma
 
       void copyFileInfo(const Option& op)
       {
-	  prefix = op.prefix;
-	  file = op.file;
-	  char_num = op.char_num;
+	prefix = op.prefix;
+	file = op.file;
+	char_num = op.char_num;
       }
 
     public:
-
       /// Throw an error
       /// \param s: error message
 
@@ -115,8 +116,8 @@ namespace Chroma
       /// Return the type of this option
       virtual Type getType() const
       {
-        throw_error("getType: invalid object, it's abstract");
-        throw std::exception{}; // silent no return warning
+	throw_error("getType: invalid object, it's abstract");
+	throw std::exception{}; // silent no return warning
       }
 
       /// Return if this options isn't None
@@ -206,7 +207,8 @@ namespace Chroma
 					fromOption_.getSome().prefix + "': ";
 
 	// If the path is empty or ask for the root node, just return this node
-	if (path.size() == 0 || path == std::string("/")) {
+	if (path.size() == 0 || path == std::string("/"))
+	{
 	  if (expectedType && getType() != expectedType.getSome())
 	    throw std::runtime_error(errorHeader + "Expected another type");
 	  return *this;
@@ -232,7 +234,8 @@ namespace Chroma
 
 	// If the tag isn't under the current node, either return the default value or throw an error
 	auto m = getDictionary();
-	if (m.count(fieldName) == 0) {
+	if (m.count(fieldName) == 0)
+	{
 	  if (defaultValue.hasSome())
 	    return defaultValue.getSome();
 	  throw std::runtime_error(errorHeader + "the tag `" + fieldName + "' was not found");
@@ -250,7 +253,8 @@ namespace Chroma
       }
 
       /// Return the option content on a path
-      Maybe<const Option&> getValueMaybe(const std::string& path, Maybe<Type> expectedType = none) const
+      Maybe<const Option&> getValueMaybe(const std::string& path,
+					 Maybe<Type> expectedType = none) const
       {
 	struct AuxNone : Option {
 	  Type getType() const override
@@ -317,7 +321,7 @@ namespace Chroma
 	: Option{file, char_num}, value(s)
       {
       }
-      StringOption(const std::string& s, Maybe<const Option&> op=none) : value(s)
+      StringOption(const std::string& s, Maybe<const Option&> op = none) : value(s)
       {
 	if (op)
 	  copyFileInfo(op.getSome());
@@ -404,7 +408,7 @@ namespace Chroma
 	: Option{file, char_num}, value(d)
       {
       }
-      DoubleOption(double d, Maybe<const Option&> op=none) : value(d)
+      DoubleOption(double d, Maybe<const Option&> op = none) : value(d)
       {
 	if (op)
 	  copyFileInfo(op.getSome());
@@ -467,7 +471,7 @@ namespace Chroma
     /// Storing a vector as the value of an option
     struct DictionaryOption : public Option {
       std::map<std::string, std::shared_ptr<Option>> value;
-      DictionaryOption(const Option& op) 
+      DictionaryOption(const Option& op)
       {
 	copyFileInfo(op);
       }
@@ -488,13 +492,18 @@ namespace Chroma
       }
     };
 
-    /// Return an option given a path
+    template <typename T>
+    struct GetExtraOption;
+
     /// \param ops: options into look for
     /// \param path: option path
     /// \param defaultValue: return value if the options isn't specified
 
     template <typename T>
-    T getOption(const Option& ops, const std::string& path, Maybe<T> defaultValue = none);
+    T getOption(const Option& ops, const std::string& path, Maybe<T> defaultValue = none)
+    {
+      return GetExtraOption<T>::getOption(ops, path, defaultValue);
+    }
 
     /// Return a string option given a path
     /// \param ops: options into look for
@@ -571,7 +580,8 @@ namespace Chroma
     {
       // Transform the map entries to lowercase
       std::map<std::string, Enum> m0;
-      for (const auto& it : m) {
+      for (const auto& it : m)
+      {
 	std::string k = detail::to_lower(it.first);
 	if (m0.count(k) == 1)
 	  throw std::runtime_error("getOption: invalid map, case sensitive keys");
@@ -608,18 +618,49 @@ namespace Chroma
     /// \param defaultValue: return value if the options isn't specified
 
     template <typename T>
-    std::vector<T> getVectorOption(const Option& ops, const std::string& path,
-				   Maybe<std::vector<T>> defaultValue = none)
-    {
-      NoneOption defaultOp{};
-      const Option& valueOp = ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none);
-      if (!valueOp)
-	return defaultValue.getSome();
-      std::vector<T> r;
-      for (const auto& op : valueOp.getVector())
-	r.push_back(getOption<T>(*op, ""));
-      return r;
-    }
+    struct GetExtraOption<std::vector<T>> {
+      static std::vector<T> getOption(const Option& ops, const std::string& path,
+				      Maybe<std::vector<T>> defaultValue = none)
+      {
+	if (defaultValue)
+	  throw std::runtime_error("getOption: unsupported to give default value for std::vector");
+	NoneOption defaultOp{};
+	const Option& valueOp =
+	  ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none);
+	if (!valueOp)
+	  return std::vector<T>();
+	std::vector<T> r;
+	for (const auto& op : valueOp.getVector())
+	  r.push_back(SB::getOption<T>(*op, ""));
+	return r;
+      }
+    };
+
+    /// Return an array of options given a path
+    /// \param ops: options into look for
+    /// \param path: option path
+    /// \param defaultValue: return value if the options isn't specified
+
+    template <typename T, std::size_t N>
+    struct GetExtraOption<std::array<T, N>> {
+      static std::array<T, N> getOption(const Option& ops, const std::string& path,
+					Maybe<std::array<T, N>> defaultValue = none)
+      {
+	NoneOption defaultOp{};
+	const Option& valueOp =
+	  ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none);
+	if (!valueOp)
+	  return defaultValue.getSome();
+	std::array<T, N> r;
+	unsigned int i = 0;
+	for (const auto& op : valueOp.getVector())
+	  if (i < r.size())
+	    r[i++] = SB::getOption<T>(*op, "");
+	if (i != r.size())
+	  valueOp.throw_error("invalid number of elements: expected " + std::to_string(r.size()));
+	return r;
+      }
+    };
 
     /// Return a dictionary option
     /// \param ops: options into look for
@@ -653,11 +694,13 @@ namespace Chroma
 				 err_msg);
       };
 
-      auto istag = [](unsigned char c) { return std::isalpha(c) || c == '_'; };
+      auto istag = [](unsigned char c) {
+	return std::isalpha(c) || std::isdigit(c) || c == '_' || c == '-' || c == '.';
+      };
 
-      std::vector<std::shared_ptr<Option>> ops;		// options of the open tags
-      std::vector<std::string> tags;	// names of the open tags
-      std::vector<Option::Type> types; // type of the open tags
+      std::vector<std::shared_ptr<Option>> ops; // options of the open tags
+      std::vector<std::string> tags;		// names of the open tags
+      std::vector<Option::Type> types;		// type of the open tags
 
       // Put the root element
       tags.push_back("/");

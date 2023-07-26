@@ -1701,7 +1701,8 @@ namespace Chroma
 
 	// Get prolongator, V
 	unsigned int num_null_vecs = getOption<unsigned int>(ops, "num_null_vecs");
-	std::vector<unsigned int> mg_blocking_v = getVectorOption<unsigned int>(ops, "blocking");
+	std::vector<unsigned int> mg_blocking_v =
+	  getOption<std::vector<unsigned int>>(ops, "blocking");
 	if (mg_blocking_v.size() != Nd)
 	  ops.getValue("blocking")
 	    .throw_error("getMGPrec: the blocking should be a vector with four elements");
@@ -1709,7 +1710,7 @@ namespace Chroma
 						 {'y', mg_blocking_v[1]},
 						 {'z', mg_blocking_v[2]},
 						 {'t', mg_blocking_v[3]}};
-	std::vector<unsigned int> layout_blocking_v = getVectorOption<unsigned int>(
+	std::vector<unsigned int> layout_blocking_v = getOption<std::vector<unsigned int>>(
 	  ops, "coarse_layout_blocking", std::vector<unsigned int>{{1, 1, 1, 1}});
 	if (layout_blocking_v.size() != Nd)
 	  ops.getValue("coarse_layout_blocking")
@@ -2106,6 +2107,8 @@ namespace Chroma
 	return rop;
       }
 
+      enum LandSeaDomain { Land, Sea, All };
+
       /// Returns a generic two domains preconditioner.
       ///
       /// It returns an approximation of Op^{-1} by splitting the rows and columns into the two
@@ -2127,7 +2130,9 @@ namespace Chroma
 
       template <std::size_t NOp, typename COMPLEX>
       Operator<NOp, COMPLEX> getHierarchicalPrec(Operator<NOp, COMPLEX> op, const Options& ops,
-						 Operator<NOp, COMPLEX> prec_)
+						 Operator<NOp, COMPLEX> prec_,
+						 LandSeaDomain land_sea_domain = All,
+						 int given_divisions = 0, double given_land = 0)
       {
 	auto dims = op.d.kvdim();
 
@@ -2137,8 +2142,9 @@ namespace Chroma
 	  throw std::runtime_error("getHierarchicalPrec: unsupported implicit operators");
 
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
-	int divisions = getOption<unsigned int>(ops, "divisions");
-	double land = getOption<double>(ops, "land");
+	int divisions =
+	  land_sea_domain == All ? getOption<unsigned int>(ops, "divisions") : given_divisions;
+	double land = land_sea_domain == All ? getOption<double>(ops, "land") : given_land;
 	if (land <= 0 || land >= 1)
 	  ops.getValue("land").throw_error("the value should be within the open interval (0, 1)");
 
@@ -2159,7 +2165,7 @@ namespace Chroma
 	  std::max(int(partition_size_large_partition * land), 1);
 	int land_size_with_small_partition =
 	  std::max(int(partition_size_small_partition * land), 1);
-	const auto is_island = [&](int c) {
+	const auto is_true_island = [&](int c) {
 	  int disp, land_size;
 	  if (c < first_coor_within_small_partition)
 	  {
@@ -2173,6 +2179,51 @@ namespace Chroma
 	    land_size = land_size_with_small_partition;
 	  }
 	  return disp < land_size;
+	};
+	// Border of the island
+	const auto is_coast = [&](int c) {
+	  int disp, land_size;
+	  if (c < first_coor_within_small_partition)
+	  {
+	    disp = c - part_ith_starts(c / partition_size_large_partition);
+	    land_size = land_size_with_large_partition;
+	  }
+	  else
+	  {
+	    disp = c - part_ith_starts(T % divisions + (c - first_coor_within_small_partition) /
+							 partition_size_small_partition);
+	    land_size = land_size_with_small_partition;
+	  }
+	  return disp == 0 || disp == land_size - 1;
+	};
+
+	// Border of the sea
+	const auto is_littoral = [&](int c) {
+	  int disp, land_size, size;
+	  if (c < first_coor_within_small_partition)
+	  {
+	    disp = c - part_ith_starts(c / partition_size_large_partition);
+	    land_size = land_size_with_large_partition;
+	    size = T / divisions + 1;
+	  }
+	  else
+	  {
+	    disp = c - part_ith_starts(T % divisions + (c - first_coor_within_small_partition) /
+							 partition_size_small_partition);
+	    land_size = land_size_with_small_partition;
+	    size = T / divisions;
+	  }
+	  return disp == land_size || disp == size - 1;
+	};
+
+	const auto is_island = [&](int c) {
+	  switch (land_sea_domain)
+	  {
+	  case All: return is_true_island(c);
+	  case Land: return is_coast(c);
+	  case Sea: return is_littoral(c);
+	  }
+	  return false; // avoid warning
 	};
 
 	int t_idx_dom = std::find(op.d.order.begin(), op.d.order.end(), 't') - op.d.order.begin();
@@ -2203,16 +2254,32 @@ namespace Chroma
 	Operator<NOp, COMPLEX> id_ii = op.get_identiy().kvslice_from_size(is_island_island);
 
 	// Get solvers for the island and the sea operators
-	const Operator<NOp, COMPLEX> solver_ss = getSolver(op_ss, getOptions(ops, "sea_solver"));
-	const Operator<NOp, COMPLEX> solver_ii = getSolver(op_ii, getOptions(ops, "land_solver"));
+	const auto& solver_ssii_ops = getOptions(ops, "sea_land_solver");
+	const Operator<NOp, COMPLEX> solver_ss = getSolver(op_ss, solver_ssii_ops);
+	const Operator<NOp, COMPLEX> solver_ii = getSolver(op_ii, solver_ssii_ops);
 
 	// Get solvers for inside opA
-	const auto solver_ss_schur_ops = getOptionsMaybe(ops, "sea_schur_solver");
+	const auto solver_opA_ops = getOptionsMaybe(ops, "schur_solver");
+	const auto solver_ssii_schur_ops =
+	  solver_opA_ops ? getOptionsMaybe(ops, "sea_land_schur_solver") : none;
+	bool is_solver_ssii_schur_hie =
+	  solver_ssii_schur_ops && land_sea_domain == All
+	    ? getOption<std::string>(solver_ssii_schur_ops.getSome(), "type") == std::string("hie")
+	    : false;
 	const Operator<NOp, COMPLEX> solver_ss_schur =
-	  solver_ss_schur_ops ? getSolver(op_ss, solver_ss_schur_ops.getSome()) : solver_ss;
-	const auto solver_ii_schur_ops = getOptionsMaybe(ops, "land_schur_solver");
+	  solver_ssii_schur_ops
+	    ? (is_solver_ssii_schur_hie
+		 ? getHierarchicalPrec(op_ss, solver_ssii_schur_ops.getSome(),
+				       Operator<NOp, COMPLEX>{}, Sea, divisions, land)
+		 : getSolver(op_ss, solver_ssii_schur_ops.getSome()))
+	    : solver_ss;
 	const Operator<NOp, COMPLEX> solver_ii_schur =
-	  solver_ii_schur_ops ? getSolver(op_ii, solver_ii_schur_ops.getSome()) : solver_ii;
+	  solver_ssii_schur_ops
+	    ? (is_solver_ssii_schur_hie
+		 ? getHierarchicalPrec(op_ii, solver_ssii_schur_ops.getSome(),
+				       Operator<NOp, COMPLEX>{}, Land, divisions, land)
+		 : getSolver(op_ii, solver_ssii_schur_ops.getSome()))
+	    : solver_ii;
 
 	unsigned int create_operator_max_rhs =
 	  getOption<unsigned int>(ops, "create_operator_max_rhs", 0);
@@ -2237,7 +2304,6 @@ namespace Chroma
 			     });
 	  },
 	  op_ss.d, op_ss.i, nullptr, op_ss};
-	const auto solver_opA_ops = getOptionsMaybe(ops, "schur_solver");
 	const Operator<NOp, COMPLEX> opA_solver =
 	  solver_opA_ops ? getSolver(opA, solver_opA_ops.getSome()) : Operator<NOp, COMPLEX>{};
 
@@ -2286,9 +2352,9 @@ namespace Chroma
 	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
 	    max_err = std::max(max_err, (double)normdiff.get({{i}}) / normx.get({{i}}));
 	  QDPIO::cout << " hierarchical prec error: " << detail::tostr(max_err) << std::endl;
-	}
+	     }
 
-	return rop;
+	     return rop;
       }
 
       /// Returns an approximation of the inverse of the domains local to the processes
@@ -2375,7 +2441,7 @@ namespace Chroma
 	std::vector<unsigned int> default_blocking{
 	  {op.imgLayout == EvensOnlyLayout ? 2u : 1u, 1u, 1u, 1u}};
 	std::vector<unsigned int> blocking =
-	  getVectorOption<unsigned int>(ops, "blocking", default_blocking);
+	  getOption<std::vector<unsigned int>>(ops, "blocking", default_blocking);
 	if (blocking.size() != Nd)
 	  ops.getValue("blocking")
 	    .throw_error("getBlocking: the blocking should be a vector with four elements");
@@ -2563,7 +2629,7 @@ namespace Chroma
 	   dim.count('2') == 1 ? (unsigned int)dim.at('2') : 1u,
 	   dim.count('3') == 1 ? (unsigned int)dim.at('3') : 1u}};
 	std::vector<unsigned int> blocking =
-	  getVectorOption<unsigned int>(ops, "blocking", default_blocking);
+	  getOption<std::vector<unsigned int>>(ops, "blocking", default_blocking);
 	if (blocking.size() != Nd)
 	  ops.getValue("blocking")
 	    .throw_error("getBlocking: the blocking should be a vector with four elements");
