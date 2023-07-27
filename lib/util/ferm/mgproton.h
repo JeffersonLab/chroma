@@ -2148,6 +2148,7 @@ namespace Chroma
 			   : given_divisions;
 	auto land =
 	  land_sea_domain == All ? getOption<std::array<unsigned int, 4>>(ops, "land") : given_land;
+	bool use_red_black = getOption<bool>(ops, "use_red_black", false);
 
 	// Check divisions and land
 	if (divisions == std::array<unsigned int, 4>{{}})
@@ -2183,6 +2184,7 @@ namespace Chroma
 
 	const auto is_true_island = [&](const std::array<int, 4>& coor) {
 	  // The coordinate is island if for all components is island
+	  int num_sea = 0;
 	  for (int d = 0; d < 4; ++d)
 	  {
 	    if (divisions[d] == 0)
@@ -2202,9 +2204,17 @@ namespace Chroma
 	      land_size = land[d];
 	    }
 	    if (disp >= land_size)
-	      return false;
+	    {
+	      if (!use_red_black)
+		return false;
+	      else
+		++num_sea;
+	    }
 	  }
-	  return true;
+	  if (!use_red_black)
+	    return true;
+	  else
+	    return num_sea % 2 == 1;
 	};
 	// Border of the island
 	const auto is_coast = [&](const std::array<int, 4>& coor) {
