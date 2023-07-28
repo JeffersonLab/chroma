@@ -622,13 +622,11 @@ namespace Chroma
       static std::vector<T> getOption(const Option& ops, const std::string& path,
 				      Maybe<std::vector<T>> defaultValue = none)
       {
-	if (defaultValue)
-	  throw std::runtime_error("getOption: unsupported to give default value for std::vector");
 	NoneOption defaultOp{};
 	const Option& valueOp =
 	  ops.getValue(path, defaultValue ? Maybe<const Option&>{defaultOp} : none);
 	if (!valueOp)
-	  return std::vector<T>();
+	  return defaultValue.getSome();
 	std::vector<T> r;
 	for (const auto& op : valueOp.getVector())
 	  r.push_back(SB::getOption<T>(*op, ""));
