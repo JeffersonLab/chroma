@@ -5864,7 +5864,8 @@ namespace Chroma
 	  dirs_global.set_zero();
 	  auto dirs_global_local = dirs_global.getLocal();
 	  int max_nnz_per_row = 0;
-	  Coor<NI> from_img = kvcoors<NI>(i.order, img_kvfrom);
+	  using superbblas::detail::operator+;
+	  Coor<NI> from_img = kvcoors<NI>(i.order, img_kvfrom) + this->i.p->localFrom();
 	  Coor<NI> local_img_size = new_ii_local.size;
 	  for (int i = 0; i < nblocki + nkroni; ++i)
 	    local_img_size[i] = 1;
@@ -5876,7 +5877,6 @@ namespace Chroma
 	  for (std::size_t i = 0, i_acc = 0, i1 = new_ii_local.volume(); i < i1;
 	       i_acc += ii_slice_ptr[i], ++i)
 	  {
-	    using superbblas::detail::operator+;
 	    Coor<NI> row_global_coor = normalize_coor(
 	      superbblas::detail::index2coor(i, local_img_size, img_local_stride) + from_img,
 	      this->i.dim);
