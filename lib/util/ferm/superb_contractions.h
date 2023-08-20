@@ -6935,6 +6935,13 @@ namespace Chroma
     using OperatorPowerFun =
       std::function<void(const Tensor<NOp + 2, COMPLEX>&, Tensor<NOp + 2, COMPLEX>, char)>;
 
+    /// Representation of an eigensolver, function of type Operator<NOp, COMPLEX>, int -> {std::vector<double>, tensor}
+    /// where the output tensor
+
+    template <std::size_t NOp, typename COMPLEX>
+    using EigensolverFun =
+      std::function<std::tuple<std::vector<double>, Tensor<NOp + 1, COMPLEX>>(int, double)>;
+
     /// Displacements of each site nonzero edge for every operator's site
 
     using NaturalNeighbors = std::vector<std::map<char, int>>;
@@ -8693,6 +8700,36 @@ namespace Chroma
       return r;
     }
 
+    /// Returns the \gamma_5 for a given number of spins
+    /// \param ns: number of spins
+
+    template <typename COMPLEX = Complex>
+    Tensor<2, COMPLEX> getGamma5(int ns, DeviceHost dev = OnDefaultDevice)
+    {
+      if (ns == 1)
+      {
+	Tensor<2, COMPLEX> r("ij", {1, 1}, OnHost, OnEveryoneReplicated);
+	r.set({{0, 0}}, COMPLEX{1});
+	return r.make_sure(none, dev);
+      }
+      else if (ns == Ns)
+      {
+	return SB::Gamma(Ns * Ns - 1).template make_sure<COMPLEX>(none, dev);
+      }
+      else if (ns == 2)
+      {
+	Tensor<2, COMPLEX> r("ij", {2, 2}, OnHost, OnEveryoneReplicated);
+	r.set_zero();
+	r.set({{0, 0}}, COMPLEX{1});
+	r.set({{1, 1}}, COMPLEX{-1});
+	return r.make_sure(none, dev);
+      }
+      else
+      {
+	throw std::runtime_error("Error in getGamma5: Unsupported spin number");
+      }
+    }
+
     // template <std::size_t N, typename T>
     // class Transform : public Tensor<N,T> {
     // public:
@@ -8933,8 +8970,9 @@ namespace Chroma
 
       // Auxiliary structure passed to PRIMME's matvec
 
+      template <std::size_t N>
       struct OperatorAux {
-	const Operator<Nd + 2, ComplexD> op; // Operator in cxyztX
+	const Operator<N, ComplexD> op;	     // Operator, most likely cxyztX or csxyztX
 	const DeviceHost primme_dev;	     // where primme allocations are
       };
 
@@ -8946,8 +8984,9 @@ namespace Chroma
       /// \param blockSize: number of input/output vectors
       /// \param ierr: output error state (zero means ok)
 
-      extern "C" inline void primmeMatvec(void* x, PRIMME_INT* ldx, void* y, PRIMME_INT* ldy,
-					  int* blockSize, primme_params* primme, int* ierr)
+      template <std::size_t N>
+      inline void primmeMatvec(void* x, PRIMME_INT* ldx, void* y, PRIMME_INT* ldy, int* blockSize,
+			       primme_params* primme, int* ierr)
       {
 	*ierr = -1;
 	try
@@ -8956,13 +8995,26 @@ namespace Chroma
 	  if (*blockSize > 1 && (*ldx != primme->nLocal || *ldy != primme->nLocal))
 	    throw std::runtime_error("We cannot play with the leading dimensions");
 
-	  OperatorAux& opaux = *(OperatorAux*)primme->matrix;
+	  OperatorAux<N>& opaux = *(OperatorAux<N>*)primme->matrix;
 	  const std::string order(opaux.op.d.order + std::string("n"));
-	  Coor<Nd + 3> size = latticeSize<Nd + 3>(order, {{'n', *blockSize}, {'t', 1}});
-	  Tensor<Nd + 3, ComplexD> tx(order, size, opaux.primme_dev, opaux.op.i.dist, (ComplexD*)x);
-	  Tensor<Nd + 3, ComplexD> ty(order, size, opaux.primme_dev, opaux.op.i.dist, (ComplexD*)y);
+	  auto dim = opaux.op.i.kvdim();
+	  dim['n'] = *blockSize;
+	  Coor<N + 1> size = kvcoors<N + 1>(order, dim);
+	  Tensor<N + 1, ComplexD> tx(order, size, opaux.primme_dev, opaux.op.i.dist, (ComplexD*)x);
+	  Tensor<N + 1, ComplexD> ty(order, size, opaux.primme_dev, opaux.op.i.dist, (ComplexD*)y);
 	  assert(tx.getLocal().volume() == primme->nLocal * (*blockSize));
-	  opaux.op(tx, ty);
+	  if (dim.count('s') == 0)
+	  {
+	    // ty = op * tx
+	    opaux.op(tx, ty);
+	  }
+	  else
+	  {
+	    // ty = op * g5 * tx
+	    auto g5 = getGamma5<ComplexD>(dim['s'], opaux.primme_dev);
+	    opaux.op(
+	      contract<N + 1>(g5.rename_dims({{'j', 's'}}), tx, "s").rename_dims({{'i', 's'}}), ty);
+	  }
 	  assert(ty.allocation->pending_operations.size() == 0);
 #    if defined(SUPERBBLAS_USE_CUDA)
 	  // Make sure cublas handle operates on legacy stream for primme
@@ -8972,6 +9024,19 @@ namespace Chroma
 	} catch (...)
 	{
 	}
+      }
+
+      extern "C" inline void primmeMatvecLaplacian(void* x, PRIMME_INT* ldx, void* y,
+						   PRIMME_INT* ldy, int* blockSize,
+						   primme_params* primme, int* ierr)
+      {
+	primmeMatvec<Nd + 2>(x, ldx, y, ldy, blockSize, primme, ierr);
+      }
+
+      extern "C" inline void primmeMatvecFermion(void* x, PRIMME_INT* ldx, void* y, PRIMME_INT* ldy,
+						 int* blockSize, primme_params* primme, int* ierr)
+      {
+	primmeMatvec<Nd + 7>(x, ldx, y, ldy, blockSize, primme, ierr);
       }
 
       /// Wrapper for PRIMME of a global sum for double
@@ -9067,7 +9132,7 @@ namespace Chroma
 	  // Create an auxiliary struct for the PRIMME's matvec
 	  // NOTE: Please keep 'n' as the slowest index; the rows of vectors taken by PRIMME's matvec has dimensions 'cxyztX',
 	  // and 'n' is the dimension for the columns.
-	  OperatorAux opaux{laplacianOp, primme_dev};
+	  OperatorAux<Nd + 2> opaux{laplacianOp, primme_dev};
 
 	  // Make a bigger structure holding
 	  primme_params primme;
@@ -9093,7 +9158,7 @@ namespace Chroma
 	  primme.target = primme_largest;
 
 	  // No preconditioner for my matrix
-	  primme.matrixMatvec = primmeMatvec;
+	  primme.matrixMatvec = primmeMatvecLaplacian;
 	  primme.matrix = &opaux;
 
 	  // Set block size

@@ -1148,12 +1148,6 @@ namespace Chroma
       try
       {
 	StopWatch swatch;
-	swatch.reset();
-
-	// Typedefs to save typing
-	typedef LatticeFermion               T;
-	typedef multi1d<LatticeColorMatrix>  P;
-	typedef multi1d<LatticeColorMatrix>  Q;
 
 	//
 	// Initialize fermion action
