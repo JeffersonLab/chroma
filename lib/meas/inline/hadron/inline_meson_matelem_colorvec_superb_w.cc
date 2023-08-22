@@ -39,42 +39,23 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
 
-      int version;
-      read(paramtop, "version", version);
-
-      switch (version)
-      {
-      case 1:
-	/**************************************************************************/
-	param.mom2_min = 0;
-	param.mom_list.resize(0);
-	break;
-
-      case 2:
-	/**************************************************************************/
-	read(paramtop, "mom2_min", param.mom2_min);
-	param.mom_list.resize(0);
-	break;
-
-      case 3:
-      case 4: // For compatibility with harom's task
-	/**************************************************************************/
-	read(paramtop, "mom2_min", param.mom2_min);
-	read(paramtop, "mom_list", param.mom_list);
-	break;
-
-      default:
-	/**************************************************************************/
-
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
-	QDP_abort(1);
-      }
-
       param.use_derivP = true;
+
       if (paramtop.count("use_derivP") > 0)
 	read(paramtop, "use_derivP", param.use_derivP);
+
+	param.mom_list.resize(0);
+      if (paramtop.count("mom_list") > 0)
+	read(paramtop, "mom_list", param.mom_list);
+
+      param.mom2_min = 0;
+      if (paramtop.count("mom_min") > 0)
+	read(paramtop, "mom2_min", param.mom2_min);
+
+      param.mom2_max = 0;
+      if (paramtop.count("mom2_max") > 0)
       read(paramtop, "mom2_max", param.mom2_max);
-      read(paramtop, "displacement_length", param.displacement_length);
+
       read(paramtop, "displacement_list", param.displacement_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
@@ -150,7 +131,6 @@ namespace Chroma
       write(xml, "mom2_min", param.mom2_min);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "mom_list", param.mom_list);
-      write(xml, "displacement_length", param.displacement_length);
       write(xml, "displacement_list", param.displacement_list);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);

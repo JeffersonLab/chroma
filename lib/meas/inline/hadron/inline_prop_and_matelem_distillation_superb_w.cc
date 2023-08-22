@@ -78,7 +78,6 @@ namespace Chroma
       read(inputtop, "Nt_forward", input.Nt_forward);
       read(inputtop, "Nt_backward", input.Nt_backward);
       read(inputtop, "mass_label", input.mass_label);
-      read(inputtop, "num_tries", input.num_tries);
 
       input.max_rhs = 8;
       if( inputtop.count("max_rhs") == 1 ) {
@@ -110,7 +109,6 @@ namespace Chroma
       write(xml, "Nt_forward", input.Nt_forward);
       write(xml, "Nt_backward", input.Nt_backward);
       write(xml, "mass_label", input.mass_label);
-      write(xml, "num_tries", input.num_tries);
       write(xml, "max_rhs", input.max_rhs);
       write(xml, "phase", input.phase);
       write(xml, "use_device_for_contractions", input.use_device_for_contractions);
@@ -313,13 +311,6 @@ namespace Chroma
 	QDPIO::cerr << name << ": TimeSliceIO only supports decay_dir= " << Nd-1 << "\n";
 	QDP_abort(1);
       }
-
-      // Reset
-      if (params.param.contract.num_tries <= 0)
-      {
-	params.param.contract.num_tries = 1;
-      }
-
 
       //
       // Read in the source along with relevant information.
