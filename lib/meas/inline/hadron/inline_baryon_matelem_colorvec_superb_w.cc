@@ -85,7 +85,6 @@ namespace Chroma
 	read(paramtop, "mom_list", param.mom_list);
       }
 
-      read(paramtop, "displacement_length", param.displacement_length);
       read(paramtop, "displacement_list", param.displacement_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
@@ -150,14 +149,10 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 2;
-
-      write(xml, "version", version);
       write(xml, "mom2_min", param.mom2_min);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "mom_list", param.mom_list);
       write(xml, "use_derivP", param.use_derivP);
-      write(xml, "displacement_length", param.displacement_length);
       write(xml, "displacement_list", param.displacement_list);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);

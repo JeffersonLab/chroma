@@ -140,7 +140,7 @@ namespace Chroma
     {
       XMLReader inputtop(xml, path);
 
-      input.alt_t_start = std::numeric_limits<int>::max();
+      input.alt_t_start = 0;
       if (inputtop.count("t_start") == 1) {
         read(inputtop, "t_start", input.alt_t_start);
       }
@@ -157,9 +157,7 @@ namespace Chroma
 
       read(inputtop, "use_derivP", input.use_derivP);
       read(inputtop, "decay_dir", input.decay_dir);
-      read(inputtop, "displacement_length", input.displacement_length);
       read(inputtop, "mass_label", input.mass_label);
-      read(inputtop, "num_tries", input.num_tries);
 
       input.max_rhs = 8;
       if( inputtop.count("max_rhs") == 1 ) {
@@ -242,9 +240,7 @@ namespace Chroma
       write(xml, "num_vecs", input.alt_num_vecs);
       write(xml, "use_derivP", input.use_derivP);
       write(xml, "decay_dir", input.decay_dir);
-      write(xml, "displacement_length", input.displacement_length);
       write(xml, "mass_label", input.mass_label);
-      write(xml, "num_tries", input.num_tries);
       write(xml, "max_rhs", input.max_rhs);
       write(xml, "max_tslices_in_contraction", input.max_tslices_in_contraction);
       write(xml, "max_moms_in_contraction", input.max_moms_in_contraction);
@@ -281,8 +277,6 @@ namespace Chroma
         read(inputtop, "SinkSources", input.alt_sink_sources);
 
       read(inputtop, "Contractions", input.contract);
-
-      input.link_smearing  = readXMLGroup(inputtop, "LinkSmearing", "LinkSmearingType");
     }
 
     //! Propagator output
@@ -299,7 +293,6 @@ namespace Chroma
       write(xml, "Displacements", input.alt_displacements);
       write(xml, "Moms", input.alt_moms);
       write(xml, "SinkSources", input.alt_sink_sources);
-      xml << input.link_smearing.xml;
 
       pop(xml);
     }
@@ -768,12 +761,6 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      // Reset
-      if (params.param.contract.num_tries <= 0)
-      {
-	params.param.contract.num_tries = 1;
-      }
-
       if (params.param.contract.use_derivP && params.param.contract.use_genprop4_format)
 	throw std::runtime_error("`use_genprop4_format` does not support `use_derivP` for now");
 
@@ -883,7 +870,7 @@ namespace Chroma
       // Stores the range of time-slices used for each sink/source
       //
 
-      std::vector<bool> cache_tslice(Lt);
+      std::vector<bool> cache_tslice(Lt, true);
       for (const auto& it : params.param.alt_sink_sources)
       {
 	for (const auto& snk : it.second)
@@ -896,7 +883,6 @@ namespace Chroma
 	  ss.Nt_backward = it.first - params.param.contract.alt_t_start;
 	  ss.Nt_forward = params.param.contract.alt_Nt_forward - ss.Nt_backward;
 	  params.param.sink_source_pairs.push_back(ss);
-	  cache_tslice[ss.t_source] = cache_tslice[ss.t_sink] = true;
 	}
       }
 
@@ -948,8 +934,8 @@ namespace Chroma
 	if (it.t_source < 0)
 	  throw std::runtime_error("Invalid source on PropSources");
 
-	if (it.cacheP)
-	  cache_tslice[it.t_source % Lt] = true;
+	if (!it.cacheP)
+	  cache_tslice[it.t_source % Lt] = false;
       }
 
       //
