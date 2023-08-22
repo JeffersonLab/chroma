@@ -761,7 +761,7 @@ Main options:
 
 ## Singular value/eigenvalue partial decomposition
 
-Compute the right singular vectors and values of the lower part of the spectrum of an operator by computing the eigenpairs of the Hermitian operator $$ D^{-1} \gamma_5 $$ for the largest eigenvalues in magnitude.
+Compute the right singular vectors and values of the lower part of the spectrum of an operator by computing the eigenpairs of the Hermitian operator $D^{-1}\gamma_5$ for the largest eigenvalues in magnitude.
 
 Example:
 ```
@@ -836,7 +836,7 @@ Example:
 Main options:
 
 * `Param/Contractions/num_vecs`: number of eigenpairs to compute.
-* `Param/Contractions/tolerance`: $$ \|\gamma_5*D^{-1}*x - \lambda x \|_2 \leq \text{tol}\ \|D^{-1}\|_2 $$.
+* `Param/Contractions/tolerance`: $\|\gamma_5 D^{-1} x - \lambda x \|_2 \leq \text{tol}\ \|D^{-1}\|_2$.
 * `Param/Contractions/mass_label`: label indicating the used mass.
 * `Param/Contractions/max_rhs`: (optional, default is 8) number of right-hand-sides to invert at once.
 * `Param/eigensolver/max_block_size`: (optional, default is `1`) maximum number of vectors expanding the search subspace in each iteration.
