@@ -1125,7 +1125,7 @@ namespace Chroma
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
 	if (precOps && prec_)
 	  throw std::runtime_error(
-	    "getFGMRESSolver: invalid `prec` tag: the solver got a preconditioner already");
+	    "getBicgstabSolver: invalid `prec` tag: the solver got a preconditioner already");
 	if (precOps)
 	  prec = getSolver(op, precOps.getSome());
 	else if (prec_)
@@ -1249,7 +1249,7 @@ namespace Chroma
 	  prec = prec_;
 
 	// Get the remainder options
-	unsigned int max_basis_size = getOption<unsigned int>(ops, "max_basis_size", 0);
+	unsigned int max_basis_size = getOption<unsigned int>(ops, "max_basis_size", 3);
 	double tol = getOption<double>(ops, "tol", 0.0);
 	unsigned int max_its = getOption<unsigned int>(ops, "max_its", 0);
 	if (max_its == 0 && tol <= 0)
