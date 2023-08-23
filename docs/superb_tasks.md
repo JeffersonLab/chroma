@@ -844,3 +844,223 @@ Main options:
 * `Param/eigensolver/verbosity`: (optional, default `nooutput`) one of `nooutput`, `summary`, `detailed`.
 * `Param/Propagator`: propagator configuration.
 * `NamedObject/eigs_file`: file to store the results.
+
+# `mgproton` solver collection
+
+## Flexible GMRES
+
+Example:
+```
+<InvertParam>
+  <invType>MGPROTON</invType>
+  <type>fgmres</type>
+  <tol>1e-7</tol>
+  <max_basis_size>3</max_basis_size>
+  <max_its>20000</max_its>
+  <verbosity>Detailed</verbosity>
+</InvertParam>
+```
+
+Main options:
+
+* `tol`: residual norm tolerance, stopping when $\|Dx-b\|_2 \leq \text{tol}\ \|b\|_2$.
+* `max_basis_size`: (optional, default `5`) maximum size of the search subspace.
+* `max_its`: (optional, default infinity) maximum number of iterations.
+* `error_if_not_converged`: (optional, default `true`) whether to complain if tolerance is not achieved.
+* `prec`: (optional, default none) left preconditioning, does not affect residual norm.
+* `ortho_each_its`: (optional, default `8` for double and `4` for single precision) orthogonalize the basis every this number of iterations.
+* `max_residual_updates`: (optional, default `4` for double and `2` for single precision) recompute the residual vector every this number of iterations.
+* `max_simultaneous_rhs`: (optional, default infinity) solver this many right-hand-sides at once.
+* `verbosity`: (optional, default `nooutput`) level of verbosity, one of `nonoutput`, `summary`, `detailed`.
+* `prefix`: (optional, default none) prefix output related with this solver with this string.
+
+## BiCGstab
+
+Example:
+```
+<InvertParam>
+  <invType>MGPROTON</invType>
+  <type>bicgstab</type>
+  <tol>1e-7</tol>
+  <max_its>20000</max_its>
+  <verbosity>Detailed</verbosity>
+</InvertParam>
+```
+
+Main options:
+
+* `tol`: residual norm tolerance, stopping when $\|Dx-b\|_2 \leq \text{tol}\ \|b\|_2$.
+* `max_its`: (optional, default infinity) maximum number of iterations.
+* `error_if_not_converged`: (optional, default `true`) whether to complain if tolerance is not achieved.
+* `prec`: (optional, default none) right preconditioning, may affect residual norm.
+* `max_simultaneous_rhs`: (optional, default infinity) solver this many right-hand-sides at once.
+* `verbosity`: (optional, default `nooutput`) level of verbosity, one of `nonoutput`, `summary`, `detailed`.
+* `prefix`: (optional, default none) prefix output related with this solver with this string.
+
+## Minimum Residual (MR)
+
+Example:
+```
+<InvertParam>
+  <invType>MGPROTON</invType>
+  <type>mr</type>
+  <tol>1e-7</tol>
+  <max_its>20000</max_its>
+  <verbosity>Detailed</verbosity>
+</InvertParam>
+```
+
+Main options:
+
+* `tol`: residual norm tolerance, stopping when $\|Dx-b\|_2 \leq \text{tol}\ \|b\|_2$.
+* `max_its`: (optional, default infinity) maximum number of iterations.
+* `error_if_not_converged`: (optional, default `true`) whether to complain if tolerance is not achieved.
+* `prec`: (optional, default none) left preconditioning, does not affect residual norm.
+* `max_simultaneous_rhs`: (optional, default infinity) solver this many right-hand-sides at once.
+* `verbosity`: (optional, default `nooutput`) level of verbosity, one of `nonoutput`, `summary`, `detailed`.
+* `prefix`: (optional, default none) prefix output related with this solver with this string.
+
+## Generalized Conjugate Residual (GCR)
+
+Example:
+```
+<InvertParam>
+  <invType>MGPROTON</invType>
+  <type>gcr</type>
+  <max_basis_size>3</max_basis_size>
+  <tol>1e-7</tol>
+  <max_its>20000</max_its>
+  <verbosity>Detailed</verbosity>
+</InvertParam>
+```
+
+Main options:
+
+* `tol`: residual norm tolerance, stopping when $\|Dx-b\|_2 \leq \text{tol}\ \|b\|_2$.
+* `max_basis_size`: (optional, default `3`) maximum size of the search subspace.
+* `max_its`: (optional, default infinity) maximum number of iterations.
+* `error_if_not_converged`: (optional, default `true`) whether to complain if tolerance is not achieved.
+* `prec`: (optional, default none) left preconditioning, does not affect residual norm.
+* `max_simultaneous_rhs`: (optional, default infinity) solver this many right-hand-sides at once.
+* `verbosity`: (optional, default `nooutput`) level of verbosity, one of `nonoutput`, `summary`, `detailed`.
+* `prefix`: (optional, default none) prefix output related with this solver with this string.
+
+## Even-odd preconditioning
+
+Approximate $D^{-1}$ by splitting the sites of $D$ into two colors (red-black, even-odd) and solving the Schur complement iteratively.
+
+Example:
+```
+<InvertParam>
+  <invType>MGPROTON</invType>
+  <type>eo</type>
+  <solver>
+    <type>gcr</type>
+    <tol>1e-7</tol>
+    <max_basis_size>3</max_basis_size>
+    <max_its>20000</max_its>
+    <verbosity>Detailed</verbosity>
+  </solver>
+</InvertParam>
+```
+
+Main options:
+
+* `use_Aee_prec`: (optional, default `false`) whether to preconditioning the Schur complement with $D_{ee}^{-1}$, resulting in solving $(I-D_{eo}D_{oo}^{-1}D_{oe}D_{ee}^{-1})^{-1}$, insted of $(D_{ee}-D_{eo}D_{oo}^{-1}D_{oe})^{-1}$.
+* `prec_ee`: (optional, default none): left preconditioning acting on the even sites for solving the Schur complement.
+* `solver`: solver for the Schur complement.
+* `prefix`: (optional, default none) prefix output related with this solver with this string.
+
+## Multigrid preconditioner
+
+Example:
+```
+<InvertParam>
+  <invType>MGPROTON</invType>
+  <type>eo</type>
+  <solver>
+    <type>mr</type>
+    <tol>1e-7</tol>
+    <max_its>20000</max_its>
+    <prefix>l0</prefix>
+    <verbosity>Detailed</verbosity>
+  </solver>
+  <prec_ee>
+    <type>mg</type>
+    <num_null_vecs>24</num_null_vecs>
+    <blocking>4 4 4 4</blocking>
+    <solver_null_vecs>
+      <type>eo</type>
+      <solver>
+        <type>mr</type>
+        <tol>1e-3</tol>
+        <max_its>50</max_its>
+        <error_if_not_converged>false</error_if_not_converged>
+        <prefix>nv0</prefix>
+        <verbosity>Detailed</verbosity>
+        <prec>
+          <type>dd</type>
+          <solver>
+            <type>mr</type>
+            <max_its>2</max_its>
+            <tol>1e-1</tol>
+            <error_if_not_converged>false</error_if_not_converged>
+            <verbosity>Detailed</verbosity>
+            <prefix>nv0_dd</prefix>
+          </solver>
+        </prec>
+      </solver>
+    </solver_null_vecs>
+    <solver_coarse>
+      <type>eo</type>
+      <solver>
+        <type>mr</type>
+        <tol>1e-1</tol>
+        <verbosity>Detailed</verbosity>
+        <prefix>c0</prefix>
+        <prec>
+          <type>dd</type>
+          <solver>
+            <type>mr</type>
+            <max_its>2</max_its>
+            <tol>1e-1</tol>
+            <error_if_not_converged>false</error_if_not_converged>
+            <verbosity>Detailed</verbosity>
+            <prefix>c0_dd</prefix>
+          </solver>
+        </prec>
+      </solver>
+    </solver_coarse>
+    <solver_smoother>
+      <type>eo</type>
+      <solver>
+        <type>mr</type>
+        <tol>1e-1</tol>
+        <max_its>5</max_its>
+        <error_if_not_converged>false</error_if_not_converged>
+        <prefix>s0</prefix>
+        <prec>
+          <type>dd</type>
+          <solver>
+            <type>mr</type>
+            <max_its>4</max_its>
+            <tol>1e-1</tol>
+            <error_if_not_converged>false</error_if_not_converged>
+            <verbosity>Detailed</verbosity>
+            <prefix>s0_dd</prefix>
+          </solver>
+        </prec>
+      </solver>
+    </solver_smoother>
+  </prec_ee>
+</InvertParam>
+```
+
+Main options:
+
+* `num_null_vecs`: number of null vectors.
+* `blocking`: sites factor reduction in each lattice direction for producing the prolongator $V$.
+* `solver_null_vecs`: solver to compute the null vectors, approximate solutions of $D{-1}0$.
+* `solver_coarse`: solver for the coarse operator, $V^* D V$, where $V$ is the prolongator.
+* `solver_smoother`: solver for the correction (post-smoothing).
+
