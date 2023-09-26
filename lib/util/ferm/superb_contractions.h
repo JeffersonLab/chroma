@@ -3739,27 +3739,6 @@ namespace Chroma
 	if (is_eg() || v.is_eg() || w.is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	// NOTE: Superbblas tensor contraction is shit and does not deal with contracting a host and
-	// device tensor (for now)
-	// a) If either v or w is on OnDevice, force both to be on device
-	if (v.ctx().plat != w.ctx().plat)
-	{
-	  if (v.getDev() != OnDefaultDevice)
-	    v = v.cloneOn(OnDefaultDevice);
-	  if (w.getDev() != OnDefaultDevice)
-	    w = w.cloneOn(OnDefaultDevice);
-	}
-
-	// b) Do arrangements if the input tensors are on a different device than the result tensor
-	if (getDev() != v.getDev())
-	{
-	  Tensor<N, T> aux =
-	    std::norm(beta) == 0 ? like_this(none, {}, v.getDev()) : cloneOn(v.getDev());
-	  aux.contract(v, mv, conjv, w, mw, conjw, mr, beta);
-	  aux.copyTo(*this);
-	  return;
-	}
-
 	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local) ||
 	    (v.dist == Glocal) != (w.dist == Glocal) || (w.dist == Glocal) != (dist == Glocal))
 	  throw std::runtime_error("contract: one of the contracted tensors or the output tensor "
