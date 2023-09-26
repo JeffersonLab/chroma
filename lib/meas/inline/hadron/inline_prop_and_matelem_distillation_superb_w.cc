@@ -375,11 +375,6 @@ namespace Chroma
 	swatch.reset();
 	QDPIO::cout << "Try the various factories" << std::endl;
 
-	// Typedefs to save typing
-	typedef LatticeFermion               T;
-	typedef multi1d<LatticeColorMatrix>  P;
-	typedef multi1d<LatticeColorMatrix>  Q;
-
 	//
 	// Initialize fermion action and create the solver
 	//
