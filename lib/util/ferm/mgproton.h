@@ -2768,7 +2768,7 @@ namespace Chroma
 #  endif
 #  if defined(SUPERBBLAS_USE_HIP)
 	    hipblasHandle_t gpublas_handle;
-	    gpuBlasCheck(hipblasCreate(&gpublas_handle));
+	    ns_getColorvecs::gpuBlasCheck(hipblasCreate(&gpublas_handle));
 #  endif
 
 	    // Create an auxiliary struct for the PRIMME's matvec
@@ -2823,7 +2823,7 @@ namespace Chroma
 	    superbblas::detail::GpuBlasHandle gpublas_handle =
 	      superbblas::detail::getGpuBlasHandle(evecs.ctx().toGpu(0));
 	    // Make sure cublas handle operates on legacy stream for primme
-	    gpuBlasCheck(cublasSetStream(gpublas_handle, 0));
+	    ns_getColorvecs::gpuBlasCheck(cublasSetStream(gpublas_handle, 0));
 
 #    endif
 	    primme.queue = &gpublas_handle;
@@ -2859,7 +2859,7 @@ namespace Chroma
 	    primme_free(&primme);
 
 #  if defined(SUPERBBLAS_USE_HIP)
-	    gpuBlasCheck(hipblasDestroy(gpublas_handle));
+	    ns_getColorvecs::gpuBlasCheck(hipblasDestroy(gpublas_handle));
 #  endif
 
 	    // Return
