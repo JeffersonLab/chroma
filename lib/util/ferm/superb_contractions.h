@@ -3067,9 +3067,7 @@ namespace Chroma
 	// Check that the size is divisible by the new partition
 	if (new_labels.size() == 0)
 	{
-	  if (size[pos] != 1)
-	    throw std::runtime_error("Invalid operation: removing a dimension that isn't singlet");
-	  if (dim[pos] != 1)
+	  if (dim[pos] > 1)
 	    throw std::runtime_error("Unsupported remove a dimension that isn't singlet; clone "
 				     "this object before doing the operator");
 	}
@@ -3103,14 +3101,14 @@ namespace Chroma
 	if (new_labels.size() != 2)
 	  throw std::runtime_error(
 	    "split_dimension: invalid `new_labels`, it should have size two");
-	if (kvdim().at(dim_label) == 1)
+	if (alloc_kvdim().at(dim_label) == 1)
 	  step = 1;
-	if (kvdim().at(dim_label) % step != 0)
+	if (alloc_kvdim().at(dim_label) % step != 0)
 	  throw std::runtime_error(
 	    "split_dimension: invalid `step`, it should divide the dimension size");
 	return split_dimension<N + 1>(
 	  dim_label, new_labels,
-	  {{new_labels[0], step}, {new_labels[1], kvdim().at(dim_label) / step}});
+	  {{new_labels[0], step}, {new_labels[1], alloc_kvdim().at(dim_label) / step}});
       }
 
       /// Collapse several dimensions into a new one
