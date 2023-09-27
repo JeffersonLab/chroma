@@ -413,7 +413,7 @@ namespace Chroma
 	  key.key().idx = idx;
 	  auto v =
 	    SB::detail::toNaturalOrdering(vectors.kvslice_from_size({{'n', idx}}, {{'n', 1}}))
-	      .make_sure(SB::none, SB::OnHost)
+	      .make_sure(SB::none, SB::OnHost, SB::OnMaster)
 	      .getLocal();
 	  if (v)
 	  {
