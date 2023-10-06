@@ -39,42 +39,23 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
 
-      int version;
-      read(paramtop, "version", version);
-
-      switch (version)
-      {
-      case 1:
-	/**************************************************************************/
-	param.mom2_min = 0;
-	param.mom_list.resize(0);
-	break;
-
-      case 2:
-	/**************************************************************************/
-	read(paramtop, "mom2_min", param.mom2_min);
-	param.mom_list.resize(0);
-	break;
-
-      case 3:
-      case 4: // For compatibility with harom's task
-	/**************************************************************************/
-	read(paramtop, "mom2_min", param.mom2_min);
-	read(paramtop, "mom_list", param.mom_list);
-	break;
-
-      default:
-	/**************************************************************************/
-
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
-	QDP_abort(1);
-      }
-
       param.use_derivP = true;
+
       if (paramtop.count("use_derivP") > 0)
 	read(paramtop, "use_derivP", param.use_derivP);
+
+	param.mom_list.resize(0);
+      if (paramtop.count("mom_list") > 0)
+	read(paramtop, "mom_list", param.mom_list);
+
+      param.mom2_min = 0;
+      if (paramtop.count("mom_min") > 0)
+	read(paramtop, "mom2_min", param.mom2_min);
+
+      param.mom2_max = 0;
+      if (paramtop.count("mom2_max") > 0)
       read(paramtop, "mom2_max", param.mom2_max);
-      read(paramtop, "displacement_length", param.displacement_length);
+
       read(paramtop, "displacement_list", param.displacement_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
@@ -102,7 +83,7 @@ namespace Chroma
       if (paramtop.count("phase") == 1)
       {
 	read(paramtop, "phase", param.quarkPhase);
-	if (paramtop.count("quarkPhase") == 1 || paramtop.count("quarkPhase") == 1)
+	if (paramtop.count("quarkPhase") == 1 || paramtop.count("aQuarkPhase") == 1)
 	{
 	  QDPIO::cerr << "Error: please don't give the tag `phase' and either `quarkPhase' or "
 			 "`aQuarkPhase'"
@@ -122,7 +103,6 @@ namespace Chroma
       else
       {
 	param.quarkPhase.resize(Nd - 1);
-	param.aQuarkPhase.resize(Nd - 1);
       }
 
       if (paramtop.count("aQuarkPhase") == 1)
@@ -151,7 +131,6 @@ namespace Chroma
       write(xml, "mom2_min", param.mom2_min);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "mom_list", param.mom_list);
-      write(xml, "displacement_length", param.displacement_length);
       write(xml, "displacement_list", param.displacement_list);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);
@@ -159,8 +138,8 @@ namespace Chroma
       write(xml, "Nt_forward", param.Nt_forward);
       write(xml, "max_tslices_in_contraction", param.max_tslices_in_contraction);
       write(xml, "max_moms_in_contraction", param.max_moms_in_contraction);
-      //write(xml, "quarkPhase", param.quarkPhase);
-      //write(xml, "aQuarkPhase", param.aQuarkPhase);
+      write(xml, "quarkPhase", SB::tomulti1d(param.quarkPhase));
+      write(xml, "aQuarkPhase", SB::tomulti1d(param.aQuarkPhase));
       xml << param.link_smearing.xml;
 
       pop(xml);

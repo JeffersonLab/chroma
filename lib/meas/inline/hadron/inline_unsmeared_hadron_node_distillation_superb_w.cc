@@ -140,7 +140,7 @@ namespace Chroma
     {
       XMLReader inputtop(xml, path);
 
-      input.alt_t_start = std::numeric_limits<int>::max();
+      input.alt_t_start = 0;
       if (inputtop.count("t_start") == 1) {
         read(inputtop, "t_start", input.alt_t_start);
       }
@@ -157,9 +157,7 @@ namespace Chroma
 
       read(inputtop, "use_derivP", input.use_derivP);
       read(inputtop, "decay_dir", input.decay_dir);
-      read(inputtop, "displacement_length", input.displacement_length);
       read(inputtop, "mass_label", input.mass_label);
-      read(inputtop, "num_tries", input.num_tries);
 
       input.max_rhs = 8;
       if( inputtop.count("max_rhs") == 1 ) {
@@ -196,13 +194,41 @@ namespace Chroma
         read(inputtop, "use_multiple_writers", input.use_multiple_writers);
       }
 
-      input.phase.resize(Nd - 1);
-      for (int i = 0; i < Nd - 1; ++i)
-	input.phase[i] = 0;
-      if( inputtop.count("phase") == 1 ) {
-        read(inputtop, "phase", input.phase);
+      if (inputtop.count("phase") == 1)
+      {
+	read(inputtop, "phase", input.quarkPhase);
+	if (inputtop.count("quarkPhase") == 1 || inputtop.count("quarkPhase") == 1)
+	{
+	  QDPIO::cerr << "Error: please don't give the tag `phase' and either `quarkPhase' or "
+			 "`aQuarkPhase'"
+		      << std::endl;
+	  QDP_abort(1);
+	}
       }
-     }
+      else if (inputtop.count("quarkPhase") == 1)
+      {
+	read(inputtop, "quarkPhase", input.quarkPhase);
+      }
+      else if (inputtop.count("aQuarkPhase") == 1)
+      {
+	QDPIO::cerr << "Label `aQuarkPhase' without the label `quarkPhase'" << std::endl;
+	QDP_abort(1);
+      }
+      else
+      {
+	input.quarkPhase.resize(Nd - 1);
+      }
+
+      if (inputtop.count("aQuarkPhase") == 1)
+      {
+	read(inputtop, "aQuarkPhase", input.aQuarkPhase);
+      }
+      else
+      {
+	for (float i : input.quarkPhase)
+	  input.aQuarkPhase.push_back(-i);
+      }
+    }
 
     //! Propagator output
     void write(XMLWriter& xml, const std::string& path, const Params::Param_t::Contract_t& input)
@@ -214,9 +240,7 @@ namespace Chroma
       write(xml, "num_vecs", input.alt_num_vecs);
       write(xml, "use_derivP", input.use_derivP);
       write(xml, "decay_dir", input.decay_dir);
-      write(xml, "displacement_length", input.displacement_length);
       write(xml, "mass_label", input.mass_label);
-      write(xml, "num_tries", input.num_tries);
       write(xml, "max_rhs", input.max_rhs);
       write(xml, "max_tslices_in_contraction", input.max_tslices_in_contraction);
       write(xml, "max_moms_in_contraction", input.max_moms_in_contraction);
@@ -224,7 +248,8 @@ namespace Chroma
       write(xml, "use_genprop5_format", input.use_genprop5_format);
       write(xml, "use_device_for_contractions", input.use_device_for_contractions);
       write(xml, "use_multiple_writers", input.use_multiple_writers);
-      write(xml, "phase", input.phase);
+      write(xml, "quarkPhase", SB::tomulti1d(input.quarkPhase));
+      write(xml, "aQuarkPhase", SB::tomulti1d(input.aQuarkPhase));
 
       pop(xml);
     }
@@ -252,8 +277,6 @@ namespace Chroma
         read(inputtop, "SinkSources", input.alt_sink_sources);
 
       read(inputtop, "Contractions", input.contract);
-
-      input.link_smearing  = readXMLGroup(inputtop, "LinkSmearing", "LinkSmearingType");
     }
 
     //! Propagator output
@@ -270,7 +293,6 @@ namespace Chroma
       write(xml, "Displacements", input.alt_displacements);
       write(xml, "Moms", input.alt_moms);
       write(xml, "SinkSources", input.alt_sink_sources);
-      xml << input.link_smearing.xml;
 
       pop(xml);
     }
@@ -739,12 +761,6 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      // Reset
-      if (params.param.contract.num_tries <= 0)
-      {
-	params.param.contract.num_tries = 1;
-      }
-
       if (params.param.contract.use_derivP && params.param.contract.use_genprop4_format)
 	throw std::runtime_error("`use_genprop4_format` does not support `use_derivP` for now");
 
@@ -822,17 +838,20 @@ namespace Chroma
       //
       // Parse the phase
       //
-      if (params.param.contract.phase.size() != Nd - 1)
+      if (params.param.contract.quarkPhase.size() != Nd - 1 || params.param.contract.aQuarkPhase.size() != Nd - 1)
       {
-	QDPIO::cerr << "phase tag should have " << Nd - 1 << " components" << std::endl;
+	QDPIO::cerr << "`phase', `quarkPhase', and `aQuarkPhase' tags should have " << Nd - 1
+		    << " components" << std::endl;
 	QDP_abort(1);
       }
-      SB::Coor<Nd - 1> phase;
+      SB::Coor<Nd - 1> negSinkPhase, sourcePhase;
       for (int i = 0; i < Nd - 1; ++i)
       {
-	phase[i] = params.param.contract.phase[i];
-	if (std::fabs(phase[i] - params.param.contract.phase[i]) > 0)
-	  std::runtime_error("phase should be integer");
+	if (std::fabs((int)params.param.contract.quarkPhase[i] - params.param.contract.quarkPhase[i]) > 0 ||
+	    std::fabs((int)params.param.contract.aQuarkPhase[i] - params.param.contract.aQuarkPhase[i]) > 0)
+	  std::runtime_error("phase', `quarkPhase', and `aQuarkPhase' should be integer");
+	sourcePhase[i] = params.param.contract.quarkPhase[i];
+	negSinkPhase[i] = -params.param.contract.aQuarkPhase[i];
       }
 
       //
@@ -851,7 +870,7 @@ namespace Chroma
       // Stores the range of time-slices used for each sink/source
       //
 
-      std::vector<bool> cache_tslice(Lt);
+      std::vector<bool> cache_tslice(Lt, true);
       for (const auto& it : params.param.alt_sink_sources)
       {
 	for (const auto& snk : it.second)
@@ -864,7 +883,6 @@ namespace Chroma
 	  ss.Nt_backward = it.first - params.param.contract.alt_t_start;
 	  ss.Nt_forward = params.param.contract.alt_Nt_forward - ss.Nt_backward;
 	  params.param.sink_source_pairs.push_back(ss);
-	  cache_tslice[ss.t_source] = cache_tslice[ss.t_sink] = true;
 	}
       }
 
@@ -872,7 +890,9 @@ namespace Chroma
 	int from;
 	int size;
       };
-      std::vector<FromSize> active_tslices(Lt);
+      std::vector<FromSize> active_tslices_source(Lt), active_tslices_sink0(Lt);
+      std::vector<FromSize>& active_tslices_sink =
+	  negSinkPhase == sourcePhase ? active_tslices_source : active_tslices_sink0;
       for (const auto& it : params.param.sink_source_pairs)
       {
 	// Check t_source and t_sink
@@ -883,24 +903,26 @@ namespace Chroma
 	// Make the number of time-slices even; required by SB::doMomGammaDisp_contractions
 	num_tslices_active = std::min(num_tslices_active + num_tslices_active % 2, Lt);
 
-	FromSize fs = active_tslices[it.t_source % Lt];
+	FromSize fs = active_tslices_source[it.t_source % Lt];
 	SB::union_interval(fs.from, fs.size, it.t_source - it.Nt_backward, num_tslices_active, Lt,
 			   fs.from, fs.size);
-	active_tslices[it.t_source % Lt] = fs;
-	fs = active_tslices[it.t_sink % Lt];
+	active_tslices_source[it.t_source % Lt] = fs;
+	fs = active_tslices_sink[it.t_sink % Lt];
 	SB::union_interval(fs.from, fs.size, it.t_source - it.Nt_backward, num_tslices_active, Lt,
 			   fs.from, fs.size);
-	active_tslices[it.t_sink % Lt] = fs;
+	active_tslices_sink[it.t_sink % Lt] = fs;
       }
 
       //
       // Store how many times a sink/source is call
       //
-      std::vector<unsigned int> edges_on_tslice(Lt);
+      std::vector<unsigned int> edges_on_tslice_source(Lt), edges_on_tslice_sink0(Lt);
+      std::vector<unsigned int>& edges_on_tslice_sink =
+	negSinkPhase == sourcePhase ? edges_on_tslice_source : edges_on_tslice_sink0;
       for (const auto& it : params.param.sink_source_pairs)
       {
-	edges_on_tslice[it.t_source % Lt]++;
-	edges_on_tslice[it.t_sink % Lt]++;
+	edges_on_tslice_source[it.t_source % Lt]++;
+	edges_on_tslice_sink[it.t_sink % Lt]++;
       }
 
       //
@@ -912,8 +934,8 @@ namespace Chroma
 	if (it.t_source < 0)
 	  throw std::runtime_error("Invalid source on PropSources");
 
-	if (it.cacheP)
-	  cache_tslice[it.t_source % Lt] = true;
+	if (!it.cacheP)
+	  cache_tslice[it.t_source % Lt] = false;
       }
 
       //
@@ -1078,7 +1100,8 @@ namespace Chroma
 	write(metadata_xml, "moms", moms);
 	write(metadata_xml, "mass_label", params.param.contract.mass_label);
 	write(metadata_xml, "gammas", gammas);
-	write(metadata_xml, "eigen_phase", params.param.contract.phase);
+	write(metadata_xml, "quarkPhase", SB::tomulti1d(params.param.contract.quarkPhase));
+	write(metadata_xml, "aQuarkPhase", SB::tomulti1d(params.param.contract.aQuarkPhase));
 	pop(metadata_xml);
 
 	// NOTE: metadata_xml only has a valid value on Master node; so do a broadcast
@@ -1137,7 +1160,9 @@ namespace Chroma
 	// and calling the relevant propagator routines.
 	//
 
-	std::vector<SB::Tensor<Nd + 5, SB::Complex>> invCache(Lt); // cache inversions
+	std::vector<SB::Tensor<Nd + 5, SB::Complex>> invCacheSource(Lt), invCacheSink0(Lt); // cache inversions
+	std::vector<SB::Tensor<Nd + 5, SB::Complex>>& invCacheSink =
+	  negSinkPhase == sourcePhase ? invCacheSource : invCacheSink0;
 
 	// Maximum number of linear system RHS solved at once 
 	const int max_rhs = params.param.contract.max_rhs;
@@ -1173,61 +1198,62 @@ namespace Chroma
 	  // Make the number of time-slices even; required by SB::doMomGammaDisp_contractions
 	  num_tslices_active = std::min(num_tslices_active + num_tslices_active % 2, Lt);
 
-	  if (!invCache[t_source])
+	  if (!invCacheSource[t_source])
 	  {
 	    // If this inversion is not going to be cache, just store tslices for this source-sink pair
 	    if (!cache_tslice[t_source])
 	    {
-	      active_tslices[t_source].from = first_tslice_active;
-	      active_tslices[t_source].size = num_tslices_active;
+	      active_tslices_source[t_source].from = first_tslice_active;
+	      active_tslices_source[t_source].size = num_tslices_active;
 	    }
 
 	    // Get num_vecs colorvecs on time-slice t_source
 	    SB::Tensor<Nd + 3, SB::ComplexF> source_colorvec = SB::getColorvecs(
-	      colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none, phase, dev);
+	      colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none, sourcePhase, dev);
 
 	    // Invert the source for all spins and retrieve num_tslices_active
 	    // time-slices starting from time-slice first_tslice_active
-	    invCache[t_source] = SB::doInversion<SB::ComplexF, SB::Complex>(
-	      *PP, std::move(source_colorvec), t_source, active_tslices[t_source].from,
-	      active_tslices[t_source].size, {0, 1, 2, 3}, max_rhs, "cxyzXnSst");
+	    invCacheSource[t_source] = SB::doInversion<SB::ComplexF, SB::Complex>(
+	      *PP, std::move(source_colorvec), t_source,
+	      active_tslices_source[t_source].from, active_tslices_source[t_source].size,
+	      {0, 1, 2, 3}, max_rhs, "cxyzXnSst");
 	  }
 
-	  if (!invCache[t_sink])
+	  if (!invCacheSink[t_sink])
 	  {
 	    // If this inversion is not going to be cache, just store tslices for this source-sink pair
 	    if (!cache_tslice[t_sink])
 	    {
-	      active_tslices[t_sink].from = first_tslice_active;
-	      active_tslices[t_sink].size = num_tslices_active;
+	      active_tslices_sink[t_sink].from = first_tslice_active;
+	      active_tslices_sink[t_sink].size = num_tslices_active;
 	    }
 
 	    // Get num_vecs colorvecs on time-slice t_sink
 	    SB::Tensor<Nd + 3, SB::ComplexF> sink_colorvec = SB::getColorvecs(
-	      colorvecsSto, u, decay_dir, t_sink, 1, num_vecs, SB::none, phase, dev);
+	      colorvecsSto, u, decay_dir, t_sink, 1, num_vecs, SB::none, negSinkPhase, dev);
 
 	    // Invert the sink for all spins and retrieve num_tslices_active time-slices starting from
 	    // time-slice first_tslice_active
-	    invCache[t_sink] = SB::doInversion<SB::ComplexF, SB::Complex>(
-	      *PP, std::move(sink_colorvec), t_sink, active_tslices[t_sink].from,
-	      active_tslices[t_sink].size, {0, 1, 2, 3}, max_rhs, "ScnsxyzXt");
+	    invCacheSink[t_sink] = SB::doInversion<SB::ComplexF, SB::Complex>(
+	      *PP, std::move(sink_colorvec), t_sink, active_tslices_sink[t_sink].from,
+	      active_tslices_sink[t_sink].size, {0, 1, 2, 3}, max_rhs, "ScnsxyzXt");
 	  }
 
 	  // The cache may have more tslices than need it; restrict to the ones required for this source-sink pair
-	  SB::Tensor<Nd + 5, SB::Complex> invSource = invCache[t_source].kvslice_from_size(
-	    {{'t', first_tslice_active - active_tslices[t_source].from}},
+	  SB::Tensor<Nd + 5, SB::Complex> invSource = invCacheSource[t_source].kvslice_from_size(
+	    {{'t', first_tslice_active - active_tslices_source[t_source].from}},
 	    {{'t', num_tslices_active}});
-	  SB::Tensor<Nd + 5, SB::Complex> invSink = invCache[t_sink].kvslice_from_size(
-	    {{'t', first_tslice_active - active_tslices[t_sink].from}},
+	  SB::Tensor<Nd + 5, SB::Complex> invSink = invCacheSink[t_sink].kvslice_from_size(
+	    {{'t', first_tslice_active - active_tslices_sink[t_sink].from}},
 	    {{'t', num_tslices_active}});
 
 	  // Remove from cache the source/sink inversions if the user suggests it or they are not going to be used anymore
-	  edges_on_tslice[t_source]--;
-	  edges_on_tslice[t_sink]--;
-	  if (edges_on_tslice[t_source] == 0 || !cache_tslice[t_source])
-	    invCache[t_source].release();
-	  if (edges_on_tslice[t_sink] == 0 || !cache_tslice[t_sink])
-	    invCache[t_sink].release();
+	  edges_on_tslice_source[t_source]--;
+	  edges_on_tslice_sink[t_sink]--;
+	  if (edges_on_tslice_source[t_source] == 0 || !cache_tslice[t_source])
+	    invCacheSource[t_source].release();
+	  if (edges_on_tslice_sink[t_sink] == 0 || !cache_tslice[t_sink])
+	    invCacheSink[t_sink].release();
 
 	  // Contract the spatial components of sink and source together with
 	  // several momenta, gammas and displacements; but contract not more than

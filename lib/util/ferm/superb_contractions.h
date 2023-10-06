@@ -47,10 +47,6 @@
 #    include <primme.h>
 #  endif
 
-#  if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
-#    include "magma_v2.h"
-#  endif
-
 namespace Chroma
 {
 
@@ -390,34 +386,6 @@ namespace Chroma
 	return v;
       }
 
-#  if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
-      // Return a MAGMA context
-      inline std::shared_ptr<magma_queue_t> getMagmaContext(Maybe<int> device = none)
-      {
-	static std::shared_ptr<magma_queue_t> queue;
-	if (!queue)
-	{
-	  // Start MAGMA and create a queue
-	  int dev = device.getSome(-1);
-	  if (dev < 0)
-	  {
-#    ifdef SUPERBBLAS_USE_CUDA
-	    superbblas::detail::cudaCheck(cudaGetDevice(&dev));
-#    elif defined(SUPERBBLAS_USE_HIP)
-	    superbblas::detail::hipCheck(hipGetDevice(&dev));
-#    else
-#      error superbblas was not build with support for GPUs
-#    endif
-	  }
-	  magma_init();
-	  magma_queue_t q;
-	  magma_queue_create(dev, &q);
-	  queue = std::make_shared<magma_queue_t>(q);
-	}
-	return queue;
-      }
-#  endif
-
       // Return a context on either the host or the device
       inline std::shared_ptr<superbblas::Context> getContext(DeviceHost dev)
       {
@@ -442,11 +410,6 @@ namespace Chroma
 	    superbblas::detail::hipCheck(hipGetDevice(&dev));
 #    else
 #      error superbblas was not build with support for GPUs
-#    endif
-
-#    if defined(BUILD_MAGMA)
-	    // Force the creation of the queue before creating a superbblas context (otherwise cublas complains)
-	    getMagmaContext();
 #    endif
 
 	    // Workaround on a potential issue in qdp-jit: avoid passing through the pool allocator
@@ -1970,7 +1933,7 @@ namespace Chroma
 
       DeviceHost getDev() const
       {
-#  ifdef QDP_IS_QDPJIT
+#  ifdef SUPERBBLAS_USE_GPU
 	return (ctx->plat != superbblas::CPU ? OnDefaultDevice : OnHost);
 #  else
 	return OnDefaultDevice;
@@ -2989,8 +2952,7 @@ namespace Chroma
 				      });
       }
 
-      // NOTE: for now, the GPU version requires MAGMA
-#  if defined(BUILD_PRIMME) && (!defined(QDP_IS_QDPJIT) || defined(BUILD_MAGMA))
+#  if defined(BUILD_PRIMME)
 
       // Apply the laplacian operator on the spatial dimensions
       /// \param u: Gauge fields restricted to the same t-slice as chi and psi
@@ -3171,13 +3133,15 @@ namespace Chroma
 	  Tensor<Nd + 3, ComplexD> evecs(
 	    opaux.order, latticeSize<Nd + 3>(opaux.order, {{'n', primme.numEvals}, {'t', 1}}),
 	    OnDefaultDevice, OnEveryone);
-#    if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
-	  primme.queue = &*detail::getMagmaContext();
+#    if defined(SUPERBBLAS_USE_CUDA)
+	  primme.queue = &*evecs.ctx->cublasHandle;
+#    elif defined(SUPERBBLAS_USE_HIP)
+	  primme.queue = &*evecs.ctx->hipblasHandle;
 #    endif
 
 	  // Call primme
-#    if defined(QDP_IS_QDPJIT) && defined(BUILD_MAGMA)
-	  int ret = magma_zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
+#    if defined(SUPERBBLAS_USE_GPU)
+	  int ret = cublas_zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
 #    else
 	  int ret = zprimme(evals.data(), evecs.data.get(), rnorms.data(), &primme);
 #    endif

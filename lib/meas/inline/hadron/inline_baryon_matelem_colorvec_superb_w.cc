@@ -85,7 +85,6 @@ namespace Chroma
 	read(paramtop, "mom_list", param.mom_list);
       }
 
-      read(paramtop, "displacement_length", param.displacement_length);
       read(paramtop, "displacement_list", param.displacement_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
@@ -136,6 +135,11 @@ namespace Chroma
 	read(paramtop, "max_vecs", param.max_vecs);
       }
 
+      param.use_superb_format = false;
+      if( paramtop.count("use_superb_format") == 1 ) {
+        read(paramtop, "use_superb_format", param.use_superb_format);
+      }
+
       param.link_smearing = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
 
@@ -145,14 +149,10 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 2;
-
-      write(xml, "version", version);
       write(xml, "mom2_min", param.mom2_min);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "mom_list", param.mom_list);
       write(xml, "use_derivP", param.use_derivP);
-      write(xml, "displacement_length", param.displacement_length);
       write(xml, "displacement_list", param.displacement_list);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);
@@ -163,6 +163,7 @@ namespace Chroma
       write(xml, "max_tslices_in_contraction", param.max_tslices_in_contraction);
       write(xml, "max_moms_in_contraction", param.max_moms_in_contraction);
       write(xml, "max_vecs", param.max_vecs);
+      write(xml, "use_superb_format", param.use_superb_format);
       xml << param.link_smearing.xml;
 
       pop(xml);
@@ -571,6 +572,40 @@ namespace Chroma
 	  std::runtime_error("phase should be integer");
       }
 
+      // Make sure displacements are something sensible and transform to std objects
+      std::vector<std::array<std::vector<int>, 3>> displacement_list =
+	normalizeDisplacements(params.param.displacement_list);
+
+      // Compute the interval of t points to compute
+      int tfrom = 0; // First t-slice to compute
+      int tsize = 0; // Number of t-slices to compute
+      std::set<int> t_slices_to_write{};
+      const int Nt = Layout::lattSize()[params.param.decay_dir];
+      if (params.param.t_slices.size() == 0)
+      {
+	tfrom = params.param.t_source;
+	tsize = params.param.Nt_forward;
+	params.param.t_slices.resize(tsize);
+	for (int i = 0; i < tsize; ++i)
+	{
+	  params.param.t_slices[i] = (tfrom + i) % Nt;
+	  t_slices_to_write.insert((tfrom + i) % Nt);
+	}
+      }
+      else
+      {
+	for (int i = 0; i < params.param.t_slices.size(); ++i)
+	{
+	  // Check the values
+	  int t0 = params.param.t_slices[i];
+	  if (t0 < 0 || t0 >= Nt)
+	    throw std::runtime_error("Invalid source at tag `t_slices'");
+
+	  SB::union_interval(tfrom, tsize, t0, 1, Nt, tfrom, tsize);
+	  t_slices_to_write.insert(t0);
+	}
+      }
+
       //
       // DB storage
       // NOTE: Only the master node opens the storage and writes on it
@@ -627,32 +662,68 @@ namespace Chroma
 	}
       };
 
-      // Compute the interval of t points to compute
-      int tfrom = 0; // First t-slice to compute
-      int tsize = 0; // Number of t-slices to compute
-      std::set<int> t_slices_to_write{};
-      const int Nt = Layout::lattSize()[params.param.decay_dir];
-      if (params.param.t_slices.size() == 0)
-      {
-	tfrom = params.param.t_source;
-	tsize = params.param.Nt_forward;
-	params.param.t_slices.resize(tsize);
-	for (int i = 0; i < tsize; ++i)
-	  t_slices_to_write.insert((tfrom + i) % Nt);
-      }
-      else
-      {
-	for (int i = 0; i < params.param.t_slices.size(); ++i)
-	{
-	  // Check the values
-	  int t0 = params.param.t_slices[i];
-	  if (t0 < 0 || t0 >= Nt)
-	    throw std::runtime_error("Invalid source at tag `t_slices'");
+      /// Superb storage; dimension labels ijktdm:
+      /// i,j,k: eigenvector indeces
+      /// t: time slice
+      /// d: concatenation of the left, middle and right displacements
+      /// m: momentum
 
-	  SB::union_interval(tfrom, tsize, t0, 1, Nt, tfrom, tsize);
-	  t_slices_to_write.insert(t0);
+      SB::StorageTensor<6, SB::ComplexD> st;
+      if (params.param.use_superb_format)
+      {
+	const char* order = "ijktdm";
+	XMLBufferWriter metadata_xml;
+	push(metadata_xml, "DBMetaData");
+	write(metadata_xml, "id", std::string("baryonElemOpSuperb"));
+	write(metadata_xml, "lattSize", QDP::Layout::lattSize());
+	write(metadata_xml, "decay_dir", params.param.decay_dir);
+	proginfo(metadata_xml); // Print out basic program info
+	write(metadata_xml, "Config_info", gauge_xml);
+	write(metadata_xml, "Params", params.param);
+	write(metadata_xml, "tensorOrder", order);
+	std::vector<std::vector<multi1d<int>>>  disps;
+	for (const auto& disp : displacement_list)
+	{
+	  disps.push_back(std::vector<multi1d<int>>{SB::tomulti1d(disp[0]), SB::tomulti1d(disp[1]),
+						    SB::tomulti1d(disp[2])});
 	}
+	write(metadata_xml, "displacements_left_middle_right", disps);
+	std::vector<multi1d<int>>  moms;
+	for (const auto& mom: mom_list)
+	  moms.push_back(SB::tomulti1d(mom));
+	write(metadata_xml, "moms", moms);
+	write(metadata_xml, "phase", params.param.phase);
+
+	// Some tasks read the eigenvalues from metadata but they not used; so we are going to give fake values
+	multi1d<multi1d<double>> evals(params.param.num_vecs);
+	const int Nt = Layout::lattSize()[params.param.decay_dir];
+	for (int i = 0; i < params.param.num_vecs; ++i)
+	{
+	  evals[i].resize(Nt);
+	  for (int t = 0; t < Nt; ++t)
+	    evals[i][t] = 0;
+	}
+	write(metadata_xml, "Weights", evals);
+
+	pop(metadata_xml);
+
+	// NOTE: metadata_xml only has a valid value on Master node; so do a broadcast
+	std::string metadata = SB::broadcast(metadata_xml.str());
+
+	st =
+	  SB::StorageTensor<6, SB::ComplexD>(params.named_obj.baryon_op_file, metadata, order,
+					     SB::kvcoors<6>(order, {{'i', params.param.num_vecs},
+								    {'j', params.param.num_vecs},
+								    {'k', params.param.num_vecs},
+								    {'t', Nt},
+								    {'d', displacement_list.size()},
+								    {'m', moms.size()}}),
+					     SB::Sparse, SB::checksum_type::BlockChecksum);
+	st.preallocate(params.param.num_vecs * params.param.num_vecs * params.param.num_vecs *
+		       t_slices_to_write.size() * displacement_list.size() * moms.size() *
+		       sizeof(SB::ComplexD));
       }
+
 
       //
       // Baryon operators
@@ -669,10 +740,6 @@ namespace Chroma
       swiss.reset();
       swiss.start();
 
-      // Make sure displacements are something sensible and transform to std objects
-      std::vector<std::array<std::vector<int>, 3>> displacement_list =
-	normalizeDisplacements(params.param.displacement_list);
-
       double time_storing = 0; // total time in writing elementals
 
       // Iterate over time-slices
@@ -688,8 +755,25 @@ namespace Chroma
 					this_tsize, params.param.num_vecs, "cxyzXnt", phase);
 
 	// Call for storing the baryons
-	SB::ColorContractionFn<SB::Complex> call(
-	  [&](SB::Tensor<5, SB::Complex> tensor, int disp, int first_tslice, int first_mom) {
+	SB::ColorContractionFn<SB::Complex> call([&](SB::Tensor<5, SB::Complex> tensor, int disp,
+						     int first_tslice, int first_mom) {
+	  StopWatch tstoring;
+	  tstoring.reset();
+	  tstoring.start();
+
+	  if (params.param.use_superb_format)
+	  {
+	    for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
+	    {
+	      if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
+		continue;
+	      st.kvslice_from_size({{'t', (first_tslice + t) % Nt}, {'d', disp}, {'m', first_mom}},
+				   {{'t', 1}, {'d', 1}, {'m', tensor.kvdim()['m']}})
+		.copyFrom(tensor.kvslice_from_size({{'t', t}}, {{'t', 1}}));
+	    }
+	  }
+	  else
+	  {
 	    // Only the master node writes the elementals and we assume that tensor is only supported on master
 	    assert(tensor.dist == SB::OnMaster);
 	    tensor = tensor.getLocal();
@@ -698,15 +782,9 @@ namespace Chroma
 	      // Open the database
 	      open_db();
 
-	      StopWatch tstoring;
-	      tstoring.reset();
-	      tstoring.start();
-
 	      KeyBaryonElementalOperator_t key;
 	      ValBaryonElementalOperator_t val(params.param.num_vecs);
 
-	      // The keys for the displacements for this particular elemental operator
-	      // Invert the time - make it an independent key
 	      for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
 	      {
 		if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
@@ -722,18 +800,19 @@ namespace Chroma
 		  qdp_db[0].insert(key, val);
 		}
 	      }
-
-	      tstoring.stop();
-	      time_storing += tstoring.getTimeInSeconds();
 	    }
-	  });
+	  }
+
+	  tstoring.stop();
+	  time_storing += tstoring.getTimeInSeconds();
+	});
 
 	// Do the color-contraction
 	SB::doMomDisp_colorContractions(
 	  u_smr, source_colorvec, mom_list, this_tfrom, displacement_list, params.param.use_derivP,
 	  call, 0 /*params.param.max_tslices_in_contraction==0 means to do all */,
 	  params.param.max_moms_in_contraction, params.param.max_vecs, SB::none,
-	  SB::OnDefaultDevice, SB::OnMaster);
+	  SB::OnDefaultDevice, params.param.use_superb_format ? SB::OnEveryone : SB::OnMaster);
       }
 
       // Close db

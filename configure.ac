@@ -434,15 +434,6 @@ AC_ARG_WITH(primme,
   [ with_primme="no" ]
 )
 
-AC_ARG_WITH(magma,
-  AC_HELP_STRING(
-    [--with-magma=DIR],
-    [Build Chroma with MAGMA in DIR]
-  ),
-  [ MAGMA_HOME="${with_magma}" ],
-  [ with_magma="no" ]
-)
-
 if test "X${QDPCVER_HOME}X" = "XX" ; then
   AC_MSG_NOTICE([QDPCVER_HOME variable not set.])
 else
@@ -1420,29 +1411,6 @@ fi
 
 AM_CONDITIONAL(BUILD_PRIMME,
 	[test "x${with_primme}x" != "xnox" ])
-
-################################################################################
-# MAGMA 
-################################################################################
- 
-if test "X${MAGMA_HOME}X" != "XX";
-then
-  AC_SUBST(MAGMA_CXXFLAGS, "-I${MAGMA_HOME}/include" ) 
-  AC_SUBST(MAGMA_LDFLAGS, "-L${MAGMA_HOME}/lib" )
-  AC_SUBST(MAGMA_LIBS,"-lmagma")
-  AC_MSG_NOTICE([ Build chroma with MAGMA installation in ${MAGMA_HOME}])
-  AC_DEFINE([BUILD_MAGMA], [], [Build with MAGMA])
-else
-  if test "X${with_magma}X" != "XnoX";
-  then
-    AC_MSG_NOTICE([ Building with MAGMA installation given in the CXXFLAGS, LDFLAGS, and LIBS flags ])
-    AC_DEFINE([BUILD_MAGMA], [], [Build with MAGMA])
-  fi
-fi
-
-AM_CONDITIONAL(BUILD_MAGMA,
-	[test "x${with_magma}x" != "xnox" ])
-
 
 
 AM_CONDITIONAL(BUILD_QOP_MG,
