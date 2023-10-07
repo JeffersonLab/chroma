@@ -345,34 +345,28 @@ namespace Chroma
 	}
       }
 
-      // Contract S and Q with all the gammas, and apply the displacements
-      std::string order_out = "gmNndsqt*";
-      std::pair<SB::Tensor<9, SB::Complex>, std::vector<int>> r =
-	SB::doMomGammaDisp_contractions<9>(u, std::move(qbart), std::move(qt), 0, mom_list, 0,
-					   SB::none, gamma_mats, disps, false, order_out);
-
-      // Gather all traces at the master node
-      SB::Tensor<9, SB::Complex> con =
-	r.first.make_sure(SB::none, SB::OnHost, SB::OnMaster).getLocal();
-
-      const std::vector<int>& disps_perm = r.second;
-
       // Normalize paths: replace empty by [0]
       std::vector<std::vector<int>> norm_disps;
       norm_disps.reserve(disps.size());
       for (const auto& it : disps)
 	norm_disps.push_back(it.size() == 0 ? std::vector<int>(1) : it);
 
-      // Do the update only on the master node
-      if (con)
-      {
-	for (int d = 0; d < disps_perm.size(); ++d)
+      // Contract S and Q with all the gammas, and apply the displacements
+      std::string order_out = "gmNnsqt*";
+      auto call = [&](SB::Tensor<8, SB::Complex> r, int disp_index, int tfrom, int mfrom) {
+	// Gather all traces at the master node
+	SB::Tensor<8, SB::Complex> con =
+	  r.make_sure(order_out, SB::OnHost, SB::OnMaster).getLocal();
+
+	// Do the update only on the master node
+	if (con)
 	{
+	  int tsize = r.kvdim().at('t');
 	  for (int mom = 0; mom < mom_list.size(); ++mom)
 	  {
-	    for (int t = 0; t < Nt; ++t)
+	    for (int t = 0; t < tsize; ++t)
 	    {
-	      MesonKey k{t, norm_disps[disps_perm[d]], mom_list[mom]};
+	      MesonKey k{(tfrom + t) % Nt, norm_disps[disp_index], mom_list[mfrom + mom]};
 
 	      auto it = db.find(k);
 	      if (it == db.end())
@@ -382,13 +376,16 @@ namespace Chroma
 	      {
 		for (int g = 0; g < Ns * Ns; ++g)
 		{
-		  it->second[g] += con.get({g, mom, 1, 1, d, 1, 1, t, ai});
+		  it->second[g] += con.get({g, mom, 1, 1, 1, 1, t, ai});
 		}
 	      }
 	    }
 	  }
 	}
-      }
+      };
+      SB::doMomGammaDisp_contractions<8, Nd + 6, Nd + 6, SB::Complex>(
+	u, std::move(qbart), std::move(qt), 0 /* first t_slize */, mom_list, gamma_mats, disps,
+	false /*no deriv*/, call, order_out);
     }
 
     // Update the mean and var for each observable in db

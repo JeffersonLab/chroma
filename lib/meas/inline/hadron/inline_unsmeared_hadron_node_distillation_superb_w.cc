@@ -194,11 +194,6 @@ namespace Chroma
         read(inputtop, "use_genprop5_format", input.use_genprop5_format);
       }
 
-      input.use_multiple_writers = false;
-      if( inputtop.count("use_multiple_writers") == 1 ) {
-        read(inputtop, "use_multiple_writers", input.use_multiple_writers);
-      }
-
       if (inputtop.count("phase") == 1)
       {
 	read(inputtop, "phase", input.quarkPhase);
@@ -252,7 +247,6 @@ namespace Chroma
       write(xml, "use_genprop4_format", input.use_genprop4_format);
       write(xml, "use_genprop5_format", input.use_genprop5_format);
       write(xml, "use_device_for_contractions", input.use_device_for_contractions);
-      write(xml, "use_multiple_writers", input.use_multiple_writers);
       write(xml, "quarkPhase", SB::tomulti1d(input.quarkPhase));
       write(xml, "aQuarkPhase", SB::tomulti1d(input.aQuarkPhase));
 
@@ -964,12 +958,6 @@ namespace Chroma
 	}
       }
 
-      // Set how many processes are going to write elementals; each process is going to write in a
-      // independent file
-      bool use_multiple_writers = params.param.contract.use_multiple_writers;
-      if (params.param.contract.use_genprop5_format)
-	use_multiple_writers = true;
-
       //
       // DB storage
       //
@@ -988,52 +976,22 @@ namespace Chroma
 	  std::max(max_tslices, (std::size_t)sink_source.Nt_backward + sink_source.Nt_forward + 1);
       std::size_t num_keys_gp4 = moms.size() * gammas.size() * disps.size() * max_tslices *
 				 params.param.sink_source_pairs.size();
-      for (auto& db : qdp_db)
-	db.setNumberBuckets(num_keys_gp4 * num_vecs * 2);
-      for (auto& db : qdp4_db)
-	db.setNumberBuckets(num_keys_gp4 * 2);
-
-      // The final elementals are going to be distributed along the lattice `t`
-      // dimension, with no support on the lattice spatial dimension.  Because
-      // of this, not all processes are going to have support on the final
-      // elementals. The processes that have are going to write them on disk
 
       bool db_is_open = false;  //< whether qdp_db/qdp4_db has been opened
-      int this_proc_id_t = -1;	//< the process id on the tensor holding the elementals
-      // This function open the output file, after changing the name with the process id if multiple writers is used
-      // \param proc_id_t: process rank on the tensor
-      // \param numprocs_t: number of processes with support on the tensor
-      std::function<void(int, int)> open_db = [&](int proc_id_t, int numprocs_t) {
-	if (params.param.contract.use_genprop5_format)
-	  return;
 
-	// If this process has not support on the tensor, do nothing
-	if (proc_id_t < 0)
-	  return;
-
+      // This function open the output file when using filehash
+      auto open_db = [&]() {
 	if (db_is_open)
-	{
-	  assert(proc_id_t == this_proc_id_t);
-	  assert((!params.param.contract.use_genprop4_format && qdp_db.size() == 1) ||
-		 (params.param.contract.use_genprop4_format && qdp4_db.size() == 1));
 	  return;
-	}
-	this_proc_id_t = proc_id_t;
 	db_is_open = true;
 
-	// If the final elementals are going to be spread among several processes, append the index
-	// of the current process on the `t` dimension to the filename
-	if (!params.param.contract.use_genprop4_format)
-	  qdp_db.resize(1);
-	else
-	  qdp4_db.resize(1);
 	std::string filename = params.named_obj.dist_op_file;
-	if (use_multiple_writers)
-	  filename += "." + std::to_string(proc_id_t + 1) + "_outof_" + std::to_string(numprocs_t);
 
 	// Open the file, and write the meta-data and the binary for this operator
 	if (!params.param.contract.use_genprop4_format)
 	{
+	  qdp_db.resize(1);
+	  qdp_db[0].setNumberBuckets(num_keys_gp4 * num_vecs * 2);
 	  if (!qdp_db[0].fileExists(filename))
 	  {
 	    XMLBufferWriter file_xml;
@@ -1060,6 +1018,8 @@ namespace Chroma
 	}
 	else
 	{
+	  qdp4_db.resize(1);
+	  qdp4_db[0].setNumberBuckets(num_keys_gp4 * 2);
 	  if (!qdp4_db[0].fileExists(filename))
 	  {
 	    XMLBufferWriter file_xml;
@@ -1128,17 +1088,14 @@ namespace Chroma
 	qdp5_db.preallocate(num_keys_gp4 * num_vecs * num_vecs * gammas.size() * sizeof(SB::ComplexD));
       }
 
-      //
-      // Try the factories
-      //
+      // Initialize fermion action
+      // NOTE: this gets out the following try-block because QUDA and MGPROTO solvers may
+      // hang when an exception is thrown, preventing the report of the exception message
+      SB::ChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u};
+
       try
       {
 	StopWatch swatch;
-
-	//
-	// Initialize fermion action
-	//
-	SB::ChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u};
 
 	//
 	// Loop over the source color and spin, creating the source
@@ -1242,6 +1199,7 @@ namespace Chroma
 	  SB::Tensor<Nd + 5, SB::Complex> invSink = invCacheSink[t_sink].kvslice_from_size(
 	    {{'t', first_tslice_active - active_tslices_sink[t_sink].from}},
 	    {{'t', num_tslices_active}});
+	  invSink = invSink.rename_dims({{'n', 'N'}, {'s', 'q'}, {'S', 'Q'}});
 
 	  // Remove from cache the source/sink inversions if the user suggests it or they are not going to be used anymore
 	  edges_on_tslice_source[t_source]--;
@@ -1251,108 +1209,66 @@ namespace Chroma
 	  if (edges_on_tslice_sink[t_sink] == 0 || !cache_tslice[t_sink])
 	    invCacheSink[t_sink].release();
 
-	  // Contract the spatial components of sink and source together with
-	  // several momenta, gammas and displacements; but contract not more than
-	  // max_tslices_in_contraction at once!
+	  double time_in_writing = 0; // time in writing in genprops
 
-	  invSink = invSink.rename_dims({{'n', 'N'}, {'s', 'q'}, {'S', 'Q'}});
-	  for (int tfrom = 0, tsize = std::min(max_tslices_in_contraction, num_tslices_active);
-	       tfrom < num_tslices_active; tfrom += tsize,
-		   tsize = std::min(max_tslices_in_contraction, num_tslices_active - tfrom))
-	  {
-	    for (int mfrom = 0, msize = std::min(max_moms_in_contraction, (int)moms.size());
-		 mfrom < moms.size();
-		 mfrom += msize, msize = std::min(max_moms_in_contraction, (int)moms.size() - mfrom))
-	    {
-
-	      StopWatch snarss1;
-	      snarss1.reset();
-	      snarss1.start();
-
-	      const char order_out[] = "qgmNndst";
-	      SB::Tensor<Nd + 5, SB::Complex> this_invSource =
-		invSource.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
-	      SB::Tensor<Nd + 5, SB::Complex> this_invSink =
-		invSink.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
-	      if (tfrom + tsize >= num_tslices_active && mfrom + msize >= moms.size())
-	      {
-		invSource.release();
-		invSink.release();
-	      }
-	      std::pair<SB::Tensor<8, SB::Complex>, std::vector<int>> r =
-		SB::doMomGammaDisp_contractions<8>(
-		  u, std::move(this_invSink), std::move(this_invSource),
-		  first_tslice_active + tfrom, moms, mfrom, msize, gamma_mats, disps,
-		  params.param.contract.use_derivP, order_out, SB::none, dev);
+	  auto call =
+	    [&](SB::Tensor<7, SB::Complex> r, int disp_index, int tfrom, int mfrom) {
 
 	      // Premultiply by g5, again; see above comment about this
-	      SB::Tensor<8, SB::Complex> g5_con = r.first.like_this(
-		"qgmNndst", {}, SB::OnHost, use_multiple_writers ? SB::OnEveryone : SB::OnMaster);
-	      g5_con.contract(SB::Gamma<SB::Complex>(g5, SB::OnDefaultDevice), {}, SB::NotConjugate,
-			      std::move(r.first), {{'q', 'j'}}, SB::NotConjugate, {{'q', 'i'}});
-	      const std::vector<int> disps_perm = r.second;
-
-	      snarss1.stop();
-	      QDPIO::cout << "Time to compute contractions for " << tsize
-			  << " tslices from t= " << (first_tslice_active + tfrom) % Lt << " and "
-			  << msize << " momenta from momentum " << mfrom << " : "
-			  << snarss1.getTimeInSeconds() << " secs" << std::endl;
+	      r = SB::contract<7>(r, SB::Gamma<SB::Complex>(g5, dev).rename_dims({{'j', 'q'}}), "q")
+		    .rename_dims({{'i', 'q'}});
 
 	      //
 	      // Do summation over all time slices between t_source+1 and t_sink-1
 	      //
-
+	      int tsize = r.kvdim().at('t');
+	      int msize = r.kvdim().at('m');
 	      if (params.param.contract.do_summation)
 	      {
-		auto s = g5_con.like_this(SB::none, {{'t', 1}});
+		auto s = r.like_this(SB::none, {{'t', 1}});
 		s.set_zero();
 		bool something_was_sum_up = false;
 		for (int t = 0; t < tsize; ++t)
 		{
-		  if (SB::normalize_coor(tfrom + first_tslice_active + t - (t_source + 1), Lt) <
+		  if (SB::normalize_coor(tfrom + t - (t_source + 1), Lt) <
 		      SB::normalize_coor(t_sink - 1 - (t_source + 1), Lt))
 		  {
-		    g5_con.kvslice_from_size({{'t', t}}, {{'t', 1}}).addTo(s);
+		    r.kvslice_from_size({{'t', t}}, {{'t', 1}}).addTo(s);
 		    something_was_sum_up = true;
 		  }
 		}
 		if (!something_was_sum_up)
-		  continue;
-		g5_con = s;
+		  return;
+		r = s;
 	      }
 
 	      //
 	      // Write the elementals
 	      //
 
-	      snarss1.reset();
-	      snarss1.start();
+	      double time_writing_this = -SB::w_time();
 
 	      if (params.param.contract.use_genprop5_format)
 	      {
-		auto g5_con_rearrange_d = g5_con.like_this();
-		for (int d = 0; d < disps_perm.size(); ++d)
-		{
-		  g5_con.kvslice_from_size({{'d', d}}, {{'d', 1}})
-		    .copyTo(
-		      g5_con_rearrange_d.kvslice_from_size({{'d', disps_perm[d]}}, {{'d', 1}}));
-		}
-
 		qdp5_db
 		  .kvslice_from_size(
 		    {{'m', mfrom},
-		     {'t', (!params.param.contract.do_summation ? tfrom + first_tslice_active
-								: t_source + 1) %
-			     Lt},
+		     {'d', disp_index},
+		     {'t', !params.param.contract.do_summation ? tfrom : (t_source + 1) % Lt},
 		     {'p', t_source},
 		     {'P', t_sink}},
-		    {{'p', 1}, {'P', 1}})
-		  .copyFrom(g5_con_rearrange_d);
+		    {{'p', 1}, {'P', 1}, {'d', 1}})
+		  .copyFrom(r);
 	      }
 	      else
 	      {
+		// Move the result to the master node and do the writing (only the master node)
+		r = r.make_sure(SB::none, SB::OnHost, SB::OnMaster).getLocal();
+		if (!r)
+		  return;
+
 		// Open DB if they are not opened already
-		open_db(g5_con.p->procRank(), g5_con.p->numProcs());
+		open_db();
 
 		// Store the tensor
 		if (!params.param.contract.use_genprop4_format)
@@ -1362,42 +1278,30 @@ namespace Chroma
 		  LocalSerialDBData<ValUnsmearedMesonElementalOperator_t> val;
 		  val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
 
-		  for (int t = 0, tsize0 = g5_con.kvdim().at('t'); t < tsize0; ++t)
+		  for (int t = 0; t < tsize; ++t)
 		  {
 		    for (int g = 0; g < gammas.size(); ++g)
 		    {
 		      for (int mom = 0; mom < msize; ++mom)
 		      {
-			for (int d = 0; d < disps_perm.size(); ++d)
+			for (int n = 0; n < num_vecs; ++n)
 			{
-			  for (int n = 0; n < num_vecs; ++n)
-			  {
-			    auto g5_con_t =
-			      g5_con
-				.kvslice_from_size(
-				  {{'g', g}, {'m', mom}, {'n', n}, {'d', d}, {'t', t}},
-				  {{'g', 1}, {'m', 1}, {'n', 1}, {'d', 1}, {'t', 1}})
-				.getLocal();
-			    if (g5_con_t)
-			    {
-			      g5_con_t.copyTo(val.data());
+			  r.kvslice_from_size({{'g', g}, {'m', mom}, {'n', n}, {'t', t}},
+					      {{'g', 1}, {'m', 1}, {'n', 1}, {'t', 1}})
+			    .copyTo(val.data());
 
-			      key.key().derivP = params.param.contract.use_derivP;
-			      key.key().t_sink = t_sink;
-			      key.key().t_slice = (!params.param.contract.do_summation
-						     ? t + tfrom + first_tslice_active
-						     : t_source + 1) %
-						  Lt;
-			      key.key().t_source = t_source;
-			      key.key().colorvec_src = n;
-			      key.key().gamma = gammas[g];
-			      key.key().displacement = disps[disps_perm[d]];
-			      key.key().mom = SB::tomulti1d(moms[mfrom + mom]);
-			      key.key().mass = params.param.contract.mass_label;
+			  key.key().derivP = params.param.contract.use_derivP;
+			  key.key().t_sink = t_sink;
+			  key.key().t_slice =
+			    (!params.param.contract.do_summation ? t + tfrom : t_source + 1) % Lt;
+			  key.key().t_source = t_source;
+			  key.key().colorvec_src = n;
+			  key.key().gamma = gammas[g];
+			  key.key().displacement = disps[disp_index];
+			  key.key().mom = SB::tomulti1d(moms[mfrom + mom]);
+			  key.key().mass = params.param.contract.mass_label;
 
-			      qdp_db[use_multiple_writers ? mfrom + mom : 0].insert(key, val);
-			    }
-			  }
+			  qdp_db[0].insert(key, val);
 			}
 		      }
 		    }
@@ -1410,48 +1314,50 @@ namespace Chroma
 		  LocalSerialDBData<ValGenProp4ElementalOperator_t> val;
 		  val.data() = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
 
-		  for (int t = 0, tsize0 = g5_con.kvdim().at('t'); t < tsize0; ++t)
+		  for (int t = 0; t < tsize; ++t)
 		  {
 		    for (int g = 0; g < gammas.size(); ++g)
 		    {
 		      for (int mom = 0; mom < msize; ++mom)
 		      {
-			for (int d = 0; d < disps_perm.size(); ++d)
-			{
-			  auto g5_con_t =
-			    g5_con
-			      .kvslice_from_size({{'g', g}, {'m', mom}, {'d', d}, {'t', t}},
-						 {{'g', 1}, {'m', 1}, {'d', 1}, {'t', 1}})
-			      .getLocal();
+			r.kvslice_from_size({{'g', g}, {'m', mom}, {'t', t}},
+					    {{'g', 1}, {'m', 1}, {'t', 1}})
+			  .copyTo(val.data());
 
-			  if (g5_con_t)
-			  {
-			    g5_con_t.copyTo(val.data());
+			key.key().t_sink = t_sink;
+			key.key().t_slice =
+			  (!params.param.contract.do_summation ? t + tfrom : t_source + 1) % Lt;
+			key.key().t_source = t_source;
+			key.key().g = gammas[g];
+			key.key().displacement = disps[disp_index];
+			key.key().mom = SB::tomulti1d(moms[mfrom + mom]);
+			key.key().mass = params.param.contract.mass_label;
 
-			    key.key().t_sink = t_sink;
-			    key.key().t_slice =
-			      (!params.param.contract.do_summation ? t + tfrom + first_tslice_active
-								   : t_source + 1) %
-			      Lt;
-			    key.key().t_source = t_source;
-			    key.key().g = gammas[g];
-			    key.key().displacement = disps[disps_perm[d]];
-			    key.key().mom = SB::tomulti1d(moms[mfrom + mom]);
-			    key.key().mass = params.param.contract.mass_label;
-
-			    qdp4_db[use_multiple_writers ? mfrom + mom : 0].insert(key, val);
-			  }
-			}
+			qdp4_db[0].insert(key, val);
 		      }
 		    }
 		  }
 		}
 	      }
-	      snarss1.stop();
-	      QDPIO::cout << "Time to store " << tsize
-			  << " tslices : " << snarss1.getTimeInSeconds() << " secs" << std::endl;
-	    }
-	  }
+
+	      time_in_writing += SB::w_time() + time_writing_this;
+	    };
+
+	  // Contract the spatial components of sink and source together with
+	  // several momenta, gammas and displacements; but contract not more than
+	  // max_tslices_in_contraction at once!
+
+	  double time_contracting_and_writing = -SB::w_time();
+	  SB::doMomGammaDisp_contractions<7, Nd + 5, Nd + 5, SB::Complex>(
+	    u, std::move(invSink), std::move(invSource), first_tslice_active, moms, gamma_mats,
+	    disps, params.param.contract.use_derivP, call, "qgmNnst", max_tslices_in_contraction,
+	    max_moms_in_contraction, dev);
+	  time_contracting_and_writing += SB::w_time();
+
+	  QDPIO::cout << "Time to contract: " << time_contracting_and_writing - time_in_writing
+		      << " secs" << std::endl;
+	  QDPIO::cout << "Time to store: " << time_in_writing << " secs" << std::endl;
+
 	  swatch.stop();
 	  QDPIO::cout << "SINK-SOURCE: time to compute all source solution vectors and insertions "
 			 "for t_sink= "

@@ -9939,6 +9939,16 @@ namespace Chroma
 
     }
 
+    /// Callback function for each displacement/derivate, and chunk of time-slices and momenta
+    /// Arguments of the callback:
+    /// \param tensor: output tensor with order ijkmt
+    /// \param disp: index of the displacement/derivative
+    /// \param first_timeslice: index of the first time-slice in the tensor
+    /// \param first_mom: index of the first momentum in the tensor
+
+    template <std::size_t Nout, typename COMPLEX = Complex>
+    using MomGammaDispContractionFn = std::function<void(Tensor<Nout, COMPLEX>, int, int, int)>;
+
     namespace ns_doMomGammaDisp_contractions
     {
       using namespace detail;
@@ -9961,27 +9971,19 @@ namespace Chroma
 				       const Tensor<Nleft, COMPLEX> leftconj,
 				       Tensor<Nright, COMPLEX> right, Index first_tslice,
 				       const PathNode& disps, bool deriv, Tensor<3, COMPLEX> gammas,
-				       const std::vector<Coor<Nd - 1>>& moms, int max_rhs,
-				       Tensor<Nout, COMPLEX> r, std::vector<int>& disp_indices)
+				       const std::vector<Coor<Nd - 1>>& moms, int first_mom,
+				       const MomGammaDispContractionFn<Nout, COMPLEX>& call)
       {
-	max_rhs = std::max(1, max_rhs);
-
 	if (disps.disp_index >= 0)
 	{
 	  detail::log(1, "contracting for disp_index=" + std::to_string(disps.disp_index));
-	  // Contract the spatial components and the color of the leftconj and right tensors
-	  Tensor<Nout, COMPLEX> aux =
-	    r.template like_this<Nout, COMPLEX>("mNQqnSst%", '%', "gd", {{'S', Ns}, {'Q', Ns}});
-	  aux.contract(leftconj, {}, Conjugate, right, {}, NotConjugate, {});
 
-	  // Contract the spin components S and Q with the gammas, and put the result on r[d=disp_indices.size()]
-	  Tensor<Nout - 1, COMPLEX> aux0 =
-	    r.template like_this<Nout - 1, COMPLEX>("gmNqnst%", '%', "d");
-	  aux0.contract(gammas, {}, NotConjugate, aux, {}, NotConjugate);
-	  aux0.copyTo(r.kvslice_from_size({{'d', disp_indices.size()}}, {{'d', 1}}));
+	  // Contract the spatial components (Xxyz) and the color of the leftconj and right tensors,
+	  // and the spin components S and Q with the gammas
+	  Tensor<Nout, COMPLEX> r =
+	    contract<Nout>(contract<Nout>(leftconj.conj(), right, "cxyzX"), gammas, "");
 
-	  // Annotate on disp_indices the displacement being computed for the current `d`
-	  disp_indices.push_back(disps.disp_index);
+	  call(std::move(r), disps.disp_index, first_tslice, first_mom);
 	}
 
 	// Apply displacements on the right and call recursively
@@ -9999,7 +10001,7 @@ namespace Chroma
 	  if (node_disp == disps.p.size() - 1)
 	    right.release();
 	  doMomGammaDisp_contractions(u, leftconj, std::move(right_disp), first_tslice, it.second,
-				      deriv, gammas, moms, max_rhs - num_vecs, r, disp_indices);
+				      deriv, gammas, moms, first_mom, call);
 	  node_disp++;
 	  detail::log(1, "pop direction");
 	}
@@ -10016,12 +10018,9 @@ namespace Chroma
     /// \param right: right lattice fermion tensor, cxyzXnSst
     /// \param first_tslice: first time-slice in leftconj and right
     /// \param moms: momenta to apply
-    /// \param moms_first: index of the first momenta to apply
-    /// \param num_moms: number of momenta to apply (if none, apply all of them)
     /// \param gammas: list of gamma matrices to apply
     /// \param disps: list of displacements/derivatives
     /// \param deriv: if true, do left-right nabla derivatives
-    /// \param max_rhs: maximum number of vectors hold in memory
     /// \param order_out: coordinate order of the output tensor, a permutation of nNSQmgd where
     ///        q and N (s and n) are the spin and vector from left (right) vectors, m is the momentum
     ///        index, g is the gamma index, and d is the displacement index
@@ -10029,15 +10028,18 @@ namespace Chroma
     ///        index in the tensor with an input displacement index.
 
     template <std::size_t Nout, std::size_t Nleft, std::size_t Nright, typename COMPLEX>
-    std::pair<Tensor<Nout, COMPLEX>, std::vector<int>> doMomGammaDisp_contractions(
-      const multi1d<LatticeColorMatrix>& u, Tensor<Nleft, COMPLEX> leftconj,
-      Tensor<Nright, COMPLEX> right, Index first_tslice, const CoorMoms& moms, int first_mom,
-      Maybe<int> num_moms, const std::vector<Tensor<2, COMPLEX>>& gammas,
-      const std::vector<std::vector<int>>& disps, bool deriv,
-      const std::string& order_out = "gmNndsqt", Maybe<int> max_active_tslices = none,
-      DeviceHost dev = OnDefaultDevice)
+    void doMomGammaDisp_contractions(const multi1d<LatticeColorMatrix>& u,
+				     Tensor<Nleft, COMPLEX> leftconj, Tensor<Nright, COMPLEX> right,
+				     Index first_tslice, const CoorMoms& moms,
+				     const std::vector<Tensor<2, COMPLEX>>& gammas,
+				     const std::vector<std::vector<int>>& disps, bool deriv,
+				     const MomGammaDispContractionFn<Nout, COMPLEX>& call,
+				     const std::string& order_out = "gmNnsqt",
+				     Maybe<int> max_active_tslices = none,
+				     Maybe<int> max_active_moms = none,
+				     DeviceHost dev = OnDefaultDevice)
     {
-      detail::check_order_contains(order_out, "gmNndsqt");
+      detail::check_order_contains(order_out, "gmNnsqt");
       detail::check_order_contains(leftconj.order, "cxyzXNQqt");
       detail::check_order_contains(right.order, "cxyzXnSst");
 
@@ -10048,6 +10050,7 @@ namespace Chroma
       int max_t = max_active_tslices.getSome(Nt);
       if (max_t <= 0)
 	max_t = Nt;
+      int max_moms_in_contraction = max_active_moms.getSome(moms.size());
 
       // Form a tree with the displacement paths
       detail::PathNode tree_disps = ns_doMomGammaDisp_contractions::get_tree(disps);
@@ -10056,28 +10059,6 @@ namespace Chroma
       std::array<bool, Nd> active_dirs{{}};
       unsigned int max_active_disps = 0;
       detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps);
-
-      // Number of moments to apply
-      int numMom = num_moms.getSome(moms.size());
-      if (first_mom + numMom > moms.size())
-	throw std::runtime_error("Invalid range of momenta");
-
-      // Allocate output tensor
-      std::map<char, int> r_size = {{'t', Nt},
-				    {'n', right.kvdim()['n']},
-				    {'s', right.kvdim()['s']},
-				    {'N', leftconj.kvdim()['N']},
-				    {'q', leftconj.kvdim()['q']},
-				    {'m', numMom},
-				    {'g', gammas.size()},
-				    {'d', disps.size()}};
-      for (char c : detail::remove_dimensions(order_out, "gmNndsqt"))
-	r_size[c] = leftconj.kvdim()[c];
-      Tensor<Nout, COMPLEX> r(order_out, kvcoors<Nout>(order_out, r_size));
-
-      // Create mom_list
-      std::vector<Coor<Nd - 1>> mom_list(moms.begin() + first_mom,
-					 moms.begin() + first_mom + numMom);
 
       // Copy all gammas into a single tensor
       Tensor<3, COMPLEX> gammast("gQS", {(Index)gammas.size(), Ns, Ns}, dev, OnEveryoneReplicated);
@@ -10088,41 +10069,12 @@ namespace Chroma
 	  .copyTo(gammast.kvslice_from_size({{'g', g}}, {{'g', 1}}));
       }
 
-      // Iterate over time-slices
-      std::vector<int> disp_indices;
-
       for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
       {
 	// Make tsize one or even
 	if (tsize > 1 && tsize % 2 != 0)
 	  --tsize;
-
-	detail::log(1, "contracting " + std::to_string(tsize) +
-			 " tslices from tslice= " + std::to_string(tfrom));
-
-	disp_indices.resize(0);
-
-	// Copy moms into a single tensor
-	std::string momst_order = "mxyzXt";
-	Tensor<Nd + 2, COMPLEX> momst(
-	  momst_order, latticeSize<Nd + 2>(momst_order, {{'t', tsize}, {'m', numMom}}), dev);
-	for (int m = 0; m < numMom; ++m)
-	{
-	  ns_getColorvecs::getPhase<COMPLEX>(moms[first_mom + m], first_tslice + tfrom, tsize,
-					     momst.getDev())
-	    .copyTo(momst.kvslice_from_size({{'m', m}}, {{'m', 1}}));
-	}
-
-	// Apply momenta conjugated to the left tensor and rename the spin components s and Q to q and Q,
-	// and the colorvector component n to N
-	Tensor<Nleft + 1, COMPLEX> moms_left = leftconj.template like_this<Nleft + 1>(
-	  "mQNqc%xyzXt", '%', "", {{'m', numMom}, {'t', tsize}});
-	moms_left.contract(std::move(momst), {}, Conjugate,
-			   leftconj.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}), {},
-			   NotConjugate);
-	if (tfrom + tsize >= Nt)
-	  leftconj.release();
 
 	// Make a copy of the time-slicing of u[d] also supporting left and right
 	std::vector<Tensor<Nd + 3, Complex>> ut(Nd);
@@ -10138,32 +10090,61 @@ namespace Chroma
 		    .make_sure(none, dev);
 	}
 
-	// Do the thing
-	auto this_right = right.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
-	if (tfrom + tsize >= Nt)
-	  right.release();
-	auto this_r = r.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
-	if (!deriv)
+	for (int mfrom = 0, msize = std::min(max_moms_in_contraction, (int)moms.size());
+	     mfrom < moms.size();
+	     mfrom += msize, msize = std::min(max_moms_in_contraction, (int)moms.size() - mfrom))
 	{
-	  ns_doMomGammaDisp_contractions::doMomGammaDisp_contractions(
-	    ut, std::move(moms_left), std::move(this_right), first_tslice + tfrom, tree_disps,
-	    deriv, gammast, mom_list, 0, this_r, disp_indices);
-	}
-	else
-	{
-	  throw std::runtime_error("Derivatives are not implemented! Sorry!");
-	  // std::vector<COMPLEX> ones(moms.numMom(), COMPLEX(1));
-	  // std::string right_moms_order = std::string(right.order.begin(), right.order.size()) + "m";
-	  // Tensor<Nright + 1, COMPLEX> right_moms =
-	  //   right.like_this<Nright + 1>(right_moms_order.c_str());
-	  // right_moms.contract(asTensorView(ones), {{'i', 'm'}}, NotConjugate, std::move(right), {},
-	  // 		    NotConjugate);
-	  // doMomGammaDisp_contractions(u, gammast_moms_left, right_moms, tree_disps, deriv, mom_list,
-	  // 			    max_rhs, r, disp_indices);
+
+	  detail::log(1, "contracting " + std::to_string(tsize) + " tslices from tslice= " +
+			   std::to_string(tfrom) + " and " + std::to_string(msize) +
+			   " momenta from momentum " + std::to_string(mfrom));
+
+	  // Copy moms into a single tensor
+	  std::string momst_order = "mxyzXt";
+	  Tensor<Nd + 2, COMPLEX> momst(
+	    momst_order, latticeSize<Nd + 2>(momst_order, {{'t', tsize}, {'m', msize}}), dev);
+	  for (int m = 0; m < msize; ++m)
+	  {
+	    ns_getColorvecs::getPhase<COMPLEX>(moms[mfrom + m], first_tslice + tfrom, tsize,
+					       momst.getDev())
+	      .copyTo(momst.kvslice_from_size({{'m', m}}, {{'m', 1}}));
+	  }
+
+	  // Apply momenta conjugated to the left tensor and rename the spin components s and Q to q and Q,
+	  // and the colorvector component n to N
+	  Tensor<Nleft + 1, COMPLEX> moms_left = leftconj.template like_this<Nleft + 1>(
+	    "mQNqc%xyzXt", '%', "", {{'m', msize}, {'t', tsize}});
+	  moms_left.contract(std::move(momst), {}, Conjugate,
+			     leftconj.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}), {},
+			     NotConjugate);
+	  if (tfrom + tsize >= Nt && mfrom + msize >= moms.size())
+	    leftconj.release();
+
+	  // Do the thing
+	  auto this_right = right.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
+	  if (tfrom + tsize >= Nt && mfrom + msize >= moms.size())
+	    right.release();
+	  if (!deriv)
+	  {
+	    ns_doMomGammaDisp_contractions::doMomGammaDisp_contractions(
+	      ut, std::move(moms_left), std::move(this_right), first_tslice + tfrom, tree_disps,
+	      deriv, gammast, CoorMoms(moms.begin() + mfrom, moms.begin() + mfrom + msize), mfrom,
+	      call);
+	  }
+	  else
+	  {
+	    throw std::runtime_error("Derivatives are not implemented! Sorry!");
+	    // std::vector<COMPLEX> ones(moms.numMom(), COMPLEX(1));
+	    // std::string right_moms_order = std::string(right.order.begin(), right.order.size()) + "m";
+	    // Tensor<Nright + 1, COMPLEX> right_moms =
+	    //   right.like_this<Nright + 1>(right_moms_order.c_str());
+	    // right_moms.contract(asTensorView(ones), {{'i', 'm'}}, NotConjugate, std::move(right), {},
+	    // 		    NotConjugate);
+	    // doMomGammaDisp_contractions(u, gammast_moms_left, right_moms, tree_disps, deriv, mom_list,
+	    // 			    max_rhs, r, disp_indices);
+	  }
 	}
       }
-
-      return {r, disp_indices};
     }
 
     /// Callback function for each displacement/derivate, and chunk of time-slices and momenta
