@@ -9981,7 +9981,7 @@ namespace Chroma
 	  // Contract the spatial components (Xxyz) and the color of the leftconj and right tensors,
 	  // and the spin components S and Q with the gammas
 	  Tensor<Nout, COMPLEX> r =
-	    contract<Nout>(contract<Nout>(leftconj.conj(), right, "cxyzX"), gammas, "");
+	    contract<Nout>(contract<Nout + 1>(leftconj.conj(), right, "cxyzX"), gammas, "SQ");
 
 	  call(std::move(r), disps.disp_index, first_tslice, first_mom);
 	}
