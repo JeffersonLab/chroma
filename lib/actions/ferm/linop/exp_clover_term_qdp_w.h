@@ -7,6 +7,7 @@
 #define __exp_clover_term_qdp_w_h__
 
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
+#include "actions/ferm/linop/clov_triang_qdp_w.h"
 #include "actions/ferm/linop/exp_clover_term_base_w.h"
 #include "meas/glue/mesfield.h"
 #include "qdp_allocator.h"
@@ -432,7 +433,7 @@ namespace Chroma
       }
     }
 
-  }
+  } // namespace
   // Reader/writers
   /*! \ingroup linop */
 
@@ -467,7 +468,8 @@ namespace Chroma
     void create(Handle<FermState<T, multi1d<U>, multi1d<U>>> fs, const CloverFermActParams& param_);
 
     virtual void create(Handle<FermState<T, multi1d<U>, multi1d<U>>> fs,
-			const CloverFermActParams& param_, const QDPExpCloverTermT<T, U>& from_);
+			const CloverFermActParams& param_,
+			const QDPExpCloverTermT<T, U, N_exp>& from_);
 
     //! Computes the inverse of the term on cb using Cholesky
     /*!
@@ -478,7 +480,7 @@ namespace Chroma
     //! Computes the inverse of the term on cb using Cholesky
     /*!
      * \param cb   checkerboard of work (Read)
-     * \return logarithm of the determinant  
+     * \return logarithm of the determinant
      */
     Double cholesDet(int cb) const override;
     /**
@@ -496,7 +498,7 @@ namespace Chroma
      * \param chi     result                                      (Write)
      * \param psi     source                                      (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
+     * \param cb      Checkerboard of OUTPUT std::vector               (Read)
      */
 
     void fillRefDiag(Real diag);
@@ -548,7 +550,7 @@ namespace Chroma
      */
     void makeClov(const multi1d<U>& f, const RealT& diag_mass);
 
-    //void tracePowers();
+    // void tracePowers();
 
     //! Compute the approximation coefficient
     void exponentiate();
@@ -589,7 +591,7 @@ namespace Chroma
   template <typename T, typename U, int N_exp>
   void QDPExpCloverTermT<T, U, N_exp>::create(Handle<FermState<T, multi1d<U>, multi1d<U>>> fs,
 					      const CloverFermActParams& param_,
-					      const QDPExpCloverTermT<T, U>& from)
+					      const QDPExpCloverTermT<T, U, N_exp>& from)
   {
 #ifndef QDP_IS_QDPJIT
     START_CODE();
@@ -624,9 +626,9 @@ namespace Chroma
     }
 
     /* Calculate F(mu,nu) */
-    //multi1d<LatticeColorMatrix> f;
-    //mesField(f, u);
-    //makeClov(f, diag_mass);
+    // multi1d<LatticeColorMatrix> f;
+    // mesField(f, u);
+    // makeClov(f, diag_mass);
 
     int nodeSites = Layout::sitesOnNode();
     // Deep copy.
@@ -783,7 +785,7 @@ namespace Chroma
 #endif
     }
 
-  } /* end namespace */
+  } // namespace QDPExpCloverEnv
 
   template <typename T, typename U, int N_exp>
   void QDPExpCloverTermT<T, U, N_exp>::fillRefDiag(Real ref_val)
@@ -949,8 +951,8 @@ namespace Chroma
 	}
       } /* End Site loop */
 #endif
-    }	/* Function */
-  }
+    } /* Function */
+  }   // namespace QDPExpCloverEnv
 
   /* This now just sets up and dispatches... */
   template <typename T, typename U, int N_exp>
@@ -1005,7 +1007,7 @@ namespace Chroma
   /*!
    * Computes the inverse of the term on cb using Cholesky
    *
-   * \return logarithm of the determinant  
+   * \return logarithm of the determinant
    */
   template <typename T, typename U, int N_exp>
   Double QDPExpCloverTermT<T, U, N_exp>::cholesDet(int cb) const
@@ -1145,13 +1147,13 @@ namespace Chroma
 
 	    p[1] = ((REALT)1 / (REALT)5) * trace[block][4] -
 		   ((REALT)1 / (REALT)6) * trace[block][2] *
-		     trace[block][1];			   // (1/5) Tr A^5 - (1/6) Tr A^3 Tr A^2
+		     trace[block][1]; // (1/5) Tr A^5 - (1/6) Tr A^3 Tr A^2
 
 	    p[0] = ((REALT)1 / (REALT)6) * trace[block][5] // (1/6) Tr A^6 - (1/8) Tr A^4 Tr A^2
 		   - ((REALT)1 / (REALT)8) * trace[block][3] *
-		       trace[block][1]			   //     - (1/18) [ Tr A^3 ]^2
+		       trace[block][1] //     - (1/18) [ Tr A^3 ]^2
 		   - ((REALT)1 / (REALT)18) * trace[block][2] *
-		       trace[block][2]			   //     + (1/48) [ Tr A^2 ]^3
+		       trace[block][2] //     + (1/48) [ Tr A^2 ]^3
 		   + ((REALT)1 / (REALT)48) * trace[block][1] * trace[block][1] * trace[block][1];
 
 	    // Row 6
@@ -1204,7 +1206,7 @@ namespace Chroma
       } /* End Site Loop */
     }	/* End Function */
 
-  }	/* End Namespace */
+  } // namespace QDPExpCloverEnv
 
   /*! An LDL^\dag decomposition and inversion? */
   template <typename T, typename U, int N_exp>
@@ -1283,7 +1285,7 @@ namespace Chroma
    * \param chi     result                                      (Write)
    * \param psi     source                                      (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
+   * \param cb      Checkerboard of OUTPUT std::vector               (Read)
    */
   template <typename T, typename U, int N_exp>
   void QDPExpCloverTermT<T, U, N_exp>::applyPowerSite(T& chi, const T& psi, enum PlusMinus isign,
@@ -1300,7 +1302,7 @@ namespace Chroma
 
     RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
     const RComplex<REALT>* const ppsi =
-      (const RComplex<REALT>* const)&(psi.elem(site).elem(0).elem(0));
+      (const RComplex<REALT>* const) & (psi.elem(site).elem(0).elem(0));
 
     siteApplicationPower<REALT>(cchi, tri, ppsi, power);
 
@@ -1323,7 +1325,7 @@ namespace Chroma
    * \param chi     result                                      (Write)
    * \param psi     source                                      (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
+   * \param cb      Checkerboard of OUTPUT std::vector               (Read)
    */
   template <typename T, typename U, int N_exp>
   void QDPExpCloverTermT<T, U, N_exp>::applySite(T& chi, const T& psi, enum PlusMinus isign,
@@ -1340,7 +1342,7 @@ namespace Chroma
 
     RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
     const RComplex<REALT>* const ppsi =
-      (const RComplex<REALT>* const)&(psi.elem(site).elem(0).elem(0));
+      (const RComplex<REALT>* const) & (psi.elem(site).elem(0).elem(0));
     siteApplicationExp(cchi, tri[site], ppsi);
     END_CODE();
 #endif
@@ -1361,7 +1363,7 @@ namespace Chroma
 
     RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
     const RComplex<REALT>* const ppsi =
-      (const RComplex<REALT>* const)&(psi.elem(site).elem(0).elem(0));
+      (const RComplex<REALT>* const) & (psi.elem(site).elem(0).elem(0));
     siteApplicationExp<REALT, 1>(cchi, tri[site], ppsi);
     END_CODE();
 #endif
@@ -1433,7 +1435,7 @@ namespace Chroma
 	RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
 
 	const RComplex<REALT>* const ppsi =
-	  (const RComplex<REALT>* const)&(psi.elem(site).elem(0).elem(0));
+	  (const RComplex<REALT>* const) & (psi.elem(site).elem(0).elem(0));
 
 	siteApplicationPower<REALT>(cchi, tri[site], ppsi, power);
       }
@@ -1473,14 +1475,14 @@ namespace Chroma
 	int site = rb[cb].siteTable()[ssite];
 	RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
 	const RComplex<REALT>* const ppsi =
-	  (const RComplex<REALT>* const)&(psi.elem(site).elem(0).elem(0));
+	  (const RComplex<REALT>* const) & (psi.elem(site).elem(0).elem(0));
 
 	siteApplicationExp<REALT, inv>(cchi, tri[site], ppsi);
       }
       END_CODE();
 #endif
     } // Function
-  }   // Namespace
+  }   // namespace QDPExpCloverEnv
 
   template <typename T, typename U, int N_exp>
   void QDPExpCloverTermT<T, U, N_exp>::applyRef(T& chi, const T& psi, enum PlusMinus isign,
@@ -1498,7 +1500,7 @@ namespace Chroma
     for (int cb = 0; cb < 2; ++cb)
       (*this).applyPower(tmp, chi, isign, cb, 1); // M chi
 
-    chi = psi + tmp;				  // psi + M chi
+    chi = psi + tmp; // psi + M chi
     (*this).getFermBC().modifyF(chi);
   }
   /**
@@ -1516,7 +1518,7 @@ namespace Chroma
    * \param chi     result                                      (Write)
    * \param psi     source                                      (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
+   * \param cb      Checkerboard of OUTPUT std::vector               (Read)
    */
 
   template <typename T, typename U, int N_exp>
@@ -1595,14 +1597,14 @@ namespace Chroma
   }
 
   //! TRIACNTR
-  /*! 
+  /*!
    * \ingroup linop
    *
    *  Calculates
    *     Tr_D ( Gamma_mat L )
    *
    * This routine is specific to Wilson fermions!
-   * 
+   *
    *  the trace over the Dirac indices for one of the 16 Gamma matrices
    *  and a hermitian color x spin matrix A, stored as a block diagonal
    *  complex lower triangular matrix L and a real diagonal diag_L.
@@ -1622,8 +1624,8 @@ namespace Chroma
    *
    * Arguments:
    *
-   *  \param B         the resulting SU(N) color matrix	  (Write) 
-   *  \param clov      clover term                        (Read) 
+   *  \param B         the resulting SU(N) color matrix	  (Write)
+   *  \param clov      clover term                        (Read)
    *  \param mat       label of the Gamma matrix          (Read)
    */
 
@@ -1940,7 +1942,7 @@ namespace Chroma
 
       } // END Site Loop
     }	// End Function
-  }	// End Namespace
+  }	// namespace QDPExpCloverEnv
 
   template <typename T, typename U, int N_exp>
   void QDPExpCloverTermT<T, U, N_exp>::triacntr(U& B, int mat, int cb) const
@@ -2024,7 +2026,7 @@ namespace Chroma
       }
 #endif
     }
-  }
+  } // namespace QDPExpCloverEnv
 
   template <typename T, typename U, int N_exp>
   void QDPExpCloverTermT<T, U, N_exp>::packForQUDA(

@@ -552,6 +552,7 @@ list(APPEND ChromaLIB_HEADERS
 	actions/ferm/fermacts/seoprec_clover_fermact_w.h
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h
 	actions/ferm/fermacts/unprec_clover_fermact_w.h
+  actions/ferm/fermacts/unprec_exp_clover_fermact_w.h
 	actions/ferm/fermacts/nef_fermact_params_w.h
 	actions/ferm/fermacts/eoprec_slic_fermact_w.h
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.h
@@ -653,9 +654,11 @@ list(APPEND ChromaLIB_HEADERS
 	actions/ferm/linop/lwldslash_base_3d_w.h
 	actions/ferm/linop/lwldslash_3d_qdp_w.h
 	actions/ferm/linop/clover_term_w.h
+  actions/ferm/linop/clov_triang_qdp_w.h
 	actions/ferm/linop/clover_term_base_w.h
 	actions/ferm/linop/exp_clover_term_base_w.h
 	actions/ferm/linop/clover_term_qdp_w.h
+  actions/ferm/linop/exp_clover_term_w.h
 	actions/ferm/linop/exp_clover_term_qdp_w.h
 	actions/ferm/linop/eoprec_clover_linop_w.h
 	actions/ferm/linop/seoprec_clover_linop_w.h
@@ -663,6 +666,7 @@ list(APPEND ChromaLIB_HEADERS
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.h
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.h
 	actions/ferm/linop/unprec_clover_linop_w.h
+  actions/ferm/linop/unprec_exp_clover_linop_w.h
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.h
 	actions/ferm/linop/eoprec_dwflike_linop_base_array_w.h
 	actions/ferm/linop/eoprec_dwf_linop_array_w.h
@@ -1468,6 +1472,7 @@ target_sources(chromalib PRIVATE
 	actions/ferm/fermacts/seoprec_clover_fermact_w.cc 
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc 
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc 
+  actions/ferm/fermacts/unprec_exp_clover_fermact_w.cc
 	actions/ferm/fermacts/nef_fermact_params_w.cc 
 	actions/ferm/fermacts/eoprec_slic_fermact_w.cc 
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc 
@@ -1565,6 +1570,7 @@ target_sources(chromalib PRIVATE
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.cc 
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.cc 
 	actions/ferm/linop/unprec_clover_linop_w.cc 
+  actions/ferm/linop/unprec_exp_clover_linop_w.cc
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.cc 
 	actions/ferm/linop/eoprec_slic_linop_w.cc 
 	actions/ferm/linop/eoprec_slrc_linop_w.cc 

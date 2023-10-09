@@ -9,6 +9,8 @@
 #include "actions/ferm/fermstates/simple_fermstate.h"
 #include "actions/ferm/linop/clover_term_qdp_w.h"
 #include "actions/ferm/linop/exp_clover_term_qdp_w.h"
+#include "actions/ferm/linop/unprec_clover_linop_w.h"
+#include "actions/ferm/linop/unprec_exp_clover_linop_w.h"
 
 using namespace Chroma;
 using namespace QDP;
@@ -333,4 +335,47 @@ TEST_F(ExpClovFixture, CheckExpInv)
   QDPIO::cout << "Diff  = " << normdiff << "\n";
 
   ASSERT_LT(toDouble(normdiff), 1.0e-14);
+}
+
+TEST_F(ExpClovFixture, CheckUprecExpCloverLinopZeroClover)
+{
+  CloverFermActParams p_zero;
+  p_zero.Mass = 0.1;
+  p_zero.clovCoeffR = .0001;
+  p_zero.clovCoeffT = .0001;
+  p_zero.u0 = 1;
+  p_zero.anisoParam.anisoP = false;
+  p_zero.anisoParam.t_dir = 3;
+  p_zero.anisoParam.xi_0 = Real(1);
+  p_zero.twisted_m = 0;
+  p_zero.twisted_m_usedP = false;
+
+  UnprecCloverLinOp unexpM(simpleFermState, p_zero);
+  UnprecExpCloverLinOp expM(simpleFermState, p_zero);
+
+  LatticeFermion src, res, res2, dummy, diff;
+  gaussian(src);
+  res = zero;
+  res2 = zero;
+
+  unexpM(res, src, PLUS);
+  expM(res2, src, PLUS);
+
+  diff = res2 - res;
+  Double normdiff = sqrt(norm2(diff) / norm2(res));
+  QDPIO::cout << "Diff  = " << normdiff << "\n";
+
+  ASSERT_LT(toDouble(normdiff), 9.0e-11);
+
+  res = zero;
+  res2 = zero;
+
+  unexpM(res, src, MINUS);
+  expM(res2, src, MINUS);
+
+  diff = res2 - res;
+  normdiff = sqrt(norm2(diff) / norm2(res));
+  QDPIO::cout << "Diff  = " << normdiff << "\n";
+
+  ASSERT_LT(toDouble(normdiff), 9.0e-11);
 }
