@@ -4495,7 +4495,8 @@ namespace Chroma
       {
 	r0 = (v.dist != Glocal && (dev.hasSome() || dist.hasSome()))
 	       ? v.template like_this<Nr>(rorder, w.kvdim(), dev, dist)
-	       : v.template make_compatible<Nr>(rorder, w.kvdim());
+	       : (v.volume() >= w.volume() ? v.template make_compatible<Nr>(rorder, w.kvdim())
+					   : w.template make_compatible<Nr>(rorder, v.kvdim()));
 	beta = 0;
       }
       else
@@ -9968,8 +9969,8 @@ namespace Chroma
 
       template <typename COMPLEX, std::size_t Nleft, std::size_t Nright, std::size_t Nout>
       void doMomGammaDisp_contractions(const std::vector<Tensor<Nd + 3, Complex>>& u,
-				       const Tensor<Nleft, COMPLEX> leftconj,
-				       Tensor<Nright, COMPLEX> right, Index first_tslice,
+				       const Tensor<Nleft, COMPLEX>& leftconj,
+				       Tensor<Nright, COMPLEX>&& right, Index first_tslice,
 				       const PathNode& disps, bool deriv, Tensor<3, COMPLEX> gammas,
 				       const std::vector<Coor<Nd - 1>>& moms, int first_mom,
 				       const MomGammaDispContractionFn<Nout, COMPLEX>& call)
@@ -10069,6 +10070,16 @@ namespace Chroma
 	  .copyTo(gammast.kvslice_from_size({{'g', g}}, {{'g', 1}}));
       }
 
+      Tracker _t(std::string("doMomGammaDisp_contractions"));
+
+      // Avoid distributing the tensors on directions with derivatives to avoid communications
+      Distribution dist;
+      const char* lattice_letters = "xyz";
+      for (unsigned int d = 0; d < Nd - 1; d++)
+	if (!active_dirs[d])
+	  dist = dist + std::string{lattice_letters[d]};
+      dist = dist + std::string("t");
+
       for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
       {
@@ -10087,8 +10098,13 @@ namespace Chroma
 	  ut[d] = asTensorView(u[d])
 		    .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
 		    .toComplex()
-		    .make_sure(none, dev);
+		    .make_sure(none, dev, dist);
 	}
+
+	auto this_right =
+	  right.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}).make_sure(none, dev, dist);
+	if (tfrom + tsize >= Nt)
+	  right.release();
 
 	for (int mfrom = 0, msize = std::min(max_moms_in_contraction, (int)moms.size());
 	     mfrom < moms.size();
@@ -10102,7 +10118,7 @@ namespace Chroma
 	  // Copy moms into a single tensor
 	  std::string momst_order = "mxyzXt";
 	  Tensor<Nd + 2, COMPLEX> momst(
-	    momst_order, latticeSize<Nd + 2>(momst_order, {{'t', tsize}, {'m', msize}}), dev);
+	    momst_order, latticeSize<Nd + 2>(momst_order, {{'t', tsize}, {'m', msize}}), dev, dist);
 	  for (int m = 0; m < msize; ++m)
 	  {
 	    ns_getColorvecs::getPhase<COMPLEX>(moms[mfrom + m], first_tslice + tfrom, tsize,
@@ -10113,7 +10129,7 @@ namespace Chroma
 	  // Apply momenta conjugated to the left tensor and rename the spin components s and Q to q and Q,
 	  // and the colorvector component n to N
 	  Tensor<Nleft + 1, COMPLEX> moms_left = leftconj.template like_this<Nleft + 1>(
-	    "mQNqc%xyzXt", '%', "", {{'m', msize}, {'t', tsize}});
+	    "mQNqc%xyzXt", '%', "", {{'m', msize}, {'t', tsize}}, dev, dist);
 	  moms_left.contract(std::move(momst), {}, Conjugate,
 			     leftconj.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}), {},
 			     NotConjugate);
@@ -10121,15 +10137,12 @@ namespace Chroma
 	    leftconj.release();
 
 	  // Do the thing
-	  auto this_right = right.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
-	  if (tfrom + tsize >= Nt && mfrom + msize >= moms.size())
-	    right.release();
 	  if (!deriv)
 	  {
+	    auto this_right0 = this_right;
 	    ns_doMomGammaDisp_contractions::doMomGammaDisp_contractions(
-	      ut, std::move(moms_left), std::move(this_right), first_tslice + tfrom, tree_disps,
-	      deriv, gammast, CoorMoms(moms.begin() + mfrom, moms.begin() + mfrom + msize), mfrom,
-	      call);
+	      ut, moms_left, std::move(this_right0), first_tslice + tfrom, tree_disps, deriv,
+	      gammast, CoorMoms(moms.begin() + mfrom, moms.begin() + mfrom + msize), mfrom, call);
 	  }
 	  else
 	  {
@@ -10607,6 +10620,9 @@ namespace Chroma
       for (const auto& f : detail::getDestroyList())
 	f();
       detail::getDestroyList().clear();
+
+      // Make sure that no allocation is still around
+      superbblas::checkForMemoryLeaks(std::cout);
     }
 
     /// Return the smallest interval containing the union of two intervals
