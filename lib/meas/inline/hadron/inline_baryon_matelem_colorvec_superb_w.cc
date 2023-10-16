@@ -812,7 +812,8 @@ namespace Chroma
 	  u_smr, source_colorvec, mom_list, this_tfrom, displacement_list, params.param.use_derivP,
 	  call, 0 /*params.param.max_tslices_in_contraction==0 means to do all */,
 	  params.param.max_moms_in_contraction, params.param.max_vecs, SB::none,
-	  SB::OnDefaultDevice, params.param.use_superb_format ? SB::OnEveryone : SB::OnMaster);
+	  SB::OnDefaultDevice,
+	  params.param.use_superb_format ? SB::none : SB::Maybe<SB::Distribution>(SB::OnMaster));
       }
 
       // Close db

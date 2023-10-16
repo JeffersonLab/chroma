@@ -10072,13 +10072,9 @@ namespace Chroma
 
       Tracker _t(std::string("doMomGammaDisp_contractions"));
 
-      // Avoid distributing the tensors on directions with derivatives to avoid communications
-      Distribution dist;
-      const char* lattice_letters = "xyz";
-      for (unsigned int d = 0; d < Nd - 1; d++)
-	if (!active_dirs[d])
-	  dist = dist + std::string{lattice_letters[d]};
-      dist = dist + std::string("t");
+      // Avoid distributing the tensors on directions with derivatives to avoid communications in shiftings,
+      // and on dimensions being contracted; so the only remaining dimension is t
+      const Distribution dist("t");
 
       for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
@@ -10207,11 +10203,11 @@ namespace Chroma
 
       template <typename COMPLEX, std::size_t Nin>
       void doMomDisp_colorContractions(const std::vector<Tensor<Nd + 3, COMPLEX>>& u,
-				       std::array<Tensor<Nin, COMPLEX>, 3> colorvecs,
+				       std::array<Tensor<Nin, COMPLEX>, 3>&& colorvecs,
 				       Index first_tslice, const PathNode& disps, bool deriv,
-				       int current_colorvec, const Moms<COMPLEX> moms,
+				       int current_colorvec, const Moms<COMPLEX>& moms,
 				       int first_mom, int max_cols, const std::string& order_out,
-				       DeviceHost dev, Distribution dist,
+				       const DeviceHost& dev, const Distribution& dist,
 				       const ColorContractionFn<COMPLEX>& call)
       {
 	if (disps.disp_index >= 0)
@@ -10314,7 +10310,7 @@ namespace Chroma
       const ColorContractionFn<COMPLEX>& call, Maybe<int> max_active_tslices = none,
       Maybe<int> max_active_momenta = none, Maybe<int> max_cols = none,
       const Maybe<std::string>& order_out = none, Maybe<DeviceHost> dev = none,
-      Maybe<Distribution> dist = none)
+      Maybe<Distribution> dist_ret = none)
     {
       const std::string order_out_str = order_out.getSome("ijkmt");
       detail::check_order_contains(order_out_str, "ijkmt");
@@ -10340,6 +10336,10 @@ namespace Chroma
       if (max_active_moms <= 0)
 	max_active_moms = Nmom;
 
+      // Avoid distributing the tensors on directions with derivatives to avoid communications in shiftings,
+      // and on dimensions being contracted; so the only remaining dimension is t
+      const Distribution dist("t");
+
       // Iterate over time-slices
       for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
@@ -10357,18 +10357,21 @@ namespace Chroma
 	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as colorvec and moms
 	  ut[d] = asTensorView(u[d])
 		    .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
-		    .toComplex();
+		    .toComplex()
+		    .make_sure(none, dev, dist);
 	}
 
 	// Get the time-slice for colorvec
-	auto this_colorvec = colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
+	auto this_colorvec =
+	  colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}).make_sure(none, dev, dist);
 
 	// Loop over the momenta
 	for (int mfrom = 0, msize = std::min(max_active_moms, Nmom); mfrom < Nmom;
 	     mfrom += msize, msize = std::min(max_active_moms, Nmom - mfrom))
 	{
 	  auto this_moms =
-	    this_colorvec.template like_this<Nd + 2, COMPLEX>("xyzXtm", {{'m', msize}});
+	    this_colorvec.template like_this<Nd + 2, COMPLEX>("xyzXtm", {{'m', msize}})
+	      .make_sure(none, dev, dist);
 	  for (int m = 0; m < msize; ++m)
 	    ns_getColorvecs::getPhase<COMPLEX>(moms[mfrom + m], first_tslice + tfrom, tsize,
 					       this_moms.getDev())
@@ -10381,10 +10384,12 @@ namespace Chroma
 	  std::vector<Coor<3>> moms_list(moms.begin() + mfrom, moms.begin() + mfrom + msize);
 	  if (!deriv)
 	  {
+	    std::array<Tensor<Nin, COMPLEX>, 3> this_3_colorvec{this_colorvec, this_colorvec,
+								this_colorvec};
 	    ns_doMomDisp_colorContractions::doMomDisp_colorContractions<COMPLEX, Nin>(
-	      ut, {this_colorvec, this_colorvec, this_colorvec}, first_tslice + tfrom, tree_disps,
-	      deriv, 0, {this_moms, moms_list}, mfrom, max_cols.getSome(0), order_out_str,
-	      dev.getSome(OnDefaultDevice), dist.getSome(OnEveryoneReplicated), call);
+	      ut, std::move(this_3_colorvec), first_tslice + tfrom, tree_disps, deriv, 0,
+	      {this_moms, moms_list}, mfrom, max_cols.getSome(0), order_out_str,
+	      dev.getSome(OnDefaultDevice), dist_ret.getSome(dist), call);
 	  }
 	  else
 	  {
@@ -10394,11 +10399,12 @@ namespace Chroma
 	      this_colorvec.template like_this<Nin + 1>("%m", '%', "", {{'m', msize}});
 	    this_colorvec_m.contract(this_colorvec, {}, NotConjugate, asTensorView(ones),
 				     {{'i', 'm'}}, NotConjugate);
+	    std::array<Tensor<Nin + 1, COMPLEX>, 3> this_3_colorvec_m{
+	      this_colorvec_m, this_colorvec_m, this_colorvec_m};
 	    ns_doMomDisp_colorContractions::doMomDisp_colorContractions<COMPLEX, Nin + 1>(
-	      ut, {this_colorvec_m, this_colorvec_m, this_colorvec_m}, first_tslice + tfrom,
-	      tree_disps, deriv, 0, {this_moms, moms_list}, mfrom, max_cols.getSome(0),
-	      order_out_str, dev.getSome(OnDefaultDevice), dist.getSome(OnEveryoneReplicated),
-	      call);
+	      ut, std::move(this_3_colorvec_m), first_tslice + tfrom, tree_disps, deriv, 0,
+	      {this_moms, moms_list}, mfrom, max_cols.getSome(0), order_out_str,
+	      dev.getSome(OnDefaultDevice), dist_ret.getSome(dist), call);
 	  }
 	}
       }
@@ -10430,11 +10436,12 @@ namespace Chroma
 
       template <typename COMPLEX, std::size_t Nleft, std::size_t Nright>
       void doMomDisp_contractions(const std::vector<Tensor<Nd + 3, COMPLEX>>& u,
-				  Tensor<Nleft, COMPLEX> left, Tensor<Nright, COMPLEX> right,
-				  Index first_tslice, const PathNode& disps, bool deriv,
+				  const Tensor<Nleft, COMPLEX>& left,
+				  Tensor<Nright, COMPLEX>&& right, Index first_tslice,
+				  const PathNode& disps, bool deriv,
 				  const std::vector<Coor<Nd - 1>>& moms, int first_mom,
-				  const std::string& order_out, DeviceHost dev, Distribution dist,
-				  const ContractionFn<COMPLEX>& call)
+				  const std::string& order_out, const DeviceHost& dev,
+				  const Distribution& dist, const ContractionFn<COMPLEX>& call)
       {
 	if (disps.disp_index >= 0)
 	{
@@ -10494,7 +10501,7 @@ namespace Chroma
 				Index first_tslice, const std::vector<std::vector<int>>& disps,
 				bool deriv, const ContractionFn<COMPLEX>& call,
 				const Maybe<std::string>& order_out = none,
-				Maybe<DeviceHost> dev = none, Maybe<Distribution> dist = none,
+				Maybe<DeviceHost> dev = none, Maybe<Distribution> dist_ret = none,
 				int max_tslices_in_contraction = 0, int max_moms_in_contraction = 0)
     {
       const std::string order_out_str = order_out.getSome("ijmt");
@@ -10518,6 +10525,10 @@ namespace Chroma
       if (max_moms_in_contraction <= 0)
 	max_moms_in_contraction = Nmom;
 
+      // Avoid distributing the tensors on directions with derivatives to avoid communications in shiftings,
+      // and on dimensions being contracted; so the only remaining dimension is t
+      const Distribution dist("t");
+
       // Iterate over time-slices
       for (int tfrom = 0, tsize = std::min(Nt, max_tslices_in_contraction); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_tslices_in_contraction, Nt - tfrom))
@@ -10539,11 +10550,13 @@ namespace Chroma
 	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as colorvec and moms
 	  ut[d] = asTensorView(u[d])
 		    .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
-		    .toComplex();
+		    .toComplex()
+		    .make_sure(none, dev, dist);
 	}
 
 	// Get the time-slice for colorvec
-	auto this_colorvec = colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
+	auto this_colorvec =
+	  colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}).make_sure(none, dev, dist);
 
 	// Apply the phases
 	auto this_colorvec_phase_right =
@@ -10580,9 +10593,9 @@ namespace Chroma
 	  if (!deriv)
 	  {
 	    ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
-	      ut, std::move(moms_left), this_colorvec_phase_right, first_tslice + tfrom, tree_disps,
+	      ut, moms_left, std::move(this_colorvec_phase_right), first_tslice + tfrom, tree_disps,
 	      deriv, this_moms_coors, mfrom, order_out_str, dev.getSome(OnDefaultDevice),
-	      dist.getSome(OnEveryoneReplicated), call);
+	      dist_ret.getSome(dist), call);
 	  }
 	  else
 	  {
@@ -10593,9 +10606,9 @@ namespace Chroma
 	    this_colorvec_m.contract(this_colorvec_phase_right, {}, NotConjugate,
 				     asTensorView(ones), {{'i', 'm'}}, NotConjugate);
 	    ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
-	      ut, std::move(moms_left), std::move(this_colorvec_m), first_tslice + tfrom,
-	      tree_disps, deriv, this_moms_coors, mfrom, order_out_str,
-	      dev.getSome(OnDefaultDevice), dist.getSome(OnEveryoneReplicated), call);
+	      ut, moms_left, std::move(this_colorvec_m), first_tslice + tfrom, tree_disps, deriv,
+	      this_moms_coors, mfrom, order_out_str, dev.getSome(OnDefaultDevice),
+	      dist_ret.getSome(dist), call);
 	  }
 	}
       }
