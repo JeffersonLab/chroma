@@ -857,6 +857,7 @@ namespace Chroma
 	qdp_db.insert(key,val);
       }
       
+      qdp_db.close();
 
       pop(xml_out);  // close last tag
 
