@@ -813,17 +813,18 @@ namespace Chroma
       QDPIO::cout << "Traces were  computed: time= " 
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << std::endl;
-      
 
       // write out the results
-      
-      // DB storage          
-      BinaryStoreDB<SerialDBKey<KeyOperator_t>,SerialDBData<ValOperator_t> > qdp_db;
-      
-      // Open the file, and write the meta-data and the binary for this operator
+
+      if (Layout::nodeNumber() == 0)
       {
+	// DB storage
+	LocalBinaryStoreDB<LocalSerialDBKey<KeyOperator_t>, LocalSerialDBData<ValOperator_t>>
+	  qdp_db;
+
+	// Open the file, and write the meta-data and the binary for this operator
 	XMLBufferWriter file_xml;
-	
+
 	push(file_xml, "DBMetaData");
 	write(file_xml, "id", std::string("DiscoBlocks"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
@@ -835,29 +836,29 @@ namespace Chroma
 	std::string file_str(file_xml.str());
 	qdp_db.setMaxUserInfoLen(file_str.size());
 
-	//qdp_db.open(params.named_obj.sdb_file, O_RDWR | O_CREAT, 0664);
 	//Slightly modify code to account for changes from multifile write.
 	//Be consistent with old mode of filename write.
 	std::string file_name = params.named_obj.sdb_file;
 	qdp_db.open(file_name, O_RDWR | O_CREAT, 0664);
 
 	qdp_db.insertUserdata(file_str);
+
+	LocalSerialDBKey<KeyOperator_t> key;
+	LocalSerialDBData<ValOperator_t> val;
+	std::map<KeyOperator_t, ValOperator_t>::iterator it;
+	// Store all the data
+	for (it = dbmean.begin(); it != dbmean.end(); it++)
+	{
+	  key.key() = it->first;
+	  key.key().mass_label = params.param.mass_label;
+	  val.data().op.resize(it->second.op.size());
+	  for (int i(0); i < it->second.op.size(); i++)
+	    val.data().op[i] = it->second.op[i];
+	  qdp_db.insert(key, val);
+	}
+
+	qdp_db.close();
       }
-   
-      SerialDBKey <KeyOperator_t> key ;
-      SerialDBData<ValOperator_t> val ;
-      std::map< KeyOperator_t, ValOperator_t >::iterator it;
-      // Store all the data
-      for(it=dbmean.begin();it!=dbmean.end();it++){
-	key.key()  = it->first  ;
-        key.key().mass_label = params.param.mass_label;
-	val.data().op.resize(it->second.op.size()) ;
-	for(int i(0);i<it->second.op.size();i++)
-          val.data().op[i] = it->second.op[i];
-	qdp_db.insert(key,val);
-      }
-      
-      qdp_db.close();
 
       pop(xml_out);  // close last tag
 
@@ -870,7 +871,6 @@ namespace Chroma
       
       END_CODE(); 
     }
-
 
   }// namespace
 
