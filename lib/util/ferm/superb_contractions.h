@@ -8915,19 +8915,22 @@ namespace Chroma
 
       template <typename T>
       Tensor<Nd + 1, T> getPhase(Coor<Nd - 1> phase, int tfrom, int tsize,
-				 DeviceHost dev = OnDefaultDevice)
+				 DeviceHost dev = OnDefaultDevice,
+				 const Distribution& dist = OnEveryone)
       {
 	// Get spatial dimensions of the current lattice
 	Coor<Nd> dim = latticeSize<Nd>("xyzX", {});
 	dim[0] *= dim[3];
-	return fillLatticeField<5, T>("xyztX", {{'t', tfrom}}, {{'t', tsize}}, {}, dev,
-				      [=](Coor<Nd> c) {
-					typename T::value_type phase_dot_coor = 0;
-					for (int i = 0; i < Nd - 1; ++i)
-					  phase_dot_coor += c[i] * 2 * M_PI * phase[i] / dim[i];
+	return fillLatticeField<5, T>(
+	  "xyztX", {{'t', tfrom}}, {{'t', tsize}}, {}, dev,
+	  [=](Coor<Nd> c) {
+	    typename T::value_type phase_dot_coor = 0;
+	    for (int i = 0; i < Nd - 1; ++i)
+	      phase_dot_coor += c[i] * 2 * M_PI * phase[i] / dim[i];
 
-					return T{cos(phase_dot_coor), sin(phase_dot_coor)};
-				      });
+	    return T{cos(phase_dot_coor), sin(phase_dot_coor)};
+	  },
+	  true /* zero is even */, dist);
       }
 
 #  if defined(BUILD_PRIMME)
@@ -9594,7 +9597,7 @@ namespace Chroma
 	return colorvecs;
 
       Tensor<Nd + 1, COMPLEX> tphase = ns_getColorvecs::getPhase<COMPLEX>(
-	phase, from_tslice, colorvecs.kvdim()['t'], colorvecs.getDev());
+	phase, from_tslice, colorvecs.kvdim()['t'], colorvecs.getDev(), colorvecs.dist);
       Tensor<Nd + 3, COMPLEX> r = colorvecs.like_this();
       r.contract(colorvecs, {}, NotConjugate, tphase, {}, NotConjugate);
       return r;
@@ -10117,8 +10120,8 @@ namespace Chroma
 	    momst_order, latticeSize<Nd + 2>(momst_order, {{'t', tsize}, {'m', msize}}), dev, dist);
 	  for (int m = 0; m < msize; ++m)
 	  {
-	    ns_getColorvecs::getPhase<COMPLEX>(moms[mfrom + m], first_tslice + tfrom, tsize,
-					       momst.getDev())
+	    ns_getColorvecs::getPhase<COMPLEX>(moms[mfrom + m], first_tslice + tfrom, tsize, dev,
+					       dist)
 	      .copyTo(momst.kvslice_from_size({{'m', m}}, {{'m', 1}}));
 	  }
 
@@ -10374,7 +10377,7 @@ namespace Chroma
 	      .make_sure(none, dev, dist);
 	  for (int m = 0; m < msize; ++m)
 	    ns_getColorvecs::getPhase<COMPLEX>(moms[mfrom + m], first_tslice + tfrom, tsize,
-					       this_moms.getDev())
+					       this_moms.getDev(), dist)
 	      .copyTo(this_moms.kvslice_from_size({{'m', m}}, {{'m', 1}}));
 
 	  if (tfrom + tsize >= Nt && mfrom + msize >= Nmom)
@@ -10573,7 +10576,7 @@ namespace Chroma
 	    this_colorvec_phase_left.template like_this<Nd + 2, COMPLEX>("xyzXtm", {{'m', msize}});
 	  for (int m = 0; m < msize; ++m)
 	    ns_getColorvecs::getPhase<COMPLEX>(moms[mfrom + m], first_tslice + tfrom, tsize,
-					       this_moms.getDev())
+					       this_moms.getDev(), dist)
 	      .copyTo(this_moms.kvslice_from_size({{'m', m}}, {{'m', 1}}));
 
 	  // Apply left phase and momenta conjugated to the left tensor
