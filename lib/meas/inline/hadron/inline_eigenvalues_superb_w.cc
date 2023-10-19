@@ -383,6 +383,8 @@ namespace Chroma
       {
 	StopWatch swatch;
 	swatch.reset();
+	swatch.start();
+
 	QDPIO::cout << "Try the various factories" << std::endl;
 
 	// Initialize fermion action and create the solver
@@ -406,6 +408,7 @@ namespace Chroma
 
 	// Store the eigenpairs
 	swatch.reset();
+	swatch.start();
 	LocalSerialDBKey<KeyEigenpair_t> key;
 	key.key().mass_label = params.param.contract.mass_label;
 	for (int idx = 0; idx < values.size(); ++idx)
