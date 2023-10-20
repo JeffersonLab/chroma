@@ -837,13 +837,13 @@ namespace Chroma
 
       // write out the results
 
-      // DB storage
       if (Layout::nodeNumber() == 0)
       {
+	// DB storage
 	LocalBinaryStoreDB<LocalSerialDBKey<KeyOperator_t>, LocalSerialDBData<ValOperator_t>>
 	  qdp_db;
 
-	// Opens the output file and write metadata
+	// Open the file, and write the meta-data and the binary for this operator
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "DBMetaData");
