@@ -1366,6 +1366,7 @@ target_sources(chromalib PRIVATE
 	util/ferm/subset_vectors.cc 
 	util/ferm/block_couplings.cc 
 	util/ferm/disp_soln_cache.cc 
+	util/ferm/mgproton.cc 
     util/ft/sftmom.cc 
     util/ft/single_phase.cc 
 	util/ft/time_slice_set.cc 

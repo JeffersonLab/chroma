@@ -393,7 +393,7 @@ namespace Chroma
 	// Prepare eigensolver
 	std::shared_ptr<SB::Options> ops =
 	  SB::getOptionsFromXML(SB::broadcast(params.param.eigensolver));
-	auto eigensolver = SB::detail::getInexactEigensolverGD(
+	auto eigensolver = SB::getInexactEigensolverGD(
 	  SB::getOperator(PP, params.param.contract.max_rhs), ops->getValue("eigensolver"));
 
 	// Run
@@ -407,8 +407,9 @@ namespace Chroma
 		    << std::endl;
 
 	// Store the eigenpairs
-	swatch.reset();
-	swatch.start();
+	StopWatch swatch0;
+	swatch0.reset();
+	swatch0.start();
 	LocalSerialDBKey<KeyEigenpair_t> key;
 	key.key().mass_label = params.param.contract.mass_label;
 	for (int idx = 0; idx < values.size(); ++idx)
@@ -428,8 +429,8 @@ namespace Chroma
 	  }
 	}
 
-	swatch.stop();
-	QDPIO::cout << "Eigenpairs stored: time= " << swatch.getTimeInSeconds() << " secs"
+	swatch0.stop();
+	QDPIO::cout << "Eigenpairs stored: time= " << swatch0.getTimeInSeconds() << " secs"
 		    << std::endl;
       }
       catch (const std::exception& e) 

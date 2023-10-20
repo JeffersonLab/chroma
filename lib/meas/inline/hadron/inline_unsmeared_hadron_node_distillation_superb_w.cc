@@ -1167,7 +1167,7 @@ namespace Chroma
 
 	    // Invert the source for all spins and retrieve num_tslices_active
 	    // time-slices starting from time-slice first_tslice_active
-	    invCacheSource[t_source] = SB::doInversion<SB::ComplexF, SB::Complex>(
+	    invCacheSource[t_source] = SB::doInversion(
 	      PP, std::move(source_colorvec), t_source, active_tslices_source[t_source].from,
 	      active_tslices_source[t_source].size, {0, 1, 2, 3}, max_rhs, "cxyzXnSst");
 	  }
@@ -1187,7 +1187,7 @@ namespace Chroma
 
 	    // Invert the sink for all spins and retrieve num_tslices_active time-slices starting from
 	    // time-slice first_tslice_active
-	    invCacheSink[t_sink] = SB::doInversion<SB::ComplexF, SB::Complex>(
+	    invCacheSink[t_sink] = SB::doInversion(
 	      PP, std::move(sink_colorvec), t_sink, active_tslices_sink[t_sink].from,
 	      active_tslices_sink[t_sink].size, {0, 1, 2, 3}, max_rhs, "ScnsxyzXt");
 	  }

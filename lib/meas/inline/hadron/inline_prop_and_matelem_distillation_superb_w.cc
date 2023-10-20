@@ -417,9 +417,9 @@ namespace Chroma
 	  {
 	    // Invert the source for `spin_source` spin and retrieve `num_tslices` tslices starting from tslice `first_tslice`
 	    // NOTE: s is spin source, and S is spin sink
-	    SB::Tensor<Nd + 5, SB::Complex> quark_solns = SB::doInversion<SB::Complex, SB::Complex>(
-	      PP, source_colorvec, t_source, first_tslice, num_tslices, {spin_source}, max_rhs,
-	      "cxyzXnSst");
+	    SB::Tensor<Nd + 5, SB::Complex> quark_solns =
+	      SB::doInversion(PP, source_colorvec, t_source, first_tslice, num_tslices,
+			      {spin_source}, max_rhs, "cxyzXnSst");
 
 	    StopWatch snarss1;
 	    snarss1.reset();
