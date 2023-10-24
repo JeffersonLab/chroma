@@ -1093,6 +1093,8 @@ namespace Chroma
       // hang when an exception is thrown, preventing the report of the exception message
       SB::ChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u};
 
+      // NOTE: qdp5_db needs MPI synchronization when closing, so capture exception and abort in that case
+      //       to avoid hangs
       try
       {
 	StopWatch swatch;
