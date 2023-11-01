@@ -1,7 +1,7 @@
 /*! \file
  * \brief Compute the disconnected diagrams with 4D probing
  *
- * Propagator calculation on a colorstd::vector
+ * Propagator calculation on a color vector
  */
 
 #include "inline_disco_prob_defl_superb_w.h"
@@ -32,6 +32,7 @@
 
 namespace Chroma
 {
+
   namespace InlineDiscoProbDeflSuperb
   {
 
@@ -670,20 +671,15 @@ namespace Chroma
 	coloring.reset(new Coloring(params.param.probing_distance, params.param.probing_power));
       }
 
-      //
       // Initialize fermion action
-      //
       SB::ChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u};
+      SB::ChimeraProjector proj{params.param.prop.fermact, params.param.projParam, u};
 
       std::istringstream xml_s(params.param.prop.fermact.xml);
       XMLReader fermacttop(xml_s);
-
       Handle<FermionAction<T, P, Q>> S_f(TheFermionActionFactory::Instance().createObject(
 	params.param.prop.fermact.id, fermacttop, params.param.prop.fermact.path));
-
       Handle<FermState<T, P, Q>> state(S_f->createState(u));
-
-      Handle<Projector<LatticeFermion>> proj = S_f->projector(state, params.param.projParam);
 
       // Initialize the slow Fourier transform phases
       int decay_dir = Nd - 1; // hadamard needs this for now
@@ -714,25 +710,36 @@ namespace Chroma
       StopWatch swatch_det;
       swatch_det.start();
       Traces dbdet;
-      for (int k = 0; k < proj->rank(); k++)
       {
-	// collect dk pairs of vectors
-	LatticeFermion vi_lambda, // = v[i]/(u[i]'*Dslash*v[i])
-	  ui, vi;		  // = u[i], v[i]
-	proj->V(k, vi);
-	DComplex lambda;
-	proj->lambda(k, lambda);
-	vi_lambda = vi / lambda;
-	proj->U(k, ui);
+	unsigned int rank = SB::getProjectorRank(proj);
+	unsigned int blk = std::min(rank, 12u);
+	std::vector<std::shared_ptr<LatticeFermion>> vi_lambda_sh, ui_sh;
+	vi_lambda_sh.reserve(blk);
+	ui_sh.reserve(blk);
+	for (std::size_t i = 0; i < blk; ++i)
+	{
+	  vi_lambda_sh.push_back(std::make_shared<LatticeFermion>());
+	  ui_sh.push_back(std::make_shared<LatticeFermion>());
+	}
 
-	std::vector<std::shared_ptr<LatticeFermion>> vi_lambda_sh(
-	  1, std::shared_ptr<LatticeFermion>(&vi_lambda, [](LatticeFermion*) {}));
-	std::vector<std::shared_ptr<LatticeFermion>> ui_sh(
-	  1, std::shared_ptr<LatticeFermion>(&ui, [](LatticeFermion*) {}));
-	do_disco(dbdet, ui_sh, vi_lambda_sh, mom_list,
-		 params.param.use_ferm_state_links ? state->getLinks() : u,
-		 params.param.max_path_length);
+	for (unsigned int k = 0, nk = blk; k < rank; k += nk, nk = std::min(blk, rank - k))
+	{
+	  // collect dk pairs of vectors
+	  auto vk = std::vector<std::shared_ptr<LatticeFermion>>(vi_lambda_sh.begin(),
+								 vi_lambda_sh.begin() + nk);
+	  auto uk = std::vector<std::shared_ptr<LatticeFermion>>(ui_sh.begin(), ui_sh.begin() + nk);
+	  getV(proj, k, uk);
+	  for (unsigned int ki = 0; ki < nk; ++ki)
+	    *vk[ki] = *uk[ki] / getLambda(proj, k + ki);
+	  getU(proj, k, uk);
+
+	  // Added to dbdet the results of \Omega*P*inv(A)=\Omega*V*inv(U'*A*V)*U', where \Omega are
+	  do_disco(dbdet, uk, vk, mom_list,
+		   params.param.use_ferm_state_links ? state->getLinks() : u,
+		   params.param.max_path_length);
+	}
       }
+
       swatch_det.stop();
       QDPIO::cout << "Projector contribution computed in time= " << swatch_det.getTimeInSeconds()
 		  << " secs" << std::endl;
@@ -763,13 +770,15 @@ namespace Chroma
 	{
 	  // collect (Ns*Nc*dk) pairs of vectors
 	  std::vector<std::shared_ptr<LatticeFermion>> v_chi(Ns * Nc * dk), v_psi(Ns * Nc * dk),
-	    v_q(Ns * Nc * dk);
+	    v_q(Ns * Nc * dk), v_prj(Ns * Nc * dk);
 	  for (int col = 0; col < v_chi.size(); col++)
 	    v_chi[col].reset(new LatticeFermion);
 	  for (int col = 0; col < v_psi.size(); col++)
 	    v_psi[col].reset(new LatticeFermion);
 	  for (int col = 0; col < v_q.size(); col++)
 	    v_q[col].reset(new LatticeFermion);
+	  for (int col = 0; col < v_prj.size(); col++)
+	    v_prj[col].reset(new LatticeFermion);
 	  for (int i_v = 0; i_v < dk; i_v++)
 	  {
 	    LatticeInteger hh;
@@ -795,13 +804,14 @@ namespace Chroma
 	  SB::doInversion(
 	    PP, v_psi,
 	    std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
-	  proj->VUAObliqueProjector(
-	    v_q, std::vector<std::shared_ptr<const LatticeFermion>>(v_psi.begin(), v_psi.end()));
+	  doVUAObliqueProjector(
+	    proj, v_prj,
+	    std::vector<std::shared_ptr<const LatticeFermion>>(v_psi.begin(), v_psi.end()));
 	  for (int i = 0; i < v_psi.size(); ++i)
-	    *v_q[i] = *v_psi[i] - *v_q[i]; // q <= (I - V*inv(U'*AV*)*U'*A)*quark_soln
+	    *v_q[i] = *v_psi[i] - *v_prj[i]; // q <= (I - V*inv(U'*A*V)*U'*A)*quark_soln
 
-	  // here the recursive call goes to compute the loops
-	  // result is ADDED to db
+	  // Added to db the results of chi'*\Omega*(I-P)*inv(A)*chi, where \Omega are
+	  // local operators in spin and space
 	  StopWatch swatch_dots;
 	  swatch_dots.start();
 	  do_disco(db, v_chi, v_q, mom_list,
@@ -827,9 +837,10 @@ namespace Chroma
       }
 
       // Add the deterministic part to the traces
-      for (auto& it : dbmean)
-	for (int k = 0; k < Ns * Ns; k++)
-	  it.second[k] += dbdet[it.first][k];
+      if (dbdet.size() > 0)
+	for (auto& it : dbmean)
+	  for (int k = 0; k < Ns * Ns; k++)
+	    it.second[k] += dbdet[it.first][k];
 
       swatch.stop();
       QDPIO::cout << "Traces were  computed: time= " << swatch.getTimeInSeconds() << " secs"

@@ -66,6 +66,75 @@ namespace Chroma
     template <typename COMPLEX>
     EigensolverFun<Nd + 7, COMPLEX> getInexactEigensolverGD(Operator<Nd + 7, COMPLEX> op,
 							    const Options& ops);
+
+    /// Function that returns V[from..from+size-1]
+    /// \param from: first index to return
+    /// \param size: number of vectors to return starting from `from`
+    /// \param label: label indicating the columns
+
+    template <std::size_t NOp, typename COMPLEX>
+    using VectorFun = std::function<Tensor<NOp + 1, COMPLEX>(unsigned int, unsigned int, char)>;
+
+    /// Returns a projector of the form V*inv(U'*op*V)*U'*op, where U'*op*V = diag(lambda)
+    ///
+    /// It can work as a projector on the right of inv(op), that is P*inv(op):
+    ///   P = V*inv(U'*op*V)*U'*op
+    /// Then:
+    ///   tr P*inv(op) = tr V*inv(U'*op*V)*U' = \sum_i u_i'*vi/lambda_i
+
+    template <std::size_t NOp, typename COMPLEX>
+    struct Projector {
+      /// Function that applies the projector
+      Operator<NOp, COMPLEX> op;
+
+      /// Function that returns the i-th left base of the projector
+      VectorFun<NOp, COMPLEX> V;
+
+      /// Function that returns the i-th right base of the projector
+      VectorFun<NOp, COMPLEX> U;
+
+      /// Inner products with the operator, lambda_i = U[i]'*op*V[i]
+      std::vector<COMPLEX> lambdas;
+    };
+
+
+    /// Chroma or mgproton projector, that is, P*P*x = P*x
+
+    struct ChimeraProjector {
+      /// Action type
+      using Action = Handle<
+	FermionAction<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>;
+
+      /// Action
+      Action S;
+
+      /// State type
+      using State =
+	Handle<FermState<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>>>;
+
+      /// State
+      State state;
+
+      /// Chroma projector (optional)
+      Handle<Chroma::Projector<LatticeFermion>> chroma_proj;
+
+      /// Operator on scxyztX (optional)
+      SB::Projector<Nd + 7, Complex> op;
+
+      /// Constructor
+      /// \param fermAction: XML for the fermion action
+      /// \param projParam: XML for the projector
+      /// \param u: gauge fields
+      ChimeraProjector(const GroupXML_t& fermAction, const GroupXML_t& projParam,
+		    const multi1d<LatticeColorMatrix>& u);
+    };
+
+    void doVUAObliqueProjector(const ChimeraProjector& proj, MultipleLatticeFermions& psis,
+			       const ConstMultipleLatticeFermions& chis, int max_rhs = 0);
+    unsigned int getProjectorRank(const ChimeraProjector& proj);
+    void getV(const ChimeraProjector& proj, unsigned int from, MultipleLatticeFermions& psis);
+    void getU(const ChimeraProjector& proj, unsigned int from, MultipleLatticeFermions& psis);
+    DComplex getLambda(const ChimeraProjector& proj, unsigned int index);
   }
 }
 #endif // BUILD_SB

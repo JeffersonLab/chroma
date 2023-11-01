@@ -2740,7 +2740,7 @@ namespace Chroma
       }
     }
 
-    /// Returns an inexact Generalized Davidson.
+    /// Returns an inexact Generalized Davidson on op*g5
     /// NOTE: this is an eigensolver not a linear solver
     ///
     /// \param op: operator to make the inverse of
@@ -2852,6 +2852,27 @@ namespace Chroma
 	{
 	  QDPIO::cerr << "Error: primme returned with nonzero exit status\n";
 	  QDP_abort(1);
+	}
+
+	// Check the residuals, |op*v-lambda*v|_2<=|op|*tol
+	if (evals.size() > 0)
+	{
+	  auto g5 = getGamma5<ComplexD>(op.d.kvdim().at('s'));
+	  auto r =
+	    op(contract<Nd + 8, 2, Nd + 8, ComplexD>(g5.rename_dims({{'j', 's'}}), evecs, "s")
+		 .rename_dims({{'i', 's'}}));
+	  std::vector<ComplexD> evals_cmpl(evals.begin(), evals.end());
+	  contract<Nd + 8, Nd + 8, 1, ComplexD>(
+	    evecs, asTensorView(evals_cmpl).rename_dims({{'i', 'n'}}).scale(-1), "", AddTo, r);
+	  auto rnorm = norm<1>(r, "n");
+	  for (int i = 0, vol = rnorm.volume(); i < vol; ++i)
+	  {
+	    if (rnorm.get({{i}}) > primme.stats.estimateLargestSVal * primme.eps * 10)
+	    {
+	      QDPIO::cerr << "Error: primme returned eigenpairs with too much error\n";
+	      QDP_abort(1);
+	    }
+	  }
 	}
 
 	// Cleanup
@@ -3420,6 +3441,95 @@ namespace Chroma
 
 	return r;
       }
+
+      /// Returns a projector onto the approximate right singular value space of the given operator
+      /// for the smallest singular values.
+      ///
+      /// It can work as a projector on the right of inv(op):
+      ///   P = V*inv(V'*g5*op*V)*V'*g5*op
+      /// Then:
+      ///   tr P*inv(op) = tr V*inv(V'*g5*op*V)*V'*g5 = \sum_i v_i'*g5*vi/lambda_i
+      ///
+      /// It computes a number of the smallest right singular vectors of op as the eigenvectors of
+      /// inv(g5*op), which is Hermitian.
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Projector<NOp, COMPLEX> getDeflationProj(Operator<NOp, COMPLEX> op, const Options& ops)
+      {
+	// Get options
+	unsigned int rank = getOption<unsigned int>(ops, "rank");
+	if (rank == 0)
+	{
+	  // Return trivial solution
+	  auto proj = Operator<NOp, COMPLEX>{
+	    [=](const Tensor<NOp + 1, COMPLEX>&, Tensor<NOp + 1, COMPLEX> y) { y.set_zero(); },
+	    op.d, op.i, nullptr, op};
+
+	  auto VUfun = [=](unsigned int ifrom, unsigned int isize,
+			   char col_label) -> Tensor<NOp + 1, COMPLEX> { return {}; };
+
+	  std::vector<COMPLEX> lambdas(0);
+
+	  return {proj, VUfun, VUfun, lambdas};
+	}
+	double tol = getOption<double>(ops, "tol", 0.1);
+	auto solver = getSolver(op, ops.getValue("solver"));
+	auto default_eig_ops = DictionaryOption(ops);
+	auto eigensolver = SB::getInexactEigensolverGD(
+	  solver, ops.getValue("eigensolver", Maybe<const Option&>(default_eig_ops)));
+
+	// Compute the eigenpairs of inv(op) * g5, the right singular vectors of op
+	auto values_vectors = eigensolver(rank, tol);
+	auto inv_values = std::get<0>(values_vectors);
+	auto vectors = std::get<1>(values_vectors).rename_dims({{'n', 'i'}});
+
+	// Return the projector
+	int ns = op.d.kvdim().at('s');
+	auto g5 = getGamma5<COMPLEX>(ns);
+	auto mult_by_g5 = [=](Tensor<NOp + 1, COMPLEX> v) {
+	  char i = detail::get_free_label(v.order);
+	  return contract<NOp + 1>(g5.rename_dims({{'j', 's'}, {'i', i}}), v, "s")
+	    .rename_dims({{i, 's'}});
+	};
+	auto Vt_g5_op_V = contract<2>(
+	  vectors.conj(), mult_by_g5(op(vectors.rename_dims({{'i', 'j'}}))), op.d.order);
+	auto inv_Vt_g5_op_V = inv(Vt_g5_op_V, "i", "j");
+	auto proj = Operator<NOp, COMPLEX>{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    // Do V'*g5*x, dims: i x n
+	    auto Vt_g5_op_x = contract<2>(vectors.conj(), mult_by_g5(op(x)), op.d.order);
+
+	    // Do inv(V'*g5*op*V)*V'*g5*x, dims I x i * i x n = I x n -> i x n
+	    auto lambda_inv_Vt_g5_op_x =
+	      contract<2>(inv_Vt_g5_op_V.rename_dims({{'i', 'I'}, {'j', 'i'}}), Vt_g5_op_x, "i")
+		.rename_dims({{'I', 'i'}});
+
+	    // Do y = V*inv(V'*g5*op*V)*V'*g5*x, dims latt x i * i x n = latt x n
+	    contract(vectors, lambda_inv_Vt_g5_op_x, "i", CopyTo, y);
+	  },
+	  op.d, op.i, nullptr, solver};
+
+	// Return V*inv_Vt_g5_op_V[:,ifrom..ifrom+isize]
+	auto Vfun = [=](unsigned int ifrom, unsigned int isize, char col_label) {
+	  return contract<NOp + 1>(
+		   vectors, inv_Vt_g5_op_V.kvslice_from_size({{'j', ifrom}}, {{'j', isize}}), "i")
+	    .rename_dims({{'j', col_label}});
+	};
+
+	// Returns \gamma_5*V[ifrom..ifrom+isize-1]
+	auto Ufun = [=](unsigned int ifrom, unsigned int isize, char col_label) {
+	  return mult_by_g5(vectors.kvslice_from_size({{'i', ifrom}}, {{'i', isize}})
+			      .rename_dims({{'i', col_label}}));
+	};
+
+	// Return all ones
+	std::vector<COMPLEX> lambdas(inv_values.size(), COMPLEX{1});
+
+	return {proj, Vfun, Ufun, lambdas};
+      }
     }
 
     /// Apply the inverse to LatticeColorVec tensors for a list of spins
@@ -3616,6 +3726,206 @@ namespace Chroma
 	ColumnMajor, // preferred ordering
 	false	     /* has a Kronecker form */
       };
+    }
+
+    /// Returns a projector onto the smallest singular space on an operator
+    /// \param op: operator to make the projector onto
+    /// \param ops: options to select the projector and influence the projector construction
+
+    template <std::size_t NOp, typename COMPLEX>
+    Projector<NOp, COMPLEX> getProjector(const Operator<NOp, COMPLEX>& op, const Options& ops)
+    {
+      enum ProjectorType { DEFL, MGDEFL };
+      static const std::map<std::string, ProjectorType> projectorTypeMap{{"defl", DEFL},
+									 {"mg", MGDEFL}};
+      ProjectorType projectorType = getOption<ProjectorType>(ops, "type", projectorTypeMap);
+      switch (projectorType)
+      {
+      case DEFL: // plain deflation
+	return detail::getDeflationProj(op, ops);
+	//      case MGDEFL: // Multigrid deflation
+	//	return detail::getMGDeflationProj(op, ops);
+      }
+      throw std::runtime_error("This shouldn't happen");
+    }
+
+    /// Constructor
+    /// \param fermAction: XML for the fermion action
+    /// \param projParam: XML for a projector onto the quark propagator
+    /// \param u: gauge fields
+
+    ChimeraProjector::ChimeraProjector(const GroupXML_t& fermAction, const GroupXML_t& projParam,
+				       const multi1d<LatticeColorMatrix>& u)
+    {
+      // Initialize fermion action and state
+      std::istringstream xml_s(fermAction.xml);
+      XMLReader fermacttop(xml_s);
+      QDPIO::cout << "FermAct = " << fermAction.id << std::endl;
+      S = TheFermionActionFactory::Instance().createObject(fermAction.id, fermacttop,
+							   fermAction.path);
+      state = S->createState(u);
+
+      // If the inverter is MGPROTON, use this infrastructure
+      if (projParam.id == std::string("MGPROTON"))
+      {
+	QDPIO::cout << "Setting up MGPROTON projector..." << std::endl;
+	Tracker _t("setup mgproton projector");
+
+	// Parse XML with the inverter options
+	std::shared_ptr<Options> ops = getOptionsFromXML(broadcast(projParam.xml));
+
+	// Clone the matvec
+	LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
+	ColOrdering co = getOption<ColOrdering>(*ops, "Projector/operator_ordering",
+						getColOrderingMap(), ColumnMajor);
+	ColOrdering co_blk = getOption<ColOrdering>(*ops, "Projector/operator_block_ordering",
+						    getColOrderingMap(), RowMajor);
+	Operator<Nd + 7, Complex> linOp = detail::cloneOperator(
+	  asOperatorView(*fLinOp), co, co_blk, detail::ConsiderBlockingSparse, "chroma's operator");
+
+	// Destroy chroma objects
+	delete fLinOp;
+	state = State();
+	S = Action();
+
+	// Construct the projector
+	op = getProjector(linOp, getOptions(*ops, "Projector"));
+
+	// Clean cache of operators
+	detail::cleanEvenOddOperatorsCache();
+
+	QDPIO::cout << "MGPROTON projector ready; setup time: "
+		    << detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;
+      }
+      else
+      {
+	chroma_proj = S->projector(state, projParam);
+      }
+    }
+
+    /// Apply the oblique projector V*inv(U^H*op*V)*U^H*op
+    /// \param proj: Chimera projector
+    /// \param psis: output lattice spin-color tensor, at least dimensions csxyztX
+    /// \param chis: input lattice spin-color tensor, at least dimensions csxyztX
+    /// \param max_rhs: maximum number of vectors solved at once
+
+    void doVUAObliqueProjector(const ChimeraProjector& proj, MultipleLatticeFermions& psis,
+			       const ConstMultipleLatticeFermions& chis, int max_rhs)
+    {
+      StopWatch snarss1;
+      snarss1.reset();
+      snarss1.start();
+
+      if (max_rhs <= 0)
+	max_rhs = chis.size();
+
+      // Do the projection
+      if (proj.op.op)
+      {
+	auto tchi = proj.op.op.make_compatible_dom<Nd + 8>("n", {{'n', max_rhs}});
+	auto tpsi = proj.op.op.make_compatible_img<Nd + 8>("n", {{'n', max_rhs}});
+	for (int i = 0, n = std::min(max_rhs, (int)chis.size()); i < chis.size();
+	     i += n, n = std::min((int)chis.size() - i, max_rhs))
+	{
+	  // Adjust the size of tchi and tpsi to n
+	  auto this_tchi = tchi.kvslice_from_size({{'n', 0}}, {{'n', n}});
+	  auto this_tpsi = tpsi.kvslice_from_size({{'n', 0}}, {{'n', n}});
+
+	  // Copy chis into this_tchi
+	  for (int j = 0; j < n; ++j)
+	    asTensorView(*chis[i + j]).copyTo(this_tchi.kvslice_from_size({{'n', j}}, {{'n', 1}}));
+
+	  // Do the inversion: this_tpsi = D^{-1} * this_tchi
+	  proj.op.op(this_tchi, this_tpsi);
+
+	  // Copy the solution into psis
+	  for (int j = 0; j < n; ++j)
+	    this_tpsi.kvslice_from_size({{'n', j}}, {{'n', 1}}).copyTo(asTensorView(*psis[i + j]));
+	}
+      }
+      else
+      {
+	for (int i = 0, n = std::min(max_rhs, (int)chis.size()); i < chis.size();
+	     i += n, n = std::min((int)chis.size() - i, max_rhs))
+	{
+	  proj.chroma_proj->VUAObliqueProjector(
+	    MultipleLatticeFermions(psis.begin() + i, psis.begin() + i + n),
+	    ConstMultipleLatticeFermions(chis.begin() + i, chis.begin() + i + n));
+	}
+      }
+
+      snarss1.stop();
+      QDPIO::cout << "Time to compute " << chis.size()
+		  << " projection: " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+    }
+
+    /// Get the rank of the oblique projector V*inv(U^H*op*V)*U^H*op
+    /// \param proj: Chimera projector
+
+    unsigned int getProjectorRank(const ChimeraProjector& proj)
+    {
+      if (proj.op.op)
+	return proj.op.lambdas.size();
+      return proj.chroma_proj->rank();
+    }
+
+    /// Get the left basis of the oblique projector V*inv(U^H*op*V)*U^H*op
+    /// \param proj: Chimera projector
+    /// \param from: index of the first basis column
+    /// \param psis: output lattice spin-color tensor, at least dimensions csxyztX
+
+    void getV(const ChimeraProjector& proj, unsigned int from, MultipleLatticeFermions& psis)
+    {
+      if (!proj.op.op)
+      {
+	for (unsigned int i = 0; i < psis.size(); ++i)
+	  proj.chroma_proj->V(from + i, *psis[i]);
+      }
+      else
+      {
+	auto V = proj.op.V(from, psis.size(), 'i');
+	for (unsigned int i = 0; i < psis.size(); ++i)
+	  V.kvslice_from_size({{'i', i}}, {{'i', 1}}).copyTo(asTensorView(*psis[i]));
+      }
+    }
+
+    /// Get the right basis of the oblique projector V*inv(U^H*op*V)*U^H*op
+    /// \param proj: Chimera projector
+    /// \param from: index of the first basis column
+    /// \param psis: output lattice spin-color tensor, at least dimensions csxyztX
+
+    void getU(const ChimeraProjector& proj, unsigned int from, MultipleLatticeFermions& psis)
+    {
+      if (!proj.op.op)
+      {
+	for (unsigned int i = 0; i < psis.size(); ++i)
+	  proj.chroma_proj->U(from + i, *psis[i]);
+      }
+      else
+      {
+	auto U = proj.op.U(from, psis.size(), 'i');
+	for (unsigned int i = 0; i < psis.size(); ++i)
+	  U.kvslice_from_size({{'i', i}}, {{'i', 1}}).copyTo(asTensorView(*psis[i]));
+      }
+    }
+
+    /// Get U_i^H*op*V_i for the oblique projector V*inv(U^H*op*V)*U^H*op
+    /// \param proj: Chimera projector
+    /// \param index: index of the U and V basis
+
+    DComplex getLambda(const ChimeraProjector& proj, unsigned int index)
+    {
+      DComplex r;
+      if (!proj.op.op)
+      {
+	proj.chroma_proj->lambda(index, r);
+      }
+      else
+      {
+	auto l = proj.op.lambdas[index];
+	r.elem().elem().elem() = QDP::RComplex<double>(std::real(l), std::imag(l));
+      }
+      return r;
     }
   }
 }
