@@ -724,7 +724,7 @@ namespace Chroma
 	  1, std::shared_ptr<LatticeFermion>(&vi_lambda, [](LatticeFermion*) {}));
 	std::vector<std::shared_ptr<LatticeFermion>> ui_sh(
 	  1, std::shared_ptr<LatticeFermion>(&ui, [](LatticeFermion*) {}));
-	do_disco(dbdet, vi_lambda_sh, ui_sh, ft,
+	do_disco(dbdet, ui_sh, vi_lambda_sh, ft,
 		 params.param.use_ferm_state_links ? state->getLinks() : u,
 		 params.param.max_path_length);
       }

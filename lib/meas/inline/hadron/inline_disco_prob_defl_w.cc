@@ -688,10 +688,10 @@ namespace Chroma
 
         multi1d<int> d;
         if (params.param.use_ferm_state_links)
-          do_disco(dbdet, vi_lambda, ui, ft, state->getLinks(),
+          do_disco(dbdet, ui, vi_lambda, ft, state->getLinks(),
                    d, params.param.max_path_length);
         else
-          do_disco(dbdet, vi_lambda, ui, ft, u, 
+          do_disco(dbdet, ui, vi_lambda, ft, u, 
                    d, params.param.max_path_length);
       }
       swatch_det.stop();
