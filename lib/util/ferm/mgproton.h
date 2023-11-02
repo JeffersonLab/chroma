@@ -75,17 +75,21 @@ namespace Chroma
     template <std::size_t NOp, typename COMPLEX>
     using VectorFun = std::function<Tensor<NOp + 1, COMPLEX>(unsigned int, unsigned int, char)>;
 
-    /// Returns a projector of the form V*inv(U'*op*V)*U'*op, where U'*op*V = diag(lambda)
+    /// Returns the pieces of a projector of the form:
+    ///   V*inv(U'*op*V)*U'*op, where U'*op*V = diag(lambda)
     ///
-    /// It can work as a projector on the right of inv(op), that is P*inv(op):
+    /// It can work as a projector on the right of inv(op), that is P*inv(op), where
     ///   P = V*inv(U'*op*V)*U'*op
-    /// Then:
-    ///   tr P*inv(op) = tr V*inv(U'*op*V)*U' = \sum_i u_i'*vi/lambda_i
+    /// or it can work as a projector on the left of inv(op), that is inv(op)*Q, where
+    ///   Q = op*V*inv(U'*op*V)*U'
+    ///
+    /// Then, the trace of either P*inv(op) or inv(op)*Q is
+    ///   tr V*inv(U'*op*V)*U' = \sum_i u_i'*vi/lambda_i
 
     template <std::size_t NOp, typename COMPLEX>
     struct Projector {
-      /// Function that applies the projector
-      Operator<NOp, COMPLEX> op;
+      /// Function that applies V * inv(U'*op*V) * U'
+      Operator<NOp, COMPLEX> V_inv_Ut;
 
       /// Function that returns the i-th left base of the projector
       VectorFun<NOp, COMPLEX> V;
@@ -95,8 +99,10 @@ namespace Chroma
 
       /// Inner products with the operator, lambda_i = U[i]'*op*V[i]
       std::vector<COMPLEX> lambdas;
-    };
 
+      /// Function that applies the operator
+      Operator<NOp, COMPLEX> op;
+    };
 
     /// Chroma or mgproton projector, that is, P*P*x = P*x
 

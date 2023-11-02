@@ -1639,30 +1639,12 @@ namespace Chroma
 	return m;
       }
 
-      /// Returns a MG preconditioner.
-      ///
-      /// It returns an approximation of Op^{-1} = Op^{-1}*Q + Op^{-1}(I-Q), where Q is a projector
-      /// on the left singular space of Op. (MG can be derived also from P*Op^{-1} + (I-P)*Op^{-1},
-      /// where P is on the right singular space, producing pre-smoothers instead.)
-      /// The approximation is constructed using an oblique projector and doing the inversions
-      /// approximately:
-      ///   1) Q = Op*V*(W'*Op*V)^{-1}*W', where W and V are left and right singular spaces.
-      ///   2) [Op^{-1}*Q + Op^{-1}(I-Q)]*x \approx
-      ///                       V*solver(W'*Op*V, W'*x) + solver(Op, x - Op*V*solver(W'*Op*V, W'*x))
-      /// Note that if Op is \gamma_5-Hermitian, and W=\gamma_5*V, and \gamma_5 commutes with V
-      /// (\gamma_5*V = V*\gamma_5^coarse), then the projector reduces to Q=Op*V(V'*Op*V)^{-1}*V',
-      /// and, this coarse operator is easier to solve than V'\gamma_5*Op*V.
-      ///
-      /// \param op: operator to make the inverse of
-      /// \param ops: options to select the solver and the null-vectors creation
-
+      /// Return the prolongator and the coarse operator and spin splitting
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getMGPrec(Operator<NOp, COMPLEX> op, const Options& ops,
-				       Operator<NOp, COMPLEX> prec_, SolverSpace solverSpace)
+      std::tuple<Operator<NOp, COMPLEX>, Operator<NOp, COMPLEX>, SpinSplitting>
+      getProlongatorAndCoarse(Operator<NOp, COMPLEX> op, const Options& ops,
+			      SolverSpace solverSpace)
       {
-	if (prec_)
-	  throw std::runtime_error("getMGPrec: unsupported input preconditioner");
-
 	// Get prolongator, V
 	unsigned int num_null_vecs = getOption<unsigned int>(ops, "num_null_vecs");
 	std::vector<unsigned int> mg_blocking_v =
@@ -1683,7 +1665,6 @@ namespace Chroma
 						     {'y', layout_blocking_v[1]},
 						     {'z', layout_blocking_v[2]},
 						     {'t', layout_blocking_v[3]}};
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 	const Operator<NOp, COMPLEX> nullSolver =
 	  getSolver(op, getOptions(ops, "solver_null_vecs"));
 	static const std::map<std::string, SpinSplitting> m_spin_splitting{
@@ -1741,6 +1722,39 @@ namespace Chroma
 	    op.preferred_col_ordering, V.is_kronecker()},
 	  co, co_blk, ConsiderBlockingSparse, "coarse");
 
+	return {V, op_c, spin_splitting};
+      }
+
+      /// Returns a MG preconditioner.
+      ///
+      /// It returns an approximation of Op^{-1} = Op^{-1}*Q + Op^{-1}(I-Q), where Q is a projector
+      /// on the left singular space of Op. (MG can be derived also from P*Op^{-1} + (I-P)*Op^{-1},
+      /// where P is on the right singular space, producing pre-smoothers instead.)
+      /// The approximation is constructed using an oblique projector and doing the inversions
+      /// approximately:
+      ///   1) Q = Op*V*(W'*Op*V)^{-1}*W', where W and V are left and right singular spaces.
+      ///   2) [Op^{-1}*Q + Op^{-1}(I-Q)]*x \approx
+      ///                       V*solver(W'*Op*V, W'*x) + solver(Op, x - Op*V*solver(W'*Op*V, W'*x))
+      /// Note that if Op is \gamma_5-Hermitian, and W=\gamma_5*V, and \gamma_5 commutes with V
+      /// (\gamma_5*V = V*\gamma_5^coarse), then the projector reduces to Q=Op*V(V'*Op*V)^{-1}*V',
+      /// and, this coarse operator is easier to solve than V'\gamma_5*Op*V.
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getMGPrec(Operator<NOp, COMPLEX> op, const Options& ops,
+				       Operator<NOp, COMPLEX> prec_, SolverSpace solverSpace)
+      {
+	if (prec_)
+	  throw std::runtime_error("getMGPrec: unsupported input preconditioner");
+
+	// Get prolongator and coarse operator
+	auto prolongator_coarse_spin_splitting = getProlongatorAndCoarse(op, ops, solverSpace);
+	Operator<NOp, COMPLEX> V = std::get<0>(prolongator_coarse_spin_splitting);
+	Operator<NOp, COMPLEX> op_c = std::get<1>(prolongator_coarse_spin_splitting);
+	SpinSplitting spin_splitting = std::get<2>(prolongator_coarse_spin_splitting);
+
 	// Get the solver for the projector
 	const Operator<NOp, COMPLEX> coarseSolver =
 	  getSolver(op_c, getOptions(ops, "solver_coarse"));
@@ -1749,6 +1763,9 @@ namespace Chroma
 	const Operator<NOp, COMPLEX> opSolver = getSolver(op, getOptions(ops, "solver_smoother"));
 
 	OperatorFun<NOp, COMPLEX> solver;
+	int ns = op.d.kvdim().at('s');
+	auto g5 = getGamma5<COMPLEX>(ns);
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
 	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
 	{
 	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -3464,7 +3481,7 @@ namespace Chroma
 	if (rank == 0)
 	{
 	  // Return trivial solution
-	  auto proj = Operator<NOp, COMPLEX>{
+	  auto almost_proj = Operator<NOp, COMPLEX>{
 	    [=](const Tensor<NOp + 1, COMPLEX>&, Tensor<NOp + 1, COMPLEX> y) { y.set_zero(); },
 	    op.d, op.i, nullptr, op};
 
@@ -3473,7 +3490,7 @@ namespace Chroma
 
 	  std::vector<COMPLEX> lambdas(0);
 
-	  return {proj, VUfun, VUfun, lambdas};
+	  return {almost_proj, VUfun, VUfun, lambdas, op};
 	}
 	double tol = getOption<double>(ops, "tol", 0.1);
 	auto solver = getSolver(op, ops.getValue("solver"));
@@ -3497,18 +3514,18 @@ namespace Chroma
 	auto Vt_g5_op_V = contract<2>(
 	  vectors.conj(), mult_by_g5(op(vectors.rename_dims({{'i', 'j'}}))), op.d.order);
 	auto inv_Vt_g5_op_V = inv(Vt_g5_op_V, "i", "j");
-	auto proj = Operator<NOp, COMPLEX>{
+	auto almost_proj = Operator<NOp, COMPLEX>{
 	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	    // Do V'*g5*x, dims: i x n
-	    auto Vt_g5_op_x = contract<2>(vectors.conj(), mult_by_g5(op(x)), op.d.order);
+	    auto Vt_g5_x = contract<2>(vectors.conj(), mult_by_g5(x), op.d.order);
 
 	    // Do inv(V'*g5*op*V)*V'*g5*x, dims I x i * i x n = I x n -> i x n
-	    auto lambda_inv_Vt_g5_op_x =
-	      contract<2>(inv_Vt_g5_op_V.rename_dims({{'i', 'I'}, {'j', 'i'}}), Vt_g5_op_x, "i")
+	    auto lambda_inv_Vt_g5_x =
+	      contract<2>(inv_Vt_g5_op_V.rename_dims({{'i', 'I'}, {'j', 'i'}}), Vt_g5_x, "i")
 		.rename_dims({{'I', 'i'}});
 
 	    // Do y = V*inv(V'*g5*op*V)*V'*g5*x, dims latt x i * i x n = latt x n
-	    contract(vectors, lambda_inv_Vt_g5_op_x, "i", CopyTo, y);
+	    contract(vectors, lambda_inv_Vt_g5_x, "i", CopyTo, y);
 	  },
 	  op.d, op.i, nullptr, solver};
 
@@ -3528,7 +3545,67 @@ namespace Chroma
 	// Return all ones
 	std::vector<COMPLEX> lambdas(inv_values.size(), COMPLEX{1});
 
-	return {proj, Vfun, Ufun, lambdas};
+	return {almost_proj, Vfun, Ufun, lambdas, op};
+      }
+
+      /// Returns a projector onto the approximate right singular value space of the given operator
+      /// for the smallest singular values.
+      ///
+      /// It can work as a projector on the right of inv(op):
+      ///   P = Q*V*inv(V'*g5*Q'*op*Q*V)*V'*g5*Q'*op
+      /// Then:
+      ///   tr P*inv(op) = tr Q*V*inv(V'*g5*Q'*op*Q*V)*V'*g5*Q' = \sum_i v_i'*g5*vi/lambda_i
+      ///
+      /// It computes a number of the smallest right singular vectors of op as the eigenvectors of
+      /// inv(g5*op), which is Hermitian.
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Projector<NOp, COMPLEX> getMGDeflationProj(Operator<NOp, COMPLEX> op, const Options& ops)
+      {
+	// Get options
+	unsigned int rank = getOption<unsigned int>(ops, "rank");
+	// Return trivial solution
+	if (rank == 0)
+	  return getDeflationProj(op, ops);
+
+	// Get prolongator and coarse operator
+	auto prolongator_coarse_spin_splitting =
+	  getProlongatorAndCoarse(op, ops.getValue("prolongator"), FullSpace);
+	Operator<NOp, COMPLEX> Q = std::get<0>(prolongator_coarse_spin_splitting);
+	Operator<NOp, COMPLEX> op_c = std::get<1>(prolongator_coarse_spin_splitting);
+
+	// Return the projector for the coarse operator
+	auto proj_c = getDeflationProj(op_c, ops);
+
+	/// Return Q*V*inv(U'*Q'*op*Q*V)*U'*Q' = Q proj_c * Q'
+	auto almost_proj = Operator<NOp, COMPLEX>{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Q(proj_c.V_inv_Ut(Q.tconj()(x)), y);
+	  },
+	  op.d,
+	  op.i,
+	  nullptr,
+	  op.order_t,
+	  op.imgLayout,
+	  op.domLayout,
+	  DenseOperator(),
+	  op.preferred_col_ordering,
+	  false /* no Kronecker blocking */};
+
+	// Return Q*V[:,ifrom..ifrom+isize]
+	auto Vfun = [=](unsigned int ifrom, unsigned int isize, char col_label) {
+	  return Q(proj_c.V(ifrom, isize, col_label));
+	};
+
+	// Returns Q*U[ifrom..ifrom+isize-1]
+	auto Ufun = [=](unsigned int ifrom, unsigned int isize, char col_label) {
+	  return Q(proj_c.U(ifrom, isize, col_label));
+	};
+
+	return {almost_proj, Vfun, Ufun, proj_c.lambdas, op};
       }
     }
 
@@ -3743,8 +3820,8 @@ namespace Chroma
       {
       case DEFL: // plain deflation
 	return detail::getDeflationProj(op, ops);
-	//      case MGDEFL: // Multigrid deflation
-	//	return detail::getMGDeflationProj(op, ops);
+      case MGDEFL: // Multigrid deflation
+	return detail::getMGDeflationProj(op, ops);
       }
       throw std::runtime_error("This shouldn't happen");
     }
@@ -3835,8 +3912,8 @@ namespace Chroma
 	  for (int j = 0; j < n; ++j)
 	    asTensorView(*chis[i + j]).copyTo(this_tchi.kvslice_from_size({{'n', j}}, {{'n', 1}}));
 
-	  // Do the inversion: this_tpsi = D^{-1} * this_tchi
-	  proj.op.op(this_tchi, this_tpsi);
+	  // Do the projection: this_tpsi = V * inv(U'*D*V) * U' * D * this_tchi
+	  proj.op.V_inv_Ut(proj.op.op(this_tchi), this_tpsi);
 
 	  // Copy the solution into psis
 	  for (int j = 0; j < n; ++j)
