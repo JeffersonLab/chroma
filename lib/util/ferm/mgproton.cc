@@ -2862,11 +2862,15 @@ namespace Chroma
 	primme.ldOPs = primme.nLocal;
 
 	// Should set lots of defaults
-	if (primme_set_method(PRIMME_DEFAULT_MIN_TIME, &primme) < 0)
+	if (primme_set_method(PRIMME_DEFAULT_MIN_MATVECS, &primme) < 0)
 	{
 	  QDPIO::cerr << __func__ << ": invalid preset method\n";
 	  QDP_abort(1);
 	}
+
+	// Print primme options
+	if (verb >= VeryDetailed && Layout::nodeNumber() == 0)
+	  primme_display_params(primme);
 
 	// Allocate space for converged Ritz values and residual norms
 	std::vector<double> evals(primme.numEvals);
