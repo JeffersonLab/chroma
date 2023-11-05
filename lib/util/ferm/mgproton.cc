@@ -509,8 +509,8 @@ namespace Chroma
       if (max_residual_updates == 0)
 	max_residual_updates = (std::is_same<COMPLEX, double>::value ||
 				std::is_same<COMPLEX, std::complex<double>>::value)
-				 ? 4
-				 : 2;
+				 ? 100
+				 : 100;
 
       // Check that the operator is compatible with the input and output vectors
       if (!op.d.is_compatible(x) || !op.d.is_compatible(y))
@@ -589,10 +589,24 @@ namespace Chroma
 	pj = contract<NOp + 1>(pj, beta_j, "");
 	rj.addTo(pj);
 
+	// Recompute residual vector if needed
+	if (residual_updates < max_residual_updates)
+	{
+	  residual_updates++;
+	}
+	else
+	{
+	  op(y.scale(-1), rj); // rj = op(-y)
+	  x.addTo(rj);
+	  rj.copyTo(pj);
+	  nops += num_cols;
+	  residual_updates = 0;
+	}
+
 	// Compute the norm
 	auto normr = norm<1>(rj, op.order_t + order_cols);
 
-	// Check final residual
+	// Show error in the residual
 	if (superbblas::getDebugLevel() > 0)
 	{
 	  auto rd = rj.make_compatible();
@@ -686,8 +700,8 @@ namespace Chroma
       if (max_residual_updates == 0)
 	max_residual_updates = (std::is_same<COMPLEX, double>::value ||
 				std::is_same<COMPLEX, std::complex<double>>::value)
-				 ? 4
-				 : 2;
+				 ? 100
+				 : 100;
 
       // Check that the operator is compatible with the input and output vectors
       if (!op.d.is_compatible(x) || !op.d.is_compatible(y))
@@ -737,7 +751,6 @@ namespace Chroma
 	{
 	  prec(r, kr);
 	  nprecs += num_cols;
-	  auto normkr = norm<1>(kr, op.order_t + order_cols);
 	}
 
 	// p = A * kr
@@ -754,10 +767,23 @@ namespace Chroma
 	// r = r - alpha * p
 	contract<NOp + 1>(p.scale(-1), alpha, "", AddTo, r);
 
+	// Update residual if needed
+	if (residual_updates < max_residual_updates)
+	{
+	  residual_updates++;
+	}
+	else
+	{
+	  op(y.scale(-1), r); // r = op(-y)
+	  x.addTo(r);
+	  nops += num_cols;
+	  residual_updates = 0;
+	}
+
 	// Compute the norm
 	auto normr = norm<1>(r, op.order_t + order_cols);
 
-	// Check final residual
+	// Show residual error
 	if (superbblas::getDebugLevel() > 0)
 	{
 	  auto rd = r.make_compatible();
@@ -856,8 +882,8 @@ namespace Chroma
       if (max_residual_updates == 0)
 	max_residual_updates = (std::is_same<COMPLEX, double>::value ||
 				std::is_same<COMPLEX, std::complex<double>>::value)
-				 ? 4
-				 : 2;
+				 ? 100
+				 : 100;
 
       // Check that the operator is compatible with the input and output vectors
       if (!op.d.is_compatible(x) || !op.d.is_compatible(y))
@@ -919,7 +945,6 @@ namespace Chroma
 	{
 	  prec(r, kr);
 	  nprecs += num_cols;
-	  auto normkr = norm<1>(kr, op.order_t + order_cols);
 	}
 
 	// Akr = A * kr
@@ -958,6 +983,20 @@ namespace Chroma
 
 	// r = r - alpha * Ap
 	contract<NOp + 1>(Ap.scale(-1), alpha, "", AddTo, r);
+
+	// Update residual if needed
+	if (residual_updates < max_residual_updates)
+	{
+	  residual_updates++;
+	}
+	else
+	{
+	  op(y.scale(-1), r); // r = op(-y)
+	  x.addTo(r);
+	  nops += num_cols;
+	  active_P = 0;
+	  residual_updates = 0;
+	}
 
 	// Compute the norm
 	auto normr = norm<1>(r, op.order_t + order_cols);
@@ -2925,7 +2964,7 @@ namespace Chroma
 	  throw std::runtime_error("getInexactGD: unsupported input preconditioner");
 
 	const Operator<NOp, COMPLEX> solver = getSolver(op, getOptions(ops, "solver"));
-	double tol = getOption<double>(getOptions(ops, "solver"), "tol", 0.0) * 3.0;
+	double tol = getOption<double>(ops, "tol");
 	auto eigensolver = getInexactEigensolverGD(solver, ops);
 
 	// Return the solver
