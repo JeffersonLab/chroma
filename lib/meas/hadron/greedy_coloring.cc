@@ -230,6 +230,14 @@ namespace Chroma
       return (dim == 0 ? 0 : coor % dim);
     }
 
+    CoorType normalize_coor(const CoorType& coor, const CoorType& dim)
+    {
+      CoorType r;
+      for (unsigned int i = 0; i < coor.size(); ++i)
+	r[i] = normalize_coor(coor[i], dim[i]);
+      return r;
+    }
+
     IndexType euclidian_dist_squared(const CoorType& a, const CoorType& b, const CoorType& dim)
     {
       CoorType d;
@@ -243,8 +251,16 @@ namespace Chroma
       return dist;
     }
 
+    CoorType minus(const CoorType& a, const CoorType& b)
+    {
+      CoorType r;
+      for (unsigned int i = 0; i < a.size(); ++i)
+	r[i] = a[i] - b[i];
+      return r;
+    }
+
     // Return all neighbors up to a given distance WITH THE SAME PARITY
-    // \param dist: distance in the z-direction
+    // \param dists: shifts to consider
     // \param power: all neighbors up to this distance
     //
     // Return a vector of coordinate differences to all neighbors up to
@@ -255,15 +271,18 @@ namespace Chroma
     // NOTE: no performance requirements for this function; the function
     //       'plus' is doing the heavy lifting.
 
-    Coors neighbors_upto_distance(unsigned int dist, unsigned int power, const CoorType& dim)
+    Coors neighbors_upto_distance(const Coors& dists, unsigned int power, const CoorType& dim)
     {
       // Find all neighbors of the vertex at origin up to the
-      // given distance; a regular code should do something like:
+      // given distances; a regular code should do something like:
       //   for i=1:dist, vertices=union(vertices, neighbors(vertices))
       // BUT get_motive ONLY CARES ABOUT EVEN VERTICES
-      Coors centers(2);
-      centers[0][2] = dist;
-      centers[1][2] = normalize_coor(dim[2] - dist, dim[2]);
+      Coors centers;
+      for (const auto& dist : dists)
+      {
+	centers.push_back(dist);
+	centers.push_back(normalize_coor(minus(dim, dist), dim));
+      }
       Coors neighbors_pattern = centers, prev;
       for (unsigned int i = 0; i < power; i++)
       {
@@ -297,10 +316,10 @@ namespace Chroma
     // * First color even vertices with greedy coloring
     // * Then color odd vertices copying the coloring of the even vertices
 
-    Indices get_colors(unsigned int dist, unsigned int power, const CoorType& dim,
+    Indices get_colors(const Coors& dists, unsigned int power, const CoorType& dim,
 		       unsigned int& num_colors)
     {
-      Coors neighbors_rel = neighbors_upto_distance(dist, power, dim);
+      Coors neighbors_rel = neighbors_upto_distance(dists, power, dim);
 
       const unsigned int vol = volume(dim);
       std::vector<unsigned int> color(vol);
@@ -356,10 +375,10 @@ namespace Chroma
       return color;
     }
 
-    bool check_coloring(const Indices& color, unsigned int dist, unsigned int power,
+    bool check_coloring(const Indices& color, const Coors& dists, unsigned int power,
 			const CoorType& dim)
     {
-      Coors neighbors_rel = neighbors_upto_distance(dist, power, dim);
+      Coors neighbors_rel = neighbors_upto_distance(dists, power, dim);
 
       const unsigned int vol = volume(dim);
       for (unsigned int i = 0; i < vol; i++)
@@ -381,19 +400,33 @@ namespace Chroma
   }
 
   // Construct a k-distance coloring
-  void Coloring::construct(unsigned int distance, unsigned int power, CoorType latt_size, bool build_local)
+  void Coloring::construct(const std::vector<std::array<int, 4>>& distances, unsigned int power,
+			   CoorType latt_size, bool build_local)
   {
+    // Get the absolute value of the distances
+    Coors abs_distances;
+    for (const auto& dist : distances)
+      abs_distances.push_back(
+	CoorType{(unsigned int)std::abs(dist[0]), (unsigned int)std::abs(dist[1]),
+		 (unsigned int)std::abs(dist[2]), (unsigned int)std::abs(dist[3])});
+
+    // Compute the maximum shift/distance requested
+    CoorType max_distance{{}};
+    for (const auto& dist : abs_distances)
+      for (unsigned int i = 0; i < dist.size(); ++i)
+	max_distance[i] = std::max(max_distance[i], dist[i]);
+
     // Compute the tile size; the tile size should be divisible by the lattice size and
     // greater or equal than 2*(dist+power)
     for (unsigned int i = 0; i < latt_size.size(); i++)
     {
-      tile_size[i] = std::min(2 * ((i == 2 ? distance : 0) + power), latt_size[i]);
+      tile_size[i] = std::min(2 * (max_distance[i] + power), latt_size[i]);
       while (latt_size[i] % tile_size[i] != 0)
 	tile_size[i]++;
     }
 
     // Get colors for all nodes
-    colors = get_colors(distance, power, tile_size, num_colors);
+    colors = get_colors(abs_distances, power, tile_size, num_colors);
 
     if (build_local)
     {
@@ -415,14 +448,14 @@ namespace Chroma
   }
 
   // Construct a k-distance coloring
-  Coloring::Coloring(unsigned int distance, unsigned int power)
+  Coloring::Coloring(const std::vector<std::array<int, 4>>& distances, unsigned int power)
   {
     // Get lattice dimensions
     CoorType latt_size;
     for (unsigned int i = 0; i < latt_size.size(); i++)
       latt_size[i] = Layout::lattSize()[i];
 
-    construct(distance, power, latt_size, true);
+    construct(distances, power, latt_size, true);
   }
 
   // Read the coloring from a file

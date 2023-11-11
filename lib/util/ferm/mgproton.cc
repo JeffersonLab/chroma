@@ -3932,6 +3932,9 @@ namespace Chroma
     void doVUAObliqueProjector(const ChimeraProjector& proj, MultipleLatticeFermions& psis,
 			       const ConstMultipleLatticeFermions& chis, int max_rhs)
     {
+      if (chis.size() == 0)
+	return;
+
       StopWatch snarss1;
       snarss1.reset();
       snarss1.start();

@@ -129,12 +129,11 @@ namespace Chroma
       else
 	param.noise_vectors = 1;
 
+      param.max_rhs = 0;
       if (inputtop.count("max_rhs") != 0)
       {
 	read(inputtop, "max_rhs", param.max_rhs);
       }
-      else
-	param.max_rhs = 1;
     }
 
     //! Propagator output
@@ -668,7 +667,12 @@ namespace Chroma
 	QDPIO::cout << "Generating a " << params.param.probing_distance
 		    << "-distance coloring with a power " << params.param.probing_power
 		    << std::endl;
-	coloring.reset(new Coloring(params.param.probing_distance, params.param.probing_power));
+	// Do a k-distance coloring with k being params.param.probing_distance and taking as
+	// shifts, zero and the given probing distance. We include always the zero shift because
+	// the disconnected loops can be small at z=0 for several gammas.
+	coloring.reset(new Coloring(
+	  std::vector<std::array<int, 4>>{{{}}, {0, 0, params.param.probing_distance, 0}},
+	  params.param.probing_power));
       }
 
       // Initialize fermion action
@@ -764,7 +768,7 @@ namespace Chroma
 	vec = cmplx(cos(theta), sin(theta));
 
 	// All the loops
-	const int N_rhs = (params.param.max_rhs + Ns * Nc - 1) / Ns / Nc;
+	const int N_rhs = (std::max(params.param.max_rhs, 1) + Ns * Nc - 1) / Ns / Nc;
 	for (int k1 = 0, dk = std::min(Nsrc, N_rhs); k1 < Nsrc;
 	     k1 += dk, dk = std::min(Nsrc - k1, N_rhs))
 	{

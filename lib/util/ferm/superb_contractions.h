@@ -7571,8 +7571,7 @@ namespace Chroma
 	// Compute the coloring
 	Coor<Nd> nat_dims =
 	  kvcoors<Nd>("xyzt", getNatLatticeDims(dim, layout, ConsiderBlockingDense));
-	Coloring coloring{0, // zero displacement in coloring
-			  power == 0 ? max_dist_neighbors + 1
+	Coloring coloring{power == 0 ? max_dist_neighbors + 1
 				     : max_dist_neighbors * 2 + 1, // k-distance coloring
 			  nat_dims};
 
