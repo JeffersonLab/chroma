@@ -101,6 +101,8 @@ namespace Chroma
     static const Distribution Local("");
     /// Only the local process has support and non-collective 
     static const Distribution Glocal("__glocal__");
+    /// Distribute along the labels, one at a time
+    static const Distribution OnEveryoneCompact("__OnEveryoneCompact__");
 
     /// Whether complex conjugate the elements before contraction (see Tensor::contract)
     enum Conjugation { NotConjugate, Conjugate };
@@ -1081,6 +1083,11 @@ namespace Chroma
 	  {
 	    p = all_tensor_glocal(dim);
 	  }
+	  else if (dist.size() > OnEveryoneCompact.size() &&
+		   dist.substr(0, OnEveryoneCompact.size()) == OnEveryoneCompact)
+	  {
+	    p = partitioning_distributed_compact(order, dim, dist.substr(OnEveryoneCompact.size()));
+	  }
 	  else
 	  {
 	    p = partitioning_distributed(order, dim, dist);
@@ -1552,6 +1559,37 @@ namespace Chroma
 								  dist_labels.c_str(), num_procs);
 	  return superbblas::basic_partitioning(order.c_str(), dim, procs, dist_labels.c_str(),
 						num_procs);
+	}
+
+	/// Return a partitioning for a tensor of `dim` dimension onto a grid of processes
+	/// \param order: dimension labels
+	/// \param dim: dimension size for the tensor
+	/// \param order: labels to distribute
+
+	static PartitionStored partitioning_distributed_compact(const std::string& order,
+								const Coor<N>& dim,
+								const std::string& dist_labels)
+	{
+	  Coor<N> procs;
+	  for (unsigned int i = 0; i < N; ++i) procs[i] = 1;
+
+	  // Update the dimension x with the even-odd label X
+	  {
+	    int num_procs = Layout::numNodes(); // remaining processes
+	    for (int dist_label_index = 0; dist_label_index < dist_labels.size();
+		 ++dist_label_index)
+	    {
+	      const auto& it = std::find(order.begin(), order.end(), dist_labels[dist_label_index]);
+	      if (it == order.end())
+		continue;
+
+	      procs[it - order.begin()] = std::min(dim[it - order.begin()], num_procs);
+	      num_procs = num_procs / procs[it - order.begin()];
+	    }
+	  }
+
+	  return superbblas::basic_partitioning(order.c_str(), dim, procs, dist_labels.c_str(),
+						Layout::numNodes());
 	}
       };
 
@@ -7600,42 +7638,29 @@ namespace Chroma
       /// NOTE: this implementation may be too slow for large tensors
 
       template <std::size_t N, typename T>
-      Tensor<N, float> getXOddityMask_aux(int xoddity, const Tensor<N, T>& t, OperatorLayout layout)
+      Tensor<5, float> getXOddityMask_aux(int xoddity, const Tensor<N, T>& t, OperatorLayout layout)
       {
 	if (xoddity != 0 && xoddity != 1)
 	  throw std::runtime_error("getXOddityMask: invalid input argument `xoddity`");
 	auto dim = t.kvdim();
-	auto r = t.template make_compatible<N, float>();
+	auto r = t.template make_compatible<5, float>("Xxyzt");
 	if (layout == NaturalLayout)
 	{
 	  if (dim.at('X') != 1 && dim.at('X') != 2)
 	    throw std::runtime_error("getXOddityMask: invalid dimension size `X`");
-	  Index xLabelPos = -1;
-	  char xLabel = (dim.at('X') == 1 ? 'x' : 'X');
-	  for (std::size_t i = 0; i < N; ++i)
-	    if (r.order[i] == xLabel)
-	      xLabelPos = i;
-	  if (xLabelPos < 0)
-	    throw std::runtime_error("getXOddityMask: given tensor doesn't have `x` dimension");
-	  r.fillCpuFunCoor([&](const Coor<N>& coor) {
-	    return coor[xLabelPos] % 2 == xoddity ? float{1} : float{0};
+	  int dimX = dim.at('X');
+	  r.fillCpuFunCoor([&](const Coor<5>& coor) {
+	    return (coor[0] + coor[1] * dimX) % 2 == xoddity ? float{1} : float{0};
 	  });
 	}
 	else if (isEvenOddLayout(layout))
 	{
 	  if (dim.at('X') != 2)
 	    throw std::runtime_error("getXOddityMask: invalid dimension size `X`");
-	  Coor<4> c;
-	  for (std::size_t i = 0, j = 0; i < N; ++i)
-	    if (is_in("Xyzt", r.order[i]))
-	      c[j++] = i;
 	  if (layout == XEvenOddLayoutZeroOdd)
 	    xoddity = (xoddity + 1) % 2;
-	  r.fillCpuFunCoor([&](const Coor<N>& coor) {
-	    Index s = 0;
-	    for (Index i : c)
-	      s += coor[i];
-	    return s % 2 == xoddity ? float{1} : float{0};
+	  r.fillCpuFunCoor([&](const Coor<5>& coor) {
+	    return (coor[0] + coor[2] + coor[3] + coor[4]) % 2 == xoddity ? float{1} : float{0};
 	  });
 	}
 	else if (layout == EvensOnlyLayout)
@@ -7655,12 +7680,11 @@ namespace Chroma
       /// \param t: return a tensor with this distribution
       /// \param layout: tensor's layout
 
-      template <std::size_t N, typename T>
+      template <std::size_t N, typename T, typename std::enable_if<(N > 5), bool>::type = true>
       Tensor<N, float> getXOddityMask(int xoddity, const Tensor<N, T>& t, OperatorLayout layout)
       {
 	// Create the mask on the lattice components
-	auto r_lat = t.template make_compatible<5, float>("Xxyzt");
-	r_lat = getXOddityMask_aux(xoddity, r_lat, layout);
+	auto r_lat = getXOddityMask_aux(xoddity, t, layout);
 
 	// Create a matrix of ones to extend the mask onto the other components
 	auto dim_dense = t.kvdim();
@@ -7676,6 +7700,13 @@ namespace Chroma
 	contract(r_lat, r_dense, "", CopyTo, r);
 
 	return r;
+      }
+
+      template <std::size_t N, typename T, typename std::enable_if<N == 5, bool>::type = true>
+      Tensor<N, float> getXOddityMask(int xoddity, const Tensor<N, T>& t, OperatorLayout layout)
+      {
+	// Create the mask on the lattice components
+	return getXOddityMask_aux(xoddity, t, layout);
       }
 
       /// Return a copy of the given tensor in natural ordering into an even-odd ordering.
@@ -7727,7 +7758,7 @@ namespace Chroma
       /// \param v: origin tensor
 
       template <std::size_t N, typename T>
-      Tensor<N, T> toNaturalOrdering(const Tensor<N, T>& v)
+      Tensor<N, T> toNaturalOrdering(const Tensor<N, T>& v, int v_oddity = 0)
       {
 	// If the tensor is already in natural ordering, return it
 	auto vdim = v.kvdim();
@@ -7752,7 +7783,8 @@ namespace Chroma
 	auto r = v0.make_compatible();
 	for (int oddity = 0; oddity < 2; ++oddity)
 	{
-	  auto eo_mask = getXOddityMask<N>(oddity, v0, XEvenOddLayout);
+	  auto eo_mask = getXOddityMask<N>(
+	    oddity, v0, v_oddity % 2 == 0 ? XEvenOddLayout : XEvenOddLayoutZeroOdd);
 	  auto nat_mask = getXOddityMask<N>(oddity, r, NaturalLayout);
 	  v0.copyToWithMask(r, eo_mask, nat_mask);
 	}
@@ -8527,12 +8559,8 @@ namespace Chroma
       return w;
 
 #  elif QDP_USE_CB2_LAYOUT
-      // Assuming that v has support on the origin and destination lattice elements
-      int dimX = v.kvdim()['X'];
-      if (dimX != 2 && len % 2 != 0)
-	throw std::runtime_error("Unsupported shift");
-
-      if (dir != 0)
+      int dimX = v.kvdim().at('X');
+      if (dir != 0 || dimX == 1)
       {
 	if (!w)
 	  return v.kvslice_from_size({{'X', -len}, {dir_label[dir], -len}});
@@ -8930,6 +8958,28 @@ namespace Chroma
 	    return T{cos(phase_dot_coor), sin(phase_dot_coor)};
 	  },
 	  true /* zero is even */, dist);
+      }
+
+      /// Return a lattice field with value exp(2*pi*(x./dim)'*phase) for each lattice site x
+      /// \param phase: integer phase
+      /// \param dev: device of the returned tensor
+
+      template <typename T>
+      Tensor<Nd + 1, T> getPhaseNatural(Coor<Nd - 1> phase, DeviceHost dev = OnDefaultDevice,
+					const Distribution& dist = OnEveryone)
+      {
+	// Get spatial dimensions of the current lattice
+	Coor<Nd + 1> dim = latticeSize<Nd + 1>("xyztX", {{'t', 1}});
+	dim[0] *= dim[4];
+	dim[4] = 1;
+	auto r = Tensor<Nd + 1, T>("xyztX", dim, dev, dist);
+	r.fillCpuFunCoor([&](const Coor<Nd + 1>& c) {
+	  typename T::value_type phase_dot_coor = 0;
+	  for (int i = 0; i < Nd - 1; ++i)
+	    phase_dot_coor += c[i] * 2 * M_PI * phase[i] / dim[i];
+	  return T{cos(phase_dot_coor), sin(phase_dot_coor)};
+	});
+	return r;
       }
 
 #  if defined(BUILD_PRIMME)
@@ -9879,17 +9929,25 @@ namespace Chroma
 
       /// Return the directions that are going to be use and the maximum number of displacements keep in memory
       inline void get_tree_mem_stats(const PathNode& disps, std::array<bool, Nd>& dirs,
-				     unsigned int& max_rhs)
+				     unsigned int& max_rhs, std::map<int, unsigned int>& counts)
       {
 	unsigned int max_rhs_sub = 0;
 	for (const auto it : disps.p)
 	{
 	  unsigned int max_rhs_sub_it = 0;
-	  get_tree_mem_stats(it.second, dirs, max_rhs_sub_it);
+	  get_tree_mem_stats(it.second, dirs, max_rhs_sub_it, counts);
 	  max_rhs_sub = std::max(max_rhs_sub, max_rhs_sub_it);
 
 	  if (std::abs(it.first) <= Nd)
-	    dirs[std::abs(it.first) - 1] = true;
+	  {
+	    int dir = std::abs(it.first) - 1;
+	    dirs[dir] = true;
+
+	    if (counts.count(dir) == 0)
+	      counts[dir] = 1;
+	    else
+	      counts[dir]++;
+	  }
 	}
 
 	if (disps.p.size() == 0)
@@ -9904,6 +9962,50 @@ namespace Chroma
 	{
 	  max_rhs = 1 + max_rhs_sub;
 	}
+      }
+
+      /// Return the lattice labels ordered from less to more counts
+      /// \param counts: counts returned by `get_tree_mem_stats`
+      /// \param extra_count_0_labels: (optional) labels to append after the zero count lattice labels
+
+      inline std::string get_optimal_lattice_order(const std::map<int, unsigned int>& counts,
+						   const std::string& extra_count_0_labels = "")
+      {
+	static_assert(Nd == 4);
+
+	// Make a vector of pairs of {label, count} for label being each direction
+	std::vector<std::array<int, 2>> v(4);
+	for (int i = 0; i < 4; ++i)
+	{
+	  if (counts.count(i) == 0)
+	    v[i] = {i, 0};
+	  else
+	    v[i] = {i, (int)counts.at(i)};
+	}
+
+	// Sort them ascendantly on the number of counts
+	std::sort(v.begin(), v.end(), [](const std::array<int, 2>& a, const std::array<int, 2>& b) {
+	  return a[1] < b[1];
+	});
+
+	// Order of the labels
+	const char* lattice_labels = "xyzt";
+	std::string order(4, 0); // string of size 4
+	for (unsigned int i = 0; i < 4; ++i)
+	  order[i] = lattice_labels[v[i][0]];
+
+	// Return the order with extra labels inserted
+	unsigned int first_label_nonzero = 4;
+	for (unsigned int i = 0; i < 4; ++i)
+	{
+	  if (v[i][1] > 0)
+	  {
+	    first_label_nonzero = i;
+	    break;
+	  }
+	}
+	return std::string(order.begin(), order.begin() + first_label_nonzero) +
+	       extra_count_0_labels + std::string(order.begin() + first_label_nonzero, order.end());
       }
 
       const int path_separator = Nd + 1;
@@ -10014,7 +10116,7 @@ namespace Chroma
     using CoorMoms = std::vector<Coor<3>>;
 
     template <typename COMPLEX = Complex>
-    using Moms = std::pair<Tensor<Nd + 2, COMPLEX>, std::vector<Coor<3>>>;
+    using Moms = std::pair<Tensor<Nd + 1, COMPLEX>, std::vector<Coor<3>>>;
 
     /// Contract two LatticeFermion with different momenta, gammas, and displacements.
     /// \param leftconj: left lattice fermion tensor, cxyzXNQqt
@@ -10061,7 +10163,8 @@ namespace Chroma
       // Get what directions are going to be used and the maximum number of displacements in memory
       std::array<bool, Nd> active_dirs{{}};
       unsigned int max_active_disps = 0;
-      detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps);
+      std::map<int, unsigned int> counts;
+      detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps, counts);
 
       // Copy all gammas into a single tensor
       Tensor<3, COMPLEX> gammast("gQS", {(Index)gammas.size(), Ns, Ns}, dev, OnEveryoneReplicated);
@@ -10076,7 +10179,7 @@ namespace Chroma
 
       // Avoid distributing the tensors on directions with derivatives to avoid communications in shiftings,
       // and on dimensions being contracted; so the only remaining dimension is t
-      const Distribution dist("t");
+      const Distribution dist = OnEveryoneCompact + detail::get_optimal_lattice_order(counts);
 
       for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
@@ -10093,14 +10196,18 @@ namespace Chroma
 	    continue;
 
 	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as leftconj and right
-	  ut[d] = asTensorView(u[d])
-		    .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
-		    .toComplex()
+	  ut[d] = detail::toNaturalOrdering(
+		    asTensorView(u[d])
+		      .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
+		      .toComplex(),
+		    first_tslice + tfrom)
 		    .make_sure(none, dev, dist);
 	}
 
 	auto this_right =
-	  right.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}).make_sure(none, dev, dist);
+	  detail::toNaturalOrdering(right.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}),
+				    first_tslice + tfrom)
+	    .make_sure(none, dev, dist);
 	if (tfrom + tsize >= Nt)
 	  right.release();
 
@@ -10114,22 +10221,24 @@ namespace Chroma
 			   " momenta from momentum " + std::to_string(mfrom));
 
 	  // Copy moms into a single tensor
-	  std::string momst_order = "mxyzXt";
-	  Tensor<Nd + 2, COMPLEX> momst(
-	    momst_order, latticeSize<Nd + 2>(momst_order, {{'t', tsize}, {'m', msize}}), dev, dist);
+	  std::string momst_order = "mxyzX";
+	  Tensor<Nd + 1, COMPLEX> momst =
+	    this_right.template like_this<Nd + 1>(momst_order, {{'m', msize}});
 	  for (int m = 0; m < msize; ++m)
 	  {
-	    ns_getColorvecs::getPhase<COMPLEX>(moms[mfrom + m], first_tslice + tfrom, tsize, dev,
-					       dist)
+	    ns_getColorvecs::getPhaseNatural<COMPLEX>(moms[mfrom + m], dev, dist)
 	      .copyTo(momst.kvslice_from_size({{'m', m}}, {{'m', 1}}));
 	  }
 
 	  // Apply momenta conjugated to the left tensor and rename the spin components s and Q to q and Q,
 	  // and the colorvector component n to N
-	  Tensor<Nleft + 1, COMPLEX> moms_left = leftconj.template like_this<Nleft + 1>(
-	    "mQNqc%xyzXt", '%', "", {{'m', msize}, {'t', tsize}}, dev, dist);
-	  moms_left.contract(std::move(momst), {}, Conjugate,
-			     leftconj.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}), {},
+	  auto leftconj_nat =
+	    detail::toNaturalOrdering(leftconj.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}),
+				      first_tslice + tfrom)
+	      .make_sure(none, dev, dist);
+	  Tensor<Nleft + 1, COMPLEX> moms_left = leftconj_nat.template like_this<Nleft + 1>(
+	    "mQNqc%xyzXt", '%', "", {{'m', msize}, {'t', tsize}});
+	  moms_left.contract(std::move(momst), {}, Conjugate, std::move(leftconj_nat), {},
 			     NotConjugate);
 	  if (tfrom + tsize >= Nt && mfrom + msize >= moms.size())
 	    leftconj.release();
@@ -10324,7 +10433,8 @@ namespace Chroma
       // Get what directions are going to be used and the maximum number of displacements in memory
       std::array<bool, Nd> active_dirs{{}};
       unsigned int max_active_disps = 0;
-      detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps);
+      std::map<int, unsigned int> counts;
+      detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps, counts);
 
       // Check that all tensors have the same number of time
       int Nt = colorvec.kvdim()['t'];
@@ -10340,7 +10450,8 @@ namespace Chroma
 
       // Avoid distributing the tensors on directions with derivatives to avoid communications in shiftings,
       // and on dimensions being contracted; so the only remaining dimension is t
-      const Distribution dist("t");
+      const Distribution dist =
+	OnEveryoneCompact + detail::get_optimal_lattice_order(counts, deriv ? "m" : "");
 
       // Iterate over time-slices
       for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
@@ -10357,27 +10468,31 @@ namespace Chroma
 	    continue;
 
 	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as colorvec and moms
-	  ut[d] = asTensorView(u[d])
-		    .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
-		    .toComplex()
+	  ut[d] = detail::toNaturalOrdering(
+		    asTensorView(u[d])
+		      .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
+		      .toComplex(),
+		    first_tslice + tfrom)
 		    .make_sure(none, dev, dist);
 	}
 
 	// Get the time-slice for colorvec
 	auto this_colorvec =
-	  colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}).make_sure(none, dev, dist);
+	  detail::toNaturalOrdering(colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}),
+				    first_tslice + tfrom)
+	    .make_sure(none, dev, dist);
 
 	// Loop over the momenta
 	for (int mfrom = 0, msize = std::min(max_active_moms, Nmom); mfrom < Nmom;
 	     mfrom += msize, msize = std::min(max_active_moms, Nmom - mfrom))
 	{
 	  auto this_moms =
-	    this_colorvec.template like_this<Nd + 2, COMPLEX>("xyzXtm", {{'m', msize}})
-	      .make_sure(none, dev, dist);
+	    this_colorvec.template like_this<Nd + 1, COMPLEX>("xyzXm", {{'m', msize}});
 	  for (int m = 0; m < msize; ++m)
-	    ns_getColorvecs::getPhase<COMPLEX>(moms[mfrom + m], first_tslice + tfrom, tsize,
-					       this_moms.getDev(), dist)
+	  {
+	    ns_getColorvecs::getPhaseNatural<COMPLEX>(moms[mfrom + m], this_moms.getDev(), dist)
 	      .copyTo(this_moms.kvslice_from_size({{'m', m}}, {{'m', 1}}));
+	  }
 
 	  if (tfrom + tsize >= Nt && mfrom + msize >= Nmom)
 	  {
@@ -10516,7 +10631,8 @@ namespace Chroma
       // Get what directions are going to be used and the maximum number of displacements in memory
       std::array<bool, Nd> active_dirs{{}};
       unsigned int max_active_disps = 0;
-      detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps);
+      std::map<int, unsigned int> counts;
+      detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps, counts);
 
       // Check that all tensors have the same number of time
       int Nt = colorvec.kvdim()['t'];
@@ -10529,7 +10645,8 @@ namespace Chroma
 
       // Avoid distributing the tensors on directions with derivatives to avoid communications in shiftings,
       // and on dimensions being contracted; so the only remaining dimension is t
-      const Distribution dist("t");
+      const Distribution dist =
+	OnEveryoneCompact + detail::get_optimal_lattice_order(counts, deriv ? "m" : "");
 
       // Iterate over time-slices
       for (int tfrom = 0, tsize = std::min(Nt, max_tslices_in_contraction); tfrom < Nt;
@@ -10550,21 +10667,28 @@ namespace Chroma
 	    continue;
 
 	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as colorvec and moms
-	  ut[d] = asTensorView(u[d])
-		    .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
-		    .toComplex()
+	  ut[d] = detail::toNaturalOrdering(
+		    asTensorView(u[d])
+		      .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
+		      .toComplex(), first_tslice + tfrom)
 		    .make_sure(none, dev, dist);
 	}
 
 	// Get the time-slice for colorvec
-	auto this_colorvec =
-	  colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}).make_sure(none, dev, dist);
+	auto this_colorvec_eo = colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}});
 
 	// Apply the phases
 	auto this_colorvec_phase_right =
-	  phaseColorvecs(this_colorvec, first_tslice + tfrom, right_phase);
+	  detail::toNaturalOrdering(
+	    phaseColorvecs(this_colorvec_eo, first_tslice + tfrom, right_phase),
+	    first_tslice + tfrom)
+	    .make_sure(none, dev, dist);
 	auto this_colorvec_phase_left =
-	  phaseColorvecs(this_colorvec, first_tslice + tfrom, left_phase);
+	  detail::toNaturalOrdering(
+	    phaseColorvecs(this_colorvec_eo, first_tslice + tfrom, left_phase),
+	    first_tslice + tfrom)
+	    .make_sure(none, dev, dist);
+	this_colorvec_eo.release();
 
 	// Loop over the momenta
 	for (int mfrom = 0, msize = std::min(max_moms_in_contraction, Nmom); mfrom < Nmom;
@@ -10572,16 +10696,18 @@ namespace Chroma
 	{
 
 	  auto this_moms =
-	    this_colorvec_phase_left.template like_this<Nd + 2, COMPLEX>("xyzXtm", {{'m', msize}});
+	    this_colorvec_phase_left.template like_this<Nd + 1, COMPLEX>("xyzXm", {{'m', msize}});
 	  for (int m = 0; m < msize; ++m)
-	    ns_getColorvecs::getPhase<COMPLEX>(moms[mfrom + m], first_tslice + tfrom, tsize,
-					       this_moms.getDev(), dist)
+	  {
+	    ns_getColorvecs::getPhaseNatural<COMPLEX>(moms[mfrom + m], this_moms.getDev(), dist)
 	      .copyTo(this_moms.kvslice_from_size({{'m', m}}, {{'m', 1}}));
+	  }
 
 	  // Apply left phase and momenta conjugated to the left tensor
 	  // NOTE: look for the minus sign on left_phase in the doc of this function
 	  Tensor<Nin + 1, COMPLEX> moms_left =
-	    this_colorvec.template like_this<Nin + 1>("mc%xyzXt", '%', "", {{'m', msize}});
+	    this_colorvec_phase_right.template like_this<Nin + 1>("mc%xyzXt", '%', "",
+								  {{'m', msize}});
 	  moms_left.contract(std::move(this_moms), {}, Conjugate, this_colorvec_phase_left, {},
 			     NotConjugate);
 
@@ -10594,17 +10720,18 @@ namespace Chroma
 	    std::vector<Coor<Nd - 1>>(moms.begin() + mfrom, moms.begin() + mfrom + msize);
 	  if (!deriv)
 	  {
+	    auto this_colorvec_phase_right0 = this_colorvec_phase_right;
 	    ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
-	      ut, moms_left, std::move(this_colorvec_phase_right), first_tslice + tfrom, tree_disps,
-	      deriv, this_moms_coors, mfrom, order_out_str, dev.getSome(OnDefaultDevice),
-	      dist_ret.getSome(dist), call);
+	      ut, moms_left, std::move(this_colorvec_phase_right0), first_tslice + tfrom,
+	      tree_disps, deriv, this_moms_coors, mfrom, order_out_str,
+	      dev.getSome(OnDefaultDevice), dist_ret.getSome(dist), call);
 	  }
 	  else
 	  {
 	    // When using derivatives, each momenta has a different effect
 	    std::vector<COMPLEX> ones(msize, COMPLEX(1));
 	    Tensor<Nin + 1, COMPLEX> this_colorvec_m =
-	      this_colorvec.template like_this<Nin + 1>("%m", '%', "", {{'m', msize}});
+	      this_colorvec_phase_right.template like_this<Nin + 1>("%m", '%', "", {{'m', msize}});
 	    this_colorvec_m.contract(this_colorvec_phase_right, {}, NotConjugate,
 				     asTensorView(ones), {{'i', 'm'}}, NotConjugate);
 	    ns_doMomDisp_contractions::doMomDisp_contractions<COMPLEX>(
