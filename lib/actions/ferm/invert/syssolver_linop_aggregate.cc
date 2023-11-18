@@ -19,6 +19,7 @@
 #include "actions/ferm/invert/syssolver_linop_rel_cg_clover.h"
 #include "actions/ferm/invert/syssolver_linop_fgmres_dr.h"
 #include "actions/ferm/invert/projector_random.h"
+#include "actions/ferm/invert/projector_null.h"
 
 
 #include "chroma_config.h"
@@ -86,6 +87,7 @@ namespace Chroma
 	success &= LinOpSysSolverReliableCGCloverEnv::registerAll();
 	success &= LinOpSysSolverFGMRESDREnv::registerAll();
 	success &= ProjectorRandomEnv::registerAll();
+	success &= ProjectorNullEnv::registerAll();
 
 #ifdef BUILD_QUDA
 	success &= LinOpSysSolverQUDACloverEnv::registerAll();
