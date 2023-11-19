@@ -10223,7 +10223,7 @@ namespace Chroma
 	  // Copy moms into a single tensor
 	  std::string momst_order = "mxyzX";
 	  Tensor<Nd + 1, COMPLEX> momst =
-	    this_right.template like_this<Nd + 1>(momst_order, {{'m', msize}});
+	    this_right.template make_compatible<Nd + 1>(momst_order, {{'m', msize}});
 	  for (int m = 0; m < msize; ++m)
 	  {
 	    ns_getColorvecs::getPhaseNatural<COMPLEX>(moms[mfrom + m], dev, dist)
@@ -10487,7 +10487,7 @@ namespace Chroma
 	     mfrom += msize, msize = std::min(max_active_moms, Nmom - mfrom))
 	{
 	  auto this_moms =
-	    this_colorvec.template like_this<Nd + 1, COMPLEX>("xyzXm", {{'m', msize}});
+	    this_colorvec.template make_compatible<Nd + 1, COMPLEX>("xyzXm", {{'m', msize}});
 	  for (int m = 0; m < msize; ++m)
 	  {
 	    ns_getColorvecs::getPhaseNatural<COMPLEX>(moms[mfrom + m], this_moms.getDev(), dist)
@@ -10695,8 +10695,8 @@ namespace Chroma
 	     mfrom += msize, msize = std::min(max_moms_in_contraction, Nmom - mfrom))
 	{
 
-	  auto this_moms =
-	    this_colorvec_phase_left.template like_this<Nd + 1, COMPLEX>("xyzXm", {{'m', msize}});
+	  auto this_moms = this_colorvec_phase_left.template make_compatible<Nd + 1, COMPLEX>(
+	    "xyzXm", {{'m', msize}});
 	  for (int m = 0; m < msize; ++m)
 	  {
 	    ns_getColorvecs::getPhaseNatural<COMPLEX>(moms[mfrom + m], this_moms.getDev(), dist)
