@@ -746,10 +746,14 @@ namespace Chroma
       //       to avoid hangs
       try
       {
+	int max_tslices_in_contraction = params.param.max_tslices_in_contraction == 0
+					   ? tsize
+					   : params.param.max_tslices_in_contraction;
+
 	// Iterate over time-slices
-	for (int tfrom0 = 0, this_tsize = std::min(tsize, params.param.max_tslices_in_contraction);
+	for (int tfrom0 = 0, this_tsize = std::min(tsize, max_tslices_in_contraction);
 	     tfrom0 < tsize; tfrom0 += this_tsize,
-		 this_tsize = std::min(params.param.max_tslices_in_contraction, tsize - tfrom0))
+		 this_tsize = std::min(max_tslices_in_contraction, tsize - tfrom0))
 	{
 	  int this_tfrom = (tfrom + tfrom0) % Nt;
 
@@ -816,8 +820,7 @@ namespace Chroma
 	  // Do the color-contraction
 	  SB::doMomDisp_colorContractions(
 	    u_smr, source_colorvec, mom_list, this_tfrom, displacement_list,
-	    params.param.use_derivP, call,
-	    0 /*params.param.max_tslices_in_contraction==0 means to do all */,
+	    params.param.use_derivP, call, 0 /* it means to do all */,
 	    params.param.max_moms_in_contraction, params.param.max_vecs, SB::none,
 	    SB::OnDefaultDevice,
 	    params.param.use_superb_format ? SB::none : SB::Maybe<SB::Distribution>(SB::OnMaster));
