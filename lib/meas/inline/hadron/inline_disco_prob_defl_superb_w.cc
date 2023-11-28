@@ -129,6 +129,18 @@ namespace Chroma
       else
 	param.noise_vectors = 1;
 
+      param.first_color = 0;
+      if (inputtop.count("first_color") != 0)
+      {
+	read(inputtop, "first_color", param.first_color);
+      }
+
+      param.num_colors = -1;
+      if (inputtop.count("num_colors") != 0)
+      {
+	read(inputtop, "num_colors", param.num_colors);
+      }
+
       param.max_rhs = 0;
       if (inputtop.count("max_rhs") != 0)
       {
@@ -714,6 +726,7 @@ namespace Chroma
       StopWatch swatch_det;
       swatch_det.start();
       Traces dbdet;
+      if (params.param.first_color == 0)
       {
 	unsigned int rank = SB::getProjectorRank(proj);
 	unsigned int blk = std::min(rank, 12u);
@@ -748,6 +761,11 @@ namespace Chroma
       QDPIO::cout << "Projector contribution computed in time= " << swatch_det.getTimeInSeconds()
 		  << " secs" << std::endl;
 
+      const int N_rhs = (std::max(params.param.max_rhs, 1) + Ns * Nc - 1) / Ns / Nc;
+      const int max_color = params.param.num_colors < 0
+			      ? Nsrc
+			      : std::min(Nsrc, params.param.first_color + params.param.num_colors);
+
       // Loop over the source color and spin, creating the source
       // and calling the relevant propagator routines.
       Traces dbmean(16);
@@ -768,9 +786,8 @@ namespace Chroma
 	vec = cmplx(cos(theta), sin(theta));
 
 	// All the loops
-	const int N_rhs = (std::max(params.param.max_rhs, 1) + Ns * Nc - 1) / Ns / Nc;
-	for (int k1 = 0, dk = std::min(Nsrc, N_rhs); k1 < Nsrc;
-	     k1 += dk, dk = std::min(Nsrc - k1, N_rhs))
+	for (int k1 = params.param.first_color, dk = std::min(max_color - k1, N_rhs);
+	     k1 < max_color; k1 += dk, dk = std::min(max_color - k1, N_rhs))
 	{
 	  // collect (Ns*Nc*dk) pairs of vectors
 	  std::vector<std::shared_ptr<LatticeFermion>> v_chi(Ns * Nc * dk), v_psi(Ns * Nc * dk),
@@ -841,7 +858,7 @@ namespace Chroma
       }
 
       // Add the deterministic part to the traces
-      if (dbdet.size() > 0)
+      if (params.param.first_color == 0 && dbdet.size() > 0)
 	for (auto& it : dbmean)
 	  for (int k = 0; k < Ns * Ns; k++)
 	    it.second[k] += dbdet[it.first][k];
@@ -867,6 +884,9 @@ namespace Chroma
 	write(file_xml, "decay_dir", decay_dir);
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
+	write(file_xml, "first_computed_color", params.param.first_color);
+	write(file_xml, "num_computed_colors", std::max(0, max_color - params.param.first_color));
+	write(file_xml, "num_colors", Nsrc);
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
