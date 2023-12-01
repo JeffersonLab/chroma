@@ -1350,7 +1350,7 @@ namespace Chroma
 	    superbblas::detail::intersection(i[0], i[1], from, size, dim, lfrom, lsize);
 	    r.push_back(superbblas::detail::volume(lsize) == 0
 			  ? std::array<Coor<N>, 2>{Coor<N>{{}}, Coor<N>{{}}}
-			  : std::array<Coor<N>, 2>{normalize_coor(lfrom - from, size), lsize});
+			  : std::array<Coor<N>, 2>{normalize_coor(lfrom - from, dim), lsize});
 	  }
 	  return TensorPartition<N>{size, r, isLocal};
 	}
