@@ -3010,6 +3010,11 @@ namespace Chroma
       toComplex(bool allow_cloning = true) const
       {
 	std::size_t dot_pos = order.find(complexLabel);
+	if (dot_pos == std::string::npos)
+	  std::runtime_error("toComplex: invalid complex label");
+	if (from[dot_pos] != 0 || size[dot_pos] != 2 || dim[dot_pos] != 2)
+	  std::runtime_error("toComplex: not supported on a slice of the complex label");
+
 	std::string new_order = detail::remove_coor(order, dot_pos);
 
 	if (dot_pos != 0)
@@ -3521,7 +3526,9 @@ namespace Chroma
       template <std::size_t Nw, typename Tw, std::size_t Nm = N, typename Tm = float,
 		std::size_t Nwm = Nw, typename Twm = float,
 		typename std::enable_if<
-		  detail::is_complex<T>::value == detail::is_complex<Tw>::value, bool>::type = true>
+		  detail::is_complex<T>::value == detail::is_complex<Tw>::value &&
+		    detail::is_diycomplex<T>::value == detail::is_diycomplex<Tw>::value,
+		  bool>::type = true>
       void doAction(Action action, Tensor<Nw, Tw> w, Tensor<Nm, Tm> m = {},
 		    Tensor<Nwm, Twm> wm = {}, const std::string& uneven_mask_labels = "",
 		    CopyingTrash copying_trash = dontCopyingTrash) const
@@ -4114,7 +4121,9 @@ namespace Chroma
 			      Maybe<DeviceHost> new_dev = none,
 			      Maybe<Distribution> new_dist = none) const
       {
-	Tensor<N, Tn> r = like_this<N, Tn>(new_order, {}, new_dev, new_dist);
+	Tensor<N, Tn> r = new_dist.getSome(dist) != dist
+			    ? like_this<N, Tn>(new_order, {}, new_dev, new_dist)
+			    : make_compatible<N, Tn>(new_order, {}, new_dev);
 	if (is_eg())
 	{
 	  r = r.make_eg();
@@ -5694,6 +5703,7 @@ namespace Chroma
 		continue;
 
 	      using superbblas::detail::operator-;
+	      /// FIXME: size_dom?
 	      Coor<ND> new_from_nnz = normalize_coor(from_nnz - from_dom, size_dom);
 	      std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_ii_ptr[i]) * ND);
 	      new_ii_ptr[i]++;
@@ -5993,6 +6003,7 @@ namespace Chroma
 	      {
 		// Copy the coordinates of the nonzero to new matrix
 		using superbblas::detail::operator-;
+		/// FIXME: size_dom?
 		Coor<ND> new_from_nnz = normalize_coor(from_nnz - from_dom, size_dom);
 		std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_nnz_in_row) * ND);
 		new_jj_mask_ptr[j] = 1;
@@ -9133,11 +9144,11 @@ namespace Chroma
 	  "nt", latticeSize<2>("nt", {{'n', n_colorvecs}, {'t', n_tslices}}), OnDefaultDevice, "t");
 
 	// Distribute ut only on the t direction
-	std::vector<Tensor<Nd + 3, ComplexD>> ut_global(Nd);
+	std::vector<Tensor<Nd + 3, ComplexD>> ut_global(Nd - 1);
 	for (unsigned int d = 0; d < Nd - 1; d++)
 	{
-	  ut_global[d] = asTensorView(u[d])
-			   .kvslice_from_size({{'t', from_tslice}}, {{'t', n_tslices}})
+	ut_global[d] = asTensorView(u[d])
+			 .kvslice_from_size({{'t', from_tslice}}, {{'t', n_tslices}})
 			   .toComplex()
 			   .template make_sure<ComplexD>("ijxyztX", none, "t");
 	}
@@ -9155,7 +9166,7 @@ namespace Chroma
 	for (Index t = 0; t < n_tslices; ++t)
 	{
 	  // Distribute ut only on the t direction
-	  std::vector<Tensor<Nd + 3, ComplexD>> ut(Nd);
+	  std::vector<Tensor<Nd + 3, ComplexD>> ut(Nd - 1);
 	  for (unsigned int d = 0; d < Nd - 1; d++)
 	  {
 	    ut[d] = ut_global[d].kvslice_from_size({{'t', t}}, {{'t', 1}}).getLocal();
@@ -9498,9 +9509,17 @@ namespace Chroma
 	if (write_fingerprint)
 	{
 	  // Compute the colorvecs
-	  auto colorvecs =
-	    ns_getColorvecs::computeColorvecs(u_smr, from_tslice, n_tslices, n_colorvecs, order_)
-	      .first;
+	  auto colorvecs_values =
+	    ns_getColorvecs::computeColorvecs(u_smr, from_tslice, n_tslices, n_colorvecs, order_);
+	  auto colorvecs = colorvecs_values.first;
+	  if (superbblas::getLogLevel() > 0 && Layout::nodeNumber() == 0)
+	  {
+	    std::cout << "Printing computed eigenvalues:" << std::endl;
+	    for (int t = 0; t < n_tslices; ++t)
+	      for (int n = 0; n < n_colorvecs; ++n)
+		std::cout << "Eigenvalue for t= " << (from_tslice + t) % Nt << " : "
+			  << colorvecs_values.second[t][n] << std::endl;
+	  }
 
 	  // We need to phase the individual eigenvectors so that the have the same phase as the
 	  // s3t's colorvecs. That is, we need to apply a phase phi[i] to each eigenvector so that
@@ -9519,6 +9538,7 @@ namespace Chroma
 		      .reorder("nt");
 
 	  auto phi = ip.like_this();
+	  bool error = false;
 	  for (int t = 0; t < n_tslices; ++t)
 	  {
 	    for (int n = 0; n < n_colorvecs; ++n)
@@ -9526,11 +9546,22 @@ namespace Chroma
 	      auto cv_norm = colorvecs_s3t_norms.get({n, t});
 	      auto phi_i = cv_norm * cv_norm / ip.get({n, t});
 	      if (std::fabs(std::fabs(phi_i) - 1) > 1e-4)
-		throw std::runtime_error(
-		  "The colorvec fingerprint does not correspond to current gates field");
+	      {
+		error = true;
+		if (Layout::nodeNumber() == 0)
+		{
+		  std::cout << "warning: The colorvec fingerprint does not correspond to current "
+			       "gates field: deviation of the phase: "
+			    << std::fabs(std::fabs(phi_i) - 1) << " on t slice "
+			    << (from_tslice + t) % Nt << " and vector " << n << std::endl;
+		}
+	      }
 	      phi.set({n, t}, phi_i);
 	    }
 	  }
+	  if (error)
+	    throw std::runtime_error(
+	      "The colorvec fingerprint does not correspond to current gates field");
 
 	  // Apply the phase of the colorvecs in s3t to the computed colorvecs
 	  colorvecs_s3t.contract(colorvecs, {}, NotConjugate, phi, {}, NotConjugate);
@@ -9838,6 +9869,14 @@ namespace Chroma
 	std::string order = "cxyzXtn";
 	auto colorvecs_and_evals =
 	  ns_getColorvecs::computeColorvecs(u_smr, from_tslice0, n_tslices0, n_colorvecs, order);
+	if (superbblas::getLogLevel() > 0 && Layout::nodeNumber() == 0)
+	{
+	  std::cout << "Printing computed eigenvalues:" << std::endl;
+	  for (int t = 0; t < n_tslices0; ++t)
+	    for (int n = 0; n < n_colorvecs; ++n)
+	      std::cout << "Eigenvalue for t= " << (from_tslice0 + t) % Nt << " : "
+			<< colorvecs_and_evals.second[t][n] << std::endl;
+	}
 	auto colorvecs = colorvecs_and_evals.first;
 
 	// Read the eigenvectors from another source if indicated
