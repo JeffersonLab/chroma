@@ -979,8 +979,8 @@ namespace Chroma
       // Estimate the number of keys
       std::size_t max_tslices = 0;
       for (const auto& sink_source : params.param.sink_source_pairs)
-	max_tslices =
-	  std::max(max_tslices, (std::size_t)sink_source.Nt_backward + sink_source.Nt_forward + 1);
+	max_tslices = std::max(max_tslices,
+			       (std::size_t)(sink_source.Nt_backward + sink_source.Nt_forward + 1));
       std::size_t num_keys_gp4 = phases.numMom() * gammas.size() * disps.size() * max_tslices *
 				 params.param.sink_source_pairs.size();
       for (auto& db : qdp_db)
@@ -1192,9 +1192,13 @@ namespace Chroma
 	  swatch.reset();
 	  swatch.start();
 
-	  int first_tslice_active = t_source - sink_source.Nt_backward;
-	  int num_tslices_active =
-	    std::min(sink_source.Nt_backward + std::max(sink_source.Nt_forward, 1), Lt);
+	  int first_tslice_active; // first middle time-slice to compute
+	  int num_tslices_active; // number of middle time-slices to compute
+	  first_tslice_active = SB::normalize_coor(t_source - sink_source.Nt_backward, Lt);
+	  num_tslices_active = std::min(
+	    sink_source.Nt_backward + (sink_source.Nt_forward == 0 ? 1 : sink_source.Nt_forward),
+	    Lt);
+
 	  // Make the number of time-slices even; required by SB::doMomGammaDisp_contractions
 	  num_tslices_active = std::min(num_tslices_active + num_tslices_active % 2, Lt);
 
@@ -1362,7 +1366,8 @@ namespace Chroma
 
 			      key.key().derivP = params.param.contract.use_derivP;
 			      key.key().t_sink = t_sink;
-			      key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
+			      key.key().t_slice =
+				SB::normalize_coor(t + tfrom + first_tslice_active, Lt);
 			      key.key().t_source = t_source;
 			      key.key().colorvec_src = n;
 			      key.key().gamma = gammas[g];
@@ -1404,7 +1409,8 @@ namespace Chroma
 			    g5_con_t.copyTo(val.data());
 
 			    key.key().t_sink = t_sink;
-			    key.key().t_slice = (t + tfrom + first_tslice_active) % Lt;
+			    key.key().t_slice =
+			      SB::normalize_coor(t + tfrom + first_tslice_active, Lt);
 			    key.key().t_source = t_source;
 			    key.key().g = gammas[g];
 			    key.key().displacement = disps[disps_perm[d]];
