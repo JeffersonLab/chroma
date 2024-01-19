@@ -140,6 +140,11 @@ namespace Chroma
         read(paramtop, "use_superb_format", param.use_superb_format);
       }
 
+      param.output_file_is_local = false;
+      if( paramtop.count("output_file_is_local") == 1 ) {
+        read(paramtop, "output_file_is_local", param.output_file_is_local);
+      }
+
       param.link_smearing = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
 
@@ -164,6 +169,7 @@ namespace Chroma
       write(xml, "max_moms_in_contraction", param.max_moms_in_contraction);
       write(xml, "max_vecs", param.max_vecs);
       write(xml, "use_superb_format", param.use_superb_format);
+      write(xml, "output_file_is_local", param.output_file_is_local);
       xml << param.link_smearing.xml;
 
       pop(xml);
@@ -710,18 +716,20 @@ namespace Chroma
 	// NOTE: metadata_xml only has a valid value on Master node; so do a broadcast
 	std::string metadata = SB::broadcast(metadata_xml.str());
 
-	st =
-	  SB::StorageTensor<6, SB::ComplexD>(params.named_obj.baryon_op_file, metadata, order,
-					     SB::kvcoors<6>(order, {{'i', params.param.num_vecs},
-								    {'j', params.param.num_vecs},
-								    {'k', params.param.num_vecs},
-								    {'t', Nt},
-								    {'d', displacement_list.size()},
-								    {'m', moms.size()}}),
-					     SB::Sparse, SB::checksum_type::BlockChecksum);
+	st = SB::StorageTensor<6, SB::ComplexD>(
+	  params.named_obj.baryon_op_file, metadata, order,
+	  SB::kvcoors<6>(order, {{'i', params.param.num_vecs},
+				 {'j', params.param.num_vecs},
+				 {'k', params.param.num_vecs},
+				 {'t', Nt},
+				 {'d', displacement_list.size()},
+				 {'m', moms.size()}}),
+	  SB::Sparse, SB::checksum_type::BlockChecksum,
+	  params.param.output_file_is_local ? SB::LocalFSFile : SB::SharedFSFile);
 	st.preallocate(params.param.num_vecs * params.param.num_vecs * params.param.num_vecs *
 		       t_slices_to_write.size() * displacement_list.size() * moms.size() *
-		       sizeof(SB::ComplexD));
+		       sizeof(SB::ComplexD) /
+		       (params.param.output_file_is_local ? Layout::numNodes() : 1));
       }
 
 

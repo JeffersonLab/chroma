@@ -87,6 +87,12 @@ namespace Chroma
       OnDefaultDevice ///< on GPU memory if possible
     };
 
+    /// Whether the file is in a local or a shared filesystem
+    enum LocalSharedFile {
+      LocalFSFile, ///< on a local file system
+      SharedFSFile ///< on a shared file system
+    };
+
     /// How to distribute the tensor (see class Tensor)
     using Distribution = std::string;
     /// Fully supported on node with index zero
@@ -1026,6 +1032,12 @@ namespace Chroma
       inline bool isDistributedOnEveryone(const Distribution& dist)
       {
 	return dist != OnMaster && dist != OnEveryoneReplicated && dist != Local && dist != Glocal;
+      }
+
+      /// Return whether the tensor is local (not collective)
+      inline bool is_distribution_local(const Distribution& dist)
+      {
+	return dist == Local || dist == Glocal;
       }
 
       /// Return whether the tensor isn't local or on master or replicated
@@ -6629,6 +6641,7 @@ namespace Chroma
       Coor<N> from; ///< First active coordinate in the tensor
       Coor<N> size; ///< Number of active coordinates on each dimension
       T scalar;	    ///< Scalar factor of the tensor
+      LocalSharedFile filesystem_type; ///< whether the file is in a local/share filesystem
 
       // Empty constructor
       StorageTensor()
@@ -6640,14 +6653,16 @@ namespace Chroma
 	  ctx{},
 	  from{{}},
 	  size{{}},
-	  scalar{0}
+	  scalar{0},
+	  filesystem_type(LocalFSFile)
       {
       }
 
       // Create storage construct
       StorageTensor(const std::string& filename, const std::string& metadata,
 		    const std::string& order, Coor<N> dim, Sparsity sparsity = Dense,
-		    checksum_type checksum = checksum_type::NoChecksum)
+		    checksum_type checksum = checksum_type::NoChecksum,
+		    LocalSharedFile filesystem_type = SharedFSFile)
 	: filename(filename),
 	  metadata(metadata),
 	  order(order),
@@ -6655,30 +6670,36 @@ namespace Chroma
 	  sparsity(sparsity),
 	  from{{}},
 	  size{dim},
-	  scalar{1}
+	  scalar{1},
+	  filesystem_type(filesystem_type)
       {
 	checkOrder();
+	std::string use_filename =
+	  filename + (filesystem_type == SharedFSFile
+			? std::string()
+			: std::string(".part_") + std::to_string(Layout::nodeNumber()));
+	MPI_Comm comm = filesystem_type == SharedFSFile ? MPI_COMM_WORLD : MPI_COMM_SELF;
 	superbblas::Storage_handle stoh;
-	superbblas::create_storage<N, T>(dim, superbblas::FastToSlow, filename.c_str(),
-					 metadata.c_str(), metadata.size(), checksum,
-					 MPI_COMM_WORLD, &stoh);
+	superbblas::create_storage<N, T>(
+	  dim, superbblas::FastToSlow, use_filename.c_str(), metadata.c_str(), metadata.size(),
+	  checksum, comm, &stoh);
 	ctx = std::shared_ptr<superbblas::detail::Storage_context_abstract>(
 	  stoh, [=](superbblas::detail::Storage_context_abstract* ptr) {
-	    superbblas::close_storage<N, T>(ptr, MPI_COMM_WORLD);
+	    superbblas::close_storage<N, T>(ptr, comm);
 	  });
 
 	// If the tensor to store is dense, create the block here; otherwise, create the block on copy
 	if (sparsity == Dense)
 	{
 	  superbblas::PartitionItem<N> p{Coor<N>{{}}, dim};
-	  superbblas::append_blocks<N, T>(&p, 1, dim, stoh, MPI_COMM_WORLD, superbblas::FastToSlow);
+	  superbblas::append_blocks<N, T>(&p, 1, dim, stoh, comm, superbblas::FastToSlow);
 	}
       }
 
       // Open storage construct
       StorageTensor(const std::string& filename, bool read_order = true,
 		    const Maybe<std::string>& order_tag = none)
-	: filename(filename), sparsity(Sparse), from{{}}, scalar{1}
+	: filename(filename), sparsity(Sparse), from{{}}, scalar{1}, filesystem_type(SharedFSFile)
       {
 	// Read information from the storage
 	superbblas::values_datatype values_dtype;
@@ -6729,7 +6750,8 @@ namespace Chroma
 	  sparsity(t.sparsity),
 	  from(normalize_coor(from, t.dim)),
 	  size(size),
-	  scalar{t.scalar}
+	  scalar{t.scalar},
+	  filesystem_type(t.filesystem_type)
       {
 	checkOrder();
       }
@@ -6800,6 +6822,7 @@ namespace Chroma
 	scalar = T{0};
 	filename = "";
 	metadata = "";
+	filesystem_type = LocalFSFile;
       }
 
       /// Check that the dimension labels are valid
@@ -6833,20 +6856,32 @@ namespace Chroma
 	  if (wsize[i] > size[i])
 	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
 
-	MPI_Comm comm = (w.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	if (detail::is_distribution_local(w.dist) && filesystem_type != LocalFSFile)
+	  throw std::runtime_error("A local tensor cannot be stored on a global tensor storage");
+
+	MPI_Comm comm = filesystem_type == SharedFSFile ? MPI_COMM_WORLD : MPI_COMM_SELF;
+	auto w0 = w;
+	auto w0_p = w0.p->p.data();
+	std::size_t w0_p_size = w0.p->p.size();
+	if (filesystem_type == LocalFSFile && w.dist != Local)
+	{
+	  w0 = w.getGlocal();
+	  w0_p = w0.p->p.data() + Layout::nodeNumber();
+	  w0_p_size = 1;
+	}
 
 	// If the storage is sparse, add blocks for the new content
 	if (sparsity == Sparse)
 	{
-	  superbblas::append_blocks<Nw, N, T>(w.p->p.data(), w.p->p.size(), w.order.c_str(), w.from,
-					      w.size, w.dim, order.c_str(), from, ctx.get(), comm,
+	  superbblas::append_blocks<Nw, N, T>(w0_p, w0_p_size, w0.order.c_str(), w0.from,
+					      w0.size, w0.dim, order.c_str(), from, ctx.get(), comm,
 					      superbblas::FastToSlow);
 	}
 
-	Tw* w_ptr = w.data();
-	superbblas::save<Nw, N, Tw, T>(detail::safe_div<Tw>(w.scalar, scalar), w.p->p.data(), 1,
-				       w.order.c_str(), w.from, w.size, w.dim, (const Tw**)&w_ptr,
-				       &w.ctx(), order.c_str(), from, ctx.get(), comm,
+	Tw* w_ptr = w0.data();
+	superbblas::save<Nw, N, Tw, T>(detail::safe_div<Tw>(w.scalar, scalar), w0_p, 1,
+				       w0.order.c_str(), w0.from, w0.size, w0.dim, (const Tw**)&w_ptr,
+				       &w0.ctx(), order.c_str(), from, ctx.get(), comm,
 				       superbblas::FastToSlow);
       }
 
@@ -6861,14 +6896,26 @@ namespace Chroma
 	  if (size[i] > wsize[i])
 	    throw std::runtime_error("The destination tensor is smaller than the source tensor");
 
-	Tw* w_ptr = w.data_for_writing();
-	MPI_Comm comm = (w.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	if (filesystem_type == LocalFSFile && !detail::is_distribution_local(w.dist))
+	  throw std::runtime_error("Unsupported a collective tensor from reading from a local file");
+
+	MPI_Comm comm = filesystem_type == SharedFSFile ? MPI_COMM_WORLD : MPI_COMM_SELF;
+	auto w0 = w;
+	auto w0_p = w0.p->p.data();
+	std::size_t w0_p_size = w0.p->p.size();
+	if (filesystem_type == LocalFSFile && w.dist != Local)
+	{
+	  w0 = w.getGlocal();
+	  w0_p = w0.p->p.data() + Layout::nodeNumber();
+	  w0_p_size = 1;
+	}
+	Tw* w_ptr = w0.data_for_writing();
 	superbblas::load<N, Nw, T, Tw>(detail::safe_div<T>(scalar, w.scalar), ctx.get(),
-				       order.c_str(), from, size, w.p->p.data(), 1, w.order.c_str(),
-				       w.from, w.dim, &w_ptr, &w.ctx(), comm,
+				       order.c_str(), from, size, w0_p, 1, w0.order.c_str(),
+				       w0.from, w0.dim, &w_ptr, &w0.ctx(), comm,
 				       superbblas::FastToSlow, superbblas::Copy);
-	if (!w.is_managed())
-	  superbblas::sync(w.ctx());
+	if (!w0.is_managed())
+	  superbblas::sync(w0.ctx());
       }
     };
 

@@ -194,6 +194,11 @@ namespace Chroma
         read(inputtop, "use_genprop5_format", input.use_genprop5_format);
       }
 
+      input.output_file_is_local = false;
+      if( inputtop.count("output_file_is_local") == 1 ) {
+        read(inputtop, "output_file_is_local", input.output_file_is_local);
+      }
+
       if (inputtop.count("phase") == 1)
       {
 	read(inputtop, "phase", input.quarkPhase);
@@ -246,6 +251,7 @@ namespace Chroma
       write(xml, "max_moms_in_contraction", input.max_moms_in_contraction);
       write(xml, "use_genprop4_format", input.use_genprop4_format);
       write(xml, "use_genprop5_format", input.use_genprop5_format);
+      write(xml, "output_file_is_local", input.output_file_is_local);
       write(xml, "use_device_for_contractions", input.use_device_for_contractions);
       write(xml, "quarkPhase", SB::tomulti1d(input.quarkPhase));
       write(xml, "aQuarkPhase", SB::tomulti1d(input.aQuarkPhase));
@@ -1072,20 +1078,23 @@ namespace Chroma
 	// NOTE: metadata_xml only has a valid value on Master node; so do a broadcast
 	std::string metadata = SB::broadcast(metadata_xml.str());
 
-	qdp5_db =
-	  SB::StorageTensor<10, SB::ComplexD>(params.named_obj.dist_op_file, metadata, qdp5_order,
-					      SB::kvcoors<10>(qdp5_order, {{'n', num_vecs},
-									   {'N', num_vecs},
-									   {'s', Ns},
-									   {'q', Ns},
-									   {'g', gammas.size()},
-									   {'d', disps.size()},
-									   {'m', moms.size()},
-									   {'t', Lt},
-									   {'p', Lt},
-									   {'P', Lt}}),
-					      SB::Sparse, SB::checksum_type::BlockChecksum);
-	qdp5_db.preallocate(num_keys_gp4 * num_vecs * num_vecs * gammas.size() * sizeof(SB::ComplexD));
+	qdp5_db = SB::StorageTensor<10, SB::ComplexD>(
+	  params.named_obj.dist_op_file, metadata, qdp5_order,
+	  SB::kvcoors<10>(qdp5_order, {{'n', num_vecs},
+				       {'N', num_vecs},
+				       {'s', Ns},
+				       {'q', Ns},
+				       {'g', gammas.size()},
+				       {'d', disps.size()},
+				       {'m', moms.size()},
+				       {'t', Lt},
+				       {'p', Lt},
+				       {'P', Lt}}),
+	  SB::Sparse, SB::checksum_type::BlockChecksum,
+	  params.param.contract.output_file_is_local ? SB::LocalFSFile : SB::SharedFSFile);
+	qdp5_db.preallocate(num_keys_gp4 * num_vecs * num_vecs * gammas.size() *
+			    sizeof(SB::ComplexD) /
+			    (params.param.contract.output_file_is_local ? Layout::numNodes() : 1));
       }
 
       // Initialize fermion action
