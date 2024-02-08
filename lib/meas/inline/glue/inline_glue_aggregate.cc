@@ -17,6 +17,14 @@
 #include "meas/inline/glue/inline_glueball_ops.h"
 #include "meas/inline/glue/inline_wilson_flow.h"
 
+
+#include "meas/inline/glue/inline_gluon_cc.h"
+#include "meas/inline/glue/inline_gluon_fraction_OA.h"
+#include "meas/inline/glue/inline_gluon_fraction_OB.h"
+#include "meas/inline/glue/inline_gluon_npr.h"
+#include "meas/inline/glue/inline_gluon_pdf.h"
+
+
 namespace Chroma
 {
 
@@ -49,6 +57,15 @@ namespace Chroma
 	success &= InlineGlueDiagMatElemColorVecEnv::registerAll();
 	success &= InlineGlueballOpsEnv::registerAll();
 	success &= InlineWilsonFlowEnv::registerAll();
+
+
+	success &= InlineGluonMomFracOAEnv::registerAll();
+	success &= InlineGluonMomFracOBEnv::registerAll();
+	success &= InlineGluonCCEnv::registerAll();
+	success &= InlineGluonNPREnv::registerAll();
+	success &= InlineGluonPDFEnv::registerAll();
+        
+
 
 	registered = true;
       }

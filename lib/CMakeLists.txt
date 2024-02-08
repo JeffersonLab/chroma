@@ -955,6 +955,15 @@ list(APPEND ChromaLIB_HEADERS
 	meas/inline/glue/inline_glue_diag_matelem_colorvec.h
 	meas/inline/glue/inline_glueball_ops.h
 	meas/inline/glue/inline_wilson_flow.h
+	meas/inline/glue/inline_gluon_fraction_OA.h
+	meas/inline/glue/inline_gluon_fraction_OB.h
+	meas/inline/glue/inline_gluon_cc.h
+	meas/inline/glue/inline_gluon_npr.h
+	meas/inline/glue/inline_gluon_pdf.h
+        util/ferm/unsmeared_fsq_disco.h
+        util/ferm/meson_ops.h
+	meas/inline/hadron/inline_meson_da_db_w.h
+	meas/inline/hadron/inline_mesonspec_db_w.h
 	meas/inline/hadron/hadron.h
 	meas/inline/hadron/inline_hadron_aggregate.h
 	meas/inline/hadron/inline_hadron_contract.h
@@ -1723,6 +1732,15 @@ target_sources(chromalib PRIVATE
 	meas/inline/glue/inline_glue_diag_matelem_colorvec.cc 
 	meas/inline/glue/inline_glueball_ops.cc 
 	meas/inline/glue/inline_wilson_flow.cc 
+        meas/inline/glue/inline_gluon_fraction_OA.cc
+        meas/inline/glue/inline_gluon_fraction_OB.cc
+        meas/inline/glue/inline_gluon_cc.cc
+        meas/inline/glue/inline_gluon_npr.cc
+        meas/inline/glue/inline_gluon_pdf.cc
+        util/ferm/unsmeared_fsq_disco.cc
+        util/ferm/meson_ops.cc
+        meas/inline/hadron/inline_meson_da_db_w.cc
+        meas/inline/hadron/inline_mesonspec_db_w.cc
 	meas/inline/hadron/inline_hadron_aggregate.cc 
 	meas/inline/hadron/inline_hadron_contract.cc 
 	meas/inline/hadron/inline_gauge_transf_obj.cc 
