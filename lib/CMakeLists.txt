@@ -1920,7 +1920,10 @@ endif()
 # JIT CLOVER/STOUTING
 #######################################################
 if( Chroma_ENABLE_JIT_CLOVER )
-  list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit_w.h)
+  list(APPEND ChromaLIB_HEADERS 
+    actions/ferm/linop/clover_term_jit_w.h
+    actions/ferm/linop/clover_term_jit_stabilized_helpers.h
+  )
   target_sources(chromalib PRIVATE util/gauge/stout_utils_jit.cc)
 endif()
 
