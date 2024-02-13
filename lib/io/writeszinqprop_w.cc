@@ -39,7 +39,7 @@ void writeSzinQprop(const LatticePropagator& q, const std::string& file,
 
   for(int cb=0; cb < 2; ++cb)
   {
-    for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
+    for(size_t sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
     {
       multi1d<int> coord = crtesn(sitecb, lattsize_cb);
 

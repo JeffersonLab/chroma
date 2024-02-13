@@ -38,7 +38,7 @@ void ClMesFerm(const multi1d<LatticeColorMatrix>& u,
   if ( FermiP == YES )
   {
     /* chi_bar*(1/(M_dag*M))*chi = chi_bar*psi */
-    w_ferm = innerProduct(chi,psi,sub) / Double(Layout::vol()*Nc*Ns);
+    w_ferm = innerProduct(chi,psi,sub) / ( Double(Layout::vol()) * Double(Nc*Ns) );
 
     /* compute also contribution from the "preconditioning matrix" */
             
@@ -59,7 +59,7 @@ void ClMesFerm(const multi1d<LatticeColorMatrix>& u,
     chlclovms(clov, invclov, YES, logdet);
 
     /* Normalize by number of pseudo-fermionic degree of freedom */
-    logdet /= Double(Layout::vol()*Nc*Ns);
+    logdet /= ( Double(Layout::vol()) * Double(Nc*Ns) );
     w_ferm -= 2*logdet;   // HMM, THE 2 IS THE NUMBER OF FERMIONS??? DON'T RECALL...
   }
   else

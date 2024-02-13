@@ -190,7 +190,7 @@ namespace Chroma
     }
     
     {
-      RealT ff = where(param.anisoParam.anisoP, Real(1) / param.anisoParam.xi_0, Real(1));
+      RealT ff = param.anisoParam.anisoP ? Real(1) / param.anisoParam.xi_0 : Real(1);
       param.clovCoeffR *= Real(0.5) * ff;
       param.clovCoeffT *= Real(0.5);
     }
@@ -202,7 +202,7 @@ namespace Chroma
     //
     RealT diag_mass;
     {
-      RealT ff = where(param.anisoParam.anisoP, param.anisoParam.nu / param.anisoParam.xi_0, Real(1));
+      RealT ff = param.anisoParam.anisoP ? param.anisoParam.nu / param.anisoParam.xi_0 : Real(1);
       diag_mass = 1 + (Nd-1)*ff + param.Mass;
     }
     
@@ -262,7 +262,7 @@ namespace Chroma
     }
 
     {
-      RealT ff = where(param.anisoParam.anisoP, Real(1) / param.anisoParam.xi_0, Real(1));
+      RealT ff = param.anisoParam.anisoP ? Real(1) / param.anisoParam.xi_0 : Real(1);
       param.clovCoeffR *= RealT(0.5) * ff;
       param.clovCoeffT *= RealT(0.5);
     }
@@ -274,7 +274,7 @@ namespace Chroma
     //
     RealT diag_mass;
     {
-      RealT ff = where(param.anisoParam.anisoP, param.anisoParam.nu / param.anisoParam.xi_0, Real(1));
+      RealT ff = param.anisoParam.anisoP ? param.anisoParam.nu / param.anisoParam.xi_0 : Real(1);
       diag_mass = 1 + (Nd-1)*ff + param.Mass;
     }
     

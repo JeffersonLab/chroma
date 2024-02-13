@@ -84,8 +84,9 @@ namespace Chroma
 	auto wlparams = invParam.WilsonParams;
 	
 	auto aniso = wlparams.anisoParam;
-	
-	Real ff = where(aniso.anisoP, Real(1) / aniso.xi_0, Real(1));
+	//  Real ff = where(aniso.anisoP, Real(1) / aniso.xi_0, Real(1));
+        Real ff =  toBool(aniso.anisoP) ?  Real(1)/aniso.xi_0 : Real(1);
+
 	diag_mass = 1 + (Nd-1)*ff + wlparams.Mass;
       }
 

@@ -91,7 +91,7 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
 	  Double n2_diff = sqrt(norm2(diff));
 	  QDPIO::cout << "Diff Norm = " << n2_diff << std::endl;
 	  QDPIO::cout << "Diff Norm/norm2psi = " << n2_diff /sqrt(norm2(psi)) << std::endl;
-	  QDPIO::cout << "Diff Norm / d.o.f = " << n2_diff / toDouble(Layout::vol()*Nc*Ns) << std::endl;
+	  QDPIO::cout << "Diff Norm / d.o.f = " << n2_diff / ( Double(Layout::vol()) *Double(Nc*Ns) ) << std::endl;
   }
 
   // Try and create the solver object:

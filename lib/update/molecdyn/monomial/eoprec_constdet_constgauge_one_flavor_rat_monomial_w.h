@@ -42,7 +42,8 @@ EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial::dsdq(F,s);
  //FA.getFermBC().modify(F);
  ColorMatrix CF ;
  for(int mu(0);mu<Nd;mu++){
-   CF=sum(F[mu])/Double(Layout::vol());F[mu]=CF;
+   CF=sum(F[mu])/Double( Layout::vol() ) ;
+	 F[mu]=CF;
  }
 } 
 

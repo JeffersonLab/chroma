@@ -411,8 +411,6 @@ public:
 
 
 		q_gauge_param.ga_pad = max_face;
-		quda_inv_param.sp_pad = 0;
-		quda_inv_param.cl_pad = 0;
 
 		if( invParam.innerParamsP ) {
 			QDPIO::cout << "Setting inner solver params" << std::endl;
@@ -629,8 +627,18 @@ public:
 		quda_inv_param.chrono_use_resident = true;
 		quda_inv_param.chrono_replace_last = false;
 
+		quda_inv_param.tol = toDouble(Real(0.5)*invParam.RsdTarget);
+		if ( predictor.getChronoPrecision() == DEFAULT ) {
+			QDPIO::cout << "Setting Default Chrono precision of " << cpu_prec << std::endl;
+			quda_inv_param.chrono_precision = cpu_prec;
+		}
+		else {
+			quda_inv_param.chrono_precision = theChromaToQudaPrecisionTypeMap::Instance()[ predictor.getChronoPrecision() ];
+			QDPIO::cout << "Setting Chrono precision of " << quda_inv_param.chrono_precision << std::endl;
+		}
+
 		T Y;
-		Y[ A->subset() ] = psi; // Y is initial guess
+		Y[ A->subset() ] = zero; // Y is initial guess
 
 		// Set up prediction for Y in QUDA here.
 
@@ -650,7 +658,7 @@ public:
 		quda_inv_param.chrono_make_resident = true;
 		quda_inv_param.chrono_use_resident = true;
 		quda_inv_param.chrono_replace_last = false;
-
+		quda_inv_param.tol = toDouble(invParam.RsdTarget);
 
 		// Step 2: Solve M X = Y
 		// Predict X
@@ -743,7 +751,7 @@ public:
 		Y_prediction_timer.start();
 		predictor.predictY(Y,*A,chi);
 		Y_prediction_timer.stop();
-
+		quda_inv_param.tol = toDouble(Real(0.5)*invParam.RsdTarget);
 		Y_solve_timer.start();
 		// Now want to solve with M^\dagger on this.
 		quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
@@ -766,6 +774,7 @@ public:
 		X_prediction_timer.stop();
 		X_solve_timer.start();
 		quda_inv_param.dagger = QUDA_DAG_NO; // Solve without dagger
+		quda_inv_param.tol = toDouble(invParam.RsdTarget);
 		res2 = qudaInvert(*clov,
 				*invclov,
 				Y,

@@ -200,8 +200,6 @@ namespace Chroma {
 
 
 
-				mg_inv_param.sp_pad = 0;
-				mg_inv_param.cl_pad = 0;
 				mg_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
 				mg_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
 				mg_inv_param.dirac_order = QUDA_DIRAC_ORDER;

@@ -57,7 +57,7 @@ namespace Chroma
     fs = fs_;
     
     // Work out aniso factors
-    Real ff = where(param.anisoParam.anisoP, param.anisoParam.nu / param.anisoParam.xi_0, Real(1));
+    Real ff = param.anisoParam.anisoP ? param.anisoParam.nu / param.anisoParam.xi_0 : Real(1);
     fact = 1 + (Nd-1)*ff + param.Mass;
     QDPIO::cout << "Factor=" << fact << "  log10(Factor)="<< log10(fact) << std::endl;
 

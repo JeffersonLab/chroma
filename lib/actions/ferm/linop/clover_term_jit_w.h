@@ -6,12 +6,13 @@
 #ifndef __clover_term_jit_w_h__
 #define __clover_term_jit_w_h__
 
-#warning "Using QDP-JIT clover term"
+//#warning "Using QDP-JIT clover term"
 
 #include "state.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/clover_term_base_w.h"
 #include "meas/glue/mesfield.h"
+
 
 
 namespace QDP
@@ -52,15 +53,14 @@ namespace QDP
     }
 
 
-    inline       T& elem(int i)       { return this->arrayF(i); }
-    inline const T& elem(int i) const { return this->arrayF(i); }
+    inline       T elem(int i)       { return this->arrayF(i); }
   };
 
   template<class T>
   struct PCompREG 
   {
     T F[2];
-    void setup(const PCompJIT< typename JITType<T>::Type_t >& rhs ) {
+    void setup(PCompJIT< typename JITType<T>::Type_t > rhs ) {
       F[0].setup( rhs.elem(0) );
       F[1].setup( rhs.elem(1) );
     }
@@ -68,6 +68,18 @@ namespace QDP
     inline const T& elem(int i) const { return F[i]; }
   };
 
+  template<class T> 
+  struct ScalarType<PComp<T> >
+  {
+    typedef PComp<typename ScalarType<T>::Type_t>  Type_t;
+  };
+
+  template<class T> 
+  struct ScalarType<PCompJIT<T> >
+  {
+    typedef PCompJIT<typename ScalarType<T>::Type_t>  Type_t;
+  };
+  
   template<class T> 
   struct JITType<PComp<T> >
   {
@@ -126,15 +138,14 @@ namespace QDP
       return *this;
     }
 
-    inline       T& elem(int i)       { return this->arrayF(i); }
-    inline const T& elem(int i) const { return this->arrayF(i); }
+    inline       T elem(int i)       { return this->arrayF(i); }
   };
 
   template<class T>
   struct PTriDiaREG 
   {
     T F[2*Nc];
-    void setup(const PTriDiaJIT< typename JITType<T>::Type_t >& rhs ) {
+    void setup( PTriDiaJIT< typename JITType<T>::Type_t > rhs ) {
       for (int i=0;i<2*Nc;++i)
 	F[i].setup( rhs.elem(i) );
     }
@@ -142,6 +153,20 @@ namespace QDP
     inline const T& elem(int i) const { return F[i]; }
   };
 
+
+  template<class T> 
+  struct ScalarType<PTriDia<T> >
+  {
+    typedef PTriDia<typename ScalarType<T>::Type_t>  Type_t;
+  };
+  
+  template<class T> 
+  struct ScalarType<PTriDiaJIT<T> >
+  {
+    typedef PTriDiaJIT<typename ScalarType<T>::Type_t>  Type_t;
+  };
+
+  
   template<class T> 
   struct JITType<PTriDia<T> >
   {
@@ -198,21 +223,34 @@ namespace QDP
       return *this;
     }
 
-    inline       T& elem(int i)       { return this->arrayF(i); }
-    inline const T& elem(int i) const { return this->arrayF(i); }
+    inline       T elem(int i)       { return this->arrayF(i); }
   };
 
   template<class T>
   struct PTriOffREG 
   {
     T F[2*Nc*Nc-Nc];
-    void setup(const PTriOffJIT< typename JITType<T>::Type_t >& rhs ) {
+    void setup( PTriOffJIT< typename JITType<T>::Type_t > rhs ) {
       for (int i=0;i<2*Nc*Nc-Nc;++i)
 	F[i].setup( rhs.elem(i) );
     }
     inline       T& elem(int i)       { return F[i]; }
     inline const T& elem(int i) const { return F[i]; }
   };
+
+
+  template<class T> 
+  struct ScalarType<PTriOff<T> >
+  {
+    typedef PTriOff<typename ScalarType<T>::Type_t>  Type_t;
+  };
+  
+  template<class T> 
+  struct ScalarType<PTriOffJIT<T> >
+  {
+    typedef PTriOffJIT<typename ScalarType<T>::Type_t>  Type_t;
+  };
+
 
   template<class T> 
   struct JITType<PTriOff<T> >
@@ -284,11 +322,14 @@ namespace QDP
       return 0;
     }
   };
+} // QDP
 
 
-
-}
-
+#if defined (QDP_BACKEND_AVX)
+#define WORD WordVec
+#else
+#define WORD Word
+#endif
 
 
 namespace Chroma 
@@ -309,7 +350,7 @@ namespace Chroma
     // Typedefs to save typing
     typedef typename WordType<T>::Type_t REALT;
 
-    typedef OLattice< PScalar< PScalar< RScalar< Word< REALT> > > > > LatticeREAL;
+    typedef OLattice< PScalar< PScalar< RScalar< WORD< REALT> > > > > LatticeREAL;
     typedef OScalar<  PScalar< PScalar< RScalar< Word< REALT> > > > > RealT;
 
     //! Empty constructor. Must use create later
@@ -402,11 +443,13 @@ namespace Chroma
     multi1d<bool> choles_done;   // Keep note of whether the decomposition has been done
                                  // on a particular checkerboard. 
 
-    OLattice<PComp<PTriDia<RScalar <Word<REALT> > > > >  tri_dia;
-    OLattice<PComp<PTriOff<RComplex<Word<REALT> > > > >  tri_off;
-    
+    OLattice<PComp<PTriDia<RScalar <WORD<REALT> > > > >  tri_dia;
+    OLattice<PComp<PTriOff<RComplex<WORD<REALT> > > > >  tri_off;    
   };
 
+#undef WORD
+
+  
 
    // Empty constructor. Must use create later
   template<typename T, typename U>
@@ -435,7 +478,7 @@ namespace Chroma
     }
     
     {
-      RealT ff = where(param.anisoParam.anisoP, Real(1) / param.anisoParam.xi_0, Real(1));
+      RealT ff = param.anisoParam.anisoP ? Real(1) / param.anisoParam.xi_0 : Real(1);
       param.clovCoeffR *= Real(0.5) * ff;
       param.clovCoeffT *= Real(0.5);
     }
@@ -447,7 +490,7 @@ namespace Chroma
     //
     RealT diag_mass;
     {
-      RealT ff = where(param.anisoParam.anisoP, param.anisoParam.nu / param.anisoParam.xi_0, Real(1));
+      RealT ff = param.anisoParam.anisoP ? param.anisoParam.nu / param.anisoParam.xi_0 : Real(1);
       diag_mass = 1 + (Nd-1)*ff + param.Mass;
     }
     
@@ -493,7 +536,7 @@ namespace Chroma
     }
 
     {
-      RealT ff = where(param.anisoParam.anisoP, Real(1) / param.anisoParam.xi_0, Real(1));
+      RealT ff = param.anisoParam.anisoP ? Real(1) / param.anisoParam.xi_0 : Real(1);
       param.clovCoeffR *= RealT(0.5) * ff;
       param.clovCoeffT *= RealT(0.5);
     }
@@ -505,10 +548,11 @@ namespace Chroma
     //
     RealT diag_mass;
     {
-      RealT ff = where(param.anisoParam.anisoP, param.anisoParam.nu / param.anisoParam.xi_0, Real(1));
+      RealT ff = param.anisoParam.anisoP ? param.anisoParam.nu / param.anisoParam.xi_0 : Real(1);
       diag_mass = 1 + (Nd-1)*ff + param.Mass;
     }
-    
+
+
     /* Calculate F(mu,nu) */
     multi1d<U> f;
     mesField(f, u);
@@ -617,6 +661,13 @@ namespace Chroma
 			       X& tri_dia,
 			       Y& tri_off)
   {
+#ifdef QDP_DEEP_LOG
+    function.type_W = typeid(REAL).name();
+    //function.set_dest_id( tri_dia.getId() );
+    function.set_dest_id( tri_off.getId() );
+    function.set_is_lat(true);
+#endif
+    
     AddressLeaf addr_leaf(all);
 
     forEach(diag_mass, addr_leaf, NullCombine());
@@ -629,19 +680,16 @@ namespace Chroma
     forEach(tri_dia, addr_leaf, NullCombine());
     forEach(tri_off, addr_leaf, NullCombine());
 
-    // lo <= idx < hi
-    int lo = 0;
-    int hi = Layout::sitesOnNode();
+    int th_count = Layout::sitesOnNode();
 
-    JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
-    JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
+    WorkgroupGuardExec workgroupGuardExec(th_count);
 
     std::vector<QDPCache::ArgKey> ids;
-    ids.push_back( jit_lo.get_id() );
-    ids.push_back( jit_hi.get_id() );
+    workgroupGuardExec.check(ids);
+    ids.push_back( all.getIdSiteTable() );
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
       ids.push_back( addr_leaf.ids[i] );
-    jit_launch(function,Layout::sitesOnNode(),ids);
+    jit_launch(function,th_count,ids);
   }
 
 
@@ -660,26 +708,19 @@ namespace Chroma
   {
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
-    if (ptx_db::db_enabled)
-      {
-	llvm_ptx_db( function , __PRETTY_FUNCTION__ );
-	if (!function.empty())
-	  return;
-      }
-
     typedef typename WordType<RealT>::Type_t REALT;
 
     llvm_start_new_function("make_clov",__PRETTY_FUNCTION__ );
 
-    ParamRef  p_lo     = llvm_add_param<int>();
-    ParamRef  p_hi     = llvm_add_param<int>();
+    WorkgroupGuard workgroupGuard;
+    ParamRef p_site_table = llvm_add_param<int*>();
 
-    ParamLeaf param_leaf;
-  
-    typedef typename LeafFunctor<RealT, ParamLeaf>::Type_t  RealTJIT;
+    ParamLeafScalar param_leaf;
+    
+    typedef typename LeafFunctor<RealT, ParamLeafScalar>::Type_t  RealTJIT;
     RealTJIT diag_mass_jit(forEach(diag_mass, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<U, ParamLeaf>::Type_t  UJIT;
+    typedef typename LeafFunctor<U, ParamLeafScalar>::Type_t  UJIT;
     UJIT f0_jit(forEach(f0, param_leaf, TreeCombine()));
     UJIT f1_jit(forEach(f1, param_leaf, TreeCombine()));
     UJIT f2_jit(forEach(f2, param_leaf, TreeCombine()));
@@ -687,34 +728,30 @@ namespace Chroma
     UJIT f4_jit(forEach(f4, param_leaf, TreeCombine()));
     UJIT f5_jit(forEach(f5, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
+    typedef typename LeafFunctor<X, ParamLeafScalar>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
+    typedef typename LeafFunctor<Y, ParamLeafScalar>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
 
+    llvm::Value* r_idx_thread = llvm_thread_idx();
 
-    llvm_derefParam( p_lo );
-    llvm::Value *  r_hi     = llvm_derefParam( p_hi );
-    llvm::Value *  r_idx = llvm_thread_idx();
-    
-    llvm_cond_exit( llvm_ge( r_idx , r_hi ) );
+    workgroupGuard.check(r_idx_thread);
+    llvm::Value* r_idx = llvm_array_type_indirection<int>( p_site_table , r_idx_thread );
 
-    auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f3_j = f3_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f4_j = f4_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f5_j = f5_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f0_j = f0_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f1_j = f1_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f2_j = f2_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f3_j = f3_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f4_j = f4_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f5_j = f5_jit.elem(JitDeviceLayout::Coalesced , r_idx );
 
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , r_idx );
 
     typename REGType< typename RealTJIT::Subtype_t >::Type_t diag_mass_reg;
     //diag_mass_reg.setup( diag_mass_jit.elem() );
     diag_mass_reg.setup_value( diag_mass_jit.elem() );
-
-      
 
 
     for(int jj = 0; jj < 2; jj++) {
@@ -825,6 +862,7 @@ namespace Chroma
     U f4 = f[4] * getCloverCoeff(1,3);
     U f5 = f[5] * getCloverCoeff(2,3);    
 
+    
     //QDPIO::cout << "PTX Clover make "  << (void*)this << "\n";
     //std::cout << "PTX Clover make "  << (void*)this << "\n";
     static JitFunction function;
@@ -886,7 +924,6 @@ namespace Chroma
   }
 
 
-
   template<typename T,typename X,typename Y>
   void function_ldagdlinv_exec( JitFunction& function,
 				T& tr_log_diag,
@@ -894,27 +931,28 @@ namespace Chroma
 				Y& tri_off,
 				const Subset& s)
   {
-    if (!s.hasOrderedRep())
-      QDP_error_exit("ldagdlinv on subset with unordered representation not implemented");
-
+#ifdef QDP_DEEP_LOG
+    function.type_W = typeid(REAL).name();
+    function.set_dest_id( tr_log_diag.getId() );
+    function.set_is_lat(true);
+#endif
+    
     AddressLeaf addr_leaf(s);
 
     forEach(tr_log_diag, addr_leaf, NullCombine());
     forEach(tri_dia, addr_leaf, NullCombine());
     forEach(tri_off, addr_leaf, NullCombine());
 
-    // lo <= idx < hi
-    int lo = s.start();
-    int hi = s.end();
+    int th_count = s.numSiteTable();
 
-    JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
-    JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
+    WorkgroupGuardExec workgroupGuardExec(th_count);
+
     std::vector<QDPCache::ArgKey> ids;
-    ids.push_back( jit_lo.get_id() );
-    ids.push_back( jit_hi.get_id() );
+    workgroupGuardExec.check(ids);
+    ids.push_back( s.getIdSiteTable() );
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
       ids.push_back( addr_leaf.ids[i] );
-    jit_launch(function,s.numSiteTable(),ids);
+    jit_launch(function,th_count,ids);
   }
 
 
@@ -929,43 +967,34 @@ namespace Chroma
 				const Subset& s)
   {
     typedef typename WordType<U>::Type_t REALT;
-    if (ptx_db::db_enabled)
-      {
-	llvm_ptx_db( function , __PRETTY_FUNCTION__ );
-	if (!function.empty())
-	  return;
-      }
-
 
     //std::cout << __PRETTY_FUNCTION__ << " entering\n";
 
     llvm_start_new_function("ldagdlinv",__PRETTY_FUNCTION__);
 
-    ParamRef  p_lo     = llvm_add_param<int>();
-    ParamRef  p_hi     = llvm_add_param<int>();
+    WorkgroupGuard workgroupGuard;
+    ParamRef p_site_table = llvm_add_param<int*>();
 
-    ParamLeaf param_leaf;
+    ParamLeafScalar param_leaf;
 
-    typedef typename LeafFunctor<T, ParamLeaf>::Type_t  TJIT;
+    typedef typename LeafFunctor<T, ParamLeafScalar>::Type_t  TJIT;
     TJIT tr_log_diag_jit(forEach(tr_log_diag, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
+    typedef typename LeafFunctor<X, ParamLeafScalar>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
+    typedef typename LeafFunctor<Y, ParamLeafScalar>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
 
-    llvm::Value *  r_lo     = llvm_derefParam( p_lo );
-    llvm::Value *  r_hi     = llvm_derefParam( p_hi );
-    llvm::Value *  r_idx_thread    = llvm_thread_idx();
+    llvm::Value* r_idx_thread = llvm_thread_idx();
 
-    llvm_cond_exit(  llvm_gt( r_idx_thread , llvm_sub( r_hi , r_lo ) ) );
+    workgroupGuard.check(r_idx_thread);
 
-    llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
+    llvm::Value* r_idx = llvm_array_type_indirection<int>( p_site_table , r_idx_thread );
 
-    auto& tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_off_j     = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_off_j     = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
@@ -1215,30 +1244,31 @@ namespace Chroma
 			       int mat,
 			       const Subset& s)
   {
-    if (!s.hasOrderedRep())
-      QDP_error_exit("triacntr on subset with unordered representation not implemented");
-
+#ifdef QDP_DEEP_LOG
+    function.type_W = typeid(REAL).name();
+    function.set_dest_id( B.getId() );
+    function.set_is_lat(true);
+#endif
+    
     AddressLeaf addr_leaf(s);
 
     forEach(B, addr_leaf, NullCombine());
     forEach(tri_dia, addr_leaf, NullCombine());
     forEach(tri_off, addr_leaf, NullCombine());
 
-    // lo <= idx < hi
-    int lo = s.start();
-    int hi = s.end();
+    int th_count = s.numSiteTable();
 
-    JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
-    JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
+    WorkgroupGuardExec workgroupGuardExec(th_count);
+
     JitParam jit_mat( QDP_get_global_cache().addJitParamInt( mat ) );
 
     std::vector<QDPCache::ArgKey> ids;
-    ids.push_back( jit_lo.get_id() );
-    ids.push_back( jit_hi.get_id() );
+    workgroupGuardExec.check(ids);
+    ids.push_back( s.getIdSiteTable() );
     ids.push_back( jit_mat.get_id() );
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
       ids.push_back( addr_leaf.ids[i] );
-    jit_launch(function,s.numSiteTable(),ids);
+    jit_launch(function,th_count,ids);
   }
 
 
@@ -1252,49 +1282,39 @@ namespace Chroma
 				int mat,
 				const Subset& s)
   {
-    if (ptx_db::db_enabled)
-      {
-	llvm_ptx_db( function , __PRETTY_FUNCTION__ );
-	if (!function.empty())
-	  return;
-      }
-
-
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
     typedef typename WordType<U>::Type_t REALT;
 
     llvm_start_new_function( "triacntr" , __PRETTY_FUNCTION__ );
 
-    ParamRef  p_lo     = llvm_add_param<int>();
-    ParamRef  p_hi     = llvm_add_param<int>();
+    WorkgroupGuard workgroupGuard;
+    ParamRef p_site_table = llvm_add_param<int*>();
 
     ParamRef p_mat    = llvm_add_param<int>();
 
-    ParamLeaf param_leaf;
+    ParamLeafScalar param_leaf;
 
-
-    typedef typename LeafFunctor<U, ParamLeaf>::Type_t  UJIT;
+    typedef typename LeafFunctor<U, ParamLeafScalar>::Type_t  UJIT;
     UJIT B_jit(forEach(B, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
+    typedef typename LeafFunctor<X, ParamLeafScalar>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
+    typedef typename LeafFunctor<Y, ParamLeafScalar>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
 
+    llvm::Value* r_idx_thread = llvm_thread_idx();
+
+    workgroupGuard.check(r_idx_thread);
+
+    llvm::Value* r_idx = llvm_array_type_indirection<int>( p_site_table , r_idx_thread );
+
     llvm::Value * r_mat    = llvm_derefParam( p_mat );
-    llvm::Value *  r_lo     = llvm_derefParam( p_lo );
-    llvm::Value *  r_hi     = llvm_derefParam( p_hi );
-    llvm::Value *  r_idx_thread    = llvm_thread_idx();
 
-    llvm_cond_exit(  llvm_gt( r_idx_thread , llvm_sub( r_hi , r_lo ) ) );
-
-    llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
-
-    auto& B_j = B_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto B_j = B_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
@@ -1302,295 +1322,271 @@ namespace Chroma
     tri_dia_r.setup( tri_dia_j );
     tri_off_r.setup( tri_off_j );
 
-
-    llvm::BasicBlock * case_0 = llvm_new_basic_block();
-    llvm::BasicBlock * case_3 = llvm_new_basic_block();
-    llvm::BasicBlock * case_5 = llvm_new_basic_block();
-    llvm::BasicBlock * case_6 = llvm_new_basic_block();
-    llvm::BasicBlock * case_9 = llvm_new_basic_block();
-    llvm::BasicBlock * case_10 = llvm_new_basic_block();
-    llvm::BasicBlock * case_12 = llvm_new_basic_block();
-    llvm::BasicBlock * case_default = llvm_new_basic_block();
-
-    llvm::SwitchInst * mat_sw = llvm_switch( r_mat , case_default );
-
-    mat_sw->addCase( llvm_create_const_int(0) , case_0 );
-    mat_sw->addCase( llvm_create_const_int(3) , case_3 );
-    mat_sw->addCase( llvm_create_const_int(5) , case_5 );
-    mat_sw->addCase( llvm_create_const_int(6) , case_6 );
-    mat_sw->addCase( llvm_create_const_int(9) , case_9 );
-    mat_sw->addCase( llvm_create_const_int(10) , case_10 );
-    mat_sw->addCase( llvm_create_const_int(12) , case_12 );
-
-    /*# gamma(   0)   1  0  0  0            # ( 0000 )  --> 0 */
-    /*#               0  1  0  0 */
-    /*#               0  0  1  0 */
-    /*#               0  0  0  1 */
-    /*# From diagonal part */
-    llvm_set_insert_point(  case_0 );
+    JitSwitch sw(r_mat);
     {
-      RComplexREG<WordREG<REALT> > lctmp0;
-      RScalarREG< WordREG<REALT> > lr_zero0;
-      RScalarREG< WordREG<REALT> > lrtmp0;
+      /*# gamma(   0)   1  0  0  0            # ( 0000 )  --> 0 */
+      /*#               0  1  0  0 */
+      /*#               0  0  1  0 */
+      /*#               0  0  0  1 */
+      /*# From diagonal part */
+      sw.case_begin(0);
+      {
+	RComplexREG<WordREG<REALT> > lctmp0;
+	RScalarREG< WordREG<REALT> > lr_zero0;
+	RScalarREG< WordREG<REALT> > lrtmp0;
     
-      zero_rep(lr_zero0);
+	zero_rep(lr_zero0);
 	    
-      for(int i0 = 0; i0 < Nc; ++i0) {
-	      
-	lrtmp0 = tri_dia_r.elem(0).elem(i0);
-	lrtmp0 += tri_dia_r.elem(0).elem(i0+Nc);
-	lrtmp0 += tri_dia_r.elem(1).elem(i0);
-	lrtmp0 += tri_dia_r.elem(1).elem(i0+Nc);
-	B_j.elem().elem(i0,i0) = cmplx(lrtmp0,lr_zero0);
-      }
+	for(int i0 = 0; i0 < Nc; ++i0)
+	  {
+	    lrtmp0 = tri_dia_r.elem(0).elem(i0);
+	    lrtmp0 += tri_dia_r.elem(0).elem(i0+Nc);
+	    lrtmp0 += tri_dia_r.elem(1).elem(i0);
+	    lrtmp0 += tri_dia_r.elem(1).elem(i0+Nc);
+	    B_j.elem().elem(i0,i0) = cmplx(lrtmp0,lr_zero0);
+	  }
 	    
-      /*# From lower triangular portion */
-      int elem_ij0 = 0;
-      for(int i0 = 1; i0 < Nc; ++i0) {
+	/*# From lower triangular portion */
+	int elem_ij0 = 0;
+	for(int i0 = 1; i0 < Nc; ++i0) {
 	      
-	int elem_ijb0 = (i0+Nc)*(i0+Nc-1)/2 + Nc;
+	  int elem_ijb0 = (i0+Nc)*(i0+Nc-1)/2 + Nc;
 	      
-	for(int j0 = 0; j0 < i0; ++j0) {
+	  for(int j0 = 0; j0 < i0; ++j0) {
 		
-	  lctmp0 = tri_off_r.elem(0).elem(elem_ij0);
-	  lctmp0 += tri_off_r.elem(0).elem(elem_ijb0);
-	  lctmp0 += tri_off_r.elem(1).elem(elem_ij0);
-	  lctmp0 += tri_off_r.elem(1).elem(elem_ijb0);
+	    lctmp0 = tri_off_r.elem(0).elem(elem_ij0);
+	    lctmp0 += tri_off_r.elem(0).elem(elem_ijb0);
+	    lctmp0 += tri_off_r.elem(1).elem(elem_ij0);
+	    lctmp0 += tri_off_r.elem(1).elem(elem_ijb0);
 		
-	  B_j.elem().elem(j0,i0) = lctmp0;
-	  B_j.elem().elem(i0,j0) = adj(lctmp0);
+	    B_j.elem().elem(j0,i0) = lctmp0;
+	    B_j.elem().elem(i0,j0) = adj(lctmp0);
 		
-	  elem_ij0++;
-	  elem_ijb0++;
+	    elem_ij0++;
+	    elem_ijb0++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
 
-    llvm_set_insert_point(  case_3 );
-    {
       /*# gamma(  12)  -i  0  0  0            # ( 0011 )  --> 3 */
       /*#               0  i  0  0 */
       /*#               0  0 -i  0 */
       /*#               0  0  0  i */
       /*# From diagonal part */
-	  
-      RComplexREG<WordREG<REALT> > lctmp3;
-      RScalarREG<WordREG<REALT> > lr_zero3;
-      RScalarREG<WordREG<REALT> > lrtmp3;
+      sw.case_begin( 3 );
+      {
+	RComplexREG<WordREG<REALT> > lctmp3;
+	RScalarREG<WordREG<REALT> > lr_zero3;
+	RScalarREG<WordREG<REALT> > lrtmp3;
 	    
-      lr_zero3 = 0;
+	lr_zero3 = 0;
 	    
-      for(int i3 = 0; i3 < Nc; ++i3) {
+	for(int i3 = 0; i3 < Nc; ++i3) {
 	      
-	lrtmp3 = tri_dia_r.elem(0).elem(i3+Nc);
-	lrtmp3 -= tri_dia_r.elem(0).elem(i3);
-	lrtmp3 -= tri_dia_r.elem(1).elem(i3);
-	lrtmp3 += tri_dia_r.elem(1).elem(i3+Nc);
-	B_j.elem().elem(i3,i3) = cmplx(lr_zero3,lrtmp3);
-      }
+	  lrtmp3 = tri_dia_r.elem(0).elem(i3+Nc);
+	  lrtmp3 -= tri_dia_r.elem(0).elem(i3);
+	  lrtmp3 -= tri_dia_r.elem(1).elem(i3);
+	  lrtmp3 += tri_dia_r.elem(1).elem(i3+Nc);
+	  B_j.elem().elem(i3,i3) = cmplx(lr_zero3,lrtmp3);
+	}
 	    
-      /*# From lower triangular portion */
-      int elem_ij3 = 0;
-      for(int i3 = 1; i3 < Nc; ++i3) {
+	/*# From lower triangular portion */
+	int elem_ij3 = 0;
+	for(int i3 = 1; i3 < Nc; ++i3) {
 	      
-	int elem_ijb3 = (i3+Nc)*(i3+Nc-1)/2 + Nc;
+	  int elem_ijb3 = (i3+Nc)*(i3+Nc-1)/2 + Nc;
 	      
-	for(int j3 = 0; j3 < i3; ++j3) {
+	  for(int j3 = 0; j3 < i3; ++j3) {
 		
-	  lctmp3 = tri_off_r.elem(0).elem(elem_ijb3);
-	  lctmp3 -= tri_off_r.elem(0).elem(elem_ij3);
-	  lctmp3 -= tri_off_r.elem(1).elem(elem_ij3);
-	  lctmp3 += tri_off_r.elem(1).elem(elem_ijb3);
+	    lctmp3 = tri_off_r.elem(0).elem(elem_ijb3);
+	    lctmp3 -= tri_off_r.elem(0).elem(elem_ij3);
+	    lctmp3 -= tri_off_r.elem(1).elem(elem_ij3);
+	    lctmp3 += tri_off_r.elem(1).elem(elem_ijb3);
 		
-	  B_j.elem().elem(j3,i3) = timesI(adj(lctmp3));
-	  B_j.elem().elem(i3,j3) = timesI(lctmp3);
+	    B_j.elem().elem(j3,i3) = timesI(adj(lctmp3));
+	    B_j.elem().elem(i3,j3) = timesI(lctmp3);
 		
-	  elem_ij3++;
-	  elem_ijb3++;
+	    elem_ij3++;
+	    elem_ijb3++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
-
-    llvm_set_insert_point(  case_5 );
-    {
       /*# gamma(  13)   0 -1  0  0            # ( 0101 )  --> 5 */
       /*#               1  0  0  0 */
       /*#               0  0  0 -1 */
       /*#               0  0  1  0 */
-	  
-      RComplexREG<WordREG<REALT> > lctmp5;
-      RScalarREG<WordREG<REALT> > lrtmp5;
+      sw.case_begin( 5 );
+      {
+	RComplexREG<WordREG<REALT> > lctmp5;
+	RScalarREG<WordREG<REALT> > lrtmp5;
 	    
-      for(int i5 = 0; i5 < Nc; ++i5) {
+	for(int i5 = 0; i5 < Nc; ++i5) {
 	      
-	int elem_ij5 = (i5+Nc)*(i5+Nc-1)/2;
+	  int elem_ij5 = (i5+Nc)*(i5+Nc-1)/2;
 	      
-	for(int j5 = 0; j5 < Nc; ++j5) {
+	  for(int j5 = 0; j5 < Nc; ++j5) {
 		
-	  int elem_ji5 = (j5+Nc)*(j5+Nc-1)/2 + i5;
+	    int elem_ji5 = (j5+Nc)*(j5+Nc-1)/2 + i5;
 		
+	    lctmp5 = adj(tri_off_r.elem(0).elem(elem_ji5));
+	    lctmp5 -= tri_off_r.elem(0).elem(elem_ij5);
+	    lctmp5 += adj(tri_off_r.elem(1).elem(elem_ji5));
+	    lctmp5 -= tri_off_r.elem(1).elem(elem_ij5);
 		
-	  lctmp5 = adj(tri_off_r.elem(0).elem(elem_ji5));
-	  lctmp5 -= tri_off_r.elem(0).elem(elem_ij5);
-	  lctmp5 += adj(tri_off_r.elem(1).elem(elem_ji5));
-	  lctmp5 -= tri_off_r.elem(1).elem(elem_ij5);
+	    B_j.elem().elem(i5,j5) = lctmp5;
 		
-	  B_j.elem().elem(i5,j5) = lctmp5;
-		
-	  elem_ij5++;
+	    elem_ij5++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
-
-    llvm_set_insert_point(  case_6 );
-    {
       /*# gamma(  23)   0 -i  0  0            # ( 0110 )  --> 6 */
       /*#              -i  0  0  0 */
       /*#               0  0  0 -i */
       /*#               0  0 -i  0 */
-
-      RComplexREG<WordREG<REALT> > lctmp6;
-      RScalarREG<WordREG<REALT> > lrtmp6;
+      sw.case_begin( 6 );
+      {
+	RComplexREG<WordREG<REALT> > lctmp6;
+	RScalarREG<WordREG<REALT> > lrtmp6;
 	    
-      for(int i6 = 0; i6 < Nc; ++i6) {
+	for(int i6 = 0; i6 < Nc; ++i6) {
 	      
-	int elem_ij6 = (i6+Nc)*(i6+Nc-1)/2;
+	  int elem_ij6 = (i6+Nc)*(i6+Nc-1)/2;
 	      
-	for(int j6 = 0; j6 < Nc; ++j6) {
+	  for(int j6 = 0; j6 < Nc; ++j6) {
 		
-	  int elem_ji6 = (j6+Nc)*(j6+Nc-1)/2 + i6;
+	    int elem_ji6 = (j6+Nc)*(j6+Nc-1)/2 + i6;
 	
-	  lctmp6 = adj(tri_off_r.elem(0).elem(elem_ji6));
-	  lctmp6 += tri_off_r.elem(0).elem(elem_ij6);
-	  lctmp6 += adj(tri_off_r.elem(1).elem(elem_ji6));
-	  lctmp6 += tri_off_r.elem(1).elem(elem_ij6);
+	    lctmp6 = adj(tri_off_r.elem(0).elem(elem_ji6));
+	    lctmp6 += tri_off_r.elem(0).elem(elem_ij6);
+	    lctmp6 += adj(tri_off_r.elem(1).elem(elem_ji6));
+	    lctmp6 += tri_off_r.elem(1).elem(elem_ij6);
 		
-	  B_j.elem().elem(i6,j6) = timesMinusI(lctmp6);
+	    B_j.elem().elem(i6,j6) = timesMinusI(lctmp6);
 		
-	  elem_ij6++;
+	    elem_ij6++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
-
-    llvm_set_insert_point(  case_9 );
-    {
       /*# gamma(  14)   0  i  0  0            # ( 1001 )  --> 9 */
       /*#               i  0  0  0 */
       /*#               0  0  0 -i */
       /*#               0  0 -i  0 */
-	  
-      RComplexREG<WordREG<REALT> > lctmp9;
-      RScalarREG<WordREG<REALT> > lrtmp9;
+      sw.case_begin( 9 );
+      {
+	RComplexREG<WordREG<REALT> > lctmp9;
+	RScalarREG<WordREG<REALT> > lrtmp9;
 	    
-      for(int i9 = 0; i9 < Nc; ++i9) {
+	for(int i9 = 0; i9 < Nc; ++i9) {
 	      
-	int elem_ij9 = (i9+Nc)*(i9+Nc-1)/2;
+	  int elem_ij9 = (i9+Nc)*(i9+Nc-1)/2;
 	      
-	for(int j9 = 0; j9 < Nc; ++j9) {
+	  for(int j9 = 0; j9 < Nc; ++j9) {
 		
-	  int elem_ji9 = (j9+Nc)*(j9+Nc-1)/2 + i9;
+	    int elem_ji9 = (j9+Nc)*(j9+Nc-1)/2 + i9;
 	
-	  lctmp9 = adj(tri_off_r.elem(0).elem(elem_ji9));
-	  lctmp9 += tri_off_r.elem(0).elem(elem_ij9);
-	  lctmp9 -= adj(tri_off_r.elem(1).elem(elem_ji9));
-	  lctmp9 -= tri_off_r.elem(1).elem(elem_ij9);
+	    lctmp9 = adj(tri_off_r.elem(0).elem(elem_ji9));
+	    lctmp9 += tri_off_r.elem(0).elem(elem_ij9);
+	    lctmp9 -= adj(tri_off_r.elem(1).elem(elem_ji9));
+	    lctmp9 -= tri_off_r.elem(1).elem(elem_ij9);
 		
-	  B_j.elem().elem(i9,j9) = timesI(lctmp9);
+	    B_j.elem().elem(i9,j9) = timesI(lctmp9);
 		
-	  elem_ij9++;
+	    elem_ij9++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
 
-    llvm_set_insert_point(  case_10 );
-    {
       /*# gamma(  24)   0 -1  0  0            # ( 1010 )  --> 10 */
       /*#               1  0  0  0 */
       /*#               0  0  0  1 */
       /*#               0  0 -1  0 */
-
-      RComplexREG<WordREG<REALT> > lctmp10;
-      RScalarREG<WordREG<REALT> > lrtmp10;
+      sw.case_begin( 10 );
+      {
+	RComplexREG<WordREG<REALT> > lctmp10;
+	RScalarREG<WordREG<REALT> > lrtmp10;
 	    
-      for(int i10 = 0; i10 < Nc; ++i10) {
+	for(int i10 = 0; i10 < Nc; ++i10) {
 	      
-	int elem_ij10 = (i10+Nc)*(i10+Nc-1)/2;
+	  int elem_ij10 = (i10+Nc)*(i10+Nc-1)/2;
 	      
-	for(int j10 = 0; j10 < Nc; ++j10) {
+	  for(int j10 = 0; j10 < Nc; ++j10) {
 		
-	  int elem_ji10 = (j10+Nc)*(j10+Nc-1)/2 + i10;
+	    int elem_ji10 = (j10+Nc)*(j10+Nc-1)/2 + i10;
 	
-	  lctmp10 = adj(tri_off_r.elem(0).elem(elem_ji10));
-	  lctmp10 -= tri_off_r.elem(0).elem(elem_ij10);
-	  lctmp10 -= adj(tri_off_r.elem(1).elem(elem_ji10));
-	  lctmp10 += tri_off_r.elem(1).elem(elem_ij10);
+	    lctmp10 = adj(tri_off_r.elem(0).elem(elem_ji10));
+	    lctmp10 -= tri_off_r.elem(0).elem(elem_ij10);
+	    lctmp10 -= adj(tri_off_r.elem(1).elem(elem_ji10));
+	    lctmp10 += tri_off_r.elem(1).elem(elem_ij10);
 		
-	  B_j.elem().elem(i10,j10) = lctmp10;
+	    B_j.elem().elem(i10,j10) = lctmp10;
 		
-	  elem_ij10++;
+	    elem_ij10++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
 
-    llvm_set_insert_point(  case_12 );
-    {
       /*# gamma(  34)   i  0  0  0            # ( 1100 )  --> 12 */
       /*#               0 -i  0  0 */
       /*#               0  0 -i  0 */
       /*#               0  0  0  i */
       /*# From diagonal part */
+      sw.case_begin( 12 );
+      {
+	RComplexREG<WordREG<REALT> > lctmp12;
+	RScalarREG<WordREG<REALT> > lr_zero12;
+	RScalarREG<WordREG<REALT> > lrtmp12;
 	    
-      RComplexREG<WordREG<REALT> > lctmp12;
-      RScalarREG<WordREG<REALT> > lr_zero12;
-      RScalarREG<WordREG<REALT> > lrtmp12;
+	lr_zero12 = 0;
 	    
-      lr_zero12 = 0;
-	    
-      for(int i12 = 0; i12 < Nc; ++i12) {
+	for(int i12 = 0; i12 < Nc; ++i12) {
       
-	lrtmp12 = tri_dia_r.elem(0).elem(i12);
-	lrtmp12 -= tri_dia_r.elem(0).elem(i12+Nc);
-	lrtmp12 -= tri_dia_r.elem(1).elem(i12);
-	lrtmp12 += tri_dia_r.elem(1).elem(i12+Nc);
-	B_j.elem().elem(i12,i12) = cmplx(lr_zero12,lrtmp12);
-      }
+	  lrtmp12 = tri_dia_r.elem(0).elem(i12);
+	  lrtmp12 -= tri_dia_r.elem(0).elem(i12+Nc);
+	  lrtmp12 -= tri_dia_r.elem(1).elem(i12);
+	  lrtmp12 += tri_dia_r.elem(1).elem(i12+Nc);
+	  B_j.elem().elem(i12,i12) = cmplx(lr_zero12,lrtmp12);
+	}
 	    
-      /*# From lower triangular portion */
-      int elem_ij12 = 0;
-      for(int i12 = 1; i12 < Nc; ++i12) {
+	/*# From lower triangular portion */
+	int elem_ij12 = 0;
+	for(int i12 = 1; i12 < Nc; ++i12) {
 	      
-	int elem_ijb12 = (i12+Nc)*(i12+Nc-1)/2 + Nc;
+	  int elem_ijb12 = (i12+Nc)*(i12+Nc-1)/2 + Nc;
 	      
-	for(int j12 = 0; j12 < i12; ++j12) {
+	  for(int j12 = 0; j12 < i12; ++j12) {
 	
-	  lctmp12 = tri_off_r.elem(0).elem(elem_ij12);
-	  lctmp12 -= tri_off_r.elem(0).elem(elem_ijb12);
-	  lctmp12 -= tri_off_r.elem(1).elem(elem_ij12);
-	  lctmp12 += tri_off_r.elem(1).elem(elem_ijb12);
+	    lctmp12 = tri_off_r.elem(0).elem(elem_ij12);
+	    lctmp12 -= tri_off_r.elem(0).elem(elem_ijb12);
+	    lctmp12 -= tri_off_r.elem(1).elem(elem_ij12);
+	    lctmp12 += tri_off_r.elem(1).elem(elem_ijb12);
 		
-	  B_j.elem().elem(i12,j12) = timesI(lctmp12);
-	  B_j.elem().elem(j12,i12) = timesI(adj(lctmp12));
+	    B_j.elem().elem(i12,j12) = timesI(lctmp12);
+	    B_j.elem().elem(j12,i12) = timesI(adj(lctmp12));
 		
-	  elem_ij12++;
-	  elem_ijb12++;
+	    elem_ij12++;
+	    elem_ijb12++;
+	  }
 	}
       }
-      llvm_exit( );
-    }
+      sw.case_end();
 
-    llvm_set_insert_point( case_default );
+      sw.case_default();
+      {
+      }
+      sw.case_end();
+    }
 
     jit_get_function(function);
   }
@@ -1659,11 +1655,12 @@ namespace Chroma
 				const Y& tri_off,
 				const Subset& s)
   {
-    if (!s.hasOrderedRep())
-      QDP_error_exit("clover on subset with unordered representation not implemented");
-
-    //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
-
+#ifdef QDP_DEEP_LOG
+    function.type_W = typeid(REAL).name();
+    function.set_dest_id( chi.getId() );
+    function.set_is_lat(true);
+#endif
+    
     AddressLeaf addr_leaf(s);
 
     forEach(chi, addr_leaf, NullCombine());
@@ -1671,18 +1668,15 @@ namespace Chroma
     forEach(tri_dia, addr_leaf, NullCombine());
     forEach(tri_off, addr_leaf, NullCombine());
 
-    // lo <= idx < hi
-    int lo = s.start();
-    int hi = s.end();
+    int th_count = s.numSiteTable();
+    WorkgroupGuardExec workgroupGuardExec(th_count);
 
-    JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
-    JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
     std::vector<QDPCache::ArgKey> ids;
-    ids.push_back( jit_lo.get_id() );
-    ids.push_back( jit_hi.get_id() );
+    workgroupGuardExec.check(ids);
+    ids.push_back( s.getIdSiteTable() );
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
       ids.push_back( addr_leaf.ids[i] );
-    jit_launch(function,s.numSiteTable(),ids);
+    jit_launch(function,th_count,ids);
   }
 
 
@@ -1696,45 +1690,34 @@ namespace Chroma
 				  const Y& tri_off,
 				  const Subset& s)
   {
-    if (ptx_db::db_enabled)
-      {
-	llvm_ptx_db( function , __PRETTY_FUNCTION__ );
-	if (!function.empty())
-	  return;
-      }
-
     llvm_start_new_function("apply_clov",__PRETTY_FUNCTION__);
 
-    ParamRef  p_lo     = llvm_add_param<int>();
-    ParamRef  p_hi     = llvm_add_param<int>();
+    WorkgroupGuard workgroupGuard;
+    ParamRef p_site_table = llvm_add_param<int*>();
 
-    ParamLeaf param_leaf;
+    ParamLeafScalar param_leaf;
 
-    typedef typename LeafFunctor<T, ParamLeaf>::Type_t  TJIT;
+    typedef typename LeafFunctor<T, ParamLeafScalar>::Type_t  TJIT;
     TJIT chi_jit(forEach(chi, param_leaf, TreeCombine()));
     TJIT psi_jit(forEach(psi, param_leaf, TreeCombine()));
-    typename REGType< typename TJIT::Subtype_t >::Type_t psi_r;
-    typename REGType< typename TJIT::Subtype_t >::Type_t chi_r;
+    typename REGType< typename ScalarType<typename TJIT::Subtype_t>::Type_t >::Type_t psi_r;
+    typename REGType< typename ScalarType<typename TJIT::Subtype_t>::Type_t >::Type_t chi_r;
 
-    typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
+    typedef typename LeafFunctor<X, ParamLeafScalar>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
 
-    typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
+    typedef typename LeafFunctor<Y, ParamLeafScalar>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
 
-    //llvm::Value * r_idx = jit_function_preamble_get_idx( params );
+    llvm::Value* r_idx_thread = llvm_thread_idx();
 
-    llvm::Value *  r_lo     = llvm_derefParam( p_lo );
-    llvm::Value *  r_hi     = llvm_derefParam( p_hi );
-    llvm::Value *  r_idx_thread    = llvm_thread_idx();
+    workgroupGuard.check(r_idx_thread);
 
-    llvm_cond_exit(  llvm_gt( r_idx_thread , llvm_sub( r_hi , r_lo ) ) );
+    llvm::Value* r_idx = llvm_array_type_indirection<int>( p_site_table , r_idx_thread );
 
-    llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
-
-    auto& chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
     psi_r.setup( psi_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
     tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
     tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
@@ -1830,8 +1813,7 @@ namespace Chroma
 
 
 
-
-
+#ifndef  BUILD_QUDA_DEVIFACE_CLOVER
   namespace QDPCloverEnv {
     template<typename R,typename TD,typename TO> 
     struct QUDAPackArgs { 
@@ -1912,17 +1894,14 @@ namespace Chroma
       PackForQUDATimer::Instance().get() += watch.getTimeInMicroseconds();
     }
 
-
+#endif
 
   template<typename T, typename U>
   void JITCloverTermT<T,U>::applySite(T& chi, const T& psi, 
 				      enum PlusMinus isign, int site) const
   {
     QDP_error_exit("JITCloverTermT<T,U>::applySite(T& chi, const T& psi,..) not implemented ");
-#if 0
-#endif
   }
-
 
   typedef JITCloverTermT<LatticeFermion, LatticeColorMatrix> JITCloverTerm;
   typedef JITCloverTermT<LatticeFermionF, LatticeColorMatrixF> JITCloverTermF;

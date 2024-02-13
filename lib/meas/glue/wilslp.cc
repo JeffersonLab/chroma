@@ -206,7 +206,7 @@ namespace Chroma
 	}       /* end i loop (for mu) */
       }         /* end j loop (for nu) */
 
-      dummy = 2.0 / double (Layout::vol()*Nc*nspace*(nspace-1)) ;
+      dummy = 2.0 / ( Double(Layout::vol()) * Double(Nc*(nspace*(nspace-1))) ) ;
 
       push(xml, "wils_loop1"); // XML tag for wils_wloop1
       write(xml, "lengthr", lengthr);
@@ -296,7 +296,7 @@ namespace Chroma
 	}      /* end r loop */
       }        /* end i loop (for mu) */
 
-      dummy = 1.0 / double (Layout::vol()*Nc*nspace) ;
+      dummy = 1.0 / ( Double(Layout::vol())* Double(Nc)* Double(nspace) ) ;
 
       push(xml,"wils_loop2"); // XML tag for wils_wloop2
       write(xml, "lengthr", lengthr);
@@ -756,12 +756,12 @@ namespace Chroma
 	}            /* end i loop (for mu) */
       }              /* end j loop (for nu) */
 
-      dummy = 1.0 / double (Layout::vol()*Nc*nspace*(nspace-1)) ;
+      dummy = 1.0 / ( Double(Layout::vol()) * Double( Nc*nspace*(nspace-1) ) ) ;
       for(t = 0;t  < ( lengtht); ++t )
 	for(r = 0;r  < ( lengthr); ++r )
 	  wils_loop3[t][r] = wils_loop3[t][r] * dummy;
 
-      dummy = 1.0 / double (Layout::vol()*Nc*2*nspace*(nspace-1)) ;
+      dummy = 1.0 / ( Double(Layout::vol()) * Double( Nc*2*nspace*(nspace-1) ) ) ;
       for(t = 0;t  < ( lengtht); ++t )
 	for(r = r_off;r  < ( r_off+lengthr/2); ++r )
 	  wils_loop3[t][r] = wils_loop3[t][r] * dummy;
@@ -1151,7 +1151,7 @@ namespace Chroma
 
 
 
-	dummy = 3.0 / double (Layout::vol()*Nc*2*nspace*(nspace-1)*(nspace-2)) ;
+	dummy = 3.0 / ( Double(Layout::vol()) * Double(Nc*2*nspace*(nspace-1)*(nspace-2)) ) ;
 	for(t = 0;t  < ( lengtht); ++t )
 	  for(r = r_off;r  < ( r_off+lengthr); ++r )
 	    wils_loop3[t][r] = wils_loop3[t][r] * dummy;

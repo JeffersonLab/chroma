@@ -325,9 +325,6 @@ public:
 		}
 
 		q_gauge_param.ga_pad = max_face;
-		// PADDING
-		quda_inv_param.sp_pad = 0;
-		quda_inv_param.cl_pad = 0;
 
 		// Clover precision and order
 		quda_inv_param.clover_cpu_prec = cpu_prec;

@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<ShiftedSolverTest>
+  <nrow>32 32 32 64</nrow>
+  <Cfg>
+    <cfg_type>SZINQIO</cfg_type>
+    <cfg_file>/gpfs/alpine/proj-shared/lgt104/bjoo/Testcase/cl21_32_64_b6p3_m0p2390_m0p2050_cfg_3200.lime</cfg_file>
+  </Cfg>
+  <FermionAction>
+    <FermAct>CLOVER</FermAct>
+    <Mass>-0.2050</Mass>
+    <clovCoeff>1.20536588031793</clovCoeff>
+    <AnisoParam>
+      <anisoP>false</anisoP>
+      <t_dir>3</t_dir>
+      <xi_0>1</xi_0>
+      <nu>1</nu>
+    </AnisoParam>
+    <FermState>
+      <Name>STOUT_FERM_STATE</Name>
+      <rho>0.125</rho>
+      <n_smear>1</n_smear>
+      <orthog_dir>-1</orthog_dir>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermState>
+  </FermionAction>
+  <shifts>0.000109335909283339 0.000584211769074023 0.00181216713967916 0.00478464392272826 0.0119020708754186 0.0289155646996088 0.0695922442548162 0.166959610676697 0.400720136243831 0.965951931276981 2.35629923417205 5.92110728201649 16.0486180482883 53.7484938194392 402.99686403222</shifts>
+  <InvertParam>
+    <invType>MULTI_CG_QUDA_CLOVER_INVERTER</invType>
+    <CloverParams>
+      <Mass>-0.2050</Mass>
+      <clovCoeff>1.20536588031793</clovCoeff>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1</xi_0>
+        <nu>1</nu>
+      </AnisoParam>
+    </CloverParams>
+    <RsdTarget>1e-09 1e-09 1e-09 1e-09 1e-09 1e-09 1e-09 1e-09 1e-09 1e-09 1e-09 1e-09 1e-09 1e-09 1e-09</RsdTarget>
+    <Delta>1.0e-18</Delta>
+    <Pipeline>0</Pipeline>
+    <MaxIter>50000</MaxIter>
+    <RsdToleranceFactor>10</RsdToleranceFactor>
+    <AntiPeriodicT>true</AntiPeriodicT>
+    <SolverType>CG</SolverType>
+    <Verbose>true</Verbose>
+    <CheckShifts>false</CheckShifts>
+    <AsymmetricLinop>true</AsymmetricLinop>
+    <CudaReconstruct>RECONS_NONE</CudaReconstruct>
+    <CudaSloppyPrecision>DOUBLE</CudaSloppyPrecision>
+    <CudaSloppyReconstruct>RECONS_NONE</CudaSloppyReconstruct>
+    <CudaRefinementPrecision>DOUBLE</CudaRefinementPrecision>
+    <CudaRefinementReconstruct>RECONS_NONE</CudaRefinementReconstruct>
+    <AxialGaugeFix>false</AxialGaugeFix>
+    <AutotuneDslash>true</AutotuneDslash>
+  </InvertParam>
+</ShiftedSolverTest>

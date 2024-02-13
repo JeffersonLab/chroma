@@ -33,7 +33,7 @@ namespace Chroma
 
     D.create(fs,N5,aniso);   // construct using possibly aniso glue
 
-    Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
+    Real ff = aniso.anisoP ? (aniso.nu / aniso.xi_0) : Real(1);
     InvTwoKappa = 1 + a5*(1 + (Nd-1)*ff - WilsonMass); 
     //InvTwoKappa =  WilsonMass - 5.0;
     TwoKappa = 1.0 / InvTwoKappa;
@@ -80,7 +80,7 @@ namespace Chroma
       // (N5-2)*4N cNs*cbsite flops
       for(int s(1);s<N5-1;s++) { // 1/2k psi[s] - P_- * psi[s+1] - P_+ * psi[s-1]
 	//chi[s][rb[cb]] = InvTwoKappa*psi[s] - 
-	//   0.5*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s-1] - psi[s+1]) ) ;
+	//   0.5*( psi[s+1] + psi[s-1] + Gamma(15)*(psi[s-1] - psi[s+1]) ) ;
 
 	// Recoded using chiralProject
 
@@ -94,7 +94,7 @@ namespace Chroma
       int N5m1(N5-1) ;
       //s=0 -- 1/2k psi[0] - P_- * psi[1] + mf* P_+ * psi[N5-1]
       // chi[0][rb[cb]] = InvTwoKappa*psi[0] - 
-      //	0.5*( psi[1]   - m_q*psi[N5m1] - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]) ) ;
+      //	0.5*( psi[1]   - m_q*psi[N5m1] - Gamma(15)*(m_q*psi[N5m1] + psi[1]) ) ;
 
       // Recoded using chiralProject
       
@@ -110,7 +110,7 @@ namespace Chroma
       int N5m2(N5-2);
       //s=N5-1 -- 1/2k psi[N5-1] +mf* P_- * psi[0]  -  P_+ * psi[N5-2]
       //chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - 
-      //	0.5*( psi[N5m2] - m_q *psi[0] + GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
+      //	0.5*( psi[N5m2] - m_q *psi[0] + Gamma(15)*(psi[N5m2] + m_q * psi[0]) );
 
       // Recoded using chiralProject
 
@@ -134,7 +134,7 @@ namespace Chroma
       // Flopcount for this part: (N5-2)*4 Nc Ns cbsite flops
       for(int s(1);s<N5-1;s++) { // 1/2k psi[s] - P_+ * psi[s+1] - P_- * psi[s-1]
 	//	chi[s][rb[cb]] = InvTwoKappa*psi[s] - 
-	//  0.5*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s+1] - psi[s-1]) ) ;
+	//  0.5*( psi[s+1] + psi[s-1] + Gamma(15)*(psi[s+1] - psi[s-1]) ) ;
 	
 
 	// Recoded using chiralProject
@@ -149,7 +149,7 @@ namespace Chroma
       int N5m1(N5-1) ;
       //s=0 -- 1/2k psi[0] - P_+ * psi[1] + mf* P_- * psi[N5-1]
       // chi[0][rb[cb]] = InvTwoKappa*psi[0] - 
-      //	0.5*( psi[1]   - m_q*psi[N5m1] + GammaConst<Ns,Ns*Ns-1>()*( psi[1]+m_q*psi[N5m1]) ) ;
+      //	0.5*( psi[1]   - m_q*psi[N5m1] + Gamma(15)*( psi[1]+m_q*psi[N5m1]) ) ;
 
       // Recoded using chiralProject
       // Flopcount for this part 5NcNs flops:
@@ -164,7 +164,7 @@ namespace Chroma
       int N5m2(N5-2);
       //s=N5-1 -- 1/2k psi[N5-1] + mf* P_+ * psi[0]  -  P_- * psi[N5-2]
       // chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - 
-      // 0.5*( psi[N5m2] - m_q *psi[0] - GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
+      // 0.5*( psi[N5m2] - m_q *psi[0] - Gamma(15)*(psi[N5m2] + m_q * psi[0]) );
       
       // Recoded using chiralProject
       // Flopcount for this part: 5NcNs cbsite flops

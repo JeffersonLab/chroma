@@ -377,9 +377,11 @@ namespace Chroma
       }
 
 
-      int num_cb_sites = Layout::vol()/2;
-      unsigned long total_flops = (site_flops + (1320+504+1320+504+48)*mv_apps)*num_cb_sites;
-      double gflops = (double)(total_flops)/(1.0e9);
+      size_t num_cb_sites = Layout::vol()/2;
+      double total_flops = (static_cast<double>(site_flops) 
+														+ static_cast<double>(1320+504+1320+504+48)*static_cast<double>(mv_apps))
+														* static_cast<double>(num_cb_sites);
+      double gflops = total_flops/1.0e9;
 
       double total_time = end - start;
       QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
@@ -440,9 +442,10 @@ namespace Chroma
       }
 #endif
 
-      int num_cb_sites = Layout::vol()/2;
-      unsigned long total_flops = (site_flops + (1320+504+1320+504+48)*mv_apps)*num_cb_sites;
-      double gflops = (double)(total_flops)/(1.0e9);
+      size_t num_cb_sites = Layout::vol()/2;
+      double total_flops = (static_cast<double>(site_flops) + static_cast<double>(1320+504+1320+504+48)
+													*static_cast<double>(mv_apps))*static_cast<double>(num_cb_sites);
+      double gflops = total_flops/1.0e9;
 
       double total_time = end - start;
       QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;

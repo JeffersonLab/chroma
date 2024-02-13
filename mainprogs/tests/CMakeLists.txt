@@ -28,7 +28,9 @@ set(ChromaSingleExecs
     t_gauge_force
     t_stout_state
     t_aniso_gaugeact
-    t_temp_prec 
+    t_temp_prec
+    t_multishift_quda
+    t_invmdagm_quda
 )
 
 if( GMP_FOUND )
@@ -89,7 +91,20 @@ endif()
 # Single source guys
 foreach( EXEC ${ChromaSingleExecs})
   add_executable( ${EXEC} ${EXEC}.cc )
-  target_link_libraries( ${EXEC} Chroma::chromalib )
+
+  if (QDP_IS_QDPJIT)
+    set_target_properties( ${EXEC} PROPERTIES CXX_STANDARD 20 )
+    
+    if( QDP_BACKEND_L0 )
+      find_package(PkgConfig REQUIRED)
+      pkg_search_module(PKG_LLVMSPIRV REQUIRED LLVMSPIRVLib)
+      target_link_libraries(${EXEC} PUBLIC ${PKG_LLVMSPIRV_LIBRARIES})
+      target_link_options(${EXEC} PUBLIC ${PKG_LLVMSPIRV_LDFLAGS})
+    endif()
+
+  endif()
+  
+  target_link_libraries( ${EXEC} PUBLIC Chroma::chromalib )
   target_include_directories( ${EXEC} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endforeach()
 
@@ -103,9 +118,21 @@ add_executable(t_symm_prec
 	chroma_gtest_env.h 
 	symm_prec_xml.h 
 	symm_prec_tests.cc
-)
-target_link_libraries( t_symm_prec PRIVATE Chroma::chromalib GTest)
-target_include_directories(t_symm_prec PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+	)
+
+if (QDP_IS_QDPJIT)
+  set_target_properties( t_symm_prec PROPERTIES CXX_STANDARD 20 )
+    
+  if( QDP_BACKEND_L0 )
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(PKG_LLVMSPIRV REQUIRED LLVMSPIRVLib)
+    target_link_libraries(t_symm_prec PUBLIC ${PKG_LLVMSPIRV_LIBRARIES})
+    target_link_options(t_symm_prec PUBLIC ${PKG_LLVMSPIRV_LDFLAGS})
+  endif()
+endif()
+
+target_link_libraries( t_symm_prec PUBLIC Chroma::chromalib GTest)
+target_include_directories(t_symm_prec PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 if ( Chroma_ENABLE_LAPACK )
@@ -113,8 +140,19 @@ add_executable(t_inv_fgmres_dr
 	t_inv_fgmres_dr.cc 
 	chroma_gtest_env.h
 	fgmres_dr_tests.cc
-)
-target_link_libraries( t_inv_fgmres_dr PRIVATE Chroma::chromalib GTest)
-target_include_directories(t_inv_fgmres_dr PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+	)
+
+if (QDP_IS_QDPJIT)
+  set_target_properties( t_inv_fgmres_dr PROPERTIES CXX_STANDARD 20 )
+    
+  if( QDP_BACKEND_L0 )
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(PKG_LLVMSPIRV REQUIRED LLVMSPIRVLib)
+    target_link_libraries(t_inv_fgmres_dr PUBLIC ${PKG_LLVMSPIRV_LIBRARIES})
+    target_link_options(t_inv_fgmres_dr PUBLIC ${PKG_LLVMSPIRV_LDFLAGS})
+  endif()
 endif()
 
+target_link_libraries( t_inv_fgmres_dr PUBLIC Chroma::chromalib GTest)
+target_include_directories(t_inv_fgmres_dr PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif()

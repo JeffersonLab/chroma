@@ -562,7 +562,7 @@ TEST_F(SymmFixture, TestDeriv)
 	for(int mu=0; mu < Nd; ++mu) {
 		rhs[mu] -= ds_symm[mu];
 		Double norm_rhs = sqrt(norm2(rhs[mu]));
-		Double norm_rhs_per_number = norm_rhs/Double(3*3*2*Layout::vol());
+		Double norm_rhs_per_number = norm_rhs/ ( Double(3*3*2) * Double(Layout::vol()) );
 		QDPIO::cout << "mu=" << mu << " || rhs - ds_symm || = " << norm_rhs
 				<< "  || rhs - ds_symm || / number =" << norm_rhs_per_number << std::endl;
 
@@ -622,7 +622,7 @@ TEST_F(SymmFixture, TestDerivDagger)
 	for(int mu=0; mu < Nd; ++mu) {
 		rhs[mu] -= ds_symm[mu];
 		Double norm_rhs = sqrt(norm2(rhs[mu]));
-		Double norm_rhs_per_number = norm_rhs/Double(3*3*2*Layout::vol());
+		Double norm_rhs_per_number = norm_rhs/( Double(3*3*2) * Double(Layout::vol()) );
 		QDPIO::cout << "mu=" << mu << " || rhs - ds_symm || = " << norm_rhs
 				<< "  || rhs - ds_symm || / number =" << norm_rhs_per_number << std::endl;
 
@@ -707,7 +707,7 @@ TEST_F(SymmFixture,TestTwist)
     {
 	(*M_tw)(t1,source,PLUS);
 	(*M_symm)(t2,source, PLUS);
-	t2[ rb[1] ] += twist*(GammaConst<Ns,Ns*Ns-1>()*timesI(source));
+	t2[ rb[1] ] += twist*(Gamma(15)*timesI(source));
 
 	t2[ rb[1] ] -= t1;
 	Double normdiff = sqrt(norm2(t2,rb[1]));
@@ -720,7 +720,7 @@ TEST_F(SymmFixture,TestTwist)
     {
  	(*M_tw)(t1,source,MINUS);
  	(*M_symm)(t2,source, MINUS);
- 	t2[ rb[1] ] -= twist*(GammaConst<Ns,Ns*Ns-1>()*timesI(source));
+ 	t2[ rb[1] ] -= twist*(Gamma(15)*timesI(source));
 
  	t2[ rb[1] ] -= t1;
  	Double normdiff = sqrt(norm2(t2,rb[1]));
@@ -742,13 +742,13 @@ TEST_F(SymmFixture,TestTwist)
     	mdagm[rb[1]] += (twist*twist)*source;
 
     	// +i mu M^\dag gamma_5
-    	t1[rb[1]] = (GammaConst<Ns,Ns*Ns-1>()*timesI(source));
+    	t1[rb[1]] = (Gamma(15)*timesI(source));
     	(*M_symm)(t3,t1,MINUS);
     	mdagm[rb[1]] += twist*t3;
 
     	// -i mu gamma_5 M soure
     	(*M_symm)(t1,source,PLUS);
-    	t3[rb[1]] = (GammaConst<Ns,Ns*Ns-1>()*timesI(t1));
+    	t3[rb[1]] = (Gamma(15)*timesI(t1));
     	mdagm[rb[1]] -= twist*t3;
 
 
@@ -818,7 +818,7 @@ TEST_P(TrLogForceFixture,TestShiftedGaugeTrLnForce)
 		ds_unshifted[mu] -= ds_symm[mu];
 		ds_wrong_shifted[mu] -= ds_symm[mu];
 		Double diffnorm_unshifted = sqrt(norm2(ds_unshifted[mu]));
-		Double diffnorm_per_site = diffnorm_unshifted/Layout::vol();
+		Double diffnorm_per_site = diffnorm_unshifted/Double(Layout::vol());
 		QDPIO::cout << "mu=" << mu << " || F_mu - shift(F_shifted, BACKWARD, mu) || =" << diffnorm_unshifted << std::endl;
 		QDPIO::cout << "mu=" << mu << " || F_mu - shift(F_shifted, BACKWARD, mu) ||/site =" << diffnorm_per_site << std::endl;
 
@@ -882,7 +882,7 @@ TEST_F(SymmFixture, CheckDerivMultipole)
 		for(int mu=0; mu < Nd; ++mu) {
 			ds_mp[mu] -= ds_u[mu];
 			Double normdiff = sqrt(norm2(ds_mp[mu]));
-			Double normdiff_per_link = normdiff/static_cast<double>(4*Layout::vol());
+			Double normdiff_per_link = normdiff/ ( Double(4) * Double(Layout::vol()) );
 			QDPIO::cout << "mu="<< mu << " normdiff = " << normdiff
 					<< " normdiff per link = " << normdiff_per_link << std::endl;
 			ASSERT_LT( toDouble(normdiff_per_link), 1.0e-17);

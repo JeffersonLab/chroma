@@ -38,11 +38,11 @@ namespace Chroma
     switch (isign)
     {
     case PLUS:
-      chi[rb[0]] = fact*psi + GammaConst<Ns,Ns*Ns-1>()*(H*timesI(psi));
+      chi[rb[0]] = fact*psi + Gamma(15)*(H*timesI(psi));
       break;
 
     case MINUS:
-      chi[rb[0]] = fact*psi - GammaConst<Ns,Ns*Ns-1>()*(H*timesI(psi));
+      chi[rb[0]] = fact*psi - Gamma(15)*(H*timesI(psi));
       break;
     }
   }
@@ -66,11 +66,11 @@ namespace Chroma
     switch (isign)
     {
     case PLUS:
-      chi[rb[0]] = invfact1*psi - GammaConst<Ns,Ns*Ns-1>()*(invfact2*timesI(psi));
+      chi[rb[0]] = invfact1*psi - Gamma(15)*(invfact2*timesI(psi));
       break;
 
     case MINUS:
-      chi[rb[0]] = invfact1*psi + GammaConst<Ns,Ns*Ns-1>()*(invfact2*timesI(psi));
+      chi[rb[0]] = invfact1*psi + Gamma(15)*(invfact2*timesI(psi));
       break;
     }
   }
@@ -84,11 +84,11 @@ namespace Chroma
     switch (isign)
     {
     case PLUS:
-      chi[rb[1]] = fact*psi + GammaConst<Ns,Ns*Ns-1>()*(H*timesI(psi));
+      chi[rb[1]] = fact*psi + Gamma(15)*(H*timesI(psi));
       break;
 
     case MINUS:
-      chi[rb[1]] = fact*psi - GammaConst<Ns,Ns*Ns-1>()*(H*timesI(psi));
+      chi[rb[1]] = fact*psi - Gamma(15)*(H*timesI(psi));
       break;
     }
   }
@@ -163,26 +163,26 @@ namespace Chroma
       // tmp1[0] = D_eo psi[1]
       D.apply(tmp1, psi, isign, 0);
 
-      tmp2[rb[0]] = invfact1*tmp1 - invfact2*(GammaConst<Ns,Ns*Ns-1>()*timesI(tmp1));
+      tmp2[rb[0]] = invfact1*tmp1 - invfact2*(Gamma(15)*timesI(tmp1));
 
       // tmp2[1] = D_oe tmp2[0]
       D.apply(tmp3, tmp2, isign, 1);
 
       chi[rb[1]] = fact*psi + mquarter*tmp3;
-      chi[rb[1]] += H*(GammaConst<Ns,Ns*Ns-1>()*timesI(psi));
+      chi[rb[1]] += H*(Gamma(15)*timesI(psi));
       break;
 
     case MINUS:
       // tmp1[0] = D_eo psi[1]
       D.apply(tmp1, psi, isign, 0);
 
-      tmp2[rb[0]] = invfact1*tmp1 + invfact2*(GammaConst<Ns,Ns*Ns-1>()*timesI(tmp1));
+      tmp2[rb[0]] = invfact1*tmp1 + invfact2*(Gamma(15)*timesI(tmp1));
 
       // tmp2[1] = D_oe tmp2[0]
       D.apply(tmp3, tmp2, isign, 1);
 
       chi[rb[1]] = fact*psi + mquarter*tmp3;
-      chi[rb[1]] -= H*(GammaConst<Ns,Ns*Ns-1>()*timesI(psi));
+      chi[rb[1]] -= H*(Gamma(15)*timesI(psi));
       break;
     }
 

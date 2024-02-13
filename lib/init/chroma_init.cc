@@ -7,6 +7,7 @@
 #include "singleton.h"
 #include "init/chroma_init.h"
 #include "io/xmllog_io.h"
+#include "util/ferm/superb_contractions.h"
 
 #include "qdp_init.h"
 
@@ -18,6 +19,11 @@
 
 #ifdef BUILD_QUDA
 #include <quda.h>
+#include <unistd.h>
+#ifndef QDP_IS_QDPJIT
+#include <quda_api.h>
+#include <device.h>
+#endif
 #endif
 
 // Indlude it no-matter what
@@ -37,6 +43,11 @@
 #ifdef MG_ENABLE_TIMERS
 #include "utils/timer.h"
 #endif
+#endif
+
+
+#ifdef ARCH_PARSCALAR
+#include "qmp.h"
 #endif
 
 namespace Chroma 
@@ -66,7 +77,8 @@ namespace Chroma
     //! Has the input instance been created?
     // bool xmlInputP = false;
 
-
+    std::vector<std::string> input_list;
+    
     // Internal
     std::string constructFileName(const std::string& filename)
     {
@@ -85,6 +97,11 @@ namespace Chroma
 
   } // End anonymous namespace
 
+
+  //! Get input file name
+  std::vector<std::string>& getInputFileList()  {return input_list;}
+
+  
   //! Get input file name
   std::string getXMLInputFileName() {return constructFileName(input_filename);}
 
@@ -137,7 +154,11 @@ namespace Chroma
 		    << "   --chroma-i   [" << getXMLInputFileName() << "]  xml input file name\n"
 		    << "   -o           [" << getXMLOutputFileName() << "]  xml output file name\n"
 		    << "   --chroma-p   [" << getXMLOutputFileName() << "]  xml output file name\n"
-		    << "   -l           [" << getXMLLogFileName() << "]  xml log file name\n"
+		    
+#ifdef ARCH_PARSCALAR
+#include "qmp.h"
+#endif
+<< "   -l           [" << getXMLLogFileName() << "]  xml log file name\n"
 		    << "   --chroma-l   [" << getXMLLogFileName() << "]  xml log file name\n"
 		    << "   -cwd         [" << getCWD() << "]  xml working directory\n"
 		    << "   --chroma-cwd [" << getCWD() << "]  xml working directory\n"
@@ -146,7 +167,37 @@ namespace Chroma
 		    << std::endl;
 	QDP_abort(0);
       }
+      
+      // Search for -il
+      if( argv_i == std::string("-il") )
+      {
+	QDPIO::cout << "Input file list:" << std::endl;
+	if( i + 1 < *argc )
+	{
+	  std::ifstream flist((*argv)[i+1]);
 
+	  std::string line;
+	  int count=0;
+	  while (std::getline(flist, line))
+	    {
+	      QDPIO::cout << line << std::endl;
+	      input_list.push_back(line);
+	      count++;
+	    }
+
+	  QDPIO::cout << "Total number of input files: " << count << std::endl;
+	  // Skip over next
+	  i++;
+	}
+	else 
+	{
+	  // i + 1 is too big
+	  QDPIO::cerr << "Error: dangling -il specified. " << std::endl;
+	  QDP_abort(1);
+	}
+      }
+
+      
       // Search for -i or --chroma-i
       if( argv_i == std::string("-i") || argv_i == std::string("--chroma-i") ) 
       {
@@ -225,6 +276,19 @@ namespace Chroma
 #    endif
     setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
 
+
+		QDPIO::cout << "Calling initCommsGridQuda\n";
+#ifdef ARCH_PARSCALAR
+	  int ndim = QMP_get_logical_number_of_dimensions();
+		const int *dims = QMP_get_logical_dimensions();
+#else
+		int ndim=4;
+		const int dims[4]={1,1,1,1};
+#endif
+		QDPIO::cout << "calling initCommsGridQuda with ndim = " << ndim << " and geom=( " << dims[0] << ", "
+			<< dims[1] << ", " << dims[2] << ", " << dims[3] << " )\n";
+		initCommsGridQuda(ndim, dims, nullptr, nullptr);
+
     QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")"
 		<< std::endl;
 
@@ -248,6 +312,7 @@ namespace Chroma
 #    ifdef QDP_USE_COMM_SPLIT_INIT
     QDP_setGPUCommSplit();
 #    endif
+
     QDPIO::cout << "Initializing start GPUs" << std::endl;
 #    ifdef QDP_FIX_GPU_SETTING
     QDP_startGPU(dev);
@@ -258,8 +323,10 @@ namespace Chroma
 
 #else // defined QDP_IS_QDPJIT
 #  ifdef BUILD_QUDA
-    std::cout << "Initializing QUDA" << std::endl;
-    initQuda(-1);
+   {
+     std::cout << "Initializing QUDA with initQuda(-1)" <<  std::endl;
+     initQuda(-1);
+   }
 #  endif
 #endif
 

@@ -58,8 +58,8 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
   Double diff_sq;
   Double det_diff;
   Double unit_test;
-  int iter;
-  int i_rot;
+  size_t iter;
+  size_t  i_rot;
   int n_rot;
   int numbad;
 

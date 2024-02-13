@@ -29,23 +29,19 @@ void function_get_fs_bs_exec(JitFunction& function,
   int junk_9 = forEach(b2[1], addr_leaf, NullCombine());
   int junk_10= forEach(b2[2], addr_leaf, NullCombine());
 
-  int lo = 0;
-  int hi = Layout::sitesOnNode();
+  int th_count = Layout::sitesOnNode();
+  
+  WorkgroupGuardExec workgroupGuardExec(th_count);
 
-  JitParam jit_lo( QDP_get_global_cache().addJitParamInt( lo ) );
-  JitParam jit_hi( QDP_get_global_cache().addJitParamInt( hi ) );
   JitParam jit_dobs( QDP_get_global_cache().addJitParamBool( dobs ) );
   
   std::vector<QDPCache::ArgKey> ids;
-  
-  ids.push_back( jit_lo.get_id() );
-  ids.push_back( jit_hi.get_id() );
+  workgroupGuardExec.check(ids);
   ids.push_back( jit_dobs.get_id() );
-  
   for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
     ids.push_back( addr_leaf.ids[i] );
   
-  jit_launch(function,hi-lo,ids);
+  jit_launch(function,th_count,ids);
 }
 
 
@@ -70,6 +66,7 @@ namespace
 }
 
 
+
 void function_get_fs_bs_build(JitFunction& function,
 			      const LatticeColorMatrix& Q,
 			      const LatticeColorMatrix& QQ,
@@ -77,26 +74,16 @@ void function_get_fs_bs_build(JitFunction& function,
 			      multi1d<LatticeComplex>& b1,
 			      multi1d<LatticeComplex>& b2)
 {
-  if (ptx_db::db_enabled)
-    {
-      llvm_ptx_db( function , __PRETTY_FUNCTION__ );
-      if (!function.empty())
-	return;
-    }
-
-  //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
-
-
   llvm_start_new_function("get_fs_bs",__PRETTY_FUNCTION__);
 
-  ParamRef  p_lo     = llvm_add_param<int>();
-  ParamRef  p_hi     = llvm_add_param<int>();
-  ParamRef  p_dobs   = llvm_add_param<bool>();
+  WorkgroupGuard workgroupGuard;
 
-  ParamLeaf param_leaf;
+  ParamRef p_dobs   = llvm_add_param<bool>();
+
+  ParamLeafScalar param_leaf;
   
-  typedef typename LeafFunctor<LatticeColorMatrix, ParamLeaf>::Type_t  LCMJIT;
-  typedef typename LeafFunctor<LatticeComplex    , ParamLeaf>::Type_t  LCJIT;
+  typedef typename LeafFunctor<LatticeColorMatrix, ParamLeafScalar>::Type_t  LCMJIT;
+  typedef typename LeafFunctor<LatticeComplex    , ParamLeafScalar>::Type_t  LCJIT;
 
   LCMJIT Q_jit(forEach(Q, param_leaf, TreeCombine()));
   LCMJIT QQ_jit(forEach(QQ, param_leaf, TreeCombine()));
@@ -110,29 +97,25 @@ void function_get_fs_bs_build(JitFunction& function,
   LCJIT  b21_jit(forEach(b2[1], param_leaf, TreeCombine()));
   LCJIT  b22_jit(forEach(b2[2], param_leaf, TreeCombine()));
 
-  llvm::Value*  r_lo     = llvm_derefParam( p_lo );
-  llvm::Value*  r_hi     = llvm_derefParam( p_hi );
+  llvm::Value* r_idx = llvm_thread_idx();
+  workgroupGuard.check(r_idx);
+
   llvm::Value*  r_dobs   = llvm_derefParam( p_dobs );
-  //llvm::Value*  r_nobs   = llvm_not( r_dobs );
       
-  llvm::Value*  r_idx = llvm_thread_idx();
-      
-  llvm_cond_exit( llvm_ge( r_idx , r_hi ) );
 
+  auto Q_j  = Q_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto QQ_j = QQ_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
-  auto& Q_j  = Q_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& QQ_j = QQ_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-
-  auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto f0_j = f0_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto f1_j = f1_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto f2_j = f2_jit.elem(JitDeviceLayout::Coalesced,r_idx);
   
-  auto& b10_j = b10_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& b11_j = b11_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& b12_j = b12_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& b20_j = b20_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& b21_j = b21_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& b22_j = b22_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto b10_j = b10_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto b11_j = b11_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto b12_j = b12_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto b20_j = b20_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto b21_j = b21_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto b22_j = b22_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
 
   // Get the traces
@@ -148,11 +131,8 @@ void function_get_fs_bs_build(JitFunction& function,
   real_t c1    = real_t( 1./2.) * trQQ.elem();	 // eq 15 
 
 
-  auto lv_c1_lt_0p004 = real_t( c1 < real_t( 4.0e-3 ) ).elem().get_val();
-
-  JitIf c1_lt_0p004( lv_c1_lt_0p004 );   //    if( c1 < 4.0e-3  ) 
+  JitIf c1_lt_0p004( (  c1 < real_t( 4.0e-3 )  ).elem().get_val() );   //    if( c1 < 4.0e-3  ) 
   {
-
     poke_real(f0_j) = real_t(1.0) - c0 * c0 / real_t(720.0);
     poke_imag(f0_j) =  -( c0 / real_t(6.0) )*( real_t(1.0) -(c1/real_t(20.0))*(real_t(1.0)-(c1/real_t(42.0)))) ;
 
@@ -161,8 +141,7 @@ void function_get_fs_bs_build(JitFunction& function,
 	  
     poke_real(f2_j) = real_t(0.5)*(real_t(-1.0)+c1/real_t(12.0)*(real_t(1.0)-c1/real_t(30.0)*(real_t(1.0)-c1/real_t(56.0)))+c0*c0/real_t(20160.0));
     poke_imag(f2_j) = real_t(0.5)*(c0/real_t(60.0)*(real_t(1.0)-c1/real_t(21.0)*(real_t(1.0)-c1/real_t(48.0))));
-
-
+    
     JitIf if_dobs( r_dobs ); // dobs
     {
       poke_real(b20_j) = -c0/real_t(360.0);
@@ -193,30 +172,23 @@ void function_get_fs_bs_build(JitFunction& function,
 
     } // Dobs==true
     if_dobs.end();
-    
   }
   c1_lt_0p004.els(); // if (c1 < 4.0e-3 )
   {
-    
     real_t c0abs = fabs( c0 );
     real_t c0max = real_t( 2.0 ) * pow( c1 / real_t( 3.0 ) , real_t( 1.5 ) );
     real_t theta;
     real_t eps = ( c0max - c0abs ) / c0max ;
 
-
     auto theta_stack = stack_alloc< real_t >();
     
-    auto lv_eps_lt_0 = real_t(eps < real_t( 0.0 )).elem().get_val();
-    
-    JitIf eps_lt_0( lv_eps_lt_0 ); // epsilon < 0
+    JitIf eps_lt_0( (eps < real_t( 0.0 )).elem().get_val() ); // epsilon < 0
     {
       theta_stack = real_t( 0.0 );
     }
     eps_lt_0.els();
     {
-      auto lv_eps_lt_0p001 = real_t(eps < real_t( 0.001 )).elem().get_val();
-
-      JitIf eps_lt_0p001( lv_eps_lt_0p001 ); // epsilon < 1.e-3
+      JitIf eps_lt_0p001( (eps < real_t( 0.001 )).elem().get_val() ); // epsilon < 1.e-3
       {
 	real_t sqtwo = sqrt( real_t(2.0) );
 	real_t theta_tmp;
@@ -281,9 +253,7 @@ void function_get_fs_bs_build(JitFunction& function,
 
       auto xi0_stack = stack_alloc< real_t >();
 
-      llvm::Value* lv_w_small = real_t( fabs( w ) < real_t( 0.05 ) ).elem().get_val();
-	
-      JitIf w_small( lv_w_small );
+      JitIf w_small( ( fabs( w ) < real_t( 0.05 ) ).elem().get_val() );
       {
 	real_t xi0_tmp0 =
 	  real_t(1.0) - 
@@ -311,9 +281,7 @@ void function_get_fs_bs_build(JitFunction& function,
     {
       { // xi1
 	
-	llvm::Value* lv_w_small = real_t( fabs( w ) < real_t( 0.05 ) ).elem().get_val();
-	
-	JitIf w_small( lv_w_small );
+	JitIf w_small( (fabs( w ) < real_t( 0.05 ) ).elem().get_val() );
 	{
 	  real_t xi1_tmp0 = 	    
 	    real_t(-1.0)*
@@ -469,9 +437,7 @@ void function_get_fs_bs_build(JitFunction& function,
       multi1d<real_t > b2_site_re_phi1(3);
       multi1d<real_t > b2_site_im_phi1(3);
 
-      auto lv_c0_neg = real_t( c0 < real_t(0.0) ).elem().get_val();
-      
-      JitIf if_c0_neg( lv_c0_neg );   // if( c0_negativeP ) 
+      JitIf if_c0_neg( ( c0 < real_t(0.0) ).elem().get_val() );   // if( c0_negativeP ) 
       {
 	b1_site_im_0_stack *= real_t(-1.0);
 	b1_site_re_1_stack *= real_t(-1.0);
@@ -539,10 +505,7 @@ void function_get_fs_bs_build(JitFunction& function,
     poke_real(f2_j) = f_site_re[2];
     poke_imag(f2_j) = f_site_im[2];
 
-
-    auto lv_c0_neg = real_t( c0 < real_t(0.0) ).elem().get_val();
-      
-    JitIf if_c0_neg2( lv_c0_neg );   // if( c0_negativeP ) 
+    JitIf if_c0_neg2( ( c0 < real_t(0.0) ).elem().get_val() );   // if( c0_negativeP ) 
     {
       poke_imag(f0_j) *= real_t(-1.0);
       poke_real(f1_j) *= real_t(-1.0);
@@ -553,9 +516,11 @@ void function_get_fs_bs_build(JitFunction& function,
   }
   c1_lt_0p004.end(); // if (c1 < 4.0e-3 )
 
-
   jit_get_function(function);
 }
+
+
+
 
 
 

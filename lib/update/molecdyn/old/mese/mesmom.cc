@@ -22,7 +22,7 @@ void MesMom(const multi1d<LatticeColorMatrix>& p_mom,
   for(int mu=0; mu < Nd; ++mu)
     p_mom_sq += norm2(p_mom[mu]);
   
-  p_mom_sq /= Double(Layout::vol()*Nd);
+  p_mom_sq /= ( Double(Layout::vol()) * Double(Nd) );
 
   END_CODE();
 }

@@ -29,7 +29,7 @@ namespace Chroma
     fbc = fs->getFermBC();
     D.create(fs, aniso);   // construct using possibly aniso glue
 
-    Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
+    Real ff = aniso.anisoP ? (aniso.nu / aniso.xi_0) : Real(1);
     fact1 =  1 + a5*(1 + (Nd-1)*ff - WilsonMass);
     fact2 = -0.5*a5;
   }

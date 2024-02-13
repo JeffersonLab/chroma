@@ -35,7 +35,7 @@ void WlMesFerm(const multi1d<LatticeColorMatrix>& u,
   if ( FermiP == YES )
   {
     /* chi_bar*(1/(M_dag*M))*chi = chi_bar*psi */
-    w_ferm = innerProduct(chi,psi,sub) / Double(Layout::vol()*Nc*Ns);
+    w_ferm = innerProduct(chi,psi,sub) / ( Double(Layout::vol()) * Double(Nc*Ns) );
   }
   
   END_CODE();

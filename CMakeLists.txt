@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
-project(Chroma VERSION 3.44.1 LANGUAGES CXX C Fortran)
+project(Chroma VERSION 3.44.1 LANGUAGES CXX C)
 include(FindOpenMP)
 
 option(Chroma_ENABLE_CPP_WILSON_DSLASH "Use CPP Dslash for efficiecy" OFF)
@@ -26,6 +26,11 @@ option(Chroma_ENABLE_QPHIX  "Enable QPhiX Solvers" OFF)
 option(Chroma_ENABLE_MGPROTO "Enable MG-Proto" OFF)
 option(Chroma_ENABLE_LAPACK "Enable Lapack Binding in QDPLapack" OFF)
 option(Chroma_ENABLE_OPENMP "Enable OpenMP" OFF)
+option(Chroma_ENABLE_SUPERBBLAS  "Enable tasks using Superbblas" OFF)
+option(Chroma_ENABLE_PRIMME  "Build with PRIMME" OFF)
+set(BLAS_SUFFIX_LINK_FLAGS "" CACHE STRING "Extra linking flags placed after BLAS")
+separate_arguments(Chroma_extra_link_flags UNIX_COMMAND ${BLAS_SUFFIX_LINK_FLAGS})
+message(STATUS "Chroma extra links: ${Chroma_extra_link_flags}")
 
 set(Chroma_QPHIX_SOLVER_ARCH "avx" CACHE STRING "Architecture of QPhiX Architecture")
 set_property(CACHE Chroma_QPHIX_SOLVER_ARCH PROPERTY
@@ -45,6 +50,8 @@ option(Chroma_QPHIX_COMPRESS12 "Set to ON to enable 12-compression" OFF)
 option(Chroma_QPHIX_DSLASH "Set to ON to enable QPhiX Dslash. QDP-JIT builds with matchin SOALENs only" OFF)
 option(Chroma_USE_MGPROTO "Use the MGProto Multigrid solver" OFF)
 
+set(SUPERBBLAS_DIR "" CACHE PATH "path to superbblas installation")
+set(PRIMME_DIR "" CACHE PATH "path to PRIMME installation")
 
 ##################
 # End of Options
@@ -55,8 +62,7 @@ option(Chroma_USE_MGPROTO "Use the MGProto Multigrid solver" OFF)
 ##################
 
 if( Chroma_ENABLE_JIT_CLOVER )
-#  set( DEBUG 1 )
-  add_definitions(-DBUILD_JIT_CLOVER_TERM)
+ set(BUILD_JIT_CLOVER_TERM 1)
 endif()
 
 
@@ -99,16 +105,11 @@ endif()
 find_package(QDPXX REQUIRED)
 
 if( Chroma_ENABLE_SANITIZERS )
-   if( ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 3.1)
-       OR ( CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 4.8) )
-
-       message(STATUS "Chroma: Setting Sanitizer options")
-       set(Chroma_SANITIZER_OPTS "-fsanitize=address,undefined")
-       set(CPPWilsonDslash_ENABLE_SANITIZERS ON)
-       set(QDPLapack_ENABLE_SANITIZERS ON)
-   else()
-       message(STATUS "Don't know how to enable sanitizers for ${CMAKE_CXX_COMPILER_ID}... Ignoring")
-   endif()
+       include(cmake/CheckSanitizeOpts.cmake)
+       check_sanitizer_options( "${Chroma_ENABLE_SANITIZERS}" Chroma_SANITIZER_OPTS )
+       message(STATUS "Chroma: Setting Sanitizer options: ${Chroma_SANITIZER_OPTS}")
+       set(CPPWilsonDslash_ENABLE_SANITIZERS ${Chroma_ENABLE_SANITIZERS} )
+       set(QDPLapack_ENABLE_SANITIZERS ${Chroma_ENABLE_SANITIZERS} )
 endif()
 
 ##########################
@@ -143,6 +144,12 @@ if( Chroma_ENABLE_QUDA )
   elseif( QUDA_TARGET_HIP )
     set(CHROMA_TARGET_HIP 1)
   endif()
+  if (QDP_IS_QDPJIT)
+     message(STATUS "QDP is QDPJIT so enabling QDPJIT Interfaces")
+     set(BUILD_QUDA_DEVIFACE_CLOVER 1)
+     set(BUILD_QUDA_DEVIFACE_GAUGE 1)
+     set(BUILD_QUDA_DEVIFACE_SPINOR 1)
+  endif()
 endif()
 
 ###########################
@@ -174,6 +181,44 @@ if( Chroma_ENABLE_LAPACK )
 endif()
 add_subdirectory(other_libs/qdp-lapack)
  
+###########################
+# 6th: Deal with superbblas
+###########################
+if( Chroma_ENABLE_SUPERBBLAS )
+  message(STATUS "Enabling superbblas")
+
+  include(FindBLAS)
+  find_package(BLAS REQUIRED)
+  
+  if( QDP_BACKEND_ROCM AND NOT HIP_CPP_CONFIG )
+     find_package(HIP REQUIRED)
+     execute_process(
+                 COMMAND ${HIP_HIPCONFIG_EXECUTABLE} -C
+                 OUTPUT_VARIABLE _hip_cpp_config_raw
+                 OUTPUT_STRIP_TRAILING_WHITESPACE
+                 )
+     separate_arguments(_hip_cpp_config UNIX_COMMAND ${_hip_cpp_config_raw})
+     message(STATUS "HIP cpp_config ${_hip_cpp_config}")
+     set(HIP_CPP_CONFIG ${_hip_cpp_config} CACHE STRING "HIP cpp_config as computed by hipconfig")
+     mark_as_advanced(HIP_CPP_CONFIG)
+  endif()
+
+  if( QDP_BACKEND_ROCM )
+     find_package(hipBLAS REQUIRED)
+  endif()
+  if( Chroma_ENABLE_CUDA )
+     find_package(CUDAToolkit REQUIRED)
+  endif()
+
+  set(BUILD_SB 1)
+
+  # Deal with PRIMME
+  if( Chroma_ENABLE_PRIMME )
+    message(STATUS "Enabling PRIMME")
+    set(BUILD_PRIMME 1)
+  endif()
+endif()
+
 
 #####################################
 # Configure chroma_config_internal.h
@@ -207,11 +252,11 @@ configure_package_config_file(ChromaConfig.cmake.in ChromaConfig.cmake
                               INSTALL_DESTINATION lib/cmake/Chroma)
 
 write_basic_package_version_file(
-    ChromaVersion.cmake
+	ChromaConfigVersion.cmake
     VERSION ${PACKAGE_VERSION}
     COMPATIBILITY AnyNewerVersion
     )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ChromaVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ChromaConfigVersion.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/ChromaConfig.cmake
               DESTINATION lib/cmake/Chroma)

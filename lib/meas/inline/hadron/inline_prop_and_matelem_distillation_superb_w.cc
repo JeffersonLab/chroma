@@ -16,7 +16,6 @@
 #include "qdp_disk_map_slice.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_distillation.h"
-#include "util/ferm/key_timeslice_colorvec.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_prop_matelem.h"
 #include "util/ferm/key_val_db.h"
@@ -27,7 +26,6 @@
 #include "util/ferm/superb_contractions.h"
 #include "util/ft/sftmom.h"
 #include "util/ft/time_slice_set.h"
-#include "util/info/proginfo.h"
 #include "util/info/proginfo.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
@@ -41,39 +39,6 @@
 
 namespace Chroma 
 { 
-  //----------------------------------------------------------------------------
-  // Utilities
-  namespace
-  {
-    multi1d<SubsetVectorWeight_t> readEigVals(const std::string& meta)
-    {    
-      std::istringstream  xml_l(meta);
-      XMLReader eigtop(xml_l);
-
-      std::string pat("/MODMetaData/Weights");
-      //      multi1d<SubsetVectorWeight_t> eigenvalues;
-      multi1d< multi1d<Real> > eigens;
-      try
-      {
-	read(eigtop, pat, eigens);
-      }
-      catch(const std::string& e) 
-      {
-	QDPIO::cerr << __func__ << ": Caught Exception reading meta= XX" << meta << "XX   with path= " << pat << "   error= " << e << std::endl;
-	QDP_abort(1);
-      }
-
-      eigtop.close();
-
-      multi1d<SubsetVectorWeight_t> eigenvalues(eigens.size());
-
-      for(int i=0; i < eigens.size(); ++i)
-	eigenvalues[i].weights = eigens[i];
-
-      return eigenvalues;
-    }
-  }
-  
 
   //----------------------------------------------------------------------------
   namespace InlinePropAndMatElemDistillationSuperbEnv 
@@ -112,7 +77,6 @@ namespace Chroma
       read(inputtop, "Nt_forward", input.Nt_forward);
       read(inputtop, "Nt_backward", input.Nt_backward);
       read(inputtop, "mass_label", input.mass_label);
-      read(inputtop, "num_tries", input.num_tries);
 
       input.max_rhs = 8;
       if( inputtop.count("max_rhs") == 1 ) {
@@ -126,22 +90,9 @@ namespace Chroma
         read(inputtop, "phase", input.phase);
       }
 
-      input.zero_colorvecs = false;
-      if( inputtop.count("zero_colorvecs") == 1 ) {
-	read(inputtop, "zero_colorvecs", input.zero_colorvecs );
-	if (input.zero_colorvecs)
-	  {
-	    QDPIO::cout << "zero_colorvecs found, *** timing mode activated ***\n";
-	  }
-      }
-
-      input.fuse_timeloop = false;
-      if( inputtop.count("fuse_timeloop") == 1 ) {
-	read(inputtop, "fuse_timeloop", input.fuse_timeloop );
-	if (input.fuse_timeloop)
-	  {
-	    QDPIO::cout << "fuse_timeloop found!\n";
-	  }
+      input.use_device_for_contractions = true;
+      if( inputtop.count("use_device_for_contractions") == 1 ) {
+        read(inputtop, "use_device_for_contractions", input.use_device_for_contractions);
       }
 
     }
@@ -157,9 +108,9 @@ namespace Chroma
       write(xml, "Nt_forward", input.Nt_forward);
       write(xml, "Nt_backward", input.Nt_backward);
       write(xml, "mass_label", input.mass_label);
-      write(xml, "num_tries", input.num_tries);
       write(xml, "max_rhs", input.max_rhs);
       write(xml, "phase", input.phase);
+      write(xml, "use_device_for_contractions", input.use_device_for_contractions);
 
       pop(xml);
     }
@@ -360,112 +311,43 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      // Reset
-      if (params.param.contract.num_tries <= 0)
-      {
-	params.param.contract.num_tries = 1;
-      }
-
-
       //
       // Read in the source along with relevant information.
       // 
-      QDPIO::cout << "Snarf the source from a std::map object disk file" << std::endl;
 
-      SB::MODS_t eigen_source;
-      eigen_source.setDebug(0);
-
-      std::string eigen_meta_data;   // holds the eigenvalues
-
-      if (!params.param.contract.zero_colorvecs)
-	{
-	  try
-	    {
-	      // Open
-	      QDPIO::cout << "Open file= " << params.named_obj.colorvec_files[0] << std::endl;
-	      eigen_source.open(params.named_obj.colorvec_files);
-
-	      // Snarf the source info. 
-	      QDPIO::cout << "Get user data" << std::endl;
-	      eigen_source.getUserdata(eigen_meta_data);
-	      //	QDPIO::cout << "User data= " << eigen_meta_data << std::endl;
-
-	      // Write it
-	      //	QDPIO::cout << "Write to an xml file" << std::endl;
-	      //	XMLBufferWriter xml_buf(eigen_meta_data);
-	      //	write(xml_out, "Source_info", xml_buf);
-	    }    
-	  catch (std::bad_cast) {
-	    QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
-	    QDP_abort(1);
-	  }
-	  catch (const std::string& e) {
-	    QDPIO::cerr << name << ": error extracting source_header: " << e << std::endl;
-	    QDP_abort(1);
-	  }
-	  catch( const char* e) {
-	    QDPIO::cerr << name <<": Caught some char* exception:" << std::endl;
-	    QDPIO::cerr << e << std::endl;
-	    QDPIO::cerr << "Rethrowing" << std::endl;
-	    throw;
-	  }
-
-	  QDPIO::cout << "Source successfully read and parsed" << std::endl;
-	}
-      
-#if 0
-      // Sanity check
-      if (params.param.contract.num_vecs > eigen_source.size())
-      {
-	QDPIO::cerr << name << ": number of available eigenvectors is too small\n";
-	QDP_abort(1);
-      }
-#endif
-
-      QDPIO::cout << "Number of vecs available is large enough" << std::endl;
-
-      // The sub-lattice eigenstd::vector std::map
-      // QDPIO::cout << "Initialize sub-lattice std::map" << std::endl;
-      // SubEigenMap sub_eigen_map(eigen_source, decay_dir, params.param.contract.zero_colorvecs);
-      // QDPIO::cout << "Finished initializing sub-lattice std::map" << std::endl;
-
-
+      SB::ColorvecsStorage colorvecsSto = SB::openColorvecStorage(params.named_obj.colorvec_files);
+     
       //
       // DB storage
       //
       BinaryStoreDB< SerialDBKey<KeyPropElementalOperator_t>, SerialDBData<ValPropElementalOperator_t> > qdp_db;
 
-      if (!params.param.contract.zero_colorvecs)
-	{
-	  // Open the file, and write the meta-data and the binary for this operator
-	  if (! qdp_db.fileExists(params.named_obj.prop_op_file))
-	    {
-	      XMLBufferWriter file_xml;
-	      push(file_xml, "DBMetaData");
-	      write(file_xml, "id", std::string("propElemOp"));
-	      write(file_xml, "lattSize", QDP::Layout::lattSize());
-	      write(file_xml, "decay_dir", params.param.contract.decay_dir);
-	      proginfo(file_xml);    // Print out basic program info
-	      write(file_xml, "Params", params.param);
-	      write(file_xml, "Config_info", gauge_xml);
-	      if (!params.param.contract.zero_colorvecs)
-		write(file_xml, "Weights", readEigVals(eigen_meta_data));
-	      pop(file_xml);
+      // Open the file, and write the meta-data and the binary for this operator
+      if (!qdp_db.fileExists(params.named_obj.prop_op_file))
+      {
+	XMLBufferWriter file_xml;
+	push(file_xml, "DBMetaData");
+	write(file_xml, "id", std::string("propElemOp"));
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "decay_dir", params.param.contract.decay_dir);
+	proginfo(file_xml); // Print out basic program info
+	write(file_xml, "Params", params.param);
+	write(file_xml, "Config_info", gauge_xml);
+	pop(file_xml);
 
-	      std::string file_str(file_xml.str());
-	      qdp_db.setMaxUserInfoLen(file_str.size());
+	std::string file_str(file_xml.str());
+	qdp_db.setMaxUserInfoLen(file_str.size());
 
-	      qdp_db.open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
+	qdp_db.open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
 
-	      qdp_db.insertUserdata(file_str);
-	    }
-	  else
-	    {
-	      qdp_db.open(params.named_obj.prop_op_file, O_RDWR, 0664);
-	    }
+	qdp_db.insertUserdata(file_str);
+      }
+      else
+      {
+	qdp_db.open(params.named_obj.prop_op_file, O_RDWR, 0664);
+      }
 
-	  QDPIO::cout << "Finished opening peram file" << std::endl;
-	}
+      QDPIO::cout << "Finished opening peram file" << std::endl;
 
       //
       // Parse the phase
@@ -477,11 +359,11 @@ namespace Chroma
       }
       SB::Coor<Nd - 1> phase;
       for (int i = 0; i < Nd - 1; ++i)
+      {
 	phase[i] = params.param.contract.phase[i];
-
-
-      // Total number of iterations
-      int ncg_had = 0;
+	if (std::fabs(phase[i] - params.param.contract.phase[i]) > 0)
+	  std::runtime_error("phase should be integer");
+      }
 
       //
       // Try the factories
@@ -526,202 +408,89 @@ namespace Chroma
 	const multi1d<int>& t_sources = params.param.contract.t_sources;
 	const int max_rhs             = params.param.contract.max_rhs;
 
-	
+	// Set place for doing the contractions
+	SB::DeviceHost dev =
+	  params.param.contract.use_device_for_contractions ? SB::OnDefaultDevice : SB::OnHost;
+
 	// Loop over each time source
 	for (int tt = 0; tt < t_sources.size(); ++tt)
 	{
 	  int t_source = t_sources[tt]; // This is the actual time-slice.
 	  QDPIO::cout << "t_source = " << t_source << std::endl;
 
-	  // The tensor `active_colorvec` will have the eigenvectors for the active time-slides;
-	  // the contraction requires `t` being the slowest index
-	  int first_tslice_in_active_colorvec = t_source - params.param.contract.Nt_backward;
-	  int num_tslices_in_active_colorvec =
-	    std::min(params.param.contract.Nt_backward + params.param.contract.Nt_forward + 1, Lt);
-	  const char order_in_active_colorvec[] = "cxyzXnt";
-	  SB::Tensor<Nd + 3, SB::ComplexF> active_colorvec =
-	    SB::getColorvecs(eigen_source, decay_dir, first_tslice_in_active_colorvec,
-			     num_tslices_in_active_colorvec, num_vecs, order_in_active_colorvec, phase);
+	  // Compute the first tslice and the number of tslices involved in the contraction
+	  int first_tslice = t_source - params.param.contract.Nt_backward;
+	  int num_tslices = std::min(
+	    params.param.contract.Nt_backward + std::max(1, params.param.contract.Nt_forward), Lt);
 
-	  // The tensor `tensor_quark_solns` will have the active time-slices of the solution vectors;
-	  // the contraction requires `t` and `s` being the slowest indices
-	  const char order_in_tensor_quark_solns[] = "cxyzXnst";
-	  SB::Tensor<Nd + 4, SB::ComplexF> tensor_quark_solns(
-	    order_in_tensor_quark_solns,
-	    SB::latticeSize<Nd + 4>(order_in_tensor_quark_solns,
-				    {{'t', num_tslices_in_active_colorvec}, {'n', num_vecs}}));
+	  // Get `num_vecs` colorvecs, and `num_tslices` tslices starting from time-slice `first_tslice`
+	  SB::Tensor<Nd + 3, SB::Complex> colorvec = SB::getColorvecs<SB::Complex>(
+	    colorvecsSto, u, decay_dir, first_tslice, num_tslices, num_vecs, "cxyzXnt", phase, dev);
 
-	  // Loop over each spin source
+	  // Get all eigenvectors for `t_source`
+	  auto source_colorvec =
+	    colorvec.kvslice_from_size({{'t', t_source - first_tslice}}, {{'t', 1}});
+
 	  for (int spin_source = 0; spin_source < Ns; ++spin_source)
 	  {
-	    QDPIO::cout << "spin_source = " << spin_source << std::endl;
+	    // Invert the source for `spin_source` spin and retrieve `num_tslices` tslices starting from tslice `first_tslice`
+	    // NOTE: s is spin source, and S is spin sink
+	    SB::Tensor<Nd + 5, SB::Complex> quark_solns = SB::doInversion<SB::Complex, SB::Complex>(
+	      *PP, source_colorvec, t_source, first_tslice, num_tslices, {spin_source}, max_rhs,
+	      "cxyzXnSst");
 
 	    StopWatch snarss1;
 	    snarss1.reset();
 	    snarss1.start();
 
-	    //
-	    // The space distillation loop
-	    //
-	    for (int colorvec_src0 = 0, colorvec_src_step = std::min(max_rhs, num_vecs);
-		 colorvec_src0 < num_vecs; colorvec_src0 += colorvec_src_step,
-		     colorvec_src_step = std::min(colorvec_src_step, num_vecs - colorvec_src0))
-	    {
-	      std::vector<std::shared_ptr<LatticeFermion>> chis(colorvec_src_step),
-		quark_solns(colorvec_src_step);
-	      for (int col = 0; col < colorvec_src_step; col++)
-		chis[col].reset(new LatticeFermion);
-	      for (int col = 0; col < colorvec_src_step; col++)
-		quark_solns[col].reset(new LatticeFermion);
-
-	      for (int colorvec_src = colorvec_src0, col = 0; col < colorvec_src_step;
-		   ++colorvec_src, ++col)
-	      {
-		QDPIO::cout << "Do spin_source= " << spin_source
-			    << "  colorvec_src= " << colorvec_src << std::endl;
-
-		// Put the colorvec sources for the t_source on chis for spin `spin_source`
-		// chis[col][s=spin_source] = active_colorvec[t=t_source-first_tslice_in_active_colorvec, n=colorvec_src0]
-		*chis[col] = zero;
-		active_colorvec
-		  .kvslice_from_size(
-		    {{'t', t_source - first_tslice_in_active_colorvec}, {'n', colorvec_src}},
-		    {{'t', 1}, {'n', 1}})
-		  .copyTo(SB::asTensorView(*chis[col]).kvslice_from_size({{'s', spin_source}}));
-		*quark_solns[col] = zero;
-	      } // colorvec_src
-
-	      if (!params.param.contract.zero_colorvecs)
-	      {
-		// Do the propagator inversion
-		// Check if bad things are happening
-		bool badP = true;
-		for (int nn = 1; nn <= params.param.contract.num_tries; ++nn)
-		{
-		  // Reset
-		  for (int col = 0; col < colorvec_src_step; col++)
-		    *quark_solns[col] = zero;
-		  badP = false;
-
-		  // Solve for the solution std::vector
-		  std::vector<SystemSolverResults_t> res = PP->operator()(
-		    quark_solns,
-		    std::vector<std::shared_ptr<const LatticeFermion>>(chis.begin(), chis.end()));
-
-		  for (int col = 0; col < colorvec_src_step; col++)
-		  {
-		    ncg_had += res[col].n_count;
-
-		    // Some sanity checks
-		    if (toDouble(res[col].resid) > 1.0e-3)
-		    {
-		      QDPIO::cerr << name << ": have a resid > 1.0e-3. That is unacceptable"
-				  << std::endl;
-		      QDP_abort(1);
-		    }
-		  }
-
-		  // Check for finite values - neither NaN nor Inf
-		  for (int col = 0; col < colorvec_src_step; col++)
-		    if (isfinite(*quark_solns[col]))
-		    {
-		      // Okay
-		      break;
-		    }
-		    else
-		    {
-		      QDPIO::cerr << name << ": WARNING - found something not finite, may retry\n";
-		      badP = true;
-		    }
-		}
-
-		// Sanity check
-		if (badP)
-		{
-		  QDPIO::cerr << name
-			      << ": this is bad - did not get a finite solution std::vector "
-				 "after num_tries= "
-			      << params.param.contract.num_tries << std::endl;
-		  QDP_abort(1);
-		}
-	      } // zero_colorvecs ??
-
-	      for (int colorvec_src = colorvec_src0, col = 0; col < colorvec_src_step;
-		   ++colorvec_src, ++col)
-	      {
-		// tensor_quark_solns[n=colorvec_src] = quark_solns[col][t=first_tslice_in_active_colorvec+(0:num_tslices_in_active_colorvec-1)]
-		SB::asTensorView(*quark_solns[col])
-		  .kvslice_from_size({{'t', first_tslice_in_active_colorvec}},
-				     {{'t', num_tslices_in_active_colorvec}})
-		  .copyTo(tensor_quark_solns.kvslice_from_size({{'n', colorvec_src}}));
-	      }
-	    }
+	    // Contract the distillation elements
+	    // NOTE: N: is colorvec in sink, and n is colorvec in source
+	    SB::Tensor<5, SB::Complex> elems("NnSst", {num_vecs, num_vecs, Ns, 1, num_tslices},
+					     SB::OnHost, SB::OnMaster);
+	    elems.contract(colorvec, {{'n', 'N'}}, SB::Conjugate, quark_solns, {},
+			   SB::NotConjugate);
 
 	    snarss1.stop();
-	    QDPIO::cout << "Time to compute prop for spin_source= " << spin_source
-			  << "  time = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+	    QDPIO::cout << "Time to contract for one spin source : " << snarss1.getTimeInSeconds()
+			<< " secs" << std::endl;
 
 	    snarss1.reset();
 	    snarss1.start();
 
-	    // Contract the distillation elements
-	    const char order_in_elems[] =
-	      "nNst"; // N: colorvec in source, n: colorvec in sink, s: spin in sink
-	    SB::Tensor<4, SB::ComplexF> elems(
-	      order_in_elems, {num_vecs, num_vecs, Ns, num_tslices_in_active_colorvec}, SB::OnHost,
-	      SB::OnMaster);
-	    elems.contract(active_colorvec, {}, SB::Conjugate, tensor_quark_solns, {{'n', 'N'}},
-			   SB::NotConjugate, {});
-
-	    snarss1.stop();
-	    QDPIO::cout << "Time to compute prop for spin_source= " << spin_source
-			  << "  contraction time = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
-
-	    // Store them
-	    if (!params.param.contract.zero_colorvecs)
+	    ValPropElementalOperator_t val;
+	    val.mat.resize(num_vecs, num_vecs);
+	    val.mat = zero;
+	    for (int i_tslice = 0; i_tslice < num_tslices; ++i_tslice)
 	    {
-	      snarss1.reset();
-	      snarss1.start();
-
-	      QDPIO::cout << "Write all perambulator for spin_source= " << spin_source
-			  << "  to disk" << std::endl;
-	      ValPropElementalOperator_t val;
-	      val.mat.resize(num_vecs, num_vecs);
-	      val.mat = zero;
-	      for (int t_slice = first_tslice_in_active_colorvec, i_tslice = 0;
-		   i_tslice < num_tslices_in_active_colorvec;
-		   ++i_tslice, t_slice = (t_slice + 1) % Lt)
+	      for (int spin_sink = 0; spin_sink < Ns; ++spin_sink)
 	      {
-		for (int spin_sink = 0; spin_sink < Ns; ++spin_sink)
+		KeyPropElementalOperator_t key;
+		key.t_source = t_source;
+		key.t_slice = SB::normalize_coor(i_tslice + first_tslice, Lt);
+		key.spin_src = spin_source;
+		key.spin_snk = spin_sink;
+		key.mass_label = params.param.contract.mass_label;
+		if (Layout::nodeNumber() == 0)
 		{
-		  KeyPropElementalOperator_t key;
-		  key.t_source = t_source;
-		  key.t_slice = t_slice;
-		  key.spin_src = spin_source;
-		  key.spin_snk = spin_sink;
-		  key.mass_label = params.param.contract.mass_label;
-		  if (Layout::nodeNumber() == 0)
+		  for (int colorvec_sink = 0; colorvec_sink < num_vecs; ++colorvec_sink)
 		  {
-		    for (int colorvec_sink = 0; colorvec_sink < num_vecs; ++colorvec_sink)
+		    for (int colorvec_source = 0; colorvec_source < num_vecs; ++colorvec_source)
 		    {
-		      for (int colorvec_source = 0; colorvec_source < num_vecs; ++colorvec_source)
-		      {
-			std::complex<REAL> e =
-			  elems.get({colorvec_sink, colorvec_source, spin_sink, i_tslice});
-			val.mat(colorvec_sink, colorvec_source).elem().elem().elem() =
-			  RComplex<REAL64>(e.real(), e.imag());
-		      }
+		      std::complex<REAL> e = elems.get(
+			{colorvec_sink, colorvec_source, spin_sink, 0, i_tslice});
+		      val.mat(colorvec_sink, colorvec_source).elem().elem().elem() =
+			RComplex<REAL64>(e.real(), e.imag());
 		    }
 		  }
-		  qdp_db.insert(key, val);
 		}
+		qdp_db.insert(key, val);
 	      }
-
-	      snarss1.stop();
-	      QDPIO::cout << "Time to compute prop for spin_source= " << spin_source
-			  << "  storage time = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
 	    }
-	  } // for spin_src
+
+	    snarss1.stop();
+	    QDPIO::cout << "Time to store the props : " << snarss1.getTimeInSeconds() << " secs"
+			<< std::endl;
+	  } // for spin_source
 	}   // for tt
 
 	swatch.stop();
@@ -729,15 +498,13 @@ namespace Chroma
 		    << swatch.getTimeInSeconds() 
 		    << " secs" << std::endl;
       }
-      catch (const std::string& e) 
+      catch (const std::exception& e) 
       {
-	QDPIO::cout << name << ": caught exception around qprop: " << e << std::endl;
-	QDP_abort(1);
+	QDP_error_exit("%s: caught exception: %s\n", name.c_str(), e.what());
       }
 
-      push(xml_out,"Relaxation_Iterations");
-      write(xml_out, "ncg_had", ncg_had);
-      pop(xml_out);
+      // Close colorvecs storage
+      SB::closeColorvecStorage(colorvecsSto);
 
       pop(xml_out);  // prop_dist
 

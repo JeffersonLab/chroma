@@ -46,10 +46,10 @@ namespace Chroma
 
 
 
-  int
+  size_t
   TimeSliceSet::numSites() const
   {
-    int vol = 1;
+    size_t vol = 1;
 
     if ((decay_dir<0)||(decay_dir>=Nd))
       vol = Layout::vol();

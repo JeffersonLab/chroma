@@ -46,11 +46,17 @@
 
 /* Use of QUDA device pointer interface GAUGE, requires to build on top of
    QDP-JIT/PTX */
-#cmakedefine BUILD_QUDA_DEVIFACE_GAUGE	  @BUILD_QUDA_DEVICFACE_GAUGE@
+#cmakedefine BUILD_QUDA_DEVIFACE_GAUGE	  @BUILD_QUDA_DEVIFACE_GAUGE@
 
 /* Use of QUDA device pointer interface SPINOR, requires to build on top of
    QDP-JIT/PTX */
-#cmakedefine BUILD_QUDA_DEVIFACE_SPINOR   @BUILD_QUDA_DEVICFACE_SPINOR@
+#cmakedefine BUILD_QUDA_DEVIFACE_SPINOR   @BUILD_QUDA_DEVIFACE_SPINOR@
+
+/* Build SUPERB tasks */
+#cmakedefine BUILD_SB   @BUILD_SB@
+
+/* Build with PRIMME */
+#cmakedefine BUILD_PRIMME   @BUILD_PRIMME@
 
 /* Build Scalarsite BICGStab Kernels */
 #cmakedefine BUILD_SCALARSITE_BICGSTAB  @BUILD_SCALARSITE_BICGSTAB@
@@ -106,6 +112,10 @@
 
 /* Enable QUDA MG Dump */
 #cmakedefine QUDA_MG_DUMP_ENABLED @QUDA_MG_DUMP_ENABLED@
+
+/* Enable JITTED Clover Term */
+#cmakedefine BUILD_JIT_CLOVER_TERM @BUILD_JIT_CLOVER_TERM@
+
 
 /* QUDA Target */
 #cmakedefine CHROMA_TARGET_CUDA	@CHROMA_TARGET_CUDA@

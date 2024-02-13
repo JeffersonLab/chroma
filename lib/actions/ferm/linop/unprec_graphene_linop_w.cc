@@ -110,10 +110,10 @@ namespace Chroma
     gams.resize(Nd);   moveToFastMemoryHint(gams);
 
     // Build gamma matrix multiplied pieces
-    gams[0] = GammaConst<Ns,1>()*psi;
-    gams[1] = GammaConst<Ns,2>()*psi;
-    gams[2] = GammaConst<Ns,4>()*psi;
-    gams[3] = GammaConst<Ns,8>()*psi;
+    gams[0] = Gamma(1)*psi;
+    gams[1] = Gamma(2)*psi;
+    gams[2] = Gamma(4)*psi;
+    gams[3] = Gamma(8)*psi;
   }
 
 
@@ -221,7 +221,7 @@ namespace Chroma
     multi1d<Real> anisoWeights(Nd);
     anisoWeights = 0.5;
 
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+    Real ff = anisoParam.anisoP ? (anisoParam.nu / anisoParam.xi_0) : Real(1);
 
     if (anisoParam.anisoP)
     {

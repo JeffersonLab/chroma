@@ -215,17 +215,17 @@ namespace Chroma
     init(mom2_max, origin_offset_, mom_off, avg_mom, j_decay) ;
   }
 
-  int
+  size_t
   SftMom::numSites() const
   {
-    int vol = 1;
+    size_t vol = 1;
 
     if ((decay_dir<0)||(decay_dir>=Nd))
       vol = Layout::vol();
     else 
     {
       for(int m=0; m < Nd; ++m)
-	vol *= Layout::lattSize()[m];
+					vol *= Layout::lattSize()[m];
     }
 
     return vol;

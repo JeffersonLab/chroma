@@ -63,7 +63,7 @@ namespace Chroma
     int numSubsets() const { return sft_set.numSubsets(); }
 
     //! Number of sites in each subset
-    int numSites() const;
+    size_t numSites() const;
 
     //! Decay direction
     int getDir() const { return decay_dir; }

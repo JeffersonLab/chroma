@@ -8,7 +8,7 @@
 #include "meas/inline/hadron/inline_apply_fermstate_w.h"
 //#include "meas/inline/hadron/inline_spectrumQll.h"
 #include "meas/inline/hadron/inline_create_colorvecs.h"
-#include "meas/inline/hadron/inline_create_colorvecs.h"
+#include "meas/inline/hadron/inline_create_colorvecs_superb.h"
 
 #if defined(BUILD_LAPACK) && defined(BUILD_OPT_EIGCG)
 #include "meas/inline/hadron/inline_laplace_eigs.h"
@@ -19,6 +19,7 @@
 #include "meas/inline/hadron/inline_prop_3pt_w.h"
 #include "meas/inline/hadron/inline_disco_w.h"
 #include "meas/inline/hadron/inline_disco_prob_defl_w.h"
+#include "meas/inline/hadron/inline_disco_prob_defl_superb_w.h"
 #include "meas/inline/hadron/inline_disco_eoprec_w.h"
 #include "meas/inline/hadron/inline_disco_eo_eigcg_w.h"
 #include "meas/inline/hadron/inline_disco_eigcg_w.h"
@@ -66,7 +67,9 @@
 #include "meas/inline/hadron/inline_prop_and_matelem_distillation2_w.h"
 #include "meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h"
 #include "meas/inline/hadron/inline_baryon_matelem_colorvec_w.h"
+#include "meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.h"
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_w.h"
+#include "meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h"
 #include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.h"
 #include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.h"
 #include "meas/inline/hadron/inline_genprop_matelem_colorvec_w.h"
@@ -134,12 +137,18 @@ namespace Chroma
 	success &= InlineHadronContractEnv::registerAll();
 //	success &= InlineSpectrumEnv::registerAll();
 	success &= InlineCreateColorVecsEnv::registerAll();
+#ifdef BUILD_SB
+	success &= InlineCreateColorVecsSuperbEnv::registerAll();
+#endif
 	success &= InlineProp3ptEnv::registerAll();
 	success &= InlineDiscoEnv::registerAll();
 	success &= InlineDiscoEOPrecEnv::registerAll();
 	success &= InlineDiscoEoEigCGEnv::registerAll();
 	success &= InlineDiscoEigCGEnv::registerAll();
 	success &= InlineDiscoProbDefl::registerAll();
+#ifdef BUILD_SB
+	success &= InlineDiscoProbDeflSuperb::registerAll();
+#endif
 
 	success &= InlineStagToWilsEnv::registerAll();
 	success &= InlineSinkSmearEnv::registerAll();
@@ -177,7 +186,13 @@ namespace Chroma
 #endif
 	success &= InlinePropMatElemLowMemoryColorVecEnv::registerAll();
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();
+#ifdef BUILD_SB
+	success &= InlineBaryonMatElemColorVecSuperbEnv::registerAll();
+#endif
 	success &= InlineMesonMatElemColorVecEnv::registerAll();
+#ifdef BUILD_SB
+	success &= InlineMesonMatElemColorVecSuperbEnv::registerAll();
+#endif
 	success &= InlineGenPropMatElemColorVecEnv::registerAll();
 	success &= InlineGenPropMatElemDAColorVecEnv::registerAll();
 	success &= InlineGenPropMatElemPtColorVecEnv::registerAll();

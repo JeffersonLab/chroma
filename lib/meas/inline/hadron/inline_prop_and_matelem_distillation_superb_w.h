@@ -43,10 +43,9 @@ namespace Chroma
 	  std::string   mass_label;     /*!< Some kind of mass label */
 
 	  int           num_tries;      /*!< In case of bad things happening in the solution vectors, do retries */
-	  bool          zero_colorvecs;
-	  bool          fuse_timeloop;  
+	  bool          use_device_for_contractions;  /*!< Whether use gpu for contractions if available */
           int           max_rhs;        /*! maximum number of linear systems solved simultaneously */
-	  multi1d<int>  phase;          /*!< Phase to apply to colorvecs */
+	  multi1d<float> phase;         /*!< Phase to apply to colorvecs */
 	};
 
 	ChromaProp_t    prop;

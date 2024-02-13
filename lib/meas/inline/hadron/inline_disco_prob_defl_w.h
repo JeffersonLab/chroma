@@ -44,6 +44,7 @@ namespace Chroma
 	ChromaProp_t prop;
         GroupXML_t projParam;
 	int probing_distance;
+	int probing_power;
         std::string probing_file;
 	int noise_vectors;
 	bool use_ferm_state_links ;

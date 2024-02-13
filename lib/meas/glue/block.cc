@@ -109,7 +109,7 @@ namespace Chroma
 
     /* The initial trace */
     Double old_tr = sum(real(trace(u_block * u_unproj)));
-    old_tr /= Double(QDP::Layout::vol()*Nc);
+    old_tr /= ( Double(QDP::Layout::vol())* Double(Nc) );
 
     int n_blk = 0;
     bool wrswitch = true;		/* Write out iterations? */
@@ -138,7 +138,7 @@ namespace Chroma
     
       /* Calculate the trace */
       Double new_tr = sum(real(trace(u_block * u_unproj)));
-      new_tr /= Double(QDP::Layout::vol()*Nc);
+      new_tr /= ( Double(QDP::Layout::vol()) *Double(Nc) );
 
       if( wrswitch )
       {
