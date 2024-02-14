@@ -226,6 +226,7 @@ namespace Chroma
 
 
 	success &= InlineMesDAEnv::registerAll();
+	success &= InlineMesSpecEnv::registerAll();
 
 
 

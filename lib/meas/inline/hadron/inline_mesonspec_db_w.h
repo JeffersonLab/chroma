@@ -5,8 +5,8 @@
  * Hadron spectrum calculations
  */
 
-#ifndef __inline_mesonspec_h__
-#define __inline_mesonspec_h__
+#ifndef __inline_mesonspec_db_h__
+#define __inline_mesonspec_db_h__
 
 #include <map>
 #include <vector>
