@@ -1049,6 +1049,7 @@ namespace Chroma
 	using PartitionStored = std::vector<superbblas::PartitionItem<N>>;
 	Coor<N> dim;	   ///< Dimensions of the tensor
 	PartitionStored p; ///< p[i] = {first coordinate, size} of tensor on i-th node
+	unsigned int num_components; ///< number of components
 	bool isLocal;	   ///< Whether the partition is non-collective
 
 	/// Constructor
@@ -1060,6 +1061,7 @@ namespace Chroma
 	{
 	  detail::check_order<N>(order);
 	  isLocal = false;
+	  num_components = 1;
 	  if (dist == OnMaster)
 	  {
 	    p = all_tensor_on_master(dim);
@@ -1092,78 +1094,53 @@ namespace Chroma
 	/// \param p: partition
 	/// \praam isLocal: whether the tensor is local
 
-	TensorPartition(Coor<N> dim, const PartitionStored& p, bool isLocal)
-	  : dim(dim), p(p), isLocal(isLocal)
+	TensorPartition(Coor<N> dim, const PartitionStored& p, unsigned int num_components,
+			bool isLocal)
+	  : dim(dim), p(p), num_components(num_components), isLocal(isLocal)
 	{
 	}
 
 	/// Empty constructor
-	TensorPartition() : dim{}, p{}, isLocal{false}
+	TensorPartition() : dim{{}}, p{}, num_components(0), isLocal{false}
 	{
+	}
+
+	/// Return the local components
+
+	PartitionStored get_local_components() const
+	{
+	  return PartitionStored(p.begin() + MpiProcRank() * num_components,
+				 p.begin() + MpiProcRank() * num_components + num_components);
 	}
 
 	/// Return the volume of the tensor supported on this node
+
+	std::size_t localVolume(unsigned int component) const
+	{
+	  return superbblas::detail::volume(p[MpiProcRank() * num_components + component][1]);
+	}
+
+	/// Return the volume of the tensor supported on this node
+
+	std::vector<std::size_t> get_local_volumes() const
+	{
+	  std::vector<std::size_t> vols(num_components);
+	  for (unsigned int i = 0; i < num_components; ++i)
+	    vols[i] = superbblas::detail::volume(p[MpiProcRank() * num_components + component][1]);
+	  return vols;
+	}
+
+	/// Return the volume of the tensor supported on this node
+
 	std::size_t localVolume() const
 	{
-	  return superbblas::detail::volume(p[MpiProcRank()][1]);
-	}
-
-	/// Return the first coordinate store locally
-	Coor<N> localFrom() const
-	{
-	  return p[MpiProcRank()][0];
-	}
-
-	/// Return the number of elements store locally in each dimension
-	Coor<N> localSize() const
-	{
-	  return p[MpiProcRank()][1];
-	}
-
-	/// Return how many processes have support on this tensor
-	/// Note that it may differ from MPI's numProcs if the tensor does not have support on all processes.
-
-	unsigned int numProcs() const
-	{
-	  unsigned int numprocs = 0;
-	  for (const auto& i : p)
-	    if (superbblas::detail::volume(i[1]) > 0)
-	      numprocs++;
-	  return numprocs;
-	}
-
-	/// Return the process rank on this tensor or -1 if this process does not have support on the tensor
-	/// Note that it may differ from MPI's rank if the tensor does not have support on all processes.
-
-	int procRank() const
-	{
-	  // Return -1 if this process does not have support on the tensor
-	  int mpi_rank = MpiProcRank();
-	  if (superbblas::detail::volume(p[mpi_rank][1]) == 0)
-	    return -1;
-
-	  // Return as rank how many processes with MPI rank smaller than this process have support
-	  int this_rank = 0;
-	  for (int i = 0; i < mpi_rank; ++i)
-	    if (superbblas::detail::volume(p[i][1]) > 0)
-	      this_rank++;
-	  return this_rank;
+	  return superbblas::detail::volume(get_local_components());
 	}
 
 	/// Return the MPI process rank
 	int MpiProcRank() const
 	{
 	  return (isLocal ? 0 : Layout::nodeNumber());
-	}
-
-	/// Return the maximum local volume supported supported by a process
-
-	std::size_t maxLocalVolume() const
-	{
-	  std::size_t maxLocalVol = 0;
-	  for (const auto& it : p)
-	    maxLocalVol = std::max(maxLocalVol, superbblas::detail::volume(it[1]));
-	  return maxLocalVol;
 	}
 
 	/// Return whether other partition is compatible with this one
@@ -1209,7 +1186,7 @@ namespace Chroma
 		r[i] = std::array<Coor<N1>, 2>{Coor<N1>{{}}, Coor<N1>{{}}};
 	    }
 	  }
-	  TensorPartition<N1> new_t{new_dim, r, isLocal};
+	  TensorPartition<N1> new_t{new_dim, r, num_components, isLocal};
 
 	  // TODO: Fusing different tensor partitions isn't trivial. If both partitions differ in the number of
 	  // active processes (processes with nonzero support), then the current implementation will fail
@@ -1227,7 +1204,7 @@ namespace Chroma
 	  r.reserve(p.size());
 	  for (const auto& i : p)
 	    r.push_back({insert_coor(i[0], pos, 0), insert_coor(i[1], pos, dim_size)});
-	  return TensorPartition<N + 1>{insert_coor(dim, pos, dim_size), r, isLocal};
+	  return TensorPartition<N + 1>{insert_coor(dim, pos, dim_size), r, num_components, isLocal};
 	}
 
 	/// Remove a non-distributed dimension
@@ -1238,7 +1215,7 @@ namespace Chroma
 	  r.reserve(p.size());
 	  for (const auto& i : p)
 	    r.push_back({remove_coor(i[0], pos), remove_coor(i[1], pos)});
-	  return TensorPartition<N - 1>{remove_coor(dim, pos), r, isLocal};
+	  return TensorPartition<N - 1>{remove_coor(dim, pos), r, num_components, isLocal};
 	}
 
 	/// Split a dimension into a non-distributed dimension and another dimension
@@ -1252,7 +1229,7 @@ namespace Chroma
 	    r.push_back({detail::split_dimension(pos, i[0], new_dim, From),
 			 detail::split_dimension(pos, i[1], new_dim, Size)});
 	  return TensorPartition<Nout>{detail::split_dimension(pos, dim, new_dim, Size), r,
-				       isLocal};
+				       num_components, isLocal};
 	}
 
 	/// Coarse the ranges on each process
@@ -1264,7 +1241,7 @@ namespace Chroma
 	  r.reserve(p.size());
 	  for (const auto& i : p)
 	    r.push_back(detail::coarse_range(i, blocking));
-	  return TensorPartition<N>{dim, r, isLocal};
+	  return TensorPartition<N>{dim, r, num_components, isLocal};
 	}
 
 	/// Collapse several dimensions into another dimension
@@ -1278,7 +1255,7 @@ namespace Chroma
 	    r.push_back({detail::collapse_dimensions<Nout>(pos, i[0], dim, From),
 			 detail::collapse_dimensions<Nout>(pos, i[1], dim, Size)});
 	  return TensorPartition<Nout>{detail::collapse_dimensions<Nout>(pos, dim, dim, Size), r,
-				       isLocal};
+				       num_components, isLocal};
 	}
 
 	/// Reshape several dimensions into another dimension
@@ -1309,7 +1286,7 @@ namespace Chroma
 	      return {new_size.first, {}};
 	    r.push_back({new_from.second, new_size.second});
 	  }
-	  return {Success, TensorPartition<Nout>{new_dim_aux.second, r, isLocal}};
+	  return {Success, TensorPartition<Nout>{new_dim_aux.second, r, num_components, isLocal}};
 	}
 
 	/// Extend the support of distributed dimensions by one step in each direction
@@ -1328,7 +1305,7 @@ namespace Chroma
 	    }
 	    r.push_back(fs);
 	  }
-	  return TensorPartition<N>{dim, r, isLocal};
+	  return TensorPartition<N>{dim, r, num_components, isLocal};
 	}
 
 	/// Return a subpartition given a range
@@ -1345,15 +1322,38 @@ namespace Chroma
 			  ? std::array<Coor<N>, 2>{Coor<N>{{}}, Coor<N>{{}}}
 			  : std::array<Coor<N>, 2>{normalize_coor(lfrom - from, size), lsize});
 	  }
-	  return TensorPartition<N>{size, r, isLocal};
+	  return TensorPartition<N>{size, r, num_components, isLocal};
+	}
+
+	static typename PartitionStored::value_type union_partition(const PartitionStored& p)
+	{
+	  typename PartitionStored::value_type r = {Coor<N>{{}}, Coor<N>{{}}};
+	  for (std::size_t i = 0; i < N; ++i)
+	  {
+	    for (const auto& fs : p)
+	    {
+	      union_interval(r[0][i], r[1][i], fs[0][i], fs[1][i], dim[i], r[0][i], r[1][i]);
+	    }
+	  }
+	  return r;
+	}
+
+	/// Return a partition with the local portion of the tensor
+
+	std::array<Coor<N>, 2> get_local_from_size() const
+	{
+	  return local_fs = union_partition(get_local_components());
 	}
 
 	/// Return a partition with the local portion of the tensor
 
 	TensorPartition<N> get_local_partition() const
 	{
-	  return TensorPartition<N>{
-	    localSize(), PartitionStored(1, superbblas::PartitionItem<N>{{{}, localSize()}}), true};
+	  auto local_components = get_local_components();
+	  auto local_fs = union_partition(local_components);
+	  for (auto& fs : local_components)
+	    fs[0] = normalize_coor(fs[0] - local_fs[0], dim);
+	  return TensorPartition<N>{local_fs[1], fs, num_components, true};
 	}
 
 	/// Return a partition with the local portion of the tensor
@@ -1361,8 +1361,9 @@ namespace Chroma
 	TensorPartition<N> get_glocal_partition() const
 	{
 	  PartitionStored r(p.size());
-	  r[MpiProcRank()] = p[MpiProcRank()];
-	  return TensorPartition<N>{dim, r, isLocal};
+	  for (unsigned int i = 0; i < num_components; ++i)
+	    r[MpiProcRank() * num_components + i] = p[MpiProcRank() * num_components + i];
+	  return TensorPartition<N>{dim, r, num_components, isLocal};
 	}
 
 	/// Return a copy of this tensor with a compatible distribution to be contracted with the given tensor
@@ -1398,7 +1399,7 @@ namespace Chroma
 	    if (superbblas::detail::volume(r[pi][1]) == 0)
 	      r[pi] = std::array<Coor<N>, 2>{Coor<N>{{}}, Coor<N>{{}}};
 	  }
-	  return TensorPartition<N>{dim, r, isLocal};
+	  return TensorPartition<N>{dim, r, num_components, isLocal};
 	}
 
       private:
@@ -1740,25 +1741,30 @@ namespace Chroma
       /// Data allocation
       template <typename T>
       struct Allocation {
-	/// Allocation
-	T* ptr;
+	/// Allocations
+	std::vector<T*> ptrs;
 
-	/// Context of the allocation
+	/// Context of the allocations
 	std::shared_ptr<superbblas::Context> ctx;
 
-	/// Unfinished operations on the allocation
+	/// Unfinished operations on the allocations
 	std::vector<superbblas::Request> pending_operations;
 
 	/// Deallocate the pointer on destruction
 	bool destroy_ptr;
 
 	/// Allocate n elements of type T with the given context
-	/// \param n: number of elements to allocate
+	/// \param n: list of number of elements to allocate (times `factor`)
+	/// \param factor: multiplicative factor to elements to allocate (use for allocating complex numbers)
 	/// \param ctx: context of the allocation
 
-	Allocation(std::size_t n, const std::shared_ptr<superbblas::Context>& ctx)
-	  : ptr(superbblas::allocate<T>(n, *ctx)), ctx(ctx), destroy_ptr(true)
+	Allocation(const std::vector<std::size_t>& n, std::size_t factor,
+		   const std::shared_ptr<superbblas::Context>& ctx)
+	  : ctx(ctx), destroy_ptr(true)
 	{
+	  ptrs.resize(n.size());
+	  for (std::size_t i = 0; i < n.size(); ++i)
+	    ptrs[i] = superbblas::allocate<T>(n[i] * factor, *ctx);
 	}
 
 	/// User given pointer that will not be deallocated automatically
@@ -1766,7 +1772,7 @@ namespace Chroma
 	/// \param ctx: context of the allocation
 
 	Allocation(T* ptr, const std::shared_ptr<superbblas::Context>& ctx)
-	  : ptr(ptr), ctx(ctx), destroy_ptr(false)
+	  : ptrs(1, ptr), ctx(ctx), destroy_ptr(false)
 	{
 	}
 
@@ -1776,15 +1782,16 @@ namespace Chroma
 	{
 	  finish_pending_operations();
 	  if (destroy_ptr)
-	    superbblas::deallocate(ptr, *ctx);
+	    for (const auto& ptr : ptrs)
+	      superbblas::deallocate(ptr, *ctx);
 	}
 
 	/// Return the pointer
 
-	T* data()
+	T** data()
 	{
 	  finish_pending_operations();
-	  return ptr;
+	  return ptrs.data();
 	}
 
 	/// Append a pending operation
@@ -1978,8 +1985,9 @@ namespace Chroma
 	: order(order),
 	  dim(dim),
 	  /// NOTE: the extra two factor shouldn't apply for DIYComplex
-	  allocation(std::make_shared<Allocation>(
-	    p->localVolume() * (detail::is_complex<T>::value ? 2u : 1u), detail::getContext(dev))),
+	  allocation(std::make_shared<Allocation>(p->get_local_volumes(),
+						  detail::is_complex<T>::value ? 2u : 1u,
+						  detail::getContext(dev))),
 	  p(p),
 	  dist(dist),
 	  from{{}},
@@ -2206,10 +2214,17 @@ namespace Chroma
 	return allocation->destroy_ptr;
       }
 
+      /// Return the number of components in each process
+
+      unsigned int num_components() const
+      {
+	return p->num_components;
+      }
+
       /// Return the pointer to the first local element
       /// NOTE: there will be no pending writing operations
 
-      value_type* data() const
+      value_type** datas() const
       {
 	if (!allocation)
 	  return nullptr;
@@ -2219,13 +2234,27 @@ namespace Chroma
 	if (!is_managed())
 	  superbblas::syncLegacyStream(ctx());
 
-	return (value_type*)allocation->data();
+	return (value_type**)allocation->data();
+      }
+
+      /// Return the pointer to the first local element
+      /// NOTE: there will be no pending writing operations
+
+      value_type* data() const
+      {
+	if (!allocation)
+	  return nullptr;
+
+	if (num_components() != 1)
+	  throw std::runtime_error("Tensor::data(): unsupported for muliticomponent tensors");
+
+	return datas()[0];
       }
 
       /// Return the pointer to the first local element
       /// NOTE: there may be pending writing operations if `unordered_writing` is true
 
-      value_type* data_for_writing() const
+      value_type** datas_for_writing() const
       {
 	if (!allocation)
 	  return nullptr;
@@ -2236,9 +2265,23 @@ namespace Chroma
 	  superbblas::syncLegacyStream(ctx());
 
 	if (unordered_writing)
-	  return (value_type*)allocation->ptr;
+	  return (value_type*)allocation->ptrs.data();
 
-	return (value_type*)allocation->data();
+	return (value_type**)allocation->data();
+      }
+
+      /// Return the pointer to the first local element
+      /// NOTE: there may be pending writing operations if `unordered_writing` is true
+
+      value_type* data_for_writing() const
+      {
+	if (!allocation)
+	  return nullptr;
+
+	if (num_components() != 1)
+	  throw std::runtime_error("Tensor::data(): unsupported for muliticomponent tensors");
+
+	return datas_for_writing()[0];
       }
 
       /// Return the allocation context
@@ -2272,13 +2315,15 @@ namespace Chroma
       {
 	if (ctx().plat != superbblas::CPU)
 	  throw std::runtime_error(
-	    "Unsupported to `get` elements from tensors not stored on the host");
+	    "Tensor::get(): Unsupported to `get` elements from tensors not stored on the host");
 	if (dist != OnEveryoneReplicated && dist != Local)
 	  throw std::runtime_error(
-	    "Unsupported to `get` elements on a distributed tensor; change the distribution to "
+	    "Tensor::get(): Unsupported to `get` elements on a distributed tensor; change the distribution to "
 	    "`OnEveryoneReplicated` or local");
 	if (is_eg())
-	  throw std::runtime_error("Invalid operation from an example tensor");
+	  throw std::runtime_error("Tensor::get(): Invalid operation from an example tensor");
+	if (num_components() != 1)
+	  throw std::runtime_error("Tensor::get(): Invalid operation from a multicomponent tensor");
 
 	// coor[i] = coor[i] + from[i]
 	for (unsigned int i = 0; i < N; ++i)
@@ -2308,10 +2353,10 @@ namespace Chroma
       {
 	if (dist != OnEveryoneReplicated && dist != Local)
 	  throw std::runtime_error(
-	    "Unsupported to `set` elements on a distributed tensor; change the distribution to "
+	    "Tensor::set(): Unsupported to `set` elements on a distributed tensor; change the distribution to "
 	    "`OnEveryoneReplicated` or local");
 	if (is_eg())
-	  throw std::runtime_error("Invalid operation from an example tensor");
+	  throw std::runtime_error("Tensor::set(): Invalid operation from an example tensor");
 
 	if (ctx().plat == superbblas::CPU)
 	{
@@ -2337,24 +2382,29 @@ namespace Chroma
       void fillWithCPUFuncNoArgs(Func func, bool threaded = true)
       {
 	if (is_eg())
-	  throw std::runtime_error("Invalid operation from an example tensor");
+	  throw std::runtime_error(
+	    "Tensor::fillWithCPUFuncNoArgs(): Invalid operation from an example tensor");
 
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
-	std::size_t vol = t.getLocal().volume();
-	value_type* ptr = t.data_for_writing();
+	auto vols = t.p->get_local_volumes();
+	value_type** ptrs = t.datas_for_writing();
 
-	if (threaded)
+	for (unsigned int c = 0; c < vols.size(); ++c)
 	{
+	  auto ptr = ptrs[c];
+	  if (threaded)
+	  {
 #  ifdef _OPENMP
 #    pragma omp parallel for schedule(static)
 #  endif
-	  for (std::size_t i = 0; i < vol; ++i)
-	    ptr[i] = func();
-	}
-	else
-	{
-	  for (std::size_t i = 0; i < vol; ++i)
-	    ptr[i] = func();
+	    for (std::size_t i = 0, i1 = vols[c]; i < i1; ++i)
+	      ptr[i] = func();
+	  }
+	  else
+	  {
+	    for (std::size_t i = 0, i1 = vols[c]; i < i1; ++i)
+	      ptr[i] = func();
+	  }
 	}
 
 	t.copyTo(*this);
@@ -2373,36 +2423,43 @@ namespace Chroma
 	using superbblas::detail::operator+;
 
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
-	std::size_t vol = t.getLocal().volume();
-	value_type* ptr = t.data_for_writing();
-	/// Number of elements in each direction for the local part
-	Coor<N> local_size = t.getLocal().size;
-	/// Stride for the local volume
-	Stride<N> local_stride =
-	  superbblas::detail::get_strides<std::size_t>(local_size, superbblas::FastToSlow);
-	/// Coordinates of first elements stored locally
-	Coor<N> local_from = t.p->localFrom();
+	auto local_fs = t.p->get_local_components();
+	auto vols = t.p->get_local_volumes();
+	value_type** ptrs = t.datas_for_writing();
 
-	if (threaded)
+	for (unsigned int c = 0; c < vols.size(); ++c)
 	{
+	  std::size_t vol = vols[c];
+	  auto ptr = ptrs[c];
+	  /// Number of elements in each direction for the local part
+	  Coor<N> local_size = local_fs[c][1];
+	  /// Stride for the local volume
+	  Stride<N> local_stride =
+	    superbblas::detail::get_strides<std::size_t>(local_size, superbblas::FastToSlow);
+	  /// Coordinates of first elements stored locally
+	  Coor<N> local_from = local_fs[c][0];
+
+	  if (threaded)
+	  {
 #  ifdef _OPENMP
 #    pragma omp parallel for schedule(static)
 #  endif
-	  for (std::size_t i = 0; i < vol; ++i)
-	  {
-	    // Get the global coordinates
-	    Coor<N> c = normalize_coor(
-	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
-	    ptr[i] = func(c);
+	    for (std::size_t i = 0; i < vol; ++i)
+	    {
+	      // Get the global coordinates
+	      Coor<N> c = normalize_coor(
+		superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
+	      ptr[i] = func(c);
+	    }
 	  }
-	}
-	else
-	{
-	  for (std::size_t i = 0; i < vol; ++i)
+	  else
 	  {
-	    Coor<N> c = normalize_coor(
-	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
-	    ptr[i] = func(c);
+	    for (std::size_t i = 0; i < vol; ++i)
+	    {
+	      Coor<N> c = normalize_coor(
+		superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
+	      ptr[i] = func(c);
+	    }
 	  }
 	}
 
@@ -2422,22 +2479,27 @@ namespace Chroma
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
 	auto r = t.template make_compatible<N, Tr>();
 	assert(!r.isSubtensor() && !t.isSubtensor());
-	std::size_t vol = t.getLocal().volume();
-	value_type* tptr = t.data();
-	typename Tensor<N, Tr>::value_type* rptr = r.data();
+	auto vols = t.p->get_local_volumes();
+	value_type** tptrs = t.datas();
+	typename Tensor<N, Tr>::value_type** rptrs = r.datas_for_writing();
 
-	if (threaded)
+	for (unsigned int c = 0; c < vols.size(); ++c)
 	{
+	  auto tptr = tptrs[c];
+	  auto rptr = rptrs[c];
+	  if (threaded)
+	  {
 #  ifdef _OPENMP
 #    pragma omp parallel for schedule(static)
 #  endif
-	  for (std::size_t i = 0; i < vol; ++i)
-	    rptr[i] = func(tptr[i]);
-	}
-	else
-	{
-	  for (std::size_t i = 0; i < vol; ++i)
-	    rptr[i] = func(tptr[i]);
+	    for (std::size_t i = 0; i < vol; ++i)
+	      rptr[i] = func(tptr[i]);
+	  }
+	  else
+	  {
+	    for (std::size_t i = 0; i < vol; ++i)
+	      rptr[i] = func(tptr[i]);
+	  }
 	}
 
 	return r.make_sure(none, getDev());
@@ -2458,38 +2520,46 @@ namespace Chroma
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
 	auto r = t.template make_compatible<N, Tr>();
 	assert(!r.isSubtensor() && !t.isSubtensor());
-	std::size_t vol = t.getLocal().volume();
-	value_type* tptr = t.data();
-	typename Tensor<N, Tr>::value_type* rptr = r.data();
-	/// Number of elements in each direction for the local part
-	Coor<N> local_size = t.getLocal().size;
-	/// Stride for the local volume
-	Stride<N> local_stride =
-	  superbblas::detail::get_strides<std::size_t>(local_size, superbblas::FastToSlow);
-	/// Coordinates of first elements stored locally
-	Coor<N> local_from = t.p->localFrom();
+	auto local_fs = t.p->get_local_components();
+	auto vols = t.p->get_local_volumes();
+	value_type** tptrs = t.datas();
+	typename Tensor<N, Tr>::value_type** rptrs = r.datas_for_writing();
 
-	if (threaded)
+	for (unsigned int c = 0; c < vols.size(); ++c)
 	{
+	  std::size_t vol = vols[c];
+	  auto tptr = tptrs[c];
+	  auto rptr = rptrs[c];
+	  /// Number of elements in each direction for the local part
+	  Coor<N> local_size = local_fs[c][1];
+	  /// Stride for the local volume
+	  Stride<N> local_stride =
+	    superbblas::detail::get_strides<std::size_t>(local_size, superbblas::FastToSlow);
+	  /// Coordinates of first elements stored locally
+	  Coor<N> local_from = local_fs[c][0];
+
+	  if (threaded)
+	  {
 #  ifdef _OPENMP
 #    pragma omp parallel for schedule(static)
 #  endif
-	  for (std::size_t i = 0; i < vol; ++i)
-	  {
-	    // Get the global coordinates
-	    Coor<N> c = normalize_coor(
-	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
-	    rptr[i] = func(c, tptr[i]);
+	    for (std::size_t i = 0; i < vol; ++i)
+	    {
+	      // Get the global coordinates
+	      Coor<N> c = normalize_coor(
+		superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
+	      rptr[i] = func(c, tptr[i]);
+	    }
 	  }
-	}
-	else
-	{
-	  for (std::size_t i = 0; i < vol; ++i)
+	  else
 	  {
-	    // Get the global coordinates
-	    Coor<N> c = normalize_coor(
-	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
-	    rptr[i] = func(c, tptr[i]);
+	    for (std::size_t i = 0; i < vol; ++i)
+	    {
+	      // Get the global coordinates
+	      Coor<N> c = normalize_coor(
+		superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
+	      rptr[i] = func(c, tptr[i]);
+	    }
 	  }
 	}
 
@@ -2510,30 +2580,35 @@ namespace Chroma
 	auto t_ = make_sure(none, OnHost, OnMaster);
 	auto t = isSubtensor() ? t_.cloneOn(OnHost) : t_;
 	assert(!t.isSubtensor());
-	std::size_t vol = t.getLocal().volume();
-	value_type* tptr = t.data();
-	/// Number of elements in each direction for the local part
-	Coor<N> local_size = t.getLocal().size;
-	/// Stride for the local volume
-	Stride<N> local_stride =
-	  superbblas::detail::get_strides<std::size_t>(local_size, superbblas::FastToSlow);
-	/// Coordinates of first elements stored locally
-	Coor<N> local_from = t.p->localFrom();
+	auto local_fs = t.p->get_local_components();
+	auto vols = t.p->get_local_volumes();
+	value_type** ptrs = t.datas();
 
-	Maybe<Coor<N>> r = none;
-	for (std::size_t i = 0; i < vol; ++i)
+	for (unsigned int c = 0; c < vols.size(); ++c)
 	{
-	  if (func(detail::cond_conj(t.conjugate, tptr[i])))
+	  std::size_t vol = vols[c];
+	  auto ptr = ptrs[c];
+	  /// Number of elements in each direction for the local part
+	  Coor<N> local_size = local_fs[c][1];
+	  /// Stride for the local volume
+	  Stride<N> local_stride =
+	    superbblas::detail::get_strides<std::size_t>(local_size, superbblas::FastToSlow);
+	  /// Coordinates of first elements stored locally
+	  Coor<N> local_from = local_fs[c][0];
+
+	  for (std::size_t i = 0; i < vol; ++i)
 	  {
-	    // Get the global coordinates
-	    Coor<N> c = normalize_coor(
-	      superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
-	    r = Maybe<Coor<N>>(c);
-	    break;
+	    if (func(detail::cond_conj(t.conjugate, tptr[i])))
+	    {
+	      // Get the global coordinates
+	      Coor<N> c = normalize_coor(
+		superbblas::detail::index2coor(i, local_size, local_stride) + local_from, t.dim);
+	      return broadcast(Maybe<Coor<N>>(c));
+	    }
 	  }
 	}
 
-	return broadcast(r);
+	return broadcast(none);
       }
 
       /// Apply the function to each tensor element
@@ -2548,21 +2623,25 @@ namespace Chroma
 
 	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
 	assert(!t.isSubtensor());
-	std::size_t vol = t.getLocal().volume();
-	value_type* tptr = t.data();
+	auto vols = t.p->get_local_volumes();
+	value_type** ptrs = t.datas();
 
-	if (threaded)
+	for (unsigned int c = 0; c < vols.size(); ++c)
 	{
+	  auto ptr = ptrs[c];
+	  if (threaded)
+	  {
 #  ifdef _OPENMP
 #    pragma omp parallel for schedule(static)
 #  endif
-	  for (std::size_t i = 0; i < vol; ++i)
-	    func(detail::cond_conj(t.conjugate, tptr[i]));
-	}
-	else
-	{
-	  for (std::size_t i = 0; i < vol; ++i)
-	    func(detail::cond_conj(t.conjugate, tptr[i]));
+	    for (std::size_t i = 0, i1 = vols[c]; i < i1; ++i)
+	      func(detail::cond_conj(t.conjugate, ptr[i]));
+	  }
+	  else
+	  {
+	    for (std::size_t i = 0, i1 = vols[c]; i < i1; ++i)
+	      func(detail::cond_conj(t.conjugate, ptr[i]));
+	  }
 	}
       }
 
@@ -3358,11 +3437,12 @@ namespace Chroma
 	  return *this;
 
 	// Finish writing operations: local tensor will not be able to finish pending writing operations
-	data();
+	datas();
 
 	// Compute the size of the intersection of the current view and the local support
+	auto local_fs = p->get_local_from_size();
 	Coor<N> lfrom, lsize;
-	superbblas::detail::intersection(p->localFrom(), p->localSize(), from, size, dim, lfrom,
+	superbblas::detail::intersection(local_fs[0], local_fs[1], from, size, dim, lfrom,
 					 lsize);
 
 	// If the current process has no support, return the empty tensor
@@ -3370,9 +3450,9 @@ namespace Chroma
 	  return Tensor<N, T>{};
 
 	using superbblas::detail::operator-;
-	return Tensor<N, T>(order, p->localSize(), allocation,
+	return Tensor<N, T>(order, local_fs[1], allocation,
 			    std::make_shared<detail::TensorPartition<N>>(p->get_local_partition()),
-			    Local, normalize_coor(from - p->localFrom(), dim), lsize, scalar,
+			    Local, normalize_coor(from - local_fs[0], dim), lsize, scalar,
 			    conjugate, eg, false /* ordered writing */, complexLabel);
       }
 
@@ -3384,7 +3464,7 @@ namespace Chroma
 	  return *this;
 
 	// Finish writing operations: local tensor will not be able to finish pending writing operations
-	data();
+	datas();
 
 	return Tensor<N, T>(order, dim, allocation,
 			    std::make_shared<detail::TensorPartition<N>>(p->get_glocal_partition()),
@@ -3392,22 +3472,28 @@ namespace Chroma
 			    false /* ordered writing */, complexLabel);
       }
 
+      std::vector<superbblas::Context*> get_contexts() const
+      {
+	return std::vector<superbblas::Context*>(num_components(), &ctx());
+      }
+
       /// Set zero
       void set_zero()
       {
 	if (is_eg())
-	  throw std::runtime_error("Invalid operation from an example tensor");
+	  throw std::runtime_error("Tensor::set_zero(): Invalid operation from an example tensor");
 
-	value_type* ptr = data_for_writing();
+	value_type** ptrs = datas_for_writing();
+	auto ctxs = get_contexts();
 	MPI_Comm comm =
 	  (dist == OnMaster || dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	if (dist != OnMaster || Layout::nodeNumber() == 0)
 	{
-	  superbblas::copy<N, N>(value_type{0}, p->p.data() + p_disp, 1, order.c_str(), from, size,
-				 dim, (const value_type**)&ptr, nullptr, &ctx(),
-				 p->p.data() + p_disp, 1, order.c_str(), from, dim, &ptr, nullptr,
-				 &ctx(), comm, superbblas::FastToSlow, superbblas::Copy);
+	  superbblas::copy<N, N>(value_type{0}, p->p.data() + p_disp, num_components(), order.c_str(), from, size,
+				 dim, (const value_type**)&ptr, nullptr, ctxs.data(),
+				 p->p.data() + p_disp, num_components(), order.c_str(), from, dim, &ptrs, nullptr,
+				 ctxs.data(), comm, superbblas::FastToSlow, superbblas::Copy);
 	  // Force synchronization in superbblas stream if the allocation isn't managed by superbblas
 	  if (!is_managed())
 	    superbblas::sync(ctx());
@@ -3637,8 +3723,10 @@ namespace Chroma
 	}
 
 	// Get the pointers to data
-	value_type* ptr = data();
-	typename decltype(w)::value_type* w_ptr = w.data_for_writing();
+	value_type** ptrs = datas();
+	typename decltype(w)::value_type** w_ptrs = w.datas_for_writing();
+	auto ctxs = get_contexts();
+	auto w_ctxs = w.get_contexts();
 
 	// Shortcuts for who is involved in the operation
 	bool do_operation = true;
@@ -3667,13 +3755,13 @@ namespace Chroma
 	if (do_operation)
 	{
 	  superbblas::Request req;
-	  superbblas::copy<N, Nw>(detail::safe_div<value_type>(scalar, w.scalar),
-				  p->p.data() + p_disp, 1, order.c_str(), from, size, dim,
-				  (const value_type**)&ptr, (const float**)&m0ptr, &ctx(),
-				  w.p->p.data() + p_disp, 1, w.order.c_str(), w.from, w.dim, &w_ptr,
-				  (const float**)&m1ptr, &w.ctx(), comm, superbblas::FastToSlow,
-				  action == CopyTo ? superbblas::Copy : superbblas::Add,
-				  &req /*, copying_trash == doCopyingTrash*/);
+	  superbblas::copy<N, Nw>(
+	    detail::safe_div<value_type>(scalar, w.scalar), p->p.data() + p_disp, num_components(),
+	    order.c_str(), from, size, dim, (const value_type**)&ptrs, (const float**)&m0ptr,
+	    ctxs.data(), w.p->p.data() + p_disp, w.num_components(), w.order.c_str(), w.from, w.dim,
+	    w_ptrs.data(), (const float**)&m1ptr, &w.ctx(), comm, superbblas::FastToSlow,
+	    action == CopyTo ? superbblas::Copy : superbblas::Add,
+	    &req /*, copying_trash == doCopyingTrash*/);
 	  w.allocation->append_pending_operation(req);
 	  // Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	  if (!w.is_managed())
@@ -3745,9 +3833,12 @@ namespace Chroma
 	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	
-	value_type* v_ptr = v.data();
-	value_type* w_ptr = w.data();
-	value_type* ptr = std::norm(beta) == 0 ? data_for_writing() : data();
+	value_type** v_ptrs = v.datas();
+	value_type** w_ptrs = w.datas();
+	value_type** ptrs = std::norm(beta) == 0 ? datas_for_writing() : datas();
+	auto v_ctxs = v.get_contexts();
+	auto w_ctxs = w.get_contexts();
+	auto ctxs = get_contexts();
 	std::string orderv_ = detail::update_order_and_check<Nv>(v.order, mv);
 	std::string orderw_ = detail::update_order_and_check<Nw>(w.order, mw);
 	std::string order_ = detail::update_order_and_check<N>(order, mr);
@@ -3756,12 +3847,12 @@ namespace Chroma
 	superbblas::Request req;
 	superbblas::contraction<Nv, Nw, N>(
 	  detail::cond_conj(conjv_, v.scalar) * detail::cond_conj(conjw_, w.scalar) / scalar, //
-	  v.p->p.data() + p_disp, v.from, v.size, v.dim, 1, orderv_.c_str(), conjv_,
-	  (const value_type**)&v_ptr, &v.ctx(), //
-	  w.p->p.data() + p_disp, w.from, w.size, w.dim, 1, orderw_.c_str(), conjw_,
-	  (const value_type**)&w_ptr, &w.ctx(), //
-	  detail::cond_conj(conjugate, beta), p->p.data() + p_disp, from, size, dim, 1,
-	  order_.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow, &req);
+	  v.p->p.data() + p_disp, v.from, v.size, v.dim, v.num_components(), orderv_.c_str(),
+	  conjv_, (const value_type**)v_ptrs, v_ctxs.data(), //
+	  w.p->p.data() + p_disp, w.from, w.size, w.dim, w.num_components(), orderw_.c_str(),
+	  conjw_, (const value_type**)w_ptrs, w_ctxs.data(), //
+	  detail::cond_conj(conjugate, beta), p->p.data() + p_disp, from, size, dim,
+	  num_components(), order_.c_str(), ptrs, ctxs.data(), comm, superbblas::FastToSlow, &req);
 	allocation->append_pending_operation(req);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
@@ -3826,19 +3917,22 @@ namespace Chroma
 	if (std::fabs(std::imag(v.scalar)) != 0 || std::real(v.scalar) < 0)
 	  throw std::runtime_error("cholInv: unsupported a negative or imaginary scale");
 
-	value_type* v_ptr = v.data();
-	value_type* w_ptr = w.data();
-	value_type* ptr = data_for_writing();
-	superbblas::cholesky<Nv>(v.p->p.data(), v.dim, 1, v.order.c_str(), &v_ptr,
-				 order_rows.c_str(), order_cols.c_str(), &v.ctx(), MPI_COMM_WORLD,
+	value_type** v_ptrs = v.datas();
+	value_type** w_ptrs = w.datas();
+	value_type** ptrs = datas_for_writing();
+	auto v_ctxs = v.get_contexts();
+	auto w_ctxs = w.get_contexts();
+	auto ctxs = get_contexts();
+	superbblas::cholesky<Nv>(v.p->p.data(), v.dim, v.num_components(), v.order.c_str(), v_ptrs,
+				 order_rows.c_str(), order_cols.c_str(), v_ctxs.data(), MPI_COMM_WORLD,
 				 superbblas::FastToSlow);
 	superbblas::trsm<Nv, Nw, N>(
 	  w.scalar / std::sqrt(v.scalar) / scalar, //
-	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const value_type**)&v_ptr, order_rows.c_str(),
+	  v.p->p.data(), v.dim, v.num_components(), v.order.c_str(), (const value_type**)v_ptrs, order_rows.c_str(),
 	  order_cols.c_str(),
-	  &v.ctx(),									  //
-	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr, &w.ctx(), //
-	  p->p.data(), dim, 1, order.c_str(), &ptr, &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
+	  v_ctxs.data(),									  //
+	  w.p->p.data(), w.dim, w.num_components(), w.order.c_str(), (const value_type**)w_ptrs, w_ctxs.data(), //
+	  p->p.data(), dim, num_components(), order.c_str(), ptrs, ctxs.data(), MPI_COMM_WORLD, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
@@ -3866,10 +3960,11 @@ namespace Chroma
 	}
 
 	v.copyTo(*this);
-	value_type* ptr = data_for_writing();
-	superbblas::inversion<Nv>(p->p.data(), dim, 1, order.c_str(), &ptr, order_rows.c_str(),
-				  order_cols.c_str(), &ctx(), MPI_COMM_WORLD,
-				  superbblas::FastToSlow);
+	value_type** ptrs = datas_for_writing();
+	auto ctxs = get_contexts();
+	superbblas::inversion<Nv>(p->p.data(), dim, num_components(), order.c_str(), ptrs,
+				  order_rows.c_str(), order_cols.c_str(), ctxs.data(),
+				  MPI_COMM_WORLD, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
@@ -3936,16 +4031,21 @@ namespace Chroma
 	if (v.dist == OnEveryoneReplicated && detail::isDistributedOnEveryone(w.dist))
 	  v = v.make_suitable_for_contraction(w);
 
-	value_type* v_ptr = v.data();
-	value_type* w_ptr = w.data();
-	value_type* ptr = data_for_writing();
-	superbblas::gesm<Nv, Nw, N>(
-	  w.scalar / v.scalar / scalar, //
-	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const value_type**)&v_ptr, order_rows.c_str(),
-	  order_cols.c_str(),
-	  &v.ctx(),									  //
-	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr, &w.ctx(), //
-	  p->p.data(), dim, 1, order.c_str(), &ptr, &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
+	value_type** v_ptrs = v.datas();
+	value_type** w_ptrs = w.datas();
+	value_type** ptrs = datas_for_writing();
+	auto v_ctxs = v.get_contexts();
+	auto w_ctxs = w.get_contexts();
+	auto ctxs = get_contexts();
+	superbblas::gesm<Nv, Nw, N>(w.scalar / v.scalar / scalar, //
+				    v.p->p.data(), v.dim, v.num_components(), v.order.c_str(),
+				    (const value_type**)v_ptrs, order_rows.c_str(),
+				    order_cols.c_str(),
+				    v_ctxs.data(), //
+				    w.p->p.data(), w.dim, w.num_components(), w.order.c_str(),
+				    (const value_type**)w_ptrs, w_ctxs(), //
+				    p->p.data(), dim, num_components(), order.c_str(), ptrs,
+				    ctxs.data(), MPI_COMM_WORLD, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
@@ -3993,8 +4093,8 @@ namespace Chroma
       // Return whether the current view is contiguous in memory
       bool isContiguous() const
       {
-	// Meaningless for tensors not been fully supported on a single node
-	if (dist != OnMaster && dist != Local)
+	// Meaningless for tensors not been fully supported on a single node or have more than one component
+	if (dist != OnMaster && dist != Local && num_components() > 1)
 	  return false;
 
 	if (volume() > 0 && N > 1)
@@ -4177,16 +4277,16 @@ namespace Chroma
       void binaryRead(BinaryReader& bin)
       {
 	if (is_eg())
-	  throw std::runtime_error("Invalid operation from an example tensor");
+	  throw std::runtime_error("Tensor::binaryRead(): Invalid operation from an example tensor");
 	if (ctx().plat != superbblas::CPU)
-	  throw std::runtime_error("Only supported to read on `OnHost` tensors");
+	  throw std::runtime_error("Tensor::binaryRead(): Only supported to read on `OnHost` tensors");
 	if (dist != OnMaster)
-	  throw std::runtime_error("Only supported to read on `OnMaster` tensors");
+	  throw std::runtime_error("Tensor::binaryRead(): Only supported to read on `OnMaster` tensors");
 	if (!isContiguous())
-	  throw std::runtime_error("Only supported contiguous views in memory");
+	  throw std::runtime_error("Tensor::binaryRead(): Only supported contiguous views in memory");
 	if (scalar != value_type{1} || conjugate)
 	  throw std::runtime_error(
-	    "Not allowed for tensor with a scale not being one or implicitly conjugated");
+	    "Tensor::binaryRead(): Not allowed for tensor with a scale not being one or implicitly conjugated");
 
 	// Only on primary node read the data
 	std::size_t vol = volume();
@@ -4199,18 +4299,18 @@ namespace Chroma
       void binaryWrite(BinaryWriter& bin) const
       {
 	if (is_eg())
-	  throw std::runtime_error("Invalid operation from an example tensor");
+	  throw std::runtime_error("Tensor::binaryWrite(): Invalid operation from an example tensor");
 
 	// If the writing is collective, the root process needs to hold the whole tensor
 	if (!bin.isLocal() && dist != OnMaster)
-	  throw std::runtime_error("For collective writing, the tensor should be `OnMaster`");
+	  throw std::runtime_error("Tensor::binaryWrite(): For collective writing, the tensor should be `OnMaster`");
 
 	// If the writing is non-collective, the tensor should be local
 	if (bin.isLocal() && dist != Local)
-	  throw std::runtime_error("For non-collective writing, the tensor should be `Local`");
+	  throw std::runtime_error("Tensor::binaryWrite(): For non-collective writing, the tensor should be `Local`");
 
 	if (conjugate)
-	  throw std::runtime_error("Not allowed for tensors implicitly conjugated");
+	  throw std::runtime_error("Tensor::binaryWrite(): Not allowed for tensors implicitly conjugated");
 
 	// If the tensor has an implicit scale, view, or is not on host, make a copy
 	if (scalar != value_type{1} || isSubtensor() || ctx().plat != superbblas::CPU)
@@ -4222,7 +4322,7 @@ namespace Chroma
 	// Write the local data
 	std::size_t vol = p->localVolume();
 	std::size_t word_size = sizeof(typename detail::WordType<T>::type);
-	bin.writeArrayPrimaryNode((char*)data(), word_size, sizeof(T) / word_size * vol);
+	bin.writeArrayPrimaryNode((char*)data_for_writing(), word_size, sizeof(T) / word_size * vol);
       }
 
       void print(const std::string& name) const
@@ -4234,19 +4334,19 @@ namespace Chroma
 	auto t = toComplex();
 	auto t_host = t.like_this(none, {}, OnHost, OnMaster);
 	t.copyTo(t_host);
-	if (Layout::nodeNumber() == 0)
+	auto t_host_local = t_host.getLocal();
+	if (t_host_local)
 	{
 	  using namespace detail::repr;
 	  ss << "% " << repr(data()) << std::endl;
 	  ss << "% dist=" << p->p << std::endl;
 	  ss << name << "=reshape([";
-	  assert(!t_host.isSubtensor());
-	  std::size_t vol = volume();
-	  for (std::size_t i = 0; i < vol; ++i)
+	  assert(!t_host_local.isSubtensor());
+	  auto ptr = t_host_local.data();
+	  for (std::size_t i = 0, vol = t_host_local.volume(); i < vol; ++i)
 	  {
-	    //using detail::repr::operator<<;
 	    ss << " ";
-	    detail::repr::operator<<(ss, t_host.data()[i]);
+	    detail::repr::operator<<(ss, ptr[i]);
 	  }
 	  ss << "], [" << size << "]);" << std::endl;
 	}
@@ -6054,6 +6154,238 @@ namespace Chroma
 
 	return r;
       }
+
+      /// Return a slice of the tensor starting at coordinate `dom_kvfrom`, `img_kvfrom` and taking
+      /// `dom_kvsize`, `img_kvsize` elements in each direction. The missing dimensions in `*_kvfrom`
+      /// are set to zero and the missing directions in `*_kvsize` are set to the size of the tensor.
+      ///
+      /// \param f: f(dom_coor, img_coor) return whether the nonzero block starting at the given blocks
+      ///           will be on the returning matrix.
+      /// \param dom_kvfrom: dictionary with the index of the first element in each domain direction
+      /// \param dom_kvsize: dictionary with the number of elements in each domain direction
+      /// \param img_kvfrom: dictionary with the index of the first element in each domain direction
+      /// \param img_kvsize: dictionary with the number of elements in each domain direction
+      /// \return: a copy of the tensor
+
+      SpTensor<ND, NI, T> kvslice_from_size_no_test(const Tensor<ND, T>& new_d,
+						    const Tensor<NI, T>& new_i) const
+      {
+	auto dim_d = d.kvdim();
+	auto dim_i = i.kvdim();
+
+	// Get the nonzeros in the slice
+	auto ii_slice = new_i.template make_compatible<NI, int>(ii.order, ii.kvdim(), OnHost);
+	ii.copyTo(ii_slice);
+	auto new_ii = ii_slice.make_compatible();
+	new_ii.set_zero();
+	auto jj_slice = new_i.template make_compatible<NI + 2, int>(jj.order, jj.kvdim(), OnHost);
+	jj.copyTo(jj_slice);
+	auto new_jj = jj_slice.make_compatible();
+	new_jj.set_zero();
+	auto new_jj_mask = jj_slice.template make_compatible<NI + 1, float>(
+	  detail::remove_dimensions(jj_slice.order, "~"), {}, OnHost);
+	new_jj_mask.set_zero();
+	unsigned int num_neighbors = jj.kvdim().at('u');
+
+	if (ii_slice.isSubtensor() || new_ii.isSubtensor() || jj_slice.isSubtensor() ||
+	    new_jj.isSubtensor() || new_jj_mask.isSubtensor())
+	{
+	  throw std::runtime_error("This shouldn't happen");
+	}
+	if (!ii_slice.is_compatible(jj_slice) || !ii_slice.is_compatible(new_ii) ||
+	    !ii_slice.is_compatible(new_jj) || !ii_slice.is_compatible(new_jj_mask))
+	{
+	  throw std::runtime_error("kvslice_from_size: hit corner case, sorry");
+	}
+
+	Tensor<1, float> dirs("u", {(int)num_neighbors}, OnHost,
+			      detail::compatible_replicated_distribution(i.dist));
+	auto next_jj_mask = new_jj_mask;
+	{
+	  Coor<ND> from_dom = kvcoors<ND>(d.order, dom_kvfrom);
+	  std::map<char, int> updated_dom_kvsize = d.kvdim();
+	  for (const auto& it : dom_kvsize)
+	    updated_dom_kvsize[it.first] = it.second;
+	  Coor<ND> size_dom = kvcoors<ND>(d.order, updated_dom_kvsize);
+	  auto ii_slice_local = ii_slice.getLocal();
+	  int** ii_slice_ptrs = ii_slice_local.datas();
+	  auto jj_slice_local = jj_slice.getLocal();
+	  int** jj_slice_ptrs = jj_slice_local.datas();
+	  auto new_ii_local = new_ii.getLocal();
+	  int** new_ii_ptrs = new_ii_local.datas();
+	  auto new_jj_local = new_jj.getLocal();
+	  int** new_jj_ptrs = new_jj_local.datas();
+	  auto new_jj_mask_local = new_jj_mask.getLocal();
+	  float** new_jj_mask_ptrs = new_jj_mask_local.datas();
+	  if (ii_slice_local.num_components() != jj_slice_local.num_components() || ii_slice_local.num_components() != new_jj_mark_local.num_components())
+	    throw std::runtime_error("wtf");
+	  Coor<ND> size_nnz = d.size;
+	  for (unsigned int i = nblockd + nkrond; i < ND; ++i)
+	    size_nnz[i] = 1;
+	  auto dirs_global =
+	    local_support_tensor<float, 2>("u", Coor<1>{(int)num_neighbors}, OnHost);
+	  dirs_global.set_zero();
+	  auto dirs_global_local = dirs_global.getLocal();
+	  int max_nnz_per_row = 0;
+	  using superbblas::detail::operator+;
+	  for (unsigned int c = 0; c < ii_slice_local.num_components(); ++c)
+	  {
+	    Coor<NI> from_img = this->i.p->localFrom();
+	    Coor<NI> local_img_size = new_ii_local.size;
+	    for (int i = 0; i < nblocki + nkroni; ++i)
+	      local_img_size[i] = 1;
+	    Stride<NI> img_local_stride =
+	      superbblas::detail::get_strides<std::size_t>(local_img_size, superbblas::FastToSlow);
+
+	    // Find the maximum number of nonzeros per row and the active directions
+	    // in case of using the Kronecker format
+	    for (std::size_t i = 0, i_acc = 0, i1 = new_ii_local.volume(); i < i1;
+		 i_acc += ii_slice_ptr[i], ++i)
+	    {
+	      Coor<NI> row_global_coor = normalize_coor(
+		superbblas::detail::index2coor(i, local_img_size, img_local_stride) + from_img,
+		this->i.dim);
+
+	      int nnz_per_row = 0;
+	      for (unsigned int j = i_acc, j1 = i_acc + ii_slice_ptr[i]; j < j1; ++j)
+	      {
+		Coor<ND> from_nnz;
+		std::copy_n(jj_slice_ptr + j * ND, ND, from_nnz.begin());
+		Coor<ND> lfrom, lsize;
+		superbblas::detail::intersection(from_dom, size_dom, from_nnz, size_nnz, d.dim,
+						 lfrom, lsize);
+		if (superbblas::detail::volume(lsize) == 0 || !f(lfrom, row_global_coor))
+		  continue;
+
+		dirs_global_local.data()[j - i_acc] = 1;
+		nnz_per_row++;
+	      }
+	      max_nnz_per_row = std::max(max_nnz_per_row, nnz_per_row);
+	    }
+	  }
+
+	  std::vector<int> new_dirs_idx(num_neighbors);
+	  if (!kron)
+	  {
+	    // Get the maximum number of nonzeros in a row
+	    max_nnz_per_row = global_max(max_nnz_per_row);
+	  }
+	  else
+	  {
+	    // Gather the directions present in all processes, and update `global_dirs_local` such that
+	    // the direction is present if it is on some process.
+	    auto dirs_collective =
+	      dirs_global.make_sure(none, none, detail::compatible_replicated_distribution(i.dist));
+	    dirs.set_zero();
+	    for (int i = 0; i < num_neighbors; ++i)
+	      for (int proc = 0; proc < Layout::numNodes(); ++proc)
+		if (dirs_collective.data()[proc + i * Layout::numNodes()] > 0)
+		  dirs.data()[i] = 1;
+
+	    // Map the old direction indices into the new directions, and count the maximum number
+	    // of nonzeros per rows as the total amount of different directions
+	    max_nnz_per_row = 0;
+	    for (int i = 0; i < num_neighbors; ++i)
+	      if (dirs.data()[i] > 0)
+		new_dirs_idx[i] = max_nnz_per_row++;
+	  }
+
+	  // Collect the nonzeros
+	  next_jj_mask = new_jj_mask.make_compatible(none, {{'u', max_nnz_per_row}});
+	  next_jj_mask.set_zero();
+	  auto next_jj_mask_local = next_jj_mask.getLocal();
+	  float* next_jj_mask_ptr = next_jj_mask_local.data();
+	  for (std::size_t i = 0, i_acc = 0, i1 = new_ii_local.volume(); i < i1;
+	       i_acc += ii_slice_ptr[i], ++i)
+	  {
+	    using superbblas::detail::operator+;
+	    Coor<NI> row_global_coor = normalize_coor(
+	      superbblas::detail::index2coor(i, local_img_size, img_local_stride) + from_img,
+	      this->i.dim);
+
+	    unsigned int new_nnz_in_row = 0;
+	    for (unsigned int j = i_acc, j1 = i_acc + ii_slice_ptr[i]; j < j1; ++j)
+	    {
+	      Coor<ND> from_nnz;
+	      std::copy_n(jj_slice_ptr + j * ND, ND, from_nnz.begin());
+	      Coor<ND> lfrom, lsize;
+	      superbblas::detail::intersection(from_dom, size_dom, from_nnz, size_nnz, d.dim, lfrom,
+					       lsize);
+	      if (superbblas::detail::volume(lsize) == 0 || !f(lfrom, row_global_coor))
+	      {
+		// If using Kronecker format and the direction is active on the new matrix, don't jump to next iteration,
+		// although the nonzero doesn't belong to the new matrix
+		if (!kron || dirs.data()[j - i_acc] == 0)
+		  continue;
+	      }
+	      else
+	      {
+		// Copy the coordinates of the nonzero to new matrix
+		using superbblas::detail::operator-;
+		Coor<ND> new_from_nnz = normalize_coor(from_nnz - from_dom, size_dom);
+		std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_nnz_in_row) * ND);
+		new_jj_mask_ptr[j] = 1;
+		next_jj_mask_ptr[max_nnz_per_row * i + new_dirs_idx[j - i_acc]] = 1;
+	      }
+	      new_nnz_in_row++;
+	    }
+	    new_ii_ptr[i] = max_nnz_per_row;
+	  }
+
+	  num_neighbors = max_nnz_per_row;
+	}
+
+	// Create the returning tensor
+	SpTensor<ND, NI, T> r{new_d,  new_i,  nblockd,	     nblocki,
+			      nkrond, nkroni, num_neighbors, isImgFastInBlock};
+	new_ii.copyTo(r.ii);
+	new_jj.kvslice_from_size({}, {{'u', num_neighbors}}).copyTo(r.jj);
+
+	auto data_mask = data.create_mask();
+	data_mask.set_zero();
+	std::map<char, int> blk_m;
+	auto data_dim = data.kvdim();
+	for (unsigned int i = 0; i < ND; ++i)
+	  blk_m[d.order[i]] = data_dim.at(d.order[i]);
+	for (unsigned int i = 0; i < NI; ++i)
+	  blk_m[this->i.order[i]] = (i < nblocki ? data_dim.at(this->i.order[i]) : 1);
+	auto data_blk = data.template like_this<NI + ND, float>(
+	  "%", '%', "u", blk_m, none, detail::compatible_replicated_distribution(new_d.dist));
+	data_blk.set(1);
+	kronecker<NI + ND + 1>(new_jj_mask, data_blk)
+	  .copyTo(data_mask.kvslice_from_size(img_kvfrom, img_kvsize));
+	auto r_data_mask = r.data.create_mask();
+	kronecker<NI + ND + 1>(next_jj_mask, data_blk).copyTo(r_data_mask);
+	r.data.set_zero();
+	data.kvslice_from_size(img_kvfrom, img_kvsize)
+	  .copyToWithMask(r.data, data_mask.kvslice_from_size(img_kvfrom, img_kvsize), r_data_mask,
+			  "u");
+
+	if (kron)
+	{
+	  auto kron_mask = kron.create_mask();
+	  kron_mask.set_zero();
+	  auto blk_m = kron.kvdim();
+	  blk_m.erase('u');
+	  auto kron_blk = kron.template like_this<NI + ND, float>(
+	    "%", '%', "u", blk_m, none, detail::compatible_replicated_distribution(new_d.dist));
+	  kron_blk.set(1);
+	  kronecker<NI + ND + 1>(dirs, kron_blk)
+	    .copyTo(kron_mask.kvslice_from_size(img_kvfrom, img_kvsize));
+	  auto r_kron_mask = r.kron.create_mask();
+	  r_kron_mask.set(1);
+	  r.kron.set(detail::NaN<T>::get());
+	  kron.kvslice_from_size(img_kvfrom, img_kvsize)
+	    .copyToWithMask(r.kron, kron_mask.kvslice_from_size(img_kvfrom, img_kvsize),
+			    r_kron_mask, "u");
+	}
+
+	if (is_constructed())
+	  r.construct();
+
+	return r;
+      }
+
 
       /// Reorder the domain and image orders
       /// \param new_dom_order: new ordering for the domain

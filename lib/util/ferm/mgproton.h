@@ -2118,7 +2118,6 @@ namespace Chroma
 			   : given_divisions;
 	auto land =
 	  land_sea_domain == All ? getOption<std::array<unsigned int, 4>>(ops, "land") : given_land;
-	bool use_red_black = getOption<bool>(ops, "use_red_black", false);
 
 	// Check divisions and land
 	if (divisions == std::array<unsigned int, 4>{{}})
@@ -2150,6 +2149,27 @@ namespace Chroma
 	  first_coor_within_small_partition[d] = part_ith_starts(latt_size[d] % divisions[d], d);
 	  partition_size_large_partition[d] = latt_size[d] / divisions[d] + 1;
 	  partition_size_small_partition[d] = latt_size[d] / divisions[d];
+	}
+
+	// Construct the list of islands
+	std::vector<std::array<Coor<4>, 2>> true_islands(1, {{}, latt_size});
+	for (int d = 0; d < 4; ++d)
+	{
+	  if (divisions[d] == 0)
+	    continue;
+	  std::vector<std::array<Coor<4>, 2>> r;
+	  r.reserve(r.size() * divisions[d]);
+	  for (int i = 0; i < divisions[d]; ++i)
+	  {
+	    int fromd = (latt_size[d] / divisions[d] + (i < coor[d] % divisions[d] ? 1 : 0)) * i;
+	    for (auto c : true_islands)
+	    {
+	      c[0][d] = fromd;
+	      c[1][d] = land[d];
+	      r.push_back(c);
+	    }
+	  }
+	  std::swap(true_islands, r);
 	}
 
 	const auto is_true_island = [&](const std::array<int, 4>& coor) {
