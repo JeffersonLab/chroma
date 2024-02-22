@@ -5682,9 +5682,10 @@ namespace Chroma
 	{
 	  Coor<ND> from_dom = kvcoors<ND>(d.order, dom_kvfrom);
 	  std::map<char, int> updated_dom_kvsize = d.kvdim();
+	  Coor<ND> size_dom = kvcoors<ND>(d.order, updated_dom_kvsize);
 	  for (const auto& it : dom_kvsize)
 	    updated_dom_kvsize[it.first] = it.second;
-	  Coor<ND> size_dom = kvcoors<ND>(d.order, updated_dom_kvsize);
+	  Coor<ND> updated_size_dom = kvcoors<ND>(d.order, updated_dom_kvsize);
 	  auto ii_slice_local = ii_slice.getLocal();
 	  int* ii_slice_ptr = ii_slice_local.data();
 	  auto jj_slice_local = jj_slice.getLocal();
@@ -5709,13 +5710,12 @@ namespace Chroma
 	      Coor<ND> from_nnz;
 	      std::copy_n(jj_slice_ptr + j * ND, ND, from_nnz.begin());
 	      Coor<ND> lfrom, lsize;
-	      superbblas::detail::intersection(from_dom, size_dom, from_nnz, size_nnz, d.dim, lfrom,
-					       lsize);
+	      superbblas::detail::intersection(from_dom, updated_size_dom, from_nnz, size_nnz,
+					       d.dim, lfrom, lsize);
 	      if (superbblas::detail::volume(lsize) == 0)
 		continue;
 
 	      using superbblas::detail::operator-;
-	      /// FIXME: size_dom?
 	      Coor<ND> new_from_nnz = normalize_coor(from_nnz - from_dom, size_dom);
 	      std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_ii_ptr[i]) * ND);
 	      new_ii_ptr[i]++;
@@ -5902,9 +5902,10 @@ namespace Chroma
 	{
 	  Coor<ND> from_dom = kvcoors<ND>(d.order, dom_kvfrom);
 	  std::map<char, int> updated_dom_kvsize = d.kvdim();
+	  Coor<ND> size_dom = kvcoors<ND>(d.order, updated_dom_kvsize);
 	  for (const auto& it : dom_kvsize)
 	    updated_dom_kvsize[it.first] = it.second;
-	  Coor<ND> size_dom = kvcoors<ND>(d.order, updated_dom_kvsize);
+	  Coor<ND> updated_size_dom = kvcoors<ND>(d.order, updated_dom_kvsize);
 	  auto ii_slice_local = ii_slice.getLocal();
 	  int* ii_slice_ptr = ii_slice_local.data();
 	  auto jj_slice_local = jj_slice.getLocal();
@@ -5946,8 +5947,8 @@ namespace Chroma
 	      Coor<ND> from_nnz;
 	      std::copy_n(jj_slice_ptr + j * ND, ND, from_nnz.begin());
 	      Coor<ND> lfrom, lsize;
-	      superbblas::detail::intersection(from_dom, size_dom, from_nnz, size_nnz, d.dim, lfrom,
-					       lsize);
+	      superbblas::detail::intersection(from_dom, updated_size_dom, from_nnz, size_nnz,
+					       d.dim, lfrom, lsize);
 	      if (superbblas::detail::volume(lsize) == 0 || !f(lfrom, row_global_coor))
 		continue;
 
@@ -6002,8 +6003,8 @@ namespace Chroma
 	      Coor<ND> from_nnz;
 	      std::copy_n(jj_slice_ptr + j * ND, ND, from_nnz.begin());
 	      Coor<ND> lfrom, lsize;
-	      superbblas::detail::intersection(from_dom, size_dom, from_nnz, size_nnz, d.dim, lfrom,
-					       lsize);
+	      superbblas::detail::intersection(from_dom, updated_size_dom, from_nnz, size_nnz,
+					       d.dim, lfrom, lsize);
 	      if (superbblas::detail::volume(lsize) == 0 || !f(lfrom, row_global_coor))
 	      {
 		// If using Kronecker format and the direction is active on the new matrix, don't jump to next iteration,
@@ -6015,7 +6016,6 @@ namespace Chroma
 	      {
 		// Copy the coordinates of the nonzero to new matrix
 		using superbblas::detail::operator-;
-		/// FIXME: size_dom?
 		Coor<ND> new_from_nnz = normalize_coor(from_nnz - from_dom, size_dom);
 		std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_nnz_in_row) * ND);
 		new_jj_mask_ptr[j] = 1;
