@@ -200,19 +200,19 @@ namespace Chroma
       u_clov_1 = k1 * tmp_1;
 
       /* First "plus-minus" 1x1 */
-      tmp_1 = u[mu1] * shift(shift(adj(u[nu1]), FORWARD, mu1), BACKWARD, nu1);
+      tmp_1 = u[mu1] * shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), BACKWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[mu1]), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 -= k1 * tmp_1;
 
       /* First "minus-minus" 1x1 */
-      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1);
+      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift((LatticeColorMatrix)shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 += k1 * tmp_1;
      /* First "minus-plus" 1x1 */
       tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(u[nu1], BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[mu1], BACKWARD, mu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 -= k1 * tmp_1;
 
@@ -220,38 +220,38 @@ namespace Chroma
      if( toBool(k2!=0) ) {
       /* First "plus-plus" 2x2 */
       tmp_1 = u[mu1] * shift(u[mu1], FORWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], FORWARD, mu1), FORWARD, mu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[nu1], FORWARD, mu1), FORWARD, mu1), FORWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[mu1]), FORWARD, mu1), FORWARD, nu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(adj(u[mu1]), FORWARD, nu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], FORWARD, mu1), FORWARD, mu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], FORWARD, mu1), FORWARD, mu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, mu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, nu1), FORWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[nu1]), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 += k2 * tmp_1;
 
       /* First "plus-minus" 2x2 */
       tmp_1 = u[mu1] * shift(u[mu1], FORWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[mu1]), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(adj(u[mu1]), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 -= k2 * tmp_1;
       /* First "minus-minus" 2x2 */
-      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 += k2 * tmp_1;
       /* First "minus-plus" 2x2 */
-      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1), FORWARD,nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[mu1], BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1), FORWARD,nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[nu1]), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 -= k2 * tmp_1;
@@ -261,64 +261,64 @@ namespace Chroma
       if( toBool(k3!=0) ) {
       /* First "plus-plus" 2x1 */
       tmp_1 = u[mu1] * shift(u[mu1], FORWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], FORWARD, mu1), FORWARD, mu1);
-      tmp_1 = tmp_2 * shift(shift(adj(u[mu1]), FORWARD, mu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], FORWARD, mu1), FORWARD, mu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, mu1), FORWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[mu1]), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 += k3 * tmp_1;
 
       /* First "plus-minus" 2x1 */
       tmp_1 = u[mu1] * shift(u[mu1], FORWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(adj(u[mu1]), FORWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, mu1), BACKWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[mu1]), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 -= k3 * tmp_1;
 
       /* First "minus-minus" 2x1 */
-      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[nu1]),BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[mu1],BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1);
+      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]),BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1],BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 += k3 * tmp_1;
 
       /* First "minus-plus" 2x1 */
-      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[mu1], BACKWARD, mu1), FORWARD, nu1);
+      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 -= k3 * tmp_1;
 
 
       /* First "plus-plus" 1x2 */
       tmp_1 = u[mu1] * shift(u[nu1], FORWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], FORWARD, mu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(adj(u[mu1]), FORWARD, nu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], FORWARD, mu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, nu1), FORWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[nu1]), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 += k3 * tmp_1;
 
       /* First "plus-minus" 1x2 */
-      tmp_1 = u[mu1] * shift(shift(adj(u[nu1]), FORWARD, mu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[nu1]), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(adj(u[mu1]), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = u[mu1] * shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 -= k3 * tmp_1;
       /* First "minus-minus" 1x2 */
-      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift((LatticeColorMatrix)shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 += k3 * tmp_1;
 
       /* First "minus-plus" 1x2 */
       tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(u[nu1], BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], BACKWARD, mu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[mu1], BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, mu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[nu1]), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 -= k3 * tmp_1;
@@ -328,78 +328,78 @@ namespace Chroma
 
      /* First "plus-plus" 3x1 */
       tmp_1 = u[mu1] * shift(u[mu1], FORWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[mu1], FORWARD, mu1), FORWARD, mu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[nu1], FORWARD, mu1), FORWARD, mu1), FORWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[mu1]), FORWARD, mu1), FORWARD, mu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(adj(u[mu1]), FORWARD, mu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[mu1], FORWARD, mu1), FORWARD, mu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], FORWARD, mu1), FORWARD, mu1), FORWARD, mu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, mu1), FORWARD, mu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, mu1), FORWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[mu1]), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 += k4 * tmp_1;
 
       /* First "plus-minus" 3x1 */
       tmp_1 = u[mu1] * shift(u[mu1], FORWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[mu1], FORWARD, mu1), FORWARD, mu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[mu1]), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(adj(u[mu1]), FORWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[mu1], FORWARD, mu1), FORWARD, mu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, mu1), BACKWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[mu1]), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 -= k4 * tmp_1;
 
       /* First "minus-minus" 3x1 */
-      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1);
+      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 += k4 * tmp_1;
       /* First "minus-plus" 3x1 */
-      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[mu1], BACKWARD, mu1), FORWARD, nu1);
+      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 -= k4 * tmp_1;
 
 
       /* First "plus-plus" 1x3 */
       tmp_1 = u[mu1] * shift(u[nu1], FORWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], FORWARD, mu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[nu1], FORWARD, mu1), FORWARD, nu1), FORWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[mu1]), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(adj(u[nu1]), FORWARD, nu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], FORWARD, mu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], FORWARD, mu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, nu1), FORWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[nu1]), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 += k4 * tmp_1;
 
       /* First "plus-minus" 1x3 */
-      tmp_1 = u[mu1] * shift(shift(adj(u[nu1]), FORWARD, mu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[nu1]), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(adj(u[nu1]), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[mu1]), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = u[mu1] * shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 -= k4 * tmp_1;
      /* First "minus-minus" 1x3 */
-      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(adj(u[nu1]),BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift((LatticeColorMatrix)shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]),BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 += k4 * tmp_1;
      /* First "minus-plus" 1x3 */
       tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(u[nu1], BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], BACKWARD, mu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[nu1], BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(u[mu1], BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(adj(u[nu1]), FORWARD, nu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, mu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, nu1), FORWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[nu1]), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 -= k4 * tmp_1;
@@ -411,55 +411,55 @@ namespace Chroma
 
       /* First "plus-plus" 3x3 */
       tmp_1 = u[mu1] * shift(u[mu1], FORWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[mu1], FORWARD, mu1), FORWARD, mu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[nu1], FORWARD, mu1), FORWARD, mu1), FORWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(u[nu1], FORWARD, mu1), FORWARD, mu1), FORWARD, mu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(shift(u[nu1], FORWARD, mu1), FORWARD, mu1), FORWARD, mu1), FORWARD, nu1), FORWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(shift(adj(u[mu1]), FORWARD, mu1), FORWARD, mu1), FORWARD, nu1),FORWARD, nu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(adj(u[mu1]), FORWARD, mu1), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[mu1]), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(adj(u[nu1]), FORWARD, nu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[mu1], FORWARD, mu1), FORWARD, mu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], FORWARD, mu1), FORWARD, mu1), FORWARD, mu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], FORWARD, mu1), FORWARD, mu1), FORWARD, mu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], FORWARD, mu1), FORWARD, mu1), FORWARD, mu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, mu1), FORWARD, mu1), FORWARD, nu1),FORWARD, nu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, mu1), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, nu1), FORWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[nu1]), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 += kk5 * tmp_1;
       /* First "plus-minus" 3x3 */
       tmp_1 = u[mu1] * shift(u[mu1], FORWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(u[mu1], FORWARD, mu1), FORWARD, mu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), FORWARD, mu1),BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(shift(shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), FORWARD,mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(shift(adj(u[mu1]), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(adj(u[mu1]), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[mu1]), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], BACKWARD, nu1
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[mu1], FORWARD, mu1), FORWARD, mu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), FORWARD, mu1),BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, mu1), FORWARD, mu1), FORWARD,mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, mu1), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), FORWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, nu1
 ), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 -= kk5 * tmp_1;
       /* First "minus-minus" 3x3 */
-      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(shift(shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[nu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1), BACKWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, nu1), BACKWARD, nu1);
       tmp_1 = tmp_2 * shift(u[nu1], BACKWARD, nu1);
       u_clov_1 += kk5 * tmp_1;
 
       /* First "minus-plus" 3x3 */
-      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift(shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_1 = tmp_2 * shift(shift(shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(shift(shift(shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
-      tmp_2 = tmp_1 * shift(shift(shift(shift(u[mu1], BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
-      tmp_1 = tmp_2 * shift(shift(adj(u[nu1]), FORWARD, nu1), FORWARD, nu1);
+      tmp_1 = shift(adj(u[mu1]), BACKWARD, mu1) * shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(adj(u[mu1]), BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[nu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_2 = tmp_1 * shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift((LatticeColorMatrix)shift(u[mu1], BACKWARD, mu1), FORWARD, nu1), FORWARD, nu1), FORWARD, nu1);
+      tmp_1 = tmp_2 * shift((LatticeColorMatrix)shift(adj(u[nu1]), FORWARD, nu1), FORWARD, nu1);
       tmp_2 = tmp_1 * shift(adj(u[nu1]), FORWARD, nu1);
       tmp_1 = tmp_2 * adj(u[nu1]);
       u_clov_1 -= kk5 * tmp_1;
