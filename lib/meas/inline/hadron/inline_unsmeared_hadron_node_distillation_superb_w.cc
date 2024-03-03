@@ -1126,8 +1126,6 @@ namespace Chroma
 	{
 	  if (max_tslices_in_contraction <= 0)
 	    max_tslices_in_contraction = Lt;
-	  max_tslices_in_contraction =
-	    max_tslices_in_contraction + (max_tslices_in_contraction % 2);
 	  max_tslices_in_contraction = std::min(Lt, max_tslices_in_contraction);
 	}
 	else

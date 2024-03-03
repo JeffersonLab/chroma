@@ -10326,6 +10326,8 @@ namespace Chroma
 	    "mQNqc%xyzXt", '%', "", {{'m', msize}, {'t', tsize}});
 	  moms_left.contract(std::move(momst), {}, Conjugate, std::move(leftconj_nat), {},
 			     NotConjugate);
+          momst.release(); // NOTE: the std::move's in previous line aren't effective
+          leftconj_nat.release();
 	  if (tfrom + tsize >= Nt && mfrom + msize >= moms.size())
 	    leftconj.release();
 
