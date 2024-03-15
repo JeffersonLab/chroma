@@ -6,11 +6,12 @@
 #ifndef __clover_term_jit_w_h__
 #define __clover_term_jit_w_h__
 
-//#warning "Using QDP-JIT clover term"
+#warning "Using QDP-JIT clover term"
 
 #include "state.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/clover_term_base_w.h"
+#include "actions/ferm/linop/clover_term_jit_stabilized_helpers.h"
 #include "meas/glue/mesfield.h"
 
 
@@ -421,7 +422,7 @@ namespace Chroma
      *  \param f         field strength tensor F(mu,nu)        (Read)
      *  \param cb        checkerboard                          (Read)
      */
-    void makeClov(const multi1d<U>& f, const RealT& diag_mass);
+    void makeClov(const multi1d<U>& f, const RealT& diag_mass, const bool stabilized);
 
     //! Invert the clover term on cb
     //void chlclovms(LatticeREAL& log_diag, int cb);
@@ -556,7 +557,7 @@ namespace Chroma
     /* Calculate F(mu,nu) */
     multi1d<U> f;
     mesField(f, u);
-    makeClov(f, diag_mass);
+    makeClov(f, diag_mass, param.stabilized_wilson);
     
     choles_done.resize(rb.numSubsets());
     for(int i=0; i < rb.numSubsets(); i++) {
@@ -658,6 +659,7 @@ namespace Chroma
 			       const U& f3,
 			       const U& f4,
 			       const U& f5,
+                   const bool stabilized,
 			       X& tri_dia,
 			       Y& tri_off)
   {
@@ -703,6 +705,7 @@ namespace Chroma
 				const U& f3,
 				const U& f4,
 				const U& f5,
+                const bool stabilized,
 				const X& tri_dia,
 				const Y& tri_off)
   {
@@ -754,12 +757,20 @@ namespace Chroma
     diag_mass_reg.setup_value( diag_mass_jit.elem() );
 
 
-    for(int jj = 0; jj < 2; jj++) {
-      for(int ii = 0; ii < 2*Nc; ii++) {
-	tri_dia_j.elem(jj).elem(ii) = diag_mass_reg.elem().elem();
-	//tri[site].diag[jj][ii] = diag_mass.elem().elem().elem();
+    if(stabilized == true){
+      for(int jj = 0; jj < 2; jj++) {
+        for(int ii = 0; ii < 2*Nc; ii++) {
+          zero_rep(tri_dia_j.elem(jj).elem(ii));
+        }
       }
     }
+    else{
+      for(int jj = 0; jj < 2; jj++) {
+        for(int ii = 0; ii < 2*Nc; ii++) {
+          tri_dia_j.elem(jj).elem(ii) = diag_mass_reg.elem().elem();
+        }
+      }
+    }	
 
 
     RComplexREG<WordREG<REALT> > E_minus;
@@ -831,6 +842,22 @@ namespace Chroma
       }
     }
 
+    if(stabilized == true){
+      exponentiate(tri_dia_j, tri_off_j, 0);
+
+      // fix constants here
+      for(int jj = 0; jj < 2; jj++) {
+        for(int ii = 0; ii < 6; ii++) {
+          tri_dia_j.elem(jj).elem(ii) *= diag_mass_reg.elem().elem();
+        }
+      }
+      for(int jj = 0; jj < 2; jj++) {
+        for(int ii = 0; ii < 15; ii++) {
+          tri_off_j.elem(jj).elem(ii) *= diag_mass_reg.elem().elem();
+        }   
+      }
+    }
+
     //    std::cout << __PRETTY_FUNCTION__ << ": leaving\n";
 
     jit_get_function(function);
@@ -841,7 +868,7 @@ namespace Chroma
   
   /* This now just sets up and dispatches... */
   template<typename T, typename U>
-  void JITCloverTermT<T,U>::makeClov(const multi1d<U>& f, const RealT& diag_mass)
+  void JITCloverTermT<T,U>::makeClov(const multi1d<U>& f, const RealT& diag_mass, const bool stabilized)
   {
     START_CODE();
     
@@ -862,16 +889,25 @@ namespace Chroma
     U f4 = f[4] * getCloverCoeff(1,3);
     U f5 = f[5] * getCloverCoeff(2,3);    
 
+    if (stabilized == true){
+      f0 /= diag_mass;
+      f1 /= diag_mass;
+      f2 /= diag_mass;
+      f3 /= diag_mass;
+      f4 /= diag_mass;
+      f5 /= diag_mass;    
+	QDPIO::cout << "\n\nUsing expo clover" << std::endl;
+    }
     
     //QDPIO::cout << "PTX Clover make "  << (void*)this << "\n";
     //std::cout << "PTX Clover make "  << (void*)this << "\n";
     static JitFunction function;
 
     if (function.empty())
-      function_make_clov_build(function, diag_mass, f0,f1,f2,f3,f4,f5, tri_dia , tri_off );
+      function_make_clov_build(function, diag_mass, f0,f1,f2,f3,f4,f5, stabilized, tri_dia , tri_off );
 
     // Execute the function
-    function_make_clov_exec(function, diag_mass, f0,f1,f2,f3,f4,f5,tri_dia, tri_off);
+    function_make_clov_exec(function, diag_mass, f0,f1,f2,f3,f4,f5,stabilized,tri_dia, tri_off);
 
     END_CODE();
   }

@@ -32,6 +32,8 @@ namespace Chroma
     Real twisted_m;
     bool twisted_m_usedP;
 
+    bool stabilized_wilson;
+
   };
 
 

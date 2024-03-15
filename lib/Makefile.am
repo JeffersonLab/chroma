@@ -575,6 +575,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/clover_term_w.h \
 	actions/ferm/linop/clover_term_base_w.h \
 	actions/ferm/linop/clover_term_qdp_w.h \
+	actions/ferm/linop/clover_term_qdp_stabilized_helpers.h \
 	actions/ferm/linop/eoprec_clover_linop_w.h \
 	actions/ferm/linop/seoprec_clover_linop_w.h \
 	actions/ferm/linop/shifted_linop_w.h \
