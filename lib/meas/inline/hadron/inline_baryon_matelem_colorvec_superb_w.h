@@ -55,6 +55,7 @@ namespace Chroma
 	int 			max_moms_in_contraction;/*! maximum number of contracted momenta simultaneously */
 	int 			max_vecs;               /*! maximum number of columns from the first tensor being contracted */
 	bool			use_superb_format;      /*! whether to use the superb file format for storing the data */
+	bool                    output_file_is_local;   /*!< Whether the output file is in a not shared filesystem */
       };
 
       struct NamedObject_t

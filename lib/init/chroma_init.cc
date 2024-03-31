@@ -154,11 +154,7 @@ namespace Chroma
 		    << "   --chroma-i   [" << getXMLInputFileName() << "]  xml input file name\n"
 		    << "   -o           [" << getXMLOutputFileName() << "]  xml output file name\n"
 		    << "   --chroma-p   [" << getXMLOutputFileName() << "]  xml output file name\n"
-		    
-#ifdef ARCH_PARSCALAR
-#include "qmp.h"
-#endif
-<< "   -l           [" << getXMLLogFileName() << "]  xml log file name\n"
+		    << "   -l           [" << getXMLLogFileName() << "]  xml log file name\n"
 		    << "   --chroma-l   [" << getXMLLogFileName() << "]  xml log file name\n"
 		    << "   -cwd         [" << getCWD() << "]  xml working directory\n"
 		    << "   --chroma-cwd [" << getCWD() << "]  xml working directory\n"
@@ -276,18 +272,17 @@ namespace Chroma
 #    endif
     setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
 
-
-		QDPIO::cout << "Calling initCommsGridQuda\n";
-#ifdef ARCH_PARSCALAR
-	  int ndim = QMP_get_logical_number_of_dimensions();
-		const int *dims = QMP_get_logical_dimensions();
-#else
-		int ndim=4;
-		const int dims[4]={1,1,1,1};
-#endif
-		QDPIO::cout << "calling initCommsGridQuda with ndim = " << ndim << " and geom=( " << dims[0] << ", "
-			<< dims[1] << ", " << dims[2] << ", " << dims[3] << " )\n";
-		initCommsGridQuda(ndim, dims, nullptr, nullptr);
+    QDPIO::cout << "Calling initCommsGridQuda\n";
+#    ifdef ARCH_PARSCALAR
+    int ndim = QMP_get_logical_number_of_dimensions();
+    const int* dims = QMP_get_logical_dimensions();
+#    else
+    int ndim = 4;
+    const int dims[4] = {1, 1, 1, 1};
+#    endif
+    QDPIO::cout << "calling initCommsGridQuda with ndim = " << ndim << " and geom=( " << dims[0]
+		<< ", " << dims[1] << ", " << dims[2] << ", " << dims[3] << " )\n";
+    initCommsGridQuda(ndim, dims, nullptr, nullptr);
 
     QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")"
 		<< std::endl;
@@ -321,12 +316,24 @@ namespace Chroma
 #    endif
 #  endif // BUILD_CUDA
 
+#elif defined(BUILD_SB) && defined(SUPERBBLAS_USE_GPU)
+    // Get device to run
+    int gpu_device = SB::detail::getGpuContext()->device;
+
+#  ifdef BUILD_QUDA
+    setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
+    QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << gpu_device << ")"
+		<< std::endl;
+    initQudaDevice(gpu_device);
+    initQudaMemory();
+#  endif
+
 #else // defined QDP_IS_QDPJIT
 #  ifdef BUILD_QUDA
-   {
-     std::cout << "Initializing QUDA with initQuda(-1)" <<  std::endl;
-     initQuda(-1);
-   }
+    {
+      std::cout << "Initializing QUDA with initQuda(-1)" << std::endl;
+      initQuda(-1);
+    }
 #  endif
 #endif
 
@@ -402,6 +409,11 @@ namespace Chroma
 #if defined(QDPJIT_IS_QDPJITPTX)
     QDP_info_primary("Time for packForQUDA: %f sec",PackForQUDATimer::Instance().get() / 1.0e6);
 #endif
+#endif
+
+#ifdef BUILD_SB
+    // Call superbblas finisher
+    SB::finish();
 #endif
 
     if (! QDP_isInitialized())
