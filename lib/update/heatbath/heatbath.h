@@ -19,6 +19,7 @@
 #include "su2_hb_update.h"
 #include "su3over.h"
 #include "mciter.h"
+#include "mciter_fixed_bc.h"
 
 #endif
 
