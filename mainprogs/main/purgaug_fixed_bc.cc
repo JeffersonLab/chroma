@@ -127,7 +127,7 @@ namespace Chroma
     write(xml, "SaveVolfmt", p.save_volfmt);
     write(xml, "FixedBoundary", p.fixed_boundary);
     write(xml, "FixedBoundaryThick", p.fixed_boundary_thickness);
-    write(xml, "./TimeDirection", p.t_dir);
+    write(xml, "TimeDirection", p.t_dir);
     pop(xml);
   }
 
