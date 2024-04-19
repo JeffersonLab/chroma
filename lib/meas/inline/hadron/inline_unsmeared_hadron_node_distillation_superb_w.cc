@@ -829,6 +829,21 @@ namespace Chroma
         std::copy(gammas_set.begin(), gammas_set.end(), gammas.begin());
       }
 
+      // Get the maximum steps in the time direction
+      int t_extra = 0;
+      for (const auto& disp : disps)
+      {
+	int this_t_extra = 0;
+	for (const auto& dir : disp)
+	{
+	  if (std::abs(dir) == 4)
+	  {
+	    this_t_extra += (dir < 0 ? -1 : 1);
+	    t_extra = std::max(t_extra, std::abs(this_t_extra));
+	  }
+	}
+      }
+
       //
       // Parse the phase
       //
@@ -904,17 +919,17 @@ namespace Chroma
 	  it.Nt_forward = std::max(SB::normalize_coor(it.t_sink - it.t_source, Lt) + 1 - 2, 0);
 	}
 
-	int num_tslices_active = it.Nt_backward + it.Nt_forward + 1;
+	int num_tslices_active = std::min(it.Nt_backward + it.Nt_forward + 1 + 2 * t_extra, Lt);
 	// Make the number of time-slices even; required by SB::doMomGammaDisp_contractions
 	num_tslices_active = std::min(num_tslices_active + num_tslices_active % 2, Lt);
 
 	FromSize fs = active_tslices_source[it.t_source % Lt];
-	SB::union_interval(fs.from, fs.size, it.t_source - it.Nt_backward, num_tslices_active, Lt,
-			   fs.from, fs.size);
+	SB::union_interval(fs.from, fs.size, it.t_source - it.Nt_backward - t_extra,
+			   num_tslices_active, Lt, fs.from, fs.size);
 	active_tslices_source[it.t_source % Lt] = fs;
 	fs = active_tslices_sink[it.t_sink % Lt];
-	SB::union_interval(fs.from, fs.size, it.t_source - it.Nt_backward, num_tslices_active, Lt,
-			   fs.from, fs.size);
+	SB::union_interval(fs.from, fs.size, it.t_source - it.Nt_backward - t_extra,
+			   num_tslices_active, Lt, fs.from, fs.size);
 	active_tslices_sink[it.t_sink % Lt] = fs;
       }
 
@@ -1156,10 +1171,12 @@ namespace Chroma
 
 	  int first_tslice_active; // first middle time-slice to compute
 	  int num_tslices_active; // number of middle time-slices to compute
-	  first_tslice_active = SB::normalize_coor(t_source - sink_source.Nt_backward, Lt);
-	  num_tslices_active = std::min(
-	    sink_source.Nt_backward + (sink_source.Nt_forward == 0 ? 1 : sink_source.Nt_forward),
-	    Lt);
+	  first_tslice_active =
+	    SB::normalize_coor(t_source - sink_source.Nt_backward - t_extra, Lt);
+	  num_tslices_active =
+	    std::min(sink_source.Nt_backward +
+		       (sink_source.Nt_forward == 0 ? 1 : sink_source.Nt_forward) + 2 * t_extra,
+		     Lt);
 
 	  // Make the number of time-slices even; required by SB::doMomGammaDisp_contractions
 	  num_tslices_active = std::min(num_tslices_active + num_tslices_active % 2, Lt);
@@ -1361,8 +1378,9 @@ namespace Chroma
 
 	  double time_contracting_and_writing = -SB::w_time();
 	  SB::doMomGammaDisp_contractions<7, Nd + 5, Nd + 5, SB::Complex>(
-	    u, std::move(invSink), std::move(invSource), first_tslice_active, moms, gamma_mats,
-	    disps, params.param.contract.use_derivP, call, "qgmNnst", max_tslices_in_contraction,
+	    u, std::move(invSink), std::move(invSource), first_tslice_active, t_extra,
+	    num_tslices_active - 2 * t_extra, moms, gamma_mats, disps,
+	    params.param.contract.use_derivP, call, "qgmNnst", max_tslices_in_contraction,
 	    max_moms_in_contraction, dev);
 	  time_contracting_and_writing += SB::w_time();
 
