@@ -9594,14 +9594,14 @@ namespace Chroma
 	    {
 	      auto cv_norm = colorvecs_s3t_norms.get({n, t});
 	      auto phi_i = cv_norm * cv_norm / ip.get({n, t});
-	      if (std::fabs(std::fabs(phi_i) - 1) > 1e-4)
+	      if (std::fabs(std::abs(phi_i) - 1) > 1e-4)
 	      {
 		error = true;
 		if (Layout::nodeNumber() == 0)
 		{
 		  std::cout << "warning: The colorvec fingerprint does not correspond to current "
 			       "gates field: deviation of the phase: "
-			    << std::fabs(std::fabs(phi_i) - 1) << " on t slice "
+			    << std::fabs(std::abs(phi_i) - 1) << " on t slice "
 			    << (from_tslice + t) % Nt << " and vector " << n << std::endl;
 		}
 	      }
@@ -9939,7 +9939,7 @@ namespace Chroma
 	  ip.contract(colorvecs, {}, Conjugate, colorvecs_src, {}, NotConjugate);
 	  for (int t = 0; t < n_tslices0; ++t)
 	    for (int n = 0; n < n_colorvecs; ++n)
-	      if (std::fabs(std::fabs(ip.get({n, t})) - 1) > 1e-4)
+	      if (std::fabs(std::abs(ip.get({n, t})) - 1) > 1e-4)
 		throw std::runtime_error(
 		  "The given colorvec does not correspond to current gates field and smearing");
 	  colorvecs = colorvecs_src;
@@ -10060,7 +10060,7 @@ namespace Chroma
       inline std::string get_optimal_lattice_order(const Coor<Nd>& counts,
 						   const std::string& extra_count_0_labels = "")
       {
-	static_assert(Nd == 4);
+	static_assert(Nd == 4, "only supports 4D");
 
 	// Make a vector of pairs of {label, count} for label being each direction
 	std::vector<std::array<int, 2>> v(4);
