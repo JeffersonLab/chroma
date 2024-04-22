@@ -123,8 +123,8 @@ namespace Chroma
         ids.resize(2*chi_s.size());
 
         for(int soln=0; soln < chi_s.size(); soln++) {
-          ids[2*soln]   = chi_s[soln].getId();
-          ids[2*soln+1] = psi_s[soln].getId();
+          ids[2*soln]   = chi_s[soln]->getId();
+          ids[2*soln+1] = psi_s[soln]->getId();
         }
        
         // Grab all the keys
