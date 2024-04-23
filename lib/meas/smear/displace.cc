@@ -73,6 +73,55 @@ namespace Chroma
   }
 
 
+  //! Apply a adjoint-displacement operator to a lattice gauge field
+  /*!
+   * \ingroup smear
+   *
+   * Arguments:
+   *
+   *  \param u        gauge field ( Read )
+   *  \param psi      lattice field ( Read )
+   *  \param length   length of displacement ( Read )
+   *  \param dir      direction of displacement ( Read )
+   *
+   *  \return  displaced field
+   */
+  template<typename T>
+  T adjDisplace(const multi1d<LatticeColorMatrix>& u, 
+		const T& psi, 
+		int length, int dir,
+		const Subset& sub)
+  {
+    if (dir < 0 || dir >= Nd)
+    {
+      QDPIO::cerr << __func__ << ": invalid direction: dir=" << dir << std::endl;
+      QDP_abort(1);
+    }
+
+    T tmp;
+    T chi;
+    chi[sub] = psi;
+
+    if (length > 0)
+    {
+      for(int n = 0; n < length; ++n)
+      {
+	tmp[sub] = shift(chi, FORWARD, dir);
+	chi[sub] = (u[dir] * tmp) * adj(u[dir]);
+      }
+    }
+    else // If length = or < 0.  If length == 0, does nothing.
+    {
+      for(int n = 0; n > length; --n)
+      {
+	tmp[sub] = shift((adj(u[dir])*chi)*u[dir], BACKWARD, dir);
+	chi[sub] = tmp;
+      }
+    }
+    return chi;
+  }
+
+
   // Apply a displacement operator to a lattice field
   LatticeColorVector displace(const multi1d<LatticeColorMatrix>& u, 
 			      const LatticeColorVector& chi, 
@@ -203,6 +252,56 @@ namespace Chroma
   }
 
 
+  //! Apply a displacement path to a lattice field
+  /*!
+   * \ingroup smear
+   *
+   * Arguments:
+   *
+   *  \param u        gauge field ( Read )
+   *  \param chi      color std::vector field ( Read )
+   *  \param length   displacement length - must be greater than zero ( Read )
+   *  \param path     array of direction of displacement paths - pos/neg, or zero ( Read )
+   *  \param sub      Subset of sites to act ( Read )
+   *
+   *  \return  displaced field
+   */
+  template<typename T>
+  T adjDisplace(const multi1d<LatticeColorMatrix>& u, 
+		const T& psi, 
+		int displacement_length, 
+		const multi1d<int>& path,
+		const Subset& sub)
+  {
+    if (displacement_length < 0)
+    {
+      QDPIO::cerr << __func__ << ": invalid length=" << displacement_length << std::endl;
+      QDP_abort(1);
+    }
+
+    T chi;
+    chi[sub] = psi;
+
+    for(int i=0; i < path.size(); ++i)
+    {
+      if (path[i] > 0)
+      {
+	int disp_dir = path[i] - 1;
+	int disp_len = displacement_length;
+	chi[sub] = adjDisplace<T>(u, chi, disp_len, disp_dir, sub);
+      }
+      else if (path[i] < 0)
+      {
+	int disp_dir = -path[i] - 1;
+	int disp_len = -displacement_length;
+	chi[sub] = adjDisplace<T>(u, chi, disp_len, disp_dir, sub);
+      }
+    }
+
+    return chi;
+  }
+
+
   // Apply a displacement path to a lattice field
   LatticeColorVector displace(const multi1d<LatticeColorMatrix>& u, 
 			      const LatticeColorVector& chi, 
@@ -220,13 +319,20 @@ namespace Chroma
     return displace<LatticeColorVector>(u, chi, length, path, sub);
   }
 
-
   // Apply a displacement path to a lattice field
   LatticeColorMatrix displace(const multi1d<LatticeColorMatrix>& u, 
 			      const LatticeColorMatrix& chi, 
 			      int length, const multi1d<int>& path)
   {
     return displace<LatticeColorMatrix>(u, chi, length, path, QDP::all);
+  }
+
+  // Apply an adj-displacement path to a lattice gauge field
+  LatticeColorMatrix adjDisplace(const multi1d<LatticeColorMatrix>& u, 
+				 const LatticeColorMatrix& chi, 
+				 int length, const multi1d<int>& path)
+  {
+    return adjDisplace<LatticeColorMatrix>(u, chi, length, path, QDP::all);
   }
 
   // Apply a displacement path to a lattice field
@@ -236,6 +342,15 @@ namespace Chroma
 			      const Subset& sub)
   {
     return displace<LatticeColorMatrix>(u, chi, length, path, sub);
+  }
+
+  // Apply a displacement path to a lattice field
+  LatticeColorMatrix adjDisplace(const multi1d<LatticeColorMatrix>& u, 
+				 const LatticeColorMatrix& chi, 
+				 int length, const multi1d<int>& path,
+				 const Subset& sub)
+  {
+    return adjDisplace<LatticeColorMatrix>(u, chi, length, path, sub);
   }
 
 
