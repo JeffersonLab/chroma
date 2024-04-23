@@ -142,8 +142,13 @@ namespace Chroma
         QudaInvertParam local_quda_inv_param = quda_inv_param ;
 
         for (int i = 0; i < 4; i++) local_quda_inv_param.split_grid[i] = 1;
+        /* 
+        * FIXME: This is a hardwire for testing. Please eliminate 
+        */
+        local_quda_inv_param.split_grid[3]=2;
+
         local_quda_inv_param.num_src = chi_s.size();
-        local_quda_inv_param.num_src_per_sub_partition = chi_s.size(); // Since we have only 1 subpartiton
+        local_quda_inv_param.num_src_per_sub_partition = chi_s.size()  / local_quda_inv_param.split_grid[3];
 
         // Do the solve here 
         StopWatch swatch1; 

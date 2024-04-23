@@ -529,7 +529,7 @@ namespace Chroma
 
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
             packed_clov.resize(all.siteTable().size());
-
+            packed_invclov.resize(all.siteTable().size());
             clov->packForQUDA(packed_clov, 0);
             clov->packForQUDA(packed_clov, 1);
 
@@ -635,6 +635,7 @@ namespace Chroma
             {
 
                 START_CODE();
+                QDPIO::cout << "Entering MRHS solution: N_src = " << chi.size() << "\n";
 
                 std::vector<SystemSolverResults_t> res(chi.size());
                 if( psi.size() != chi.size() ) {
