@@ -14,7 +14,7 @@ namespace Chroma
 {
   struct SysSolverQUDACloverParams { 
     SysSolverQUDACloverParams(XMLReader& xml, const std::string& path);
-    SysSolverQUDACloverParams() {
+    SysSolverQUDACloverParams() : GridSplitDims(Nd) {
       solverType=CG;
       cudaPrecision=DEFAULT;
       cudaReconstruct=RECONS_12;
@@ -30,6 +30,10 @@ namespace Chroma
       backup_invP = false;
       dump_on_failP = false;
       Pipeline = 1;
+      GridSplitDims[0] = 1;
+      GridSplitDims[1] = 1;
+      GridSplitDims[2] = 1;
+      GridSplitDims[3] = 1;
     };
 
     SysSolverQUDACloverParams( const SysSolverQUDACloverParams& p) {
@@ -55,6 +59,8 @@ namespace Chroma
       backup_inv_param = p.backup_inv_param;
       dump_on_failP = p.dump_on_failP;
       Pipeline = p.Pipeline;
+      GridSplitDims.resize(Nd);
+      for(int i=0; i < Nd; i++) GridSplitDims[i] = p.GridSplitDims[i];
     }
 
    
@@ -87,6 +93,7 @@ namespace Chroma
     
     // Pipeline depth 
     int Pipeline;
+    multi1d<int> GridSplitDims;
   };
 
   void read(XMLReader& xml, const std::string& path, SysSolverQUDACloverParams& p);

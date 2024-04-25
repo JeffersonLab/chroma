@@ -141,14 +141,32 @@ namespace Chroma
         // Relies on quda_inv_param being just a dumb/struct and or copyable
         QudaInvertParam local_quda_inv_param = quda_inv_param ;
 
-        for (int i = 0; i < 4; i++) local_quda_inv_param.split_grid[i] = 1;
-        /* 
-        * FIXME: This is a hardwire for testing. Please eliminate 
-        */
-        local_quda_inv_param.split_grid[3]=2;
+        int totalSubgrids=1;
+        const multi1d<int>& machine_size=QDP::Layout::logicalSize();
 
+        for (int i = 0; i < Nd; i++) {
+            local_quda_inv_param.split_grid[i] = invParam.GridSplitDims[i];
+            totalSubgrids *= invParam.GridSplitDims[i];
+            if ( machine_size[i] % invParam.GridSplitDims[i] != 0 ) {
+                QDPIO::cerr << "The split-grid-subgrid dimensions must divide the number ranks in each dimension exactly\n";
+                QDPIO::cerr << "Currently this is not the case: dim=" << i << " machine_size["<<i<<"] = " << machine_size[i]
+                            << " and GridSplitDims[" << i << "] = " << invParam.GridSplitDims[i] <<"\n";
+                QDPIO::cerr << "Aborting!\n";
+                QDP_abort(1);
+
+            }
+        }
+
+        if( (chi_s.size() % totalSubgrids) != 0 ) {
+            QDPIO::cerr << "The number of split-grid-subgrids must divide the number of sources exactly\n";
+            QDPIO::cerr << "Currently it does not: n_src = " << chi_s.size() 
+                            << " and split-grid-subgrids = " << totalSubgrids << "\n";
+            QDPIO::cerr << "Aborting!\n";
+            QDP_abort(1);
+                        
+        }
         local_quda_inv_param.num_src = chi_s.size();
-        local_quda_inv_param.num_src_per_sub_partition = chi_s.size()  / local_quda_inv_param.split_grid[3];
+        local_quda_inv_param.num_src_per_sub_partition = chi_s.size()/totalSubgrids;
 
         // Do the solve here 
         StopWatch swatch1; 
@@ -158,22 +176,18 @@ namespace Chroma
         //  gauge is available in the class definition
         //  however we need to do a bit more work to get the clover:
         //
-        void *clover[2];
-        void *cloverInv[2];
-
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
-        clover[0] = (void *)&(packed_clov[0]);
-        clover[1] = (void *)&(packed_clov[1]);
-        cloverInv[0] = (void *)&(packed_invclov[0]);
-        cloverInv[1] = (void *)&(packed_invclov[1]);
+        
+        invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, (void *)gauge, (QudaGaugeParam*)&q_gauge_param, (void *)&(packed_clov[0]), (void *)&(packed_invclov[0]));
 #else
 
+        void *clover[2];
+        void *cloverInv[2];
         // This is a yucky macro and needs the existence of 'clover' and 'cloverInv' to work
         GetMemoryPtrClover(clov->getOffId(),clov->getDiaId(),invclov->getOffId(),invclov->getDiaId());
 
+        invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, (void *)gauge, (QudaGaugeParam*)&q_gauge_param, clover, cloverInv);
 #endif
-        invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, (void *)gauge, (QudaGaugeParam*)&q_gauge_param, clover,
-                                       cloverInv);
         swatch1.stop();
 
         QDPIO::cout << "QUDA_"<<solver_string<<"_CLOVER_SOLVER: time="<< local_quda_inv_param.secs <<" s" ;
