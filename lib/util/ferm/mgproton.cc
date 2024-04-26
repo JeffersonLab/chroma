@@ -485,6 +485,27 @@ namespace Chroma
     /// \param passing_initial_guess: whether `y` contains a solution guess
     /// \param verb: verbosity level
     /// \param prefix: prefix printed before every line
+    ///
+    /// Method:
+    /// r0 = p = r = b - A * x  // compute initial residual
+    /// rho = r0' * r
+    /// for i=1,2,..
+    ///   Kp = prec * p
+    ///   AKp = A * Kp
+    ///   alpha = rho / (r0' * AKp)
+    ///   s = r - AKp * alpha
+    ///   Ks = prec * s
+    ///   AKs = A * s
+    ///   KAKs = prec * AKs
+    ///   omega = (KAKs' * Ks) / (KAKs' * KAKs)
+    ///   x = x + Kp * alpha + Ks * omega
+    ///   r = s - AKs * omega
+    ///   exit if |r| < |b|*tol
+    ///   prev_rho = rho
+    ///   rho = r0' * r
+    ///   beta = (rho/prev_rho)*(alpha/omega)
+    ///   p = r + beta*(p - omega*AKp)
+    /// end
 
     template <std::size_t NOp, typename COMPLEX>
     void bicgstab(const Operator<NOp, COMPLEX>& op, const Tensor<NOp + 1, COMPLEX>& x,
@@ -527,7 +548,7 @@ namespace Chroma
       // Counting op applications
       unsigned int nops = 0;
 
-      // Compute residual, r = op * y - x
+      // Compute residual, r = x - op * y
       Tensor<NOp + 1, COMPLEX> rj;
       if (passing_initial_guess)
       {
@@ -566,11 +587,11 @@ namespace Chroma
 	auto sj = rj.clone();
 	contract<NOp + 1>(Apj, alpha_j, "").scale(-1).addTo(sj);
 
-	// omega_j = (sj' * Asj) / (Asj' * Asj)
+	// omega_j = (Asj' * sj) / (Asj' * Asj)
 	auto Asj = op(sj);
 	nops += num_cols;
 	auto omega_j =
-	  div(contract<1>(Asj, sj.conj(), order_rows), contract<1>(Asj, Asj.conj(), order_rows));
+	  div(contract<1>(Asj.conj(), sj, order_rows), contract<1>(Asj, Asj.conj(), order_rows));
 
 	// y = y + alpha_j * pj + omega_j * sj
 	contract<NOp + 1>(pj, alpha_j, "").addTo(y);
@@ -1440,7 +1461,7 @@ namespace Chroma
 	  if (spin_splitting == SpinSplitting::Chirality)
 	  {
 	    nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
-	    auto g5 = getGamma5<COMPLEX>(ns, OnHost), g5pos = g5.cloneOn(OnHost),
+	    auto g5 = getGamma5<COMPLEX>(ns, OnHost, nv.dist), g5pos = g5.cloneOn(OnHost),
 		 g5neg = g5.cloneOn(OnHost);
 	    for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
 	      g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
@@ -1738,7 +1759,7 @@ namespace Chroma
 	ColOrdering co_blk =
 	  getOption<ColOrdering>(ops, "operator_block_ordering", getColOrderingMap(), RowMajor);
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5<COMPLEX>(ns);
+	auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
 	const Operator<NOp, COMPLEX> op_c = cloneOperator(
 	  Operator<NOp, COMPLEX>{
 	    [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1803,7 +1824,7 @@ namespace Chroma
 
 	OperatorFun<NOp, COMPLEX> solver;
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5<COMPLEX>(ns);
+	auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
 	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
 	{
@@ -3000,7 +3021,7 @@ namespace Chroma
 	  throw std::runtime_error("getDagger: unsupported input preconditioner");
 
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5<COMPLEX>(ns);
+	auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
 
 	// Return the solver
 	return {
@@ -3034,7 +3055,7 @@ namespace Chroma
 	  throw std::runtime_error("getG5: unsupported input preconditioner");
 
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5<COMPLEX>(ns);
+	auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
 
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -3548,7 +3569,7 @@ namespace Chroma
 
 	// Return the projector
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5<COMPLEX>(ns);
+	auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
 	auto mult_by_g5 = [=](Tensor<NOp + 1, COMPLEX> v) {
 	  char i = detail::get_free_label(v.order);
 	  return contract<NOp + 1>(g5.rename_dims({{'j', 's'}, {'i', i}}), v, "s")

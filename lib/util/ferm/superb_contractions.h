@@ -1051,11 +1051,13 @@ namespace Chroma
       }
 
       /// Return whether the tensor isn't local or on master or replicated
-      inline Distribution compatible_oneveryone_distribution(const Distribution& dist)
+      inline Distribution
+      compatible_oneveryone_distribution(const Distribution& dist,
+					 const Distribution& everyone_dist = OnEveryone)
       {
 	if (dist == Local || dist == Glocal)
 	  return dist;
-	return OnEveryone;
+	return everyone_dist;
       }
 
       /// Stores the subtensor supported on each node (used by class Tensor)
@@ -2325,10 +2327,10 @@ namespace Chroma
 	if (ctx().plat != superbblas::CPU)
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements from tensors not stored on the host");
-	if (dist != OnEveryoneReplicated && dist != Local)
+	if (dist != OnEveryoneReplicated && dist != Local && dist != Glocal)
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements on a distributed tensor; change the distribution to "
-	    "`OnEveryoneReplicated` or local");
+	    "`OnEveryoneReplicated` or local or glocal");
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
@@ -2358,10 +2360,10 @@ namespace Chroma
 
       void set(Coor<N> coor, value_type v)
       {
-	if (dist != OnEveryoneReplicated && dist != Local)
+	if (dist != OnEveryoneReplicated && dist != Local && dist != Glocal)
 	  throw std::runtime_error(
 	    "Unsupported to `set` elements on a distributed tensor; change the distribution to "
-	    "`OnEveryoneReplicated` or local");
+	    "`OnEveryoneReplicated` or local or glocal");
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
@@ -3893,9 +3895,10 @@ namespace Chroma
 	if (v.allocation.use_count() > 1)
 	  v = v.clone();
 
-	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
-	  throw std::runtime_error(
-	    "One of the contracted tensors or the output tensor is local and others are not!");
+	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local) ||
+	    (v.dist == Glocal) != (w.dist == Glocal) || (w.dist == Glocal) != (dist == Glocal))
+	  throw std::runtime_error("cholInv: one of the contracted tensors or the output tensor "
+				   "is local/glocal and others are not!");
 
 	if (detail::isDistributedOnEveryone(v.dist) && w.dist == OnEveryoneReplicated)
 	  w = w.make_suitable_for_contraction(v);
@@ -3906,19 +3909,23 @@ namespace Chroma
 	if (std::fabs(std::imag(v.scalar)) != 0 || std::real(v.scalar) < 0)
 	  throw std::runtime_error("cholInv: unsupported a negative or imaginary scale");
 
+	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
+	
 	value_type* v_ptr = v.data();
 	value_type* w_ptr = w.data();
 	value_type* ptr = data_for_writing();
-	superbblas::cholesky<Nv>(v.p->p.data(), v.dim, 1, v.order.c_str(), &v_ptr,
-				 order_rows.c_str(), order_cols.c_str(), &v.ctx(), MPI_COMM_WORLD,
+	superbblas::cholesky<Nv>(v.p->p.data() + p_disp, v.dim, 1, v.order.c_str(), &v_ptr,
+				 order_rows.c_str(), order_cols.c_str(), &v.ctx(), comm,
 				 superbblas::FastToSlow);
 	superbblas::trsm<Nv, Nw, N>(
 	  w.scalar / std::sqrt(v.scalar) / scalar, //
-	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const value_type**)&v_ptr, order_rows.c_str(),
-	  order_cols.c_str(),
-	  &v.ctx(),									  //
-	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr, &w.ctx(), //
-	  p->p.data(), dim, 1, order.c_str(), &ptr, &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
+	  v.p->p.data() + p_disp, v.dim, 1, v.order.c_str(), (const value_type**)&v_ptr,
+	  order_rows.c_str(), order_cols.c_str(),
+	  &v.ctx(), //
+	  w.p->p.data() + p_disp, w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr,
+	  &w.ctx(), //
+	  p->p.data() + p_disp, dim, 1, order.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
@@ -3946,9 +3953,13 @@ namespace Chroma
 	}
 
 	v.copyTo(*this);
+
+	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
+
 	value_type* ptr = data_for_writing();
-	superbblas::inversion<Nv>(p->p.data(), dim, 1, order.c_str(), &ptr, order_rows.c_str(),
-				  order_cols.c_str(), &ctx(), MPI_COMM_WORLD,
+	superbblas::inversion<Nv>(p->p.data() + p_disp, dim, 1, order.c_str(), &ptr,
+				  order_rows.c_str(), order_cols.c_str(), &ctx(), comm,
 				  superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
@@ -3996,9 +4007,10 @@ namespace Chroma
 	  return;
 	}
 
-	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
-	  throw std::runtime_error("solve: One of the contracted tensors or the output tensor is "
-				   "local and others are not!");
+	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local) ||
+	    (v.dist == Glocal) != (w.dist == Glocal) || (w.dist == Glocal) != (dist == Glocal))
+	  throw std::runtime_error("solve: one of the contracted tensors or the output tensor "
+				   "is local/glocal and others are not!");
 
 	// Help superbblas to get the same verbatim value in all processes for the same tensor element in all
 	// replicated copies
@@ -4016,16 +4028,20 @@ namespace Chroma
 	if (v.dist == OnEveryoneReplicated && detail::isDistributedOnEveryone(w.dist))
 	  v = v.make_suitable_for_contraction(w);
 
+	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
+	
 	value_type* v_ptr = v.data();
 	value_type* w_ptr = w.data();
 	value_type* ptr = data_for_writing();
 	superbblas::gesm<Nv, Nw, N>(
 	  w.scalar / v.scalar / scalar, //
-	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const value_type**)&v_ptr, order_rows.c_str(),
-	  order_cols.c_str(),
-	  &v.ctx(),									  //
-	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr, &w.ctx(), //
-	  p->p.data(), dim, 1, order.c_str(), &ptr, &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
+	  v.p->p.data() + p_disp, v.dim, 1, v.order.c_str(), (const value_type**)&v_ptr,
+	  order_rows.c_str(), order_cols.c_str(),
+	  &v.ctx(), //
+	  w.p->p.data() + p_disp, w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr,
+	  &w.ctx(), //
+	  p->p.data() + p_disp, dim, 1, order.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
@@ -4312,27 +4328,27 @@ namespace Chroma
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	std::stringstream ss;
-	auto t = toComplex();
-	auto t_host = t.like_this(none, {}, OnHost, OnMaster);
-	t.copyTo(t_host);
-	if (Layout::nodeNumber() == 0)
+	auto t_host =
+	  toComplex()
+	    .make_sure(none, OnHost, detail::compatible_oneveryone_distribution(dist, OnMaster))
+	    .getLocal();
+	if (t_host)
 	{
+	  assert(!t_host.isSubtensor());
 	  using namespace detail::repr;
+	  std::stringstream ss;
 	  ss << "% " << repr(data()) << std::endl;
 	  ss << "% dist=" << p->p << std::endl;
 	  ss << name << "=reshape([";
-	  assert(!t_host.isSubtensor());
 	  std::size_t vol = volume();
 	  for (std::size_t i = 0; i < vol; ++i)
 	  {
-	    //using detail::repr::operator<<;
 	    ss << " ";
 	    detail::repr::operator<<(ss, t_host.data()[i]);
 	  }
 	  ss << "], [" << size << "]);" << std::endl;
+	  detail::log(1, ss.str());
 	}
-	detail::log(1, ss.str());
       }
 #  if 0
       /// Get where the tensor is stored
@@ -5080,10 +5096,12 @@ namespace Chroma
       return Tensor<1, COMPLEX>("i", Coor<1>{Index(v.size())}, OnHost, dist, v.data());
     }
 
-    inline Tensor<2, Complex> asTensorView(SpinMatrix& smat)
+    inline Tensor<2, Complex> asTensorView(SpinMatrix& smat,
+					   const Distribution& dist = OnEveryoneReplicated)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(smat.getF());
-      return Tensor<2, Complex>("ji", Coor<2>{Ns, Ns}, OnHost, OnEveryoneReplicated, v_ptr);
+      return Tensor<2, Complex>("ji", Coor<2>{Ns, Ns}, OnHost,
+				detail::compatible_replicated_distribution(dist), v_ptr);
     }
 
     inline SpinMatrix SpinMatrixIdentity()
@@ -5099,11 +5117,12 @@ namespace Chroma
     }
 
     template <typename COMPLEX = Complex>
-    Tensor<2, COMPLEX> Gamma(int gamma, DeviceHost dev = OnDefaultDevice)
+    Tensor<2, COMPLEX> Gamma(int gamma, DeviceHost dev = OnDefaultDevice,
+			     const Distribution& dist = OnEveryoneReplicated)
     {
       SpinMatrix g = QDP::Gamma(gamma) * SpinMatrixIdentity();
-      Tensor<2, COMPLEX> r("ij", {Ns, Ns}, dev, OnEveryoneReplicated);
-      asTensorView(g).copyTo(r);
+      Tensor<2, COMPLEX> r("ij", {Ns, Ns}, dev, detail::compatible_replicated_distribution(dist));
+      asTensorView(g, dist).copyTo(r);
       return r;
     }
 
@@ -5396,7 +5415,8 @@ namespace Chroma
       /// Construct the sparse operator
       void construct()
       {
-	if ((ii.dist != OnEveryone && ii.dist != OnEveryoneAsChroma && ii.dist != Local) ||
+	if ((ii.dist != OnEveryone && ii.dist != OnEveryoneAsChroma && ii.dist != Local &&
+	     ii.dist != Glocal) ||
 	    ii.dist != jj.dist || ii.dist != data.dist ||
 	    (kron && kron.dist != detail::compatible_replicated_distribution(ii.dist)))
 	  throw std::runtime_error("SpTensor::construct: unexpected distribution of the data");
@@ -5627,6 +5647,10 @@ namespace Chroma
 					    const std::map<char, int>& img_kvfrom = {},
 					    const std::map<char, int>& img_kvsize = {}) const
       {
+	// Check that the object is not local or glocal (FIXME)
+	if (ii.dist == Local || ii.dist == Glocal)
+	  throw std::runtime_error("SpTensor::kvslice_from_size: unexpected distribution of the data");
+
 	// Check that we aren't slicing the blocking dimensions
 	bool fail = false;
 	std::string o_blk_d = std::string(d.order.begin(), d.order.begin() + nblockd);
@@ -8790,21 +8814,23 @@ namespace Chroma
     /// \param ns: number of spins
 
     template <typename COMPLEX = Complex>
-    Tensor<2, COMPLEX> getGamma5(int ns, DeviceHost dev = OnDefaultDevice)
+    Tensor<2, COMPLEX> getGamma5(int ns, DeviceHost dev = OnDefaultDevice,
+				 const Distribution& dist = OnEveryoneReplicated)
     {
+      const auto& new_dist = detail::compatible_replicated_distribution(dist);
       if (ns == 1)
       {
-	Tensor<2, COMPLEX> r("ij", {1, 1}, OnHost, OnEveryoneReplicated);
+	Tensor<2, COMPLEX> r("ij", {1, 1}, OnHost, new_dist);
 	r.set({{0, 0}}, COMPLEX{1});
 	return r.make_sure(none, dev);
       }
       else if (ns == Ns)
       {
-	return SB::Gamma(Ns * Ns - 1).template make_sure<COMPLEX>(none, dev);
+	return SB::Gamma(Ns * Ns - 1).template make_sure<COMPLEX>(none, dev, new_dist);
       }
       else if (ns == 2)
       {
-	Tensor<2, COMPLEX> r("ij", {2, 2}, OnHost, OnEveryoneReplicated);
+	Tensor<2, COMPLEX> r("ij", {2, 2}, OnHost, new_dist);
 	r.set_zero();
 	r.set({{0, 0}}, COMPLEX{1});
 	r.set({{1, 1}}, COMPLEX{-1});
