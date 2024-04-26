@@ -241,7 +241,7 @@ namespace Chroma
 
     /// Solve iteratively op * y = x using FGMRES
     /// \param op: problem matrix
-    /// \param prec: preconditioner
+    /// \param prec: left preconditioner
     /// \param x: input right-hand-sides
     /// \param y: the solution vectors
     /// \param max_basis_size: maximum rank of the search subspace basis per t
@@ -297,7 +297,7 @@ namespace Chroma
       // Check that the operator and the preconditioner are compatible with the input and output vectors
       if (!op.d.is_compatible(x) || !op.d.is_compatible(y) || (prec && !prec.d.is_compatible(op.d)))
 	throw std::runtime_error("Either the input or the output vector isn't compatible with the "
-				 "operator or de the preconditioner");
+				 "operator or the preconditioner");
 
       // Get an unused label for the search subspace columns
       char Vc = detail::get_free_label(x.order);
@@ -476,6 +476,7 @@ namespace Chroma
 
     /// Solve iteratively op * y = x using BICGSTAB
     /// \param op: problem matrix
+    /// \param prec: left preconditioner
     /// \param x: input right-hand-sides
     /// \param y: the solution vectors
     /// \param tol: maximum tolerance
@@ -495,7 +496,7 @@ namespace Chroma
     ///   alpha = rho / (r0' * AKp)
     ///   s = r - AKp * alpha
     ///   Ks = prec * s
-    ///   AKs = A * s
+    ///   AKs = A * Ks
     ///   KAKs = prec * AKs
     ///   omega = (KAKs' * Ks) / (KAKs' * KAKs)
     ///   x = x + Kp * alpha + Ks * omega
@@ -508,11 +509,11 @@ namespace Chroma
     /// end
 
     template <std::size_t NOp, typename COMPLEX>
-    void bicgstab(const Operator<NOp, COMPLEX>& op, const Tensor<NOp + 1, COMPLEX>& x,
-		  Tensor<NOp + 1, COMPLEX>& y, double tol, unsigned int max_its = 0,
-		  bool error_if_not_converged = true, unsigned int max_residual_updates = 0,
-		  bool passing_initial_guess = false, Verbosity verb = NoOutput,
-		  std::string prefix = "")
+    void bicgstab(const Operator<NOp, COMPLEX>& op, Operator<NOp, COMPLEX> prec,
+		  const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX>& y, double tol,
+		  unsigned int max_its = 0, bool error_if_not_converged = true,
+		  unsigned int max_residual_updates = 0, bool passing_initial_guess = false,
+		  Verbosity verb = NoOutput, std::string prefix = "")
     {
       detail::log(1, prefix + " starting bicgstab");
 
@@ -533,10 +534,10 @@ namespace Chroma
 				 ? 100
 				 : 100;
 
-      // Check that the operator is compatible with the input and output vectors
-      if (!op.d.is_compatible(x) || !op.d.is_compatible(y))
+      // Check that the operator and the preconditioner are compatible with the input and output vectors
+      if (!op.d.is_compatible(x) || !op.d.is_compatible(y) || (prec && !prec.d.is_compatible(op.d)))
 	throw std::runtime_error("Either the input or the output vector isn't compatible with the "
-				 "operator");
+				 "operator or the preconditioner");
 
       // Get an unused label for the search subspace columns
       std::string order_cols = detail::remove_dimensions(x.order, op.i.order);
@@ -545,70 +546,105 @@ namespace Chroma
       if (num_cols == 0)
 	return;
 
-      // Counting op applications
-      unsigned int nops = 0;
+      // Counting op and prec applications
+      unsigned int nops = 0, nprecs = 0;
 
       // Compute residual, r = x - op * y
-      Tensor<NOp + 1, COMPLEX> rj;
+      Tensor<NOp + 1, COMPLEX> r;
       if (passing_initial_guess)
       {
-	rj = op(y).scale(-1);
+	r = op(y).scale(-1);
 	nops += num_cols;
       }
       else
       {
-	rj = op.template make_compatible_img<NOp + 1>(order_cols, x.kvdim());
-	rj.set_zero();
+	r = op.template make_compatible_img<NOp + 1>(order_cols, x.kvdim());
+	r.set_zero();
 	y.set_zero();
       }
-      x.addTo(rj);
-      auto normr0 = norm<1>(rj, op.order_t + order_cols); // type std::vector<real of T>
+      x.addTo(r);
+      auto normr0 = norm<1>(r, op.order_t + order_cols); // type std::vector<real of T>
       if (max(normr0) == 0)
 	return;
 
       // Choose an arbitrary vector that isn't orthogonal to r
-      auto r0_star = rj.clone();
+      auto r0 = op.template make_compatible_img<NOp + 1>(order_cols, x.kvdim());
+      r.copyTo(r0);
 
       // Do the iterations
       auto normr = normr0.clone();	 ///< residual norms
       unsigned int it = 0;		 ///< iteration number
       double max_tol = HUGE_VAL;	 ///< maximum residual norm
       unsigned int residual_updates = 0; ///< number of residual updates
-      auto pj = rj.clone();		 ///< p0 = r0
+      auto p = r0.clone();		 ///< p0 = r0
+      auto rho = contract<1>(r, r0.conj(), order_rows); // rho = r0' * r
+      auto Kp = prec ? r0.make_compatible() : p;
+      auto AKp = r0.make_compatible();
+      auto Ks = prec ? r0.make_compatible() : r;
+      auto AKs = r0.make_compatible();
+      auto KAKs = prec ? r0.make_compatible() : AKs;
       for (it = 0; it < max_its;)
       {
-	// alpha_j = (r0*' * rj) / (r0*' * Apj)
-	auto Apj = op(pj);
+	// Kp = prec * p
+	if (prec)
+	{
+	  prec(p, Kp);
+	  nprecs += num_cols;
+	}
+
+	// AKp = A * Kp
+	op(Kp, AKp);
 	nops += num_cols;
-	auto r0s_rj = contract<1>(rj, r0_star.conj(), order_rows);
-	auto alpha_j = div(r0s_rj, contract<1>(Apj, r0_star.conj(), order_rows));
 
-	// sj = rj - alpha_j * Apj
-	auto sj = rj.clone();
-	contract<NOp + 1>(Apj, alpha_j, "").scale(-1).addTo(sj);
+	// alpha = rho / (r0' * AKp)
+	auto alpha = div(rho, contract<1>(AKp, r0.conj(), order_rows));
 
-	// omega_j = (Asj' * sj) / (Asj' * Asj)
-	auto Asj = op(sj);
+	// s = r - alpha * AKp
+	auto s = r;
+	contract<NOp + 1>(AKp, alpha.scale(-1), "", AddTo, s);
+
+	// Ks = prec * s
+	if (prec)
+	{
+	  prec(s, Ks);
+	  nprecs += num_cols;
+	}
+
+	// AKs = A * Ks
+	op(Ks, AKs);
 	nops += num_cols;
-	auto omega_j =
-	  div(contract<1>(Asj.conj(), sj, order_rows), contract<1>(Asj, Asj.conj(), order_rows));
 
-	// y = y + alpha_j * pj + omega_j * sj
-	contract<NOp + 1>(pj, alpha_j, "").addTo(y);
-	contract<NOp + 1>(sj, omega_j, "").addTo(y);
+	// KAKs = prec * AKs
+	if (prec)
+	{
+	  prec(AKs, KAKs);
+	  nprecs += num_cols;
+	}
 
-	// r_{j+1} = sj - omega_j * Asj
-	rj = sj;
-	contract<NOp + 1>(Asj, omega_j, "").scale(-1).addTo(rj);
+	// omega = (KAKs' * Ks) / (KAKs' * KAKs)
+	auto omega =
+	  div(contract<1>(KAKs.conj(), Ks, order_rows), contract<1>(KAKs, KAKs.conj(), order_rows));
 
-	// beta_j = (r0*' * r_{j+1}) / (r0*' * rj) * (alpha_j / omega_j)
-	auto beta_j =
-	  mult(div(contract<1>(rj, r0_star.conj(), order_rows), r0s_rj), div(alpha_j, omega_j));
+	// y = y + alpha * Kp + omega * Ks
+	contract<NOp + 1>(Kp, alpha, "").addTo(y);
+	contract<NOp + 1>(Ks, omega, "").addTo(y);
 
-	// p_{j+1} = r_{j+1} + beta_j * (pj - omega_j * Apj)
-	contract<NOp + 1>(Apj, omega_j, "").scale(-1).addTo(pj);
-	pj = contract<NOp + 1>(pj, beta_j, "");
-	rj.addTo(pj);
+	// r = s - omega * AKs (NOTE: s == r)
+	contract<NOp + 1>(AKs, omega.scale(-1), "", AddTo, r);
+
+	// prev_rho = rho, rho = r0' * r 
+	auto prev_rho = rho;
+	contract<1>(r, r0.conj(), order_rows, CopyTo, rho);
+
+	// beta = rho / prev_rho * (alpha / omega)
+	auto beta = mult(div(rho, prev_rho), div(alpha, omega));
+
+	// p = r + beta * (p - omega * AKp)
+	auto aux = AKs;
+	p.copyTo(aux);
+	contract<NOp + 1>(AKp, omega.scale(-1), "", AddTo, aux);
+	r.copyTo(p);
+	contract<NOp + 1>(aux, beta, "", AddTo, p);
 
 	// Recompute residual vector if needed
 	if (residual_updates < max_residual_updates)
@@ -617,24 +653,24 @@ namespace Chroma
 	}
 	else
 	{
-	  op(y.scale(-1), rj); // rj = op(-y)
-	  x.addTo(rj);
-	  rj.copyTo(pj);
+	  op(y.scale(-1), r); // r = op(-y)
+	  x.addTo(r);
+	  r.copyTo(p);
 	  nops += num_cols;
 	  residual_updates = 0;
 	}
 
 	// Compute the norm
-	auto normr = norm<1>(rj, op.order_t + order_cols);
+	auto normr = norm<1>(r, op.order_t + order_cols);
 
 	// Show error in the residual
 	if (superbblas::getDebugLevel() > 0)
 	{
-	  auto rd = rj.make_compatible();
+	  auto rd = r.make_compatible();
 	  op(y, rd); // rd = op(y)
 	  nops += num_cols;
 	  x.scale(-1).addTo(rd);
-	  rj.addTo(rd);
+	  r.addTo(rd);
 	  auto normrd = norm<1>(rd, op.order_t + order_cols);
 	  double max_tol_d = max(div(normrd, normr));
 	  QDPIO::cout << prefix
@@ -661,10 +697,10 @@ namespace Chroma
       // Check final residual
       if (error_if_not_converged)
       {
-	op(y, rj); // r = op(y)
+	op(y, r); // r = op(y)
 	nops += num_cols;
-	x.scale(-1).addTo(rj);
-	auto normr = norm<1>(rj, op.order_t + order_cols);
+	x.scale(-1).addTo(r);
+	auto normr = norm<1>(r, op.order_t + order_cols);
 	max_tol = max(div(normr, normr0));
 	if (tol > 0 && max_tol > tol)
 	  throw std::runtime_error("bicgstab didn't converged and you ask for checking the error");
@@ -674,11 +710,12 @@ namespace Chroma
       if (verb >= JustSummary)
 	QDPIO::cout << prefix << " MGPROTON BICGSTAB summary #its.: " << it
 		    << " max rel. residual: " << detail::tostr(max_tol, 2) << " matvecs: " << nops
-		    << std::endl;
+		    << " precs: " << nprecs << std::endl;
     }
 
     /// Solve iteratively op * y = x using Minimal Residual (valid for positive definite linear systems)
     /// \param op: problem matrix
+    /// \param prec: left preconditioner
     /// \param x: input right-hand-sides
     /// \param y: the solution vectors
     /// \param tol: maximum tolerance
@@ -1196,13 +1233,6 @@ namespace Chroma
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
-	// use left preconditioning if given
-	Operator<NOp, COMPLEX> prec_op;
-	if (prec)
-	  prec_op = Operator<NOp, COMPLEX>{
-	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) { op(prec(x), y); },
-	    op.i, op.d, nullptr, op};
-
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		  Tracker _t(std::string("bicgstab ") + prefix);
@@ -1210,12 +1240,8 @@ namespace Chroma
 		  foreachInChuncks(
 		    x, y, max_simultaneous_rhs,
 		    [=](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
-		      if (prec)
-			bicgstab(prec_op, prec(x), y, tol, max_its, error_if_not_converged,
-				 max_residual_updates, false /* no init guess */, verb, prefix);
-		      else
-			bicgstab(op, x, y, tol, max_its, error_if_not_converged,
-				 max_residual_updates, false /* no init guess */, verb, prefix);
+		      bicgstab(op, prec, x, y, tol, max_its, error_if_not_converged,
+			       max_residual_updates, false /* no init guess */, verb, prefix);
 		    },
 		    'n');
 		},
