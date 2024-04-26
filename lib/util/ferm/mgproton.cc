@@ -1430,7 +1430,7 @@ namespace Chroma
       getMGProlongator(const Operator<NOp, COMPLEX>& op, unsigned int num_null_vecs,
 		       const std::map<char, unsigned int>& mg_blocking,
 		       const std::map<char, unsigned int>& layout_blocking,
-		       SpinSplitting spin_splitting, const Operator<NOp, COMPLEX>& null_solver,
+		       SpinSplitting spin_splitting, const Options& null_vecs_ops,
 		       SolverSpace solverSpace)
       {
 	detail::log(1, "starting getMGProlongator");
@@ -1456,22 +1456,37 @@ namespace Chroma
 	if (ns == 1)
 	  spin_splitting = SpinSplitting::None;
 
-	// Create the random initial guesses to be used in solving Ax=0
-	auto b = op.template make_compatible_img<NOp + 1>("n", {{'n', num_null_vecs}});
-	if (solverSpace == FullSpace)
+	const Operator<NOp, COMPLEX> null_solver =
+	  getSolver(op, getOptions(null_vecs_ops, "solver"));
+	auto eigensolver_ops = getOptionsMaybe(null_vecs_ops, "eigensolver");
+	Tensor<NOp + 1, COMPLEX> nv;
+	if (!eigensolver_ops)
 	{
-	  nrand(b);
+	  // Create the random initial guesses to be used in solving Ax=0
+	  auto b = op.template make_compatible_img<NOp + 1>("n", {{'n', num_null_vecs}});
+	  if (solverSpace == FullSpace)
+	  {
+	    nrand(b);
+	  }
+	  else
+	  {
+	    b.set_zero();
+	    nrand(b.kvslice_from_size({}, {{'X', 1}}));
+	  }
+
+	  // Solve Ax=0 with the random initial guesses
+	  nv = null_solver(op(b));
+	  b.scale(-1).addTo(nv);
+	  b.release();
 	}
 	else
 	{
-	  b.set_zero();
-	  nrand(b.kvslice_from_size({}, {{'X', 1}}));
+	  // Compute the eigenpairs of inv(op) * g5, the right singular vectors of op
+	  auto eigensolver = SB::getInexactEigensolverGD(null_solver, eigensolver_ops.getSome());
+	  double tol = getOption<double>(null_vecs_ops, "tol", 0.1);
+	  auto values_vectors = eigensolver(num_null_vecs, tol);
+	  nv = std::get<1>(values_vectors);
 	}
-
-	// Solve Ax=0 with the random initial guesses
-	auto nv = null_solver(op(b));
-	b.scale(-1).addTo(nv);
-	b.release();
 
 	Operator<NOp, COMPLEX> V;
 	auto opdims_nat = opdims;
@@ -1751,8 +1766,6 @@ namespace Chroma
 						     {'y', layout_blocking_v[1]},
 						     {'z', layout_blocking_v[2]},
 						     {'t', layout_blocking_v[3]}};
-	const Operator<NOp, COMPLEX> nullSolver =
-	  getSolver(op, getOptions(ops, "solver_null_vecs"));
 	static const std::map<std::string, SpinSplitting> m_spin_splitting{
 	  {"none", SpinSplitting::None},
 	  {"chirality_splitting", SpinSplitting::Chirality},
@@ -1767,7 +1780,7 @@ namespace Chroma
 	    getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0)
 	{
 	  V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, spin_splitting,
-			       nullSolver, solverSpace);
+			       getOptions(ops, "null_vecs"), solverSpace);
 	  if (prolongator_id.size() > 0)
 	    getProlongatorCache<NOp, COMPLEX>()[prolongator_id] = V;
 	}
@@ -3655,12 +3668,6 @@ namespace Chroma
       template <std::size_t NOp, typename COMPLEX>
       Projector<NOp, COMPLEX> getMGDeflationProj(Operator<NOp, COMPLEX> op, const Options& ops)
       {
-	// Get options
-	unsigned int rank = getOption<unsigned int>(ops, "rank");
-	// Return trivial solution
-	if (rank == 0)
-	  return getDeflationProj(op, ops);
-
 	// Get prolongator and coarse operator
 	auto prolongator_coarse_spin_splitting =
 	  getProlongatorAndCoarse(op, ops.getValue("prolongator"), FullSpace);
@@ -3668,7 +3675,7 @@ namespace Chroma
 	Operator<NOp, COMPLEX> op_c = std::get<1>(prolongator_coarse_spin_splitting);
 
 	// Return the projector for the coarse operator
-	auto proj_c = getDeflationProj(op_c, ops);
+	auto proj_c = getProjector(op_c, ops.getValue("proj"));
 
 	/// Return Q*V*inv(U'*Q'*op*Q*V)*U'*Q' = Q proj_c * Q'
 	auto almost_proj = Operator<NOp, COMPLEX>{
