@@ -497,8 +497,7 @@ namespace Chroma
     ///   s = r - AKp * alpha
     ///   Ks = prec * s
     ///   AKs = A * Ks
-    ///   KAKs = prec * AKs
-    ///   omega = (KAKs' * Ks) / (KAKs' * KAKs)
+    ///   omega = (AKs' * Ks) / (AKs' * AKs)
     ///   x = x + Kp * alpha + Ks * omega
     ///   r = s - AKs * omega
     ///   exit if |r| < |b|*tol
@@ -582,7 +581,6 @@ namespace Chroma
       auto AKp = r0.make_compatible();
       auto Ks = prec ? r0.make_compatible() : r;
       auto AKs = r0.make_compatible();
-      auto KAKs = prec ? r0.make_compatible() : AKs;
       for (it = 0; it < max_its;)
       {
 	// Kp = prec * p
@@ -614,16 +612,9 @@ namespace Chroma
 	op(Ks, AKs);
 	nops += num_cols;
 
-	// KAKs = prec * AKs
-	if (prec)
-	{
-	  prec(AKs, KAKs);
-	  nprecs += num_cols;
-	}
-
-	// omega = (KAKs' * Ks) / (KAKs' * KAKs)
+	// omega = (AKs' * Ks) / (AKs' * AKs)
 	auto omega =
-	  div(contract<1>(KAKs.conj(), Ks, order_rows), contract<1>(KAKs, KAKs.conj(), order_rows));
+	  div(contract<1>(AKs.conj(), Ks, order_rows), contract<1>(AKs, AKs.conj(), order_rows));
 
 	// y = y + alpha * Kp + omega * Ks
 	contract<NOp + 1>(Kp, alpha, "").addTo(y);
@@ -637,14 +628,18 @@ namespace Chroma
 	contract<1>(r, r0.conj(), order_rows, CopyTo, rho);
 
 	// beta = rho / prev_rho * (alpha / omega)
-	auto beta = mult(div(rho, prev_rho), div(alpha, omega));
+	auto rho_ratio = div(rho, prev_rho);
+	auto beta = mult(rho_ratio, div(alpha, omega));
 
-	// p = r + beta * (p - omega * AKp)
+	// beta_omega = beta * omega = rho / prev_rho * alpha
+	auto beta_omega = mult(rho_ratio, alpha);
+
+	// p = r + beta * p - beta_omega * AKp
 	auto aux = AKs;
-	p.copyTo(aux);
-	contract<NOp + 1>(AKp, omega.scale(-1), "", AddTo, aux);
-	r.copyTo(p);
-	contract<NOp + 1>(aux, beta, "", AddTo, p);
+	contract<NOp + 1>(p, beta, "", CopyTo, aux);
+	aux.copyTo(p);
+	contract<NOp + 1>(AKp, beta_omega.scale(-1), "", AddTo, p);
+	r.addTo(p);
 
 	// Recompute residual vector if needed
 	if (residual_updates < max_residual_updates)
@@ -655,7 +650,9 @@ namespace Chroma
 	{
 	  op(y.scale(-1), r); // r = op(-y)
 	  x.addTo(r);
+	  r.copyTo(r0);
 	  r.copyTo(p);
+	  contract<1>(r, r0.conj(), order_rows, CopyTo, rho);
 	  nops += num_cols;
 	  residual_updates = 0;
 	}
@@ -2856,7 +2853,7 @@ namespace Chroma
       }
     }
 
-    /// Returns an inexact Generalized Davidson on op*g5
+    /// Returns an inexact Generalized Davidson on op*g5, that is the left SV of op
     /// NOTE: this is an eigensolver not a linear solver
     ///
     /// \param op: operator to make the inverse of
