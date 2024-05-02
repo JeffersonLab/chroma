@@ -1882,7 +1882,7 @@ namespace Chroma
 	    auto x1 = op(y0.scale(-1));
 	    x.addTo(x1);
 
-	    // y = y1 + solver(Op, x1)
+	    // y = y0 + solver(Op, x1)
 	    opSolver(std::move(x1), y);
 	    y0.addTo(y);
 	  };
@@ -3044,6 +3044,61 @@ namespace Chroma
 		false /* no Kronecker form */};
       }
 
+      /// Returns a shifted operator
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver from `solvers` and influence the solver construction
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getShiftedOp(Operator<NOp, COMPLEX> op, const Options& ops,
+					  Operator<NOp, COMPLEX> prec_)
+      {
+	if (prec_)
+	  throw std::runtime_error("getShiftedOp: unsupported input preconditioner");
+
+	// Get the remainder options
+	double shift_I = getOption<double>(ops, "shift_I", 0.0);
+	double shift_ig5 = getOption<double>(ops, "shift_ig5", 0.0);
+
+	// Produced the shifted operator
+	auto shifted_op = op;
+	if (shift_I != 0 || shift_ig5 != 0)
+	{
+	  int ns = op.d.kvdim().at('s');
+	  auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
+	  shifted_op = {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+			  // y = op * x
+			  op(x, y);
+
+			  // y +=  x * shift_I
+			  if (shift_I != 0)
+			    x.scale(shift_I).addTo(y);
+
+			  // y += shift_ig5 * i * g5
+			  if (shift_ig5 != 0)
+			  {
+			    COMPLEX ishift =
+			      static_cast<COMPLEX>(std::complex<double>{0.0, shift_ig5});
+			    if (ns == 1)
+			    {
+			      x.scale(ishift).addTo(y);
+			    }
+			    else
+			    {
+			      contract<NOp + 1>(g5.rename_dims({{'j', 's'}}).scale(ishift), x, "s",
+						AddTo, y, {{'s', 'i'}});
+			    }
+			  }
+			},
+			op.d, op.i, nullptr, op};
+	}
+
+	// Get the solver
+	Maybe<const Options&> solverOps = getOptionsMaybe(ops, "solver");
+	if (solverOps)
+	  return getSolver(shifted_op, solverOps.getSome());
+	return shifted_op;
+      }
+
       /// Returns the conjugate transpose of an operator
       ///
       /// \param op: operator to make the inverse of
@@ -3172,16 +3227,27 @@ namespace Chroma
 	HIE,
 	DD,
 	BJ,
+	SHIFT,
 	IGD,
 	DDAG,
 	G5,
 	BLOCKING,
 	CASTING
       };
-      static const std::map<std::string, SolverType> solverTypeMap{
-	{"fgmres", FGMRES}, {"bicgstab", BICGSTAB}, {"mr", MR},		 {"gcr", GCR}, {"mg", MG},
-	{"eo", EO},	    {"hie", HIE},	    {"dd", DD},		 {"bj", BJ},   {"igd", IGD},
-	{"g5", G5},	    {"blocking", BLOCKING}, {"casting", CASTING}};
+      static const std::map<std::string, SolverType> solverTypeMap{{"fgmres", FGMRES},
+								   {"bicgstab", BICGSTAB},
+								   {"mr", MR},
+								   {"gcr", GCR},
+								   {"mg", MG},
+								   {"eo", EO},
+								   {"hie", HIE},
+								   {"dd", DD},
+								   {"bj", BJ},
+								   {"shift", SHIFT},
+								   {"igd", IGD},
+								   {"g5", G5},
+								   {"blocking", BLOCKING},
+								   {"casting", CASTING}};
       SolverType solverType = getOption<SolverType>(ops, "type", solverTypeMap);
       switch (solverType)
       {
@@ -3203,6 +3269,8 @@ namespace Chroma
 	return detail::getDomainDecompositionPrec(op, ops, prec);
       case BJ: // block Jacobi
 	return detail::getBlockJacobi(op, ops, prec);
+      case SHIFT: // shift operator
+	return detail::getShiftedOp(op, ops, prec);
       case IGD: // inexact Generalized Davidson
 	return detail::getInexactGD(op, ops, prec);
       case DDAG: // return the operator conjugate transposed
