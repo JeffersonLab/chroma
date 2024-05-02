@@ -1122,6 +1122,9 @@ namespace Chroma
 				     const Operator<NOp, COMPLEX>& prec = Operator<NOp, COMPLEX>(),
 				     SolverSpace solverSpace = FullSpace);
 
+    template <std::size_t NOp, typename COMPLEX>
+    Projector<NOp, COMPLEX> getProjector(const Operator<NOp, COMPLEX>& op, const Options& ops);
+
     namespace detail
     {
       /// Apply the given function to all the given columns in x
@@ -1920,6 +1923,93 @@ namespace Chroma
 
 	    // y = y1 + solver(Op, x1)
 	    opSolver(std::move(x1), y);
+	    y0.addTo(y);
+	  };
+	}
+
+	// Return the solver
+	return {solver,
+		op.i,
+		op.d,
+		nullptr,
+		op.order_t,
+		op.imgLayout,
+		op.domLayout,
+		DenseOperator(),
+		op.preferred_col_ordering,
+		false /* no Kronecker blocking */};
+      }
+
+      /// Returns a general deflation preconditioner
+      ///
+      /// It returns an approximation of Op^{-1} = Op^{-1}*Q + Op^{-1}(I-Q), where Q is a projector
+      /// on the left singular space of Op. 
+      /// The approximation is constructed using an oblique projector and doing the inversions
+      /// approximately:
+      ///   1) Q = Op*V*(W'*Op*V)^{-1}*W', where W and V are left and right singular spaces.
+      ///   2) [Op^{-1}*Q + Op^{-1}(I-Q)]*x \approx
+      ///                       V*solver(W'*Op*V, W'*x) + solver(Op, x - Op*V*solver(W'*Op*V, W'*x))
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getProjPrec(Operator<NOp, COMPLEX> op, const Options& ops,
+					 Operator<NOp, COMPLEX> prec_)
+      {
+	if (prec_)
+	  throw std::runtime_error("getProjPrec: unsupported input preconditioner");
+
+	// Getting a projector
+	auto proj = getProjector(op, getOptions(ops, "proj"));
+
+	// Get the solver for the smoother
+	const Operator<NOp, COMPLEX> opSolver = getSolver(op, getOptions(ops, "solver_smoother"));
+
+	OperatorFun<NOp, COMPLEX> solver;
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
+	{
+	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("proj solver ") + prefix);
+
+	    // y0 = V*inv(U'*Op*V) U' * x
+	    auto y0 = proj.V_inv_Ut(x);
+
+	    // y1 = (I - Q)*x = x - op*y0
+	    auto y1 = op(y0.scale(-1));
+	    x.addTo(y1);
+
+	    // y = y0 + solver(Op, y1)
+	    opSolver(std::move(y1), y);
+	    y0.addTo(y);
+	  };
+	}
+	else
+	{
+	  // Get the block diagonal of the operator with rows cs and columns CS
+	  remap m_sc{{'s', 'S'}, {'c', 'C'}};
+	  auto t = getEvenOddOperatorsPartsCache<NOp, COMPLEX>().at(op.id.get());
+	  Operator<NOp, COMPLEX> op_eo = std::get<0>(t);
+	  Operator<NOp, COMPLEX> op_oe = std::get<1>(t);
+	  Tensor<NOp + 2, COMPLEX> opDiag = std::get<2>(t);
+	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("proj solver ") + prefix);
+
+	    // y0 = V*inv(U'*Op*V) U' * x
+	    auto y0 = proj.V_inv_Ut(x);
+
+	    // y1_ee = x - op*y0
+	    auto y0m = y0.scale(-1);
+	    auto y1 = x.clone();
+	    contract(opDiag, y0m.rename_dims(m_sc), "CS", AddTo, y1);
+	    op_oe(y0m.kvslice_from_size({{'X', 0}}, {{'X', 1}}))
+	      .addTo(y1.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+	    op_eo(y0m.kvslice_from_size({{'X', 1}}, {{'X', 1}}))
+	      .addTo(y1.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+
+	    // y = y1 + solver(Op, y1)
+	    opSolver(std::move(y1), y);
 	    y0.addTo(y);
 	  };
 	}
@@ -3228,6 +3318,7 @@ namespace Chroma
 	DD,
 	BJ,
 	SHIFT,
+	PROJ,
 	IGD,
 	DDAG,
 	G5,
@@ -3244,6 +3335,7 @@ namespace Chroma
 								   {"dd", DD},
 								   {"bj", BJ},
 								   {"shift", SHIFT},
+								   {"proj", PROJ},
 								   {"igd", IGD},
 								   {"g5", G5},
 								   {"blocking", BLOCKING},
@@ -3271,6 +3363,8 @@ namespace Chroma
 	return detail::getBlockJacobi(op, ops, prec);
       case SHIFT: // shift operator
 	return detail::getShiftedOp(op, ops, prec);
+      case PROJ: // projector preconditioner
+	return detail::getProjPrec(op, ops, prec);
       case IGD: // inexact Generalized Davidson
 	return detail::getInexactGD(op, ops, prec);
       case DDAG: // return the operator conjugate transposed
