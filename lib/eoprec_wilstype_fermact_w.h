@@ -9,6 +9,7 @@
 
 #include "wilstype_fermact_w.h"
 #include "eoprec_linop.h"
+#include "actions/ferm/linop/lunprec_w.h"
 
 namespace Chroma
 {
@@ -28,6 +29,12 @@ namespace Chroma
     //! Override to produce an even-odd prec. linear operator for this action
     /*! Covariant return rule - override base class function */
     virtual EvenOddPrecLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const = 0;
+
+    //! Produce a linear operator for this action
+    LinearOperator<T>* genLinOp(Handle<FermState<T, P, Q>> state) const override
+    {
+      return new Lunprec<T,P,Q>(linOp(state));
+    }
 
     //! Return quark prop solver, solution of unpreconditioned system
     /*! Default implementation provided */

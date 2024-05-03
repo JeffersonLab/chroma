@@ -480,10 +480,10 @@ namespace Chroma
 	for(int j = 0 ; j < B_mag.size(); ++j)
 	{
 	  // Displace the right std::vector
-	  LatticeColorMatrix shift_vec = rightNabla(u_smr, 
-						    B_mag[j],
-						    params.param.displacement_length, 
-						    disp);
+	  LatticeColorMatrix shift_vec = adjDisplace(u_smr, 
+						     B_mag[j],
+						     params.param.displacement_length, 
+						     disp);
 
 	  // Left mag field
 	  for(int i = 0 ; i < B_mag.size(); ++i)

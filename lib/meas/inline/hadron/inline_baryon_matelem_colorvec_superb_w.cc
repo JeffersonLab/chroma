@@ -140,6 +140,11 @@ namespace Chroma
         read(paramtop, "use_superb_format", param.use_superb_format);
       }
 
+      param.output_file_is_local = false;
+      if( paramtop.count("output_file_is_local") == 1 ) {
+        read(paramtop, "output_file_is_local", param.output_file_is_local);
+      }
+
       param.link_smearing = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
 
@@ -164,6 +169,7 @@ namespace Chroma
       write(xml, "max_moms_in_contraction", param.max_moms_in_contraction);
       write(xml, "max_vecs", param.max_vecs);
       write(xml, "use_superb_format", param.use_superb_format);
+      write(xml, "output_file_is_local", param.output_file_is_local);
       xml << param.link_smearing.xml;
 
       pop(xml);
@@ -710,18 +716,20 @@ namespace Chroma
 	// NOTE: metadata_xml only has a valid value on Master node; so do a broadcast
 	std::string metadata = SB::broadcast(metadata_xml.str());
 
-	st =
-	  SB::StorageTensor<6, SB::ComplexD>(params.named_obj.baryon_op_file, metadata, order,
-					     SB::kvcoors<6>(order, {{'i', params.param.num_vecs},
-								    {'j', params.param.num_vecs},
-								    {'k', params.param.num_vecs},
-								    {'t', Nt},
-								    {'d', displacement_list.size()},
-								    {'m', moms.size()}}),
-					     SB::Sparse, SB::checksum_type::BlockChecksum);
+	st = SB::StorageTensor<6, SB::ComplexD>(
+	  params.named_obj.baryon_op_file, metadata, order,
+	  SB::kvcoors<6>(order, {{'i', params.param.num_vecs},
+				 {'j', params.param.num_vecs},
+				 {'k', params.param.num_vecs},
+				 {'t', Nt},
+				 {'d', displacement_list.size()},
+				 {'m', moms.size()}}),
+	  SB::Sparse, SB::checksum_type::BlockChecksum,
+	  params.param.output_file_is_local ? SB::LocalFSFile : SB::SharedFSFile);
 	st.preallocate(params.param.num_vecs * params.param.num_vecs * params.param.num_vecs *
 		       t_slices_to_write.size() * displacement_list.size() * moms.size() *
-		       sizeof(SB::ComplexD));
+		       sizeof(SB::ComplexD) /
+		       (params.param.output_file_is_local ? Layout::numNodes() : 1));
       }
 
 
@@ -742,77 +750,93 @@ namespace Chroma
 
       double time_storing = 0; // total time in writing elementals
 
-      // Iterate over time-slices
-      for (int tfrom0 = 0, this_tsize = std::min(tsize, params.param.max_tslices_in_contraction);
-	   tfrom0 < tsize; tfrom0 += this_tsize,
-	       this_tsize = std::min(params.param.max_tslices_in_contraction, tsize - tfrom0))
+      // NOTE: st needs MPI synchronization when closing, so capture exception and abort in that case
+      //       to avoid hangs
+      try
       {
-	int this_tfrom = (tfrom + tfrom0) % Nt;
+	int max_tslices_in_contraction = params.param.max_tslices_in_contraction == 0
+					   ? tsize
+					   : params.param.max_tslices_in_contraction;
 
-	// Get num_vecs colorvecs on time-slice t_source
-	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
-	  SB::getColorvecs<SB::Complex>(colorvecsSto, u, params.param.decay_dir, this_tfrom,
-					this_tsize, params.param.num_vecs, "cxyzXnt", phase);
+	// Iterate over time-slices
+	for (int tfrom0 = 0, this_tsize = std::min(tsize, max_tslices_in_contraction);
+	     tfrom0 < tsize; tfrom0 += this_tsize,
+		 this_tsize = std::min(max_tslices_in_contraction, tsize - tfrom0))
+	{
+	  int this_tfrom = (tfrom + tfrom0) % Nt;
 
-	// Call for storing the baryons
-	SB::ColorContractionFn<SB::Complex> call([&](SB::Tensor<5, SB::Complex> tensor, int disp,
-						     int first_tslice, int first_mom) {
-	  StopWatch tstoring;
-	  tstoring.reset();
-	  tstoring.start();
+	  // Get num_vecs colorvecs on time-slice t_source
+	  SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	    SB::getColorvecs<SB::Complex>(colorvecsSto, u, params.param.decay_dir, this_tfrom,
+					  this_tsize, params.param.num_vecs, "cxyzXnt", phase);
 
-	  if (params.param.use_superb_format)
-	  {
-	    for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
-	    {
-	      if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
-		continue;
-	      st.kvslice_from_size({{'t', (first_tslice + t) % Nt}, {'d', disp}, {'m', first_mom}},
-				   {{'t', 1}, {'d', 1}, {'m', tensor.kvdim()['m']}})
-		.copyFrom(tensor.kvslice_from_size({{'t', t}}, {{'t', 1}}));
-	    }
-	  }
-	  else
-	  {
-	    // Only the master node writes the elementals and we assume that tensor is only supported on master
-	    assert(tensor.dist == SB::OnMaster);
-	    tensor = tensor.getLocal();
-	    if (tensor) // if the local tensor isn't empty, ie this node holds the tensor
-	    {
-	      // Open the database
-	      open_db();
+	  // Call for storing the baryons
+	  SB::ColorContractionFn<SB::Complex> call(
+	    [&](SB::Tensor<5, SB::Complex> tensor, int disp, int first_tslice, int first_mom) {
+	      StopWatch tstoring;
+	      tstoring.reset();
+	      tstoring.start();
 
-	      KeyBaryonElementalOperator_t key;
-	      ValBaryonElementalOperator_t val(params.param.num_vecs);
-
-	      for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
+	      if (params.param.use_superb_format)
 	      {
-		if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
-		  continue;
-		for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
+		for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
 		{
-		  key.t_slice = (first_tslice + t) % Nt;
-		  key.left = SB::tomulti1d(displacement_list[disp][0]);
-		  key.middle = SB::tomulti1d(displacement_list[disp][1]);
-		  key.right = SB::tomulti1d(displacement_list[disp][2]);
-		  key.mom = SB::tomulti1d(mom_list[first_mom + m]);
-		  tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}}).copyTo(val);
-		  qdp_db[0].insert(key, val);
+		  if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
+		    continue;
+		  st.kvslice_from_size(
+		      {{'t', (first_tslice + t) % Nt}, {'d', disp}, {'m', first_mom}},
+		      {{'t', 1}, {'d', 1}, {'m', tensor.kvdim()['m']}})
+		    .copyFrom(tensor.kvslice_from_size({{'t', t}}, {{'t', 1}}));
 		}
 	      }
-	    }
-	  }
+	      else
+	      {
+		// Only the master node writes the elementals and we assume that tensor is only supported on master
+		assert(tensor.dist == SB::OnMaster);
+		tensor = tensor.getLocal();
+		if (tensor) // if the local tensor isn't empty, ie this node holds the tensor
+		{
+		  // Open the database
+		  open_db();
 
-	  tstoring.stop();
-	  time_storing += tstoring.getTimeInSeconds();
-	});
+		  KeyBaryonElementalOperator_t key;
+		  ValBaryonElementalOperator_t val(params.param.num_vecs);
 
-	// Do the color-contraction
-	SB::doMomDisp_colorContractions(
-	  u_smr, source_colorvec, mom_list, this_tfrom, displacement_list, params.param.use_derivP,
-	  call, 0 /*params.param.max_tslices_in_contraction==0 means to do all */,
-	  params.param.max_moms_in_contraction, params.param.max_vecs, SB::none,
-	  SB::OnDefaultDevice, params.param.use_superb_format ? SB::OnEveryone : SB::OnMaster);
+		  for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
+		  {
+		    if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
+		      continue;
+		    for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
+		    {
+		      key.t_slice = (first_tslice + t) % Nt;
+		      key.left = SB::tomulti1d(displacement_list[disp][0]);
+		      key.middle = SB::tomulti1d(displacement_list[disp][1]);
+		      key.right = SB::tomulti1d(displacement_list[disp][2]);
+		      key.mom = SB::tomulti1d(mom_list[first_mom + m]);
+		      tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}})
+			.copyTo(val);
+		      qdp_db[0].insert(key, val);
+		    }
+		  }
+		}
+	      }
+
+	      tstoring.stop();
+	      time_storing += tstoring.getTimeInSeconds();
+	    });
+
+	  // Do the color-contraction
+	  SB::doMomDisp_colorContractions(
+	    u_smr, source_colorvec, mom_list, this_tfrom, displacement_list,
+	    params.param.use_derivP, call, 0 /* it means to do all */,
+	    params.param.max_moms_in_contraction, params.param.max_vecs, SB::none,
+	    SB::OnDefaultDevice,
+	    params.param.use_superb_format ? SB::none : SB::Maybe<SB::Distribution>(SB::OnMaster));
+	}
+      } catch (const std::exception& e)
+      {
+	std::cerr << "caught error: " << e.what() << std::endl;
+	QDP_abort(1);
       }
 
       // Close db

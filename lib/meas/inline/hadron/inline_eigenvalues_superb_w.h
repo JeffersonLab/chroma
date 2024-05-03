@@ -5,8 +5,8 @@
  * Propagator calculation in distillation
  */
 
-#ifndef __inline_prop_and_matelem_distillation_superb_w_h__
-#define __inline_prop_and_matelem_distillation_superb_w_h__
+#ifndef __inline_eigenvalues_superb_w_h__
+#define __inline_eigenvalues_superb_w_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -18,7 +18,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlinePropAndMatElemDistillationSuperbEnv 
+  namespace InlineEigenvaluesSuperbEnv 
   {
     bool registerAll();
 
@@ -35,30 +35,21 @@ namespace Chroma
       {
 	struct Contract_t
 	{
-	  int           num_vecs;       /*!< Number of color vectors to use */
-	  int           decay_dir;      /*!< Decay direction */
-	  multi1d<int>  t_sources;      /*!< Array of time slice sources for props */
-	  int           Nt_forward;     /*!< Time-slices in the forward direction */
-	  int           Nt_backward;    /*!< Time-slices in the backward direction */
-	  std::string   mass_label;     /*!< Some kind of mass label */
-
-	  int           num_tries;      /*!< In case of bad things happening in the solution vectors, do retries */
-	  bool          use_device_for_contractions;  /*!< Whether use gpu for contractions if available */
+	  int           num_vecs;       /*!< Number of eigenvectors to compute */
+	  double        tol;            /*!< Tolerance of the eigenvectors to compute */
+	  std::string   mass_label;     /*!< mass label */
           int           max_rhs;        /*! maximum number of linear systems solved simultaneously */
-	  bool          use_superb_format;  /*!< Whether use the superb format for storing the elementals */
-	  bool          output_file_is_local;   /*!< Whether the output file is in a not shared filesystem */
-	  multi1d<float> phase;         /*!< Phase to apply to colorvecs */
 	};
 
 	ChromaProp_t    prop;
+	std::string     eigensolver; /* eigensolver options */
 	Contract_t      contract;
       };
 
       struct NamedObject_t
       {
 	std::string                 gauge_id;        /*!< Gauge field */
-	std::vector<std::string>    colorvec_files;  /*!< Eigenvectors in mod format */
-	std::string                 prop_op_file;    /*!< File name for propagator matrix elements */
+	std::string                 eigs_file;    /*!< File name for storing the eigenvalues and eigenvectors */
       };
 
       Param_t           param;
