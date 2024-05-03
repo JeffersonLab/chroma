@@ -2275,6 +2275,198 @@ namespace Chroma
 	return rop;
       }
 
+      /// Returns Schur complement preconditioner splitting over the spin components
+      ///
+      /// It returns an approximation of Op^{-1} by splitting the rows and columns into the two
+      /// (even-odd spin components) and doing:
+      ///
+      ///  Op^{-1} = R^{-1} * A^{-1} * L^{-1} ->
+      ///
+      /// [ Op_ee Op_eo ]^{-1} = [       I            0 ] * [ Op_ee-Op_eo*Op_oo^{-1}*Op_oe   0   ]^{-1} *
+      /// [ Op_oe Op_oo ]        [ -Op_oo^{-1}*Op_oe  I ]   [              0               Op_oo ]
+      ///
+      ///                        * [ I  -Op_eo*Op_oo^{-1} ]
+      ///                          [ 0         I          ]
+      ///
+      /// The matrix Op_oo^{-1} is block diagonal and is computed directly, while
+      /// (Op_ee-Op_eo*Op_oo^{-1}*Op_oe)^{-1} is approximated by an iterative solver. Note that
+      /// the residual norm while solving A_ee=Op_ee-Op_eo*Op_oo^{-1}*Op_oe is the same as the original
+      /// residual norm. To prove that, notice that the global residual will be zero for the odds,
+      /// and that the global residual for a solution x'_e of A_ee is
+      ///   r = L*A*R * R^{-1}*[x'_e x'_o] - b = [r_e; 0];
+      /// therefore ||L^{-1}r|| = ||r|| because of the form of L, making
+      ///   ||r|| = || A_e*x'_e - (b_e-Op_eo*Op_oo^{-1}*b_o) ||.
+      ///
+      /// Notice that A_ee^{-1} is Op^{-1}_ee. So a way for preconditioning
+      /// the solution of A_ee is with a preconditioner on Op restricted to the even sites. The
+      /// solver does that when options for `prec_ee' are given.
+      ///
+      /// Also, A_ee can be additionally preconditioned by the left with Op_ee. Note that left
+      /// preconditioning will not change the original residual norm. This option is activated
+      /// when use_Aee_prec is true.
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getSpinEvenOddPrec(Operator<NOp, COMPLEX> op, const Options& ops,
+						Operator<NOp, COMPLEX> prec_)
+      {
+	auto dims = op.d.kvdim();
+	if (dims.count('s') == 0 || dims.at('s') % 2 != 0)
+	  ops.throw_error(
+	    "getSpinEvenOddPrec: only supported on operators with even spin components");
+
+	if (prec_)
+	  throw std::runtime_error("getSpinEvenOddPrec: unsupported input preconditioner");
+
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+
+	// Partition the operator: s -> Ss, where S is the spin oddity
+	char S = detail::get_free_label(op.d.order);
+	std::string Ss = std::string({S, 's'});
+	int ns = dims.at('s');
+	auto eg_d = op.d.like_this(none, {{'s', ns / 2}}).make_eg();
+	auto eg_i = op.i.like_this(none, {{'s', ns / 2}}).make_eg();
+	Operator<NOp, COMPLEX> op_ee{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    auto x0 = op.template make_compatible_img<NOp + 1>("n", {{'n', x.kvdim().at('n')}});
+	    x0.set_zero();
+	    x.copyTo(x0.template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+		       .kvslice_from_size({{S, 0}}, {{S, 1}}));
+	    op(x0)
+	      .template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+	      .kvslice_from_size({{S, 0}}, {{S, 1}})
+	      .copyTo(y);
+	  },
+	  eg_d, eg_i, nullptr, op};
+	Operator<NOp, COMPLEX> op_eo{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    auto x0 = op.template make_compatible_img<NOp + 1>("n", {{'n', x.kvdim().at('n')}});
+	    x0.set_zero();
+	    x.copyTo(x0.template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+		       .kvslice_from_size({{S, 1}}, {{S, 1}}));
+	    op(x0)
+	      .template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+	      .kvslice_from_size({{S, 0}}, {{S, 1}})
+	      .copyTo(y);
+	  },
+	  eg_d, eg_i, nullptr, op};
+
+	Operator<NOp, COMPLEX> op_oe{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    auto x0 = op.template make_compatible_img<NOp + 1>("n", {{'n', x.kvdim().at('n')}});
+	    x0.set_zero();
+	    x.copyTo(x0.template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+		       .kvslice_from_size({{S, 0}}, {{S, 1}}));
+	    op(x0)
+	      .template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+	      .kvslice_from_size({{S, 1}}, {{S, 1}})
+	      .copyTo(y);
+	  },
+	  eg_d, eg_i, nullptr, op};
+
+	Operator<NOp, COMPLEX> op_oo{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    auto x0 = op.template make_compatible_img<NOp + 1>("n", {{'n', x.kvdim().at('n')}});
+	    x0.set_zero();
+	    x.copyTo(x0.template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+		       .kvslice_from_size({{S, 1}}, {{S, 1}}));
+	    op(x0)
+	      .template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+	      .kvslice_from_size({{S, 1}}, {{S, 1}})
+	      .copyTo(y);
+	  },
+	  eg_d, eg_i, nullptr, op};
+
+
+	// Get solver on op_oo
+	const auto solver_oo = getSolver(op_oo, getOptions(ops, "solver_oo"));
+
+	// Get an explicit form for A = Op_ee-Op_eo*Op_oo^{-1}*Op_oe
+	unsigned int max_dist_neighbors_opA = 2;
+	Operator<NOp, COMPLEX> opA{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("spin eo matvec ") + prefix);
+
+	    // y = Op_ee * x
+	    op_ee(x, y);
+
+	    // y1 = Op_oe * x
+	    auto y1 = op_oe(x);
+
+	    // y2 = Op_oo^{-1} * y1
+	    auto y2 = solver_oo(y1);
+
+	    // y += -Op_eo * y2
+	    op_eo(std::move(y2)).scale(-1).addTo(y);
+	  },
+	  eg_d,
+	  eg_i,
+	  nullptr,
+	  op.order_t,
+	  op.domLayout,
+	  op.imgLayout,
+	  getNeighbors(op.i.kvdim(), max_dist_neighbors_opA, op.imgLayout),
+	  op.preferred_col_ordering,
+	  false /* no Kronecker blocking */};
+
+	// Get solver on opA
+	const auto solver = getSolver(opA, getOptions(ops, "solver_A"));
+
+	// Create the solver
+	Operator<NOp, COMPLEX> rop{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("spin eo solver ") + prefix);
+
+	    auto x_eo = x.template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}});
+	    auto y_eo = y.template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}});
+
+	    // be = x_e - Op_eo*Op_oo^{-1}*x_o
+	    auto x_e = x_eo.kvslice_from_size({{S, 0}}, {{S, 1}});
+	    auto x_o = x_eo.kvslice_from_size({{S, 1}}, {{S, 1}});
+	    auto b_e = op_eo(solver_oo(x_o).scale(-1));
+	    x_e.addTo(b_e);
+
+	    // Solve opA * y_e = be
+	    auto y_e = y_eo.kvslice_from_size({{S, 0}}, {{S, 1}});
+	    auto y_o = y_eo.kvslice_from_size({{S, 1}}, {{S, 1}});
+	    solver(b_e, y_e);
+
+	    // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
+	    auto yo0 = b_e;
+	    x_o.copyTo(yo0);
+	    op_oe(y_e).scale(-1).addTo(yo0);
+	    solver_oo(yo0, y_o);
+	  },
+	  op.i,
+	  op.d,
+	  nullptr,
+	  op.order_t,
+	  op.imgLayout,
+	  op.domLayout,
+	  DenseOperator(),
+	  op.preferred_col_ordering,
+	  false /* no Kronecker blocking */};
+
+	// Do a test
+	if (superbblas::getDebugLevel() > 0)
+	{
+	  auto x = op.template make_compatible_img<NOp + 1>("n", {{'n', 2}});
+	  urand(x, -1, 1);
+	  auto y = op(rop(x));
+	  x.scale(-1).addTo(y);
+	  auto normx = norm<1>(x, "n");
+	  auto normdiff = norm<1>(y, "n");
+	  double max_err = 0;
+	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
+	    max_err = std::max(max_err, (double)normdiff.get({{i}}) / normx.get({{i}}));
+	  QDPIO::cout << " spin eo prec error: " << detail::tostr(max_err) << std::endl;
+	}
+
+	return rop;
+      }
+
       enum LandSeaDomain { Land, Sea, All };
 
       /// Returns a generic two domains preconditioner.
@@ -3319,6 +3511,7 @@ namespace Chroma
 	BJ,
 	SHIFT,
 	PROJ,
+	SPINEO,
 	IGD,
 	DDAG,
 	G5,
@@ -3336,6 +3529,7 @@ namespace Chroma
 								   {"bj", BJ},
 								   {"shift", SHIFT},
 								   {"proj", PROJ},
+								   {"spineo", SPINEO},
 								   {"igd", IGD},
 								   {"g5", G5},
 								   {"blocking", BLOCKING},
@@ -3365,6 +3559,8 @@ namespace Chroma
 	return detail::getShiftedOp(op, ops, prec);
       case PROJ: // projector preconditioner
 	return detail::getProjPrec(op, ops, prec);
+      case SPINEO: // even-odd Schur complement on the spin components
+	return detail::getSpinEvenOddPrec(op, ops, prec);
       case IGD: // inexact Generalized Davidson
 	return detail::getInexactGD(op, ops, prec);
       case DDAG: // return the operator conjugate transposed
