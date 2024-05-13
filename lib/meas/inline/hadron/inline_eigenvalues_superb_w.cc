@@ -300,6 +300,9 @@ namespace Chroma
     {
       START_CODE();
 
+#  ifdef __INTEL_COMPILER
+      throw std::runtime_error("crappy intel compiler failed compiling this module... sorry!");
+#  else
       StopWatch snoop;
       snoop.reset();
       snoop.start();
@@ -449,7 +452,7 @@ namespace Chroma
 		  << " secs" << std::endl;
 
       QDPIO::cout << name << ": ran successfully" << std::endl;
-
+#  endif
       END_CODE();
     }
 
