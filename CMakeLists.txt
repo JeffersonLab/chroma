@@ -79,7 +79,7 @@ endif()
 list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
 
 find_package(GMP)
-if( GMP_FOUND ) 
+if( GMP_FOUND )
    set(BUILD_GMP_REMEZ 1) # For the header file
 endif()
 # Create an imported target
@@ -95,7 +95,7 @@ if(Chroma_ENABLE_OPENMP)
   if( NOT OpenMP_FOUND )
   	find_package(OpenMP REQUIRED)
   endif()
-  
+
   if( NOT Threads_FOUND )
   	find_package(Threads REQUIRED)
   endif()
@@ -118,7 +118,7 @@ endif()
 # 2nd: Deal with QPhiX
 ##########################
 if( Chroma_ENABLE_QPHIX )
-#  
+#
 #  Deal with QPhix
 #  find_package(QPhiX)
 endif()
@@ -163,9 +163,9 @@ endif()
 # 5th: Deal with MDWF
 ###########################
 if( Chroma_ENABLE_MDWF )
-# 
+#
 # Gonna need to write a find module for this
-# 
+#
 endif()
 
 ####################################################
@@ -187,7 +187,7 @@ if( Chroma_ENABLE_LAPACK )
   set(QDPLapack_BINDING "lapack")
 endif()
 add_subdirectory(other_libs/qdp-lapack)
- 
+
 ###########################
 # 6th: Deal with superbblas
 ###########################
@@ -196,7 +196,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
 
   include(FindBLAS)
   find_package(BLAS REQUIRED)
-  
+
   if( QDP_BACKEND_ROCM AND NOT HIP_CPP_CONFIG )
      find_package(HIP REQUIRED)
      execute_process(
@@ -236,11 +236,11 @@ endif()
 #####################################
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lib/chroma_config_internal.h.cmake.in
 			   lib/chroma_config_internal.h)
-			
+
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib/chroma_config_internal.h DESTINATION include)
 
 # Now we are ready to build in lib
-# Heaven help us. 
+# Heaven help us.
 
 add_subdirectory(lib)
 add_subdirectory(mainprogs/main)
@@ -250,7 +250,7 @@ add_subdirectory(mainprogs/tests)
 # if needed
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindGMP.cmake
 		DESTINATION lib/cmake/Chroma )
-		  
+
 #install the export description of the targets
 install(EXPORT ChromaTargets
         FILE ChromaTargets.cmake

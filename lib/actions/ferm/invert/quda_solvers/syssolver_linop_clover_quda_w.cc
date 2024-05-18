@@ -177,7 +177,7 @@ namespace Chroma
         //  however we need to do a bit more work to get the clover:
         //
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
-        invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, (void *)gauge, (QudaGaugeParam*)&q_gauge_param, (void *)&(packed_clov[0]), (void *)&(packed_invclov[0]));        
+        invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, (void *)&(packed_clov[0]), (void *)&(packed_invclov[0]));        
         //invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, (void *)gauge, (QudaGaugeParam*)&q_gauge_param);
 #else
         void *clover[2];
@@ -185,7 +185,7 @@ namespace Chroma
         // This is a yucky macro and needs the existence of 'clover' and 'cloverInv' to work
         GetMemoryPtrClover(clov->getOffId(),clov->getDiaId(),invclov->getOffId(),invclov->getDiaId());
      
-        invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, (void *)gauge, (QudaGaugeParam*)&q_gauge_param, clover, cloverInv);
+        invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, clover, cloverInv);
         //invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, (void *)gauge, (QudaGaugeParam*)&q_gauge_param);
 #endif
         swatch1.stop();
