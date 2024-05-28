@@ -5422,6 +5422,7 @@ namespace Chroma
 	  throw std::runtime_error("SpTensor::construct: unexpected distribution of the data");
 
 	// Superbblas needs the column coordinates to be local
+#if SUPERBBLAS_VERSION < 3
 	// Remove the local domain coordinates to jj
 	const auto localFrom = d.p->localFrom();
 	const auto domDim = d.dim;
@@ -5429,6 +5430,9 @@ namespace Chroma
 	  jj.template transformWithCPUFunWithCoor<int>([&](const Coor<NI + 2>& c, const int& t) {
 	    return (t - localFrom[c[0]] + domDim[c[0]]) % domDim[c[0]];
 	  });
+#else
+	auto localjj = jj;
+#endif
 
 	std::string nonblock_img_labels(i.order.begin() + nblocki + nkroni, i.order.end());
 	if (!ii.isDistributedAs(this->i, nonblock_img_labels) ||
@@ -5450,15 +5454,22 @@ namespace Chroma
 	if (nkrond == 0 && nkroni == 0)
 	{
 	  superbblas::create_bsr<ND, NI, value_type>(
-	    i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd, isImgFastInBlock, &iiptr,
-	    &jjptr, &ptr, &data.ctx(), comm, superbblas::FastToSlow, &bsr);
+	    i.p->p.data(), i.dim,
+#  if SUPERBBLAS_VERSION >= 3
+	    1,
+#  endif
+	    d.p->p.data(), d.dim, 1, blki, blkd, isImgFastInBlock, &iiptr, &jjptr, &ptr,
+	    &data.ctx(), comm, superbblas::FastToSlow, &bsr);
 	}
 	else
 	{
 	  superbblas::create_kron_bsr<ND, NI, value_type>(
-	    i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd, kroni, krond,
-	    isImgFastInBlock, &iiptr, &jjptr, &ptr, &kron_ptr, &data.ctx(), comm,
-	    superbblas::FastToSlow, &bsr);
+	    i.p->p.data(), i.dim,
+#  if SUPERBBLAS_VERSION >= 3
+	    1,
+#  endif
+	    d.p->p.data(), d.dim, 1, blki, blkd, kroni, krond, isImgFastInBlock, &iiptr, &jjptr,
+	    &ptr, &kron_ptr, &data.ctx(), comm, superbblas::FastToSlow, &bsr);
 	}
 	handle = std::shared_ptr<superbblas::BSR_handle>(
 	  bsr, [=](superbblas::BSR_handle* bsr) { destroy_bsr(bsr); });
@@ -9264,7 +9275,7 @@ namespace Chroma
 	      eg, eg, nullptr, "", op_layout, op_layout,
 	      detail::getNeighbors(eg.kvdim(), 1 /* near-neighbors links only */, op_layout),
 	      ColumnMajor, false /* no kronecker op */},
-	    ColumnMajor, RowMajor, Chroma::SB::detail::ConsiderBlockingDense, "laplacian");
+	    RowMajor, ColumnMajor, Chroma::SB::detail::ConsiderBlockingDense, "laplacian");
 
 	  // Create an auxiliary struct for the PRIMME's matvec
 	  // NOTE: Please keep 'n' as the slowest index; the rows of vectors taken by PRIMME's matvec has dimensions 'cxyztX',
