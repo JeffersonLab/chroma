@@ -72,7 +72,7 @@ namespace Chroma
             LinOpSysSolverQUDAClover(Handle< LinearOperator<T> > A_,
                     Handle< FermState<T,Q,Q> > state_,
                     const SysSolverQUDACloverParams& invParam_) :
-                A(A_), invParam(invParam_), clov(new CloverTermT<T, U>() ), invclov(new CloverTermT<T, U>())
+                A(A_), invParam(invParam_)
         {
             QDPIO::cout << "LinOpSysSolverQUDAClover:" << std::endl;
 
@@ -517,34 +517,36 @@ namespace Chroma
             loadGaugeQuda((void *)gauge, &q_gauge_param);
 
             //      Setup the clover term...
+            CloverTermT<T, U> clov;
+            CloverTermT<T, U> invclov;
+
             QDPIO::cout << "Creating CloverTerm" << std::endl;
-            clov->create(fstate, invParam_.CloverParams);
+            clov.create(fstate, invParam_.CloverParams);
             // Don't recompute, just copy
-            invclov->create(fstate, invParam_.CloverParams);
+            invclov.create(fstate, invParam_.CloverParams);
 
             QDPIO::cout << "Inverting CloverTerm" << std::endl;
-            invclov->choles(0);
-            invclov->choles(1);
+            invclov.choles(0);
+            invclov.choles(1);
 
 
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
-            packed_clov.resize(all.siteTable().size());
-            packed_invclov.resize(all.siteTable().size());
-            clov->packForQUDA(packed_clov, 0);
-            clov->packForQUDA(packed_clov, 1);
+            multi1d<QUDAPackedClovSite<REALT> > packed_clov(all.siteTable().size());
+            multi1d<QUDAPackedClovSite<REALT> > packed_invclov(all.siteTable().size());;
+            
+            clov.packForQUDA(packed_clov, 0);
+            clov.packForQUDA(packed_clov, 1);
 
-            invclov->packForQUDA(packed_invclov, 0);
-            invclov->packForQUDA(packed_invclov, 1);
-
+            invclov.packForQUDA(packed_invclov, 0);
+            invclov.packForQUDA(packed_invclov, 1);
 
             loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
-
 #else
             void *clover[2];
             void *cloverInv[2];
 
             // This is a yucky macro and needs the existence of 'clover' and 'cloverInv' to work
-            GetMemoryPtrClover(clov->getOffId(),clov->getDiaId(),invclov->getOffId(),invclov->getDiaId());
+            GetMemoryPtrClover(clov.getOffId(),clov.getDiaId(),invclov.getOffId(),invclov.getDiaId());
 
             loadCloverQuda( (void*)(clover) , (void*)(cloverInv) ,&quda_inv_param);
 #endif
@@ -705,16 +707,6 @@ namespace Chroma
             QudaGaugeParam q_gauge_param;
             QudaInvertParam quda_inv_param;
 
-            Handle< CloverTermT<T, U> > clov;
-            Handle< CloverTermT<T, U> > invclov;
-
-
-
-#ifndef BUILD_QUDA_DEVIFACE_CLOVER
-            multi1d<QUDAPackedClovSite<REALT> > packed_clov;
-            multi1d<QUDAPackedClovSite<REALT> > packed_invclov;
-#endif
-
             SystemSolverResults_t qudaInvert( const T& chi_s, T& psi_s) const ;
 
             void qudaInvertMultiSrc( const std::vector<std::shared_ptr<T>>& psi, 
@@ -723,10 +715,7 @@ namespace Chroma
 
             std::string solver_string;
     };
-
-
 } // End namespace
-
 #endif // BUILD_QUDA
 #endif 
 
