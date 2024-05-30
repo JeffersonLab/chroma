@@ -203,8 +203,9 @@ namespace Chroma
 
             // These are the links
             // They may be smeared and the BC's may be applied
-            links_single.resize(Nd);
-
+					
+            Q links_single(Nd);
+			
             // Now downcast to single prec fields.
             for(int mu=0; mu < Nd; mu++) {
                 links_single[mu] = (state_->getLinks())[mu];
@@ -504,6 +505,8 @@ namespace Chroma
                 quda_inv_param.verbosity = QUDA_SUMMARIZE;
             }
 
+					  void* gauge[4]= { nullptr, nullptr, nullptr, nullptr };
+	
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
             for(int mu=0; mu < Nd; mu++) {
                 gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
@@ -692,10 +695,6 @@ namespace Chroma
         private:
             // Hide default constructor
             LinOpSysSolverQUDAClover() {}
-
-            Q links_orig;
-            Q links_single;
-            void *gauge[4];
 
             U GFixMat;
             QudaPrecision_s cpu_prec;
