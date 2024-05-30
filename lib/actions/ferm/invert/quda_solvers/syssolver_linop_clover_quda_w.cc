@@ -85,7 +85,7 @@ namespace Chroma
         spinorOut = dev_ptr[1];
 
 #endif
-
+	QDPIO::cout << "b : norm() = ( " << norm2(chi_s, rb[0])<< " , " << norm2( chi_s, rb[1]) << " ) \n";
         // Do the solve here 
         StopWatch swatch1; 
         swatch1.reset();
@@ -108,9 +108,10 @@ namespace Chroma
                                                                         const std::vector<std::shared_ptr<const T>>& chi_s,
                                                                         std::vector<SystemSolverResults_t>& res) const {
 
-        std::vector<void *> spinorIn(psi_s.size());
+        std::vector<void *> spinorIn(chi_s.size());
         std::vector<void *> spinorOut(psi_s.size());
 
+        int N_src = chi_s.size();
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
         // Regular non-qdpjit approach. Just collect the pointers 
         for(int soln=0; soln < chi_s.size(); soln++) { 
@@ -118,22 +119,20 @@ namespace Chroma
             spinorOut[soln] = (void *)&(psi_s[soln]->elem(rb[1].start()).elem(0).elem(0).real());
         }
 #else
-        // QDP-JIT approach: Collect the cache-keys
-        std::vector<QDPCache::ArgKey> ids;
-        ids.resize(2*chi_s.size());
+       	std::vector<QDPCache::ArgKey> ids(2*N_src);
 
-        for(int soln=0; soln < chi_s.size(); soln++) {
-          ids[2*soln]   = chi_s[soln]->getId();
-          ids[2*soln+1] = psi_s[soln]->getId();
+        for(int soln=0; soln < N_src; soln++) {
+          ids[soln]  = chi_s[soln]->getId();
+          ids[N_src+soln] = psi_s[soln]->getId();
         }
        
         // Grab all the keys
-        auto dev_ptr = GetMemoryPtr(ids);
+        auto dev_ptr = QDP_get_global_cache().get_dev_ptrs( multi1d( ids.data(), ids.size()) );
 
     
-        for(int soln=0; soln < chi_s.size(); soln++) {
-            spinorIn[soln]  = dev_ptr[2*soln];
-            spinorOut[soln] = dev_ptr[2*soln+1];
+        for(int soln=0; soln < N_src; soln++) {
+            spinorIn[soln]  = dev_ptr(soln);
+            spinorOut[soln] = dev_ptr(N_src+soln);
         }
 #endif
 
@@ -176,18 +175,7 @@ namespace Chroma
         //  gauge is available in the class definition
         //  however we need to do a bit more work to get the clover:
         //
-#ifndef BUILD_QUDA_DEVIFACE_CLOVER
-        invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, (void *)&(packed_clov[0]), (void *)&(packed_invclov[0]));        
-        //invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, (void *)gauge, (QudaGaugeParam*)&q_gauge_param);
-#else
-        void *clover[2];
-        void *cloverInv[2];
-        // This is a yucky macro and needs the existence of 'clover' and 'cloverInv' to work
-        GetMemoryPtrClover(clov->getOffId(),clov->getDiaId(),invclov->getOffId(),invclov->getDiaId());
-     
-        invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, clover, cloverInv);
-        //invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param, (void *)gauge, (QudaGaugeParam*)&q_gauge_param);
-#endif
+        invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param);
         swatch1.stop();
 
         QDPIO::cout << "QUDA_"<<solver_string<<"_CLOVER_SOLVER: time="<< local_quda_inv_param.secs <<" s" ;
