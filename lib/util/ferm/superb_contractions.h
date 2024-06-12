@@ -9658,7 +9658,7 @@ namespace Chroma
       // Check if it is dummy
       if (colorvec_files.size() == 1 && colorvec_files.at(0) == std::string("dummy"))
       {
-	sto.is_dummy == true;
+	sto.is_dummy = true;
 	return sto;
       }
       sto.is_dummy = false;
