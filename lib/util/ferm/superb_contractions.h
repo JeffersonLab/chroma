@@ -8931,6 +8931,7 @@ namespace Chroma
     struct ColorvecsStorage {
       std::shared_ptr<MODS_t> mod;	   // old storage
       StorageTensor<Nd + 2, ComplexD> s3t; // cxyztn
+      bool is_dummy; /// whether to create random numbers
     };
 
     namespace ns_getColorvecs
@@ -9665,6 +9666,14 @@ namespace Chroma
     {
       ColorvecsStorage sto{}; // returned object
 
+      // Check if it is dummy
+      if (colorvec_files.size() == 1 && colorvec_files.at(0) == std::string("dummy"))
+      {
+	sto.is_dummy = true;
+	return sto;
+      }
+      sto.is_dummy = false;
+
       std::string metadata; // the metadata content of the file
 
       // Try to open the file as a s3t database
@@ -9796,12 +9805,25 @@ namespace Chroma
 
       // Read the colorvecs with the proper function
       Tensor<Nd + 3, COMPLEX> r;
-      if (sto.s3t)
+      if (sto.is_dummy)
+      {
+	const std::string order_str = order.getSome("cxyztXn");
+	detail::check_order_contains(order_str, "cxyztXn");
+	r = Tensor<Nd + 3, COMPLEX>(
+	  order_str, latticeSize<Nd + 3>(order_str, {{'n', n_colorvecs}, {'t', n_tslices}}),
+	  OnDefaultDevice, "t");
+	nrand(r);
+      }
+      else if (sto.s3t)
+      {
 	r = ns_getColorvecs::getColorvecs<COMPLEX>(sto.s3t, u, decay_dir, from_tslice, n_tslices,
 						   n_colorvecs, order, dev);
+      }
       else if (sto.mod)
+      {
 	r = ns_getColorvecs::getColorvecs<COMPLEX>(*sto.mod, decay_dir, from_tslice, n_tslices,
 						   n_colorvecs, order, dev);
+      }
 
       // Phase colorvecs
       r = phaseColorvecs(r, from_tslice, phase);
