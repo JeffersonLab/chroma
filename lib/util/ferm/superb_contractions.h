@@ -5519,20 +5519,22 @@ namespace Chroma
 	  superbblas::create_bsr<ND, NI, value_type>(
 	    i.p->p.data(), i.dim,
 #  if SUPERBBLAS_VERSION >= 3
-	    d_partition.size() / d.p->p.size(),
+	    1,
 #  endif
-	    d_partition.data(), d.dim, 1, blki, blkd, isImgFastInBlock, &iiptr, &jjptr, &ptr,
-	    &data.ctx(), comm, superbblas::FastToSlow, &bsr);
+	    d_partition.data(), d.dim, d_partition.size() / d.p->p.size(), blki, blkd,
+	    isImgFastInBlock, &iiptr, &jjptr, &ptr, &data.ctx(), comm, superbblas::FastToSlow,
+	    &bsr);
 	}
 	else
 	{
 	  superbblas::create_kron_bsr<ND, NI, value_type>(
 	    i.p->p.data(), i.dim,
 #  if SUPERBBLAS_VERSION >= 3
-	    d_partition.size() / d.p->p.size(),
+	    1,
 #  endif
-	    d_partition.data(), d.dim, 1, blki, blkd, kroni, krond, isImgFastInBlock, &iiptr,
-	    &jjptr, &ptr, &kron_ptr, &data.ctx(), comm, superbblas::FastToSlow, &bsr);
+	    d_partition.data(), d.dim, d_partition.size() / d.p->p.size(), blki, blkd, kroni, krond,
+	    isImgFastInBlock, &iiptr, &jjptr, &ptr, &kron_ptr, &data.ctx(), comm,
+	    superbblas::FastToSlow, &bsr);
 	}
 	handle = std::shared_ptr<superbblas::BSR_handle>(
 	  bsr, [=](superbblas::BSR_handle* bsr) { destroy_bsr(bsr); });
