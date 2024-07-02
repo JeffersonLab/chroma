@@ -8541,7 +8541,15 @@ namespace Chroma
       {
 	//  This is quick and dirty and nonreproducible if the lattice is distributed
 	//  among the processes is different ways.
-	static std::mt19937_64 twister_engine(10 + Layout::nodeNumber());
+	static std::mt19937_64 twister_engine = [=]() {
+	  //Obtain the current seed
+	  Seed curr_seed;
+	  QDP::RNG::savern(curr_seed);
+	  const auto& s = curr_seed.elem().elem();
+	  auto seed = superbblas::detail::Hash<std::array<int, 4>>::hash(std::array<int, 4>{
+	    s.elem(0).elem(), s.elem(1).elem(), s.elem(2).elem(), s.elem(3).elem()});
+	  return std::mt19937_64(seed + Layout::nodeNumber());
+	}();
 	return twister_engine;
       }
     }
