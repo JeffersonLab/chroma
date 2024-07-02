@@ -8537,6 +8537,33 @@ namespace Chroma
 
     namespace detail
     {
+      template <typename T>
+      struct detox_aux {
+	using rtype = T;
+	static T get(const T& e)
+	{
+	  return e;
+	}
+      };
+
+#  ifdef QDP_IS_QDPJIT
+      template <typename T>
+      struct detox_aux<QDP::Word<T>> {
+	using rtype = T;
+	static T get(const QDP::Word<T>& w)
+	{
+	  return w.elem();
+	}
+      };
+#  endif
+
+      // Return the same value but with the most elemental type
+      template <typename T>
+      typename detox_aux<T>::rtype detox(const T& e)
+      {
+	return detox_aux<T>::get(e);
+      }
+
       inline std::mt19937_64& getSeed()
       {
 	//  This is quick and dirty and nonreproducible if the lattice is distributed
@@ -8546,8 +8573,9 @@ namespace Chroma
 	  Seed curr_seed;
 	  QDP::RNG::savern(curr_seed);
 	  const auto& s = curr_seed.elem().elem();
-	  auto seed = superbblas::detail::Hash<std::array<int, 4>>::hash(std::array<int, 4>{
-	    s.elem(0).elem(), s.elem(1).elem(), s.elem(2).elem(), s.elem(3).elem()});
+	  auto seed = superbblas::detail::Hash<std::array<int, 4>>::hash(
+	    std::array<int, 4>{detox(s.elem(0).elem()), detox(s.elem(1).elem()),
+			       detox(s.elem(2).elem()), detox(s.elem(3).elem())});
 	  return std::mt19937_64(seed + Layout::nodeNumber());
 	}();
 	return twister_engine;
