@@ -32,7 +32,8 @@ namespace Chroma
 
       struct Param_t
       {
-	int max_path_length ; /*! maximum displacement path */
+	int max_path_length ; /*! maximum displacement path in the z direction */
+	std::vector< std::vector<int>> alt_displacements;   /*!< Alternative displacement paths */
 	int mom2_min;               /*!< (mom)^2 >= mom2_min */
 	int mom2_max;               /*!< (mom)^2 <= mom2_max */
 	std::vector<std::vector<int>>  mom_list;        /*!< Alternative array of momenta to generate */

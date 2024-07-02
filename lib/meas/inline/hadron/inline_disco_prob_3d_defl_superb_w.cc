@@ -64,7 +64,19 @@ namespace Chroma
     {
       XMLReader inputtop(xml, path);
 
-      read(inputtop, "max_path_length", param.max_path_length);
+      if (inputtop.count("Displacements") == 1)
+      {
+	read(inputtop, "Displacements", param.alt_displacements);
+	param.max_path_length = -1;
+      }
+      else if (inputtop.count("max_path_length") == 1)
+      {
+	read(inputtop, "max_path_length", param.max_path_length);
+      }
+      else
+      {
+	throw std::runtime_error("Please give either `max_path_length` or `Displacements`");
+      }
 
       param.mom2_min = 0;
       if (inputtop.count("mom2_min") > 0)
@@ -315,7 +327,7 @@ namespace Chroma
     void do_disco(Traces& db, const std::vector<std::shared_ptr<LatticeFermion>>& qbar,
 		  const std::vector<std::shared_ptr<LatticeFermion>>& q,
 		  const SB::CoorMoms& mom_list, int t_source, const multi1d<LatticeColorMatrix>& u,
-		  const int& max_path_length)
+		  const std::vector<std::vector<int>>& disps)
     {
 
       const int Nt = Layout::lattSize()[3];
@@ -341,14 +353,6 @@ namespace Chroma
 	  .rename_dims({{'s', 'Q'}})
 	  .kvslice_from_size({{'t', t_source}}, {{'t', 1}})
 	  .copyTo(qbart.kvslice_from_size({{'*', i}}, {{'*', 1}}));
-
-      // Construct a vector with the desired contractions
-      std::vector<std::vector<int>> disps;
-      disps.push_back(std::vector<int>()); // no displacement
-      for (int i = 1; i <= max_path_length; ++i)
-	disps.push_back(std::vector<int>(i, 3)); // displacements on positive z-dir
-      for (int i = 1; i <= max_path_length; ++i)
-	disps.push_back(std::vector<int>(i, -3)); // displacements on negative z-dir
 
       // Put all gamma matrices in a single tensor
       std::vector<SB::Tensor<2, SB::Complex>> gamma_mats;
@@ -710,6 +714,21 @@ namespace Chroma
 	mom_list = SB::getMomenta(params.param.mom_list);
       }
 
+      // Process the displacements
+      std::vector<std::vector<int>> disps;
+      if (params.param.max_path_length < 0)
+      {
+	disps = params.param.alt_displacements;
+      }
+      else
+      {
+	disps.push_back(std::vector<int>()); // no displacement
+	for (int i = 1; i <= params.param.max_path_length; ++i)
+	  disps.push_back(std::vector<int>(i, 3)); // displacements on positive z-dir
+	for (int i = 1; i <= params.param.max_path_length; ++i)
+	  disps.push_back(std::vector<int>(i, -3)); // displacements on negative z-dir
+      }
+
       // number of colors
       int Nsrc = coloring->numColors();
       QDPIO::cout << "num colors " << Nsrc << std::endl;
@@ -749,8 +768,7 @@ namespace Chroma
 
 	  // Added to dbdet the results of \Omega*P*inv(A)=\Omega*V*inv(U'*A*V)*U', where \Omega are
 	  do_disco(dbdet, uk, vk, mom_list, params.param.t_sources.at(0),
-		   params.param.use_ferm_state_links ? state->getLinks() : u,
-		   params.param.max_path_length);
+		   params.param.use_ferm_state_links ? state->getLinks() : u, disps);
 	}
       }
 
@@ -847,8 +865,7 @@ namespace Chroma
 	  StopWatch swatch_dots;
 	  swatch_dots.start();
 	  do_disco(db, v_chi, v_q, mom_list, params.param.t_sources.at(0),
-		   params.param.use_ferm_state_links ? state->getLinks() : u,
-		   params.param.max_path_length);
+		   params.param.use_ferm_state_links ? state->getLinks() : u, disps);
 	  swatch_dots.stop();
 	  QDPIO::cout << "Computing inner products " << swatch_dots.getTimeInSeconds() << " secs"
 		      << std::endl;
