@@ -30,7 +30,8 @@ namespace Chroma
     }
 
     // Construct a k-distance coloring
-    Coloring(const std::vector<std::array<int, 4>>& distances, unsigned int power, const std::array<int, 4>& dim)
+    Coloring(const std::vector<std::array<int, 4>>& distances, unsigned int power,
+	     const std::array<int, 4>& dim)
     {
       std::array<unsigned int, 4> dimu{(unsigned int)dim[0], (unsigned int)dim[1],
 				       (unsigned int)dim[2], (unsigned int)dim[3]};

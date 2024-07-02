@@ -20,6 +20,7 @@
 #include "meas/inline/hadron/inline_disco_w.h"
 #include "meas/inline/hadron/inline_disco_prob_defl_w.h"
 #include "meas/inline/hadron/inline_disco_prob_defl_superb_w.h"
+#include "meas/inline/hadron/inline_disco_prob_3d_defl_superb_w.h"
 #include "meas/inline/hadron/inline_disco_eoprec_w.h"
 #include "meas/inline/hadron/inline_disco_eo_eigcg_w.h"
 #include "meas/inline/hadron/inline_disco_eigcg_w.h"
@@ -149,6 +150,7 @@ namespace Chroma
 	success &= InlineDiscoProbDefl::registerAll();
 #ifdef BUILD_SB
 	success &= InlineDiscoProbDeflSuperb::registerAll();
+	success &= InlineDiscoProb3dDeflSuperb::registerAll();
 #endif
 
 	success &= InlineStagToWilsEnv::registerAll();

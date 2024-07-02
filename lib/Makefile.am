@@ -889,6 +889,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_prob_defl_w.h \
 	meas/inline/hadron/inline_disco_prob_defl_superb_w.h \
+	meas/inline/hadron/inline_disco_prob_3d_defl_superb_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
 	meas/inline/hadron/inline_disco_eigcg_w.h \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
@@ -1814,6 +1815,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_prob_defl_w.cc \
 	meas/inline/hadron/inline_disco_prob_defl_superb_w.cc \
+	meas/inline/hadron/inline_disco_prob_3d_defl_superb_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
 	meas/inline/hadron/inline_disco_eigcg_w.cc \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
