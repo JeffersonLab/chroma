@@ -36,7 +36,7 @@ namespace Chroma {
 
 
 		template<typename T>
-		MGSubspacePointers* create_subspace(const SysSolverQUDAMULTIGRIDCloverParams& invParam, QudaInvertParam *quda_inv_param = nullptr)
+		MGSubspacePointers* create_subspace(const SysSolverQUDAMULTIGRIDCloverParams& invParam)
 		{
 			MGSubspacePointers* ret_val = new MGSubspacePointers();
 
@@ -407,17 +407,8 @@ namespace Chroma {
 			// setup the multigrid solver
 			// this allocates memory
 			QDPIO::cout << "About to Call newMultigridQuda" << std::endl;
-			if( quda_inv_param == nullptr) {
-				ret_val->preconditioner = newMultigridQuda(&mg_param);
-			}
-			else {
-				auto local_quda_inv_param = *quda_inv_param;
-				for(int i=0; i < Nd; i++) { 
-					local_quda_inv_param.split_grid[i] = invParam.GridSplitDims[i];
-				}
-				ret_val->preconditioner = newMultigridSplitQuda(&mg_param, &local_quda_inv_param);
-			}
 
+			ret_val->preconditioner = newMultigridQuda(&mg_param);
 			QDPIO::cout<<"NewMultigridQuda state initialized."<<std::endl;
 			QDPIO::cout<<"MULTIGRID preconditioner set."<<std::endl;
 			QDPIO::cout << "After call to newMultigridQuda" <<std::endl;
