@@ -175,7 +175,7 @@ namespace Chroma
         //  gauge is available in the class definition
         //  however we need to do a bit more work to get the clover:
         //
-        invertMultiSrcCloverQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param);
+        invertMultiSrcQuda(spinorOut.data(), spinorIn.data(), &local_quda_inv_param);
         swatch1.stop();
 
         QDPIO::cout << "QUDA_"<<solver_string<<"_CLOVER_SOLVER: time="<< local_quda_inv_param.secs <<" s" ;
