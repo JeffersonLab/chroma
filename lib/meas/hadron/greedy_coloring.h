@@ -22,7 +22,7 @@ namespace Chroma
     Coloring(const std::vector<std::array<int, 4>>& distances, unsigned int power);
 
     // Construct a k-distance coloring
-    Coloring(unsigned int power, std::array<int, 4> dim)
+    Coloring(unsigned int power, const std::array<int, 4>& dim)
     {
       std::array<unsigned int, 4> dimu{(unsigned int)dim[0], (unsigned int)dim[1],
 				       (unsigned int)dim[2], (unsigned int)dim[3]};
@@ -30,7 +30,7 @@ namespace Chroma
     }
 
     // Construct a k-distance coloring
-    Coloring(std::vector<std::array<int, 4>>& distances, unsigned int power, std::array<int, 4> dim)
+    Coloring(const std::vector<std::array<int, 4>>& distances, unsigned int power, const std::array<int, 4>& dim)
     {
       std::array<unsigned int, 4> dimu{(unsigned int)dim[0], (unsigned int)dim[1],
 				       (unsigned int)dim[2], (unsigned int)dim[3]};
@@ -44,7 +44,7 @@ namespace Chroma
     void getVec(LatticeInteger& vec, unsigned int color) const;
 
     // Return the color for each node
-    unsigned int getColor(std::array<int, 4> dim) const;
+    unsigned int getColor(const std::array<int, 4>& dim) const;
 
     // Return the number of colors
     unsigned int numColors() const
@@ -53,7 +53,7 @@ namespace Chroma
     }
 
     static std::vector<std::array<int, 4>> all_neighbors(unsigned int farthest_neighbor,
-							 std::array<int, 4> dim);
+							 const std::array<int, 4>& dim);
 
   private:
     std::vector<unsigned int> colors;
@@ -61,7 +61,7 @@ namespace Chroma
     std::array<unsigned int, 4> tile_size;
     unsigned int num_colors;
     void construct(const std::vector<std::array<int, 4>>& distances, unsigned int power,
-		   std::array<unsigned int, 4> latt_size, bool build_local);
+		   const std::array<unsigned int, 4>& latt_size, bool build_local);
   };
 
 }

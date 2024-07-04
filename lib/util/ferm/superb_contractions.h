@@ -711,6 +711,8 @@ namespace Chroma
       Coor<Nout> collapse_dimensions(std::size_t pos, const Coor<N>& c, const Coor<N>& old_dim,
 				     CoorType t)
       {
+	if (pos >= N || pos >= Nout)
+	  throw std::runtime_error("collapse_dimensions: invalid pos");
 	constexpr std::size_t Ncol = N + 1 - Nout; // number of dimensions to collapse
 	Coor<Nout> r;
 	std::copy_n(c.begin(), pos, r.begin());
@@ -1049,11 +1051,13 @@ namespace Chroma
       }
 
       /// Return whether the tensor isn't local or on master or replicated
-      inline Distribution compatible_oneveryone_distribution(const Distribution& dist)
+      inline Distribution
+      compatible_oneveryone_distribution(const Distribution& dist,
+					 const Distribution& everyone_dist = OnEveryone)
       {
 	if (dist == Local || dist == Glocal)
 	  return dist;
-	return OnEveryone;
+	return everyone_dist;
       }
 
       /// Stores the subtensor supported on each node (used by class Tensor)
@@ -2323,10 +2327,10 @@ namespace Chroma
 	if (ctx().plat != superbblas::CPU)
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements from tensors not stored on the host");
-	if (dist != OnEveryoneReplicated && dist != Local)
+	if (dist != OnEveryoneReplicated && dist != Local && dist != Glocal)
 	  throw std::runtime_error(
 	    "Unsupported to `get` elements on a distributed tensor; change the distribution to "
-	    "`OnEveryoneReplicated` or local");
+	    "`OnEveryoneReplicated` or local or glocal");
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
@@ -2356,10 +2360,10 @@ namespace Chroma
 
       void set(Coor<N> coor, value_type v)
       {
-	if (dist != OnEveryoneReplicated && dist != Local)
+	if (dist != OnEveryoneReplicated && dist != Local && dist != Glocal)
 	  throw std::runtime_error(
 	    "Unsupported to `set` elements on a distributed tensor; change the distribution to "
-	    "`OnEveryoneReplicated` or local");
+	    "`OnEveryoneReplicated` or local or glocal");
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
@@ -3891,9 +3895,10 @@ namespace Chroma
 	if (v.allocation.use_count() > 1)
 	  v = v.clone();
 
-	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
-	  throw std::runtime_error(
-	    "One of the contracted tensors or the output tensor is local and others are not!");
+	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local) ||
+	    (v.dist == Glocal) != (w.dist == Glocal) || (w.dist == Glocal) != (dist == Glocal))
+	  throw std::runtime_error("cholInv: one of the contracted tensors or the output tensor "
+				   "is local/glocal and others are not!");
 
 	if (detail::isDistributedOnEveryone(v.dist) && w.dist == OnEveryoneReplicated)
 	  w = w.make_suitable_for_contraction(v);
@@ -3904,19 +3909,23 @@ namespace Chroma
 	if (std::fabs(std::imag(v.scalar)) != 0 || std::real(v.scalar) < 0)
 	  throw std::runtime_error("cholInv: unsupported a negative or imaginary scale");
 
+	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
+	
 	value_type* v_ptr = v.data();
 	value_type* w_ptr = w.data();
 	value_type* ptr = data_for_writing();
-	superbblas::cholesky<Nv>(v.p->p.data(), v.dim, 1, v.order.c_str(), &v_ptr,
-				 order_rows.c_str(), order_cols.c_str(), &v.ctx(), MPI_COMM_WORLD,
+	superbblas::cholesky<Nv>(v.p->p.data() + p_disp, v.dim, 1, v.order.c_str(), &v_ptr,
+				 order_rows.c_str(), order_cols.c_str(), &v.ctx(), comm,
 				 superbblas::FastToSlow);
 	superbblas::trsm<Nv, Nw, N>(
 	  w.scalar / std::sqrt(v.scalar) / scalar, //
-	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const value_type**)&v_ptr, order_rows.c_str(),
-	  order_cols.c_str(),
-	  &v.ctx(),									  //
-	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr, &w.ctx(), //
-	  p->p.data(), dim, 1, order.c_str(), &ptr, &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
+	  v.p->p.data() + p_disp, v.dim, 1, v.order.c_str(), (const value_type**)&v_ptr,
+	  order_rows.c_str(), order_cols.c_str(),
+	  &v.ctx(), //
+	  w.p->p.data() + p_disp, w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr,
+	  &w.ctx(), //
+	  p->p.data() + p_disp, dim, 1, order.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
@@ -3944,9 +3953,13 @@ namespace Chroma
 	}
 
 	v.copyTo(*this);
+
+	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
+
 	value_type* ptr = data_for_writing();
-	superbblas::inversion<Nv>(p->p.data(), dim, 1, order.c_str(), &ptr, order_rows.c_str(),
-				  order_cols.c_str(), &ctx(), MPI_COMM_WORLD,
+	superbblas::inversion<Nv>(p->p.data() + p_disp, dim, 1, order.c_str(), &ptr,
+				  order_rows.c_str(), order_cols.c_str(), &ctx(), comm,
 				  superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
@@ -3994,9 +4007,10 @@ namespace Chroma
 	  return;
 	}
 
-	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local))
-	  throw std::runtime_error("solve: One of the contracted tensors or the output tensor is "
-				   "local and others are not!");
+	if ((v.dist == Local) != (w.dist == Local) || (w.dist == Local) != (dist == Local) ||
+	    (v.dist == Glocal) != (w.dist == Glocal) || (w.dist == Glocal) != (dist == Glocal))
+	  throw std::runtime_error("solve: one of the contracted tensors or the output tensor "
+				   "is local/glocal and others are not!");
 
 	// Help superbblas to get the same verbatim value in all processes for the same tensor element in all
 	// replicated copies
@@ -4014,16 +4028,20 @@ namespace Chroma
 	if (v.dist == OnEveryoneReplicated && detail::isDistributedOnEveryone(w.dist))
 	  v = v.make_suitable_for_contraction(w);
 
+	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
+	
 	value_type* v_ptr = v.data();
 	value_type* w_ptr = w.data();
 	value_type* ptr = data_for_writing();
 	superbblas::gesm<Nv, Nw, N>(
 	  w.scalar / v.scalar / scalar, //
-	  v.p->p.data(), v.dim, 1, v.order.c_str(), (const value_type**)&v_ptr, order_rows.c_str(),
-	  order_cols.c_str(),
-	  &v.ctx(),									  //
-	  w.p->p.data(), w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr, &w.ctx(), //
-	  p->p.data(), dim, 1, order.c_str(), &ptr, &ctx(), MPI_COMM_WORLD, superbblas::FastToSlow);
+	  v.p->p.data() + p_disp, v.dim, 1, v.order.c_str(), (const value_type**)&v_ptr,
+	  order_rows.c_str(), order_cols.c_str(),
+	  &v.ctx(), //
+	  w.p->p.data() + p_disp, w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr,
+	  &w.ctx(), //
+	  p->p.data() + p_disp, dim, 1, order.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
@@ -4310,27 +4328,27 @@ namespace Chroma
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	std::stringstream ss;
-	auto t = toComplex();
-	auto t_host = t.like_this(none, {}, OnHost, OnMaster);
-	t.copyTo(t_host);
-	if (Layout::nodeNumber() == 0)
+	auto t_host =
+	  toComplex()
+	    .make_sure(none, OnHost, detail::compatible_oneveryone_distribution(dist, OnMaster))
+	    .getLocal();
+	if (t_host)
 	{
+	  assert(!t_host.isSubtensor());
 	  using namespace detail::repr;
+	  std::stringstream ss;
 	  ss << "% " << repr(data()) << std::endl;
 	  ss << "% dist=" << p->p << std::endl;
 	  ss << name << "=reshape([";
-	  assert(!t_host.isSubtensor());
 	  std::size_t vol = volume();
 	  for (std::size_t i = 0; i < vol; ++i)
 	  {
-	    //using detail::repr::operator<<;
 	    ss << " ";
 	    detail::repr::operator<<(ss, t_host.data()[i]);
 	  }
 	  ss << "], [" << size << "]);" << std::endl;
+	  detail::log(1, ss.str());
 	}
-	detail::log(1, ss.str());
       }
 #  if 0
       /// Get where the tensor is stored
@@ -5078,10 +5096,12 @@ namespace Chroma
       return Tensor<1, COMPLEX>("i", Coor<1>{Index(v.size())}, OnHost, dist, v.data());
     }
 
-    inline Tensor<2, Complex> asTensorView(SpinMatrix& smat)
+    inline Tensor<2, Complex> asTensorView(SpinMatrix& smat,
+					   const Distribution& dist = OnEveryoneReplicated)
     {
       Complex* v_ptr = reinterpret_cast<Complex*>(smat.getF());
-      return Tensor<2, Complex>("ji", Coor<2>{Ns, Ns}, OnHost, OnEveryoneReplicated, v_ptr);
+      return Tensor<2, Complex>("ji", Coor<2>{Ns, Ns}, OnHost,
+				detail::compatible_replicated_distribution(dist), v_ptr);
     }
 
     inline SpinMatrix SpinMatrixIdentity()
@@ -5097,11 +5117,12 @@ namespace Chroma
     }
 
     template <typename COMPLEX = Complex>
-    Tensor<2, COMPLEX> Gamma(int gamma, DeviceHost dev = OnDefaultDevice)
+    Tensor<2, COMPLEX> Gamma(int gamma, DeviceHost dev = OnDefaultDevice,
+			     const Distribution& dist = OnEveryoneReplicated)
     {
       SpinMatrix g = QDP::Gamma(gamma) * SpinMatrixIdentity();
-      Tensor<2, COMPLEX> r("ij", {Ns, Ns}, dev, OnEveryoneReplicated);
-      asTensorView(g).copyTo(r);
+      Tensor<2, COMPLEX> r("ij", {Ns, Ns}, dev, detail::compatible_replicated_distribution(dist));
+      asTensorView(g, dist).copyTo(r);
       return r;
     }
 
@@ -5394,7 +5415,8 @@ namespace Chroma
       /// Construct the sparse operator
       void construct()
       {
-	if ((ii.dist != OnEveryone && ii.dist != OnEveryoneAsChroma && ii.dist != Local) ||
+	if ((ii.dist != OnEveryone && ii.dist != OnEveryoneAsChroma && ii.dist != Local &&
+	     ii.dist != Glocal) ||
 	    ii.dist != jj.dist || ii.dist != data.dist ||
 	    (kron && kron.dist != detail::compatible_replicated_distribution(ii.dist)))
 	  throw std::runtime_error("SpTensor::construct: unexpected distribution of the data");
@@ -5625,6 +5647,10 @@ namespace Chroma
 					    const std::map<char, int>& img_kvfrom = {},
 					    const std::map<char, int>& img_kvsize = {}) const
       {
+	// Check that the object is not local or glocal (FIXME)
+	if (ii.dist == Local || ii.dist == Glocal)
+	  throw std::runtime_error("SpTensor::kvslice_from_size: unexpected distribution of the data");
+
 	// Check that we aren't slicing the blocking dimensions
 	bool fail = false;
 	std::string o_blk_d = std::string(d.order.begin(), d.order.begin() + nblockd);
@@ -8788,21 +8814,23 @@ namespace Chroma
     /// \param ns: number of spins
 
     template <typename COMPLEX = Complex>
-    Tensor<2, COMPLEX> getGamma5(int ns, DeviceHost dev = OnDefaultDevice)
+    Tensor<2, COMPLEX> getGamma5(int ns, DeviceHost dev = OnDefaultDevice,
+				 const Distribution& dist = OnEveryoneReplicated)
     {
+      const auto& new_dist = detail::compatible_replicated_distribution(dist);
       if (ns == 1)
       {
-	Tensor<2, COMPLEX> r("ij", {1, 1}, OnHost, OnEveryoneReplicated);
+	Tensor<2, COMPLEX> r("ij", {1, 1}, OnHost, new_dist);
 	r.set({{0, 0}}, COMPLEX{1});
 	return r.make_sure(none, dev);
       }
       else if (ns == Ns)
       {
-	return SB::Gamma(Ns * Ns - 1).template make_sure<COMPLEX>(none, dev);
+	return SB::Gamma(Ns * Ns - 1).template make_sure<COMPLEX>(none, dev, new_dist);
       }
       else if (ns == 2)
       {
-	Tensor<2, COMPLEX> r("ij", {2, 2}, OnHost, OnEveryoneReplicated);
+	Tensor<2, COMPLEX> r("ij", {2, 2}, OnHost, new_dist);
 	r.set_zero();
 	r.set({{0, 0}}, COMPLEX{1});
 	r.set({{1, 1}}, COMPLEX{-1});
@@ -9592,14 +9620,14 @@ namespace Chroma
 	    {
 	      auto cv_norm = colorvecs_s3t_norms.get({n, t});
 	      auto phi_i = cv_norm * cv_norm / ip.get({n, t});
-	      if (std::fabs(std::fabs(phi_i) - 1) > 1e-4)
+	      if (std::fabs(std::abs(phi_i) - 1) > 1e-4)
 	      {
 		error = true;
 		if (Layout::nodeNumber() == 0)
 		{
 		  std::cout << "warning: The colorvec fingerprint does not correspond to current "
 			       "gates field: deviation of the phase: "
-			    << std::fabs(std::fabs(phi_i) - 1) << " on t slice "
+			    << std::fabs(std::abs(phi_i) - 1) << " on t slice "
 			    << (from_tslice + t) % Nt << " and vector " << n << std::endl;
 		}
 	      }
@@ -9937,7 +9965,7 @@ namespace Chroma
 	  ip.contract(colorvecs, {}, Conjugate, colorvecs_src, {}, NotConjugate);
 	  for (int t = 0; t < n_tslices0; ++t)
 	    for (int n = 0; n < n_colorvecs; ++n)
-	      if (std::fabs(std::fabs(ip.get({n, t})) - 1) > 1e-4)
+	      if (std::fabs(std::abs(ip.get({n, t})) - 1) > 1e-4)
 		throw std::runtime_error(
 		  "The given colorvec does not correspond to current gates field and smearing");
 	  colorvecs = colorvecs_src;
@@ -10013,60 +10041,58 @@ namespace Chroma
 	int disp_index;		   ///< if >= 0, the index in the displacement list
       };
 
-      /// Return the directions that are going to be use and the maximum number of displacements keep in memory
-      inline void get_tree_mem_stats(const PathNode& disps, std::array<bool, Nd>& dirs,
-				     unsigned int& max_rhs, std::map<int, unsigned int>& counts)
+      /// Return the total amount of steps on each direction over all the displacement entries
+      /// \param disps: input tree of displacements
+
+      inline Coor<Nd> get_total_disps(const PathNode& disps)
       {
-	unsigned int max_rhs_sub = 0;
+	Coor<Nd> counts{{}};
 	for (const auto it : disps.p)
 	{
-	  unsigned int max_rhs_sub_it = 0;
-	  get_tree_mem_stats(it.second, dirs, max_rhs_sub_it, counts);
-	  max_rhs_sub = std::max(max_rhs_sub, max_rhs_sub_it);
-
-	  if (std::abs(it.first) <= Nd)
+	  if (std::abs(it.first) > 0)
 	  {
 	    int dir = std::abs(it.first) - 1;
-	    dirs[dir] = true;
-
-	    if (counts.count(dir) == 0)
-	      counts[dir] = 1;
-	    else
-	      counts[dir]++;
+	    counts[dir]++;
 	  }
 	}
+	return counts;
+      }
 
-	if (disps.p.size() == 0)
+      /// Return the maximum steps on each direction on a single displacement entry
+      /// \param disps: input tree of displacements
+
+      inline Coor<Nd> get_max_disp(const PathNode& disps)
+      {
+	Coor<Nd> max_disp{{}};
+	for (const auto it : disps.p)
 	{
-	  max_rhs = 0;
+	  Coor<Nd> disp{{}};
+	  if (std::abs(it.first) > 0)
+	  {
+	    int dir = std::abs(it.first) - 1;
+	    disp[dir] = 1;
+	  }
+	  Coor<Nd> this_max_disp = get_max_disp(it.second);
+	  for (std::size_t i = 0; i < Nd; ++i)
+	    max_disp[i] = std::max(max_disp[i], this_max_disp[i] + disp[i]);
 	}
-	else if (disps.p.size() == 1)
-	{
-	  max_rhs = std::max(1u, max_rhs_sub);
-	}
-	else
-	{
-	  max_rhs = 1 + max_rhs_sub;
-	}
+	return max_disp;
       }
 
       /// Return the lattice labels ordered from less to more counts
-      /// \param counts: counts returned by `get_tree_mem_stats`
+      /// \param counts: counts returned by `get_total_disps`
       /// \param extra_count_0_labels: (optional) labels to append after the zero count lattice labels
 
-      inline std::string get_optimal_lattice_order(const std::map<int, unsigned int>& counts,
+      inline std::string get_optimal_lattice_order(const Coor<Nd>& counts,
 						   const std::string& extra_count_0_labels = "")
       {
-	static_assert(Nd == 4);
+	static_assert(Nd == 4, "only supports 4D");
 
 	// Make a vector of pairs of {label, count} for label being each direction
 	std::vector<std::array<int, 2>> v(4);
 	for (int i = 0; i < 4; ++i)
 	{
-	  if (counts.count(i) == 0)
-	    v[i] = {i, 0};
-	  else
-	    v[i] = {i, (int)counts.at(i)};
+	    v[i] = {i, counts[i]};
 	}
 
 	// Sort them ascendantly on the number of counts
@@ -10147,6 +10173,9 @@ namespace Chroma
       /// Contract two LatticeFermion with different momenta, gammas, and displacements.
       /// \param leftconj: left lattice fermion tensor, cSxyzXN
       /// \param right: right lattice fermion tensor, csxyzXn
+      /// \param first_tslice: absolute index of the first tslice
+      /// \param save_from: relative first tslice to save
+      /// \param save_size: number of tslices to save
       /// \param disps: tree of displacements/derivatives
       /// \param deriv: if true, do left-right nabla derivatives
       /// \param gammas: tensor with spins, QSg
@@ -10161,7 +10190,8 @@ namespace Chroma
       void doMomGammaDisp_contractions(const std::vector<Tensor<Nd + 3, Complex>>& u,
 				       const Tensor<Nleft, COMPLEX>& leftconj,
 				       Tensor<Nright, COMPLEX>&& right, Index first_tslice,
-				       const PathNode& disps, bool deriv, Tensor<3, COMPLEX> gammas,
+				       Index save_from, Index save_size, const PathNode& disps,
+				       bool deriv, Tensor<3, COMPLEX> gammas,
 				       const std::vector<Coor<Nd - 1>>& moms, int first_mom,
 				       const MomGammaDispContractionFn<Nout, COMPLEX>& call)
       {
@@ -10174,7 +10204,9 @@ namespace Chroma
 	  Tensor<Nout, COMPLEX> r =
 	    contract<Nout>(contract<Nout + 1>(leftconj.conj(), right, "cxyzX"), gammas, "SQ");
 
-	  call(std::move(r), disps.disp_index, first_tslice, first_mom);
+	  int Nt = Layout::lattSize()[3];
+	  call(r.kvslice_from_size({{'t', save_from}}, {{'t', save_size}}), disps.disp_index,
+	       normalize_coor(first_tslice + save_from, Nt), first_mom);
 	}
 
 	// Apply displacements on the right and call recursively
@@ -10191,8 +10223,8 @@ namespace Chroma
 		   : leftRightNabla(u, right, first_tslice, it.first, moms);
 	  if (node_disp == disps.p.size() - 1)
 	    right.release();
-	  doMomGammaDisp_contractions(u, leftconj, std::move(right_disp), first_tslice, it.second,
-				      deriv, gammas, moms, first_mom, call);
+	  doMomGammaDisp_contractions(u, leftconj, std::move(right_disp), first_tslice, save_from,
+				      save_size, it.second, deriv, gammas, moms, first_mom, call);
 	  node_disp++;
 	  detail::log(1, "pop direction");
 	}
@@ -10208,6 +10240,8 @@ namespace Chroma
     /// \param leftconj: left lattice fermion tensor, cxyzXNQqt
     /// \param right: right lattice fermion tensor, cxyzXnSst
     /// \param first_tslice: first time-slice in leftconj and right
+    /// \param save_from: relative first tslice to save
+    /// \param save_size: number of tslices to save
     /// \param moms: momenta to apply
     /// \param gammas: list of gamma matrices to apply
     /// \param disps: list of displacements/derivatives
@@ -10219,16 +10253,14 @@ namespace Chroma
     ///        index in the tensor with an input displacement index.
 
     template <std::size_t Nout, std::size_t Nleft, std::size_t Nright, typename COMPLEX>
-    void doMomGammaDisp_contractions(const multi1d<LatticeColorMatrix>& u,
-				     Tensor<Nleft, COMPLEX> leftconj, Tensor<Nright, COMPLEX> right,
-				     Index first_tslice, const CoorMoms& moms,
-				     const std::vector<Tensor<2, COMPLEX>>& gammas,
-				     const std::vector<std::vector<int>>& disps, bool deriv,
-				     const MomGammaDispContractionFn<Nout, COMPLEX>& call,
-				     const std::string& order_out = "gmNnsqt",
-				     Maybe<int> max_active_tslices = none,
-				     Maybe<int> max_active_moms = none,
-				     DeviceHost dev = OnDefaultDevice)
+    void doMomGammaDisp_contractions(
+      const multi1d<LatticeColorMatrix>& u, Tensor<Nleft, COMPLEX> leftconj,
+      Tensor<Nright, COMPLEX> right, Index first_tslice, Index save_from, Index save_size,
+      const CoorMoms& moms, const std::vector<Tensor<2, COMPLEX>>& gammas,
+      const std::vector<std::vector<int>>& disps, bool deriv,
+      const MomGammaDispContractionFn<Nout, COMPLEX>& call,
+      const std::string& order_out = "gmNnsqt", Maybe<int> max_active_tslices = none,
+      Maybe<int> max_active_moms = none, DeviceHost dev = OnDefaultDevice)
     {
       detail::check_order_contains(order_out, "gmNnsqt");
       detail::check_order_contains(leftconj.order, "cxyzXNQqt");
@@ -10236,21 +10268,28 @@ namespace Chroma
 
       if (right.kvdim()['t'] != leftconj.kvdim()['t'])
 	throw std::runtime_error("The t component of `right' and `left' does not match");
-      int Nt = right.kvdim()['t'];
+      int num_tslices = right.kvdim()['t'];
 
-      int max_t = max_active_tslices.getSome(Nt);
+      int max_t = max_active_tslices.getSome(save_size);
       if (max_t <= 0)
-	max_t = Nt;
+	max_t = save_size;
+      if (max_t > save_size)
+	max_t = save_size;
       int max_moms_in_contraction = max_active_moms.getSome(moms.size());
 
       // Form a tree with the displacement paths
       detail::PathNode tree_disps = ns_doMomGammaDisp_contractions::get_tree(disps);
 
       // Get what directions are going to be used and the maximum number of displacements in memory
-      std::array<bool, Nd> active_dirs{{}};
-      unsigned int max_active_disps = 0;
-      std::map<int, unsigned int> counts;
-      detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps, counts);
+      Coor<Nd> active_dirs = get_max_disp(tree_disps);
+      Coor<Nd> counts = get_total_disps(tree_disps);
+
+      // Check that it is given enough extra time slices for time derivatives
+      int Nt = Layout::lattSize()[3];
+      if (num_tslices < Nt &&
+	  (save_from < active_dirs[3] || save_from + save_size + active_dirs[3] < num_tslices))
+	throw std::runtime_error("doMomGammaDisp_contractions: not enough time slices given for "
+				 "the requested time derivatives");
 
       // Copy all gammas into a single tensor
       Tensor<3, COMPLEX> gammast("gQS", {(Index)gammas.size(), Ns, Ns}, dev, OnEveryoneReplicated);
@@ -10267,34 +10306,37 @@ namespace Chroma
       // and on dimensions being contracted; so the only remaining dimension is t
       const Distribution dist = OnEveryoneCompact + detail::get_optimal_lattice_order(counts);
 
-      for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
-	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
+      for (int tfrom = save_from, tsize = std::min(max_t, save_size); tfrom < save_from + save_size;
+	   tfrom += tsize, tsize = std::min(max_t, save_from + save_size - tfrom))
       {
-	// Make tsize one or even
-	if (tsize > 1 && tsize % 2 != 0)
-	  --tsize;
+	// When having derivatives in the time direction, pack extra time slices
+	int t_extra = active_dirs[3];
+	t_extra = std::min(t_extra + tsize, Nt) - tsize;
+	int first_active_tslice = first_tslice + tfrom - t_extra;
+	int num_active_tslices = std::min(tsize + t_extra + active_dirs[3], Nt);
 
 	// Make a copy of the time-slicing of u[d] also supporting left and right
 	std::vector<Tensor<Nd + 3, Complex>> ut(Nd);
-	for (unsigned int d = 0; d < Nd - 1; d++)
+	for (unsigned int d = 0; d < Nd; d++)
 	{
-	  if (!active_dirs[d])
+	  if (active_dirs[d] == 0)
 	    continue;
 
 	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as leftconj and right
 	  ut[d] = detail::toNaturalOrdering(
 		    asTensorView(u[d])
-		      .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
+		      .kvslice_from_size({{'t', first_active_tslice}}, {{'t', num_active_tslices}})
 		      .toComplex(),
-		    first_tslice + tfrom)
+		    first_active_tslice)
 		    .make_sure(none, dev, dist);
 	}
 
 	auto this_right =
-	  detail::toNaturalOrdering(right.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}),
-				    first_tslice + tfrom)
+	  detail::toNaturalOrdering(
+	    right.kvslice_from_size({{'t', tfrom - t_extra}}, {{'t', num_active_tslices}}),
+	    first_active_tslice)
 	    .make_sure(none, dev, dist);
-	if (tfrom + tsize >= Nt)
+	if (tfrom + tsize >= save_from + save_size)
 	  right.release();
 
 	for (int mfrom = 0, msize = std::min(max_moms_in_contraction, (int)moms.size());
@@ -10319,14 +10361,15 @@ namespace Chroma
 	  // Apply momenta conjugated to the left tensor and rename the spin components s and Q to q and Q,
 	  // and the colorvector component n to N
 	  auto leftconj_nat =
-	    detail::toNaturalOrdering(leftconj.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}),
-				      first_tslice + tfrom)
+	    detail::toNaturalOrdering(
+	      leftconj.kvslice_from_size({{'t', tfrom - t_extra}}, {{'t', num_active_tslices}}),
+	      first_active_tslice)
 	      .make_sure(none, dev, dist);
 	  Tensor<Nleft + 1, COMPLEX> moms_left = leftconj_nat.template like_this<Nleft + 1>(
-	    "mQNqc%xyzXt", '%', "", {{'m', msize}, {'t', tsize}});
+	    "mQNqc%xyzXt", '%', "", {{'m', msize}, {'t', num_active_tslices}});
 	  moms_left.contract(std::move(momst), {}, Conjugate, std::move(leftconj_nat), {},
 			     NotConjugate);
-	  if (tfrom + tsize >= Nt && mfrom + msize >= moms.size())
+	  if (tfrom + tsize >= save_from + save_size && mfrom + msize >= moms.size())
 	    leftconj.release();
 
 	  // Do the thing
@@ -10334,8 +10377,9 @@ namespace Chroma
 	  {
 	    auto this_right0 = this_right;
 	    ns_doMomGammaDisp_contractions::doMomGammaDisp_contractions(
-	      ut, moms_left, std::move(this_right0), first_tslice + tfrom, tree_disps, deriv,
-	      gammast, CoorMoms(moms.begin() + mfrom, moms.begin() + mfrom + msize), mfrom, call);
+	      ut, moms_left, std::move(this_right0), first_active_tslice, t_extra, tsize,
+	      tree_disps, deriv, gammast,
+	      CoorMoms(moms.begin() + mfrom, moms.begin() + mfrom + msize), mfrom, call);
 	  }
 	  else
 	  {
@@ -10517,10 +10561,8 @@ namespace Chroma
       detail::PathNode tree_disps = ns_doMomDisp_colorContractions::get_tree(disps);
 
       // Get what directions are going to be used and the maximum number of displacements in memory
-      std::array<bool, Nd> active_dirs{{}};
-      unsigned int max_active_disps = 0;
-      std::map<int, unsigned int> counts;
-      detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps, counts);
+      Coor<Nd> active_dirs = get_max_disp(tree_disps);
+      Coor<Nd> counts = get_total_disps(tree_disps);
 
       // Check that all tensors have the same number of time
       int Nt = colorvec.kvdim()['t'];
@@ -10550,7 +10592,7 @@ namespace Chroma
 	std::vector<Tensor<Nd + 3, COMPLEX>> ut(Nd);
 	for (unsigned int d = 0; d < Nd - 1; d++)
 	{
-	  if (!active_dirs[d])
+	  if (active_dirs[d] == 0)
 	    continue;
 
 	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as colorvec and moms
@@ -10715,10 +10757,8 @@ namespace Chroma
       detail::PathNode tree_disps = detail::get_tree(disps);
 
       // Get what directions are going to be used and the maximum number of displacements in memory
-      std::array<bool, Nd> active_dirs{{}};
-      unsigned int max_active_disps = 0;
-      std::map<int, unsigned int> counts;
-      detail::get_tree_mem_stats(tree_disps, active_dirs, max_active_disps, counts);
+      Coor<Nd> active_dirs = get_max_disp(tree_disps);
+      Coor<Nd> counts = get_total_disps(tree_disps);
 
       // Check that all tensors have the same number of time
       int Nt = colorvec.kvdim()['t'];
@@ -10738,10 +10778,6 @@ namespace Chroma
       for (int tfrom = 0, tsize = std::min(Nt, max_tslices_in_contraction); tfrom < Nt;
 	   tfrom += tsize, tsize = std::min(max_tslices_in_contraction, Nt - tfrom))
       {
-	// Make tsize one or even
-	if (tsize > 1 && tsize % 2 != 0)
-	  --tsize;
-
 	detail::log(1, "contracting " + std::to_string(tsize) +
 			 " tslices from tslice= " + std::to_string(tfrom));
 
@@ -10749,7 +10785,7 @@ namespace Chroma
 	std::vector<Tensor<Nd + 3, COMPLEX>> ut(Nd);
 	for (unsigned int d = 0; d < Nd - 1; d++)
 	{
-	  if (!active_dirs[d])
+	  if (active_dirs[d] == 0)
 	    continue;
 
 	  // NOTE: This is going to create a tensor with the same distribution of the t-dimension as colorvec and moms

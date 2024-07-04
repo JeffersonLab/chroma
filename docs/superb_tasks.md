@@ -892,7 +892,7 @@ Main options:
 * `tol`: residual norm tolerance, stopping when $\|Dx-b\|_2 \leq \text{tol}\ \|b\|_2$.
 * `max_its`: (optional, default infinity) maximum number of iterations.
 * `error_if_not_converged`: (optional, default `true`) whether to complain if tolerance is not achieved.
-* `prec`: (optional, default none) right preconditioning, may affect residual norm.
+* `prec`: (optional, default none) left preconditioning, does not affect the residual norm.
 * `max_simultaneous_rhs`: (optional, default infinity) solver this many right-hand-sides at once.
 * `verbosity`: (optional, default `nooutput`) level of verbosity, one of `nonoutput`, `summary`, `detailed`.
 * `prefix`: (optional, default none) prefix output related with this solver with this string.
@@ -989,28 +989,30 @@ Example:
     <type>mg</type>
     <num_null_vecs>24</num_null_vecs>
     <blocking>4 4 4 4</blocking>
-    <solver_null_vecs>
-      <type>eo</type>
+    <null_vecs>
       <solver>
-        <type>mr</type>
-        <tol>1e-3</tol>
-        <max_its>50</max_its>
-        <error_if_not_converged>false</error_if_not_converged>
-        <prefix>nv0</prefix>
-        <verbosity>Detailed</verbosity>
-        <prec>
-          <type>dd</type>
-          <solver>
-            <type>mr</type>
-            <max_its>2</max_its>
-            <tol>1e-1</tol>
-            <error_if_not_converged>false</error_if_not_converged>
-            <verbosity>Detailed</verbosity>
-            <prefix>nv0_dd</prefix>
-          </solver>
-        </prec>
+        <type>eo</type>
+        <solver>
+          <type>mr</type>
+          <tol>1e-3</tol>
+          <max_its>50</max_its>
+          <error_if_not_converged>false</error_if_not_converged>
+          <prefix>nv0</prefix>
+          <verbosity>Detailed</verbosity>
+          <prec>
+            <type>dd</type>
+            <solver>
+              <type>mr</type>
+              <max_its>2</max_its>
+              <tol>1e-1</tol>
+              <error_if_not_converged>false</error_if_not_converged>
+              <verbosity>Detailed</verbosity>
+              <prefix>nv0_dd</prefix>
+            </solver>
+          </prec>
+        </solver>
       </solver>
-    </solver_null_vecs>
+    </null_vecs>
     <solver_coarse>
       <type>eo</type>
       <solver>
@@ -1060,7 +1062,9 @@ Main options:
 
 * `num_null_vecs`: number of null vectors.
 * `blocking`: sites factor reduction in each lattice direction for producing the prolongator $V$.
-* `solver_null_vecs`: solver to compute the null vectors, approximate solutions of $Dx=0$.
+* `null_vecs/solver`: if `null_vecs/eigensolver` is not given, solver to compute the null vectors approximating solutions of $Dx=0$;  otherwise, solver used as the operator for the eigensolver.
+* `null_vecs/eigensolver`: (optional) if given, it uses as null vectors the approximated largest singular vectors of $D^{-1}$.
+* `null_vecs/tol`: (optional) if `null_vecs/eigensolver` is given, the tolerance for the eigensolver.
 * `solver_coarse`: solver for the coarse operator, $V^* D V$, where $V$ is the prolongator.
 * `solver_smoother`: solver for the correction (post-smoothing).
 
@@ -1104,55 +1108,65 @@ If $U$ and $V$ and $\Sigma$ are the smallest singular triplets of $P^*DP$, that 
 following oblique projector, $PV(U^*P^*D*PV)^{-1}U^*P^*D$.
 
 ```
-<?xml version="1.0"?>
 <Projector>
   <projectorType>MGPROTON</projectorType>
   <type>mg</type>
   <prolongator>
     <num_null_vecs>24</num_null_vecs>
     <blocking>4 4 4 4</blocking>
-    <solver_null_vecs>
-      <type>eo</type>
+    <null_vecs>
       <solver>
-        <type>mr</type>
-        <tol>1e-3</tol>
-        <max_its>50</max_its>
-        <error_if_not_converged>false</error_if_not_converged>
-        <prefix>nv0</prefix>
-        <verbosity>Detailed</verbosity>
-        <prec>
-          <type>dd</type>
-          <solver>
-            <type>mr</type>
-            <max_its>2</max_its>
-            <tol>1e-1</tol>
-            <error_if_not_converged>false</error_if_not_converged>
-            <verbosity>Detailed</verbosity>
-            <prefix>nv0_dd</prefix>
-          </solver>
-        </prec>
+        <type>eo</type>
+        <solver>
+          <type>mr</type>
+          <tol>1e-3</tol>
+          <max_its>50</max_its>
+          <error_if_not_converged>false</error_if_not_converged>
+          <prefix>nv0</prefix>
+          <verbosity>Detailed</verbosity>
+          <prec>
+            <type>dd</type>
+            <solver>
+              <type>mr</type>
+              <max_its>2</max_its>
+              <tol>1e-1</tol>
+              <error_if_not_converged>false</error_if_not_converged>
+              <verbosity>Detailed</verbosity>
+              <prefix>nv0_dd</prefix>
+            </solver>
+          </prec>
+        </solver>
       </solver>
-    </solver_null_vecs>
+      <tol>1e-2</tol>
+      <eigensolver>
+        <verbosity>Detailed</verbosity>
+      </eigensolver>
+    </null_vecs>
   </prolongator>
-  <rank>200</rank>
-  <tol>1e-1</tol>
-  <solver>
-    <type>bicgstab</type>
-    <tol>1e-2</tol>
-    <max_its>20000</max_its>
-    <verbosity>Detailed</verbosity>
-    <prefix>eig</prefix>
-  </solver>
-  <eigensolver>
-    <verbosity>Detailed</verbosity>
-  </eigensolver>
+  <proj>
+    <type>defl</type>
+    <rank>200</rank>
+    <tol>1e-1</tol>
+    <solver>
+      <type>bicgstab</type>
+      <tol>1e-2</tol>
+      <max_its>20000</max_its>
+      <verbosity>Detailed</verbosity>
+      <prefix>eig</prefix>
+    </solver>
+    <eigensolver>
+      <verbosity>Detailed</verbosity>
+    </eigensolver>
+  </proj>
 </Projector>
 ```
 
 Main options:
-* `rank`: number of singular triplets to compute.
-* `tol`: (optional, default 0.1): relative error of the singular triplets relative to $\|D^{-1}\|_2$, $\|\gamma_5 D^{-1} v - \sigma v \|_2 \leq \text{tol}\ \|D^{-1}\|_2$.
-* `solver`: solver to estimate $D^{-1}$ used by the eigensolver.
-* `eigensolver/max_block_size`: (optional, default is `1`) maximum number of vectors expanding the search subspace in each iteration.
-* `eigensolver/max_basis_size`: (optional, default is `PRIMME`'s default) maximum rank of the search subspace.
-* `eigensolver/verbosity`: (optional, default `nooutput`) one of `nooutput`, `summary`, `detailed`.
+* `prolongator/num_null_vecs`: number of null vectors.
+* `prolongator/blocking`: sites factor reduction in each lattice direction for producing the prolongator $V$.
+* `prolongator/null_vecs/solver`: if `prolongator/null_vecs/eigensolver` is not given, solver to compute the null vectors approximating solutions of $Dx=0$;  otherwise, solver used as the operator for the eigensolver.
+* `prolongator/null_vecs/eigensolver`: (optional) if given, it uses as null vectors the approximated largest singular vectors of $D^{-1}$.
+* `prolongator/null_vecs/tol`: (optional) if `null_vecs/eigensolver` is given, the tolerance for the eigensolver.
+* `solver_coarse`: solver for the coarse operator, $V^* D V$, where $V$ is the prolongator.
+* `solver_smoother`: solver for the correction (post-smoothing).
+* `proj`: projector options onto the coarse operator, $V^* D V$.

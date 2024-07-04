@@ -71,8 +71,8 @@ namespace Chroma
     //
     // NOTE: we used anti-natural order, the last coordinate moves the fastest
 
-    Indices coor2index(const Coors& coors, const CoorType dim,
-		       const CoorType order = antiNaturalOrder())
+    Indices coor2index(const Coors& coors, const CoorType& dim,
+		       const CoorType& order = antiNaturalOrder())
     {
       // Quick exit
       if (dim.size() <= 0)
@@ -113,8 +113,8 @@ namespace Chroma
     //
     // NOTE: we used anti-natural order, the last coordinate moves the fastest
 
-    Coors index2coor(const Indices& indices, const CoorType dim,
-		     const CoorType order = antiNaturalOrder())
+    Coors index2coor(const Indices& indices, const CoorType& dim,
+		     const CoorType& order = antiNaturalOrder())
     {
       // Quick exit
       if (dim.size() <= 0)
@@ -144,7 +144,7 @@ namespace Chroma
     //
     // Return the neighbors' coordinates of the vertices 'coors'.
 
-    Coors neighbors(const Coors coors, const CoorType dim)
+    Coors neighbors(const Coors coors, const CoorType& dim)
     {
       if (dim.size() <= 0)
 	return Coors();
@@ -180,7 +180,7 @@ namespace Chroma
     // Return the number of vertices in a lattice
     // \param dim: lattice dimensions
 
-    std::size_t volume(const CoorType dim)
+    std::size_t volume(const CoorType& dim)
     {
       if (dim.size() <= 0)
 	return 0;
@@ -230,6 +230,10 @@ namespace Chroma
       return (dim == 0 ? 0 : coor % dim);
     }
 
+// Avoid intel compiler explosion
+#ifdef __INTEL_COMPILER
+#  pragma intel optimization_level 0
+#endif
     CoorType normalize_coor(const CoorType& coor, const CoorType& dim)
     {
       CoorType r;
@@ -251,6 +255,10 @@ namespace Chroma
       return dist;
     }
 
+// Avoid intel compiler explosion
+#ifdef __INTEL_COMPILER
+#  pragma intel optimization_level 0
+#endif
     CoorType minus(const CoorType& a, const CoorType& b)
     {
       CoorType r;
@@ -294,7 +302,7 @@ namespace Chroma
 
       // Filter our neighbors further than power distance in euclidian metric from the centers
       Coors filter;
-      for (CoorType c : neighbors_pattern)
+      for (const CoorType& c : neighbors_pattern)
 	if (coor2index(Coors(1, c), dim)[0] != 0 &&
 	    (euclidian_dist_squared(c, centers[0], dim) <= power * power ||
 	     euclidian_dist_squared(c, centers[1], dim) <= power * power))
@@ -401,7 +409,7 @@ namespace Chroma
 
   // Construct a k-distance coloring
   void Coloring::construct(const std::vector<std::array<int, 4>>& distances, unsigned int power,
-			   CoorType latt_size, bool build_local)
+			   const CoorType& latt_size, bool build_local)
   {
     // Get the absolute value of the distances
     Coors abs_distances;
@@ -525,7 +533,7 @@ namespace Chroma
   }
 
   // Return the color for a site
-  unsigned int Coloring::getColor(std::array<int, 4>  coor) const
+  unsigned int Coloring::getColor(const std::array<int, 4>&  coor) const
   {
     CoorType coor0{(unsigned int)coor[0], (unsigned int)coor[1], (unsigned int)coor[2],
 		   (unsigned int)coor[3]};
@@ -534,7 +542,7 @@ namespace Chroma
 
   // Return all neighbors
   std::vector<std::array<int, 4>> Coloring::all_neighbors(unsigned int farthest_neighbor,
-							  std::array<int, 4> dim)
+							  const std::array<int, 4>& dim)
   {
     std::array<unsigned int, 4> dimu{(unsigned int)dim[0], (unsigned int)dim[1],
 				     (unsigned int)dim[2], (unsigned int)dim[3]};

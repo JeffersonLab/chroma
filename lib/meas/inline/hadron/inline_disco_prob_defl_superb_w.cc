@@ -396,8 +396,8 @@ namespace Chroma
 	}
       };
       SB::doMomGammaDisp_contractions<8, Nd + 6, Nd + 6, SB::Complex>(
-	u, std::move(qbart), std::move(qt), 0 /* first t_slize */, mom_list, gamma_mats, disps,
-	false /*no deriv*/, call, order_out);
+	u, std::move(qbart), std::move(qt), 0 /* first t_slize */, 0 /* save from */,
+	Nt /* save size */, mom_list, gamma_mats, disps, false /*no deriv*/, call, order_out);
     }
 
     // Update the mean and var for each observable in db

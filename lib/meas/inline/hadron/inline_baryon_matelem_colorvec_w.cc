@@ -84,7 +84,6 @@ namespace Chroma
       read(paramtop, "displacement_list", param.displacement_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
-      read(paramtop, "site_orthog_basis", param.site_orthog_basis);
 
       param.link_smearing  = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
@@ -104,7 +103,6 @@ namespace Chroma
       write(xml, "displacement_list", param.displacement_list);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);
-      write(xml, "site_orthog_basis", param.site_orthog_basis);
       xml << param.link_smearing.xml;
 
       pop(xml);

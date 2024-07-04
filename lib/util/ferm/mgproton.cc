@@ -241,7 +241,7 @@ namespace Chroma
 
     /// Solve iteratively op * y = x using FGMRES
     /// \param op: problem matrix
-    /// \param prec: preconditioner
+    /// \param prec: left preconditioner
     /// \param x: input right-hand-sides
     /// \param y: the solution vectors
     /// \param max_basis_size: maximum rank of the search subspace basis per t
@@ -297,7 +297,7 @@ namespace Chroma
       // Check that the operator and the preconditioner are compatible with the input and output vectors
       if (!op.d.is_compatible(x) || !op.d.is_compatible(y) || (prec && !prec.d.is_compatible(op.d)))
 	throw std::runtime_error("Either the input or the output vector isn't compatible with the "
-				 "operator or de the preconditioner");
+				 "operator or the preconditioner");
 
       // Get an unused label for the search subspace columns
       char Vc = detail::get_free_label(x.order);
@@ -476,6 +476,7 @@ namespace Chroma
 
     /// Solve iteratively op * y = x using BICGSTAB
     /// \param op: problem matrix
+    /// \param prec: left preconditioner
     /// \param x: input right-hand-sides
     /// \param y: the solution vectors
     /// \param tol: maximum tolerance
@@ -485,13 +486,33 @@ namespace Chroma
     /// \param passing_initial_guess: whether `y` contains a solution guess
     /// \param verb: verbosity level
     /// \param prefix: prefix printed before every line
+    ///
+    /// Method:
+    /// r0 = p = r = b - A * x  // compute initial residual
+    /// rho = r0' * r
+    /// for i=1,2,..
+    ///   Kp = prec * p
+    ///   AKp = A * Kp
+    ///   alpha = rho / (r0' * AKp)
+    ///   s = r - AKp * alpha
+    ///   Ks = prec * s
+    ///   AKs = A * Ks
+    ///   omega = (AKs' * Ks) / (AKs' * AKs)
+    ///   x = x + Kp * alpha + Ks * omega
+    ///   r = s - AKs * omega
+    ///   exit if |r| < |b|*tol
+    ///   prev_rho = rho
+    ///   rho = r0' * r
+    ///   beta = (rho/prev_rho)*(alpha/omega)
+    ///   p = r + beta*(p - omega*AKp)
+    /// end
 
     template <std::size_t NOp, typename COMPLEX>
-    void bicgstab(const Operator<NOp, COMPLEX>& op, const Tensor<NOp + 1, COMPLEX>& x,
-		  Tensor<NOp + 1, COMPLEX>& y, double tol, unsigned int max_its = 0,
-		  bool error_if_not_converged = true, unsigned int max_residual_updates = 0,
-		  bool passing_initial_guess = false, Verbosity verb = NoOutput,
-		  std::string prefix = "")
+    void bicgstab(const Operator<NOp, COMPLEX>& op, Operator<NOp, COMPLEX> prec,
+		  const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX>& y, double tol,
+		  unsigned int max_its = 0, bool error_if_not_converged = true,
+		  unsigned int max_residual_updates = 0, bool passing_initial_guess = false,
+		  Verbosity verb = NoOutput, std::string prefix = "")
     {
       detail::log(1, prefix + " starting bicgstab");
 
@@ -512,10 +533,10 @@ namespace Chroma
 				 ? 100
 				 : 100;
 
-      // Check that the operator is compatible with the input and output vectors
-      if (!op.d.is_compatible(x) || !op.d.is_compatible(y))
+      // Check that the operator and the preconditioner are compatible with the input and output vectors
+      if (!op.d.is_compatible(x) || !op.d.is_compatible(y) || (prec && !prec.d.is_compatible(op.d)))
 	throw std::runtime_error("Either the input or the output vector isn't compatible with the "
-				 "operator");
+				 "operator or the preconditioner");
 
       // Get an unused label for the search subspace columns
       std::string order_cols = detail::remove_dimensions(x.order, op.i.order);
@@ -524,70 +545,101 @@ namespace Chroma
       if (num_cols == 0)
 	return;
 
-      // Counting op applications
-      unsigned int nops = 0;
+      // Counting op and prec applications
+      unsigned int nops = 0, nprecs = 0;
 
-      // Compute residual, r = op * y - x
-      Tensor<NOp + 1, COMPLEX> rj;
+      // Compute residual, r = x - op * y
+      Tensor<NOp + 1, COMPLEX> r;
       if (passing_initial_guess)
       {
-	rj = op(y).scale(-1);
+	r = op(y).scale(-1);
 	nops += num_cols;
       }
       else
       {
-	rj = op.template make_compatible_img<NOp + 1>(order_cols, x.kvdim());
-	rj.set_zero();
+	r = op.template make_compatible_img<NOp + 1>(order_cols, x.kvdim());
+	r.set_zero();
 	y.set_zero();
       }
-      x.addTo(rj);
-      auto normr0 = norm<1>(rj, op.order_t + order_cols); // type std::vector<real of T>
+      x.addTo(r);
+      auto normr0 = norm<1>(r, op.order_t + order_cols); // type std::vector<real of T>
       if (max(normr0) == 0)
 	return;
 
       // Choose an arbitrary vector that isn't orthogonal to r
-      auto r0_star = rj.clone();
+      auto r0 = op.template make_compatible_img<NOp + 1>(order_cols, x.kvdim());
+      r.copyTo(r0);
 
       // Do the iterations
       auto normr = normr0.clone();	 ///< residual norms
       unsigned int it = 0;		 ///< iteration number
       double max_tol = HUGE_VAL;	 ///< maximum residual norm
       unsigned int residual_updates = 0; ///< number of residual updates
-      auto pj = rj.clone();		 ///< p0 = r0
+      auto p = r0.clone();		 ///< p0 = r0
+      auto rho = contract<1>(r, r0.conj(), order_rows); // rho = r0' * r
+      auto Kp = prec ? r0.make_compatible() : p;
+      auto AKp = r0.make_compatible();
+      auto Ks = prec ? r0.make_compatible() : r;
+      auto AKs = r0.make_compatible();
       for (it = 0; it < max_its;)
       {
-	// alpha_j = (r0*' * rj) / (r0*' * Apj)
-	auto Apj = op(pj);
+	// Kp = prec * p
+	if (prec)
+	{
+	  prec(p, Kp);
+	  nprecs += num_cols;
+	}
+
+	// AKp = A * Kp
+	op(Kp, AKp);
 	nops += num_cols;
-	auto r0s_rj = contract<1>(rj, r0_star.conj(), order_rows);
-	auto alpha_j = div(r0s_rj, contract<1>(Apj, r0_star.conj(), order_rows));
 
-	// sj = rj - alpha_j * Apj
-	auto sj = rj.clone();
-	contract<NOp + 1>(Apj, alpha_j, "").scale(-1).addTo(sj);
+	// alpha = rho / (r0' * AKp)
+	auto alpha = div(rho, contract<1>(AKp, r0.conj(), order_rows));
 
-	// omega_j = (sj' * Asj) / (Asj' * Asj)
-	auto Asj = op(sj);
+	// s = r - alpha * AKp
+	auto s = r;
+	contract<NOp + 1>(AKp, alpha.scale(-1), "", AddTo, s);
+
+	// Ks = prec * s
+	if (prec)
+	{
+	  prec(s, Ks);
+	  nprecs += num_cols;
+	}
+
+	// AKs = A * Ks
+	op(Ks, AKs);
 	nops += num_cols;
-	auto omega_j =
-	  div(contract<1>(Asj, sj.conj(), order_rows), contract<1>(Asj, Asj.conj(), order_rows));
 
-	// y = y + alpha_j * pj + omega_j * sj
-	contract<NOp + 1>(pj, alpha_j, "").addTo(y);
-	contract<NOp + 1>(sj, omega_j, "").addTo(y);
+	// omega = (AKs' * Ks) / (AKs' * AKs)
+	auto omega =
+	  div(contract<1>(AKs.conj(), Ks, order_rows), contract<1>(AKs, AKs.conj(), order_rows));
 
-	// r_{j+1} = sj - omega_j * Asj
-	rj = sj;
-	contract<NOp + 1>(Asj, omega_j, "").scale(-1).addTo(rj);
+	// y = y + alpha * Kp + omega * Ks
+	contract<NOp + 1>(Kp, alpha, "").addTo(y);
+	contract<NOp + 1>(Ks, omega, "").addTo(y);
 
-	// beta_j = (r0*' * r_{j+1}) / (r0*' * rj) * (alpha_j / omega_j)
-	auto beta_j =
-	  mult(div(contract<1>(rj, r0_star.conj(), order_rows), r0s_rj), div(alpha_j, omega_j));
+	// r = s - omega * AKs (NOTE: s == r)
+	contract<NOp + 1>(AKs, omega.scale(-1), "", AddTo, r);
 
-	// p_{j+1} = r_{j+1} + beta_j * (pj - omega_j * Apj)
-	contract<NOp + 1>(Apj, omega_j, "").scale(-1).addTo(pj);
-	pj = contract<NOp + 1>(pj, beta_j, "");
-	rj.addTo(pj);
+	// prev_rho = rho, rho = r0' * r 
+	auto prev_rho = rho;
+	contract<1>(r, r0.conj(), order_rows, CopyTo, rho);
+
+	// beta = rho / prev_rho * (alpha / omega)
+	auto rho_ratio = div(rho, prev_rho);
+	auto beta = mult(rho_ratio, div(alpha, omega));
+
+	// beta_omega = beta * omega = rho / prev_rho * alpha
+	auto beta_omega = mult(rho_ratio, alpha);
+
+	// p = r + beta * p - beta_omega * AKp
+	auto aux = AKs;
+	contract<NOp + 1>(p, beta, "", CopyTo, aux);
+	aux.copyTo(p);
+	contract<NOp + 1>(AKp, beta_omega.scale(-1), "", AddTo, p);
+	r.addTo(p);
 
 	// Recompute residual vector if needed
 	if (residual_updates < max_residual_updates)
@@ -596,24 +648,26 @@ namespace Chroma
 	}
 	else
 	{
-	  op(y.scale(-1), rj); // rj = op(-y)
-	  x.addTo(rj);
-	  rj.copyTo(pj);
+	  op(y.scale(-1), r); // r = op(-y)
+	  x.addTo(r);
+	  r.copyTo(r0);
+	  r.copyTo(p);
+	  contract<1>(r, r0.conj(), order_rows, CopyTo, rho);
 	  nops += num_cols;
 	  residual_updates = 0;
 	}
 
 	// Compute the norm
-	auto normr = norm<1>(rj, op.order_t + order_cols);
+	auto normr = norm<1>(r, op.order_t + order_cols);
 
 	// Show error in the residual
 	if (superbblas::getDebugLevel() > 0)
 	{
-	  auto rd = rj.make_compatible();
+	  auto rd = r.make_compatible();
 	  op(y, rd); // rd = op(y)
 	  nops += num_cols;
 	  x.scale(-1).addTo(rd);
-	  rj.addTo(rd);
+	  r.addTo(rd);
 	  auto normrd = norm<1>(rd, op.order_t + order_cols);
 	  double max_tol_d = max(div(normrd, normr));
 	  QDPIO::cout << prefix
@@ -640,10 +694,10 @@ namespace Chroma
       // Check final residual
       if (error_if_not_converged)
       {
-	op(y, rj); // r = op(y)
+	op(y, r); // r = op(y)
 	nops += num_cols;
-	x.scale(-1).addTo(rj);
-	auto normr = norm<1>(rj, op.order_t + order_cols);
+	x.scale(-1).addTo(r);
+	auto normr = norm<1>(r, op.order_t + order_cols);
 	max_tol = max(div(normr, normr0));
 	if (tol > 0 && max_tol > tol)
 	  throw std::runtime_error("bicgstab didn't converged and you ask for checking the error");
@@ -653,11 +707,12 @@ namespace Chroma
       if (verb >= JustSummary)
 	QDPIO::cout << prefix << " MGPROTON BICGSTAB summary #its.: " << it
 		    << " max rel. residual: " << detail::tostr(max_tol, 2) << " matvecs: " << nops
-		    << std::endl;
+		    << " precs: " << nprecs << std::endl;
     }
 
     /// Solve iteratively op * y = x using Minimal Residual (valid for positive definite linear systems)
     /// \param op: problem matrix
+    /// \param prec: left preconditioner
     /// \param x: input right-hand-sides
     /// \param y: the solution vectors
     /// \param tol: maximum tolerance
@@ -1067,6 +1122,9 @@ namespace Chroma
 				     const Operator<NOp, COMPLEX>& prec = Operator<NOp, COMPLEX>(),
 				     SolverSpace solverSpace = FullSpace);
 
+    template <std::size_t NOp, typename COMPLEX>
+    Projector<NOp, COMPLEX> getProjector(const Operator<NOp, COMPLEX>& op, const Options& ops);
+
     namespace detail
     {
       /// Apply the given function to all the given columns in x
@@ -1175,13 +1233,6 @@ namespace Chroma
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
-	// use left preconditioning if given
-	Operator<NOp, COMPLEX> prec_op;
-	if (prec)
-	  prec_op = Operator<NOp, COMPLEX>{
-	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) { op(prec(x), y); },
-	    op.i, op.d, nullptr, op};
-
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 		  Tracker _t(std::string("bicgstab ") + prefix);
@@ -1189,12 +1240,8 @@ namespace Chroma
 		  foreachInChuncks(
 		    x, y, max_simultaneous_rhs,
 		    [=](Tensor<NOp + 1, COMPLEX> x, Tensor<NOp + 1, COMPLEX> y) {
-		      if (prec)
-			bicgstab(prec_op, prec(x), y, tol, max_its, error_if_not_converged,
-				 max_residual_updates, false /* no init guess */, verb, prefix);
-		      else
-			bicgstab(op, x, y, tol, max_its, error_if_not_converged,
-				 max_residual_updates, false /* no init guess */, verb, prefix);
+		      bicgstab(op, prec, x, y, tol, max_its, error_if_not_converged,
+			       max_residual_updates, false /* no init guess */, verb, prefix);
 		    },
 		    'n');
 		},
@@ -1383,7 +1430,7 @@ namespace Chroma
       getMGProlongator(const Operator<NOp, COMPLEX>& op, unsigned int num_null_vecs,
 		       const std::map<char, unsigned int>& mg_blocking,
 		       const std::map<char, unsigned int>& layout_blocking,
-		       SpinSplitting spin_splitting, const Operator<NOp, COMPLEX>& null_solver,
+		       SpinSplitting spin_splitting, const Options& null_vecs_ops,
 		       SolverSpace solverSpace)
       {
 	detail::log(1, "starting getMGProlongator");
@@ -1409,22 +1456,37 @@ namespace Chroma
 	if (ns == 1)
 	  spin_splitting = SpinSplitting::None;
 
-	// Create the random initial guesses to be used in solving Ax=0
-	auto b = op.template make_compatible_img<NOp + 1>("n", {{'n', num_null_vecs}});
-	if (solverSpace == FullSpace)
+	const Operator<NOp, COMPLEX> null_solver =
+	  getSolver(op, getOptions(null_vecs_ops, "solver"));
+	auto eigensolver_ops = getOptionsMaybe(null_vecs_ops, "eigensolver");
+	Tensor<NOp + 1, COMPLEX> nv;
+	if (!eigensolver_ops)
 	{
-	  nrand(b);
+	  // Create the random initial guesses to be used in solving Ax=0
+	  auto b = op.template make_compatible_img<NOp + 1>("n", {{'n', num_null_vecs}});
+	  if (solverSpace == FullSpace)
+	  {
+	    nrand(b);
+	  }
+	  else
+	  {
+	    b.set_zero();
+	    nrand(b.kvslice_from_size({}, {{'X', 1}}));
+	  }
+
+	  // Solve Ax=0 with the random initial guesses
+	  nv = null_solver(op(b));
+	  b.scale(-1).addTo(nv);
+	  b.release();
 	}
 	else
 	{
-	  b.set_zero();
-	  nrand(b.kvslice_from_size({}, {{'X', 1}}));
+	  // Compute the eigenpairs of inv(op) * g5, the right singular vectors of op
+	  auto eigensolver = SB::getInexactEigensolverGD(null_solver, eigensolver_ops.getSome());
+	  double tol = getOption<double>(null_vecs_ops, "tol", 0.1);
+	  auto values_vectors = eigensolver(num_null_vecs, tol);
+	  nv = std::get<1>(values_vectors);
 	}
-
-	// Solve Ax=0 with the random initial guesses
-	auto nv = null_solver(op(b));
-	b.scale(-1).addTo(nv);
-	b.release();
 
 	Operator<NOp, COMPLEX> V;
 	auto opdims_nat = opdims;
@@ -1440,7 +1502,7 @@ namespace Chroma
 	  if (spin_splitting == SpinSplitting::Chirality)
 	  {
 	    nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
-	    auto g5 = getGamma5<COMPLEX>(ns, OnHost), g5pos = g5.cloneOn(OnHost),
+	    auto g5 = getGamma5<COMPLEX>(ns, OnHost, nv.dist), g5pos = g5.cloneOn(OnHost),
 		 g5neg = g5.cloneOn(OnHost);
 	    for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
 	      g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
@@ -1704,8 +1766,6 @@ namespace Chroma
 						     {'y', layout_blocking_v[1]},
 						     {'z', layout_blocking_v[2]},
 						     {'t', layout_blocking_v[3]}};
-	const Operator<NOp, COMPLEX> nullSolver =
-	  getSolver(op, getOptions(ops, "solver_null_vecs"));
 	static const std::map<std::string, SpinSplitting> m_spin_splitting{
 	  {"none", SpinSplitting::None},
 	  {"chirality_splitting", SpinSplitting::Chirality},
@@ -1720,7 +1780,7 @@ namespace Chroma
 	    getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0)
 	{
 	  V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, spin_splitting,
-			       nullSolver, solverSpace);
+			       getOptions(ops, "null_vecs"), solverSpace);
 	  if (prolongator_id.size() > 0)
 	    getProlongatorCache<NOp, COMPLEX>()[prolongator_id] = V;
 	}
@@ -1738,7 +1798,7 @@ namespace Chroma
 	ColOrdering co_blk =
 	  getOption<ColOrdering>(ops, "operator_block_ordering", getColOrderingMap(), RowMajor);
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5<COMPLEX>(ns);
+	auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
 	const Operator<NOp, COMPLEX> op_c = cloneOperator(
 	  Operator<NOp, COMPLEX>{
 	    [&](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1803,7 +1863,7 @@ namespace Chroma
 
 	OperatorFun<NOp, COMPLEX> solver;
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5<COMPLEX>(ns);
+	auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
 	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
 	{
@@ -1825,7 +1885,7 @@ namespace Chroma
 	    auto x1 = op(y0.scale(-1));
 	    x.addTo(x1);
 
-	    // y = y1 + solver(Op, x1)
+	    // y = y0 + solver(Op, x1)
 	    opSolver(std::move(x1), y);
 	    y0.addTo(y);
 	  };
@@ -1863,6 +1923,93 @@ namespace Chroma
 
 	    // y = y1 + solver(Op, x1)
 	    opSolver(std::move(x1), y);
+	    y0.addTo(y);
+	  };
+	}
+
+	// Return the solver
+	return {solver,
+		op.i,
+		op.d,
+		nullptr,
+		op.order_t,
+		op.imgLayout,
+		op.domLayout,
+		DenseOperator(),
+		op.preferred_col_ordering,
+		false /* no Kronecker blocking */};
+      }
+
+      /// Returns a general deflation preconditioner
+      ///
+      /// It returns an approximation of Op^{-1} = Op^{-1}*Q + Op^{-1}(I-Q), where Q is a projector
+      /// on the left singular space of Op. 
+      /// The approximation is constructed using an oblique projector and doing the inversions
+      /// approximately:
+      ///   1) Q = Op*V*(W'*Op*V)^{-1}*W', where W and V are left and right singular spaces.
+      ///   2) [Op^{-1}*Q + Op^{-1}(I-Q)]*x \approx
+      ///                       V*solver(W'*Op*V, W'*x) + solver(Op, x - Op*V*solver(W'*Op*V, W'*x))
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getProjPrec(Operator<NOp, COMPLEX> op, const Options& ops,
+					 Operator<NOp, COMPLEX> prec_)
+      {
+	if (prec_)
+	  throw std::runtime_error("getProjPrec: unsupported input preconditioner");
+
+	// Getting a projector
+	auto proj = getProjector(op, getOptions(ops, "proj"));
+
+	// Get the solver for the smoother
+	const Operator<NOp, COMPLEX> opSolver = getSolver(op, getOptions(ops, "solver_smoother"));
+
+	OperatorFun<NOp, COMPLEX> solver;
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
+	{
+	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("proj solver ") + prefix);
+
+	    // y0 = V*inv(U'*Op*V) U' * x
+	    auto y0 = proj.V_inv_Ut(x);
+
+	    // y1 = (I - Q)*x = x - op*y0
+	    auto y1 = op(y0.scale(-1));
+	    x.addTo(y1);
+
+	    // y = y0 + solver(Op, y1)
+	    opSolver(std::move(y1), y);
+	    y0.addTo(y);
+	  };
+	}
+	else
+	{
+	  // Get the block diagonal of the operator with rows cs and columns CS
+	  remap m_sc{{'s', 'S'}, {'c', 'C'}};
+	  auto t = getEvenOddOperatorsPartsCache<NOp, COMPLEX>().at(op.id.get());
+	  Operator<NOp, COMPLEX> op_eo = std::get<0>(t);
+	  Operator<NOp, COMPLEX> op_oe = std::get<1>(t);
+	  Tensor<NOp + 2, COMPLEX> opDiag = std::get<2>(t);
+	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("proj solver ") + prefix);
+
+	    // y0 = V*inv(U'*Op*V) U' * x
+	    auto y0 = proj.V_inv_Ut(x);
+
+	    // y1_ee = x - op*y0
+	    auto y0m = y0.scale(-1);
+	    auto y1 = x.clone();
+	    contract(opDiag, y0m.rename_dims(m_sc), "CS", AddTo, y1);
+	    op_oe(y0m.kvslice_from_size({{'X', 0}}, {{'X', 1}}))
+	      .addTo(y1.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+	    op_eo(y0m.kvslice_from_size({{'X', 1}}, {{'X', 1}}))
+	      .addTo(y1.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+
+	    // y = y1 + solver(Op, y1)
+	    opSolver(std::move(y1), y);
 	    y0.addTo(y);
 	  };
 	}
@@ -2123,6 +2270,198 @@ namespace Chroma
 	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
 	    max_err = std::max(max_err, (double)normdiff.get({{i}}) / normx.get({{i}}));
 	  QDPIO::cout << " eo prec error: " << detail::tostr(max_err) << std::endl;
+	}
+
+	return rop;
+      }
+
+      /// Returns Schur complement preconditioner splitting over the spin components
+      ///
+      /// It returns an approximation of Op^{-1} by splitting the rows and columns into the two
+      /// (even-odd spin components) and doing:
+      ///
+      ///  Op^{-1} = R^{-1} * A^{-1} * L^{-1} ->
+      ///
+      /// [ Op_ee Op_eo ]^{-1} = [       I            0 ] * [ Op_ee-Op_eo*Op_oo^{-1}*Op_oe   0   ]^{-1} *
+      /// [ Op_oe Op_oo ]        [ -Op_oo^{-1}*Op_oe  I ]   [              0               Op_oo ]
+      ///
+      ///                        * [ I  -Op_eo*Op_oo^{-1} ]
+      ///                          [ 0         I          ]
+      ///
+      /// The matrix Op_oo^{-1} is block diagonal and is computed directly, while
+      /// (Op_ee-Op_eo*Op_oo^{-1}*Op_oe)^{-1} is approximated by an iterative solver. Note that
+      /// the residual norm while solving A_ee=Op_ee-Op_eo*Op_oo^{-1}*Op_oe is the same as the original
+      /// residual norm. To prove that, notice that the global residual will be zero for the odds,
+      /// and that the global residual for a solution x'_e of A_ee is
+      ///   r = L*A*R * R^{-1}*[x'_e x'_o] - b = [r_e; 0];
+      /// therefore ||L^{-1}r|| = ||r|| because of the form of L, making
+      ///   ||r|| = || A_e*x'_e - (b_e-Op_eo*Op_oo^{-1}*b_o) ||.
+      ///
+      /// Notice that A_ee^{-1} is Op^{-1}_ee. So a way for preconditioning
+      /// the solution of A_ee is with a preconditioner on Op restricted to the even sites. The
+      /// solver does that when options for `prec_ee' are given.
+      ///
+      /// Also, A_ee can be additionally preconditioned by the left with Op_ee. Note that left
+      /// preconditioning will not change the original residual norm. This option is activated
+      /// when use_Aee_prec is true.
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getSpinEvenOddPrec(Operator<NOp, COMPLEX> op, const Options& ops,
+						Operator<NOp, COMPLEX> prec_)
+      {
+	auto dims = op.d.kvdim();
+	if (dims.count('s') == 0 || dims.at('s') % 2 != 0)
+	  ops.throw_error(
+	    "getSpinEvenOddPrec: only supported on operators with even spin components");
+
+	if (prec_)
+	  throw std::runtime_error("getSpinEvenOddPrec: unsupported input preconditioner");
+
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+
+	// Partition the operator: s -> Ss, where S is the spin oddity
+	char S = detail::get_free_label(op.d.order);
+	std::string Ss = std::string({S, 's'});
+	int ns = dims.at('s');
+	auto eg_d = op.d.like_this(none, {{'s', ns / 2}}).make_eg();
+	auto eg_i = op.i.like_this(none, {{'s', ns / 2}}).make_eg();
+	Operator<NOp, COMPLEX> op_ee{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    auto x0 = op.template make_compatible_img<NOp + 1>("n", {{'n', x.kvdim().at('n')}});
+	    x0.set_zero();
+	    x.copyTo(x0.template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+		       .kvslice_from_size({{S, 0}}, {{S, 1}}));
+	    op(x0)
+	      .template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+	      .kvslice_from_size({{S, 0}}, {{S, 1}})
+	      .copyTo(y);
+	  },
+	  eg_d, eg_i, nullptr, op};
+	Operator<NOp, COMPLEX> op_eo{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    auto x0 = op.template make_compatible_img<NOp + 1>("n", {{'n', x.kvdim().at('n')}});
+	    x0.set_zero();
+	    x.copyTo(x0.template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+		       .kvslice_from_size({{S, 1}}, {{S, 1}}));
+	    op(x0)
+	      .template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+	      .kvslice_from_size({{S, 0}}, {{S, 1}})
+	      .copyTo(y);
+	  },
+	  eg_d, eg_i, nullptr, op};
+
+	Operator<NOp, COMPLEX> op_oe{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    auto x0 = op.template make_compatible_img<NOp + 1>("n", {{'n', x.kvdim().at('n')}});
+	    x0.set_zero();
+	    x.copyTo(x0.template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+		       .kvslice_from_size({{S, 0}}, {{S, 1}}));
+	    op(x0)
+	      .template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+	      .kvslice_from_size({{S, 1}}, {{S, 1}})
+	      .copyTo(y);
+	  },
+	  eg_d, eg_i, nullptr, op};
+
+	Operator<NOp, COMPLEX> op_oo{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    auto x0 = op.template make_compatible_img<NOp + 1>("n", {{'n', x.kvdim().at('n')}});
+	    x0.set_zero();
+	    x.copyTo(x0.template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+		       .kvslice_from_size({{S, 1}}, {{S, 1}}));
+	    op(x0)
+	      .template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}})
+	      .kvslice_from_size({{S, 1}}, {{S, 1}})
+	      .copyTo(y);
+	  },
+	  eg_d, eg_i, nullptr, op};
+
+
+	// Get solver on op_oo
+	const auto solver_oo = getSolver(op_oo, getOptions(ops, "solver_oo"));
+
+	// Get an explicit form for A = Op_ee-Op_eo*Op_oo^{-1}*Op_oe
+	unsigned int max_dist_neighbors_opA = 2;
+	Operator<NOp, COMPLEX> opA{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("spin eo matvec ") + prefix);
+
+	    // y = Op_ee * x
+	    op_ee(x, y);
+
+	    // y1 = Op_oe * x
+	    auto y1 = op_oe(x);
+
+	    // y2 = Op_oo^{-1} * y1
+	    auto y2 = solver_oo(y1);
+
+	    // y += -Op_eo * y2
+	    op_eo(std::move(y2)).scale(-1).addTo(y);
+	  },
+	  eg_d,
+	  eg_i,
+	  nullptr,
+	  op.order_t,
+	  op.domLayout,
+	  op.imgLayout,
+	  getNeighbors(op.i.kvdim(), max_dist_neighbors_opA, op.imgLayout),
+	  op.preferred_col_ordering,
+	  false /* no Kronecker blocking */};
+
+	// Get solver on opA
+	const auto solver = getSolver(opA, getOptions(ops, "solver_A"));
+
+	// Create the solver
+	Operator<NOp, COMPLEX> rop{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("spin eo solver ") + prefix);
+
+	    auto x_eo = x.template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}});
+	    auto y_eo = y.template split_dimension<NOp + 2>('s', Ss, {{S, 2}, {'s', ns / 2}});
+
+	    // be = x_e - Op_eo*Op_oo^{-1}*x_o
+	    auto x_e = x_eo.kvslice_from_size({{S, 0}}, {{S, 1}});
+	    auto x_o = x_eo.kvslice_from_size({{S, 1}}, {{S, 1}});
+	    auto b_e = op_eo(solver_oo(x_o).scale(-1));
+	    x_e.addTo(b_e);
+
+	    // Solve opA * y_e = be
+	    auto y_e = y_eo.kvslice_from_size({{S, 0}}, {{S, 1}});
+	    auto y_o = y_eo.kvslice_from_size({{S, 1}}, {{S, 1}});
+	    solver(b_e, y_e);
+
+	    // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
+	    auto yo0 = b_e;
+	    x_o.copyTo(yo0);
+	    op_oe(y_e).scale(-1).addTo(yo0);
+	    solver_oo(yo0, y_o);
+	  },
+	  op.i,
+	  op.d,
+	  nullptr,
+	  op.order_t,
+	  op.imgLayout,
+	  op.domLayout,
+	  DenseOperator(),
+	  op.preferred_col_ordering,
+	  false /* no Kronecker blocking */};
+
+	// Do a test
+	if (superbblas::getDebugLevel() > 0)
+	{
+	  auto x = op.template make_compatible_img<NOp + 1>("n", {{'n', 2}});
+	  urand(x, -1, 1);
+	  auto y = op(rop(x));
+	  x.scale(-1).addTo(y);
+	  auto normx = norm<1>(x, "n");
+	  auto normdiff = norm<1>(y, "n");
+	  double max_err = 0;
+	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
+	    max_err = std::max(max_err, (double)normdiff.get({{i}}) / normx.get({{i}}));
+	  QDPIO::cout << " spin eo prec error: " << detail::tostr(max_err) << std::endl;
 	}
 
 	return rop;
@@ -2796,7 +3135,7 @@ namespace Chroma
       }
     }
 
-    /// Returns an inexact Generalized Davidson on op*g5
+    /// Returns an inexact Generalized Davidson on op*g5, that is the left SV of op
     /// NOTE: this is an eigensolver not a linear solver
     ///
     /// \param op: operator to make the inverse of
@@ -2987,6 +3326,61 @@ namespace Chroma
 		false /* no Kronecker form */};
       }
 
+      /// Returns a shifted operator
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver from `solvers` and influence the solver construction
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getShiftedOp(Operator<NOp, COMPLEX> op, const Options& ops,
+					  Operator<NOp, COMPLEX> prec_)
+      {
+	if (prec_)
+	  throw std::runtime_error("getShiftedOp: unsupported input preconditioner");
+
+	// Get the remainder options
+	double shift_I = getOption<double>(ops, "shift_I", 0.0);
+	double shift_ig5 = getOption<double>(ops, "shift_ig5", 0.0);
+
+	// Produced the shifted operator
+	auto shifted_op = op;
+	if (shift_I != 0 || shift_ig5 != 0)
+	{
+	  int ns = op.d.kvdim().at('s');
+	  auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
+	  shifted_op = {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+			  // y = op * x
+			  op(x, y);
+
+			  // y +=  x * shift_I
+			  if (shift_I != 0)
+			    x.scale(shift_I).addTo(y);
+
+			  // y += shift_ig5 * i * g5
+			  if (shift_ig5 != 0)
+			  {
+			    COMPLEX ishift =
+			      static_cast<COMPLEX>(std::complex<double>{0.0, shift_ig5});
+			    if (ns == 1)
+			    {
+			      x.scale(ishift).addTo(y);
+			    }
+			    else
+			    {
+			      contract<NOp + 1>(g5.rename_dims({{'j', 's'}}).scale(ishift), x, "s",
+						AddTo, y, {{'s', 'i'}});
+			    }
+			  }
+			},
+			op.d, op.i, nullptr, op};
+	}
+
+	// Get the solver
+	Maybe<const Options&> solverOps = getOptionsMaybe(ops, "solver");
+	if (solverOps)
+	  return getSolver(shifted_op, solverOps.getSome());
+	return shifted_op;
+      }
+
       /// Returns the conjugate transpose of an operator
       ///
       /// \param op: operator to make the inverse of
@@ -3000,7 +3394,7 @@ namespace Chroma
 	  throw std::runtime_error("getDagger: unsupported input preconditioner");
 
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5<COMPLEX>(ns);
+	auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
 
 	// Return the solver
 	return {
@@ -3034,7 +3428,7 @@ namespace Chroma
 	  throw std::runtime_error("getG5: unsupported input preconditioner");
 
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5<COMPLEX>(ns);
+	auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
 
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -3115,16 +3509,31 @@ namespace Chroma
 	HIE,
 	DD,
 	BJ,
+	SHIFT,
+	PROJ,
+	SPINEO,
 	IGD,
 	DDAG,
 	G5,
 	BLOCKING,
 	CASTING
       };
-      static const std::map<std::string, SolverType> solverTypeMap{
-	{"fgmres", FGMRES}, {"bicgstab", BICGSTAB}, {"mr", MR},		 {"gcr", GCR}, {"mg", MG},
-	{"eo", EO},	    {"hie", HIE},	    {"dd", DD},		 {"bj", BJ},   {"igd", IGD},
-	{"g5", G5},	    {"blocking", BLOCKING}, {"casting", CASTING}};
+      static const std::map<std::string, SolverType> solverTypeMap{{"fgmres", FGMRES},
+								   {"bicgstab", BICGSTAB},
+								   {"mr", MR},
+								   {"gcr", GCR},
+								   {"mg", MG},
+								   {"eo", EO},
+								   {"hie", HIE},
+								   {"dd", DD},
+								   {"bj", BJ},
+								   {"shift", SHIFT},
+								   {"proj", PROJ},
+								   {"spineo", SPINEO},
+								   {"igd", IGD},
+								   {"g5", G5},
+								   {"blocking", BLOCKING},
+								   {"casting", CASTING}};
       SolverType solverType = getOption<SolverType>(ops, "type", solverTypeMap);
       switch (solverType)
       {
@@ -3146,6 +3555,12 @@ namespace Chroma
 	return detail::getDomainDecompositionPrec(op, ops, prec);
       case BJ: // block Jacobi
 	return detail::getBlockJacobi(op, ops, prec);
+      case SHIFT: // shift operator
+	return detail::getShiftedOp(op, ops, prec);
+      case PROJ: // projector preconditioner
+	return detail::getProjPrec(op, ops, prec);
+      case SPINEO: // even-odd Schur complement on the spin components
+	return detail::getSpinEvenOddPrec(op, ops, prec);
       case IGD: // inexact Generalized Davidson
 	return detail::getInexactGD(op, ops, prec);
       case DDAG: // return the operator conjugate transposed
@@ -3548,7 +3963,7 @@ namespace Chroma
 
 	// Return the projector
 	int ns = op.d.kvdim().at('s');
-	auto g5 = getGamma5<COMPLEX>(ns);
+	auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
 	auto mult_by_g5 = [=](Tensor<NOp + 1, COMPLEX> v) {
 	  char i = detail::get_free_label(v.order);
 	  return contract<NOp + 1>(g5.rename_dims({{'j', 's'}, {'i', i}}), v, "s")
@@ -3608,12 +4023,6 @@ namespace Chroma
       template <std::size_t NOp, typename COMPLEX>
       Projector<NOp, COMPLEX> getMGDeflationProj(Operator<NOp, COMPLEX> op, const Options& ops)
       {
-	// Get options
-	unsigned int rank = getOption<unsigned int>(ops, "rank");
-	// Return trivial solution
-	if (rank == 0)
-	  return getDeflationProj(op, ops);
-
 	// Get prolongator and coarse operator
 	auto prolongator_coarse_spin_splitting =
 	  getProlongatorAndCoarse(op, ops.getValue("prolongator"), FullSpace);
@@ -3621,7 +4030,7 @@ namespace Chroma
 	Operator<NOp, COMPLEX> op_c = std::get<1>(prolongator_coarse_spin_splitting);
 
 	// Return the projector for the coarse operator
-	auto proj_c = getDeflationProj(op_c, ops);
+	auto proj_c = getProjector(op_c, ops.getValue("proj"));
 
 	/// Return Q*V*inv(U'*Q'*op*Q*V)*U'*Q' = Q proj_c * Q'
 	auto almost_proj = Operator<NOp, COMPLEX>{
