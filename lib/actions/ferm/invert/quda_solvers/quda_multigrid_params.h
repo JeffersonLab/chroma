@@ -35,6 +35,7 @@ namespace Chroma
     multi1d<int> nu_pre;
     multi1d<int> nu_post;
     multi1d< multi1d<int> > blocking;
+		multi1d<int> nvec_batch;
     int outer_gcr_nkrylov;
     int precond_gcr_nkrylov;
     std::string cycle_type;
@@ -65,6 +66,7 @@ namespace Chroma
       }
       blocking.resize(mg_levels-1);
       nvec.resize(mg_levels-1);
+			nvec_batch.resize(mg_levels-1);
       nu_pre.resize(mg_levels-1);
       nu_post.resize(mg_levels-1);
       maxIterSubspaceCreate.resize(mg_levels-1);
@@ -87,7 +89,7 @@ namespace Chroma
     	  nu_pre[l] = 2;
     	  nu_post[l] = 2;
     	  nvec[l] = 16;
-
+				nvec_batch[l]=1; // the batch size for Nvec solves is 1 by default
     	  // Default params:
     	  maxIterSubspaceCreate[l] = 500;
     	  rsdTargetSubspaceCreate[l] = 5.0e-6;

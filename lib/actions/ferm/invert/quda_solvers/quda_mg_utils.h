@@ -255,6 +255,7 @@ namespace Chroma {
 					// FIXME: Elevate ip.nvec, ip.nu_pre, ip.nu_post, ip.tol to arrays in the XML
 					if ( i < mg_param.n_level-1) {
 						mg_param.n_vec[i] = ip.nvec[i];
+						mg_param.n_vec_batch[i] = ip.nvec_batch[i];
 						mg_param.nu_pre[i] = ip.nu_pre[i];
 						mg_param.nu_post[i] = ip.nu_post[i];
 					}
