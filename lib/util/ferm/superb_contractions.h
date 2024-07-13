@@ -4980,7 +4980,7 @@ namespace Chroma
     template <std::size_t N, typename T>
     typename detail::base_type<T>::type
     max(Tensor<N, T> v, typename detail::base_type<T>::type init =
-			  std::numeric_limits<typename detail::base_type<T>::type>::min())
+			  std::numeric_limits<typename detail::base_type<T>::type>::lowest())
     {
       using value_type = typename detail::base_type<T>::type;
       v = v.make_sure(none, OnHost, detail::compatible_replicated_distribution(v.dist));
