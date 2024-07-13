@@ -7160,6 +7160,15 @@ namespace Chroma
       return dense;
     }
 
+    namespace detail
+    {
+      inline NaturalNeighbors updateNeighborsAfterSlicing(const NaturalNeighbors& neighbors,
+							  const std::map<char, int>& dim,
+							  OperatorLayout layout,
+							  const std::map<char, int>& new_dim,
+							  OperatorLayout new_layout);
+    }
+
     /// Representation of a function that takes and returns tensors with the same labels, although the
     /// dimensions may be different.
 
@@ -7480,13 +7489,18 @@ namespace Chroma
 	  (new_i.kvdim().at('X') != i.kvdim().at('X') && detail::isEvenOddLayout(imgLayout)
 	     ? EvensOnlyLayout
 	     : imgLayout);
+
+	// Update the neighbors
+	auto new_neighbors = detail::updateNeighborsAfterSlicing(neighbors, i.kvdim(), imgLayout,
+								 new_i.kvdim(), new_imgLayout);
+
 	if (sp)
 	{
 	  return Operator<NOp, COMPLEX>(sp.kvslice_from_size(detail::update_kvcoor(dom_kvfrom, rd),
 							     detail::update_kvcoor(dom_kvsize, rd),
 							     img_kvfrom, img_kvsize),
 					rd, max_power, new_d, new_i, order_t, new_domLayout,
-					new_imgLayout, neighbors, preferred_col_ordering);
+					new_imgLayout, new_neighbors, preferred_col_ordering);
 	}
 	else
 	{
@@ -7518,7 +7532,7 @@ namespace Chroma
 	      op_tconj(x0, y0);
 	      y0.kvslice_from_size(dom_kvfrom, dom_kvsize).copyTo(y);
             } : OperatorFun<NOp, COMPLEX>{},
-	    order_t, new_domLayout, new_imgLayout, neighbors, preferred_col_ordering, is_kronecker());
+	    order_t, new_domLayout, new_imgLayout, new_neighbors, preferred_col_ordering, is_kronecker());
 	}
       }
 
@@ -7559,11 +7573,16 @@ namespace Chroma
 	  (new_i.kvdim().at('X') != i.kvdim().at('X') && detail::isEvenOddLayout(imgLayout)
 	     ? EvensOnlyLayout
 	     : imgLayout);
+
+	// Update the neighbors
+	auto new_neighbors = detail::updateNeighborsAfterSlicing(neighbors, i.kvdim(), imgLayout,
+								 new_i.kvdim(), new_imgLayout);
+
 	return Operator<NOp, COMPLEX>(sp.kvslice_from_size(f, detail::update_kvcoor(dom_kvfrom, rd),
 							   detail::update_kvcoor(dom_kvsize, rd),
 							   img_kvfrom, img_kvsize),
 				      rd, max_power, new_d, new_i, order_t, new_domLayout,
-				      new_imgLayout, neighbors, preferred_col_ordering);
+				      new_imgLayout, new_neighbors, preferred_col_ordering);
       }
 
       /// Return an identity operator with the same dimensions as this operator
@@ -7749,6 +7768,48 @@ namespace Chroma
 	}
 
 	return r;
+      }
+
+      /// Return the new neighbours after slicing an operator
+      /// \param neighbors: operator's neighbors in natural coordinates
+      /// \param dim: operator dimensions
+      /// \param layout: operator's layout
+      /// \param new_dim: new operator dimensions
+      /// \param new_layout: new operator's layout
+
+      inline NaturalNeighbors updateNeighborsAfterSlicing(const NaturalNeighbors& neighbors,
+							  const std::map<char, int>& dim,
+							  OperatorLayout layout,
+							  const std::map<char, int>& new_dim,
+							  OperatorLayout new_layout)
+      {
+	// Shortcut for dense operators
+	if (neighbors == DenseOperator())
+	  return neighbors;
+
+	NaturalNeighbors new_neighbors;
+	const auto natdim = getNatLatticeDims(dim, layout);
+	const auto new_natdim = getNatLatticeDims(new_dim, new_layout);
+	for (const auto& kvcoor : neighbors)
+	{
+	  bool discard = false;
+	  std::map<char, int> new_neighbor;
+	  for (const auto& it : kvcoor)
+	  {
+	    int label_dim = natdim.at(it.first);
+	    int new_label_dim = new_natdim.at(it.first);
+	    int label_coor = normalize_coor(it.second, label_dim);
+	    int dist = (label_coor < label_dim / 2 ? label_coor : label_coor - label_dim);
+	    if (std::abs(dist) >= new_label_dim)
+	    {
+	      discard = true;
+	      break;
+	    }
+	    new_neighbor[it.first] = normalize_coor(dist, new_label_dim);
+	  }
+	  new_neighbors.push_back(new_neighbor);
+	}
+	return new_neighbors;
       }
 
       /// Return the color for each site
