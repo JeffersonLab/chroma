@@ -9313,6 +9313,11 @@ namespace Chroma
 	    QDP_abort(1);
 	  }
 
+#    if defined(SUPERBBLAS_USE_GPU)
+	  // Primme block orthogonalization is very slow on gpus
+	  primme.orth = primme_orth_implicit_I;
+#    endif
+
 	  // Allocate space for converged Ritz values and residual norms
 	  std::vector<double> evals(primme.numEvals);
 	  std::vector<double> rnorms(primme.numEvals);
