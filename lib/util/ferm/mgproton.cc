@@ -2759,6 +2759,7 @@ namespace Chroma
 	    const auto y_s = opA_solver ? opA_solver(b_s) : b_s;
 
 	    // y = Op_ss^{-1} * y_s
+	    y.set_zero();
 	    solver_ss(y_s, y);
 
 	    // y += Op_ii^{-1}*(-Op_is*y + x_i)
@@ -2789,6 +2790,157 @@ namespace Chroma
 	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
 	    max_err = std::max(max_err, (double)normdiff.get({{i}}) / normx.get({{i}}));
 	  QDPIO::cout << " hierarchical prec error: " << detail::tostr(max_err) << std::endl;
+	}
+
+	return rop;
+      }
+
+      /// Returns a generic two domains preconditioner.
+      ///
+      /// It returns an approximation of Op^{-1} by splitting the rows and columns into the two
+      /// domains (islands, domains without holes, and sea, the domain which connect all the domains) and doing:
+      ///
+      /// [ Op_ss Op_si ]^{-1} = [       I            0 ] * [ Op_ss-Op_si*Op_ii^{-1}*Op_is   0   ]^{-1} *
+      /// [ Op_is Op_ii ]        [ -Op_ii^{-1}*Op_is  I ]   [              0               Op_ii ]
+      ///
+      ///                        * [ I  -Op_si*Op_ii^{-1} ]
+      ///                          [ 0         I          ]
+      ///
+      /// The matrix Op_ii^{-1} is block diagonal, while
+      /// (Op_ss-Op_si*Op_ii^{-1}*Op_is)^{-1} should be close to Op_ss^{-1}. Note that
+      /// the residual norm while solving A_ss=Op_ss-Op_si*Op_ii^{-1}*Op_is is the same as the original
+      /// residual norm if the linear systems with Op_ii are solved exactly. See a prove in the comment of `getEvenOddPrec`.
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getHie2Prec(Operator<NOp, COMPLEX> op, const Options& ops,
+					 Operator<NOp, COMPLEX> prec_)
+      {
+	auto dims = op.d.kvdim();
+
+	if (prec_)
+	  throw std::runtime_error("getHie2Prec: unsupported input preconditioner");
+	if (!op.sp)
+	  throw std::runtime_error("getHie2Prec: unsupported implicit operators");
+
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	int boundary = getOption<unsigned int>(ops, "boundary");
+	int start = getOption<unsigned int>(ops, "start", 0);
+
+	// Check divisions and land
+	if (boundary % 2 != 0)
+	  ops.getValue("boundary").throw_error("the boundary value should be even");
+	int Nt = dims.at('t');
+
+	if (Nt + 2 < boundary * 2)
+	  ops.getValue("boundary").throw_error("the boundary is too big");
+
+	if (Nt % 4 != 0)
+	  throw std::runtime_error("getHie2Prec: unsupported time dimension not being divisible by 4");
+
+	// Get the pieces
+	int domain = Nt / 2 - boundary;
+	int startd0 = start;
+	int startb0 = startd0 + domain;
+	int startd1 = startd0 + Nt / 2;
+	int startb1 = startd1 + domain;
+	const auto op_d0 = op.kvslice_from_size({{'t', startd0}}, {{'t', domain}}, {{'t', startd0}}, {{'t', domain}});
+	const auto op_d1 = op.kvslice_from_size({{'t', startd1}}, {{'t', domain}}, {{'t', startd1}}, {{'t', domain}});
+	const auto op_b0 = op.kvslice_from_size({{'t', startb0}}, {{'t', boundary}}, {{'t', startb0}}, {{'t', boundary}});
+	const auto op_b1 = op.kvslice_from_size({{'t', startb1}}, {{'t', boundary}}, {{'t', startb1}}, {{'t', boundary}});
+	const auto op_d0b0 = op.kvslice_from_size({{'t', startb0}}, {{'t', boundary}}, {{'t', startd0}}, {{'t', domain}});
+	const auto op_d0b1 = op.kvslice_from_size({{'t', startb1}}, {{'t', boundary}}, {{'t', startd0}}, {{'t', domain}});
+	const auto op_d1b0 = op.kvslice_from_size({{'t', startb0}}, {{'t', boundary}}, {{'t', startd1}}, {{'t', domain}});
+	const auto op_d1b1 = op.kvslice_from_size({{'t', startb1}}, {{'t', boundary}}, {{'t', startd1}}, {{'t', domain}});
+	const auto op_b0d0 = op.kvslice_from_size({{'t', startd0}}, {{'t', domain}}, {{'t', startb0}}, {{'t', boundary}});
+	const auto op_b1d0 = op.kvslice_from_size({{'t', startd0}}, {{'t', domain}}, {{'t', startb1}}, {{'t', boundary}});
+	const auto op_b0d1 = op.kvslice_from_size({{'t', startd1}}, {{'t', domain}}, {{'t', startb0}}, {{'t', boundary}});
+	const auto op_b1d1 = op.kvslice_from_size({{'t', startd1}}, {{'t', domain}}, {{'t', startb1}}, {{'t', boundary}});
+
+	// Get the solvers
+	const auto solver_d0 = getSolver(op_d0, getOptions(ops, "solver"));
+	const auto solver_d1 = getSolver(op_d1, getOptions(ops, "solver"));
+	const auto solver_b0 = getSolver(op_b0, getOptions(ops, "solver"));
+	const auto solver_b1 = getSolver(op_b1, getOptions(ops, "solver"));
+
+	// Create operator Op_dd^{-1} + Op_dd^{-1}*Op_db*Op_bb^{-1}*Op_bd*Op_dd^{-1}
+	Operator<NOp, COMPLEX> rop{
+	  [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
+	    Tracker _t(std::string("hie2 solver ") + prefix);
+
+	    y.set_zero();
+
+	    // y0 = invD_x0 = Op_d0d0^{-1}*x0
+	    auto invD_x0 = solver_d0(x.kvslice_from_size({{'t', startd0}}, {{'t', domain}}));
+	    invD_x0.copyTo(y.kvslice_from_size({{'t', startd0}}, {{'t', domain}}));
+
+	    // invD_x1 = Op_d1d1^{-1}*x1
+	    auto invD_x1 = solver_d1(x.kvslice_from_size({{'t', startd1}}, {{'t', domain}}));
+	    invD_x1.copyTo(y.kvslice_from_size({{'t', startd1}}, {{'t', domain}}));
+
+	    // Dbd_invD_0 = Op_b0d0 * invD_x0 + Op_b0d1 * invD_x1
+	    auto Ddb_invD_0 = op_b0d0(invD_x0);
+	    op_b0d1(invD_x1).addTo(Ddb_invD_0);
+
+	    // Dbd_invD_1 = Op_b1d0 * invD_x0 + Op_b1d1 * invD_x1
+	    auto Ddb_invD_1 = op_b1d0(invD_x0);
+	    op_b1d1(invD_x1).addTo(Ddb_invD_1);
+
+	    invD_x0.release();
+	    invD_x1.release();
+
+	    // invB_0 = Op_b0b0^{-1} * Dbd_invD_0
+	    auto invB_0 = solver_b0(Ddb_invD_0);
+	    Ddb_invD_0.release();
+
+	    // invB_1 = Op_b1b1^{-1} * Dbd_invD_1
+	    auto invB_1 = solver_b1(Ddb_invD_1);
+	    Ddb_invD_1.release();
+
+	    // Ddb_invB_0 = Op_d0b0 * invB_0 + Op_d0b1 * invB_1
+	    auto Ddb_invB_0 = op_d0b0(invB_0);
+	    op_d0b1(invB_1).addTo(Ddb_invB_0);
+
+	    // Ddb_invB_1 = Op_d1b0 * invB_0 + Op_d1b1 * invB_1
+	    auto Ddb_invB_1 = op_d1b0(invB_0);
+	    op_d1b1(invB_1).addTo(Ddb_invB_1);
+
+	    invB_0.release();
+	    invB_1.release();
+
+	    // y0 += Op_d0d0^{-1}*Ddb_invB_0
+	    solver_d0(Ddb_invB_0).addTo(y.kvslice_from_size({{'t', startd0}}, {{'t', domain}}));
+	    Ddb_invB_0.release();
+
+	    // y1 += Op_d1d1^{-1}*Ddb_invB_1
+	    solver_d1(Ddb_invB_1).addTo(y.kvslice_from_size({{'t', startd1}}, {{'t', domain}}));
+	    Ddb_invB_1.release();
+	  },
+	  op.i,
+	  op.d,
+	  nullptr,
+	  op.order_t,
+	  op.imgLayout,
+	  op.domLayout,
+	  DenseOperator(),
+	  op.preferred_col_ordering,
+	  false /* no Kronecker blocking */};
+
+	// Do a test
+	if (superbblas::getDebugLevel() > 0)
+	{
+	  auto x = op.template make_compatible_img<NOp + 1>("n", {{'n', 2}});
+	  urand(x, -1, 1);
+	  auto y = op(rop(x));
+	  x.scale(-1).addTo(y);
+	  auto normx = norm<1>(x, "n");
+	  auto normdiff = norm<1>(y, "n");
+	  double max_err = 0;
+	  for (int i = 0, vol = normdiff.volume(); i < vol; ++i)
+	    max_err = std::max(max_err, (double)normdiff.get({{i}}) / normx.get({{i}}));
+	  QDPIO::cout << " hie2 prec error: " << detail::tostr(max_err) << std::endl;
 	}
 
 	return rop;
@@ -3507,6 +3659,7 @@ namespace Chroma
 	MG,
 	EO,
 	HIE,
+	HIE2,
 	DD,
 	BJ,
 	SHIFT,
@@ -3525,6 +3678,7 @@ namespace Chroma
 								   {"mg", MG},
 								   {"eo", EO},
 								   {"hie", HIE},
+								   {"hie2", HIE2},
 								   {"dd", DD},
 								   {"bj", BJ},
 								   {"shift", SHIFT},
@@ -3551,6 +3705,8 @@ namespace Chroma
 	return detail::getEvenOddPrec(op, ops, prec, solverSpace);
       case HIE: // hierarchical Schur preconditioner
 	return detail::getHierarchicalPrec(op, ops, prec);
+      case HIE2: // hierarchical Schur preconditioner
+	return detail::getHie2Prec(op, ops, prec);
       case DD: // domain decomposition with domains local to processes
 	return detail::getDomainDecompositionPrec(op, ops, prec);
       case BJ: // block Jacobi

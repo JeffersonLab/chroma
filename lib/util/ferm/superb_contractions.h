@@ -423,6 +423,19 @@ namespace Chroma
 	return r;
       }
 
+      /// Return the elements in a given map for the given keys
+      /// \param kvcoor: given map
+      /// \param order: given keys
+
+      inline std::map<char, int> slice_map(const std::map<char, int>& kvcoor, const std::string& order)
+      {
+	std::map<char, int> r;
+	for (auto const& it : kvcoor)
+	  if (is_in(order, it.first))
+	    r[it.first] = it.second;
+	return r;
+      }
+
       /// Return the inverse map
       /// \param map: from domain labels to image labels
 
@@ -5686,6 +5699,7 @@ namespace Chroma
 	new_ii.set_zero();
 	auto jj_slice = jj.kvslice_from_size(img_kvfrom, img_kvsize).cloneOn(OnHost);
 	auto new_jj = jj_slice.make_compatible(none, {}, OnHost);
+	new_jj.set_zero();
 	auto new_jj_mask = jj_slice.template make_compatible<NI + 1, float>(
 	  detail::remove_dimensions(jj_slice.order, "~"), {}, OnHost);
 	new_jj_mask.set_zero();
@@ -5702,9 +5716,9 @@ namespace Chroma
 	  throw std::runtime_error("kvslice_from_size: hit corner case, sorry");
 	}
 
-	Tensor<1, float> dirs("u", {(int)num_neighbors}, OnHost, OnMaster);
-	dirs.set_zero();
-	auto dirs_local = dirs.getLocal();
+	Tensor<1, float> dirs("u", {(int)num_neighbors}, OnHost,
+			      detail::compatible_replicated_distribution(i.dist));
+	auto next_jj_mask = new_jj_mask;
 	{
 	  Coor<ND> from_dom = kvcoors<ND>(d.order, dom_kvfrom);
 	  std::map<char, int> updated_dom_kvsize = d.kvdim();
@@ -5723,14 +5737,21 @@ namespace Chroma
 	  auto new_jj_mask_local = new_jj_mask.getLocal();
 	  float* new_jj_mask_ptr = new_jj_mask_local.data();
 	  Coor<ND> size_nnz = d.size;
-	  Tensor<1, float> dirs_global("u", {(int)num_neighbors}, OnHost, OnMaster);
-	  dirs_global.set_zero();
-	  auto dirs_local = dirs_global.getLocal();
 	  for (unsigned int i = nblockd + nkrond; i < ND; ++i)
 	    size_nnz[i] = 1;
+
+	  // Find the maximum number of nonzeros per row and the active directions
+	  // in case of using the Kronecker format
+
+	  auto dirs_global =
+	    local_support_tensor<float, 2>("u", Coor<1>{(int)num_neighbors}, OnHost);
+	  dirs_global.set_zero();
+	  auto dirs_global_local = dirs_global.getLocal();
+	  int max_nnz_per_row = 0;
 	  for (std::size_t i = 0, i_acc = 0, i1 = new_ii_local.volume(); i < i1;
 	       i_acc += ii_slice_ptr[i], ++i)
 	  {
+	    int nnz_per_row = 0;
 	    for (unsigned int j = i_acc, j1 = i_acc + ii_slice_ptr[i]; j < j1; ++j)
 	    {
 	      Coor<ND> from_nnz;
@@ -5741,39 +5762,78 @@ namespace Chroma
 	      if (superbblas::detail::volume(lsize) == 0)
 		continue;
 
-	      using superbblas::detail::operator-;
-	      Coor<ND> new_from_nnz = normalize_coor(from_nnz - from_dom, size_dom);
-	      std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_ii_ptr[i]) * ND);
-	      new_ii_ptr[i]++;
-	      new_jj_mask_ptr[j] = 1;
-	      if (dirs_local)
-		dirs_local.data()[j - i_acc] = 1;
+	      dirs_global_local.data()[j - i_acc] = 1;
+	      nnz_per_row++;
 	    }
-	    if (i > 0 && new_ii_ptr[i] != new_ii_ptr[0])
-	      throw std::runtime_error("SpTensor::kvslice_from_size: unsupported slices ending up "
-				       "in different number of nonzero values in each row");
-	    if (i > 0 && kron)
-	    {
-	      for (unsigned int j = i_acc, j1 = i_acc + ii_slice_ptr[i]; j < j1; ++j)
-		if (new_jj_mask_ptr[j] != new_jj_mask_ptr[j - i_acc])
-		  throw std::runtime_error("SpTensor::kvslice_from_size unsupported slices ending "
-					   "up in selecting different directions for each row");
-	    }
+	    max_nnz_per_row = std::max(max_nnz_per_row, nnz_per_row);
 	  }
 
-	  // Make sure that all nodes with support have the same number of neighbors
-	  if (Layout::nodeNumber() == 0 && new_ii_local.volume() == 0)
-	    throw std::runtime_error("kvslice_from_size: unsupported distribution, master process "
-				     "should have support on the origin tensor");
-	  if (new_ii_local.volume() > 0)
-	    num_neighbors = new_ii_ptr[0];
-	  int global_num_neighbors = broadcast(num_neighbors);
-	  if (new_ii_local.volume() > 0 && global_num_neighbors != num_neighbors)
-	    throw std::runtime_error("SpTensor::kvslice_from_size: unsupported distribution");
-	  num_neighbors = global_num_neighbors;
+	  std::vector<int> new_dirs_idx(num_neighbors);
+	  if (!kron)
+	  {
+	    // Get the maximum number of nonzeros in a row
+	    max_nnz_per_row = global_max(max_nnz_per_row);
+	  }
+	  else
+	  {
+	    // Gather the directions present in all processes, and update `global_dirs_local` such that
+	    // the direction is present if it is on some process.
+	    auto dirs_collective =
+	      dirs_global.make_sure(none, none, detail::compatible_replicated_distribution(i.dist));
+	    dirs.set_zero();
+	    for (int i = 0; i < num_neighbors; ++i)
+	      for (int proc = 0; proc < Layout::numNodes(); ++proc)
+		if (dirs_collective.data()[proc + i * Layout::numNodes()] > 0)
+		  dirs.data()[i] = 1;
 
-	  dirs = dirs_global.make_sure(none, OnDefaultDevice,
-				       detail::compatible_replicated_distribution(i.dist));
+	    // Map the old direction indices into the new directions, and count the maximum number
+	    // of nonzeros per rows as the total amount of different directions
+	    max_nnz_per_row = 0;
+	    for (int i = 0; i < num_neighbors; ++i)
+	      if (dirs.data()[i] > 0)
+		new_dirs_idx[i] = max_nnz_per_row++;
+	  }
+
+
+	  // Collect the nonzeros
+	  next_jj_mask = new_jj_mask.make_compatible(none, {{'u', max_nnz_per_row}});
+	  next_jj_mask.set_zero();
+	  auto next_jj_mask_local = next_jj_mask.getLocal();
+	  float* next_jj_mask_ptr = next_jj_mask_local.data();
+	  for (std::size_t i = 0, i_acc = 0, i1 = new_ii_local.volume(); i < i1;
+	       i_acc += ii_slice_ptr[i], ++i)
+	  {
+	    unsigned int new_nnz_in_row = 0;
+	    for (unsigned int j = i_acc, j1 = i_acc + ii_slice_ptr[i]; j < j1; ++j)
+	    {
+	      Coor<ND> from_nnz;
+	      std::copy_n(jj_slice_ptr + j * ND, ND, from_nnz.begin());
+	      Coor<ND> lfrom, lsize;
+	      superbblas::detail::intersection(from_dom, updated_size_dom, from_nnz, size_nnz,
+					       d.dim, lfrom, lsize);
+
+	      if (superbblas::detail::volume(lsize) == 0)
+	      {
+		// If using Kronecker format and the direction is active on the new matrix, don't jump to next iteration,
+		// although the nonzero doesn't belong to the new matrix
+		if (!kron || dirs.data()[j - i_acc] == 0)
+		  continue;
+	      }
+	      else
+	      {
+		// Copy the coordinates of the nonzero to new matrix
+		using superbblas::detail::operator-;
+		Coor<ND> new_from_nnz = normalize_coor(from_nnz - from_dom, size_dom);
+		std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_nnz_in_row) * ND);
+		new_jj_mask_ptr[j] = 1;
+		next_jj_mask_ptr[max_nnz_per_row * i + new_dirs_idx[j - i_acc]] = 1;
+	      }
+	      new_nnz_in_row++;
+	    }
+	    new_ii_ptr[i] = max_nnz_per_row;
+	  }
+
+	  num_neighbors = max_nnz_per_row;
 	}
 
 	// Create the returning tensor
@@ -5796,14 +5856,34 @@ namespace Chroma
 	kronecker<NI + ND + 1>(new_jj_mask, data_blk)
 	  .copyTo(data_mask.kvslice_from_size(img_kvfrom, img_kvsize));
 	auto r_data_mask = r.data.create_mask();
-	r_data_mask.set(1);
-	r.data.set(detail::NaN<T>::get());
+	kronecker<NI + ND + 1>(next_jj_mask, data_blk).copyTo(r_data_mask);
+	r.data.set_zero();
 	data.kvslice_from_size(img_kvfrom, img_kvsize)
 	  .copyToWithMask(r.data, data_mask.kvslice_from_size(img_kvfrom, img_kvsize), r_data_mask,
 			  "u");
 
 	if (kron)
 	{
+	  // Filter kronecker blocking dimensions
+	  auto kron_order =
+	    std::string(d.order.begin() + nblockd, d.order.begin() + nblockd + nkrond) +
+	    std::string(i.order.begin() + nblocki, i.order.begin() + nblocki + nkroni);
+	  std::map<char, int> kron_from{};
+	  for (const auto& it : dom_kvfrom)
+	    if (detail::is_in(kron_order, it.first))
+	      kron_from[it.first] = it.second;
+	  for (const auto& it : img_kvfrom)
+	    if (detail::is_in(kron_order, it.first))
+	      kron_from[it.first] = it.second;
+	  std::map<char, int> kron_size{};
+	  for (const auto& it : dom_kvsize)
+	    if (detail::is_in(kron_order, it.first))
+	      kron_size[it.first] = it.second;
+	  for (const auto& it : img_kvsize)
+	    if (detail::is_in(kron_order, it.first))
+	      kron_size[it.first] = it.second;
+
+	  // Create origin mask
 	  auto kron_mask = kron.create_mask();
 	  kron_mask.set_zero();
 	  auto blk_m = kron.kvdim();
@@ -5812,13 +5892,13 @@ namespace Chroma
 	    "%", '%', "u", blk_m, none, detail::compatible_replicated_distribution(new_d.dist));
 	  kron_blk.set(1);
 	  kronecker<NI + ND + 1>(dirs, kron_blk)
-	    .copyTo(kron_mask.kvslice_from_size(img_kvfrom, img_kvsize));
+	    .copyTo(kron_mask.kvslice_from_size(kron_from, kron_size));
 	  auto r_kron_mask = r.kron.create_mask();
 	  r_kron_mask.set(1);
 	  r.kron.set(detail::NaN<T>::get());
-	  kron.kvslice_from_size(img_kvfrom, img_kvsize)
-	    .copyToWithMask(r.kron, kron_mask.kvslice_from_size(img_kvfrom, img_kvsize),
-			    r_kron_mask, "u");
+	  kron.kvslice_from_size(kron_from, kron_size)
+	    .copyToWithMask(r.kron, kron_mask.kvslice_from_size(kron_from, kron_size), r_kron_mask,
+			    "u");
 	}
 
 	if (is_constructed())
@@ -7257,7 +7337,7 @@ namespace Chroma
 	if (sp)
 	{
 	  remap mcols = detail::getNewLabels(cols, sp.d.order + sp.i.order);
-	  auto y = make_compatible_img<N, T>(cols, t.kvdim());
+	  auto y = make_compatible_img<N, T>(cols, detail::slice_map(t.kvdim(), cols));
 	  if (t.dist == Glocal)
 	    y = y.getGlocal();
 	  sp.contractWith(t.rename_dims(mcols), rd, y.rename_dims(mcols), {});
