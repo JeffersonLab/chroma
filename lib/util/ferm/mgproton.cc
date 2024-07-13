@@ -2861,10 +2861,10 @@ namespace Chroma
 	const auto op_b1d1 = op.kvslice_from_size({{'t', startd1}}, {{'t', domain}}, {{'t', startb1}}, {{'t', boundary}});
 
 	// Get the solvers
-	const auto solver_d0 = getSolver(op_d0, getOptions(ops, "solver"));
-	const auto solver_d1 = getSolver(op_d1, getOptions(ops, "solver"));
-	const auto solver_b0 = getSolver(op_b0, getOptions(ops, "solver"));
-	const auto solver_b1 = getSolver(op_b1, getOptions(ops, "solver"));
+	const auto solver_d0 = getSolver(op_d0, getOptions(ops, "solver_land"));
+	const auto solver_d1 = getSolver(op_d1, getOptions(ops, "solver_land"));
+	const auto solver_b0 = getSolver(op_b0, getOptions(ops, "solver_sea"));
+	const auto solver_b1 = getSolver(op_b1, getOptions(ops, "solver_sea"));
 
 	// Create operator Op_dd^{-1} + Op_dd^{-1}*Op_db*Op_bb^{-1}*Op_bd*Op_dd^{-1}
 	Operator<NOp, COMPLEX> rop{
