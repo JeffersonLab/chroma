@@ -2828,6 +2828,7 @@ namespace Chroma
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
 	int boundary = getOption<unsigned int>(ops, "boundary");
 	int start = getOption<unsigned int>(ops, "start", 0);
+	bool full = getOption<bool>(ops, "full", true);
 
 	// Check divisions and land
 	if (boundary % 2 != 0)
@@ -2917,6 +2918,17 @@ namespace Chroma
 	    // y1 += Op_d1d1^{-1}*Ddb_invB_1
 	    solver_d1(Ddb_invB_1).addTo(y.kvslice_from_size({{'t', startd1}}, {{'t', domain}}));
 	    Ddb_invB_1.release();
+
+	    if (full)
+	    {
+	      // y[b0] = Op_b0b0^{-1}*x[b0]
+	      solver_b0(x.kvslice_from_size({{'t', startb0}}, {{'t', boundary}}),
+			y.kvslice_from_size({{'t', startb0}}, {{'t', boundary}}));
+
+	      // y[b1] = Op_b1b1^{-1}*x[b1]
+	      solver_b1(x.kvslice_from_size({{'t', startb1}}, {{'t', boundary}}),
+			y.kvslice_from_size({{'t', startb1}}, {{'t', boundary}}));
+	    }
 	  },
 	  op.i,
 	  op.d,
