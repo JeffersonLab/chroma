@@ -5826,7 +5826,14 @@ namespace Chroma
 		Coor<ND> new_from_nnz = normalize_coor(from_nnz - from_dom, size_dom);
 		std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_nnz_in_row) * ND);
 		new_jj_mask_ptr[j] = 1;
-		next_jj_mask_ptr[max_nnz_per_row * i + new_dirs_idx[j - i_acc]] = 1;
+		if (!kron)
+		{
+		  next_jj_mask_ptr[max_nnz_per_row * i + new_nnz_in_row] = 1;
+		}
+		else
+		{
+		  next_jj_mask_ptr[max_nnz_per_row * i + new_dirs_idx[j - i_acc]] = 1;
+		}
 	      }
 	      new_nnz_in_row++;
 	    }
@@ -6125,7 +6132,14 @@ namespace Chroma
 		Coor<ND> new_from_nnz = normalize_coor(from_nnz - from_dom, size_dom);
 		std::copy_n(new_from_nnz.begin(), ND, new_jj_ptr + (i_acc + new_nnz_in_row) * ND);
 		new_jj_mask_ptr[j] = 1;
-		next_jj_mask_ptr[max_nnz_per_row * i + new_dirs_idx[j - i_acc]] = 1;
+		if (!kron)
+		{
+		  next_jj_mask_ptr[max_nnz_per_row * i + new_nnz_in_row] = 1;
+		}
+		else
+		{
+		  next_jj_mask_ptr[max_nnz_per_row * i + new_dirs_idx[j - i_acc]] = 1;
+		}
 	      }
 	      new_nnz_in_row++;
 	    }
