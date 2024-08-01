@@ -128,6 +128,16 @@ namespace Chroma {
       // Default Pipeline = 0
       Pipeline=0;
     }
+    if ( paramtop.count("GridSplitDims") > 0) {
+      read(paramtop, "GridSplitDims", GridSplitDims);
+    }
+    else {
+        GridSplitDims.resize(Nd);
+        GridSplitDims[0]=1;
+        GridSplitDims[1]=1;
+        GridSplitDims[2]=1;
+        GridSplitDims[3]=1;
+    }
   }
 
   void read(XMLReader& xml, const std::string& path, 
@@ -163,6 +173,7 @@ namespace Chroma {
 
     write(xml, "DumpOnFail", p.dump_on_failP);
     write(xml, "Pipeline", p.Pipeline);
+    write(xml, "GridSplitDims", p.GridSplitDims);
 
     if( p.backup_invP ) { 
       // Need to dump out the XML for the back up solver here...

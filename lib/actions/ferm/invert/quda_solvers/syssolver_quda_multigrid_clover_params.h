@@ -14,7 +14,7 @@ namespace Chroma
 {
   struct SysSolverQUDAMULTIGRIDCloverParams { 
     SysSolverQUDAMULTIGRIDCloverParams(XMLReader& xml, const std::string& path);
-    SysSolverQUDAMULTIGRIDCloverParams() {
+    SysSolverQUDAMULTIGRIDCloverParams() : GridSplitDims(Nd) {
       solverType=CG;
       cudaPrecision=DEFAULT;
       cudaReconstruct=RECONS_12;
@@ -31,9 +31,14 @@ namespace Chroma
       dump_on_failP = false;
       Pipeline = 1;
       SolutionCheckP = true;
+			GridSplitDims[0] = 1;
+			GridSplitDims[1] = 1;
+			GridSplitDims[2] = 1;
+			GridSplitDims[3] = 1;
+
     };
 
-    SysSolverQUDAMULTIGRIDCloverParams( const SysSolverQUDAMULTIGRIDCloverParams& p) {
+    SysSolverQUDAMULTIGRIDCloverParams( const SysSolverQUDAMULTIGRIDCloverParams& p) : GridSplitDims(Nd){
       CloverParams = p.CloverParams;
       AntiPeriodicT = p.AntiPeriodicT;
       MaxIter = p.MaxIter;
@@ -59,6 +64,10 @@ namespace Chroma
       ThresholdCount = p.ThresholdCount;
       Pipeline = p.Pipeline;
       SolutionCheckP = p.SolutionCheckP;
+			GridSplitDims[0] = p.GridSplitDims[0];
+			GridSplitDims[1] = p.GridSplitDims[1];
+			GridSplitDims[2] = p.GridSplitDims[2];
+			GridSplitDims[3] = p.GridSplitDims[3];
     }
 
    
@@ -92,7 +101,7 @@ namespace Chroma
     GroupXML_t backup_inv_param;
     bool dump_on_failP;
     bool SolutionCheckP;
- 
+		multi1d<int> GridSplitDims; 
 
   };
 
