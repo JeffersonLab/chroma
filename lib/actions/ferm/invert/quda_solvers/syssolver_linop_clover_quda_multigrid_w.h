@@ -635,6 +635,62 @@ namespace Chroma
 			return res;
 		}
 
+		std::vector<SystemSolverResults_t> operator() (const std::vector<std::shared_ptr<T>>& psi, const std::vector<std::shared_ptr<const T>>& chi) const override
+		{
+
+				START_CODE();
+				QDPIO::cout << "Entering MRHS solution: N_src = " << chi.size() << "\n";
+
+				std::vector<SystemSolverResults_t> res(chi.size());
+				if( psi.size() != chi.size() ) {
+						QDPIO::cout << "Number of sources does not match number of solutions\n";
+						QDPIO::cout << "psi.size() = " << psi.size() << " but chi.size() = " << chi.size() << "\n";
+						QDP_abort(1);
+				}
+
+				StopWatch swatch;
+				swatch.start();
+
+				if ( invParam.axialGaugeP ) {
+						QDPIO::cerr << "Multi RHS solve in axial gauge not yet implemented\n";
+						QDP_abort(1);
+				}
+
+				qudaInvertMultiSrc(*invclov, psi, chi, res);
+
+				swatch.stop();
+
+				// Check solutions
+				for(int soln =0; soln < psi.size(); soln++)	{
+						T r;
+						r[A->subset()]=*(chi[ soln ]);
+						T tmp;
+						(*A)(tmp, *(psi[soln]), PLUS);
+						r[A->subset()] -= tmp;
+						res[soln].resid = sqrt(norm2(r, A->subset()));
+
+						Double rel_resid = res[soln].resid/sqrt(norm2(*(chi[soln]),A->subset()));
+
+						QDPIO::cout << "QUDA_"<< solver_string <<" solution " << soln << 
+								" : "  << res[soln].n_count << " iterations. Rsd = " << res[soln].resid 
+								<< " Relative Rsd = " << rel_resid << std::endl;
+
+						// Convergence Check/Blow Up
+						if ( ! invParam.SilentFailP ) {
+								if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
+										QDPIO::cerr << "ERROR: QUDA Solver residuum for solution " << soln 
+												<< " is outside tolerance: QUDA resid="<< rel_resid << " Desired =" 
+												<< invParam.RsdTarget << " Max Tolerated = " 
+												<< invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl;
+										QDP_abort(1);
+								}
+						}
+				}
+
+				END_CODE();
+				return res;
+		}
+
 	private:
 		// Hide default constructor
 		LinOpSysSolverQUDAMULTIGRIDClover() {}
@@ -658,10 +714,15 @@ namespace Chroma
 		Handle< CloverTermT<T, U> > invclov;
 
 		SystemSolverResults_t qudaInvert(const CloverTermT<T, U>& clover,
-				const CloverTermT<T, U>& inv_clov,
+				const CloverTermT<T, U>& invclov,
 				const T& chi_s,
 				T& psi_s
 		)const;
+
+	  void qudaInvertMultiSrc(const CloverTermT<T, U>& invclov,
+					const std::vector<std::shared_ptr<T>>& psi_s, 
+					const std::vector<std::shared_ptr<const T>>& chi_s,
+					std::vector<SystemSolverResults_t>& res) const;
 
 		std::string solver_string;
 	};

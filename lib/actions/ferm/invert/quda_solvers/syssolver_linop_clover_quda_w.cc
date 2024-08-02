@@ -98,7 +98,7 @@ namespace Chroma
         QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;
 
         ret.n_count =quda_inv_param.iter;
-
+        ret.resid = quda_inv_param.true_res[0];
         return ret;
 
     }
@@ -182,7 +182,10 @@ namespace Chroma
         QDPIO::cout << "\tPerformance="<<  local_quda_inv_param.gflops/local_quda_inv_param.secs<<" GFLOPS" ; 
         QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;
 
-        for(int soln = 0; soln < chi_s.size(); soln++) res[soln].n_count =local_quda_inv_param.iter;
+        for(int soln = 0; soln < chi_s.size(); soln++) {
+		 			 res[soln].n_count =local_quda_inv_param.iter;
+      		 res[soln].resid = quda_inv_param.true_res[soln];
+				}
         return;
     }
 
