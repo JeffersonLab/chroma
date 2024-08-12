@@ -74,8 +74,13 @@ namespace Chroma
                     const SysSolverQUDACloverParams& invParam_) :
                 A(A_), invParam(invParam_)
         {
+
             QDPIO::cout << "LinOpSysSolverQUDAClover:" << std::endl;
 
+						bool is_precond = true;
+						auto sub = A->subset();
+
+						if ( sub.start() == all.start() && sub.numSiteTable() == all.numSiteTable() ) is_precond = false;
             // FOLLOWING INITIALIZATION in test QUDA program
 
             // 1) work out cpu_prec, cuda_prec, cuda_prec_sloppy
@@ -290,9 +295,10 @@ namespace Chroma
             quda_inv_param.pipeline = invParam.Pipeline;
 
             // Solution type
-            quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
+            quda_inv_param.solution_type = is_precond ? QUDA_MATPC_SOLUTION : QUDA_MAT_SOLUTION;
 
-            // Solve type
+            // Solve type: We always solve with a PC solve (even for a MAT solution)
+						//  because PC solves have better conditioning. QUDA needs to do the EO reconstructs
             switch( invParam.solverType ) {
                 case CG:
                     quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
@@ -312,19 +318,30 @@ namespace Chroma
 
                 default:
                     quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
-
                     break;
             }
 
-            if( invParam.asymmetricP ) {
-                QDPIO::cout << "Using Asymmetric Linop: A_oo - D A^{-1}_ee D" << std::endl;
-                quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
-            }
-            else {
-                QDPIO::cout << "Using Symmetric Linop: 1 - A^{-1}_oo D A^{-1}_ee D" << std::endl;
-                quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
-            }
+						if( is_precond )  {
+	
+ 		          // Solution type
+   		        quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
 
+							// Preconditioned system
+							if( invParam.asymmetricP ) {
+									QDPIO::cout << "Using Asymmetric Linop: A_oo - D A^{-1}_ee D" << std::endl;
+									quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
+							}
+							else {
+									QDPIO::cout << "Using Symmetric Linop: 1 - A^{-1}_oo D A^{-1}_ee D" << std::endl;
+									quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
+							}
+						}
+						else  {
+ 		           // Solution type
+   		         quda_inv_param.solution_type = QUDA_MAT_SOLUTION;
+							 quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD; //QUDA's native preconditioning when using QUDA_DIRECT_PC solution
+						}
+				
             quda_inv_param.dagger = QUDA_DAG_NO;
             quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
 
@@ -594,12 +611,12 @@ namespace Chroma
 
                     // Gauge Fix source and initial guess
                     QDPIO::cout << "Gauge Fixing source and initial guess" << std::endl;
-                    g_chi[ rb[1] ]  = GFixMat * chi;
-                    g_psi[ rb[1] ]  = GFixMat * psi;
+                    g_chi[ A->subset() ]  = GFixMat * chi;
+                    g_psi[ A->subset() ]  = GFixMat * psi;
                     QDPIO::cout << "Solving" << std::endl;
                     res = qudaInvert( g_chi, g_psi);
                     QDPIO::cout << "Untransforming solution." << std::endl;
-                    psi[ rb[1]]  = adj(GFixMat)*g_psi;
+                    psi[ A->subset() ]  = adj(GFixMat)*g_psi;
 
                 }
                 else {

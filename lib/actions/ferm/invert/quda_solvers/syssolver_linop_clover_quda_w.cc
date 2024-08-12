@@ -61,6 +61,7 @@ namespace Chroma
 
         void *spinorIn;
         void *spinorOut;
+				auto sub = A->subset();
 
 #ifdef BUILD_QUDA_DEVIFACE_SPINOR
         std::vector<QDPCache::ArgKey> ids;
@@ -68,7 +69,7 @@ namespace Chroma
 
         // No need to transform source
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
-        spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
+        spinorIn =(void *)&(chi_s.elem(sub.start()).elem(0).elem(0).real());
 #else
         //spinorIn = GetMemoryPtr( chi_s.);
         //QDPIO::cout << "MDAGM spinor in = " << spinorIn << "\n";
@@ -77,7 +78,7 @@ namespace Chroma
 
 
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
-        spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
+        spinorOut =(void *)&(psi_s.elem(sub.start()).elem(0).elem(0).real());
 #else
         ids.push_back(psi_s.getId());
         auto dev_ptr = GetMemoryPtr(ids);
@@ -85,7 +86,6 @@ namespace Chroma
         spinorOut = dev_ptr[1];
 
 #endif
-	QDPIO::cout << "b : norm() = ( " << norm2(chi_s, rb[0])<< " , " << norm2( chi_s, rb[1]) << " ) \n";
         // Do the solve here 
         StopWatch swatch1; 
         swatch1.reset();
@@ -110,13 +110,14 @@ namespace Chroma
 
         std::vector<void *> spinorIn(chi_s.size());
         std::vector<void *> spinorOut(psi_s.size());
+				auto sub = A->subset();
 
         int N_src = chi_s.size();
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
         // Regular non-qdpjit approach. Just collect the pointers 
         for(int soln=0; soln < chi_s.size(); soln++) { 
-            spinorIn[soln] = (void *)&(chi_s[soln]->elem(rb[1].start()).elem(0).elem(0).real());
-            spinorOut[soln] = (void *)&(psi_s[soln]->elem(rb[1].start()).elem(0).elem(0).real());
+            spinorIn[soln] = (void *)&(chi_s[soln]->elem(sub.start()).elem(0).elem(0).real());
+            spinorOut[soln] = (void *)&(psi_s[soln]->elem(sub.start()).elem(0).elem(0).real());
         }
 #else
        	std::vector<QDPCache::ArgKey> ids(2*N_src);
@@ -182,8 +183,12 @@ namespace Chroma
         QDPIO::cout << "\tPerformance="<<  local_quda_inv_param.gflops/local_quda_inv_param.secs<<" GFLOPS" ; 
         QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;
 
+
         for(int soln = 0; soln < chi_s.size(); soln++) {
-		 			 res[soln].n_count =local_quda_inv_param.iter;
+
+			  		// Convention for now is for true MRHS solvers to fill out only n_count for solution 0. 
+						// and zero the others
+		 			 res[soln].n_count = (soln == 0) ? local_quda_inv_param.iter :  0;
       		 res[soln].resid = quda_inv_param.true_res[soln];
 				}
         return;

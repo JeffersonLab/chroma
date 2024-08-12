@@ -231,8 +231,10 @@ namespace Chroma
 
 		res.resize(chi_s.size());
 		for(int soln = 0; soln < chi_s.size(); soln++) {
-		 res[soln].n_count =local_quda_inv_param.iter;
-      res[soln].resid = quda_inv_param.true_res[soln];
+		 // Convention is for true multigrid solvers to fill out n_count for solution 0
+		 // to avoid overcounting ncg_had 
+		 res[soln].n_count = ( soln == 0 ) ? local_quda_inv_param.iter : 0 ;
+     res[soln].resid = quda_inv_param.true_res[soln];
 		}
 
 		return;

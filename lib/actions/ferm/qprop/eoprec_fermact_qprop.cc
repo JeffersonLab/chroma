@@ -46,11 +46,11 @@ namespace Chroma
       /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_e */
       T chi_tmp;
       {
-	T tmp1, tmp2;
+				T tmp1, tmp2;
 
-	A->evenEvenInvLinOp(tmp1, chi, PLUS);
-	A->oddEvenLinOp(tmp2, tmp1, PLUS);
-	chi_tmp[rb[1]] = chi - tmp2;
+				A->evenEvenInvLinOp(tmp1, chi, PLUS);
+				A->oddEvenLinOp(tmp2, tmp1, PLUS);
+				chi_tmp[rb[1]] = chi - tmp2;
       }
 
       // Call inverter
@@ -59,19 +59,19 @@ namespace Chroma
       /* Step (ii) */
       /* psi_e = A_ee^-1 * [chi_e  -  D_eo * psi_o] */
       {
-	T tmp1, tmp2;
+				T tmp1, tmp2;
 
-	A->evenOddLinOp(tmp1, psi, PLUS);
-	tmp2[rb[0]] = chi - tmp1;
-	A->evenEvenInvLinOp(psi, tmp2, PLUS);
+				A->evenOddLinOp(tmp1, psi, PLUS);
+				tmp2[rb[0]] = chi - tmp1;
+				A->evenEvenInvLinOp(psi, tmp2, PLUS);
       }
   
-      // Compute residual
+      // Compute the unprec residual
       {
-	T  r;
-	A->unprecLinOp(r, psi, PLUS);
-	r -= chi;
-	res.resid = sqrt(norm2(r));
+				T  r;
+				A->unprecLinOp(r, psi, PLUS);
+				r -= chi;
+				res.resid = sqrt(norm2(r));
       }
 
       END_CODE();
