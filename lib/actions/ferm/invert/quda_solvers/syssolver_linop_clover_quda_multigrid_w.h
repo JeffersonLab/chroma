@@ -70,7 +70,7 @@ namespace Chroma
 		LinOpSysSolverQUDAMULTIGRIDClover(Handle< LinearOperator<T> > A_,
 				Handle< FermState<T,Q,Q> > state_,
 				const SysSolverQUDAMULTIGRIDCloverParams& invParam_) :
-		A(A_), invParam(invParam_), clov(new CloverTermT<T, U>() ), invclov(new CloverTermT<T, U>())
+		A(A_), is_precond( true ), invParam(invParam_), clov(new CloverTermT<T, U>() ), invclov(new CloverTermT<T, U>())
 		{
 		  StopWatch init_swatch;
 		  init_swatch.reset(); init_swatch.start();
@@ -85,7 +85,11 @@ namespace Chroma
 		    QDPIO::cout << solver_string << "Initializing" << std::endl;
 
 			// FOLLOWING INITIALIZATION in test QUDA program
-
+			const auto& sub = A->subset();
+			if( sub.start() == all.start() && sub.numSiteTable() == all.numSiteTable()) {
+				is_precond = false;
+			}
+	
 			// 1) work out cpu_prec, cuda_prec, cuda_prec_sloppy
 			int s = sizeof( WordType<T>::Type_t );
 			if (s == 4) {
@@ -266,32 +270,9 @@ namespace Chroma
 			// Solution type
 			//quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
 			//Taken from invert test.
-			quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
+			quda_inv_param.solution_type = is_precond ? QUDA_MATPC_SOLUTION : QUDA_MAT_SOLUTION;
 			quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
-
-			// Solve type
-			/*switch( invParam.solverType ) {
-			 case CG:
-			 quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
-			 break;
-			 case BICGSTAB:
-			 quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
-			 break;
-			 case GCR:
-			 quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
-			 break;
-
-			 case MR:
-			 quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
-			 break;
-
-			 default:
-			 quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
-
-			 break;
-			 }*/
-
-			quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
+			quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;				// Always
 
 			quda_inv_param.dagger = QUDA_DAG_NO;
 			quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
@@ -317,13 +298,6 @@ namespace Chroma
 			quda_inv_param.output_location = QUDA_CUDA_FIELD_LOCATION;
 #endif
 
-			// Autotuning
-			if( invParam.tuneDslashP ) {
-				quda_inv_param.tune = QUDA_TUNE_YES;
-			}
-			else {
-				quda_inv_param.tune = QUDA_TUNE_NO;
-			}
 
 			// Setup padding
 
@@ -583,13 +557,13 @@ namespace Chroma
 				T g_chi,g_psi;
 
 				// Gauge Fix source and initial guess
-				g_chi[ rb[1] ] = GFixMat * chi;
-				g_psi[ rb[1] ] = GFixMat * psi;
+				g_chi[ A->subset() ] = GFixMat * chi;
+				g_psi[ A->subset() ] = GFixMat * psi;
 				res = qudaInvert(*clov,
 						*invclov,
 						g_chi,
 						g_psi);
-				psi[ rb[1]] = adj(GFixMat)*g_psi;
+				psi[ A->subset() ] = adj(GFixMat)*g_psi;
 
 			}
 			else {
@@ -600,33 +574,25 @@ namespace Chroma
 			}
 
 			swatch.stop();
-			Double rel_resid;
 
 			if( invParam.SolutionCheckP )  {
-			  
-			  {
 			    T r;
 			    r[A->subset()]=chi;
 			    T tmp;
 			    (*A)(tmp, psi, PLUS);
 			    r[A->subset()] -= tmp;
-			    res.resid = sqrt(norm2(r, A->subset()));
-			  }
-
-			  rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
-
-			  QDPIO::cout << solver_string  << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
+			    res.resid = sqrt(norm2(r, A->subset()))/sqrt(norm2(chi,A->subset()));
 			}
-			else { 
-			  // just believe the QUDA residuum.
-			  // which is always a true reiduum
-			  rel_resid = res.resid;
+			else {
+				QDPIO::cout << "Chroma <-> QUDA solution check disabled. Using (trusting) QUDA residuum\n";
 			}
+
+		  QDPIO::cout << solver_string  << res.n_count << " iterations. Relative Rsd = " << res.resid << std::endl;
 
 			// Convergence Check/Blow Up
 			if ( ! invParam.SilentFailP ) {
-				if ( toBool( rel_resid > invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
-					QDPIO::cerr << solver_string << "ERROR:   Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl;
+				if ( toBool( res.resid > invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
+					QDPIO::cerr << solver_string << "ERROR:   Solver residuum is outside tolerance: QUDA resid="<< res.resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl;
 					QDP_abort(1);
 				}
 			}
@@ -660,32 +626,38 @@ namespace Chroma
 
 				swatch.stop();
 
-				// Check solutions
-				for(int soln =0; soln < psi.size(); soln++)	{
-						T r;
-						r[A->subset()]=*(chi[ soln ]);
-						T tmp;
-						(*A)(tmp, *(psi[soln]), PLUS);
-						r[A->subset()] -= tmp;
-						res[soln].resid = sqrt(norm2(r, A->subset()));
+				// Check solutions -- if desired
 
-						Double rel_resid = res[soln].resid/sqrt(norm2(*(chi[soln]),A->subset()));
-
-						QDPIO::cout << "QUDA_"<< solver_string <<" solution " << soln << 
-								" : "  << res[soln].n_count << " iterations. Rsd = " << res[soln].resid 
-								<< " Relative Rsd = " << rel_resid << std::endl;
-
-						// Convergence Check/Blow Up
-						if ( ! invParam.SilentFailP ) {
-								if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
-										QDPIO::cerr << "ERROR: QUDA Solver residuum for solution " << soln 
-												<< " is outside tolerance: QUDA resid="<< rel_resid << " Desired =" 
-												<< invParam.RsdTarget << " Max Tolerated = " 
-												<< invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl;
-										QDP_abort(1);
-								}
-						}
+				if( invParam.SolutionCheckP ) {
+					for(int soln =0; soln < psi.size(); soln++)	{
+							T r;
+							r[A->subset()]=*(chi[ soln ]);
+							T tmp;
+							(*A)(tmp, *(psi[soln]), PLUS);
+							r[A->subset()] -= tmp;
+							res[soln].resid = sqrt(norm2(r, A->subset()))/sqrt(norm2(*(chi[soln]),A->subset()));
+					}
 				}
+				else { 
+					QDPIO::cout << "Chroma <-> QUDA solution check disabled. Using (trusting) QUDA residua\n";
+				}
+
+				for(int soln=0; soln < psi.size(); soln++ ) { 
+					QDPIO::cout << "QUDA_"<< solver_string <<" solution " << soln << 
+									" : "  << res[soln].n_count << " iterations. Relative Rsd = " << res[soln].resid << std::endl;
+
+					// Convergence Check/Blow Up
+					if ( ! invParam.SilentFailP ) {
+						if (  toBool( res[soln].resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
+							QDPIO::cerr << "ERROR: QUDA Solver residuum for solution " << soln 
+									<< " is outside tolerance: QUDA resid="<< res[soln].resid << " Desired =" 
+									<< invParam.RsdTarget << " Max Tolerated = " 
+									<< invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl;
+							QDP_abort(1);
+						}
+					}
+				}
+			
 
 				END_CODE();
 				return res;
@@ -698,6 +670,7 @@ namespace Chroma
 #if 1
 		Q links_orig;
 #endif
+		bool is_precond;
 
 		U GFixMat;
 		QudaPrecision_s cpu_prec;

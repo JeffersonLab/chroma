@@ -64,14 +64,13 @@ namespace Chroma
 				       		T& psi_s) const{
 
     SystemSolverResults_t ret;
-
+		const auto& sub = A->subset();
     T mod_chi;
 
     // Copy source into mod_chi, and zero the off-parity
-    mod_chi[rb[0]] = zero;
-  
-
-    if( invParam.asymmetricP ) { 
+		if( is_precond ) {	
+    	mod_chi[rb[0]] = zero;
+      if( invParam.asymmetricP ) { 
       //
       // symmetric
       // Solve with M_symm = 1 - A^{-1}_oo D A^{-1}ee D 
@@ -80,15 +79,18 @@ namespace Chroma
       //
       //  So  M x = b => A_oo (M_symm) x = b 
       //              =>       M_symm x = A^{-1}_oo b = chi_mod
-      invclov.apply(mod_chi, chi_s, PLUS, 1);
-    }
-    else {
-      mod_chi[rb[1]] = chi_s;
-    }
-
+     	  invclov.apply(mod_chi, chi_s, PLUS, 1);
+      }
+      else {
+        mod_chi[rb[1]] = chi_s;
+      }
+		}
+		else {
+			mod_chi = chi_s;
+		}
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
-    void* spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
-    void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
+    void* spinorIn =(void *)&(mod_chi.elem(sub.start()).elem(0).elem(0).real());
+    void* spinorOut =(void *)&(psi_s.elem(sub.start()).elem(0).elem(0).real());
 #else
     // void* spinorIn = GetMemoryPtr( mod_chi.getId() );
     // void* spinorOut = GetMemoryPtr( psi_s.getId() );
@@ -129,24 +131,31 @@ namespace Chroma
 		source_prep.start();
 	
     multi1d<T> mod_chi(chi_s.size());
+		const auto& sub = A->subset();
 
 		for(int i=0; i < chi_s.size(); i++) {
-	    // Copy source into mod_chi, and zero the off-parity
- 	    mod_chi[i][rb[0]] = zero;
 
-			if( invParam.asymmetricP ) { 
-				//
-				// symmetric
-				// Solve with M_symm = 1 - A^{-1}_oo D A^{-1}ee D 
-				//
-				// Chroma M =  A_oo ( M_symm )
-				//
-				//  So  M x = b => A_oo (M_symm) x = b 
-				//              =>       M_symm x = A^{-1}_oo b = chi_mod
-				invclov.apply(mod_chi[i], *(chi_s[i]), PLUS, 1);
+			if( is_precond ) { 
+	    	// Copy source into mod_chi, and zero the off-parity
+				mod_chi[i][rb[0]] = zero;
+
+				if( invParam.asymmetricP ) { 
+					//
+					// symmetric
+					// Solve with M_symm = 1 - A^{-1}_oo D A^{-1}ee D 
+					//
+					// Chroma M =  A_oo ( M_symm )
+					//
+					//  So  M x = b => A_oo (M_symm) x = b 
+					//              =>       M_symm x = A^{-1}_oo b = chi_mod
+					invclov.apply(mod_chi[i], *(chi_s[i]), PLUS, 1);
+				}
+				else {
+					mod_chi[i][rb[1]] = *(chi_s[i]);
+				}
 			}
 			else {
-				mod_chi[i][rb[1]] = *(chi_s[i]);
+				mod_chi[i] = *(chi_s[i]);
 			}
 		}
 		
@@ -157,8 +166,8 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
 		// Regular non-qdpjit approach. Just collect the pointers 
 		for(int soln=0; soln < chi_s.size(); soln++) { 
-			spinorIn[soln] = (void *)&(mod_chi[soln].elem(rb[1].start()).elem(0).elem(0).real());
-			spinorOut[soln] = (void *)&(psi_s[soln]->elem(rb[1].start()).elem(0).elem(0).real());
+			spinorIn[soln] = (void *)&(mod_chi[soln].elem(sub.start()).elem(0).elem(0).real());
+			spinorOut[soln] = (void *)&(psi_s[soln]->elem(sub.start()).elem(0).elem(0).real());
 		}
 #else
 		std::vector<QDPCache::ArgKey> ids(2*N_src);
@@ -234,7 +243,7 @@ namespace Chroma
 		 // Convention is for true multigrid solvers to fill out n_count for solution 0
 		 // to avoid overcounting ncg_had 
 		 res[soln].n_count = ( soln == 0 ) ? local_quda_inv_param.iter : 0 ;
-     res[soln].resid = quda_inv_param.true_res[soln];
+     res[soln].resid = local_quda_inv_param.true_res[soln];
 		}
 
 		return;

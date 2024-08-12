@@ -294,9 +294,6 @@ namespace Chroma
             quda_inv_param.reliable_delta = toDouble(invParam.Delta);
             quda_inv_param.pipeline = invParam.Pipeline;
 
-            // Solution type
-            quda_inv_param.solution_type = is_precond ? QUDA_MATPC_SOLUTION : QUDA_MAT_SOLUTION;
-
             // Solve type: We always solve with a PC solve (even for a MAT solution)
 						//  because PC solves have better conditioning. QUDA needs to do the EO reconstructs
             switch( invParam.solverType ) {
@@ -383,19 +380,6 @@ namespace Chroma
             quda_inv_param.clover_location = QUDA_CUDA_FIELD_LOCATION;
             quda_inv_param.clover_order = QUDA_QDPJIT_CLOVER_ORDER;
 #endif   
-
-            // Autotuning
-            if( invParam.tuneDslashP ) {
-                QDPIO::cout << "Enabling Dslash Autotuning" << std::endl;
-
-                quda_inv_param.tune = QUDA_TUNE_YES;
-            }
-            else {
-                QDPIO::cout << "Disabling Dslash Autotuning" << std::endl;
-
-                quda_inv_param.tune = QUDA_TUNE_NO;
-            }
-
 
             // Setup padding
             multi1d<int> face_size(4);
@@ -624,25 +608,26 @@ namespace Chroma
                 }
 
                 swatch.stop();
-
-
-                {
+	
+								// If required, check the solutions
+								if( invParam.SolutionCheckP ) {
                     T r;
                     r[A->subset()]=chi;
                     T tmp;
                     (*A)(tmp, psi, PLUS);
                     r[A->subset()] -= tmp;
-                    res.resid = sqrt(norm2(r, A->subset()));
-                }
+                    res.resid = sqrt(norm2(r, A->subset()))  / sqrt(norm2(chi,A->subset()));
+								}
+								else {
+									QDPIO::cout << "Chroma <-> QUDA Solution Check disabled. Using (trusting) QUDA Residuum\n";
+								}
 
-                Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
-
-                QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
+		            QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Relative Rsd = " << res.resid << std::endl;
 
                 // Convergence Check/Blow Up
                 if ( ! invParam.SilentFailP ) {
-                    if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
-                        QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl;
+                    if (  toBool( res.resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
+                        QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< res.resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl;
                         QDP_abort(1);
                     }
                 }
@@ -679,25 +664,30 @@ namespace Chroma
                 swatch.stop();
 
                 // Check solutions
-                for(int soln =0; soln < psi.size(); soln++)	{
-                    T r;
-                    r[A->subset()]=*(chi[ soln ]);
-                    T tmp;
-                    (*A)(tmp, *(psi[soln]), PLUS);
-                    r[A->subset()] -= tmp;
-                    res[soln].resid = sqrt(norm2(r, A->subset()));
+								if( invParam.SolutionCheckP ) {
+									T r;
+									T tmp;	
+            	    for(int soln =0; soln < psi.size(); soln++)	{
+											r[A->subset()]=*(chi[ soln ]);
+											(*A)(tmp, *(psi[soln]), PLUS);
+											r[A->subset()] -= tmp;
+											res[soln].resid = sqrt(norm2(r, A->subset())) / sqrt(norm2(*(chi[soln]),A->subset()));
+									}
+								}
+								else { 
+									QDPIO::cout << "Chroma <-> QUDA Solution Check disabled. Using (trusting) QUDA Residua\n";
+								}
 
-                    Double rel_resid = res[soln].resid/sqrt(norm2(*(chi[soln]),A->subset()));
 
+								for(int soln=0; soln < psi.size(); soln++) { 
                     QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: solution " << soln << 
-                        " : "  << res[soln].n_count << " iterations. Rsd = " << res[soln].resid 
-                        << " Relative Rsd = " << rel_resid << std::endl;
+                        " : "  << res[soln].n_count << " iterations. Relative Rsd = " << res[soln].resid << std::endl;
 
                     // Convergence Check/Blow Up
                     if ( ! invParam.SilentFailP ) {
-                        if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
+                        if (  toBool( res[soln].resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) {
                             QDPIO::cerr << "ERROR: QUDA Solver residuum for solution " << soln 
-                                << " is outside tolerance: QUDA resid="<< rel_resid << " Desired =" 
+                                << " is outside tolerance: QUDA resid="<< res[soln].resid << " Desired =" 
                                 << invParam.RsdTarget << " Max Tolerated = " 
                                 << invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl;
                             QDP_abort(1);

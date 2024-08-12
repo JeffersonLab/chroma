@@ -189,7 +189,7 @@ namespace Chroma
 			  		// Convention for now is for true MRHS solvers to fill out only n_count for solution 0. 
 						// and zero the others
 		 			 res[soln].n_count = (soln == 0) ? local_quda_inv_param.iter :  0;
-      		 res[soln].resid = quda_inv_param.true_res[soln];
+      		 res[soln].resid = local_quda_inv_param.true_res[soln];
 				}
         return;
     }
