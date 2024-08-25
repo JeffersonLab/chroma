@@ -1877,11 +1877,12 @@ namespace Chroma
     template <std::size_t N, typename T>
     struct Tensor {
       using value_type = typename detail::base_type<T>::type;
+      using real_value_type = typename detail::real_type<T>::type;
       static_assert(superbblas::supported_type<value_type>::value, "Not supported type");
 
       /// Allocation type
       /// NOTE: the complex types decay to the base type, which is needed by `toFakeReal`
-      using Allocation = detail::Allocation<typename detail::real_type<T>::type>;
+      using Allocation = detail::Allocation<real_value_type>;
 
     public:
       std::string order;		      ///< Labels of the tensor dimensions
@@ -3395,10 +3396,11 @@ namespace Chroma
       /// Copy/add this tensor into the given one
       /// NOTE: if this tensor or the given tensor is fake real, force both to be fake real
 
-      template <std::size_t Nw, typename Tw, std::size_t Nm = N, typename Tm = float,
-		std::size_t Nwm = Nw, typename Twm = float,
-		typename std::enable_if<
-		  detail::is_complex<T>::value != detail::is_complex<Tw>::value, bool>::type = true>
+      template <
+	std::size_t Nw, typename Tw, std::size_t Nm = N, typename Tm = float, std::size_t Nwm = Nw,
+	typename Twm = float,
+	typename std::enable_if<detail::is_diycomplex<T>::value != detail::is_diycomplex<Tw>::value,
+				bool>::type = true>
       void doAction(Action action, Tensor<Nw, Tw> w, Tensor<Nm, Tm> m = {},
 		    Tensor<Nwm, Twm> wm = {}, const std::string& uneven_mask_labels = "",
 		    CopyingTrash copying_trash = dontCopyingTrash) const
@@ -3509,8 +3511,11 @@ namespace Chroma
       /// Return whether the given tensor has the same memory allocation as this one
       /// \param v: tensor to compare
 
-      template <std::size_t Nv>
-      bool has_same_allocation(Tensor<Nv, T> v) const
+      template <std::size_t Nv, typename Tv,
+		typename std::enable_if<std::is_same<typename detail::real_type<T>::type,
+						     typename detail::real_type<Tv>::type>::value,
+					bool>::type = true>
+      bool has_same_allocation(Tensor<Nv, Tv> v) const
       {
 	// Compare the allocation pointer, not the actual allocation.ptr; we are making sure that
 	// the two allocations are on the same device in this way
@@ -3539,12 +3544,11 @@ namespace Chroma
       }
 
       /// Copy/Add this tensor into the given one; and copy only where the values of the mask are nonzero if given
-      template <std::size_t Nw, typename Tw, std::size_t Nm = N, typename Tm = float,
-		std::size_t Nwm = Nw, typename Twm = float,
-		typename std::enable_if<
-		  detail::is_complex<T>::value == detail::is_complex<Tw>::value &&
-		    detail::is_diycomplex<T>::value == detail::is_diycomplex<Tw>::value,
-		  bool>::type = true>
+      template <
+	std::size_t Nw, typename Tw, std::size_t Nm = N, typename Tm = float, std::size_t Nwm = Nw,
+	typename Twm = float,
+	typename std::enable_if<detail::is_diycomplex<T>::value == detail::is_diycomplex<Tw>::value,
+				bool>::type = true>
       void doAction(Action action, Tensor<Nw, Tw> w, Tensor<Nm, Tm> m = {},
 		    Tensor<Nwm, Twm> wm = {}, const std::string& uneven_mask_labels = "",
 		    CopyingTrash copying_trash = dontCopyingTrash) const
@@ -4046,6 +4050,82 @@ namespace Chroma
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
 	  superbblas::sync(ctx());
+      }
+
+      /// Return the singular value decomposition (SVD) of several matrices
+      /// \param order_rows: labels that are rows of the matrices to factor
+      /// \param order_cols: labels that are columns of the matrices to factor
+      /// \param u: output tensor with the left singular vectors
+      /// \param s: output tensor with the singular values
+      /// \param v: output tensor with the right singular vectors
+      /// NOTE: the singular triplets are ordered in descending order
+
+      template <std::size_t Nu, std::size_t Ns, std::size_t Nv>
+      void svd(const std::string& order_rows, const std::string& order_cols, Tensor<Nu, T> u,
+	       Tensor<Ns, real_value_type> s, Tensor<Nv, T> v) const
+      {
+	if (is_eg() || u.is_eg() || s.is_eg() || v.is_eg())
+	  throw std::runtime_error("svd: invalid operation from an example tensor");
+
+	// Conjugacy isn't supported
+	if (u.conjugate || s.conjugate || v.conjugate || conjugate)
+	  throw std::runtime_error("inv: Unsupported implicit conjugate tensors");
+
+	// Superbblas tensor contraction is shit and those not deal with subtensors or contracting a host and
+	// device tensor (for now)
+	if (isSubtensor())
+	{
+	  clone().svd(order_rows, order_cols, u, s, v);
+	  return;
+	}
+	if (u.isSubtensor() || u.scalar != T{1} || s.isSubtensor() || v.isSubtensor() || v.scalar != T{1})
+	{
+	  auto u0 = u;
+	  auto s0 = s;
+	  auto v0 = v;
+	  if (u.isSubtensor() || u.scalar != T{1})
+	    u0 = u.make_compatible(none, {}, getDev());
+	  if (s.isSubtensor())
+	    s0 = s.make_compatible(none, {}, getDev());
+	  if (v.isSubtensor() || u.scalar != T{1})
+	    v0 = v.make_compatible(none, {}, getDev());
+	  svd(order_rows, order_cols, u, s, v);
+	  u0.copyTo(u);
+	  s0.copyTo(s);
+	  v0.copyTo(v);
+	  return;
+	}
+
+	bool some_is_local = dist == Local || v.dist == Local || s.dist == Local || v.dist == Local;
+	bool some_isnt_local = dist != Local || v.dist != Local || s.dist != Local || v.dist != Local;
+	if (some_is_local && some_isnt_local)
+	  throw std::runtime_error("svd: the input tensor or on of the output tensors "
+				   "is local/glocal and others are not!");
+
+	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
+	
+	value_type* ptr = data();
+	value_type* u_ptr = u.data_for_writing();
+	real_value_type* s_ptr = s.data_for_writing();
+	value_type* v_ptr = v.data_for_writing();
+	superbblas::svd<N, Nu, Ns, Nv>(
+	  scalar / T(s.scalar), //
+	  p->p.data() + p_disp, dim, 1, order.c_str(), (const value_type**)&ptr,
+	  order_rows.c_str(), order_cols.c_str(),
+	  &ctx(), //
+	  u.p->p.data() + p_disp, u.dim, 1, u.order.c_str(), &u_ptr, &u.ctx(), //
+	  s.p->p.data() + p_disp, s.dim, 1, s.order.c_str(), &s_ptr, &s.ctx(), //
+	  v.p->p.data() + p_disp, v.dim, 1, v.order.c_str(), &v_ptr, &v.ctx(), //
+	  comm, superbblas::FastToSlow);
+
+	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
+	if (!u.is_managed())
+	  superbblas::sync(u.ctx());
+	if (!s.is_managed())
+	  superbblas::sync(s.ctx());
+	if (!v.is_managed())
+	  superbblas::sync(v.ctx());
       }
 
       /// Return a view of this tensor where the elements are scaled by the given argument
@@ -4761,6 +4841,35 @@ namespace Chroma
 	[](const typename detail::base_type<T>::type& t) { return std::sqrt(std::real(t)); });
     }
 
+    /// Compute the Frobenius norm of the whole tensor
+    /// \param v: tensor
+    ///
+    /// Example:
+    ///
+    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+    ///   auto frob_norm = fnorm(t); 
+
+    template <std::size_t N, typename T>
+    typename detail::real_type<T>::type fnorm(const Tensor<N, T>& v)
+    {
+      // Quick shortcut
+      if (N == 0)
+	return 0;
+
+      // Extend the first dimension
+      const char label = v.order[0];
+      char new_label = detail::get_free_label(v.order);
+      auto x = v.split_dimension(label, std::string{label, new_label}, v.kvdim().at(label));
+
+      // Contract the tensor on all labels excepting the new one; the result should be a single number
+      auto r = contract<1>(x.conj(), x, v.order, OnHost,
+			   detail::compatible_replicated_distribution(x.dist));
+      if (r.volume() != 1)
+	throw std::runtime_error("wtf");
+
+      return std::sqrt(std::real(r.data()[0]));
+    }
+
     /// Compute the Cholesky factor of `v' and contract its inverse with `w`
     /// \param v: tensor to compute the Cholesky factor
     /// \param order_rows: labels that are rows of the matrices to factor
@@ -4933,6 +5042,58 @@ namespace Chroma
       }
 
       return r0;
+    }
+
+    /// Return the singular values and vectors of a given matrix
+    /// \param x: tensor to compute the factors
+    /// \param order_rows: labels that are rows of the matrices to factor
+    /// \param order_cols: labels that are columns of the matrices to factor
+    /// \param index_label: label for indexing the singular triplets
+
+    template <std::size_t Nu, std::size_t Ns, std::size_t Nv, std::size_t Nx, typename T>
+    std::tuple<Tensor<Nu, T>, Tensor<Ns, typename detail::real_type<T>::type>, Tensor<Nv, T>>
+    svd(const Tensor<Nx, T>& x, const std::string& order_rows, const std::string& order_cols,
+	char index_label = '*')
+    {
+      if (detail::is_in(x.order, index_label))
+	throw std::runtime_error("svd: invalid `index_label`");
+
+      // Compute the repetition labels: x.order - (order_rows+order_cols)
+      std::string torder = detail::union_dimensions(x.order, "", order_rows + order_cols);
+
+      // Compute the output labels
+      std::string uorder = order_rows + std::string{index_label} + torder;
+      std::string sorder = std::string{index_label} + torder;
+      std::string vorder = order_cols + std::string{index_label} + torder;
+      if (Nu != uorder.size() || Ns != sorder.size() || Nv != vorder.size())
+	throw std::runtime_error(
+	  "svd: The dimension of the output tensor does not match the template arguments");
+
+      // Compute the number of singular triplets
+      auto index_size = std::min(x.volume(order_rows), x.volume(order_cols));
+
+      // Create the output matrices
+      auto new_labels = std::map<char, int>{{index_label, index_size}};
+      auto u = x.template make_compatible<Nu>(uorder, new_labels);
+      auto s = x.template make_compatible<Ns, typename detail::real_type<T>::type>(sorder, new_labels);
+      auto v = x.template make_compatible<Nv>(vorder, new_labels);
+
+      // Compute the svd
+      x.svd(order_rows, order_cols, u, s, v);
+
+      // Check the solution
+      if (superbblas::getDebugLevel() > 0)
+      {
+	auto r = contract<Nx>(contract<Nu>(u, s.template make_sure<T>(), ""), v.conj(),
+			      std::string{index_label});
+	x.scale(-1).addTo(r);
+	
+	auto eps = std::sqrt(std::numeric_limits<typename detail::real_type<T>::type>::epsilon());
+	if (fnorm(x) * eps > fnorm(r))
+	  throw std::runtime_error(std::string("svd: too much error"));
+      }
+
+      return {u, s, v};
     }
 
     /// Elementwise division
