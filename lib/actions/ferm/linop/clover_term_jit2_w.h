@@ -3,8 +3,8 @@
  *  \brief Clover term linear operator
  */
 
-#ifndef __clover_term_jit_w_h__
-#define __clover_term_jit_w_h__
+#ifndef __clover_term_jit2_w_h__
+#define __clover_term_jit2_w_h__
 
 //#warning "Using QDP-JIT clover term"
 
@@ -13,7 +13,7 @@
 #include "actions/ferm/linop/clover_term_base_w.h"
 #include "meas/glue/mesfield.h"
 
-#if ! defined (QDP_IS_QDPJIT2)
+#if defined (QDP_IS_QDPJIT2)
 
 namespace QDP
 {
@@ -35,38 +35,50 @@ namespace QDP
   struct PComp
   {
     typedef T Sub_t;
-    enum { ThisSize = 2 };
     T comp[2];
   };
 
-  template<class T>  struct PCompREG;
-
-  template<typename T>
-  struct PCompJIT: public BaseJIT<T,2>
+  template<class T>
+  class WordSize< PComp<T> >
   {
-    template<class T1>
-    PCompJIT& operator=( const PCompREG<T1>& rhs) {
-      //std::cout << __PRETTY_FUNCTION__ << "\n";
-      elem(0) = rhs.elem(0);
-      elem(1) = rhs.elem(1);
-      return *this;
+  public:
+    static int value( const QV& ret )
+    {
+      return 2 * WordSize<T>::value( ret );
     }
-
-
-    inline       T elem(int i)       { return this->arrayF(i); }
   };
 
   template<class T>
-  struct PCompREG 
+  struct GetLimit<PComp<T>,0>
   {
-    T F[2];
-    void setup(PCompJIT< typename JITType<T>::Type_t > rhs ) {
-      F[0].setup( rhs.elem(0) );
-      F[1].setup( rhs.elem(1) );
+    static int limit(const QV& var)
+    {
+      return 2;
     }
-    inline       T& elem(int i)       { return F[i]; }
-    inline const T& elem(int i) const { return F[i]; }
   };
+
+
+  template<typename T>
+  struct PCompJIT: public BaseJIT<T>
+  {
+    using BaseJIT<T>::BaseJIT;
+    int getN() const { return 2; }
+
+    int this_size() const { return 2; }
+    template<class T1>
+    PCompJIT operator=( const PCompJIT<T1>& rhs) {
+      this->elem(0) = rhs.elem(0);
+      this->elem(1) = rhs.elem(1);
+      return *this;
+    }
+
+    PCompJIT operator=( const PCompJIT& rhs) {
+      this->elem(0) = rhs.elem(0);
+      this->elem(1) = rhs.elem(1);
+      return *this;
+    }
+  };
+
 
   template<class T> 
   struct ScalarType<PComp<T> >
@@ -84,18 +96,6 @@ namespace QDP
   struct JITType<PComp<T> >
   {
     typedef PCompJIT<typename JITType<T>::Type_t>  Type_t;
-  };
-
-  template<class T> 
-  struct JITType<PCompREG<T> >
-  {
-    typedef PCompJIT<typename JITType<T>::Type_t>  Type_t;
-  };
-
-  template<class T> 
-  struct REGType<PCompJIT<T> >
-  {
-    typedef PCompREG<typename REGType<T>::Type_t>  Type_t;
   };
 
   template<class T>
@@ -119,39 +119,62 @@ namespace QDP
   struct PTriDia
   {
     typedef T Sub_t;
-    enum { ThisSize = 2*Nc };
     T diag[2*Nc];
   };
 
-
-
-  template<class T> struct PTriDiaREG;
-
-  template<typename T>
-  struct PTriDiaJIT: public BaseJIT<T,2*Nc>
+  template<class T>
+  class WordSize< PTriDia<T> >
   {
-    template<class T1>
-    PTriDiaJIT& operator=( const PTriDiaREG<T1>& rhs) {
-      //std::cout << __PRETTY_FUNCTION__ << "\n";
-      for ( int i = 0 ; i < 2 * Nc ; i++ )
-	elem(i) = rhs.elem(i);
-      return *this;
+  public:
+    static int value( const QV& ret )
+    {
+      return 2 * Nc * WordSize<T>::value( ret );
     }
-
-    inline       T elem(int i)       { return this->arrayF(i); }
   };
 
   template<class T>
-  struct PTriDiaREG 
+  struct GetLimit<PTriDia<T>,0>
   {
-    T F[2*Nc];
-    void setup( PTriDiaJIT< typename JITType<T>::Type_t > rhs ) {
-      for (int i=0;i<2*Nc;++i)
-	F[i].setup( rhs.elem(i) );
+    static int limit(const QV& var)
+    {
+      return 2*Nc;
     }
-    inline       T& elem(int i)       { return F[i]; }
-    inline const T& elem(int i) const { return F[i]; }
   };
+
+
+  
+
+  template<typename T>
+  struct PTriDiaJIT: public BaseJIT<T>
+  {
+    using BaseJIT<T>::BaseJIT;
+
+    int getN() const { return 2 * Nc; }
+    int this_size() const { return 2 * Nc; }
+    
+    template<class T1>
+    PTriDiaJIT operator=( const PTriDiaJIT<T1>& rhs)
+    {
+      JitForLoop i( 0 , 2 * Nc );
+      {
+	this->elem( i.index() ) = rhs.elem( i.index() );
+      }
+      i.end();
+      return *this;
+    }
+
+    PTriDiaJIT operator=( const PTriDiaJIT& rhs)
+    {
+      JitForLoop i( 0 , 2 * Nc );
+      {
+	this->elem( i.index() ) = rhs.elem( i.index() );
+      }
+      i.end();
+      return *this;
+    }
+  };
+
+  
 
 
   template<class T> 
@@ -173,17 +196,6 @@ namespace QDP
     typedef PTriDiaJIT<typename JITType<T>::Type_t>  Type_t;
   };
 
-  template<class T> 
-  struct JITType<PTriDiaREG<T> >
-  {
-    typedef PTriDiaJIT<typename JITType<T>::Type_t>  Type_t;
-  };
-
-  template<class T> 
-  struct REGType<PTriDiaJIT<T> >
-  {
-    typedef PTriDiaREG<typename REGType<T>::Type_t>  Type_t;
-  };
 
   template<class T>
   struct WordType<PTriDia<T> > 
@@ -206,37 +218,59 @@ namespace QDP
   struct PTriOff
   {
     typedef T Sub_t;
-    enum { ThisSize = 2*Nc*Nc-Nc };
     T offd[2*Nc*Nc-Nc];
   };
 
-  template<class T> struct PTriOffREG;
 
-  template<typename T>
-  struct PTriOffJIT: public BaseJIT<T,2*Nc*Nc-Nc>
+  template<class T>
+  class WordSize< PTriOff<T> >
   {
-    template<class T1>
-    PTriOffJIT& operator=( const PTriOffREG<T1>& rhs) {
-      //std::cout << __PRETTY_FUNCTION__ << "\n";
-      for ( int i = 0 ; i < 2*Nc*Nc-Nc ; i++ )
-	elem(i) = rhs.elem(i);
-      return *this;
+  public:
+    static int value( const QV& ret )
+    {
+      return ( 2 * Nc * Nc - Nc ) * WordSize<T>::value( ret );
     }
-
-    inline       T elem(int i)       { return this->arrayF(i); }
   };
 
   template<class T>
-  struct PTriOffREG 
+  struct GetLimit<PTriOff<T>,0>
   {
-    T F[2*Nc*Nc-Nc];
-    void setup( PTriOffJIT< typename JITType<T>::Type_t > rhs ) {
-      for (int i=0;i<2*Nc*Nc-Nc;++i)
-	F[i].setup( rhs.elem(i) );
+    static int limit(const QV& var)
+    {
+      return 2*Nc*Nc-Nc;
     }
-    inline       T& elem(int i)       { return F[i]; }
-    inline const T& elem(int i) const { return F[i]; }
   };
+
+  
+  
+  template<typename T>
+  struct PTriOffJIT: public BaseJIT<T>
+  {
+    using BaseJIT<T>::BaseJIT;
+
+    int getN() const { return this_size(); }
+    int this_size() const { return 2 * Nc * Nc - Nc; }
+
+    template<class T1>
+    PTriOffJIT operator=( const PTriOffJIT<T1>& rhs) {
+      JitForLoop i( 0 , 2*Nc*Nc-Nc );
+      {
+	this->elem( i.index() ) = rhs.elem( i.index() );
+      }
+      i.end();
+      return *this;
+    }
+    
+    PTriOffJIT operator=( const PTriOffJIT& rhs) {
+      JitForLoop i( 0 , 2*Nc*Nc-Nc );
+      {
+	this->elem( i.index() ) = rhs.elem( i.index() );
+      }
+      i.end();
+      return *this;
+    }
+  };
+
 
 
   template<class T> 
@@ -258,17 +292,6 @@ namespace QDP
     typedef PTriOffJIT<typename JITType<T>::Type_t>  Type_t;
   };
 
-  template<class T> 
-  struct JITType<PTriOffREG<T> >
-  {
-    typedef PTriOffJIT<typename JITType<T>::Type_t>  Type_t;
-  };
-
-  template<class T> 
-  struct REGType<PTriOffJIT<T> >
-  {
-    typedef PTriOffREG<typename REGType<T>::Type_t>  Type_t;
-  };
 
   template<class T>
   struct WordType<PTriOff<T> > 
@@ -325,11 +348,6 @@ namespace QDP
 } // QDP
 
 
-#if defined (QDP_BACKEND_AVX)
-#define WORD WordVec
-#else
-#define WORD Word
-#endif
 
 
 namespace Chroma 
@@ -350,7 +368,7 @@ namespace Chroma
     // Typedefs to save typing
     typedef typename WordType<T>::Type_t REALT;
 
-    typedef OLattice< PScalar< PScalar< RScalar< WORD< REALT> > > > > LatticeREAL;
+    typedef OLattice< PScalar< PScalar< RScalar< Word< REALT> > > > > LatticeREAL;
     typedef OScalar<  PScalar< PScalar< RScalar< Word< REALT> > > > > RealT;
 
     //! Empty constructor. Must use create later
@@ -443,11 +461,11 @@ namespace Chroma
     multi1d<bool> choles_done;   // Keep note of whether the decomposition has been done
                                  // on a particular checkerboard. 
 
-    OLattice<PComp<PTriDia<RScalar <WORD<REALT> > > > >  tri_dia;
-    OLattice<PComp<PTriOff<RComplex<WORD<REALT> > > > >  tri_off;    
+    OLattice<PComp<PTriDia<RScalar <Word<REALT> > > > >  tri_dia;
+    OLattice<PComp<PTriOff<RComplex<Word<REALT> > > > >  tri_off;    
   };
 
-#undef WORD
+
 
   
 
@@ -682,7 +700,7 @@ namespace Chroma
 
     int th_count = Layout::sitesOnNode();
 
-    WorkgroupGuardExec workgroupGuardExec(th_count);
+    WorkgroupGuardExec workgroupGuardExec(th_count , MG::get(f0.get_layout_ref()).sitesOnNode());
 
     std::vector<QDPCache::ArgKey> ids;
     workgroupGuardExec.check(ids);
@@ -715,12 +733,12 @@ namespace Chroma
     WorkgroupGuard workgroupGuard;
     ParamRef p_site_table = llvm_add_param<int*>();
 
-    ParamLeafScalar param_leaf;
+    ParamLeaf param_leaf(workgroupGuard);
     
-    typedef typename LeafFunctor<RealT, ParamLeafScalar>::Type_t  RealTJIT;
+    typedef typename LeafFunctor<RealT, ParamLeaf>::Type_t  RealTJIT;
     RealTJIT diag_mass_jit(forEach(diag_mass, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<U, ParamLeafScalar>::Type_t  UJIT;
+    typedef typename LeafFunctor<U, ParamLeaf>::Type_t  UJIT;
     UJIT f0_jit(forEach(f0, param_leaf, TreeCombine()));
     UJIT f1_jit(forEach(f1, param_leaf, TreeCombine()));
     UJIT f2_jit(forEach(f2, param_leaf, TreeCombine()));
@@ -728,10 +746,10 @@ namespace Chroma
     UJIT f4_jit(forEach(f4, param_leaf, TreeCombine()));
     UJIT f5_jit(forEach(f5, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<X, ParamLeafScalar>::Type_t  XJIT;
+    typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<Y, ParamLeafScalar>::Type_t  YJIT;
+    typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
 
     llvm::Value* r_idx_thread = llvm_thread_idx();
@@ -749,28 +767,34 @@ namespace Chroma
     auto tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced , r_idx );
     auto tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , r_idx );
 
-    typename REGType< typename RealTJIT::Subtype_t >::Type_t diag_mass_reg;
-    //diag_mass_reg.setup( diag_mass_jit.elem() );
-    diag_mass_reg.setup_value( diag_mass_jit.elem() );
-
-
     for(int jj = 0; jj < 2; jj++) {
       for(int ii = 0; ii < 2*Nc; ii++) {
-	tri_dia_j.elem(jj).elem(ii) = diag_mass_reg.elem().elem();
+	tri_dia_j.elem(jj).elem(ii) = diag_mass_jit.elem().elem().elem();
 	//tri[site].diag[jj][ii] = diag_mass.elem().elem().elem();
       }
     }
 
 
-    RComplexREG<WordREG<REALT> > E_minus;
-    RComplexREG<WordREG<REALT> > B_minus;
-    RComplexREG<WordREG<REALT> > ctmp_0;
-    RComplexREG<WordREG<REALT> > ctmp_1;
-    RScalarREG<WordREG<REALT> > rtmp_0;
-    RScalarREG<WordREG<REALT> > rtmp_1;
+    // RComplexREG<WordREG<REALT> > E_minus;
+    // RComplexREG<WordREG<REALT> > B_minus;
+    // RComplexREG<WordREG<REALT> > ctmp_0;
+    // RComplexREG<WordREG<REALT> > ctmp_1;
+    // RScalarREG<WordREG<REALT> > rtmp_0;
+    // RScalarREG<WordREG<REALT> > rtmp_1;
 
-
-    for(int i = 0; i < Nc; ++i) {
+    typedef RComplexJIT<WordJIT<REALT> > C_t;
+    typedef RScalarJIT<WordJIT<REALT> >  R_t;
+    
+    C_t E_minus = StackAllocJit< C_t >::alloc();
+    C_t B_minus = StackAllocJit< C_t >::alloc();
+    C_t ctmp_0 = StackAllocJit< C_t >::alloc();
+    C_t ctmp_1 = StackAllocJit< C_t >::alloc();
+    R_t rtmp_0 = StackAllocJit< R_t >::alloc();
+    R_t rtmp_1 = StackAllocJit< R_t >::alloc();
+    
+    
+    JitForLoop i( 0 , Nc );
+    {
       ctmp_0 = f5_j.elem().elem(i,i);
       ctmp_0 -= f0_j.elem().elem(i,i);
       rtmp_0 = imag(ctmp_0);
@@ -785,6 +809,7 @@ namespace Chroma
 	  
       tri_dia_j.elem(1).elem(i+Nc) += rtmp_1;
     }
+    i.end();
 
     for(int i = 1; i < Nc; ++i) {
       for(int j = 0; j < i; ++j) {
@@ -945,7 +970,7 @@ namespace Chroma
 
     int th_count = s.numSiteTable();
 
-    WorkgroupGuardExec workgroupGuardExec(th_count);
+    WorkgroupGuardExec workgroupGuardExec(th_count,MG::get(tr_log_diag.get_layout_ref()).sitesOnNode());
 
     std::vector<QDPCache::ArgKey> ids;
     workgroupGuardExec.check(ids);
@@ -975,15 +1000,15 @@ namespace Chroma
     WorkgroupGuard workgroupGuard;
     ParamRef p_site_table = llvm_add_param<int*>();
 
-    ParamLeafScalar param_leaf;
+    ParamLeaf param_leaf(workgroupGuard);
 
-    typedef typename LeafFunctor<T, ParamLeafScalar>::Type_t  TJIT;
+    typedef typename LeafFunctor<T, ParamLeaf>::Type_t  TJIT;
     TJIT tr_log_diag_jit(forEach(tr_log_diag, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<X, ParamLeafScalar>::Type_t  XJIT;
+    typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<Y, ParamLeafScalar>::Type_t  YJIT;
+    typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
 
     llvm::Value* r_idx_thread = llvm_thread_idx();
@@ -996,32 +1021,45 @@ namespace Chroma
     auto tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
     auto tri_off_j     = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
-    typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
-    typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
+    //typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
+    //typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
 
-    tri_dia_r.setup( tri_dia_j );
-    tri_off_r.setup( tri_off_j );
+    // tri_dia_r.setup( tri_dia_j );
+    // tri_off_r.setup( tri_off_j );
 
+    //RScalarREG<WordREG<REALT> > zip;
+    typedef RScalarJIT <WordJIT<REALT> >  R_t;
+    typedef RComplexJIT<WordJIT<REALT> >  C_t;
 
-    RScalarREG<WordREG<REALT> > zip;
+    R_t zip = StackAllocJit< R_t >::alloc();
     zero_rep(zip);
     int N = 2*Nc;
       
     //int site_neg_logdet=0;
   
+    auto inv_d    = stack_alloc_array_jit<R_t>(6);
+    auto inv_offd = stack_alloc_array_jit<C_t>(15);
+    auto v        = stack_alloc_array_jit<C_t>(6);
+    auto diag_g   = stack_alloc_array_jit<R_t>(6);
+
+    C_t A_ii = StackAllocJit< C_t >::alloc();
+    //C_t sum  = StackAllocJit< C_t >::alloc();
+    R_t one  = StackAllocJit< R_t >::alloc();
+    one = 1.0;
+    
     for(int block=0; block < 2; block++) {
-	  
-      RScalarREG<WordREG<REALT> >   inv_d[6] ;
-      RComplexREG<WordREG<REALT> >  inv_offd[15] ;
-      RComplexREG<WordREG<REALT> >  v[6] ;
-      RScalarREG<WordREG<REALT> >   diag_g[6] ;
+
+      // RScalarREG<WordREG<REALT> >   inv_d[6] ;
+      // RComplexREG<WordREG<REALT> >  inv_offd[15] ;
+      // RComplexREG<WordREG<REALT> >  v[6] ;
+      // RScalarREG<WordREG<REALT> >   diag_g[6] ;
 
       for(int i=0; i < N; i++) {
-	inv_d[i] = tri_dia_r.elem(block).elem(i);
+	inv_d[i] = tri_dia_j.elem(block).elem(i);
       }
 
       for(int i=0; i < 15; i++) { 
-	inv_offd[i] = tri_off_r.elem(block).elem(i);
+	inv_offd[i] = tri_off_j.elem(block).elem(i);
       }
 
 
@@ -1030,7 +1068,8 @@ namespace Chroma
 	for(int i=0; i < j; i++) { 
 	  int elem_ji = j*(j-1)/2 + i;
 	      
-	  RComplexREG<WordREG<REALT> > A_ii = cmplx( inv_d[i], zip );
+	  //RComplexREG<WordREG<REALT> > A_ii = cmplx( inv_d[i], zip );
+	  A_ii = cmplx( inv_d[i], zip );
 	  v[i] = A_ii*adj(inv_offd[elem_ji]);
 	}
 	    
@@ -1056,7 +1095,7 @@ namespace Chroma
 
 
       // Now fix up the inverse
-      RScalarREG<WordREG<REALT> > one(1.0);
+      //RScalarREG<WordREG<REALT> > one(1.0);
       //one.elem() = (REALT)1;
 	  
       for(int i=0; i < N; i++) { 
@@ -1090,7 +1129,8 @@ namespace Chroma
       //
       // Likewise L^\dagger is strictly upper triagonal and so
       // L^\dagger M^{-1} = X can be solved by forward substitution.
-      RComplexREG<WordREG<REALT> > sum;
+      
+      //RComplexREG<WordREG<REALT> > sum;
       for(int k = 0; k < N; ++k) {
 
 	for(int i = 0; i < k; ++i) {
@@ -1258,7 +1298,7 @@ namespace Chroma
 
     int th_count = s.numSiteTable();
 
-    WorkgroupGuardExec workgroupGuardExec(th_count);
+    WorkgroupGuardExec workgroupGuardExec(th_count,MG::get(tri_dia.get_layout_ref()).sitesOnNode());
 
     JitParam jit_mat( QDP_get_global_cache().addJitParamInt( mat ) );
 
@@ -1293,15 +1333,15 @@ namespace Chroma
 
     ParamRef p_mat    = llvm_add_param<int>();
 
-    ParamLeafScalar param_leaf;
+    ParamLeaf param_leaf(workgroupGuard);
 
-    typedef typename LeafFunctor<U, ParamLeafScalar>::Type_t  UJIT;
+    typedef typename LeafFunctor<U, ParamLeaf>::Type_t  UJIT;
     UJIT B_jit(forEach(B, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<X, ParamLeafScalar>::Type_t  XJIT;
+    typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
 
-    typedef typename LeafFunctor<Y, ParamLeafScalar>::Type_t  YJIT;
+    typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
 
     llvm::Value* r_idx_thread = llvm_thread_idx();
@@ -1316,11 +1356,8 @@ namespace Chroma
     auto tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
     auto tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
-    typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
-    typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
-
-    tri_dia_r.setup( tri_dia_j );
-    tri_off_r.setup( tri_off_j );
+    typedef RScalarJIT <WordJIT<REALT> >  R_t;
+    typedef RComplexJIT<WordJIT<REALT> >  C_t;
 
     JitSwitch sw(r_mat);
     {
@@ -1331,18 +1368,22 @@ namespace Chroma
       /*# From diagonal part */
       sw.case_begin(0);
       {
-	RComplexREG<WordREG<REALT> > lctmp0;
-	RScalarREG< WordREG<REALT> > lr_zero0;
-	RScalarREG< WordREG<REALT> > lrtmp0;
-    
+	// RComplexREG<WordREG<REALT> > lctmp0;
+	// RScalarREG< WordREG<REALT> > lr_zero0;
+	// RScalarREG< WordREG<REALT> > lrtmp0;
+
+	C_t lctmp0   = StackAllocJit< C_t >::alloc();
+	R_t lr_zero0 = StackAllocJit< R_t >::alloc();
+	R_t lrtmp0   = StackAllocJit< R_t >::alloc();
+
 	zero_rep(lr_zero0);
 	    
 	for(int i0 = 0; i0 < Nc; ++i0)
 	  {
-	    lrtmp0 = tri_dia_r.elem(0).elem(i0);
-	    lrtmp0 += tri_dia_r.elem(0).elem(i0+Nc);
-	    lrtmp0 += tri_dia_r.elem(1).elem(i0);
-	    lrtmp0 += tri_dia_r.elem(1).elem(i0+Nc);
+	    lrtmp0 = tri_dia_j.elem(0).elem(i0);
+	    lrtmp0 += tri_dia_j.elem(0).elem(i0+Nc);
+	    lrtmp0 += tri_dia_j.elem(1).elem(i0);
+	    lrtmp0 += tri_dia_j.elem(1).elem(i0+Nc);
 	    B_j.elem().elem(i0,i0) = cmplx(lrtmp0,lr_zero0);
 	  }
 	    
@@ -1354,10 +1395,10 @@ namespace Chroma
 	      
 	  for(int j0 = 0; j0 < i0; ++j0) {
 		
-	    lctmp0 = tri_off_r.elem(0).elem(elem_ij0);
-	    lctmp0 += tri_off_r.elem(0).elem(elem_ijb0);
-	    lctmp0 += tri_off_r.elem(1).elem(elem_ij0);
-	    lctmp0 += tri_off_r.elem(1).elem(elem_ijb0);
+	    lctmp0 = tri_off_j.elem(0).elem(elem_ij0);
+	    lctmp0 += tri_off_j.elem(0).elem(elem_ijb0);
+	    lctmp0 += tri_off_j.elem(1).elem(elem_ij0);
+	    lctmp0 += tri_off_j.elem(1).elem(elem_ijb0);
 		
 	    B_j.elem().elem(j0,i0) = lctmp0;
 	    B_j.elem().elem(i0,j0) = adj(lctmp0);
@@ -1377,18 +1418,22 @@ namespace Chroma
       /*# From diagonal part */
       sw.case_begin( 3 );
       {
-	RComplexREG<WordREG<REALT> > lctmp3;
-	RScalarREG<WordREG<REALT> > lr_zero3;
-	RScalarREG<WordREG<REALT> > lrtmp3;
-	    
+	// RComplexREG<WordREG<REALT> > lctmp3;
+	// RScalarREG<WordREG<REALT> > lr_zero3;
+	// RScalarREG<WordREG<REALT> > lrtmp3;
+
+	C_t lctmp3   = StackAllocJit< C_t >::alloc();
+	R_t lr_zero3 = StackAllocJit< R_t >::alloc();
+	R_t lrtmp3   = StackAllocJit< R_t >::alloc();
+	
 	lr_zero3 = 0;
 	    
 	for(int i3 = 0; i3 < Nc; ++i3) {
 	      
-	  lrtmp3 = tri_dia_r.elem(0).elem(i3+Nc);
-	  lrtmp3 -= tri_dia_r.elem(0).elem(i3);
-	  lrtmp3 -= tri_dia_r.elem(1).elem(i3);
-	  lrtmp3 += tri_dia_r.elem(1).elem(i3+Nc);
+	  lrtmp3 = tri_dia_j.elem(0).elem(i3+Nc);
+	  lrtmp3 -= tri_dia_j.elem(0).elem(i3);
+	  lrtmp3 -= tri_dia_j.elem(1).elem(i3);
+	  lrtmp3 += tri_dia_j.elem(1).elem(i3+Nc);
 	  B_j.elem().elem(i3,i3) = cmplx(lr_zero3,lrtmp3);
 	}
 	    
@@ -1400,10 +1445,10 @@ namespace Chroma
 	      
 	  for(int j3 = 0; j3 < i3; ++j3) {
 		
-	    lctmp3 = tri_off_r.elem(0).elem(elem_ijb3);
-	    lctmp3 -= tri_off_r.elem(0).elem(elem_ij3);
-	    lctmp3 -= tri_off_r.elem(1).elem(elem_ij3);
-	    lctmp3 += tri_off_r.elem(1).elem(elem_ijb3);
+	    lctmp3 = tri_off_j.elem(0).elem(elem_ijb3);
+	    lctmp3 -= tri_off_j.elem(0).elem(elem_ij3);
+	    lctmp3 -= tri_off_j.elem(1).elem(elem_ij3);
+	    lctmp3 += tri_off_j.elem(1).elem(elem_ijb3);
 		
 	    B_j.elem().elem(j3,i3) = timesI(adj(lctmp3));
 	    B_j.elem().elem(i3,j3) = timesI(lctmp3);
@@ -1421,9 +1466,12 @@ namespace Chroma
       /*#               0  0  1  0 */
       sw.case_begin( 5 );
       {
-	RComplexREG<WordREG<REALT> > lctmp5;
-	RScalarREG<WordREG<REALT> > lrtmp5;
-	    
+	// RComplexREG<WordREG<REALT> > lctmp5;
+	// RScalarREG<WordREG<REALT> > lrtmp5;
+
+	C_t lctmp5 = StackAllocJit< C_t >::alloc();
+	R_t lrtmp5 = StackAllocJit< R_t >::alloc();
+	
 	for(int i5 = 0; i5 < Nc; ++i5) {
 	      
 	  int elem_ij5 = (i5+Nc)*(i5+Nc-1)/2;
@@ -1432,10 +1480,10 @@ namespace Chroma
 		
 	    int elem_ji5 = (j5+Nc)*(j5+Nc-1)/2 + i5;
 		
-	    lctmp5 = adj(tri_off_r.elem(0).elem(elem_ji5));
-	    lctmp5 -= tri_off_r.elem(0).elem(elem_ij5);
-	    lctmp5 += adj(tri_off_r.elem(1).elem(elem_ji5));
-	    lctmp5 -= tri_off_r.elem(1).elem(elem_ij5);
+	    lctmp5 = adj(tri_off_j.elem(0).elem(elem_ji5));
+	    lctmp5 -= tri_off_j.elem(0).elem(elem_ij5);
+	    lctmp5 += adj(tri_off_j.elem(1).elem(elem_ji5));
+	    lctmp5 -= tri_off_j.elem(1).elem(elem_ij5);
 		
 	    B_j.elem().elem(i5,j5) = lctmp5;
 		
@@ -1451,9 +1499,12 @@ namespace Chroma
       /*#               0  0 -i  0 */
       sw.case_begin( 6 );
       {
-	RComplexREG<WordREG<REALT> > lctmp6;
-	RScalarREG<WordREG<REALT> > lrtmp6;
-	    
+	// RComplexREG<WordREG<REALT> > lctmp6;
+	// RScalarREG<WordREG<REALT> > lrtmp6;
+
+	C_t lctmp6 = StackAllocJit< C_t >::alloc();
+	R_t lrtmp6 = StackAllocJit< R_t >::alloc();
+
 	for(int i6 = 0; i6 < Nc; ++i6) {
 	      
 	  int elem_ij6 = (i6+Nc)*(i6+Nc-1)/2;
@@ -1462,10 +1513,10 @@ namespace Chroma
 		
 	    int elem_ji6 = (j6+Nc)*(j6+Nc-1)/2 + i6;
 	
-	    lctmp6 = adj(tri_off_r.elem(0).elem(elem_ji6));
-	    lctmp6 += tri_off_r.elem(0).elem(elem_ij6);
-	    lctmp6 += adj(tri_off_r.elem(1).elem(elem_ji6));
-	    lctmp6 += tri_off_r.elem(1).elem(elem_ij6);
+	    lctmp6 = adj(tri_off_j.elem(0).elem(elem_ji6));
+	    lctmp6 += tri_off_j.elem(0).elem(elem_ij6);
+	    lctmp6 += adj(tri_off_j.elem(1).elem(elem_ji6));
+	    lctmp6 += tri_off_j.elem(1).elem(elem_ij6);
 		
 	    B_j.elem().elem(i6,j6) = timesMinusI(lctmp6);
 		
@@ -1481,9 +1532,12 @@ namespace Chroma
       /*#               0  0 -i  0 */
       sw.case_begin( 9 );
       {
-	RComplexREG<WordREG<REALT> > lctmp9;
-	RScalarREG<WordREG<REALT> > lrtmp9;
-	    
+	// RComplexREG<WordREG<REALT> > lctmp9;
+	// RScalarREG<WordREG<REALT> > lrtmp9;
+
+	C_t lctmp9 = StackAllocJit< C_t >::alloc();
+	R_t lrtmp9 = StackAllocJit< R_t >::alloc();
+
 	for(int i9 = 0; i9 < Nc; ++i9) {
 	      
 	  int elem_ij9 = (i9+Nc)*(i9+Nc-1)/2;
@@ -1492,10 +1546,10 @@ namespace Chroma
 		
 	    int elem_ji9 = (j9+Nc)*(j9+Nc-1)/2 + i9;
 	
-	    lctmp9 = adj(tri_off_r.elem(0).elem(elem_ji9));
-	    lctmp9 += tri_off_r.elem(0).elem(elem_ij9);
-	    lctmp9 -= adj(tri_off_r.elem(1).elem(elem_ji9));
-	    lctmp9 -= tri_off_r.elem(1).elem(elem_ij9);
+	    lctmp9 = adj(tri_off_j.elem(0).elem(elem_ji9));
+	    lctmp9 += tri_off_j.elem(0).elem(elem_ij9);
+	    lctmp9 -= adj(tri_off_j.elem(1).elem(elem_ji9));
+	    lctmp9 -= tri_off_j.elem(1).elem(elem_ij9);
 		
 	    B_j.elem().elem(i9,j9) = timesI(lctmp9);
 		
@@ -1512,9 +1566,12 @@ namespace Chroma
       /*#               0  0 -1  0 */
       sw.case_begin( 10 );
       {
-	RComplexREG<WordREG<REALT> > lctmp10;
-	RScalarREG<WordREG<REALT> > lrtmp10;
-	    
+	// RComplexREG<WordREG<REALT> > lctmp10;
+	// RScalarREG<WordREG<REALT> > lrtmp10;
+
+	C_t lctmp10 = StackAllocJit< C_t >::alloc();
+	R_t lrtmp10 = StackAllocJit< R_t >::alloc();
+
 	for(int i10 = 0; i10 < Nc; ++i10) {
 	      
 	  int elem_ij10 = (i10+Nc)*(i10+Nc-1)/2;
@@ -1523,10 +1580,10 @@ namespace Chroma
 		
 	    int elem_ji10 = (j10+Nc)*(j10+Nc-1)/2 + i10;
 	
-	    lctmp10 = adj(tri_off_r.elem(0).elem(elem_ji10));
-	    lctmp10 -= tri_off_r.elem(0).elem(elem_ij10);
-	    lctmp10 -= adj(tri_off_r.elem(1).elem(elem_ji10));
-	    lctmp10 += tri_off_r.elem(1).elem(elem_ij10);
+	    lctmp10 = adj(tri_off_j.elem(0).elem(elem_ji10));
+	    lctmp10 -= tri_off_j.elem(0).elem(elem_ij10);
+	    lctmp10 -= adj(tri_off_j.elem(1).elem(elem_ji10));
+	    lctmp10 += tri_off_j.elem(1).elem(elem_ij10);
 		
 	    B_j.elem().elem(i10,j10) = lctmp10;
 		
@@ -1544,18 +1601,22 @@ namespace Chroma
       /*# From diagonal part */
       sw.case_begin( 12 );
       {
-	RComplexREG<WordREG<REALT> > lctmp12;
-	RScalarREG<WordREG<REALT> > lr_zero12;
-	RScalarREG<WordREG<REALT> > lrtmp12;
-	    
+	// RComplexREG<WordREG<REALT> > lctmp12;
+	// RScalarREG<WordREG<REALT> > lr_zero12;
+	// RScalarREG<WordREG<REALT> > lrtmp12;
+
+	C_t lctmp12   = StackAllocJit< C_t >::alloc();
+	R_t lr_zero12 = StackAllocJit< R_t >::alloc();
+	R_t lrtmp12   = StackAllocJit< R_t >::alloc();
+
 	lr_zero12 = 0;
 	    
 	for(int i12 = 0; i12 < Nc; ++i12) {
       
-	  lrtmp12 = tri_dia_r.elem(0).elem(i12);
-	  lrtmp12 -= tri_dia_r.elem(0).elem(i12+Nc);
-	  lrtmp12 -= tri_dia_r.elem(1).elem(i12);
-	  lrtmp12 += tri_dia_r.elem(1).elem(i12+Nc);
+	  lrtmp12 = tri_dia_j.elem(0).elem(i12);
+	  lrtmp12 -= tri_dia_j.elem(0).elem(i12+Nc);
+	  lrtmp12 -= tri_dia_j.elem(1).elem(i12);
+	  lrtmp12 += tri_dia_j.elem(1).elem(i12+Nc);
 	  B_j.elem().elem(i12,i12) = cmplx(lr_zero12,lrtmp12);
 	}
 	    
@@ -1567,10 +1628,10 @@ namespace Chroma
 	      
 	  for(int j12 = 0; j12 < i12; ++j12) {
 	
-	    lctmp12 = tri_off_r.elem(0).elem(elem_ij12);
-	    lctmp12 -= tri_off_r.elem(0).elem(elem_ijb12);
-	    lctmp12 -= tri_off_r.elem(1).elem(elem_ij12);
-	    lctmp12 += tri_off_r.elem(1).elem(elem_ijb12);
+	    lctmp12 = tri_off_j.elem(0).elem(elem_ij12);
+	    lctmp12 -= tri_off_j.elem(0).elem(elem_ijb12);
+	    lctmp12 -= tri_off_j.elem(1).elem(elem_ij12);
+	    lctmp12 += tri_off_j.elem(1).elem(elem_ijb12);
 		
 	    B_j.elem().elem(i12,j12) = timesI(lctmp12);
 	    B_j.elem().elem(j12,i12) = timesI(adj(lctmp12));
@@ -1669,7 +1730,7 @@ namespace Chroma
     forEach(tri_off, addr_leaf, NullCombine());
 
     int th_count = s.numSiteTable();
-    WorkgroupGuardExec workgroupGuardExec(th_count);
+    WorkgroupGuardExec workgroupGuardExec(th_count , MG::get(chi.get_layout_ref()).sitesOnNode() );
 
     std::vector<QDPCache::ArgKey> ids;
     workgroupGuardExec.check(ids);
@@ -1695,21 +1756,21 @@ namespace Chroma
     WorkgroupGuard workgroupGuard;
     ParamRef p_site_table = llvm_add_param<int*>();
 
-    ParamLeafScalar param_leaf;
+    ParamLeaf param_leaf(workgroupGuard);
 
-    typedef typename LeafFunctor<T, ParamLeafScalar>::Type_t  TJIT;
+    typedef typename LeafFunctor<T, ParamLeaf>::Type_t  TJIT;
     TJIT chi_jit(forEach(chi, param_leaf, TreeCombine()));
     TJIT psi_jit(forEach(psi, param_leaf, TreeCombine()));
-    typename REGType< typename ScalarType<typename TJIT::Subtype_t>::Type_t >::Type_t psi_r;
-    typename REGType< typename ScalarType<typename TJIT::Subtype_t>::Type_t >::Type_t chi_r;
+    // typename REGType< typename ScalarType<typename TJIT::Subtype_t>::Type_t >::Type_t psi_r;
+    // typename REGType< typename ScalarType<typename TJIT::Subtype_t>::Type_t >::Type_t chi_r;
 
-    typedef typename LeafFunctor<X, ParamLeafScalar>::Type_t  XJIT;
+    typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
-    typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
+    // typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
 
-    typedef typename LeafFunctor<Y, ParamLeafScalar>::Type_t  YJIT;
+    typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
-    typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
+    // typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
 
     llvm::Value* r_idx_thread = llvm_thread_idx();
 
@@ -1718,21 +1779,20 @@ namespace Chroma
     llvm::Value* r_idx = llvm_array_type_indirection<int>( p_site_table , r_idx_thread );
 
     auto chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    psi_r.setup( psi_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
-    tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
-    tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
+    auto psi_j = psi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
-    // RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
-    // const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));
+    auto chi_s = stack_alloc_jit< decltype(chi_j) >( chi_jit.get_var() );
 
     int n = 2*Nc;
 
     for(int i = 0; i < n; ++i)
       {
-	chi_r.elem((0*n+i)/3).elem((0*n+i)%3) = tri_dia_r.elem(0).elem(i) * psi_r.elem((0*n+i)/3).elem((0*n+i)%3);
+	chi_s.elem((0*n+i)/3).elem((0*n+i)%3) = tri_dia_j.elem(0).elem(i) * psi_j.elem((0*n+i)/3).elem((0*n+i)%3);
 	// cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
 
-	chi_r.elem((1*n+i)/3).elem((1*n+i)%3) = tri_dia_r.elem(1).elem(i) * psi_r.elem((1*n+i)/3).elem((1*n+i)%3);
+	chi_s.elem((1*n+i)/3).elem((1*n+i)%3) = tri_dia_j.elem(1).elem(i) * psi_j.elem((1*n+i)/3).elem((1*n+i)%3);
 	// cchi[1*n+i] = tri[site].diag[1][i] * ppsi[1*n+i];
       }
 
@@ -1741,23 +1801,23 @@ namespace Chroma
       {
 	for(int j = 0; j < i; j++)
 	  {
-	    chi_r.elem((0*n+i)/3).elem((0*n+i)%3) += tri_off_r.elem(0).elem(kij) * psi_r.elem((0*n+j)/3).elem((0*n+j)%3);
+	    chi_s.elem((0*n+i)/3).elem((0*n+i)%3) += tri_off_j.elem(0).elem(kij) * psi_j.elem((0*n+j)/3).elem((0*n+j)%3);
 	    // cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
 
-	    chi_r.elem((0*n+j)/3).elem((0*n+j)%3) += conj(tri_off_r.elem(0).elem(kij)) * psi_r.elem((0*n+i)/3).elem((0*n+i)%3);
+	    chi_s.elem((0*n+j)/3).elem((0*n+j)%3) += conj(tri_off_j.elem(0).elem(kij)) * psi_j.elem((0*n+i)/3).elem((0*n+i)%3);
 	    // cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
 
-	    chi_r.elem((1*n+i)/3).elem((1*n+i)%3) += tri_off_r.elem(1).elem(kij) * psi_r.elem((1*n+j)/3).elem((1*n+j)%3);
+	    chi_s.elem((1*n+i)/3).elem((1*n+i)%3) += tri_off_j.elem(1).elem(kij) * psi_j.elem((1*n+j)/3).elem((1*n+j)%3);
 	    // cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
 
-	    chi_r.elem((1*n+j)/3).elem((1*n+j)%3) += conj(tri_off_r.elem(1).elem(kij)) * psi_r.elem((1*n+i)/3).elem((1*n+i)%3);
+	    chi_s.elem((1*n+j)/3).elem((1*n+j)%3) += conj(tri_off_j.elem(1).elem(kij)) * psi_j.elem((1*n+i)/3).elem((1*n+i)%3);
 	    // cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
 
 	    kij++;
 	  }
       }
 
-    chi_j = chi_r;
+    chi_j = chi_s;
 
     jit_get_function(function);
   }
@@ -1910,6 +1970,6 @@ namespace Chroma
 
 
 
-
 #endif
+
 #endif

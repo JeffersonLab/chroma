@@ -206,7 +206,7 @@ namespace Chroma
 
 	  random(rnd);
 	  
-	  Real twopiN = Chroma::twopi / params.N;
+	  Real twopiN = Chroma::constant().twopi / params.N;
 	  theta = twopiN * floor(params.N*rnd);
 	  z = cmplx(cos(theta),sin(theta));
 	  

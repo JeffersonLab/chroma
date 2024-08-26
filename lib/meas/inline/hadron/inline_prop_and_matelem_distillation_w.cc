@@ -36,6 +36,8 @@
 
 #include "chroma_config.h"
 
+#if ! defined (QDP_IS_QDPJIT2)
+
 #ifndef QDP_IS_QDPJIT_NO_NVPTX
 
 #ifdef BUILD_JIT_CONTRACTION_KERNELS
@@ -967,4 +969,5 @@ namespace Chroma
 
 } // namespace Chroma
 
+#endif
 #endif

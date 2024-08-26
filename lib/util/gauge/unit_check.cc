@@ -17,6 +17,8 @@ namespace Chroma
    *
    * \param  u  The LatticeColorMatrix to be tested
    */
+  
+#if ! defined (QDP_IS_QDPJIT2)
   void unitarityCheck(const multi1d<LatticeColorMatrixF3>& u)
   {
     START_CODE();
@@ -47,5 +49,22 @@ namespace Chroma
     END_CODE();
   }
 
+#else
+
+  void unitarityCheck(const multi1d<LatticeColorMatrix>& u)
+  {
+    START_CODE();
+
+    int numbad;
+
+    for (int mu=0; mu < Nd; ++mu)
+    {
+      LatticeColorMatrix u_tmp = u[mu];
+      reunit(u_tmp, numbad, REUNITARIZE_ERROR);
+    }
+    
+    END_CODE();
+  }
+#endif
 }
 

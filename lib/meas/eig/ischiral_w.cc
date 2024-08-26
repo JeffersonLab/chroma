@@ -29,7 +29,7 @@ Chirality isChiralVector(const LatticeFermion& chi)
   // To get a boolean out of < operator I have to apply
   // toBool. Is this because otherwise it is some kind of selector
   // for a mask?
-  if ( toBool(tmp1 > fabs(chirality)*fuzz) ) {
+  if ( toBool(tmp1 > fabs(chirality)*Chroma::constant().fuzz) ) {
     ret_val = CH_NONE;
   }
   else { 

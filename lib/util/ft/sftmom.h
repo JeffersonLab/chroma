@@ -53,6 +53,8 @@ namespace Chroma
     SftMom(const SftMomParams_t& p)
       { init(p.mom2_max, p.origin_offset, p.mom_offset, p.avg_equiv_mom, p.decay_dir); }
 
+    void reset(const multi2d<int> & moms , int j_decay=-1);
+    
     //! The set to be used in sumMulti
     const Set& getSet() const { return sft_set; }
 

@@ -96,11 +96,11 @@ namespace Chroma
 	if(params.smear_dirs[d]){
 	  if(params.k[d]!=0){
 	    QDPIO::cout<<" Adding phase to direction: "<<d<<std::endl ;
-	    Real f = twopi / Real(Layout::lattSize()[d])*
+	    Real f = Chroma::constant().twopi / Real(Layout::lattSize()[d])*
 	      params.zeta*Real(params.k[d]) ;
 	    Complex c = cmplx(cos(f),sin(f)) ;
 	    QDPIO::cout<<"    exp(i*phase)= "<<c<<std::endl ;
-	    QDPIO::cout<<"    2*pi= "<<twopi<<std::endl ;
+	    QDPIO::cout<<"    2*pi= "<<Chroma::constant().twopi<<std::endl ;
 	    u[d]*=c ;
 	  }
 	}

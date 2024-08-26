@@ -47,7 +47,11 @@ namespace Chroma {
 }
 #elif defined(BUILD_JIT_CLOVER_TERM)
 
+#if ! defined (QDP_IS_QDPJIT2)
 #include "clover_term_jit_w.h"
+#else
+#include "clover_term_jit2_w.h"
+#endif
 namespace Chroma {
   using CloverTerm  = JITCloverTerm;
   using CloverTermF = JITCloverTermF;
