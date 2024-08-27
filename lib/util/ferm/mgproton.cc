@@ -1424,15 +1424,21 @@ namespace Chroma
 	Full	   // four spin output (homoiconic coarse operator)
       };
 
-      /// Returns the prolongator constructed from
+      enum class NullVectorsNormalization {
+	None,	 // don't normalize them
+	Full,	 // normalize the whole vectors
+	Blocking // normalize each block
+      };
+
+      /// Returns the prolongator constructed from the given operator
       /// \param solvers: map of solvers
       /// \param op: operator to make the inverse of
       /// \param ops: options to select the solver from `solvers` and influence the solver construction
 
       template <std::size_t NOp, typename COMPLEX>
       Operator<NOp, COMPLEX> getMGProlongator(const Operator<NOp, COMPLEX>& op,
-					      unsigned int num_null_vecs,
-					      unsigned int extra_num_null_vecs,
+					      unsigned int num_null_vecs, unsigned int num_colors,
+					      NullVectorsNormalization null_vectors_normalization,
 					      const std::map<char, unsigned int>& mg_blocking,
 					      const std::map<char, unsigned int>& layout_blocking,
 					      SpinSplitting spin_splitting,
@@ -1468,8 +1474,7 @@ namespace Chroma
 	if (!eigensolver_ops)
 	{
 	  // Create the random initial guesses to be used in solving Ax=0
-	  auto b = op.template make_compatible_img<NOp + 1>(
-	    "n", {{'n', num_null_vecs + extra_num_null_vecs}});
+	  auto b = op.template make_compatible_img<NOp + 1>("n", {{'n', num_null_vecs}});
 	  if (solverSpace == FullSpace)
 	  {
 	    nrand(b);
@@ -1490,7 +1495,7 @@ namespace Chroma
 	  // Compute the eigenpairs of inv(op) * g5, the right singular vectors of op
 	  auto eigensolver = SB::getInexactEigensolverGD(null_solver, eigensolver_ops.getSome());
 	  double tol = getOption<double>(null_vecs_ops, "tol", 0.1);
-	  auto values_vectors = eigensolver(num_null_vecs + extra_num_null_vecs, tol);
+	  auto values_vectors = eigensolver(num_null_vecs, tol);
 	  nv = std::get<1>(values_vectors);
 	}
 
@@ -1507,18 +1512,16 @@ namespace Chroma
 	  auto nv2 = nv;
 	  if (spin_splitting == SpinSplitting::Chirality)
 	  {
-	    nv2 = nv.like_this(none, {{'n', (num_null_vecs + extra_num_null_vecs) * 2}});
+	    nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
 	    auto g5 = getGamma5<COMPLEX>(ns, OnHost, nv.dist), g5pos = g5.cloneOn(OnHost),
 		 g5neg = g5.cloneOn(OnHost);
 	    for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
 	      g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
 	    for (int i = 0; i < ns; ++i) // make diagonal entries of gneg all negative or zero
 	      g5neg.set({{i, i}}, g5.get({{i, i}}) - COMPLEX{1});
-	    nv2.kvslice_from_size({}, {{'n', num_null_vecs + extra_num_null_vecs}})
+	    nv2.kvslice_from_size({}, {{'n', num_null_vecs}})
 	      .contract(g5pos, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
-	    nv2
-	      .kvslice_from_size({{'n', num_null_vecs + extra_num_null_vecs}},
-				 {{'n', num_null_vecs + extra_num_null_vecs}})
+	    nv2.kvslice_from_size({{'n', num_null_vecs}}, {{'n', num_null_vecs}})
 	      .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
 	  }
 	  nv.release();
@@ -1550,7 +1553,7 @@ namespace Chroma
 	     {'1', layout_blocking.at('y')},
 	     {'2', layout_blocking.at('z')},
 	     {'3', layout_blocking.at('t')},
-	     {'c', num_null_vecs + extra_num_null_vecs}},
+	     {'c', num_null_vecs}},
 	    true);
 	  nv2.release();
 
@@ -1559,12 +1562,22 @@ namespace Chroma
 	    throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
 
 	  // Cut down the extra null vectors
-	  if (extra_num_null_vecs > 0)
+	  if (nv_blk.kvdim().at('c') > num_colors)
 	  {
-	    // Compute the left singular vectors and take the most common `num_null_vecs` directions
+	    if (null_vectors_normalization == NullVectorsNormalization::Full)
+	    {
+	      nv_blk =
+		vecnorm<NOp + 1 + 5 - 1>(nv_blk, detail::union_dimensions(nv_blk.order, "", "c"));
+	    }
+	    else if (null_vectors_normalization == NullVectorsNormalization::Blocking)
+	    {
+	      nv_blk = vecnorm<6>(nv_blk, "WYZTSC");
+	    }
+
+	    // Compute the left singular vectors and take the most common `num_colors` directions
 	    nv_blk = std::get<0>(svd<NOp + 1 + 5, NOp, NOp + 1>(nv_blk, "WYZTSC", "c", '^'))
 		       .rename_dims({{'^', 'c'}})
-		       .kvslice_from_size({}, {{'c', num_null_vecs}})
+		       .kvslice_from_size({}, {{'c', num_colors}})
 		       .clone();
 	  }
 
@@ -1640,7 +1653,7 @@ namespace Chroma
 	     {'1', layout_blocking.at('y')},
 	     {'2', layout_blocking.at('z')},
 	     {'3', layout_blocking.at('t')},
-	     {'c', (num_null_vecs + extra_num_null_vecs) * ns}},
+	     {'c', num_null_vecs * ns}},
 	    true);
 	  nv.release();
 
@@ -1649,12 +1662,22 @@ namespace Chroma
 	    throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
 
 	  // Cut down the extra null vectors
-	  if (extra_num_null_vecs > 0)
+	  if (nv_blk.kvdim().at('c') > num_colors)
 	  {
-	    // Compute the left singular vectors and take the most common `num_null_vecs` directions
-	    nv_blk = std::get<0>(svd<NOp + 4, NOp - 2, NOp - 1>(nv_blk, "WYZTSC", "c", '^'))
+	    if (null_vectors_normalization == NullVectorsNormalization::Full)
+	    {
+	      nv_blk =
+		vecnorm<NOp + 4 - 1>(nv_blk, detail::union_dimensions(nv_blk.order, "", "c"));
+	    }
+	    else if (null_vectors_normalization == NullVectorsNormalization::Blocking)
+	    {
+	      nv_blk = vecnorm<5>(nv_blk, "WYZTC");
+	    }
+
+	    // Compute the left singular vectors and take the most common `num_colors` directions
+	    nv_blk = std::get<0>(svd<NOp + 4, NOp - 1, NOp>(nv_blk, "WYZTC", "c", '^'))
 		       .rename_dims({{'^', 'c'}})
-		       .kvslice_from_size({}, {{'c', num_null_vecs * ns}})
+		       .kvslice_from_size({}, {{'c', num_colors}})
 		       .clone();
 	  }
 
@@ -1776,7 +1799,7 @@ namespace Chroma
       {
 	// Get prolongator, V
 	unsigned int num_null_vecs = getOption<unsigned int>(ops, "num_null_vecs");
-	unsigned int extra_num_null_vecs = getOption<unsigned int>(ops, "extra_num_null_vecs", 0);
+	unsigned int num_colors = getOption<unsigned int>(ops, "num_colors", num_null_vecs);
 	std::vector<unsigned int> mg_blocking_v =
 	  getOption<std::vector<unsigned int>>(ops, "blocking");
 	if (mg_blocking_v.size() != Nd)
@@ -1802,14 +1825,22 @@ namespace Chroma
 	SpinSplitting spin_splitting = getOption<SpinSplitting>(
 	  ops, "spin_splitting", m_spin_splitting, SpinSplitting::Chirality);
 
+	static const std::map<std::string, NullVectorsNormalization> m_null_vecs_normalization{
+	  {"none", NullVectorsNormalization::None},
+	  {"full", NullVectorsNormalization::Full},
+	  {"blocking", NullVectorsNormalization::Blocking}};
+	NullVectorsNormalization null_vecs_normalization = getOption<NullVectorsNormalization>(
+	  ops, "null_vecs_norm", m_null_vecs_normalization, NullVectorsNormalization::None);
+
 	// Grab the prolongator from cache if the user name it
 	Operator<NOp, COMPLEX> V;
 	std::string prolongator_id = getOption<std::string>(ops, "prolongator_id", "");
 	if (prolongator_id.size() == 0 ||
 	    getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0)
 	{
-	  V = getMGProlongator(op, num_null_vecs, extra_num_null_vecs, mg_blocking, layout_blocking,
-			       spin_splitting, getOptions(ops, "null_vecs"), solverSpace);
+	  V = getMGProlongator(op, num_null_vecs, num_colors, null_vecs_normalization, mg_blocking,
+			       layout_blocking, spin_splitting, getOptions(ops, "null_vecs"),
+			       solverSpace);
 	  if (prolongator_id.size() > 0)
 	    getProlongatorCache<NOp, COMPLEX>()[prolongator_id] = V;
 	}

@@ -4917,6 +4917,36 @@ namespace Chroma
       return r0;
     }
 
+    /// Normalize vectors
+    /// \param v: tensor
+    /// \param order_rows: rows labels
+    ///
+    /// Example:
+    ///
+    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("Ss", {{Ns,Ns}});
+    ///   Tensor<2,Complex> r0 = contract<2>(t, q, "s"); // r0 dims are "cS"
+    ///   Tensor<3,Complex> r1 = contract<3>(t, q, ""); // r1 dims are "csS"
+    ///   Tensor<2,Complex> r2("cS", {{Nc,Ns}});
+    ///   contract<2>(t, q, "s", CopyTo, r2); // r2 = q * s
+    ///   Tensor<2,Complex> r3("cs", {{Nc,Ns}});
+    ///   contract<2>(t, q, "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s
+    ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
+
+    template <std::size_t Nr, std::size_t N, typename T>
+    Tensor<N, T> vecnorm(const Tensor<N, T>& v, std::string order_rows)
+    {
+      if (N == 0)
+	return v;
+      char new_label0 = detail::get_free_label(v.order);
+      char new_label1 = detail::get_free_label(v.order + std::string{new_label0});
+      auto ve0 = v.split_dimension(v.order[0], std::string{new_label0, v.order[0]}, 1);
+      auto ve01 = ve0.split_dimension(v.order[0], std::string{new_label1, v.order[0]}, 1);
+      auto r = contract<N - Nr + 2>(v.conj(), ve01, order_rows);
+      return cholInv<N + 1>(r, std::string{new_label0}, std::string{new_label1}, ve0,
+			    std::string{new_label0})
+	.template collapse_dimensions<N>(std::string{new_label1, v.order[0]}, v.order[0]);
+    }
+
     /// Solve the linear systems within tensor `v' and right-hand-sides `w`
     /// \param v: tensor to compute the Cholesky factor
     /// \param order_rows: labels that are rows of the matrices to factor
