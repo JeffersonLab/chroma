@@ -8,7 +8,7 @@
 
 #include "chroma_config.h"
 #include "linearop.h"
-
+#include "actions/ferm/linop/clover_term_base_w.h"
 
 namespace Chroma 
 { 
@@ -19,9 +19,7 @@ namespace Chroma
    */
 
   template<typename T, typename U>
-	   class ExpCloverTermBase : public DslashLinearOperator<T,
-							      multi1d<U>,
-							      multi1d<U> >
+	   class ExpCloverTermBase : public CloverTermBase< T, U>
   {
   public:
     //! No real need for cleanup here
