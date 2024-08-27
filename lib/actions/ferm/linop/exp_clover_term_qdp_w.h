@@ -309,6 +309,10 @@ namespace Chroma
 #endif
 
 #if 1
+      //Set the highest power of A^n for the exp sum. This allows for N_exp_default < 5 to compare with clover 
+      int pow_max=5;
+      if (N_exp_default <5)
+         pow_max=N_exp_default;
 
       // Accumulate exponential from only A
       RComplex<REALT> tmp[12];
@@ -320,7 +324,7 @@ namespace Chroma
       }
 
       // Main loop:  chi = psi + q[i]/q[i-1] A chi
-      for (int pow = 5; pow > 0; --pow)
+      for (int pow = pow_max; pow > 0; --pow)
       {
 	siteApplicationBlock<REALT, 0>(tmp, tri_in.A, cchi);
 	for (int cspin = 0; cspin < 6; cspin++)
@@ -398,6 +402,23 @@ namespace Chroma
       }
 #endif
     }
+
+   //Apply coefficient to site
+    template <typename REALT>
+    inline void siteApplicationCoeff(RComplex<REALT>* __restrict__ cchi, const ExpClovTriang<REALT>& tri_in,
+                               int pow_i,int pow_j,
+				               const RComplex<REALT>* const __restrict__ ppsi)
+    {
+    
+      // Top block
+      for (int cspin = 0; cspin < 6; cspin++)
+          cchi[cspin] =  tri_in.C[0][pow_i][pow_j] * ppsi[cspin];  
+       
+      // Second Block
+      for (int cspin = 6; cspin < 12; cspin++)
+          cchi[cspin] = tri_in.C[1][pow_i][pow_j]* ppsi[cspin];
+    }
+
 
     template <typename REALT>
     inline void siteApplicationPower(RComplex<REALT>* __restrict__ cchi,
@@ -501,16 +522,72 @@ namespace Chroma
      * \param cb      Checkerboard of OUTPUT std::vector               (Read)
      */
 
+   //! Take deriv of D^power
+    /*!
+     * \param chi     left std::vector on cb                           (Read)
+     * \param psi     right std::vector on 1-cb                        (Read)
+     * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+     * \param cb      Checkerboard of chi std::vector                  (Read)
+     *
+     * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
+     */
+    //! Take deriv of D
+    /*!
+     * \param chi     left std::vector                                 (Read)
+     * \param psi     right std::vector                                (Read)
+     * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+     *
+     * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
+     */
+    void deriv(multi1d<U>& ds_u,
+           const T& chi, const T& psi,
+           enum PlusMinus isign) const;//{ExpCloverTermBase<T, U>::deriv(ds_u,chi,psi,isign);}
+
+    void deriv(multi1d<U>& ds_u,
+           const T& chi, const T& psi,
+           enum PlusMinus isign, int cb) const;
+
+    //! Take deriv of D
+    /*!
+     * \param chi     left vectors                           (Read)
+     * \param psi     right vectors                         (Read)
+     * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+     * \param cb      Checkerboard of chi std::vector                  (Read)
+     *
+     * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
+     */
+    void derivMultipole(multi1d<U>& ds_u,
+            const multi1d<T>& chi, const multi1d<T>& psi,
+            enum PlusMinus isign) const;
+
+    //! Take deriv of D
+    /*!
+     * \param chi     left vectors on cb                           (Read)
+     * \param psi     right vectors on cb                        (Read)
+     * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+     * \param cb      Checkerboard of chi std::vector                  (Read)
+     *
+     * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
+     */
+
+    void derivMultipole(multi1d<U>& ds_u,
+            const multi1d<T>& chi, const multi1d<T>& psi,
+            enum PlusMinus isign, int cb) const;
+
+
     void fillRefDiag(Real diag);
 
     // Reference exponential using old fashioned taylor expansion
     void applyRef(T& chi, const T& psi, enum PlusMinus isign, int N = N_exp) const;
 
-    // Appl;y a power of a matrix from A^0 to A^5
+    // Apply a power of a matrix from A^0 to A^5
     void applyPowerSite(T& chi, const T& psi, enum PlusMinus isign, int site, int power = 1) const;
 
-    // Appl;y a power of a matrix from A^0 to A^5
+    // Apply a power of a matrix from A^0 to A^5
     void applyPower(T& chi, const T& psi, enum PlusMinus isign, int cb, int power = 1) const;
+
+    // Apply coefficients to powers of a matrix A
+    void applyCoeff(T& chi, const T& psi, enum PlusMinus isign,int cb, int pow_i, int pow_j) const;
 
     // Apply exponential operator
     void apply(T& chi, const T& psi, enum PlusMinus isign, int cb) const override;
@@ -1021,6 +1098,169 @@ namespace Chroma
 #endif
   }
 
+  //! Take deriv of D
+  /*! 
+   * \param chi     left std::vector                                 (Read)
+   * \param psi     right std::vector                                (Read)
+   * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+   *  
+   * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
+   */ 
+  template<typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::deriv(multi1d<U>& ds_u,
+                 const T& chi, const T& psi,
+                 enum PlusMinus isign) const
+  {   
+    START_CODE();
+      
+    // base deriv resizes.
+    // Even even checkerboard
+    deriv(ds_u, chi, psi, isign,0);
+
+    // Odd Odd checkerboard
+    multi1d<U> ds_tmp;
+    deriv(ds_tmp, chi, psi, isign,1);
+
+    ds_u += ds_tmp;
+
+    END_CODE();
+  }
+
+  //! Take deriv of D
+  /*!
+   * \param chi     left std::vector on cb                           (Read)
+   * \param psi     right std::vector on 1-cb                        (Read)
+   * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.             (Read)
+   * \param cb      Checkerboard of chi std::vector                  (Read)
+   *
+   * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
+   */
+
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::deriv(multi1d<U>& ds_u,
+                 const T& chi, const T& psi,
+                 enum PlusMinus isign, int cb) const
+  {
+    START_CODE();
+
+    // Do I still need to do this?
+    if( ds_u.size() != Nd ) {
+      ds_u.resize(Nd);
+    }
+
+    ds_u = zero;
+    multi1d<U> ds_u_tmp;
+    ds_u_tmp.resize(Nd);
+
+    // Get the links
+    //const multi1d<U>& u = getU();
+
+    T ppsi= zero;
+    T cchi= zero;
+    T f_chi= zero;
+    f_chi=chi;
+
+    // The exp derivative is computed as
+    // A'+AA'/2+A'A/2+A'AA/6+AA'A/6+AAA'/6 = Sum A^i A' A^j
+    // applyCoeff multiplies the chi by the exponential term factor 
+    // and the factors from using the Caley Hamilton for A^n, for n>5
+
+    for(int i=0;i<=5;i++){
+        for(int j=0;j<=5;j++){
+            (*this).applyCoeff(f_chi, chi, isign,cb,i,j);
+            (*this).applyPower(ppsi, psi, PLUS, cb, j);
+            (*this).applyPower(cchi, f_chi, PLUS, cb,i);
+
+            CloverTermBase<T,U>::deriv(ds_u_tmp,cchi,ppsi,isign,cb);
+
+            for(int i=0;i<ds_u_tmp.size();i++)
+                ds_u[i]+=ds_u_tmp[i];
+        }
+    }
+    
+    // Clear out the deriv on any fixed links
+    (*this).getFermBC().zero(ds_u);
+    END_CODE();
+  }
+
+
+
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::derivMultipole(multi1d<U>& ds_u,
+                 const multi1d<T>& chi, const multi1d<T>& psi,
+                 enum PlusMinus isign) const
+  { 
+    START_CODE();
+             
+    // base deriv resizes.
+    // Even even checkerboard
+    derivMultipole(ds_u, chi, psi, isign,0);
+    
+    // Odd Odd checkerboard
+    multi1d<U> ds_tmp;
+    derivMultipole(ds_tmp, chi, psi, isign,1);
+
+    ds_u += ds_tmp;
+
+    END_CODE();
+  }
+
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::derivMultipole(multi1d<U>& ds_u,
+                 const multi1d<T>& chi, const multi1d<T>& psi,
+                 enum PlusMinus isign, int cb) const
+  {
+    START_CODE();
+
+
+    // Do I still need to do this?
+    if( ds_u.size() != Nd ) {
+      ds_u.resize(Nd);
+    }
+
+    ds_u = zero;
+    multi1d<U> ds_u_tmp;
+    ds_u_tmp.resize(Nd);
+
+    // Get the links
+    //const multi1d<U>& u = getU();
+
+    multi1d<T> ppsi,cchi,f_chi;
+
+    f_chi.resize(chi.size());
+    cchi.resize(chi.size());
+    ppsi.resize(chi.size());
+
+    for(int i=0;i<chi.size();i++){
+       cchi[i]= zero;
+       f_chi[i]=chi[i];
+    }
+
+
+    // The exp derivative is computed as
+    // A'+AA'/2+A'A/2+A'AA/6+AA'A/6+AAA'/6 = Sum A^i A' A^j
+    // applyCoeff multiplies the chi by the exponential term factor 
+    // and the factors from using the Caley Hamilton for A^n, for n>5
+
+    for(int i=0;i<=5;i++){
+        for(int j=0;j<=5;j++){
+            for(int k=0;k<chi.size();k++){
+                (*this).applyCoeff(f_chi[k], psi[k], isign,cb,i,j);
+                (*this).applyPower(ppsi[k], psi[k], PLUS, cb, j);
+                (*this).applyPower(cchi[k], f_chi[k], PLUS, cb,i);
+            }
+            CloverTermBase<T,U>::derivMultipole(ds_u_tmp,cchi,ppsi,isign,cb);
+
+            for(int i=0;i<ds_u_tmp.size();i++)
+                ds_u[i]+=ds_u_tmp[i];
+        }
+    }
+
+    // Clear out the deriv on any fixed links
+    (*this).getFermBC().zero(ds_u);
+    END_CODE();
+  }
+
   namespace QDPExpCloverEnv
   {
 
@@ -1199,7 +1439,45 @@ namespace Chroma
 	      tri[site].qinv[block][i] += RScalar<REALT>(sign * tab[block][row][i] / (REALT)(fact));
 	    }
 	  }
-	}
+
+      //HMC: adding the calculation of the C_ij
+      for (int i = 0; i < 6; i++)
+      {
+        for (int j = 0; j < 6; j++)
+        {
+            tri[site].C[block][i][j] = RScalar<REALT>(tab[block][0][i])*RScalar<REALT>(tab[block][0][j]);
+        }
+      }
+
+      fact = 1;
+      unsigned long fact_row = 1;
+
+      for (unsigned int row = 0; row <= N_exp; ++row)
+      { 
+        if (row!=0)
+           fact_row *= (unsigned long)(row);
+        fact=fact_row*(unsigned long)(row+1);
+        for(unsigned int col = 0; col <= N_exp-row; ++col)
+        {
+            if(row!=0 || col!=0) //row=0, col=0 computed above
+            {
+                
+                //This is the factor on the exp = c_n x^n, for the derivative of the n-term x^row x'x^col 
+                //the factor is row+col+1,where row+col=n-1 
+                if( col !=0)
+                    fact *= (unsigned long)(row+col+1);  
+                for (int i = 0; i < 6; i++)
+                {
+                  for (int j = 0; j < 6; j++)
+                  {            
+                      tri[site].C[block][i][j] += RScalar<REALT>(tab[block][col][j])*RScalar<REALT>(tab[block][row][i] / (REALT)(fact));    
+                  }
+                }
+            }
+        }
+      }
+
+	}//for block ends
 
 	// Assemble te exponential from the q-s and powers of A.
 	// siteExponentiate(tri[site]);
@@ -1410,6 +1688,18 @@ namespace Chroma
     };
 
     template <typename T>
+    struct ApplyDerivCoeffArgs {
+      typedef typename WordType<T>::Type_t REALT;
+      T& chi;
+      const T& psi;       
+      const ExpClovTriang<REALT>* tri;
+      int cb;
+      int pow_i = 1;
+      int pow_j = 1;
+    };
+
+
+    template <typename T>
     void applySitePowerLoop(int lo, int hi, int MyId, ApplyPowerArgs<T>* arg)
     {
 #ifndef QDP_IS_QDPJIT
@@ -1451,6 +1741,43 @@ namespace Chroma
       const ExpClovTriang<REALT>* tri;
       int cb;
     };
+
+    template <typename T>
+    void applySiteCoeffLoop(int lo, int hi, int MyId, ApplyDerivCoeffArgs<T>* arg)
+    {
+#ifndef QDP_IS_QDPJIT
+      // This is essentially the body of the previous "Apply"
+      // but now the args are handed in through user arg struct...
+
+      START_CODE();
+
+      typedef typename WordType<T>::Type_t REALT;
+      // Unwrap the args...
+      T& chi = arg->chi;
+      const T& psi = arg->psi;
+      const ExpClovTriang<REALT>* tri = arg->tri;
+      int cb = arg->cb;
+      int pow_i = arg->pow_i;
+      int pow_j = arg->pow_j;
+      const int n = 2 * Nc;
+
+      for (int ssite = lo; ssite < hi; ++ssite)
+      {
+
+    int site = rb[cb].siteTable()[ssite];
+
+    RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
+
+    const RComplex<REALT>* const ppsi =
+      (const RComplex<REALT>* const) & (psi.elem(site).elem(0).elem(0));
+
+    siteApplicationCoeff<REALT>(cchi, tri[site], pow_i,pow_j, ppsi);
+      }
+      END_CODE();
+#endif
+    } // Function
+
+
 
     template <typename T, int inv = 0>
     void applySiteLoop(int lo, int hi, int MyId, ApplyArgs<T>* arg)
@@ -1540,6 +1867,30 @@ namespace Chroma
     // The dispatch function is at the end of the file
     // ought to work for non-threaded targets too...
     dispatch_to_threads(num_sites, arg, QDPExpCloverEnv::applySitePowerLoop<T>);
+    (*this).getFermBC().modifyF(chi, QDP::rb[cb]);
+
+    END_CODE();
+#endif
+  }
+
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U,N_exp>::applyCoeff(T& chi, const T& psi, enum PlusMinus isign,int cb, int pow_i, int pow_j) const
+  {
+#ifndef QDP_IS_QDPJIT
+    START_CODE();
+
+    if (Ns != 4)
+    {
+      QDPIO::cerr << __func__ << ": CloverTerm::apply requires Ns==4" << std::endl;
+      QDP_abort(1);
+    }
+
+    QDPExpCloverEnv::ApplyDerivCoeffArgs<T> arg = {chi, psi, tri, cb, pow_i, pow_j};
+    int num_sites = rb[cb].siteTable().size();
+
+    // The dispatch function is at the end of the file
+    // ought to work for non-threaded targets too...
+    dispatch_to_threads(num_sites, arg, QDPExpCloverEnv::applySiteCoeffLoop<T>);
     (*this).getFermBC().modifyF(chi, QDP::rb[cb]);
 
     END_CODE();
