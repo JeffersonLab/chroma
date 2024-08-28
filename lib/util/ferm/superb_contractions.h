@@ -47,7 +47,7 @@
 #  ifdef BUILD_PRIMME
 #    include <primme.h>
 #    if defined(SUPERBBLAS_USE_HIP)
-#      include <hipblas.h>
+#      include <hipblas/hipblas.h>
 #    endif
 #  endif
 
@@ -2261,6 +2261,23 @@ namespace Chroma
 	return allocation->destroy_ptr;
       }
 
+      /// Finish all pending operations on this tensor
+
+      void sync() const
+      {
+	if (!allocation)
+	  return;
+
+	allocation->finish_pending_operations();
+
+	// If the pointer isn't managed by supperbblas, it may be managed by Chroma
+	// and we make sure that all operations from Chroma side are finished
+	if (is_managed())
+	  superbblas::syncLegacyStream(ctx());
+	else
+	  superbblas::sync(ctx());
+      }
+
       /// Return the pointer to the first local element
       /// NOTE: there will be no pending writing operations
 
@@ -2272,7 +2289,7 @@ namespace Chroma
 	// If the pointer isn't managed by supperbblas, it may be managed by Chroma
 	// and we make sure that all operations from Chroma side are finished
 	if (!is_managed())
-	  superbblas::syncLegacyStream(ctx());
+	  sync();
 
 	return (value_type*)allocation->data();
       }
@@ -3471,7 +3488,7 @@ namespace Chroma
 				 &ctx(), comm, superbblas::FastToSlow, superbblas::Copy);
 	  // Force synchronization in superbblas stream if the allocation isn't managed by superbblas
 	  if (!is_managed())
-	    superbblas::sync(ctx());
+	    sync();
 	}
       }
 
@@ -3741,8 +3758,8 @@ namespace Chroma
 				  &req /*, copying_trash == doCopyingTrash*/);
 	  w.allocation->append_pending_operation(req);
 	  // Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
-	  if (!w.is_managed())
-	    superbblas::sync(w.ctx());
+	  if (!is_managed() || !w.is_managed())
+	    w.sync();
 	}
       }
 
@@ -3851,8 +3868,8 @@ namespace Chroma
 	allocation->append_pending_operation(req);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
-	if (!is_managed())
-	  superbblas::sync(ctx());
+	if (!v.is_managed() || !w.is_managed() || !is_managed())
+	  sync();
       }
 
       /// Compute the Cholesky factor of `v' and contract its inverse with `w`
@@ -3932,8 +3949,12 @@ namespace Chroma
 	  p->p.data() + p_disp, dim, 1, order.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
-	if (!is_managed())
-	  superbblas::sync(ctx());
+	if (!v.is_managed() || !w.is_managed() || !is_managed())
+	{
+	  v.sync();
+	  w.sync();
+	  sync();
+	}
       }
 
       /// Compute the inverse of `v'
@@ -3968,7 +3989,7 @@ namespace Chroma
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
-	  superbblas::sync(ctx());
+	  sync();
       }
 
       /// Solve the linear systems within tensor `v' and right-hand-sides `w`
@@ -4048,8 +4069,12 @@ namespace Chroma
 	  p->p.data() + p_disp, dim, 1, order.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
-	if (!is_managed())
-	  superbblas::sync(ctx());
+	if (!v.is_managed() || !w.is_managed() || !is_managed())
+	{
+	  v.sync();
+	  w.sync();
+	  sync();
+	}
       }
 
       /// Return the singular value decomposition (SVD) of several matrices
@@ -4120,12 +4145,13 @@ namespace Chroma
 	  comm, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
-	if (!u.is_managed())
-	  superbblas::sync(u.ctx());
-	if (!s.is_managed())
-	  superbblas::sync(s.ctx());
-	if (!v.is_managed())
-	  superbblas::sync(v.ctx());
+	if (!is_managed() || !u.is_managed() || !s.is_managed() || !v.is_managed())
+	{
+	  u.sync();
+	  s.sync();
+	  v.sync();
+	  sync();
+	}
       }
 
       /// Return a view of this tensor where the elements are scaled by the given argument
@@ -6642,8 +6668,8 @@ namespace Chroma
 	  nullptr, v.dist == Glocal);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
-	if (!w.is_managed())
-	  superbblas::sync(data.ctx());
+	if (!v.is_managed() || !w.is_managed())
+	  data.sync();
       }
 
       void print(const std::string& name) const
@@ -7132,7 +7158,7 @@ namespace Chroma
 				       w0.from, w0.dim, &w_ptr, &w0.ctx(), comm,
 				       superbblas::FastToSlow, superbblas::Copy);
 	if (!w0.is_managed())
-	  superbblas::sync(w0.ctx());
+	  w0.sync();
       }
     };
 
