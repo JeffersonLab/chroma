@@ -659,13 +659,18 @@ namespace Chroma
       /// \param blocking: blocking on each coordinate
 
       template <std::size_t N>
-      std::array<Coor<N>, 2> coarse_range(const std::array<Coor<N>, 2>& fs, const Coor<N>& blocking)
+      std::array<Coor<N>, 2> coarse_range(const Coor<N>& from, const std::array<Coor<N>, 2>& fs,
+					  const Coor<N>& blocking, const Coor<N>& dim)
       {
 	std::array<Coor<N>, 2> r;
 	for (unsigned int i = 0; i < N; ++i)
 	{
-	  r[0][i] = fs[0][i] / blocking[i] * blocking[i];
-	  r[1][i] = (fs[0][i] + fs[1][i] + blocking[i] - 1) / blocking[i] * blocking[i] - r[0][i];
+	  r[0][i] = (fs[0][i] + blocking[i] - 1 - from[i] + dim[i]) / blocking[i] * blocking[i] +
+		    from[i] - dim[i];
+	  r[1][i] =
+	    (fs[0][i] + fs[1][i] + blocking[i] - 1 - from[i] + dim[i]) / blocking[i] * blocking[i] +
+	    from[i] - dim[i] - r[0][i];
+	  r[0][i] = normalize_coor(r[0][i], dim[i]);
 	}
 	return r;
       }
@@ -1281,12 +1286,12 @@ namespace Chroma
 	/// Coarse the ranges on each process
 
 	template <typename std::enable_if<(N > 0), bool>::type = true>
-	TensorPartition<N> coarse_support(const Coor<N>& blocking) const
+	TensorPartition<N> coarse_support(const Coor<N>& from, const Coor<N>& blocking) const
 	{
 	  typename TensorPartition<N>::PartitionStored r;
 	  r.reserve(p.size());
 	  for (const auto& i : p)
-	    r.push_back(detail::coarse_range(i, blocking));
+	    r.push_back(detail::coarse_range(from, i, blocking, dim));
 	  return TensorPartition<N>{dim, r, isLocal};
 	}
 
@@ -3381,13 +3386,44 @@ namespace Chroma
 					 {{new_label, 1}}, false);
       }
 
+      /// Make sure that the dimensions have full support on all processes
+      /// \param labels: dimensions to check
+
+      Tensor<N, T> coarse_dimensions(const std::string& labels) const
+      {
+	std::map<char, int> blk;
+	const auto dims = kvdim();
+	for (char c : labels)
+	  blk[c] = dims.at(c);
+
+	// Create partitioning coarsening
+	auto new_p = std::make_shared<detail::TensorPartition<N>>(
+	  p->coarse_support(from, kvcoors<N>(order, blk, 1)));
+
+	// Avoid creating a new tensor if the partitioning is the same
+	if (new_p->p == p->p)
+	  return *this;
+
+	// Create output tensor
+	Tensor<N, T> r(order, dim, getDev(), dist, new_p, unordered_writing, complexLabel);
+	r.from = from;
+	r.size = size;
+	r.conjugate = conjugate;
+
+	// Return it
+	if (is_eg())
+	  return r.make_eg();
+	copyTo(r);
+	return r;
+      }
+
       /// Coarse the support range of the tensor on each process
       /// \param blocking: blocking for each dimension
 
       template <typename std::enable_if<(N > 0), bool>::type = true>
       Tensor<N, T> coarse_support(const std::map<char, int>& blocking) const
       {
-	// Get the blocking and check that it divides each diension
+	// Get the blocking and check that it divides each dimension
 	auto c_blk = kvcoors<N>(order, blocking, 1);
 	for (std::size_t i = 0; i < N; ++i)
 	  if (dim[i] % c_blk[i] != 0)
@@ -3395,7 +3431,7 @@ namespace Chroma
 	      "coarse_support: the given blocking isn't dividing the tensor dimensions");
 
 	// Transform the partition
-	auto new_p = std::make_shared<detail::TensorPartition<N>>(p->coarse_support(c_blk));
+	auto new_p = std::make_shared<detail::TensorPartition<N>>(p->coarse_support(from, c_blk));
 
 	// Create output tensor
 	Tensor<N, T> r(order, dim, getDev(), dist, new_p, unordered_writing, complexLabel);
@@ -7951,9 +7987,7 @@ namespace Chroma
 	    throw std::runtime_error("getXOddityMask: invalid dimension size `X`");
 	  int dimX = dim.at('X');
 	  r.fillCpuFunCoor([&](const Coor<5>& coor) {
-	    return (coor[0] + coor[1] * dimX + coor[2] + coor[3] + coor[4]) % 2 == xoddity
-		     ? float{1}
-		     : float{0};
+	    return (coor[0] + coor[1] * dimX) % 2 == xoddity ? float{1} : float{0};
 	  });
 	}
 	else if (isEvenOddLayout(layout))
@@ -7963,7 +7997,7 @@ namespace Chroma
 	  if (layout == XEvenOddLayoutZeroOdd)
 	    xoddity = (xoddity + 1) % 2;
 	  r.fillCpuFunCoor([&](const Coor<5>& coor) {
-	    return coor[0] == xoddity ? float{1} : float{0};
+	    return (coor[0] + coor[2] + coor[3] + coor[4]) % 2 == xoddity ? float{1} : float{0};
 	  });
 	}
 	else if (layout == EvensOnlyLayout)
@@ -8045,7 +8079,9 @@ namespace Chroma
 	//   d) the excepting dimensions are the fastest index and have the same ordering in the origin and
 	//      the destination tensors.
 
-	auto v0 = v.reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}}).reorder("Xxyzt%", '%');
+	auto v0 = v.reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}})
+		    .reorder("Xxyzt%", '%')
+		    .coarse_dimensions("X");
 	auto r = v0.make_compatible();
 	for (int oddity = 0; oddity < 2; ++oddity)
 	{
@@ -8082,7 +8118,7 @@ namespace Chroma
 	//   d) the excepting dimensions are the fastest index and have the same ordering in the origin and
 	//      the destination tensors.
 
-	auto v0 = v.reorder("Xxyzt%", '%');
+	auto v0 = v.reorder("Xxyzt%", '%').coarse_dimensions("X");
 	auto r = v0.make_compatible();
 	for (int oddity = 0; oddity < 2; ++oddity)
 	{
@@ -8155,6 +8191,7 @@ namespace Chroma
 	auto i =
 	  op.i.reorder(dense_labels + std::string("xyztX"))
 	    .like_this(none, {}, OnDefaultDevice, compatible_oneveryone_distribution(op.i.dist))
+	    .coarse_dimensions("X")
 	    .make_eg();
 
 	// Get the blocking for the domain and the image
