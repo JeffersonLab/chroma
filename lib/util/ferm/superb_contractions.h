@@ -2988,7 +2988,7 @@ namespace Chroma
 
 	for (auto s : size)
 	  if (s < 0)
-	    std::runtime_error("Invalid tensor size: it should be positive");
+	    throw std::runtime_error("Invalid tensor size: it should be positive");
       }
 
       /// Return a view of this tensor with an extra label for the real and the imaginary parts
@@ -3045,9 +3045,9 @@ namespace Chroma
       {
 	std::size_t dot_pos = order.find(complexLabel);
 	if (dot_pos == std::string::npos)
-	  std::runtime_error("toComplex: invalid complex label");
+	  throw std::runtime_error("toComplex: invalid complex label");
 	if (from[dot_pos] != 0 || size[dot_pos] != 2 || dim[dot_pos] != 2)
-	  std::runtime_error("toComplex: not supported on a slice of the complex label");
+	  throw std::runtime_error("toComplex: not supported on a slice of the complex label");
 
 	std::string new_order = detail::remove_coor(order, dot_pos);
 
@@ -7077,7 +7077,7 @@ namespace Chroma
 
 	for (auto s : size)
 	  if (s < 0)
-	    std::runtime_error("Invalid tensor size: it should be positive");
+	    throw std::runtime_error("Invalid tensor size: it should be positive");
       }
 
       /// Preallocate space for the storage file
@@ -7951,7 +7951,9 @@ namespace Chroma
 	    throw std::runtime_error("getXOddityMask: invalid dimension size `X`");
 	  int dimX = dim.at('X');
 	  r.fillCpuFunCoor([&](const Coor<5>& coor) {
-	    return (coor[0] + coor[1] * dimX) % 2 == xoddity ? float{1} : float{0};
+	    return (coor[0] + coor[1] * dimX + coor[2] + coor[3] + coor[4]) % 2 == xoddity
+		     ? float{1}
+		     : float{0};
 	  });
 	}
 	else if (isEvenOddLayout(layout))
@@ -7961,7 +7963,7 @@ namespace Chroma
 	  if (layout == XEvenOddLayoutZeroOdd)
 	    xoddity = (xoddity + 1) % 2;
 	  r.fillCpuFunCoor([&](const Coor<5>& coor) {
-	    return (coor[0] + coor[2] + coor[3] + coor[4]) % 2 == xoddity ? float{1} : float{0};
+	    return coor[0] == xoddity ? float{1} : float{0};
 	  });
 	}
 	else if (layout == EvensOnlyLayout)
