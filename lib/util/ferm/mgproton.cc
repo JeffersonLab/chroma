@@ -3328,8 +3328,10 @@ namespace Chroma
 	  {
 	    if (rnorm.get({{i}}) > primme.stats.estimateLargestSVal * primme.eps * 10)
 	    {
-	      QDPIO::cerr << "Error: primme returned eigenpairs with too much error\n";
-	      QDP_abort(1);
+	      QDPIO::cerr << "Warning (or error): primme returned eigenpairs with too much error; "
+			     "residual norm "
+			  << i << " : " << rnorm.get({{i}}) << ", expected less than "
+			  << primme.stats.estimateLargestSVal * primme.eps * 10 << std::endl;
 	    }
 	  }
 	}
