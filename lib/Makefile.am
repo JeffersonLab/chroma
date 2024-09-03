@@ -1081,6 +1081,7 @@ lib_LIBRARIES = libchroma.a
 #     chroma/scripts/build_libchroma_sources.pl
 #
 libchroma_a_SOURCES = \
+	constant.cc \
 	actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
         actions/ferm/fermstates/hex_fermstate_params.cc \
