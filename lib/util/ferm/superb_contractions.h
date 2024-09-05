@@ -1762,11 +1762,19 @@ namespace Chroma
       {
 	if (!superbblas::getTrackingMemory())
 	  return;
-	std::stringstream ss;
-	ss << "mem usage, CPU: " << std::fixed << std::setprecision(0)
-	   << superbblas::getCpuMemUsed(0) / 1024 / 1024
-	   << " MiB   GPU: " << superbblas::getGpuMemUsed(0) / 1024 / 1024 << " MiB";
-	log(1, ss.str());
+	static double max_cpu_mem = 0;
+	static double max_gpu_mem = 0;
+	auto old_max_cpu_mem = max_cpu_mem;
+	auto old_max_gpu_mem = max_gpu_mem;
+	max_cpu_mem = std::max(max_cpu_mem, superbblas::getCpuMemUsed(0) / 1024 / 1024);
+	max_gpu_mem = std::max(max_gpu_mem, superbblas::getGpuMemUsed(0) / 1024 / 1024);
+	if (old_max_cpu_mem < max_cpu_mem || old_max_gpu_mem < max_cpu_mem)
+	{
+	  std::stringstream ss;
+	  ss << "mem usage, CPU: " << std::fixed << std::setprecision(0) << max_cpu_mem
+	     << " MiB   GPU: " << max_gpu_mem << " MiB";
+	  log(1, ss.str());
+	}
       }
 
       template <typename T, typename A, typename B,
@@ -1818,6 +1826,7 @@ namespace Chroma
 	Allocation(std::size_t n, const std::shared_ptr<superbblas::Context>& ctx)
 	  : ptr(superbblas::allocate<T>(n, *ctx)), ctx(ctx), destroy_ptr(true)
 	{
+	  detail::log_mem();
 	}
 
 	/// User given pointer that will not be deallocated automatically
@@ -2052,7 +2061,6 @@ namespace Chroma
 	  complexLabel{complexLabel}
       {
 	checkOrder();
-	detail::log_mem();
       }
 
     protected:
