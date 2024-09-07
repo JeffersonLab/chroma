@@ -149,6 +149,8 @@ namespace Chroma
       if (V)
 	detail::check_compatible(V, W, none, order_cols);
 
+      Tracker _t(std::string("ortho ") + prefix);
+
       // Find the ordering
       std::string Wcorder = detail::remove_dimensions(W.order, order_t + order_rows);
       std::string Vcorder =
@@ -1159,6 +1161,9 @@ namespace Chroma
       Operator<NOp, COMPLEX> getFGMRESSolver(Operator<NOp, COMPLEX> op, const Options& ops,
 					     Operator<NOp, COMPLEX> prec_)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup fgmres ") + prefix);
+
 	// Get preconditioner
 	Operator<NOp, COMPLEX> prec;
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
@@ -1181,7 +1186,6 @@ namespace Chroma
 	unsigned int max_residual_updates = getOption<unsigned int>(ops, "max_residual_updates", 0);
 	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1215,6 +1219,9 @@ namespace Chroma
       Operator<NOp, COMPLEX> getBicgstabSolver(Operator<NOp, COMPLEX> op, const Options& ops,
 					       Operator<NOp, COMPLEX> prec_)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup bicgstab ") + prefix);
+
 	// Get preconditioner
 	Operator<NOp, COMPLEX> prec;
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
@@ -1235,7 +1242,6 @@ namespace Chroma
 	unsigned int max_residual_updates = getOption<unsigned int>(ops, "max_residual_updates", 0);
 	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1268,6 +1274,9 @@ namespace Chroma
       Operator<NOp, COMPLEX> getMRSolver(Operator<NOp, COMPLEX> op, const Options& ops,
 					 Operator<NOp, COMPLEX> prec_)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup mg ") + prefix);
+
 	// Get preconditioner
 	Operator<NOp, COMPLEX> prec;
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
@@ -1288,7 +1297,6 @@ namespace Chroma
 	unsigned int max_residual_updates = getOption<unsigned int>(ops, "max_residual_updates", 0);
 	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1321,6 +1329,9 @@ namespace Chroma
       Operator<NOp, COMPLEX> getGCRSolver(Operator<NOp, COMPLEX> op, const Options& ops,
 					  Operator<NOp, COMPLEX> prec_)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup gcr ") + prefix);
+
 	// Get preconditioner
 	Operator<NOp, COMPLEX> prec;
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
@@ -1342,11 +1353,10 @@ namespace Chroma
 	unsigned int max_residual_updates = getOption<unsigned int>(ops, "max_residual_updates", 0);
 	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		  Tracker _t(std::string("mr ") + prefix);
+		  Tracker _t(std::string("gcr ") + prefix);
 		  _t.arity = x.kvdim().at('n');
 		  foreachInChuncks(
 		    x, y, max_simultaneous_rhs,
@@ -1444,6 +1454,7 @@ namespace Chroma
 					      SpinSplitting spin_splitting,
 					      const Options& null_vecs_ops, SolverSpace solverSpace)
       {
+	Tracker _t("setup mg prolongator");
 	detail::log(1, "starting getMGProlongator");
 
 	// Check that the blocking divide the lattice sizes. For an operator with support only
@@ -1746,16 +1757,16 @@ namespace Chroma
 
       /// Return a list of destroy callbacks after setting a solver
 
-      inline std::vector<DestroyFun>& getEvenOddOperatorsCacheDestroyList()
+      inline std::vector<DestroyFun>& getOperatorsCacheDestroyList()
       {
 	static std::vector<DestroyFun> list;
 	return list;
       }
 
-      /// Call the destroy callbacks set up in `getEvenOddOperatorsCacheDestroyList`
-      inline void cleanEvenOddOperatorsCache()
+      /// Call the destroy callbacks set up in `getOperatorsCacheDestroyList`
+      inline void cleanOperatorsCache()
       {
-	for (const auto& f : getEvenOddOperatorsCacheDestroyList())
+	for (const auto& f : getOperatorsCacheDestroyList())
 	  f();
       }
 
@@ -1766,12 +1777,13 @@ namespace Chroma
 					      Tensor<NOp + 2, COMPLEX>, Tensor<NOp + 2, COMPLEX>>;
 
       /// Return the cache of block diagonals for even-odd operators generated by getEvenOddPrec
+      /// NOTE: this one is destroyed by `cleanOperatorsCache`
 
       template <std::size_t NOp, typename COMPLEX>
       std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>>& getEvenOddOperatorsPartsCache()
       {
 	static std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>> m = []() {
-	  getEvenOddOperatorsCacheDestroyList().push_back(
+	  getOperatorsCacheDestroyList().push_back(
 	    []() { getEvenOddOperatorsPartsCache<NOp, COMPLEX>().clear(); });
 	  return std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>>{};
 	}();
@@ -1779,7 +1791,7 @@ namespace Chroma
       }
 
       /// Return a cache for the prolongators
-      /// NOTE: this one isn't destroyed by `cleanEvenOddOperatorsCache`
+      /// NOTE: this one is destroyed by `cleanOperatorsCache`
 
       template <std::size_t NOp, typename COMPLEX>
       static std::map<std::string, Operator<NOp, COMPLEX>>& getProlongatorCache()
@@ -1797,6 +1809,8 @@ namespace Chroma
       getProlongatorAndCoarse(Operator<NOp, COMPLEX> op, const Options& ops,
 			      SolverSpace solverSpace)
       {
+	Tracker _t("setup mg prolongator and coarse");
+
 	// Get prolongator, V
 	unsigned int num_null_vecs = getOption<unsigned int>(ops, "num_null_vecs");
 	unsigned int num_colors = getOption<unsigned int>(ops, "num_colors", num_null_vecs);
@@ -1908,6 +1922,9 @@ namespace Chroma
 	if (prec_)
 	  throw std::runtime_error("getMGPrec: unsupported input preconditioner");
 
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup mg solver ") + prefix);
+
 	// Get prolongator and coarse operator
 	auto prolongator_coarse_spin_splitting = getProlongatorAndCoarse(op, ops, solverSpace);
 	Operator<NOp, COMPLEX> V = std::get<0>(prolongator_coarse_spin_splitting);
@@ -1924,7 +1941,6 @@ namespace Chroma
 	OperatorFun<NOp, COMPLEX> solver;
 	int ns = op.d.kvdim().at('s');
 	auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
 	{
 	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -2020,6 +2036,9 @@ namespace Chroma
 	if (prec_)
 	  throw std::runtime_error("getProjPrec: unsupported input preconditioner");
 
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup proj ") + prefix);
+
 	// Getting a projector
 	auto proj = getProjector(op, getOptions(ops, "proj"));
 
@@ -2027,7 +2046,6 @@ namespace Chroma
 	const Operator<NOp, COMPLEX> opSolver = getSolver(op, getOptions(ops, "solver_smoother"));
 
 	OperatorFun<NOp, COMPLEX> solver;
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
 	{
 	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -2138,6 +2156,8 @@ namespace Chroma
 
 	bool use_Aee_prec = getOption<bool>(ops, "use_Aee_prec", false);
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
+
+	Tracker _t(std::string("setup eo solver ") + prefix);
 
 	// Get the block diagonal of the operator with rows cs and columns CS
 	remap m_sc{{'s', 'S'}, {'c', 'C'}};
@@ -2381,6 +2401,7 @@ namespace Chroma
 	  throw std::runtime_error("getSpinEvenOddPrec: unsupported input preconditioner");
 
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup eo spin solver ") + prefix);
 
 	// Partition the operator: s -> Ss, where S is the spin oddity
 	char S = detail::get_free_label(op.d.order);
@@ -2879,6 +2900,8 @@ namespace Chroma
 	bool with_correction = getOption<bool>(ops, "with_correction", false);
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
+	Tracker _t(std::string("setup dd solver ") + prefix);
+
 	// Get the local operator and make the solver
 	auto local_op = op.getGlocal();
 	const Operator<NOp, COMPLEX> solver = getSolver(local_op, getOptions(ops, "solver"));
@@ -2932,6 +2955,9 @@ namespace Chroma
       {
 	if (prec_)
 	  throw std::runtime_error("getBlockJacobi: unsupported input preconditioner");
+
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup bj solver ") + prefix);
 
 	// Get the blocking
 	auto dim = op.d.kvdim();
@@ -3207,6 +3233,8 @@ namespace Chroma
     {
       using namespace detail;
 
+      Tracker _t(std::string("setup gd solver "));
+
       // Get eigensolver properties
       unsigned int max_basis_size = getOption<unsigned int>(ops, "max_basis_size", 0);
       unsigned int max_block_size = getOption<unsigned int>(ops, "max_block_size", 1);
@@ -3399,6 +3427,9 @@ namespace Chroma
 	if (prec_)
 	  throw std::runtime_error("getShiftedOp: unsupported input preconditioner");
 
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup shift ") + prefix);
+
 	// Get the remainder options
 	double shift_I = getOption<double>(ops, "shift_I", 0.0);
 	double shift_ig5 = getOption<double>(ops, "shift_ig5", 0.0);
@@ -3525,6 +3556,9 @@ namespace Chroma
       Operator<NOp, COMPLEX> getCasting(Operator<NOp, COMPLEX> op, const Options& ops,
 					Operator<NOp, COMPLEX> prec_, SolverSpace solverSpace)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup casting ") + prefix);
+
 	// Get the current precision and the requested by the user
 	enum Precision { Single, Double, Default };
 	static const std::map<std::string, Precision> precisionMap{
@@ -3728,7 +3762,7 @@ namespace Chroma
 	op = Operator<Nd + 7, Complex>(getSolver(linOp, getOptions(*ops, "InvertParam")));
 
 	// Clean cache of operators
-	detail::cleanEvenOddOperatorsCache();
+	detail::cleanOperatorsCache();
 
 	QDPIO::cout << "MGPROTON invertor ready; setup time: "
 		    << detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;
@@ -3824,6 +3858,8 @@ namespace Chroma
       Tensor<N, COMPLEX_OUT> doInversion(const Operator<Nd + 7, COMPLEX_OUT>& op,
 					 const Tensor<N, COMPLEX_CHI>& chi, int max_rhs)
       {
+	Tracker _t(std::string("mgproton solver"));
+
 	// Get the columns labels, which are the ones not contracted with the operator
 	std::string order_cols = remove_dimensions(chi.order, op.i.order);
 
@@ -3858,6 +3894,8 @@ namespace Chroma
 					      const std::vector<int>& spin_sources, int max_rhs,
 					      const std::string& order_out = "cSxyztXns")
       {
+	Tracker _t(std::string("mgproton solver"));
+
 	int num_vecs = chi.kvdim()['n'];
 	Tensor<Nd + 5, COMPLEX_OUT> psi(
 	  order_out,
@@ -3996,6 +4034,9 @@ namespace Chroma
       template <std::size_t NOp, typename COMPLEX>
       Projector<NOp, COMPLEX> getDeflationProj(Operator<NOp, COMPLEX> op, const Options& ops)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup defl proj ") + prefix);
+
 	// Get options
 	unsigned int rank = getOption<unsigned int>(ops, "rank");
 	if (rank == 0)
@@ -4085,6 +4126,9 @@ namespace Chroma
       template <std::size_t NOp, typename COMPLEX>
       Projector<NOp, COMPLEX> getMGDeflationProj(Operator<NOp, COMPLEX> op, const Options& ops)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup mg proj ") + prefix);
+
 	// Get prolongator and coarse operator
 	auto prolongator_coarse_spin_splitting =
 	  getProlongatorAndCoarse(op, ops.getValue("prolongator"), FullSpace);
@@ -4383,7 +4427,7 @@ namespace Chroma
 	op = getProjector(linOp, getOptions(*ops, "Projector"));
 
 	// Clean cache of operators
-	detail::cleanEvenOddOperatorsCache();
+	detail::cleanOperatorsCache();
 
 	QDPIO::cout << "MGPROTON projector ready; setup time: "
 		    << detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;
