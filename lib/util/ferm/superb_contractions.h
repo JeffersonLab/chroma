@@ -2424,7 +2424,7 @@ namespace Chroma
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
+	auto t = isSubtensor() ? make_compatible(none, {}, OnHost) : make_sure(none, OnHost);
 	std::size_t vol = t.getLocal().volume();
 	value_type* ptr = t.data_for_writing();
 

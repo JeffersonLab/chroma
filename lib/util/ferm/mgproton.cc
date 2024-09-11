@@ -1607,7 +1607,7 @@ namespace Chroma
 	    nv_blk_eo_dim['x'] /= 2;
 	    nv_blk_eo_dim['X'] = 2;
 	  }
-	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
+	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim).make_eg(), i = op.i;
 	  V = Operator<NOp, COMPLEX>{
 	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	      auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
