@@ -623,8 +623,8 @@ namespace Chroma
 	  div(contract<1>(AKs.conj(), Ks, order_rows), contract<1>(AKs, AKs.conj(), order_rows));
 
 	// y = y + alpha * Kp + omega * Ks
-	contract<NOp + 1>(Kp, alpha, "").addTo(y);
-	contract<NOp + 1>(Ks, omega, "").addTo(y);
+	contract<NOp + 1>(Kp, alpha, "", AddTo, y);
+	contract<NOp + 1>(Ks, omega, "", AddTo, y);
 
 	// r = s - omega * AKs (NOTE: s == r)
 	contract<NOp + 1>(AKs, omega.scale(-1), "", AddTo, r);
