@@ -1441,18 +1441,25 @@ namespace Chroma
       };
 
       /// Returns the prolongator constructed from the given operator
-      /// \param solvers: map of solvers
-      /// \param op: operator to make the inverse of
-      /// \param ops: options to select the solver from `solvers` and influence the solver construction
+      /// \param op: operator to make the prolongator of
+      /// \param num_null_vecs: total number of random vectors used to construct the prolongator
+      /// \param max_num_null_vecs: maximum number of vectors to consider at once
+      /// \param null_vectors_normalization: normalization to use before analysing frequencies
+      /// \param mg_blocking: lattice dimension blocking for the prolongator
+      /// \param layout_blocking: lattice dimension blocking for layout
+      /// \param spin_splitting: treatment of the spin
+      /// \param null_vecs_ops: solver options for the computing the null vecs
+      /// \param solver_space: target space
 
       template <std::size_t NOp, typename COMPLEX>
-      Operator<NOp, COMPLEX> getMGProlongator(const Operator<NOp, COMPLEX>& op,
-					      unsigned int num_null_vecs, unsigned int num_colors,
-					      NullVectorsNormalization null_vectors_normalization,
-					      const std::map<char, unsigned int>& mg_blocking,
-					      const std::map<char, unsigned int>& layout_blocking,
-					      SpinSplitting spin_splitting,
-					      const Options& null_vecs_ops, SolverSpace solverSpace)
+      Operator<NOp, COMPLEX>
+      getMGProlongator(const Operator<NOp, COMPLEX>& op, unsigned int num_null_vecs,
+		       unsigned int max_num_null_vecs, unsigned int num_colors,
+		       NullVectorsNormalization null_vectors_normalization,
+		       const std::map<char, unsigned int>& mg_blocking,
+		       const std::map<char, unsigned int>& layout_blocking,
+		       SpinSplitting spin_splitting, const Options& null_vecs_ops,
+		       SolverSpace solverSpace)
       {
 	Tracker _t("setup mg prolongator");
 	detail::log(1, "starting getMGProlongator");
@@ -1478,37 +1485,47 @@ namespace Chroma
 	if (ns == 1)
 	  spin_splitting = SpinSplitting::None;
 
+	// Ignore max_num_null_vecs if it is smaller than num_colors
+	max_num_null_vecs = std::max(max_num_null_vecs, num_colors + 1);
+
 	const Operator<NOp, COMPLEX> null_solver =
 	  getSolver(op, getOptions(null_vecs_ops, "solver"));
 	auto eigensolver_ops = getOptionsMaybe(null_vecs_ops, "eigensolver");
-	Tensor<NOp + 1, COMPLEX> nv;
-	if (!eigensolver_ops)
-	{
-	  // Create the random initial guesses to be used in solving Ax=0
-	  auto b = op.template make_compatible_img<NOp + 1>("n", {{'n', num_null_vecs}});
-	  if (solverSpace == FullSpace)
+	if (eigensolver_ops && max_num_null_vecs < num_null_vecs)
+	  eigensolver_ops.getSome().throw_error(
+	    "unsupported `eigensolver` when `max_num_null_vecs` is smaller than `num_null_vecs`");
+
+	auto get_null_vecs_fn = [&](unsigned int num_null_vecs) {
+	  Tensor<NOp + 1, COMPLEX> nv;
+	  if (!eigensolver_ops)
 	  {
-	    nrand(b);
+	    // Create the random initial guesses to be used in solving Ax=0
+	    auto b = op.template make_compatible_img<NOp + 1>("n", {{'n', num_null_vecs}});
+	    if (solverSpace == FullSpace)
+	    {
+	      nrand(b);
+	    }
+	    else
+	    {
+	      b.set_zero();
+	      nrand(b.kvslice_from_size({}, {{'X', 1}}));
+	    }
+
+	    // Solve Ax=0 with the random initial guesses
+	    nv = null_solver(op(b));
+	    b.scale(-1).addTo(nv);
+	    b.release();
 	  }
 	  else
 	  {
-	    b.set_zero();
-	    nrand(b.kvslice_from_size({}, {{'X', 1}}));
+	    // Compute the eigenpairs of inv(op) * g5, the right singular vectors of op
+	    auto eigensolver = SB::getInexactEigensolverGD(null_solver, eigensolver_ops.getSome());
+	    double tol = getOption<double>(null_vecs_ops, "tol", 0.1);
+	    auto values_vectors = eigensolver(num_null_vecs, tol);
+	    nv = std::get<1>(values_vectors);
 	  }
-
-	  // Solve Ax=0 with the random initial guesses
-	  nv = null_solver(op(b));
-	  b.scale(-1).addTo(nv);
-	  b.release();
-	}
-	else
-	{
-	  // Compute the eigenpairs of inv(op) * g5, the right singular vectors of op
-	  auto eigensolver = SB::getInexactEigensolverGD(null_solver, eigensolver_ops.getSome());
-	  double tol = getOption<double>(null_vecs_ops, "tol", 0.1);
-	  auto values_vectors = eigensolver(num_null_vecs, tol);
-	  nv = std::get<1>(values_vectors);
-	}
+	  return nv;
+	};
 
 	Operator<NOp, COMPLEX> V;
 	auto opdims_nat = opdims;
@@ -1519,77 +1536,118 @@ namespace Chroma
 	}
 	if (spin_splitting != SpinSplitting::Full)
 	{
-	  // Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
-	  auto nv2 = nv;
-	  if (spin_splitting == SpinSplitting::Chirality)
-	  {
-	    nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
-	    auto g5 = getGamma5<COMPLEX>(ns, OnHost, nv.dist), g5pos = g5.cloneOn(OnHost),
-		 g5neg = g5.cloneOn(OnHost);
-	    for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
-	      g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
-	    for (int i = 0; i < ns; ++i) // make diagonal entries of gneg all negative or zero
-	      g5neg.set({{i, i}}, g5.get({{i, i}}) - COMPLEX{1});
-	    nv2.kvslice_from_size({}, {{'n', num_null_vecs}})
-	      .contract(g5pos, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
-	    nv2.kvslice_from_size({{'n', num_null_vecs}}, {{'n', num_null_vecs}})
-	      .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
-	  }
-	  nv.release();
-
-	  // Do the blocking, which encompasses the following transformations:
-	  //  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
-	  // where output X is a singlet dimension, and W,Y,Z, and T have size mg_blocking,
-	  // and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
-	  // have the remaining
-
+	  Tensor<NOp + 1 + 5, COMPLEX> nv_blk;
 	  std::map<std::string, std::string> m_blk, m_blk_rev, m_blk_nv;
-	  m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"},
-		      {"n", "cs"},     {"c", "C"},    {"s", "S"}};
-	  m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
-		   {"3t", "T3t"},   {"c", "C"},	   {"s", "S"}};
-	  m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"},
-		       {"T3t", "3t"},	{"C", "c"},    {"S", "s"}};
-
-	  if (!x_blocking_divide_X)
-	    nv2 = toNaturalOrdering(nv2);
-	  auto nv_blk = nv2.template reshape_dimensions<NOp + 1 + 5>(
-	    m_blk_nv,
-	    {{'X', 1}, // we don't do even-odd layout on the coarse operator space
-	     {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
-	     {'Y', mg_blocking.at('y')},
-	     {'Z', mg_blocking.at('z')},
-	     {'T', mg_blocking.at('t')},
-	     {'0', layout_blocking.at('x')},
-	     {'1', layout_blocking.at('y')},
-	     {'2', layout_blocking.at('z')},
-	     {'3', layout_blocking.at('t')},
-	     {'c', num_null_vecs}},
-	    true);
-	  nv2.release();
-
-	  // User even-odd ordering for nv_blk
-	  if (nv_blk.kvdim().at('0') != 1)
-	    throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
-
-	  // Cut down the extra null vectors
-	  if (nv_blk.kvdim().at('c') > num_colors)
+	  for (unsigned int nv_created = 0; nv_created < num_null_vecs;)
 	  {
-	    if (null_vectors_normalization == NullVectorsNormalization::Full)
+	    unsigned int current_nv = std::min(
+	      num_null_vecs - nv_created, max_num_null_vecs - (nv_created == 0 ? 0 : num_colors));
+
+	    // Get the null vectors
+	    auto nv = get_null_vecs_fn(current_nv);
+
+	    // Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
+	    auto nv2 = nv;
+	    if (spin_splitting == SpinSplitting::Chirality)
 	    {
-	      nv_blk =
-		vecnorm<NOp + 1 + 5 - 1>(nv_blk, detail::union_dimensions(nv_blk.order, "", "c"));
+	      nv2 = nv.like_this(none, {{'n', current_nv * 2}});
+	      auto g5 = getGamma5<COMPLEX>(ns, OnHost, nv.dist), g5pos = g5.cloneOn(OnHost),
+		   g5neg = g5.cloneOn(OnHost);
+	      for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
+		g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
+	      for (int i = 0; i < ns; ++i) // make diagonal entries of gneg all negative or zero
+		g5neg.set({{i, i}}, g5.get({{i, i}}) - COMPLEX{1});
+	      nv2.kvslice_from_size({}, {{'n', current_nv}})
+		.contract(g5pos, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
+	      nv2.kvslice_from_size({{'n', current_nv}}, {{'n', current_nv}})
+		.contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
 	    }
-	    else if (null_vectors_normalization == NullVectorsNormalization::Blocking)
+	    nv.release();
+
+	    // Do the blocking, which encompasses the following transformations:
+	    //  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
+	    // where output X is a singlet dimension, and W,Y,Z, and T have size mg_blocking,
+	    // and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
+	    // have the remaining
+
+	    m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"},
+			{"n", "cs"},	 {"c", "C"},	{"s", "S"}};
+	    m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
+		     {"3t", "T3t"},   {"c", "C"},    {"s", "S"}};
+	    m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"},
+			 {"T3t", "3t"},	  {"C", "c"},	 {"S", "s"}};
+
+	    if (!x_blocking_divide_X)
+	      nv2 = toNaturalOrdering(nv2);
+	    auto nv_blk0 = nv2.template reshape_dimensions<NOp + 1 + 5>(
+	      m_blk_nv,
+	      {{'X', 1}, // we don't do even-odd layout on the coarse operator space
+	       {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
+	       {'Y', mg_blocking.at('y')},
+	       {'Z', mg_blocking.at('z')},
+	       {'T', mg_blocking.at('t')},
+	       {'0', layout_blocking.at('x')},
+	       {'1', layout_blocking.at('y')},
+	       {'2', layout_blocking.at('z')},
+	       {'3', layout_blocking.at('t')},
+	       {'c', current_nv}},
+	      true);
+	    nv2.release();
+
+	    // User even-odd ordering for nv_blk0
+	    if (nv_blk0.kvdim().at('0') != 1)
+	      throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
+
+	    // Cut down the extra null vectors
+	    if (num_null_vecs > num_colors)
 	    {
-	      nv_blk = vecnorm<6>(nv_blk, "WYZTSC");
+	      // Pre-normalize the vectors if the user asks
+	      if (null_vectors_normalization == NullVectorsNormalization::Full)
+	      {
+		nv_blk0 =
+		  vecnorm<NOp + 1 + 5 - 1>(nv_blk0, detail::union_dimensions(nv_blk0.order, "", "c"));
+	      }
+	      else if (null_vectors_normalization == NullVectorsNormalization::Blocking)
+	      {
+		nv_blk0 = vecnorm<6>(nv_blk0, "WYZTSC");
+	      }
+
+	      // Extend nv_blk with nv_blk0
+	      nv_blk = concat(nv_blk, nv_blk0, 'c');
+	      nv_blk0.release();
+
+	      // Compute the left singular vectors
+	      // NOTE: use the label '^' as the singular triple index
+	      auto svd_result = svd<NOp + 1 + 5, NOp, NOp + 1>(nv_blk, "WYZTSC", "c", '^');
+	      const auto& svd_u = std::get<0>(svd_result); // get the left singular vectors
+	      auto svd_s =
+		std::get<1>(svd_result).template cast<COMPLEX>(); // get the singular values
+	      std::get<2>(svd_result).release(); // release the right singular vectors
+
+	      if (nv_created + current_nv >= num_null_vecs)
+	      {
+		// If this is the last iteration, take the most common `num_colors` directions
+		nv_blk = svd_u.rename_dims({{'^', 'c'}})
+			   .kvslice_from_size({}, {{'c', num_colors}})
+			   .clone();
+	      }
+	      else
+	      {
+		// Otherwise, take the first `num_colors`+1 most frequent directions and
+		// scale them with the frequency
+		nv_blk =
+		  contract<NOp + 1 + 5>(svd_u.kvslice_from_size({}, {{'^', num_colors + 1}}),
+					svd_s.kvslice_from_size({}, {{'^', num_colors + 1}}), "")
+		    .rename_dims({{'^', 'c'}});
+	      }
+	    }
+	    else
+	    {
+	      nv_blk = nv_blk0;
 	    }
 
-	    // Compute the left singular vectors and take the most common `num_colors` directions
-	    nv_blk = std::get<0>(svd<NOp + 1 + 5, NOp, NOp + 1>(nv_blk, "WYZTSC", "c", '^'))
-		       .rename_dims({{'^', 'c'}})
-		       .kvslice_from_size({}, {{'c', num_colors}})
-		       .clone();
+	    // Update loop var
+	    nv_created += current_nv;
 	  }
 
 	  // Do the orthogonalization on each block and chirality
@@ -1637,59 +1695,98 @@ namespace Chroma
 	}
 	else
 	{
-	  // Do the blocking, which encompasses the following transformations:
-	  //  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
-	  // where output X is a singlet dimension, and W,Y,Z, and T have size mg_blocking,
-	  // and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
-	  // have the remaining.
-	  // Also, enforce the values to be the same across different spins so that the coarse operator links
-	  // are also the tensor product of a spin matrix and a color matrix
-
+	  Tensor<NOp + 4, COMPLEX> nv_blk;
 	  std::map<std::string, std::string> m_blk, m_blk_rev, m_blk_nv;
-	  m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
-		      {"3t", "T3t"},   {"ns", "c"},   {"c", "C"}};
-	  m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"}, {"c", "C"}};
-	  m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"}, {"T3t", "3t"}, {"C", "c"}};
-
-	  if (!x_blocking_divide_X)
-	    nv = toNaturalOrdering(nv);
-	  auto nv_blk = nv.template reshape_dimensions<NOp + 4>(
-	    m_blk_nv,
-	    {{'X', 1}, // we don't do even-odd layout on the coarse operator space
-	     {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
-	     {'Y', mg_blocking.at('y')},
-	     {'Z', mg_blocking.at('z')},
-	     {'T', mg_blocking.at('t')},
-	     {'0', layout_blocking.at('x')},
-	     {'1', layout_blocking.at('y')},
-	     {'2', layout_blocking.at('z')},
-	     {'3', layout_blocking.at('t')},
-	     {'c', num_null_vecs * ns}},
-	    true);
-	  nv.release();
-
-	  // User even-odd ordering for nv_blk
-	  if (nv_blk.kvdim().at('0') != 1)
-	    throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
-
-	  // Cut down the extra null vectors
-	  if (nv_blk.kvdim().at('c') > num_colors)
+	  for (unsigned int nv_created = 0; nv_created < num_null_vecs;)
 	  {
-	    if (null_vectors_normalization == NullVectorsNormalization::Full)
+	    unsigned int current_nv = std::min(
+	      num_null_vecs - nv_created, max_num_null_vecs - (nv_created == 0 ? 0 : num_colors));
+
+	    // Get the null vectors
+	    auto nv = get_null_vecs_fn(current_nv);
+
+	    // Do the blocking, which encompasses the following transformations:
+	    //  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
+	    // where output X is a singlet dimension, and W,Y,Z, and T have size mg_blocking,
+	    // and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
+	    // have the remaining.
+	    // Also, enforce the values to be the same across different spins so that the coarse operator links
+	    // are also the tensor product of a spin matrix and a color matrix
+
+	    m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
+			{"3t", "T3t"},	 {"ns", "c"},	{"c", "C"}};
+	    m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"}, {"c", "C"}};
+	    m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"}, {"T3t", "3t"}, {"C", "c"}};
+
+	    if (!x_blocking_divide_X)
+	      nv = toNaturalOrdering(nv);
+	    auto nv_blk0 = nv.template reshape_dimensions<NOp + 4>(
+	      m_blk_nv,
+	      {{'X', 1}, // we don't do even-odd layout on the coarse operator space
+	       {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
+	       {'Y', mg_blocking.at('y')},
+	       {'Z', mg_blocking.at('z')},
+	       {'T', mg_blocking.at('t')},
+	       {'0', layout_blocking.at('x')},
+	       {'1', layout_blocking.at('y')},
+	       {'2', layout_blocking.at('z')},
+	       {'3', layout_blocking.at('t')},
+	       {'c', current_nv * ns}},
+	      true);
+	    nv.release();
+
+	    // User even-odd ordering for nv_blk0
+	    if (nv_blk0.kvdim().at('0') != 1)
+	      throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
+
+	    // Cut down the extra null vectors
+	    if (num_null_vecs > num_colors)
 	    {
-	      nv_blk =
-		vecnorm<NOp + 4 - 1>(nv_blk, detail::union_dimensions(nv_blk.order, "", "c"));
+	      // Pre-normalize the vectors if the user asks
+	      if (null_vectors_normalization == NullVectorsNormalization::Full)
+	      {
+		nv_blk0 =
+		  vecnorm<NOp + 4 -1>(nv_blk0, detail::union_dimensions(nv_blk0.order, "", "c"));
+	      }
+	      else if (null_vectors_normalization == NullVectorsNormalization::Blocking)
+	      {
+		nv_blk0 = vecnorm<5>(nv_blk0, "WYZTC");
+	      }
+
+	      // Extend nv_blk with nv_blk0
+	      nv_blk = concat(nv_blk, nv_blk0, 'c');
+	      nv_blk0.release();
+
+	      // Compute the left singular vectors
+	      // NOTE: use the label '^' as the singular triple index
+	      auto svd_result = svd<NOp + 4, NOp - 1, NOp>(nv_blk, "WYZTC", "c", '^');
+	      const auto& svd_u = std::get<0>(svd_result); // get the left singular vectors
+	      auto svd_s =
+		std::get<1>(svd_result).template cast<COMPLEX>(); // get the singular values
+	      std::get<2>(svd_result).release(); // release the right singular vectors
+
+	      if (nv_created + current_nv >= num_null_vecs)
+	      {
+		// If this is the last iteration, take the most common `num_colors` directions
+		nv_blk = svd_u.rename_dims({{'^', 'c'}})
+			   .kvslice_from_size({}, {{'c', num_colors}})
+			   .clone();
+	      }
+	      else
+	      {
+		// Otherwise, take the first `num_colors`+1 most frequent directions
+		nv_blk = contract<NOp + 4>(svd_u.kvslice_from_size({}, {{'^', num_colors + 1}}),
+					   svd_s.kvslice_from_size({}, {{'^', num_colors + 1}}), "")
+			   .rename_dims({{'^', 'c'}});
+	      }
 	    }
-	    else if (null_vectors_normalization == NullVectorsNormalization::Blocking)
+	    else
 	    {
-	      nv_blk = vecnorm<5>(nv_blk, "WYZTC");
+	      nv_blk = nv_blk0;
 	    }
 
-	    // Compute the left singular vectors and take the most common `num_colors` directions
-	    nv_blk = std::get<0>(svd<NOp + 4, NOp - 1, NOp>(nv_blk, "WYZTC", "c", '^'))
-		       .rename_dims({{'^', 'c'}})
-		       .kvslice_from_size({}, {{'c', num_colors}})
-		       .clone();
+	    // Update loop var
+	    nv_created += current_nv;
 	  }
 
 	  // Do the orthogonalization on each block and chirality
@@ -1813,6 +1910,8 @@ namespace Chroma
 
 	// Get prolongator, V
 	unsigned int num_null_vecs = getOption<unsigned int>(ops, "num_null_vecs");
+	unsigned int max_num_null_vecs =
+	  getOption<unsigned int>(ops, "max_num_null_vecs", num_null_vecs);
 	unsigned int num_colors = getOption<unsigned int>(ops, "num_colors", num_null_vecs);
 	std::vector<unsigned int> mg_blocking_v =
 	  getOption<std::vector<unsigned int>>(ops, "blocking");
@@ -1852,9 +1951,9 @@ namespace Chroma
 	if (prolongator_id.size() == 0 ||
 	    getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0)
 	{
-	  V = getMGProlongator(op, num_null_vecs, num_colors, null_vecs_normalization, mg_blocking,
-			       layout_blocking, spin_splitting, getOptions(ops, "null_vecs"),
-			       solverSpace);
+	  V = getMGProlongator(op, num_null_vecs, max_num_null_vecs, num_colors,
+			       null_vecs_normalization, mg_blocking, layout_blocking,
+			       spin_splitting, getOptions(ops, "null_vecs"), solverSpace);
 	  if (prolongator_id.size() > 0)
 	    getProlongatorCache<NOp, COMPLEX>()[prolongator_id] = V;
 	}

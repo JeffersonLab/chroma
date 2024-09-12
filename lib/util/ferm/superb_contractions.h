@@ -4659,6 +4659,45 @@ namespace Chroma
       return r;
     }
 
+    /// Concatenate two tensors with the same dimensions
+    /// \param v: one of the given tensors
+    /// \param w: the other tensor
+    /// \param label: label along to concat
+    ///
+    /// Example:
+    ///
+    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("cs", {{Ns,Ns}});
+    ///   Tensor<2,Complex> r0 = concat(t, q, 'c');
+
+    template <std::size_t N, typename T>
+    Tensor<N, T> concat(const Tensor<N, T>& v, Tensor<N, T> w, char label)
+    {
+      // Shortcuts
+      if (!v)
+	return w;
+      if (!w)
+	return v;
+
+      // Check that all dimensions coincide excepting `label`
+      const auto& kvdims_v = v.kvdim();
+      const auto& kvdims_w = w.kvdim();
+      for (const auto& it : kvdims_v)
+      {
+	if (it.first == label)
+	  continue;
+	if (kvdims_w.count(it.first) == 0 || kvdims_w.at(it.first) != it.second)
+	  throw std::runtime_error(
+	    "concat: input tensors differ in a dimension that is not going to be concatenated");
+      }
+
+      // Proceed to concatenate
+      auto r = v.make_compatible(none, {{label, kvdims_v.at(label) + kvdims_w.at(label)}});
+      v.copyTo(r);
+      w.copyTo(r.kvslice_from_size({{label, kvdims_v.at(label)}}, {{label, kvdims_w.at(label)}}));
+
+      return r;
+    }
+
     /// Contract some dimension of the given tensors
     /// \param v: one tensor to contract
     /// \param w: the other tensor to contract
