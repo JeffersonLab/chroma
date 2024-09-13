@@ -10,7 +10,7 @@ using namespace QDP;
 namespace Chroma {
 
   SysSolverQUDANEFParams::SysSolverQUDANEFParams(XMLReader& xml, 
-						       const std::string& path)
+                                                 const std::string& path)
   {
     XMLReader paramtop(xml, path);
 
@@ -29,6 +29,12 @@ namespace Chroma {
     }
     else { 
       verboseP = false;
+    }
+    if ( paramtop.count("Debug") > 0 ) { // add debug bool to support QUDA_DEBUG_VERBOSE
+      read(paramtop, "Debug", debugP);
+    }
+    else {
+      debugP = false;
     }
     if ( paramtop.count("AsymmetricLinop") > 0 ) { 
       read(paramtop, "AsymmetricLinop", asymmetricP);
@@ -80,10 +86,10 @@ namespace Chroma {
     }
 
     if( paramtop.count("RsdToleranceFactor") > 0 ) { 
-       read(paramtop, "RsdToleranceFactor", RsdToleranceFactor);
+      read(paramtop, "RsdToleranceFactor", RsdToleranceFactor);
     }
     else { 
-       RsdToleranceFactor = Real(10); // Tolerate an order of magnitude difference by default.
+      RsdToleranceFactor = Real(10); // Tolerate an order of magnitude difference by default.
     }
 
     if( paramtop.count("AutotuneDslash") > 0 ) { 
@@ -122,29 +128,29 @@ namespace Chroma {
     }
    
     if ( paramtop.count("DoCGNR")  > 0 ) { 
-       read(paramtop, "DoCGNR", cgnrP);
+      read(paramtop, "DoCGNR", cgnrP);
     }
     else { 
-	cgnrP = false ; // Do CGNE by default
+      cgnrP = false ; // Do CGNE by default
     }
 
     if( paramtop.count("Pipeline") > 0 ) { 
-       read(paramtop, "Pipeline", Pipeline);
+      read(paramtop, "Pipeline", Pipeline);
     }
     else { 
-	Pipeline = 1;
+      Pipeline = 0; // For CG solvers, this should be 0, not 1
     }
   }
 
   void read(XMLReader& xml, const std::string& path, 
-	    SysSolverQUDANEFParams& p)
+            SysSolverQUDANEFParams& p)
   {
     SysSolverQUDANEFParams tmp(xml, path);
     p = tmp;
   }
 
   void write(XMLWriter& xml, const std::string& path, 
-	     const SysSolverQUDANEFParams& p) {
+             const SysSolverQUDANEFParams& p) {
     push(xml, path);
     write(xml, "MaxIter", p.MaxIter);
     write(xml, "RsdTarget", p.RsdTarget);
@@ -153,6 +159,7 @@ namespace Chroma {
     write(xml, "Delta", p.Delta);
     write(xml, "SolverType", p.solverType);
     write(xml, "Verbose", p.verboseP);
+    write(xml, "Debug", p.debugP);
     write(xml, "AsymmetricLinop", p.asymmetricP);
     write(xml, "CudaPrecision", p.cudaPrecision);
     write(xml, "CudaReconstruct", p.cudaReconstruct);

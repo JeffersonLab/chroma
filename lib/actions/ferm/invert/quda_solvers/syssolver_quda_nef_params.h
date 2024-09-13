@@ -26,6 +26,7 @@ namespace Chroma
       RsdToleranceFactor = Real(10); //< Tolerate if the solution achived is better (less) than rsdToleranceFactor*RsdTarget
       tuneDslashP = false ; //< v0.3 autotune feature
       verboseP = false;
+      debugP   = false; // if true and verboseP true, use QUDA_DEBUG_VERBOSE
       innerParamsP = false;
       backup_invP = false;
       dump_on_failP = false;
@@ -41,6 +42,7 @@ namespace Chroma
       Delta = p.Delta;
       solverType = p.solverType;
       verboseP = p.verboseP;
+      debugP   = p.debugP;
       asymmetricP = p.asymmetricP;
       cudaPrecision = p.cudaPrecision;
       cudaReconstruct = p.cudaReconstruct;
@@ -67,6 +69,7 @@ namespace Chroma
     Real Delta;
     QudaSolverType solverType;
     bool verboseP;
+    bool debugP;
     bool asymmetricP;
     QudaPrecisionType cudaPrecision;
     QudaReconsType cudaReconstruct;
@@ -77,7 +80,7 @@ namespace Chroma
     Real RsdToleranceFactor;
     bool tuneDslashP;
     bool innerParamsP;
-	
+  
     // GCR Specific params
     // Params for the preconditioner
     Handle<GCRInnerSolverParams> innerParams;
@@ -94,7 +97,7 @@ namespace Chroma
   void read(XMLReader& xml, const std::string& path, SysSolverQUDANEFParams& p);
 
   void write(XMLWriter& xml, const std::string& path, 
-	     const SysSolverQUDANEFParams& param);
+             const SysSolverQUDANEFParams& param);
 
 
 
