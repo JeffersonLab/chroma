@@ -1,6 +1,6 @@
 /*! \file
-*  \brief Solve a MdagM*psi=chi linear system by CG2
-*/
+ *  \brief Solve a MdagM*psi=chi linear system by CG2
+ */
 
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
@@ -32,11 +32,11 @@ namespace Chroma
       bool registered = false;
     }
 
-    LinOpSystemSolverArray<LatticeFermion>* createFerm(XMLReader& xml_in,	
-						       const std::string& path,
-						       Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
-						       
-						       Handle< LinearOperatorArray<LatticeFermion> > A)
+    LinOpSystemSolverArray<LatticeFermion>* createFerm(XMLReader& xml_in, 
+                                                       const std::string& path,
+                                                       Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
+                   
+                                                       Handle< LinearOperatorArray<LatticeFermion> > A)
     {
       return new LinOpSysSolverQUDANEF(A, state,SysSolverQUDANEFParams(xml_in, path));
     }
@@ -46,10 +46,10 @@ namespace Chroma
     {
       bool success = true; 
       if (! registered)
-	{
-	  success &= Chroma::TheLinOpFermSystemSolverArrayFactory::Instance().registerObject(name, createFerm);
-	  registered = true;
-	}
+        {
+          success &= Chroma::TheLinOpFermSystemSolverArrayFactory::Instance().registerObject(name, createFerm);
+          registered = true;
+        }
       return success;
     }
   }
@@ -76,8 +76,8 @@ namespace Chroma
 #else
     //not yet
     //for(unsigned int s=0; s<quda_inv_param.Ls; s++){
-    //	spinorIn[s]=GetMemoryPtr( chi_s[s].getId() );
-    //	spinorOut[s]=GetMemoryPtr( psi_s[s].getId() );
+    //  spinorIn[s]=GetMemoryPtr( chi_s[s].getId() );
+    //  spinorOut[s]=GetMemoryPtr( psi_s[s].getId() );
     //}
 #endif
     
@@ -100,8 +100,8 @@ namespace Chroma
 #else
     //not yet implemented
     //for(unsigned int s=0; s<quda_inv_param.Ls; s++){
-    //	spinorIn[s]=GetMemoryPtr( chi_s[s].getId() );
-    //	spinorOut[s]=GetMemoryPtr( psi_s[s].getId() );
+    //  spinorIn[s]=GetMemoryPtr( chi_s[s].getId() );
+    //  spinorOut[s]=GetMemoryPtr( psi_s[s].getId() );
     //}
 #endif
     
