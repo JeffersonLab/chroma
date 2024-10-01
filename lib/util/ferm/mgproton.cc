@@ -4402,8 +4402,8 @@ namespace Chroma
       if (sol.op)
       {
 	auto op = sol.op;
-	auto tchi = op.make_compatible_dom<Nd + 8>("n", {{'n', max_rhs}});
-	auto tpsi = op.make_compatible_img<Nd + 8>("n", {{'n', max_rhs}});
+	auto tchi = op.template make_compatible_dom<Nd + 8>("n", {{'n', max_rhs}});
+	auto tpsi = op.template make_compatible_img<Nd + 8>("n", {{'n', max_rhs}});
 	for (int i = 0, n = std::min(max_rhs, (int)chis.size()); i < chis.size();
 	     i += n, n = std::min((int)chis.size() - i, max_rhs))
 	{
