@@ -739,6 +739,8 @@ namespace Chroma
 
 	//-----------------------------------------------------------------------
 	//! Read a RitzPairs Type
+#if ! defined (QDP_IS_QDPJIT2)
+
 	class QIOReadRitzPairsLatticeFermion : public QIOReadObject
 	{
 	private:
@@ -798,7 +800,7 @@ namespace Chroma
 	{
 	  return new QIOReadRitzPairsLatticeFermion(p);
 	}
-
+#endif
 
 
 	//------------------------------------------------------------------------
@@ -856,8 +858,10 @@ namespace Chroma
 	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("EigenInfoLatticeFermion"),
 									qioReadEigenInfoLatticeFermion);
 
+#if ! defined (QDP_IS_QDPJIT2)
 	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("RitzPairsLatticeFermion"), 
 									qioReadRitzPairsLatticeFermion);
+#endif
 
 	  registered = true;
 	}

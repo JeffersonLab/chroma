@@ -33,12 +33,12 @@ namespace Chroma {
     struct fuzzForType {};
 
     template<>
-    struct fuzzForType<LatticeColorMatrixF> {
+    struct fuzzForType<REAL32> {
 	static constexpr float value() { return 1.0e-5; }
     };
 
     template<>
-    struct fuzzForType<LatticeColorMatrixD> {
+    struct fuzzForType<REAL64> {
         static constexpr double value() { return 1.0e-13; }
     };
 
@@ -71,7 +71,7 @@ namespace Chroma {
     numbad = 0;
     
     // some kind of small floating point number, should be prec. dep.
-    R fuzz(ReunitEnv::fuzzForType<Q>::value());
+    R fuzz(ReunitEnv::fuzzForType< typename WordType<Q>::Type_t >::value());
     
     // Extract initial components 
     for(int i=0; i < Nc; ++i)
@@ -461,7 +461,8 @@ namespace Chroma {
     ReunitEnv::time_spent += swatch.getTimeInSeconds();
     END_CODE();
   }
-  
+
+#if ! defined (QDP_IS_QDPJIT2)
   // Overloaded definitions
   // SINGLE
   void reunit(LatticeColorMatrixF3& xa)
@@ -618,5 +619,53 @@ namespace Chroma {
   {
     reunit_t<LatticeColorMatrixD3, LatticeComplexD, LatticeRealD, Subset>(xa, bad, numbad, ruflag, mstag);
   }
+#else
+  void reunit(LatticeColorMatrix& xa)
+  {
+    START_CODE();
+
+    LatticeBoolean bad;
+    int numbad;
+    
+    reunit_t<LatticeColorMatrix, LatticeComplex, LatticeReal, Subset>(xa, bad, numbad, REUNITARIZE, all);
+    
+    END_CODE();
+  }
+
+  
+  void reunit(LatticeColorMatrix& xa,
+	      const Subset& mstag)
+  {
+    START_CODE();
+
+    LatticeBoolean bad;
+    int numbad;
+    
+    reunit_t<LatticeColorMatrix, LatticeComplex, LatticeReal, Subset>(xa, bad, numbad, REUNITARIZE, mstag);
+    
+    END_CODE();
+  }
+
+  void reunit(LatticeColorMatrix& xa,
+	      int& numbad, 
+	      enum Reunitarize ruflag)
+  {
+    START_CODE();
+
+    LatticeBoolean bad;
+    
+    reunit_t<LatticeColorMatrix, LatticeComplex, LatticeReal, Subset>(xa, bad, numbad, REUNITARIZE, all);
+    
+    END_CODE();
+  }
+ 
+  void reunit(LatticeColorMatrix& xa, 
+	      LatticeBoolean& bad, 
+	      int& numbad, 
+	      enum Reunitarize ruflag)
+  {
+    reunit_t<LatticeColorMatrix, LatticeComplex, LatticeReal, Subset>(xa, bad, numbad, ruflag, all);
+  }
+#endif
 
 } // End namespace

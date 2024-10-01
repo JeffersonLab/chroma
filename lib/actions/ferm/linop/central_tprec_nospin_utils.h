@@ -12,6 +12,8 @@
 #if QDP_ND == 4
 #include "chromabase.h"
 
+#if ! defined (QDP_IS_QDPJIT2)
+
 namespace Chroma 
 {
 
@@ -635,6 +637,8 @@ namespace Chroma
   } // Namespace 
   
 } // Namespace chroma
+
+#endif
 
 #endif
 #endif

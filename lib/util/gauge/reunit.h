@@ -27,7 +27,8 @@ namespace Chroma {
   }
 
   enum Reunitarize {REUNITARIZE, REUNITARIZE_ERROR, REUNITARIZE_LABEL};
-  
+
+#if ! defined (QDP_IS_QDPJIT2)
   void reunit(LatticeColorMatrixF3& xa);
   void reunit(LatticeColorMatrixD3& xa);
   
@@ -79,6 +80,21 @@ namespace Chroma {
 	      int& numbad, 
 	      enum Reunitarize ruflag,
 	      const Subset& mstag);
+#else
+  void reunit(LatticeColorMatrix& xa);
+
+  void reunit(LatticeColorMatrix& xa,
+	      const Subset& mstag);
+
+  void reunit(LatticeColorMatrix& xa,
+	      int& numbad, 
+	      enum Reunitarize ruflag);
+
+  void reunit(LatticeColorMatrix& xa, 
+	      LatticeBoolean& bad, 
+	      int& numbad, 
+	      enum Reunitarize ruflag);
+#endif
   
 } // End namespace
 #endif

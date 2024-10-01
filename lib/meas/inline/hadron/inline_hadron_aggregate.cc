@@ -181,8 +181,10 @@ namespace Chroma
 	success &= InlineEigenvaluesSuperbEnv::registerAll();
 #endif
 #ifndef QDP_IS_QDPJIT_NO_NVPTX
+#if ! defined (QDP_IS_QDPJIT2)
 	success &= InlineMatElemDistillationEnv::registerAll();
 	success &= InlinePropAndMatElemDistillationEnv::registerAll();
+#endif
 	success &= InlineUnsmearedHadronNodeDistillationEnv::registerAll();
 #endif
 #ifndef QDP_IS_QDPJIT

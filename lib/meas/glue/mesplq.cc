@@ -81,6 +81,7 @@ namespace Chroma
     END_CODE();
   }
 
+#if ! defined (QDP_IS_QDPJIT2)
   void MesPlq(const multi1d<LatticeColorMatrixF3>& u, 
 	      multi2d<Double>& plane_plaq, Double& link) 
   {
@@ -92,6 +93,13 @@ namespace Chroma
   {
       MesPlq_t(u,plane_plaq, link);
   }
+#else
+  void MesPlq(const multi1d<LatticeColorMatrix>& u, 
+	      multi2d<Double>& plane_plaq, Double& link) 
+  {
+    MesPlq_t(u,plane_plaq, link);
+  }
+#endif
 
   //! Return the value of the average plaquette normalized to 1
   /*!
@@ -144,6 +152,7 @@ namespace Chroma
     END_CODE();
   }
 
+#if ! defined (QDP_IS_QDPJIT2)
   void MesPlq(const multi1d<LatticeColorMatrixF3>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, 
 	      multi2d<Double>& plane_plaq,
@@ -151,7 +160,6 @@ namespace Chroma
   {
      MesPlq_t(u,w_plaq,s_plaq,t_plaq, plane_plaq, link);
   }
-
   void MesPlq(const multi1d<LatticeColorMatrixD3>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, 
 	      multi2d<Double>& plane_plaq,
@@ -159,6 +167,15 @@ namespace Chroma
   {
      MesPlq_t(u,w_plaq,s_plaq,t_plaq, plane_plaq, link);
   }
+#else
+  void MesPlq(const multi1d<LatticeColorMatrix>& u, 
+	      Double& w_plaq, Double& s_plaq, Double& t_plaq, 
+	      multi2d<Double>& plane_plaq,
+	      Double& link) 
+  {
+     MesPlq_t(u,w_plaq,s_plaq,t_plaq, plane_plaq, link);
+  }
+#endif
 
   //! Return the value of the average plaquette normalized to 1
   /*!
@@ -171,6 +188,7 @@ namespace Chroma
    * \param link        space-time average link (Write)
    */
 
+#if ! defined (QDP_IS_QDPJIT2)
   void MesPlq(const multi1d<LatticeColorMatrixF3>& u, 
 	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link)
   {
@@ -194,6 +212,19 @@ namespace Chroma
 
     END_CODE();
   }
+#else
+  void MesPlq(const multi1d<LatticeColorMatrix>& u, 
+	      Double& w_plaq, Double& s_plaq, Double& t_plaq, Double& link)
+  {
+    START_CODE();
+
+    multi2d<Double> plane_plaq;
+
+    MesPlq(u, w_plaq, s_plaq, t_plaq, plane_plaq, link);
+
+    END_CODE();
+  }
+#endif
 
   //! Print the value of the average plaquette normalized to 1
   /*!
@@ -265,6 +296,7 @@ namespace Chroma
     END_CODE();
   }
 
+#if ! defined (QDP_IS_QDPJIT2)
  void MesPlq(XMLWriter& xml, 
 	     const std::string& xml_group,
 	     const multi1d<LatticeColorMatrixF3>& u)
@@ -278,5 +310,13 @@ namespace Chroma
  {
    MesPlq_t(xml, xml_group, u);
  }
-
+#else
+  void MesPlq(XMLWriter& xml, 
+	      const std::string& xml_group,
+	      const multi1d<LatticeColorMatrix>& u)
+  {
+    MesPlq_t(xml, xml_group, u);
+  }
+#endif
+  
 }  // end namespace Chroma

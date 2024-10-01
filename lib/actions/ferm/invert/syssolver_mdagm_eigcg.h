@@ -16,7 +16,11 @@ namespace Chroma
   namespace MdagMSysSolverEigCGEnv
   {
     //! Register the syssolver
-    inline bool registerAll() {return MdagMSysSolverOptEigCGEnv::registerAll();}
+    inline bool registerAll() {
+#if ! defined (QDP_IS_QDPJIT2)
+      return MdagMSysSolverOptEigCGEnv::registerAll();
+#endif
+    }
   }
 }  // end namespace Chroma
 
@@ -32,11 +36,16 @@ namespace Chroma
   namespace MdagMSysSolverEigCGEnv
   {
     //! Register the syssolver
-    inline bool registerAll() {return MdagMSysSolverQDPEigCGEnv::registerAll();}
+    inline bool registerAll() {
+#if ! defined (QDP_IS_QDPJIT2)
+      return MdagMSysSolverQDPEigCGEnv::registerAll();
+#endif
+    }
   }
 }  // end namespace Chroma
 
 #endif 
 
 #endif
+
 

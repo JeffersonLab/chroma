@@ -11,9 +11,13 @@ namespace Chroma
    *
    * \param  u  The multi1d<LatticeColorMatrix> to be tested
    */
+#if ! defined (QDP_IS_QDPJIT2)
   void unitarityCheck(const multi1d<LatticeColorMatrixF3>& u);
   void unitarityCheck(const multi1d<LatticeColorMatrixD3>& u);
-
+#else
+  void unitarityCheck(const multi1d<LatticeColorMatrix>& u);  
+#endif
+  
 }
 
 #endif

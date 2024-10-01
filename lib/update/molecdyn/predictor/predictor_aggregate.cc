@@ -49,8 +49,9 @@ namespace Chroma
 	success &= MinimalResidualExtrapolation4DChronoPredictorEnv::registerAll();
 	success &= MinimalResidualExtrapolation5DChronoPredictorEnv::registerAll();
 
+#if ! defined (QDP_IS_QDPJIT2)
 	success &= MREInitCG4DChronoPredictorEnv::registerAll();
-
+#endif
 
 #ifdef BUILD_QUDA
 	success &= QUDA4DChronoPredictorEnv::registerAll();

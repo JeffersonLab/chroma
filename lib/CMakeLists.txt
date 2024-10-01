@@ -1441,6 +1441,7 @@ target_sources(chromalib PRIVATE
 	meas/hadron/dilution_quark_source_const_w.cc 
     util/gauge/cern_gauge_init.cc 
     io/readcern.cc
+    constant.cc
 )
 
 ########################################################
@@ -1922,7 +1923,9 @@ endif()
 #######################################################
 if( Chroma_ENABLE_JIT_CLOVER )
   list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit_w.h)
+  list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit2_w.h)
   target_sources(chromalib PRIVATE util/gauge/stout_utils_jit.cc)
+  target_sources(chromalib PRIVATE util/gauge/stout_utils_jit2.cc)
 endif()
 
 

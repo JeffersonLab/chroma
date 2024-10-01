@@ -5,6 +5,9 @@
 
 #include "chromabase.h"
 
+#if ! defined (QDP_IS_QDPJIT2)
+
+
 namespace Chroma
 {
   namespace LinAlg
@@ -488,4 +491,5 @@ namespace Chroma
 
 } // namespace Chroma
 
+#endif 
 #endif 

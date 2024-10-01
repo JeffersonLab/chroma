@@ -19,6 +19,7 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
+#if ! defined (QDP_IS_QDPJIT2)
 void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const std::string& cfg_file)
 {
   START_CODE();
@@ -104,7 +105,13 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const std::s
 
   END_CODE();
 }
-
+#else
+void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const std::string& cfg_file)
+{
+  QDPIO::cerr << __func__ << " not implemented." << std::endl;
+  QDP_abort(1);
+}
+#endif
 
 
 //! Read a MILC configuration file

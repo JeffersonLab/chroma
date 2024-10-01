@@ -175,7 +175,7 @@ namespace Chroma
 	{
 	  if (mu != params.j_decay)
 	  {
-	    pp_f[j] = params.sink_mom[j] * twopi / Real(Layout::lattSize()[mu]);
+	    pp_f[j] = params.sink_mom[j] * Chroma::constant().twopi / Real(Layout::lattSize()[mu]);
 	    
 	    if (params.sink_mom[j] != 0)
 	      p_dot_x += (Layout::latticeCoordinate(mu) - getTSrce()[mu]) * pp_f[j];
@@ -280,7 +280,7 @@ namespace Chroma
 	{
 	  if (mu != params.j_decay)
 	  {
-	    pp_f[j] = params.sink_mom[j] * twopi / Real(Layout::lattSize()[mu]);
+	    pp_f[j] = params.sink_mom[j] * Chroma::constant().twopi / Real(Layout::lattSize()[mu]);
 	    
 	    if (params.sink_mom[j] != 0)
 	      p_dot_x += (Layout::latticeCoordinate(mu) - getTSrce()[mu]) * pp_f[j];
@@ -322,7 +322,7 @@ namespace Chroma
 	{
 	  if (params.sink_mom[params.pol_dir] != 0)
 	  {
-	    Real pp_f = - params.sink_mom[params.pol_dir] * twopi / Real(Layout::lattSize()[params.pol_dir]);
+	    Real pp_f = - params.sink_mom[params.pol_dir] * Chroma::constant().twopi / Real(Layout::lattSize()[params.pol_dir]);
 	    exp_p_dot_x_b *= cmplx(cos(pp_f),sin(pp_f));
 	  }
 	}

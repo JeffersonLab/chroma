@@ -938,6 +938,7 @@ namespace Chroma {
 			const multi1d<LatticeColorMatrix>& Q_old,
 			const QDP::Seed& seed_old ) 
   {
+#if ! defined (QDP_IS_QDPJIT2)
     
     // Compare local contributions of P
     int diffs_found = 0;
@@ -997,6 +998,9 @@ namespace Chroma {
       QDPIO::cout << "New and old RNG seeds do not match " << std::endl;
       return false;
     }
+#else
+    QDPIO::cout << "qdp-jit2: skipping momentum repro check" << std::endl;
+#endif
     
     return true;
   }

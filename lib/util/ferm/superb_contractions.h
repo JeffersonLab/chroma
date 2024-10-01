@@ -5267,7 +5267,7 @@ namespace Chroma
     template <std::size_t N, typename T>
     typename detail::base_type<T>::type
     max(Tensor<N, T> v, typename detail::base_type<T>::type init =
-			  std::numeric_limits<typename detail::base_type<T>::type>::min())
+			  std::numeric_limits<typename detail::base_type<T>::type>::lowest())
     {
       using value_type = typename detail::base_type<T>::type;
       v = v.make_sure(none, OnHost, detail::compatible_replicated_distribution(v.dist));
@@ -9652,6 +9652,11 @@ namespace Chroma
 	    QDPIO::cerr << __func__ << ": invalid preset method\n";
 	    QDP_abort(1);
 	  }
+
+#    if defined(SUPERBBLAS_USE_GPU)
+	  // Primme block orthogonalization is very slow on gpus
+	  primme.orth = primme_orth_implicit_I;
+#    endif
 
 	  // Allocate space for converged Ritz values and residual norms
 	  std::vector<double> evals(primme.numEvals);

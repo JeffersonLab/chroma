@@ -14,6 +14,7 @@
 #include "actions/ferm/invert/syssolver_mdagm_OPTeigcg.h"
 #include "containers.h"
 
+#if ! defined (QDP_IS_QDPJIT2)
 
 namespace Chroma
 {
@@ -315,3 +316,5 @@ namespace Chroma
 #endif
 
 }
+
+#endif

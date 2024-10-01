@@ -10,6 +10,8 @@
 #include "actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.h"
 #include "actions/ferm/linop/central_tprec_nospin_utils.h"
 
+#if ! defined (QDP_IS_QDPJIT2)
+
 using namespace QDP::Hints;
 
 namespace Chroma 
@@ -317,6 +319,8 @@ namespace Chroma
   }
 
 } // End Namespace Chroma
+
+#endif
 
 #endif
 #endif
