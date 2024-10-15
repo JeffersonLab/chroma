@@ -20,16 +20,16 @@ namespace Chroma
       cudaReconstruct=RECONS_12;
       cudaSloppyPrecision=DEFAULT;
       cudaSloppyReconstruct=RECONS_12;
-      asymmetricP = false; //< Use asymmetric version of the linear operator
+      asymmetricP = true; //< Use asymmetric version of the linear operator
       axialGaugeP = false; //< Fix Axial Gauge?
       SilentFailP = false; //< If set to true ignore lack of convergence. Default is 'loud' 
       RsdToleranceFactor = Real(10); //< Tolerate if the solution achived is better (less) than rsdToleranceFactor*RsdTarget
-      tuneDslashP = false ; //< v0.3 autotune feature
       verboseP = false;
       innerParamsP = false;
       backup_invP = false;
       dump_on_failP = false;
       Pipeline = 1;
+			SolutionCheckP = true;
       GridSplitDims[0] = 1;
       GridSplitDims[1] = 1;
       GridSplitDims[2] = 1;
@@ -52,13 +52,13 @@ namespace Chroma
       axialGaugeP = p.axialGaugeP;
       SilentFailP = p.SilentFailP;
       RsdToleranceFactor = p.RsdToleranceFactor;
-      tuneDslashP = p.tuneDslashP;
       innerParamsP = p.innerParamsP;
       innerParams = p.innerParams;
       backup_invP = p.backup_invP;
       backup_inv_param = p.backup_inv_param;
       dump_on_failP = p.dump_on_failP;
       Pipeline = p.Pipeline;
+			SolutionCheckP = p.SolutionCheckP;
       GridSplitDims.resize(Nd);
       for(int i=0; i < Nd; i++) GridSplitDims[i] = p.GridSplitDims[i];
     }
@@ -79,7 +79,6 @@ namespace Chroma
     bool axialGaugeP;
     bool SilentFailP;
     Real RsdToleranceFactor;
-    bool tuneDslashP;
     bool innerParamsP;
 
     // GCR Specific params
@@ -93,6 +92,7 @@ namespace Chroma
     
     // Pipeline depth 
     int Pipeline;
+		bool SolutionCheckP;
     multi1d<int> GridSplitDims;
   };
 

@@ -49,22 +49,38 @@ namespace Chroma
     {
       START_CODE();
 
-      // Call inverter
+      // Call inverter -- convention: invA will return res ( || r ||/ || b || )
       SystemSolverResults_t res = (*invA)(psi, chi);
-  
-      // Compute residual
-      {
-	T  r;
-	(*A)(r, psi, PLUS);
-	r -= chi;
-	res.resid = sqrt(norm2(r));
-      }
+ 			
+			// For some reason chroma convention is for Qprop to return || r || (absolute)
+			// So we multiply res.resid * sqrt(norm(chi));
+			res.resid *= sqrt(norm2(chi));
 
       END_CODE();
 
       return res;
     }
 
+		std::vector<SystemSolverResults_t> operator() (const std::vector<std::shared_ptr<T>>& psis, 
+																									 const std::vector<std::shared_ptr<const T>>& chis) const override
+    {
+      START_CODE();
+
+      assert(psis.size() == chis.size());
+
+      // Call inverter - convention  returns residuum
+      std::vector<SystemSolverResults_t> res = (*invA)(psis, chis);
+
+      // for some reason chroma convention is for Qprop to return || r || (absolute)
+			// we can obtaint his by multiplying || r || / || b || by || b ||.
+      for (int col=0; col< psis.size(); ++col) {
+  		  res[col].resid *= sqrt(norm2(*(chis[col])));
+      }
+
+      END_CODE();
+      return res;
+    }
+ 
   private:
     // Hide default constructor
     FermActQprop() {}

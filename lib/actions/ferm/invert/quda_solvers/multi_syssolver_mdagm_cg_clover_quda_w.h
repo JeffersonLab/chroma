@@ -365,19 +365,6 @@ namespace Chroma
 #endif
 
 
-      // Autotuning
-      if( invParam.tuneDslashP ) { 
-        QDPIO::cout << "Enabling Dslash Autotuning" << std::endl;
-
-        quda_inv_param.tune = QUDA_TUNE_YES;
-      }
-      else { 
-        QDPIO::cout << "Disabling Dslash Autotuning" << std::endl;
-
-        quda_inv_param.tune = QUDA_TUNE_NO;
-      }
-
-
       // PADDING
 
       // Setup padding

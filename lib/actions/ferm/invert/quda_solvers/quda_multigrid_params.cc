@@ -62,6 +62,7 @@ namespace Chroma {
 
 
     nvec.resize(mg_levels-1);
+		nvec_batch.resize(mg_levels-1);
     nu_pre.resize(mg_levels-1);
     nu_post.resize(mg_levels-1);
     maxIterSubspaceCreate.resize(mg_levels-1);
@@ -104,13 +105,37 @@ namespace Chroma {
 		 << " blockings but only " << nvec.size() << " sets of NullVectors" << std::endl;
       QDP_abort(1);
     }
-
     if (nu_pre.size() != mg_levels-1 ) {
  
       QDPIO::cout<<"Error. There are "<< (mg_levels-1)  
 		 << " blockings but only " << nu_pre.size() << " sets pre-smoothing iterations" << std::endl;
       QDP_abort(1);
     }
+
+		{
+			int paramcount = paramtop.count("NullVectorsBatchSize");
+			if ( paramcount == 1 ) { 
+				read(paramtop, "NullVectorsBatchSize", nvec_batch);
+				if (nvec_batch.size()  != mg_levels - 1 ) {
+					QDPIO::cout << "If NullVectorsBatchSize is given, then for "
+											<< mg_levels << " levels, there must be " << mg_levels-1 
+											<< " values in the input. Currently the input has " 
+											<< nvec_batch.size() << " values \n";
+					QDP_abort(1);
+				}
+			}
+			else if ( paramcount > 1 ) { 
+				QDPIO::cout << "NullVectorsBatchSize occurs more than once in this input\n";
+				QDP_abort(1);
+			}
+			else {
+				// Not found in output
+				nvec_batch.resize(mg_levels-1);
+				for( int i=0; i < mg_levels-1; i++) nvec_batch[i] = 1;
+			}	
+		}	
+
+
 
     subspaceSolver.resize(mg_levels-1);
     readArray(paramtop, "SubspaceSolver", subspaceSolver, CG);
@@ -258,6 +283,7 @@ namespace Chroma {
     write(xml, "Reconstruct", p.reconstruct);
     write(xml, "SchwarzType", p.schwarzType);
     write(xml, "NullVectors", p.nvec);
+		write(xml, "NullVectorsBatchSize", p.nvec_batch);
     write(xml, "MultiGridLevels", p.mg_levels);
     write(xml, "GenerateNullSpace", p.generate_nullspace);
     write(xml, "GenerateAllLevels", p.generate_all_levels);
