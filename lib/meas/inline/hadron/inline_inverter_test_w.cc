@@ -54,9 +54,11 @@ namespace Chroma
       read(inputtop, "num_vecs", input.num_vecs);
       read(inputtop, "decay_dir", input.decay_dir);
 
-      input.max_rhs = 8;
       if( inputtop.count("max_rhs") == 1 ) {
         read(inputtop, "max_rhs", input.max_rhs);
+      } else {
+	input.max_rhs.resize(1);
+	input.max_rhs[0] = 8;
       }
     }
 
@@ -304,58 +306,60 @@ namespace Chroma
 	swatch.start();
 
 	const int num_vecs            = params.param.contract.num_vecs;
-	const int max_rhs             = params.param.contract.max_rhs;
-
-	const int t_source = 0;
-	const int spin_source = 0;
-
-	for (int colorvec_src0 = 0, colorvec_src_step = std::min(max_rhs, num_vecs);
-	     colorvec_src0 < num_vecs; colorvec_src0 += colorvec_src_step,
-		 colorvec_src_step = std::min(colorvec_src_step, num_vecs - colorvec_src0))
+	for (int rhsi = 0; rhsi < params.param.contract.max_rhs.size(); ++rhsi)
 	{
-	  std::vector<std::shared_ptr<LatticeFermion>> chis(colorvec_src_step),
-	    quark_solns(colorvec_src_step);
-	  for (int col = 0; col < colorvec_src_step; col++)
-	    chis[col].reset(new LatticeFermion);
-	  for (int col = 0; col < colorvec_src_step; col++)
-	    quark_solns[col].reset(new LatticeFermion);
+	  const int max_rhs = params.param.contract.max_rhs[rhsi];
 
-	  for (int colorvec_src = colorvec_src0, col = 0; col < colorvec_src_step;
-	       ++colorvec_src, ++col)
+	  const int t_source = 0;
+	  const int spin_source = 0;
+
+	  for (int colorvec_src0 = 0, colorvec_src_step = std::min(max_rhs, num_vecs);
+	       colorvec_src0 < num_vecs; colorvec_src0 += colorvec_src_step,
+		   colorvec_src_step = std::min(colorvec_src_step, num_vecs - colorvec_src0))
 	  {
-	    // Get the source std::vector
-	    LatticeColorVector vec_srce;
-	    random(vec_srce);
+	    std::vector<std::shared_ptr<LatticeFermion>> chis(colorvec_src_step),
+	      quark_solns(colorvec_src_step);
+	    for (int col = 0; col < colorvec_src_step; col++)
+	      chis[col].reset(new LatticeFermion);
+	    for (int col = 0; col < colorvec_src_step; col++)
+	      quark_solns[col].reset(new LatticeFermion);
 
-	    // Insert a ColorVector into spin index spin_source
-	    // This only overwrites sections, so need to initialize first
-	    *chis[col] = zero;
-	    CvToFerm(vec_srce, *chis[col], spin_source);
+	    for (int colorvec_src = colorvec_src0, col = 0; col < colorvec_src_step;
+		 ++colorvec_src, ++col)
+	    {
+	      // Get the source std::vector
+	      LatticeColorVector vec_srce;
+	      random(vec_srce);
 
-	    *quark_solns[col] = zero;
-	  }
+	      // Insert a ColorVector into spin index spin_source
+	      // This only overwrites sections, so need to initialize first
+	      *chis[col] = zero;
+	      CvToFerm(vec_srce, *chis[col], spin_source);
 
-	  StopWatch snarss1;
-	  snarss1.reset();
-	  snarss1.start();
+	      *quark_solns[col] = zero;
+	    }
 
-	  // Solve for the solution std::vector
-	  std::vector<SystemSolverResults_t> res = PP->operator()(
-	    quark_solns,
-	    std::vector<std::shared_ptr<const LatticeFermion>>(chis.begin(), chis.end()));
+	    StopWatch snarss1;
+	    snarss1.reset();
+	    snarss1.start();
 
-	  for (int col = 0; col < colorvec_src_step; col++)
-	  {
-	    QDPIO::cout << name << ": residual norm " << toDouble(res[col].resid) << std::endl;
-	  }
+	    // Solve for the solution std::vector
+	    std::vector<SystemSolverResults_t> res = PP->operator()(
+	      quark_solns,
+	      std::vector<std::shared_ptr<const LatticeFermion>>(chis.begin(), chis.end()));
 
-	  snarss1.stop();
-	  QDPIO::cout << "Time to compute prop for spin_source= " << spin_source
-		      << "  colorvec_src= " << colorvec_src0 << " to "
-		      << colorvec_src0 + colorvec_src_step - 1
-		      << "  time = " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+	    for (int col = 0; col < colorvec_src_step; col++)
+	    {
+	      QDPIO::cout << name << ": residual norm " << toDouble(res[col].resid) << std::endl;
+	    }
 
-	} // colorvec_src0
+	    snarss1.stop();
+	    QDPIO::cout << "Time to compute " << colorvec_src_step
+			<< " inversions; time = " << snarss1.getTimeInSeconds() << " secs"
+			<< std::endl;
+
+	  } // colorvec_src0
+	}   // rhsi
 
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 

@@ -35,7 +35,7 @@ namespace Chroma
 	{
 	  int           num_vecs;       /*!< Number of color vectors to use */
 	  int           decay_dir;      /*!< Decay direction */
-          int           max_rhs;        /*! maximum number of linear systems solved simultaneously */
+          multi1d<int>  max_rhs;        /*! maximum number of linear systems solved simultaneously */
 	};
 
 	ChromaProp_t    prop;
