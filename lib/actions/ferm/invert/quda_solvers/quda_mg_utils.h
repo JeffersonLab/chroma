@@ -136,15 +136,6 @@ namespace Chroma {
 			mg_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
 			//
 			//Done...
-			// Autotuning
-			if( invParam.tuneDslashP ) {
-				QDPIO::cout << "Enabling MG Dslash Autotuning" << std::endl;
-				mg_inv_param.tune = QUDA_TUNE_YES;
-			}
-			else {
-				QDPIO::cout << "Disabling MG Dslash Autotuning" << std::endl;
-				mg_inv_param.tune = QUDA_TUNE_NO;
-			}
 			if( invParam.MULTIGRIDParamsP ) {
 				QDPIO::cout << "Setting MULTIGRID solver params" << std::endl;
 				// Dereference handle
@@ -255,6 +246,7 @@ namespace Chroma {
 					// FIXME: Elevate ip.nvec, ip.nu_pre, ip.nu_post, ip.tol to arrays in the XML
 					if ( i < mg_param.n_level-1) {
 						mg_param.n_vec[i] = ip.nvec[i];
+						mg_param.n_vec_batch[i] = ip.nvec_batch[i];
 						mg_param.nu_pre[i] = ip.nu_pre[i];
 						mg_param.nu_post[i] = ip.nu_post[i];
 					}

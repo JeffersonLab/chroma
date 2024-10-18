@@ -1009,6 +1009,7 @@ list(APPEND ChromaLIB_HEADERS
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.h
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h
+	meas/inline/hadron/inline_inverter_test_w.h
 	meas/inline/hadron/inline_mres_w.h
 	meas/inline/hadron/inline_qpropqio_w.h
 	meas/inline/hadron/inline_qpropadd_w.h
@@ -1777,6 +1778,7 @@ target_sources(chromalib PRIVATE
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.cc 
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.cc 
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.cc 
+	meas/inline/hadron/inline_inverter_test_w.cc 
 	meas/inline/hadron/inline_mres_w.cc 
 	meas/inline/hadron/inline_qpropqio_w.cc 
 	meas/inline/hadron/inline_qpropadd_w.cc 
@@ -2009,6 +2011,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h
      meas/inline/hadron/inline_create_colorvecs_superb.h
      meas/inline/hadron/inline_eigenvalues_superb_w.h
+     meas/inline/hadron/inline_inverter_test_superb_w.h
   )
   target_sources(chromalib PRIVATE 
      meas/inline/hadron/inline_disco_prob_defl_superb_w.cc
@@ -2019,6 +2022,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.cc 
      meas/inline/hadron/inline_create_colorvecs_superb.cc
      meas/inline/hadron/inline_eigenvalues_superb_w.cc
+     meas/inline/hadron/inline_inverter_test_superb_w.cc
   )
   target_include_directories(chromalib PUBLIC ${SUPERBBLAS_DIR}/include)
   add_library(superbblas STATIC IMPORTED )
