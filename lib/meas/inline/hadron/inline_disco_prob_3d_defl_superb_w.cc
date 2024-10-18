@@ -796,7 +796,7 @@ namespace Chroma
 	LatticeComplex vec;
 	LatticeReal rnd1, theta;
 	random(rnd1);
-	Real twopiN = Chroma::twopi / 4;
+	Real twopiN = Chroma::constant().twopi / 4;
 	theta = twopiN * floor(4 * rnd1);
 	vec = cmplx(cos(theta), sin(theta));
 	auto urnd =
