@@ -1018,6 +1018,7 @@ list(APPEND ChromaLIB_HEADERS
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.h
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h
+	meas/inline/hadron/inline_inverter_test_w.h
 	meas/inline/hadron/inline_mres_w.h
 	meas/inline/hadron/inline_qpropqio_w.h
 	meas/inline/hadron/inline_qpropadd_w.h
@@ -1450,6 +1451,7 @@ target_sources(chromalib PRIVATE
 	meas/hadron/dilution_quark_source_const_w.cc 
     util/gauge/cern_gauge_init.cc 
     io/readcern.cc
+    constant.cc
 )
 
 ########################################################
@@ -1794,6 +1796,7 @@ target_sources(chromalib PRIVATE
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.cc 
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.cc 
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.cc 
+	meas/inline/hadron/inline_inverter_test_w.cc 
 	meas/inline/hadron/inline_mres_w.cc 
 	meas/inline/hadron/inline_qpropqio_w.cc 
 	meas/inline/hadron/inline_qpropadd_w.cc 
@@ -1940,7 +1943,9 @@ endif()
 #######################################################
 if( Chroma_ENABLE_JIT_CLOVER )
   list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit_w.h)
+  list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit2_w.h)
   target_sources(chromalib PRIVATE util/gauge/stout_utils_jit.cc)
+  target_sources(chromalib PRIVATE util/gauge/stout_utils_jit2.cc)
 endif()
 
 
@@ -2023,6 +2028,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h
      meas/inline/hadron/inline_create_colorvecs_superb.h
      meas/inline/hadron/inline_eigenvalues_superb_w.h
+     meas/inline/hadron/inline_inverter_test_superb_w.h
   )
   target_sources(chromalib PRIVATE 
      meas/inline/hadron/inline_disco_prob_defl_superb_w.cc
@@ -2032,6 +2038,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.cc 
      meas/inline/hadron/inline_create_colorvecs_superb.cc
      meas/inline/hadron/inline_eigenvalues_superb_w.cc
+     meas/inline/hadron/inline_inverter_test_superb_w.cc
   )
   target_include_directories(chromalib PUBLIC ${SUPERBBLAS_DIR}/include)
   add_library(superbblas STATIC IMPORTED )

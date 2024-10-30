@@ -781,7 +781,7 @@ namespace Chroma
 		int mom = k - params.param.pz_max ;
 		LatticeReal pz_z = (Layout::latticeCoordinate(z_dir) - 
 				    t_srce[z_dir])
-		  * mom * twopi / Real(Layout::lattSize()[z_dir]);
+		  * mom * Chroma::constant().twopi / Real(Layout::lattSize()[z_dir]);
 		LatticeComplex pp = cmplx(cos(pz_z),sin(pz_z));
 		hsum[k] =  sumMulti(pp*latC, phases.getSet()) ;
 	      }

@@ -53,7 +53,9 @@ namespace Chroma
 	success &= MdagMSysSolverCGTimingsEnv::registerAll();
 	success &= MdagMSysSolverBiCGStabEnv::registerAll();
 	success &= MdagMSysSolverIBiCGStabEnv::registerAll();
+#if ! defined (QDP_IS_QDPJIT2)
 	success &= MdagMSysSolverEigCGEnv::registerAll();
+#endif
 	success &= MdagMSysSolverRichardsonCloverEnv::registerAll();
 	success &= MdagMSysSolverReliableBiCGStabCloverEnv::registerAll();
 	success &= MdagMSysSolverReliableIBiCGStabCloverEnv::registerAll();

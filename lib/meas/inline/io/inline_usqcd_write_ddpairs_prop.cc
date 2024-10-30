@@ -193,7 +193,11 @@ namespace Chroma
        If not, a wider scope reference will be used to bind the prop
        and u. This is to avoid a very very long try {} catch block */
     try {
+#if ! defined (QDP_IS_QDPJIT2)
       LatticeDiracPropagator& trial_prop=TheNamedObjMap::Instance().getData<LatticePropagator>(params.prop_id);
+#else
+      LatticePropagator& trial_prop=TheNamedObjMap::Instance().getData<LatticePropagator>(params.prop_id);
+#endif
       
       const multi1d<LatticeColorMatrix>& u_trial = 
 	TheNamedObjMap::Instance().getData<multi1d<LatticeColorMatrix> >(params.gauge_id);

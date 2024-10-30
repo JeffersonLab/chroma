@@ -34,7 +34,7 @@ namespace Chroma {
       read(paramtop, "AsymmetricLinop", asymmetricP);
     }
     else { 
-      asymmetricP = false; // Symmetric is default 
+      asymmetricP = true; // Asymmetric is default although it doesn't matter here
     }
 
     if( paramtop.count("CudaPrecision") > 0 ) {
@@ -85,15 +85,6 @@ namespace Chroma {
     else { 
        RsdToleranceFactor = Real(10); // Tolerate an order of magnitude difference by default.
     }
-
-    if( paramtop.count("AutotuneDslash") > 0 ) { 
-      read(paramtop, "AutotuneDslash", tuneDslashP);
-    }
-    else { 
-      tuneDslashP = false;
-    }
-    QDPIO::cout << "tuneDslasP = " << tuneDslashP << std::endl;
-
     if( paramtop.count("Pipeline") > 0 ) { 
       read(paramtop, "Pipeline", Pipeline);
     }
@@ -136,7 +127,6 @@ namespace Chroma {
     write(xml, "AxialGaugeFix", p.axialGaugeP);
     write(xml, "SilentFail", p.SilentFailP);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
-    write(xml, "AutotuneDslash", p.tuneDslashP);
     write(xml, "Pipeline", p.Pipeline);
 
     if( p.MULTIGRIDParamsP ) { 

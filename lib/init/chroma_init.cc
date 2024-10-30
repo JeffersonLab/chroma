@@ -432,12 +432,13 @@ namespace Chroma
       Chroma::getXMLLogInstance().close();
     }
 
+    // Free memory for constants
+    constant_destroy();
+
     // Destroy singletons
     destroySingletons();
 
     QDP_finalize();
-
-
   }
 
 

@@ -589,7 +589,7 @@ multi1d<int> mom = params.param.mom;
     // give 3 indices for the momentum 
     for(int k(0);k<mom.size();k++){
       LatticeReal pk = (Layout::latticeCoordinate(k) )
-        * mom[k] * twopi / Real(Layout::lattSize()[k]);
+        * mom[k] * Chroma::constant().twopi / Real(Layout::lattSize()[k]);
       qq = qq*cmplx(cos(pk),sin(pk));
     }
 

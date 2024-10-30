@@ -76,6 +76,8 @@
 #include "meas/inline/hadron/inline_genprop_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.h"
 #include "meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h"
+#include "meas/inline/hadron/inline_inverter_test_w.h"
+#include "meas/inline/hadron/inline_inverter_test_superb_w.h"
 #include "meas/inline/hadron/inline_mres_w.h"
 #include "meas/inline/hadron/inline_qpropqio_w.h"
 #include "meas/inline/hadron/inline_qpropadd_w.h"
@@ -186,8 +188,10 @@ namespace Chroma
 	success &= InlineEigenvaluesSuperbEnv::registerAll();
 #endif
 #ifndef QDP_IS_QDPJIT_NO_NVPTX
+#if ! defined (QDP_IS_QDPJIT2)
 	success &= InlineMatElemDistillationEnv::registerAll();
 	success &= InlinePropAndMatElemDistillationEnv::registerAll();
+#endif
 	success &= InlineUnsmearedHadronNodeDistillationEnv::registerAll();
 #endif
 #ifndef QDP_IS_QDPJIT
@@ -232,6 +236,10 @@ namespace Chroma
 
 
 
+	success &= InlineInverterTestEnv::registerAll();
+#ifdef BUILD_SB
+	success &= InlineInverterTestSuperbEnv::registerAll();
+#endif
 //	success &= InlineStochLaphQuarkEnv::registerAll();
 //	success &= InlineStochLaphBaryonEnv::registerAll();
 

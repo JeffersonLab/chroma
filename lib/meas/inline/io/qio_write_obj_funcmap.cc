@@ -380,6 +380,7 @@ namespace Chroma
 	close(to);
       }
 
+#if ! defined (QDP_IS_QDPJIT2)
       //------------------------------------------------------------------------
       //! Write out an RitzPairs Type
       void QIOWriteRitzPairsLatticeFermion(const std::string& buffer_id,
@@ -416,7 +417,8 @@ namespace Chroma
 	// Close
 	close(to);
       }
-
+#endif
+      
       //----------------------------------------------------------------------
       void QIOWriteSubsetVectors(const std::string& buffer_id,
 				 const std::string& file,
@@ -546,8 +548,10 @@ namespace Chroma
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("EigenInfoLatticeFermion"), 
 								      QIOWriteEigenInfo<LatticeFermion>);
 
+#if ! defined (QDP_IS_QDPJIT2)
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("RitzPairsLatticeFermion"), 
 								      QIOWriteRitzPairsLatticeFermion);
+#endif
 	
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("SubsetVectorsLatticeColorVector"), 
 								      QIOWriteSubsetVectors);

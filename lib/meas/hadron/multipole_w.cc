@@ -52,7 +52,7 @@ namespace Chroma
     //! Normalization for Y_{LM}
     Real normConst(int l, int m)
     {
-      Real cnst = sqrt((2*l+1)*factorial(l-m)/(2*twopi*factorial(l+m)));
+      Real cnst = sqrt((2*l+1)*factorial(l-m)/(2*Chroma::constant().twopi*factorial(l+m)));
       return cnst;
     }
 

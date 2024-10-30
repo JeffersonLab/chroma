@@ -939,6 +939,8 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.h \
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h \
+	meas/inline/hadron/inline_inverter_test_w.h \
+	meas/inline/hadron/inline_inverter_test_superb_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
@@ -1089,6 +1091,7 @@ lib_LIBRARIES = libchroma.a
 #     chroma/scripts/build_libchroma_sources.pl
 #
 libchroma_a_SOURCES = \
+	constant.cc \
 	actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
         actions/ferm/fermstates/hex_fermstate_params.cc \
@@ -1871,6 +1874,8 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.cc \
+	meas/inline/hadron/inline_inverter_test_w.cc \
+	meas/inline/hadron/inline_inverter_test_superb_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \

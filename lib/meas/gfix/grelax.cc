@@ -89,7 +89,7 @@ void grelax(LatticeColorMatrix& g,
   
     // Normalize
     LatticeBoolean lbtmp;
-    lbtmp[rb[cb]] = r_l > fuzz;
+    lbtmp[rb[cb]] = r_l > Chroma::constant().fuzz;
     LatticeReal lftmp;
     lftmp[rb[cb]] = 1.0 / where(lbtmp, r_l, LatticeReal(1));
 
@@ -118,7 +118,7 @@ void grelax(LatticeColorMatrix& g,
 
       /* compute sin(new)/sin(old) */
       /* set the ratio to 0, if sin(old) < FUZZ */
-      lftmp[rb[cb]] = where(oldsin > fuzz, sin(theta_new) / oldsin, LatticeReal(0));
+      lftmp[rb[cb]] = where(oldsin > Chroma::constant().fuzz, sin(theta_new) / oldsin, LatticeReal(0));
 
       /* get the new cos = a[0] */
       a[0][rb[cb]] = cos(theta_new);
@@ -144,7 +144,7 @@ void grelax(LatticeColorMatrix& g,
 
     // Normalize
     LatticeBoolean lbtmp;
-    lbtmp[rb[cb]] = r_l > fuzz;
+    lbtmp[rb[cb]] = r_l > Chroma::constant().fuzz;
     LatticeReal lftmp;
     lftmp[rb[cb]] = 1.0 / where(lbtmp, r_l, LatticeReal(1));
 
@@ -157,7 +157,7 @@ void grelax(LatticeColorMatrix& g,
     /* Now do the overrelaxation, if desired */
     if( ordo )
     {
-      Real pi = 0.5 * twopi;
+      Real pi = 0.5 * Chroma::constant().twopi;
 
       /* get angle */
       LatticeReal theta;

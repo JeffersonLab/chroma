@@ -19,13 +19,13 @@ namespace Chroma
       class Datum{
       public:
 	multi1d<int> d;
-	Real sign ;  
-	void init(int i,int j, int k, int l, Real s){
+	REAL sign ;  
+	void init(int i,int j, int k, int l, REAL s){
 	  d.resize(4) ; sign=s ;
 	  d[0]=i;d[1]=j;d[2]=k;d[3]=l ;
 	}
 	Datum(){d.resize(4);sign=1.0;}
-	Datum(int i,int j, int k, int l, Real s){
+	Datum(int i,int j, int k, int l, REAL s){
 	  init(i,j,k,l,s);
 	}
 	~Datum(){}

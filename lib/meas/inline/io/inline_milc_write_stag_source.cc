@@ -248,7 +248,9 @@ namespace Chroma
 
     	  // Write
     	  QDPIO::cout << "About to write single prec. source component: " << col << std::endl;
+#if ! defined (QDP_IS_QDPJIT2)
     	  QDPIO::cout << "TypeSize is: " << sizeof(PColorVector<RComplex<REAL32>,3>) << std::endl;
+#endif
     	  write(qio_out,record_xml, fermOut, lower_left, upper_right);
 
     	}
