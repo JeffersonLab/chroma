@@ -623,8 +623,8 @@ namespace Chroma
 	// r = s - omega * AKs (NOTE: s == r)
 	contract<NOp + 1>(AKs, omega.scale(-1), "", AddTo, r);
 
-	// prev_rho = rho, rho = r0' * r 
-	auto prev_rho = rho;
+	// prev_rho = rho, rho = r0' * r
+	auto prev_rho = rho.clone();
 	contract<1>(r, r0.conj(), order_rows, CopyTo, rho);
 
 	// beta = rho / prev_rho * (alpha / omega)

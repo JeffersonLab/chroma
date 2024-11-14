@@ -34,7 +34,7 @@ namespace Chroma {
       read(paramtop, "AsymmetricLinop", asymmetricP);
     }
     else { 
-      asymmetricP = false; // Symmetric is default 
+      asymmetricP = true; // Asymmetric (i.e. CLOVER)  is default 
     }
 
     if( paramtop.count("CudaPrecision") > 0 ) {
@@ -85,14 +85,6 @@ namespace Chroma {
     else { 
        RsdToleranceFactor = Real(10); // Tolerate an order of magnitude difference by default.
     }
-
-    if( paramtop.count("AutotuneDslash") > 0 ) { 
-      read(paramtop, "AutotuneDslash", tuneDslashP);
-    }
-    else { 
-      tuneDslashP = false;
-    }
-    QDPIO::cout << "tuneDslasP = " << tuneDslashP << std::endl;
 
     read(paramtop, "SubspaceID", SaveSubspaceID);
 
@@ -180,8 +172,6 @@ namespace Chroma {
     write(xml, "AxialGaugeFix", p.axialGaugeP);
     write(xml, "SilentFail", p.SilentFailP);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
-
-    write(xml, "AutotuneDslash", p.tuneDslashP);
 
     //Write the MG persistence params.
     write(xml, "SubspaceID", p.SaveSubspaceID);
