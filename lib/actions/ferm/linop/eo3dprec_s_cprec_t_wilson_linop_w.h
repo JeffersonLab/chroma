@@ -13,6 +13,8 @@
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/central_tprec_nospin_utils.h"
 
+#if ! defined (QDP_IS_QDPJIT2)
+
 namespace Chroma 
 { 
   //! Wilson Dirac Operator - Unpreconditioned in Space, Centrally Preconditioned in time
@@ -252,6 +254,7 @@ namespace Chroma
 
 } // End Namespace Chroma
 
+#endif
 
 #endif
 #endif

@@ -26,6 +26,8 @@ bool linkage_hack()
 
 int main(int argc, char **argv)
 {
+#if ! defined (QDP_IS_QDPJIT2)
+
   // This test has trouble with Nc=2, so make sure we're using 3 colors
 #if QDP_NC == 3
   // Put the machine into a known state
@@ -700,6 +702,6 @@ int main(int argc, char **argv)
   Chroma::finalize();
 
 #endif
-
+#endif
   exit(0);
 }

@@ -120,6 +120,7 @@ namespace Chroma
 #if QDP_NS == 4
 #if QDP_NC == 3
 #if QDP_ND == 4
+#if ! defined (QDP_IS_QDPJIT2)
 	success &= UnprecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
 	success &= ILUPrecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
 	success &= ILUPrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
@@ -127,6 +128,7 @@ namespace Chroma
 	success &= ILU2PrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
 	success &= EO3DPrecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
 	success &= EO3DPrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
+#endif
 #endif
 #endif
 #endif

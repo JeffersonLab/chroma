@@ -38,6 +38,7 @@ namespace Chroma
 	return new SinkSmear<LatticePropagator>(Params(xml_in, path), u);
       }
 
+#if ! defined (QDP_IS_QDPJIT2)
       //! Callback function
       QuarkSourceSink<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
 								  const std::string& path,
@@ -45,7 +46,8 @@ namespace Chroma
       {
 	return new SinkSmear<LatticeStaggeredPropagator>(Params(xml_in, path), u);
       }
-
+#endif
+      
       //! Callback function
       QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
 						  const std::string& path,
@@ -71,7 +73,9 @@ namespace Chroma
       if (! registered)
       {
 	success &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
+#if ! defined (QDP_IS_QDPJIT2)
 	success &= Chroma::TheStagPropSinkSmearingFactory::Instance().registerObject(name, createStagProp);
+#endif
 	success &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
 	registered = true;
       }
@@ -147,6 +151,7 @@ namespace Chroma
 
 
 
+#if ! defined (QDP_IS_QDPJIT2)
     //! Construct the sink smearing
     template<>
     void
@@ -164,7 +169,7 @@ namespace Chroma
 
       return;
     }
-
+#endif
 
 
     //! Construct the sink smearing

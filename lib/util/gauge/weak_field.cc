@@ -25,7 +25,7 @@ namespace Chroma
 
     u.resize(Nd);
 
-    Real amp = 0.02 * twopi;
+    Real amp = 0.02 * Chroma::constant().twopi;
     LatticeReal theta;
     LatticeColorMatrix s1, s2;
     multi1d<LatticeReal> a(4);

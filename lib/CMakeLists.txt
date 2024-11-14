@@ -1374,6 +1374,7 @@ target_sources(chromalib PRIVATE
 	util/ferm/subset_vectors.cc 
 	util/ferm/block_couplings.cc 
 	util/ferm/disp_soln_cache.cc 
+	util/ferm/mgproton.cc 
     util/ft/sftmom.cc 
     util/ft/single_phase.cc 
 	util/ft/time_slice_set.cc 
@@ -1448,6 +1449,7 @@ target_sources(chromalib PRIVATE
 	meas/hadron/dilution_quark_source_const_w.cc 
     util/gauge/cern_gauge_init.cc 
     io/readcern.cc
+    constant.cc
 )
 
 ########################################################
@@ -1933,7 +1935,9 @@ endif()
 #######################################################
 if( Chroma_ENABLE_JIT_CLOVER )
   list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit_w.h)
+  list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit2_w.h)
   target_sources(chromalib PRIVATE util/gauge/stout_utils_jit.cc)
+  target_sources(chromalib PRIVATE util/gauge/stout_utils_jit2.cc)
 endif()
 
 
@@ -2015,6 +2019,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.h
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h
      meas/inline/hadron/inline_create_colorvecs_superb.h
+     meas/inline/hadron/inline_eigenvalues_superb_w.h
   )
   target_sources(chromalib PRIVATE 
      meas/inline/hadron/inline_disco_prob_defl_superb_w.cc
@@ -2023,6 +2028,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.cc 
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.cc 
      meas/inline/hadron/inline_create_colorvecs_superb.cc
+     meas/inline/hadron/inline_eigenvalues_superb_w.cc
   )
   target_include_directories(chromalib PUBLIC ${SUPERBBLAS_DIR}/include)
   add_library(superbblas STATIC IMPORTED )
@@ -2034,7 +2040,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      add_library(magma STATIC IMPORTED )
      set_target_properties( magma PROPERTIES IMPORTED_LOCATION ${MAGMA_DIR}/lib/libmagma.a )
      target_link_libraries(chromalib PUBLIC magma )
-     if( QDP_BACKEND_CUDA )
+     if( QDP_BACKEND_CUDA  OR Chroma_ENABLE_CUDA)
        target_link_libraries(magma INTERFACE CUDA::cublas CUDA::cublasLt CUDA::cusparse CUDA::cudart)
      endif()
      target_link_libraries(magma INTERFACE BLAS::BLAS ${Chroma_extra_link_flags})
@@ -2047,19 +2053,19 @@ if( Chroma_ENABLE_SUPERBBLAS )
      target_link_libraries(chromalib PUBLIC primme )
      if( Chroma_ENABLE_MAGMA )
         target_link_libraries(primme INTERFACE magma)
-     elseif( QDP_BACKEND_CUDA )
+     elseif( QDP_BACKEND_CUDA OR Chroma_ENABLE_CUDA)
        target_link_libraries(primme INTERFACE CUDA::cublas CUDA::cudart BLAS::BLAS ${Chroma_extra_link_flags})
      else()
        target_link_libraries(primme INTERFACE BLAS::BLAS ${Chroma_extra_link_flags})
      endif()
   endif()
 
-  if( QDP_BACKEND_ROCM )
+  if( QDP_BACKEND_ROCM OR Chroma_ENABLE_ROCM)
      target_compile_options(chromalib PUBLIC ${HIP_CPP_CONFIG})
-     target_link_libraries(superbblas INTERFACE roc::hipblas)
+     target_link_libraries(superbblas INTERFACE roc::hipblas roc::hipsparse roc::hipsolver roc::rocblas roc::rocsolver)
   endif()
-  if( QDP_BACKEND_CUDA )
-    target_link_libraries(superbblas INTERFACE CUDA::cublas CUDA::cublasLt CUDA::cusparse CUDA::cudart)
+  if( QDP_BACKEND_CUDA OR Chroma_ENABLE_CUDA)
+    target_link_libraries(superbblas INTERFACE CUDA::cublas CUDA::cublasLt CUDA::cusparse CUDA::cusolver CUDA::cudart)
   endif()
   target_link_libraries(superbblas INTERFACE BLAS::BLAS ${Chroma_extra_link_flags})
 endif()

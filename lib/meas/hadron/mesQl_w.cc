@@ -4,6 +4,7 @@
 
 #include "mesQl_w.h"
 #include "barQll_w.h"
+#include <stdexcept>
 
 namespace Chroma {
 
@@ -37,6 +38,7 @@ void Qlbar(const multi1d<LatticeColorMatrix>& u,
 	   const std::string& xml_group,
 	   const int bc)
 {
+#if !defined(__INTEL_LLVM_COMPILER)
   START_CODE();
   
   if ( Ns != 4 )		/* Code is specific to Ns=4 */
@@ -84,6 +86,9 @@ void Qlbar(const multi1d<LatticeColorMatrix>& u,
   pop(xml);
 
   END_CODE();
+#else
+  throw std::runtime_error("shitty intel compiler refuses to compile this code");
+#endif
 }
 
 //! Heavy-light meson 2-pt function with backwards moving static quark
@@ -116,6 +121,7 @@ void QlbarBACK(const multi1d<LatticeColorMatrix>& u,
 	   const std::string& xml_group,
 	   const int bc)
 {
+#if !defined(__INTEL_LLVM_COMPILER)
   START_CODE();
   
   if ( Ns != 4 )		/* Code is specific to Ns=4 */
@@ -158,6 +164,9 @@ void QlbarBACK(const multi1d<LatticeColorMatrix>& u,
   pop(xml);
 
   END_CODE();
+#else
+  throw std::runtime_error("shitty intel compiler refuses to compile this code");
+#endif
 }
 
 }

@@ -1282,7 +1282,7 @@ then
 
    AC_SUBST(CUDA_CXXFLAGS, ["-I${CUDA_HOME}/include"] )
    AC_SUBST(CUDA_LDFLAGS,  ["-L${CUDA_LIBDIR} -Wl,-rpath,${CUDA_LIBDIR}"] )
-   AC_SUBST(CUDA_LIBS,     ["-lcublas -lcublasLt -lcudart -lcuda"])
+   AC_SUBST(CUDA_LIBS,     ["-lcusolver -lcusparse -lcublas -lcublasLt -lcudart -lcuda"])
 fi
 
 ###############################################

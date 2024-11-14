@@ -134,7 +134,7 @@ namespace Chroma
     Double chi_norm_sq = norm2(chi_internal,sub);    flopcount.addSiteFlops(4*Nc*Ns,sub);
     Double chi_norm = sqrt(chi_norm_sq);
 
-    if( toBool( chi_norm < fuzz )) 
+    if( toBool( chi_norm < Chroma::constant().fuzz )) 
     {
       swatch.stop();
 
