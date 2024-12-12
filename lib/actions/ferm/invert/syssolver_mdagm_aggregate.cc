@@ -25,6 +25,7 @@
 #ifdef BUILD_QUDA
 #include "actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_multigrid_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_mdagm_exp_clover_quda_multigrid_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h"
 #endif
 
@@ -67,6 +68,7 @@ namespace Chroma
 #ifdef BUILD_QUDA
 	success &= MdagMSysSolverQUDACloverEnv::registerAll();
 	success &= MdagMSysSolverQUDAMULTIGRIDCloverEnv::registerAll();
+    success &= MdagMSysSolverQUDAMULTIGRIDExpCloverEnv::registerAll();
 	success &= MdagMSysSolverQUDAWilsonEnv::registerAll();
 #endif
 

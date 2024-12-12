@@ -22,7 +22,7 @@ namespace Chroma
     START_CODE();
     // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << std::endl;
 
-    QDPIO::cout << "Using even-odd preconditioned exponetiated clover\n";
+    QDPIO::cout << "Using even-odd preconditioned exponentiated clover\n";
 
     param = param_;
 
