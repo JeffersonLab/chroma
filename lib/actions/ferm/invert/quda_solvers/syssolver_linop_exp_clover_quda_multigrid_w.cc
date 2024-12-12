@@ -27,7 +27,7 @@ namespace Chroma
     namespace
     {
       //! Name to be used
-      const std::string name("QUDA_MULTIGRID_CLOVER_INVERTER");
+      const std::string name("QUDA_MULTIGRID_EXP_CLOVER_INVERTER");
 
       //! Local registration flag
       bool registered = false;
