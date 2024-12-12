@@ -1685,6 +1685,7 @@ namespace Chroma
       const ExpClovTriang<REALT>* tri;
       int cb;
       int power = 1;
+      ApplyPowerArgs(T& _chi, const T& _psi,const ExpClovTriang<REALT>* _tri,int _cb,int _power) : chi(_chi), psi(_psi), tri(_tri), cb(_cb), power(_power) {}
     };
 
     template <typename T>
@@ -1696,6 +1697,8 @@ namespace Chroma
       int cb;
       int pow_i = 1;
       int pow_j = 1;
+      ApplyDerivCoeffArgs(T& _chi, const T& _psi,const ExpClovTriang<REALT>* _tri,int _cb,int _pow_i, int _pow_j) : chi(_chi), psi(_psi), tri(_tri), cb(_cb), pow_i(_pow_i), pow_j(_pow_j) {}
+
     };
 
 

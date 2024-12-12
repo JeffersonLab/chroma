@@ -20,5 +20,9 @@ namespace Chroma
   using ExpCloverTermF = QDPExpCloverTermF<>;
   using ExpCloverTermD = QDPExpCloverTermD<>;
 
+  template<typename T,typename U>
+  using ExpCloverTermT = QDPExpCloverTermT<T,U>;
+
 }
+
 #endif
