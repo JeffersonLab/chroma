@@ -463,6 +463,29 @@ namespace Chroma
 
 			quda_inv_param.omega = toDouble(ip.relaxationOmegaOuter);
 
+    LatticeFermion src, resc, resc2, diff, dummy;
+    gaussian(src);
+    resc = zero;
+    resc2 = zero;
+    dummy=zero;
+    //const auto& sub = A->subset();
+
+    //const auto& sub = QDP::all;
+
+    void* spinorInc =(void *)&(src.elem(sub.start()).elem(0).elem(0).real());
+    void* spinorOutc =(void *)&(resc.elem(sub.start()).elem(0).elem(0).real());
+
+    int Ns2 = Ns / 2;
+
+    cloverQuda(spinorOutc, spinorInc, (QudaInvertParam*)&quda_inv_param,(QudaParity) QUDA_EVEN_PARITY, 1);
+    invclov->apply(resc2, src, PLUS,0);
+
+    diff = resc-resc2;
+    Double normdiff = sqrt(norm2(diff) / norm2(resc));
+    QDPIO::cout << "Clover Chroma-QUDA Diff  = " << normdiff << "\n";
+
+
+
 
 // merged from mdgam_clover_quda_multigrid, begin
                       if(TheNamedObjMap::Instance().check(invParam.SaveSubspaceID))

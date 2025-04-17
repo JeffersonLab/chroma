@@ -27,6 +27,11 @@ namespace Chroma
     param = param_;
 
     clov.create(fs, param);
+
+
+    //clov. makeExpClov(PLUS,0);
+    //makeExpClov(PLUS,1);
+
  
     invclov.create(fs,param,clov);  // make a copy
     invclov.choles(0);  // invert the cb=0 part

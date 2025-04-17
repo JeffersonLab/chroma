@@ -433,7 +433,7 @@ public:
 		// Don't recompute, just copy
 		invclov->create(fstate, invParam_.CloverParams);
 
-		QDPIO::cout <<solver_string<< "Inverting CloverTerm" << std::endl;
+		QDPIO::cout <<solver_string<< "Inverting CloverTerm GGG" << std::endl;
 		invclov->choles(0);
 		invclov->choles(1);
 
@@ -455,7 +455,53 @@ public:
 
 		loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
 
+
+#if 0
+    //Check to compare with Chroma exp-clover op
+
+    LatticeFermion src, resc, resc2, diff, dummy;
+    gaussian(src);
+    resc = zero;
+    resc2 = zero;
+    dummy=zero;
+    //const auto& sub = A->subset();
+
+    const auto& sub = QDP::all;
+
+    void* spinorInc =(void *)&(src.elem(sub.start()).elem(0).elem(0).real());
+    void* spinorOutc =(void *)&(resc.elem(sub.start()).elem(0).elem(0).real());
+
+    int Ns2 = Ns / 2;
+
+    cloverQuda(spinorOutc, spinorInc, (QudaInvertParam*)&quda_inv_param,(QudaParity) QUDA_EVEN_PARITY, 1);
+    invclov->apply(resc2, src, PLUS,0);
+
+    diff = resc-resc2;
+    Double normdiff = sqrt(norm2(diff) / norm2(resc));
+    QDPIO::cout << "MDAGM Chroma-QUDA Diff  = " << normdiff << "\n";
+
+
+    resc = zero;
+    resc2 = zero;
+    invclov->apply(resc, src, PLUS,0);
+    clov->apply(resc2, src, PLUS,0);
+
+    normdiff = sqrt(norm2(resc) / norm2(src));
+    QDPIO::cout << "invclov*src  = " << normdiff << "\n\n";
+
+
+    normdiff = sqrt(norm2(resc2) / norm2(src));
+    QDPIO::cout << "clov*src  = " << normdiff << "\n\n";
+
+
+    normdiff = sqrt(norm2(src));
+    QDPIO::cout << "src  = " << normdiff << "\n\n";
+
+
+#endif
+
 #else
+
 
 #warning "USING QUDA DEVICE IFACE"
 

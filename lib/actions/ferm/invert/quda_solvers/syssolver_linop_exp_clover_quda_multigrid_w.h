@@ -424,8 +424,8 @@ namespace Chroma
 			invclov->create(fstate, invParam_.CloverParams);
 
 			QDPIO::cout << solver_string << "Inverting ExpCloverTerm" << std::endl;
-			invclov->choles(0);
-			invclov->choles(1);
+			//invclov->choles(0);
+			//invclov->choles(1);
 
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
 #warning "NOT USING QUDA DEVICE IFACE"
@@ -436,13 +436,26 @@ namespace Chroma
 			
 			packed_clov.resize(all.siteTable().size());
 
-			clov->packForQUDA(packed_clov, 0);
-			clov->packForQUDA(packed_clov, 1);
+            clov->makeExpClov(PLUS,0,0);
+            clov->makeExpClov(PLUS,1,0);
+
+			clov->packForQUDA(packed_clov, 0, 0);
+			clov->packForQUDA(packed_clov, 1, 0);
 			
 			// Always need inverse
 			multi1d<QUDAPackedClovSite<REALT> > packed_invclov(all.siteTable().size());
-			invclov->packForQUDA(packed_invclov, 0);
-			invclov->packForQUDA(packed_invclov, 1);
+
+            invclov->makeExpClov(PLUS,0,1);
+            invclov->makeExpClov(PLUS,1,1);
+
+            invclov->makeExpClov(MINUS,0,1);
+            invclov->makeExpClov(MINUS,1,1);
+
+            //invclov->cholesTest(0);
+            //invclov->cholesTest(1);
+
+			invclov->packForQUDA(packed_invclov, 0, 1);
+			invclov->packForQUDA(packed_invclov, 1, 1);
 
 			loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
 
@@ -462,7 +475,6 @@ namespace Chroma
 #endif
 
 			quda_inv_param.omega = toDouble(ip.relaxationOmegaOuter);
-
 
 // merged from mdgam_clover_quda_multigrid, begin
                       if(TheNamedObjMap::Instance().check(invParam.SaveSubspaceID))
@@ -487,7 +499,38 @@ namespace Chroma
                         StopWatch create_swatch;
                         create_swatch.reset(); create_swatch.start();
                         QDPIO::cout << solver_string << "Creating Subspace" << std::endl;
+
+
+//Check to compare with Chroma exp-clover op
+#if 0
+    //Check to compare with Chroma exp-clover op
+
+    LatticeFermion src, resc, resc2, diff;
+    gaussian(src);
+    resc = zero;
+    resc2 = zero;
+
+    void* spinorInc =(void *)&(src.elem(sub.start()).elem(0).elem(0).real());
+    void* spinorOutc =(void *)&(resc.elem(sub.start()).elem(0).elem(0).real());
+
+    for (int cb = 0; cb < 2; ++cb)
+    {
+        //eclov.apply(res2, src, PLUS, cb);
+        //eclov.applyExpClov(res, src, PLUS, cb);
+        cloverQuda(spinorOutc, spinorInc, (QudaInvertParam*)&quda_inv_param, (QudaParity) cb, 1);
+        clov->apply(resc2, src, PLUS, 1);
+    }
+
+    diff = resc-resc2;
+    Double normdiff = sqrt(norm2(diff) / norm2(src));
+    QDPIO::cout << "Clover Chroma-QUDA Diff  = " << normdiff << "\n";
+
+#endif
+
+
+
                         subspace_pointers = QUDAMGUtils::create_subspace<T>(invParam);
+
                         XMLBufferWriter file_xml;
                         push(file_xml, "FileXML");
                         pop(file_xml);
