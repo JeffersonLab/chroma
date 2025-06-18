@@ -236,44 +236,6 @@ namespace Chroma
       }
     }
 
-#if 0
-
-    template<typename T>
-    inline
-    void siteExponentiate(ExpClovTriang<T>& tri_in)
-    {
-      RComplex<T> zip( RScalar<T>((T)0), RScalar<T>((T)0) );
-      for(int block=0; block < 2; ++block) {
-        // q0 * I -- no offdiag piece in I
-
-        for(int i=0; i < 6; ++i) {
-          tri_in.Exp[0].diag[block][i] = tri_in.q[block][0];
-          tri_in.Exp[1].diag[block][i] = tri_in.qinv[block][0];
-        }
-
-        for(int ord=1; ord <= 5; ++ord) {
-          for(int i=0; i < 6; ++i) {
-            tri_in.Exp[0].diag[block][i] += tri_in.q[block][ord]*tri_in.A[ord-1].diag[block][i];
-            tri_in.Exp[1].diag[block][i] += tri_in.qinv[block][ord]*tri_in.A[ord-1].diag[block][i];
-          }
-        }
-
-        for(int i=0; i < 15; ++i) {
-          tri_in.Exp[0].offd[block][i] = zip;
-          tri_in.Exp[1].offd[block][i] = zip;
-        }
-
-        for(int ord=1; ord <= 5; ++ord) {
-          for(int i=0; i < 15; ++i) {
-            tri_in.Exp[0].offd[block][i] += tri_in.q[block][ord]*tri_in.A[ord-1].offd[block][i];
-            tri_in.Exp[1].offd[block][i] += tri_in.qinv[block][ord]*tri_in.A[ord-1].offd[block][i];
-          }
-        }
-
-       
-      }
-    }
-#endif
 
     template < typename REALT, int block = 0>
     inline void siteApplicationExpPack(ExpClovTriang<REALT>& tri_out,ExpClovTriang<REALT>& tri_in,int inv, double mclov)
@@ -299,14 +261,11 @@ namespace Chroma
       //Set the output clov triang to 1+A (power 1)
   
       for (int c=0; c < 2*Nc ;c++){
-          //tri_out.A.diag[block][c]=tri_in.q[block][0]+tri_in.q[block][1]*tri_in.A.diag[block][c];
           tri_out.A.diag[block][c]=qi[0]+qi[1]*tri_in.A.diag[block][c];
-
       }
     
      //Add the off-diagonal entries
       for (int c=0; c < 2*Nc*Nc-Nc; c++){
-        //tri_out.A.offd[block][c]= tri_in.q[block][1]*tri_in.A.offd[block][c];
         tri_out.A.offd[block][c]=qi[1]*tri_in.A.offd[block][c];
       }
      
@@ -325,14 +284,12 @@ namespace Chroma
             tr.multiply(Curr, Prev, tri_in_A);
 
             //Add the diagonal entries
-            for (int c=0; c < 2*Nc ;c++){
-                //tri_out.A.diag[block][c]+=curr.diag[block][c]*tri_in.q[block][pow];
+            for (int c=0; c < 2*Nc ;c++){          
                 tri_out.A.diag[block][c]+=curr.diag[block][c]*qi[pow];
             }
 
             //Add the off-diagonal entries
             for (int c=0; c < 2*Nc*Nc-Nc; c++){
-                //tri_out.A.offd[block][c]+=curr.offd[block][c]*tri_in.q[block][pow];
                 tri_out.A.offd[block][c]+=curr.offd[block][c]*qi[pow];
 
             }
@@ -348,37 +305,6 @@ namespace Chroma
 				   const ExpClovTriang<REALT>& tri_in,
 				   const RComplex<REALT>* const __restrict__ ppsi)
     {
-
-#if 0
-      siteApplicationBlock<REALT,0>(cchi,tri_in.Exp[i],ppsi);
-      siteApplicationBlock<REALT,1>(cchi,tri_in.Exp[i],ppsi);
-#endif
-
-#if 0
-     // Accumulate exponential from stored powers of A
-     RComplex<REALT> tmp[12];
-      for(int i=0; i < 6; ++i) {
-        cchi[i] = tri_in.q[0][0]*ppsi[i];
-      }
-      for(int pow=1; pow <=5; pow++) {
-        siteApplicationBlock<REAL,0>(tmp,tri_in.A[pow-1],ppsi);
-        for(int i=0;i < 6; ++i) {
-          cchi[i] += tri_in.q[0][pow]*tmp[i];
-        }
-      }
-
-        
-      for(int i=6; i < 12; ++i) {
-        cchi[i] = tri_in.q[1][0]*ppsi[i];
-      }
-      for(int pow=1; pow <=5; pow++) {
-        siteApplicationBlock<REAL,1>(tmp,tri_in.A[pow-1],ppsi);
-        for(int i=6; i < 12; ++i) {
-          cchi[i] += tri_in.q[1][pow]*tmp[i];
-        }
-      }
-#endif
-
 #if 1
       //Set the highest power of A^n for the exp sum. This allows for N_exp_default < 5 to compare with clover 
       int pow_max=5;
@@ -675,6 +601,7 @@ namespace Chroma
 
     void cholesTest(int cb);
 
+
     //! Computes the inverse of the term on cb using Cholesky
     /*!
      * \param cb   checkerboard of work (Read)
@@ -785,21 +712,6 @@ namespace Chroma
     inline void applyUnexp(T& chi, const T& psi, enum PlusMinus isign, int cb) const
     {
       applyPower(chi, psi, isign, cb, 1); // Explicily apply just the clover term.
-    }
-
-    void printExpClov() const{
-
-          for(int i=0;i<1;i++){
-                for (int c=0; c < 2*Nc*Nc-Nc; c++){
-                    QDPIO::cout << "\nexp_tri.A.offd["<<i<<"]["<<c<<"]="<<this->exp_tri->A.offd[i][c]<<std::endl;
-                    QDPIO::cout << "tri.A.offd["<<i<<"]["<<c<<"]="<<this->tri->A.offd[i][c]<<std::endl;
-
-                }
-                for (int c=0; c < 2*Nc ;c++){
-                    QDPIO::cout << "exp_tri.A.diag["<<i<<"]["<<c<<"]="<<this->exp_tri->A.diag[i][c]<<std::endl;;
-                    QDPIO::cout << "tri.A.diag["<<i<<"]["<<c<<"]="<<this->tri->A.diag[i][c]<<std::endl;;
-                }
-          }
     }
 
     //! Calculates Tr_D ( Gamma_mat L )
@@ -1014,9 +926,6 @@ namespace Chroma
 	}
       }
     }
-
-    //makeExpClov(PLUS,0,0);
-    //makeExpClov(PLUS,1,0);
 
     END_CODE();
 #endif
@@ -1296,6 +1205,7 @@ namespace Chroma
     END_CODE();
   } 
 
+
   //! Invert
   /*!
    * Computes the inverse of the term on cb using Cholesky
@@ -1351,13 +1261,16 @@ namespace Chroma
    *
    * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
    */
-
+#if 0
   template <typename T, typename U, int N_exp>
   void QDPExpCloverTermT<T, U, N_exp>::deriv(multi1d<U>& ds_u,
                  const T& chi, const T& psi,
                  enum PlusMinus isign, int cb) const
   {
     START_CODE();
+
+    //StopWatch swatch;
+    //swatch.reset(); swatch.start();
 
     // Do I still need to do this?
     if( ds_u.size() != Nd ) {
@@ -1387,17 +1300,157 @@ namespace Chroma
             (*this).applyPower(ppsi, psi, PLUS, cb, j);
             (*this).applyPower(cchi, f_chi, PLUS, cb,i);
 
-            CloverTermBase<T,U>::deriv(ds_u_tmp,cchi,ppsi,isign,cb);
-
+            //CloverTermBase<T,U>::deriv(ds_u_tmp,cchi,ppsi,isign,cb);
+            ExpCloverTermBase<T, U>::deriv(ds_u_tmp,cchi,ppsi,isign,cb);
             for(int i=0;i<ds_u_tmp.size();i++)
                 ds_u[i]+=ds_u_tmp[i];
         }
     }
+
+
+    //swatch.stop();
+    //QDPIO::cout << "\nOuter deriv function time: "<< swatch.getTimeInSeconds() <<" s\n";
+    QDPIO::cout << "\nUsing old deriv \n";
+    
+
+
+    // Clear out the deriv on any fixed links
+    (*this).getFermBC().zero(ds_u);
+    END_CODE();
+  }
+
+#endif
+
+#if 0
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::deriv(multi1d<U>& ds_u,
+                 const T& chi, const T& psi,
+                 enum PlusMinus isign, int cb) const
+  {
+    START_CODE();
+
+    //StopWatch swatch;
+    //swatch.reset(); swatch.start();
+
+    // Do I still need to do this?
+    if( ds_u.size() != Nd ) {
+      ds_u.resize(Nd);
+    }
+
+    ds_u = zero;
+    multi1d<U> ds_u_tmp;
+    ds_u_tmp.resize(Nd);
+
+    // Get the links
+    //const multi1d<U>& u = getU();
+
+    T ppsi= zero;
+    T cchi= zero;
+    T tmp_psi= psi;
+    T sum_psi= zero;
+
+
+    // The exp derivative is computed as
+    // A'+AA'/2+A'A/2+A'AA/6+AA'A/6+AAA'/6 = Sum A^i A' A^j
+    // applyCoeff multiplies the chi by the exponential term factor 
+    // and the factors from using the Caley Hamilton for A^n, for n>5
+
+    for(int i=0;i<=5;i++){
+        sum_psi= zero;
+        for(int j=0;j<=5;j++){
+            (*this).applyCoeff(tmp_psi, psi, isign,cb,i,j);
+            (*this).applyPower(ppsi, tmp_psi, PLUS, cb, j);
+            sum_psi+=ppsi;
+        }
+
+        (*this).applyPower(cchi, chi, PLUS, cb,i);
+        //CloverTermBase<T,U>::deriv(ds_u_tmp,cchi,sum_psi,isign,cb);
+        ExpCloverTermBase<T,U>::deriv(ds_u_tmp,cchi,sum_psi,isign,cb);
+
+        for(int i=0;i<ds_u_tmp.size();i++)
+            ds_u[i]+=ds_u_tmp[i];
+
+    }
+
+
+    //swatch.stop();
+    //QDPIO::cout << "\nOuter deriv function time: "<< swatch.getTimeInSeconds() <<" s\n";
     
     // Clear out the deriv on any fixed links
     (*this).getFermBC().zero(ds_u);
     END_CODE();
   }
+
+#endif
+
+//Improved derivative
+#if 1
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::deriv(multi1d<U>& ds_u,
+                 const T& chi, const T& psi,
+                 enum PlusMinus isign, int cb) const
+  {
+    START_CODE();
+
+    //StopWatch swatch;
+    //swatch.reset(); swatch.start();
+    //QDPIO::cout << "\nUsing improved deriv function \n";
+
+
+    // Do I still need to do this?
+    if( ds_u.size() != Nd ) {
+      ds_u.resize(Nd);
+    }
+
+    ds_u = zero;
+    multi1d<U> ds_u_tmp;
+    ds_u_tmp.resize(Nd);
+
+    // Get the links
+    //const multi1d<U>& u = getU();
+
+    T ppsi= zero;
+    T cchi= zero;
+    T tmp_psi= psi;
+    T sum_psi= zero;
+
+    multi1d<T> cchi_vec;
+    multi1d<T> sum_psi_vec;
+    cchi_vec.resize(6);
+    sum_psi_vec.resize(6);
+
+    // The exp derivative is computed as
+    // A'+AA'/2+A'A/2+A'AA/6+AA'A/6+AAA'/6 = Sum A^i A' A^j
+    // applyCoeff multiplies the chi by the exponential term factor 
+    // and the factors from using the Caley Hamilton for A^n, for n>5
+
+    for(int i=0;i<=5;i++){
+        sum_psi_vec[i]= zero;
+        cchi_vec[i]= zero;
+
+        for(int j=0;j<=5;j++){
+            (*this).applyCoeff(tmp_psi, psi, isign,cb,i,j);
+            (*this).applyPower(ppsi, tmp_psi, PLUS, cb, j);
+            sum_psi_vec[i]+=ppsi;
+        }
+
+        (*this).applyPower(cchi_vec[i], chi, PLUS, cb,i);
+
+    }
+
+    ExpCloverTermBase<T,U>::derivMultipole(ds_u,cchi_vec,sum_psi_vec,isign,cb);
+
+    
+    //swatch.stop();
+    //QDPIO::cout << "\nOuter deriv function time: "<< swatch.getTimeInSeconds() <<" s\n";
+    
+    // Clear out the deriv on any fixed links
+    (*this).getFermBC().zero(ds_u);
+    END_CODE();
+  }
+
+#endif
+
 
 
   template <typename T, typename U, int N_exp>
@@ -1464,7 +1517,8 @@ namespace Chroma
                 (*this).applyPower(ppsi[k], psi[k], PLUS, cb, j);
                 (*this).applyPower(cchi[k], f_chi[k], PLUS, cb,i);
             }
-            CloverTermBase<T,U>::derivMultipole(ds_u_tmp,cchi,ppsi,isign,cb);
+            //CloverTermBase<T,U>::derivMultipole(ds_u_tmp,cchi,ppsi,isign,cb);
+            ExpCloverTermBase<T,U>::derivMultipole(ds_u_tmp,cchi,ppsi,isign,cb);
 
             for(int i=0;i<ds_u_tmp.size();i++)
                 ds_u[i]+=ds_u_tmp[i];
@@ -2361,7 +2415,7 @@ namespace Chroma
 
       // This is essentially the body of the previous "Apply"
       // but now the args are handed in through user arg struct...
-
+#ifndef QDP_IS_QDPJIT
       START_CODE();
 
       typedef typename WordType<T>::Type_t REALT;
@@ -2461,6 +2515,7 @@ namespace Chroma
       }
 
       END_CODE();
+#endif
     } // Function
 
 

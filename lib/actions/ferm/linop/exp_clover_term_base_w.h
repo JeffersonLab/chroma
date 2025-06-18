@@ -692,6 +692,9 @@ namespace Chroma
   {
     START_CODE();
 
+    //StopWatch swatch;
+    //swatch.reset(); swatch.start();
+
 
     // Do I still need to do this?
     if( ds_u.size() != Nd ) { 
@@ -738,6 +741,8 @@ namespace Chroma
       }
     }
 
+    //swatch.stop();
+    //QDPIO::cout << "\nInner Deriv function time: "<< swatch.getTimeInSeconds() <<" s\n";
 
     // Clear out the deriv on any fixed links
     (*this).getFermBC().zero(ds_u);
