@@ -1,0 +1,15 @@
+
+*.o
+.deps
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+config.log
+config.status
+configure
+include/qdp-lapack_config_internal.h
+include/qdp-lapack_config_internal.h.in*
+include/stamp-h1
+lib/.deps/
+lib/libqdp-lapack.a

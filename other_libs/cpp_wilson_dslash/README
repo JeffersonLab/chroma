@@ -1,0 +1,25 @@
+New C++ (Intrinsics only) version.
+Allows for mixed precision dslashery. Eg:
+
+Dslash<float>
+Dslash<double>
+Dslash3D<float>
+Dslash3D<double>
+
+operator() does all the applications.
+
+Gauge field still needs to be packed... (Work on this?)
+Otherwise interface is the same/similar to old SSE Dslash
+
+To Do:
+ - straight C versions of the SSE for testing on Intel/Pathscale compiler
+   also for loop unrollings etc etc etc. This primarily needs rewrite
+   of the decompose reconstruct (TEDIOUS but useful?)
+
+ - autoconf setting of details in cache.h 
+
+ - bells and whistles
+	* funky data orderings. 
+	* combine with clover for high level clover op?
+ 	* temp prec C_L and C_R backsubstitutions (should be easy?)
+

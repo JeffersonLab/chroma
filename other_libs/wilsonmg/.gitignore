@@ -1,0 +1,7 @@
+Makefile.in
+aclocal.m4
+configure
+include/Makefile.in
+lib/Makefile.in
+autom4te.cache
+include/wilsonmg_config_internal.h.in*

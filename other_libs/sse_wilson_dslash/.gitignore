@@ -1,0 +1,8 @@
+Makefile.in
+aclocal.m4
+configure
+include/Makefile.in
+lib/Makefile.in
+tests/Makefile.in
+autom4te.cache
+include/sse_config_internal.h.in~

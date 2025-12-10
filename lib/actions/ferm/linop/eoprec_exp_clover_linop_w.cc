@@ -34,7 +34,17 @@ namespace Chroma
 
  
     invclov.create(fs,param,clov);  // make a copy
+
+#if 0
     invclov.choles(0);  // invert the cb=0 part
+#else
+        invclov.makeExpClov(PLUS,0,0);
+        invclov.makeExpClov(PLUS,1,0);
+        
+        invclov.makeExpClov(MINUS,0,1);
+        invclov.makeExpClov(MINUS,1,1);
+#endif
+
 
     D.create(fs, param.anisoParam);
 
@@ -351,6 +361,9 @@ namespace Chroma
   //! Get the log det of the even even part
   // BUt for now, return zero for testing.
   Double EvenOddPrecExpCloverLinOp::logDetEvenEvenLinOp(void) const  {
+
     return invclov.cholesDet(0);
+    //return clov.cholesDet(0);
+
   }
 } // End Namespace Chroma

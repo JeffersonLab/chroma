@@ -295,8 +295,14 @@ namespace Chroma
             }
             tr.copy(Prev, Curr);
       }
-  
-     
+ 
+
+      //Save tr_M
+#if 0
+        for (int c=0; c < 2*Nc ;c++){
+            tr_Minv = tr_Minv+ tri_out.A.diag[block][c];
+        }
+#endif
 }
 
 
@@ -834,9 +840,9 @@ namespace Chroma
 	  tri[site].A.diag[block][d] = from.tri[site].A.diag[block][d];
 
 	  // Inline accumulate the trace
-	  tr_M.elem(site).elem().elem() += tri[site].A.diag[block][d];
+	  tr_M.elem(site).elem().elem() -= fabs(tri[site].A.diag[block][d]); //check this
 	}
-
+    
 	for (int od = 0; od < 15; ++od)
 	{
 	  tri[site].A.offd[block][od] = from.tri[site].A.offd[block][od];
@@ -862,6 +868,7 @@ namespace Chroma
 	  }
 	}
       } // End site loop
+    //QDPIO::cout << "copy tr_M("<<site<<")="<<tr_M.elem(site).elem().elem()<<std::endl;
     }
 
     END_CODE();
@@ -922,9 +929,11 @@ namespace Chroma
 	for (int d = 0; d < 6; ++d)
 	{
 	  // Inline accumulate the trace
-	  tr_M.elem(site).elem().elem() += tri[site].A.diag[block][d];
+      //checked this A=A^dagger, det(A)=det(sqrt(A^dagger A )) = tr(abs(A))
+	  tr_M.elem(site).elem().elem() += fabs(tri[site].A.diag[block][d]); //checked this A=A^dagger, so
 	}
       }
+      //QDPIO::cout << "creation tr_M("<<site<<")="<<tr_M.elem(site).elem().elem()<<std::endl;
     }
 
     END_CODE();
@@ -1216,6 +1225,7 @@ namespace Chroma
   Double QDPExpCloverTermT<T, U, N_exp>::cholesDet(int cb) const
   {
 #ifndef QDP_IS_QDPJIT
+    QDPIO::cout << "tr_M = " << tr_M.elem(10).elem().elem() << std::endl;
     return sum(tr_M, rb[cb]);
 #else
     assert(!"ni");
@@ -1459,11 +1469,12 @@ namespace Chroma
                  enum PlusMinus isign) const
   { 
     START_CODE();
-             
+         
     // base deriv resizes.
     // Even even checkerboard
+
     derivMultipole(ds_u, chi, psi, isign,0);
-    
+   
     // Odd Odd checkerboard
     multi1d<U> ds_tmp;
     derivMultipole(ds_tmp, chi, psi, isign,1);
@@ -1473,6 +1484,8 @@ namespace Chroma
     END_CODE();
   }
 
+
+#if 0
   template <typename T, typename U, int N_exp>
   void QDPExpCloverTermT<T, U, N_exp>::derivMultipole(multi1d<U>& ds_u,
                  const multi1d<T>& chi, const multi1d<T>& psi,
@@ -1489,6 +1502,10 @@ namespace Chroma
     ds_u = zero;
     multi1d<U> ds_u_tmp;
     ds_u_tmp.resize(Nd);
+
+    QDPIO::cout << "I am running 2 derivMultiple now debug" << std::endl;
+
+
 
     // Get the links
     //const multi1d<U>& u = getU();
@@ -1529,6 +1546,83 @@ namespace Chroma
     (*this).getFermBC().zero(ds_u);
     END_CODE();
   }
+
+//Improved derivative
+#elif 1
+  template <typename T, typename U, int N_exp>
+  void QDPExpCloverTermT<T, U, N_exp>::derivMultipole(multi1d<U>& ds_u,
+                 const multi1d<T>& chi, const multi1d<T>& psi,
+                 enum PlusMinus isign, int cb) const
+  {
+    START_CODE();
+
+    //StopWatch swatch;
+    //swatch.reset(); swatch.start();
+    //QDPIO::cout << "\nUsing improved deriv function \n";
+
+
+    // Do I still need to do this?
+    if( ds_u.size() != Nd ) {
+      ds_u.resize(Nd);
+    }
+
+    ds_u = zero;
+    multi1d<U> ds_u_tmp;
+    ds_u_tmp.resize(Nd);
+
+    // Get the links
+    //const multi1d<U>& u = getU();
+
+    T ppsi= zero;
+    T cchi= zero;
+    T tmp_psi= zero; //psi;
+    T sum_psi= zero;
+
+    multi1d<T> cchi_vec;
+    multi1d<T> sum_psi_vec;
+   
+    //for every fermion in chi, we have 6 terms, so total number is 6*chi.size()
+    int num_terms=6*chi.size();
+    cchi_vec.resize(num_terms);
+    sum_psi_vec.resize(num_terms);
+
+    // The exp derivative is computed as
+    // A'+AA'/2+A'A/2+A'AA/6+AA'A/6+AAA'/6 = Sum A^i A' A^j
+    // applyCoeff multiplies the chi by the exponential term factor 
+    // and the factors from using the Caley Hamilton for A^n, for n>5
+    int nterm=0;
+    for(int k=0;k<chi.size();k++){
+        tmp_psi= psi[k];
+        for(int i=0;i<=5;i++){
+            sum_psi_vec[nterm]= zero;
+            cchi_vec[nterm]= zero;
+
+            for(int j=0;j<=5;j++){
+                (*this).applyCoeff(tmp_psi, psi[k], isign,cb,i,j);
+                (*this).applyPower(ppsi, tmp_psi, PLUS, cb, j);
+                sum_psi_vec[nterm]+=ppsi;
+            }
+
+            (*this).applyPower(cchi_vec[nterm], chi[k], PLUS, cb,i);
+            nterm+=1;
+        }
+    }
+    ExpCloverTermBase<T,U>::derivMultipole(ds_u,cchi_vec,sum_psi_vec,isign,cb);
+
+    
+    //swatch.stop();
+    //QDPIO::cout << "\nOuter deriv function time: "<< swatch.getTimeInSeconds() <<" s\n";
+    
+    // Clear out the deriv on any fixed links
+    (*this).getFermBC().zero(ds_u);
+    END_CODE();
+  }
+
+#endif
+
+
+
+ 
 
   namespace QDPExpCloverEnv
   {
@@ -2339,11 +2433,12 @@ namespace Chroma
     template <typename T>
     struct makeExpClovArgs {
       typedef typename WordType<T>::Type_t REALT;
+      //typedef OLattice<PScalar<PScalar<RScalar<REALT>>>> LatticeRealT;
       ExpClovTriang<REALT>* tri_out;
       ExpClovTriang<REALT>* tri;
       int cb;
       Real mclov;
-
+      //LatticeRealT& tr_Minv;
     };
 
 
@@ -2357,19 +2452,33 @@ namespace Chroma
       START_CODE();
 
       typedef typename WordType<T>::Type_t REALT;
+      typedef OLattice<PScalar<PScalar<RScalar<REALT>>>> LatticeRealT;
       // Unwrap the args...
       ExpClovTriang<REALT>* tri = arg->tri;
       ExpClovTriang<REALT>* tri_out = arg->tri_out;
       double mclov=  (arg->mclov).elem().elem().elem().elem();
+      //LatticeRealT& tr_Minv = arg->tr_Minv;
 
       int cb = arg->cb;
       const int n = 2 * Nc;
 	
       for (int ssite = lo; ssite < hi; ++ssite)
       {
-        int site = rb[cb].siteTable()[ssite];	
+         int site = rb[cb].siteTable()[ssite];
+
+        //need to pass the reference to tr_Minv
          siteApplicationExpPack<REALT,0>(tri_out[site],tri[site],inv, mclov);
          siteApplicationExpPack<REALT,1>(tri_out[site],tri[site],inv, mclov);
+
+      //Save tr_M
+#if 0
+        for (int c=0; c < 2*Nc ;c++){
+            tr_Minv.elem(site).elem().elem() += tri_out[site].A.diag[0][c];
+            tr_Minv.elem(site).elem().elem() += tri_out[site].A.diag[1][c];
+        }
+#endif
+
+
       }
       END_CODE();
 #endif
@@ -2629,7 +2738,7 @@ namespace Chroma
     }       
 
     //mclov= 1.0;
-    QDPExpCloverEnv::makeExpClovArgs<T> arg = {exp_tri, tri, cb,mclov};
+    QDPExpCloverEnv::makeExpClovArgs<T> arg = {exp_tri, tri, cb,mclov};//,tr_M};
     int num_sites = rb[cb].siteTable().size();
 
 

@@ -1,0 +1,74 @@
+TAG = 
+SCIDAC = /scratch/bjoo/qdpqop/install
+QOPDIR = $(SCIDAC)/qopqdp
+QDPDIR = $(SCIDAC)/qdp
+QLADIR = $(SCIDAC)/qla
+QIODIR = $(SCIDAC)/qio
+QMPDIR = $(SCIDAC)/qmp
+
+QMPCONF = $(QMPDIR)/bin/qmp-config
+QLACONF = $(QLADIR)/bin/qla-config
+
+#CC = $(shell $(QLACONF) --cc)
+COPT = $(shell $(QLACONF) --copts) -DQDP_PROFILE
+CC = $(shell $(QMPCONF) --cc)
+#COPT = $(shell $(QMPCONF) --copts) -std=c99 -DQDP_PROFILE
+#COPT = -Wall -O2 -std=c99 -DQDP_PROFILE
+#CC = gcc -E
+
+# LAPACK/BLAS options
+ILAPACK = -DUSE_UNDERSCORES
+LLAPACK = -llapack -lblas
+#LLAPACK = /usr/local/lib/libblas.a /usr/lib/liblapack.a /usr/local/lib/libblas.a -lgfortran
+#LLAPACK = -L/opt/ibmcmp/xlf/bg/11.1/bglib /soft/apps/LAPACK/lapack_BGP.a /soft/apps/BLAS/blas_BGP.a -lxlf90 -lxlsmp
+
+
+IQOP = -I$(QOPDIR)/include
+LQOP = -L$(QOPDIR)/lib -lqopqdp
+
+IQDP = -I$(QDPDIR)/include
+LQDP = -L$(QDPDIR)/lib -lqdp_f -lqdp_d -lqdp_df -lqdp_f3 -lqdp_d3 -lqdp_df3 -lqdp_fn -lqdp_dn -lqdp_dfn -lqdp_int -lqdp_common
+
+IQLA = -I$(QLADIR)/include
+LQLA = -L$(QLADIR)/lib -lqla_f -lqla_d -lqla_q -lqla_df -lqla_dq -lqla_f3 -lqla_d3 -lqla_q3 -lqla_df3 -lqla_dq3 -lqla_fn -lqla_dn -lqla_qn -lqla_dfn -lqla_dqn -lqla_int -lqla_random -lqla_cmath
+
+IQIO = -I$(QIODIR)/include
+LQIO = -L$(QIODIR)/lib -lqio -llime
+
+IQMP = $(shell $(QMPCONF) --cflags)
+LQMP = $(shell $(QMPCONF) --ldflags) $(shell $(QMPCONF) --libs)
+
+IQCD = 
+LQCD =
+
+IQOPMG = -I../include
+
+CFLAGSF = $(COPT) $(IQCD) $(IQOP) $(IQDP) $(IQLA) $(IQIO) $(IQMP) $(IQOPMG) -DQDP_Precision=\'F\'
+CFLAGSD = $(COPT) $(IQCD) $(IQOP) $(IQDP) $(IQLA) $(IQIO) $(IQMP) $(IQOPMG) -DQDP_Precision=\'D\'
+CFLAGS = $(ILAPACK) $(CFLAGSD)
+LDLIBS = $(LQCD) $(LQOP) $(LQDP) $(LQLA) $(LQIO) $(LQMP) $(LLAPACK) -lm
+
+all: libwilsonmg.a
+
+qdpstack: libqdpstack.a
+
+libwilsonmg.a: wilsonmg_d.o wilsonmg_f.o
+	ar rcs $@ $^
+
+libqdpstack.a:
+	ar q $@ $(shell find `echo ${QOPDIR} | sed "s/install/build/"`* -name \*.o)
+	ar q $@ $(shell find `echo ${QDPDIR} | sed "s/install/build/"`* -name \*.o)
+	ar q $@ $(shell find `echo ${QLADIR} | sed "s/install/build/"`* -name \*.o)
+	ar q $@ $(shell find `echo ${QIODIR} | sed "s/install/build/"`* -name \*.o)
+	ar q $@ $(shell find `echo ${QMPDIR} | sed "s/install/build/"`* -name \*.o)
+	ar q $@ $(shell find ../qcdlib -name \*.o)
+	cp libqdpstack.a libwilsonmg.a
+
+wilsonmg_f.o: wilsonmg_p.c
+	$(CC) $(CFLAGSF) $^ -c -o $@
+
+wilsonmg_d.o: wilsonmg_p.c
+	$(CC) $(CFLAGSD) $^ -c -o $@
+
+clean:
+	-rm -rf $(PROGS) *.o #*.a

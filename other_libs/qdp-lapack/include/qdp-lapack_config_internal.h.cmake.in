@@ -1,0 +1,11 @@
+/* include/qdp-lapack_config_internal.h.in.  Generated from configure.ac by autoheader.  */
+#cmakedefine DUMMY_LAPACK_BINDING @DUMMY_LAPACK_BINDING@
+
+/* Use Lapack Fortran bindings */
+#cmakedefine FORTRAN_LAPACK_BINDING @FORTRAN_LAPACK_BINDING@
+
+/* Use BLAS CDOT */
+#cmakedefine USE_BLAS_CDOT @USE_BLAS_CDOT@
+
+/* Using the QMP library for communications */
+#cmakedefine USE_QMP @USE_QMP@

@@ -169,6 +169,7 @@ namespace Chroma
 
     // base deriv resizes.
     // Even even checkerboard
+
     derivMultipole(ds_u, chi, psi, isign,0);
     
     // Odd Odd checkerboard
@@ -767,7 +768,6 @@ namespace Chroma
 
     // Get the links
     //const multi1d<U>& u = getU();
-
 
     // Now compute the insertions
     for(int mu=0; mu < Nd; mu++) {

@@ -1,0 +1,23 @@
+@PACKAGE_INIT@
+include(CMakeFindDependencyMacro)
+
+
+set(CPPWilsonDslash_PARALLEL_ARCH @dslashParallelArch@)
+set(CPPWilsonDslash_ENABLE_OPENMP @CPPWilsonDslash_ENABLE_OPENMP@) 
+set(CPPWilsonDslash_ENABLE_SSE2   @CPPWilsonDslash_ENABLE_SSE2@)
+set(CPPWilsonDslash_ENABLE_QDPXX  @CPPWilsonDslash_ENABLE_QDPXX@)
+
+if( CPPWilsonDslash_ENABLE_OPENMP ) 
+  find_dependency(OpenMP REQUIRED)
+  find_dependency(Threads REQUIRED)
+endif()
+
+if( CPPWilsonDslash_PARALLEL_ARCH STREQUAL "parscalar")
+   find_dependency(QMP REQUIRED)
+endif()
+
+if( CPPWilsonDslash_ENABLE_QDPXX )
+   find_dependency(QDPXX REQUIRED)
+endif()
+
+include(${CMAKE_CURRENT_LIST_DIR}/CPPWilsonDslashTargets.cmake)

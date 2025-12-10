@@ -165,6 +165,9 @@ namespace Chroma
   {
     START_CODE();
 
+
+    QDPIO::cout << "I am running derivMultiple now debug" << std::endl;
+
     // base deriv resizes.
     // Even even checkerboard
     derivMultipole(ds_u, chi, psi, isign,0);
@@ -794,6 +797,8 @@ namespace Chroma
 	  T ferm_tmp = Gamma(mu_nu_index)*psi[i];
 	  s_xy_dag += traceSpin( outerProduct(ferm_tmp,chi[i]));
 	}
+
+    //For exp-clover, the psi and chi can be applied directly to the field, and thus the trace spin is zero?
 
 	s_xy_dag *= Real(factor);
 
