@@ -230,13 +230,14 @@ namespace Chroma
 
       qtop_tmp = real(trace(tmp_2));
       lrqtop -= qtop_tmp;
-    }  
+    }
+    
             
     /* Lattice version of S_ratio */
-    lract /= (4*Chroma::twopi*Chroma::twopi);
+    lract /= ( 4 * Chroma::constant().twopi * Chroma::constant().twopi);
   
     /* Lattice version of qtop */
-    lrqtop /= (64*Chroma::twopi*Chroma::twopi);
+    lrqtop /= ( 64 * Chroma::constant().twopi * Chroma::constant().twopi);
   
     END_CODE();
   }

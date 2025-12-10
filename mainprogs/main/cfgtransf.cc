@@ -693,8 +693,12 @@ int main(int argc, char **argv)
       QDPIO::cin >> szin_gauge_header.AlpLog;
       QDPIO::cout << "Enter AlpExp\n";
       QDPIO::cin >> szin_gauge_header.AlpExp;
+#if ! defined (QDP_IS_QDPJIT2)
       QDPIO::cout << "Enter seed\n";
       QDPIO::cin >> szin_gauge_header.seed;
+#else
+      QDPIO::cout << "Skipping enter SEED, not implemented in qdp-jit2\n";
+#endif
     }
   }
   break;

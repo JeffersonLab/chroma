@@ -92,7 +92,6 @@ namespace Chroma
 
       // Loop over all the pseudoferms
       multi1d<int> n_count(getNPF());
-      QDPIO::cout << "num_pf = " << getNPF() << std::endl;
 
       for(int n=0; n < getNPF(); ++n)
       {

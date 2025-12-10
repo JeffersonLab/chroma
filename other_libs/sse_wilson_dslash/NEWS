@@ -1,0 +1,9 @@
+21/11/07: Balint Joo - Some tweaking. Simplifying the site loops for single precision brought marked
+                       improvement both on my CoreDuo Laptop and on AMD Barcelona. On qcdeval-01 the 
+	               single node (no comms) dslash ran with 3.77Gflops, and the the 3d dslash with 3.4Gflops.
+		       Code also builds with intel compiler, but apparently not with the pathscale compiler.
+	               Pathscale generated code does not appear to pass regression and appears slow (NaNs?)
+		       Intel generated code seems slower than GNU, but can't be sure as it ran on a slower
+	               system. Time to leave this now and do some tests in Parallel.
+
+12/9/07: Balint Joo - Initial revision. Passes regressions in scalar, scalar-double, single, single-double

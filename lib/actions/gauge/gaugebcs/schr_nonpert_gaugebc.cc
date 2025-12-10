@@ -54,7 +54,7 @@ namespace Chroma
     phases.lower.resize(Nc);
     phases.upper.resize(Nc);
 
-    Real ftmp = Chroma::twopi * 0.5 * SchrPhiMult();
+    Real ftmp = Chroma::constant().twopi * 0.5 * SchrPhiMult();
 
     switch (Nc)
     {

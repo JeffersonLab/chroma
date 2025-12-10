@@ -71,7 +71,7 @@ namespace Chroma
     {
       RANNYU::random(rng);
 
-      Real twopiN = 0.25 * Chroma::twopi;
+      Real twopiN = 0.25 * Chroma::constant().twopi;
       Real theta = twopiN * floor(4*rng.ran);
 
       return cmplx(cos(theta),sin(theta));

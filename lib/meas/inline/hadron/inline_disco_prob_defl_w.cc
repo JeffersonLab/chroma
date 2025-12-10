@@ -129,11 +129,11 @@ namespace Chroma
       else
 	param.noise_vectors = 1;
 
-      if(inputtop.count("max_rhs")!=0){ 
-	read(inputtop,"max_rhs",param.max_rhs) ;
+      param.max_rhs = 0;
+      if (inputtop.count("max_rhs") != 0)
+      {
+	read(inputtop, "max_rhs", param.max_rhs);
       }
-      else
-	param.max_rhs = 1;
      }
 
     //! Propagator output
@@ -627,16 +627,24 @@ namespace Chroma
       MesPlq(xml_out, "Observables", u);
 
       std::shared_ptr<Coloring> coloring;
-      if (!params.param.probing_file.empty()) {
-        QDPIO::cout << "Reading colors from file " << params.param.probing_file << std::endl;
+      if (!params.param.probing_file.empty())
+      {
+	QDPIO::cout << "Reading colors from file " << params.param.probing_file << std::endl;
         coloring.reset(new Coloring(params.param.probing_file));
-      } else {
+      }
+      else
+      {
 	QDPIO::cout << "Generating a " << params.param.probing_distance
 		    << "-distance coloring with a power " << params.param.probing_power
 		    << std::endl;
-	coloring.reset(new Coloring(params.param.probing_distance, params.param.probing_power));
+	// Do a k-distance coloring with k being params.param.probing_distance and taking as
+	// shifts, zero and the given probing distance. We include always the zero shift because
+	// the disconnected loops can be small at z=0 for several gammas.
+	coloring.reset(new Coloring(
+	  std::vector<std::array<int, 4>>{{{}}, {0, 0, params.param.probing_distance, 0}},
+	  params.param.probing_power));
       }
-    
+
       //
       // Initialize fermion action
       //
@@ -688,10 +696,10 @@ namespace Chroma
 
         multi1d<int> d;
         if (params.param.use_ferm_state_links)
-          do_disco(dbdet, vi_lambda, ui, ft, state->getLinks(),
+          do_disco(dbdet, ui, vi_lambda, ft, state->getLinks(),
                    d, params.param.max_path_length);
         else
-          do_disco(dbdet, vi_lambda, ui, ft, u, 
+          do_disco(dbdet, ui, vi_lambda, ft, u, 
                    d, params.param.max_path_length);
       }
       swatch_det.stop();
@@ -711,12 +719,12 @@ namespace Chroma
 	LatticeComplex vec ;
 	LatticeReal rnd1, theta;
 	random(rnd1); 
-	Real twopiN = Chroma::twopi / 4; 
+	Real twopiN = Chroma::constant().twopi / 4; 
         theta = twopiN * floor(4*rnd1);
 	vec = cmplx(cos(theta),sin(theta));
 
         // All the loops
-        const int N_rhs = (params.param.max_rhs + Ns * Nc - 1) / Ns / Nc;
+	const int N_rhs = (std::max(params.param.max_rhs, 1) + Ns * Nc - 1) / Ns / Nc;
         for (int k1 = 0, dk = std::min(Nsrc, N_rhs); k1 < Nsrc ; k1 += dk, dk = std::min(Nsrc - k1, N_rhs)) {
           // collect (Ns*Nc*dk) pairs of vectors
           std::vector<std::shared_ptr<LatticeFermion>> v_chi(Ns * Nc * dk), v_psi(Ns * Nc * dk), v_q(Ns * Nc * dk);
@@ -786,16 +794,17 @@ namespace Chroma
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << std::endl;
       
-
       // write out the results
-      
-      // DB storage          
-      BinaryStoreDB<SerialDBKey<KeyOperator_t>,SerialDBData<ValOperator_t> > qdp_db;
-      
-      // Open the file, and write the meta-data and the binary for this operator
+
+      if (Layout::nodeNumber() == 0)
       {
+	// DB storage
+	LocalBinaryStoreDB<LocalSerialDBKey<KeyOperator_t>, LocalSerialDBData<ValOperator_t>>
+	  qdp_db;
+
+	// Open the file, and write the meta-data and the binary for this operator
 	XMLBufferWriter file_xml;
-	
+
 	push(file_xml, "DBMetaData");
 	write(file_xml, "id", std::string("DiscoBlocks"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
@@ -807,43 +816,41 @@ namespace Chroma
 	std::string file_str(file_xml.str());
 	qdp_db.setMaxUserInfoLen(file_str.size());
 
-	//qdp_db.open(params.named_obj.sdb_file, O_RDWR | O_CREAT, 0664);
 	//Slightly modify code to account for changes from multifile write.
 	//Be consistent with old mode of filename write.
 	std::string file_name = params.named_obj.sdb_file;
 	qdp_db.open(file_name, O_RDWR | O_CREAT, 0664);
 
 	qdp_db.insertUserdata(file_str);
-      }
-   
-      SerialDBKey <KeyOperator_t> key ;
-      SerialDBData<ValOperator_t> val ;
-      std::map< KeyOperator_t, ValOperator_t >::iterator it;
-      // Store all the data
-      for(it=dbmean.begin();it!=dbmean.end();it++){
-	key.key()  = it->first  ;
-        key.key().mass_label = params.param.mass_label;
-	val.data().op.resize(it->second.op.size()) ;
-	for(int i(0);i<it->second.op.size();i++)
-          val.data().op[i] = it->second.op[i];
-	qdp_db.insert(key,val);
-      }
-      
 
-      pop(xml_out);  // close last tag
+	LocalSerialDBKey<KeyOperator_t> key;
+	LocalSerialDBData<ValOperator_t> val;
+	std::map<KeyOperator_t, ValOperator_t>::iterator it;
+	// Store all the data
+	for (it = dbmean.begin(); it != dbmean.end(); it++)
+	{
+	  key.key() = it->first;
+	  key.key().mass_label = params.param.mass_label;
+	  val.data().op.resize(it->second.op.size());
+	  for (int i(0); i < it->second.op.size(); i++)
+	    val.data().op[i] = it->second.op[i];
+	  qdp_db.insert(key, val);
+	}
+
+	qdp_db.close();
+      }
+
+      pop(xml_out); // close last tag
 
       snoop.stop();
-      QDPIO::cout << name << ": total time = "
-		  << snoop.getTimeInSeconds() 
-		  << " secs" << std::endl;
-      
+      QDPIO::cout << name << ": total time = " << snoop.getTimeInSeconds() << " secs" << std::endl;
+
       QDPIO::cout << name << ": ran successfully" << std::endl;
-      
-      END_CODE(); 
+
+      END_CODE();
     }
 
-
-  }// namespace
+  } // namespace
 
 } // namespace Chroma
 // vim: sw=2 sts=2

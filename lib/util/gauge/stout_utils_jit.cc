@@ -1,6 +1,9 @@
 #include "qdp.h"
 
+#include "chroma_config.h"
+
 #ifdef QDP_IS_QDPJIT
+#if ! defined (QDP_IS_QDPJIT2)
 
 using namespace QDP;
 
@@ -525,4 +528,5 @@ void function_get_fs_bs_build(JitFunction& function,
 
 
 
+#endif
 #endif

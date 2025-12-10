@@ -1,0 +1,22 @@
+/* include/dslash_config_internal.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Parscalar Arch */
+#cmakedefine CPP_DSLASH_PARSCALAR  @CPP_DSLASH_PARSCALAR@
+
+/* Scalar Arch */
+#cmakedefine CPP_DSLASH_SCALAR @CPP_DSLASH_SCALAR@
+
+/* Use OpenMP Threads */
+#cmakedefine DSLASH_USE_OMP_THREADS @DSLASH_USE_OMP_THREADS@
+
+/* Use SSE3 Code in kernels */
+#cmakedefine DSLASH_USE_SSE2 @DSLASH_USE_SSE2@
+
+/* Disable computation in 4D kernels */
+#cmakedefine SSEDSLASH_4D_NOCOMMS @SSEDSLASH_4D_NOCOMMS@
+
+/* Disable computation in 4D kernels */
+#cmakedefine SSEDSLASH_4D_NOCOMPUTE @SSEDSLASH_4D_NOCOMPUTE@
+
+/* Dslash uses QDPXX */
+#cmakedefine SSE_USE_QDPXX @SSE_USE_QDPXX@

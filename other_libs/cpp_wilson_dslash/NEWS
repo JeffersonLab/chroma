@@ -1,0 +1,12 @@
+11/07/20: Robert Edwards -
+        Merged devel.
+
+10/24/14: Balint Joo -
+        Added threading improvements from J. Bloch and S. Heybrock from the University of Regensburg, for use on Xeon Phi, in branch regensburg-patches. Many thanks for these contributions.
+
+04/17/09: Balint Joo - 
+	Reverted back the blocking in the scalar operator
+ 	Updated for threading in the QDP++
+	Ready to integrate into chroma!
+	
+26/8/08: Balint Joo - Initial revision. Passes unit tests in scalar, scalar-qmt, scalar-openmp. parscalar, parscalar-qmt, parscalar-openmp but more testing is needed.

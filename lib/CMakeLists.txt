@@ -549,10 +549,11 @@ list(APPEND ChromaLIB_HEADERS
 	actions/ferm/fermacts/fermact_factory_w.h
 	actions/ferm/fermacts/clover_fermact_params_w.h
 	actions/ferm/fermacts/eoprec_clover_fermact_w.h
+    actions/ferm/fermacts/eoprec_exp_clover_fermact_w.h
 	actions/ferm/fermacts/seoprec_clover_fermact_w.h
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h
 	actions/ferm/fermacts/unprec_clover_fermact_w.h
-  actions/ferm/fermacts/unprec_exp_clover_fermact_w.h
+    actions/ferm/fermacts/unprec_exp_clover_fermact_w.h
 	actions/ferm/fermacts/nef_fermact_params_w.h
 	actions/ferm/fermacts/eoprec_slic_fermact_w.h
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.h
@@ -654,19 +655,20 @@ list(APPEND ChromaLIB_HEADERS
 	actions/ferm/linop/lwldslash_base_3d_w.h
 	actions/ferm/linop/lwldslash_3d_qdp_w.h
 	actions/ferm/linop/clover_term_w.h
-  actions/ferm/linop/clov_triang_qdp_w.h
+    actions/ferm/linop/clov_triang_qdp_w.h
 	actions/ferm/linop/clover_term_base_w.h
 	actions/ferm/linop/exp_clover_term_base_w.h
 	actions/ferm/linop/clover_term_qdp_w.h
-  actions/ferm/linop/exp_clover_term_w.h
+    actions/ferm/linop/exp_clover_term_w.h
 	actions/ferm/linop/exp_clover_term_qdp_w.h
 	actions/ferm/linop/eoprec_clover_linop_w.h
+    actions/ferm/linop/eoprec_exp_clover_linop_w.h
 	actions/ferm/linop/seoprec_clover_linop_w.h
 	actions/ferm/linop/shifted_linop_w.h
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.h
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.h
 	actions/ferm/linop/unprec_clover_linop_w.h
-  actions/ferm/linop/unprec_exp_clover_linop_w.h
+    actions/ferm/linop/unprec_exp_clover_linop_w.h
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.h
 	actions/ferm/linop/eoprec_dwflike_linop_base_array_w.h
 	actions/ferm/linop/eoprec_dwf_linop_array_w.h
@@ -1015,6 +1017,7 @@ list(APPEND ChromaLIB_HEADERS
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.h
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h
+	meas/inline/hadron/inline_inverter_test_w.h
 	meas/inline/hadron/inline_mres_w.h
 	meas/inline/hadron/inline_qpropqio_w.h
 	meas/inline/hadron/inline_qpropadd_w.h
@@ -1372,6 +1375,7 @@ target_sources(chromalib PRIVATE
 	util/ferm/subset_vectors.cc 
 	util/ferm/block_couplings.cc 
 	util/ferm/disp_soln_cache.cc 
+	util/ferm/mgproton.cc 
     util/ft/sftmom.cc 
     util/ft/single_phase.cc 
 	util/ft/time_slice_set.cc 
@@ -1446,6 +1450,7 @@ target_sources(chromalib PRIVATE
 	meas/hadron/dilution_quark_source_const_w.cc 
     util/gauge/cern_gauge_init.cc 
     io/readcern.cc
+    constant.cc
 )
 
 ########################################################
@@ -1469,10 +1474,11 @@ target_sources(chromalib PRIVATE
 	actions/ferm/fermacts/eoprec_ovext_fermact_array_w.cc 
 	actions/ferm/fermacts/clover_fermact_params_w.cc 
 	actions/ferm/fermacts/eoprec_clover_fermact_w.cc 
+    actions/ferm/fermacts/eoprec_exp_clover_fermact_w.cc
 	actions/ferm/fermacts/seoprec_clover_fermact_w.cc 
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc 
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc 
-  actions/ferm/fermacts/unprec_exp_clover_fermact_w.cc
+    actions/ferm/fermacts/unprec_exp_clover_fermact_w.cc
 	actions/ferm/fermacts/nef_fermact_params_w.cc 
 	actions/ferm/fermacts/eoprec_slic_fermact_w.cc 
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc 
@@ -1565,12 +1571,13 @@ target_sources(chromalib PRIVATE
 	actions/ferm/linop/unprec_wilson_linop_w.cc 
 	actions/ferm/linop/clover_term_base_w.cc 
 	actions/ferm/linop/clover_term_qdp_w.cc 
-	actions/ferm/linop/eoprec_clover_linop_w.cc 
+	actions/ferm/linop/eoprec_clover_linop_w.cc
+    actions/ferm/linop/eoprec_exp_clover_linop_w.cc  
 	actions/ferm/linop/seoprec_clover_linop_w.cc 
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.cc 
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.cc 
 	actions/ferm/linop/unprec_clover_linop_w.cc 
-  actions/ferm/linop/unprec_exp_clover_linop_w.cc
+    actions/ferm/linop/unprec_exp_clover_linop_w.cc
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.cc 
 	actions/ferm/linop/eoprec_slic_linop_w.cc 
 	actions/ferm/linop/eoprec_slrc_linop_w.cc 
@@ -1783,6 +1790,7 @@ target_sources(chromalib PRIVATE
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.cc 
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.cc 
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.cc 
+	meas/inline/hadron/inline_inverter_test_w.cc 
 	meas/inline/hadron/inline_mres_w.cc 
 	meas/inline/hadron/inline_qpropqio_w.cc 
 	meas/inline/hadron/inline_qpropadd_w.cc 
@@ -1929,7 +1937,9 @@ endif()
 #######################################################
 if( Chroma_ENABLE_JIT_CLOVER )
   list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit_w.h)
+  list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit2_w.h)
   target_sources(chromalib PRIVATE util/gauge/stout_utils_jit.cc)
+  target_sources(chromalib PRIVATE util/gauge/stout_utils_jit2.cc)
 endif()
 
 
@@ -1946,11 +1956,13 @@ if( Chroma_ENABLE_QUDA )
 	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.h
+    actions/ferm/invert/quda_solvers/syssolver_linop_exp_clover_quda_multigrid_w.h
 	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_multigrid_w.h
+    actions/ferm/invert/quda_solvers/syssolver_mdagm_exp_clover_quda_multigrid_w.h
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.h
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h
@@ -1976,11 +1988,13 @@ target_sources(chromalib PRIVATE
 	actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_wilson_params.cc
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.cc
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.cc
+    actions/ferm/invert/quda_solvers/syssolver_linop_exp_clover_quda_multigrid_w.cc
 	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.cc
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.cc
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.cc
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_multigrid_w.cc
+    actions/ferm/invert/quda_solvers/syssolver_mdagm_exp_clover_quda_multigrid_w.cc
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc
@@ -2011,6 +2025,8 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.h
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h
      meas/inline/hadron/inline_create_colorvecs_superb.h
+     meas/inline/hadron/inline_eigenvalues_superb_w.h
+     meas/inline/hadron/inline_inverter_test_superb_w.h
   )
   target_sources(chromalib PRIVATE 
      meas/inline/hadron/inline_disco_prob_defl_superb_w.cc
@@ -2019,6 +2035,8 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.cc 
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.cc 
      meas/inline/hadron/inline_create_colorvecs_superb.cc
+     meas/inline/hadron/inline_eigenvalues_superb_w.cc
+     meas/inline/hadron/inline_inverter_test_superb_w.cc
   )
   target_include_directories(chromalib PUBLIC ${SUPERBBLAS_DIR}/include)
   add_library(superbblas STATIC IMPORTED )
@@ -2030,7 +2048,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      add_library(magma STATIC IMPORTED )
      set_target_properties( magma PROPERTIES IMPORTED_LOCATION ${MAGMA_DIR}/lib/libmagma.a )
      target_link_libraries(chromalib PUBLIC magma )
-     if( QDP_BACKEND_CUDA )
+     if( QDP_BACKEND_CUDA  OR Chroma_ENABLE_CUDA)
        target_link_libraries(magma INTERFACE CUDA::cublas CUDA::cublasLt CUDA::cusparse CUDA::cudart)
      endif()
      target_link_libraries(magma INTERFACE BLAS::BLAS ${Chroma_extra_link_flags})
@@ -2043,19 +2061,19 @@ if( Chroma_ENABLE_SUPERBBLAS )
      target_link_libraries(chromalib PUBLIC primme )
      if( Chroma_ENABLE_MAGMA )
         target_link_libraries(primme INTERFACE magma)
-     elseif( QDP_BACKEND_CUDA )
+     elseif( QDP_BACKEND_CUDA OR Chroma_ENABLE_CUDA)
        target_link_libraries(primme INTERFACE CUDA::cublas CUDA::cudart BLAS::BLAS ${Chroma_extra_link_flags})
      else()
        target_link_libraries(primme INTERFACE BLAS::BLAS ${Chroma_extra_link_flags})
      endif()
   endif()
 
-  if( QDP_BACKEND_ROCM )
+  if( QDP_BACKEND_ROCM OR Chroma_ENABLE_ROCM)
      target_compile_options(chromalib PUBLIC ${HIP_CPP_CONFIG})
-     target_link_libraries(superbblas INTERFACE roc::hipblas)
+     target_link_libraries(superbblas INTERFACE roc::hipblas roc::hipsparse roc::hipsolver roc::rocblas roc::rocsolver)
   endif()
-  if( QDP_BACKEND_CUDA )
-    target_link_libraries(superbblas INTERFACE CUDA::cublas CUDA::cublasLt CUDA::cusparse CUDA::cudart)
+  if( QDP_BACKEND_CUDA OR Chroma_ENABLE_CUDA)
+    target_link_libraries(superbblas INTERFACE CUDA::cublas CUDA::cublasLt CUDA::cusparse CUDA::cusolver CUDA::cudart)
   endif()
   target_link_libraries(superbblas INTERFACE BLAS::BLAS ${Chroma_extra_link_flags})
 endif()

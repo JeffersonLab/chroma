@@ -169,6 +169,7 @@ namespace Chroma
 
     // base deriv resizes.
     // Even even checkerboard
+
     derivMultipole(ds_u, chi, psi, isign,0);
     
     // Odd Odd checkerboard
@@ -694,6 +695,8 @@ namespace Chroma
   {
     START_CODE();
 
+    //StopWatch swatch;
+    //swatch.reset(); swatch.start();
 
     // Do I still need to do this?
     if( ds_u.size() != Nd ) { 
@@ -740,6 +743,8 @@ namespace Chroma
       }
     }
 
+    //swatch.stop();
+    //QDPIO::cout << "\nDeriv function time: "<< swatch.getTimeInSeconds() <<" s\n";
 
     // Clear out the deriv on any fixed links
     (*this).getFermBC().zero(ds_u);
@@ -763,7 +768,6 @@ namespace Chroma
 
     // Get the links
     //const multi1d<U>& u = getU();
-
 
     // Now compute the insertions
     for(int mu=0; mu < Nd; mu++) {

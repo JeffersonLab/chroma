@@ -38,147 +38,164 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << "Entering quarkProp4" << std::endl;
+    QDPIO::cout << "Entering quarkProp4 - MRHS interface" << std::endl;
     push(xml_out, "QuarkProp4");
 
     ncg_had = 0;
 
     int start_spin;
     int end_spin;
+		int num_spin;
 
     switch (quarkSpinType)
     {
     case QUARK_SPIN_TYPE_FULL:
       start_spin = 0;
       end_spin = Ns;
+			num_spin = Ns;
       break;
 
     case QUARK_SPIN_TYPE_UPPER:
       start_spin = 0;
       end_spin = Ns/2;
+			num_spin = Ns/2;
       break;
 
     case QUARK_SPIN_TYPE_LOWER:
       start_spin = Ns/2;
       end_spin = Ns;
+			num_spin = Ns/2;
       break;
     }
 
-//  LatticeFermion psi = zero;  // note this is ``zero'' and not 0
 
-    // This version loops over all color and spin indices
-    for(int color_source = 0; color_source < Nc; ++color_source)
-    {
-      for(int spin_source = start_spin; spin_source < end_spin; ++spin_source)
-      {
-	LatticeFermion psi = zero;  // note this is ``zero'' and not 0
-	LatticeFermion chi;
+		{ 
+			multi1d<Double> norm_chi(Nc*num_spin);
+			multi1d<Double> fact(Nc*num_spin);
+			std::vector< std::shared_ptr<const LatticeFermion> > chi_ptrs(Nc*num_spin);
+			std::vector< std::shared_ptr<LatticeFermion> > psi_ptrs(Nc*num_spin);
+			// This version loops over all color and spin indices
+			int idx=0;
+			for(int color_source = 0; color_source < Nc; ++color_source)
+			{
+				for(int spin_source = start_spin; spin_source < end_spin; ++spin_source)
+				{
+					psi_ptrs[idx] = std::make_shared<LatticeFermion>(zero);
+					
 
-	// Extract a fermion source
-	PropToFerm(q_src, chi, color_source, spin_source);
+					// Extract a fermion source
+					// Due to the vaguaries of initializing a std::shared<const T>
+					// We go via a temporary.
+					LatticeFermion tmp;
+					PropToFerm(q_src, tmp, color_source, spin_source);
 
-	// Use the last initial guess as the current initial guess
+					// Normalize temporary 
+					norm_chi[idx] = sqrt(norm2(tmp));
+					fact[idx] = toDouble(1)/norm_chi[idx];
+					tmp *= fact[idx];
+				
+					// Create the RHS 	
+					chi_ptrs[idx] = std::make_shared<const LatticeFermion>(tmp);
 
-	/* 
-	 * Normalize the source in case it is really huge or small - 
-	 * a trick to avoid overflows or underflows
-	 */
-	Real fact = 1.0;
-	Real nrm = sqrt(norm2(chi));
-	if (toFloat(nrm) != 0.0)
-	  fact /= nrm;
+					// Update Index
+					idx++;
+				}
+			}
 
-	// Rescale
-	chi *= fact;
+			// Do the MultiRHS solve
+			//
+			// Convention: In true multiRHS solve only solution 0 will have non-zero
+			// n-count for now. That way accumulating ncg_had by adding 0s potentially
+			// will work.
+			std::vector<SystemSolverResults_t> results = (*qprop)(psi_ptrs, chi_ptrs);
 
-	// Compute the propagator for given source color/spin.
-	{
-	  SystemSolverResults_t result = (*qprop)(psi,chi);
-	  ncg_had += result.n_count;
+			// Accumulate ncg_had and restore solution into solution prop	
+			ncg_had = 0;
+			for(int idx=0; idx < Nc*num_spin; idx++) {
 
-	  push(xml_out,"Qprop");
-	  write(xml_out, "color_source", color_source);
-	  write(xml_out, "spin_source", spin_source);
-	  write(xml_out, "n_count", result.n_count);
-	  write(xml_out, "resid", result.resid);
-	  pop(xml_out);
-	}
+				// Undo rescale by multiplying by 1/fact = norm_chi[idx]
+				*(psi_ptrs[idx]) *= norm_chi[idx]; 
 
-	// Unnormalize the source following the inverse of the normalization above
-	fact = Real(1) / fact;
-	psi *= fact;
+				// break colorspin index into color and spin indices. 
+				int spin_idx = idx%num_spin + start_spin;
+				int col_idx =idx/num_spin; 
 
-	/*
-	 * Move the solution to the appropriate components
-	 * of quark propagator.
-	 */
-	FermToProp(psi, q_sol, color_source, spin_source);
-      }	/* end loop over spin_source */
-    } /* end loop over color_source */
+				// Insert  solution into propagator
+				FermToProp(*(psi_ptrs[idx]), q_sol, col_idx, spin_idx);
 
+				// Accumulate ncg_had. This will be correct if we follow
+				// the convention that true mrhs solvers return only a count
+				// in results[0].n_count and keep all others as zero
+				// Fake MRHS solvers (which loop over sources) can fill out 
+				// an accurate iteration count for each solve. 
+				ncg_had += results[idx].n_count;
+				push(xml_out,"Qprop");
+				write(xml_out, "color_source", col_idx);
+				write(xml_out, "spin_source", spin_idx);
+				write(xml_out, "n_count", results[idx].n_count);
+				write(xml_out, "resid", results[idx].resid);
+				pop(xml_out);
+
+			} /* end loop over solutions */
+		} // psis, chis etc go away here. 
 
     switch (quarkSpinType)
     {
-    case QUARK_SPIN_TYPE_FULL:
-      // Do nothing here
-      break;
+			case QUARK_SPIN_TYPE_FULL:
+				// Do nothing here
+				break;
 
-    case QUARK_SPIN_TYPE_UPPER:
-    {
-      /* Since this is a non-relativistic prop 
-       * negate the quark props 'lower' components
-       * This is because I should have only done a half inversion 
-       * on non relativistic channels, where the last two columns of the 
-       * source MUST be the negation of the first two columns. 
-       * Hence the last two columns of the solution must also be 
-       * negations of the first two columns. The half inversion itself
-       * has not put in the minus sign, it just copied the columns.
-       * The post multiply by Gamma_5 adds in the required - sign 
-       * in the last two columns 
-       */ 
-      /* Apply Gamma_5 = Gamma(15) by negating the fermion extracted */
-      for(int color_source = 0; color_source < Nc ; ++color_source) 
-      {
-	for(int spin_source = Ns/2; spin_source < Ns; ++spin_source) 
-	{ 
-	  int copyfrom = spin_source - Ns/2;
-	  LatticeFermion psi;
+			case QUARK_SPIN_TYPE_UPPER:
+			{
+				/* Since this is a non-relativistic prop 
+				 * negate the quark props 'lower' components
+				 * This is because I should have only done a half inversion 
+				 * on non relativistic channels, where the last two columns of the 
+				 * source MUST be the negation of the first two columns. 
+				 * Hence the last two columns of the solution must also be 
+				 * negations of the first two columns. The half inversion itself
+				 * has not put in the minus sign, it just copied the columns.
+				 * The post multiply by Gamma_5 adds in the required - sign 
+				 * in the last two columns 
+				 */ 
+				/* Apply Gamma_5 = Gamma(15) by negating the fermion extracted */
+				for(int color_source = 0; color_source < Nc ; ++color_source) {
+					for(int spin_source = Ns/2; spin_source < Ns; ++spin_source) { int copyfrom = spin_source - Ns/2;
+						LatticeFermion psi;
+						PropToFerm(q_sol, psi, color_source, copyfrom);
+						FermToProp(LatticeFermion(-psi), q_sol, color_source, spin_source);
+					}
+				}
+			}
+			break;
 
-	  PropToFerm(q_sol, psi, color_source, copyfrom);
-	  FermToProp(LatticeFermion(-psi), q_sol, color_source, spin_source);
-	}
-      }
-    }
-    break;
+			case QUARK_SPIN_TYPE_LOWER:
+			{
+				/* Since this is a non-relativistic prop 
+				 * negate the quark props 'lower' components
+				 * This is because I should have only done a half inversion 
+				 * on non relativistic channels, where the last two columns of the 
+				 * source MUST be the negation of the first two columns. 
+				 * Hence the last two columns of the solution must also be 
+				 * negations of the first two columns. The half inversion itself
+				 * has not put in the minus sign, it just copied the columns.
+				 * The post multiply by Gamma_5 adds in the required - sign 
+				 * in the last two columns 
+				 */ 
+				/* Apply Gamma_5 = Gamma(15) by negating the fermion extracted */
+				for(int color_source = 0; color_source < Nc ; ++color_source) {
+					for(int spin_source = 0; spin_source < Ns/2; ++spin_source) { 
+						int copyfrom = spin_source + Ns/2;
+						LatticeFermion psi;
 
-    case QUARK_SPIN_TYPE_LOWER:
-    {
-      /* Since this is a non-relativistic prop 
-       * negate the quark props 'lower' components
-       * This is because I should have only done a half inversion 
-       * on non relativistic channels, where the last two columns of the 
-       * source MUST be the negation of the first two columns. 
-       * Hence the last two columns of the solution must also be 
-       * negations of the first two columns. The half inversion itself
-       * has not put in the minus sign, it just copied the columns.
-       * The post multiply by Gamma_5 adds in the required - sign 
-       * in the last two columns 
-       */ 
-      /* Apply Gamma_5 = Gamma(15) by negating the fermion extracted */
-      for(int color_source = 0; color_source < Nc ; ++color_source) 
-      {
-	for(int spin_source = 0; spin_source < Ns/2; ++spin_source) 
-	{ 
-	  int copyfrom = spin_source + Ns/2;
-	  LatticeFermion psi;
+						PropToFerm(q_sol, psi, color_source, copyfrom);
 
-	  PropToFerm(q_sol, psi, color_source, copyfrom);
-	  // There is no need for (-) in the lower component case (KNO)
-	  FermToProp(LatticeFermion(psi), q_sol, color_source, spin_source);
-	}
-      }
-    }
-    break;
+						// There is no need for (-) in the lower component case (KNO)
+						FermToProp(LatticeFermion(psi), q_sol, color_source, spin_source);
+					}
+				}
+			}
+			break;
     }  // end switch(quarkSpinType)
 
     pop(xml_out);

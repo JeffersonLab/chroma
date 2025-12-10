@@ -12,6 +12,10 @@
 #include "actions/ferm/linop/unprec_clover_linop_w.h"
 #include "actions/ferm/linop/unprec_exp_clover_linop_w.h"
 
+// QUDA Headers
+#include <quda.h>
+// #include <util_quda.h>
+
 using namespace Chroma;
 using namespace QDP;
 
@@ -50,6 +54,9 @@ public:
 
     clov.create(simpleFermState, p);
     eclov.create(simpleFermState, p);
+    inv_eclov.create(simpleFermState, p);
+    invclov.create(simpleFermState, p);
+
   }
 
   static constexpr double Mass = 0.1;
@@ -63,6 +70,8 @@ public:
   Handle<FermState<T, P, Q>> simpleFermState;
   QDPCloverTerm clov;
   QDPExpCloverTerm<> eclov;
+  QDPExpCloverTerm<> inv_eclov; 
+  QDPCloverTerm invclov;
 };
 
 class ExpClovFixture : public ExpCloverFixtureT<::testing::Test>
@@ -285,6 +294,9 @@ TEST_F(ExpClovFixture, CheckApplyPower7)
     ASSERT_LT(toDouble(normdiff), 1.0e-14);
   }
 }
+
+
+#if 0
 TEST_F(ExpClovFixture, CheckExp)
 {
   LatticeFermion src, res, res2, dummy, diff;
@@ -310,6 +322,171 @@ TEST_F(ExpClovFixture, CheckExp)
 
   ASSERT_LT(toDouble(normdiff), 1.0e-14);
 }
+#endif
+
+
+TEST_F(ExpClovFixture, CheckApplyExpClov)
+{
+  LatticeFermion src, res, res2, dummy, diff;
+  gaussian(src);
+  res = zero;
+  res2 = zero;
+
+  // We will be going for an exponential in the end:
+  //
+  // so:
+  //  exp(x) = (diag mass)[ 1 + E + 1/2 E^2 + .... ]
+  //
+  //  First test: (diag mass)[ 1 + E ] = regular clover term.
+  eclov.makeExpClov(PLUS,0,0);
+  eclov.makeExpClov(PLUS,1,0);
+
+  //eclov.printExpClov();
+
+  for (int cb = 0; cb < 2; ++cb)
+  {
+    eclov.apply(res2, src, PLUS, cb);
+
+    eclov.applyExpClov(dummy, src, PLUS, cb);
+    res[rb[cb]] = dummy/Real(Nd + Mass);
+  }
+
+  diff = res-res2;
+  Double normdiff = sqrt(norm2(diff) / norm2(src));
+  QDPIO::cout << "Diff  = " << normdiff << "\n";
+
+  ASSERT_LT(toDouble(normdiff), 1.0e-14);
+  }
+
+TEST_F(ExpClovFixture, CheckOpExpClov)
+{
+  LatticeFermion src, res, res_exp, dummy, diff;
+  gaussian(src);
+  res = zero;
+  res_exp = zero;
+
+  // We will be going for an exponential in the end:
+  //
+  // so:
+  //  exp(x) = (diag mass)[ 1 + E + 1/2 E^2 + .... ]
+  //
+  //  First test: (diag mass)[ 1 + E ] = regular clover term.
+
+  eclov.makeExpClov(PLUS,0,0);
+  eclov.makeExpClov(PLUS,1,0);
+
+  eclov.makeExpClov(MINUS,0,0);
+  eclov.makeExpClov(MINUS,1,0);
+
+  for (int cb = 0; cb < 2; ++cb)
+  {
+    clov.apply(res, src, PLUS, cb);
+    eclov.applyExpClov(dummy, src, PLUS, cb);
+
+    //eclov.apply(dummy, src, PLUS, cb);
+
+    res_exp[rb[cb]] = dummy;
+    //res_exp[rb[cb]] *= Real(Nd + Mass);
+
+    QDPIO::cout << " Real(Nd + Mass) = " << Real(Nd + Mass) << " \n";
+
+    diff[rb[cb]] = res_exp-res;
+    Double normdiff = sqrt(norm2(diff, rb[cb]) / norm2(src, rb[cb]));
+    //normdiff = sqrt(norm2(diff, rb[cb]));
+
+    QDPIO::cout << "Diff (" << cb << ") = " << normdiff << "\n";
+
+    ASSERT_LT(toDouble(normdiff), 1.0e-14);
+  }
+}
+
+
+TEST_F(ExpClovFixture, CheckApplyInvExpClov)
+{
+  LatticeFermion src, res, res2, dummy,diff;
+  gaussian(src);
+  res = zero;
+  res2 = zero;
+  dummy=zero;
+
+  // We will be going for an exponential in the end:
+  //
+  // so:
+  //  exp(x) = (diag mass)[ 1 + E + 1/2 E^2 + .... ]
+  //
+  //  First test: (diag mass)[ 1 + E ] = regular clover term.
+  eclov.makeExpClov(PLUS,0,0);
+  eclov.makeExpClov(PLUS,1,0);
+
+  inv_eclov.makeExpClov(PLUS,0,0);
+  inv_eclov.makeExpClov(PLUS,1,0);
+
+
+  inv_eclov.cholesTest(0);
+  inv_eclov.cholesTest(1);
+
+  //invclov.choles(0);
+  //invclov.choles(1);
+
+
+  for (int cb = 0; cb < 2; ++cb)
+  {
+    inv_eclov.applyExpClov(res, src, PLUS, cb);
+    eclov.applyExpClov(res2, res, PLUS, cb);
+    //invclov.apply(res2,res, PLUS, cb);
+  }
+
+  diff = src-res2;
+  Double normdiff = sqrt(norm2(diff) / norm2(src));
+  QDPIO::cout << "Diff  = " << normdiff << "\n";
+
+  ASSERT_LT(toDouble(normdiff), 1.0e-14);
+  }
+
+
+
+#if 0
+TEST_F(ExpClovFixture, CheckApplyQUDAExpClov)
+{
+  LatticeFermion src, res, res2, dummy, diff;
+  gaussian(src);
+  res = zero;
+  res2 = zero;
+
+  // We will be going for an exponential in the end:
+  //
+  // so:
+  //  exp(x) = (diag mass)[ 1 + E + 1/2 E^2 + .... ]
+  //
+  //  First test: (diag mass)[ 1 + E ] = regular clover term.
+
+  void *spinorIn =(void *)&(src.elem(rb[1].start()).elem(0).elem(0).real());
+  void* spinorOut =(void *)&(res.elem(rb[1].start()).elem(0).elem(0).real());
+
+  //cloverQuda(*spinorOut, *spinorIn, QudaInvertParam *inv_param, QudaParity parity, int inverse);
+
+
+  eclov.makeExpClov(PLUS,0,0);
+  eclov.makeExpClov(PLUS,1,0);
+
+  //eclov.printExpClov();
+
+  for (int cb = 0; cb < 2; ++cb)
+  {
+    eclov.apply(res2, src, PLUS, cb);
+    eclov.applyExpClov(res, src, PLUS, cb);
+  }
+
+  diff = res-res2;
+  Double normdiff = sqrt(norm2(diff) / norm2(src));
+  QDPIO::cout << "Diff  = " << normdiff << "\n";
+
+  ASSERT_LT(toDouble(normdiff), 1.0e-14);
+  }
+#endif
+
+
+#if 0
 
 TEST_F(ExpClovFixture, CheckExpInv)
 {
@@ -336,6 +513,8 @@ TEST_F(ExpClovFixture, CheckExpInv)
 
   ASSERT_LT(toDouble(normdiff), 1.0e-14);
 }
+
+#endif
 
 TEST_F(ExpClovFixture, CheckUprecExpCloverLinopZeroClover)
 {

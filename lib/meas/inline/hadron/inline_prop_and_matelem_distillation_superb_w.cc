@@ -24,6 +24,7 @@
 #include "util/ferm/diractodr.h"
 #include "util/ferm/twoquark_contract_ops.h"
 #include "util/ferm/superb_contractions.h"
+#include "util/ferm/mgproton.h"
 #include "util/ft/sftmom.h"
 #include "util/ft/time_slice_set.h"
 #include "util/info/proginfo.h"
@@ -95,6 +96,15 @@ namespace Chroma
         read(inputtop, "use_device_for_contractions", input.use_device_for_contractions);
       }
 
+      input.use_superb_format = false;
+      if( inputtop.count("use_superb_format") == 1 ) {
+	read(inputtop, "use_superb_format", input.use_superb_format);
+      }
+
+      input.output_file_is_local = false;
+      if( inputtop.count("output_file_is_local") == 1 ) {
+        read(inputtop, "output_file_is_local", input.output_file_is_local);
+      }
     }
 
     //! Propagator output
@@ -110,6 +120,8 @@ namespace Chroma
       write(xml, "mass_label", input.mass_label);
       write(xml, "max_rhs", input.max_rhs);
       write(xml, "phase", input.phase);
+      write(xml, "use_superb_format", input.use_superb_format);
+      write(xml, "output_file_is_local", input.output_file_is_local);
       write(xml, "use_device_for_contractions", input.use_device_for_contractions);
 
       pop(xml);
@@ -320,31 +332,71 @@ namespace Chroma
       //
       // DB storage
       //
-      BinaryStoreDB< SerialDBKey<KeyPropElementalOperator_t>, SerialDBData<ValPropElementalOperator_t> > qdp_db;
+      std::vector<BinaryStoreDB<SerialDBKey<KeyPropElementalOperator_t>,
+				SerialDBData<ValPropElementalOperator_t>>>
+	qdp_db{};
+      SB::StorageTensor<6, SB::ComplexD> st;
 
       // Open the file, and write the meta-data and the binary for this operator
-      if (!qdp_db.fileExists(params.named_obj.prop_op_file))
+      if (!params.param.contract.use_superb_format)
       {
-	XMLBufferWriter file_xml;
-	push(file_xml, "DBMetaData");
-	write(file_xml, "id", std::string("propElemOp"));
-	write(file_xml, "lattSize", QDP::Layout::lattSize());
-	write(file_xml, "decay_dir", params.param.contract.decay_dir);
-	proginfo(file_xml); // Print out basic program info
-	write(file_xml, "Params", params.param);
-	write(file_xml, "Config_info", gauge_xml);
-	pop(file_xml);
+	qdp_db.resize(1);
+	if (!qdp_db[0].fileExists(params.named_obj.prop_op_file))
+	{
+	  XMLBufferWriter file_xml;
+	  push(file_xml, "DBMetaData");
+	  write(file_xml, "id", std::string("propElemOp"));
+	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  write(file_xml, "decay_dir", params.param.contract.decay_dir);
+	  proginfo(file_xml); // Print out basic program info
+	  write(file_xml, "Params", params.param);
+	  write(file_xml, "Config_info", gauge_xml);
+	  pop(file_xml);
 
-	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size());
+	  std::string file_str(file_xml.str());
+	  qdp_db[0].setMaxUserInfoLen(file_str.size());
 
-	qdp_db.open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
+	  qdp_db[0].open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
 
-	qdp_db.insertUserdata(file_str);
+	  qdp_db[0].insertUserdata(file_str);
+	}
+	else
+	{
+	  qdp_db[0].open(params.named_obj.prop_op_file, O_RDWR, 0664);
+	}
       }
       else
       {
-	qdp_db.open(params.named_obj.prop_op_file, O_RDWR, 0664);
+	// Read order; letter meaning:
+	//   n/N: source/sink eigenvector index
+	//   s/q: source/sink spin index
+	//   p/P: time slice source/sink
+	const char* order = "sqnNpP";
+	XMLBufferWriter metadata_xml;
+	push(metadata_xml, "DBMetaData");
+	write(metadata_xml, "id", std::string("propElemOp"));
+	write(metadata_xml, "lattSize", QDP::Layout::lattSize());
+	write(metadata_xml, "decay_dir", params.param.contract.decay_dir);
+	proginfo(metadata_xml); // Print out basic program info
+	write(metadata_xml, "Config_info", gauge_xml);
+	write(metadata_xml, "Params", params.param);
+	write(metadata_xml, "mass_label", params.param.contract.mass_label);
+	write(metadata_xml, "tensorOrder", order);
+	pop(metadata_xml);
+
+	// NOTE: metadata_xml only has a valid value on Master node; so do a broadcast
+	std::string metadata = SB::broadcast(metadata_xml.str());
+
+	st = SB::StorageTensor<6, SB::ComplexD>(
+	  params.named_obj.prop_op_file, metadata, order,
+	  SB::kvcoors<6>(order, {{'s', Ns},
+				 {'q', Ns},
+				 {'n', params.param.contract.num_vecs},
+				 {'N', params.param.contract.num_vecs},
+				 {'p', Lt},
+				 {'P', Lt}}),
+	  SB::Sparse, SB::checksum_type::BlockChecksum,
+	  params.param.contract.output_file_is_local ? SB::LocalFSFile : SB::SharedFSFile);
       }
 
       QDPIO::cout << "Finished opening peram file" << std::endl;
@@ -374,30 +426,11 @@ namespace Chroma
 	swatch.reset();
 	QDPIO::cout << "Try the various factories" << std::endl;
 
-	// Typedefs to save typing
-	typedef LatticeFermion               T;
-	typedef multi1d<LatticeColorMatrix>  P;
-	typedef multi1d<LatticeColorMatrix>  Q;
-
 	//
-	// Initialize fermion action
+	// Initialize fermion action and create the solver
 	//
-	std::istringstream  xml_s(params.param.prop.fermact.xml);
-	XMLReader  fermacttop(xml_s);
-	QDPIO::cout << "FermAct = " << params.param.prop.fermact.id << std::endl;
+	SB::ChimeraSolver PP{params.param.prop.fermact, params.param.prop.invParam, u};
 
-	// Generic Wilson-Type stuff
-	Handle< FermionAction<T,P,Q> >
-	  S_f(TheFermionActionFactory::Instance().createObject(params.param.prop.fermact.id,
-							       fermacttop,
-							       params.param.prop.fermact.path));
-
-	Handle< FermState<T,P,Q> > state(S_f->createState(u));
-
-	Handle< SystemSolver<LatticeFermion> > PP = S_f->qprop(state,
-							       params.param.prop.invParam);
-      
-	QDPIO::cout << "Suitable factory found: compute all the quark props" << std::endl;
 	swatch.start();
 
 	//
@@ -419,7 +452,7 @@ namespace Chroma
 	  QDPIO::cout << "t_source = " << t_source << std::endl;
 
 	  // Compute the first tslice and the number of tslices involved in the contraction
-	  int first_tslice = t_source - params.param.contract.Nt_backward;
+	  int first_tslice = SB::normalize_coor(t_source - params.param.contract.Nt_backward, Lt);
 	  int num_tslices = std::min(
 	    params.param.contract.Nt_backward + std::max(1, params.param.contract.Nt_forward), Lt);
 
@@ -428,16 +461,16 @@ namespace Chroma
 	    colorvecsSto, u, decay_dir, first_tslice, num_tslices, num_vecs, "cxyzXnt", phase, dev);
 
 	  // Get all eigenvectors for `t_source`
-	  auto source_colorvec =
-	    colorvec.kvslice_from_size({{'t', t_source - first_tslice}}, {{'t', 1}});
+	  auto source_colorvec = colorvec.kvslice_from_size(
+	    {{'t', SB::normalize_coor(t_source - first_tslice, Lt)}}, {{'t', 1}});
 
 	  for (int spin_source = 0; spin_source < Ns; ++spin_source)
 	  {
 	    // Invert the source for `spin_source` spin and retrieve `num_tslices` tslices starting from tslice `first_tslice`
 	    // NOTE: s is spin source, and S is spin sink
-	    SB::Tensor<Nd + 5, SB::Complex> quark_solns = SB::doInversion<SB::Complex, SB::Complex>(
-	      *PP, source_colorvec, t_source, first_tslice, num_tslices, {spin_source}, max_rhs,
-	      "cxyzXnSst");
+	    SB::Tensor<Nd + 5, SB::Complex> quark_solns =
+	      SB::doInversion(PP, source_colorvec, t_source, first_tslice, num_tslices,
+			      {spin_source}, max_rhs, "cxyzXnSst");
 
 	    StopWatch snarss1;
 	    snarss1.reset();
@@ -445,8 +478,9 @@ namespace Chroma
 
 	    // Contract the distillation elements
 	    // NOTE: N: is colorvec in sink, and n is colorvec in source
-	    SB::Tensor<5, SB::Complex> elems("NnSst", {num_vecs, num_vecs, Ns, 1, num_tslices},
-					     SB::OnHost, SB::OnMaster);
+	    SB::Tensor<5, SB::Complex> elems(
+	      "NnSst", {num_vecs, num_vecs, Ns, 1, num_tslices}, SB::OnHost,
+	      !params.param.contract.use_superb_format ? SB::OnMaster : SB::OnEveryone);
 	    elems.contract(colorvec, {{'n', 'N'}}, SB::Conjugate, quark_solns, {},
 			   SB::NotConjugate);
 
@@ -457,47 +491,56 @@ namespace Chroma
 	    snarss1.reset();
 	    snarss1.start();
 
-	    ValPropElementalOperator_t val;
-	    val.mat.resize(num_vecs, num_vecs);
-	    val.mat = zero;
-	    for (int i_tslice = 0; i_tslice < num_tslices; ++i_tslice)
+	    if (!params.param.contract.use_superb_format)
 	    {
-	      for (int spin_sink = 0; spin_sink < Ns; ++spin_sink)
+	      ValPropElementalOperator_t val;
+	      val.mat.resize(num_vecs, num_vecs);
+	      val.mat = zero;
+	      auto local_elems = elems.getLocal();
+	      for (int i_tslice = 0; i_tslice < num_tslices; ++i_tslice)
 	      {
-		KeyPropElementalOperator_t key;
-		key.t_source = t_source;
-		key.t_slice = SB::normalize_coor(i_tslice + first_tslice, Lt);
-		key.spin_src = spin_source;
-		key.spin_snk = spin_sink;
-		key.mass_label = params.param.contract.mass_label;
-		if (Layout::nodeNumber() == 0)
+		for (int spin_sink = 0; spin_sink < Ns; ++spin_sink)
 		{
-		  for (int colorvec_sink = 0; colorvec_sink < num_vecs; ++colorvec_sink)
+		  KeyPropElementalOperator_t key;
+		  key.t_source = t_source;
+		  key.t_slice = SB::normalize_coor(i_tslice + first_tslice, Lt);
+		  key.spin_src = spin_source;
+		  key.spin_snk = spin_sink;
+		  key.mass_label = params.param.contract.mass_label;
+		  if (local_elems)
 		  {
-		    for (int colorvec_source = 0; colorvec_source < num_vecs; ++colorvec_source)
+		    for (int colorvec_sink = 0; colorvec_sink < num_vecs; ++colorvec_sink)
 		    {
-		      std::complex<REAL> e = elems.get(
-			{colorvec_sink, colorvec_source, spin_sink, 0, i_tslice});
-		      val.mat(colorvec_sink, colorvec_source).elem().elem().elem() =
-			RComplex<REAL64>(e.real(), e.imag());
+		      for (int colorvec_source = 0; colorvec_source < num_vecs; ++colorvec_source)
+		      {
+			std::complex<REAL> e =
+			  local_elems.get({colorvec_sink, colorvec_source, spin_sink, 0, i_tslice});
+			val.mat(colorvec_sink, colorvec_source).elem().elem().elem() =
+			  RComplex<REAL64>(e.real(), e.imag());
+		      }
 		    }
 		  }
+		  qdp_db[0].insert(key, val);
 		}
-		qdp_db.insert(key, val);
 	      }
+	    }
+	    else
+	    {
+	      st.kvslice_from_size({{'s', spin_source}, {'p', t_source}, {'P', first_tslice}},
+				   {{'s', 1}, {'p', 1}, {'P', num_tslices}})
+		.copyFrom(elems.rename_dims({{'S', 'q'}, {'t', 'P'}}));
 	    }
 
 	    snarss1.stop();
 	    QDPIO::cout << "Time to store the props : " << snarss1.getTimeInSeconds() << " secs"
 			<< std::endl;
-	  } // for spin_source
-	}   // for tt
+	    } // for spin_source
+	  }   // for tt
 
-	swatch.stop();
-	QDPIO::cout << "Propagators computed: time= " 
-		    << swatch.getTimeInSeconds() 
-		    << " secs" << std::endl;
-      }
+	  swatch.stop();
+	  QDPIO::cout << "Propagators computed: time= " << swatch.getTimeInSeconds() << " secs"
+		      << std::endl;
+	}
       catch (const std::exception& e) 
       {
 	QDP_error_exit("%s: caught exception: %s\n", name.c_str(), e.what());

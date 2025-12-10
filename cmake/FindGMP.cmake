@@ -1,5 +1,6 @@
 message( STATUS "Looking for GMP")
 find_library(LIBGMP gmp PATHS /usr/lib /usr/lib64 /usr/local/lib /usr/local/lib64)
+
 if( LIBGMP STREQUAL LIBGMP-NOTFOUND)
    set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE "GMP library was not found")
    set(${CMAKE_FIND_PACKAGE}-FOUND FALSE)

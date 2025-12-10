@@ -34,7 +34,7 @@ namespace Chroma {
       read(paramtop, "AsymmetricLinop", asymmetricP);
     }
     else { 
-      asymmetricP = false; // Symmetric is default 
+      asymmetricP = true; // Asymmetric (i.e. CLOVER) is default 
     }
 
     if( paramtop.count("CudaPrecision") > 0 ) {
@@ -100,14 +100,6 @@ namespace Chroma {
        RsdToleranceFactor = Real(10); // Tolerate an order of magnitude difference by default.
     }
 
-    if( paramtop.count("AutotuneDslash") > 0 ) { 
-      read(paramtop, "AutotuneDslash", tuneDslashP);
-    }
-    else { 
-      tuneDslashP = false;
-    }
-    QDPIO::cout << "tuneDslasP = " << tuneDslashP << std::endl;
-
 
     if( paramtop.count("GCRInnerParams") > 0 ) {
       innerParams = new GCRInnerSolverParams(paramtop, "./GCRInnerParams");
@@ -160,7 +152,6 @@ namespace Chroma {
     write(xml, "SilentFail", p.SilentFailP);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
     write(xml, "CheckShifts", p.checkShiftsP);
-    write(xml, "AutotuneDslash", p.tuneDslashP);
     write(xml, "Pipeline", p.Pipeline);
 
     if( p.innerParamsP ) { 

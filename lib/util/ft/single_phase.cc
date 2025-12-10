@@ -48,7 +48,7 @@ namespace Chroma
 	{
 	  nonzeroP = true;
 	  p_dot_x += (Layout::latticeCoordinate(mu) - t_srce[mu]) * sink_mom[j] 
-	    * twopi / Real(Layout::lattSize()[mu]);
+	    * Chroma::constant().twopi / Real(Layout::lattSize()[mu]);
 	}
 	j++;
       }
@@ -94,7 +94,7 @@ namespace Chroma
 	{
 	  nonzeroP = true;
 	  p_dot_x += (Layout::latticeCoordinate(mu) - t_srce[mu]) * sink_mom[mu]
-	    * twopi / Real(Layout::lattSize()[mu]);
+	    * Chroma::constant().twopi / Real(Layout::lattSize()[mu]);
 	}
     }
 

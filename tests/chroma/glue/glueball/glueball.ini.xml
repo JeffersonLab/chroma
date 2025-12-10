@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<chroma>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <!-- Wilson loops -->
+      <Name>GLUEBALL_OPS</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <displacement_list>
+          <elem>1 2</elem>
+        </displacement_list>
+        <mom2_max>0</mom2_max>
+        <LinkSmearing>
+           <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+           <link_smear_fact>2.5</link_smear_fact>
+           <link_smear_num>1</link_smear_num>
+           <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <glue_op_file>glueball.sdb</glue_op_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 16</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+

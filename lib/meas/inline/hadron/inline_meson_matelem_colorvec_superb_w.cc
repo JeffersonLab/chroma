@@ -44,7 +44,7 @@ namespace Chroma
       if (paramtop.count("use_derivP") > 0)
 	read(paramtop, "use_derivP", param.use_derivP);
 
-	param.mom_list.resize(0);
+      param.mom_list.resize(0);
       if (paramtop.count("mom_list") > 0)
 	read(paramtop, "mom_list", param.mom_list);
 
@@ -54,7 +54,7 @@ namespace Chroma
 
       param.mom2_max = 0;
       if (paramtop.count("mom2_max") > 0)
-      read(paramtop, "mom2_max", param.mom2_max);
+	read(paramtop, "mom2_max", param.mom2_max);
 
       read(paramtop, "displacement_list", param.displacement_list);
       read(paramtop, "num_vecs", param.num_vecs);

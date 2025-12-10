@@ -6,6 +6,7 @@
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 
 #include "actions/ferm/fermacts/unprec_clover_fermact_w.h"
+#include "actions/ferm/fermacts/unprec_exp_clover_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_parwilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_graphene_fermact_w.h"
@@ -14,6 +15,7 @@
 #include "actions/ferm/fermacts/unprec_w12_fermact_w.h"
 
 #include "actions/ferm/fermacts/eoprec_clover_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_exp_clover_fermact_w.h"
 #include "actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h"
 #include "actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.h"
 #include "actions/ferm/fermacts/eoprec_wilson_fermact_w.h"
@@ -100,8 +102,10 @@ namespace Chroma
 	success &= UnprecParWilsonFermActEnv::registerAll();
 
 	success &= EvenOddPrecCloverFermActEnv::registerAll();
+    success &= EvenOddPrecExpCloverFermActEnv::registerAll();
 	success &= SymEvenOddPrecCloverFermActEnv::registerAll();
 	success &= UnprecCloverFermActEnv::registerAll();
+    success &= UnprecExpCloverFermActEnv::registerAll();
 	success &= EvenOddPrecCloverOrbifoldFermActEnv::registerAll();
 	success &= EvenOddPrecSLICFermActEnv::registerAll();
 	success &= EvenOddPrecSLRCFermActEnv::registerAll();
@@ -116,6 +120,7 @@ namespace Chroma
 #if QDP_NS == 4
 #if QDP_NC == 3
 #if QDP_ND == 4
+#if ! defined (QDP_IS_QDPJIT2)
 	success &= UnprecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
 	success &= ILUPrecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
 	success &= ILUPrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
@@ -123,6 +128,7 @@ namespace Chroma
 	success &= ILU2PrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
 	success &= EO3DPrecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
 	success &= EO3DPrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
+#endif
 #endif
 #endif
 #endif

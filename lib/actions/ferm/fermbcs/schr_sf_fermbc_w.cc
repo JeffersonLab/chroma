@@ -90,7 +90,7 @@ namespace Chroma
 
       if (mu != j_decay)
       {
-	Real ftmp = Chroma::twopi * getTheta()[i] / Real(QDP::Layout::lattSize()[mu]);
+	Real ftmp = Chroma::constant().twopi * getTheta()[i] / Real(QDP::Layout::lattSize()[mu]);
 	SFBndFld[mu] *= cmplx(cos(ftmp),sin(ftmp));
 	++i;
       }

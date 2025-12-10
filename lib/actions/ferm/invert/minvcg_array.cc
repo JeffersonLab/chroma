@@ -174,7 +174,7 @@ namespace Chroma
 
     Double chi_norm = sqrt(chi_norm_sq);
 
-    if( toBool( chi_norm < fuzz )) { 
+    if( toBool( chi_norm < Chroma::constant().fuzz )) { 
       n_count = 0;
       swatch.stop();
       QDPIO::cout << "MinvCG: Finished. Iters taken = " << n_count << std::endl;

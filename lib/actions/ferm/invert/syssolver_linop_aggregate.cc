@@ -18,12 +18,15 @@
 #include "actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_cg_clover.h"
 #include "actions/ferm/invert/syssolver_linop_fgmres_dr.h"
+#include "actions/ferm/invert/projector_random.h"
+#include "actions/ferm/invert/projector_null.h"
 
 
 #include "chroma_config.h"
 #ifdef BUILD_QUDA
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_exp_clover_quda_multigrid_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h"
@@ -84,10 +87,13 @@ namespace Chroma
 	success &= LinOpSysSolverReliableIBiCGStabCloverEnv::registerAll();
 	success &= LinOpSysSolverReliableCGCloverEnv::registerAll();
 	success &= LinOpSysSolverFGMRESDREnv::registerAll();
+	success &= ProjectorRandomEnv::registerAll();
+	success &= ProjectorNullEnv::registerAll();
 
 #ifdef BUILD_QUDA
 	success &= LinOpSysSolverQUDACloverEnv::registerAll();
 	success &= LinOpSysSolverQUDAMULTIGRIDCloverEnv::registerAll();
+    success &= LinOpSysSolverQUDAMULTIGRIDExpCloverEnv::registerAll();
 	success &= LinOpSysSolverQUDAWilsonEnv::registerAll();
 	success &= LinOpSysSolverQUDAMULTIGRIDWilsonEnv::registerAll();
 	success &= LinOpSysSolverQUDANEFEnv::registerAll();
@@ -135,7 +141,9 @@ namespace Chroma
 #ifdef BUILD_MDWF
 	success &= LinOpSysSolverMDWFArrayEnv::registerAll();
 #endif
+#if ! defined (QDP_IS_QDPJIT2)
 	success &= LinOpSysSolverEigCGArrayEnv::registerAll();
+#endif
 	registered = true;
       }
       return success;

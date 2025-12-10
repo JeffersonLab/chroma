@@ -8,7 +8,7 @@
 
 #include "chroma_config.h"
 #include "linearop.h"
-
+#include "actions/ferm/linop/clover_term_base_w.h"
 
 namespace Chroma 
 { 
@@ -19,9 +19,7 @@ namespace Chroma
    */
 
   template<typename T, typename U>
-	   class ExpCloverTermBase : public DslashLinearOperator<T,
-							      multi1d<U>,
-							      multi1d<U> >
+	   class ExpCloverTermBase : public CloverTermBase< T, U>
   {
   public:
     //! No real need for cleanup here
@@ -166,6 +164,9 @@ namespace Chroma
 			     enum PlusMinus isign) const
   {
     START_CODE();
+
+
+    QDPIO::cout << "I am running derivMultiple now debug" << std::endl;
 
     // base deriv resizes.
     // Even even checkerboard
@@ -694,6 +695,9 @@ namespace Chroma
   {
     START_CODE();
 
+    //StopWatch swatch;
+    //swatch.reset(); swatch.start();
+
 
     // Do I still need to do this?
     if( ds_u.size() != Nd ) { 
@@ -740,6 +744,8 @@ namespace Chroma
       }
     }
 
+    //swatch.stop();
+    //QDPIO::cout << "\nInner Deriv function time: "<< swatch.getTimeInSeconds() <<" s\n";
 
     // Clear out the deriv on any fixed links
     (*this).getFermBC().zero(ds_u);
@@ -791,6 +797,8 @@ namespace Chroma
 	  T ferm_tmp = Gamma(mu_nu_index)*psi[i];
 	  s_xy_dag += traceSpin( outerProduct(ferm_tmp,chi[i]));
 	}
+
+    //For exp-clover, the psi and chi can be applied directly to the field, and thus the trace spin is zero?
 
 	s_xy_dag *= Real(factor);
 
@@ -847,7 +855,9 @@ namespace Chroma
 
 	  // Get  weight*Tr_spin gamma_mu gamma_nu A^{-1} piece
 	  triacntr(sigma_XY_dag, mu_nu_index, cb);
-	  sigma_XY_dag[rb[cb]] *= factor;
+	  //sigma_XY_dag[rb[cb]] *= factor;
+
+      sigma_XY_dag[rb[cb]] *= factor*0;
 
 	  // These will be overwritten so no need to initialize to zero
 	  U ds_tmp_mu;

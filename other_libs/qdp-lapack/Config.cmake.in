@@ -1,0 +1,13 @@
+@PACKAGE_INIT@
+include(CMakeFindDependencyMacro)
+
+set(QDPLapack_BINDING @qdpLapackBinding@)
+
+
+if(QDPLapack_BINDING STREQUAL "lapack")
+	message(STATUS "Looking for lapack")
+	find_dependency(LAPACK REQUIRED)
+endif()
+
+find_dependency(QDPXX REQUIRED)
+include(${CMAKE_CURRENT_LIST_DIR}/QDPLapackTargets.cmake)
