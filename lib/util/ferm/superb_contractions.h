@@ -423,6 +423,15 @@ namespace Chroma
 	return r;
       }
 
+      inline std::map<char, int> update_map(const std::map<char, int>& m0,
+					    const std::map<char, int>& m1)
+      {
+	std::map<char, int> r = m0;
+	for (auto const& it : m1)
+	  r[it.first] = it.second;
+	return r;
+      }
+
       /// Return the inverse map
       /// \param map: from domain labels to image labels
 
@@ -4195,7 +4204,7 @@ namespace Chroma
 
 	// Conjugacy isn't supported
 	if (u.conjugate || s.conjugate || v.conjugate || conjugate)
-	  throw std::runtime_error("inv: Unsupported implicit conjugate tensors");
+	  throw std::runtime_error("svd: Unsupported implicit conjugate tensors");
 
 	// Superbblas tensor contraction is shit and those not deal with subtensors or contracting a host and
 	// device tensor (for now)
@@ -4816,10 +4825,15 @@ namespace Chroma
       Tensor<Nr, T> r0;
       if (!r)
       {
+	std::string sug_rorder(rorder.size(), char(0));
+	superbblas::suggested_orders_for_contraction(
+	  v.order.data(), v.order.size(), v.conjugate, w.order.data(), w.order.size(), w.conjugate,
+	  rorder.data(), rorder.size(), superbblas::FastToSlow, nullptr, nullptr,
+	  &sug_rorder.front());
 	r0 = (v.dist != Glocal && (dev.hasSome() || dist.hasSome()))
-	       ? v.template like_this<Nr>(rorder, w.kvdim(), dev, dist)
-	       : (v.volume() >= w.volume() ? v.template make_compatible<Nr>(rorder, w.kvdim())
-					   : w.template make_compatible<Nr>(rorder, v.kvdim()));
+	       ? v.template like_this<Nr>(sug_rorder, w.kvdim(), dev, dist)
+	       : (v.volume() >= w.volume() ? v.template make_compatible<Nr>(sug_rorder, w.kvdim())
+					   : w.template make_compatible<Nr>(sug_rorder, v.kvdim()));
 	beta = 0;
       }
       else
@@ -6817,6 +6831,49 @@ namespace Chroma
 	  data.sync();
       }
 
+      /// Return an optimal ordering for the tensor to contract with
+      /// \param col_order: order for the columns
+      /// \param mv: column dimension size
+      /// \param power_label: power label
+
+      template <std::size_t Ncols>
+      std::tuple<std::string, std::string>
+      suggest_order_for_contractWith(const std::string& order_cols, const std::map<char, int>& mv,
+				     char power_label = 0) const
+      {
+	if (Ncols != order_cols.size())
+	  throw std::runtime_error(
+	    "suggest_order_for_contractWith: invalid template parameter input");
+
+	if (data.is_eg())
+	  throw std::runtime_error("Invalid operation from an example tensor");
+
+	if (!is_constructed())
+	  throw std::runtime_error("invalid operation on an not constructed tensor");
+
+	// Construct the input and output orders
+	std::string orderv = d.order + order_cols;
+	std::string orderw = i.order + order_cols;
+
+	// Construct the dimensions
+	auto mv0 = mv;
+	if (power_label)
+	  mv0[power_label] = 1;
+	auto v_size = kvcoors<ND + Ncols>(orderv, detail::update_map(d.kvdim(), mv0), 0, NoThrow);
+	auto w_size = kvcoors<NI + Ncols>(orderw, detail::update_map(i.kvdim(), mv0), 0, NoThrow);
+
+	std::string sug_orderv(orderv.size(), char(0));
+	std::string sug_orderw(orderw.size(), char(0));
+	superbblas::suggested_orders_for_bsr_krylov<ND, NI, ND + Ncols, NI + Ncols, value_type>(
+	  handle.get(), 1, &data.ctx(), i.order.c_str(), d.order.c_str(),	    //
+	  orderv.c_str(), v_size,						    //
+	  orderw.c_str(), w_size, power_label,					    //
+	  d.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD, superbblas::FastToSlow, //
+	  &sug_orderv.front(), &sug_orderw.front());
+
+	return {sug_orderv, sug_orderw};
+      }
+
       void print(const std::string& name) const
       {
 	std::stringstream ss;
@@ -7644,6 +7701,31 @@ namespace Chroma
 	return sp ? sp.is_kronecker() : kron;
       }
 
+      /// Return a suggestive ordering of right-hand-sides
+      /// \param col_order: order for the columns
+      /// \param m: column dimension size
+      /// \param for_image: whether the returned ordering is for an image tensor
+
+      template <std::size_t N>
+      std::string suggest_order_rhs(const std::string& col_order, const std::map<char, int>& m,
+				    bool for_image = true) const
+      {
+	if (!sp)
+	{
+	  return (for_image ? i : d)
+	    .get_order_for_reorder(preferred_col_ordering == ColumnMajor
+				     ? std::string("%") + col_order
+				     : col_order + "%",
+				   '%');
+	}
+
+	auto sug_orders = sp.template suggest_order_for_contractWith<N - NOp>(col_order, m);
+	if (!for_image)
+	  return detail::update_order(std::get<0>(sug_orders), detail::reverse(rd));
+	else
+	  return std::get<1>(sug_orders);
+      }
+
       /// Return compatible domain tensors
       /// \param col_order: order for the columns
       /// \param m: column dimension size
@@ -7652,9 +7734,7 @@ namespace Chroma
       Tensor<N, T> make_compatible_dom(const std::string& col_order,
 				       const std::map<char, int>& m) const
       {
-	return d.template make_compatible<N, T>(
-	  preferred_col_ordering == ColumnMajor ? std::string("%") + col_order : col_order + "%",
-	  '%', "", m);
+	return d.template make_compatible<N, T>(suggest_order_rhs<N>(col_order, m, false), m);
       }
 
       /// Return compatible image tensors
@@ -7665,9 +7745,7 @@ namespace Chroma
       Tensor<N, T> make_compatible_img(const std::string& col_order,
 				       const std::map<char, int>& m) const
       {
-	return i.template make_compatible<N, T>(
-	  preferred_col_ordering == ColumnMajor ? std::string("%") + col_order : col_order + "%",
-	  '%', "", m);
+	return i.template make_compatible<N, T>(suggest_order_rhs<N>(col_order, m, true), m);
       }
 
       /// Apply the operator
@@ -9621,8 +9699,9 @@ namespace Chroma
 	  gpuBlasCheck(cublasSetStream(*(superbblas::detail::GpuBlasHandle*)primme->queue, 0));
 #    endif
 	  *ierr = 0;
-	} catch (...)
+	} catch (const std::exception& e)
 	{
+	  std::cerr << "Error in SB::ns_getColorvecs::primmeMatvec: " << e.what() << std::endl;
 	}
       }
 
