@@ -27,6 +27,7 @@ option(Chroma_ENABLE_MGPROTO "Enable MG-Proto" OFF)
 option(Chroma_ENABLE_LAPACK "Enable Lapack Binding in QDPLapack" OFF)
 option(Chroma_ENABLE_OPENMP "Enable OpenMP" OFF)
 option(Chroma_ENABLE_SUPERBBLAS  "Enable tasks using Superbblas" OFF)
+option(Chroma_ENABLE_REDSTAR_DATALIB  "Enable tasks using redstar-datalib" OFF)
 option(Chroma_ENABLE_PRIMME  "Build with PRIMME" OFF)
 option(Chroma_ENABLE_CUDA  "Build with CUDA" OFF)
 option(Chroma_ENABLE_ROCM  "Build with ROCM" OFF)
@@ -53,6 +54,7 @@ option(Chroma_QPHIX_DSLASH "Set to ON to enable QPhiX Dslash. QDP-JIT builds wit
 option(Chroma_USE_MGPROTO "Use the MGProto Multigrid solver" OFF)
 
 set(SUPERBBLAS_DIR "" CACHE PATH "path to superbblas installation")
+set(REDSTAR_DATALIB_DIR "" CACHE PATH "path to redstar-datalib installation")
 set(PRIMME_DIR "" CACHE PATH "path to PRIMME installation")
 
 ##################
@@ -227,6 +229,12 @@ if( Chroma_ENABLE_SUPERBBLAS )
   if( Chroma_ENABLE_PRIMME )
     message(STATUS "Enabling PRIMME")
     set(BUILD_PRIMME 1)
+  endif()
+
+  # Deal with redstar-datalib
+  if( Chroma_ENABLE_REDSTAR_DATALIB )
+    message(STATUS "Enabling redstar-datalib")
+    set(BUILD_REDSTAR_DATALIB 1)
   endif()
 endif()
 

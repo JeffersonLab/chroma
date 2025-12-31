@@ -425,6 +425,15 @@ AC_ARG_WITH(superbblas,
   [ with_superbblas="no" ]
 )
 
+AC_ARG_WITH(redstar-datalib,
+  AC_HELP_STRING(
+    [--with-redstar-datalib=DIR],
+    [Build Chroma with redstar-datalib installed in DIR]
+  ),
+  [ REDSTAR_DATALIB_HOME="${with_redstar_datalib}" ],
+  [ with_redstar_datalib="no" ]
+)
+
 AC_ARG_WITH(primme,
   AC_HELP_STRING(
     [--with-primme=DIR],
@@ -1389,6 +1398,28 @@ fi
 
 AM_CONDITIONAL(BUILD_SB,
 	[test "x${with_superbblas}x" != "xnox" ])
+
+################################################################################
+# redstar-datalib 
+################################################################################
+
+if test "X${REDSTAR_DATALIB_HOME}X" != "XX";
+then
+  AC_SUBST(REDSTAR_DATALIB_CXXFLAGS, "-I${REDSTAR_DATALIB_HOME}/include" ) 
+  AC_SUBST(REDSTAR_DATALIB_LDFLAGS, "-L${REDSTAR_DATALIB_HOME}/lib" )
+  AC_SUBST(REDSTAR_DATALIB_LIBS,"-ladat")
+  AC_MSG_NOTICE([ Enabling SUPERB tasks using redstar-datalib installation in ${REDSTAR_DATALIB_HOME}])
+  AC_DEFINE([BUILD_REDSTAR_DATALIB], [], [Build redstar-datalib tasks])
+else
+  if test "X${with_redstar_datalib}X" != "XnoX";
+  then
+    AC_MSG_NOTICE([ Enabling redstar-datalib tasks using redstar-datalib installation given in the CXXFLAGS, LDFLAGS, and LIBS flags ])
+    AC_DEFINE([BUILD_REDSTAR_DATALIB], [], [Build redstar-datalib tasks])
+  fi
+fi
+
+AM_CONDITIONAL(BUILD_REDSTAR_DATALIB,
+	[test "x${with_redstar_datalib}x" != "xnox" ])
 
 ################################################################################
 # PRIMME 

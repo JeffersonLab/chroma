@@ -934,6 +934,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h \
 	meas/inline/hadron/inline_inverter_test_w.h \
 	meas/inline/hadron/inline_inverter_test_superb_w.h \
+	meas/inline/hadron/inline_corr_superb_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
@@ -1064,6 +1065,10 @@ endif
 
 if BUILD_MGPROTO
 AM_CXXFLAGS += @MGPROTO_CXXFLAGS@
+endif
+
+if BUILD_REDSTAR_DATALIB
+AM_CXXFLAGS += @REDSTAR_DATALIB_CXXFLAGS@
 endif
 
 if BUILD_SB
@@ -1862,6 +1867,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.cc \
 	meas/inline/hadron/inline_inverter_test_w.cc \
 	meas/inline/hadron/inline_inverter_test_superb_w.cc \
+	meas/inline/hadron/inline_corr_superb_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \

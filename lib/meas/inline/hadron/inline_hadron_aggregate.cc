@@ -79,6 +79,7 @@
 #include "meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h"
 #include "meas/inline/hadron/inline_inverter_test_w.h"
 #include "meas/inline/hadron/inline_inverter_test_superb_w.h"
+#include "meas/inline/hadron/inline_corr_superb_w.h"
 #include "meas/inline/hadron/inline_mres_w.h"
 #include "meas/inline/hadron/inline_qpropqio_w.h"
 #include "meas/inline/hadron/inline_qpropadd_w.h"
@@ -225,6 +226,7 @@ namespace Chroma
 	success &= InlineInverterTestEnv::registerAll();
 #ifdef BUILD_SB
 	success &= InlineInverterTestSuperbEnv::registerAll();
+	success &= InlineCorrSuperbEnv::registerAll();
 #endif
 //	success &= InlineStochLaphQuarkEnv::registerAll();
 //	success &= InlineStochLaphBaryonEnv::registerAll();

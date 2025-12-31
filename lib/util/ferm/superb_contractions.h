@@ -11618,6 +11618,18 @@ namespace Chroma
       return r;
     }
 
+    /// Return a std::vector from multi1d
+    /// \param v: multi1d to convert
+
+    template <typename T>
+    std::vector<T> tovector(const multi1d<T>& v)
+    {
+      std::vector<T> r(v.size());
+      for (int i = 0; i < v.size(); ++i)
+	r[i] = v[i];
+      return r;
+    }
+
     /// Return all momenta with magnitude squared within a range
     /// \param min_mom2: all returned momenta should have this magnitude squared at least
     /// \param max_mom2: all returned momenta should have up to this magnitude squared

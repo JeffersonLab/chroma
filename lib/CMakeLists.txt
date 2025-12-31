@@ -2015,6 +2015,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_create_colorvecs_superb.h
      meas/inline/hadron/inline_eigenvalues_superb_w.h
      meas/inline/hadron/inline_inverter_test_superb_w.h
+     meas/inline/hadron/inline_corr_superb_w.h
   )
   target_sources(chromalib PRIVATE 
      meas/inline/hadron/inline_disco_prob_defl_superb_w.cc
@@ -2026,6 +2027,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_create_colorvecs_superb.cc
      meas/inline/hadron/inline_eigenvalues_superb_w.cc
      meas/inline/hadron/inline_inverter_test_superb_w.cc
+     meas/inline/hadron/inline_corr_superb_w.cc
   )
   target_include_directories(chromalib PUBLIC ${SUPERBBLAS_DIR}/include)
   add_library(superbblas STATIC IMPORTED )
@@ -2055,6 +2057,13 @@ if( Chroma_ENABLE_SUPERBBLAS )
      else()
        target_link_libraries(primme INTERFACE BLAS::BLAS ${Chroma_extra_link_flags})
      endif()
+  endif()
+
+  if( Chroma_ENABLE_REDSTAR_DATALIB )
+     target_include_directories(chromalib PUBLIC ${REDSTAR_DATALIB_DIR}/include)
+     add_library(redstar-datalib STATIC IMPORTED )
+     set_target_properties( redstar-datalib PROPERTIES IMPORTED_LOCATION ${REDSTAR_DATALIB_DIR}/lib/libadat.a )
+     target_link_libraries(chromalib PUBLIC redstar-datalib )
   endif()
 
   if( QDP_BACKEND_ROCM OR Chroma_ENABLE_ROCM)
