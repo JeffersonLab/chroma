@@ -14,7 +14,7 @@ namespace
   void usage(const char* prog)
   {
     std::cerr << "Usage: " << prog
-              << " --nrow n0 n1 n2 n3 [--tol tol] <cfg1.lime> <cfg2.lime>\n";
+              << " --nrow n0 n1 n2 n3 [--tol tol] [--rtol rtol] <cfg1.lime> <cfg2.lime>\n";
   }
 }
 
@@ -31,6 +31,7 @@ int main(int argc, char* argv[])
   multi1d<int> nrow(Nd);
   bool have_nrow = false;
   double tol = 0.0;
+  double rtol = 0.0;
   std::string cfg1;
   std::string cfg2;
 
@@ -53,6 +54,13 @@ int main(int argc, char* argv[])
         return 1;
       }
       tol = std::atof(argv[++i]);
+    } else if (arg == "--rtol") {
+      if (i + 1 >= argc) {
+        usage(argv[0]);
+        Chroma::finalize();
+        return 1;
+      }
+      rtol = std::atof(argv[++i]);
     } else if (cfg1.empty()) {
       cfg1 = arg;
     } else if (cfg2.empty()) {
@@ -91,18 +99,24 @@ int main(int argc, char* argv[])
   }
 
   double total_n2 = 0.0;
+  double ref_n2 = 0.0;
   for (int mu = 0; mu < Nd; ++mu) {
     LatticeColorMatrix diff = u1[mu] - u2[mu];
     Double n2 = norm2(diff);
     total_n2 += toDouble(n2);
+    Double ref = norm2(u1[mu]);
+    ref_n2 += toDouble(ref);
   }
 
   double rms = std::sqrt(total_n2);
+  double ref_rms = std::sqrt(ref_n2);
+  double rel = (ref_rms > 0.0) ? (rms / ref_rms) : 0.0;
   QDPIO::cout << "Gauge diff: sqrt(sum_mu norm2) = " << rms << std::endl;
+  QDPIO::cout << "Gauge diff (relative) = " << rel << std::endl;
 
-  bool ok = rms <= tol;
+  bool ok = (rms <= tol) && (rel <= rtol);
   QDPIO::cout << "Compare status: " << (ok ? "MATCH" : "DIFF")
-              << " (tol=" << tol << ")" << std::endl;
+              << " (tol=" << tol << ", rtol=" << rtol << ")" << std::endl;
 
   Chroma::finalize();
   return ok ? 0 : 2;
