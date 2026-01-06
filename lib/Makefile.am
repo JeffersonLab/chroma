@@ -413,6 +413,8 @@ nobase_include_HEADERS = \
 	update/molecdyn/hmc/lcm_hmc.h \
 	update/molecdyn/hmc/const_lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
+	update/molecdyn/smd/smd.h \
+	update/molecdyn/smd/lcm_smd.h \
 	update/molecdyn/monomial/monomial.h \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
@@ -2202,4 +2204,3 @@ if BUILD_GTEST
 nobase_include_HEADERS += gtest/gtest.h
 libchroma_a_SOURCES += gtest/gtest-all.cc
 endif
-
