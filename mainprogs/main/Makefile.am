@@ -143,7 +143,8 @@ HDRS =
 bin_PROGRAMS = chroma  \
         purgaug \
         cfgtransf \
-        const_hmc hmc spectrum_s
+        const_hmc hmc smd spectrum_s
+bin_PROGRAMS += compare_gauge
 
 # Wilson specific programs
 check_PROGRAMS = collect_propcomp qpropgfix qproptrev qpropqio qproptransf wallformfac 
@@ -179,6 +180,7 @@ collect_propcomp_SOURCES = collect_propcomp.cc
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
 spectrum_s_SOURCES= spectrum_s.cc
 hmc_SOURCES= hmc.cc
+smd_SOURCES= smd.cc
 const_hmc_SOURCES= const_hmc.cc
 purgaug_SOURCES= purgaug.cc
 wallformfac_SOURCES= wallformfac.cc
@@ -188,6 +190,7 @@ qpropadd_SOURCES= qpropadd.cc
 qpropgfix_SOURCES= qpropgfix.cc
 qproptrev_SOURCES= qproptrev.cc
 cfgtransf_SOURCES= cfgtransf.cc
+compare_gauge_SOURCES= compare_gauge.cc
 
 #
 # The latter rule will always try to rebuild libchroma.a when you 
