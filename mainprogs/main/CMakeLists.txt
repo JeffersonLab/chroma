@@ -13,7 +13,9 @@ set( ChromaMain_EXECUTABLES
 	cfgtransf
 	const_hmc
 	hmc
+    smd
 	spectrum_s
+    compare_gauge
     collect_propcomp 
     qpropgfix qproptrev 
     qpropqio  
@@ -46,7 +48,7 @@ foreach( EXEC ${ChromaMain_EXECUTABLES})
   target_link_libraries( ${EXEC} PUBLIC Chroma::chromalib )
 endforeach()
 
-INSTALL( TARGETS hmc const_hmc chroma purgaug cfgtransf 
+INSTALL( TARGETS hmc const_hmc chroma purgaug cfgtransf smd compare_gauge
 		 EXPORT ChromaTargets
 		 ARCHIVE DESTINATION lib
  		 LIBRARY  DESTINATION lib
