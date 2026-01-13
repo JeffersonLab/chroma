@@ -1102,8 +1102,8 @@ namespace Chroma
 	auto noise_vec =
 	  urnd.transformWithCPUFun<SB::Complex>([=](const typename SB::Complex::value_type& x) {
 	    return SB::Complex{
-	      std::static_cast<typename SB::Complex::value_type>(std::cos(M_PI / 2 * x)),
-	      std::static_cast<typename SB::Complex::value_type>(std::sin(M_PI / 2 * x))};
+	      static_cast<typename SB::Complex::value_type>(std::cos(M_PI / 2 * x)),
+	      static_cast<typename SB::Complex::value_type>(std::sin(M_PI / 2 * x))};
 	  });
 
 	// All the loops
