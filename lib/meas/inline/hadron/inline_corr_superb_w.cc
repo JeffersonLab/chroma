@@ -1,6 +1,16 @@
 /*! \file
- * \brief Inline measurement of baryon operators via colorstd::vector matrix elements
+ * \brief Inline measurement for compute correlation functions
  */
+
+#include "chroma_config.h"
+
+#ifdef BUILD_SB
+// Activate the MPI support in Superbblas
+#  define SUPERBBLAS_USE_MPI
+
+// Activate redstar-datalib support for superbblas
+#  define USE_SUPERBBLAS
+#endif
 
 #include "algs/superb_contractions.h"
 #include "hadron/process_corrs.h"
@@ -267,6 +277,384 @@ namespace Chroma
       }
     }
 
+#  if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+    template <std::size_t N>
+    SBN::superbblas_implementation::detail::Distribution
+    get_sbn_distribution(const std::string& order, const SB::Distribution& dist,
+			 const SB::detail::TensorPartition<N>& p)
+    {
+      const auto kind = p.isLocal
+			  ? SBN::superbblas_implementation::detail::Distribution::Local
+			  : SBN::superbblas_implementation::detail::Distribution::Distributed;
+      const auto dim = SBN::Coor(p.dim.begin(), p.dim.end());
+      std::vector<unsigned char> distributed_directions;
+      if (kind != SBN::superbblas_implementation::detail::Distribution::Local)
+      {
+	if (dist != SB::OnMaster && !(dist.size() > 2 && dist.at(0) == '_' && dist.at(1) == '_'))
+	{
+	  for (char d : dist)
+	  {
+	    auto s = std::find(order.begin(), order.end(), d);
+	    if (s != order.end())
+	      distributed_directions.push_back(s - order.begin());
+	  }
+	}
+      }
+      SBN::superbblas_implementation::detail::Distribution::Fs fs(
+	{(int)dim.size(), 2, (int)p.p.size()});
+      for (int proc = 0; proc < (int)p.p.size(); ++proc)
+      {
+	for (int i = 0; i < 2; ++i)
+	{
+	  std::copy(p.p.at(proc).at(i).begin(), p.p.at(proc).at(i).end(), fs.begin({0, i, proc}));
+	}
+      }
+      return SBN::superbblas_implementation::detail::Distribution(kind, dim, distributed_directions,
+								  fs);
+    }
+#  endif // defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+
+    /// Return a view of the tensor object
+    /// \param t: tensor
+
+    template<std::size_t N> SBN::Tensor toTensor(const SB::Tensor<N, SB::ComplexD>& t)
+    {
+      // Check that the input tensor is not fake complex or example gratia
+      if (t.complexLabel != 0 || t.eg || t.dist == SB::Glocal)
+	throw std::runtime_error("toTensor: unsupported tensor");
+
+      const SBN::Coor from(t.from.begin(), t.from.end());
+      const SBN::Coor size(t.size.begin(), t.size.end());
+      const SBN::Coor dim(t.dim.begin(), t.dim.end());
+      static_assert(std::is_same<SB::ComplexD, SBN::value_type>::value,
+		    "superbnova has an invalid type");
+#  if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+      auto op_ptr = t.data();
+      const auto dev = t.getDev();
+      const auto ctx =
+	(dev == SB::OnHost ? SBN::superbblas_implementation::detail::getCpuContext()
+			   : SBN::superbblas_implementation::detail::getGpuContext());
+      auto alloc =
+	std::make_shared<SBN::superbblas_implementation::detail::Allocation<SBN::value_type>>(
+	  op_ptr, ctx);
+      auto p = std::make_shared<SBN::superbblas_implementation::detail::Distribution>(
+	get_sbn_distribution(t.order, t.dist, *t.p));
+      return SBN::Tensor{from, size, dim, t.order, alloc, p, t.scalar, t.conjugate, 0, 0, {}};
+#  else
+      const auto trep = t.make_sure(SB::none, SB::OnHost, SB::OnEveryoneReplicated);
+      auto p = (const std::complex<double>*)trep.data();
+      auto alloc = std::make_shared<std::vector<std::complex<double>>>(p, p + SBN::volume(dim));
+      return SBN::Tensor{from, size, dim, trep.order, alloc, trep.scalar, trep.conjugate, 0, 0, {}};
+#  endif
+    }
+
+    /// Return the mesons without spins
+    /// \param db: meson storage
+    /// \param colorvecsSto: colorvec storage
+    /// \param u: original gauge field
+    /// \param u_smr: smeared original gauge field
+    /// \param meson_keys: list of mesons keys
+    /// \param perms: list of permutations, one for each meson key
+    /// \param do_conj: list of whether to conjugate the meson, one for each meson key
+    /// \param ev_from: first eigenvector to return
+    /// \param ev_size: number of eigenvectors to return
+    /// \param dist_labels: dimensions to be distributed, some of "vwi"
+    /// \param alloc: allocation for the returned tensor
+
+    inline SBN::Tensor
+    get_meson_elementals(const ADATIO::StorageMeson& db, const SB::ColorvecsStorage& colorvecsSto,
+			 const multi1d<LatticeColorMatrix>& u,
+			 const multi1d<LatticeColorMatrix>& u_smr,
+			 const std::vector<Hadron::KeyMesonElementalOperator_t>& meson_keys,
+			 const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
+			 const SBN::Coor& ev_from, const SBN::Coor& ev_size,
+			 const std::string& dist_labels, const SBN::Tensor& guide)
+    {
+      // Check input
+      if (meson_keys.size() != perms.size())
+	throw std::runtime_error("invalid input");
+      if (ev_from.size() != 2 || ev_size.size() != 2)
+	throw std::runtime_error("invalid input");
+      if (superbblas::getDebugLevel() > 0)
+      {
+	for (const auto& it : perms)
+	{
+	  if (it.size() != 2)
+	    throw std::runtime_error("invalid input");
+	  for (const auto& i : it)
+	    if (i < 0 || i >= 2)
+	      throw std::runtime_error("invalid input");
+	}
+      }
+
+      const int num_vecs = std::max(ev_from.at(0) + ev_size.at(0), ev_from.at(1) + ev_size.at(1));
+
+      // Create output tensor
+      SBN::Tensor mesons = SBN::create_tensor_with_local_components(
+	{ev_size.at(0), ev_size.at(1), -(int)meson_keys.size()}, "vwi", dist_labels,
+	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, guide);
+      const auto first_local_meson = SBN::get_local_srange(mesons).at(0).at('i');
+
+      // Try to get the mesons from the storage and annotate the missing keys
+      std::vector<std::tuple<Hadron::KeyMesonElementalOperator_t, SBN::Coor, int>>
+	local_missing_mesons;
+      {
+	local_missing_mesons.reserve(meson_keys.size());
+	const auto& local_mesons =
+	  SBN::slice_kv(SBN::get_local_tensor(mesons), {{'i', first_local_meson}},
+			{{'i', (int)meson_keys.size()}});
+	Hadron::ValMesonElementalOperator_t val;
+	for (std::size_t i = 0; i < meson_keys.size(); ++i)
+	{
+	  const auto& key = meson_keys.at(i);
+	  const auto& p = perms.at(i);
+	  if (do_conj.at(i))
+	    throw std::runtime_error("unsupported case");
+	  if (db.get(key, val) != 0)
+	  {
+	    local_missing_mesons.push_back({key, p, first_local_meson + i});
+	  }
+	  else
+	  {
+	    if (val.op.size1() < num_vecs || val.op.size2() < num_vecs)
+	      throw std::runtime_error("got a meson with insufficient number of vectors");
+	    auto ti = SBN::toTensor(val.op, "vw", SBN::Options::Distribution::Local);
+	    ti = Hadron::detail::apply_vertex_perm(ti, p, "vw");
+	    ti = SBN::slice_kv(ti, //
+			       {{'v', ev_from.at(0)}, {'w', ev_from.at(0)}},
+			       {{'v', ev_size.at(1)}, {'w', ev_size.at(1)}});
+	    SBN::copyTo(ti, SBN::slice_kv(local_mesons, {{'i', i}}, {{'i', 1}}));
+	  }
+	}
+      }
+
+      // Recompile for each missing time slice, the phases, momenta, and displacement to compute
+      using displacement_t = std::vector<int>;
+      using tslice_left_right_phases = std::tuple<int, SB::Coor<3>, SB::Coor<3>>;
+      using momenta_displacements_indices = std::tuple<
+	Hadron::detail::unordered_map<SB::Coor<3>, int>,
+	Hadron::detail::unordered_map<displacement_t, int>,
+	Hadron::detail::unordered_multimap<std::array<int, 2>, std::tuple<SBN::Coor, int>>>;
+      Hadron::detail::unordered_map<tslice_left_right_phases, momenta_displacements_indices>
+	from_tslice_left_right_phases_to_momenta_displacement;
+      const auto get_index = [=](auto& map, const auto& value) {
+	const auto s = map.size();
+	if (map.count(value) == 0)
+	  map[value] = s;
+	return map.at(value);
+      };
+      const auto get_vector = [=](const auto& map) {
+	std::vector<typename std::remove_reference<decltype(map)>::type::key_type> r(map.size());
+	for (const auto& it : map)
+	  r.at(it.second) = it.first;
+	return r;
+      };
+      for (const auto& missing_mesons_in_some_process : SBN::gather(local_missing_mesons))
+      {
+	for (const auto& [meson_key, perm, index] : missing_mesons_in_some_process)
+	{
+	  const auto& k = tslice_left_right_phases{
+	    meson_key.t_slice, ADATIO::detail::toCoor(meson_key.phasing_sink),
+	    ADATIO::detail::toCoor(meson_key.phasing_source)};
+	  auto& v = from_tslice_left_right_phases_to_momenta_displacement[k];
+	  auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(meson_key.mom));
+	  auto disp_index = get_index(std::get<1>(v), meson_key.displacement);
+	  std::get<2>(v).insert({{mom_index, disp_index}, {perm, index}});
+	}
+      }
+
+      for (const auto& it : from_tslice_left_right_phases_to_momenta_displacement)
+      {
+	const int t_source = std::get<0>(it.first);
+	const auto& left_phase = std::get<1>(it.first);
+	const auto& right_phase = std::get<2>(it.first);
+	const auto& moms = get_vector(std::get<0>(it.second));
+	const auto& disps = get_vector(std::get<1>(it.second));
+	const auto& mom_disp_to_index = std::get<2>(it.second);
+
+	// Get num_vecs colorvecs on time-slice t_source
+	const int decay_dir = 3;
+	SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
+	  colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none);
+
+	// Callback
+	const auto call = [&](SB::Tensor<4, SB::ComplexD> tensor, int disp, int first_tslice,
+			      int first_mom) {
+	  auto range = mom_disp_to_index.equal_range({first_mom, disp});
+	  for (auto it = range.first; it != range.second; ++it)
+	  {
+	    const auto& [p, index] = it->second;
+	    auto ti = SBN::relabel(toTensor(tensor), {{'i', 'v'}, {'j', 'w'}});
+	    ti = Hadron::detail::apply_vertex_perm(ti, perms.at(index), "vw");
+	    ti = SBN::slice_kv(ti, //
+			       {{'v', ev_from.at(0)}, {'w', ev_from.at(0)}},
+			       {{'v', ev_size.at(1)}, {'w', ev_size.at(1)}});
+	    SBN::copyTo(ti, SBN::slice_kv(mesons, {{'i', index}}, {{'i', 1}}));
+	  }
+	};
+
+	// Do the contractions
+	const bool use_derivP = true;
+	SB::doMomDisp_contractions<Nd + 3, SB::ComplexD>(
+	  u_smr, source_colorvec.make_sure<SB::ComplexD>(), left_phase, right_phase, moms, t_source,
+	  disps, use_derivP, call, SB::none, SB::OnDefaultDevice, SB::OnEveryone,
+	  0 /* max_tslices_in_contraction==0 means to do all */, 1 /* max_moms_in_contraction */);
+      }
+
+      return mesons;
+    }
+
+    /// Return the baryons without spins
+    /// \param db: baryon storage
+    /// \param colorvecsSto: colorvec storage
+    /// \param u: original gauge field
+    /// \param u_smr: smeared original gauge field
+    /// \param baryon_keys: list of baryons keys
+    /// \param perms: list of permutations, one for each baryon key
+    /// \param do_conj: list of whether to conjugate the baryon, one for each baryon key
+    /// \param ev_from: first eigenvector to return for "vwx"
+    /// \param ev_size: number of eigenvectors to return for "vwx"
+    /// \param dist_labels: dimensions to be distributed, some of "vwxi"
+    /// \param alloc: allocation for the returned tensor
+
+    inline SBN::Tensor
+    get_baryon_elementals(const ADATIO::StorageBaryon& db, const SB::ColorvecsStorage& colorvecsSto,
+			  const multi1d<LatticeColorMatrix>& u,
+			  const multi1d<LatticeColorMatrix>& u_smr,
+			  const std::vector<Hadron::KeyBaryonElementalOperator_t>& baryon_keys,
+			  const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
+			  const SBN::Coor& ev_from, const SBN::Coor& ev_size,
+			  const std::string& dist_labels, const SBN::Tensor& guide)
+    {
+      if (baryon_keys.size() != perms.size() || baryon_keys.size() != do_conj.size())
+	throw std::runtime_error("invalid input");
+      if (ev_from.size() != 3 || ev_size.size() != 3)
+	throw std::runtime_error("invalid input");
+      if (SBN::detail::get_debug_level() > 0)
+      {
+	for (const auto& it : perms)
+	{
+	  if (it != SBN::Coor{0, 1, 2})
+	    throw std::runtime_error("unsupported case");
+	}
+      }
+
+      const int num_vecs =
+	std::max(std::max(ev_from.at(0) + ev_size.at(0), ev_from.at(1) + ev_size.at(1)),
+		 ev_from.at(2) + ev_size.at(2));
+
+      // Create output tensor
+      SBN::Tensor baryons = SBN::create_tensor_with_local_components(
+	SBN::concat(ev_size, {-(int)baryon_keys.size()}), "vwxi", dist_labels,
+	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, guide);
+
+      // Try to get the mesons from the storage and annotate the missing keys
+      std::vector<std::tuple<Hadron::KeyBaryonElementalOperator_t, int>> local_missing_baryons;
+      {
+	local_missing_baryons.reserve(baryon_keys.size());
+	const auto first_local_baryon = SBN::get_local_srange(baryons).at(0).at('i');
+	const auto& local_baryons =
+	  SBN::slice_kv(SBN::get_local_tensor(baryons), {{'i', first_local_baryon}},
+			{{'i', (int)baryon_keys.size()}});
+	ADATIO::SerialDBData<Hadron::ValBaryonElementalOperator_t> val;
+	for (std::size_t i = 0; i < baryon_keys.size(); ++i)
+	{
+	  const auto& baryon_i = SBN::slice_kv(local_baryons, {{'i', i}}, {{'i', 1}});
+	  if (!has_local_support(baryon_i))
+	    continue;
+	  const auto& key = baryon_keys.at(i);
+	  if (db.get(key, val) != 0)
+	  {
+	    local_missing_baryons.push_back({key, first_local_baryon + i});
+	  }
+	  else
+	  {
+	    if (val.data().op.size1() < num_vecs || val.data().op.size2() < num_vecs ||
+		val.data().op.size3() < num_vecs)
+	      throw std::runtime_error("got a baryon with insufficient number of vectors");
+	    auto ti = SBN::toTensor(val.data().op, "vwx", SBN::Options::Distribution::Local);
+	    ti = SBN::slice_kv(ti, SBN::get_scoor("vwx", ev_from), SBN::get_scoor("vwx", ev_size));
+	    SBN::copyTo(do_conj.at(i) ? SBN::conj(ti) : ti, baryon_i);
+	  }
+	}
+      }
+
+      // Recompile for each missing time slice, the phases, momenta, and displacement to compute
+      using displacement_t = std::array<std::vector<int>, 3>;
+      using tslice_phase = std::tuple<int, SB::Coor<3>>;
+      using momenta_displacements_indices =
+	std::tuple<Hadron::detail::unordered_map<SB::Coor<3>, int>,
+		   Hadron::detail::unordered_map<displacement_t, int>,
+		   Hadron::detail::unordered_multimap<std::array<int, 2>, int>>;
+      Hadron::detail::unordered_map<tslice_phase, momenta_displacements_indices>
+	from_tslice_and_phase_to_momenta_displacement;
+      const auto get_index = [=](auto& map, const auto& value) {
+	const auto s = map.size();
+	if (map.count(value) == 0)
+	  map[value] = s;
+	return map.at(value);
+      };
+      const auto get_vector = [=](const auto& map) {
+	std::vector<typename std::remove_reference<decltype(map)>::type::key_type> r(map.size());
+	for (const auto& it : map)
+	  r.at(it.second) = it.first;
+	return r;
+      };
+      for (const auto& missing_baryons_in_some_process : SBN::gather(local_missing_baryons))
+      {
+	for (const auto& [baryon_key, index] : missing_baryons_in_some_process)
+	{
+	  const auto& k =
+	    tslice_phase{baryon_key.t_slice, ADATIO::detail::toCoor(baryon_key.phasing)};
+	  auto& v = from_tslice_and_phase_to_momenta_displacement[k];
+	  auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(baryon_key.mom));
+	  auto disp_index = get_index(
+	    std::get<1>(v), displacement_t{baryon_key.left, baryon_key.middle, baryon_key.right});
+	  std::get<2>(v).insert({{mom_index, disp_index}, index});
+	}
+      }
+
+      for (const auto& it : from_tslice_and_phase_to_momenta_displacement)
+      {
+	const int t_slide = std::get<0>(it.first);
+	const auto& phase = std::get<1>(it.first);
+	const auto& moms = get_vector(std::get<0>(it.second));
+	const auto& disps = get_vector(std::get<1>(it.second));
+	const auto& mom_disp_to_index = std::get<2>(it.second);
+
+	// Get num_vecs colorvecs on time-slice t_slide
+	const int decay_dir = 3;
+	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	  SB::getColorvecs<SB::Complex>(colorvecsSto, u, decay_dir, t_slide, 1, num_vecs, SB::none);
+
+	// Callback
+	const auto call = SB::ColorContractionFn<SB::Complex>(
+	  [&](SB::Tensor<5, SB::ComplexD> tensor, int disp, int first_tslice, int first_mom) {
+	    auto range = mom_disp_to_index.equal_range({first_mom, disp});
+	    for (auto it = range.first; it != range.second; ++it)
+	    {
+	      const auto& index = it->second;
+	      auto ti = SBN::relabel(toTensor(tensor), {{'i', 'v'}, {'j', 'w'}});
+	      ti = SBN::slice_kv(ti, //
+				 {{'v', ev_from.at(0)}, {'w', ev_from.at(0)}},
+				 {{'v', ev_size.at(1)}, {'w', ev_size.at(1)}});
+	      SBN::copyTo(ti, SBN::slice_kv(baryons, {{'i', index}}, {{'i', 1}}));
+	    }
+	  });
+
+	// Do the contractions
+	const bool use_derivP = true;
+	const int max_moms_in_contraction = 1;
+	const int max_vecs = 4;
+	SB::doMomDisp_colorContractions(u_smr, source_colorvec.make_sure<SB::ComplexD>(), moms,
+					t_slide, disps, use_derivP, call,
+					0 /* it means to do all */, max_moms_in_contraction,
+					max_vecs, SB::none, SB::OnDefaultDevice, SB::OnEveryone);
+      }
+
+      return baryons;
+    }
+
     // Function call
     void InlineMeas::func(unsigned long update_no, XMLWriter& xml_out)
     {
@@ -384,15 +772,51 @@ namespace Chroma
       const bool zero_values_for_outside_t_slices = true;
       storage_genprop.open(params.param.genprop_files, nev, zero_values_for_outside_t_slices);
 
+      const auto meson_callback =
+	[&](const std::vector<Hadron::KeyMesonElementalOperator_t>& meson_keys,
+	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
+	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
+	    const SBN::Tensor& guide) {
+	  return get_meson_elementals(storage_meson, colorvecsSto, u, u_smr, meson_keys, perms,
+				      do_conj, ev_from, ev_size, dist_labels, guide);
+	};
+      const auto baryon_callback =
+	[&](const std::vector<Hadron::KeyBaryonElementalOperator_t>& baryon_keys,
+	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
+	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
+	    const SBN::Tensor& perm) {
+	  return get_baryon_elementals(storage_baryon, colorvecsSto, u, u_smr, baryon_keys, perms,
+				       do_conj, ev_from, ev_size, dist_labels, perm);
+	};
+      const auto prop_callback =
+	[&](const std::vector<Hadron::KeyProp4ElementalOperator_t>& prop_keys,
+	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
+	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
+	    const SBN::Tensor& perm) {
+	  return Hadron::detail::get_prop_elementals_from_storage(
+	    storage_prop, prop_keys, perms, do_conj, ev_from, ev_size, dist_labels, perm);
+	};
+      const auto genprop_callback =
+	[&](const std::vector<Hadron::KeyGenProp4ElementalOperator_t>& genprop_keys,
+	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
+	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
+	    const SBN::Tensor& perm) {
+	  return Hadron::detail::get_genprop_elementals_from_storage(
+	    storage_genprop, genprop_keys, perms, do_conj, ev_from, ev_size, dist_labels, perm);
+	};
+
       const bool zeroUnsmearedGraphsP = true;
       const auto& corr = Hadron::evaluate_graphs_with_superb(
-	corr_graph, zeroUnsmearedGraphsP, storage_prop, storage_baryon, storage_meson,
-	storage_genprop, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward);
+	corr_graph, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
+	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward);
 
-      std::cout << "Storing the correlation functions" << std::endl;
-      const int decay_dir = 3;
-      Hadron::writeCorrMap(corr, params.param.ensemble, corr_graph.layout.latt_size, decay_dir,
-			   params.param.t_origin, params.named_obj.corr_file);
+      QDPIO::cout << "Storing the correlation functions" << std::endl;
+      if (Layout::nodeNumber() == 0)
+      {
+	const int decay_dir = 3;
+	Hadron::writeCorrMap(corr, params.param.ensemble, corr_graph.layout.latt_size, decay_dir,
+			     params.param.t_origin, params.named_obj.corr_file);
+      }
 
       // Close colorvecs storage
       SB::closeColorvecStorage(colorvecsSto);
