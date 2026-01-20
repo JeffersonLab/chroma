@@ -535,8 +535,8 @@ namespace Chroma
 	    auto ti = SBN::relabel(toTensor(tensor), {{'i', 'v'}, {'j', 'w'}});
 	    ti = Hadron::detail::apply_vertex_perm(ti, perms.at(index), "vw");
 	    ti = SBN::slice_kv(ti, //
-			       {{'v', ev_from.at(0)}, {'w', ev_from.at(0)}},
-			       {{'v', ev_size.at(1)}, {'w', ev_size.at(1)}});
+			       {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}},
+			       {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}});
 	    SBN::copyTo(ti, SBN::slice_kv(mesons, {{'i', index}}, {{'i', 1}}));
 	  }
 	};
@@ -683,10 +683,11 @@ namespace Chroma
 	    for (auto it = range.first; it != range.second; ++it)
 	    {
 	      const auto& index = it->second;
-	      auto ti = SBN::relabel(toTensor(tensor), {{'i', 'v'}, {'j', 'w'}});
-	      ti = SBN::slice_kv(ti, //
-				 {{'v', ev_from.at(0)}, {'w', ev_from.at(0)}},
-				 {{'v', ev_size.at(1)}, {'w', ev_size.at(1)}});
+	      auto ti = SBN::relabel(toTensor(tensor), {{'i', 'v'}, {'j', 'w'}, {'k', 'x'}});
+	      ti =
+		SBN::slice_kv(ti, //
+			      {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}, {'x', ev_from.at(2)}},
+			      {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}, {'x', ev_size.at(2)}});
 	      SBN::copyTo(ti, SBN::slice_kv(baryons, {{'i', index}}, {{'i', 1}}));
 	    }
 	  });
@@ -741,11 +742,15 @@ namespace Chroma
       }
 
       const int num_vecs = std::max(ev_from.at(0) + ev_size.at(0), ev_from.at(1) + ev_size.at(1));
+      if (max_rhs == 0)
+	max_rhs = num_vecs;
 
       // This object is in the DR basis; create matrices to convert it to DP
-      const auto& dr_left =
-	SBN::slice_kv(Hadron::detail::adjForSpins(Hadron::detail::getDiracToDRMat()), //
+      const auto& dr_left_global =
+	SBN::slice_kv(Hadron::detail::adjForSpins(
+			Hadron::detail::getDiracToDRMat(SBN::Options::Distribution::Replicated)), //
 		      {{'s', ev_from.at(2)}}, {{'s', ev_size.at(2)}});
+      const auto& dr_left = SBN::get_local_tensor(dr_left_global);
       const auto& dr_right = SBN::slice_kv(Hadron::detail::getDiracToDRMat(),
 					   {{'S', ev_from.at(3)}}, {{'S', ev_size.at(3)}});
 
@@ -756,10 +761,10 @@ namespace Chroma
 	Hadron::detail::contractSpins(Hadron::detail::chromaGamma5(), dr_right);
 
       // Create chroma versions of dr_right
-      auto dr_right_chroma = SB::Tensor<2, SB::Complex>("Ss", {{Nc, ev_size.at(3)}}, SB::OnHost,
+      auto dr_right_chroma = SB::Tensor<2, SB::Complex>("Ss", {{Ns, ev_size.at(3)}}, SB::OnHost,
 							SB::OnEveryoneReplicated);
       SBN::copyTo(SBN::relabel(dr_right, {{'S', 's'}, {'s', 'S'}}),
-		  toTensor(dr_right_chroma, false /* don't copy */));
+		  SBN::get_local_tensor(toTensor(dr_right_chroma, false /* don't copy */)));
 
       // Create output tensor
       SBN::Tensor props = SBN::create_tensor_with_local_components(
@@ -771,8 +776,12 @@ namespace Chroma
       {
 	local_missing_props.reserve(prop_keys.size());
 	const auto first_local_prop = SBN::get_local_srange(props).at(0).at('i');
-	const auto& local_props = SBN::slice_kv(
-	  SBN::get_local_tensor(props), {{'i', first_local_prop}}, {{'i', (int)prop_keys.size()}});
+	const auto& local_props = //
+	  SBN::relabel(		  //
+	    SBN::slice_kv(	  //
+	      SBN::get_local_tensor(props), {{'i', first_local_prop}},
+	      {{'i', (int)prop_keys.size()}}),
+	    {{'r', 's'}, {'s', 'S'}});
 	Hadron::ValProp4ElementalOperator_t val;
 	for (std::size_t i = 0; i < prop_keys.size(); ++i)
 	{
@@ -906,18 +915,23 @@ namespace Chroma
 	const std::map<char, char> m_rev{{'n', 'v'}, {'N', 'w'}, {'s', 'r'}, {'S', 's'}};
 	const std::map<char, char> m_dir{{'n', 'w'}, {'N', 'v'}, {'s', 's'}, {'S', 'r'}};
 	const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int sink_spin, int first_n) {
-	  const auto& r = SB::contract<6>(sinks_colorvecs.conj(), tensor, "Xxyz")
-			    .rename_dims({{'s', 'S'}, {'S', 's'}});
 	  for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
 	  {
+	    const auto& r =
+	      SB::contract<6>(
+		sinks_colorvecs.conj(),
+		tensor.kvslice_from_size({{'t', t_sinks.at(t_sink_index)}}, {{'t', 1}}), "cXxyz")
+		.rename_dims({{'s', 'S'}, {'S', 's'}});
 	    const auto& ti = Hadron::detail::contractSpins(
-	      dr_left, toTensor(r.kvslice_from_size({{'T', t_sink_index}}, {{'T', 1}})));
+	      dr_left_global, toTensor(r.kvslice_from_size({{'T', t_sink_index}}, {{'T', 1}})));
 	    auto range = tsink_vs_swap_and_indices.equal_range(t_sinks.at(t_sink_index));
 	    for (auto it = range.first; it != range.second; ++it)
 	    {
 	      const auto& [do_swap, index] = it->second;
 	      auto tii = SBN::relabel(ti, !do_swap ? m_dir : m_rev);
-	      SBN::copyTo(tii, SBN::slice_kv(props, {{'i', index}}, {{'i', 1}}));
+	      const char s = (!do_swap ? 'r' : 's');
+	      SBN::copyTo(tii,
+			  SBN::slice_kv(props, {{s, sink_spin}, {'i', index}}, {{s, 1}, {'i', 1}}));
 	    }
 	  }
 	};
@@ -1121,8 +1135,6 @@ namespace Chroma
 
       // Close colorvecs storage
       SB::closeColorvecStorage(colorvecsSto);
-
-      pop(xml_out); // ElementalOps
 
       // Close the namelist output file XMLDAT
       pop(xml_out); // CorrSuperb

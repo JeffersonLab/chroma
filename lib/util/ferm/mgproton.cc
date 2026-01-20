@@ -4110,12 +4110,14 @@ namespace Chroma
 	  {
 	    auto aux0 = aux.kvslice_from_size({}, {{'n', n_step}});
 	    aux0.set_zero();
-	    SB::contract(chi.kvslice_from_size({{'n', n0}}, {{'n', n_step}}),
-			 spin_sources.kvslice_from_size({{'s', spin_index}}, {{'s', 1}})
-			   .rename_dims({{'s', '0'}, {'S', 's'}})
-			   .template cast<COMPLEX_CHI>(),
-			 "", SB::CopyTo,
-			 aux0.kvslice_from_size({{'t', t_source}, {'s', spin_index}}));
+	    SB::contract(
+	      chi.kvslice_from_size({{'n', n0}}, {{'n', n_step}}),
+	      spin_sources.kvslice_from_size({{'s', spin_index}}, {{'s', 1}})
+		.rename_dims({{'s', '0'}, {'S', 's'}})
+		.template cast<COMPLEX_CHI>(),
+	      "", SB::CopyTo,
+	      aux0.kvslice_from_size({{'t', t_source}}, {{'t', 1}})
+		.template reshape_dimensions<Nd + 5>({{"0123", "0"}}, {{'s', 1}}, false));
 
 	    // Solve and invoke the callback
 	    call(op(aux0)
