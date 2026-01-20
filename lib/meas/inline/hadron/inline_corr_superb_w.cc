@@ -912,8 +912,8 @@ namespace Chroma
 	sinks_colorvecs = sinks_colorvecs.rename_dims({{'n', 'N'}, {'t', 'T'}});
 
 	// Callback
-	const std::map<char, char> m_rev{{'n', 'v'}, {'N', 'w'}, {'s', 'r'}, {'S', 's'}};
-	const std::map<char, char> m_dir{{'n', 'w'}, {'N', 'v'}, {'s', 's'}, {'S', 'r'}};
+	const std::map<char, char> m_rev{{'n', 'v'}, {'N', 'w'}, {'s', 's'}, {'S', 'r'}};
+	const std::map<char, char> m_dir{{'n', 'w'}, {'N', 'v'}, {'s', 'r'}, {'S', 's'}};
 	const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int sink_spin, int first_n) {
 	  for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
 	  {
@@ -929,7 +929,7 @@ namespace Chroma
 	    {
 	      const auto& [do_swap, index] = it->second;
 	      auto tii = SBN::relabel(ti, !do_swap ? m_dir : m_rev);
-	      const char s = (!do_swap ? 'r' : 's');
+	      const char s = (!do_swap ? 's' : 'r');
 	      SBN::copyTo(tii,
 			  SBN::slice_kv(props, {{s, sink_spin}, {'i', index}}, {{s, 1}, {'i', 1}}));
 	    }
