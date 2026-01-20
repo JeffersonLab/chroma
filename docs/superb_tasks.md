@@ -806,6 +806,38 @@ Example:
               <mass>U-0.2390</mass>
             </elem>
           </flavor_to_mass>
+          <flavor_to_prop>
+            <elem>
+              <flavor>l</flavor>
+              <Propagator>
+                <version>10</version>
+                <quarkSpinType>FULL</quarkSpinType>
+                <obsvP>false</obsvP>
+                <numRetries>1</numRetries>
+                <FermionAction>
+                  <FermAct>CLOVER</FermAct>
+                  <Mass>0.1</Mass>
+                  <clovCoeff>1.20536588031793</clovCoeff>
+                  <FermState>
+                    <Name>STOUT_FERM_STATE</Name>
+                    <rho>0.125</rho>
+                    <n_smear>1</n_smear>
+                    <orthog_dir>-1</orthog_dir>
+                    <FermionBC>
+                      <FermBC>SIMPLE_FERMBC</FermBC>
+                      <boundary>1 1 1 -1</boundary>
+                    </FermionBC>
+                  </FermState>
+                </FermionAction>
+                <InvertParam>
+                  <invType>BICGSTAB_INVERTER</invType>
+                  <RsdBiCGStab>1.0e-7</RsdBiCGStab>
+                  <MaxBiCGStab>20000</MaxBiCGStab>
+                  <Verbose>true</Verbose>
+                </InvertParam>
+              </Propagator>
+             </elem>
+          </flavor_to_prop>
           <mesons>
             <elem>mesons.sdb</elem>
           </mesons>
@@ -858,7 +890,8 @@ Main options:
 * `Param/t_origin`: (optional, default `0`) shift on the time-slices
 * `Param/Nt_forward`: (optional, default `0`) number of time slices to compute; if `0` is given, it uses the value stored on the corr graph file.
 * `Param/ensemble`: ensemble name added to the output file metadata.
-* `Param/flavor_to_mass`: list of the mass label associated to each flavor (one of `c`, `e`, `l`, `s`, `y`, `x`)
+* `Param/flavor_to_mass`: (optional, default empty) list of the mass label associated to each flavor (one of `c`, `e`, `l`, `s`, `y`, `x`)
+* `Param/flavor_to_prop`: (optional, default empty) list of the propagator associated to each flavor (one of `c`, `e`, `l`, `s`, `y`, `x`)
 * `Param/mesons`: (optional, default empty) list of meson database files.
 * `Param/baryons`: (optional, default empty) list of baryon database files.
 * `Param/props`: (optional, default empty) list of propagator database files.

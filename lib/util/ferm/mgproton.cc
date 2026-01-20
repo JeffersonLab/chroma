@@ -3986,21 +3986,14 @@ namespace Chroma
       /// \return: tensor cSxyztXns where the first t_slice is the t_source-Nt_backward time-slice of
       ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
 
-      template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-      Tensor<Nd + 5, COMPLEX_OUT> doInversion(const SystemSolver<LatticeFermion>& PP,
-					      const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
-					      int first_tslice_out, int n_tslice_out,
-					      const std::vector<int>& spin_sources, int max_rhs,
-					      const std::string& order_out = "cSxyztXns")
+      template <typename COMPLEX_CHI>
+      void doInversion(const SystemSolver<LatticeFermion>& PP,
+		       const Tensor<Nd + 3, COMPLEX_CHI>& chi, int t_source,
+		       const Tensor<2, SB::Complex>& spin_sources, int max_rhs,
+		       const doInversionOnTSliceFn<SB::Complex>& call)
       {
 	int num_vecs = chi.kvdim()['n'];
-	Tensor<Nd + 5, COMPLEX_OUT> psi(
-	  order_out,
-	  latticeSize<Nd + 5>(
-	    order_out,
-	    {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}),
-	  chi.getDev());
-
+	int num_spins = spin_sources.kvdim()['s'];
 	int max_step = std::max(num_vecs, max_rhs);
 	std::vector<std::shared_ptr<LatticeFermion>> chis(max_step), quark_solns(max_step);
 	for (int col = 0; col < max_step; col++)
@@ -4008,19 +4001,22 @@ namespace Chroma
 	for (int col = 0; col < max_step; col++)
 	  quark_solns[col].reset(new LatticeFermion);
 
-	for (int spin_source : spin_sources)
+	for (int spin_index = 0; spin_index < num_spins; ++spin_index)
 	{
 	  for (int n0 = 0, n_step = std::min(max_rhs, num_vecs); n0 < num_vecs;
 	       n0 += n_step, n_step = std::min(n_step, num_vecs - n0))
 	  {
 	    for (int n = n0, col = 0; col < n_step; ++n, ++col)
 	    {
-	      // Put the colorvec sources for the t_source on chis for spin `spin_source`
-	      // chis[col][s=spin_source] = chi[n=n0]
+	      // Put the colorvec sources for the t_source on chis
+	      // chis[col] = chi[n=n0] x spin_sources[s=spin_index]
 	      *chis[col] = zero;
-	      chi.kvslice_from_size({{'n', n}}, {{'n', 1}})
-		.copyTo(SB::asTensorView(*chis[col])
-			  .kvslice_from_size({{'t', t_source}, {'s', spin_source}}));
+	      SB::contract<Nd + 5>(chi.kvslice_from_size({{'n', n}}, {{'n', 1}}),
+				   spin_sources.kvslice_from_size({{'s', spin_index}}, {{'s', 1}})
+				     .template cast<COMPLEX_CHI>(),
+				   "")
+		.rename_dims({{'s', '!'}, {'S', 's'}})
+		.copyTo(SB::asTensorView(*chis[col]).kvslice_from_size({{'t', t_source}}));
 
 	      *quark_solns[col] = zero;
 	    }
@@ -4034,16 +4030,16 @@ namespace Chroma
 
 	    for (int n = n0, col = 0; col < n_step; ++n, ++col)
 	    {
-	      // psi[n=n] = quark_solns[col][t=first_tslice+(0:n_tslice_out-1)]
-	      asTensorView(*quark_solns[col])
-		.kvslice_from_size({{'t', first_tslice_out}}, {{'t', n_tslice_out}})
-		.rename_dims({{'s', 'S'}})
-		.copyTo(psi.kvslice_from_size({{'n', n}, {'s', spin_source}}));
+	      call(asTensorView(*quark_solns[col])
+		     .rename_dims({{'s', 'S'}})
+		     .toComplex()
+		     .template make_sure<SB::Complex>()
+		     .append_dimension('s')
+		     .append_dimension('n'),
+		   spin_index, n);
 	    }
 	  }
 	}
-
-	return psi;
       }
 
       /// Apply the inverse to LatticeFermion tensors
@@ -4086,23 +4082,16 @@ namespace Chroma
       ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
 
       template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-      Tensor<Nd + 5, COMPLEX_OUT> doInversion(const Operator<Nd + 7, COMPLEX_OUT>& op,
-					      const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
-					      int first_tslice_out, int n_tslice_out,
-					      const std::vector<int>& spin_sources, int max_rhs,
-					      const std::string& order_out = "cSxyztXns")
+      void doInversion(const Operator<Nd + 7, COMPLEX_OUT>& op,
+		       const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
+		       const Tensor<2, SB::Complex>& spin_sources, int max_rhs,
+		       const doInversionOnTSliceFn<SB::Complex>& call)
       {
 	Tracker _t(std::string("mgproton solver"));
 
-	int num_vecs = chi.kvdim()['n'];
-	Tensor<Nd + 5, COMPLEX_OUT> psi(
-	  order_out,
-	  latticeSize<Nd + 5>(
-	    order_out,
-	    {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}),
-	  chi.getDev());
-
 	// Create tensors with full support on the lattice
+	int num_vecs = chi.kvdim()['n'];
+	int num_spins = spin_sources.kvdim()['s'];
 	int max_step = std::max(num_vecs, max_rhs);
 	auto aux = chi.template make_compatible<Nd + 8>(
 	  op.preferred_col_ordering == ColumnMajor ? "0123csxyztXn" : "0123ncsxyztX",
@@ -4114,25 +4103,28 @@ namespace Chroma
 	   {'2', 1},
 	   {'3', 1}});
 
-	for (int spin_source : spin_sources)
+	for (int spin_index = 0; spin_index < num_spins; ++spin_index)
 	{
 	  for (int n0 = 0, n_step = std::min(max_rhs, num_vecs); n0 < num_vecs;
 	       n0 += n_step, n_step = std::min(n_step, num_vecs - n0))
 	  {
 	    auto aux0 = aux.kvslice_from_size({}, {{'n', n_step}});
 	    aux0.set_zero();
-	    chi.kvslice_from_size({{'n', n0}}, {{'n', n_step}})
-	      .copyTo(aux0.kvslice_from_size({{'t', t_source}, {'s', spin_source}}));
+	    SB::contract(chi.kvslice_from_size({{'n', n0}}, {{'n', n_step}}),
+			 spin_sources.kvslice_from_size({{'s', spin_index}}, {{'s', 1}})
+			   .rename_dims({{'s', '0'}, {'S', 's'}})
+			   .template cast<COMPLEX_CHI>(),
+			 "", SB::CopyTo,
+			 aux0.kvslice_from_size({{'t', t_source}, {'s', spin_index}}));
 
-	    // Solve
-	    op(aux0)
-	      .kvslice_from_size({{'t', first_tslice_out}}, {{'t', n_tslice_out}})
-	      .rename_dims({{'s', 'S'}})
-	      .copyTo(psi.kvslice_from_size({{'n', n0}, {'s', spin_source}}));
+	    // Solve and invoke the callback
+	    call(op(aux0)
+		   .template reshape_dimensions<Nd + 5>({{"0123", "s"}, {"s", "S"}}, {{'S', Ns}},
+							false)
+		   .template make_sure<SB::Complex>(),
+		 spin_index, n0);
 	  }
 	}
-
-	return psi;
       }
 
       /// Apply the inverse to a list of LatticeFermions
@@ -4366,11 +4358,45 @@ namespace Chroma
     }
 
     /// Apply the inverse to LatticeColorVec tensors for a list of spins
-    /// \param PP: invertor
+    /// \param PP: inverter
     /// \param chi: lattice color tensor on a t_slice, cxyzXn
     /// \param t_source: time-slice in chi
-    /// \param Nt_forward: return the next Nt_forward time-slices after t_source
-    /// \param Nt_backward: return the previous Nt_backward time-slices before t_source
+    /// \param spin_sources: Ss matrix to contract with chi
+    /// \param max_rhs: maximum number of vectors solved at once
+    /// \param call: call(tensor, first_s_index, first_n_index), where
+    ///              - tensor is cSxyztXns;
+    ///              - first_s_index, index of the first `spin_sources` component `s` in tensor;
+    ///              - first_n_index, index of the first `chi` component `n` in tensor;
+
+    template <typename COMPLEX_CHI>
+    void doInversion(const ChimeraSolver& sol, const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
+		     const Tensor<2, SB::Complex>& spin_sources, int max_rhs,
+		     const doInversionOnTSliceFn<SB::Complex>& call)
+    {
+      if (chi.kvdim()['t'] != 1)
+	throw std::runtime_error("Expected one time-slice");
+      const int num_spins = spin_sources.kvdim()['s'];
+      const int num_vecs = chi.kvdim()['n'];
+
+      StopWatch snarss1;
+      snarss1.reset();
+      snarss1.start();
+
+      if (sol.op)
+	detail::doInversion(sol.op, chi, t_source, spin_sources, max_rhs, call);
+      else
+	detail::doInversion(*sol.PP, chi, t_source, spin_sources, max_rhs, call);
+
+      snarss1.stop();
+      QDPIO::cout << "Time to compute inversions for " << num_spins << " spin sources and "
+		  << num_vecs << " colorvecs : " << snarss1.getTimeInSeconds() << " secs"
+		  << std::endl;
+    }
+
+    /// Apply the inverse to LatticeColorVec tensors for a list of spins
+    /// \param PP: inverter
+    /// \param chi: lattice color tensor on a t_slice, cxyzXn
+    /// \param t_source: time-slice in chi
     /// \param spin_sources: list of spins
     /// \param max_rhs: maximum number of vectors solved at once
     /// \param order_out: coordinate order of the output tensor, a permutation of cSxyztXns where
@@ -4392,24 +4418,28 @@ namespace Chroma
       if (n_tslice_out > Layout::lattSize()[3])
 	throw std::runtime_error("Too many tslices");
 
-      StopWatch snarss1;
-      snarss1.reset();
-      snarss1.start();
+      // Prepare spins
+      auto spins = SB::Tensor<2, SB::Complex>("Ss", {{Nc, (int)spin_sources.size()}}, SB::OnHost,
+					      SB::OnEveryoneReplicated);
+      spins.set_zero();
+      for (int spin_index = 0; spin_index < spin_sources.size(); ++spin_index)
+	spins.set({spin_sources.at(spin_index), spin_index}, 1.0);
 
-      Tensor<Nd + 5, SB::Complex> r;
-      if (sol.op)
-	r = detail::doInversion<COMPLEX_CHI, SB::Complex>(
-	  sol.op, chi, t_source, first_tslice_out, n_tslice_out, spin_sources, max_rhs, order_out);
-      else
-	r = detail::doInversion<COMPLEX_CHI, SB::Complex>(
-	  *sol.PP, chi, t_source, first_tslice_out, n_tslice_out, spin_sources, max_rhs, order_out);
+      // Prepare output
+      Tensor<Nd + 5, SB::Complex> psi(
+	order_out,
+	latticeSize<Nd + 5>(
+	  order_out, {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}),
+	chi.getDev());
 
-      snarss1.stop();
-      QDPIO::cout << "Time to compute inversions for " << spin_sources.size()
-		  << " spin sources and " << num_vecs
-		  << " colorvecs : " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+      const auto& call = [&](Tensor<Nd + 5, SB::Complex> tensor, int spin_index, int first_n) {
+	tensor //
+	  .kvslice_from_size({{'t', first_tslice_out}}, {{'t', n_tslice_out}})
+	  .copyTo(psi.kvslice_from_size({{'n', first_n}, {'s', spin_index}}));
+      };
+      doInversion(sol, chi, t_source, spins, max_rhs, call);
 
-      return r;
+      return psi;
     }
 
     template Tensor<Nd + 5, SB::Complex>

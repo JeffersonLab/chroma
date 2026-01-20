@@ -28,6 +28,7 @@
 #include "meas/inline/make_xml_file.h"
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
+#include "util/ferm/mgproton.h"
 #include "util/ferm/superb_contractions.h"
 #include "util/info/proginfo.h"
 
@@ -71,6 +72,34 @@ namespace Chroma
 
     // Reader for input parameters
     void read(XMLReader& xml, const std::string& path,
+	      InlineCorrSuperbEnv::Params::Param_t::FlavorToProp& param)
+    {
+      XMLReader paramtop(xml, path);
+
+      read(paramtop, "flavor", param.flavor);
+      read(paramtop, "Propagator", param.prop);
+      const std::set<char> flavors{'c', 'e', 'l', 's', 'y', 'x'};
+      if (flavors.count(param.flavor) == 0)
+      {
+	QDPIO::cerr << "invalid flavor: " << std::string{param.flavor} << std::endl;
+	QDP_abort(1);
+      }
+    }
+
+    // Writer for input parameters
+    void write(XMLWriter& xml, const std::string& path,
+	       const InlineCorrSuperbEnv::Params::Param_t::FlavorToProp& param)
+    {
+      push(xml, path);
+
+      write(xml, "flavor", param.flavor);
+      write(xml, "Propagator", param.prop);
+
+      pop(xml);
+    }
+
+    // Reader for input parameters
+    void read(XMLReader& xml, const std::string& path,
 	      InlineCorrSuperbEnv::Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
@@ -78,7 +107,21 @@ namespace Chroma
       param.num_vecs = 0;
       read(paramtop, "num_vecs", param.num_vecs);
 
-      read(paramtop, "flavor_to_mass", param.flavor_to_mass);
+      param.max_rhs = 0;
+      if (paramtop.count("max_rhs") > 0)
+      {
+	read(paramtop, "max_rhs", param.max_rhs);
+      }
+
+      if (paramtop.count("flavor_to_mass") > 0)
+      {
+	read(paramtop, "flavor_to_mass", param.flavor_to_mass);
+      }
+
+      if (paramtop.count("flavor_to_prop") > 0)
+      {
+	read(paramtop, "flavor_to_prop", param.flavor_to_prop);
+      }
 
       param.t_origin = 0;
       if (paramtop.count("t_origin") > 0)
@@ -129,7 +172,9 @@ namespace Chroma
       push(xml, path);
 
       write(xml, "num_vecs", param.num_vecs);
+      write(xml, "max_rhs", param.max_rhs);
       write(xml, "flavor_to_mass", param.flavor_to_mass);
+      write(xml, "flavor_to_prop", param.flavor_to_prop);
       write(xml, "t_origin", param.t_origin);
       write(xml, "mesons", param.meson_files);
       write(xml, "baryons", param.baryon_files);
@@ -317,7 +362,8 @@ namespace Chroma
     /// Return a view of the tensor object
     /// \param t: tensor
 
-    template<std::size_t N> SBN::Tensor toTensor(const SB::Tensor<N, SB::ComplexD>& t)
+    template <std::size_t N>
+    SBN::Tensor toTensor(const SB::Tensor<N, SB::ComplexD>& t, bool allow_copy = true)
     {
       // Check that the input tensor is not fake complex or example gratia
       if (t.complexLabel != 0 || t.eg || t.dist == SB::Glocal)
@@ -341,6 +387,8 @@ namespace Chroma
 	get_sbn_distribution(t.order, t.dist, *t.p));
       return SBN::Tensor{from, size, dim, t.order, alloc, p, t.scalar, t.conjugate, 0, 0, {}};
 #  else
+      if (!allow_copy)
+	throw std::runtime_error("unsupported");
       const auto trep = t.make_sure(SB::none, SB::OnHost, SB::OnEveryoneReplicated);
       auto p = (const std::complex<double>*)trep.data();
       auto alloc = std::make_shared<std::vector<std::complex<double>>>(p, p + SBN::volume(dim));
@@ -626,6 +674,7 @@ namespace Chroma
 	const int decay_dir = 3;
 	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
 	  SB::getColorvecs<SB::Complex>(colorvecsSto, u, decay_dir, t_slide, 1, num_vecs, SB::none);
+	source_colorvec = SB::phaseColorvecs(source_colorvec, t_slide, phase);
 
 	// Callback
 	const auto call = SB::ColorContractionFn<SB::Complex>(
@@ -653,6 +702,232 @@ namespace Chroma
       }
 
       return baryons;
+    }
+
+    /// Return the props
+    /// \param db: prop storage
+    /// \param colorvecsSto: colorvec storage
+    /// \param u: original gauge field
+    /// \param get_prop: get solver from mass label
+    /// \param prop_keys: list of props keys
+    /// \param max_rhs: maximum RHS to solve at once
+    /// \param perms: list of permutations, one for each prop key
+    /// \param do_conj: list of whether to conjugate the prop, one for each prop key
+    /// \param ev_from: first eigenvector to return for "vwx"
+    /// \param ev_size: number of eigenvectors to return for "vwx"
+    /// \param dist_labels: dimensions to be distributed, some of "vwxi"
+    /// \param alloc: allocation for the returned tensor
+
+    inline SBN::Tensor
+    get_prop_elementals(const ADATIO::StorageProp4& db, const SB::ColorvecsStorage& colorvecsSto,
+			const multi1d<LatticeColorMatrix>& u,
+			const std::function<SB::ChimeraSolver(std::string)>& get_prop, int max_rhs,
+			const std::vector<Hadron::KeyProp4ElementalOperator_t>& prop_keys,
+			const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
+			const SBN::Coor& ev_from, const SBN::Coor& ev_size,
+			const std::string& dist_labels, const SBN::Tensor& guide)
+    {
+      if (prop_keys.size() != perms.size() || prop_keys.size() != do_conj.size())
+	throw std::runtime_error("invalid input");
+      if (ev_from.size() != 4 || ev_size.size() != 4)
+	throw std::runtime_error("invalid input");
+      if (SBN::detail::get_debug_level() > 0)
+      {
+	for (const auto& it : perms)
+	{
+	  if (it != SBN::Coor{0, 1, 2, 3} && it != SBN::Coor{1, 0, 3, 2})
+	    throw std::runtime_error("invalid input");
+	}
+      }
+
+      const int num_vecs = std::max(ev_from.at(0) + ev_size.at(0), ev_from.at(1) + ev_size.at(1));
+
+      // This object is in the DR basis; create matrices to convert it to DP
+      const auto& dr_left =
+	SBN::slice_kv(Hadron::detail::adjForSpins(Hadron::detail::getDiracToDRMat()), //
+		      {{'s', ev_from.at(2)}}, {{'s', ev_size.at(2)}});
+      const auto& dr_right = SBN::slice_kv(Hadron::detail::getDiracToDRMat(),
+					   {{'S', ev_from.at(3)}}, {{'S', ev_size.at(3)}});
+
+      // Create matrices to convert it to DP and with pre/post applying \gamma_5
+      const auto dr_g5_left =
+	Hadron::detail::contractSpins(dr_left, Hadron::detail::chromaGamma5());
+      const auto dr_g5_right =
+	Hadron::detail::contractSpins(Hadron::detail::chromaGamma5(), dr_right);
+
+      // Create chroma versions of dr_right
+      auto dr_right_chroma = SB::Tensor<2, SB::Complex>("Ss", {{Nc, ev_size.at(3)}}, SB::OnHost,
+							SB::OnEveryoneReplicated);
+      SBN::copyTo(SBN::relabel(dr_right, {{'S', 's'}, {'s', 'S'}}),
+		  toTensor(dr_right_chroma, false /* don't copy */));
+
+      // Create output tensor
+      SBN::Tensor props = SBN::create_tensor_with_local_components(
+	SBN::concat(ev_size, {-(int)prop_keys.size()}), "vwrsi", dist_labels,
+	SBN::Options::Alloc::Host, 0, 0, SBN::Options::IsEg::False, guide);
+
+      // Try to get the mesons from the storage and annotate the missing keys
+      std::vector<std::tuple<Hadron::KeyProp4ElementalOperator_t, bool, int>> local_missing_props;
+      {
+	local_missing_props.reserve(prop_keys.size());
+	const auto first_local_prop = SBN::get_local_srange(props).at(0).at('i');
+	const auto& local_props = SBN::slice_kv(
+	  SBN::get_local_tensor(props), {{'i', first_local_prop}}, {{'i', (int)prop_keys.size()}});
+	Hadron::ValProp4ElementalOperator_t val;
+	for (std::size_t i = 0; i < prop_keys.size(); ++i)
+	{
+	  const auto& prop_i = SBN::slice_kv(local_props, {{'i', i}}, {{'i', 1}});
+	  if (!has_local_support(prop_i))
+	    continue;
+	  auto key = prop_keys.at(i);
+	  bool is_swap = (perms.at(i) != SBN::Coor{0, 1, 2, 3});
+	  bool this_conj = do_conj.at(i);
+	  bool gotit = false;
+	  for (int attempt = 0; attempt < 2; ++attempt)
+	  {
+	    if (db.get(key, val) == 0)
+	    {
+	      gotit = true;
+	      break;
+	    }
+	    if (attempt == 0)
+	    {
+	      // If it fails, try reversing sink and source
+	      std::swap(key.t_slice, key.t_source);
+	      key.phasing_sink = -key.phasing_sink;
+	      std::swap(key.phasing_source, key.phasing_sink);
+	      key.phasing_sink = -key.phasing_sink;
+	      is_swap = !is_swap;
+	      this_conj = !this_conj;
+	    }
+	    else
+	    {
+	      if (this_conj)
+	      {
+		key.phasing_sink = -key.phasing_sink;
+		std::swap(key.phasing_source, key.phasing_sink);
+		key.phasing_sink = -key.phasing_sink;
+		is_swap = !is_swap;
+		this_conj = !this_conj;
+	      }
+	      local_missing_props.push_back({key, is_swap, first_local_prop + i});
+	      break;
+	    }
+	  }
+	  if (gotit)
+	  {
+	    if (val.op.size3() < num_vecs || val.op.size4() < num_vecs)
+	    {
+	      throw std::runtime_error("got a propagator with insufficient number of vectors");
+	    }
+	    // If sink and source are swapped, then conjugate and apply \gamma_5 left and right:
+	    // V_t0' D^{-1} V_t1 =
+	    //          [(V_t0' D^{-1} V_t1)']' =
+	    //          [V_t1' D^{-\dagger} V_t0]' =
+	    //          [\g_5 V_t1' D^{-1} V_t0 \g_5]' =
+	    //          \g_5 [V_t1' D^{-1} V_t0]' \g_5
+	    const auto& ti0 =
+	      SBN::toTensor(val.op, is_swap ? "wvSs" : "vwsS", SBN::Options::Distribution::Local);
+	    auto ti = SBN::slice_kv(is_swap ? SBN::conj(ti0) : ti0, //
+				    {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}},
+				    {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}});
+
+	    // If the propagator is conjugated, then applied \gamma_5 left and right
+	    // NOTE: \g_5 (V' D^{-1} V) \g_5 = V' \g_5 D^{-1} \g_5 V = V' D^{-\dagger} V
+	    // NOTE: colorvec function gamma5Herm also adjoint the matrix; we do that just above
+	    if (this_conj)
+	    {
+	      ti = Hadron::detail::contractSpins(Hadron::detail::contractSpins(dr_g5_left, ti),
+						 dr_g5_right);
+	    }
+	    else
+	    {
+	      ti =
+		Hadron::detail::contractSpins(Hadron::detail::contractSpins(dr_left, ti), dr_right);
+	    }
+
+	    SBN::copyTo(ti, prop_i);
+	  }
+	}
+      }
+
+      // Recompile for each missing time slice, the phases, momenta, and displacement to compute
+      using mass_tsource_source_sink_phases = std::tuple<std::string, int, SB::Coor<3>, SB::Coor<3>>;
+      using tsink_vs_swap_and_indices_t = Hadron::detail::unordered_multimap<int, std::tuple<bool, int>>;
+      Hadron::detail::unordered_map<mass_tsource_source_sink_phases, tsink_vs_swap_and_indices_t>
+	from_mass_tsource_source_sink_phases_to_tsink_swap_and_indices;
+      const auto get_keys = [=](const auto& map) {
+	using T = typename std::remove_reference<decltype(map)>::type::key_type;
+	std::set<T> r;
+	for (const auto& it : map)
+	  r.insert(it.first);
+	return std::vector<T>(r.begin(), r.end());
+      };
+      for (const auto& missing_props_in_some_process : SBN::gather(local_missing_props))
+      {
+	for (const auto& [prop_key, do_swap, index] : missing_props_in_some_process)
+	{
+	  const auto& k = mass_tsource_source_sink_phases{
+	    prop_key.mass_label, prop_key.t_source, ADATIO::detail::toCoor(prop_key.phasing_source),
+	    ADATIO::detail::toCoor(prop_key.phasing_sink)};
+	  from_mass_tsource_source_sink_phases_to_tsink_swap_and_indices[k].insert(
+	    {prop_key.t_slice, {do_swap, index}});
+	}
+      }
+
+      for (const auto& it : from_mass_tsource_source_sink_phases_to_tsink_swap_and_indices)
+      {
+	const auto& mass_label = std::get<0>(it.first);
+	const int t_source = std::get<1>(it.first);
+	const auto& source_phase = std::get<2>(it.first);
+	const auto& sink_phase = std::get<3>(it.first);
+	const auto& tsink_vs_swap_and_indices = it.second;
+	const auto& t_sinks = get_keys(tsink_vs_swap_and_indices);
+
+	// Get num_vecs colorvecs on time-slice t_source
+	const int decay_dir = 3;
+	SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
+	  colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none);
+	source_colorvec = SB::phaseColorvecs(source_colorvec, t_source, source_phase);
+
+	// Get num_vecs colorvecs on time-slice t_source
+	SB::Tensor<Nd + 3, SB::Complex> sinks_colorvecs =
+	  source_colorvec.like_this(SB::none, {{'t', t_sinks.size()}});
+	for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
+	{
+	  SB::Tensor<Nd + 3, SB::Complex> sink_colorvec = SB::getColorvecs<SB::Complex>(
+	    colorvecsSto, u, decay_dir, t_sinks.at(t_sink_index), 1, num_vecs, SB::none);
+	  SB::phaseColorvecs(sink_colorvec, t_sinks.at(t_sink_index), sink_phase)
+	    .copyTo(sinks_colorvecs.kvslice_from_size({{'t', t_sink_index}}, {{'t', 1}}));
+	}
+	sinks_colorvecs = sinks_colorvecs.rename_dims({{'n', 'N'}, {'t', 'T'}});
+
+	// Callback
+	const std::map<char, char> m_rev{{'n', 'v'}, {'N', 'w'}, {'s', 'r'}, {'S', 's'}};
+	const std::map<char, char> m_dir{{'n', 'w'}, {'N', 'v'}, {'s', 's'}, {'S', 'r'}};
+	const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int sink_spin, int first_n) {
+	  const auto& r = SB::contract<6>(sinks_colorvecs.conj(), tensor, "Xxyz")
+			    .rename_dims({{'s', 'S'}, {'S', 's'}});
+	  for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
+	  {
+	    const auto& ti = Hadron::detail::contractSpins(
+	      dr_left, toTensor(r.kvslice_from_size({{'T', t_sink_index}}, {{'T', 1}})));
+	    auto range = tsink_vs_swap_and_indices.equal_range(t_sinks.at(t_sink_index));
+	    for (auto it = range.first; it != range.second; ++it)
+	    {
+	      const auto& [do_swap, index] = it->second;
+	      auto tii = SBN::relabel(ti, !do_swap ? m_dir : m_rev);
+	      SBN::copyTo(tii, SBN::slice_kv(props, {{'i', index}}, {{'i', 1}}));
+	    }
+	  }
+	};
+
+	// Do the inversions
+	doInversion<SB::Complex>(get_prop(mass_label), source_colorvec, t_source, dr_right_chroma,
+				 max_rhs, call);
+      }
+
+      return props;
     }
 
     // Function call
@@ -745,6 +1020,31 @@ namespace Chroma
       for (const auto& it : params.param.flavor_to_mass)
 	flavor_to_mass[it.flavor] = it.mass;
 
+      std::map<std::string, ChromaProp_t> mass_to_prop_options;
+      for (const auto& it : params.param.flavor_to_prop)
+      {
+	if (flavor_to_mass.count(it.flavor) == 0)
+	  flavor_to_mass[it.flavor] = std::string{'_', it.flavor};
+	mass_to_prop_options[flavor_to_mass.at(it.flavor)] = it.prop;
+      }
+
+      std::map<std::string, SB::ChimeraSolver> mass_to_prop;
+      const auto& get_prop = [&](const std::string& mass) {
+	if (mass_to_prop.count(mass) == 0)
+	{
+	  if (mass_to_prop_options.count(mass) == 0)
+	  {
+	    QDPIO::cout << "Unspecified mass or flavor: " << mass << std::endl;
+	    QDP_abort(1);
+	  }
+	  QDPIO::cout << "Initializing propagator for mass " << mass << std::endl;
+	  const auto& prop_options = mass_to_prop_options.at(mass);
+	  mass_to_prop.insert(
+	    {mass, SB::ChimeraSolver{prop_options.fermact, prop_options.invParam, u}});
+	}
+	return mass_to_prop.at(mass);
+      };
+
       QDPIO::cout << "Opening corr graph " << params.named_obj.corr_graph_file << std::endl;
       Hadron::CorrGraphMap_t corr_graph;
       ADATIO::BinaryFileReader bin(params.named_obj.corr_graph_file);
@@ -793,8 +1093,9 @@ namespace Chroma
 	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
 	    const SBN::Tensor& perm) {
-	  return Hadron::detail::get_prop_elementals_from_storage(
-	    storage_prop, prop_keys, perms, do_conj, ev_from, ev_size, dist_labels, perm);
+	  return get_prop_elementals(storage_prop, colorvecsSto, u, get_prop, params.param.max_rhs,
+				     prop_keys, perms, do_conj, ev_from, ev_size, dist_labels,
+				     perm);
 	};
       const auto genprop_callback =
 	[&](const std::vector<Hadron::KeyGenProp4ElementalOperator_t>& genprop_keys,

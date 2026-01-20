@@ -11418,7 +11418,7 @@ namespace Chroma
 		    asTensorView(u[d])
 		      .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
 		      .toComplex(), first_tslice + tfrom)
-		    .make_sure(none, dev, dist);
+		    .make_sure<COMPLEX>(none, dev, dist);
 	}
 
 	// Get the time-slice for colorvec

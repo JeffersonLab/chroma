@@ -9,6 +9,7 @@
 
 #include "io/xml_group_reader.h"
 #include "meas/inline/abs_inline_measurement.h"
+#include "io/qprop_io.h"
 #include <list>
 
 namespace Chroma 
@@ -39,9 +40,17 @@ namespace Chroma
 	  std::string mass;
 	};
 
+	// Flavor to mass entry
+	struct FlavorToProp {
+	  char flavor;
+	  ChromaProp_t prop;
+	};
+
 	int 			num_vecs;               /*! rank of the distillation basis */
+	int 			max_rhs;                /*! maximum rhs to solve at once */
 	int                     decay_dir;              /*!< Decay direction */
 	std::vector<FlavorToMass> flavor_to_mass;       /*!< map from flavor to mass label */
+	std::vector<FlavorToProp> flavor_to_prop;       /*!< map from flavor to prop */
 	int			t_origin;		/*!< t_origin */
 	int			Nt_forward;		/*!< Nt_forward */
 	GroupXML_t              link_smearing;          /*!< link smearing xml */
