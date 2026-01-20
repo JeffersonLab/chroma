@@ -513,9 +513,7 @@ namespace Chroma
 
       for (const auto& it : from_tslice_left_right_phases_to_momenta_displacement)
       {
-	const int t_source = std::get<0>(it.first);
-	const auto& left_phase = std::get<1>(it.first);
-	const auto& right_phase = std::get<2>(it.first);
+	const auto& [t_source, left_phase, right_phase] = it.first;
 	const auto& moms = get_vector(std::get<0>(it.second));
 	const auto& disps = get_vector(std::get<1>(it.second));
 	const auto& mom_disp_to_index = std::get<2>(it.second);
@@ -664,17 +662,17 @@ namespace Chroma
 
       for (const auto& it : from_tslice_and_phase_to_momenta_displacement)
       {
-	const int t_slide = std::get<0>(it.first);
+	const int t_slice = std::get<0>(it.first);
 	const auto& phase = std::get<1>(it.first);
 	const auto& moms = get_vector(std::get<0>(it.second));
 	const auto& disps = get_vector(std::get<1>(it.second));
 	const auto& mom_disp_to_index = std::get<2>(it.second);
 
-	// Get num_vecs colorvecs on time-slice t_slide
+	// Get num_vecs colorvecs on time-slice t_slice
 	const int decay_dir = 3;
 	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
-	  SB::getColorvecs<SB::Complex>(colorvecsSto, u, decay_dir, t_slide, 1, num_vecs, SB::none);
-	source_colorvec = SB::phaseColorvecs(source_colorvec, t_slide, phase);
+	  SB::getColorvecs<SB::Complex>(colorvecsSto, u, decay_dir, t_slice, 1, num_vecs, SB::none);
+	source_colorvec = SB::phaseColorvecs(source_colorvec, t_slice, phase);
 
 	// Callback
 	const auto call = SB::ColorContractionFn<SB::Complex>(
@@ -697,7 +695,7 @@ namespace Chroma
 	const int max_moms_in_contraction = 1;
 	const int max_vecs = 4;
 	SB::doMomDisp_colorContractions(u_smr, source_colorvec.make_sure<SB::ComplexD>(), moms,
-					t_slide, disps, use_derivP, call,
+					t_slice, disps, use_derivP, call,
 					0 /* it means to do all */, max_moms_in_contraction,
 					max_vecs, SB::none, SB::OnDefaultDevice, SB::OnEveryone);
       }
@@ -949,6 +947,283 @@ namespace Chroma
       return props;
     }
 
+    /// Return the genprops
+    /// \param db: genprop storage
+    /// \param colorvecsSto: colorvec storage
+    /// \param u: original gauge field
+    /// \param get_genprop: get solver from mass label
+    /// \param genprop_keys: list of genprops keys
+    /// \param max_rhs: maximum RHS to solve at once
+    /// \param perms: list of permutations, one for each genprop key
+    /// \param do_conj: list of whether to conjugate the genprop, one for each genprop key
+    /// \param ev_from: first eigenvector to return for "vwx"
+    /// \param ev_size: number of eigenvectors to return for "vwx"
+    /// \param dist_labels: dimensions to be distributed, some of "vwxi"
+    /// \param alloc: allocation for the returned tensor
+
+    inline SBN::Tensor get_genprop_elementals(
+      const ADATIO::StorageGenprop4& db, const SB::ColorvecsStorage& colorvecsSto,
+      const multi1d<LatticeColorMatrix>& u,
+      const std::function<SB::ChimeraSolver(std::string)>& get_prop, int max_rhs,
+      const std::vector<Hadron::KeyGenProp4ElementalOperator_t>& genprop_keys,
+      const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
+      const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
+      const SBN::Tensor& guide)
+    {
+      if (genprop_keys.size() != perms.size() || genprop_keys.size() != do_conj.size())
+	throw std::runtime_error("invalid input");
+      if (ev_from.size() != 4 || ev_size.size() != 4)
+	throw std::runtime_error("invalid input");
+      if (SBN::detail::get_debug_level() > 0)
+      {
+	for (const auto& it : perms)
+	{
+	  if (it != SBN::Coor{0, 1, 2, 3} && it != SBN::Coor{1, 0, 3, 2})
+	    throw std::runtime_error("invalid input");
+	}
+      }
+
+      const int num_vecs = std::max(ev_from.at(0) + ev_size.at(0), ev_from.at(1) + ev_size.at(1));
+      if (max_rhs == 0)
+	max_rhs = num_vecs;
+
+      // This object is in the DR basis; create matrices to convert it to DP
+      const auto& dr_left_global =
+	SBN::slice_kv(Hadron::detail::adjForSpins(
+			Hadron::detail::getDiracToDRMat(SBN::Options::Distribution::Replicated)), //
+		      {{'s', ev_from.at(2)}}, {{'s', ev_size.at(2)}});
+      const auto& dr_left = SBN::get_local_tensor(dr_left_global);
+      const auto& dr_right = SBN::slice_kv(Hadron::detail::getDiracToDRMat(),
+					   {{'S', ev_from.at(3)}}, {{'S', ev_size.at(3)}});
+
+      // Create matrices to convert it to DP and with pre/post applying \gamma_5
+      const auto dr_g5_left_global = Hadron::detail::contractSpins(
+	dr_left_global, Hadron::detail::chromaGamma5(SBN::Options::Distribution::Replicated));
+      const auto& dr_g5_left = SBN::get_local_tensor(dr_g5_left_global);
+      const auto dr_g5_right =
+	Hadron::detail::contractSpins(Hadron::detail::chromaGamma5(), dr_right);
+
+      // Create chroma versions of dr_right and dr_g5_left
+      auto dr_right_chroma = SB::Tensor<2, SB::Complex>("Ss", {{Ns, ev_size.at(3)}}, SB::OnHost,
+							SB::OnEveryoneReplicated);
+      SBN::copyTo(SBN::relabel(dr_right, {{'S', 's'}, {'s', 'S'}}),
+		  SBN::get_local_tensor(toTensor(dr_right_chroma, false /* don't copy */)));
+      auto dr_g5_left_conj_chroma = SB::Tensor<2, SB::Complex>(
+	"Ss", {{Ns, ev_size.at(2)}}, SB::OnHost, SB::OnEveryoneReplicated);
+      SBN::copyTo(SBN::relabel(SBN::conj(dr_g5_left), {{'s', 's'}, {'S', 'S'}}),
+		  SBN::get_local_tensor(toTensor(dr_g5_left_conj_chroma, false /* don't copy */)));
+
+      // Create output tensor
+      SBN::Tensor genprops = SBN::create_tensor_with_local_components(
+	SBN::concat(ev_size, {-(int)genprop_keys.size()}), "vwrsi", dist_labels,
+	SBN::Options::Alloc::Host, 0, 0, SBN::Options::IsEg::False, guide);
+
+      // Try to get the mesons from the storage and annotate the missing keys
+      std::vector<std::tuple<Hadron::KeyGenProp4ElementalOperator_t, int>> local_missing_genprops;
+      {
+	local_missing_genprops.reserve(genprop_keys.size());
+	const auto first_local_genprop = SBN::get_local_srange(genprops).at(0).at('i');
+	const auto& local_genprops = //
+	  SBN::relabel(		     //
+	    SBN::slice_kv(	     //
+	      SBN::get_local_tensor(genprops), {{'i', first_local_genprop}},
+	      {{'i', (int)genprop_keys.size()}}),
+	    {{'r', 's'}, {'s', 'S'}});
+	auto val = SBN::create_tensor({ev_size.at(0), ev_size.at(1), ENSEM::Ns, ENSEM::Ns}, "vwsS",
+				      SBN::Options::Distribution::Local, SBN::Options::Alloc::Host);
+	auto toCoor4 = [](const SBN::Coor& coor) {
+	  if (coor.size() != 4)
+	    throw std::runtime_error("wtf");
+	  std::array<int, 4> r;
+	  std::copy_n(coor.begin(), 4, r.begin());
+	  return r;
+	};
+	for (std::size_t i = 0; i < genprop_keys.size(); ++i)
+	{
+	  const auto& genprop_i = SBN::slice_kv(local_genprops, {{'i', i}}, {{'i', 1}});
+	  if (!has_local_support(genprop_i))
+	    continue;
+	  const auto& key = genprop_keys.at(i);
+	  bool is_swap = (perms.at(i) != SBN::Coor{0, 1, 2, 3});
+	  bool this_conj = do_conj.at(i);
+	  if (is_swap || this_conj)
+	    throw std::runtime_error(
+	      "get_genprop_elementals: unsupported permuting or conjugated genprops");
+	  const auto& val_from =
+	    toCoor4(SBN::get_coor(val.order, {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}}, 0));
+	  const auto& val_size = toCoor4(val.size);
+	  const auto& val_order =
+	    SBN::relabel(SBN::remap{{'v', 'N'}, {'w', 'n'}, {'s', 'q'}, {'S', 's'}}, val.order);
+	  if (db.get(key, val_from, toCoor4(val.size), val_order, data(val)) != 0)
+	  {
+	    local_missing_genprops.push_back({key, first_local_genprop + i});
+	  }
+	  else
+	  {
+	    const auto& ti =
+	      Hadron::detail::contractSpins(Hadron::detail::contractSpins(dr_left, val), dr_right);
+
+	    SBN::copyTo(ti, genprop_i);
+	  }
+	}
+      }
+
+      // Recompile for each missing time slice, the phases, momenta, and displacement to compute
+      using displacement_t = std::vector<int>;
+      using mass_tsource_sink_phase_source_sink_t =
+	std::tuple<std::string, int, int, SB::Coor<3>, SB::Coor<3>>;
+      using mom_disp_gamma_tslice_vs_indices_t =
+	Hadron::detail::unordered_multimap<SB::Coor<4>, int>;
+      using moms_disps_gamma_and_tslides_vs_indices_t =
+	std::tuple<Hadron::detail::unordered_map<SB::Coor<3>, int>,    // moms
+		   Hadron::detail::unordered_map<displacement_t, int>, // disps
+		   Hadron::detail::unordered_map<int, int>,	       // gammas
+		   Hadron::detail::unordered_map<int, int>,	       // tslices
+		   mom_disp_gamma_tslice_vs_indices_t // mom, disp, gamma, tslice to index
+		   >;
+      Hadron::detail::unordered_map<mass_tsource_sink_phase_source_sink_t,
+				    moms_disps_gamma_and_tslides_vs_indices_t>
+	from_mass_tsource_sink_phase_source_sink_to_moms_disps_gammas_and_tslides_vs_indices;
+      const auto get_index = [=](auto& map, const auto& value) {
+	const auto s = map.size();
+	if (map.count(value) == 0)
+	  map[value] = s;
+	return map.at(value);
+      };
+      const auto get_vector = [=](const auto& map) {
+	std::vector<typename std::remove_reference<decltype(map)>::type::key_type> r(map.size());
+	for (const auto& it : map)
+	  r.at(it.second) = it.first;
+	return r;
+      };
+      for (const auto& missing_genprops_in_some_process : SBN::gather(local_missing_genprops))
+      {
+	for (const auto& [genprop_key, index] : missing_genprops_in_some_process)
+	{
+	  const auto& k = mass_tsource_sink_phase_source_sink_t{
+	    genprop_key.mass, genprop_key.t_source, genprop_key.t_sink,
+	    ADATIO::detail::toCoor(genprop_key.phasing_source),
+	    ADATIO::detail::toCoor(genprop_key.phasing_sink)};
+	  auto& v =
+	    from_mass_tsource_sink_phase_source_sink_to_moms_disps_gammas_and_tslides_vs_indices[k];
+	  const auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(genprop_key.mom));
+	  const auto disp_index = get_index(std::get<1>(v), genprop_key.displacement);
+	  const auto gamma_index = get_index(std::get<2>(v), genprop_key.g);
+	  const auto tslide_index = get_index(std::get<3>(v), genprop_key.t_slice);
+	  std::get<4>(v).insert({{mom_index, disp_index, gamma_index, tslide_index}, index});
+	}
+      }
+
+      for (const auto& it :
+	   from_mass_tsource_sink_phase_source_sink_to_moms_disps_gammas_and_tslides_vs_indices)
+      {
+	const auto& [mass_label, t_source, t_sink, source_phase, sink_phase] = it.first;
+	const auto& moms = get_vector(std::get<0>(it.second));
+	const auto& disps = get_vector(std::get<1>(it.second));
+	const auto& tslices = get_vector(std::get<2>(it.second));
+	const auto& gammas = get_vector(std::get<3>(it.second));
+	const auto& mom_disp_gamma_tslice_to_index = std::get<4>(it.second);
+
+	const auto& PP = get_prop(mass_label);
+
+	// Get num_vecs colorvecs on time-slice t_source
+	const int decay_dir = 3;
+	SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
+	  colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none);
+	source_colorvec =
+	  source_colorvec.kvslice_from_size({{'n', ev_from.at(1)}}, {{'n', ev_size.at(1)}});
+	source_colorvec = SB::phaseColorvecs(source_colorvec, t_source, source_phase);
+
+	// Invert a source and get the time slices
+	const auto& get_inv_tslice =
+	  [&](int tsource, const SB::Coor<3>& phase, const SB::Tensor<2, SB::Complex>& spins,
+	      int ev_from, int ev_size) {
+	    // Get num_vecs colorvecs on time-slice t_source
+	    const int decay_dir = 3;
+	    SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
+	      colorvecsSto, u, decay_dir, t_source, 1, ev_from + ev_size, SB::none);
+	    source_colorvec = source_colorvec.kvslice_from_size({{'n', ev_from}}, {{'n', ev_size}});
+	    source_colorvec = SB::phaseColorvecs(source_colorvec, t_source, phase);
+
+	    const auto order_out = "cSxyztXns";
+	    SB::Tensor<Nd + 5, SB::Complex> r(
+	      order_out,
+	      SB::latticeSize<Nd + 5>(order_out, {{'t', (int)tslices.size()},
+						  {'S', Ns},
+						  {'s', spins.kvdim().at('s')},
+						  {'n', ev_size}}),
+	      SB::OnDefaultDevice);
+	    const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int sink_spin,
+				  int first_n) {
+	      for (int i = 0; i < tslices.size(); ++i)
+	      {
+		tensor.kvslice_from_size({{'t', tslices.at(i)}}, {{'t', 1}})
+		  .copyTo(r.kvslice_from_size({{'t', i}, {'s', sink_spin}, {'n', first_n}},
+					      {{'t', 1}, {'s', 1}}));
+	      }
+	    };
+	    doInversion<SB::Complex>(PP, source_colorvec, t_source, spins, max_rhs, call);
+	    return r;
+	  };
+
+	// Get num_vecs colorvecs on time-slice t_source
+	auto inv_src =
+	  get_inv_tslice(t_source, source_phase, dr_right_chroma, ev_from.at(1), ev_size.at(1));
+
+	// Get num_vecs colorvecs on time-slice t_sink
+	auto inv_snk =
+	  get_inv_tslice(t_sink, sink_phase, dr_g5_left_conj_chroma, ev_from.at(0), ev_size.at(0))
+	    .rename_dims({{'n', 'N'}, {'s', 'q'}, {'S', 'Q'}});
+
+	// Get the gamma matrices, premultiplied by g5
+	const int g5 = Ns * Ns - 1;
+	std::vector<SB::Tensor<2, SB::Complex>> gamma_mats;
+	{
+	  for (const int g : gammas)
+	  {
+	    SpinMatrix gmat = Gamma(g5) * (Gamma(g) * SB::SpinMatrixIdentity());
+	    gamma_mats.push_back(SB::asTensorView(gmat).cloneOn<SB::Complex>(SB::OnDefaultDevice));
+	  }
+	}
+
+	for (int tslice_index = 0; tslice_index < tslices.size(); ++tslice_index)
+	{
+	  auto call = [&](SB::Tensor<7, SB::Complex> r_chroma, int disp_index, int tfrom, int mfrom) {
+	    (void)tfrom;
+	    const int msize = r_chroma.kvdim().at('m');
+	    const auto& r =
+	      SBN::relabel(toTensor(r_chroma.toComplex().template cast<SB::ComplexD>()),
+			   {{'N', 'v'}, {'n', 'w'}, {'q', 'r'}, {'s', 's'}});
+	    for (int g = 0; g < gammas.size(); ++g)
+	    {
+	      for (int m = 0; m < msize; ++m)
+	      {
+		const auto& ti =
+		  SBN::slice_kv(r, {{'g', g}, {'m', mfrom + m}}, {{'g', 1}, {'m', 1}});
+
+		const auto& k = SB::Coor<4>{m, disp_index, g, tslice_index};
+		auto range = mom_disp_gamma_tslice_to_index.equal_range(k);
+		for (auto it = range.first; it != range.second; ++it)
+		{
+		  SBN::copyTo(ti, SBN::slice_kv(genprops, {{'i', it->second}}, {{'i', 1}}));
+		}
+	      }
+	    }
+	  };
+
+	  const auto use_derivP = false;
+	  const int max_moms_in_contraction = 1;
+	  SB::doMomGammaDisp_contractions<7, Nd + 5, Nd + 5, SB::Complex>(
+	    u, inv_snk.kvslice_from_size({{'t', tslice_index}}, {{'t', 1}}),
+	    inv_src.kvslice_from_size({{'t', tslice_index}}, {{'t', 1}}), tslices.at(tslice_index),
+	    0, 1, moms, gamma_mats, disps, use_derivP, call, "qgmNnst",
+	    1 /* max_tslices_in_contraction */, max_moms_in_contraction, inv_src.getDev());
+	}
+      }
+
+      return genprops;
+    }
+
     // Function call
     void InlineMeas::func(unsigned long update_no, XMLWriter& xml_out)
     {
@@ -1121,8 +1396,9 @@ namespace Chroma
 	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
 	    const SBN::Tensor& perm) {
-	  return Hadron::detail::get_genprop_elementals_from_storage(
-	    storage_genprop, genprop_keys, perms, do_conj, ev_from, ev_size, dist_labels, perm);
+	  return get_genprop_elementals(storage_genprop, colorvecsSto, u, get_prop,
+					params.param.max_rhs, genprop_keys, perms, do_conj, ev_from,
+					ev_size, dist_labels, perm);
 	};
 
       const bool zeroUnsmearedGraphsP = true;
