@@ -755,16 +755,21 @@ namespace Chroma
 					   {{'S', ev_from.at(3)}}, {{'S', ev_size.at(3)}});
 
       // Create matrices to convert it to DP and with pre/post applying \gamma_5
-      const auto dr_g5_left =
-	Hadron::detail::contractSpins(dr_left, Hadron::detail::chromaGamma5());
+      const auto dr_g5_left_global = Hadron::detail::contractSpins(
+	dr_left_global, Hadron::detail::chromaGamma5(SBN::Options::Distribution::Replicated));
+      const auto& dr_g5_left = SBN::get_local_tensor(dr_g5_left_global);
       const auto dr_g5_right =
 	Hadron::detail::contractSpins(Hadron::detail::chromaGamma5(), dr_right);
 
-      // Create chroma versions of dr_right
+      // Create chroma versions of dr_right and dr_g5_right
       auto dr_right_chroma = SB::Tensor<2, SB::Complex>("Ss", {{Ns, ev_size.at(3)}}, SB::OnHost,
 							SB::OnEveryoneReplicated);
       SBN::copyTo(SBN::relabel(dr_right, {{'S', 's'}, {'s', 'S'}}),
 		  SBN::get_local_tensor(toTensor(dr_right_chroma, false /* don't copy */)));
+      auto dr_g5_right_chroma = SB::Tensor<2, SB::Complex>("Ss", {{Ns, ev_size.at(3)}}, SB::OnHost,
+							   SB::OnEveryoneReplicated);
+      SBN::copyTo(SBN::relabel(dr_g5_right, {{'S', 's'}, {'s', 'S'}}),
+		  SBN::get_local_tensor(toTensor(dr_g5_right_chroma, false /* don't copy */)));
 
       // Create output tensor
       SBN::Tensor props = SBN::create_tensor_with_local_components(
@@ -811,7 +816,7 @@ namespace Chroma
 	    }
 	    else
 	    {
-	      if (this_conj)
+	      if (is_swap)
 	      {
 		key.phasing_sink = -key.phasing_sink;
 		std::swap(key.phasing_source, key.phasing_sink);
@@ -819,7 +824,7 @@ namespace Chroma
 		is_swap = !is_swap;
 		this_conj = !this_conj;
 	      }
-	      local_missing_props.push_back({key, is_swap, first_local_prop + i});
+	      local_missing_props.push_back({key, this_conj, first_local_prop + i});
 	      break;
 	    }
 	  }
@@ -861,10 +866,11 @@ namespace Chroma
       }
 
       // Recompile for each missing time slice, the phases, momenta, and displacement to compute
-      using mass_tsource_source_sink_phases = std::tuple<std::string, int, SB::Coor<3>, SB::Coor<3>>;
-      using tsink_vs_swap_and_indices_t = Hadron::detail::unordered_multimap<int, std::tuple<bool, int>>;
-      Hadron::detail::unordered_map<mass_tsource_source_sink_phases, tsink_vs_swap_and_indices_t>
-	from_mass_tsource_source_sink_phases_to_tsink_swap_and_indices;
+      using mass_tsource_source_sink_phases_conj =
+	std::tuple<std::string, int, SB::Coor<3>, SB::Coor<3>, bool>;
+      using tsink_vs_indices_t = Hadron::detail::unordered_multimap<int, int>;
+      Hadron::detail::unordered_map<mass_tsource_source_sink_phases_conj, tsink_vs_indices_t>
+	from_mass_tsource_source_sink_phases_conj_to_tsink_and_indices;
       const auto get_keys = [=](const auto& map) {
 	using T = typename std::remove_reference<decltype(map)>::type::key_type;
 	std::set<T> r;
@@ -874,46 +880,45 @@ namespace Chroma
       };
       for (const auto& missing_props_in_some_process : SBN::gather(local_missing_props))
       {
-	for (const auto& [prop_key, do_swap, index] : missing_props_in_some_process)
+	for (const auto& [prop_key, do_conj, index] : missing_props_in_some_process)
 	{
-	  const auto& k = mass_tsource_source_sink_phases{
+	  const auto& k = mass_tsource_source_sink_phases_conj{
 	    prop_key.mass_label, prop_key.t_source, ADATIO::detail::toCoor(prop_key.phasing_source),
-	    ADATIO::detail::toCoor(prop_key.phasing_sink)};
-	  from_mass_tsource_source_sink_phases_to_tsink_swap_and_indices[k].insert(
-	    {prop_key.t_slice, {do_swap, index}});
+	    ADATIO::detail::toCoor(prop_key.phasing_sink), do_conj};
+	  from_mass_tsource_source_sink_phases_conj_to_tsink_and_indices[k].insert(
+	    {prop_key.t_slice, index});
 	}
       }
 
-      for (const auto& it : from_mass_tsource_source_sink_phases_to_tsink_swap_and_indices)
+      for (const auto& it : from_mass_tsource_source_sink_phases_conj_to_tsink_and_indices)
       {
-	const auto& mass_label = std::get<0>(it.first);
-	const int t_source = std::get<1>(it.first);
-	const auto& source_phase = std::get<2>(it.first);
-	const auto& sink_phase = std::get<3>(it.first);
-	const auto& tsink_vs_swap_and_indices = it.second;
-	const auto& t_sinks = get_keys(tsink_vs_swap_and_indices);
+	const auto& [mass_label, t_source, source_phase, sink_phase, do_conj] = it.first;
+	const auto& from_tsink_to_indices = it.second;
+	const auto& t_sinks = get_keys(from_tsink_to_indices);
 
 	// Get num_vecs colorvecs on time-slice t_source
 	const int decay_dir = 3;
 	SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
 	  colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none);
+	source_colorvec =
+	  source_colorvec.kvslice_from_size({{'n', ev_from.at(1)}}, {{'n', ev_size.at(1)}});
 	source_colorvec = SB::phaseColorvecs(source_colorvec, t_source, source_phase);
 
-	// Get num_vecs colorvecs on time-slice t_source
+	// Get num_vecs colorvecs on time-slice t_sink
 	SB::Tensor<Nd + 3, SB::Complex> sinks_colorvecs =
-	  source_colorvec.like_this(SB::none, {{'t', t_sinks.size()}});
+	  source_colorvec.like_this(SB::none, {{'n', ev_size.at(0)}, {'t', t_sinks.size()}});
 	for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
 	{
 	  SB::Tensor<Nd + 3, SB::Complex> sink_colorvec = SB::getColorvecs<SB::Complex>(
 	    colorvecsSto, u, decay_dir, t_sinks.at(t_sink_index), 1, num_vecs, SB::none);
+	  sink_colorvec =
+	    sink_colorvec.kvslice_from_size({{'n', ev_from.at(0)}}, {{'n', ev_size.at(0)}});
 	  SB::phaseColorvecs(sink_colorvec, t_sinks.at(t_sink_index), sink_phase)
 	    .copyTo(sinks_colorvecs.kvslice_from_size({{'t', t_sink_index}}, {{'t', 1}}));
 	}
 	sinks_colorvecs = sinks_colorvecs.rename_dims({{'n', 'N'}, {'t', 'T'}});
 
 	// Callback
-	const std::map<char, char> m_rev{{'n', 'v'}, {'N', 'w'}, {'s', 's'}, {'S', 'r'}};
-	const std::map<char, char> m_dir{{'n', 'w'}, {'N', 'v'}, {'s', 'r'}, {'S', 's'}};
 	const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int sink_spin, int first_n) {
 	  for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
 	  {
@@ -923,22 +928,22 @@ namespace Chroma
 		tensor.kvslice_from_size({{'t', t_sinks.at(t_sink_index)}}, {{'t', 1}}), "cXxyz")
 		.rename_dims({{'s', 'S'}, {'S', 's'}});
 	    const auto& ti = Hadron::detail::contractSpins(
-	      dr_left_global, toTensor(r.kvslice_from_size({{'T', t_sink_index}}, {{'T', 1}})));
-	    auto range = tsink_vs_swap_and_indices.equal_range(t_sinks.at(t_sink_index));
+	      !do_conj ? dr_left_global : dr_g5_left_global,
+	      toTensor(r.kvslice_from_size({{'T', t_sink_index}}, {{'T', 1}})));
+	    auto range = from_tsink_to_indices.equal_range(t_sinks.at(t_sink_index));
 	    for (auto it = range.first; it != range.second; ++it)
 	    {
-	      const auto& [do_swap, index] = it->second;
-	      auto tii = SBN::relabel(ti, !do_swap ? m_dir : m_rev);
-	      const char s = (!do_swap ? 's' : 'r');
-	      SBN::copyTo(tii,
-			  SBN::slice_kv(props, {{s, sink_spin}, {'i', index}}, {{s, 1}, {'i', 1}}));
+	      const auto& index = it->second;
+	      auto tii = SBN::relabel(ti, {{'n', 'w'}, {'N', 'v'}, {'s', 'r'}, {'S', 's'}});
+	      SBN::copyTo(
+		tii, SBN::slice_kv(props, {{'s', sink_spin}, {'i', index}}, {{'s', 1}, {'i', 1}}));
 	    }
 	  }
 	};
 
 	// Do the inversions
-	doInversion<SB::Complex>(get_prop(mass_label), source_colorvec, t_source, dr_right_chroma,
-				 max_rhs, call);
+	doInversion<SB::Complex>(get_prop(mass_label), source_colorvec, t_source,
+				 !do_conj ? dr_right_chroma : dr_g5_right_chroma, max_rhs, call);
       }
 
       return props;
