@@ -550,6 +550,46 @@ namespace Chroma
       return mesons;
     }
 
+    inline std::tuple<Hadron::KeyBaryonElementalOperator_t, int>
+    get_perm_baryon_key(const Hadron::KeyBaryonElementalOperator_t& key, const SB::Coor<3>& perm)
+    {
+      // Get the new key
+      auto perm_key = key;
+      const auto& disps = std::array<std::vector<int>, 3>{key.left, key.middle, key.right};
+      auto perm_disps =
+	std::array<std::vector<int>, 3>{std::vector<int>{}, std::vector<int>{}, std::vector<int>{}};
+      for (std::size_t i = 0; i < 3; ++i)
+	perm_disps.at(perm.at(i)) = disps.at(i);
+      perm_key.left = std::move(perm_disps.at(0));
+      perm_key.middle = std::move(perm_disps.at(1));
+      perm_key.right = std::move(perm_disps.at(2));
+
+      // List all permutation of three elements; and the sign is the evenness of the number of single exchanges
+      const std::vector<std::pair<std::array<int, 3>, int>> perm_and_sign_list{
+	{SB::Coor<3>{0, 1, 2}, 1},  //
+	{SB::Coor<3>{0, 2, 1}, -1}, //
+	{SB::Coor<3>{1, 0, 2}, -1}, //
+	{SB::Coor<3>{1, 2, 0}, 1},  //
+	{SB::Coor<3>{2, 0, 1}, 1},  //
+	{SB::Coor<3>{2, 1, 0}, -1}  //
+      };
+
+      // Find scalar
+      int scalar = 0;
+      for (const auto& it : perm_and_sign_list)
+      {
+	if (it.first == perm)
+	{
+	  scalar = it.second;
+	  break;
+	}
+      }
+      if (scalar == 0)
+	throw std::runtime_error("wtf");
+
+      return {perm_key, scalar};
+    }
+
     /// Return the baryons without spins
     /// \param db: baryon storage
     /// \param colorvecsSto: colorvec storage
@@ -580,10 +620,17 @@ namespace Chroma
       {
 	for (const auto& it : perms)
 	{
-	  if (it != SBN::Coor{0, 1, 2})
-	    throw std::runtime_error("unsupported case");
+	  if (it.size() != 3)
+	    throw std::runtime_error("invalid input");
+	  for (const auto& i : it)
+	    if (i < 0 || i >= 3)
+	      throw std::runtime_error("invalid input");
 	}
       }
+
+      const auto toCoor3 = [=](const SBN::Coor& v) {
+	return SB::Coor<3>{v.at(0), v.at(1), v.at(2)};
+      };
 
       const int num_vecs =
 	std::max(std::max(ev_from.at(0) + ev_size.at(0), ev_from.at(1) + ev_size.at(1)),
@@ -595,7 +642,8 @@ namespace Chroma
 	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, guide);
 
       // Try to get the mesons from the storage and annotate the missing keys
-      std::vector<std::tuple<Hadron::KeyBaryonElementalOperator_t, int>> local_missing_baryons;
+      std::vector<std::tuple<Hadron::KeyBaryonElementalOperator_t, int, bool, int>>
+	local_missing_baryons;
       {
 	local_missing_baryons.reserve(baryon_keys.size());
 	const auto first_local_baryon = SBN::get_local_srange(baryons).at(0).at('i');
@@ -611,7 +659,9 @@ namespace Chroma
 	  const auto& key = baryon_keys.at(i);
 	  if (db.get(key, val) != 0)
 	  {
-	    local_missing_baryons.push_back({key, first_local_baryon + i});
+	    const auto& [norm_key, scalar] = get_perm_baryon_key(key, toCoor3(perms.at(i)));
+	    local_missing_baryons.push_back(
+	      {norm_key, scalar, do_conj.at(i), first_local_baryon + i});
 	  }
 	  else
 	  {
@@ -619,6 +669,7 @@ namespace Chroma
 		val.data().op.size3() < num_vecs)
 	      throw std::runtime_error("got a baryon with insufficient number of vectors");
 	    auto ti = SBN::toTensor(val.data().op, "vwx", SBN::Options::Distribution::Local);
+	    ti = Hadron::detail::apply_vertex_perm(ti, perms.at(i), "vwx");
 	    ti = SBN::slice_kv(ti, SBN::get_scoor("vwx", ev_from), SBN::get_scoor("vwx", ev_size));
 	    SBN::copyTo(do_conj.at(i) ? SBN::conj(ti) : ti, baryon_i);
 	  }
@@ -628,10 +679,10 @@ namespace Chroma
       // Recompile for each missing time slice, the phases, momenta, and displacement to compute
       using displacement_t = std::array<std::vector<int>, 3>;
       using tslice_phase = std::tuple<int, SB::Coor<3>>;
-      using momenta_displacements_indices =
-	std::tuple<Hadron::detail::unordered_map<SB::Coor<3>, int>,
-		   Hadron::detail::unordered_map<displacement_t, int>,
-		   Hadron::detail::unordered_multimap<std::array<int, 2>, int>>;
+      using momenta_displacements_indices = std::tuple<
+	Hadron::detail::unordered_map<SB::Coor<3>, int>,
+	Hadron::detail::unordered_map<displacement_t, int>,
+	Hadron::detail::unordered_multimap<std::array<int, 2>, std::tuple<int, bool, int>>>;
       Hadron::detail::unordered_map<tslice_phase, momenta_displacements_indices>
 	from_tslice_and_phase_to_momenta_displacement;
       const auto get_index = [=](auto& map, const auto& value) {
@@ -648,7 +699,7 @@ namespace Chroma
       };
       for (const auto& missing_baryons_in_some_process : SBN::gather(local_missing_baryons))
       {
-	for (const auto& [baryon_key, index] : missing_baryons_in_some_process)
+	for (const auto& [baryon_key, scalar, do_conj, index] : missing_baryons_in_some_process)
 	{
 	  const auto& k =
 	    tslice_phase{baryon_key.t_slice, ADATIO::detail::toCoor(baryon_key.phasing)};
@@ -656,7 +707,7 @@ namespace Chroma
 	  auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(baryon_key.mom));
 	  auto disp_index = get_index(
 	    std::get<1>(v), displacement_t{baryon_key.left, baryon_key.middle, baryon_key.right});
-	  std::get<2>(v).insert({{mom_index, disp_index}, index});
+	  std::get<2>(v).insert({{mom_index, disp_index}, {scalar, do_conj, index}});
 	}
       }
 
@@ -680,13 +731,16 @@ namespace Chroma
 	    auto range = mom_disp_to_index.equal_range({first_mom, disp});
 	    for (auto it = range.first; it != range.second; ++it)
 	    {
-	      const auto& index = it->second;
+	      const auto& [scalar, do_conj, index] = it->second;
 	      auto ti = SBN::relabel(toTensor(tensor), {{'i', 'v'}, {'j', 'w'}, {'k', 'x'}});
 	      ti =
 		SBN::slice_kv(ti, //
 			      {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}, {'x', ev_from.at(2)}},
 			      {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}, {'x', ev_size.at(2)}});
-	      SBN::copyTo(ti, SBN::slice_kv(baryons, {{'i', index}}, {{'i', 1}}));
+	      if (do_conj)
+		ti = SBN::conj(ti);
+	      SBN::copyTo(SBN::scale(ti, (double)scalar),
+			  SBN::slice_kv(baryons, {{'i', index}}, {{'i', 1}}));
 	    }
 	  });
 
