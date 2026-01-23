@@ -8,8 +8,9 @@
 // Activate the MPI support in Superbblas
 #  define SUPERBBLAS_USE_MPI
 
-// Activate redstar-datalib support for superbblas
+// Activate redstar-datalib support for superbblas and with gpus
 #  define USE_SUPERBBLAS
+#  define USE_SUPERBBLAS_WITH_GPU_SUPPORT
 #endif
 
 #include "algs/superb_contractions.h"
@@ -944,7 +945,8 @@ namespace Chroma
 
       for (const auto& it : from_mass_tsource_source_sink_phases_conj_to_tsink_and_indices)
       {
-	const auto& [mass_label, t_source, source_phase, sink_phase, do_conj] = it.first;
+	const auto& [mass_label, t_source, source_phase, sink_phase, do_conj_] = it.first;
+	const auto& do_conj = do_conj_;
 	const auto& from_tsink_to_indices = it.second;
 	const auto& t_sinks = get_keys(from_tsink_to_indices);
 
@@ -1171,7 +1173,8 @@ namespace Chroma
       for (const auto& it :
 	   from_mass_tsource_sink_phase_source_sink_to_moms_disps_gammas_and_tslides_vs_indices)
       {
-	const auto& [mass_label, t_source, t_sink, source_phase, sink_phase] = it.first;
+	const auto& [mass_label, t_source_, t_sink, source_phase, sink_phase] = it.first;
+	const auto& t_source = t_source_;
 	const auto& moms = get_vector(std::get<0>(it.second));
 	const auto& disps = get_vector(std::get<1>(it.second));
 	const auto& tslices = get_vector(std::get<2>(it.second));
@@ -1456,6 +1459,9 @@ namespace Chroma
 	};
 
       const bool zeroUnsmearedGraphsP = true;
+#    if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
+      SBN::get_default_gpu_device() = SB::detail::get_default_gpu_device();
+#    endif
       const auto& corr = Hadron::evaluate_graphs_with_superb(
 	corr_graph, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
 	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward);
