@@ -4421,7 +4421,7 @@ namespace Chroma
 	throw std::runtime_error("Too many tslices");
 
       // Prepare spins
-      auto spins = SB::Tensor<2, SB::Complex>("Ss", {{Nc, (int)spin_sources.size()}}, SB::OnHost,
+      auto spins = SB::Tensor<2, SB::Complex>("Ss", {{Ns, (int)spin_sources.size()}}, SB::OnHost,
 					      SB::OnEveryoneReplicated);
       spins.set_zero();
       for (int spin_index = 0; spin_index < spin_sources.size(); ++spin_index)
