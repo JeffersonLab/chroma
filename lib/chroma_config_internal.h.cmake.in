@@ -55,6 +55,9 @@
 /* Build SUPERB tasks */
 #cmakedefine BUILD_SB   @BUILD_SB@
 
+/* Build MGPROTON */
+#cmakedefine BUILD_MGPROTON   @BUILD_MGPROTON@
+
 /* Build with PRIMME */
 #cmakedefine BUILD_PRIMME   @BUILD_PRIMME@
 

@@ -24,6 +24,7 @@ option(Chroma_ENABLE_QUDA  "Enable the QUDA Library for GPUs" OFF)
 #option(Chroma_ENABLE_QUDA_MG_DUMP "Enable to dump on failed QUDA solves" OFF)
 option(Chroma_ENABLE_QPHIX  "Enable QPhiX Solvers" OFF)
 option(Chroma_ENABLE_MGPROTO "Enable MG-Proto" OFF)
+option(Chroma_ENABLE_MGPROTON "Enable MGPROTON" OFF)
 option(Chroma_ENABLE_LAPACK "Enable Lapack Binding in QDPLapack" OFF)
 option(Chroma_ENABLE_OPENMP "Enable OpenMP" OFF)
 option(Chroma_ENABLE_SUPERBBLAS  "Enable tasks using Superbblas" OFF)
@@ -224,6 +225,12 @@ if( Chroma_ENABLE_SUPERBBLAS )
   endif()
 
   set(BUILD_SB 1)
+
+  # Deal with MGPROTON
+  if( Chroma_ENABLE_MGPROTO)
+    message(STATUS "Enabling MGPROTON")
+    set(BUILD_MGPROTON 1)
+  endif()
 
   # Deal with PRIMME
   if( Chroma_ENABLE_PRIMME )

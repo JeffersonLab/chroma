@@ -3871,6 +3871,7 @@ namespace Chroma
     inline Operator<Nd + 7, Complex> asOperatorView(const LinearOperator<LatticeFermion>& linOp,
 						    bool use_kron_format = true)
     {
+#  if BUILD_MGPROTON
       LatticeFermion a;
       auto d = asTensorView(a).toComplex();
       auto blkd =
@@ -3909,6 +3910,9 @@ namespace Chroma
 	ColumnMajor,	// preferred ordering
 	use_kron_format /* has a Kronecker form */
       };
+#  else
+      throw std::runtime_error("not available, compile with mgproton support");
+#  endif
     }
 
     //
@@ -3934,6 +3938,7 @@ namespace Chroma
       // If the inverter is MGPROTON, use this infrastructure
       if (invParam.id == std::string("MGPROTON"))
       {
+#  if BUILD_MGPROTON
 	QDPIO::cout << "Setting up MGPROTON invertor..." << std::endl;
 	Tracker _t("setup mgproton");
 
@@ -3964,6 +3969,9 @@ namespace Chroma
 
 	QDPIO::cout << "MGPROTON invertor ready; setup time: "
 		    << detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;
+#  else
+      throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
       else
       {
@@ -4052,6 +4060,7 @@ namespace Chroma
       Tensor<N, COMPLEX_OUT> doInversion(const Operator<Nd + 7, COMPLEX_OUT>& op,
 					 const Tensor<N, COMPLEX_CHI>& chi, int max_rhs)
       {
+#  if BUILD_MGPROTON
 	Tracker _t(std::string("mgproton solver"));
 
 	// Get the columns labels, which are the ones not contracted with the operator
@@ -4066,6 +4075,9 @@ namespace Chroma
 	  x0, y0, max_rhs,
 	  [=](Tensor<Nd + 8, COMPLEX_CHI> x, Tensor<Nd + 8, COMPLEX_CHI> y) { op(x, y); });
 	return y0.template reshape_dimensions<N, COMPLEX_OUT>({{"n", order_cols}});
+#  else
+      throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
 
       /// Apply the inverse to LatticeColorVec tensors for a list of spins
@@ -4087,6 +4099,7 @@ namespace Chroma
 		       const Tensor<2, SB::Complex>& spin_sources, int max_rhs,
 		       const doInversionOnTSliceFn<SB::Complex>& call)
       {
+#  if BUILD_MGPROTON
 	Tracker _t(std::string("mgproton solver"));
 
 	// Create tensors with full support on the lattice
@@ -4127,6 +4140,9 @@ namespace Chroma
 		 spin_index, n0);
 	  }
 	}
+#  else
+      throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
 
       /// Apply the inverse to a list of LatticeFermions
@@ -4318,6 +4334,7 @@ namespace Chroma
       template <std::size_t NOp, typename COMPLEX>
       Projector<NOp, COMPLEX> getMGDeflationProj(Operator<NOp, COMPLEX> op, const Options& ops)
       {
+#  if BUILD_MGPROTON
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
 	Tracker _t(std::string("setup mg proj ") + prefix);
 
@@ -4356,6 +4373,9 @@ namespace Chroma
 	};
 
 	return {almost_proj, Vfun, Ufun, proj_c.lambdas, op};
+#  else
+      throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
     }
 
@@ -4520,6 +4540,7 @@ namespace Chroma
       // Do the inversion
       if (sol.op)
       {
+#  if BUILD_MGPROTON
 	auto op = sol.op;
 	auto tchi = op.template make_compatible_dom<Nd + 8>("n", {{'n', max_rhs}});
 	auto tpsi = op.template make_compatible_img<Nd + 8>("n", {{'n', max_rhs}});
@@ -4541,6 +4562,9 @@ namespace Chroma
 	  for (int j = 0; j < n; ++j)
 	    this_tpsi.kvslice_from_size({{'n', j}}, {{'n', 1}}).copyTo(asTensorView(*psis[i + j]));
 	}
+#  else
+      throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
       else
       {
@@ -4633,6 +4657,7 @@ namespace Chroma
       // If the inverter is MGPROTON, use this infrastructure
       if (projParam.id == std::string("MGPROTON"))
       {
+#  if BUILD_MGPROTON
 	QDPIO::cout << "Setting up MGPROTON projector..." << std::endl;
 	Tracker _t("setup mgproton projector");
 
@@ -4663,6 +4688,9 @@ namespace Chroma
 
 	QDPIO::cout << "MGPROTON projector ready; setup time: "
 		    << detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;
+#  else
+      throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
       else
       {
@@ -4692,6 +4720,7 @@ namespace Chroma
       // Do the projection
       if (proj.op.op)
       {
+#  if BUILD_MGPROTON
 	auto tchi = proj.op.op.make_compatible_dom<Nd + 8>("n", {{'n', max_rhs}});
 	auto tpsi = proj.op.op.make_compatible_img<Nd + 8>("n", {{'n', max_rhs}});
 	for (int i = 0, n = std::min(max_rhs, (int)chis.size()); i < chis.size();
@@ -4712,6 +4741,9 @@ namespace Chroma
 	  for (int j = 0; j < n; ++j)
 	    this_tpsi.kvslice_from_size({{'n', j}}, {{'n', 1}}).copyTo(asTensorView(*psis[i + j]));
 	}
+#  else
+      throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
       else
       {

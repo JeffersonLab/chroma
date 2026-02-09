@@ -425,6 +425,13 @@ AC_ARG_WITH(superbblas,
   [ with_superbblas="no" ]
 )
 
+AC_ARG_ENABLE(mgproton,
+   AC_HELP_STRING(
+     [--enable-mgproton], [ Enable mgproton solvers ]
+   ),
+   [BUILD_MGPROTON=${enableval}]
+)
+
 AC_ARG_WITH(redstar-datalib,
   AC_HELP_STRING(
     [--with-redstar-datalib=DIR],
@@ -1398,6 +1405,11 @@ fi
 
 AM_CONDITIONAL(BUILD_SB,
 	[test "x${with_superbblas}x" != "xnox" ])
+
+if test "X${BUILD_MGPROTON}X" = "XyesX";
+then
+    AC_DEFINE([BUILD_MGPROTON], [], [Build MGPROTON solvers])
+fi
 
 ################################################################################
 # redstar-datalib 
