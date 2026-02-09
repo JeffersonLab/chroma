@@ -927,6 +927,7 @@ namespace Chroma
 	  // Don't record requiring doing sink-source swapping, just whether to apply \gamma_5
 	  if (is_swap)
 	  {
+	    std::swap(key.t_slice, key.t_source);
 	    key.phasing_sink = -key.phasing_sink;
 	    std::swap(key.phasing_source, key.phasing_sink);
 	    key.phasing_sink = -key.phasing_sink;
@@ -1343,12 +1344,12 @@ namespace Chroma
 	const auto& get_inv_tslice =
 	  [&](int t_slice, const SB::Coor<3>& phase, const SB::Tensor<2, SB::Complex>& spins,
 	      int ev_from, int ev_size) {
-	    // Get num_vecs colorvecs on time-slice t_source
+	    // Get num_vecs colorvecs on time-slice t_slice
 	    const int decay_dir = 3;
 	    SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
 	      colorvecsSto, u, decay_dir, t_slice, 1, ev_from + ev_size, SB::none);
 	    source_colorvec = source_colorvec.kvslice_from_size({{'n', ev_from}}, {{'n', ev_size}});
-	    source_colorvec = SB::phaseColorvecs(source_colorvec, t_source, phase);
+	    source_colorvec = SB::phaseColorvecs(source_colorvec, t_slice, phase);
 
 	    const auto order_out = "cSxyztXns";
 	    SB::Tensor<Nd + 5, SB::Complex> r(
@@ -1386,11 +1387,13 @@ namespace Chroma
 	  }
 	}
 
-	auto call = [&](SB::Tensor<7, SB::Complex> r_chroma, int disp_index, int tfrom, int mfrom) {
+	auto call = [&](SB::Tensor<7, SB::Complex> r_chroma_, int disp_index, int tfrom,
+			int mfrom) {
+	  const auto& r_chroma = r_chroma_.toComplex().template cast<SB::ComplexD>();
 	  const int tsize = r_chroma.kvdim().at('t');
 	  const int msize = r_chroma.kvdim().at('m');
-	  const auto& r = SBN::relabel(toTensor(r_chroma.toComplex().template cast<SB::ComplexD>()),
-				       {{'N', 'v'}, {'n', 'w'}, {'q', 'r'}, {'s', 's'}});
+	  const auto& r =
+	    SBN::relabel(toTensor(r_chroma), {{'N', 'v'}, {'n', 'w'}, {'q', 'r'}, {'s', 's'}});
 	  for (int t = 0; t < tsize; ++t)
 	  {
 	    for (int g = 0; g < gammas.size(); ++g)
