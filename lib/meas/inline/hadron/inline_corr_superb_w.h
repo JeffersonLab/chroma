@@ -59,6 +59,7 @@ namespace Chroma
 	std::vector<std::string>  prop_files;           /*!< list of props files */
 	std::vector<std::string>  genprop_files;        /*!< list of genprops files */
 	std::string             ensemble;               /*!< ensemble name */
+	bool                      testing;              /*!< whether to do tests */
       };
 
       struct NamedObject_t
