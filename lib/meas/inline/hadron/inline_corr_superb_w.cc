@@ -1087,12 +1087,11 @@ namespace Chroma
 	  {
 	    const auto& r =
 	      SB::contract<6>(
-		sinks_colorvecs.conj(),
+		sinks_colorvecs.kvslice_from_size({{'T', t_sink_index}}, {{'T', 1}}).conj(),
 		tensor.kvslice_from_size({{'t', t_sinks.at(t_sink_index)}}, {{'t', 1}}), "cXxyz")
 		.rename_dims({{'s', 'S'}, {'S', 's'}});
 	    const auto& ti = Hadron::detail::contractSpins(
-	      !do_conj ? dr_left_global : dr_g5_left_global,
-	      toTensor(r.kvslice_from_size({{'T', t_sink_index}}, {{'T', 1}})));
+	      !do_conj ? dr_left_global : dr_g5_left_global, toTensor(r));
 	    auto range = from_tsink_to_indices.equal_range(t_sinks.at(t_sink_index));
 	    for (auto it = range.first; it != range.second; ++it)
 	    {
