@@ -588,10 +588,11 @@ namespace Chroma
         }
       }
 
+      bool pseudofermions_loaded = false;
       if (mc_control.pseudofermion_present) {
         if (fileExists(mc_control.pseudofermion_file)) {
-          bool pseudofermions_loaded = H_MC.loadInternalFields(mc_control.pseudofermion_file,
-                                                               mc_control.save_pario);
+          pseudofermions_loaded = H_MC.loadInternalFields(mc_control.pseudofermion_file,
+                                                          mc_control.save_pario);
           if (!pseudofermions_loaded) {
             QDPIO::cerr << "SMD: Failed to load pseudofermion file, falling back to refresh"
                         << std::endl;
@@ -602,6 +603,7 @@ namespace Chroma
                       << ". Falling back to refresh." << std::endl;
         }
       }
+      theSMDTrj.setInternalFieldsInitialized(pseudofermions_loaded);
       
       // Create a field state
       GaugeFieldState gauge_state(p,u);
