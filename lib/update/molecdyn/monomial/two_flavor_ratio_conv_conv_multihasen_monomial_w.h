@@ -195,8 +195,8 @@ namespace Chroma
 				END_CODE();
 			}
 
-			virtual void refreshInternalFields(const AbsFieldState<P, Q>& s)
-			{
+				virtual void refreshInternalFields(const AbsFieldState<P, Q>& s)
+				{
 				START_CODE();
 				const FAType<T,P,Q>& FA = getFermAct();
 
@@ -249,11 +249,31 @@ namespace Chroma
 					write(xml_out, n_count, res.n_count);
 					pop(xml_out);
 				}
-				END_CODE();
-			}
+					END_CODE();
+				}
 
-			virtual void setInternalFields(const Monomial<P, Q>& m)
-			{
+				virtual void refreshInternalFields(const AbsFieldState<P, Q>& s,
+				                                   const Real& traj_length,
+				                                   const Real& gamma,
+				                                   const InternalFieldsRefreshMode mode)
+				{
+					if (mode == INTERNAL_FIELDS_REFRESH_FULL) {
+						refreshInternalFields(s);
+						return;
+					}
+
+					const multi1d<T> old_phi = phi;
+					refreshInternalFields(s);
+					if (old_phi.size() != phi.size()) {
+						return;
+					}
+					Real c1, c2;
+					MonomialInternalFieldsUtils::getOUCoeffs(traj_length, gamma, c1, c2);
+					MonomialInternalFieldsUtils::applyOU(phi, old_phi, c1, c2);
+				}
+
+				virtual void setInternalFields(const Monomial<P, Q>& m)
+				{
 				START_CODE();
 				try{
 					const PrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial<T,P,Q,FAType,LOType>& fm =
@@ -265,8 +285,70 @@ namespace Chroma
 						<<std::endl;
 					QDP_abort(1);
 				}
-				END_CODE();
-			}
+					END_CODE();
+				}
+
+				virtual bool hasInternalFields(void) const
+				{
+					return true;
+				}
+
+				virtual bool saveInternalFields(QDPFileWriter& to, int monomial_index) const
+				{
+					MonomialInternalFieldsUtils::saveToOpenQIO(to, phi, monomial_index);
+					return true;
+				}
+
+				virtual bool loadInternalFields(QDPFileReader& from, int monomial_index)
+				{
+					multi1d<T> loaded_phi = phi;
+					if (!MonomialInternalFieldsUtils::loadFromOpenQIO(from, loaded_phi, monomial_index)) {
+						return false;
+					}
+					phi = loaded_phi;
+					return true;
+				}
+
+				virtual void pushInternalFields(void)
+				{
+					multi1d< multi1d<T> > new_stack(phi_backup_stack_.size() + 1);
+					for (int i = 0; i < phi_backup_stack_.size(); ++i) {
+						new_stack[i] = phi_backup_stack_[i];
+					}
+					new_stack[phi_backup_stack_.size()] = phi;
+					phi_backup_stack_ = new_stack;
+				}
+
+				virtual void popInternalFields(void)
+				{
+					if (phi_backup_stack_.size() == 0) {
+						QDPIO::cerr << "PrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial::popInternalFields on empty stack" << std::endl;
+						QDP_abort(1);
+					}
+
+					const int top = phi_backup_stack_.size() - 1;
+					phi = phi_backup_stack_[top];
+
+					multi1d< multi1d<T> > new_stack(top);
+					for (int i = 0; i < top; ++i) {
+						new_stack[i] = phi_backup_stack_[i];
+					}
+					phi_backup_stack_ = new_stack;
+				}
+
+				virtual void dropInternalFields(void)
+				{
+					if (phi_backup_stack_.size() == 0) {
+						return;
+					}
+
+					const int top = phi_backup_stack_.size() - 1;
+					multi1d< multi1d<T> > new_stack(top);
+					for (int i = 0; i < top; ++i) {
+						new_stack[i] = phi_backup_stack_[i];
+					}
+					phi_backup_stack_ = new_stack;
+				}
 
 			void resetPredictors(){
 				getMDSolutionPredictor().reset();
@@ -305,8 +387,9 @@ namespace Chroma
 			PrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial();
 			void operator=(const PrecConstDetTwoFlavorRatioConvConvMultihasenWilsonTypeFermMonomial&);
 
-			// Pseudofermion field phi for multi-hasenbusch term
-			multi1d<T> phi;
+				// Pseudofermion field phi for multi-hasenbusch term
+				multi1d<T> phi;
+				multi1d< multi1d<T> > phi_backup_stack_;
 
 			Handle<const FAType<T,P,Q> > fermact;
 

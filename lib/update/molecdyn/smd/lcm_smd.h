@@ -30,9 +30,13 @@ namespace Chroma
     LatColMatSMDTrj(Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& _H_MC,
                     Handle< AbsMDIntegrator< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& _MD_int,
                     const Real& _gamma,
+                    const Real& _pf_gamma,
+                    const InternalFieldsRefreshMode _pf_refresh_mode,
                     bool _accept_reject,
                     bool _measure_actions)
-      : the_MD(_MD_int), the_H_MC(_H_MC), gamma(_gamma), accept_reject(_accept_reject),
+      : the_MD(_MD_int), the_H_MC(_H_MC), gamma(_gamma), pf_gamma(_pf_gamma),
+        pf_refresh_mode(_pf_refresh_mode), internal_fields_initialized(false),
+        accept_reject(_accept_reject),
         measure_actions(_measure_actions)
     {
       if (accept_reject && !measure_actions) {
@@ -43,6 +47,18 @@ namespace Chroma
 
     //! Destructor
     ~LatColMatSMDTrj(void) {}
+
+    //! Access the Hamiltonian used by this trajectory object
+    AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& getMCHamiltonian(void)
+    {
+      return *the_H_MC;
+    }
+
+    //! Mark whether pseudofermion internal fields are already initialized
+    void setInternalFieldsInitialized(bool value)
+    {
+      internal_fields_initialized = value;
+    }
 
     //! Do the SMD trajectory
     void operator()(AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s,
@@ -72,10 +88,19 @@ namespace Chroma
       QDPIO::cout << "SMD_TIME: Momentum Refresh Time: " << swatch.getTimeInSeconds() << " \n";
 
       // Refresh pseudofermions
+      bool internal_fields_pushed = false;
       try {
         swatch.reset();
         swatch.start();
-        H_MC.refreshInternalFields(s);
+        if (pf_refresh_mode == INTERNAL_FIELDS_REFRESH_OU && !internal_fields_initialized) {
+          H_MC.refreshInternalFields(s);
+        }
+        else {
+          H_MC.refreshInternalFields(s, MD.getTrajLength(), pf_gamma, pf_refresh_mode);
+        }
+        internal_fields_initialized = true;
+        H_MC.pushInternalFields();
+        internal_fields_pushed = true;
         swatch.stop();
         QDPIO::cout << "SMD_TIME: Pseudofermion Refresh Time: " << swatch.getTimeInSeconds() << " \n";
       }
@@ -222,6 +247,15 @@ namespace Chroma
       if (!acceptTraj) {
         s.getQ() = s_old->getQ();
         s.getP() = s_old->getP();
+        flipMomenta(s);
+        if (internal_fields_pushed) {
+          H_MC.popInternalFields();
+        }
+      }
+      else {
+        if (internal_fields_pushed) {
+          H_MC.dropInternalFields();
+        }
       }
 
       pop(xml_log);
@@ -235,6 +269,9 @@ namespace Chroma
     Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > the_H_MC;
 
     Real gamma;
+    Real pf_gamma;
+    InternalFieldsRefreshMode pf_refresh_mode;
+    bool internal_fields_initialized;
     bool accept_reject;
     bool measure_actions;
 

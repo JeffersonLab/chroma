@@ -6,6 +6,7 @@
 #include "update/molecdyn/smd/smd.h"
 #include "util/gauge/szinqio_gauge_init.h"
 #include <string>
+#include <fstream>
 
 using namespace Chroma;
 
@@ -26,12 +27,42 @@ namespace Chroma
     }
     return default_value;
   }
+
+  InternalFieldsRefreshMode pseudoFermionRefreshModeFromString(const std::string& mode_str)
+  {
+    if (mode_str == "OU") {
+      return INTERNAL_FIELDS_REFRESH_OU;
+    }
+    if (mode_str == "FULL_REFRESH") {
+      return INTERNAL_FIELDS_REFRESH_FULL;
+    }
+
+    QDPIO::cerr << "Unknown PseudoFermionRefreshMode: " << mode_str << std::endl;
+    QDP_abort(1);
+    return INTERNAL_FIELDS_REFRESH_OU;
+  }
+
+  std::string pseudoFermionRefreshModeToString(const InternalFieldsRefreshMode mode)
+  {
+    if (mode == INTERNAL_FIELDS_REFRESH_FULL) {
+      return "FULL_REFRESH";
+    }
+    return "OU";
+  }
+
+  bool fileExists(const std::string& file_name)
+  {
+    std::ifstream f(file_name.c_str());
+    return f.good();
+  }
   
   struct MCControl 
   {
     GroupXML_t    cfg;
     GroupXML_t    mom;
     bool          mom_present;
+    std::string   pseudofermion_file;
+    bool          pseudofermion_present;
     QDP::Seed     rng_seed;
     unsigned long start_update_num;
     unsigned long n_warm_up_updates;
@@ -61,6 +92,11 @@ namespace Chroma
       if (paramtop.count("./Momenta") > 0) {
         p.mom = readXMLGroup(paramtop, "Momenta", "cfg_type");
         p.mom_present = true;
+      }
+      p.pseudofermion_present = false;
+      if (paramtop.count("./PseudoFermions") > 0 && paramtop.count("./PseudoFermions/File") > 0) {
+        read(paramtop, "./PseudoFermions/File", p.pseudofermion_file);
+        p.pseudofermion_present = true;
       }
       read(paramtop, "./RNG", p.rng_seed);
       read(paramtop, "./StartUpdateNum", p.start_update_num);
@@ -174,6 +210,11 @@ namespace Chroma
       if (p.mom_present) {
         xml << p.mom.xml;
       }
+      if (p.pseudofermion_present) {
+        push(xml, "PseudoFermions");
+        write(xml, "File", p.pseudofermion_file);
+        pop(xml);
+      }
       write(xml, "RNG", p.rng_seed);
       write(xml, "StartUpdateNum", p.start_update_num);
       write(xml, "NWarmUpUpdates", p.n_warm_up_updates);
@@ -214,6 +255,8 @@ namespace Chroma
   { 
     multi1d<int> nrow;
     Real         gamma;
+    Real         pseudofermion_gamma;
+    InternalFieldsRefreshMode pseudofermion_refresh_mode;
     bool         accept_reject;
     bool         measure_actions;
     
@@ -232,6 +275,8 @@ namespace Chroma
       write(xml, "nrow", p.nrow);
       push(xml, "SMDParams");
       write(xml, "gamma", p.gamma);
+      write(xml, "PseudoFermionGamma", p.pseudofermion_gamma);
+      write(xml, "PseudoFermionRefreshMode", pseudoFermionRefreshModeToString(p.pseudofermion_refresh_mode));
       write(xml, "AcceptReject", p.accept_reject);
       write(xml, "MeasureActions", p.measure_actions);
       pop(xml);
@@ -260,10 +305,21 @@ namespace Chroma
       read(paramtop, "./nrow", p.nrow);
 
       p.gamma = Real(0.3);
+      p.pseudofermion_gamma = p.gamma;
+      p.pseudofermion_refresh_mode = INTERNAL_FIELDS_REFRESH_OU;
       p.accept_reject = true;
       p.measure_actions = true;
       if (paramtop.count("./SMDParams") > 0) {
         read(paramtop, "./SMDParams/gamma", p.gamma);
+        p.pseudofermion_gamma = p.gamma;
+        if (paramtop.count("./SMDParams/PseudoFermionGamma") > 0) {
+          read(paramtop, "./SMDParams/PseudoFermionGamma", p.pseudofermion_gamma);
+        }
+        if (paramtop.count("./SMDParams/PseudoFermionRefreshMode") > 0) {
+          std::string mode_str;
+          read(paramtop, "./SMDParams/PseudoFermionRefreshMode", mode_str);
+          p.pseudofermion_refresh_mode = pseudoFermionRefreshModeFromString(mode_str);
+        }
         if (paramtop.count("./SMDParams/AcceptReject") > 0) {
           read(paramtop, "./SMDParams/AcceptReject", p.accept_reject);
         }
@@ -310,7 +366,8 @@ namespace Chroma
 		 MCControl& mc_control,
 		 unsigned long update_no,
 		 const multi1d<LatticeColorMatrix>& p,
-		 const multi1d<LatticeColorMatrix>& u) {
+		 const multi1d<LatticeColorMatrix>& u,
+		 const AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& H_MC) {
     // Do nothing
   }
 
@@ -320,7 +377,8 @@ namespace Chroma
 		 MCControl& mc_control,
 		 unsigned long update_no,
 		 const multi1d<LatticeColorMatrix>& p,
-		 const multi1d<LatticeColorMatrix>& u)
+		 const multi1d<LatticeColorMatrix>& u,
+		 const AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& H_MC)
   {
     START_CODE();
     
@@ -333,6 +391,9 @@ namespace Chroma
 
     std::ostringstream restart_momenta_filename;
     restart_momenta_filename << mc_control.save_prefix << "_mom_" << update_no << ".lime";
+
+    std::ostringstream restart_pseudofermion_filename;
+    restart_pseudofermion_filename << mc_control.save_prefix << "_pf_" << update_no << ".lime";
       
     XMLBufferWriter restart_data_buffer;
 
@@ -379,6 +440,16 @@ namespace Chroma
       p_new.mom.id = SZINQIOGaugeInitEnv::name;
       p_new.mom.path = "/Momenta";
       p_new.mom_present = true;
+    }
+
+    p_new.pseudofermion_present = false;
+    p_new.pseudofermion_file = "";
+    if (H_MC.saveInternalFields(restart_pseudofermion_filename.str(),
+                                p_new.save_volfmt,
+                                p_new.save_pario))
+    {
+      p_new.pseudofermion_present = true;
+      p_new.pseudofermion_file = restart_pseudofermion_filename.str();
     }
 
 
@@ -446,6 +517,8 @@ namespace Chroma
   {
     START_CODE();
 
+    AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& H_MC =
+      theSMDTrj.getMCHamiltonian();
 
     // Turn monitoring off/on
     QDPIO::cout << "Setting Force monitoring to " << mc_control.monitorForcesP  << std::endl;
@@ -514,6 +587,23 @@ namespace Chroma
           taproj(p[mu]);
         }
       }
+
+      bool pseudofermions_loaded = false;
+      if (mc_control.pseudofermion_present) {
+        if (fileExists(mc_control.pseudofermion_file)) {
+          pseudofermions_loaded = H_MC.loadInternalFields(mc_control.pseudofermion_file,
+                                                          mc_control.save_pario);
+          if (!pseudofermions_loaded) {
+            QDPIO::cerr << "SMD: Failed to load pseudofermion file, falling back to refresh"
+                        << std::endl;
+          }
+        }
+        else {
+          QDPIO::cerr << "SMD: Pseudofermion file not found: " << mc_control.pseudofermion_file
+                      << ". Falling back to refresh." << std::endl;
+        }
+      }
+      theSMDTrj.setInternalFieldsInitialized(pseudofermions_loaded);
       
       // Create a field state
       GaugeFieldState gauge_state(p,u);
@@ -580,6 +670,7 @@ namespace Chroma
 	  GaugeFieldState repro_bkup_start( gauge_state.getP(), gauge_state.getQ());
 	  QDP::Seed rng_seed_bkup_start;
 	  QDP::RNG::savern(rng_seed_bkup_start);
+          H_MC.pushInternalFields();
 	  
 	  // DO the trajectory
 	  QDPIO::cout << "Before SMD trajectory call" << std::endl;
@@ -609,6 +700,7 @@ namespace Chroma
 	  gauge_state.getP() = repro_bkup_start.getP(); 
 	  gauge_state.getQ() = repro_bkup_start.getQ(); 
 	  QDP::RNG::setrn(rng_seed_bkup_start); 
+          H_MC.popInternalFields();
 
 	  // Do the repro trajectory
 	  QDPIO::cout << "Before SMD repro trajectory call" << std::endl;
@@ -759,7 +851,12 @@ namespace Chroma
 	  swatch.start();
 
 	  // Save state
-	  saveState<UpdateParams>(update_params, mc_control, cur_update, gauge_state.getP(), gauge_state.getQ());
+	  saveState<UpdateParams>(update_params,
+                                  mc_control,
+                                  cur_update,
+                                  gauge_state.getP(),
+                                  gauge_state.getQ(),
+                                  H_MC);
 
 	  swatch.stop();
 	  QDPIO::cout << "After saving state: time= "
@@ -775,7 +872,12 @@ namespace Chroma
       }   
       
       // Save state
-      saveState<UpdateParams>(update_params, mc_control, cur_update, gauge_state.getP(), gauge_state.getQ());
+      saveState<UpdateParams>(update_params,
+                              mc_control,
+                              cur_update,
+                              gauge_state.getP(),
+                              gauge_state.getQ(),
+                              H_MC);
       
       pop(xml_log); // pop("MCUpdates")
       pop(xml_out); // pop("MCUpdates")
@@ -984,6 +1086,8 @@ int main(int argc, char *argv[])
   LatColMatSMDTrj theSMDTrj( H_MC,
                              Integrator,
                              trj_params.gamma,
+                             trj_params.pseudofermion_gamma,
+                             trj_params.pseudofermion_refresh_mode,
                              trj_params.accept_reject,
                              trj_params.measure_actions );
 
