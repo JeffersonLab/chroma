@@ -247,6 +247,7 @@ namespace Chroma
       if (!acceptTraj) {
         s.getQ() = s_old->getQ();
         s.getP() = s_old->getP();
+        flipMomenta(s);
         if (internal_fields_pushed) {
           H_MC.popInternalFields();
         }

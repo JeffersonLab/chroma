@@ -164,7 +164,9 @@ namespace Chroma
       push(meta_xml, "PseudoFermionMeta");
       write(meta_xml, "MonomialIndex", monomial_index);
       pop(meta_xml);
-      write(to, meta_xml, meta);
+      BinaryBufferWriter meta_bin;
+      write(meta_bin, meta);
+      write(to, meta_xml, meta_bin);
 
       int leaf_index = 0;
       writeLeaves(to, fields, monomial_index, leaf_index);
@@ -176,7 +178,9 @@ namespace Chroma
       XMLReader meta_xml;
       multi1d<int> meta;
       try {
-        read(from, meta_xml, meta);
+        BinaryBufferReader meta_bin;
+        read(from, meta_xml, meta_bin);
+        read(meta_bin, meta);
       }
       catch (...) {
         return false;

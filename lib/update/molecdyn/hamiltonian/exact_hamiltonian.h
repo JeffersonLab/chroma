@@ -150,7 +150,9 @@ namespace Chroma
 
       multi1d<int> global_meta(1);
       global_meta[0] = num_with_internal_fields;
-      write(to, global_meta_xml, global_meta);
+      BinaryBufferWriter global_meta_bin;
+      write(global_meta_bin, global_meta);
+      write(to, global_meta_xml, global_meta_bin);
 
       for (int i = 0; i < monomials.size(); ++i) {
         if (!monomials[i]->hasInternalFields()) {
@@ -195,7 +197,9 @@ namespace Chroma
       XMLReader global_meta_xml;
       multi1d<int> global_meta;
       try {
-        read(from, global_meta_xml, global_meta);
+        BinaryBufferReader global_meta_bin;
+        read(from, global_meta_xml, global_meta_bin);
+        read(global_meta_bin, global_meta);
       }
       catch (...) {
         close(from);
