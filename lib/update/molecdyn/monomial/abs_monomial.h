@@ -54,8 +54,7 @@ namespace Chroma
     inline void resizeToDims(T&, const multi1d<int>& dims, int depth = 0)
     {
       if (depth != dims.size()) {
-        QDPIO::cerr << "MonomialInternalFieldsUtils::resizeToDims: bad depth for leaf type" << std::endl;
-        QDP_abort(1);
+        throw std::string("MonomialInternalFieldsUtils::resizeToDims: bad depth for leaf type");
       }
     }
 
@@ -63,8 +62,7 @@ namespace Chroma
     inline void resizeToDims(multi1d<T>& fields, const multi1d<int>& dims, int depth = 0)
     {
       if (depth >= dims.size()) {
-        QDPIO::cerr << "MonomialInternalFieldsUtils::resizeToDims: missing dimension for multi1d type" << std::endl;
-        QDP_abort(1);
+        throw std::string("MonomialInternalFieldsUtils::resizeToDims: missing dimension for multi1d type");
       }
 
       fields.resize(dims[depth]);
@@ -135,8 +133,7 @@ namespace Chroma
       }
 
       if (file_monomial_index != monomial_index || file_leaf_index != leaf_index) {
-        QDPIO::cerr << "MonomialInternalFieldsUtils::readLeaves: record index mismatch" << std::endl;
-        QDP_abort(1);
+        throw std::string("MonomialInternalFieldsUtils::readLeaves: record index mismatch");
       }
 
       ++leaf_index;
