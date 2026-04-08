@@ -2063,6 +2063,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      target_include_directories(chromalib PUBLIC ${REDSTAR_DATALIB_DIR}/include)
      add_library(redstar-datalib STATIC IMPORTED )
      set_target_properties( redstar-datalib PROPERTIES IMPORTED_LOCATION ${REDSTAR_DATALIB_DIR}/lib/libadat.a )
+     target_link_libraries(redstar-datalib INTERFACE QDPXX::qdp)
      target_link_libraries(chromalib PUBLIC redstar-datalib )
   endif()
 
