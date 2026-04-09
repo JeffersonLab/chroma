@@ -150,8 +150,8 @@ namespace Chroma
 				END_CODE();
 			}
 
-			virtual void refreshInternalFields(const AbsFieldState<P,Q>& s)
-			{
+				virtual void refreshInternalFields(const AbsFieldState<P,Q>& s)
+				{
 				START_CODE();
 
 				const FAType<T,P,Q>& FA = getFermAct();
@@ -173,11 +173,28 @@ namespace Chroma
 				QDPIO::cout << "TwoFlavWilson4DCancelMonomial: resetting Predictor after field refresh" << std::endl;
 				getMDSolutionPredictor().reset();
 
-				END_CODE();
-			}
+					END_CODE();
+				}
 
-			virtual void setInternalFields(const Monomial<P,Q>& m)
-			{
+				virtual void refreshInternalFields(const AbsFieldState<P,Q>& s,
+				                                   const Real& traj_length,
+				                                   const Real& gamma,
+				                                   const InternalFieldsRefreshMode mode)
+				{
+					if (mode == INTERNAL_FIELDS_REFRESH_FULL) {
+						refreshInternalFields(s);
+						return;
+					}
+
+					const T old_phi = getPhi();
+					refreshInternalFields(s);
+					Real c1, c2;
+					MonomialInternalFieldsUtils::getOUCoeffs(traj_length, gamma, c1, c2);
+					MonomialInternalFieldsUtils::applyOU(getPhi(), old_phi, c1, c2);
+				}
+
+				virtual void setInternalFields(const Monomial<P,Q>& m)
+				{
 				START_CODE();
 				try{
 					const PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial<T,P,Q,FAType,LOType>& fm = 
@@ -188,11 +205,73 @@ namespace Chroma
 					QDPIO::cerr<<"Failed to cast input Monomial to PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial "<<std::endl;
 					QDP_abort(1);
 				}
-				END_CODE();
-			}
-			virtual void resetPredictors(void){
-				getMDSolutionPredictor().reset();
-			}
+					END_CODE();
+				}
+
+				virtual bool hasInternalFields(void) const
+				{
+					return true;
+				}
+
+				virtual bool saveInternalFields(QDPFileWriter& to, int monomial_index) const
+				{
+					MonomialInternalFieldsUtils::saveToOpenQIO(to, getPhi(), monomial_index);
+					return true;
+				}
+
+				virtual bool loadInternalFields(QDPFileReader& from, int monomial_index)
+				{
+					T loaded_phi = getPhi();
+					if (!MonomialInternalFieldsUtils::loadFromOpenQIO(from, loaded_phi, monomial_index)) {
+						return false;
+					}
+					getPhi() = loaded_phi;
+					return true;
+				}
+
+				virtual void pushInternalFields(void)
+				{
+					multi1d<T> new_stack(phi_backup_stack_.size() + 1);
+					for (int i = 0; i < phi_backup_stack_.size(); ++i) {
+						new_stack[i] = phi_backup_stack_[i];
+					}
+					new_stack[phi_backup_stack_.size()] = getPhi();
+					phi_backup_stack_ = new_stack;
+				}
+
+				virtual void popInternalFields(void)
+				{
+					if (phi_backup_stack_.size() == 0) {
+						QDPIO::cerr << "PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial::popInternalFields on empty stack" << std::endl;
+						QDP_abort(1);
+					}
+
+					const int top = phi_backup_stack_.size() - 1;
+					getPhi() = phi_backup_stack_[top];
+
+					multi1d<T> new_stack(top);
+					for (int i = 0; i < top; ++i) {
+						new_stack[i] = phi_backup_stack_[i];
+					}
+					phi_backup_stack_ = new_stack;
+				}
+
+				virtual void dropInternalFields(void)
+				{
+					if (phi_backup_stack_.size() == 0) {
+						return;
+					}
+
+					const int top = phi_backup_stack_.size() - 1;
+					multi1d<T> new_stack(top);
+					for (int i = 0; i < top; ++i) {
+						new_stack[i] = phi_backup_stack_[i];
+					}
+					phi_backup_stack_ = new_stack;
+				}
+				virtual void resetPredictors(void){
+					getMDSolutionPredictor().reset();
+				}
 
 		protected:
 			virtual const T& getPhi(void) const {
@@ -214,9 +293,10 @@ namespace Chroma
 		private:
 			PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial();
 			void operator=(const PrecConstDetTwoFlavorWilsonMultihasenCancelMonomial&);
-			// Pseudofermion field phi
-			T phi;
-			Handle<const FAType<T,P,Q> > fermact;
+				// Pseudofermion field phi
+				T phi;
+				multi1d<T> phi_backup_stack_;
+				Handle<const FAType<T,P,Q> > fermact;
 			// Shifted mass parameter
 			Real mu;
 			GroupXML_t inv_param;

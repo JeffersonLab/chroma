@@ -49,6 +49,8 @@
   <SMDTrj>
     <SMDParams>
       <gamma>0.3</gamma>
+      <PseudoFermionGamma>0.3</PseudoFermionGamma>
+      <PseudoFermionRefreshMode>OU</PseudoFermionRefreshMode>
       <AcceptReject>true</AcceptReject>
       <MeasureActions>true</MeasureActions>
     </SMDParams>

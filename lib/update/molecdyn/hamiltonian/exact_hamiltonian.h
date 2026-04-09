@@ -69,6 +69,165 @@ namespace Chroma
       }
       END_CODE();
     }
+
+    //! Internal field refreshment with OU options
+    void refreshInternalFields(const AbsFieldState<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> >& s,
+                               const Real& traj_length,
+                               const Real& gamma,
+                               const InternalFieldsRefreshMode mode)
+    {
+      START_CODE();
+      for (int i = 0; i < monomials.size(); ++i) {
+        monomials[i]->refreshInternalFields(s, traj_length, gamma, mode);
+      }
+      END_CODE();
+    }
+
+    //! Push monomial internal fields
+    void pushInternalFields(void)
+    {
+      for (int i = 0; i < monomials.size(); ++i) {
+        if (monomials[i]->hasInternalFields()) {
+          monomials[i]->pushInternalFields();
+        }
+      }
+    }
+
+    //! Pop monomial internal fields
+    void popInternalFields(void)
+    {
+      for (int i = 0; i < monomials.size(); ++i) {
+        if (monomials[i]->hasInternalFields()) {
+          monomials[i]->popInternalFields();
+        }
+      }
+    }
+
+    //! Drop monomial internal-field backup
+    void dropInternalFields(void)
+    {
+      for (int i = 0; i < monomials.size(); ++i) {
+        if (monomials[i]->hasInternalFields()) {
+          monomials[i]->dropInternalFields();
+        }
+      }
+    }
+
+    //! Save all pseudofermion internal fields into one QIO/LIME file
+    bool saveInternalFields(const std::string& file,
+                            QDP_volfmt_t volfmt,
+                            QDP_serialparallel_t serpar) const
+    {
+      START_CODE();
+
+      int num_with_internal_fields = 0;
+      for (int i = 0; i < monomials.size(); ++i) {
+        if (monomials[i]->hasInternalFields()) {
+          ++num_with_internal_fields;
+        }
+      }
+
+      if (num_with_internal_fields == 0) {
+        END_CODE();
+        return false;
+      }
+
+      XMLBufferWriter file_xml;
+      push(file_xml, "SMDPseudoFermions");
+      write(file_xml, "NumInternalFieldMonomials", num_with_internal_fields);
+      pop(file_xml);
+
+      QDPFileWriter to(file_xml, file, volfmt, serpar, QDPIO_OPEN);
+      if (to.bad()) {
+        QDPIO::cerr << "ExactHamiltonian::saveInternalFields: error opening " << file << std::endl;
+        QDP_abort(1);
+      }
+
+      XMLBufferWriter global_meta_xml;
+      push(global_meta_xml, "PseudoFermionGlobalMeta");
+      write(global_meta_xml, "NumInternalFieldMonomials", num_with_internal_fields);
+      pop(global_meta_xml);
+
+      multi1d<int> global_meta(1);
+      global_meta[0] = num_with_internal_fields;
+      BinaryBufferWriter global_meta_bin;
+      write(global_meta_bin, global_meta);
+      write(to, global_meta_xml, global_meta_bin);
+
+      for (int i = 0; i < monomials.size(); ++i) {
+        if (!monomials[i]->hasInternalFields()) {
+          continue;
+        }
+        if (!monomials[i]->saveInternalFields(to, i)) {
+          QDPIO::cerr << "ExactHamiltonian::saveInternalFields: failed on monomial index " << i << std::endl;
+          QDP_abort(1);
+        }
+      }
+
+      close(to);
+      END_CODE();
+      return true;
+    }
+
+    //! Load all pseudofermion internal fields from one QIO/LIME file
+    bool loadInternalFields(const std::string& file,
+                            QDP_serialparallel_t serpar)
+    {
+      START_CODE();
+
+      int num_with_internal_fields = 0;
+      for (int i = 0; i < monomials.size(); ++i) {
+        if (monomials[i]->hasInternalFields()) {
+          ++num_with_internal_fields;
+        }
+      }
+
+      if (num_with_internal_fields == 0) {
+        END_CODE();
+        return false;
+      }
+
+      XMLReader file_xml;
+      QDPFileReader from(file_xml, file, serpar);
+      if (from.bad()) {
+        END_CODE();
+        return false;
+      }
+
+      XMLReader global_meta_xml;
+      multi1d<int> global_meta;
+      try {
+        BinaryBufferReader global_meta_bin;
+        read(from, global_meta_xml, global_meta_bin);
+        read(global_meta_bin, global_meta);
+      }
+      catch (...) {
+        close(from);
+        END_CODE();
+        return false;
+      }
+
+      if (global_meta.size() != 1 || global_meta[0] != num_with_internal_fields) {
+        close(from);
+        END_CODE();
+        return false;
+      }
+
+      for (int i = 0; i < monomials.size(); ++i) {
+        if (!monomials[i]->hasInternalFields()) {
+          continue;
+        }
+        if (!monomials[i]->loadInternalFields(from, i)) {
+          close(from);
+          END_CODE();
+          return false;
+        }
+      }
+
+      close(from);
+      END_CODE();
+      return true;
+    }
  
 
     Double mesKE(const AbsFieldState< 
