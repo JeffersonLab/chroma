@@ -856,6 +856,31 @@ namespace Chroma
       }
 #  endif
 
+      // Get the default communicator
+
+      inline MPI_Comm getDefaultComm()
+      {
+	static MPI_Comm comm = [] {
+	  MPI_Comm comm;
+	  if (QMP_get_mpi_comm(QMP_comm_get_default(), &comm) != QMP_SUCCESS)
+	  {
+	    std::cerr << "QMP_get_mpi_comm failed!" << std::endl;
+	    std::exit(1);
+	  }
+	  // Check that the MPI rank coincides with the one
+	  int nprocs, rank;
+	  superbblas::detail::MPI_check(MPI_Comm_size(comm, &nprocs));
+	  superbblas::detail::MPI_check(MPI_Comm_rank(comm, &rank));
+	  if (Layout::nodeNumber() != rank || Layout::numNodes() != nprocs)
+	  {
+	    std::cerr << "unsupported QDP comm by superbblas!" << std::endl;
+	    std::exit(1);
+	  }
+	  return comm;
+	}();
+	return comm;
+      }
+
       // Get the cpu context
       inline std::shared_ptr<superbblas::Context>& getCpuContext()
       {
@@ -3636,7 +3661,8 @@ namespace Chroma
 
 	value_type* ptr = data_for_writing();
 	MPI_Comm comm =
-	  (dist == OnMaster || dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	  (dist == OnMaster || dist == Local || dist == Glocal ? MPI_COMM_SELF
+							       : SB::detail::getDefaultComm());
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	if (dist != OnMaster || Layout::nodeNumber() == 0)
 	{
@@ -3883,7 +3909,7 @@ namespace Chroma
 	// Shortcuts for who is involved in the operation
 	bool do_operation = true;
 	int p_disp = 0;
-	MPI_Comm comm = MPI_COMM_WORLD;
+	MPI_Comm comm = SB::detail::getDefaultComm();
 	// a) if the origin and destination tensors have full support on the master node
 	// and the destination tensor is only supported on the master node, the operation
 	// only happens on the master node
@@ -4003,7 +4029,8 @@ namespace Chroma
 	  throw std::runtime_error("contract: one of the contracted tensors or the output tensor "
 				   "is local/glocal and others are not!");
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm =
+	  (dist == Local || dist == Glocal ? MPI_COMM_SELF : SB::detail::getDefaultComm());
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	
 	value_type* v_ptr = v.data();
@@ -4088,7 +4115,8 @@ namespace Chroma
 	if (std::fabs(std::imag(v.scalar)) != 0 || std::real(v.scalar) < 0)
 	  throw std::runtime_error("cholInv: unsupported a negative or imaginary scale");
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm =
+	  (dist == Local || dist == Glocal ? MPI_COMM_SELF : SB::detail::getDefaultComm());
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	
 	value_type* v_ptr = v.data();
@@ -4137,7 +4165,8 @@ namespace Chroma
 
 	v.copyTo(*this);
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm =
+	  (dist == Local || dist == Glocal ? MPI_COMM_SELF : SB::detail::getDefaultComm());
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 
 	value_type* ptr = data_for_writing();
@@ -4211,7 +4240,8 @@ namespace Chroma
 	if (v.dist == OnEveryoneReplicated && detail::isDistributedOnEveryone(w.dist))
 	  v = v.make_suitable_for_contraction(w);
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm =
+	  (dist == Local || dist == Glocal ? MPI_COMM_SELF : SB::detail::getDefaultComm());
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	
 	value_type* v_ptr = v.data();
@@ -4285,7 +4315,8 @@ namespace Chroma
 	  throw std::runtime_error("svd: the input tensor or on of the output tensors "
 				   "is local/glocal and others are not!");
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm =
+	  (dist == Local || dist == Glocal ? MPI_COMM_SELF : SB::detail::getDefaultComm());
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	
 	value_type* ptr = data();
@@ -5878,7 +5909,7 @@ namespace Chroma
 	  throw std::runtime_error("Ups! Look into this");
 	const value_type* ptr = data.data();
 	const value_type* kron_ptr = kron.data();
-	MPI_Comm comm = (ii.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm = (ii.dist == Local ? MPI_COMM_SELF : SB::detail::getDefaultComm());
 	superbblas::BSR_handle* bsr = nullptr;
 	if (nkrond == 0 && nkroni == 0)
 	{
@@ -6907,8 +6938,8 @@ namespace Chroma
 	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const value_type**)&v_ptr, //
 	  T{0}, w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim, power_label,
 	  (value_type**)&w_ptr, //
-	  &data.ctx(), v.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD, superbblas::FastToSlow,
-	  nullptr, v.dist == Glocal);
+	  &data.ctx(), v.dist == Local ? MPI_COMM_SELF : SB::detail::getDefaultComm(),
+	  superbblas::FastToSlow, nullptr, v.dist == Glocal);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!v.is_managed() || !w.is_managed())
@@ -7209,7 +7240,8 @@ namespace Chroma
 	  filename + (filesystem_type == SharedFSFile
 			? std::string()
 			: std::string(".part_") + std::to_string(Layout::nodeNumber()));
-	MPI_Comm comm = filesystem_type == SharedFSFile ? MPI_COMM_WORLD : MPI_COMM_SELF;
+	MPI_Comm comm =
+	  filesystem_type == SharedFSFile ? SB::detail::getDefaultComm() : MPI_COMM_SELF;
 	superbblas::Storage_handle stoh;
 	superbblas::create_storage<N, T>(
 	  dim, superbblas::FastToSlow, use_filename.c_str(), metadata.c_str(), metadata.size(),
@@ -7237,7 +7269,7 @@ namespace Chroma
 	std::vector<char> metadatav;
 	std::vector<superbblas::IndexType> dimv;
 	superbblas::read_storage_header(filename.c_str(), superbblas::FastToSlow, values_dtype,
-					metadatav, dimv, MPI_COMM_WORLD);
+					metadatav, dimv, SB::detail::getDefaultComm());
 
 	// Check that storage tensor dimension and value type match template arguments
 	if (dimv.size() != N)
@@ -7262,10 +7294,10 @@ namespace Chroma
 
 	superbblas::Storage_handle stoh;
 	superbblas::open_storage<N, T>(filename.c_str(), false /* don't allow writing */,
-				       MPI_COMM_WORLD, &stoh);
+				       SB::detail::getDefaultComm(), &stoh);
 	ctx = std::shared_ptr<superbblas::detail::Storage_context_abstract>(
 	  stoh, [=](superbblas::detail::Storage_context_abstract* ptr) {
-	    superbblas::close_storage<N, T>(ptr, MPI_COMM_WORLD);
+	    superbblas::close_storage<N, T>(ptr, SB::detail::getDefaultComm());
 	  });
       }
 
@@ -7409,7 +7441,8 @@ namespace Chroma
 	  return;
 	}
 
-	MPI_Comm comm = filesystem_type == SharedFSFile ? MPI_COMM_WORLD : MPI_COMM_SELF;
+	MPI_Comm comm =
+	  filesystem_type == SharedFSFile ? SB::detail::getDefaultComm() : MPI_COMM_SELF;
 	auto w0 = w;
 	auto w0_p = w0.p->p.data();
 	std::size_t w0_p_size = w0.p->p.size();
@@ -7449,7 +7482,8 @@ namespace Chroma
 	if (filesystem_type == LocalFSFile && !detail::is_distribution_local(w.dist))
 	  throw std::runtime_error("Unsupported a collective tensor from reading from a local file");
 
-	MPI_Comm comm = filesystem_type == SharedFSFile ? MPI_COMM_WORLD : MPI_COMM_SELF;
+	MPI_Comm comm =
+	  filesystem_type == SharedFSFile ? SB::detail::getDefaultComm() : MPI_COMM_SELF;
 	auto w0 = w;
 	auto w0_p = w0.p->p.data();
 	std::size_t w0_p_size = w0.p->p.size();
@@ -9784,12 +9818,12 @@ namespace Chroma
 	if (sendBuf == recvBuf)
 	{
 	  *ierr = MPI_Allreduce(MPI_IN_PLACE, recvBuf, *count, MPI_DOUBLE, MPI_SUM,
-				MPI_COMM_WORLD) != MPI_SUCCESS;
+				SB::detail::getDefaultComm()) != MPI_SUCCESS;
 	}
 	else
 	{
-	  *ierr = MPI_Allreduce(sendBuf, recvBuf, *count, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD) !=
-		  MPI_SUCCESS;
+	  *ierr = MPI_Allreduce(sendBuf, recvBuf, *count, MPI_DOUBLE, MPI_SUM,
+				SB::detail::getDefaultComm()) != MPI_SUCCESS;
 	}
       }
 

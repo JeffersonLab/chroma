@@ -131,15 +131,10 @@ namespace Chroma
   //! Chroma initialisation routine
   void initialize(int* argc, char ***argv) 
   {
-#if defined QDP_IS_QDPJIT
-    if (! QDP_isInitialized())
-      QDP_initialize_CUDA(argc, argv);
-#else
-    if (! QDP_isInitialized())
-      QDP_initialize(argc, argv);
-#endif
+    int num_replicas = 1;
+    int logical_geom_volume = 1;
 
-    for(int i=0; i < *argc; i++) 
+    for (int i = 0; i < *argc; i++)
     {
       // Get argv[i] into a std::string
       std::string argv_i = std::string( (*argv)[i] );
@@ -147,27 +142,32 @@ namespace Chroma
       // Search for -i or --chroma-i
       if( argv_i == std::string("-h") || argv_i == std::string("--help") ) 
       {
-	QDPIO::cerr << "Usage: " << (*argv)[0] << "  <options>" << std::endl
-		    << "   -h           help\n"
-		    << "   --help       help\n"
-		    << "   -i           [" << getXMLInputFileName() << "]  xml input file name\n"
-		    << "   --chroma-i   [" << getXMLInputFileName() << "]  xml input file name\n"
-		    << "   -o           [" << getXMLOutputFileName() << "]  xml output file name\n"
-		    << "   --chroma-p   [" << getXMLOutputFileName() << "]  xml output file name\n"
-		    << "   -l           [" << getXMLLogFileName() << "]  xml log file name\n"
-		    << "   --chroma-l   [" << getXMLLogFileName() << "]  xml log file name\n"
-		    << "   -cwd         [" << getCWD() << "]  xml working directory\n"
-		    << "   --chroma-cwd [" << getCWD() << "]  xml working directory\n"
+	std::cerr << "Usage: " << (*argv)[0] << "  <options>" << std::endl
+		  << "   -h           help\n"
+		  << "   --help       help\n"
+		  << "   -i           [" << getXMLInputFileName() << "]  xml input file name\n"
+		  << "   --chroma-i   [" << getXMLInputFileName() << "]  xml input file name\n"
+		  << "   -o           [" << getXMLOutputFileName() << "]  xml output file name\n"
+		  << "   --chroma-p   [" << getXMLOutputFileName() << "]  xml output file name\n"
+		  << "   -l           [" << getXMLLogFileName() << "]  xml log file name\n"
+		  << "   --chroma-l   [" << getXMLLogFileName() << "]  xml log file name\n"
+		  << "   -cwd         [" << getCWD() << "]  xml working directory\n"
+		  << "   --chroma-cwd [" << getCWD() << "]  xml working directory\n"
+		  << std::endl;
 
-		    
-		    << std::endl;
-	QDP_abort(0);
+	// Show QMP help also
+#if defined QDP_IS_QDPJIT
+	QDP_initialize_CUDA(argc, argv);
+#else
+	QDP_initialize(argc, argv);
+#endif
+	exit(0);
       }
-      
+
       // Search for -il
       if( argv_i == std::string("-il") )
       {
-	QDPIO::cout << "Input file list:" << std::endl;
+	std::cout << "Input file list:" << std::endl;
 	if( i + 1 < *argc )
 	{
 	  std::ifstream flist((*argv)[i+1]);
@@ -176,20 +176,20 @@ namespace Chroma
 	  int count=0;
 	  while (std::getline(flist, line))
 	    {
-	      QDPIO::cout << line << std::endl;
+	      std::cout << line << std::endl;
 	      input_list.push_back(line);
 	      count++;
 	    }
 
-	  QDPIO::cout << "Total number of input files: " << count << std::endl;
+	  std::cout << "Total number of input files: " << count << std::endl;
 	  // Skip over next
 	  i++;
 	}
 	else 
 	{
 	  // i + 1 is too big
-	  QDPIO::cerr << "Error: dangling -il specified. " << std::endl;
-	  QDP_abort(1);
+	  std::cerr << "Error: dangling -il specified. " << std::endl;
+	  exit(1);
 	}
       }
 
@@ -206,8 +206,8 @@ namespace Chroma
 	else 
 	{
 	  // i + 1 is too big
-	  QDPIO::cerr << "Error: dangling -i specified. " << std::endl;
-	  QDP_abort(1);
+	  std::cerr << "Error: dangling -i specified. " << std::endl;
+	  exit(1);
 	}
       }
  
@@ -221,8 +221,8 @@ namespace Chroma
 	}
 	else {
 	  // i + 1 is too big
-	  QDPIO::cerr << "Error: dangling -o specified. " << std::endl;
-	  QDP_abort(1);
+	  std::cerr << "Error: dangling -o specified. " << std::endl;
+	  exit(1);
 	}
       }
       
@@ -236,8 +236,8 @@ namespace Chroma
 	}
 	else {
 	  // i + 1 is too big
-	  QDPIO::cerr << "Error: dangling -l specified. " << std::endl;
-	  QDP_abort(1);
+	  std::cerr << "Error: dangling -l specified. " << std::endl;
+	  exit(1);
 	}
       }
       
@@ -251,11 +251,88 @@ namespace Chroma
 	}
 	else {
 	  // i + 1 is too big
-	  QDPIO::cerr << "Error: dangling -cwd specified. " << std::endl;
-	  QDP_abort(1);
+	  std::cerr << "Error: dangling -cwd specified. " << std::endl;
+	  exit(1);
 	}
       }
 
+      // Search for -replicas or --replicas-cwd
+      if (argv_i == std::string("-replicas") || argv_i == std::string("--chroma-replicas"))
+      {
+	if( i + 1 < *argc ) {
+	  replicas = std::atoi(argv[i + 1]);
+	  if (replicas < 1)
+	  {
+	    std::cerr << "Error: invalid value for option -replicas. " << std::endl;
+	    exit(1);
+	  }
+
+	  // Skip over next
+	  i++;
+	}
+	else {
+	  // i + 1 is too big
+	  std::cerr << "Error: dangling -replicas specified. " << std::endl;
+	  exit(1);
+	}
+      }
+
+      // Search for -geom
+      if (argv_i == std::string("-geom"))
+      {
+	for (int j = 0; j < Nd; j++)
+	{
+	  logical_geom_volume *= std::atoi(argv[++i]);
+	}
+	if (logical_geom_volume < 1)
+	{
+	  std::cerr << "Error: invalid -geom specified. " << std::endl;
+	  exit(1);
+	}
+      }
+    }
+
+    // Modify the default communicator if several replicas are going to be launched
+    if (replicas > 1)
+    {
+      if (!QMP_is_initialized())
+      {
+	QMP_thread_level_t prv;
+	if (QMP_init_msg_passing(argc, argv, QMP_THREAD_MULTIPLE, &prv) != QMP_SUCCESS)
+	{
+	  std::cerr << __func__ << ": QMP_init_msg_passing failed" << std::endl;
+	  exit(1);
+	}
+      }
+      if (QMP_get_number_of_nodes() % logical_geom_volume != 0)
+      {
+	std::cerr
+	  << "Error: invalid -geom value: total volume isn't divisible by the number of processes"
+	  << std::endl;
+	exit(1);
+      }
+      const int rank = QMP_get_node_number();
+      QMP_comm_t newcomm;
+      if (QMP_comm_split(QMP_comm_get_default(), rank / logical_geom_volume,
+			 rank % logical_geom_volume, &newcomm) != QMP_SUCCESS)
+      {
+	std::cerr << __func__ << ": QMP_comm_split failed" << std::endl;
+	exit(1);
+      }
+      if (QMP_comm_set_default(newcomm) != QMP_SUCCESS)
+      {
+	std::cerr << __func__ << ": QMP_comm_set_default failed" << std::endl;
+	exit(1);
+      }
+    }
+
+    if (!QDP_isInitialized())
+    {
+#if defined QDP_IS_QDPJIT
+      QDP_initialize_CUDA(argc, argv);
+#else
+      QDP_initialize(argc, argv);
+#endif
     }
 
     // Good luck following the flow of the conditional compilation macros

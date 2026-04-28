@@ -331,17 +331,39 @@ namespace Chroma
     }
 
 #  if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+    std::vector<int>& get_local_ranks()
+    {
+      static const auto ranks = [] { return SBN::detail::get_ranks(MPI_COMM_SELF); }();
+      return ranks;
+    }
+
+    std::vector<int>& get_global_ranks()
+    {
+      static const auto ranks = [] {
+	return SBN::detail::get_ranks(SB::detail::getDefaultComm());
+      }();
+      return ranks;
+    }
+
+    SB::Comm get_global_comm()
+    {
+      static const auto comm = []() {
+	return get_comm_from_mpi_comm(SB::detail::getDefaultComm());
+      };
+      return comm;
+    }
+
     template <std::size_t N>
     SBN::superbblas_implementation::detail::Distribution
     get_sbn_distribution(const std::string& order, const SB::Distribution& dist,
 			 const SB::detail::TensorPartition<N>& p)
     {
-      const auto kind = p.isLocal
-			  ? SBN::superbblas_implementation::detail::Distribution::Local
-			  : SBN::superbblas_implementation::detail::Distribution::Distributed;
+      const auto kind = SBN::superbblas_implementation::detail::Distribution::Distributed;
+      const auto comm = p.isLocal ? MPI_COMM_SELF : SB::detail::getDefaultComm();
+      const auto& ranks = p.isLocal ? get_local_ranks() : get_global_ranks();
       const auto dim = SBN::Coor(p.dim.begin(), p.dim.end());
       std::vector<unsigned char> distributed_directions;
-      if (kind != SBN::superbblas_implementation::detail::Distribution::Local)
+      if (!p.isLocal)
       {
 	if (dist != SB::OnMaster && !(dist.size() > 2 && dist.at(0) == '_' && dist.at(1) == '_'))
 	{
@@ -363,7 +385,7 @@ namespace Chroma
 	}
       }
       return SBN::superbblas_implementation::detail::Distribution(kind, dim, distributed_directions,
-								  fs);
+								  fs, ranks, comm);
     }
 #  endif // defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
 
@@ -525,7 +547,8 @@ namespace Chroma
 	  r.at(it.second) = it.first;
 	return r;
       };
-      for (const auto& missing_mesons_in_some_process : SBN::gather(local_missing_mesons))
+      for (const auto& missing_mesons_in_some_process :
+	   SBN::gather(local_missing_mesons, SB::detail::getDefaultComm()))
       {
 	for (const auto& [meson_key, perm, index] : missing_mesons_in_some_process)
 	{
@@ -539,6 +562,7 @@ namespace Chroma
 	}
       }
 
+      const auto this_chroma_mesons = SBN::get_tensor_supported_on(mesons, get_global_comm());
       for (const auto& it : from_tslice_left_right_phases_to_momenta_displacement)
       {
 	const auto& [t_source, left_phase, right_phase] = it.first;
@@ -565,7 +589,7 @@ namespace Chroma
 	    ti = SBN::slice_kv(ti, //
 			       {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}},
 			       {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}});
-	    SBN::copyTo(ti, SBN::slice_kv(mesons, {{'i', index}}, {{'i', 1}}));
+	    SBN::copyTo(ti, SBN::slice_kv(this_choroma_mesons, {{'i', index}}, {{'i', 1}}));
 	  }
 	};
 
@@ -765,7 +789,8 @@ namespace Chroma
 	  r.at(it.second) = it.first;
 	return r;
       };
-      for (const auto& missing_baryons_in_some_process : SBN::gather(local_missing_baryons))
+      for (const auto& missing_baryons_in_some_process :
+	   SBN::gather(local_missing_baryons, SB::detail::getDefaultComm()))
       {
 	for (const auto& [baryon_key, scalar, do_conj, index] : missing_baryons_in_some_process)
 	{
@@ -779,6 +804,7 @@ namespace Chroma
 	}
       }
 
+      const auto this_chroma_baryons = SBN::get_tensor_supported_on(baryons, get_global_comm());
       for (const auto& it : from_tslice_and_phase_to_momenta_displacement)
       {
 	const int t_slice = std::get<0>(it.first);
@@ -808,7 +834,7 @@ namespace Chroma
 	      if (do_conj)
 		ti = SBN::conj(ti);
 	      SBN::copyTo(SBN::scale(ti, (double)scalar),
-			  SBN::slice_kv(baryons, {{'i', index}}, {{'i', 1}}));
+			  SBN::slice_kv(this_chroma_baryons, {{'i', index}}, {{'i', 1}}));
 	    }
 	  });
 
@@ -1040,7 +1066,8 @@ namespace Chroma
 	  r.insert(it.first);
 	return std::vector<T>(r.begin(), r.end());
       };
-      for (const auto& missing_props_in_some_process : SBN::gather(local_missing_props))
+      for (const auto& missing_props_in_some_process :
+	   SBN::gather(local_missing_props, SB::detail::getDefaultComm()))
       {
 	for (const auto& [prop_key, do_conj, index] : missing_props_in_some_process)
 	{
@@ -1052,6 +1079,7 @@ namespace Chroma
 	}
       }
 
+      const auto this_chroma_props = SBN::get_tensor_supported_on(props, get_global_comm());
       for (const auto& it : from_mass_tsource_source_sink_phases_conj_to_tsink_and_indices)
       {
 	const auto& [mass_label, t_source, source_phase, sink_phase, do_conj_] = it.first;
@@ -1098,8 +1126,9 @@ namespace Chroma
 	      const auto& index = it->second;
 	      auto tii = SBN::relabel(ti, {{'n', 'w'}, {'N', 'v'}, {'s', 'r'}, {'S', 's'}});
 	      SBN::copyTo(
-		tii, SBN::slice_kv(props, {{'s', sink_spin}, {'w', first_n}, {'i', index}},
-				   {{'s', 1}, {'w', SBN::get_kv_size(tii).at('w')}, {'i', 1}}));
+		tii,
+		SBN::slice_kv(this_chroma_props, {{'s', sink_spin}, {'w', first_n}, {'i', index}},
+			      {{'s', 1}, {'w', SBN::get_kv_size(tii).at('w')}, {'i', 1}}));
 	    }
 	  }
 	};
@@ -1308,7 +1337,8 @@ namespace Chroma
 	  r.at(it.second) = it.first;
 	return r;
       };
-      for (const auto& missing_genprops_in_some_process : SBN::gather(local_missing_genprops))
+      for (const auto& missing_genprops_in_some_process :
+	   SBN::gather(local_missing_genprops, SB::detail::getDefaultComm()))
       {
 	for (const auto& [genprop_key, index] : missing_genprops_in_some_process)
 	{
@@ -1325,6 +1355,7 @@ namespace Chroma
 	}
       }
 
+      const auto this_chroma_genprops = SBN::get_tensor_supported_on(genprops, get_global_comm());
       for (const auto& it :
 	   from_mass_tsource_sink_phase_source_sink_to_moms_disps_gammas_and_tslides_vs_indices)
       {
@@ -1406,7 +1437,8 @@ namespace Chroma
 		auto range = mom_disp_gamma_tslice_to_index.equal_range(k);
 		for (auto it = range.first; it != range.second; ++it)
 		{
-		  SBN::copyTo(ti, SBN::slice_kv(genprops, {{'i', it->second}}, {{'i', 1}}));
+		  SBN::copyTo(ti,
+			      SBN::slice_kv(this_chroma_genprops, {{'i', it->second}}, {{'i', 1}}));
 		}
 	      }
 	    }
@@ -1620,7 +1652,13 @@ namespace Chroma
 
       const bool zeroUnsmearedGraphsP = true;
 #    if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
+      // Set default device
       SBN::get_default_gpu_device() = SB::detail::get_default_gpu_device();
+      // Gather the current rank and the other ranks participating in this chroma
+      // NOTE: they first time they are invoked may involve communications, please do it before calling the previous callbacks
+      get_local_ranks();
+      get_global_ranks();
+      get_global_comm();
 #    endif
       const auto& corr = Hadron::evaluate_graphs_with_superb(
 	corr_graph, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
