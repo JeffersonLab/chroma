@@ -13,6 +13,7 @@
 #  define USE_SUPERBBLAS_WITH_GPU_SUPPORT
 #endif
 
+#ifdef BUILD_REDSTAR_DATALIB
 #include "algs/superb_contractions.h"
 #include "hadron/process_corrs.h"
 #include "io/adat_xmlio.h"
@@ -33,7 +34,6 @@
 #include "util/ferm/superb_contractions.h"
 #include "util/info/proginfo.h"
 
-#ifdef BUILD_SB
 namespace Chroma
 {
   /*!
@@ -1654,4 +1654,4 @@ namespace Chroma
 
 } // namespace Chroma
 
-#endif // BUILD_SB
+#endif // BUILD_REDSTAR_DATALIB
