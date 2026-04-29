@@ -260,8 +260,8 @@ namespace Chroma
       if (argv_i == std::string("-replicas") || argv_i == std::string("--chroma-replicas"))
       {
 	if( i + 1 < *argc ) {
-	  replicas = std::atoi(argv[i + 1]);
-	  if (replicas < 1)
+	  num_replicas = std::atoi((*argv)[i + 1]);
+	  if (num_replicas < 1)
 	  {
 	    std::cerr << "Error: invalid value for option -replicas. " << std::endl;
 	    exit(1);
@@ -282,7 +282,7 @@ namespace Chroma
       {
 	for (int j = 0; j < Nd; j++)
 	{
-	  logical_geom_volume *= std::atoi(argv[++i]);
+	  logical_geom_volume *= std::atoi((*argv)[++i]);
 	}
 	if (logical_geom_volume < 1)
 	{
@@ -293,7 +293,7 @@ namespace Chroma
     }
 
     // Modify the default communicator if several replicas are going to be launched
-    if (replicas > 1)
+    if (num_replicas > 1)
     {
       if (!QMP_is_initialized())
       {

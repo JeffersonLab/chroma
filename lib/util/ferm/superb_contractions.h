@@ -862,9 +862,9 @@ namespace Chroma
       {
 	static MPI_Comm comm = [] {
 	  MPI_Comm comm;
-	  if (QMP_get_mpi_comm(QMP_comm_get_default(), &comm) != QMP_SUCCESS)
+	  if (QMP_get_hidden_comm(QMP_comm_get_default(), reinterpret_cast<void**>(&comm)) != QMP_SUCCESS)
 	  {
-	    std::cerr << "QMP_get_mpi_comm failed!" << std::endl;
+	    std::cerr << "QMP_get_hidden_comm failed!" << std::endl;
 	    std::exit(1);
 	  }
 	  // Check that the MPI rank coincides with the one
