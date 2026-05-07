@@ -861,22 +861,28 @@ namespace Chroma
       inline MPI_Comm getDefaultComm()
       {
 	static MPI_Comm comm = [] {
-	  MPI_Comm comm;
-	  if (QMP_get_hidden_comm(QMP_comm_get_default(), reinterpret_cast<void**>(&comm)) != QMP_SUCCESS)
+	  if (!QMP_is_initialized())
+	  {
+	    std::cerr << "QMP hasn't been initialized!" << std::endl;
+	    std::exit(1);
+	  }
+	  MPI_Comm* comm = nullptr;
+	  if (QMP_get_hidden_comm(QMP_comm_get_default(), reinterpret_cast<void**>(&comm)) !=
+	      QMP_SUCCESS)
 	  {
 	    std::cerr << "QMP_get_hidden_comm failed!" << std::endl;
 	    std::exit(1);
 	  }
 	  // Check that the MPI rank coincides with the one
 	  int nprocs, rank;
-	  superbblas::detail::MPI_check(MPI_Comm_size(comm, &nprocs));
-	  superbblas::detail::MPI_check(MPI_Comm_rank(comm, &rank));
+	  superbblas::detail::MPI_check(MPI_Comm_size(*comm, &nprocs));
+	  superbblas::detail::MPI_check(MPI_Comm_rank(*comm, &rank));
 	  if (Layout::nodeNumber() != rank || Layout::numNodes() != nprocs)
 	  {
 	    std::cerr << "unsupported QDP comm by superbblas!" << std::endl;
 	    std::exit(1);
 	  }
-	  return comm;
+	  return *comm;
 	}();
 	return comm;
       }
