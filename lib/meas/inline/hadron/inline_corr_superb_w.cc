@@ -907,8 +907,8 @@ namespace Chroma
 
       // This object is in the DR basis; create matrices to convert it to DP
       const auto& dr_left_global =
-	SBN::slice_kv(Hadron::detail::adjForSpins(
-			Hadron::detail::getDiracToDRMat(SBN::Options::Distribution::Replicated)), //
+	SBN::slice_kv(Hadron::detail::adjForSpins(Hadron::detail::getDiracToDRMat(
+			SBN::Options::Distribution::Replicated, get_global_comm())), //
 		      {{'s', ev_from.at(2)}}, {{'s', ev_size.at(2)}});
       const auto& dr_left = SBN::get_local_tensor(dr_left_global);
       const auto& dr_right = SBN::slice_kv(Hadron::detail::getDiracToDRMat(),
@@ -916,7 +916,8 @@ namespace Chroma
 
       // Create matrices to convert it to DP and with pre/post applying \gamma_5
       const auto dr_g5_left_global = Hadron::detail::contractSpins(
-	dr_left_global, Hadron::detail::chromaGamma5(SBN::Options::Distribution::Replicated));
+	dr_left_global,
+	Hadron::detail::chromaGamma5(SBN::Options::Distribution::Replicated, get_global_comm()));
       const auto& dr_g5_left = SBN::get_local_tensor(dr_g5_left_global);
       const auto dr_g5_right =
 	Hadron::detail::contractSpins(Hadron::detail::chromaGamma5(), dr_right);
@@ -1201,8 +1202,8 @@ namespace Chroma
 
       // This object is in the DR basis; create matrices to convert it to DP
       const auto& dr_left_global =
-	SBN::slice_kv(Hadron::detail::adjForSpins(
-			Hadron::detail::getDiracToDRMat(SBN::Options::Distribution::Replicated)), //
+	SBN::slice_kv(Hadron::detail::adjForSpins(Hadron::detail::getDiracToDRMat(
+			SBN::Options::Distribution::Replicated, get_global_comm())), //
 		      {{'s', ev_from.at(2)}}, {{'s', ev_size.at(2)}});
       const auto& dr_left = SBN::get_local_tensor(dr_left_global);
       const auto& dr_right = SBN::slice_kv(Hadron::detail::getDiracToDRMat(),
@@ -1210,7 +1211,8 @@ namespace Chroma
 
       // Create matrices to convert it to DP and with pre/post applying \gamma_5
       const auto dr_g5_left_global = Hadron::detail::contractSpins(
-	dr_left_global, Hadron::detail::chromaGamma5(SBN::Options::Distribution::Replicated));
+	dr_left_global,
+	Hadron::detail::chromaGamma5(SBN::Options::Distribution::Replicated, get_global_comm()));
       const auto& dr_g5_left = SBN::get_local_tensor(dr_g5_left_global);
 
       // Create chroma versions of dr_right and dr_g5_left
