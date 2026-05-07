@@ -108,7 +108,7 @@ namespace Chroma
       param.num_vecs = 0;
       read(paramtop, "num_vecs", param.num_vecs);
 
-      param.max_rhs = 0;
+      param.max_rhs = 1;
       if (paramtop.count("max_rhs") > 0)
       {
 	read(paramtop, "max_rhs", param.max_rhs);
@@ -163,6 +163,20 @@ namespace Chroma
 	read(paramtop, "ensemble", param.ensemble);
       }
 
+      param.max_moms_in_contraction_for_genprops = 1;
+      if (paramtop.count("max_moms_in_contraction_for_genprops") > 0)
+      {
+	read(paramtop, "max_moms_in_contraction_for_genprops",
+	     param.max_moms_in_contraction_for_genprops);
+      }
+
+      param.max_tslices_in_contraction_for_genprops = 1;
+      if (paramtop.count("max_tslices_in_contraction_for_genprops") > 0)
+      {
+	read(paramtop, "max_tslices_in_contraction_for_genprops",
+	     param.max_tslices_in_contraction_for_genprops);
+      }
+
       param.testing = false;
       if (paramtop.count("testing") > 0)
       {
@@ -180,6 +194,8 @@ namespace Chroma
 
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "max_rhs", param.max_rhs);
+      write(xml, "max_rhs", param.max_moms_in_contraction_for_genprops);
+      write(xml, "max_rhs", param.max_tslices_in_contraction_for_genprops);
       write(xml, "flavor_to_mass", param.flavor_to_mass);
       write(xml, "flavor_to_prop", param.flavor_to_prop);
       write(xml, "t_origin", param.t_origin);
@@ -448,6 +464,9 @@ namespace Chroma
 			 const SBN::Coor& ev_from, const SBN::Coor& ev_size,
 			 const std::string& dist_labels, const SBN::Tensor& guide, bool testing)
     {
+      SB::Tracker _t("generate mesons");
+      QDPIO::cout << "reading/generating mesons..." << std::endl;
+
       // Check input
       if (meson_keys.size() != perms.size())
 	throw std::runtime_error("invalid input");
@@ -615,6 +634,9 @@ namespace Chroma
 	}
       }
 
+      QDPIO::cout << "reading/generating mesons took " << _t.stopAndGetElapsedTime() << " s"
+		  << std::endl;
+
       return mesons;
     }
 
@@ -680,6 +702,9 @@ namespace Chroma
 			  const SBN::Coor& ev_from, const SBN::Coor& ev_size,
 			  const std::string& dist_labels, const SBN::Tensor& guide, bool testing)
     {
+      SB::Tracker _t("generate baryons");
+      QDPIO::cout << "reading/generating baryons..." << std::endl;
+
       if (baryon_keys.size() != perms.size() || baryon_keys.size() != do_conj.size())
 	throw std::runtime_error("invalid input");
       if (ev_from.size() != 3 || ev_size.size() != 3)
@@ -862,6 +887,9 @@ namespace Chroma
 	}
       }
 
+      QDPIO::cout << "reading/generating baryons took " << _t.stopAndGetElapsedTime() << " s"
+		  << std::endl;
+
       return baryons;
     }
 
@@ -888,6 +916,9 @@ namespace Chroma
 			const SBN::Coor& ev_from, const SBN::Coor& ev_size,
 			const std::string& dist_labels, const SBN::Tensor& guide, bool testing)
     {
+      SB::Tracker _t("generate props");
+      QDPIO::cout << "reading/generating props..." << std::endl;
+
       if (prop_keys.size() != perms.size() || prop_keys.size() != do_conj.size())
 	throw std::runtime_error("invalid input");
       if (ev_from.size() != 4 || ev_size.size() != 4)
@@ -935,7 +966,7 @@ namespace Chroma
       // Create output tensor
       SBN::Tensor props = SBN::create_tensor_with_local_components(
 	SBN::concat(ev_size, {-(int)prop_keys.size()}), "vwrsi", dist_labels,
-	SBN::Options::Alloc::Host, 0, 0, SBN::Options::IsEg::False, guide);
+	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, guide);
 
       // Try to get the mesons from the storage and annotate the missing keys
       std::vector<std::tuple<Hadron::KeyProp4ElementalOperator_t, bool, int>> local_missing_props;
@@ -1153,6 +1184,9 @@ namespace Chroma
 	}
       }
 
+      QDPIO::cout << "reading/generating props took " << _t.stopAndGetElapsedTime() << " s"
+		  << std::endl;
+
       return props;
     }
 
@@ -1176,11 +1210,15 @@ namespace Chroma
 			   const multi1d<LatticeColorMatrix>& u,
 			   const std::function<SB::ChimeraSolver(std::string)>& get_prop,
 			   int max_rhs, bool zero_values_for_outside_t_slices,
+			   int max_moms_in_contraction, int max_tslices_in_contraction,
 			   const std::vector<Hadron::KeyGenProp4ElementalOperator_t>& genprop_keys,
 			   const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 			   const SBN::Coor& ev_from, const SBN::Coor& ev_size,
 			   const std::string& dist_labels, const SBN::Tensor& guide, bool testing)
     {
+      SB::Tracker _t("generate genprops");
+      QDPIO::cout << "reading/generating genprops..." << std::endl;
+
       if (!zero_values_for_outside_t_slices)
 	throw std::runtime_error("unsupported case: zero_values_for_outside_t_slices is false!");
       if (genprop_keys.size() != perms.size() || genprop_keys.size() != do_conj.size())
@@ -1231,7 +1269,7 @@ namespace Chroma
       // Create output tensor
       SBN::Tensor genprops = SBN::create_tensor_with_local_components(
 	SBN::concat(ev_size, {-(int)genprop_keys.size()}), "vwrsi", dist_labels,
-	SBN::Options::Alloc::Host, 0, 0, SBN::Options::IsEg::False, guide);
+	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, guide);
 
       // Set all genprops to zero as the default value for the keys with tslice outside of t_source and t_sink
       SBN::set_zero(genprops);
@@ -1448,8 +1486,6 @@ namespace Chroma
 	};
 
 	const auto use_derivP = false;
-	const int max_moms_in_contraction = 1;
-	const int max_tslices_in_contraction = 1;
 	SB::doMomGammaDisp_contractions<7, Nd + 5, Nd + 5, SB::Complex>(
 	  u, inv_snk, inv_src, t_source, 0, num_tslices, moms, gamma_mats, disps, use_derivP, call,
 	  "qgmNnst", max_tslices_in_contraction, max_moms_in_contraction, inv_src.getDev());
@@ -1468,6 +1504,9 @@ namespace Chroma
 	    throw std::runtime_error("genprops not passing test");
 	}
       }
+
+      QDPIO::cout << "reading/generating genprops took " << _t.stopAndGetElapsedTime() << " s"
+		  << std::endl;
 
       return genprops;
     }
@@ -1646,10 +1685,11 @@ namespace Chroma
 	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
 	    const SBN::Tensor& perm) {
-	  return get_genprop_elementals(storage_genprop, colorvecsSto, u, get_prop,
-					params.param.max_rhs, zero_values_for_outside_t_slices,
-					genprop_keys, perms, do_conj, ev_from, ev_size, dist_labels,
-					perm, params.param.testing);
+	  return get_genprop_elementals(
+	    storage_genprop, colorvecsSto, u, get_prop, params.param.max_rhs,
+	    zero_values_for_outside_t_slices, params.param.max_moms_in_contraction_for_genprops,
+	    params.param.max_tslices_in_contraction_for_genprops, genprop_keys, perms, do_conj,
+	    ev_from, ev_size, dist_labels, perm, params.param.testing);
 	};
 
       const bool zeroUnsmearedGraphsP = true;
@@ -1666,9 +1706,11 @@ namespace Chroma
 	corr_graph, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
 	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward);
 
-      QDPIO::cout << "Storing the correlation functions" << std::endl;
-      if (Layout::nodeNumber() == 0)
+      // Store the correlation functions
+      // NOTE: only process zero have the values for the correlation functions
+      if (corr.size() > 0)
       {
+	QDPIO::cout << "Storing the correlation functions" << std::endl;
 	const int decay_dir = 3;
 	Hadron::writeCorrMap(corr, params.param.ensemble, corr_graph.layout.latt_size, decay_dir,
 			     params.param.t_origin, params.named_obj.corr_file);
