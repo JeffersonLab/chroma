@@ -462,7 +462,7 @@ namespace Chroma
 			 const std::vector<Hadron::KeyMesonElementalOperator_t>& meson_keys,
 			 const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 			 const SBN::Coor& ev_from, const SBN::Coor& ev_size,
-			 const std::string& dist_labels, const SBN::Tensor& guide, bool testing)
+			 const std::string& dist_labels, bool testing)
     {
       SB::Tracker _t("generate mesons");
       QDPIO::cout << "reading/generating mesons..." << std::endl;
@@ -489,7 +489,7 @@ namespace Chroma
       // Create output tensor
       SBN::Tensor mesons = SBN::create_tensor_with_local_components(
 	{ev_size.at(0), ev_size.at(1), -(int)meson_keys.size()}, "vwi", dist_labels,
-	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, guide);
+	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, {}, get_global_comm());
       const auto first_local_meson = SBN::get_local_srange(mesons).at(0).at('i');
 
       // Try to get the mesons from the storage and annotate the missing keys
@@ -581,7 +581,6 @@ namespace Chroma
 	}
       }
 
-      const auto this_chroma_mesons = SBN::get_tensor_supported_on(mesons, get_global_comm());
       for (const auto& it : from_tslice_left_right_phases_to_momenta_displacement)
       {
 	const auto& [t_source, left_phase, right_phase] = it.first;
@@ -608,7 +607,7 @@ namespace Chroma
 	    ti = SBN::slice_kv(ti, //
 			       {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}},
 			       {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}});
-	    SBN::copyTo(ti, SBN::slice_kv(this_chroma_mesons, {{'i', index}}, {{'i', 1}}));
+	    SBN::copyTo(ti, SBN::slice_kv(mesons, {{'i', index}}, {{'i', 1}}));
 	  }
 	};
 
@@ -637,7 +636,7 @@ namespace Chroma
       QDPIO::cout << "reading/generating mesons took " << _t.stopAndGetElapsedTime() << " s"
 		  << std::endl;
 
-      return mesons;
+      return SBN::get_local_tensor_tight(mesons);
     }
 
     inline std::tuple<Hadron::KeyBaryonElementalOperator_t, int>
@@ -700,7 +699,7 @@ namespace Chroma
 			  const std::vector<Hadron::KeyBaryonElementalOperator_t>& baryon_keys,
 			  const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 			  const SBN::Coor& ev_from, const SBN::Coor& ev_size,
-			  const std::string& dist_labels, const SBN::Tensor& guide, bool testing)
+			  const std::string& dist_labels, bool testing)
     {
       SB::Tracker _t("generate baryons");
       QDPIO::cout << "reading/generating baryons..." << std::endl;
@@ -732,7 +731,7 @@ namespace Chroma
       // Create output tensor
       SBN::Tensor baryons = SBN::create_tensor_with_local_components(
 	SBN::concat(ev_size, {-(int)baryon_keys.size()}), "vwxi", dist_labels,
-	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, guide);
+	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, {}, get_global_comm());
 
       // Try to get the mesons from the storage and annotate the missing keys
       std::vector<std::tuple<Hadron::KeyBaryonElementalOperator_t, int, bool, int>>
@@ -829,7 +828,6 @@ namespace Chroma
 	}
       }
 
-      const auto this_chroma_baryons = SBN::get_tensor_supported_on(baryons, get_global_comm());
       for (const auto& it : from_tslice_and_phase_to_momenta_displacement)
       {
 	const int t_slice = std::get<0>(it.first);
@@ -859,7 +857,7 @@ namespace Chroma
 	      if (do_conj)
 		ti = SBN::conj(ti);
 	      SBN::copyTo(SBN::scale(ti, (double)scalar),
-			  SBN::slice_kv(this_chroma_baryons, {{'i', index}}, {{'i', 1}}));
+			  SBN::slice_kv(baryons, {{'i', index}}, {{'i', 1}}));
 	    }
 	  });
 
@@ -890,7 +888,107 @@ namespace Chroma
       QDPIO::cout << "reading/generating baryons took " << _t.stopAndGetElapsedTime() << " s"
 		  << std::endl;
 
-      return baryons;
+      return SBN::get_local_tensor_tight(baryons);
+    }
+
+    using mass_phase_tsource_slices_spin_ev_from_size_conj_tensor =
+      std::tuple<std::string, SB::Coor<3>, int, int, int, int, int, int, int, bool,
+		 SB::Tensor<Nd + 5, SB::Complex>>;
+    using Cache =
+      std::vector<std::pair<int, mass_phase_tsource_slices_spin_ev_from_size_conj_tensor>>;
+
+    /// Reserve space in the cache for a new element
+    /// \param cache: cache
+    /// \param max_cache_size: maximum number of elements in the cache
+
+    void make_space_to_add_entry_in_cache(Cache& cache, std::size_t max_cache_size)
+    {
+      if (max_cache_size <= 1)
+      {
+	cache.resize(0);
+	return;
+      }
+      while (cache.size() + 1 > max_cache_size)
+      {
+	std::size_t index = 0;
+	for (std::size_t i = 1; i < cache.size(); ++i)
+	  if (cache.at(i).first < cache.at(index).first)
+	    index = i;
+	std::swap(cache.at(index), cache.back());
+	cache.pop_back();
+      }
+    }
+
+    /// Find an element into the cache of inverted distillation vectors
+    /// \param cache: cache
+    /// \param mass_label: mass label
+    /// \param t_source: time source to invert
+    /// \param first_tslice: first time-slice to store
+    /// \param num_tslices: number of time-slices stored
+    /// \param spin_from: first spin inverted
+    /// \param spin_size: number of spins inverted
+    /// \param conj: whether \gamma_5 was applied
+    /// \param ev_from: index of the first distillation vector inverted
+    /// \param ev_size: number of distillation vectors inverted
+    /// \param Lt: lattice time extend
+
+    SB::Tensor<Nd + 5, SB::Complex> find_entry_in_cache(Cache& cache, const std::string& mass_label,
+							const SB::Coor<3>& phase, int t_source,
+							int first_tslice, int num_tslices,
+							int spin_from, int spin_size, bool conj,
+							int ev_from, int ev_size, int Lt)
+    {
+      for (std::size_t cache_idx = 0; cache_idx < cache.size(); cache_idx++)
+      {
+	const auto& [cache_mass_label, cache_phase, cache_tsource, cache_first_tslice,
+		     cache_num_slices, cache_spin_from, cache_spin_size, cache_ev_from,
+		     cache_ev_size, cache_conj, t] = cache.at(cache_idx).second;
+	const auto norm_first_tslice = SB::normalize_coor(first_tslice - cache_first_tslice, Lt);
+	if (cache_mass_label == mass_label && cache_phase == phase && cache_tsource == t_source &&
+	    norm_first_tslice < cache_num_slices &&
+	    cache_num_slices >= norm_first_tslice + num_tslices && cache_conj == conj &&
+	    cache_spin_from <= spin_from &&
+	    cache_spin_from + cache_spin_size >= spin_from + spin_size &&
+	    cache_ev_from <= ev_from && cache_ev_from + cache_ev_size >= ev_from + ev_size)
+	{
+	  cache.at(cache_idx).first++;
+	  return t.kvslice_from_size({{'t', norm_first_tslice},
+				      {'s', spin_from - cache_spin_from},
+				      {'n', ev_from - cache_ev_from}},
+				     {{'t', num_tslices}, {'s', spin_size}, {'n', ev_size}});
+	}
+      }
+
+      return {};
+    }
+
+    /// Find an element into the cache of inverted distillation vectors
+    /// \param cache: cache
+    /// \param max_cache_size: maximum number of elements in the cache
+    /// \param mass_label: mass label
+    /// \param t_source: time source to invert
+    /// \param first_tslice: first time-slice to store
+    /// \param num_tslices: number of time-slices stored
+    /// \param spin_from: first spin inverted
+    /// \param spin_size: number of spins inverted
+    /// \param conj: whether \gamma_5 was applied
+    /// \param ev_from: index of the first distillation vector inverted
+    /// \param ev_size: number of distillation vectors inverted
+    /// \param tensor: inverted distillation vectors
+
+    void insert_entry_in_cache(Cache& cache, std::size_t max_cache_size,
+			       const std::string& mass_label, const SB::Coor<3>& phase,
+			       int t_source, int first_tslice, int num_tslices, int spin_from,
+			       int spin_size, bool conj, int ev_from, int ev_size,
+			       SB::Tensor<Nd + 5, SB::Complex> tensor)
+    {
+      make_space_to_add_entry_in_cache(cache, max_cache_size);
+      if (max_cache_size > 0)
+      {
+	cache.push_back({0, mass_phase_tsource_slices_spin_ev_from_size_conj_tensor{
+			      mass_label, phase, t_source, first_tslice, num_tslices, spin_from,
+			      spin_size, ev_from, ev_size, conj, tensor}});
+      }
     }
 
     /// Return the props
@@ -900,6 +998,7 @@ namespace Chroma
     /// \param get_prop: get solver from mass label
     /// \param prop_keys: list of props keys
     /// \param max_rhs: maximum RHS to solve at once
+    /// \param cache: inversions cache
     /// \param perms: list of permutations, one for each prop key
     /// \param do_conj: list of whether to conjugate the prop, one for each prop key
     /// \param ev_from: first eigenvector to return for "vwx"
@@ -911,10 +1010,11 @@ namespace Chroma
     get_prop_elementals(const ADATIO::StorageProp4& db, const SB::ColorvecsStorage& colorvecsSto,
 			const multi1d<LatticeColorMatrix>& u,
 			const std::function<SB::ChimeraSolver(std::string)>& get_prop, int max_rhs,
+			Cache& cache, const int max_cache_size,
 			const std::vector<Hadron::KeyProp4ElementalOperator_t>& prop_keys,
 			const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 			const SBN::Coor& ev_from, const SBN::Coor& ev_size,
-			const std::string& dist_labels, const SBN::Tensor& guide, bool testing)
+			const std::string& dist_labels, bool testing)
     {
       SB::Tracker _t("generate props");
       QDPIO::cout << "reading/generating props..." << std::endl;
@@ -966,7 +1066,7 @@ namespace Chroma
       // Create output tensor
       SBN::Tensor props = SBN::create_tensor_with_local_components(
 	SBN::concat(ev_size, {-(int)prop_keys.size()}), "vwrsi", dist_labels,
-	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, guide);
+	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, {}, get_global_comm());
 
       // Try to get the mesons from the storage and annotate the missing keys
       std::vector<std::tuple<Hadron::KeyProp4ElementalOperator_t, bool, int>> local_missing_props;
@@ -1111,7 +1211,6 @@ namespace Chroma
 	}
       }
 
-      const auto this_chroma_props = SBN::get_tensor_supported_on(props, get_global_comm());
       for (const auto& it : from_mass_tsource_source_sink_phases_conj_to_tsink_and_indices)
       {
 	const auto& [mass_label, t_source, source_phase, sink_phase, do_conj_] = it.first;
@@ -1141,8 +1240,9 @@ namespace Chroma
 	}
 	sinks_colorvecs = sinks_colorvecs.rename_dims({{'n', 'N'}, {'t', 'T'}});
 
-	// Callback
-	const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int sink_spin, int first_n) {
+	// Function to contract with all sinks
+	const auto contract_with_sink = [&](SB::Tensor<Nd + 5, SB::Complex> tensor,
+					    int first_spin_src, int first_n) {
 	  for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
 	  {
 	    const auto& r =
@@ -1157,17 +1257,67 @@ namespace Chroma
 	    {
 	      const auto& index = it->second;
 	      auto tii = SBN::relabel(ti, {{'n', 'w'}, {'N', 'v'}, {'s', 'r'}, {'S', 's'}});
-	      SBN::copyTo(
-		tii,
-		SBN::slice_kv(this_chroma_props, {{'s', sink_spin}, {'w', first_n}, {'i', index}},
-			      {{'s', 1}, {'w', SBN::get_kv_size(tii).at('w')}, {'i', 1}}));
+	      SBN::copyTo(tii, SBN::slice_kv(props,
+					     {{'s', first_spin_src}, {'w', first_n}, {'i', index}},
+					     {{'s', SBN::get_kv_size(tii).at('s')},
+					      {'w', SBN::get_kv_size(tii).at('w')},
+					      {'i', 1}}));
 	    }
 	  }
 	};
 
-	// Do the inversions
-	doInversion<SB::Complex>(get_prop(mass_label), source_colorvec, t_source,
-				 !do_conj ? dr_right_chroma : dr_g5_right_chroma, max_rhs, call);
+	// Look into the cache
+	const int Lt = Layout::lattSize()[decay_dir];
+	int num_tslices = 0;
+	for (const auto t_sink : t_sinks)
+	  num_tslices = std::max(num_tslices, SB::normalize_coor(t_sink - t_source, Lt));
+	auto cache_tensor = find_entry_in_cache(cache, mass_label, source_phase, t_source, t_source,
+						num_tslices, ev_from.at(3), ev_size.at(3), do_conj,
+						ev_from.at(1), ev_size.at(1), Lt);
+	if (cache_tensor)
+	{
+	  contract_with_sink(cache_tensor, 0, 0);
+	}
+	else
+	{
+	  // Create the tensor for the cache
+	  SB::Tensor<Nd + 5, SB::Complex> cache_tensor;
+	  if (max_cache_size > 0)
+	  {
+	    const auto order_out = "cSxyztXns";
+	    make_space_to_add_entry_in_cache(cache, max_cache_size);
+	    cache_tensor = SB::Tensor<Nd + 5, SB::Complex>(
+	      order_out,
+	      SB::latticeSize<Nd + 5>(
+		order_out,
+		{{'t', num_tslices}, {'S', Ns}, {'s', ev_size.at(3)}, {'n', ev_size.at(1)}}),
+	      SB::OnDefaultDevice);
+	  }
+
+	  // Callback
+	  const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int src_spin, int first_n) {
+	    contract_with_sink(tensor, src_spin, first_n);
+	    if (cache_tensor)
+	    {
+	      tensor.kvslice_from_size({{'t', t_source}}, {{'t', num_tslices}})
+		.copyTo(cache_tensor.kvslice_from_size(
+		  {{'s', src_spin}, {'n', first_n}},
+		  {{'s', tensor.kvdim().at('s')}, {'n', tensor.kvdim().at('n')}}));
+	      }
+	  };
+
+	  // Do the inversions
+	  doInversion<SB::Complex>(get_prop(mass_label), source_colorvec, t_source,
+				   !do_conj ? dr_right_chroma : dr_g5_right_chroma, max_rhs, call);
+
+	  // Insert the solution into the cache
+	  if (cache_tensor)
+	  {
+	    insert_entry_in_cache(cache, max_cache_size, mass_label, source_phase, t_source,
+				  t_source, num_tslices, ev_from.at(3), ev_size.at(3), do_conj,
+				  ev_from.at(1), ev_size.at(1), cache_tensor);
+	  }
+	}
       }
 
       // If testing, make sure that recomputed mesons are similar to the ones got from storage
@@ -1187,7 +1337,7 @@ namespace Chroma
       QDPIO::cout << "reading/generating props took " << _t.stopAndGetElapsedTime() << " s"
 		  << std::endl;
 
-      return props;
+      return SBN::get_local_tensor_tight(props);
     }
 
     /// Return the genprops
@@ -1197,6 +1347,7 @@ namespace Chroma
     /// \param get_genprop: get solver from mass label
     /// \param genprop_keys: list of genprops keys
     /// \param max_rhs: maximum RHS to solve at once
+    /// \param cache: inversions cache
     /// \param perms: list of permutations, one for each genprop key
     /// \param do_conj: list of whether to conjugate the genprop, one for each genprop key
     /// \param ev_from: first eigenvector to return for "vwx"
@@ -1204,19 +1355,19 @@ namespace Chroma
     /// \param dist_labels: dimensions to be distributed, some of "vwxi"
     /// \param alloc: allocation for the returned tensor
 
-    inline SBN::Tensor
-    get_genprop_elementals(const ADATIO::StorageGenprop4& db,
-			   const SB::ColorvecsStorage& colorvecsSto,
-			   const multi1d<LatticeColorMatrix>& u,
-			   const std::function<SB::ChimeraSolver(std::string)>& get_prop,
-			   int max_rhs, bool zero_values_for_outside_t_slices,
-			   int max_moms_in_contraction, int max_tslices_in_contraction,
-			   const std::vector<Hadron::KeyGenProp4ElementalOperator_t>& genprop_keys,
-			   const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
-			   const SBN::Coor& ev_from, const SBN::Coor& ev_size,
-			   const std::string& dist_labels, const SBN::Tensor& guide, bool testing)
+    inline SBN::Tensor get_genprop_elementals(
+      const ADATIO::StorageGenprop4& db, const SB::ColorvecsStorage& colorvecsSto,
+      const multi1d<LatticeColorMatrix>& u,
+      const std::function<SB::ChimeraSolver(std::string)>& get_prop, int max_rhs, Cache& cache,
+      const int max_cache_size, bool zero_values_for_outside_t_slices, int max_moms_in_contraction,
+      int max_tslices_in_contraction,
+      const std::vector<Hadron::KeyGenProp4ElementalOperator_t>& genprop_keys,
+      const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
+      const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
+      bool testing)
     {
       SB::Tracker _t("generate genprops");
+      std::cout << "enter " << SBN::get_rank() << std::endl;
       QDPIO::cout << "reading/generating genprops..." << std::endl;
 
       if (!zero_values_for_outside_t_slices)
@@ -1269,7 +1420,7 @@ namespace Chroma
       // Create output tensor
       SBN::Tensor genprops = SBN::create_tensor_with_local_components(
 	SBN::concat(ev_size, {-(int)genprop_keys.size()}), "vwrsi", dist_labels,
-	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, guide);
+	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, {}, get_global_comm());
 
       // Set all genprops to zero as the default value for the keys with tslice outside of t_source and t_sink
       SBN::set_zero(genprops);
@@ -1395,7 +1546,6 @@ namespace Chroma
 	}
       }
 
-      const auto this_chroma_genprops = SBN::get_tensor_supported_on(genprops, get_global_comm());
       for (const auto& it :
 	   from_mass_tsource_sink_phase_source_sink_to_moms_disps_gammas_and_tslides_vs_indices)
       {
@@ -1413,7 +1563,16 @@ namespace Chroma
 	// Invert a source and get the time slices
 	const auto& get_inv_tslice =
 	  [&](int t_slice, const SB::Coor<3>& phase, const SB::Tensor<2, SB::Complex>& spins,
-	      int ev_from, int ev_size) {
+	      int spin_from, int spin_size, int ev_from, int ev_size, bool do_conj) {
+
+	    // Look at the cache
+	    SB::Tensor<Nd + 5, SB::Complex> cache_tensor;
+	    cache_tensor =
+	      find_entry_in_cache(cache, mass_label, phase, t_slice, t_source, num_tslices,
+				  spin_from, spin_size, do_conj, ev_from, ev_size, Lt);
+	    if (cache_tensor)
+	      return cache_tensor;
+
 	    // Get num_vecs colorvecs on time-slice t_slice
 	    const int decay_dir = 3;
 	    SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
@@ -1421,30 +1580,43 @@ namespace Chroma
 	    source_colorvec = source_colorvec.kvslice_from_size({{'n', ev_from}}, {{'n', ev_size}});
 	    source_colorvec = SB::phaseColorvecs(source_colorvec, t_slice, phase);
 
+	    // Create the tensor for the cache
 	    const auto order_out = "cSxyztXns";
-	    SB::Tensor<Nd + 5, SB::Complex> r(
+	    make_space_to_add_entry_in_cache(cache, max_cache_size);
+	    cache_tensor = SB::Tensor<Nd + 5, SB::Complex>(
 	      order_out,
 	      SB::latticeSize<Nd + 5>(
 		order_out,
 		{{'t', num_tslices}, {'S', Ns}, {'s', spins.kvdim().at('s')}, {'n', ev_size}}),
 	      SB::OnDefaultDevice);
-	    const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int sink_spin,
+
+	    // Do the inversions and copy the time slices into the cache tensor
+	    const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int first_spin,
 				  int first_n) {
 	      tensor.kvslice_from_size({{'t', t_source}}, {{'t', num_tslices}})
-		.copyTo(r.kvslice_from_size({{'s', sink_spin}, {'n', first_n}}, {{'s', 1}}));
+		.copyTo(cache_tensor.kvslice_from_size(
+		  {{'s', first_spin}, {'n', first_n}},
+		  {{'s', tensor.kvdim().at('s')}, {'n', tensor.kvdim().at('n')}}));
 	    };
 	    doInversion<SB::Complex>(PP, source_colorvec, t_slice, spins, max_rhs, call);
-	    return r;
+
+	    // Insert the solution into the cache
+	    insert_entry_in_cache(cache, max_cache_size, mass_label, phase, t_slice, t_source,
+				  num_tslices, spin_from, spin_size, do_conj, ev_from, ev_size,
+				  cache_tensor);
+
+	    return cache_tensor;
 	  };
 
 	// Get num_vecs colorvecs on time-slice t_source
 	auto inv_src =
-	  get_inv_tslice(t_source, source_phase, dr_right_chroma, ev_from.at(1), ev_size.at(1));
+	  get_inv_tslice(t_source, source_phase, dr_right_chroma, ev_from.at(3), ev_size.at(3),
+			 ev_from.at(1), ev_size.at(1), false /*no conj */);
 
 	// Get num_vecs colorvecs on time-slice t_sink
-	auto inv_snk =
-	  get_inv_tslice(t_sink, sink_phase, dr_g5_left_conj_chroma, ev_from.at(0), ev_size.at(0))
-	    .rename_dims({{'n', 'N'}, {'s', 'q'}, {'S', 'Q'}});
+	auto inv_snk = get_inv_tslice(t_sink, sink_phase, dr_g5_left_conj_chroma, ev_from.at(2),
+				      ev_size.at(2), ev_from.at(0), ev_size.at(0), true /* conj */)
+			 .rename_dims({{'n', 'N'}, {'s', 'q'}, {'S', 'Q'}});
 
 	// Get the gamma matrices, premultiplied by g5
 	const int g5 = Ns * Ns - 1;
@@ -1477,8 +1649,7 @@ namespace Chroma
 		auto range = mom_disp_gamma_tslice_to_index.equal_range(k);
 		for (auto it = range.first; it != range.second; ++it)
 		{
-		  SBN::copyTo(ti,
-			      SBN::slice_kv(this_chroma_genprops, {{'i', it->second}}, {{'i', 1}}));
+		  SBN::copyTo(ti, SBN::slice_kv(genprops, {{'i', it->second}}, {{'i', 1}}));
 		}
 	      }
 	    }
@@ -1508,7 +1679,7 @@ namespace Chroma
       QDPIO::cout << "reading/generating genprops took " << _t.stopAndGetElapsedTime() << " s"
 		  << std::endl;
 
-      return genprops;
+      return SBN::get_local_tensor_tight(genprops);
     }
 
     // Function call
@@ -1653,43 +1824,54 @@ namespace Chroma
       const bool zero_values_for_outside_t_slices = true;
       storage_genprop.open(params.param.genprop_files, nev, zero_values_for_outside_t_slices);
 
+      /// Inverted distillation vectors cache
+      Cache cache;
+      const auto max_cache_size = 2;
+
       const auto meson_callback =
 	[&](const std::vector<Hadron::KeyMesonElementalOperator_t>& meson_keys,
 	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
 	    const SBN::Tensor& guide) {
+	  if (SBN::get_comm(guide).ranks != SBN::get_local_comm().ranks)
+	    throw std::runtime_error("unsupported case");
 	  return get_meson_elementals(storage_meson, colorvecsSto, u, u_smr, meson_keys, perms,
-				      do_conj, ev_from, ev_size, dist_labels, guide,
-				      params.param.testing);
+				      do_conj, ev_from, ev_size, dist_labels, params.param.testing);
 	};
       const auto baryon_callback =
 	[&](const std::vector<Hadron::KeyBaryonElementalOperator_t>& baryon_keys,
 	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
-	    const SBN::Tensor& perm) {
+	    const SBN::Tensor& guide) {
+	  if (SBN::get_comm(guide).ranks != SBN::get_local_comm().ranks)
+	    throw std::runtime_error("unsupported case");
 	  return get_baryon_elementals(storage_baryon, colorvecsSto, u, u_smr, baryon_keys, perms,
-				       do_conj, ev_from, ev_size, dist_labels, perm,
+				       do_conj, ev_from, ev_size, dist_labels,
 				       params.param.testing);
 	};
       const auto prop_callback =
 	[&](const std::vector<Hadron::KeyProp4ElementalOperator_t>& prop_keys,
 	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
-	    const SBN::Tensor& perm) {
+	    const SBN::Tensor& guide) {
+	  if (SBN::get_comm(guide).ranks != SBN::get_local_comm().ranks)
+	    throw std::runtime_error("unsupported case");
 	  return get_prop_elementals(storage_prop, colorvecsSto, u, get_prop, params.param.max_rhs,
-				     prop_keys, perms, do_conj, ev_from, ev_size, dist_labels, perm,
-				     params.param.testing);
+				     cache, max_cache_size, prop_keys, perms, do_conj, ev_from,
+				     ev_size, dist_labels, params.param.testing);
 	};
       const auto genprop_callback =
 	[&](const std::vector<Hadron::KeyGenProp4ElementalOperator_t>& genprop_keys,
 	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
-	    const SBN::Tensor& perm) {
+	    const SBN::Tensor& guide) {
+	  if (SBN::get_comm(guide).ranks != SBN::get_local_comm().ranks)
+	    throw std::runtime_error("unsupported case");
 	  return get_genprop_elementals(
-	    storage_genprop, colorvecsSto, u, get_prop, params.param.max_rhs,
+	    storage_genprop, colorvecsSto, u, get_prop, params.param.max_rhs, cache, max_cache_size,
 	    zero_values_for_outside_t_slices, params.param.max_moms_in_contraction_for_genprops,
 	    params.param.max_tslices_in_contraction_for_genprops, genprop_keys, perms, do_conj,
-	    ev_from, ev_size, dist_labels, perm, params.param.testing);
+	    ev_from, ev_size, dist_labels, params.param.testing);
 	};
 
       const bool zeroUnsmearedGraphsP = true;
@@ -1705,6 +1887,9 @@ namespace Chroma
       const auto& corr = Hadron::evaluate_graphs_with_superb(
 	corr_graph, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
 	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward);
+
+      // Clear cache
+      cache.clear();
 
       // Store the correlation functions
       // NOTE: only process zero have the values for the correlation functions
