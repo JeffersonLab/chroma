@@ -48,6 +48,8 @@ namespace Chroma
 
 	int 			num_vecs;               /*! rank of the distillation basis */
 	int 			max_rhs;                /*! maximum rhs to solve at once */
+	int 			max_vecs_in_contraction_for_baryons; /*! maximum vecs to contract at once with baryons */
+	int 			max_moms_in_contraction_for_baryons; /*! maximum moms to contract at once with baryons */
 	int 			max_moms_in_contraction_for_genprops; /*! maximum moms to contract at once with genprops */
 	int 			max_tslices_in_contraction_for_genprops; /*! maximum time-slices to contract at once with genprops */
 	int                     decay_dir;              /*!< Decay direction */

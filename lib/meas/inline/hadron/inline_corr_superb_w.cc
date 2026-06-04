@@ -163,6 +163,20 @@ namespace Chroma
 	read(paramtop, "ensemble", param.ensemble);
       }
 
+      param.max_vecs_in_contraction_for_baryons = 4;
+      if (paramtop.count("max_vecs_in_contraction_for_baryons") > 0)
+      {
+	read(paramtop, "max_vecs_in_contraction_for_baryons",
+	     param.max_vecs_in_contraction_for_baryons);
+      }
+
+      param.max_moms_in_contraction_for_baryons = 1;
+      if (paramtop.count("max_moms_in_contraction_for_baryons") > 0)
+      {
+	read(paramtop, "max_moms_in_contraction_for_baryons",
+	     param.max_moms_in_contraction_for_baryons);
+      }
+
       param.max_moms_in_contraction_for_genprops = 1;
       if (paramtop.count("max_moms_in_contraction_for_genprops") > 0)
       {
@@ -194,8 +208,12 @@ namespace Chroma
 
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "max_rhs", param.max_rhs);
-      write(xml, "max_rhs", param.max_moms_in_contraction_for_genprops);
-      write(xml, "max_rhs", param.max_tslices_in_contraction_for_genprops);
+      write(xml, "max_vecs_in_contraction_for_baryons", param.max_vecs_in_contraction_for_baryons);
+      write(xml, "max_moms_in_contraction_for_baryons", param.max_moms_in_contraction_for_baryons);
+      write(xml, "max_moms_in_contraction_for_genprops",
+	    param.max_moms_in_contraction_for_genprops);
+      write(xml, "max_tslices_in_contraction_for_genprops",
+	    param.max_tslices_in_contraction_for_genprops);
       write(xml, "flavor_to_mass", param.flavor_to_mass);
       write(xml, "flavor_to_prop", param.flavor_to_prop);
       write(xml, "t_origin", param.t_origin);
@@ -442,6 +460,78 @@ namespace Chroma
 #  endif
     }
 
+    struct ColorvecCache {
+      const int max_cache_size;		   // max tslices entries
+      int num_vecs;			   // max vecs
+      std::vector<int> from_pos_to_tslice; // from position in v to tslice
+      std::vector<int> hits;		   // number of hist in each position
+      SB::Tensor<Nd + 3, SB::ComplexD> v;  // cache of colorvecs
+    };
+
+    inline SB::Tensor<Nd + 3, SB::ComplexD> get_colorvec(ColorvecCache& colorvecCache,
+							 const SB::ColorvecsStorage& colorvecsSto,
+							 const multi1d<LatticeColorMatrix>& u,
+							 int tslice, int num_vecs)
+    {
+      // Invalidate the whole cache if the number of vectors is different
+      if (colorvecCache.num_vecs < num_vecs)
+      {
+	colorvecCache.from_pos_to_tslice.resize(0);
+	colorvecCache.hits.resize(0);
+	colorvecCache.v = SB::Tensor<Nd + 3, SB::ComplexD>();
+      }
+
+      // Initialize the cache if it is empty
+      if (colorvecCache.from_pos_to_tslice.size() == 0)
+      {
+	colorvecCache.num_vecs = num_vecs;
+	const auto order = "cxyztXn";
+	colorvecCache.v = SB::Tensor<Nd + 3, SB::ComplexD>(
+	  order,
+	  SB::latticeSize<Nd + 3>(
+	    order, {{'X', 1}, {'t', colorvecCache.max_cache_size}, {'n', colorvecCache.num_vecs}}),
+	  SB::OnDefaultDevice);
+      }
+
+      // Look for the tslice
+      for (std::size_t i = 0; i < colorvecCache.from_pos_to_tslice.size(); ++i)
+      {
+	if (colorvecCache.from_pos_to_tslice.at(i) == tslice)
+	{
+	  colorvecCache.hits.at(i)++;
+	  return colorvecCache.v.kvslice_from_size({{'t', (int)i}}, {{'t', 1}, {'n', num_vecs}});
+	}
+      }
+
+      // Look for the entry with less hits or add a new entry
+      std::size_t pos_with_less_hits = 0;
+      if (colorvecCache.from_pos_to_tslice.size() >= colorvecCache.max_cache_size)
+      {
+	for (std::size_t i = 1; i < colorvecCache.hits.size(); ++i)
+	{
+	  if (colorvecCache.hits.at(pos_with_less_hits) > colorvecCache.hits.at(i))
+	    pos_with_less_hits = i;
+	}
+      }
+      else
+      {
+	pos_with_less_hits = colorvecCache.from_pos_to_tslice.size();
+	colorvecCache.from_pos_to_tslice.push_back(-1);
+	colorvecCache.hits.push_back(0);
+      }
+
+      // Fill the selected entry with the colorvec
+      colorvecCache.from_pos_to_tslice.at(pos_with_less_hits) = tslice;
+      colorvecCache.hits.at(pos_with_less_hits) = 0;
+      const auto decay_dir = 3;
+      const auto colorvec = SB::getColorvecs<SB::Complex>(colorvecsSto, u, decay_dir, tslice, 1,
+							  colorvecCache.num_vecs, SB::none);
+      colorvec.copyTo(
+	colorvecCache.v.kvslice_from_size({{'t', (int)pos_with_less_hits}}, {{'t', 1}}));
+      return colorvecCache.v.kvslice_from_size({{'t', (int)pos_with_less_hits}},
+					       {{'t', 1}, {'n', num_vecs}});
+    }
+
     /// Return the mesons without spins
     /// \param db: meson storage
     /// \param colorvecsSto: colorvec storage
@@ -457,7 +547,7 @@ namespace Chroma
 
     inline SBN::Tensor
     get_meson_elementals(const ADATIO::StorageMeson& db, const SB::ColorvecsStorage& colorvecsSto,
-			 const multi1d<LatticeColorMatrix>& u,
+			 ColorvecCache& colorvecCache, const multi1d<LatticeColorMatrix>& u,
 			 const multi1d<LatticeColorMatrix>& u_smr,
 			 const std::vector<Hadron::KeyMesonElementalOperator_t>& meson_keys,
 			 const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
@@ -590,8 +680,8 @@ namespace Chroma
 
 	// Get num_vecs colorvecs on time-slice t_source
 	const int decay_dir = 3;
-	SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
-	  colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none);
+	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	  get_colorvec(colorvecCache, colorvecsSto, u, t_source, num_vecs);
 
 	// Callback
 	const auto call = [&](SB::Tensor<4, SB::ComplexD> tensor, int disp, int first_tslice,
@@ -694,12 +784,13 @@ namespace Chroma
 
     inline SBN::Tensor
     get_baryon_elementals(const ADATIO::StorageBaryon& db, const SB::ColorvecsStorage& colorvecsSto,
-			  const multi1d<LatticeColorMatrix>& u,
+			  ColorvecCache& colorvecCache, const multi1d<LatticeColorMatrix>& u,
 			  const multi1d<LatticeColorMatrix>& u_smr,
 			  const std::vector<Hadron::KeyBaryonElementalOperator_t>& baryon_keys,
 			  const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 			  const SBN::Coor& ev_from, const SBN::Coor& ev_size,
-			  const std::string& dist_labels, bool testing)
+			  const std::string& dist_labels, const int max_moms_in_contraction,
+			  const int max_vecs, bool testing)
     {
       SB::Tracker _t("generate baryons");
       QDPIO::cout << "reading/generating baryons..." << std::endl;
@@ -839,7 +930,7 @@ namespace Chroma
 	// Get num_vecs colorvecs on time-slice t_slice
 	const int decay_dir = 3;
 	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
-	  SB::getColorvecs<SB::Complex>(colorvecsSto, u, decay_dir, t_slice, 1, num_vecs, SB::none);
+	  get_colorvec(colorvecCache, colorvecsSto, u, t_slice, num_vecs);
 	source_colorvec = SB::phaseColorvecs(source_colorvec, t_slice, phase);
 
 	// Callback
@@ -863,8 +954,6 @@ namespace Chroma
 
 	// Do the contractions
 	const bool use_derivP = true;
-	const int max_moms_in_contraction = 1;
-	const int max_vecs = 4;
 	SB::doMomDisp_colorContractions(u_smr, source_colorvec.make_sure<SB::ComplexD>(), moms,
 					t_slice, disps, use_derivP, call,
 					0 /* it means to do all */, max_moms_in_contraction,
@@ -1008,7 +1097,7 @@ namespace Chroma
 
     inline SBN::Tensor
     get_prop_elementals(const ADATIO::StorageProp4& db, const SB::ColorvecsStorage& colorvecsSto,
-			const multi1d<LatticeColorMatrix>& u,
+			ColorvecCache& colorvecCache, const multi1d<LatticeColorMatrix>& u,
 			const std::function<SB::ChimeraSolver(std::string)>& get_prop, int max_rhs,
 			Cache& cache, const int max_cache_size,
 			const std::vector<Hadron::KeyProp4ElementalOperator_t>& prop_keys,
@@ -1220,8 +1309,8 @@ namespace Chroma
 
 	// Get num_vecs colorvecs on time-slice t_source
 	const int decay_dir = 3;
-	SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
-	  colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none);
+	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	  get_colorvec(colorvecCache, colorvecsSto, u, t_source, num_vecs);
 	source_colorvec =
 	  source_colorvec.kvslice_from_size({{'n', ev_from.at(1)}}, {{'n', ev_size.at(1)}});
 	source_colorvec = SB::phaseColorvecs(source_colorvec, t_source, source_phase);
@@ -1231,8 +1320,8 @@ namespace Chroma
 	  source_colorvec.like_this(SB::none, {{'n', ev_size.at(0)}, {'t', t_sinks.size()}});
 	for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
 	{
-	  SB::Tensor<Nd + 3, SB::Complex> sink_colorvec = SB::getColorvecs<SB::Complex>(
-	    colorvecsSto, u, decay_dir, t_sinks.at(t_sink_index), 1, num_vecs, SB::none);
+	  SB::Tensor<Nd + 3, SB::Complex> sink_colorvec =
+	    get_colorvec(colorvecCache, colorvecsSto, u, t_sinks.at(t_sink_index), num_vecs);
 	  sink_colorvec =
 	    sink_colorvec.kvslice_from_size({{'n', ev_from.at(0)}}, {{'n', ev_size.at(0)}});
 	  SB::phaseColorvecs(sink_colorvec, t_sinks.at(t_sink_index), sink_phase)
@@ -1357,7 +1446,7 @@ namespace Chroma
 
     inline SBN::Tensor get_genprop_elementals(
       const ADATIO::StorageGenprop4& db, const SB::ColorvecsStorage& colorvecsSto,
-      const multi1d<LatticeColorMatrix>& u,
+      ColorvecCache& colorvecCache, const multi1d<LatticeColorMatrix>& u,
       const std::function<SB::ChimeraSolver(std::string)>& get_prop, int max_rhs, Cache& cache,
       const int max_cache_size, bool zero_values_for_outside_t_slices, int max_moms_in_contraction,
       int max_tslices_in_contraction,
@@ -1575,8 +1664,8 @@ namespace Chroma
 
 	    // Get num_vecs colorvecs on time-slice t_slice
 	    const int decay_dir = 3;
-	    SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
-	      colorvecsSto, u, decay_dir, t_slice, 1, ev_from + ev_size, SB::none);
+	    SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	      get_colorvec(colorvecCache, colorvecsSto, u, t_slice, ev_from + ev_size);
 	    source_colorvec = source_colorvec.kvslice_from_size({{'n', ev_from}}, {{'n', ev_size}});
 	    source_colorvec = SB::phaseColorvecs(source_colorvec, t_slice, phase);
 
@@ -1828,6 +1917,9 @@ namespace Chroma
       Cache cache;
       const auto max_cache_size = 2;
 
+      // Initialize the colorvec cache
+      ColorvecCache colorvecCache{params.param.Nt_forward + 1, 0};
+
       const auto meson_callback =
 	[&](const std::vector<Hadron::KeyMesonElementalOperator_t>& meson_keys,
 	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
@@ -1835,8 +1927,9 @@ namespace Chroma
 	    const SBN::Tensor& guide) {
 	  if (SBN::get_comm(guide).ranks != SBN::get_local_comm().ranks)
 	    throw std::runtime_error("unsupported case");
-	  return get_meson_elementals(storage_meson, colorvecsSto, u, u_smr, meson_keys, perms,
-				      do_conj, ev_from, ev_size, dist_labels, params.param.testing);
+	  return get_meson_elementals(storage_meson, colorvecsSto, colorvecCache, u, u_smr,
+				      meson_keys, perms, do_conj, ev_from, ev_size, dist_labels,
+				      params.param.testing);
 	};
       const auto baryon_callback =
 	[&](const std::vector<Hadron::KeyBaryonElementalOperator_t>& baryon_keys,
@@ -1845,9 +1938,10 @@ namespace Chroma
 	    const SBN::Tensor& guide) {
 	  if (SBN::get_comm(guide).ranks != SBN::get_local_comm().ranks)
 	    throw std::runtime_error("unsupported case");
-	  return get_baryon_elementals(storage_baryon, colorvecsSto, u, u_smr, baryon_keys, perms,
-				       do_conj, ev_from, ev_size, dist_labels,
-				       params.param.testing);
+	  return get_baryon_elementals(
+	    storage_baryon, colorvecsSto, colorvecCache, u, u_smr, baryon_keys, perms, do_conj,
+	    ev_from, ev_size, dist_labels, params.param.max_vecs_in_contraction_for_baryons,
+	    params.param.max_moms_in_contraction_for_baryons, params.param.testing);
 	};
       const auto prop_callback =
 	[&](const std::vector<Hadron::KeyProp4ElementalOperator_t>& prop_keys,
@@ -1856,9 +1950,9 @@ namespace Chroma
 	    const SBN::Tensor& guide) {
 	  if (SBN::get_comm(guide).ranks != SBN::get_local_comm().ranks)
 	    throw std::runtime_error("unsupported case");
-	  return get_prop_elementals(storage_prop, colorvecsSto, u, get_prop, params.param.max_rhs,
-				     cache, max_cache_size, prop_keys, perms, do_conj, ev_from,
-				     ev_size, dist_labels, params.param.testing);
+	  return get_prop_elementals(storage_prop, colorvecsSto, colorvecCache, u, get_prop,
+				     params.param.max_rhs, cache, max_cache_size, prop_keys, perms,
+				     do_conj, ev_from, ev_size, dist_labels, params.param.testing);
 	};
       const auto genprop_callback =
 	[&](const std::vector<Hadron::KeyGenProp4ElementalOperator_t>& genprop_keys,
@@ -1868,8 +1962,9 @@ namespace Chroma
 	  if (SBN::get_comm(guide).ranks != SBN::get_local_comm().ranks)
 	    throw std::runtime_error("unsupported case");
 	  return get_genprop_elementals(
-	    storage_genprop, colorvecsSto, u, get_prop, params.param.max_rhs, cache, max_cache_size,
-	    zero_values_for_outside_t_slices, params.param.max_moms_in_contraction_for_genprops,
+	    storage_genprop, colorvecsSto, colorvecCache, u, get_prop, params.param.max_rhs, cache,
+	    max_cache_size, zero_values_for_outside_t_slices,
+	    params.param.max_moms_in_contraction_for_genprops,
 	    params.param.max_tslices_in_contraction_for_genprops, genprop_keys, perms, do_conj,
 	    ev_from, ev_size, dist_labels, params.param.testing);
 	};
