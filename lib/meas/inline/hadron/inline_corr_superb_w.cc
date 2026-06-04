@@ -516,7 +516,7 @@ namespace Chroma
 	      colorvecCache.hits.at(pos_with_less_hits) > colorvecCache.hits.at(i))
 	    pos_with_less_hits = i;
 	}
-	if (colorvecCache.in_use.at(i))
+	if (colorvecCache.in_use.at(pos_with_less_hits))
 	  throw std::runtime_error("get_colorvec: too small number of entries");
       }
       else
@@ -959,19 +959,24 @@ namespace Chroma
 	// Callback
 	const auto call = SB::ColorContractionFn<SB::Complex>(
 	  [&](SB::Tensor<5, SB::ComplexD> tensor, int disp, int first_tslice, int first_mom) {
-	    auto range = mom_disp_to_index.equal_range({first_mom, disp});
-	    for (auto it = range.first; it != range.second; ++it)
+	    const in num_mom = tensor.kvdim().at('m');
+	    for (int m = 0; m < num_mom; ++m)
 	    {
-	      const auto& [scalar, do_conj, index] = it->second;
-	      auto ti = SBN::relabel(toTensor(tensor), {{'i', 'v'}, {'j', 'w'}, {'k', 'x'}});
-	      ti =
-		SBN::slice_kv(ti, //
-			      {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}, {'x', ev_from.at(2)}},
-			      {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}, {'x', ev_size.at(2)}});
-	      if (do_conj)
-		ti = SBN::conj(ti);
-	      SBN::copyTo(SBN::scale(ti, (double)scalar),
-			  SBN::slice_kv(baryons, {{'i', index}}, {{'i', 1}}));
+	      auto range = mom_disp_to_index.equal_range({first_mom + m, disp});
+	      for (auto it = range.first; it != range.second; ++it)
+	      {
+		const auto& [scalar, do_conj, index] = it->second;
+		auto ti = SBN::relabel(toTensor(tensor.kvslice_from_size({{'m', m}}, {{'m', 1}})),
+				       {{'i', 'v'}, {'j', 'w'}, {'k', 'x'}});
+		ti =
+		  SBN::slice_kv(ti, //
+				{{'v', ev_from.at(0)}, {'w', ev_from.at(1)}, {'x', ev_from.at(2)}},
+				{{'v', ev_size.at(0)}, {'w', ev_size.at(1)}, {'x', ev_size.at(2)}});
+		if (do_conj)
+		  ti = SBN::conj(ti);
+		SBN::copyTo(SBN::scale(ti, (double)scalar),
+			    SBN::slice_kv(baryons, {{'i', index}}, {{'i', 1}}));
+	      }
 	    }
 	  });
 
@@ -1969,8 +1974,8 @@ namespace Chroma
 	    throw std::runtime_error("unsupported case");
 	  return get_baryon_elementals(
 	    storage_baryon, colorvecsSto, colorvecCache, u, u_smr, baryon_keys, perms, do_conj,
-	    ev_from, ev_size, dist_labels, params.param.max_vecs_in_contraction_for_baryons,
-	    params.param.max_moms_in_contraction_for_baryons, params.param.testing);
+	    ev_from, ev_size, dist_labels, params.param.max_moms_in_contraction_for_baryons,
+	    params.param.max_vecs_in_contraction_for_baryons, params.param.testing);
 	};
       const auto prop_callback =
 	[&](const std::vector<Hadron::KeyProp4ElementalOperator_t>& prop_keys,
