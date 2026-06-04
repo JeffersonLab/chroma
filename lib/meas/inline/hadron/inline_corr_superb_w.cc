@@ -465,6 +465,7 @@ namespace Chroma
       int num_vecs;			   // max vecs
       std::vector<int> from_pos_to_tslice; // from position in v to tslice
       std::vector<int> hits;		   // number of hist in each position
+      std::vector<bool> in_use;		   // whether the position is in use
       SB::Tensor<Nd + 3, SB::ComplexD> v;  // cache of colorvecs
     };
 
@@ -478,6 +479,7 @@ namespace Chroma
       {
 	colorvecCache.from_pos_to_tslice.resize(0);
 	colorvecCache.hits.resize(0);
+	colorvecCache.in_use.resize(0);
 	colorvecCache.v = SB::Tensor<Nd + 3, SB::ComplexD>();
       }
 
@@ -489,7 +491,7 @@ namespace Chroma
 	colorvecCache.v = SB::Tensor<Nd + 3, SB::ComplexD>(
 	  order,
 	  SB::latticeSize<Nd + 3>(
-	    order, {{'X', 1}, {'t', colorvecCache.max_cache_size}, {'n', colorvecCache.num_vecs}}),
+	    order, {{'t', colorvecCache.max_cache_size}, {'n', colorvecCache.num_vecs}}),
 	  SB::OnDefaultDevice);
       }
 
@@ -499,6 +501,7 @@ namespace Chroma
 	if (colorvecCache.from_pos_to_tslice.at(i) == tslice)
 	{
 	  colorvecCache.hits.at(i)++;
+	  colorvecCache.in_use.at(i) = true;
 	  return colorvecCache.v.kvslice_from_size({{'t', (int)i}}, {{'t', 1}, {'n', num_vecs}});
 	}
       }
@@ -509,20 +512,25 @@ namespace Chroma
       {
 	for (std::size_t i = 1; i < colorvecCache.hits.size(); ++i)
 	{
-	  if (colorvecCache.hits.at(pos_with_less_hits) > colorvecCache.hits.at(i))
+	  if (!colorvecCache.in_use.at(i) &&
+	      colorvecCache.hits.at(pos_with_less_hits) > colorvecCache.hits.at(i))
 	    pos_with_less_hits = i;
 	}
+	if (colorvecCache.in_use.at(i))
+	  throw std::runtime_error("get_colorvec: too small number of entries");
       }
       else
       {
 	pos_with_less_hits = colorvecCache.from_pos_to_tslice.size();
 	colorvecCache.from_pos_to_tslice.push_back(-1);
 	colorvecCache.hits.push_back(0);
+	colorvecCache.in_use.push_back(false);
       }
 
       // Fill the selected entry with the colorvec
       colorvecCache.from_pos_to_tslice.at(pos_with_less_hits) = tslice;
       colorvecCache.hits.at(pos_with_less_hits) = 0;
+      colorvecCache.in_use.at(pos_with_less_hits) = true;
       const auto decay_dir = 3;
       const auto colorvec = SB::getColorvecs<SB::Complex>(colorvecsSto, u, decay_dir, tslice, 1,
 							  colorvecCache.num_vecs, SB::none);
@@ -530,6 +538,19 @@ namespace Chroma
 	colorvecCache.v.kvslice_from_size({{'t', (int)pos_with_less_hits}}, {{'t', 1}}));
       return colorvecCache.v.kvslice_from_size({{'t', (int)pos_with_less_hits}},
 					       {{'t', 1}, {'n', num_vecs}});
+    }
+
+    inline void release_from_colorvec_cache(ColorvecCache& colorvecCache, int tslice)
+    {
+      for (std::size_t i = 0; i < colorvecCache.from_pos_to_tslice.size(); ++i)
+      {
+	if (colorvecCache.from_pos_to_tslice.at(i) == tslice)
+	{
+	  colorvecCache.in_use.at(i) = false;
+	  return;
+	}
+      }
+      throw std::runtime_error("release_from_colorvec_cache: invalid tslice");
     }
 
     /// Return the mesons without spins
@@ -707,6 +728,8 @@ namespace Chroma
 	  u_smr, source_colorvec.make_sure<SB::ComplexD>(), left_phase, right_phase, moms, t_source,
 	  disps, use_derivP, call, SB::none, SB::OnDefaultDevice, SB::OnEveryone,
 	  0 /* max_tslices_in_contraction==0 means to do all */, 1 /* max_moms_in_contraction */);
+
+	release_from_colorvec_cache(colorvecCache, t_source);
       }
 
       // If testing, make sure that recomputed mesons are similar to the ones got from storage
@@ -958,6 +981,8 @@ namespace Chroma
 					t_slice, disps, use_derivP, call,
 					0 /* it means to do all */, max_moms_in_contraction,
 					max_vecs, SB::none, SB::OnDefaultDevice, SB::OnEveryone);
+
+	release_from_colorvec_cache(colorvecCache, t_slice);
       }
 
       // If testing, make sure that recomputed baryons are similar to the ones got from storage
@@ -1326,6 +1351,7 @@ namespace Chroma
 	    sink_colorvec.kvslice_from_size({{'n', ev_from.at(0)}}, {{'n', ev_size.at(0)}});
 	  SB::phaseColorvecs(sink_colorvec, t_sinks.at(t_sink_index), sink_phase)
 	    .copyTo(sinks_colorvecs.kvslice_from_size({{'t', t_sink_index}}, {{'t', 1}}));
+	  release_from_colorvec_cache(colorvecCache, t_sinks.at(t_sink_index));
 	}
 	sinks_colorvecs = sinks_colorvecs.rename_dims({{'n', 'N'}, {'t', 'T'}});
 
@@ -1407,6 +1433,8 @@ namespace Chroma
 				  ev_from.at(1), ev_size.at(1), cache_tensor);
 	  }
 	}
+
+	release_from_colorvec_cache(colorvecCache, t_source);
       }
 
       // If testing, make sure that recomputed mesons are similar to the ones got from storage
@@ -1688,6 +1716,7 @@ namespace Chroma
 		  {{'s', tensor.kvdim().at('s')}, {'n', tensor.kvdim().at('n')}}));
 	    };
 	    doInversion<SB::Complex>(PP, source_colorvec, t_slice, spins, max_rhs, call);
+	    release_from_colorvec_cache(colorvecCache, t_slice);
 
 	    // Insert the solution into the cache
 	    insert_entry_in_cache(cache, max_cache_size, mass_label, phase, t_slice, t_source,
