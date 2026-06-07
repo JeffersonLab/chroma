@@ -959,7 +959,7 @@ namespace Chroma
 	// Callback
 	const auto call = SB::ColorContractionFn<SB::Complex>(
 	  [&](SB::Tensor<5, SB::ComplexD> tensor, int disp, int first_tslice, int first_mom) {
-	    const in num_mom = tensor.kvdim().at('m');
+	    const int num_mom = tensor.kvdim().at('m');
 	    for (int m = 0; m < num_mom; ++m)
 	    {
 	      auto range = mom_disp_to_index.equal_range({first_mom + m, disp});
@@ -1368,7 +1368,8 @@ namespace Chroma
 	    const auto& r =
 	      SB::contract<6>(
 		sinks_colorvecs.kvslice_from_size({{'T', t_sink_index}}, {{'T', 1}}).conj(),
-		tensor.kvslice_from_size({{'t', t_sinks.at(t_sink_index)}}, {{'t', 1}}), "cXxyz")
+		tensor.kvslice_from_size({{'t', t_sinks.at(t_sink_index) - t_source}}, {{'t', 1}}),
+		"cXxyz")
 		.rename_dims({{'s', 'S'}, {'S', 's'}});
 	    const auto& ti = Hadron::detail::contractSpins(
 	      !do_conj ? dr_left_global : dr_g5_left_global, toTensor(r));
@@ -1390,7 +1391,7 @@ namespace Chroma
 	const int Lt = Layout::lattSize()[decay_dir];
 	int num_tslices = 0;
 	for (const auto t_sink : t_sinks)
-	  num_tslices = std::max(num_tslices, SB::normalize_coor(t_sink - t_source, Lt));
+	  num_tslices = std::max(num_tslices, 1 + SB::normalize_coor(t_sink - t_source, Lt));
 	auto cache_tensor = find_entry_in_cache(cache, mass_label, source_phase, t_source, t_source,
 						num_tslices, ev_from.at(3), ev_size.at(3), do_conj,
 						ev_from.at(1), ev_size.at(1), Lt);
@@ -1416,14 +1417,15 @@ namespace Chroma
 
 	  // Callback
 	  const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int src_spin, int first_n) {
-	    contract_with_sink(tensor, src_spin, first_n);
+	    const auto tensor_from_tsource =
+	      tensor.kvslice_from_size({{'t', t_source}}, {{'t', num_tslices}});
+	    contract_with_sink(tensor_from_tsource, src_spin, first_n);
 	    if (cache_tensor)
 	    {
-	      tensor.kvslice_from_size({{'t', t_source}}, {{'t', num_tslices}})
-		.copyTo(cache_tensor.kvslice_from_size(
-		  {{'s', src_spin}, {'n', first_n}},
-		  {{'s', tensor.kvdim().at('s')}, {'n', tensor.kvdim().at('n')}}));
-	      }
+	      tensor_from_tsource.copyTo(cache_tensor.kvslice_from_size(
+		{{'s', src_spin}, {'n', first_n}},
+		{{'s', tensor.kvdim().at('s')}, {'n', tensor.kvdim().at('n')}}));
+	    }
 	  };
 
 	  // Do the inversions
