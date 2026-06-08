@@ -1068,6 +1068,7 @@ list(APPEND ChromaLIB_HEADERS
 	meas/inline/io/inline_read_map_obj_disk.h
 	meas/inline/io/inline_copy_map_obj.h
 	meas/inline/io/inline_write_timeslice_map_obj_disk.h
+	meas/inline/io/inline_cmd.h
 )
 
 
@@ -1840,6 +1841,7 @@ target_sources(chromalib PRIVATE
 	meas/inline/schrfun/inline_sfpcac_w.cc 
 	meas/inline/smear/inline_smear_aggregate.cc 
 	meas/inline/smear/inline_link_smear.cc
+	meas/inline/io/inline_cmd.cc 
 )
 
 # Taken Out of original build Makefile.am
