@@ -12,7 +12,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineExecuteEnv 
+  namespace InlineExecuteCmdEnv 
   {
     bool registerAll();
 
