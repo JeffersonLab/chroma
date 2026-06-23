@@ -138,7 +138,7 @@ bin_PROGRAMS = chroma  \
         purgaug \
         cfgtransf \
         const_hmc hmc smd spectrum_s
-bin_PROGRAMS += compare_gauge
+bin_PROGRAMS += compare_gauge gauge_segment
 
 # Wilson specific programs
 check_PROGRAMS = collect_propcomp qpropgfix qproptrev qpropqio qproptransf wallformfac 
@@ -185,6 +185,7 @@ qpropgfix_SOURCES= qpropgfix.cc
 qproptrev_SOURCES= qproptrev.cc
 cfgtransf_SOURCES= cfgtransf.cc
 compare_gauge_SOURCES= compare_gauge.cc
+gauge_segment_SOURCES= gauge_segment.cc
 
 #
 # The latter rule will always try to rebuild libchroma.a when you 
