@@ -78,6 +78,7 @@ namespace Chroma
     // bool xmlInputP = false;
 
     std::vector<std::string> input_list;
+    std::vector<std::string> output_list;
     
     // Internal
     std::string constructFileName(const std::string& filename)
@@ -100,6 +101,9 @@ namespace Chroma
 
   //! Get input file name
   std::vector<std::string>& getInputFileList()  {return input_list;}
+
+  //! Get input file name
+  const std::vector<std::string>& getOutputFileList()  {return output_list;}
 
   
   //! Get input file name
@@ -133,6 +137,7 @@ namespace Chroma
   {
     int num_replicas = 1;
     int logical_geom_volume = 1;
+    bool do_file_list_in_parallel = false;
 
     for (int i = 0; i < *argc; i++)
     {
@@ -153,6 +158,10 @@ namespace Chroma
 		  << "   --chroma-l   [" << getXMLLogFileName() << "]  xml log file name\n"
 		  << "   -cwd         [" << getCWD() << "]  xml working directory\n"
 		  << "   --chroma-cwd [" << getCWD() << "]  xml working directory\n"
+		  << "   -il          <file>  list of input xml files\n"
+		  << "   -ilp         <file>  list of input xml file and output file pairs to execute in parallel among the replicas\n"
+		  << "   --replicas <num>         split all processes into <num> independent jobs, each one with the given geometry\n"
+		  << "   --chroma-replicas <num>  split all processes into <num> independent jobs, each one with the given geometry\n"
 		  << std::endl;
 
 	// Show QMP help also
@@ -165,7 +174,7 @@ namespace Chroma
       }
 
       // Search for -il
-      if( argv_i == std::string("-il") )
+      if (argv_i == std::string("-il"))
       {
 	std::cout << "Input file list:" << std::endl;
 	if( i + 1 < *argc )
@@ -193,13 +202,54 @@ namespace Chroma
 	}
       }
 
+      // Search for -ilp
+      if (argv_i == std::string("-ilp"))
+      {
+	std::cout << "Input file list:" << std::endl;
+	if( i + 1 < *argc )
+	{
+	  std::ifstream flist((*argv)[i+1]);
+
+	  std::string line;
+	  int count=0;
+	  while (std::getline(flist, line))
+	  {
+	    std::istringstream iss(line);
+	    std::string xml_file, output_file;
+	    if (!(iss >> xml_file >> output_file))
+	    {
+	      std::cerr << "Error: parsing the file given at -ilp" << std::endl;
+	      exit(1);
+	    }
+	    input_list.push_back(xml_file);
+	    output_list.push_back(output_file);
+	    count++;
+	  }
+
+	  do_file_list_in_parallel = true;
+
+	  std::cout << "Total number of input files: " << count << " (executing them in parallel)"
+		    << std::endl;
+
+	  // Skip over next
+	  i++;
+	}
+	else 
+	{
+	  // i + 1 is too big
+	  std::cerr << "Error: dangling -ilp specified. " << std::endl;
+	  exit(1);
+	}
+      }
       
       // Search for -i or --chroma-i
       if( argv_i == std::string("-i") || argv_i == std::string("--chroma-i") ) 
       {
 	if( i + 1 < *argc ) 
 	{
-	  setXMLInputFileName(std::string( (*argv)[i+1] ));
+	  setXMLInputFileName(std::string((*argv)[i + 1]));
+	  input_list.push_back(std::string((*argv)[i + 1]));
+	  output_list.push_back(std::string());
 	  // Skip over next
 	  i++;
 	}
@@ -312,9 +362,11 @@ namespace Chroma
 	exit(1);
       }
       const int rank = QMP_get_node_number();
+      const int replica_index = rank / logical_geom_volume;
+      const int rank_in_replica = rank % logical_geom_volume;
       QMP_comm_t newcomm;
-      if (QMP_comm_split(QMP_comm_get_default(), rank / logical_geom_volume,
-			 rank % logical_geom_volume, &newcomm) != QMP_SUCCESS)
+      if (QMP_comm_split(QMP_comm_get_default(), replica_index, rank_in_replica, &newcomm) !=
+	  QMP_SUCCESS)
       {
 	std::cerr << __func__ << ": QMP_comm_split failed" << std::endl;
 	exit(1);
@@ -323,6 +375,19 @@ namespace Chroma
       {
 	std::cerr << __func__ << ": QMP_comm_set_default failed" << std::endl;
 	exit(1);
+      }
+
+      if (do_file_list_in_parallel)
+      {
+	std::vector<std::string> new_input_list;
+	std::vector<std::string> new_output_list;
+	for (std::size_t i = replica_index; i < input_list.size(); i += (std::size_t)num_replicas)
+	{
+	  new_input_list.push_back(input_list.at(i));
+	  new_output_list.push_back(output_list.at(i));
+	}
+	input_list = new_input_list;
+	output_list = new_output_list;
       }
     }
 

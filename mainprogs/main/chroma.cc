@@ -3,6 +3,8 @@
  */
 
 #include "chroma.h"
+#include <fstream>
+#include <memory>
 
 using namespace Chroma;
 extern "C" { 
@@ -93,12 +95,6 @@ int main(int argc, char *argv[])
   snoop.reset();
   snoop.start();
 
-  // We always use the input list
-  if (Chroma::getInputFileList().empty())
-    {
-      Chroma::getInputFileList().push_back(Chroma::getXMLInputFileName());
-    }
-
   // // Sanity check
   // if (!Chroma::getOutputFileList().empty())
   //   {
@@ -112,8 +108,17 @@ int main(int argc, char *argv[])
 
   for(int list_index = 0 ; list_index < Chroma::getInputFileList().size() ; list_index++) 
     {
-      Chroma::setXMLInputFileName( Chroma::getInputFileList().at( list_index ) );
-      
+      Chroma::setXMLInputFileName(Chroma::getInputFileList().at(list_index));
+      std::shared_ptr<std::ostream> out;
+      if (Chroma::getOutputFileList().size() > 0 &&
+	  Chroma::getOutputFileList().at(list_index).size() > 0)
+      {
+	out = std::shared_ptr<std::ostream>(
+	  new std::ofstream(Chroma::getOutputFileList().at(list_index), std::ios::trunc));
+	QDPIO::cout.init(&*out);
+	QDPIO::cerr.init(&*out);
+      }
+
       XMLReader xml_in;
 
       // Input parameter structure
@@ -329,9 +334,13 @@ int main(int argc, char *argv[])
 	  TheNamedObjMap::Instance().erase_all();
 	}
 
+	if (out)
+	{
+	  QDPIO::cout.init(&std::cout);
+	  QDPIO::cerr.init(&std::cerr);
+	}
     } // list_index
 
-  
   if ( Chroma::getInputFileList().size() > 1 )
     {
       QDPIO::cout << "CHROMA: total number of input files processed = " << Chroma::getInputFileList().size() << std::endl;
