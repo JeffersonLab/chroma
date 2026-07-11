@@ -135,12 +135,12 @@ namespace Chroma
       }
       else
       {
-	if (params.param.cmd.size() > Layout::numNodes())
-	  throw std::runtime_error("there are more commands that processes");
 	int proc = 0;
 	for (const auto& cmd : params.param.cmd)
-	  execute(cmd, proc++);
+	  execute(cmd, proc++ % Layout::numNodes());
       }
+
+      QMP_barrier();
 
       QDPIO::cout << InlineExecuteCmdEnv::name << ": ran successfully" << std::endl;
 
