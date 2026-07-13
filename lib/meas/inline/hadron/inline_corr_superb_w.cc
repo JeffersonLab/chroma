@@ -1689,49 +1689,49 @@ namespace Chroma
 	  [&](int t_slice, const SB::Coor<3>& phase, const SB::Tensor<2, SB::Complex>& spins,
 	      int spin_from, int spin_size, int ev_from, int ev_size, bool do_conj) {
 
-	    // Look at the cache
-	    SB::Tensor<Nd + 5, SB::Complex> cache_tensor;
-	    cache_tensor =
+	  // Look at the cache
+	  SB::Tensor<Nd + 5, SB::Complex> cache_tensor;
+	  cache_tensor =
 	      find_entry_in_cache(cache, mass_label, phase, t_slice, t_source, num_tslices,
 				  spin_from, spin_size, do_conj, ev_from, ev_size, Lt);
-	    if (cache_tensor)
-	      return cache_tensor;
-
-	    // Get num_vecs colorvecs on time-slice t_slice
-	    const int decay_dir = 3;
-	    SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
-	      get_colorvec(colorvecCache, colorvecsSto, u, t_slice, ev_from + ev_size);
-	    source_colorvec = source_colorvec.kvslice_from_size({{'n', ev_from}}, {{'n', ev_size}});
-	    source_colorvec = SB::phaseColorvecs(source_colorvec, t_slice, phase);
-
-	    // Create the tensor for the cache
-	    const auto order_out = "cSxyztXns";
-	    make_space_to_add_entry_in_cache(cache, max_cache_size);
-	    cache_tensor = SB::Tensor<Nd + 5, SB::Complex>(
-	      order_out,
-	      SB::latticeSize<Nd + 5>(
-		order_out,
-		{{'t', num_tslices}, {'S', Ns}, {'s', spins.kvdim().at('s')}, {'n', ev_size}}),
-	      SB::OnDefaultDevice);
-
-	    // Do the inversions and copy the time slices into the cache tensor
-	    const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int first_spin,
-				  int first_n) {
-	      tensor.kvslice_from_size({{'t', t_source}}, {{'t', num_tslices}})
-		.copyTo(cache_tensor.kvslice_from_size(
-		  {{'s', first_spin}, {'n', first_n}},
-		  {{'s', tensor.kvdim().at('s')}, {'n', tensor.kvdim().at('n')}}));
-	    };
-	    doInversion<SB::Complex>(PP, source_colorvec, t_slice, spins, max_rhs, call);
-	    release_from_colorvec_cache(colorvecCache, t_slice);
-
-	    // Insert the solution into the cache
-	    insert_entry_in_cache(cache, max_cache_size, mass_label, phase, t_slice, t_source,
-				  num_tslices, spin_from, spin_size, do_conj, ev_from, ev_size,
-				  cache_tensor);
-
+	  if (cache_tensor)
 	    return cache_tensor;
+
+	  // Get num_vecs colorvecs on time-slice t_slice
+	  const int decay_dir = 3;
+	  SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	    get_colorvec(colorvecCache, colorvecsSto, u, t_slice, ev_from + ev_size);
+	  source_colorvec = source_colorvec.kvslice_from_size({{'n', ev_from}}, {{'n', ev_size}});
+	  source_colorvec = SB::phaseColorvecs(source_colorvec, t_slice, phase);
+
+	  // Create the tensor for the cache
+	  const auto order_out = "cSxyztXns";
+	  make_space_to_add_entry_in_cache(cache, max_cache_size);
+	  cache_tensor = SB::Tensor<Nd + 5, SB::Complex>(
+	    order_out,
+	    SB::latticeSize<Nd + 5>(
+	      order_out,
+	      {{'t', num_tslices}, {'S', Ns}, {'s', spins.kvdim().at('s')}, {'n', ev_size}}),
+	    SB::OnDefaultDevice);
+
+	  // Do the inversions and copy the time slices into the cache tensor
+	  const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int first_spin,
+				int first_n) {
+	    tensor.kvslice_from_size({{'t', t_source}}, {{'t', num_tslices}})
+	      .copyTo(cache_tensor.kvslice_from_size(
+		{{'s', first_spin}, {'n', first_n}},
+		{{'s', tensor.kvdim().at('s')}, {'n', tensor.kvdim().at('n')}}));
 	  };
+	  doInversion<SB::Complex>(PP, source_colorvec, t_slice, spins, max_rhs, call);
+	  release_from_colorvec_cache(colorvecCache, t_slice);
+
+	  // Insert the solution into the cache
+	  insert_entry_in_cache(cache, max_cache_size, mass_label, phase, t_slice, t_source,
+				num_tslices, spin_from, spin_size, do_conj, ev_from, ev_size,
+				cache_tensor);
+
+	  return cache_tensor;
+	};
 
 	// Get num_vecs colorvecs on time-slice t_source
 	auto inv_src =
@@ -2009,6 +2009,8 @@ namespace Chroma
 #    if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
       // Set default device
       SBN::get_default_gpu_device() = SB::detail::get_default_gpu_device();
+#    endif
+#    if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
       // Gather the current rank and the other ranks participating in this chroma
       // NOTE: they first time they are invoked may involve communications, please do it before calling the previous callbacks
       get_local_ranks();
@@ -2017,7 +2019,8 @@ namespace Chroma
 #    endif
       const auto& corr = Hadron::evaluate_graphs_with_superb(
 	corr_graph, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
-	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward);
+	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward,
+	SB::detail::getDefaultComm());
 
       // Clear cache
       cache.clear();
@@ -2046,7 +2049,7 @@ namespace Chroma
 
       END_CODE();
     } // func
-  }   // namespace InlineCorrSuperbEnv
+  } // namespace InlineCorrSuperbEnv
 
   /*! @} */ // end of group hadron
 
