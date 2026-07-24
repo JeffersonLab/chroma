@@ -39,6 +39,7 @@ namespace Chroma
     multi1d<int> nu_post;
     multi1d< multi1d<int> > blocking;
 		multi1d<int> nvec_batch;
+		multi1d<bool> matrix_accelerate_coarse;
     int outer_gcr_nkrylov;
     int precond_gcr_nkrylov;
     std::string cycle_type;
@@ -74,6 +75,10 @@ namespace Chroma
       blocking.resize(mg_levels-1);
       nvec.resize(mg_levels-1);
 			nvec_batch.resize(mg_levels-1);
+			matrix_accelerate_coarse.resize(mg_levels-1);
+		  for(int i=0; i < mg_levels-1; i++) {
+			  matrix_accelerate_coarse[i] = false;
+			}
       nu_pre.resize(mg_levels-1);
       nu_post.resize(mg_levels-1);
       maxIterSubspaceCreate.resize(mg_levels-1);
