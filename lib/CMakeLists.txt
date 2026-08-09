@@ -2097,10 +2097,7 @@ foreach( file ${ChromaLIB_HEADERS})
   install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/${file} DESTINATION include/${basedir} )
 endforeach()
 
-set(Chroma_CXX_STANDARD "17")
-if (QDP_IS_QDPJIT)
-  set(Chroma_CXX_STANDARD "20")
-endif()
+set(Chroma_CXX_STANDARD "20")
 
 set_target_properties( chromalib PROPERTIES CXX_STANDARD ${Chroma_CXX_STANDARD} )
 set_target_properties( chromalib PROPERTIES CXX_EXTENSIONS OFF )
