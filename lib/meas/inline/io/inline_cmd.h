@@ -29,6 +29,7 @@ namespace Chroma
       {
 	  std::vector<std::string>           cmd;       /*!< command lines*/
 	  bool           only_on_master;      /*!< whether to execute all commands on master node */
+	  int            max_attempts;        /*!< maximum number of times to try to launch a command */
       };
 
       Param_t           param;
