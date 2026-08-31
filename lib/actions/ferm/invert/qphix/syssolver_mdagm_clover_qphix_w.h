@@ -38,7 +38,9 @@
 #include "qphix_singleton.h"
 #include "actions/ferm/invert/qphix/qphix_vec_traits.h"
 #include "qphix/blas_new_c.h"
+
 using namespace QDP;
+using namespace std;
 
 namespace Chroma
 {
