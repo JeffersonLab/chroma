@@ -71,6 +71,11 @@ namespace Chroma
 	if (input.max_attempts < 1)
 	  throw std::runtime_error("invalid value of max_attempts");
       }
+      input.constrain_to_gpu = false;
+      if (inputtop.count("constrain_to_gpu") == 1)
+      {
+	read(inputtop, "constrain_to_gpu", input.constrain_to_gpu);
+      }
     }
 
     void write(XMLWriter& xml, const std::string& path, const Params::Param_t& input)
@@ -79,6 +84,8 @@ namespace Chroma
 
       write(xml, "cmd", input.cmd);
       write(xml, "only_on_master", input.only_on_master);
+      write(xml, "max_attempts", input.max_attempts);
+      write(xml, "constrain_to_gpu", input.constrain_to_gpu);
 
       pop(xml);
     }
@@ -98,9 +105,30 @@ namespace Chroma
       pop(xml);
     }
 
-    int execute(const std::string& cmd)
+    int execute(const std::string& cmd0, bool constrain_to_gpu)
     {
-      QDPIO::cout << "on proc " << Layout::nodeNumber() << " executing " << cmd << std::endl;
+      std::string cmd;
+      if (constrain_to_gpu)
+      {
+#if defined(SUPERBBLAS_USE_GPU)
+	const int gpu_device = SB::detail::getGpuContext()->device;
+	cmd =
+#  ifdef SUPERBBLAS_USE_CUDA
+	  std::string("CUDA_VISIBLE_DEVICES=") +
+#  else
+	  std::string("ROCR_VISIBLE_DEVICES=") +
+#  endif
+	  std::to_string(gpu_device) + std::string(" ") + cmd0;
+#else
+	throw std::runtime_error(
+	  "chroma compiled without gpu support but requested constrain_to_gpu=true");
+#endif // SUPERBBLAS_USE_GPU
+      }
+      else
+      {
+	cmd = cmd0;
+      }
+      std::cout << "on proc " << Layout::nodeNumber() << " executing " << cmd << std::endl;
       int ret = std::system(cmd.c_str());
 #if defined(_WIN32)
       const auto exit_code = ret;
@@ -156,7 +184,7 @@ namespace Chroma
 	  {
 	    for (int attempt = 0; attempt < params.param.max_attempts; ++attempt)
 	    {
-	      if (execute(cmd) == 0)
+	      if (execute(cmd, params.param.constrain_to_gpu) == 0)
 	      {
 		break;
 	      }
@@ -191,7 +219,7 @@ namespace Chroma
 	  {
 	    if (procs.at(proc++ % procs.size()) == Layout::nodeNumber())
 	    {
-	      if (execute(params.param.cmd.at(index)) != 0)
+	      if (execute(params.param.cmd.at(index), params.param.constrain_to_gpu) != 0)
 		local_failed_cmds.push_back(index);
 	    }
 	  }
