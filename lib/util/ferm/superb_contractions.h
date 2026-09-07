@@ -11292,30 +11292,12 @@ namespace Chroma
 	    colorvec.release();
 	  }
 	  std::vector<Coor<3>> moms_list(moms.begin() + mfrom, moms.begin() + mfrom + msize);
-	  if (!deriv)
-	  {
-	    std::array<Tensor<Nin, COMPLEX>, 3> this_3_colorvec{this_colorvec, this_colorvec,
-								this_colorvec};
-	    ns_doMomDisp_colorContractions::doMomDisp_colorContractions<COMPLEX, Nin>(
-	      ut, std::move(this_3_colorvec), first_tslice + tfrom, tree_disps, deriv, 0,
-	      {this_moms, moms_list}, mfrom, max_cols.getSome(0), order_out_str,
-	      dev.getSome(OnDefaultDevice), dist_ret.getSome(dist), call);
-	  }
-	  else
-	  {
-	    // When using derivatives, each momenta has a different effect
-	    std::vector<COMPLEX> ones(msize, COMPLEX(1));
-	    Tensor<Nin + 1, COMPLEX> this_colorvec_m =
-	      this_colorvec.template like_this<Nin + 1>("%m", '%', "", {{'m', msize}});
-	    this_colorvec_m.contract(this_colorvec, {}, NotConjugate, asTensorView(ones),
-				     {{'i', 'm'}}, NotConjugate);
-	    std::array<Tensor<Nin + 1, COMPLEX>, 3> this_3_colorvec_m{
-	      this_colorvec_m, this_colorvec_m, this_colorvec_m};
-	    ns_doMomDisp_colorContractions::doMomDisp_colorContractions<COMPLEX, Nin + 1>(
-	      ut, std::move(this_3_colorvec_m), first_tslice + tfrom, tree_disps, deriv, 0,
-	      {this_moms, moms_list}, mfrom, max_cols.getSome(0), order_out_str,
-	      dev.getSome(OnDefaultDevice), dist_ret.getSome(dist), call);
-	  }
+	  std::array<Tensor<Nin, COMPLEX>, 3> this_3_colorvec{this_colorvec, this_colorvec,
+							      this_colorvec};
+	  ns_doMomDisp_colorContractions::doMomDisp_colorContractions<COMPLEX, Nin>(
+	    ut, std::move(this_3_colorvec), first_tslice + tfrom, tree_disps, deriv, 0,
+	    {this_moms, moms_list}, mfrom, max_cols.getSome(0), order_out_str,
+	    dev.getSome(OnDefaultDevice), dist_ret.getSome(dist), call);
 	}
       }
     }
