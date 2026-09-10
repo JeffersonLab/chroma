@@ -1536,9 +1536,10 @@ namespace Chroma
 	      nrand(b.kvslice_from_size({}, {{'X', 1}}));
 	    }
 
-	    // Solve Ax=0 with the random initial guesses
-	    nv = op(null_solver(b));
-	    b.scale(-1).addTo(nv);
+	    // Solve Ax=0 with the random initial guesses:
+	    // Ax=0 -> A(x+y)=Ay -> x=A^{-1}Ay - y, where y is a random vector
+	    nv = null_solver(op(b)); ///< nv = appr_inv(A*b)
+	    b.scale(-1).addTo(nv);   ///< nv = nv - b
 	    b.release();
 
 	    // If the odd part of nv is too small (because an even-odd preconditioner has
