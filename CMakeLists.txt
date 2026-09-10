@@ -227,7 +227,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
   set(BUILD_SB 1)
 
   # Deal with MGPROTON
-  if( Chroma_ENABLE_MGPROTO)
+  if( Chroma_ENABLE_MGPROTON)
     message(STATUS "Enabling MGPROTON")
     set(BUILD_MGPROTON 1)
   endif()
