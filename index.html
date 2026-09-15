@@ -53,7 +53,7 @@
       <h4>Individual Packages from USQCD</h4>
       <p><a href="http://usqcd-software.github.io/qmp">QMP</a><br></p>
       <p><a href="http://usqcd-software.github.io/qio">QIO</a><br></p>
-      <p><a href="http://usqcd-software.github.io/qdpxx/">QDP/C++</a></p>
+      <p><a href="https://usqcd-software.github.io/qdpxx/">QDP/C++</a></p>
       <p><a href="http://usqcd-software.github.io/c-lime">C-LIME</a></p>
       
       <h4>Third party package Web Pages</h4>
@@ -111,7 +111,24 @@ Chroma releases are available as <a href="https://github.com/JeffersonLab/chroma
 
             <h3>Building Chroma</h3>
             <p>
-The <a href="https://github.com/eromero-vlc/chromaform">chromaform</a> code builder package is available to help build Chroma.
+The following tools help build and install Chroma and its dependencies:
+            </p>
+            <ul>
+              <li><a href="https://github.com/eromero-vlc/chromaform">Chromaform</a>
+automates downloading, building, and installing Chroma and QDP, with options
+for CPU builds and GPU builds using CUDA or HIP. See the repository for
+build options and examples.</li>
+              <li>The <a href="https://github.com/fwinter/package">package repository</a>
+provides scripts for building Chroma with
+<a href="https://github.com/JeffersonLab/qdp-jit.git">QDP-JIT</a>, the
+GPU implementation of QDP++, and their dependencies. Choose the build
+configuration for your target system from the repository.</li>
+            </ul>
+            <p>
+For QDP documentation and source code, visit the
+<a href="https://usqcd-software.github.io/qdpxx/">QDP++ project page</a>,
+the <a href="https://github.com/usqcd-software/qdpxx">QDP++ source repository</a>,
+and the <a href="https://github.com/JeffersonLab/qdp-jit.git">QDP-JIT source repository</a>.
 Chroma also supports building with CMake.
             </p>
 
@@ -128,7 +145,7 @@ In order to build Chroma you'll need to have installed
 
             <ul>
 
-              <li><a href="http://usqcd-software.github.io/qdpxx">QDP++
+              <li><a href="https://usqcd-software.github.io/qdpxx">QDP++
 and its dependencies</a>. You may need the following tarballs:
                 <ul>
 
@@ -160,7 +177,7 @@ Arithmetic Library (GMP)</a>.</li>
 
             <ul>
 
-              <li><a href="http://usqcd-software.github.io/qdpxx">QDP++</a>
+              <li><a href="https://usqcd-software.github.io/qdpxx">QDP++</a>
 - SciDAC C++ data-parallel programming interface </li>
 
               <li><a href="http://usqcd-software.github.io/qmp">QMP</a>
