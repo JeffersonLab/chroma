@@ -81,4 +81,26 @@ namespace Chroma
     return site_flops*Layout::sitesOnNode();
   }
 
+
+
+  void UnprecCloverLinOp::applyDirection (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int dir) const
+  {
+    D.applyDirection(chi, psi, isign, dir, 0);
+    D.applyDirection(chi, psi, isign, dir, 1);
+
+    Real mhalf = -0.5;
+    chi *= mhalf;
+
+    getFermBC().modifyF(chi);
+  }
+
+
+  void UnprecCloverLinOp::applyLocal (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const
+  {
+    A(chi, psi, isign);
+
+    getFermBC().modifyF(chi);
+  }
+
+  
 } // End Namespace Chroma

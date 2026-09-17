@@ -9,6 +9,7 @@
 #include "state.h"
 #include "io/aniso_io.h"
 #include "actions/ferm/linop/lwldslash_base_w.h"
+#include "coarsenable_op.h"
 
 
 namespace Chroma 
@@ -44,7 +45,9 @@ namespace Chroma
    */
 
   template<typename T, typename P, typename Q> 
-  class QDPWilsonDslashT : public WilsonDslashBase<T, P, Q>
+  class QDPWilsonDslashT :
+    public WilsonDslashBase<T, P, Q>,
+    public MGCoarsenableOperator<T>
   {
   public:
 
@@ -88,6 +91,102 @@ namespace Chroma
      */
     void apply (T& chi, const T& psi, enum PlusMinus isign, int cb) const;
 
+
+    void applyDirection(LatticeFermion& chi,
+			const LatticeFermion& psi,
+			enum PlusMinus isign,
+			int dir) const
+    {
+      applyDirection( chi , psi , isign , dir, 0 );
+      applyDirection( chi , psi , isign , dir, 1 );
+    }
+
+    void applyDirection(LatticeFermion& chi,
+			const LatticeFermion& psi,
+			enum PlusMinus isign,
+			int dir, int cb) const
+    {
+      switch (isign)
+	{
+	case PLUS:
+
+	  switch (dir) {
+	  case 0:
+	    chi[rb[cb]] = spinReconstructDir0Minus(u[0] * shift(spinProjectDir0Minus(psi), FORWARD, 0));
+	    break;
+	  case 1:
+	    chi[rb[cb]] = spinReconstructDir1Minus(u[1] * shift(spinProjectDir1Minus(psi), FORWARD, 1));
+	    break;
+	  case 2:
+	    chi[rb[cb]] = spinReconstructDir2Minus(u[2] * shift(spinProjectDir2Minus(psi), FORWARD, 2));
+	    break;
+	  case 3:
+	    chi[rb[cb]] = spinReconstructDir3Minus(u[3] * shift(spinProjectDir3Minus(psi), FORWARD, 3));
+	    break;
+	  case 4:
+	    chi[rb[cb]] = spinReconstructDir0Plus(shift(adj(u[0]) * spinProjectDir0Plus(psi), BACKWARD, 0));
+	    break;
+	  case 5:
+	    chi[rb[cb]] = spinReconstructDir1Plus(shift(adj(u[1]) * spinProjectDir1Plus(psi), BACKWARD, 1));
+	    break;
+	  case 6:
+	    chi[rb[cb]] = spinReconstructDir2Plus(shift(adj(u[2]) * spinProjectDir2Plus(psi), BACKWARD, 2));
+	    break;
+	  case 7:
+	    chi[rb[cb]] = spinReconstructDir3Plus(shift(adj(u[3]) * spinProjectDir3Plus(psi), BACKWARD, 3));
+	    break;
+	  default:
+	    QDPIO::cout << "QDPWilsonDslash applyDirection dir = " << dir << " not valid." << std::endl;
+	    QDP_abort(1);
+	  }
+	  break;
+
+	case MINUS:
+
+	  switch (dir) {
+	  case 0:
+	    chi[rb[cb]] = spinReconstructDir0Plus(u[0] * shift(spinProjectDir0Plus(psi), FORWARD, 0));
+	    break;
+	  case 1:
+	    chi[rb[cb]] = spinReconstructDir1Plus(u[1] * shift(spinProjectDir1Plus(psi), FORWARD, 1));
+	    break;
+	  case 2:
+	    chi[rb[cb]] = spinReconstructDir2Plus(u[2] * shift(spinProjectDir2Plus(psi), FORWARD, 2));
+	    break;
+	  case 3:
+	    chi[rb[cb]] = spinReconstructDir3Plus(u[3] * shift(spinProjectDir3Plus(psi), FORWARD, 3));
+	    break;
+	  case 4:
+	    chi[rb[cb]] = spinReconstructDir0Minus(shift(adj(u[0]) * spinProjectDir0Minus(psi), BACKWARD, 0));
+	    break;
+	  case 5:
+	    chi[rb[cb]] = spinReconstructDir1Minus(shift(adj(u[1]) * spinProjectDir1Minus(psi), BACKWARD, 1));
+	    break;
+	  case 6:
+	    chi[rb[cb]] = spinReconstructDir2Minus(shift(adj(u[2]) * spinProjectDir2Minus(psi), BACKWARD, 2));
+	    break;
+	  case 7:
+	    chi[rb[cb]] = spinReconstructDir3Minus(shift(adj(u[3]) * spinProjectDir3Minus(psi), BACKWARD, 3));
+	    break;
+	  default:
+	    QDPIO::cout << "QDPWilsonDslash applyDirection dir = " << dir << " not valid." << std::endl;
+	    QDP_abort(1);
+	  }
+	  break;
+
+	}
+
+    }
+
+
+
+    
+    void applyLocal (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const
+    {
+    }
+
+    
+    
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
 

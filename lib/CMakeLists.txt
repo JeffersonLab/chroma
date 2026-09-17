@@ -29,6 +29,7 @@ set(ChromaLIB_HEADERS
 	handle.h
 	lib.h
 	linearop.h
+	coarsenable_op.h
 	eo_linop.h
     eoprec_linop.h
     eoprec_constdet_linop.h

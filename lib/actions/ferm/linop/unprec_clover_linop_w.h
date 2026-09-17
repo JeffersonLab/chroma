@@ -7,6 +7,7 @@
 #define __unprec_clover_linop_w_h__
 
 #include "linearop.h"
+#include "coarsenable_op.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/clover_term_w.h"
 
@@ -20,8 +21,8 @@ namespace Chroma
    * This routine is specific to Wilson fermions!
    */
   
-  class UnprecCloverLinOp : public UnprecLinearOperator<LatticeFermion, 
-			    multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
+  class UnprecCloverLinOp : public UnprecLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >,
+			    public MGCoarsenableOperator<LatticeFermion>
   {
   public:
     // Typedefs to save typing
@@ -54,6 +55,10 @@ namespace Chroma
     void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 	       const LatticeFermion& chi, const LatticeFermion& psi, 
 	       enum PlusMinus isign) const;
+
+    void applyDirection (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int dir) const;
+
+    void applyLocal (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
