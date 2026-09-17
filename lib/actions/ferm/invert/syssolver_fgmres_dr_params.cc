@@ -17,6 +17,15 @@ namespace Chroma
     read(paramtop, "NKrylov",   p.NKrylov);
     read(paramtop, "NDefl",     p.NDefl);
     read(paramtop, "MaxIter",   p.MaxIter);
+
+    if (paramtop.count("Verbose") > 0)
+      {
+	read(paramtop, "Verbose", p.Verbose);
+      }
+    else
+      p.Verbose = true;
+
+    read(paramtop, "",   p.MaxIter);
     p.PrecondParams = readXMLGroup(paramtop, "PrecondParams", "invType");
     
   }
@@ -29,6 +38,7 @@ namespace Chroma
     write(xml, "NKyrlov",   p.NKrylov);
     write(xml, "NDefl",     p.NDefl);
     write(xml, "MaxIter",   p.MaxIter);
+    write(xml, "Verbose",   p.Verbose);
     xml << p.PrecondParams.xml;
   }
 
@@ -38,7 +48,7 @@ namespace Chroma
     NKrylov = 0;
     NDefl = 0;
     MaxIter = 0;
-
+    Verbose = true;
 
     // Create a dummy XML
     XMLBufferWriter xml_buf;

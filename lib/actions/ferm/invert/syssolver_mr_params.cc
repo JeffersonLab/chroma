@@ -19,6 +19,13 @@ namespace Chroma
       read(paramtop, "MROver", param.MROver);
     else
       param.MROver = 1.0;
+
+    if (paramtop.count("Verbose") > 0)
+      {
+	read(paramtop, "Verbose", param.Verbose);
+      }
+    else
+      param.Verbose = true;
   }
 
   // Writer parameters
@@ -32,6 +39,7 @@ namespace Chroma
     write(xml, "RsdMR", param.RsdMR);
     write(xml, "MaxMR", param.MaxMR);
     write(xml, "MROver", param.MROver);
+    write(xml, "Verbose", param.Verbose);
     pop(xml);
   }
 
@@ -41,6 +49,7 @@ namespace Chroma
     RsdMR = zero;
     MaxMR = 0;
     MROver = 1.0;
+    Verbose = true;
   }
 
   //! Read parameters

@@ -22,6 +22,7 @@ namespace Chroma
     Real          MROver;          /*!< MR over-relaxation parameter */
     Real          RsdMR;           /*!< MR residual */
     int           MaxMR;           /*!< Maximum MR iterations */
+    bool          Verbose;
   };
 
 

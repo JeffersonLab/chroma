@@ -204,6 +204,18 @@ namespace Chroma
       }
 
 
+    LinOpSysSolverFGMRESDR(Handle< LinearOperator<T> > A,
+			   Handle< LinOpSystemSolver<T> > precond ,
+			   const SysSolverFGMRESDRParams& invParam) : 
+      A_(A), preconditioner_(precond), invParam_(invParam)
+      {
+	// Initialize stuff
+	InitMatrices();
+      }
+
+
+
+    
     //! Initialize the internal matrices
     void InitMatrices();
     
@@ -234,7 +246,8 @@ namespace Chroma
 			 multi1d<DComplex>& g,
 			 multi2d<DComplex>& Qk, 
 			 multi1d<DComplex>& Qk_tau,
-			 int&  ndim_cycle) const;
+			 int&  ndim_cycle,
+			 bool verbose) const;
 
     void LeastSquaresSolve(const multi2d<DComplex>& R, 
 			   const multi1d<DComplex>& rhs,
