@@ -32,10 +32,25 @@ namespace QDP
 
 
   template<typename T>
-  struct PComp
+  class PComp: public BaseView<T>
   {
+  public:
     typedef T Sub_t;
-    T comp[2];
+    enum { ThisSize = 2 };
+    QV get_var() const { return BaseView<T>::get_var(); }
+    PComp( QV var_ , typename WordType<T>::Type_t *base_ ): BaseView<T>(var_,base_) {}
+
+    PComp operator=(const PComp& rhs)
+    {
+      for (int i = 0 ; i < 2 ; ++i )
+	elem(i) = rhs.elem(i);
+      return *this;
+    }
+
+    T elem(int i) const { return BaseView<T>::elem(i); }
+
+  private:
+    //T comp[2];
   };
 
   template<class T>
@@ -116,10 +131,24 @@ namespace QDP
 
 
   template<typename T>
-  struct PTriDia
+  class PTriDia: public BaseView<T>
   {
+  public:
     typedef T Sub_t;
-    T diag[2*Nc];
+    enum { ThisSize = 2*Nc };
+    QV get_var() const { return BaseView<T>::get_var(); }
+    PTriDia( QV var_ , typename WordType<T>::Type_t *base_ ): BaseView<T>(var_,base_) {}
+
+    PTriDia operator=(const PTriDia& rhs)
+    {
+      for (int i = 0 ; i < 2*Nc ; ++i )
+	elem(i) = rhs.elem(i);
+      return *this;
+    }
+
+    T elem(int i) const { return BaseView<T>::elem(i); }
+  private:
+    //T diag[2*Nc];
   };
 
   template<class T>
@@ -215,10 +244,25 @@ namespace QDP
 
 
   template<typename T>
-  struct PTriOff
+  class PTriOff: public BaseView<T>
   {
+  public:
     typedef T Sub_t;
-    T offd[2*Nc*Nc-Nc];
+    enum { ThisSize = 2*Nc*Nc-Nc };
+    QV get_var() const { return BaseView<T>::get_var(); }
+    PTriOff( QV var_ , typename WordType<T>::Type_t *base_ ): BaseView<T>(var_,base_) {}
+
+    PTriOff operator=(const PTriOff& rhs)
+    {
+      for (int i = 0 ; i < 2*Nc*Nc-Nc ; ++i )
+	elem(i) = rhs.elem(i);
+      return *this;
+    }
+
+    T elem(int i) const { return BaseView<T>::elem(i); }
+    
+  private:
+    //T offd[2*Nc*Nc-Nc];
   };
 
 
@@ -539,8 +583,6 @@ namespace Chroma
   {
     START_CODE();
 
-    //std::cout << "PTX Clover create "  << (void*)this << "\n";
-   
     u.resize(Nd);
     
     u = fs->getLinks();
@@ -757,15 +799,15 @@ namespace Chroma
     workgroupGuard.check(r_idx_thread);
     llvm::Value* r_idx = llvm_array_type_indirection<int>( p_site_table , r_idx_thread );
 
-    auto f0_j = f0_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto f1_j = f1_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto f2_j = f2_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto f3_j = f3_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto f4_j = f4_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto f5_j = f5_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto f0_j = f0_jit.elem( r_idx );
+    auto f1_j = f1_jit.elem( r_idx );
+    auto f2_j = f2_jit.elem( r_idx );
+    auto f3_j = f3_jit.elem( r_idx );
+    auto f4_j = f4_jit.elem( r_idx );
+    auto f5_j = f5_jit.elem( r_idx );
 
-    auto tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto tri_dia_j = tri_dia_jit.elem( r_idx );
+    auto tri_off_j = tri_off_jit.elem( r_idx );
 
     for(int jj = 0; jj < 2; jj++) {
       for(int ii = 0; ii < 2*Nc; ii++) {
@@ -961,7 +1003,9 @@ namespace Chroma
     function.set_dest_id( tr_log_diag.getId() );
     function.set_is_lat(true);
 #endif
-    
+    int ss_ref = s.get_layout_ref();
+    s.set_layout_ref( tri_dia.get_layout_ref() );
+
     AddressLeaf addr_leaf(s);
 
     forEach(tr_log_diag, addr_leaf, NullCombine());
@@ -978,6 +1022,8 @@ namespace Chroma
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
       ids.push_back( addr_leaf.ids[i] );
     jit_launch(function,th_count,ids);
+
+    s.set_layout_ref( ss_ref );
   }
 
 
@@ -1017,9 +1063,9 @@ namespace Chroma
 
     llvm::Value* r_idx = llvm_array_type_indirection<int>( p_site_table , r_idx_thread );
 
-    auto tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto tri_off_j     = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto tr_log_diag_j = tr_log_diag_jit.elem(r_idx);
+    auto tri_dia_j     = tri_dia_jit.elem(r_idx);
+    auto tri_off_j     = tri_off_jit.elem(r_idx);
 
     //typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     //typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
@@ -1289,7 +1335,9 @@ namespace Chroma
     function.set_dest_id( B.getId() );
     function.set_is_lat(true);
 #endif
-    
+    int ss_ref = s.get_layout_ref();
+    s.set_layout_ref( tri_dia.get_layout_ref() );
+
     AddressLeaf addr_leaf(s);
 
     forEach(B, addr_leaf, NullCombine());
@@ -1309,6 +1357,8 @@ namespace Chroma
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
       ids.push_back( addr_leaf.ids[i] );
     jit_launch(function,th_count,ids);
+
+    s.set_layout_ref( ss_ref );
   }
 
 
@@ -1352,9 +1402,9 @@ namespace Chroma
 
     llvm::Value * r_mat    = llvm_derefParam( p_mat );
 
-    auto B_j = B_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto B_j = B_jit.elem(r_idx);
+    auto tri_dia_j = tri_dia_jit.elem(r_idx);
+    auto tri_off_j = tri_off_jit.elem(r_idx);
 
     typedef RScalarJIT <WordJIT<REALT> >  R_t;
     typedef RComplexJIT<WordJIT<REALT> >  C_t;
@@ -1721,7 +1771,9 @@ namespace Chroma
     function.set_dest_id( chi.getId() );
     function.set_is_lat(true);
 #endif
-    
+    int ss_ref = s.get_layout_ref();
+    s.set_layout_ref( psi.get_layout_ref() );
+ 
     AddressLeaf addr_leaf(s);
 
     forEach(chi, addr_leaf, NullCombine());
@@ -1738,6 +1790,8 @@ namespace Chroma
     for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
       ids.push_back( addr_leaf.ids[i] );
     jit_launch(function,th_count,ids);
+
+    s.set_layout_ref( ss_ref );
   }
 
 
@@ -1778,10 +1832,10 @@ namespace Chroma
 
     llvm::Value* r_idx = llvm_array_type_indirection<int>( p_site_table , r_idx_thread );
 
-    auto chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto psi_j = psi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto chi_j = chi_jit.elem(r_idx);
+    auto psi_j = psi_jit.elem(r_idx);
+    auto tri_dia_j = tri_dia_jit.elem(r_idx);
+    auto tri_off_j = tri_off_jit.elem(r_idx);
 
     auto chi_s = stack_alloc_jit< decltype(chi_j) >( chi_jit.get_var() );
 
@@ -1856,8 +1910,6 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    //QDPIO::cout << "PTX Clover apply"  << (void*)this << "\n";
-    //std::cout << "PTX Clover apply"  << (void*)this << "\n";
     static JitFunction function;
 
     if (function.empty())

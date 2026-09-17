@@ -16,6 +16,7 @@ void function_get_fs_bs_exec(JitFunction& function,
 			     bool dobs)
 {
   //QDPIO::cout << __FILE__ << ":" << __LINE__ << "\n";
+  int ref = Q.get_layout_ref();
 
   AddressLeaf addr_leaf(all);
 
@@ -31,7 +32,7 @@ void function_get_fs_bs_exec(JitFunction& function,
   int junk_9 = forEach(b2[1], addr_leaf, NullCombine());
   int junk_10= forEach(b2[2], addr_leaf, NullCombine());
 
-  int th_count = Layout::sitesOnNode();
+  int th_count = MG::get(ref).sitesOnNode();
   
   WorkgroupGuardExec workgroupGuardExec(th_count , MG::get(Q.get_layout_ref()).sitesOnNode() );
 
@@ -88,19 +89,19 @@ void function_get_fs_bs_build(JitFunction& function,
   llvm::Value*  r_dobs   = llvm_derefParam( p_dobs );
       
 
-  auto Q_j  = Q_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto QQ_j = QQ_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto Q_j  = Q_jit.elem(r_idx);
+  auto QQ_j = QQ_jit.elem(r_idx);
 
-  auto f0_j = f0_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto f1_j = f1_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto f2_j = f2_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto f0_j = f0_jit.elem(r_idx);
+  auto f1_j = f1_jit.elem(r_idx);
+  auto f2_j = f2_jit.elem(r_idx);
   
-  auto b10_j = b10_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto b11_j = b11_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto b12_j = b12_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto b20_j = b20_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto b21_j = b21_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto b22_j = b22_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto b10_j = b10_jit.elem(r_idx);
+  auto b11_j = b11_jit.elem(r_idx);
+  auto b12_j = b12_jit.elem(r_idx);
+  auto b20_j = b20_jit.elem(r_idx);
+  auto b21_j = b21_jit.elem(r_idx);
+  auto b22_j = b22_jit.elem(r_idx);
 
 
   // Get the traces
