@@ -150,10 +150,18 @@ AC_ARG_ENABLE(jit_contraction_kernels,
 
 
 AC_ARG_ENABLE(opt-eigcg,
-  AS_HELP_STRING([--enable-opt-eigcg],[Build optimized eigcg]),
-  [opt_eigcg_enabled="${enableval}"],
-  [opt_eigcg_enabled="no" ]
+  AS_HELP_STRING([--enable-opt-eigcg],[Alias for --enable-opt-lapack]),
+  [opt_eigcg_enabled="${enableval}"]
 )
+AC_ARG_ENABLE(opt-lapack,
+  AS_HELP_STRING([--enable-opt-lapack],[Build optional LAPACK-dependent solvers]),
+  [opt_lapack_enabled="${enableval}"],
+  [opt_lapack_enabled="${opt_eigcg_enabled:-no}"]
+)
+case "${opt_lapack_enabled}" in
+  yes|no) ;;
+  *) AC_MSG_ERROR([--enable-opt-lapack expects yes or no]) ;;
+esac
 
 AC_ARG_ENABLE(opt_cfz_linop,
   AS_HELP_STRING([--enable-opt-cfz-linop],[Build and use the generic optimized Continued Frac. Zolo. (CFZ) Linear Oper.])
@@ -919,21 +927,21 @@ fi
 
 
 dnl ************************************************************************
-dnl **** Use optimized eigcg                                            ****  
+dnl **** Use optional LAPACK solvers                                    ****
 dnl ************************************************************************   
-case "${opt_eigcg_enabled}" in
+case "${opt_lapack_enabled}" in
 yes)
-        AC_MSG_NOTICE([Configuring to use optimized eigcg])
-        AC_DEFINE(BUILD_OPT_EIGCG,[],[Configuring to use optimized eigcg])
-        AC_SUBST(OPT_EIGCG_ENABLED,[yes])
+        AC_MSG_NOTICE([Configuring to use optional LAPACK solvers])
+        AC_DEFINE(BUILD_OPT_LAPACK,[],[Configuring to use optional LAPACK solvers])
+        AC_SUBST(OPT_LAPACK_ENABLED,[yes])
         ;;
 *)
-        AC_MSG_NOTICE([Will not build optimized eigCG.])
-        AC_SUBST(OPT_EIGCG_ENABLED,[no])
+        AC_MSG_NOTICE([Will not build optional LAPACK solvers.])
+        AC_SUBST(OPT_LAPACK_ENABLED,[no])
         ;;
 esac
 
-AM_CONDITIONAL(BUILD_OPT_EIGCG, [ test "X${OPT_EIGCG_ENABLED}X" = "XyesX" ])
+AM_CONDITIONAL(BUILD_OPT_LAPACK, [ test "X${OPT_LAPACK_ENABLED}X" = "XyesX" ])
 
 
 dnl ************************************************************************

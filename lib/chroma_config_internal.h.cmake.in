@@ -31,7 +31,7 @@
 #cmakedefine BUILD_MGPROTO  @BUILD_MGPROTO@
 
 /* Configuring to use optimized eigcg */
-#cmakedefine BUILD_OPT_EIGCG  @BUILD_OPT_EIGCG@
+#cmakedefine BUILD_OPT_LAPACK  @BUILD_OPT_LAPACK@
 
 
 /* Build with the QPHIX_LIBRARY */

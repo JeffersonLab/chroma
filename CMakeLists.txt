@@ -187,6 +187,7 @@ endif()
 ####################################
 if( Chroma_ENABLE_LAPACK )
   set(BUILD_LAPACK 1)
+  set(BUILD_OPT_LAPACK 1)
   set(QDPLapack_BINDING "lapack")
 endif()
 add_subdirectory(other_libs/qdp-lapack)

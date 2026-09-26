@@ -1,3 +1,6 @@
+#include "chroma_config.h"
+
+#ifdef BUILD_OPT_LAPACK
 // -*- C++ -*-
 /*! \file
  *  \brief Conjugate-Gradient algorithm with eigenstd::vector acceleration
@@ -1000,3 +1003,5 @@ namespace Chroma
 }// End Namespace Chroma
 
 #endif
+
+#endif // BUILD_OPT_LAPACK

@@ -1,4 +1,3 @@
-# $Id: Makefile.am,v 3.242 2009/11/14 20:01:43 eneil Exp $
 #
 # Path for all files used in building the library
 
@@ -1113,8 +1112,6 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/invsumr.cc \
 	actions/ferm/invert/inv_gmresr_cg_array.cc \
 	actions/ferm/invert/inv_minres_array.cc \
-	actions/ferm/invert/inv_eigcg2.cc \
-	actions/ferm/invert/inv_eigcg2_array.cc \
 	actions/ferm/invert/inv_rel_cg1.cc \
 	actions/ferm/invert/inv_rel_cg2.cc \
 	actions/ferm/invert/inv_rel_gmresr_cg.cc \
@@ -1148,8 +1145,6 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
-	actions/ferm/invert/syssolver_linop_eigcg.cc \
-	actions/ferm/invert/syssolver_linop_eigcg_array.cc \
 	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.cc \
 	actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.cc \
 	actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.cc \
@@ -1164,14 +1159,11 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_mdagm_rel_ibicgstab_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc \
-	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
-	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \
 	actions/ferm/invert/syssolver_linop_bicgstab.cc \
 	actions/ferm/invert/syssolver_linop_bicrstab.cc \
 	actions/ferm/invert/syssolver_linop_ibicgstab.cc \
 	actions/ferm/invert/syssolver_linop_mr.cc \
-	actions/ferm/invert/syssolver_linop_fgmres_dr.cc \
 	actions/ferm/invert/multi_syssolver_cg_params.cc \
 	actions/ferm/invert/multi_syssolver_mr_params.cc \
 	actions/ferm/invert/multi_syssolver_linop_aggregate.cc \
@@ -1825,8 +1817,6 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_disco_prob_defl_superb_w.cc \
 	meas/inline/hadron/inline_disco_prob_3d_defl_superb_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
-	meas/inline/hadron/inline_disco_eigcg_w.cc \
-	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
 	meas/inline/hadron/inline_distillution_noise.cc \
 	meas/inline/hadron/inline_prop_distillation_w.cc \
 	meas/inline/hadron/inline_prop_distillation_stoch_w.cc \
@@ -2193,4 +2183,19 @@ endif
 if BUILD_GTEST
 nobase_include_HEADERS += gtest/gtest.h
 libchroma_a_SOURCES += gtest/gtest-all.cc
+endif
+
+if BUILD_OPT_LAPACK
+libchroma_a_SOURCES += \
+	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
+	meas/inline/hadron/inline_laplace_eigs.cc \
+	meas/inline/hadron/inline_disco_eigcg_w.cc \
+	actions/ferm/invert/syssolver_linop_OPTeigbicg.cc \
+	actions/ferm/invert/syssolver_linop_eigcg_array.cc \
+	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
+	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc \
+	actions/ferm/invert/syssolver_linop_fgmres_dr.cc \
+	actions/ferm/invert/inv_eigcg2.cc \
+	actions/ferm/invert/inv_eigcg2_array.cc \
+	actions/ferm/invert/syssolver_linop_eigcg.cc
 endif

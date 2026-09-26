@@ -1,3 +1,6 @@
+#include "chroma_config.h"
+
+#ifdef BUILD_OPT_LAPACK
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -821,3 +824,5 @@ namespace Chroma
   }
   
 } // namespace Chroma
+
+#endif // BUILD_OPT_LAPACK

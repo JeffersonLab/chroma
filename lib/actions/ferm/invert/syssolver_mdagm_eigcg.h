@@ -6,7 +6,9 @@
 #ifndef __syssolver_mdagm_eigcg_h__
 #define __syssolver_mdagm_eigcg_h__
 
-#ifdef BUILD_OPT_EIGCG
+#include "chroma_config.h"
+
+#ifdef BUILD_OPT_LAPACK
 
 #include "actions/ferm/invert/syssolver_mdagm_OPTeigcg.h"
 

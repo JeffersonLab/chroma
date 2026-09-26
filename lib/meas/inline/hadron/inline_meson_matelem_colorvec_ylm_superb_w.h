@@ -30,7 +30,6 @@ namespace Chroma
       struct Param_t
       {
 	bool                    drop_negative_m = false; /*!< Store m >= 0; requires opposite momenta and equal vector phasings */
-	bool                    use_derivP;             /*!< Are these displacements or derivatives? */
 	int                     mom2_min;               /*!< (mom)^2 >= mom2_min */
 	int                     mom2_max;               /*!< (mom)^2 <= mom2_max */
 	std::vector<std::vector<int>> mom_list;         /*!< Array of momenta to generate */

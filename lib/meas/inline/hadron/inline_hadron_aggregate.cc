@@ -10,7 +10,7 @@
 #include "meas/inline/hadron/inline_create_colorvecs.h"
 #include "meas/inline/hadron/inline_create_colorvecs_superb.h"
 
-#if defined(BUILD_LAPACK) && defined(BUILD_OPT_EIGCG)
+#if defined(BUILD_OPT_LAPACK)
 #include "meas/inline/hadron/inline_laplace_eigs.h"
 #else
 #warning "Not Building Inline Laplace Eigs"
@@ -22,8 +22,12 @@
 #include "meas/inline/hadron/inline_disco_prob_defl_superb_w.h"
 #include "meas/inline/hadron/inline_disco_prob_3d_defl_superb_w.h"
 #include "meas/inline/hadron/inline_disco_eoprec_w.h"
+#ifdef BUILD_OPT_LAPACK
 #include "meas/inline/hadron/inline_disco_eo_eigcg_w.h"
+#endif
+#ifdef BUILD_OPT_LAPACK
 #include "meas/inline/hadron/inline_disco_eigcg_w.h"
+#endif
 
 
 #include "meas/inline/hadron/inline_static_light_spec_w.h"
@@ -134,7 +138,7 @@ namespace Chroma
 
 	success &= InlineMultiPropagatorEnv::registerAll();  // save space
 	success &= InlineSeqSourceEnv::registerAll();
-#if defined(BUILD_LAPACK) && defined(BUILD_OPT_EIGCG)
+#if defined(BUILD_OPT_LAPACK)
 	success &= InlineLaplaceEigsEnv::registerAll();
 #endif
 	success &= InlineSeqPropTestEnv::registerAll();
@@ -149,8 +153,12 @@ namespace Chroma
 	success &= InlineProp3ptEnv::registerAll();
 	success &= InlineDiscoEnv::registerAll();
 	success &= InlineDiscoEOPrecEnv::registerAll();
+#ifdef BUILD_OPT_LAPACK
 	success &= InlineDiscoEoEigCGEnv::registerAll();
+#endif
+#ifdef BUILD_OPT_LAPACK
 	success &= InlineDiscoEigCGEnv::registerAll();
+#endif
 	success &= InlineDiscoProbDefl::registerAll();
 #ifdef BUILD_SB
 	success &= InlineDiscoProbDeflSuperb::registerAll();

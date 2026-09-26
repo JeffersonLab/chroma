@@ -43,13 +43,8 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
 
-      param.use_derivP = true;
-
       if (paramtop.count("use_derivP") > 0)
-	read(paramtop, "use_derivP", param.use_derivP);
-
-      if (!param.use_derivP)
-        throw std::string("YLM elementals require use_derivP=true");
+        throw std::string("use_derivP is no longer supported by YLM elementals; remove the tag. YLM elementals always use derivatives.");
       param.drop_negative_m = false;
       if (paramtop.count("drop_negative_m"))
         read(paramtop, "drop_negative_m", param.drop_negative_m);
@@ -160,7 +155,6 @@ namespace Chroma
       int version = 5;
 
       write(xml, "version", version);
-      write(xml, "use_derivP", param.use_derivP);
       write(xml, "drop_negative_m", param.drop_negative_m);
       write(xml, "displacement_length", param.displacement_length);
       write(xml, "derivative_basis", std::string("redstar_circular_v1"));
