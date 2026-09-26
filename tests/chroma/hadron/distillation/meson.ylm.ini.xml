@@ -22,12 +22,71 @@
 
         <!-- List of derivative arrays -->
         <displacement_list>
+          <!-- No derivatives -->
           <elem>0</elem>
-          <elem>1 1</elem>
-          <elem>1 0</elem>
+
+          <!-- One derivative: J=1 -->
           <elem>1 -1</elem>
+          <elem>1 0</elem>
+          <elem>1 1</elem>
+
+          <!-- Two derivatives: J=0 -->
+          <elem>2 0 0</elem>
+
+          <!-- Two derivatives: J=1 -->
+          <elem>2 1 -1</elem>
           <elem>2 1 0</elem>
+          <elem>2 1 1</elem>
+
+          <!-- Two derivatives: J=2 -->
+          <elem>2 2 -2</elem>
+          <elem>2 2 -1</elem>
+          <elem>2 2 0</elem>
+          <elem>2 2 1</elem>
+          <elem>2 2 2</elem>
+
+          <!-- Three derivatives: J13=0, J=1 -->
+          <elem>3 0 1 -1</elem>
+          <elem>3 0 1 0</elem>
+          <elem>3 0 1 1</elem>
+
+          <!-- Three derivatives: J13=1, J=0 -->
+          <elem>3 1 0 0</elem>
+
+          <!-- Three derivatives: J13=1, J=1 -->
+          <elem>3 1 1 -1</elem>
+          <elem>3 1 1 0</elem>
+          <elem>3 1 1 1</elem>
+
+          <!-- Three derivatives: J13=1, J=2 -->
+          <elem>3 1 2 -2</elem>
+          <elem>3 1 2 -1</elem>
+          <elem>3 1 2 0</elem>
+          <elem>3 1 2 1</elem>
+          <elem>3 1 2 2</elem>
+
+          <!-- Three derivatives: J13=2, J=1 -->
+          <elem>3 2 1 -1</elem>
+          <elem>3 2 1 0</elem>
+          <elem>3 2 1 1</elem>
+
+          <!-- Three derivatives: J13=2, J=2 -->
+          <elem>3 2 2 -2</elem>
+          <elem>3 2 2 -1</elem>
+          <elem>3 2 2 0</elem>
+          <elem>3 2 2 1</elem>
+          <elem>3 2 2 2</elem>
+
+          <!-- Three derivatives: J13=2, J=3 -->
+          <elem>3 2 3 -3</elem>
+          <elem>3 2 3 -2</elem>
+          <elem>3 2 3 -1</elem>
+          <elem>3 2 3 0</elem>
+          <elem>3 2 3 1</elem>
+          <elem>3 2 3 2</elem>
+          <elem>3 2 3 3</elem>
         </displacement_list>
+        <drop_negative_m>false</drop_negative_m>
 
         <LinkSmearing>
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
