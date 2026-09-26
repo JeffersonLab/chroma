@@ -162,7 +162,7 @@ namespace Chroma
       write(xml, "displacement_encoding_version", 1);
       write(xml, "type_of_data", COLORVEC_MATELEM_TYPE_YLM);
       // QDP string output does not escape XML metacharacters: keep this text XML-safe.
-      write(xml, "adjoint_convention", std::string("Phi_m(p)^dagger=eta*(-1)^m*Phi_-m(-p); eta=1 for n=0,1,2, (-1)^(3-J+J13) for n=3; swap vector phasings"));
+      write(xml, "adjoint_convention", std::string("ylm_adjoint_v1"));
       write(xml, "mom2_min", param.mom2_min);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "mom_list", param.mom_list);
