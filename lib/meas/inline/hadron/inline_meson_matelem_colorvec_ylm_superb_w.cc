@@ -157,10 +157,12 @@ namespace Chroma
       write(xml, "version", version);
       write(xml, "drop_negative_m", param.drop_negative_m);
       write(xml, "displacement_length", param.displacement_length);
-      write(xml, "derivative_basis", std::string("redstar_circular_v1"));
+      // Descriptive basis identifier; the key encoding has its own version.
+      write(xml, "derivative_basis", std::string("cg_coupled_covariant_derivatives_v1"));
       write(xml, "displacement_encoding_version", 1);
       write(xml, "type_of_data", COLORVEC_MATELEM_TYPE_YLM);
-      write(xml, "adjoint_convention", std::string("Phi_m(p)^dagger=eta*(-1)^m*Phi_-m(-p); eta=1 for n<=2, (-1)^(3-J+J13) for n=3; swap vector phasings"));
+      // QDP string output does not escape XML metacharacters: keep this text XML-safe.
+      write(xml, "adjoint_convention", std::string("Phi_m(p)^dagger=eta*(-1)^m*Phi_-m(-p); eta=1 for n=0,1,2, (-1)^(3-J+J13) for n=3; swap vector phasings"));
       write(xml, "mom2_min", param.mom2_min);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "mom_list", param.mom_list);
@@ -322,7 +324,7 @@ namespace Chroma
     //! Meson operator, colorstd::vector source and sink with momentum projection
     struct ValMesonElementalOperator_t : public SB::Tensor<2, SB::ComplexD> {
       int type_of_data; /*!< Flag indicating type of data (maybe trivial) */
-      ValMesonElementalOperator_t(int n = 0, int type_of_data = COLORVEC_MATELEM_TYPE_GENERIC)
+      ValMesonElementalOperator_t(int n = 0, int type_of_data = COLORVEC_MATELEM_TYPE_YLM)
 	: SB::Tensor<2, SB::ComplexD>("ij", {n, n}, SB::OnHost, SB::Local),
 	  type_of_data(type_of_data)
       {
