@@ -1,5 +1,5 @@
 AC_INIT([chroma],[3.44.0],[edwards@jlab.org])
-AC_PREREQ([2.72])
+AC_PREREQ([2.69])
 AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE([subdir-objects])

@@ -1,28 +1,27 @@
 <?xml version="1.0"?>
-<harom>
-<annotation>
-;
-; Test input file for harom main program
-;
-</annotation>
-<Param> 
+
+<chroma>
+<Param>
   <InlineMeasurements>
 
-    <elem>
-      <Name>MESON_MATELEM_COLORVEC</Name>
+<elem>
+      <Name>MESON_MATELEM_COLORVEC_SUPERB</Name>
       <Frequency>1</Frequency>
       <Param>
         <version>4</version>
         <mom2_min>0</mom2_min>
-        <mom2_max>4</mom2_max>
-        <mom_list></mom_list>
+        <mom2_max>0</mom2_max>
+        <mom_list>
+
+        </mom_list>
         <num_vecs>10</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
-        <use_derivP>true</use_derivP>
+        <t_source>0</t_source>
+        <Nt_forward>4</Nt_forward>
 
         <!-- List of displacement arrays -->
-        <deriv_list>
+        <displacement_list>
           <elem></elem>
           <elem>1</elem>
           <elem>2</elem>
@@ -150,7 +149,7 @@
           <elem>3 3 3 2</elem>
           <elem>3 3 3 3</elem>
 
-        </deriv_list>
+        </displacement_list>
 
         <LinkSmearing>
           <!-- LinkSmearingType>NONE</LinkSmearingType -->
@@ -161,16 +160,29 @@
         </LinkSmearing>
       </Param>
       <NamedObject>
-        <gauge_file>./gauge.mod</gauge_file>
-        <colorvec_files><elem>./colorvec.mod</elem></colorvec_files>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_files>
+          <elem>./colorvec.mod</elem>
+        </colorvec_files>
         <meson_op_file>meson.deriv.sdb</meson_op_file>
       </NamedObject>
     </elem>
-
   </InlineMeasurements>
   <nrow>4 4 4 16</nrow>
 </Param>
 
-</harom>
+<RNG>
+  <Seed>        
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
 
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
 
