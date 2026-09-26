@@ -31,8 +31,8 @@
 
         <LinkSmearing>
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
-          <link_smear_fact>0.1</link_smear_fact>
-          <link_smear_num>10</link_smear_num>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
           <no_smear_dir>3</no_smear_dir>
         </LinkSmearing>
 
