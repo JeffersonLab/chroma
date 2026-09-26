@@ -10,9 +10,15 @@
       <Param>
         <version>4</version>
         <mom2_min>0</mom2_min>
-        <mom2_max>0</mom2_max>
+        <mom2_max>3</mom2_max>
         <mom_list>
-
+          <elem>0 0 0</elem>
+          <elem>1 0 0</elem>
+          <elem>-1 0 0</elem>
+          <elem>1 1 0</elem>
+          <elem>-1 -1 0</elem>
+          <elem>1 1 1</elem>
+          <elem>-1 -1 -1</elem>
         </mom_list>
         <num_vecs>10</num_vecs>
         <displacement_length>1</displacement_length>
@@ -101,7 +107,7 @@
         <colorvec_files>
           <elem>./colorvec.mod</elem>
         </colorvec_files>
-        <meson_op_file>meson.ylm.sdb</meson_op_file>
+        <meson_op_file>meson.ylm.nonzero.sdb</meson_op_file>
       </NamedObject>
     </elem>
   </InlineMeasurements>
