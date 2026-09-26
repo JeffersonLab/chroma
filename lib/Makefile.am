@@ -928,6 +928,8 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h \
+	meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.h \
+	meas/inline/hadron/meson_derivative_ylm.h \
 	meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.h \
 	meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.h \
 	meas/inline/hadron/inline_eigenvalues_superb_w.h \
@@ -1008,13 +1010,9 @@ nobase_include_HEADERS += \
 # 
 AM_CXXFLAGS  = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib 
 AM_CXXFLAGS += @CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@
-AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
-               -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
 
 AM_CFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib 
 AM_CFLAGS += @CFLAGS@
-AM_CFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
-               -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
 
 
 if BUILD_GMP_REMEZ
@@ -1861,6 +1859,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.cc \
+	meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.cc \
 	meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.cc \
 	meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.cc \
 	meas/inline/hadron/inline_eigenvalues_superb_w.cc \
@@ -2018,21 +2017,6 @@ endif
 if BUILD_OPT_CFZ_LINOP
 nobase_include_HEADERS += actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h
 libchroma_a_SOURCES += actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc
-endif
-
-if BUILD_LAPACK
-if BUILD_OPT_EIGCG
-nobase_include_HEADERS += \
-	actions/ferm/invert/syssolver_OPTeigcg_params.h \
-	actions/ferm/invert/syssolver_mdagm_OPTeigcg.h \
-	actions/ferm/invert/syssolver_linop_OPTeigbicg.h \
-	meas/inline/hadron/inline_laplace_eigs.h
-libchroma_a_SOURCES += \
-	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
-	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
-	actions/ferm/invert/syssolver_linop_OPTeigbicg.cc \
-	meas/inline/hadron/inline_laplace_eigs.cc
-endif
 endif
 
 if BUILD_SSED_CLOVER_APPLY

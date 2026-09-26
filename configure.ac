@@ -1,5 +1,5 @@
-AC_INIT(chroma,3.44.0,edwards@jlab.org)
-AC_PREREQ([2.57])
+AC_INIT([chroma],[3.44.0],[edwards@jlab.org])
+AC_PREREQ([2.72])
 AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE([subdir-objects])
@@ -31,42 +31,32 @@ dnl Complete rewrite of configure switches based on new config scripts.
 
 dnl --with-qdp=DIR
 AC_ARG_WITH(qdp,
-  AC_HELP_STRING(
-    [--with-qdp=DIR],
-    [Build Chroma on top of QDP++ where QDP++ is installed in DIR]
-  ),
+  AS_HELP_STRING([--with-qdp=DIR],[Build Chroma on top of QDP++ where QDP++ is installed in DIR
+  ]),
   [QDPXX_HOME="$with_qdp"]
 )
 
 AC_ARG_ENABLE(sse_wilson_dslash,
-  AC_HELP_STRING( 
-    [--enable-sse-wilson-dslash],
-    [Build and Use the SSE2 Wilson Dslash Library])
+  AS_HELP_STRING([--enable-sse-wilson-dslash],[Build and Use the SSE2 Wilson Dslash Library])
 )
 
 dnl CPP_WILSON_DSLASH_OPTIONS
 AC_ARG_ENABLE(cpp_wilson_dslash,
-   AC_HELP_STRING(
-    [--enable-cpp-wilson-dslash],
-    [Build and Use the CPP Wilson Dslash Library. Can also specify --enable-sse2 or --enable-sse3 and requires a QMP location in parscalar more with --with-qmp]   )
+   AS_HELP_STRING([--enable-cpp-wilson-dslash],[Build and Use the CPP Wilson Dslash Library. Can also specify --enable-sse2 or --enable-sse3 and requires a QMP location in parscalar more with --with-qmp   ])
 )
 
 AC_ARG_ENABLE(sse2,
-   AC_HELP_STRING(
-    [--enable-sse2],
-    [Enable SSE2 support in the CPP Wilson Dslash package]
-   )
+   AS_HELP_STRING([--enable-sse2],[Enable SSE2 support in the CPP Wilson Dslash package
+   ])
 )
 
 AC_ARG_ENABLE(sse3,
-   AC_HELP_STRING(
-    [--enable-sse3],
-    [Enable SSE3 support in the CPP Wilson Dslash package]
-   )
+   AS_HELP_STRING([--enable-sse3],[Enable SSE3 support in the CPP Wilson Dslash package
+   ])
 )
 
 AC_ARG_ENABLE(cg-dwf,
-	AC_HELP_STRING([--enable-cg-dwf=<cpuarch> <cpuarch>=sse,bluelight,altivec]),
+	AS_HELP_STRING([--enable-cg-dwf=<cpuarch> <cpuarch>=sse,bluelight,altivec]),
 	[cg_dwf_cpu_arch=${enableval}
 	 build_cg_dwf="yes"],
 	[cg_dwf_cpu_arch="none"
@@ -74,19 +64,19 @@ AC_ARG_ENABLE(cg-dwf,
 )
 
 AC_ARG_ENABLE(cg-dwf-lowmem,
-	AC_HELP_STRING([--enable-cg-dwf-lowmem=<yes/no> Enable Low/High Memory mode of CG-DWF inverter]), 
+	AS_HELP_STRING([--enable-cg-dwf-lowmem=<yes/no> Enable Low/High Memory mode of CG-DWF inverter]), 
 	[ cg_dwf_lowmem="yes"],
 	[ cg_dwf_lowmem="no" ]
 )
 
 AC_ARG_ENABLE(cg-solver-restart,
-	AC_HELP_STRING([ Enable a single restart in the CG linop syssolvers ]),
+	AS_HELP_STRING([ Enable a single restart in the CG linop syssolvers ]),
 	[cg_do_one_restart="yes"],
 	[cg_do_one_restart="no"]
 )
 
 AC_ARG_WITH(mdwf,
-	AC_HELP_STRING([--with-mdwf=<install location>]),
+	AS_HELP_STRING([--with-mdwf=<install location>]),
 	[mdwf_path=${withval}
 	 build_mdwf="yes"],
 	[mdwf_path=""
@@ -94,7 +84,7 @@ AC_ARG_WITH(mdwf,
 )
 
 AC_ARG_WITH(llvm-wilson-dslash,
-	AC_HELP_STRING([--with-llvm-wilson-dslash=<install location>]),
+	AS_HELP_STRING([--with-llvm-wilson-dslash=<install location>]),
 	[llvm_wd_path=${withval}
 	 build_llvm_wd="yes"],
 	[llvm_wd_path=""
@@ -102,139 +92,104 @@ AC_ARG_WITH(llvm-wilson-dslash,
 )
 
 AC_ARG_ENABLE(static-packed-gauge,
-	AC_HELP_STRING([--enable-static-packed-gauge. Enable Static packed gauges for cpp_wilson_dslash and QPhiX. This may be dangerous, but improve balance ]),
+	AS_HELP_STRING([--enable-static-packed-gauge. Enable Static packed gauges for cpp_wilson_dslash and QPhiX. This may be dangerous, but improve balance ]),
 	[enable_static_packed_gauge=${enableval} ],
 	[enable_static_packed_gauge="no"]
 )
 
 
 AC_ARG_ENABLE(asqtad_level3_inverter,
-   AC_HELP_STRING(
-    [--enable-asqtad-level3-inverter],
-    [Wrap the level3 asqtad inverter])
+   AS_HELP_STRING([--enable-asqtad-level3-inverter],[Wrap the level3 asqtad inverter])
 )
 
 	
 AC_ARG_WITH(bagel_wilson_dslash,
-  AC_HELP_STRING(
-    [--with-bagel-wilson-dslash=DIR],
-    [Use Peter Boyles BAGEL Wilson Dslash Library installed in DIR]
-  ),
+  AS_HELP_STRING([--with-bagel-wilson-dslash=DIR],[Use Peter Boyles BAGEL Wilson Dslash Library installed in DIR
+  ]),
     [bagel_wilson_dslash_enabled="yes"
      BAGEL_WILSON_DSLASH_HOME="${with_bagel_wilson_dslash}"]
 )
 
 AC_ARG_ENABLE(bagel_wilson_dslash_sloppy,
-	AC_HELP_STRING(
-        [--enable-bagel-wilson-dslash-sloppy], 
-	[Enable Sloppy Precision in BAGEL Dslash -- different internal and external precisions]),
+	AS_HELP_STRING([--enable-bagel-wilson-dslash-sloppy],[Enable Sloppy Precision in BAGEL Dslash -- different internal and external precisions]),
 	[bagel_wilson_dslash_sloppy="yes"],
 	[bagel_wilson_dslash_sloppy="no"]
 )
 
 
 AC_ARG_WITH(bagel_clover,
-  AC_HELP_STRING(
-    [--with-bagel-clover=DIR],
-    [Use the BAGEL Clover Apply Library installed in DIR]
-  ),
+  AS_HELP_STRING([--with-bagel-clover=DIR],[Use the BAGEL Clover Apply Library installed in DIR
+  ]),
     [bagel_clover_enabled="yes"
      BAGEL_CLOVER_HOME="${with_bagel_clover}"]
 )
 
 AC_ARG_ENABLE(ssed_clover,
-	AC_HELP_STRING(
-        [--enable-ssed-clover], 
-	[Enable SSE Double Prec clover operator]),
+	AS_HELP_STRING([--enable-ssed-clover],[Enable SSE Double Prec clover operator]),
 	[ssed_clover_enabled="${enableval}"],
 	[ssed_clover_enabled="no"]
 )
 
 AC_ARG_ENABLE(jit_clover,
-	AC_HELP_STRING(
-        [--enable-jit-clover], 
-	[Enable QDP-JIT clover operator]),
+	AS_HELP_STRING([--enable-jit-clover],[Enable QDP-JIT clover operator]),
 	[jit_clover_enabled="${enableval}"],
 	[jit_clover_enabled="no"]
 )
 
 AC_ARG_ENABLE(quda_deviface,
-	AC_HELP_STRING(
-        [--enable-quda-deviface], 
-	[Enable QUDA device pointer interface]),
+	AS_HELP_STRING([--enable-quda-deviface],[Enable QUDA device pointer interface]),
 	[quda_deviface_enabled="${enableval}"],
 	[quda_deviface_enabled="no"]
 )
 
 AC_ARG_ENABLE(jit_contraction_kernels,
-	AC_HELP_STRING(
-        [--enable-jit-contraction-kernels], 
-	[Enable QDP-JIT contraction kernels]),
+	AS_HELP_STRING([--enable-jit-contraction-kernels],[Enable QDP-JIT contraction kernels]),
 	[jit_contraction_kernels_enabled="${enableval}"],
 	[jit_contraction_kernels_enabled="no"]
 )
 
 
-AC_ARG_ENABLE(lapack,
-  AC_HELP_STRING([--enable-lapack=<type>],
-    [Use the type of lapack bindings specified by <type>. Currently, this can be lapack]),
-  [LAPACK_BINDING="${enableval}"]
-)
-
 AC_ARG_ENABLE(opt-eigcg,
-  AC_HELP_STRING([--enable-opt-eigcg],
-    [Build optimized eigcg]),
+  AS_HELP_STRING([--enable-opt-eigcg],[Build optimized eigcg]),
   [opt_eigcg_enabled="${enableval}"],
   [opt_eigcg_enabled="no" ]
 )
 
 AC_ARG_ENABLE(opt_cfz_linop,
-  AC_HELP_STRING( 
-    [--enable-opt-cfz-linop],
-    [Build and use the generic optimized Continued Frac. Zolo. (CFZ) Linear Oper.])
+  AS_HELP_STRING([--enable-opt-cfz-linop],[Build and use the generic optimized Continued Frac. Zolo. (CFZ) Linear Oper.])
 )
 
 AC_ARG_ENABLE(enable_generic_scalarsite_bicgstab_kernels,
-	AC_HELP_STRING(
-	[--enable-generic-scalarsite-bicgstab-kernels],
-	[Switch on kernels to reduce Reliable BiCGStab BLAS memory bandwidth on threaded machines])
+	AS_HELP_STRING([--enable-generic-scalarsite-bicgstab-kernels],[Switch on kernels to reduce Reliable BiCGStab BLAS memory bandwidth on threaded machines])
 )
 
 AC_ARG_ENABLE(enable_sse_scalarsite_bicgstab_kernels,
-	AC_HELP_STRING(
-	[--enable-sse-scalarsite-bicgstab-kernels],
-	[Switch on SSE kernels to reduce Reliable BiCGStab BLAS memory bandwidth on threaded machines])
+	AS_HELP_STRING([--enable-sse-scalarsite-bicgstab-kernels],[Switch on SSE kernels to reduce Reliable BiCGStab BLAS memory bandwidth on threaded machines])
 )
 
 AC_ARG_ENABLE(testcase-runner,
-  AC_HELP_STRING([--enable-testcase-runner=script],
-    [Use <script> to run testcases: trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh|9q_mpirun_rsh]),
+  AS_HELP_STRING([--enable-testcase-runner=script],[Use <script> to run testcases: trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh|9q_mpirun_rsh]),
     [chroma_testcase_runner=${enable_testcase_runner}],
     [chroma_testcase_runner="trivial_runner.sh"]
 )
 
 AC_ARG_ENABLE(gtest,
-  AC_HELP_STRING([--enable-gtest],
-  [ Enable GoogleTest UnitTesting Framework ]),
+  AS_HELP_STRING([--enable-gtest],[ Enable GoogleTest UnitTesting Framework ]),
   [ chroma_enable_gtest=${enable_gtest} ],
   [ chroma_enable_gtest="no" ]
 )
 
 AC_ARG_WITH(gmp,
-   AC_HELP_STRING(
-    [--with-gmp=<DIR>],
-    [Enable use of GMP - GNU Multi-Precision library, installed in DIR]
-   ),
+   AS_HELP_STRING([--with-gmp=<DIR>],[Enable use of GMP - GNU Multi-Precision library, installed in DIR
+   ]),
     [gmp_enabled="yes"
      GMP_HOME=${with_gmp}],
     [gmp_enabled="no"]
 )
 
 AC_ARG_WITH(qmt,
-   AC_HELP_STRING(
-    [--with-qmt=<DIR>],
-    [Enable use of QMT Threads library installed in DIR]
-   ),
+   AS_HELP_STRING([--with-qmt=<DIR>],[Enable use of QMT Threads library installed in DIR
+   ]),
    [ qmt_enabled="yes"
      QMT_HOME=${with_qmt} ],
    [ qmt_enabled="no" ]
@@ -242,48 +197,38 @@ AC_ARG_WITH(qmt,
 
 
 AC_ARG_WITH(quda,
-   AC_HELP_STRING(
-      [--with-quda=<DIR>],
-      [Use QUDA Library installed in DIR]
-   ),
+   AS_HELP_STRING([--with-quda=<DIR>],[Use QUDA Library installed in DIR
+   ]),
    [ quda_enabled="yes"
      QUDA_HOME=${with_quda} ],
    [ quda_enabled="no" ]
 )
 
 AC_ARG_ENABLE(quda-debug,
-    AC_HELP_STRING(
-	[--enable-quda-debug],
-	[ define QUDA_DEBUG for extra diagnostics from QUDA solvers ]
-    ),
+    AS_HELP_STRING([--enable-quda-debug],[ define QUDA_DEBUG for extra diagnostics from QUDA solvers 
+    ]),
     [ quda_debug_enabled="yes" ],
     [ quda_debug_enabled="no" ]
 )
 
 AC_ARG_ENABLE(quda-mg-dump,
-     AC_HELP_STRING(
-	[--enable-quda-mg-dump],
-	[ dump QUDA MG on fail. Needs QUDA compiled with QIO and have MG dump enabled in QUDA]
-     ),
+     AS_HELP_STRING([--enable-quda-mg-dump],[ dump QUDA MG on fail. Needs QUDA compiled with QIO and have MG dump enabled in QUDA
+     ]),
      [ quda_mg_dump_enabled="yes" ],
      [ quda_mg_dump_enabled="no" ]
 )
 
 AC_ARG_WITH(cuda,
-   AC_HELP_STRING(
-      [--with-cuda=<DIR>],
-      [Use CUDA installation in DIR]
-   ),
+   AS_HELP_STRING([--with-cuda=<DIR>],[Use CUDA installation in DIR
+   ]),
    [ ],
    [ with_cuda="no" ]
 )
 
 
 AC_ARG_WITH(qphix-solver,
-  AC_HELP_STRING(
-    [--with-qphix-solver=DIR],
-    [Build Chroma with the QPhiX L3 solver installed in DIR]
-  ),
+  AS_HELP_STRING([--with-qphix-solver=DIR],[Build Chroma with the QPhiX L3 solver installed in DIR
+  ]),
   [qphix_enabled="yes"
    QPHIX_HOME="$with_qphix_solver"],
   [qphix_enabled="no"]
@@ -291,161 +236,127 @@ AC_ARG_WITH(qphix-solver,
 
 
 AC_ARG_ENABLE(qphix-solver-arch,
-  AC_HELP_STRING(
-   [--enable-qphix-solver-arch=avx|mic|qpx],
-   [Set Architecture for the QPhiX solver (avx or mic)]
-  ),
+  AS_HELP_STRING([--enable-qphix-solver-arch=avx|mic|qpx],[Set Architecture for the QPhiX solver (avx or mic)
+  ]),
   [ qphix_arch="${enable_qphix_solver_arch}" ],
   [ qphix_arch="avx"]
 )
 
 AC_ARG_ENABLE(qphix-solver-soalen,
-  AC_HELP_STRING(
-    [--enable-qphix-solver-soalen=S], 
-    [Set Soalen for the QPhiX solver]
-  ),
+  AS_HELP_STRING([--enable-qphix-solver-soalen=S],[Set Soalen for the QPhiX solver
+  ]),
   [ qphix_soalen="${enable_qphix_solver_soalen}" ],
   [ qphix_soalen="4" ]
 )
 
 AC_ARG_ENABLE(qphix-solver-inner-soalen,
-  AC_HELP_STRING(
-    [--enable-qphix-solver-inner-soalen=S], 
-    [Set Inner Solver Soalen for Mixed precision QPhiX solvers]
-  ),
+  AS_HELP_STRING([--enable-qphix-solver-inner-soalen=S],[Set Inner Solver Soalen for Mixed precision QPhiX solvers
+  ]),
   [ qphix_inner_soalen="${enable_qphix_solver_inner_soalen}" ],
   [ qphix_inner_soalen="4" ]
 )
 
 AC_ARG_ENABLE(qphix-solver-inner-type,
-  AC_HELP_STRING(
-    [--enable-qphix-solver-inner-type=half,float,double], 
-    [Set Inner Solver Type for Mixed precision QPhiX solvers]
-  ),
+  AS_HELP_STRING([--enable-qphix-solver-inner-type=half,float,double],[Set Inner Solver Type for Mixed precision QPhiX solvers
+  ]),
   [ qphix_inner_type="${enable_qphix_solver_inner_type}" ],
   [ qphix_inner_type="none" ]
 )
 
 AC_ARG_ENABLE(qphix-solver-compress12,
-  AC_HELP_STRING(
-    [--enable-qphix-solver-compress12], 
-    [If enabled will employ compression in the QPhiX solver]
-  ),
+  AS_HELP_STRING([--enable-qphix-solver-compress12],[If enabled will employ compression in the QPhiX solver
+  ]),
   [ qphix_compress12="${enable_qphix_solver_compress12}" ],
   [ qphix_compress12="no" ]
 )
 
 AC_ARG_ENABLE(qphix-dslash,
-  AC_HELP_STRING(
-    [--enable-qphix-dslash],
-    [ Will enable a QPhiX based Dslash for use with QDP-JIT/LLVM. Restrictions apply]
-  ),
+  AS_HELP_STRING([--enable-qphix-dslash],[ Will enable a QPhiX based Dslash for use with QDP-JIT/LLVM. Restrictions apply
+  ]),
   [ qphix_dslash="${enable_qphix_dslash}" ],
   [ qphix_dslash="no" ]
 )
 
 dnl level 3 libraries for asqtad inverter
 AC_ARG_WITH(asqtadlevel3,
-  AC_HELP_STRING(
-    [--with-asqtadlevel3=DIR],
-    [Build Chroma on top of the level3 asqtad libraries, where the libraries installed in DIR.]
-  ),
+  AS_HELP_STRING([--with-asqtadlevel3=DIR],[Build Chroma on top of the level3 asqtad libraries, where the libraries installed in DIR.
+  ]),
   [QDPCVER_HOME="$with_asqtadlevel3"]
 )
 
 
 dnl support for MG Solver from QDP/C
 AC_ARG_WITH(qdpc,
-  AC_HELP_STRING(
-    [--with-qdpc=DIR], 
-    [Use QDPC in directory DOR]
-  ), 
+  AS_HELP_STRING([--with-qdpc=DIR],[Use QDPC in directory DOR
+  ]), 
   [QDPC_DIR="${with_qdpc}"],
   [QDPC_DIR="not_given"]
 )
 
 AC_ARG_WITH(qmp,
-  AC_HELP_STRING(
-    [--with-qmp=DIR], 
-    [Use QMP in directory DIR]
-  ), 
+  AS_HELP_STRING([--with-qmp=DIR],[Use QMP in directory DIR
+  ]), 
   [QMP_DIR="${with_qmp}"],
   [QMP_DIR="not_given"]
 )
 
 AC_ARG_WITH(qla,
-  AC_HELP_STRING(
-    [--with-qla=DIR], 
-    [Use QLA in directory DOR]
-  ), 
+  AS_HELP_STRING([--with-qla=DIR],[Use QLA in directory DOR
+  ]), 
   [QLA_DIR="${with_qla}"],
   [QLA_DIR="not_given"]
 )
 
 AC_ARG_WITH(qopqdp,
-  AC_HELP_STRING(
-    [--with-qopqdp=DIR], 
-    [Use QOPQDP in directory DOR]
-  ), 
+  AS_HELP_STRING([--with-qopqdp=DIR],[Use QOPQDP in directory DOR
+  ]), 
   [QOPQDP_DIR="${with_qopqdp}"],
   [QOPQDP_DIR="not_given"]
 )
 
 AC_ARG_WITH(qio,
-  AC_HELP_STRING(
-    [--with-qio=DIR], 
-    [Use QIO for header includes in directory DOR]
-  ), 
+  AS_HELP_STRING([--with-qio=DIR],[Use QIO for header includes in directory DOR
+  ]), 
   [QIO_DIR="${with_qio}"],
   [QIO_DIR="not_given"]
 )
 
 AC_ARG_ENABLE(qop-mg,
-   AC_HELP_STRING(
-     [--enable-qop-mg], [ Enable QDP MultiGrid. Needs --with-qla --with-qdp and --with-qdpqop arguments ]
-   ),
+   AS_HELP_STRING([--enable-qop-mg],[ Enable QDP MultiGrid. Needs --with-qla --with-qdp and --with-qdpqop arguments 
+   ]),
    [BUILD_QOP_MG=${enableval}]
 )
 
 AC_ARG_WITH(mg-proto,
-   AC_HELP_STRING(
-    [ --with-mg-proto=DIR],
-    [ Use MG Proto MG library ]
-   ),
+   AS_HELP_STRING([ --with-mg-proto=DIR],[ Use MG Proto MG library 
+   ]),
    [ MGPROTO_DIR="${with_mg_proto}" ],
    [ MGPROTO_DIR="not_given" ]
 )
 
 AC_ARG_WITH(superbblas,
-  AC_HELP_STRING(
-    [--with-superbblas=DIR],
-    [Build Chroma SUPERB tasks with superbblas installed in DIR]
-  ),
+  AS_HELP_STRING([--with-superbblas=DIR],[Build Chroma SUPERB tasks with superbblas installed in DIR
+  ]),
   [ SB_HOME="${with_superbblas}" ],
   [ with_superbblas="no" ]
 )
 
 AC_ARG_ENABLE(mgproton,
-   AC_HELP_STRING(
-     [--enable-mgproton], [ Enable mgproton solvers ]
-   ),
+   AS_HELP_STRING([--enable-mgproton],[ Enable mgproton solvers 
+   ]),
    [BUILD_MGPROTON=${enableval}]
 )
 
 AC_ARG_WITH(redstar-datalib,
-  AC_HELP_STRING(
-    [--with-redstar-datalib=DIR],
-    [Build Chroma with redstar-datalib installed in DIR]
-  ),
+  AS_HELP_STRING([--with-redstar-datalib=DIR],[Build Chroma with redstar-datalib installed in DIR
+  ]),
   [ REDSTAR_DATALIB_HOME="${with_redstar_datalib}" ],
   [ with_redstar_datalib="no" ]
 )
 
 AC_ARG_WITH(primme,
-  AC_HELP_STRING(
-    [--with-primme=DIR],
-    [Build Chroma with PRIMME in DIR]
-  ),
+  AS_HELP_STRING([--with-primme=DIR],[Build Chroma with PRIMME in DIR
+  ]),
   [ PRIMME_HOME="${with_primme}" ],
   [ with_primme="no" ]
 )
@@ -735,7 +646,7 @@ yes|YES|Yes)
 esac
 
 AC_ARG_ENABLE(ittnotify,
-	AC_HELP_STRING([--enable-ittnotify ],[ Use VTune ITTNOTIFY Inteface in some test. Please ensure CXXFLAGS, LDFLAGS, LIBS are correctly set for Vtue]),
+	AS_HELP_STRING([--enable-ittnotify ],[ Use VTune ITTNOTIFY Inteface in some test. Please ensure CXXFLAGS, LDFLAGS, LIBS are correctly set for Vtue]),
 	[ use_ittnotify="${enableval}" ],
 	[ use_ittnotify="no" ]
 )
@@ -752,7 +663,7 @@ esac
 	
 
 AC_ARG_ENABLE(fused-clover-deriv-loops,
-	AC_HELP_STRING(	[--enable-fused-clover-deriv-loops],[ Enable fused clover deriv_loops function contributed by J Bloch of Regensburg University ] ),
+	AS_HELP_STRING([--enable-fused-clover-deriv-loops],[ Enable fused clover deriv_loops function contributed by J Bloch of Regensburg University  ]),
 	[fused_clover_deriv_loops=${enableval}],
 	[fused_clover_deriv_loops="no"]
 )
@@ -1008,23 +919,6 @@ fi
 
 
 dnl ************************************************************************
-dnl **** Use Lapack                                                     ****
-dnl ************************************************************************
-case "${LAPACK_BINDING}" in
-lapack)
-	AC_MSG_NOTICE([Configuring to use Lapack.])
-	AC_DEFINE(BUILD_LAPACK,[],[Using Lapack])
-        AC_SUBST(LAPACK_ENABLED,[yes])
-	;;
-*)
-	AC_MSG_NOTICE([Will not use Lapack])
-        AC_SUBST(LAPACK_ENABLED,[no])
-	;;
-esac
-
-AM_CONDITIONAL(BUILD_LAPACK, [ test "X${LAPACK_ENABLED}X" = "XyesX" ])
-
-dnl ************************************************************************
 dnl **** Use optimized eigcg                                            ****  
 dnl ************************************************************************   
 case "${opt_eigcg_enabled}" in
@@ -1178,17 +1072,6 @@ cobalt)
 esac
 
 
-
-dnl
-dnl Always build qdp-lapack. If no --enable-lapack option is given,
-dnl it will build a dummy lib with stubs. If the enable option is
-dnl given, it will build something that can be used by chroma
-dnl and not fry when call
-dnl
-AC_MSG_NOTICE([Configuring qdp-lapack])
-AC_CONFIG_SUBDIRS(other_libs/qdp-lapack)
-AC_MSG_NOTICE([Finished configuring qdp-lapack])
-AC_SUBST(QDP_LAPACK_DIR, [qdp-lapack])
 
 dnl
 dnl ************************************************************
