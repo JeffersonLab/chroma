@@ -1,5 +1,5 @@
 /*! \file
- * \brief Inline measurement of meson operators via colorstd::vector matrix elements
+ * \brief Inline measurement of meson operators via colorvector matrix elements
  */
 
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.h"

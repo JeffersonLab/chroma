@@ -1,7 +1,6 @@
 // -*- C++ -*-
 /*! \file
- * \brief Inline measurement of baryon
- operators via colorstd::vector matrix elements
+ * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
 
 #ifndef __inline_baryon_matelem_colorvec_ylm_superb_h__

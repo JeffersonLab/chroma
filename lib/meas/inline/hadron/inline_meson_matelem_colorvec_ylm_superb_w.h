@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- * \brief Inline measurement of meson operators via colorstd::vector matrix elements
+ * \brief Inline measurement of meson operators via colorvector matrix elements
  */
 
 #ifndef __inline_meson_matelem_colorvec_ylm_superb_h__

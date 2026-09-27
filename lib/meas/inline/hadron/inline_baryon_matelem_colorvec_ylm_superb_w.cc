@@ -2,7 +2,7 @@
 #include <fstream>
 #include <tuple>
 /*! \file
- * \brief Inline measurement of baryon operators via colorstd::vector matrix elements
+ * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
 
 #include "meas/inline/hadron/inline_baryon_matelem_colorvec_ylm_superb_w.h"
