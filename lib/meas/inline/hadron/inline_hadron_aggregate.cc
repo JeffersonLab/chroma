@@ -73,6 +73,7 @@
 #include "meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h"
 #include "meas/inline/hadron/inline_baryon_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.h"
+#include "meas/inline/hadron/inline_baryon_matelem_colorvec_ylm_superb_w.h"
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h"
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.h"
@@ -206,6 +207,7 @@ namespace Chroma
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();
 #ifdef BUILD_SB
 	success &= InlineBaryonMatElemColorVecSuperbEnv::registerAll();
+	success &= InlineBaryonMatElemColorVecYlmSuperbEnv::registerAll();
 #endif
 	success &= InlineMesonMatElemColorVecEnv::registerAll();
 #ifdef BUILD_SB

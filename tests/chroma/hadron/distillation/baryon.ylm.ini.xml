@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='utf-8'?>
+<chroma>
+  <Param>
+    <InlineMeasurements>
+      <elem>
+        <Name>BARYON_MATELEM_COLORVEC_YLM_SUPERB</Name>
+        <Frequency>1</Frequency>
+        <Param>
+          <version>4</version>
+          <mom2_min>0</mom2_min>
+          <mom2_max>3</mom2_max>
+          <mom_list>
+            <elem>0 0 0</elem>
+            <elem>1 0 0</elem>
+            <elem>-1 0 0</elem>
+            <elem>1 1 0</elem>
+            <elem>-1 -1 0</elem>
+            <elem>1 1 1</elem>
+            <elem>-1 -1 -1</elem>
+          </mom_list>
+          <num_vecs>10</num_vecs>
+          <displacement_length>1</displacement_length>
+          <decay_dir>3</decay_dir>
+          <t_source>0</t_source>
+          <Nt_forward>4</Nt_forward>
+          <LinkSmearing>
+            <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+            <link_smear_fact>0.1625</link_smear_fact>
+            <link_smear_num>4</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+          <ylm_list>
+            <elem>0</elem>
+            <elem>3 -1</elem>
+            <elem>3 0</elem>
+            <elem>3 1</elem>
+            <elem>33 0 0</elem>
+            <elem>33 1 -1</elem>
+            <elem>33 1 0</elem>
+            <elem>33 1 1</elem>
+            <elem>33 2 -2</elem>
+            <elem>33 2 -1</elem>
+            <elem>33 2 0</elem>
+            <elem>33 2 1</elem>
+            <elem>33 2 2</elem>
+            <elem>23 0 0</elem>
+            <elem>23 1 -1</elem>
+            <elem>23 1 0</elem>
+            <elem>23 1 1</elem>
+            <elem>23 2 -2</elem>
+            <elem>23 2 -1</elem>
+            <elem>23 2 0</elem>
+            <elem>23 2 1</elem>
+            <elem>23 2 2</elem>
+          </ylm_list>
+          <use_superb_format>true</use_superb_format>
+          <max_tslices_in_contraction>1</max_tslices_in_contraction>
+          <max_moms_in_contraction>1</max_moms_in_contraction>
+          <max_vecs>4</max_vecs>
+        </Param>
+        <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
+          <colorvec_files>
+            <elem>./colorvec.mod</elem>
+          </colorvec_files>
+          <baryon_op_file>baryon.ylm.nonzero.sdb</baryon_op_file>
+        </NamedObject>
+      </elem>
+    </InlineMeasurements>
+    <nrow>4 4 4 16</nrow>
+  </Param>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Cfg>
+    <cfg_type>WEAK_FIELD</cfg_type>
+    <cfg_file>dummy</cfg_file>
+  </Cfg>
+</chroma>

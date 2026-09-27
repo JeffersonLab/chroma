@@ -768,6 +768,7 @@ nobase_include_HEADERS += \
 	util/ferm/key_prop_distillution.h \
 	util/ferm/key_val_db.h \
 	util/ferm/crc48.h \
+	util/ferm/clebsch.h \
 	util/ferm/distillution_noise.h \
         util/ferm/spin_rep.h \
         util/ferm/twoquark_contract_ops.h \
@@ -925,6 +926,8 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.h \
+	meas/inline/hadron/baryon_derivative_ylm.h \
+	meas/inline/hadron/inline_baryon_matelem_colorvec_ylm_superb_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.h \
@@ -1749,6 +1752,7 @@ libchroma_a_SOURCES += \
 	util/ferm/key_prop_distillation.cc \
 	util/ferm/key_prop_distillution.cc \
 	util/ferm/crc48.cc \
+	util/ferm/clebsch.cc \
 	util/ferm/distillution_noise.cc \
         util/ferm/spin_rep.cc \
         util/ferm/twoquark_contract_ops.cc \
@@ -1847,6 +1851,8 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.cc \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.cc \
+	meas/inline/hadron/baryon_derivative_ylm.cc \
+	meas/inline/hadron/inline_baryon_matelem_colorvec_ylm_superb_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.cc \
