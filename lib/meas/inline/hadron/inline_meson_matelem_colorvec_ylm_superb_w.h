@@ -36,7 +36,7 @@ namespace Chroma
 	int                     displacement_length;    /*!< Displacement length for creat. and annih. ops */
 	int                     num_vecs;               /*!< Number of color vectors to use */
 	int                     decay_dir;              /*!< Decay direction */
-	multi1d< multi1d<int> > displacement_list;      /*!< YLM requests: (n) for all couplings, or explicit (1,m), (2,J,m), (3,J13,J,m) */
+	multi1d< multi1d<int> > ylm_list;      /*!< YLM requests: (n) for all couplings, or explicit (1,m), (2,J,m), (3,J13,J,m) */
 	GroupXML_t              link_smearing;          /*!< link smearing xml */
 	int			Nt_forward;		/*!< Nt_forward */
 	int			t_source;		/*!< t_source */

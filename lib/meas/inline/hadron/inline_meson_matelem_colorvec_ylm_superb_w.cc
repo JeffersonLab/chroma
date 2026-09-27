@@ -66,7 +66,7 @@ namespace Chroma
       if (paramtop.count("mom2_max") > 0)
 	read(paramtop, "mom2_max", param.mom2_max);
 
-      read(paramtop, "displacement_list", param.displacement_list);
+      read(paramtop, "ylm_list", param.ylm_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
       if (Nd != 4 || param.decay_dir != 3 || param.num_vecs <= 0)
@@ -166,7 +166,7 @@ namespace Chroma
       write(xml, "mom2_min", param.mom2_min);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "mom_list", param.mom_list);
-      write(xml, "displacement_list", param.displacement_list);
+      write(xml, "ylm_list", param.ylm_list);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);
       write(xml, "t_source", param.t_source);
@@ -549,10 +549,10 @@ namespace Chroma
 
       // Expand compact requests into explicit database keys and Cartesian paths.
       std::vector<MesonDerivativeYlm::Key> requests;
-      for (int i=0; i<params.param.displacement_list.size(); ++i) {
+      for (int i=0; i<params.param.ylm_list.size(); ++i) {
         MesonDerivativeYlm::Key k;
-        for (int j=0; j<params.param.displacement_list[i].size(); ++j)
-          k.push_back(params.param.displacement_list[i][j]);
+        for (int j=0; j<params.param.ylm_list[i].size(); ++j)
+          k.push_back(params.param.ylm_list[i][j]);
         requests.push_back(k);
       }
       std::vector<MesonDerivativeYlm::Component> components;
@@ -572,11 +572,11 @@ namespace Chroma
           }
         }
       }
-      std::vector<std::vector<int>> displacement_list, cartesian_paths;
+      std::vector<std::vector<int>> ylm_list, cartesian_paths;
       std::map<std::vector<int>, int> path_index;
       std::vector<std::vector<std::pair<int, std::complex<double>>>> consumers;
       for (int c=0; c<int(components.size()); ++c) {
-        displacement_list.push_back(components[c].key);
+        ylm_list.push_back(components[c].key);
         for (const auto& term : components[c].paths) {
           auto ins = path_index.emplace(term.first, int(cartesian_paths.size()));
           if (ins.second) {cartesian_paths.push_back(term.first); consumers.emplace_back();}
@@ -707,7 +707,7 @@ namespace Chroma
 	  SB::Sparse, SB::checksum_type::BlockChecksum,
 	  params.param.output_file_is_local ? SB::LocalFSFile : SB::SharedFSFile);
 	st.preallocate(params.param.num_vecs * params.param.num_vecs *
-		       tsize * displacement_list.size() * moms.size() *
+		       tsize * ylm_list.size() * moms.size() *
 		       phasings.size() * sizeof(SB::ComplexD) /
 		       (params.param.output_file_is_local ? Layout::numNodes() : 1));
       }
@@ -776,7 +776,7 @@ namespace Chroma
 		  key.t_slice = (first_tslice + t) % Nt;
 		  key.mom = SB::tomulti1d(mom_list[first_mom + m]);
 		  key.displacement =
-		    SB::tomulti1d(displacement_list[disp]); // only right colorstd::vector
+		    SB::tomulti1d(ylm_list[disp]); // only right colorstd::vector
 		  tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}}).copyTo(val);
 		  qdp_db[0].insert(key, val);
 		}
