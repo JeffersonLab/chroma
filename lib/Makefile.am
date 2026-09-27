@@ -1856,6 +1856,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.cc \
+	meas/inline/hadron/meson_derivative_ylm.cc \
 	meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.cc \
 	meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.cc \
 	meas/inline/hadron/inline_eigenvalues_superb_w.cc \
