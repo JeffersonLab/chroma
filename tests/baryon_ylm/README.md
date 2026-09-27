@@ -33,8 +33,8 @@ any independent convention for the Levi-Civita tensor.
 Coefficients live in `baryon_derivative_ylm.cc`, not inline template headers.
 The Superb prefix tree shares coordinate-space derivative intermediates across
 whole vector-column blocks. Each contracted Cartesian block is converted to
-double precision once, then accumulated into its coupled components. Storage
-is complex double; underlying contraction precision follows the Chroma build.
+double precision once, then accumulated into its coupled components. S3T storage defaults to complex float, with `storage_precision=64` available;
+CG accumulation remains double and contraction precision follows the Chroma build.
 
 ## Output
 
@@ -77,3 +77,10 @@ circular versus Cartesian construction on a periodic noncommuting SU(3) lattice.
 Finite-momentum and equal nonzero phasing cases exercise spectator antisymmetry
 and the split-line exchange sign (-1)^(L+1). These are synthetic algebra tests;
 actual Chroma output/readback and Redstar baryon vertex integration remain pending.
+
+## Storage precision (27 September)
+
+S3T now defaults to 32-bit payloads; request `storage_precision=64` for references.
+FileDB remains 64-bit. The existing runtime inputs explicitly retain 64; new
+`.single.ini.xml` variants select 32 and distinct output names. See
+[storage validation](../ylm_storage/README.md).

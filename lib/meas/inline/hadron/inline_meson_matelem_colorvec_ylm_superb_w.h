@@ -46,6 +46,7 @@ namespace Chroma
 	std::vector<int>          aQuarkPhase;        /*!< Phase to apply to the left colorvecs (antiquarks) */
 	bool                    use_superb_format;  /*!< Whether use the superb format for storing the elementals */
 	bool                    output_file_is_local;   /*!< Whether the output file is in a not shared filesystem */
+        int storage_precision; /*!< S3T payload bits: 32 or 64; FileDB requires 64 */
       };
 
       struct NamedObject_t

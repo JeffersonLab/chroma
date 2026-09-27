@@ -132,6 +132,14 @@ namespace Chroma
         read(paramtop, "use_superb_format", param.use_superb_format);
       }
 
+      param.storage_precision = param.use_superb_format ? 32 : 64;
+      if (paramtop.count("storage_precision"))
+        read(paramtop, "storage_precision", param.storage_precision);
+      if (param.storage_precision != 32 && param.storage_precision != 64)
+        throw std::runtime_error("YLM storage_precision must be 32 or 64");
+      if (!param.use_superb_format && param.storage_precision != 64)
+        throw std::runtime_error("Single-precision YLM currently requires S3T output");
+
       param.output_file_is_local = false;
       if( paramtop.count("output_file_is_local") == 1 ) {
         read(paramtop, "output_file_is_local", param.output_file_is_local);
@@ -176,6 +184,8 @@ namespace Chroma
       write(xml, "quarkPhase", SB::tomulti1d(param.quarkPhase));
       write(xml, "aQuarkPhase", SB::tomulti1d(param.aQuarkPhase));
       write(xml, "use_superb_format", param.use_superb_format);
+      write(xml, "elemental_basis", std::string("YLM"));
+      write(xml, "storage_precision", param.storage_precision);
       write(xml, "output_file_is_local", param.output_file_is_local);
       xml << param.link_smearing.xml;
 
@@ -623,6 +633,9 @@ namespace Chroma
 
 	  push(file_xml, "DBMetaData");
 	  write(file_xml, "id", std::string("mesonElemOp"));
+      write(file_xml, "elemental_basis", std::string("YLM"));
+      write(file_xml, "elemental_family", std::string("MESON"));
+      write(file_xml, "storage_precision", params.param.storage_precision);
 	  write(file_xml, "lattSize", QDP::Layout::lattSize());
 	  //	write(file_xml, "blockSize", params.param.block_size);
 	  write(file_xml, "decay_dir", params.param.decay_dir);
@@ -663,12 +676,16 @@ namespace Chroma
       /// H: phasing sink
 
       SB::StorageTensor<7, SB::ComplexD> st;
+      SB::StorageTensor<7, SB::ComplexF> st_single;
       if (params.param.use_superb_format)
       {
 	const char* order = "ijtdmhH";
 	XMLBufferWriter metadata_xml;
 	push(metadata_xml, "DBMetaData");
 	write(metadata_xml, "id", std::string("mesonElemOp"));
+      write(metadata_xml, "elemental_basis", std::string("YLM"));
+      write(metadata_xml, "elemental_family", std::string("MESON"));
+      write(metadata_xml, "storage_precision", params.param.storage_precision);
 	write(metadata_xml, "lattSize", QDP::Layout::lattSize());
 	write(metadata_xml, "decay_dir", params.param.decay_dir);
 	proginfo(metadata_xml); // Print out basic program info
@@ -695,6 +712,23 @@ namespace Chroma
 	// NOTE: metadata_xml only has a valid value on Master node; so do a broadcast
 	std::string metadata = SB::broadcast(metadata_xml.str());
 
+        if (params.param.storage_precision == 32) {
+	st_single = SB::StorageTensor<7, SB::ComplexF>(
+	  params.named_obj.meson_op_file, metadata, order,
+	  SB::kvcoors<7>(order, {{'i', params.param.num_vecs},
+				 {'j', params.param.num_vecs},
+				 {'t', Nt},
+				 {'d', disps.size()},
+				 {'m', moms.size()},
+				 {'h', phasings.size()},
+				 {'H', phasings.size()}}),
+	  SB::Sparse, SB::checksum_type::BlockChecksum,
+	  params.param.output_file_is_local ? SB::LocalFSFile : SB::SharedFSFile);
+	st_single.preallocate(std::size_t(params.param.num_vecs) * params.param.num_vecs *
+		       tsize * ylm_list.size() * moms.size() *
+		       phasings.size() * sizeof(SB::ComplexF) /
+		       (params.param.output_file_is_local ? Layout::numNodes() : 1));
+        } else {
 	st = SB::StorageTensor<7, SB::ComplexD>(
 	  params.named_obj.meson_op_file, metadata, order,
 	  SB::kvcoors<7>(order, {{'i', params.param.num_vecs},
@@ -706,10 +740,11 @@ namespace Chroma
 				 {'H', phasings.size()}}),
 	  SB::Sparse, SB::checksum_type::BlockChecksum,
 	  params.param.output_file_is_local ? SB::LocalFSFile : SB::SharedFSFile);
-	st.preallocate(params.param.num_vecs * params.param.num_vecs *
+	st.preallocate(std::size_t(params.param.num_vecs) * params.param.num_vecs *
 		       tsize * ylm_list.size() * moms.size() *
 		       phasings.size() * sizeof(SB::ComplexD) /
 		       (params.param.output_file_is_local ? Layout::numNodes() : 1));
+        }
       }
 
       //
@@ -745,13 +780,23 @@ namespace Chroma
 
 	  if (params.param.use_superb_format)
 	  {
-	    st.kvslice_from_size({{'t', first_tslice},
+	    if (params.param.storage_precision == 32) {
+                st_single.kvslice_from_size({{'t', first_tslice},
 				  {'m', first_mom},
 				  {'d', disp},
 				  {'h', rightphase_index},
 				  {'H', leftphase_index}},
 				 {{'d', 1}, {'h', 1}, {'H', 1}})
 	      .copyFrom(tensor);
+              } else {
+                st.kvslice_from_size({{'t', first_tslice},
+				  {'m', first_mom},
+				  {'d', disp},
+				  {'h', rightphase_index},
+				  {'H', leftphase_index}},
+				 {{'d', 1}, {'h', 1}, {'H', 1}})
+	      .copyFrom(tensor);
+              }
 	  }
 	  else
 	  {

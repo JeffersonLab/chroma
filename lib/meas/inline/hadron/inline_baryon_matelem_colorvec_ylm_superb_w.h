@@ -61,6 +61,7 @@ namespace Chroma
 	int 			max_vecs;               /*! maximum number of columns from the first tensor being contracted */
 	bool			use_superb_format;      /*! whether to use the superb file format for storing the data */
 	bool                    output_file_is_local;   /*!< Whether the output file is in a not shared filesystem */
+        int storage_precision; /*!< S3T payload bits: 32 or 64; FileDB requires 64 */
       };
 
       struct NamedObject_t

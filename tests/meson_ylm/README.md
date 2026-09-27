@@ -103,3 +103,10 @@ coupled descriptors. The examples use explicit tuples to match the tested inputs
 The meson helper is separately compiled in `meson_derivative_ylm.cc` and uses
 the same doubled-spin `Hadron::clebsch` implementation as the baryon helper.
 The XML labels and meson circular/ordering conventions are unchanged.
+
+## Storage precision (27 September)
+
+S3T now defaults to 32-bit payloads; request `storage_precision=64` for references.
+FileDB remains 64-bit. The existing runtime inputs explicitly retain 64; new
+`.single.ini.xml` variants select 32 and distinct output names. See
+[storage validation](../ylm_storage/README.md).

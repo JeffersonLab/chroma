@@ -22,7 +22,7 @@
         </mom_list>
         <num_vecs>10</num_vecs>
         <displacement_length>1</displacement_length>
-        <storage_precision>64</storage_precision>
+        <storage_precision>32</storage_precision>
         <decay_dir>3</decay_dir>
         <t_source>0</t_source>
         <Nt_forward>4</Nt_forward>
@@ -93,7 +93,7 @@
           <elem>3 2 3 2</elem>
           <elem>3 2 3 3</elem>
         </ylm_list>
-        <drop_negative_m>true</drop_negative_m>
+        <drop_negative_m>false</drop_negative_m>
 
         <LinkSmearing>
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
@@ -108,7 +108,7 @@
         <colorvec_files>
           <elem>./colorvec.mod</elem>
         </colorvec_files>
-        <meson_op_file>meson.ylm.nonzero.reduced.sdb</meson_op_file>
+        <meson_op_file>meson.ylm.nonzero.single.sdb</meson_op_file>
       </NamedObject>
     </elem>
   </InlineMeasurements>
