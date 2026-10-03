@@ -1031,7 +1031,7 @@ namespace Chroma
       {
 	std::size_t index = 0;
 	for (std::size_t i = 1; i < cache.size(); ++i)
-	  if (cache.at(i).first < cache.at(index).first)
+	  if (cache.at(i).first > cache.at(index).first)
 	    index = i;
 	std::swap(cache.at(index), cache.back());
 	cache.pop_back();
@@ -1070,7 +1070,9 @@ namespace Chroma
 	    cache_spin_from + cache_spin_size >= spin_from + spin_size &&
 	    cache_ev_from <= ev_from && cache_ev_from + cache_ev_size >= ev_from + ev_size)
 	{
-	  cache.at(cache_idx).first++;
+	  for (auto& it : cache)
+	    it.first++;
+	  cache.at(cache_idx).first = 0;
 	  return t.kvslice_from_size({{'t', norm_first_tslice},
 				      {'s', spin_from - cache_spin_from},
 				      {'n', ev_from - cache_ev_from}},
@@ -1101,13 +1103,15 @@ namespace Chroma
 			       int spin_size, bool conj, int ev_from, int ev_size,
 			       SB::Tensor<Nd + 5, SB::Complex> tensor)
     {
-      make_space_to_add_entry_in_cache(cache, max_cache_size);
-      if (max_cache_size > 0)
-      {
-	cache.push_back({0, mass_phase_tsource_slices_spin_ev_from_size_conj_tensor{
-			      mass_label, phase, t_source, first_tslice, num_tslices, spin_from,
-			      spin_size, ev_from, ev_size, conj, tensor}});
-      }
+	make_space_to_add_entry_in_cache(cache, max_cache_size);
+	for (auto& it : cache)
+	  it.first++;
+	if (max_cache_size > 0)
+	{
+	  cache.push_back({0, mass_phase_tsource_slices_spin_ev_from_size_conj_tensor{
+				mass_label, phase, t_source, first_tslice, num_tslices, spin_from,
+				spin_size, ev_from, ev_size, conj, tensor}});
+	}
     }
 
     /// Return the props
@@ -1954,7 +1958,7 @@ namespace Chroma
 
       /// Inverted distillation vectors cache
       Cache cache;
-      const auto max_cache_size = 2;
+      const auto max_cache_size = 3;
 
       // Initialize the colorvec cache
       ColorvecCache colorvecCache{params.param.Nt_forward + 1, 0};
@@ -2023,7 +2027,7 @@ namespace Chroma
       const auto& corr = Hadron::evaluate_graphs_with_superb(
 	corr_graph, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
 	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward,
-	SB::detail::getDefaultComm());
+	QDPIO::cout, SB::detail::getDefaultComm());
 
       // Clear cache
       cache.clear();
