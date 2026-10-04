@@ -469,6 +469,14 @@ namespace Chroma
       SB::Tensor<Nd + 3, SB::ComplexD> v;  // cache of colorvecs
     };
 
+    /// Return the distillation vectors on a time-slice
+    /// \param colorvecCache: cache of distillation vectors
+    /// \param colrovecSto:  distillation vectors storage
+    /// \param u: unsmeared links (for computing distillation vector on the fly)
+    /// \param tslice: the timeslice of the distillation of vectors to return
+    /// \param num_vecs: the first distillation vectors to return
+    /// NOTE: the function caches requested distillation vectors to avoid recomputing them
+
     inline SB::Tensor<Nd + 3, SB::ComplexD> get_colorvec(ColorvecCache& colorvecCache,
 							 const SB::ColorvecsStorage& colorvecsSto,
 							 const multi1d<LatticeColorMatrix>& u,
@@ -538,6 +546,105 @@ namespace Chroma
 	colorvecCache.v.kvslice_from_size({{'t', (int)pos_with_less_hits}}, {{'t', 1}}));
       return colorvecCache.v.kvslice_from_size({{'t', (int)pos_with_less_hits}},
 					       {{'t', 1}, {'n', num_vecs}});
+    }
+
+    /// Pre-compute distillation vectors on the requested time-slices if needed
+    /// \param colorvecCache: cache of distillation vectors
+    /// \param colrovecSto:  distillation vectors storage
+    /// \param u: unsmeared links (for computing distillation vector on the fly)
+    /// \param tslices: the timeslices of the distillation of vectors to return
+    /// \param num_vecs: the first distillation vectors to return
+    /// NOTE: the function caches requested distillation vectors to avoid recomputing them
+
+    inline void prefetch_colorvec(ColorvecCache& colorvecCache,
+				  const SB::ColorvecsStorage& colorvecsSto,
+				  const multi1d<LatticeColorMatrix>& u, std::vector<int> tslices,
+				  int num_vecs)
+    {
+      const auto decay_dir = 3;
+      const int Lt = Layout::lattSize()[decay_dir];
+
+      // Invalidate the whole cache if the number of vectors is different
+      if (colorvecCache.num_vecs < num_vecs)
+      {
+	colorvecCache.from_pos_to_tslice.resize(0);
+	colorvecCache.hits.resize(0);
+	colorvecCache.in_use.resize(0);
+	colorvecCache.v = SB::Tensor<Nd + 3, SB::ComplexD>();
+      }
+
+      // Initialize the cache if it is empty
+      if (colorvecCache.from_pos_to_tslice.size() == 0)
+      {
+	colorvecCache.num_vecs = num_vecs;
+	const auto order = "cxyztXn";
+	colorvecCache.v = SB::Tensor<Nd + 3, SB::ComplexD>(
+	  order,
+	  SB::latticeSize<Nd + 3>(
+	    order, {{'t', colorvecCache.max_cache_size}, {'n', colorvecCache.num_vecs}}),
+	  SB::OnDefaultDevice);
+      }
+
+      // Look for the tslices not present on the cache and sort them
+      std::vector<int> new_tslices;
+      for (const auto tslice : tslices)
+      {
+	if (std::find(colorvecCache.from_pos_to_tslice.begin(),
+		      colorvecCache.from_pos_to_tslice.end(),
+		      tslice) == colorvecCache.from_pos_to_tslice.end())
+	{
+	  new_tslices.push_back(tslice);
+	}
+      }
+      std::sort(new_tslices.begin(), new_tslices.end());
+      new_tslices.erase(std::unique(new_tslices.begin(), new_tslices.end()), new_tslices.end());
+
+      // Look for consecutive sequences of time-slices and compute them all at once
+      for (auto it = new_tslices.begin(); it != new_tslices.end();)
+      {
+	// Look for consecutive time-slices
+	int num_tslices = 1;
+	for (auto it0 = it + 1;
+	     it0 != new_tslices.end() && *it0 == SB::normalize_coor(*it + num_tslices, Lt);
+	     ++it0, ++num_tslices)
+	  ;
+
+	// Compute them
+	const auto colorvec = SB::getColorvecs<SB::Complex>(
+	  colorvecsSto, u, decay_dir, *it, num_tslices, colorvecCache.num_vecs, SB::none);
+
+	for (int t = 0; t < num_tslices; ++t, ++it)
+	{
+	  // Look for the entry with less hits or add a new entry
+	  std::size_t pos_with_less_hits = 0;
+	  if (colorvecCache.from_pos_to_tslice.size() >= colorvecCache.max_cache_size)
+	  {
+	    for (std::size_t i = 1; i < colorvecCache.hits.size(); ++i)
+	    {
+	      if (!colorvecCache.in_use.at(i) &&
+		  colorvecCache.hits.at(pos_with_less_hits) > colorvecCache.hits.at(i))
+		pos_with_less_hits = i;
+	    }
+	    if (colorvecCache.in_use.at(pos_with_less_hits))
+	      throw std::runtime_error("prefetch_colorvec: too small number of entries");
+	  }
+	  else
+	  {
+	    pos_with_less_hits = colorvecCache.from_pos_to_tslice.size();
+	    colorvecCache.from_pos_to_tslice.push_back(-1);
+	    colorvecCache.hits.push_back(0);
+	    colorvecCache.in_use.push_back(false);
+	  }
+
+	  // Fill the selected entry with the colorvec
+	  colorvecCache.from_pos_to_tslice.at(pos_with_less_hits) = *it;
+	  colorvecCache.hits.at(pos_with_less_hits) = 0;
+	  colorvecCache.in_use.at(pos_with_less_hits) = false;
+	  colorvec.kvslice_from_size({{'t', t}}, {{'t', 1}})
+	    .copyTo(
+	      colorvecCache.v.kvslice_from_size({{'t', (int)pos_with_less_hits}}, {{'t', 1}}));
+	}
+      }
     }
 
     inline void release_from_colorvec_cache(ColorvecCache& colorvecCache, int tslice)
@@ -677,6 +784,7 @@ namespace Chroma
 	  r.at(it.second) = it.first;
 	return r;
       };
+      std::vector<int> missing_tslices;
       for (const auto& missing_mesons_in_some_process :
 	   SBN::gather(local_missing_mesons, SB::detail::getDefaultComm()))
       {
@@ -685,6 +793,8 @@ namespace Chroma
 	  const auto& k = tslice_left_right_phases{
 	    meson_key.t_slice, ADATIO::detail::toCoor(meson_key.phasing_sink),
 	    ADATIO::detail::toCoor(meson_key.phasing_source)};
+	  if (from_tslice_left_right_phases_to_momenta_displacement.count(k) == 0)
+	    missing_tslices.push_back(meson_key.t_slice);
 	  auto& v = from_tslice_left_right_phases_to_momenta_displacement[k];
 	  auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(meson_key.mom));
 	  auto disp_index = get_index(std::get<1>(v), meson_key.displacement);
@@ -692,6 +802,7 @@ namespace Chroma
 	}
       }
 
+      prefetch_colorvec(colorvecCache, colorvecsSto, u, missing_tslices, num_vecs);
       for (const auto& it : from_tslice_left_right_phases_to_momenta_displacement)
       {
 	const auto& [t_source, left_phase, right_phase] = it.first;
@@ -927,6 +1038,7 @@ namespace Chroma
 	  r.at(it.second) = it.first;
 	return r;
       };
+      std::vector<int> missing_tslices;
       for (const auto& missing_baryons_in_some_process :
 	   SBN::gather(local_missing_baryons, SB::detail::getDefaultComm()))
       {
@@ -934,6 +1046,8 @@ namespace Chroma
 	{
 	  const auto& k =
 	    tslice_phase{baryon_key.t_slice, ADATIO::detail::toCoor(baryon_key.phasing)};
+	  if (from_tslice_and_phase_to_momenta_displacement.count(k) == 0)
+	    missing_tslices.push_back(baryon_key.t_slice);
 	  auto& v = from_tslice_and_phase_to_momenta_displacement[k];
 	  auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(baryon_key.mom));
 	  auto disp_index = get_index(
@@ -942,6 +1056,7 @@ namespace Chroma
 	}
       }
 
+      prefetch_colorvec(colorvecCache, colorvecsSto, u, missing_tslices, num_vecs);
       for (const auto& it : from_tslice_and_phase_to_momenta_displacement)
       {
 	const int t_slice = std::get<0>(it.first);
@@ -1354,6 +1469,7 @@ namespace Chroma
 	// Get num_vecs colorvecs on time-slice t_sink
 	SB::Tensor<Nd + 3, SB::Complex> sinks_colorvecs =
 	  source_colorvec.like_this(SB::none, {{'n', ev_size.at(0)}, {'t', t_sinks.size()}});
+	prefetch_colorvec(colorvecCache, colorvecsSto, u, t_sinks, num_vecs);
 	for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
 	{
 	  SB::Tensor<Nd + 3, SB::Complex> sink_colorvec =
