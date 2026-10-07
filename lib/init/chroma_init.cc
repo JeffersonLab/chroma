@@ -261,14 +261,13 @@ namespace Chroma
     // Good luck following the flow of the conditional compilation macros
 #if defined QDP_IS_QDPJIT
 #  ifdef BUILD_QUDA
-    std::cout << "Setting CUDA device" << std::endl;
-#    ifndef QDP_USE_COMM_SPLIT_INIT
-    int cuda_device = QDP_setGPU();
-#    endif
     std::cout << "Initializing QMP part" << std::endl;
     QDP_initialize_QMP(argc, argv);
+    std::cout << "Setting CUDA device" << std::endl;
 #    ifdef QDP_USE_COMM_SPLIT_INIT
     int cuda_device = QDP_setGPUCommSplit();
+#    else
+    int cuda_device = QDP_setGPU();
 #    endif
     setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
 
@@ -303,14 +302,13 @@ namespace Chroma
 #    endif
 
 #  else // BUILD_QUDA
-    std::cout << "Setting device" << std::endl;
-#    ifndef QDP_USE_COMM_SPLIT_INIT
-    int dev = QDP_setGPU();
-#    endif
     std::cout << "Initializing QMP part" << std::endl;
     QDP_initialize_QMP(argc, argv);
+    std::cout << "Setting device" << std::endl;
 #    ifdef QDP_USE_COMM_SPLIT_INIT
-    QDP_setGPUCommSplit();
+    int dev = QDP_setGPUCommSplit();
+#    else
+    int dev = QDP_setGPU();
 #    endif
 
     QDPIO::cout << "Initializing start GPUs" << std::endl;
