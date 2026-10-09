@@ -7,42 +7,25 @@
 using namespace QDP;
 
 
-void function_get_fs_bs_exec(JitFunction& function, 
-			     const LatticeColorMatrix& Q,
-			     const LatticeColorMatrix& QQ,
-			     multi1d<LatticeComplex>& f,
-			     multi1d<LatticeComplex>& b1,
-			     multi1d<LatticeComplex>& b2,
-			     bool dobs)
+// Kernel params: th_count, latsize (one thread per site, no site table),
+// dobs, then the plan entries
+static void function_get_fs_bs_exec(JitFunction& function, const ExprPlan& plan,
+				    const LatticeColorMatrix& Q,
+				    bool dobs)
 {
-  //QDPIO::cout << __FILE__ << ":" << __LINE__ << "\n";
   int ref = Q.get_layout_ref();
-
-  AddressLeaf addr_leaf(all);
-
-  int junk_0 = forEach(Q, addr_leaf, NullCombine());
-  int junk_1 = forEach(QQ, addr_leaf, NullCombine());
-  int junk_2 = forEach(f[0], addr_leaf, NullCombine());
-  int junk_3 = forEach(f[1], addr_leaf, NullCombine());
-  int junk_4 = forEach(f[2], addr_leaf, NullCombine());
-  int junk_5 = forEach(b1[0], addr_leaf, NullCombine());
-  int junk_6 = forEach(b1[1], addr_leaf, NullCombine());
-  int junk_7 = forEach(b1[2], addr_leaf, NullCombine());
-  int junk_8 = forEach(b2[0], addr_leaf, NullCombine());
-  int junk_9 = forEach(b2[1], addr_leaf, NullCombine());
-  int junk_10= forEach(b2[2], addr_leaf, NullCombine());
 
   int th_count = MG::get(ref).sitesOnNode();
   
-  WorkgroupGuardExec workgroupGuardExec(th_count , MG::get(Q.get_layout_ref()).sitesOnNode() );
+  IterationSpaceArgs iter_args( th_count , MG::get(ref).sitesOnNode() );
+  PlanLeafArgs leaf_args;
 
   JitParam jit_dobs( QDP_get_global_cache().addJitParamBool( dobs ) );
   
   std::vector<QDPCache::ArgKey> ids;
-  workgroupGuardExec.check(ids);
+  iter_args.append( ids );
   ids.push_back( jit_dobs.get_id() );
-  for(unsigned i=0; i < addr_leaf.ids.size(); ++i) 
-    ids.push_back( addr_leaf.ids[i] );
+  leaf_args.append( ids , plan , all );
   
   jit_launch(function,th_count,ids);
 }
@@ -53,23 +36,23 @@ void function_get_fs_bs_exec(JitFunction& function,
 
 
 
-void function_get_fs_bs_build(JitFunction& function,
-			      const LatticeColorMatrix& Q,
-			      const LatticeColorMatrix& QQ,
-			      multi1d<LatticeComplex>& f,
-			      multi1d<LatticeComplex>& b1,
-			      multi1d<LatticeComplex>& b2)
+static void function_get_fs_bs_build(JitFunction& function, const ExprPlan& plan,
+				     const LatticeColorMatrix& Q,
+				     const LatticeColorMatrix& QQ,
+				     multi1d<LatticeComplex>& f,
+				     multi1d<LatticeComplex>& b1,
+				     multi1d<LatticeComplex>& b2)
 {
   llvm_start_new_function("get_fs_bs",__PRETTY_FUNCTION__);
 
-  WorkgroupGuard workgroupGuard;
+  IterationSpace iter( false );   // th_count, latsize; all sites, no site table
 
   ParamRef p_dobs   = llvm_add_param<bool>();
 
-  ParamLeaf param_leaf(workgroupGuard);
+  MGParamLeaf param_leaf( plan , iter.latsize_dest() );
   
-  typedef typename LeafFunctor<LatticeColorMatrix, ParamLeaf>::Type_t  LCMJIT;
-  typedef typename LeafFunctor<LatticeComplex    , ParamLeaf>::Type_t  LCJIT;
+  typedef typename LeafFunctor<LatticeColorMatrix, MGParamLeaf>::Type_t  LCMJIT;
+  typedef typename LeafFunctor<LatticeComplex    , MGParamLeaf>::Type_t  LCJIT;
 
   LCMJIT Q_jit(forEach(Q, param_leaf, TreeCombine()));
   LCMJIT QQ_jit(forEach(QQ, param_leaf, TreeCombine()));
@@ -83,8 +66,9 @@ void function_get_fs_bs_build(JitFunction& function,
   LCJIT  b21_jit(forEach(b2[1], param_leaf, TreeCombine()));
   LCJIT  b22_jit(forEach(b2[2], param_leaf, TreeCombine()));
 
-  llvm::Value* r_idx = llvm_thread_idx();
-  workgroupGuard.check(r_idx);
+  assert( param_leaf.all_entries_used() );
+
+  llvm::Value* r_idx = iter.get_idx_thread();
 
   llvm::Value*  r_dobs   = llvm_derefParam( p_dobs );
       
@@ -452,6 +436,34 @@ void function_get_fs_bs_build(JitFunction& function,
   c1_lt_0p004.end(); // if (c1 < 4.0e-3 )
 
   jit_get_function(function);
+
+  // th_count, latsize, dobs, the entries
+  assert( function.get_num_params() < 0 ||
+	  function.get_num_params() == 3 + plan.num_leaf_params() );
+}
+
+
+
+void function_get_fs_bs(const LatticeColorMatrix& Q,
+			const LatticeColorMatrix& QQ,
+			multi1d<LatticeComplex>& f,
+			multi1d<LatticeComplex>& b1,
+			multi1d<LatticeComplex>& b2,
+			bool dobs)
+{
+  static JitFunctionMap function_map;
+  ExprPlan plan = describe_leaves( Q , QQ ,
+				   f[0] , f[1] , f[2] ,
+				   b1[0] , b1[1] , b1[2] ,
+				   b2[0] , b2[1] , b2[2] );
+  JitFunction& function = function_map[ plan.key() ];
+  if (function.empty())
+    {
+      function_get_fs_bs_build( function, plan, Q, QQ, f, b1, b2 );
+      function.set_plan_structure( plan.structure() );
+    }
+  assert( function.get_plan_structure() == plan.structure() );
+  function_get_fs_bs_exec( function, plan, Q, dobs );
 }
 
 
