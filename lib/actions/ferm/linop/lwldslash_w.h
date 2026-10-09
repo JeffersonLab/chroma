@@ -46,8 +46,7 @@ namespace Chroma
 
   template<typename T, typename P, typename Q> 
   class QDPWilsonDslashT :
-    public WilsonDslashBase<T, P, Q>,
-    public MGCoarsenableOperator<T>
+    public WilsonDslashBase<T, P, Q>
   {
   public:
 
