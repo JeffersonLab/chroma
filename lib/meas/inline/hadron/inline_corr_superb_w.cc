@@ -1613,7 +1613,6 @@ namespace Chroma
       bool testing)
     {
       SB::Tracker _t("generate genprops");
-      std::cout << "enter " << SBN::get_rank() << std::endl;
       QDPIO::cout << "reading/generating genprops..." << std::endl;
 
       if (!zero_values_for_outside_t_slices)
