@@ -1408,7 +1408,7 @@ AM_CONDITIONAL(BUILD_SB,
 
 if test "X${BUILD_MGPROTON}X" = "XyesX";
 then
-    AC_DEFINE([BUILD_MGPROTON], [], [Build MGPROTON solvers])
+    AC_DEFINE([BUILD_MGPROTON], [1], [Build MGPROTON solvers])
 fi
 
 ################################################################################

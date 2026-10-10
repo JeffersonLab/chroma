@@ -994,7 +994,8 @@ nobase_include_HEADERS += \
 	meas/inline/smear/inline_link_smear.h \
 	meas/inline/io/inline_read_map_obj_disk.h \
 	meas/inline/io/inline_copy_map_obj.h \
-	meas/inline/io/inline_write_timeslice_map_obj_disk.h
+	meas/inline/io/inline_write_timeslice_map_obj_disk.h \
+	meas/inline/io/inline_cmd.h
 
 # Taken out for now
 #	
@@ -1930,7 +1931,8 @@ libchroma_a_SOURCES += \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
 	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
-	meas/inline/smear/inline_link_smear.cc
+	meas/inline/smear/inline_link_smear.cc \
+	meas/inline/io/inline_cmd.cc
 
 # Taken out for now
 

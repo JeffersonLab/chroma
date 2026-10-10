@@ -108,7 +108,7 @@ namespace Chroma
       param.num_vecs = 0;
       read(paramtop, "num_vecs", param.num_vecs);
 
-      param.max_rhs = 0;
+      param.max_rhs = 1;
       if (paramtop.count("max_rhs") > 0)
       {
 	read(paramtop, "max_rhs", param.max_rhs);
@@ -163,6 +163,34 @@ namespace Chroma
 	read(paramtop, "ensemble", param.ensemble);
       }
 
+      param.max_vecs_in_contraction_for_baryons = 4;
+      if (paramtop.count("max_vecs_in_contraction_for_baryons") > 0)
+      {
+	read(paramtop, "max_vecs_in_contraction_for_baryons",
+	     param.max_vecs_in_contraction_for_baryons);
+      }
+
+      param.max_moms_in_contraction_for_baryons = 1;
+      if (paramtop.count("max_moms_in_contraction_for_baryons") > 0)
+      {
+	read(paramtop, "max_moms_in_contraction_for_baryons",
+	     param.max_moms_in_contraction_for_baryons);
+      }
+
+      param.max_moms_in_contraction_for_genprops = 1;
+      if (paramtop.count("max_moms_in_contraction_for_genprops") > 0)
+      {
+	read(paramtop, "max_moms_in_contraction_for_genprops",
+	     param.max_moms_in_contraction_for_genprops);
+      }
+
+      param.max_tslices_in_contraction_for_genprops = 1;
+      if (paramtop.count("max_tslices_in_contraction_for_genprops") > 0)
+      {
+	read(paramtop, "max_tslices_in_contraction_for_genprops",
+	     param.max_tslices_in_contraction_for_genprops);
+      }
+
       param.testing = false;
       if (paramtop.count("testing") > 0)
       {
@@ -180,6 +208,12 @@ namespace Chroma
 
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "max_rhs", param.max_rhs);
+      write(xml, "max_vecs_in_contraction_for_baryons", param.max_vecs_in_contraction_for_baryons);
+      write(xml, "max_moms_in_contraction_for_baryons", param.max_moms_in_contraction_for_baryons);
+      write(xml, "max_moms_in_contraction_for_genprops",
+	    param.max_moms_in_contraction_for_genprops);
+      write(xml, "max_tslices_in_contraction_for_genprops",
+	    param.max_tslices_in_contraction_for_genprops);
       write(xml, "flavor_to_mass", param.flavor_to_mass);
       write(xml, "flavor_to_prop", param.flavor_to_prop);
       write(xml, "t_origin", param.t_origin);
@@ -331,17 +365,39 @@ namespace Chroma
     }
 
 #  if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+    const std::vector<int>& get_local_ranks()
+    {
+      static const auto ranks = [] { return SBN::detail::get_ranks(MPI_COMM_SELF); }();
+      return ranks;
+    }
+
+    const std::vector<int>& get_global_ranks()
+    {
+      static const auto ranks = [] {
+	return SBN::detail::get_ranks(SB::detail::getDefaultComm());
+      }();
+      return ranks;
+    }
+
+    const SBN::Comm& get_global_comm()
+    {
+      static const auto comm = [] {
+	return SBN::get_comm_from_mpi_comm(SB::detail::getDefaultComm());
+      }();
+      return comm;
+    }
+
     template <std::size_t N>
     SBN::superbblas_implementation::detail::Distribution
     get_sbn_distribution(const std::string& order, const SB::Distribution& dist,
 			 const SB::detail::TensorPartition<N>& p)
     {
-      const auto kind = p.isLocal
-			  ? SBN::superbblas_implementation::detail::Distribution::Local
-			  : SBN::superbblas_implementation::detail::Distribution::Distributed;
+      const auto kind = SBN::superbblas_implementation::detail::Distribution::Distributed;
+      const auto comm = p.isLocal ? MPI_COMM_SELF : SB::detail::getDefaultComm();
+      const auto& ranks = p.isLocal ? get_local_ranks() : get_global_ranks();
       const auto dim = SBN::Coor(p.dim.begin(), p.dim.end());
       std::vector<unsigned char> distributed_directions;
-      if (kind != SBN::superbblas_implementation::detail::Distribution::Local)
+      if (!p.isLocal)
       {
 	if (dist != SB::OnMaster && !(dist.size() > 2 && dist.at(0) == '_' && dist.at(1) == '_'))
 	{
@@ -363,7 +419,7 @@ namespace Chroma
 	}
       }
       return SBN::superbblas_implementation::detail::Distribution(kind, dim, distributed_directions,
-								  fs);
+								  fs, ranks, comm);
     }
 #  endif // defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
 
@@ -404,6 +460,206 @@ namespace Chroma
 #  endif
     }
 
+    struct ColorvecCache {
+      const int max_cache_size;		   // max tslices entries
+      int num_vecs;			   // max vecs
+      std::vector<int> from_pos_to_tslice; // from position in v to tslice
+      std::vector<int> hits;		   // number of hist in each position
+      std::vector<bool> in_use;		   // whether the position is in use
+      SB::Tensor<Nd + 3, SB::ComplexD> v;  // cache of colorvecs
+    };
+
+    /// Return the distillation vectors on a time-slice
+    /// \param colorvecCache: cache of distillation vectors
+    /// \param colrovecSto:  distillation vectors storage
+    /// \param u: unsmeared links (for computing distillation vector on the fly)
+    /// \param tslice: the timeslice of the distillation of vectors to return
+    /// \param num_vecs: the first distillation vectors to return
+    /// NOTE: the function caches requested distillation vectors to avoid recomputing them
+
+    inline SB::Tensor<Nd + 3, SB::ComplexD> get_colorvec(ColorvecCache& colorvecCache,
+							 const SB::ColorvecsStorage& colorvecsSto,
+							 const multi1d<LatticeColorMatrix>& u,
+							 int tslice, int num_vecs)
+    {
+      // Invalidate the whole cache if the number of vectors is different
+      if (colorvecCache.num_vecs < num_vecs)
+      {
+	colorvecCache.from_pos_to_tslice.resize(0);
+	colorvecCache.hits.resize(0);
+	colorvecCache.in_use.resize(0);
+	colorvecCache.v = SB::Tensor<Nd + 3, SB::ComplexD>();
+      }
+
+      // Initialize the cache if it is empty
+      if (colorvecCache.from_pos_to_tslice.size() == 0)
+      {
+	colorvecCache.num_vecs = num_vecs;
+	const auto order = "cxyztXn";
+	colorvecCache.v = SB::Tensor<Nd + 3, SB::ComplexD>(
+	  order,
+	  SB::latticeSize<Nd + 3>(
+	    order, {{'t', colorvecCache.max_cache_size}, {'n', colorvecCache.num_vecs}}),
+	  SB::OnDefaultDevice);
+      }
+
+      // Look for the tslice
+      for (std::size_t i = 0; i < colorvecCache.from_pos_to_tslice.size(); ++i)
+      {
+	if (colorvecCache.from_pos_to_tslice.at(i) == tslice)
+	{
+	  colorvecCache.hits.at(i)++;
+	  colorvecCache.in_use.at(i) = true;
+	  return colorvecCache.v.kvslice_from_size({{'t', (int)i}}, {{'t', 1}, {'n', num_vecs}});
+	}
+      }
+
+      // Look for the entry with less hits or add a new entry
+      std::size_t pos_with_less_hits = 0;
+      if (colorvecCache.from_pos_to_tslice.size() >= colorvecCache.max_cache_size)
+      {
+	for (std::size_t i = 1; i < colorvecCache.hits.size(); ++i)
+	{
+	  if (!colorvecCache.in_use.at(i) &&
+	      colorvecCache.hits.at(pos_with_less_hits) > colorvecCache.hits.at(i))
+	    pos_with_less_hits = i;
+	}
+	if (colorvecCache.in_use.at(pos_with_less_hits))
+	  throw std::runtime_error("get_colorvec: too small number of entries");
+      }
+      else
+      {
+	pos_with_less_hits = colorvecCache.from_pos_to_tslice.size();
+	colorvecCache.from_pos_to_tslice.push_back(-1);
+	colorvecCache.hits.push_back(0);
+	colorvecCache.in_use.push_back(false);
+      }
+
+      // Fill the selected entry with the colorvec
+      colorvecCache.from_pos_to_tslice.at(pos_with_less_hits) = tslice;
+      colorvecCache.hits.at(pos_with_less_hits) = 0;
+      colorvecCache.in_use.at(pos_with_less_hits) = true;
+      const auto decay_dir = 3;
+      const auto colorvec = SB::getColorvecs<SB::Complex>(colorvecsSto, u, decay_dir, tslice, 1,
+							  colorvecCache.num_vecs, SB::none);
+      colorvec.copyTo(
+	colorvecCache.v.kvslice_from_size({{'t', (int)pos_with_less_hits}}, {{'t', 1}}));
+      return colorvecCache.v.kvslice_from_size({{'t', (int)pos_with_less_hits}},
+					       {{'t', 1}, {'n', num_vecs}});
+    }
+
+    /// Pre-compute distillation vectors on the requested time-slices if needed
+    /// \param colorvecCache: cache of distillation vectors
+    /// \param colrovecSto:  distillation vectors storage
+    /// \param u: unsmeared links (for computing distillation vector on the fly)
+    /// \param tslices: the timeslices of the distillation of vectors to return
+    /// \param num_vecs: the first distillation vectors to return
+    /// NOTE: the function caches requested distillation vectors to avoid recomputing them
+
+    inline void prefetch_colorvec(ColorvecCache& colorvecCache,
+				  const SB::ColorvecsStorage& colorvecsSto,
+				  const multi1d<LatticeColorMatrix>& u, std::vector<int> tslices,
+				  int num_vecs)
+    {
+      const auto decay_dir = 3;
+      const int Lt = Layout::lattSize()[decay_dir];
+
+      // Invalidate the whole cache if the number of vectors is different
+      if (colorvecCache.num_vecs < num_vecs)
+      {
+	colorvecCache.from_pos_to_tslice.resize(0);
+	colorvecCache.hits.resize(0);
+	colorvecCache.in_use.resize(0);
+	colorvecCache.v = SB::Tensor<Nd + 3, SB::ComplexD>();
+      }
+
+      // Initialize the cache if it is empty
+      if (colorvecCache.from_pos_to_tslice.size() == 0)
+      {
+	colorvecCache.num_vecs = num_vecs;
+	const auto order = "cxyztXn";
+	colorvecCache.v = SB::Tensor<Nd + 3, SB::ComplexD>(
+	  order,
+	  SB::latticeSize<Nd + 3>(
+	    order, {{'t', colorvecCache.max_cache_size}, {'n', colorvecCache.num_vecs}}),
+	  SB::OnDefaultDevice);
+      }
+
+      // Look for the tslices not present on the cache and sort them
+      std::vector<int> new_tslices;
+      for (const auto tslice : tslices)
+      {
+	if (std::find(colorvecCache.from_pos_to_tslice.begin(),
+		      colorvecCache.from_pos_to_tslice.end(),
+		      tslice) == colorvecCache.from_pos_to_tslice.end())
+	{
+	  new_tslices.push_back(tslice);
+	}
+      }
+      std::sort(new_tslices.begin(), new_tslices.end());
+      new_tslices.erase(std::unique(new_tslices.begin(), new_tslices.end()), new_tslices.end());
+
+      // Look for consecutive sequences of time-slices and compute them all at once
+      for (auto it = new_tslices.begin(); it != new_tslices.end();)
+      {
+	// Look for consecutive time-slices
+	int num_tslices = 1;
+	for (auto it0 = it + 1;
+	     it0 != new_tslices.end() && *it0 == SB::normalize_coor(*it + num_tslices, Lt);
+	     ++it0, ++num_tslices)
+	  ;
+
+	// Compute them
+	const auto colorvec = SB::getColorvecs<SB::Complex>(
+	  colorvecsSto, u, decay_dir, *it, num_tslices, colorvecCache.num_vecs, SB::none);
+
+	for (int t = 0; t < num_tslices; ++t, ++it)
+	{
+	  // Look for the entry with less hits or add a new entry
+	  std::size_t pos_with_less_hits = 0;
+	  if (colorvecCache.from_pos_to_tslice.size() >= colorvecCache.max_cache_size)
+	  {
+	    for (std::size_t i = 1; i < colorvecCache.hits.size(); ++i)
+	    {
+	      if (!colorvecCache.in_use.at(i) &&
+		  colorvecCache.hits.at(pos_with_less_hits) > colorvecCache.hits.at(i))
+		pos_with_less_hits = i;
+	    }
+	    if (colorvecCache.in_use.at(pos_with_less_hits))
+	      throw std::runtime_error("prefetch_colorvec: too small number of entries");
+	  }
+	  else
+	  {
+	    pos_with_less_hits = colorvecCache.from_pos_to_tslice.size();
+	    colorvecCache.from_pos_to_tslice.push_back(-1);
+	    colorvecCache.hits.push_back(0);
+	    colorvecCache.in_use.push_back(false);
+	  }
+
+	  // Fill the selected entry with the colorvec
+	  colorvecCache.from_pos_to_tslice.at(pos_with_less_hits) = *it;
+	  colorvecCache.hits.at(pos_with_less_hits) = 0;
+	  colorvecCache.in_use.at(pos_with_less_hits) = false;
+	  colorvec.kvslice_from_size({{'t', t}}, {{'t', 1}})
+	    .copyTo(
+	      colorvecCache.v.kvslice_from_size({{'t', (int)pos_with_less_hits}}, {{'t', 1}}));
+	}
+      }
+    }
+
+    inline void release_from_colorvec_cache(ColorvecCache& colorvecCache, int tslice)
+    {
+      for (std::size_t i = 0; i < colorvecCache.from_pos_to_tslice.size(); ++i)
+      {
+	if (colorvecCache.from_pos_to_tslice.at(i) == tslice)
+	{
+	  colorvecCache.in_use.at(i) = false;
+	  return;
+	}
+      }
+      throw std::runtime_error("release_from_colorvec_cache: invalid tslice");
+    }
+
     /// Return the mesons without spins
     /// \param db: meson storage
     /// \param colorvecsSto: colorvec storage
@@ -419,13 +675,16 @@ namespace Chroma
 
     inline SBN::Tensor
     get_meson_elementals(const ADATIO::StorageMeson& db, const SB::ColorvecsStorage& colorvecsSto,
-			 const multi1d<LatticeColorMatrix>& u,
+			 ColorvecCache& colorvecCache, const multi1d<LatticeColorMatrix>& u,
 			 const multi1d<LatticeColorMatrix>& u_smr,
 			 const std::vector<Hadron::KeyMesonElementalOperator_t>& meson_keys,
 			 const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 			 const SBN::Coor& ev_from, const SBN::Coor& ev_size,
-			 const std::string& dist_labels, const SBN::Tensor& guide, bool testing)
+			 const std::string& dist_labels, bool testing)
     {
+      SB::Tracker _t("generate mesons");
+      QDPIO::cout << "reading/generating mesons..." << std::endl;
+
       // Check input
       if (meson_keys.size() != perms.size())
 	throw std::runtime_error("invalid input");
@@ -448,7 +707,7 @@ namespace Chroma
       // Create output tensor
       SBN::Tensor mesons = SBN::create_tensor_with_local_components(
 	{ev_size.at(0), ev_size.at(1), -(int)meson_keys.size()}, "vwi", dist_labels,
-	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, guide);
+	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, {}, get_global_comm());
       const auto first_local_meson = SBN::get_local_srange(mesons).at(0).at('i');
 
       // Try to get the mesons from the storage and annotate the missing keys
@@ -482,7 +741,7 @@ namespace Chroma
 	  {
 	    if (val.op.size1() < num_vecs || val.op.size2() < num_vecs)
 	      throw std::runtime_error("got a meson with insufficient number of vectors");
-	    auto ti = SBN::toTensor(val.op, "vw", SBN::Options::Distribution::Local);
+	    auto ti = SBN::toTensor(val.op, "vw");
 	    ti = Hadron::detail::apply_vertex_perm(ti, p, "vw");
 	    ti = SBN::slice_kv(ti, //
 			       {{'v', ev_from.at(0)}, {'w', ev_from.at(0)}},
@@ -525,13 +784,17 @@ namespace Chroma
 	  r.at(it.second) = it.first;
 	return r;
       };
-      for (const auto& missing_mesons_in_some_process : SBN::gather(local_missing_mesons))
+      std::vector<int> missing_tslices;
+      for (const auto& missing_mesons_in_some_process :
+	   SBN::gather(local_missing_mesons, SB::detail::getDefaultComm()))
       {
 	for (const auto& [meson_key, perm, index] : missing_mesons_in_some_process)
 	{
 	  const auto& k = tslice_left_right_phases{
 	    meson_key.t_slice, ADATIO::detail::toCoor(meson_key.phasing_sink),
 	    ADATIO::detail::toCoor(meson_key.phasing_source)};
+	  if (from_tslice_left_right_phases_to_momenta_displacement.count(k) == 0)
+	    missing_tslices.push_back(meson_key.t_slice);
 	  auto& v = from_tslice_left_right_phases_to_momenta_displacement[k];
 	  auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(meson_key.mom));
 	  auto disp_index = get_index(std::get<1>(v), meson_key.displacement);
@@ -539,6 +802,7 @@ namespace Chroma
 	}
       }
 
+      prefetch_colorvec(colorvecCache, colorvecsSto, u, missing_tslices, num_vecs);
       for (const auto& it : from_tslice_left_right_phases_to_momenta_displacement)
       {
 	const auto& [t_source, left_phase, right_phase] = it.first;
@@ -548,8 +812,8 @@ namespace Chroma
 
 	// Get num_vecs colorvecs on time-slice t_source
 	const int decay_dir = 3;
-	SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
-	  colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none);
+	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	  get_colorvec(colorvecCache, colorvecsSto, u, t_source, num_vecs);
 
 	// Callback
 	const auto call = [&](SB::Tensor<4, SB::ComplexD> tensor, int disp, int first_tslice,
@@ -575,6 +839,8 @@ namespace Chroma
 	  u_smr, source_colorvec.make_sure<SB::ComplexD>(), left_phase, right_phase, moms, t_source,
 	  disps, use_derivP, call, SB::none, SB::OnDefaultDevice, SB::OnEveryone,
 	  0 /* max_tslices_in_contraction==0 means to do all */, 1 /* max_moms_in_contraction */);
+
+	release_from_colorvec_cache(colorvecCache, t_source);
       }
 
       // If testing, make sure that recomputed mesons are similar to the ones got from storage
@@ -591,7 +857,10 @@ namespace Chroma
 	}
       }
 
-      return mesons;
+      QDPIO::cout << "reading/generating mesons took " << _t.stopAndGetElapsedTime() << " s"
+		  << std::endl;
+
+      return SBN::get_local_tensor_tight(mesons);
     }
 
     inline std::tuple<Hadron::KeyBaryonElementalOperator_t, int>
@@ -649,13 +918,17 @@ namespace Chroma
 
     inline SBN::Tensor
     get_baryon_elementals(const ADATIO::StorageBaryon& db, const SB::ColorvecsStorage& colorvecsSto,
-			  const multi1d<LatticeColorMatrix>& u,
+			  ColorvecCache& colorvecCache, const multi1d<LatticeColorMatrix>& u,
 			  const multi1d<LatticeColorMatrix>& u_smr,
 			  const std::vector<Hadron::KeyBaryonElementalOperator_t>& baryon_keys,
 			  const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 			  const SBN::Coor& ev_from, const SBN::Coor& ev_size,
-			  const std::string& dist_labels, const SBN::Tensor& guide, bool testing)
+			  const std::string& dist_labels, const int max_moms_in_contraction,
+			  const int max_vecs, bool testing)
     {
+      SB::Tracker _t("generate baryons");
+      QDPIO::cout << "reading/generating baryons..." << std::endl;
+
       if (baryon_keys.size() != perms.size() || baryon_keys.size() != do_conj.size())
 	throw std::runtime_error("invalid input");
       if (ev_from.size() != 3 || ev_size.size() != 3)
@@ -683,7 +956,7 @@ namespace Chroma
       // Create output tensor
       SBN::Tensor baryons = SBN::create_tensor_with_local_components(
 	SBN::concat(ev_size, {-(int)baryon_keys.size()}), "vwxi", dist_labels,
-	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, guide);
+	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, {}, get_global_comm());
 
       // Try to get the mesons from the storage and annotate the missing keys
       std::vector<std::tuple<Hadron::KeyBaryonElementalOperator_t, int, bool, int>>
@@ -720,7 +993,7 @@ namespace Chroma
 	    if (val.data().op.size1() < num_vecs || val.data().op.size2() < num_vecs ||
 		val.data().op.size3() < num_vecs)
 	      throw std::runtime_error("got a baryon with insufficient number of vectors");
-	    auto ti = SBN::toTensor(val.data().op, "vwx", SBN::Options::Distribution::Local);
+	    auto ti = SBN::toTensor(val.data().op, "vwx");
 	    ti = Hadron::detail::apply_vertex_perm(ti, perms.at(i), "vwx");
 	    ti = SBN::slice_kv(ti, SBN::get_scoor("vwx", ev_from), SBN::get_scoor("vwx", ev_size));
 	    SBN::copyTo(do_conj.at(i) ? SBN::conj(ti) : ti, baryon_i);
@@ -765,12 +1038,16 @@ namespace Chroma
 	  r.at(it.second) = it.first;
 	return r;
       };
-      for (const auto& missing_baryons_in_some_process : SBN::gather(local_missing_baryons))
+      std::vector<int> missing_tslices;
+      for (const auto& missing_baryons_in_some_process :
+	   SBN::gather(local_missing_baryons, SB::detail::getDefaultComm()))
       {
 	for (const auto& [baryon_key, scalar, do_conj, index] : missing_baryons_in_some_process)
 	{
 	  const auto& k =
 	    tslice_phase{baryon_key.t_slice, ADATIO::detail::toCoor(baryon_key.phasing)};
+	  if (from_tslice_and_phase_to_momenta_displacement.count(k) == 0)
+	    missing_tslices.push_back(baryon_key.t_slice);
 	  auto& v = from_tslice_and_phase_to_momenta_displacement[k];
 	  auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(baryon_key.mom));
 	  auto disp_index = get_index(
@@ -779,6 +1056,7 @@ namespace Chroma
 	}
       }
 
+      prefetch_colorvec(colorvecCache, colorvecsSto, u, missing_tslices, num_vecs);
       for (const auto& it : from_tslice_and_phase_to_momenta_displacement)
       {
 	const int t_slice = std::get<0>(it.first);
@@ -790,36 +1068,41 @@ namespace Chroma
 	// Get num_vecs colorvecs on time-slice t_slice
 	const int decay_dir = 3;
 	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
-	  SB::getColorvecs<SB::Complex>(colorvecsSto, u, decay_dir, t_slice, 1, num_vecs, SB::none);
+	  get_colorvec(colorvecCache, colorvecsSto, u, t_slice, num_vecs);
 	source_colorvec = SB::phaseColorvecs(source_colorvec, t_slice, phase);
 
 	// Callback
 	const auto call = SB::ColorContractionFn<SB::Complex>(
 	  [&](SB::Tensor<5, SB::ComplexD> tensor, int disp, int first_tslice, int first_mom) {
-	    auto range = mom_disp_to_index.equal_range({first_mom, disp});
-	    for (auto it = range.first; it != range.second; ++it)
+	    const int num_mom = tensor.kvdim().at('m');
+	    for (int m = 0; m < num_mom; ++m)
 	    {
-	      const auto& [scalar, do_conj, index] = it->second;
-	      auto ti = SBN::relabel(toTensor(tensor), {{'i', 'v'}, {'j', 'w'}, {'k', 'x'}});
-	      ti =
-		SBN::slice_kv(ti, //
-			      {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}, {'x', ev_from.at(2)}},
-			      {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}, {'x', ev_size.at(2)}});
-	      if (do_conj)
-		ti = SBN::conj(ti);
-	      SBN::copyTo(SBN::scale(ti, (double)scalar),
-			  SBN::slice_kv(baryons, {{'i', index}}, {{'i', 1}}));
+	      auto range = mom_disp_to_index.equal_range({first_mom + m, disp});
+	      for (auto it = range.first; it != range.second; ++it)
+	      {
+		const auto& [scalar, do_conj, index] = it->second;
+		auto ti = SBN::relabel(toTensor(tensor.kvslice_from_size({{'m', m}}, {{'m', 1}})),
+				       {{'i', 'v'}, {'j', 'w'}, {'k', 'x'}});
+		ti =
+		  SBN::slice_kv(ti, //
+				{{'v', ev_from.at(0)}, {'w', ev_from.at(1)}, {'x', ev_from.at(2)}},
+				{{'v', ev_size.at(0)}, {'w', ev_size.at(1)}, {'x', ev_size.at(2)}});
+		if (do_conj)
+		  ti = SBN::conj(ti);
+		SBN::copyTo(SBN::scale(ti, (double)scalar),
+			    SBN::slice_kv(baryons, {{'i', index}}, {{'i', 1}}));
+	      }
 	    }
 	  });
 
 	// Do the contractions
 	const bool use_derivP = true;
-	const int max_moms_in_contraction = 1;
-	const int max_vecs = 4;
 	SB::doMomDisp_colorContractions(u_smr, source_colorvec.make_sure<SB::ComplexD>(), moms,
 					t_slice, disps, use_derivP, call,
 					0 /* it means to do all */, max_moms_in_contraction,
 					max_vecs, SB::none, SB::OnDefaultDevice, SB::OnEveryone);
+
+	release_from_colorvec_cache(colorvecCache, t_slice);
       }
 
       // If testing, make sure that recomputed baryons are similar to the ones got from storage
@@ -836,7 +1119,114 @@ namespace Chroma
 	}
       }
 
-      return baryons;
+      QDPIO::cout << "reading/generating baryons took " << _t.stopAndGetElapsedTime() << " s"
+		  << std::endl;
+
+      return SBN::get_local_tensor_tight(baryons);
+    }
+
+    using mass_phase_tsource_slices_spin_ev_from_size_conj_tensor =
+      std::tuple<std::string, SB::Coor<3>, int, int, int, int, int, int, int, bool,
+		 SB::Tensor<Nd + 5, SB::Complex>>;
+    using Cache =
+      std::vector<std::pair<int, mass_phase_tsource_slices_spin_ev_from_size_conj_tensor>>;
+
+    /// Reserve space in the cache for a new element
+    /// \param cache: cache
+    /// \param max_cache_size: maximum number of elements in the cache
+
+    void make_space_to_add_entry_in_cache(Cache& cache, std::size_t max_cache_size)
+    {
+      if (max_cache_size <= 1)
+      {
+	cache.resize(0);
+	return;
+      }
+      while (cache.size() + 1 > max_cache_size)
+      {
+	std::size_t index = 0;
+	for (std::size_t i = 1; i < cache.size(); ++i)
+	  if (cache.at(i).first > cache.at(index).first)
+	    index = i;
+	std::swap(cache.at(index), cache.back());
+	cache.pop_back();
+      }
+    }
+
+    /// Find an element into the cache of inverted distillation vectors
+    /// \param cache: cache
+    /// \param mass_label: mass label
+    /// \param t_source: time source to invert
+    /// \param first_tslice: first time-slice to store
+    /// \param num_tslices: number of time-slices stored
+    /// \param spin_from: first spin inverted
+    /// \param spin_size: number of spins inverted
+    /// \param conj: whether \gamma_5 was applied
+    /// \param ev_from: index of the first distillation vector inverted
+    /// \param ev_size: number of distillation vectors inverted
+    /// \param Lt: lattice time extend
+
+    SB::Tensor<Nd + 5, SB::Complex> find_entry_in_cache(Cache& cache, const std::string& mass_label,
+							const SB::Coor<3>& phase, int t_source,
+							int first_tslice, int num_tslices,
+							int spin_from, int spin_size, bool conj,
+							int ev_from, int ev_size, int Lt)
+    {
+      for (std::size_t cache_idx = 0; cache_idx < cache.size(); cache_idx++)
+      {
+	const auto& [cache_mass_label, cache_phase, cache_tsource, cache_first_tslice,
+		     cache_num_slices, cache_spin_from, cache_spin_size, cache_ev_from,
+		     cache_ev_size, cache_conj, t] = cache.at(cache_idx).second;
+	const auto norm_first_tslice = SB::normalize_coor(first_tslice - cache_first_tslice, Lt);
+	if (cache_mass_label == mass_label && cache_phase == phase && cache_tsource == t_source &&
+	    norm_first_tslice < cache_num_slices &&
+	    cache_num_slices >= norm_first_tslice + num_tslices && cache_conj == conj &&
+	    cache_spin_from <= spin_from &&
+	    cache_spin_from + cache_spin_size >= spin_from + spin_size &&
+	    cache_ev_from <= ev_from && cache_ev_from + cache_ev_size >= ev_from + ev_size)
+	{
+	  for (auto& it : cache)
+	    it.first++;
+	  cache.at(cache_idx).first = 0;
+	  return t.kvslice_from_size({{'t', norm_first_tslice},
+				      {'s', spin_from - cache_spin_from},
+				      {'n', ev_from - cache_ev_from}},
+				     {{'t', num_tslices}, {'s', spin_size}, {'n', ev_size}});
+	}
+      }
+
+      return {};
+    }
+
+    /// Find an element into the cache of inverted distillation vectors
+    /// \param cache: cache
+    /// \param max_cache_size: maximum number of elements in the cache
+    /// \param mass_label: mass label
+    /// \param t_source: time source to invert
+    /// \param first_tslice: first time-slice to store
+    /// \param num_tslices: number of time-slices stored
+    /// \param spin_from: first spin inverted
+    /// \param spin_size: number of spins inverted
+    /// \param conj: whether \gamma_5 was applied
+    /// \param ev_from: index of the first distillation vector inverted
+    /// \param ev_size: number of distillation vectors inverted
+    /// \param tensor: inverted distillation vectors
+
+    void insert_entry_in_cache(Cache& cache, std::size_t max_cache_size,
+			       const std::string& mass_label, const SB::Coor<3>& phase,
+			       int t_source, int first_tslice, int num_tslices, int spin_from,
+			       int spin_size, bool conj, int ev_from, int ev_size,
+			       SB::Tensor<Nd + 5, SB::Complex> tensor)
+    {
+	make_space_to_add_entry_in_cache(cache, max_cache_size);
+	for (auto& it : cache)
+	  it.first++;
+	if (max_cache_size > 0)
+	{
+	  cache.push_back({0, mass_phase_tsource_slices_spin_ev_from_size_conj_tensor{
+				mass_label, phase, t_source, first_tslice, num_tslices, spin_from,
+				spin_size, ev_from, ev_size, conj, tensor}});
+	}
     }
 
     /// Return the props
@@ -846,6 +1236,7 @@ namespace Chroma
     /// \param get_prop: get solver from mass label
     /// \param prop_keys: list of props keys
     /// \param max_rhs: maximum RHS to solve at once
+    /// \param cache: inversions cache
     /// \param perms: list of permutations, one for each prop key
     /// \param do_conj: list of whether to conjugate the prop, one for each prop key
     /// \param ev_from: first eigenvector to return for "vwx"
@@ -855,13 +1246,17 @@ namespace Chroma
 
     inline SBN::Tensor
     get_prop_elementals(const ADATIO::StorageProp4& db, const SB::ColorvecsStorage& colorvecsSto,
-			const multi1d<LatticeColorMatrix>& u,
+			ColorvecCache& colorvecCache, const multi1d<LatticeColorMatrix>& u,
 			const std::function<SB::ChimeraSolver(std::string)>& get_prop, int max_rhs,
+			Cache& cache, const int max_cache_size,
 			const std::vector<Hadron::KeyProp4ElementalOperator_t>& prop_keys,
 			const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 			const SBN::Coor& ev_from, const SBN::Coor& ev_size,
-			const std::string& dist_labels, const SBN::Tensor& guide, bool testing)
+			const std::string& dist_labels, bool testing)
     {
+      SB::Tracker _t("generate props");
+      QDPIO::cout << "reading/generating props..." << std::endl;
+
       if (prop_keys.size() != perms.size() || prop_keys.size() != do_conj.size())
 	throw std::runtime_error("invalid input");
       if (ev_from.size() != 4 || ev_size.size() != 4)
@@ -881,8 +1276,8 @@ namespace Chroma
 
       // This object is in the DR basis; create matrices to convert it to DP
       const auto& dr_left_global =
-	SBN::slice_kv(Hadron::detail::adjForSpins(
-			Hadron::detail::getDiracToDRMat(SBN::Options::Distribution::Replicated)), //
+	SBN::slice_kv(Hadron::detail::adjForSpins(Hadron::detail::getDiracToDRMat(
+			SBN::Options::Distribution::Replicated, get_global_comm())), //
 		      {{'s', ev_from.at(2)}}, {{'s', ev_size.at(2)}});
       const auto& dr_left = SBN::get_local_tensor(dr_left_global);
       const auto& dr_right = SBN::slice_kv(Hadron::detail::getDiracToDRMat(),
@@ -890,7 +1285,8 @@ namespace Chroma
 
       // Create matrices to convert it to DP and with pre/post applying \gamma_5
       const auto dr_g5_left_global = Hadron::detail::contractSpins(
-	dr_left_global, Hadron::detail::chromaGamma5(SBN::Options::Distribution::Replicated));
+	dr_left_global,
+	Hadron::detail::chromaGamma5(SBN::Options::Distribution::Replicated, get_global_comm()));
       const auto& dr_g5_left = SBN::get_local_tensor(dr_g5_left_global);
       const auto dr_g5_right =
 	Hadron::detail::contractSpins(Hadron::detail::chromaGamma5(), dr_right);
@@ -908,7 +1304,7 @@ namespace Chroma
       // Create output tensor
       SBN::Tensor props = SBN::create_tensor_with_local_components(
 	SBN::concat(ev_size, {-(int)prop_keys.size()}), "vwrsi", dist_labels,
-	SBN::Options::Alloc::Host, 0, 0, SBN::Options::IsEg::False, guide);
+	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, {}, get_global_comm());
 
       // Try to get the mesons from the storage and annotate the missing keys
       std::vector<std::tuple<Hadron::KeyProp4ElementalOperator_t, bool, int>> local_missing_props;
@@ -991,7 +1387,7 @@ namespace Chroma
 	    //          [\g_5 V_t1' D^{-1} V_t0 \g_5]' =
 	    //          \g_5 [V_t1' D^{-1} V_t0]' \g_5
 	    const auto& ti0 =
-	      SBN::toTensor(val.op, is_swap ? "wvSs" : "vwsS", SBN::Options::Distribution::Local);
+	      SBN::toTensor(val.op, is_swap ? "wvSs" : "vwsS");
 	    auto ti = SBN::slice_kv(is_swap ? SBN::conj(ti0) : ti0, //
 				    {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}},
 				    {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}});
@@ -1040,7 +1436,8 @@ namespace Chroma
 	  r.insert(it.first);
 	return std::vector<T>(r.begin(), r.end());
       };
-      for (const auto& missing_props_in_some_process : SBN::gather(local_missing_props))
+      for (const auto& missing_props_in_some_process :
+	   SBN::gather(local_missing_props, SB::detail::getDefaultComm()))
       {
 	for (const auto& [prop_key, do_conj, index] : missing_props_in_some_process)
 	{
@@ -1054,15 +1451,17 @@ namespace Chroma
 
       for (const auto& it : from_mass_tsource_source_sink_phases_conj_to_tsink_and_indices)
       {
-	const auto& [mass_label, t_source, source_phase, sink_phase, do_conj_] = it.first;
+	const auto& [mass_label_, t_source_, source_phase, sink_phase, do_conj_] = it.first;
+	const auto& t_source = t_source_;
+	const auto& mass_label = mass_label_;
 	const auto& do_conj = do_conj_;
 	const auto& from_tsink_to_indices = it.second;
 	const auto& t_sinks = get_keys(from_tsink_to_indices);
 
 	// Get num_vecs colorvecs on time-slice t_source
 	const int decay_dir = 3;
-	SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
-	  colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none);
+	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	  get_colorvec(colorvecCache, colorvecsSto, u, t_source, num_vecs);
 	source_colorvec =
 	  source_colorvec.kvslice_from_size({{'n', ev_from.at(1)}}, {{'n', ev_size.at(1)}});
 	source_colorvec = SB::phaseColorvecs(source_colorvec, t_source, source_phase);
@@ -1070,25 +1469,29 @@ namespace Chroma
 	// Get num_vecs colorvecs on time-slice t_sink
 	SB::Tensor<Nd + 3, SB::Complex> sinks_colorvecs =
 	  source_colorvec.like_this(SB::none, {{'n', ev_size.at(0)}, {'t', t_sinks.size()}});
+	prefetch_colorvec(colorvecCache, colorvecsSto, u, t_sinks, num_vecs);
 	for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
 	{
-	  SB::Tensor<Nd + 3, SB::Complex> sink_colorvec = SB::getColorvecs<SB::Complex>(
-	    colorvecsSto, u, decay_dir, t_sinks.at(t_sink_index), 1, num_vecs, SB::none);
+	  SB::Tensor<Nd + 3, SB::Complex> sink_colorvec =
+	    get_colorvec(colorvecCache, colorvecsSto, u, t_sinks.at(t_sink_index), num_vecs);
 	  sink_colorvec =
 	    sink_colorvec.kvslice_from_size({{'n', ev_from.at(0)}}, {{'n', ev_size.at(0)}});
 	  SB::phaseColorvecs(sink_colorvec, t_sinks.at(t_sink_index), sink_phase)
 	    .copyTo(sinks_colorvecs.kvslice_from_size({{'t', t_sink_index}}, {{'t', 1}}));
+	  release_from_colorvec_cache(colorvecCache, t_sinks.at(t_sink_index));
 	}
 	sinks_colorvecs = sinks_colorvecs.rename_dims({{'n', 'N'}, {'t', 'T'}});
 
-	// Callback
-	const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int sink_spin, int first_n) {
+	// Function to contract with all sinks
+	const auto contract_with_sink = [&](SB::Tensor<Nd + 5, SB::Complex> tensor,
+					    int first_spin_src, int first_n) {
 	  for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
 	  {
 	    const auto& r =
 	      SB::contract<6>(
 		sinks_colorvecs.kvslice_from_size({{'T', t_sink_index}}, {{'T', 1}}).conj(),
-		tensor.kvslice_from_size({{'t', t_sinks.at(t_sink_index)}}, {{'t', 1}}), "cXxyz")
+		tensor.kvslice_from_size({{'t', t_sinks.at(t_sink_index) - t_source}}, {{'t', 1}}),
+		"cXxyz")
 		.rename_dims({{'s', 'S'}, {'S', 's'}});
 	    const auto& ti = Hadron::detail::contractSpins(
 	      !do_conj ? dr_left_global : dr_g5_left_global, toTensor(r));
@@ -1097,16 +1500,70 @@ namespace Chroma
 	    {
 	      const auto& index = it->second;
 	      auto tii = SBN::relabel(ti, {{'n', 'w'}, {'N', 'v'}, {'s', 'r'}, {'S', 's'}});
-	      SBN::copyTo(
-		tii, SBN::slice_kv(props, {{'s', sink_spin}, {'w', first_n}, {'i', index}},
-				   {{'s', 1}, {'w', SBN::get_kv_size(tii).at('w')}, {'i', 1}}));
+	      SBN::copyTo(tii, SBN::slice_kv(props,
+					     {{'s', first_spin_src}, {'w', first_n}, {'i', index}},
+					     {{'s', SBN::get_kv_size(tii).at('s')},
+					      {'w', SBN::get_kv_size(tii).at('w')},
+					      {'i', 1}}));
 	    }
 	  }
 	};
 
-	// Do the inversions
-	doInversion<SB::Complex>(get_prop(mass_label), source_colorvec, t_source,
-				 !do_conj ? dr_right_chroma : dr_g5_right_chroma, max_rhs, call);
+	// Look into the cache
+	const int Lt = Layout::lattSize()[decay_dir];
+	int num_tslices = 0;
+	for (const auto t_sink : t_sinks)
+	  num_tslices = std::max(num_tslices, 1 + SB::normalize_coor(t_sink - t_source, Lt));
+	auto cache_tensor = find_entry_in_cache(cache, mass_label, source_phase, t_source, t_source,
+						num_tslices, ev_from.at(3), ev_size.at(3), do_conj,
+						ev_from.at(1), ev_size.at(1), Lt);
+	if (cache_tensor)
+	{
+	  contract_with_sink(cache_tensor, 0, 0);
+	}
+	else
+	{
+	  // Create the tensor for the cache
+	  SB::Tensor<Nd + 5, SB::Complex> cache_tensor;
+	  if (max_cache_size > 0)
+	  {
+	    const auto order_out = "cSxyztXns";
+	    make_space_to_add_entry_in_cache(cache, max_cache_size);
+	    cache_tensor = SB::Tensor<Nd + 5, SB::Complex>(
+	      order_out,
+	      SB::latticeSize<Nd + 5>(
+		order_out,
+		{{'t', num_tslices}, {'S', Ns}, {'s', ev_size.at(3)}, {'n', ev_size.at(1)}}),
+	      SB::OnDefaultDevice);
+	  }
+
+	  // Callback
+	  const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int src_spin, int first_n) {
+	    const auto tensor_from_tsource =
+	      tensor.kvslice_from_size({{'t', t_source}}, {{'t', num_tslices}});
+	    contract_with_sink(tensor_from_tsource, src_spin, first_n);
+	    if (cache_tensor)
+	    {
+	      tensor_from_tsource.copyTo(cache_tensor.kvslice_from_size(
+		{{'s', src_spin}, {'n', first_n}},
+		{{'s', tensor.kvdim().at('s')}, {'n', tensor.kvdim().at('n')}}));
+	    }
+	  };
+
+	  // Do the inversions
+	  doInversion<SB::Complex>(get_prop(mass_label), source_colorvec, t_source,
+				   !do_conj ? dr_right_chroma : dr_g5_right_chroma, max_rhs, call);
+
+	  // Insert the solution into the cache
+	  if (cache_tensor)
+	  {
+	    insert_entry_in_cache(cache, max_cache_size, mass_label, source_phase, t_source,
+				  t_source, num_tslices, ev_from.at(3), ev_size.at(3), do_conj,
+				  ev_from.at(1), ev_size.at(1), cache_tensor);
+	  }
+	}
+
+	release_from_colorvec_cache(colorvecCache, t_source);
       }
 
       // If testing, make sure that recomputed mesons are similar to the ones got from storage
@@ -1123,7 +1580,10 @@ namespace Chroma
 	}
       }
 
-      return props;
+      QDPIO::cout << "reading/generating props took " << _t.stopAndGetElapsedTime() << " s"
+		  << std::endl;
+
+      return SBN::get_local_tensor_tight(props);
     }
 
     /// Return the genprops
@@ -1133,6 +1593,7 @@ namespace Chroma
     /// \param get_genprop: get solver from mass label
     /// \param genprop_keys: list of genprops keys
     /// \param max_rhs: maximum RHS to solve at once
+    /// \param cache: inversions cache
     /// \param perms: list of permutations, one for each genprop key
     /// \param do_conj: list of whether to conjugate the genprop, one for each genprop key
     /// \param ev_from: first eigenvector to return for "vwx"
@@ -1140,17 +1601,20 @@ namespace Chroma
     /// \param dist_labels: dimensions to be distributed, some of "vwxi"
     /// \param alloc: allocation for the returned tensor
 
-    inline SBN::Tensor
-    get_genprop_elementals(const ADATIO::StorageGenprop4& db,
-			   const SB::ColorvecsStorage& colorvecsSto,
-			   const multi1d<LatticeColorMatrix>& u,
-			   const std::function<SB::ChimeraSolver(std::string)>& get_prop,
-			   int max_rhs, bool zero_values_for_outside_t_slices,
-			   const std::vector<Hadron::KeyGenProp4ElementalOperator_t>& genprop_keys,
-			   const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
-			   const SBN::Coor& ev_from, const SBN::Coor& ev_size,
-			   const std::string& dist_labels, const SBN::Tensor& guide, bool testing)
+    inline SBN::Tensor get_genprop_elementals(
+      const ADATIO::StorageGenprop4& db, const SB::ColorvecsStorage& colorvecsSto,
+      ColorvecCache& colorvecCache, const multi1d<LatticeColorMatrix>& u,
+      const std::function<SB::ChimeraSolver(std::string)>& get_prop, int max_rhs, Cache& cache,
+      const int max_cache_size, bool zero_values_for_outside_t_slices, int max_moms_in_contraction,
+      int max_tslices_in_contraction,
+      const std::vector<Hadron::KeyGenProp4ElementalOperator_t>& genprop_keys,
+      const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
+      const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
+      bool testing)
     {
+      SB::Tracker _t("generate genprops");
+      QDPIO::cout << "reading/generating genprops..." << std::endl;
+
       if (!zero_values_for_outside_t_slices)
 	throw std::runtime_error("unsupported case: zero_values_for_outside_t_slices is false!");
       if (genprop_keys.size() != perms.size() || genprop_keys.size() != do_conj.size())
@@ -1172,8 +1636,8 @@ namespace Chroma
 
       // This object is in the DR basis; create matrices to convert it to DP
       const auto& dr_left_global =
-	SBN::slice_kv(Hadron::detail::adjForSpins(
-			Hadron::detail::getDiracToDRMat(SBN::Options::Distribution::Replicated)), //
+	SBN::slice_kv(Hadron::detail::adjForSpins(Hadron::detail::getDiracToDRMat(
+			SBN::Options::Distribution::Replicated, get_global_comm())), //
 		      {{'s', ev_from.at(2)}}, {{'s', ev_size.at(2)}});
       const auto& dr_left = SBN::get_local_tensor(dr_left_global);
       const auto& dr_right = SBN::slice_kv(Hadron::detail::getDiracToDRMat(),
@@ -1181,7 +1645,8 @@ namespace Chroma
 
       // Create matrices to convert it to DP and with pre/post applying \gamma_5
       const auto dr_g5_left_global = Hadron::detail::contractSpins(
-	dr_left_global, Hadron::detail::chromaGamma5(SBN::Options::Distribution::Replicated));
+	dr_left_global,
+	Hadron::detail::chromaGamma5(SBN::Options::Distribution::Replicated, get_global_comm()));
       const auto& dr_g5_left = SBN::get_local_tensor(dr_g5_left_global);
 
       // Create chroma versions of dr_right and dr_g5_left
@@ -1200,7 +1665,7 @@ namespace Chroma
       // Create output tensor
       SBN::Tensor genprops = SBN::create_tensor_with_local_components(
 	SBN::concat(ev_size, {-(int)genprop_keys.size()}), "vwrsi", dist_labels,
-	SBN::Options::Alloc::Host, 0, 0, SBN::Options::IsEg::False, guide);
+	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, {}, get_global_comm());
 
       // Set all genprops to zero as the default value for the keys with tslice outside of t_source and t_sink
       SBN::set_zero(genprops);
@@ -1308,7 +1773,8 @@ namespace Chroma
 	  r.at(it.second) = it.first;
 	return r;
       };
-      for (const auto& missing_genprops_in_some_process : SBN::gather(local_missing_genprops))
+      for (const auto& missing_genprops_in_some_process :
+	   SBN::gather(local_missing_genprops, SB::detail::getDefaultComm()))
       {
 	for (const auto& [genprop_key, index] : missing_genprops_in_some_process)
 	{
@@ -1328,7 +1794,8 @@ namespace Chroma
       for (const auto& it :
 	   from_mass_tsource_sink_phase_source_sink_to_moms_disps_gammas_and_tslides_vs_indices)
       {
-	const auto& [mass_label, t_source_, t_sink, source_phase, sink_phase] = it.first;
+	const auto& [mass_label_, t_source_, t_sink, source_phase, sink_phase] = it.first;
+	const auto& mass_label = mass_label_;
 	const auto& t_source = t_source_;
 	const auto& moms = get_vector(std::get<0>(it.second));
 	const auto& disps = get_vector(std::get<1>(it.second));
@@ -1342,38 +1809,61 @@ namespace Chroma
 	// Invert a source and get the time slices
 	const auto& get_inv_tslice =
 	  [&](int t_slice, const SB::Coor<3>& phase, const SB::Tensor<2, SB::Complex>& spins,
-	      int ev_from, int ev_size) {
-	    // Get num_vecs colorvecs on time-slice t_slice
-	    const int decay_dir = 3;
-	    SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
-	      colorvecsSto, u, decay_dir, t_slice, 1, ev_from + ev_size, SB::none);
-	    source_colorvec = source_colorvec.kvslice_from_size({{'n', ev_from}}, {{'n', ev_size}});
-	    source_colorvec = SB::phaseColorvecs(source_colorvec, t_slice, phase);
+	      int spin_from, int spin_size, int ev_from, int ev_size, bool do_conj) {
 
-	    const auto order_out = "cSxyztXns";
-	    SB::Tensor<Nd + 5, SB::Complex> r(
+	  // Look at the cache
+	  SB::Tensor<Nd + 5, SB::Complex> cache_tensor;
+	  cache_tensor =
+	      find_entry_in_cache(cache, mass_label, phase, t_slice, t_source, num_tslices,
+				  spin_from, spin_size, do_conj, ev_from, ev_size, Lt);
+	  if (cache_tensor)
+	    return cache_tensor;
+
+	  // Get num_vecs colorvecs on time-slice t_slice
+	  const int decay_dir = 3;
+	  SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	    get_colorvec(colorvecCache, colorvecsSto, u, t_slice, ev_from + ev_size);
+	  source_colorvec = source_colorvec.kvslice_from_size({{'n', ev_from}}, {{'n', ev_size}});
+	  source_colorvec = SB::phaseColorvecs(source_colorvec, t_slice, phase);
+
+	  // Create the tensor for the cache
+	  const auto order_out = "cSxyztXns";
+	  make_space_to_add_entry_in_cache(cache, max_cache_size);
+	  cache_tensor = SB::Tensor<Nd + 5, SB::Complex>(
+	    order_out,
+	    SB::latticeSize<Nd + 5>(
 	      order_out,
-	      SB::latticeSize<Nd + 5>(
-		order_out,
-		{{'t', num_tslices}, {'S', Ns}, {'s', spins.kvdim().at('s')}, {'n', ev_size}}),
-	      SB::OnDefaultDevice);
-	    const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int sink_spin,
-				  int first_n) {
-	      tensor.kvslice_from_size({{'t', t_source}}, {{'t', num_tslices}})
-		.copyTo(r.kvslice_from_size({{'s', sink_spin}, {'n', first_n}}, {{'s', 1}}));
-	    };
-	    doInversion<SB::Complex>(PP, source_colorvec, t_slice, spins, max_rhs, call);
-	    return r;
+	      {{'t', num_tslices}, {'S', Ns}, {'s', spins.kvdim().at('s')}, {'n', ev_size}}),
+	    SB::OnDefaultDevice);
+
+	  // Do the inversions and copy the time slices into the cache tensor
+	  const auto call = [&](SB::Tensor<Nd + 5, SB::Complex> tensor, int first_spin,
+				int first_n) {
+	    tensor.kvslice_from_size({{'t', t_source}}, {{'t', num_tslices}})
+	      .copyTo(cache_tensor.kvslice_from_size(
+		{{'s', first_spin}, {'n', first_n}},
+		{{'s', tensor.kvdim().at('s')}, {'n', tensor.kvdim().at('n')}}));
 	  };
+	  doInversion<SB::Complex>(PP, source_colorvec, t_slice, spins, max_rhs, call);
+	  release_from_colorvec_cache(colorvecCache, t_slice);
+
+	  // Insert the solution into the cache
+	  insert_entry_in_cache(cache, max_cache_size, mass_label, phase, t_slice, t_source,
+				num_tslices, spin_from, spin_size, do_conj, ev_from, ev_size,
+				cache_tensor);
+
+	  return cache_tensor;
+	};
 
 	// Get num_vecs colorvecs on time-slice t_source
 	auto inv_src =
-	  get_inv_tslice(t_source, source_phase, dr_right_chroma, ev_from.at(1), ev_size.at(1));
+	  get_inv_tslice(t_source, source_phase, dr_right_chroma, ev_from.at(3), ev_size.at(3),
+			 ev_from.at(1), ev_size.at(1), false /*no conj */);
 
 	// Get num_vecs colorvecs on time-slice t_sink
-	auto inv_snk =
-	  get_inv_tslice(t_sink, sink_phase, dr_g5_left_conj_chroma, ev_from.at(0), ev_size.at(0))
-	    .rename_dims({{'n', 'N'}, {'s', 'q'}, {'S', 'Q'}});
+	auto inv_snk = get_inv_tslice(t_sink, sink_phase, dr_g5_left_conj_chroma, ev_from.at(2),
+				      ev_size.at(2), ev_from.at(0), ev_size.at(0), true /* conj */)
+			 .rename_dims({{'n', 'N'}, {'s', 'q'}, {'S', 'Q'}});
 
 	// Get the gamma matrices, premultiplied by g5
 	const int g5 = Ns * Ns - 1;
@@ -1414,8 +1904,6 @@ namespace Chroma
 	};
 
 	const auto use_derivP = false;
-	const int max_moms_in_contraction = 1;
-	const int max_tslices_in_contraction = 1;
 	SB::doMomGammaDisp_contractions<7, Nd + 5, Nd + 5, SB::Complex>(
 	  u, inv_snk, inv_src, t_source, 0, num_tslices, moms, gamma_mats, disps, use_derivP, call,
 	  "qgmNnst", max_tslices_in_contraction, max_moms_in_contraction, inv_src.getDev());
@@ -1435,7 +1923,10 @@ namespace Chroma
 	}
       }
 
-      return genprops;
+      QDPIO::cout << "reading/generating genprops took " << _t.stopAndGetElapsedTime() << " s"
+		  << std::endl;
+
+      return SBN::get_local_tensor_tight(genprops);
     }
 
     // Function call
@@ -1580,55 +2071,87 @@ namespace Chroma
       const bool zero_values_for_outside_t_slices = true;
       storage_genprop.open(params.param.genprop_files, nev, zero_values_for_outside_t_slices);
 
+      /// Inverted distillation vectors cache
+      Cache cache;
+      const auto max_cache_size = 3;
+
+      // Initialize the colorvec cache
+      ColorvecCache colorvecCache{params.param.Nt_forward + 1, 0};
+
       const auto meson_callback =
 	[&](const std::vector<Hadron::KeyMesonElementalOperator_t>& meson_keys,
 	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
 	    const SBN::Tensor& guide) {
-	  return get_meson_elementals(storage_meson, colorvecsSto, u, u_smr, meson_keys, perms,
-				      do_conj, ev_from, ev_size, dist_labels, guide,
+	  if (SBN::get_comm(guide).ranks != SBN::get_local_comm().ranks)
+	    throw std::runtime_error("unsupported case");
+	  return get_meson_elementals(storage_meson, colorvecsSto, colorvecCache, u, u_smr,
+				      meson_keys, perms, do_conj, ev_from, ev_size, dist_labels,
 				      params.param.testing);
 	};
       const auto baryon_callback =
 	[&](const std::vector<Hadron::KeyBaryonElementalOperator_t>& baryon_keys,
 	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
-	    const SBN::Tensor& perm) {
-	  return get_baryon_elementals(storage_baryon, colorvecsSto, u, u_smr, baryon_keys, perms,
-				       do_conj, ev_from, ev_size, dist_labels, perm,
-				       params.param.testing);
+	    const SBN::Tensor& guide) {
+	  if (SBN::get_comm(guide).ranks != SBN::get_local_comm().ranks)
+	    throw std::runtime_error("unsupported case");
+	  return get_baryon_elementals(
+	    storage_baryon, colorvecsSto, colorvecCache, u, u_smr, baryon_keys, perms, do_conj,
+	    ev_from, ev_size, dist_labels, params.param.max_moms_in_contraction_for_baryons,
+	    params.param.max_vecs_in_contraction_for_baryons, params.param.testing);
 	};
       const auto prop_callback =
 	[&](const std::vector<Hadron::KeyProp4ElementalOperator_t>& prop_keys,
 	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
-	    const SBN::Tensor& perm) {
-	  return get_prop_elementals(storage_prop, colorvecsSto, u, get_prop, params.param.max_rhs,
-				     prop_keys, perms, do_conj, ev_from, ev_size, dist_labels, perm,
-				     params.param.testing);
+	    const SBN::Tensor& guide) {
+	  if (SBN::get_comm(guide).ranks != SBN::get_local_comm().ranks)
+	    throw std::runtime_error("unsupported case");
+	  return get_prop_elementals(storage_prop, colorvecsSto, colorvecCache, u, get_prop,
+				     params.param.max_rhs, cache, max_cache_size, prop_keys, perms,
+				     do_conj, ev_from, ev_size, dist_labels, params.param.testing);
 	};
       const auto genprop_callback =
 	[&](const std::vector<Hadron::KeyGenProp4ElementalOperator_t>& genprop_keys,
 	    const std::vector<SBN::Coor>& perms, const std::vector<bool>& do_conj,
 	    const SBN::Coor& ev_from, const SBN::Coor& ev_size, const std::string& dist_labels,
-	    const SBN::Tensor& perm) {
-	  return get_genprop_elementals(storage_genprop, colorvecsSto, u, get_prop,
-					params.param.max_rhs, zero_values_for_outside_t_slices,
-					genprop_keys, perms, do_conj, ev_from, ev_size, dist_labels,
-					perm, params.param.testing);
+	    const SBN::Tensor& guide) {
+	  if (SBN::get_comm(guide).ranks != SBN::get_local_comm().ranks)
+	    throw std::runtime_error("unsupported case");
+	  return get_genprop_elementals(
+	    storage_genprop, colorvecsSto, colorvecCache, u, get_prop, params.param.max_rhs, cache,
+	    max_cache_size, zero_values_for_outside_t_slices,
+	    params.param.max_moms_in_contraction_for_genprops,
+	    params.param.max_tslices_in_contraction_for_genprops, genprop_keys, perms, do_conj,
+	    ev_from, ev_size, dist_labels, params.param.testing);
 	};
 
       const bool zeroUnsmearedGraphsP = true;
 #    if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
+      // Set default device
       SBN::get_default_gpu_device() = SB::detail::get_default_gpu_device();
+#    endif
+#    if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+      // Gather the current rank and the other ranks participating in this chroma
+      // NOTE: they first time they are invoked may involve communications, please do it before calling the previous callbacks
+      get_local_ranks();
+      get_global_ranks();
+      get_global_comm();
 #    endif
       const auto& corr = Hadron::evaluate_graphs_with_superb(
 	corr_graph, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
-	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward);
+	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward,
+	QDPIO::cout, SB::detail::getDefaultComm());
 
-      QDPIO::cout << "Storing the correlation functions" << std::endl;
-      if (Layout::nodeNumber() == 0)
+      // Clear cache
+      cache.clear();
+
+      // Store the correlation functions
+      // NOTE: only process zero have the values for the correlation functions
+      if (corr.size() > 0)
       {
+	QDPIO::cout << "Storing the correlation functions" << std::endl;
 	const int decay_dir = 3;
 	Hadron::writeCorrMap(corr, params.param.ensemble, corr_graph.layout.latt_size, decay_dir,
 			     params.param.t_origin, params.named_obj.corr_file);
@@ -1648,7 +2171,7 @@ namespace Chroma
 
       END_CODE();
     } // func
-  }   // namespace InlineCorrSuperbEnv
+  } // namespace InlineCorrSuperbEnv
 
   /*! @} */ // end of group hadron
 
