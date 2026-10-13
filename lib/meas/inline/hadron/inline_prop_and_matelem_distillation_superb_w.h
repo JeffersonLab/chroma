@@ -33,6 +33,11 @@ namespace Chroma
 
       struct Param_t
       {
+        struct Phasing_t {
+	  multi1d<int>  src;            /*!< source phasing */
+	  multi1d<int>  snk;            /*!< sink phasing */
+        };
+	
 	struct Contract_t
 	{
 	  int           num_vecs;       /*!< Number of color vectors to use */
@@ -47,7 +52,8 @@ namespace Chroma
           int           max_rhs;        /*! maximum number of linear systems solved simultaneously */
 	  bool          use_superb_format;  /*!< Whether use the superb format for storing the elementals */
 	  bool          output_file_is_local;   /*!< Whether the output file is in a not shared filesystem */
-	  multi1d<float> phase;         /*!< Phase to apply to colorvecs */
+	  multi1d<int>  phase;         /*!< Phase to apply to colorvecs */
+	  std::vector<Phasing_t> phases;/*!< Sink-source phases to apply to colorvecs */
 	};
 
 	ChromaProp_t    prop;

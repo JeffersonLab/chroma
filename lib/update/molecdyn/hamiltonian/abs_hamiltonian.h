@@ -33,6 +33,39 @@ namespace Chroma
 
     //! Refresh pseudofermsions (if any)
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& s) =0;
+
+    //! Refresh pseudofermsions (if any) with optional OU parameters
+    virtual void refreshInternalFields(const AbsFieldState<P,Q>& s,
+                                       const Real& traj_length,
+                                       const Real& gamma,
+                                       const InternalFieldsRefreshMode mode)
+    {
+      refreshInternalFields(s);
+    }
+
+    //! Push monomial internal fields onto backup stack(s)
+    virtual void pushInternalFields(void) {}
+
+    //! Pop monomial internal fields from backup stack(s)
+    virtual void popInternalFields(void) {}
+
+    //! Drop monomial internal-field backup without restoring
+    virtual void dropInternalFields(void) {}
+
+    //! Save monomial internal fields into a QIO/LIME file
+    virtual bool saveInternalFields(const std::string& file,
+                                    QDP_volfmt_t volfmt,
+                                    QDP_serialparallel_t serpar) const
+    {
+      return false;
+    }
+
+    //! Load monomial internal fields from a QIO/LIME file
+    virtual bool loadInternalFields(const std::string& file,
+                                    QDP_serialparallel_t serpar)
+    {
+      return false;
+    }
     
     //! Compute the energies 
     //! The total energy

@@ -141,9 +141,15 @@ namespace Chroma
       if (order_cols.size() != Ncols)
 	throw std::runtime_error("ortho: invalid template argument `Ncols`");
 
+      // Quick shortcut
+      if (!W)
+	return;
+
       // Check that V and W are compatible, excepting the column dimensions
       if (V)
 	detail::check_compatible(V, W, none, order_cols);
+
+      Tracker _t(std::string("ortho ") + prefix);
 
       // Find the ordering
       std::string Wcorder = detail::remove_dimensions(W.order, order_t + order_rows);
@@ -617,14 +623,14 @@ namespace Chroma
 	  div(contract<1>(AKs.conj(), Ks, order_rows), contract<1>(AKs, AKs.conj(), order_rows));
 
 	// y = y + alpha * Kp + omega * Ks
-	contract<NOp + 1>(Kp, alpha, "").addTo(y);
-	contract<NOp + 1>(Ks, omega, "").addTo(y);
+	contract<NOp + 1>(Kp, alpha, "", AddTo, y);
+	contract<NOp + 1>(Ks, omega, "", AddTo, y);
 
 	// r = s - omega * AKs (NOTE: s == r)
 	contract<NOp + 1>(AKs, omega.scale(-1), "", AddTo, r);
 
-	// prev_rho = rho, rho = r0' * r 
-	auto prev_rho = rho;
+	// prev_rho = rho, rho = r0' * r
+	auto prev_rho = rho.clone();
 	contract<1>(r, r0.conj(), order_rows, CopyTo, rho);
 
 	// beta = rho / prev_rho * (alpha / omega)
@@ -1155,6 +1161,9 @@ namespace Chroma
       Operator<NOp, COMPLEX> getFGMRESSolver(Operator<NOp, COMPLEX> op, const Options& ops,
 					     Operator<NOp, COMPLEX> prec_)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup fgmres ") + prefix);
+
 	// Get preconditioner
 	Operator<NOp, COMPLEX> prec;
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
@@ -1177,7 +1186,6 @@ namespace Chroma
 	unsigned int max_residual_updates = getOption<unsigned int>(ops, "max_residual_updates", 0);
 	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1211,6 +1219,9 @@ namespace Chroma
       Operator<NOp, COMPLEX> getBicgstabSolver(Operator<NOp, COMPLEX> op, const Options& ops,
 					       Operator<NOp, COMPLEX> prec_)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup bicgstab ") + prefix);
+
 	// Get preconditioner
 	Operator<NOp, COMPLEX> prec;
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
@@ -1231,7 +1242,6 @@ namespace Chroma
 	unsigned int max_residual_updates = getOption<unsigned int>(ops, "max_residual_updates", 0);
 	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1264,6 +1274,9 @@ namespace Chroma
       Operator<NOp, COMPLEX> getMRSolver(Operator<NOp, COMPLEX> op, const Options& ops,
 					 Operator<NOp, COMPLEX> prec_)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup mg ") + prefix);
+
 	// Get preconditioner
 	Operator<NOp, COMPLEX> prec;
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
@@ -1284,7 +1297,6 @@ namespace Chroma
 	unsigned int max_residual_updates = getOption<unsigned int>(ops, "max_residual_updates", 0);
 	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1317,6 +1329,9 @@ namespace Chroma
       Operator<NOp, COMPLEX> getGCRSolver(Operator<NOp, COMPLEX> op, const Options& ops,
 					  Operator<NOp, COMPLEX> prec_)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup gcr ") + prefix);
+
 	// Get preconditioner
 	Operator<NOp, COMPLEX> prec;
 	Maybe<const Options&> precOps = getOptionsMaybe(ops, "prec");
@@ -1338,11 +1353,10 @@ namespace Chroma
 	unsigned int max_residual_updates = getOption<unsigned int>(ops, "max_residual_updates", 0);
 	unsigned int max_simultaneous_rhs = getOption<unsigned int>(ops, "max_simultaneous_rhs", 0);
 	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
 	// Return the solver
 	return {[=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
-		  Tracker _t(std::string("mr ") + prefix);
+		  Tracker _t(std::string("gcr ") + prefix);
 		  _t.arity = x.kvdim().at('n');
 		  foreachInChuncks(
 		    x, y, max_simultaneous_rhs,
@@ -1420,19 +1434,59 @@ namespace Chroma
 	Full	   // four spin output (homoiconic coarse operator)
       };
 
-      /// Returns the prolongator constructed from
-      /// \param solvers: map of solvers
-      /// \param op: operator to make the inverse of
-      /// \param ops: options to select the solver from `solvers` and influence the solver construction
+      enum class NullVectorsNormalization {
+	None,	 // don't normalize them
+	Full,	 // normalize the whole vectors
+	Blocking // normalize each block
+      };
+
+      inline std::vector<DestroyFun>& getOperatorsCacheDestroyList();
+
+      template <std::size_t NOp, typename COMPLEX>
+      using EvenOddOperatorParts = std::tuple<Operator<NOp, COMPLEX>,	///< op_eo
+					      Operator<NOp, COMPLEX>,	///< op_oe
+					      Tensor<NOp + 2, COMPLEX>, ///< opDiagE
+					      Tensor<NOp + 2, COMPLEX>, ///< opDiagO
+					      Tensor<NOp + 2, COMPLEX>, ///< opInvDiagE
+					      Tensor<NOp + 2, COMPLEX>	///< opInvDiagO
+					      >;
+
+      /// Return the cache of block diagonals for even-odd operators generated by getEvenOddPrec
+      /// NOTE: this one is destroyed by `cleanOperatorsCache`
+
+      template <std::size_t NOp, typename COMPLEX>
+      std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>>& getEvenOddOperatorsPartsCache()
+      {
+	static std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>> m = []() {
+	  getOperatorsCacheDestroyList().push_back(
+	    []() { getEvenOddOperatorsPartsCache<NOp, COMPLEX>().clear(); });
+	  return std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>>{};
+	}();
+	return m;
+      }
+
+      /// Returns the prolongator constructed from the given operator
+      /// \param op: operator to make the prolongator of
+      /// \param num_null_vecs: total number of random vectors used to construct the prolongator
+      /// \param max_num_null_vecs: maximum number of vectors to consider at once
+      /// \param null_vectors_normalization: normalization to use before analysing frequencies
+      /// \param mg_blocking: lattice dimension blocking for the prolongator
+      /// \param layout_blocking: lattice dimension blocking for layout
+      /// \param spin_splitting: treatment of the spin
+      /// \param null_vecs_ops: solver options for the computing the null vecs
+      /// \param solver_space: target space
 
       template <std::size_t NOp, typename COMPLEX>
       Operator<NOp, COMPLEX>
       getMGProlongator(const Operator<NOp, COMPLEX>& op, unsigned int num_null_vecs,
+		       unsigned int max_num_null_vecs, unsigned int num_colors,
+		       NullVectorsNormalization null_vectors_normalization,
 		       const std::map<char, unsigned int>& mg_blocking,
 		       const std::map<char, unsigned int>& layout_blocking,
 		       SpinSplitting spin_splitting, const Options& null_vecs_ops,
 		       SolverSpace solverSpace)
       {
+	Tracker _t("setup mg prolongator");
 	detail::log(1, "starting getMGProlongator");
 
 	// Check that the blocking divide the lattice sizes. For an operator with support only
@@ -1456,37 +1510,71 @@ namespace Chroma
 	if (ns == 1)
 	  spin_splitting = SpinSplitting::None;
 
+	// Ignore max_num_null_vecs if it is smaller than num_colors
+	max_num_null_vecs = std::max(max_num_null_vecs, num_colors + 1);
+
 	const Operator<NOp, COMPLEX> null_solver =
 	  getSolver(op, getOptions(null_vecs_ops, "solver"));
 	auto eigensolver_ops = getOptionsMaybe(null_vecs_ops, "eigensolver");
-	Tensor<NOp + 1, COMPLEX> nv;
-	if (!eigensolver_ops)
-	{
-	  // Create the random initial guesses to be used in solving Ax=0
-	  auto b = op.template make_compatible_img<NOp + 1>("n", {{'n', num_null_vecs}});
-	  if (solverSpace == FullSpace)
+	if (eigensolver_ops && max_num_null_vecs < num_null_vecs)
+	  eigensolver_ops.getSome().throw_error(
+	    "unsupported `eigensolver` when `max_num_null_vecs` is smaller than `num_null_vecs`");
+
+	auto get_null_vecs_fn = [&](unsigned int num_null_vecs) {
+	  Tensor<NOp + 1, COMPLEX> nv;
+	  if (!eigensolver_ops)
 	  {
-	    nrand(b);
+	    // Create the random initial guesses to be used in solving Ax=0
+	    auto b = op.template make_compatible_img<NOp + 1>("n", {{'n', num_null_vecs}});
+	    if (solverSpace == FullSpace)
+	    {
+	      nrand(b);
+	    }
+	    else
+	    {
+	      b.set_zero();
+	      nrand(b.kvslice_from_size({}, {{'X', 1}}));
+	    }
+
+	    // Solve Ax=0 with the random initial guesses:
+	    // Ax=0 -> A(x+y)=Ay -> x=A^{-1}Ay - y, where y is a random vector
+	    nv = null_solver(op(b)); ///< nv = appr_inv(A*b)
+	    b.scale(-1).addTo(nv);   ///< nv = nv - b
+	    b.release();
+
+	    // If the odd part of nv is too small (because an even-odd preconditioner has
+	    // been used) or we care only about the evens sides, reconstruct the odd part
+	    // of the null vectors from the even sides as -inv(op_oo)*op_oe*nv_e
+	    if (solverSpace != FullSpace ||
+		fnorm(nv.kvslice_from_size({}, {{'X', 1}})) >
+		  10.0 * fnorm(nv.kvslice_from_size({{'X', 1}}, {{'X', 1}})))
+	    {
+	      if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
+	      {
+		throw std::runtime_error("not implemented");
+	      }
+	      else
+	      {
+		const auto& t = getEvenOddOperatorsPartsCache<NOp, COMPLEX>().at(op.id.get());
+		const auto& op_oe = std::get<1>(t);
+		const auto& opInvDiagO = std::get<5>(t);
+		remap m_sc{{'s', 'S'}, {'c', 'C'}};
+		contract<NOp + 1>(opInvDiagO.scale(-1),
+				  op_oe(nv.kvslice_from_size({}, {{'X', 1}})).rename_dims(m_sc),
+				  "CS", CopyTo, nv.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+	      }
+	    }
 	  }
 	  else
 	  {
-	    b.set_zero();
-	    nrand(b.kvslice_from_size({}, {{'X', 1}}));
+	    // Compute the eigenpairs of inv(op) * g5, the right singular vectors of op
+	    auto eigensolver = SB::getInexactEigensolverGD(null_solver, eigensolver_ops.getSome());
+	    double tol = getOption<double>(null_vecs_ops, "tol", 0.1);
+	    auto values_vectors = eigensolver(num_null_vecs, tol);
+	    nv = std::get<1>(values_vectors);
 	  }
-
-	  // Solve Ax=0 with the random initial guesses
-	  nv = null_solver(op(b));
-	  b.scale(-1).addTo(nv);
-	  b.release();
-	}
-	else
-	{
-	  // Compute the eigenpairs of inv(op) * g5, the right singular vectors of op
-	  auto eigensolver = SB::getInexactEigensolverGD(null_solver, eigensolver_ops.getSome());
-	  double tol = getOption<double>(null_vecs_ops, "tol", 0.1);
-	  auto values_vectors = eigensolver(num_null_vecs, tol);
-	  nv = std::get<1>(values_vectors);
-	}
+	  return nv;
+	};
 
 	Operator<NOp, COMPLEX> V;
 	auto opdims_nat = opdims;
@@ -1497,58 +1585,119 @@ namespace Chroma
 	}
 	if (spin_splitting != SpinSplitting::Full)
 	{
-	  // Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
-	  auto nv2 = nv;
-	  if (spin_splitting == SpinSplitting::Chirality)
-	  {
-	    nv2 = nv.like_this(none, {{'n', num_null_vecs * 2}});
-	    auto g5 = getGamma5<COMPLEX>(ns, OnHost, nv.dist), g5pos = g5.cloneOn(OnHost),
-		 g5neg = g5.cloneOn(OnHost);
-	    for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
-	      g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
-	    for (int i = 0; i < ns; ++i) // make diagonal entries of gneg all negative or zero
-	      g5neg.set({{i, i}}, g5.get({{i, i}}) - COMPLEX{1});
-	    nv2.kvslice_from_size({}, {{'n', num_null_vecs}})
-	      .contract(g5pos, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
-	    nv2.kvslice_from_size({{'n', num_null_vecs}}, {{'n', num_null_vecs}})
-	      .contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
-	  }
-	  nv.release();
-
-	  // Do the blocking, which encompasses the following transformations:
-	  //  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
-	  // where output X is a singlet dimension, and W,Y,Z, and T have size mg_blocking,
-	  // and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
-	  // have the remaining
-
+	  Tensor<NOp + 1 + 5, COMPLEX> nv_blk;
 	  std::map<std::string, std::string> m_blk, m_blk_rev, m_blk_nv;
-	  m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"},
-		      {"n", "cs"},     {"c", "C"},    {"s", "S"}};
-	  m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
-		   {"3t", "T3t"},   {"c", "C"},	   {"s", "S"}};
-	  m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"},
-		       {"T3t", "3t"},	{"C", "c"},    {"S", "s"}};
+	  for (unsigned int nv_created = 0; nv_created < num_null_vecs;)
+	  {
+	    unsigned int current_nv = std::min(
+	      num_null_vecs - nv_created, max_num_null_vecs - (nv_created == 0 ? 0 : num_colors));
 
-	  if (!x_blocking_divide_X)
-	    nv2 = toNaturalOrdering(nv2);
-	  auto nv_blk = nv2.template reshape_dimensions<NOp + 1 + 5>(
-	    m_blk_nv,
-	    {{'X', 1}, // we don't do even-odd layout on the coarse operator space
-	     {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
-	     {'Y', mg_blocking.at('y')},
-	     {'Z', mg_blocking.at('z')},
-	     {'T', mg_blocking.at('t')},
-	     {'0', layout_blocking.at('x')},
-	     {'1', layout_blocking.at('y')},
-	     {'2', layout_blocking.at('z')},
-	     {'3', layout_blocking.at('t')},
-	     {'c', num_null_vecs}},
-	    true);
-	  nv2.release();
+	    // Get the null vectors
+	    auto nv = get_null_vecs_fn(current_nv);
 
-	  // User even-odd ordering for nv_blk
-	  if (nv_blk.kvdim().at('0') != 1)
-	    throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
+	    // Do chirality splitting nv2 = [ nv * gpos, nv * gneg ]
+	    auto nv2 = nv;
+	    if (spin_splitting == SpinSplitting::Chirality)
+	    {
+	      nv2 = nv.like_this(none, {{'n', current_nv * 2}});
+	      auto g5 = getGamma5<COMPLEX>(ns, OnHost, nv.dist), g5pos = g5.cloneOn(OnHost),
+		   g5neg = g5.cloneOn(OnHost);
+	      for (int i = 0; i < ns; ++i) // make diagonal entries of gpos all positive or zero
+		g5pos.set({{i, i}}, g5.get({{i, i}}) + COMPLEX{1});
+	      for (int i = 0; i < ns; ++i) // make diagonal entries of gneg all negative or zero
+		g5neg.set({{i, i}}, g5.get({{i, i}}) - COMPLEX{1});
+	      nv2.kvslice_from_size({}, {{'n', current_nv}})
+		.contract(g5pos, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
+	      nv2.kvslice_from_size({{'n', current_nv}}, {{'n', current_nv}})
+		.contract(g5neg, {{'i', 's'}}, NotConjugate, nv, {{'s', 'j'}}, NotConjugate);
+	    }
+	    nv.release();
+
+	    // Do the blocking, which encompasses the following transformations:
+	    //  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
+	    // where output X is a singlet dimension, and W,Y,Z, and T have size mg_blocking,
+	    // and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
+	    // have the remaining
+
+	    m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"},
+			{"n", "cs"},	 {"c", "C"},	{"s", "S"}};
+	    m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
+		     {"3t", "T3t"},   {"c", "C"},    {"s", "S"}};
+	    m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"},
+			 {"T3t", "3t"},	  {"C", "c"},	 {"S", "s"}};
+
+	    if (!x_blocking_divide_X)
+	      nv2 = toNaturalOrdering(nv2);
+	    auto nv_blk0 = nv2.template reshape_dimensions<NOp + 1 + 5>(
+	      m_blk_nv,
+	      {{'X', 1}, // we don't do even-odd layout on the coarse operator space
+	       {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
+	       {'Y', mg_blocking.at('y')},
+	       {'Z', mg_blocking.at('z')},
+	       {'T', mg_blocking.at('t')},
+	       {'0', layout_blocking.at('x')},
+	       {'1', layout_blocking.at('y')},
+	       {'2', layout_blocking.at('z')},
+	       {'3', layout_blocking.at('t')},
+	       {'c', current_nv}},
+	      true);
+	    nv2.release();
+
+	    // User even-odd ordering for nv_blk0
+	    if (nv_blk0.kvdim().at('0') != 1)
+	      throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
+
+	    // Cut down the extra null vectors
+	    if (num_null_vecs > num_colors)
+	    {
+	      // Pre-normalize the vectors if the user asks
+	      if (null_vectors_normalization == NullVectorsNormalization::Full)
+	      {
+		nv_blk0 =
+		  vecnorm<NOp + 1 + 5 - 1>(nv_blk0, detail::union_dimensions(nv_blk0.order, "", "c"));
+	      }
+	      else if (null_vectors_normalization == NullVectorsNormalization::Blocking)
+	      {
+		nv_blk0 = vecnorm<6>(nv_blk0, "WYZTSC");
+	      }
+
+	      // Extend nv_blk with nv_blk0
+	      nv_blk = concat(nv_blk, nv_blk0, 'c');
+	      nv_blk0.release();
+
+	      // Compute the left singular vectors
+	      // NOTE: use the label '^' as the singular triple index
+	      auto svd_result = svd<NOp + 1 + 5, NOp, NOp + 1>(nv_blk, "WYZTSC", "c", '^');
+	      const auto& svd_u = std::get<0>(svd_result); // get the left singular vectors
+	      auto svd_s =
+		std::get<1>(svd_result).template cast<COMPLEX>(); // get the singular values
+	      std::get<2>(svd_result).release(); // release the right singular vectors
+
+	      if (nv_created + current_nv >= num_null_vecs)
+	      {
+		// If this is the last iteration, take the most common `num_colors` directions
+		nv_blk = svd_u.rename_dims({{'^', 'c'}})
+			   .kvslice_from_size({}, {{'c', num_colors}})
+			   .clone();
+	      }
+	      else
+	      {
+		// Otherwise, take the first `num_colors`+1 most frequent directions and
+		// scale them with the frequency
+		nv_blk =
+		  contract<NOp + 1 + 5>(svd_u.kvslice_from_size({}, {{'^', num_colors + 1}}),
+					svd_s.kvslice_from_size({}, {{'^', num_colors + 1}}), "")
+		    .rename_dims({{'^', 'c'}});
+	      }
+	    }
+	    else
+	    {
+	      nv_blk = nv_blk0;
+	    }
+
+	    // Update loop var
+	    nv_created += current_nv;
+	  }
 
 	  // Do the orthogonalization on each block and chirality
 	  // NOTE: don't check the orthogonality level, it will replicate the inner products on all processes
@@ -1565,7 +1714,7 @@ namespace Chroma
 	    nv_blk_eo_dim['x'] /= 2;
 	    nv_blk_eo_dim['X'] = 2;
 	  }
-	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim), i = op.i;
+	  Tensor<NOp, COMPLEX> d = op.d.like_this(none, nv_blk_eo_dim).make_eg(), i = op.i;
 	  V = Operator<NOp, COMPLEX>{
 	    [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	      auto y0 = contract<NOp + 1 + 4>(nv_blk, toNaturalOrdering(x), "cs")
@@ -1595,40 +1744,99 @@ namespace Chroma
 	}
 	else
 	{
-	  // Do the blocking, which encompasses the following transformations:
-	  //  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
-	  // where output X is a singlet dimension, and W,Y,Z, and T have size mg_blocking,
-	  // and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
-	  // have the remaining.
-	  // Also, enforce the values to be the same across different spins so that the coarse operator links
-	  // are also the tensor product of a spin matrix and a color matrix
-
+	  Tensor<NOp + 4, COMPLEX> nv_blk;
 	  std::map<std::string, std::string> m_blk, m_blk_rev, m_blk_nv;
-	  m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
-		      {"3t", "T3t"},   {"ns", "c"},   {"c", "C"}};
-	  m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"}, {"c", "C"}};
-	  m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"}, {"T3t", "3t"}, {"C", "c"}};
+	  for (unsigned int nv_created = 0; nv_created < num_null_vecs;)
+	  {
+	    unsigned int current_nv = std::min(
+	      num_null_vecs - nv_created, max_num_null_vecs - (nv_created == 0 ? 0 : num_colors));
 
-	  if (!x_blocking_divide_X)
-	    nv = toNaturalOrdering(nv);
-	  auto nv_blk = nv.template reshape_dimensions<NOp + 4>(
-	    m_blk_nv,
-	    {{'X', 1}, // we don't do even-odd layout on the coarse operator space
-	     {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
-	     {'Y', mg_blocking.at('y')},
-	     {'Z', mg_blocking.at('z')},
-	     {'T', mg_blocking.at('t')},
-	     {'0', layout_blocking.at('x')},
-	     {'1', layout_blocking.at('y')},
-	     {'2', layout_blocking.at('z')},
-	     {'3', layout_blocking.at('t')},
-	     {'c', num_null_vecs * ns}},
-	    true);
-	  nv.release();
+	    // Get the null vectors
+	    auto nv = get_null_vecs_fn(current_nv);
 
-	  // User even-odd ordering for nv_blk
-	  if (nv_blk.kvdim().at('0') != 1)
-	    throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
+	    // Do the blocking, which encompasses the following transformations:
+	    //  X0x -> WX0x, 1y -> Y1y, 2z -> Z2z, 3t -> T3t,
+	    // where output X is a singlet dimension, and W,Y,Z, and T have size mg_blocking,
+	    // and output's 0,1,2, and 3 have size layout_blocking, and the output's x,y,z, and t
+	    // have the remaining.
+	    // Also, enforce the values to be the same across different spins so that the coarse operator links
+	    // are also the tensor product of a spin matrix and a color matrix
+
+	    m_blk_nv = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"},
+			{"3t", "T3t"},	 {"ns", "c"},	{"c", "C"}};
+	    m_blk = {{"X0x", "WX0x"}, {"1y", "Y1y"}, {"2z", "Z2z"}, {"3t", "T3t"}, {"c", "C"}};
+	    m_blk_rev = {{"WX0x", "X0x"}, {"Y1y", "1y"}, {"Z2z", "2z"}, {"T3t", "3t"}, {"C", "c"}};
+
+	    if (!x_blocking_divide_X)
+	      nv = toNaturalOrdering(nv);
+	    auto nv_blk0 = nv.template reshape_dimensions<NOp + 4>(
+	      m_blk_nv,
+	      {{'X', 1}, // we don't do even-odd layout on the coarse operator space
+	       {'W', mg_blocking.at('x') / (op.imgLayout == EvensOnlyLayout ? 2 : 1)},
+	       {'Y', mg_blocking.at('y')},
+	       {'Z', mg_blocking.at('z')},
+	       {'T', mg_blocking.at('t')},
+	       {'0', layout_blocking.at('x')},
+	       {'1', layout_blocking.at('y')},
+	       {'2', layout_blocking.at('z')},
+	       {'3', layout_blocking.at('t')},
+	       {'c', current_nv * ns}},
+	      true);
+	    nv.release();
+
+	    // User even-odd ordering for nv_blk0
+	    if (nv_blk0.kvdim().at('0') != 1)
+	      throw std::runtime_error("getMGProlongator: unsupported blocking on the x direction");
+
+	    // Cut down the extra null vectors
+	    if (num_null_vecs > num_colors)
+	    {
+	      // Pre-normalize the vectors if the user asks
+	      if (null_vectors_normalization == NullVectorsNormalization::Full)
+	      {
+		nv_blk0 =
+		  vecnorm<NOp + 4 -1>(nv_blk0, detail::union_dimensions(nv_blk0.order, "", "c"));
+	      }
+	      else if (null_vectors_normalization == NullVectorsNormalization::Blocking)
+	      {
+		nv_blk0 = vecnorm<5>(nv_blk0, "WYZTC");
+	      }
+
+	      // Extend nv_blk with nv_blk0
+	      nv_blk = concat(nv_blk, nv_blk0, 'c');
+	      nv_blk0.release();
+
+	      // Compute the left singular vectors
+	      // NOTE: use the label '^' as the singular triple index
+	      auto svd_result = svd<NOp + 4, NOp - 1, NOp>(nv_blk, "WYZTC", "c", '^');
+	      const auto& svd_u = std::get<0>(svd_result); // get the left singular vectors
+	      auto svd_s =
+		std::get<1>(svd_result).template cast<COMPLEX>(); // get the singular values
+	      std::get<2>(svd_result).release(); // release the right singular vectors
+
+	      if (nv_created + current_nv >= num_null_vecs)
+	      {
+		// If this is the last iteration, take the most common `num_colors` directions
+		nv_blk = svd_u.rename_dims({{'^', 'c'}})
+			   .kvslice_from_size({}, {{'c', num_colors}})
+			   .clone();
+	      }
+	      else
+	      {
+		// Otherwise, take the first `num_colors`+1 most frequent directions
+		nv_blk = contract<NOp + 4>(svd_u.kvslice_from_size({}, {{'^', num_colors + 1}}),
+					   svd_s.kvslice_from_size({}, {{'^', num_colors + 1}}), "")
+			   .rename_dims({{'^', 'c'}});
+	      }
+	    }
+	    else
+	    {
+	      nv_blk = nv_blk0;
+	    }
+
+	    // Update loop var
+	    nv_created += current_nv;
+	  }
 
 	  // Do the orthogonalization on each block and chirality
 	  // NOTE: don't check the orthogonality level, it will replicate the inner products on all processes
@@ -1695,40 +1903,21 @@ namespace Chroma
 
       /// Return a list of destroy callbacks after setting a solver
 
-      inline std::vector<DestroyFun>& getEvenOddOperatorsCacheDestroyList()
+      inline std::vector<DestroyFun>& getOperatorsCacheDestroyList()
       {
 	static std::vector<DestroyFun> list;
 	return list;
       }
 
-      /// Call the destroy callbacks set up in `getEvenOddOperatorsCacheDestroyList`
-      inline void cleanEvenOddOperatorsCache()
+      /// Call the destroy callbacks set up in `getOperatorsCacheDestroyList`
+      inline void cleanOperatorsCache()
       {
-	for (const auto& f : getEvenOddOperatorsCacheDestroyList())
+	for (const auto& f : getOperatorsCacheDestroyList())
 	  f();
       }
 
-      /// Tuple storing the operator even-odd and odd-even parts and the block diagonal and its inverse
-
-      template <std::size_t NOp, typename COMPLEX>
-      using EvenOddOperatorParts = std::tuple<Operator<NOp, COMPLEX>, Operator<NOp, COMPLEX>,
-					      Tensor<NOp + 2, COMPLEX>, Tensor<NOp + 2, COMPLEX>>;
-
-      /// Return the cache of block diagonals for even-odd operators generated by getEvenOddPrec
-
-      template <std::size_t NOp, typename COMPLEX>
-      std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>>& getEvenOddOperatorsPartsCache()
-      {
-	static std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>> m = []() {
-	  getEvenOddOperatorsCacheDestroyList().push_back(
-	    []() { getEvenOddOperatorsPartsCache<NOp, COMPLEX>().clear(); });
-	  return std::map<void*, EvenOddOperatorParts<NOp, COMPLEX>>{};
-	}();
-	return m;
-      }
-
       /// Return a cache for the prolongators
-      /// NOTE: this one isn't destroyed by `cleanEvenOddOperatorsCache`
+      /// NOTE: this one is destroyed by `cleanOperatorsCache`
 
       template <std::size_t NOp, typename COMPLEX>
       static std::map<std::string, Operator<NOp, COMPLEX>>& getProlongatorCache()
@@ -1746,8 +1935,13 @@ namespace Chroma
       getProlongatorAndCoarse(Operator<NOp, COMPLEX> op, const Options& ops,
 			      SolverSpace solverSpace)
       {
+	Tracker _t("setup mg prolongator and coarse");
+
 	// Get prolongator, V
 	unsigned int num_null_vecs = getOption<unsigned int>(ops, "num_null_vecs");
+	unsigned int max_num_null_vecs =
+	  getOption<unsigned int>(ops, "max_num_null_vecs", num_null_vecs);
+	unsigned int num_colors = getOption<unsigned int>(ops, "num_colors", num_null_vecs);
 	std::vector<unsigned int> mg_blocking_v =
 	  getOption<std::vector<unsigned int>>(ops, "blocking");
 	if (mg_blocking_v.size() != Nd)
@@ -1773,14 +1967,22 @@ namespace Chroma
 	SpinSplitting spin_splitting = getOption<SpinSplitting>(
 	  ops, "spin_splitting", m_spin_splitting, SpinSplitting::Chirality);
 
+	static const std::map<std::string, NullVectorsNormalization> m_null_vecs_normalization{
+	  {"none", NullVectorsNormalization::None},
+	  {"full", NullVectorsNormalization::Full},
+	  {"blocking", NullVectorsNormalization::Blocking}};
+	NullVectorsNormalization null_vecs_normalization = getOption<NullVectorsNormalization>(
+	  ops, "null_vecs_norm", m_null_vecs_normalization, NullVectorsNormalization::None);
+
 	// Grab the prolongator from cache if the user name it
 	Operator<NOp, COMPLEX> V;
 	std::string prolongator_id = getOption<std::string>(ops, "prolongator_id", "");
 	if (prolongator_id.size() == 0 ||
 	    getProlongatorCache<NOp, COMPLEX>().count(prolongator_id) == 0)
 	{
-	  V = getMGProlongator(op, num_null_vecs, mg_blocking, layout_blocking, spin_splitting,
-			       getOptions(ops, "null_vecs"), solverSpace);
+	  V = getMGProlongator(op, num_null_vecs, max_num_null_vecs, num_colors,
+			       null_vecs_normalization, mg_blocking, layout_blocking,
+			       spin_splitting, getOptions(ops, "null_vecs"), solverSpace);
 	  if (prolongator_id.size() > 0)
 	    getProlongatorCache<NOp, COMPLEX>()[prolongator_id] = V;
 	}
@@ -1848,6 +2050,9 @@ namespace Chroma
 	if (prec_)
 	  throw std::runtime_error("getMGPrec: unsupported input preconditioner");
 
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup mg solver ") + prefix);
+
 	// Get prolongator and coarse operator
 	auto prolongator_coarse_spin_splitting = getProlongatorAndCoarse(op, ops, solverSpace);
 	Operator<NOp, COMPLEX> V = std::get<0>(prolongator_coarse_spin_splitting);
@@ -1864,7 +2069,6 @@ namespace Chroma
 	OperatorFun<NOp, COMPLEX> solver;
 	int ns = op.d.kvdim().at('s');
 	auto g5 = getGamma5<COMPLEX>(ns, op.d.getDev(), op.d.dist);
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
 	{
 	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1897,7 +2101,8 @@ namespace Chroma
 	  auto t = getEvenOddOperatorsPartsCache<NOp, COMPLEX>().at(op.id.get());
 	  Operator<NOp, COMPLEX> op_eo = std::get<0>(t);
 	  Operator<NOp, COMPLEX> op_oe = std::get<1>(t);
-	  Tensor<NOp + 2, COMPLEX> opDiag = std::get<2>(t);
+	  Tensor<NOp + 2, COMPLEX> opDiagE = std::get<2>(t);
+	  Tensor<NOp + 2, COMPLEX> opDiagO = std::get<3>(t);
 	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	    Tracker _t(std::string("mg solver ") + prefix);
 
@@ -1912,17 +2117,20 @@ namespace Chroma
 	    // y0 = V*solver(V'*Op*V, V'x0)
 	    auto y0 = V(coarseSolver(V.tconj()(x0)));
 
-	    // x1_ee = x - op*y0
+	    // y1 = x - op*y0
 	    auto y0m = y0.scale(-1);
-	    auto x1 = x.clone();
-	    contract(opDiag, y0m.rename_dims(m_sc), "CS", AddTo, x1);
-	    op_oe(y0m.kvslice_from_size({{'X', 0}}, {{'X', 1}}))
-	      .addTo(x1.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
-	    op_eo(y0m.kvslice_from_size({{'X', 1}}, {{'X', 1}}))
-	      .addTo(x1.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+	    auto y0me = y0m.kvslice_from_size({{'X', 0}}, {{'X', 1}}).clone();
+	    auto y0mo = y0m.kvslice_from_size({{'X', 1}}, {{'X', 1}}).clone();
+	    auto y1 = x.clone();
+	    auto y1e = y1.kvslice_from_size({{'X', 0}}, {{'X', 1}});
+	    auto y1o = y1.kvslice_from_size({{'X', 1}}, {{'X', 1}});
+	    contract(opDiagE, y0me.rename_dims(m_sc), "CS", AddTo, y1e);
+	    contract(opDiagO, y0mo.rename_dims(m_sc), "CS", AddTo, y1o);
+	    op_oe(y0me).addTo(y1o);
+	    op_eo(y0mo).addTo(y1e);
 
-	    // y = y1 + solver(Op, x1)
-	    opSolver(std::move(x1), y);
+	    // y = y0 + solver(Op, y1)
+	    opSolver(std::move(y1), y);
 	    y0.addTo(y);
 	  };
 	}
@@ -1960,6 +2168,9 @@ namespace Chroma
 	if (prec_)
 	  throw std::runtime_error("getProjPrec: unsupported input preconditioner");
 
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup proj ") + prefix);
+
 	// Getting a projector
 	auto proj = getProjector(op, getOptions(ops, "proj"));
 
@@ -1967,7 +2178,6 @@ namespace Chroma
 	const Operator<NOp, COMPLEX> opSolver = getSolver(op, getOptions(ops, "solver_smoother"));
 
 	OperatorFun<NOp, COMPLEX> solver;
-	std::string prefix = getOption<std::string>(ops, "prefix", "");
 	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
 	{
 	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
@@ -1992,23 +2202,27 @@ namespace Chroma
 	  auto t = getEvenOddOperatorsPartsCache<NOp, COMPLEX>().at(op.id.get());
 	  Operator<NOp, COMPLEX> op_eo = std::get<0>(t);
 	  Operator<NOp, COMPLEX> op_oe = std::get<1>(t);
-	  Tensor<NOp + 2, COMPLEX> opDiag = std::get<2>(t);
+	  Tensor<NOp + 2, COMPLEX> opDiagE = std::get<2>(t);
+	  Tensor<NOp + 2, COMPLEX> opDiagO = std::get<3>(t);
 	  solver = [=](const Tensor<NOp + 1, COMPLEX>& x, Tensor<NOp + 1, COMPLEX> y) {
 	    Tracker _t(std::string("proj solver ") + prefix);
 
 	    // y0 = V*inv(U'*Op*V) U' * x
 	    auto y0 = proj.V_inv_Ut(x);
 
-	    // y1_ee = x - op*y0
+	    // y1 = x - op*y0
 	    auto y0m = y0.scale(-1);
+	    auto y0me = y0m.kvslice_from_size({{'X', 0}}, {{'X', 1}}).clone();
+	    auto y0mo = y0m.kvslice_from_size({{'X', 1}}, {{'X', 1}}).clone();
 	    auto y1 = x.clone();
-	    contract(opDiag, y0m.rename_dims(m_sc), "CS", AddTo, y1);
-	    op_oe(y0m.kvslice_from_size({{'X', 0}}, {{'X', 1}}))
-	      .addTo(y1.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
-	    op_eo(y0m.kvslice_from_size({{'X', 1}}, {{'X', 1}}))
-	      .addTo(y1.kvslice_from_size({{'X', 0}}, {{'X', 1}}));
+	    auto y1e = y1.kvslice_from_size({{'X', 0}}, {{'X', 1}});
+	    auto y1o = y1.kvslice_from_size({{'X', 1}}, {{'X', 1}});
+	    contract(opDiagE, y0me.rename_dims(m_sc), "CS", AddTo, y1e);
+	    contract(opDiagO, y0mo.rename_dims(m_sc), "CS", AddTo, y1o);
+	    op_oe(y0me).addTo(y1o);
+	    op_eo(y0mo).addTo(y1e);
 
-	    // y = y1 + solver(Op, y1)
+	    // y = y0 + solver(Op, y1)
 	    opSolver(std::move(y1), y);
 	    y0.addTo(y);
 	  };
@@ -2078,27 +2292,36 @@ namespace Chroma
 
 	bool use_Aee_prec = getOption<bool>(ops, "use_Aee_prec", false);
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Verbosity verb = getOption<Verbosity>(ops, "verbosity", getVerbosityMap(), NoOutput);
+
+	Tracker _t(std::string("setup eo solver ") + prefix);
 
 	// Get the block diagonal of the operator with rows cs and columns CS
 	remap m_sc{{'s', 'S'}, {'c', 'C'}};
-	Tensor<NOp + 2, COMPLEX> opDiag, opInvDiag;
+	Tensor<NOp + 2, COMPLEX> opDiagE, opDiagO, opInvDiagE, opInvDiagO;
 	Operator<NOp, COMPLEX> op_eo, op_oe;
 	if (getEvenOddOperatorsPartsCache<NOp, COMPLEX>().count(op.id.get()) == 0)
 	{
-	  opDiag = getBlockDiag<NOp + 2>(op, "cs", m_sc); // rows cs, cols CS
-	  opInvDiag = inv(opDiag, "cs", "CS");
+	  auto opDiag = getBlockDiag<NOp + 2>(op, "cs", m_sc); // rows cs, cols CS
+	  opDiagE = opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}).clone();
+	  opDiagO = opDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}).clone();
+	  auto opInvDiag = inv(opDiag, "cs", "CS");
+	  opInvDiagE = opInvDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}).clone();
+	  opInvDiagO = opInvDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}).clone();
 	  op_eo = op.kvslice_from_size({{'X', 1}}, {{'X', 1}}, {{'X', 0}}, {{'X', 1}});
 	  op_oe = op.kvslice_from_size({{'X', 0}}, {{'X', 1}}, {{'X', 1}}, {{'X', 1}});
-	  getEvenOddOperatorsPartsCache<NOp, COMPLEX>()[op.id.get()] = {op_eo, op_oe, opDiag,
-									opInvDiag};
+	  getEvenOddOperatorsPartsCache<NOp, COMPLEX>()[op.id.get()] = {
+	    op_eo, op_oe, opDiagE, opDiagO, opInvDiagE, opInvDiagO};
 	}
 	else
 	{
 	  auto t = getEvenOddOperatorsPartsCache<NOp, COMPLEX>().at(op.id.get());
 	  op_eo = std::get<0>(t);
 	  op_oe = std::get<1>(t);
-	  opDiag = std::get<2>(t);
-	  opInvDiag = std::get<3>(t);
+	  opDiagE = std::get<2>(t);
+	  opDiagO = std::get<3>(t);
+	  opInvDiagE = std::get<4>(t);
+	  opInvDiagO = std::get<5>(t);
 	}
 
 	// Get an explicit form for A:=Op_ee-Op_eo*Op_oo^{-1}*Op_oe
@@ -2124,15 +2347,13 @@ namespace Chroma
 		    x.copyTo(y);
 
 		    // y0 = Op_ee^{-1} * x
-		    auto y0 = contract<NOp + 1>(opInvDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
-						x.rename_dims(m_sc), "CS");
+		    auto y0 = contract<NOp + 1>(opInvDiagE, x.rename_dims(m_sc), "CS");
 
 		    // y1 = Op_oe * y0
 		    auto y1 = op_oe(std::move(y0));
 
 		    // y2 = Op_oo^{-1} * y1
-		    auto y2 = contract<NOp + 1>(opInvDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}),
-						std::move(y1).rename_dims(m_sc), "CS");
+		    auto y2 = contract<NOp + 1>(opInvDiagO, std::move(y1).rename_dims(m_sc), "CS");
 
 		    // y += -Op_eo * y2
 		    op_eo(std::move(y2)).scale(-1).addTo(y);
@@ -2147,16 +2368,14 @@ namespace Chroma
 				   Tracker _t(std::string("eo matvec ") + prefix);
 
 				   // y = Op_ee * x
-				   contract(opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
-					    x.rename_dims(m_sc), "CS", CopyTo, y);
+				   contract(opDiagE, x.rename_dims(m_sc), "CS", CopyTo, y);
 
 				   // y1 = Op_oe * x
 				   auto y1 = op_oe(x);
 
 				   // y2 = Op_oo^{-1} * y1
 				   auto y2 = contract<NOp + 1>(
-				     opInvDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}),
-				     std::move(y1).rename_dims(m_sc), "CS");
+				     opInvDiagO, std::move(y1).rename_dims(m_sc), "CS");
 
 				   // y += -Op_eo * y2
 				   op_eo(std::move(y2)).scale(-1).addTo(y);
@@ -2186,8 +2405,7 @@ namespace Chroma
 		Tracker _t(std::string("eo prec_ee ") + prefix);
 
 		// y = Op_ee * prec_ee0(x)
-		contract(opDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
-			 prec_ee0(x).rename_dims(m_sc), "CS", CopyTo, y);
+		contract(opDiagE, prec_ee0(x).rename_dims(m_sc), "CS", CopyTo, y);
 	      },
 	      prec_ee0.d, prec_ee0.i, nullptr, prec_ee0};
 	  }
@@ -2211,7 +2429,7 @@ namespace Chroma
 	    {
 	      be = solver.template make_compatible_img<NOp + 1>("n", {{'n', x.kvdim().at('n')}});
 	      x.kvslice_from_size({{'X', 0}}, {{'X', 1}}).copyTo(be);
-	      op_eo(contract<NOp + 1>(opInvDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}),
+	      op_eo(contract<NOp + 1>(opInvDiagO,
 				      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).rename_dims(m_sc),
 				      "CS"))
 		.scale(-1)
@@ -2231,9 +2449,7 @@ namespace Chroma
 	    // Do y_e = Op_ee^{-1} y_e if use_Aee_prec
 	    if (use_Aee_prec)
 	    {
-	      contract<NOp + 1>(opInvDiag.kvslice_from_size({{'X', 0}}, {{'X', 1}}),
-				ye.rename_dims(m_sc), "CS")
-		.copyTo(ye);
+	      contract<NOp + 1>(opInvDiagE, ye.rename_dims(m_sc), "CS").copyTo(ye);
 	    }
 
 	    // y_o = Op_oo^{-1}*(-Op_oe*y_e + x_o)
@@ -2242,9 +2458,43 @@ namespace Chroma
 	      auto yo0 = be;
 	      x.kvslice_from_size({{'X', 1}}, {{'X', 1}}).copyTo(yo0);
 	      op_oe(ye).scale(-1).addTo(yo0);
-	      contract<NOp + 1>(opInvDiag.kvslice_from_size({{'X', 1}}, {{'X', 1}}),
+	      contract<NOp + 1>(opInvDiagO,
 				yo0.rename_dims(m_sc), "CS", CopyTo,
 				y.kvslice_from_size({{'X', 1}}, {{'X', 1}}));
+	    }
+
+	    // Compute the residual norm
+	    if (verb >= JustSummary)
+	    {
+	      // r = x - op*y
+	      auto ym = y.scale(-1);
+	      auto yme = ym.kvslice_from_size({{'X', 0}}, {{'X', 1}});
+	      auto ymo = ym.kvslice_from_size({{'X', 1}}, {{'X', 1}});
+	      auto r = x.clone();
+	      auto re = r.kvslice_from_size({{'X', 0}}, {{'X', 1}});
+	      contract(opDiagE, yme.rename_dims(m_sc), "CS", AddTo, re);
+	      op_eo(ymo).addTo(re);
+	      std::string order_cols = detail::remove_dimensions(x.order, op_eo.i.order);
+	      if (solverSpace == FullSpace)
+	      {
+		auto ro = r.kvslice_from_size({{'X', 1}}, {{'X', 1}});
+		contract(opDiagO, ymo.rename_dims(m_sc), "CS", AddTo, ro);
+		op_oe(yme).addTo(ro);
+		auto normx = norm<1>(x, op_eo.order_t + order_cols);
+		auto normr = norm<1>(r, op_eo.order_t + order_cols);
+		double max_tol = max(div(normr, normx));
+		QDPIO::cout << prefix << " MGPROTON EO error in full residual vector: "
+			    << detail::tostr(max_tol) << std::endl;
+	      }
+	      else
+	      {
+		auto normx =
+		  norm<1>(x.kvslice_from_size({{'X', 0}}, {{'X', 1}}), op_eo.order_t + order_cols);
+		auto normr = norm<1>(re, op_eo.order_t + order_cols);
+		double max_tol = max(div(normr, normx));
+		QDPIO::cout << prefix << " MGPROTON EO error in even residual vector: "
+			    << detail::tostr(max_tol) << std::endl;
+	      }
 	    }
 	  },
 	  op.i,
@@ -2321,6 +2571,7 @@ namespace Chroma
 	  throw std::runtime_error("getSpinEvenOddPrec: unsupported input preconditioner");
 
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup eo spin solver ") + prefix);
 
 	// Partition the operator: s -> Ss, where S is the spin oddity
 	char S = detail::get_free_label(op.d.order);
@@ -2983,6 +3234,8 @@ namespace Chroma
 	bool with_correction = getOption<bool>(ops, "with_correction", false);
 	std::string prefix = getOption<std::string>(ops, "prefix", "");
 
+	Tracker _t(std::string("setup dd solver ") + prefix);
+
 	// Get the local operator and make the solver
 	auto local_op = op.getGlocal();
 	const Operator<NOp, COMPLEX> solver = getSolver(local_op, getOptions(ops, "solver"));
@@ -3036,6 +3289,9 @@ namespace Chroma
       {
 	if (prec_)
 	  throw std::runtime_error("getBlockJacobi: unsupported input preconditioner");
+
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup bj solver ") + prefix);
 
 	// Get the blocking
 	auto dim = op.d.kvdim();
@@ -3311,6 +3567,8 @@ namespace Chroma
     {
       using namespace detail;
 
+      Tracker _t(std::string("setup gd solver "));
+
       // Get eigensolver properties
       unsigned int max_basis_size = getOption<unsigned int>(ops, "max_basis_size", 0);
       unsigned int max_block_size = getOption<unsigned int>(ops, "max_block_size", 1);
@@ -3432,8 +3690,10 @@ namespace Chroma
 	  {
 	    if (rnorm.get({{i}}) > primme.stats.estimateLargestSVal * primme.eps * 10)
 	    {
-	      QDPIO::cerr << "Error: primme returned eigenpairs with too much error\n";
-	      QDP_abort(1);
+	      QDPIO::cerr << "Warning (or error): primme returned eigenpairs with too much error; "
+			     "residual norm "
+			  << i << " : " << rnorm.get({{i}}) << ", expected less than "
+			  << primme.stats.estimateLargestSVal * primme.eps * 10 << std::endl;
 	    }
 	  }
 	}
@@ -3500,6 +3760,9 @@ namespace Chroma
       {
 	if (prec_)
 	  throw std::runtime_error("getShiftedOp: unsupported input preconditioner");
+
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup shift ") + prefix);
 
 	// Get the remainder options
 	double shift_I = getOption<double>(ops, "shift_I", 0.0);
@@ -3627,6 +3890,9 @@ namespace Chroma
       Operator<NOp, COMPLEX> getCasting(Operator<NOp, COMPLEX> op, const Options& ops,
 					Operator<NOp, COMPLEX> prec_, SolverSpace solverSpace)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup casting ") + prefix);
+
 	// Get the current precision and the requested by the user
 	enum Precision { Single, Double, Default };
 	static const std::map<std::string, Precision> precisionMap{
@@ -3652,6 +3918,29 @@ namespace Chroma
 			   solverSpace)
 	    .template cast<COMPLEX>();
 	}
+      }
+
+      /// Returns a solver with possible different precision than the operator's
+      ///
+      /// \param op: operator to make the inverse of
+      /// \param ops: options to select the solver and the null-vectors creation
+
+      template <std::size_t NOp, typename COMPLEX>
+      Operator<NOp, COMPLEX> getPrint(Operator<NOp, COMPLEX> op, const Options& ops,
+				      Operator<NOp, COMPLEX> prec_, SolverSpace solverSpace)
+      {
+	// Store operator in file
+	std::string save_op_in_file = getOption<std::string>(ops, "save_in_file", "");
+	if (save_op_in_file.size() > 0)
+	{
+	  if (!op.sp)
+	    ops.throw_error("getPrint: cannot store an implicit operator");
+	  op.sp.store(save_op_in_file);
+	}
+
+	// Get the solver options
+	const Options& solverOps = getOptions(ops, "solver");
+	return getSolver(op, solverOps, prec_, solverSpace);
       }
     }
 
@@ -3681,7 +3970,8 @@ namespace Chroma
 	DDAG,
 	G5,
 	BLOCKING,
-	CASTING
+	CASTING,
+	PRINT
       };
       static const std::map<std::string, SolverType> solverTypeMap{{"fgmres", FGMRES},
 								   {"bicgstab", BICGSTAB},
@@ -3699,7 +3989,8 @@ namespace Chroma
 								   {"igd", IGD},
 								   {"g5", G5},
 								   {"blocking", BLOCKING},
-								   {"casting", CASTING}};
+								   {"casting", CASTING},
+								   {"print", PRINT}};
       SolverType solverType = getOption<SolverType>(ops, "type", solverTypeMap);
       switch (solverType)
       {
@@ -3739,6 +4030,8 @@ namespace Chroma
 	return detail::getBlocking(op, ops, prec);
       case CASTING: // change the precision
 	return detail::getCasting(op, ops, prec, solverSpace);
+      case PRINT: // change the precision
+	return detail::getPrint(op, ops, prec, solverSpace);
       }
       throw std::runtime_error("This shouldn't happen");
     }
@@ -3747,6 +4040,7 @@ namespace Chroma
     inline Operator<Nd + 7, Complex> asOperatorView(const LinearOperator<LatticeFermion>& linOp,
 						    bool use_kron_format = true)
     {
+#  if (BUILD_MGPROTON + 0)
       LatticeFermion a;
       auto d = asTensorView(a).toComplex();
       auto blkd =
@@ -3785,6 +4079,9 @@ namespace Chroma
 	ColumnMajor,	// preferred ordering
 	use_kron_format /* has a Kronecker form */
       };
+#  else
+      throw std::runtime_error("not available, compile with mgproton support");
+#  endif
     }
 
     //
@@ -3810,6 +4107,7 @@ namespace Chroma
       // If the inverter is MGPROTON, use this infrastructure
       if (invParam.id == std::string("MGPROTON"))
       {
+#  if (BUILD_MGPROTON + 0)
 	QDPIO::cout << "Setting up MGPROTON invertor..." << std::endl;
 	Tracker _t("setup mgproton");
 
@@ -3818,10 +4116,12 @@ namespace Chroma
 
 	// Clone the matvec
 	LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
+	if (!fLinOp)
+	  throw std::runtime_error("Unsupported action by mgproton");
 	ColOrdering co = getOption<ColOrdering>(*ops, "InvertParam/operator_ordering",
-						getColOrderingMap(), ColumnMajor);
+						getColOrderingMap(), RowMajor);
 	ColOrdering co_blk = getOption<ColOrdering>(*ops, "InvertParam/operator_block_ordering",
-						    getColOrderingMap(), RowMajor);
+						    getColOrderingMap(), ColumnMajor);
 	Operator<Nd + 7, Complex> linOp = detail::cloneOperator(
 	  asOperatorView(*fLinOp), co, co_blk, detail::ConsiderBlockingSparse, "chroma's operator");
 
@@ -3834,10 +4134,13 @@ namespace Chroma
 	op = Operator<Nd + 7, Complex>(getSolver(linOp, getOptions(*ops, "InvertParam")));
 
 	// Clean cache of operators
-	detail::cleanEvenOddOperatorsCache();
+	detail::cleanOperatorsCache();
 
 	QDPIO::cout << "MGPROTON invertor ready; setup time: "
 		    << detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;
+#  else
+	throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
       else
       {
@@ -3860,21 +4163,14 @@ namespace Chroma
       /// \return: tensor cSxyztXns where the first t_slice is the t_source-Nt_backward time-slice of
       ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
 
-      template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-      Tensor<Nd + 5, COMPLEX_OUT> doInversion(const SystemSolver<LatticeFermion>& PP,
-					      const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
-					      int first_tslice_out, int n_tslice_out,
-					      const std::vector<int>& spin_sources, int max_rhs,
-					      const std::string& order_out = "cSxyztXns")
+      template <typename COMPLEX_CHI>
+      void doInversion(const SystemSolver<LatticeFermion>& PP,
+		       const Tensor<Nd + 3, COMPLEX_CHI>& chi, int t_source,
+		       const Tensor<2, SB::Complex>& spin_sources, int max_rhs,
+		       const doInversionOnTSliceFn<SB::Complex>& call)
       {
 	int num_vecs = chi.kvdim()['n'];
-	Tensor<Nd + 5, COMPLEX_OUT> psi(
-	  order_out,
-	  latticeSize<Nd + 5>(
-	    order_out,
-	    {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}),
-	  chi.getDev());
-
+	int num_spins = spin_sources.kvdim()['s'];
 	int max_step = std::max(num_vecs, max_rhs);
 	std::vector<std::shared_ptr<LatticeFermion>> chis(max_step), quark_solns(max_step);
 	for (int col = 0; col < max_step; col++)
@@ -3882,19 +4178,22 @@ namespace Chroma
 	for (int col = 0; col < max_step; col++)
 	  quark_solns[col].reset(new LatticeFermion);
 
-	for (int spin_source : spin_sources)
+	for (int spin_index = 0; spin_index < num_spins; ++spin_index)
 	{
 	  for (int n0 = 0, n_step = std::min(max_rhs, num_vecs); n0 < num_vecs;
 	       n0 += n_step, n_step = std::min(n_step, num_vecs - n0))
 	  {
 	    for (int n = n0, col = 0; col < n_step; ++n, ++col)
 	    {
-	      // Put the colorvec sources for the t_source on chis for spin `spin_source`
-	      // chis[col][s=spin_source] = chi[n=n0]
+	      // Put the colorvec sources for the t_source on chis
+	      // chis[col] = chi[n=n0] x spin_sources[s=spin_index]
 	      *chis[col] = zero;
-	      chi.kvslice_from_size({{'n', n}}, {{'n', 1}})
-		.copyTo(SB::asTensorView(*chis[col])
-			  .kvslice_from_size({{'t', t_source}, {'s', spin_source}}));
+	      SB::contract<Nd + 5>(chi.kvslice_from_size({{'n', n}}, {{'n', 1}}),
+				   spin_sources.kvslice_from_size({{'s', spin_index}}, {{'s', 1}})
+				     .template cast<COMPLEX_CHI>(),
+				   "")
+		.rename_dims({{'s', '!'}, {'S', 's'}})
+		.copyTo(SB::asTensorView(*chis[col]).kvslice_from_size({{'t', t_source}}));
 
 	      *quark_solns[col] = zero;
 	    }
@@ -3908,16 +4207,16 @@ namespace Chroma
 
 	    for (int n = n0, col = 0; col < n_step; ++n, ++col)
 	    {
-	      // psi[n=n] = quark_solns[col][t=first_tslice+(0:n_tslice_out-1)]
-	      asTensorView(*quark_solns[col])
-		.kvslice_from_size({{'t', first_tslice_out}}, {{'t', n_tslice_out}})
-		.rename_dims({{'s', 'S'}})
-		.copyTo(psi.kvslice_from_size({{'n', n}, {'s', spin_source}}));
+	      call(asTensorView(*quark_solns[col])
+		     .rename_dims({{'s', 'S'}})
+		     .toComplex()
+		     .template make_sure<SB::Complex>()
+		     .append_dimension('s')
+		     .append_dimension('n'),
+		   spin_index, n);
 	    }
 	  }
 	}
-
-	return psi;
       }
 
       /// Apply the inverse to LatticeFermion tensors
@@ -3930,6 +4229,9 @@ namespace Chroma
       Tensor<N, COMPLEX_OUT> doInversion(const Operator<Nd + 7, COMPLEX_OUT>& op,
 					 const Tensor<N, COMPLEX_CHI>& chi, int max_rhs)
       {
+#  if (BUILD_MGPROTON + 0)
+	Tracker _t(std::string("mgproton solver"));
+
 	// Get the columns labels, which are the ones not contracted with the operator
 	std::string order_cols = remove_dimensions(chi.order, op.i.order);
 
@@ -3942,6 +4244,9 @@ namespace Chroma
 	  x0, y0, max_rhs,
 	  [=](Tensor<Nd + 8, COMPLEX_CHI> x, Tensor<Nd + 8, COMPLEX_CHI> y) { op(x, y); });
 	return y0.template reshape_dimensions<N, COMPLEX_OUT>({{"n", order_cols}});
+#  else
+	throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
 
       /// Apply the inverse to LatticeColorVec tensors for a list of spins
@@ -3958,21 +4263,17 @@ namespace Chroma
       ///        the vectors after the inversion, and goes increasingly until time-source t_source+Nt_forward
 
       template <typename COMPLEX_CHI, typename COMPLEX_OUT>
-      Tensor<Nd + 5, COMPLEX_OUT> doInversion(const Operator<Nd + 7, COMPLEX_OUT>& op,
-					      const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
-					      int first_tslice_out, int n_tslice_out,
-					      const std::vector<int>& spin_sources, int max_rhs,
-					      const std::string& order_out = "cSxyztXns")
+      void doInversion(const Operator<Nd + 7, COMPLEX_OUT>& op,
+		       const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
+		       const Tensor<2, SB::Complex>& spin_sources, int max_rhs,
+		       const doInversionOnTSliceFn<SB::Complex>& call)
       {
-	int num_vecs = chi.kvdim()['n'];
-	Tensor<Nd + 5, COMPLEX_OUT> psi(
-	  order_out,
-	  latticeSize<Nd + 5>(
-	    order_out,
-	    {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}),
-	  chi.getDev());
+#  if (BUILD_MGPROTON + 0)
+	Tracker _t(std::string("mgproton solver"));
 
 	// Create tensors with full support on the lattice
+	int num_vecs = chi.kvdim()['n'];
+	int num_spins = spin_sources.kvdim()['s'];
 	int max_step = std::max(num_vecs, max_rhs);
 	auto aux = chi.template make_compatible<Nd + 8>(
 	  op.preferred_col_ordering == ColumnMajor ? "0123csxyztXn" : "0123ncsxyztX",
@@ -3984,25 +4285,33 @@ namespace Chroma
 	   {'2', 1},
 	   {'3', 1}});
 
-	for (int spin_source : spin_sources)
+	for (int spin_index = 0; spin_index < num_spins; ++spin_index)
 	{
 	  for (int n0 = 0, n_step = std::min(max_rhs, num_vecs); n0 < num_vecs;
 	       n0 += n_step, n_step = std::min(n_step, num_vecs - n0))
 	  {
 	    auto aux0 = aux.kvslice_from_size({}, {{'n', n_step}});
 	    aux0.set_zero();
-	    chi.kvslice_from_size({{'n', n0}}, {{'n', n_step}})
-	      .copyTo(aux0.kvslice_from_size({{'t', t_source}, {'s', spin_source}}));
+	    SB::contract(
+	      chi.kvslice_from_size({{'n', n0}}, {{'n', n_step}}),
+	      spin_sources.kvslice_from_size({{'s', spin_index}}, {{'s', 1}})
+		.rename_dims({{'s', '0'}, {'S', 's'}})
+		.template cast<COMPLEX_CHI>(),
+	      "", SB::CopyTo,
+	      aux0.kvslice_from_size({{'t', t_source}}, {{'t', 1}})
+		.template reshape_dimensions<Nd + 5>({{"0123", "0"}}, {{'s', 1}}, false));
 
-	    // Solve
-	    op(aux0)
-	      .kvslice_from_size({{'t', first_tslice_out}}, {{'t', n_tslice_out}})
-	      .rename_dims({{'s', 'S'}})
-	      .copyTo(psi.kvslice_from_size({{'n', n0}, {'s', spin_source}}));
+	    // Solve and invoke the callback
+	    call(op(aux0)
+		   .template reshape_dimensions<Nd + 5>({{"0123", "s"}, {"s", "S"}}, {{'S', Ns}},
+							false)
+		   .template make_sure<SB::Complex>(),
+		 spin_index, n0);
 	  }
 	}
-
-	return psi;
+#  else
+	throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
 
       /// Apply the inverse to a list of LatticeFermions
@@ -4102,6 +4411,9 @@ namespace Chroma
       template <std::size_t NOp, typename COMPLEX>
       Projector<NOp, COMPLEX> getDeflationProj(Operator<NOp, COMPLEX> op, const Options& ops)
       {
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup defl proj ") + prefix);
+
 	// Get options
 	unsigned int rank = getOption<unsigned int>(ops, "rank");
 	if (rank == 0)
@@ -4191,6 +4503,10 @@ namespace Chroma
       template <std::size_t NOp, typename COMPLEX>
       Projector<NOp, COMPLEX> getMGDeflationProj(Operator<NOp, COMPLEX> op, const Options& ops)
       {
+#  if (BUILD_MGPROTON + 0)
+	std::string prefix = getOption<std::string>(ops, "prefix", "");
+	Tracker _t(std::string("setup mg proj ") + prefix);
+
 	// Get prolongator and coarse operator
 	auto prolongator_coarse_spin_splitting =
 	  getProlongatorAndCoarse(op, ops.getValue("prolongator"), FullSpace);
@@ -4226,15 +4542,52 @@ namespace Chroma
 	};
 
 	return {almost_proj, Vfun, Ufun, proj_c.lambdas, op};
+#  else
+	throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
     }
 
     /// Apply the inverse to LatticeColorVec tensors for a list of spins
-    /// \param PP: invertor
+    /// \param PP: inverter
     /// \param chi: lattice color tensor on a t_slice, cxyzXn
     /// \param t_source: time-slice in chi
-    /// \param Nt_forward: return the next Nt_forward time-slices after t_source
-    /// \param Nt_backward: return the previous Nt_backward time-slices before t_source
+    /// \param spin_sources: Ss matrix to contract with chi
+    /// \param max_rhs: maximum number of vectors solved at once
+    /// \param call: call(tensor, first_s_index, first_n_index), where
+    ///              - tensor is cSxyztXns;
+    ///              - first_s_index, index of the first `spin_sources` component `s` in tensor;
+    ///              - first_n_index, index of the first `chi` component `n` in tensor;
+
+    template <typename COMPLEX_CHI>
+    void doInversion(const ChimeraSolver& sol, const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
+		     const Tensor<2, SB::Complex>& spin_sources, int max_rhs,
+		     const doInversionOnTSliceFn<SB::Complex>& call)
+    {
+      if (chi.kvdim()['t'] != 1)
+	throw std::runtime_error("Expected one time-slice");
+      const int num_spins = spin_sources.kvdim()['s'];
+      const int num_vecs = chi.kvdim()['n'];
+
+      StopWatch snarss1;
+      snarss1.reset();
+      snarss1.start();
+
+      if (sol.op)
+	detail::doInversion(sol.op, chi, t_source, spin_sources, max_rhs, call);
+      else
+	detail::doInversion(*sol.PP, chi, t_source, spin_sources, max_rhs, call);
+
+      snarss1.stop();
+      QDPIO::cout << "Time to compute inversions for " << num_spins << " spin sources and "
+		  << num_vecs << " colorvecs : " << snarss1.getTimeInSeconds() << " secs"
+		  << std::endl;
+    }
+
+    /// Apply the inverse to LatticeColorVec tensors for a list of spins
+    /// \param PP: inverter
+    /// \param chi: lattice color tensor on a t_slice, cxyzXn
+    /// \param t_source: time-slice in chi
     /// \param spin_sources: list of spins
     /// \param max_rhs: maximum number of vectors solved at once
     /// \param order_out: coordinate order of the output tensor, a permutation of cSxyztXns where
@@ -4256,24 +4609,28 @@ namespace Chroma
       if (n_tslice_out > Layout::lattSize()[3])
 	throw std::runtime_error("Too many tslices");
 
-      StopWatch snarss1;
-      snarss1.reset();
-      snarss1.start();
+      // Prepare spins
+      auto spins = SB::Tensor<2, SB::Complex>("Ss", {{Ns, (int)spin_sources.size()}}, SB::OnHost,
+					      SB::OnEveryoneReplicated);
+      spins.set_zero();
+      for (int spin_index = 0; spin_index < spin_sources.size(); ++spin_index)
+	spins.set({spin_sources.at(spin_index), spin_index}, 1.0);
 
-      Tensor<Nd + 5, SB::Complex> r;
-      if (sol.op)
-	r = detail::doInversion<COMPLEX_CHI, SB::Complex>(
-	  sol.op, chi, t_source, first_tslice_out, n_tslice_out, spin_sources, max_rhs, order_out);
-      else
-	r = detail::doInversion<COMPLEX_CHI, SB::Complex>(
-	  *sol.PP, chi, t_source, first_tslice_out, n_tslice_out, spin_sources, max_rhs, order_out);
+      // Prepare output
+      Tensor<Nd + 5, SB::Complex> psi(
+	order_out,
+	latticeSize<Nd + 5>(
+	  order_out, {{'t', n_tslice_out}, {'S', Ns}, {'s', spin_sources.size()}, {'n', num_vecs}}),
+	chi.getDev());
 
-      snarss1.stop();
-      QDPIO::cout << "Time to compute inversions for " << spin_sources.size()
-		  << " spin sources and " << num_vecs
-		  << " colorvecs : " << snarss1.getTimeInSeconds() << " secs" << std::endl;
+      const auto& call = [&](Tensor<Nd + 5, SB::Complex> tensor, int spin_index, int first_n) {
+	tensor //
+	  .kvslice_from_size({{'t', first_tslice_out}}, {{'t', n_tslice_out}})
+	  .copyTo(psi.kvslice_from_size({{'n', first_n}, {'s', spin_index}}));
+      };
+      doInversion(sol, chi, t_source, spins, max_rhs, call);
 
-      return r;
+      return psi;
     }
 
     template Tensor<Nd + 5, SB::Complex>
@@ -4352,9 +4709,10 @@ namespace Chroma
       // Do the inversion
       if (sol.op)
       {
+#  if (BUILD_MGPROTON + 0)
 	auto op = sol.op;
-	auto tchi = op.make_compatible_dom<Nd + 8>("n", {{'n', max_rhs}});
-	auto tpsi = op.make_compatible_img<Nd + 8>("n", {{'n', max_rhs}});
+	auto tchi = op.template make_compatible_dom<Nd + 8>("n", {{'n', max_rhs}});
+	auto tpsi = op.template make_compatible_img<Nd + 8>("n", {{'n', max_rhs}});
 	for (int i = 0, n = std::min(max_rhs, (int)chis.size()); i < chis.size();
 	     i += n, n = std::min((int)chis.size() - i, max_rhs))
 	{
@@ -4373,6 +4731,9 @@ namespace Chroma
 	  for (int j = 0; j < n; ++j)
 	    this_tpsi.kvslice_from_size({{'n', j}}, {{'n', 1}}).copyTo(asTensorView(*psis[i + j]));
 	}
+#  else
+	throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
       else
       {
@@ -4465,6 +4826,7 @@ namespace Chroma
       // If the inverter is MGPROTON, use this infrastructure
       if (projParam.id == std::string("MGPROTON"))
       {
+#  if (BUILD_MGPROTON + 0)
 	QDPIO::cout << "Setting up MGPROTON projector..." << std::endl;
 	Tracker _t("setup mgproton projector");
 
@@ -4473,10 +4835,12 @@ namespace Chroma
 
 	// Clone the matvec
 	LinearOperator<LatticeFermion>* fLinOp = S->genLinOp(state);
+	if (!fLinOp)
+	  throw std::runtime_error("Unsupported action by mgproton");
 	ColOrdering co = getOption<ColOrdering>(*ops, "Projector/operator_ordering",
-						getColOrderingMap(), ColumnMajor);
+						getColOrderingMap(), RowMajor);
 	ColOrdering co_blk = getOption<ColOrdering>(*ops, "Projector/operator_block_ordering",
-						    getColOrderingMap(), RowMajor);
+						    getColOrderingMap(), ColumnMajor);
 	Operator<Nd + 7, Complex> linOp = detail::cloneOperator(
 	  asOperatorView(*fLinOp), co, co_blk, detail::ConsiderBlockingSparse, "chroma's operator");
 
@@ -4489,10 +4853,13 @@ namespace Chroma
 	op = getProjector(linOp, getOptions(*ops, "Projector"));
 
 	// Clean cache of operators
-	detail::cleanEvenOddOperatorsCache();
+	detail::cleanOperatorsCache();
 
 	QDPIO::cout << "MGPROTON projector ready; setup time: "
 		    << detail::tostr(_t.stopAndGetElapsedTime()) << " s" << std::endl;
+#  else
+	throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
       else
       {
@@ -4522,6 +4889,7 @@ namespace Chroma
       // Do the projection
       if (proj.op.op)
       {
+#  if (BUILD_MGPROTON + 0)
 	auto tchi = proj.op.op.make_compatible_dom<Nd + 8>("n", {{'n', max_rhs}});
 	auto tpsi = proj.op.op.make_compatible_img<Nd + 8>("n", {{'n', max_rhs}});
 	for (int i = 0, n = std::min(max_rhs, (int)chis.size()); i < chis.size();
@@ -4542,6 +4910,9 @@ namespace Chroma
 	  for (int j = 0; j < n; ++j)
 	    this_tpsi.kvslice_from_size({{'n', j}}, {{'n', 1}}).copyTo(asTensorView(*psis[i + j]));
 	}
+#  else
+	throw std::runtime_error("not available, compile with mgproton support");
+#  endif
       }
       else
       {

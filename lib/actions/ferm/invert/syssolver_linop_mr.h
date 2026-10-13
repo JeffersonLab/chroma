@@ -60,7 +60,7 @@ namespace Chroma
 
 	SystemSolverResults_t res;  // initialized by a constructor
 	{
-	  res = InvMR(*A, chi, psi, invParam.MROver, invParam.RsdMR, invParam.MaxMR, PLUS);
+	  res = InvMR(*A, chi, psi, invParam.MROver, invParam.RsdMR, invParam.MaxMR, PLUS, invParam.Verbose );
 	}
 
 	END_CODE();

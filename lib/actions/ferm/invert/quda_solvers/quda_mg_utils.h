@@ -136,15 +136,6 @@ namespace Chroma {
 			mg_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
 			//
 			//Done...
-			// Autotuning
-			if( invParam.tuneDslashP ) {
-				QDPIO::cout << "Enabling MG Dslash Autotuning" << std::endl;
-				mg_inv_param.tune = QUDA_TUNE_YES;
-			}
-			else {
-				QDPIO::cout << "Disabling MG Dslash Autotuning" << std::endl;
-				mg_inv_param.tune = QUDA_TUNE_NO;
-			}
 			if( invParam.MULTIGRIDParamsP ) {
 				QDPIO::cout << "Setting MULTIGRID solver params" << std::endl;
 				// Dereference handle
@@ -186,14 +177,16 @@ namespace Chroma {
 				}
 #endif
 				mg_inv_param.gcrNkrylov = ip.precond_gcr_nkrylov;
-				if( ip.verbosity == true ) {
+				if( invParam.verboseP == true ) {
 					mg_inv_param.verbosity = QUDA_VERBOSE;
 				}
 				else {
 					mg_inv_param.verbosity = QUDA_SUMMARIZE;
 				}
 
-
+				for(int i=0; i < ip.mg_levels; i++) { 
+					mg_param.verbosity[i] =ip.verbosity ? QUDA_VERBOSE : QUDA_SILENT;
+				}
 
 
 				mg_inv_param.verbosity_precondition = QUDA_SILENT;
@@ -255,6 +248,7 @@ namespace Chroma {
 					// FIXME: Elevate ip.nvec, ip.nu_pre, ip.nu_post, ip.tol to arrays in the XML
 					if ( i < mg_param.n_level-1) {
 						mg_param.n_vec[i] = ip.nvec[i];
+						mg_param.n_vec_batch[i] = ip.nvec_batch[i];
 						mg_param.nu_pre[i] = ip.nu_pre[i];
 						mg_param.nu_post[i] = ip.nu_post[i];
 					}
@@ -403,7 +397,22 @@ namespace Chroma {
 				  mg_param.vec_outfile[l][0] = '\0';
 				}
 				QDPIO::cout<<"Basic MULTIGRID params copied."<<std::endl;
+
+				if( ip.got_mg_eig_params) {
+					for(int i=0; i < mg_param.n_level; i++) {
+						mg_param.use_eig_solver[i]=QUDA_BOOLEAN_FALSE;
+					}
+					int n_defl_levels = ip.mg_eig_params.size();
+					QDPIO::cout << "MULTIGRID specified deflation on " << n_defl_levels << " levels\n";
+					for( int i=0; i < n_defl_levels; i++) {
+						int d_level = ip.mg_eig_params[i].level;
+						QDPIO::cout << "Setting Eigenvalue params on level " << d_level << "\n";
+						mg_param.use_eig_solver[d_level] = QUDA_BOOLEAN_TRUE;
+						mg_param.eig_param[d_level] = const_cast<QudaEigParam*>(&(ip.mg_eig_params[i].eig_p));
+					}
+				}
 			}
+
 			// setup the multigrid solver
 			// this allocates memory
 			QDPIO::cout << "About to Call newMultigridQuda" << std::endl;

@@ -200,6 +200,32 @@ namespace Chroma
 
   }
 
+  
+  void SftMom::reset(const multi2d<int> & moms , int j_decay)
+  {
+    decay_dir = j_decay;
+		
+    multi1d<int> orig(Nd);
+
+
+    for(int i = 0 ; i < Nd ; ++i)
+      orig[i] = 0;
+		
+    init(0, orig, orig , false, decay_dir);
+		
+    num_mom = moms.size2();
+    mom_list = moms;
+
+    phases.resize(num_mom);
+
+    for (int m = 0 ; m < num_mom ; ++m)
+    {
+      phases[m] = singlePhase(orig, mom_list[m], decay_dir);
+    }
+
+  }
+
+  
   SftMom::SftMom(int mom2_max, multi1d<int> origin_offset_, bool avg_mom,
                  int j_decay)
   {

@@ -14,7 +14,7 @@ namespace Chroma
     Real rnd1;
     random(rnd1);
 
-    Real twopiN = Chroma::twopi / N;
+    Real twopiN = Chroma::constant().twopi / N;
     Real theta = twopiN * floor(N*rnd1);
 
     return cmplx(cos(theta),sin(theta));
@@ -42,7 +42,7 @@ namespace Chroma
   {
     a = zero; 
     LatticeReal rnd1, theta;
-    Real twopiN = Chroma::twopi / N;   // twopi defined in chroma/lib/chromabase.h
+    Real twopiN = Chroma::constant().twopi / N;   // twopi defined in chroma/lib/chromabase.h
     LatticeComplex c;
     LatticeColorVector colorvec = zero;
 

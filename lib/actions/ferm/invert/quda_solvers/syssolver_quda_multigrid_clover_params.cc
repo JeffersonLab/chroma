@@ -34,7 +34,7 @@ namespace Chroma {
       read(paramtop, "AsymmetricLinop", asymmetricP);
     }
     else { 
-      asymmetricP = false; // Symmetric is default 
+      asymmetricP = true; // Asymmetric (i.e. CLOVER)  is default 
     }
 
     if( paramtop.count("CudaPrecision") > 0 ) {
@@ -86,14 +86,6 @@ namespace Chroma {
        RsdToleranceFactor = Real(10); // Tolerate an order of magnitude difference by default.
     }
 
-    if( paramtop.count("AutotuneDslash") > 0 ) { 
-      read(paramtop, "AutotuneDslash", tuneDslashP);
-    }
-    else { 
-      tuneDslashP = false;
-    }
-    QDPIO::cout << "tuneDslasP = " << tuneDslashP << std::endl;
-
     read(paramtop, "SubspaceID", SaveSubspaceID);
 
     if( paramtop.count("ThresholdCount") == 1 ) {
@@ -143,6 +135,16 @@ namespace Chroma {
       SolutionCheckP = true; // default solution check is on
     }
 
+   	if ( paramtop.count("GridSplitDims") > 0) {
+      read(paramtop, "GridSplitDims", GridSplitDims);
+    }
+    else {
+        GridSplitDims.resize(Nd);
+        GridSplitDims[0]=1;
+        GridSplitDims[1]=1;
+        GridSplitDims[2]=1;
+        GridSplitDims[3]=1;
+    }
   }
 
   void read(XMLReader& xml, const std::string& path, 
@@ -171,8 +173,6 @@ namespace Chroma {
     write(xml, "SilentFail", p.SilentFailP);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
 
-    write(xml, "AutotuneDslash", p.tuneDslashP);
-
     //Write the MG persistence params.
     write(xml, "SubspaceID", p.SaveSubspaceID);
     write(xml, "ThresholdCount", p.ThresholdCount);
@@ -184,6 +184,7 @@ namespace Chroma {
 
     write(xml, "DumpOnFail", p.dump_on_failP);
     write(xml, "SolutionCheckP", p.SolutionCheckP);
+		write(xml, "GridSplitDims", p.GridSplitDims);
 
     if( p.backup_invP ) { 
       // Need to dump out the XML for the back up solver here...

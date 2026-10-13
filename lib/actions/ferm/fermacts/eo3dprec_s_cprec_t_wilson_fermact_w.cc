@@ -7,6 +7,8 @@
 #if QDP_NC == 3
 #if QDP_ND == 4
 
+#if ! defined (QDP_IS_QDPJIT2)
+
 #include "chromabase.h"
 #include "actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.h"
 #include "actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.h"
@@ -78,6 +80,8 @@ namespace Chroma
   }
 
 }
+
+#endif
 
 #endif
 #endif

@@ -12,6 +12,8 @@
 #include "actions/ferm/invert/containers.h"
 #include "actions/ferm/invert/norm_gram_schm.h"
 
+#if ! defined (QDP_IS_QDPJIT2)
+
 //#define DEBUG
 #define DEBUG_FINAL
 
@@ -997,3 +999,4 @@ namespace Chroma
   
 }// End Namespace Chroma
 
+#endif

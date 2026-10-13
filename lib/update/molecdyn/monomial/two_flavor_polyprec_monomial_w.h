@@ -128,6 +128,24 @@ namespace Chroma
     
       END_CODE();
     }				    
+
+    //! Refresh pseudofermions with optional OU update
+    virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state,
+                                       const Real& traj_length,
+                                       const Real& gamma,
+                                       const InternalFieldsRefreshMode mode)
+    {
+      if (mode == INTERNAL_FIELDS_REFRESH_FULL) {
+        refreshInternalFields(field_state);
+        return;
+      }
+
+      const Phi old_phi = getPhi();
+      refreshInternalFields(field_state);
+      Real c1, c2;
+      MonomialInternalFieldsUtils::getOUCoeffs(traj_length, gamma, c1, c2);
+      MonomialInternalFieldsUtils::applyOU(getPhi(), old_phi, c1, c2);
+    }
   
     //! Copy pseudofermions if any
     virtual void setInternalFields(const Monomial<P,Q>& m) 
@@ -145,6 +163,74 @@ namespace Chroma
       }
 
       END_CODE();
+    }
+
+    //! This monomial stores pseudofermion fields
+    virtual bool hasInternalFields(void) const
+    {
+      return true;
+    }
+
+    //! Save pseudofermions in an already-open QIO stream
+    virtual bool saveInternalFields(QDPFileWriter& to, int monomial_index) const
+    {
+      MonomialInternalFieldsUtils::saveToOpenQIO(to, getPhi(), monomial_index);
+      return true;
+    }
+
+    //! Load pseudofermions from an already-open QIO stream
+    virtual bool loadInternalFields(QDPFileReader& from, int monomial_index)
+    {
+      Phi loaded_phi = getPhi();
+      if (!MonomialInternalFieldsUtils::loadFromOpenQIO(from, loaded_phi, monomial_index)) {
+        return false;
+      }
+      getPhi() = loaded_phi;
+      return true;
+    }
+
+    //! Push pseudofermions to backup stack
+    virtual void pushInternalFields(void)
+    {
+      multi1d<Phi> new_stack(phi_backup_stack_.size() + 1);
+      for (int i = 0; i < phi_backup_stack_.size(); ++i) {
+        new_stack[i] = phi_backup_stack_[i];
+      }
+      new_stack[phi_backup_stack_.size()] = getPhi();
+      phi_backup_stack_ = new_stack;
+    }
+
+    //! Restore pseudofermions from backup stack
+    virtual void popInternalFields(void)
+    {
+      if (phi_backup_stack_.size() == 0) {
+        QDPIO::cerr << "TwoFlavorExactPolyPrecWilsonTypeFermMonomial::popInternalFields on empty stack" << std::endl;
+        QDP_abort(1);
+      }
+
+      const int top = phi_backup_stack_.size() - 1;
+      getPhi() = phi_backup_stack_[top];
+
+      multi1d<Phi> new_stack(top);
+      for (int i = 0; i < top; ++i) {
+        new_stack[i] = phi_backup_stack_[i];
+      }
+      phi_backup_stack_ = new_stack;
+    }
+
+    //! Drop pseudofermion backup without restoring
+    virtual void dropInternalFields(void)
+    {
+      if (phi_backup_stack_.size() == 0) {
+        return;
+      }
+
+      const int top = phi_backup_stack_.size() - 1;
+      multi1d<Phi> new_stack(top);
+      for (int i = 0; i < top; ++i) {
+        new_stack[i] = phi_backup_stack_[i];
+      }
+      phi_backup_stack_ = new_stack;
     }
 
     //! Reset predictors
@@ -198,6 +284,9 @@ namespace Chroma
 
       return res.n_count;
     }
+
+  private:
+    multi1d<Phi> phi_backup_stack_;
 
   };
 

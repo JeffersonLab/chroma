@@ -22,11 +22,10 @@ namespace Chroma
       cudaSloppyReconstruct=RECONS_12;
       cudaRefinementPrecision=DEFAULT;
       cudaRefinementReconstruct=RECONS_12;
-      asymmetricP = false; //< Use asymmetric version of the linear operator
+      asymmetricP = true; //< Use asymmetric version of the linear operator
       axialGaugeP = false; //< Fix Axial Gauge?
       SilentFailP = false; //< If set to true ignore lack of convergence. Default is 'loud' 
       RsdToleranceFactor = Real(10); //< Tolerate if the solution achived is better (less) than rsdToleranceFactor*RsdTarget
-      tuneDslashP = false ; //< v0.3 autotune feature
       verboseP = false;
       innerParamsP = false;
       checkShiftsP = true;
@@ -50,7 +49,6 @@ namespace Chroma
       axialGaugeP = p.axialGaugeP;
       SilentFailP = p.SilentFailP;
       RsdToleranceFactor = p.RsdToleranceFactor;
-      tuneDslashP = p.tuneDslashP;
       innerParamsP = p.innerParamsP;
       innerParams = p.innerParams;
       checkShiftsP = p.checkShiftsP;
@@ -75,7 +73,6 @@ namespace Chroma
     bool axialGaugeP;
     bool SilentFailP;
     Real RsdToleranceFactor;
-    bool tuneDslashP;
     bool innerParamsP;
     bool checkShiftsP;
     int Pipeline;

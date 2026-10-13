@@ -122,7 +122,7 @@ namespace Chroma
     for(int mu = 1; mu < Nd; ++mu)
       fld[mu] = 1;
 
-    Real ftmp = Chroma::twopi * p.SchrPhiMult / Real(QDP::Layout::lattSize()[var_dir]);
+    Real ftmp = Chroma::constant().twopi * p.SchrPhiMult / Real(QDP::Layout::lattSize()[var_dir]);
     LatticeReal lftmp = ftmp * Layout::latticeCoordinate(var_dir);
 
     fld[0] = 1.0;

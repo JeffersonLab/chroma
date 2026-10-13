@@ -164,7 +164,7 @@ namespace Chroma
 	//just get one momentum. the one we want!
 	SftMom phases(0, params.t_srce, mom3, params.av_mom, params.j_decay);
 	mom3 = phases.canonicalOrder(mom3);
-	Real fact = twopi * Real(params.mom[params.j_decay]) / Real(Layout::lattSize()[params.j_decay]);
+	Real fact = Chroma::constant().twopi * Real(params.mom[params.j_decay]) / Real(Layout::lattSize()[params.j_decay]);
 	phase = cos( fact * QDP::Layout::latticeCoordinate(params.j_decay) );
 	/**
 	for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num){

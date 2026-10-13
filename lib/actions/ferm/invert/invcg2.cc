@@ -105,6 +105,12 @@ namespace Chroma
 #endif
 
     Double rsd_sq = (RsdCG * RsdCG) * chi_sq;
+    
+    if ( toBool( rsd_sq == 0.0 ) )
+      {
+	QDPIO::cout << "Detected zero target relative residuum. Using absolute target residuum." << std::endl;
+	rsd_sq = (RsdCG * RsdCG);
+      }
 
     //                                            +
     //  r[0]  :=  Chi - A . Psi[0]    where  A = M  . M

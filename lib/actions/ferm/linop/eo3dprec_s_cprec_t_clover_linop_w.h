@@ -13,6 +13,9 @@
 #include "actions/ferm/linop/central_tprec_nospin_utils.h"
 #include "actions/ferm/linop/clover_term_w.h"
 #include "actions/ferm/invert/invcg2.h"
+
+#if ! defined (QDP_IS_QDPJIT2)
+
 namespace Chroma 
 { 
 
@@ -300,6 +303,8 @@ namespace Chroma
   };
 
 } // End Namespace Chroma
+
+#endif
 
 #endif
 #endif

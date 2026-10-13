@@ -13,7 +13,7 @@
 #include "actions/ferm/linop/clover_term_base_w.h"
 #include "meas/glue/mesfield.h"
 
-
+#if ! defined (QDP_IS_QDPJIT2)
 
 namespace QDP
 {
@@ -1911,4 +1911,5 @@ namespace Chroma
 
 
 
+#endif
 #endif

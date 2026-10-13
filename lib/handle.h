@@ -28,75 +28,125 @@ namespace Chroma
    * Holds and object, and deletes it when the last Handle to it
    * is destroyed
    */
-  template <class T>
+
+
+  template<typename T>
   class Handle
   {
   public:
-    //! Initialize pointer with existing pointer
-    /*! Requires that the pointer p is a return value of new */
-    Handle(T* p=0) : ptr(p), count(new int(1)) {}
 
-    //! Copy pointer (one more owner)
-    Handle(const Handle& p) : ptr(p.ptr), count(p.count) 
-      {++*count;}
+    Handle(Handle&& other) noexcept : ptr(other.ptr), count(other.count)
+    {
+      other.ptr = nullptr;
+      other.count = nullptr; // Or a new int(0) depending on your design
+    }
 
-    //! Destructor (delete value if this was the last owner)
-    ~Handle() {dispose();}
+    Handle& operator=(Handle&& other) noexcept
+    {
+      if (this != &other)
+	{
+	  dispose();
 
-    //! Assignment (unshare old and share new value)
-    Handle& operator=(const Handle& p) 
-      {
-	if (ptr != p.ptr)
+	  ptr = other.ptr;
+	  count = other.count;
+
+	  other.ptr = nullptr;
+	  other.count = nullptr;
+	}
+      return *this;
+    }
+    
+
+    Handle(T* p = nullptr) : ptr(p) {
+      if (ptr) {
+	count = new int(1);
+      } else {
+	count = new int(0); 
+      }
+    }
+
+    Handle(const Handle& p) : ptr(p.ptr), count(p.count)
+    {
+      if (ptr) {
+	++*count;
+      }
+    }
+
+    ~Handle() { dispose(); }
+
+    Handle& operator=(const Handle& p)
+    {
+      if (this != &p)
 	{
 	  dispose();
 	  ptr = p.ptr;
 	  count = p.count;
-	  ++*count;
+	  if (ptr) {
+	    ++*count;
+	  }
 	}
-	return *this;
-      }
+      return *this;
+    }
 
-    //! RGE's addition. A cast function to morph the actual type
+
     template<typename Q>
-    Handle<Q> cast()
-      {
-	Handle<Q> q;
-	q.ptr = dynamic_cast<Q*>(ptr);
-	if( q.ptr == 0x0 ) { 
-	  QDPIO::cerr << "Dynamic cast failed in Handle::cast()" <<std::endl;
-	  QDPIO::cerr << "You are trying to cast to a class you cannot cast to" << std::endl;
-	  QDP_abort(1);
-	}
-	delete q.count;
-
-	q.count = count;
-	++*count;
-	return q;
+    Handle<Q> cast() const
+    {
+      Handle<Q> q = this->tryCast<Q>();
+      if (!q) {
+	QDPIO::cerr << "Dynamic cast failed in Handle::cast()" << std::endl;
+	QDPIO::cerr << "You are trying to cast to a class you cannot cast to" << std::endl;
+	QDP_abort(1);
       }
+      return q;
+    }
 
-    //! The cast function requires all Handles<Q> to be friends of Handle<T>
+    
+    template<typename Q>
+    Handle<Q> tryCast() const
+    {
+      if (Q* new_ptr = dynamic_cast<Q*>(ptr)) {
+	return Handle<Q>(new_ptr, count);
+      }
+      return Handle<Q>();
+    }
+
+
+    explicit operator bool() const { return ptr != nullptr; }
+
+
     template<typename Q> friend class Handle;
 
-    //! Access the value to which the pointer refers
-    T& operator*() const {return *ptr;}
-    T* operator->() const {return ptr;}
+
+    T& operator*() const { assert(ptr); return *ptr; }
+    T* operator->() const { assert(ptr); return ptr; }
+    T* get() const { return ptr; }
 
   private:
-    void dispose() 
-      {
-	if (--*count == 0) 
+    Handle(T* p, int* c) : ptr(p), count(c)
+    {
+      if (ptr) {
+	++*count;
+      }
+    }
+
+    void dispose()
+    {
+      if (ptr && --*count == 0)
 	{
 	  delete count;
 	  delete ptr;
 	}
-      }
+    }
 
   private:
-    T* ptr;        // pointer to the value
-    int* count;    // shared number of owners
+    T* ptr;   // Pointer to the value
+    int* count; // Shared number of owners
   };
 
-}
+
+
+}// namespace
 
 
 #endif

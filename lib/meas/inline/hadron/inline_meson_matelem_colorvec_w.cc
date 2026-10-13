@@ -481,8 +481,12 @@ namespace Chroma
 	  {
 	    moms[i] = params.param.mom_list[i];
 	  }
+#if ! defined (QDP_IS_QDPJIT2)
 	SftMom temp_phases(moms, params.param.decay_dir);
 	phases = temp_phases;
+#else
+	phases.reset(moms, params.param.decay_dir);
+#endif
 	params.param.mom2_min = 0;
       }
 

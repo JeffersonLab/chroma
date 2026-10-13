@@ -48,7 +48,7 @@ namespace Chroma
 
     // Normalize
     LatticeBoolean lbtmp = false;
-    lbtmp[mstag] = r_l > fuzz;
+    lbtmp[mstag] = r_l > Chroma::constant().fuzz;
     LatticeReal lftmp = 1.0 / where(lbtmp, r_l, LatticeReal(1));
 
     // Fill   (r[0]/r_l, -r[1]/r_l, -r[2]/r_l, -r[3]/r_l) for r_l > fuzz

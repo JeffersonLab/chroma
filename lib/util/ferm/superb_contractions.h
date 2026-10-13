@@ -47,7 +47,7 @@
 #  ifdef BUILD_PRIMME
 #    include <primme.h>
 #    if defined(SUPERBBLAS_USE_HIP)
-#      include <hipblas.h>
+#      include <hipblas/hipblas.h>
 #    endif
 #  endif
 
@@ -633,6 +633,21 @@ namespace Chroma
 	return vol;
       }
 
+      /// Return the volume associated to an order
+      /// \param m: size of each dimension
+      /// \param labels: labels to consider
+
+      template <std::size_t N>
+      inline std::map<char, int> to_kv(const std::string& labels, const Coor<N>& coors)
+      {
+	if (labels.size() != coors.size())
+	  throw std::runtime_error("to_kv: incompatible dimensions");
+	std::map<char, int> r;
+	for (std::size_t i = 0; i < N; ++i)
+	  r[labels[i]] = coors[i];
+	return r;
+      }
+
       enum CoorType { From, Size };
 
       /// Return whether two from-size ranges are compatible on common dimensions
@@ -672,13 +687,18 @@ namespace Chroma
       /// \param blocking: blocking on each coordinate
 
       template <std::size_t N>
-      std::array<Coor<N>, 2> coarse_range(const std::array<Coor<N>, 2>& fs, const Coor<N>& blocking)
+      std::array<Coor<N>, 2> coarse_range(const Coor<N>& from, const std::array<Coor<N>, 2>& fs,
+					  const Coor<N>& blocking, const Coor<N>& dim)
       {
 	std::array<Coor<N>, 2> r;
 	for (unsigned int i = 0; i < N; ++i)
 	{
-	  r[0][i] = fs[0][i] / blocking[i] * blocking[i];
-	  r[1][i] = (fs[0][i] + fs[1][i] + blocking[i] - 1) / blocking[i] * blocking[i] - r[0][i];
+	  r[0][i] = (fs[0][i] + blocking[i] - 1 - from[i] + dim[i]) / blocking[i] * blocking[i] +
+		    from[i] - dim[i];
+	  r[1][i] =
+	    (fs[0][i] + fs[1][i] + blocking[i] - 1 - from[i] + dim[i]) / blocking[i] * blocking[i] +
+	    from[i] - dim[i] - r[0][i];
+	  r[0][i] = normalize_coor(r[0][i], dim[i]);
 	}
 	return r;
       }
@@ -841,6 +861,45 @@ namespace Chroma
 	return list;
       }
 
+#  if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
+      inline int& get_default_gpu_device()
+      {
+	static int d = -1;
+	return d;
+      }
+#  endif
+
+      // Get the default communicator
+
+      inline MPI_Comm getDefaultComm()
+      {
+	static MPI_Comm comm = [] {
+	  if (!QMP_is_initialized())
+	  {
+	    std::cerr << "QMP hasn't been initialized!" << std::endl;
+	    std::exit(1);
+	  }
+	  MPI_Comm* comm = nullptr;
+	  if (QMP_get_hidden_comm(QMP_comm_get_default(), reinterpret_cast<void**>(&comm)) !=
+	      QMP_SUCCESS)
+	  {
+	    std::cerr << "QMP_get_hidden_comm failed!" << std::endl;
+	    std::exit(1);
+	  }
+	  // Check that the MPI rank coincides with the one
+	  int nprocs, rank;
+	  superbblas::detail::MPI_check(MPI_Comm_size(*comm, &nprocs));
+	  superbblas::detail::MPI_check(MPI_Comm_rank(*comm, &rank));
+	  if (Layout::nodeNumber() != rank || Layout::numNodes() != nprocs)
+	  {
+	    std::cerr << "unsupported QDP comm by superbblas!" << std::endl;
+	    std::exit(1);
+	  }
+	  return *comm;
+	}();
+	return comm;
+      }
+
       // Get the cpu context
       inline std::shared_ptr<superbblas::Context>& getCpuContext()
       {
@@ -866,13 +925,7 @@ namespace Chroma
 	  int dev = -1;
 #    if defined(QDP_IS_QDPJIT)
 	  // When using QDP-JIT, the GPU device to use is already selected
-#      ifdef SUPERBBLAS_USE_CUDA
-	  superbblas::detail::gpuCheck(cudaGetDevice(&dev));
-#      elif defined(SUPERBBLAS_USE_HIP)
-	  superbblas::detail::gpuCheck(hipGetDevice(&dev));
-#      else
-#	error unsupported GPU platform
-#      endif
+	  dev = get_default_gpu_device();
 #    else
 	  // When not using QDP-JIT, select the GPU device based on either the local
 	  // MPI rank or the global MPI rank and assuming that consecutive MPI ranks
@@ -896,6 +949,7 @@ namespace Chroma
 	    }
 	  }
 #    endif
+	  std::cout << "Initializing SB context to device " << dev << std::endl;
 
 	  // Workaround on a potential issue in qdp-jit: avoid passing through the pool allocator
 #    if defined(QDP_IS_QDPJIT)
@@ -1294,12 +1348,12 @@ namespace Chroma
 	/// Coarse the ranges on each process
 
 	template <typename std::enable_if<(N > 0), bool>::type = true>
-	TensorPartition<N> coarse_support(const Coor<N>& blocking) const
+	TensorPartition<N> coarse_support(const Coor<N>& from, const Coor<N>& blocking) const
 	{
 	  typename TensorPartition<N>::PartitionStored r;
 	  r.reserve(p.size());
 	  for (const auto& i : p)
-	    r.push_back(detail::coarse_range(i, blocking));
+	    r.push_back(detail::coarse_range(from, i, blocking, dim));
 	  return TensorPartition<N>{dim, r, isLocal};
 	}
 
@@ -1348,7 +1402,8 @@ namespace Chroma
 	  return {Success, TensorPartition<Nout>{new_dim_aux.second, r, isLocal}};
 	}
 
-	/// Extend the support of distributed dimensions by one step in each direction
+	/// Extend the support of distributed dimensions on each process by the given amount
+	/// \param m: extension in the back/forward direction for each dimension
 
 	TensorPartition<N> extend_support(Coor<N> m) const
 	{
@@ -1367,6 +1422,57 @@ namespace Chroma
 	  return TensorPartition<N>{dim, r, isLocal};
 	}
 
+	/// Extend the support of the distributed dimensions removing inaccessible corners
+	/// \param m: extension in the back/forward direction for each dimension
+
+	TensorPartition<N> extend_support_removing_corners(Coor<N> m) const
+	{
+	  std::vector<typename TensorPartition<N>::PartitionStored> raux;
+	  raux.reserve(p.size());
+	  for (const auto& i : p)
+	  {
+	    // Create extension
+	    superbblas::PartitionItem<N> fs;
+	    for (unsigned int j = 0; j < N; ++j)
+	    {
+	      fs[1][j] = std::min(i[1][j] + 2 * m[j], dim[j]);
+	      fs[0][j] = (fs[1][j] < dim[j] ? (i[0][j] - m[j] + dim[j]) % dim[j] : 0);
+	    }
+
+	    // Create hole
+	    superbblas::PartitionItem<N> hole;
+	    std::size_t hole_dim = 0;
+	    for (std::size_t j = 0; j < N; ++j)
+	    {
+	      if (m[j] == 0 || fs[1][j] == dim[j])
+	      {
+		hole[0][j] = 0;
+		hole[1][j] = dim[j];
+	      }
+	      else
+	      {
+		hole[0][j] = (i[0][j] + i[1][j] + m[j] - 1 + dim[j]) % dim[j];
+		hole[1][j] = dim[j] - i[1][j] - m[j] * 2 + 2;
+		hole_dim++;
+	      }
+	    }
+
+	    // Remove hole
+	    raux.push_back(hole_dim > 1 ? superbblas::make_hole(fs[0], fs[1], hole[0], hole[1], dim)
+					: TensorPartition<N>::PartitionStored(1, fs));
+	  }
+
+	  std::size_t max_components = 1;
+	  for (const auto& i : raux)
+	    max_components = std::max(max_components, i.size());
+
+	  typename TensorPartition<N>::PartitionStored r(p.size() * max_components);
+	  for (std::size_t i = 0; i < p.size(); ++i)
+	    std::copy(raux[i].begin(), raux[i].end(), r.begin() + i * max_components);
+
+	  return TensorPartition<N>{dim, r, isLocal};
+	}
+
 	/// Return a subpartition given a range
 
 	TensorPartition<N> get_subpartition(const Coor<N>& from, const Coor<N>& size) const
@@ -1382,6 +1488,29 @@ namespace Chroma
 			  : std::array<Coor<N>, 2>{normalize_coor(lfrom - from, dim), lsize});
 	  }
 	  return TensorPartition<N>{size, r, isLocal};
+	}
+
+	/// Return a list of ranges unique to the local partition
+
+	PartitionStored get_unique_fragments(const Coor<N>& from, const Coor<N>& size) const
+	{
+	  int this_rank = MpiProcRank();
+	  typename TensorPartition<N>::PartitionStored r(1);
+	  r[0] = p[MpiProcRank()];
+	  r = superbblas::detail::intersection(r, from, size, dim);
+	  for (int rank = 0; rank < this_rank; ++rank)
+	  {
+	    PartitionStored rr;
+	    rr.reserve(r.size());
+	    for (const auto& fs :
+		 superbblas::make_hole(Coor<N>{{}}, dim, p[rank][0], p[rank][1], dim))
+	    {
+	      const auto& ri = superbblas::detail::intersection(r, fs[0], fs[1], dim);
+	      rr.insert(rr.end(), ri.begin(), ri.end());
+	    }
+	    std::swap(rr, r);
+	  }
+	  return r;
 	}
 
 	/// Return a partition with the local portion of the tensor
@@ -1750,6 +1879,16 @@ namespace Chroma
 	  s << "}";
 	  return s;
 	}
+
+	template <typename Ostream, typename T, typename Q>
+	Ostream& operator<<(Ostream& s, const std::map<T, Q>& m)
+	{
+	  s << "{";
+	  for (const auto& i : m)
+	    s << "{" << i.first << "," << i.second << "}";
+	  s << "}";
+	  return s;
+	}
       }
 
       inline void log(int level, const std::string& s)
@@ -1770,11 +1909,19 @@ namespace Chroma
       {
 	if (!superbblas::getTrackingMemory())
 	  return;
-	std::stringstream ss;
-	ss << "mem usage, CPU: " << std::fixed << std::setprecision(0)
-	   << superbblas::getCpuMemUsed(0) / 1024 / 1024
-	   << " MiB   GPU: " << superbblas::getGpuMemUsed(0) / 1024 / 1024 << " MiB";
-	log(1, ss.str());
+	static double max_cpu_mem = 0;
+	static double max_gpu_mem = 0;
+	auto old_max_cpu_mem = max_cpu_mem;
+	auto old_max_gpu_mem = max_gpu_mem;
+	max_cpu_mem = std::max(max_cpu_mem, superbblas::getCpuMemUsed(0) / 1024 / 1024);
+	max_gpu_mem = std::max(max_gpu_mem, superbblas::getGpuMemUsed(0) / 1024 / 1024);
+	if (old_max_cpu_mem < max_cpu_mem || old_max_gpu_mem < max_cpu_mem)
+	{
+	  std::stringstream ss;
+	  ss << "mem usage, CPU: " << std::fixed << std::setprecision(0) << max_cpu_mem
+	     << " MiB   GPU: " << max_gpu_mem << " MiB";
+	  log(1, ss.str());
+	}
       }
 
       template <typename T, typename A, typename B,
@@ -1826,6 +1973,7 @@ namespace Chroma
 	Allocation(std::size_t n, const std::shared_ptr<superbblas::Context>& ctx)
 	  : ptr(superbblas::allocate<T>(n, *ctx)), ctx(ctx), destroy_ptr(true)
 	{
+	  detail::log_mem();
 	}
 
 	/// User given pointer that will not be deallocated automatically
@@ -1890,11 +2038,12 @@ namespace Chroma
     template <std::size_t N, typename T>
     struct Tensor {
       using value_type = typename detail::base_type<T>::type;
+      using real_value_type = typename detail::real_type<T>::type;
       static_assert(superbblas::supported_type<value_type>::value, "Not supported type");
 
       /// Allocation type
       /// NOTE: the complex types decay to the base type, which is needed by `toFakeReal`
-      using Allocation = detail::Allocation<typename detail::real_type<T>::type>;
+      using Allocation = detail::Allocation<real_value_type>;
 
     public:
       std::string order;		      ///< Labels of the tensor dimensions
@@ -2059,7 +2208,6 @@ namespace Chroma
 	  complexLabel{complexLabel}
       {
 	checkOrder();
-	detail::log_mem();
       }
 
     protected:
@@ -2273,6 +2421,23 @@ namespace Chroma
 	return allocation->destroy_ptr;
       }
 
+      /// Finish all pending operations on this tensor
+
+      void sync() const
+      {
+	if (!allocation)
+	  return;
+
+	allocation->finish_pending_operations();
+
+	// If the pointer isn't managed by supperbblas, it may be managed by Chroma
+	// and we make sure that all operations from Chroma side are finished
+	if (is_managed())
+	  superbblas::syncLegacyStream(ctx());
+	else
+	  superbblas::sync(ctx());
+      }
+
       /// Return the pointer to the first local element
       /// NOTE: there will be no pending writing operations
 
@@ -2284,7 +2449,7 @@ namespace Chroma
 	// If the pointer isn't managed by supperbblas, it may be managed by Chroma
 	// and we make sure that all operations from Chroma side are finished
 	if (!is_managed())
-	  superbblas::syncLegacyStream(ctx());
+	  sync();
 
 	return (value_type*)allocation->data();
       }
@@ -2406,7 +2571,7 @@ namespace Chroma
 	if (is_eg())
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
-	auto t = isSubtensor() ? cloneOn(OnHost) : make_sure(none, OnHost);
+	auto t = isSubtensor() ? make_compatible(none, {}, OnHost) : make_sure(none, OnHost);
 	std::size_t vol = t.getLocal().volume();
 	value_type* ptr = t.data_for_writing();
 
@@ -2719,7 +2884,8 @@ namespace Chroma
 	}
 
 	using superbblas::detail::operator+;
-	return Tensor<N, T>(*this, order, this->from + from, size);
+	return Tensor<N, T>(
+	  *this, order, normalize_coor(this->from + normalize_coor(from, this->size), dim), size);
       }
 
       /// Return a similar tensor keeping the same distribution
@@ -2983,7 +3149,7 @@ namespace Chroma
 
 	for (auto s : size)
 	  if (s < 0)
-	    std::runtime_error("Invalid tensor size: it should be positive");
+	    throw std::runtime_error("Invalid tensor size: it should be positive");
       }
 
       /// Return a view of this tensor with an extra label for the real and the imaginary parts
@@ -3040,9 +3206,9 @@ namespace Chroma
       {
 	std::size_t dot_pos = order.find(complexLabel);
 	if (dot_pos == std::string::npos)
-	  std::runtime_error("toComplex: invalid complex label");
+	  throw std::runtime_error("toComplex: invalid complex label");
 	if (from[dot_pos] != 0 || size[dot_pos] != 2 || dim[dot_pos] != 2)
-	  std::runtime_error("toComplex: not supported on a slice of the complex label");
+	  throw std::runtime_error("toComplex: not supported on a slice of the complex label");
 
 	std::string new_order = detail::remove_coor(order, dot_pos);
 
@@ -3287,12 +3453,22 @@ namespace Chroma
 				   "given in `m` doesn't match the output tensor's dimensions!");
 
 	// Compute the new order
-	std::string new_order = order;
+	std::map<char, std::pair<std::size_t, std::string>> m_replacement;
 	for (const auto& it : m)
+	  m_replacement[it.first.front()] = {it.first.size(), it.second};
+	std::string new_order;
+	for (auto it = order.begin(); it != order.end();)
 	{
-	  auto s_first = std::find(new_order.begin(), new_order.end(), it.first.front());
-	  new_order = std::string(new_order.begin(), s_first) + it.second +
-		      std::string(s_first + it.first.size(), new_order.end());
+	  if (m_replacement.count(*it) == 0)
+	  {
+	    new_order.push_back(*it);
+	    ++it;
+	  }
+	  else
+	  {
+	    new_order.append(m_replacement.at(*it).second);
+	    it += m_replacement.at(*it).first;
+	  }
 	}
 
 	// Compute the dimensions of the new tensor
@@ -3376,13 +3552,44 @@ namespace Chroma
 					 {{new_label, 1}}, false);
       }
 
+      /// Make sure that the dimensions have full support on all processes
+      /// \param labels: dimensions to check
+
+      Tensor<N, T> coarse_dimensions(const std::string& labels) const
+      {
+	std::map<char, int> blk;
+	const auto dims = kvdim();
+	for (char c : labels)
+	  blk[c] = dims.at(c);
+
+	// Create partitioning coarsening
+	auto new_p = std::make_shared<detail::TensorPartition<N>>(
+	  p->coarse_support(from, kvcoors<N>(order, blk, 1)));
+
+	// Avoid creating a new tensor if the partitioning is the same
+	if (new_p->p == p->p)
+	  return *this;
+
+	// Create output tensor
+	Tensor<N, T> r(order, dim, getDev(), dist, new_p, unordered_writing, complexLabel);
+	r.from = from;
+	r.size = size;
+	r.conjugate = conjugate;
+
+	// Return it
+	if (is_eg())
+	  return r.make_eg();
+	copyTo(r);
+	return r;
+      }
+
       /// Coarse the support range of the tensor on each process
       /// \param blocking: blocking for each dimension
 
       template <typename std::enable_if<(N > 0), bool>::type = true>
       Tensor<N, T> coarse_support(const std::map<char, int>& blocking) const
       {
-	// Get the blocking and check that it divides each diension
+	// Get the blocking and check that it divides each dimension
 	auto c_blk = kvcoors<N>(order, blocking, 1);
 	for (std::size_t i = 0; i < N; ++i)
 	  if (dim[i] % c_blk[i] != 0)
@@ -3390,7 +3597,7 @@ namespace Chroma
 	      "coarse_support: the given blocking isn't dividing the tensor dimensions");
 
 	// Transform the partition
-	auto new_p = std::make_shared<detail::TensorPartition<N>>(p->coarse_support(c_blk));
+	auto new_p = std::make_shared<detail::TensorPartition<N>>(p->coarse_support(from, c_blk));
 
 	// Create output tensor
 	Tensor<N, T> r(order, dim, getDev(), dist, new_p, unordered_writing, complexLabel);
@@ -3408,10 +3615,11 @@ namespace Chroma
       /// Copy/add this tensor into the given one
       /// NOTE: if this tensor or the given tensor is fake real, force both to be fake real
 
-      template <std::size_t Nw, typename Tw, std::size_t Nm = N, typename Tm = float,
-		std::size_t Nwm = Nw, typename Twm = float,
-		typename std::enable_if<
-		  detail::is_complex<T>::value != detail::is_complex<Tw>::value, bool>::type = true>
+      template <
+	std::size_t Nw, typename Tw, std::size_t Nm = N, typename Tm = float, std::size_t Nwm = Nw,
+	typename Twm = float,
+	typename std::enable_if<detail::is_diycomplex<T>::value != detail::is_diycomplex<Tw>::value,
+				bool>::type = true>
       void doAction(Action action, Tensor<Nw, Tw> w, Tensor<Nm, Tm> m = {},
 		    Tensor<Nwm, Twm> wm = {}, const std::string& uneven_mask_labels = "",
 		    CopyingTrash copying_trash = dontCopyingTrash) const
@@ -3472,7 +3680,8 @@ namespace Chroma
 
 	value_type* ptr = data_for_writing();
 	MPI_Comm comm =
-	  (dist == OnMaster || dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	  (dist == OnMaster || dist == Local || dist == Glocal ? MPI_COMM_SELF
+							       : SB::detail::getDefaultComm());
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	if (dist != OnMaster || Layout::nodeNumber() == 0)
 	{
@@ -3482,7 +3691,7 @@ namespace Chroma
 				 &ctx(), comm, superbblas::FastToSlow, superbblas::Copy);
 	  // Force synchronization in superbblas stream if the allocation isn't managed by superbblas
 	  if (!is_managed())
-	    superbblas::sync(ctx());
+	    sync();
 	}
       }
 
@@ -3491,7 +3700,7 @@ namespace Chroma
       bool is_distributed_like(Tensor<N, Tv> v) const
       {
 	return order == v.order && from == v.from && size == v.size && dim == v.dim &&
-	       p->p == v.p->p;
+	       p->p == v.p->p && getDev() == v.getDev();
       }
 
       /// Return whether the given tensor has the same distribution as this one
@@ -3522,8 +3731,11 @@ namespace Chroma
       /// Return whether the given tensor has the same memory allocation as this one
       /// \param v: tensor to compare
 
-      template <std::size_t Nv>
-      bool has_same_allocation(Tensor<Nv, T> v) const
+      template <std::size_t Nv, typename Tv,
+		typename std::enable_if<std::is_same<typename detail::real_type<T>::type,
+						     typename detail::real_type<Tv>::type>::value,
+					bool>::type = true>
+      bool has_same_allocation(Tensor<Nv, Tv> v) const
       {
 	// Compare the allocation pointer, not the actual allocation.ptr; we are making sure that
 	// the two allocations are on the same device in this way
@@ -3552,12 +3764,11 @@ namespace Chroma
       }
 
       /// Copy/Add this tensor into the given one; and copy only where the values of the mask are nonzero if given
-      template <std::size_t Nw, typename Tw, std::size_t Nm = N, typename Tm = float,
-		std::size_t Nwm = Nw, typename Twm = float,
-		typename std::enable_if<
-		  detail::is_complex<T>::value == detail::is_complex<Tw>::value &&
-		    detail::is_diycomplex<T>::value == detail::is_diycomplex<Tw>::value,
-		  bool>::type = true>
+      template <
+	std::size_t Nw, typename Tw, std::size_t Nm = N, typename Tm = float, std::size_t Nwm = Nw,
+	typename Twm = float,
+	typename std::enable_if<detail::is_diycomplex<T>::value == detail::is_diycomplex<Tw>::value,
+				bool>::type = true>
       void doAction(Action action, Tensor<Nw, Tw> w, Tensor<Nm, Tm> m = {},
 		    Tensor<Nwm, Twm> wm = {}, const std::string& uneven_mask_labels = "",
 		    CopyingTrash copying_trash = dontCopyingTrash) const
@@ -3717,7 +3928,7 @@ namespace Chroma
 	// Shortcuts for who is involved in the operation
 	bool do_operation = true;
 	int p_disp = 0;
-	MPI_Comm comm = MPI_COMM_WORLD;
+	MPI_Comm comm = SB::detail::getDefaultComm();
 	// a) if the origin and destination tensors have full support on the master node
 	// and the destination tensor is only supported on the master node, the operation
 	// only happens on the master node
@@ -3750,8 +3961,8 @@ namespace Chroma
 				  &req /*, copying_trash == doCopyingTrash*/);
 	  w.allocation->append_pending_operation(req);
 	  // Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
-	  if (!w.is_managed())
-	    superbblas::sync(w.ctx());
+	  if (!is_managed() || !w.is_managed())
+	    w.sync();
 	}
       }
 
@@ -3837,7 +4048,8 @@ namespace Chroma
 	  throw std::runtime_error("contract: one of the contracted tensors or the output tensor "
 				   "is local/glocal and others are not!");
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm =
+	  (dist == Local || dist == Glocal ? MPI_COMM_SELF : SB::detail::getDefaultComm());
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	
 	value_type* v_ptr = v.data();
@@ -3860,8 +4072,8 @@ namespace Chroma
 	allocation->append_pending_operation(req);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
-	if (!is_managed())
-	  superbblas::sync(ctx());
+	if (!v.is_managed() || !w.is_managed() || !is_managed())
+	  sync();
       }
 
       /// Compute the Cholesky factor of `v' and contract its inverse with `w`
@@ -3922,7 +4134,8 @@ namespace Chroma
 	if (std::fabs(std::imag(v.scalar)) != 0 || std::real(v.scalar) < 0)
 	  throw std::runtime_error("cholInv: unsupported a negative or imaginary scale");
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm =
+	  (dist == Local || dist == Glocal ? MPI_COMM_SELF : SB::detail::getDefaultComm());
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	
 	value_type* v_ptr = v.data();
@@ -3941,8 +4154,12 @@ namespace Chroma
 	  p->p.data() + p_disp, dim, 1, order.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
-	if (!is_managed())
-	  superbblas::sync(ctx());
+	if (!v.is_managed() || !w.is_managed() || !is_managed())
+	{
+	  v.sync();
+	  w.sync();
+	  sync();
+	}
       }
 
       /// Compute the inverse of `v'
@@ -3967,7 +4184,8 @@ namespace Chroma
 
 	v.copyTo(*this);
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm =
+	  (dist == Local || dist == Glocal ? MPI_COMM_SELF : SB::detail::getDefaultComm());
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 
 	value_type* ptr = data_for_writing();
@@ -3977,7 +4195,7 @@ namespace Chroma
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed())
-	  superbblas::sync(ctx());
+	  sync();
       }
 
       /// Solve the linear systems within tensor `v' and right-hand-sides `w`
@@ -4041,7 +4259,8 @@ namespace Chroma
 	if (v.dist == OnEveryoneReplicated && detail::isDistributedOnEveryone(w.dist))
 	  v = v.make_suitable_for_contraction(w);
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm =
+	  (dist == Local || dist == Glocal ? MPI_COMM_SELF : SB::detail::getDefaultComm());
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	
 	value_type* v_ptr = v.data();
@@ -4057,8 +4276,90 @@ namespace Chroma
 	  p->p.data() + p_disp, dim, 1, order.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
-	if (!is_managed())
-	  superbblas::sync(ctx());
+	if (!v.is_managed() || !w.is_managed() || !is_managed())
+	{
+	  v.sync();
+	  w.sync();
+	  sync();
+	}
+      }
+
+      /// Return the singular value decomposition (SVD) of several matrices
+      /// \param order_rows: labels that are rows of the matrices to factor
+      /// \param order_cols: labels that are columns of the matrices to factor
+      /// \param u: output tensor with the left singular vectors
+      /// \param s: output tensor with the singular values
+      /// \param v: output tensor with the right singular vectors
+      /// NOTE: the singular triplets are ordered in descending order
+
+      template <std::size_t Nu, std::size_t Ns, std::size_t Nv>
+      void svd(const std::string& order_rows, const std::string& order_cols, Tensor<Nu, T> u,
+	       Tensor<Ns, real_value_type> s, Tensor<Nv, T> v) const
+      {
+	if (is_eg() || u.is_eg() || s.is_eg() || v.is_eg())
+	  throw std::runtime_error("svd: invalid operation from an example tensor");
+
+	// Conjugacy isn't supported
+	if (u.conjugate || s.conjugate || v.conjugate || conjugate)
+	  throw std::runtime_error("inv: Unsupported implicit conjugate tensors");
+
+	// Superbblas tensor contraction is shit and those not deal with subtensors or contracting a host and
+	// device tensor (for now)
+	if (isSubtensor())
+	{
+	  clone().svd(order_rows, order_cols, u, s, v);
+	  return;
+	}
+	if (u.isSubtensor() || u.scalar != T{1} || s.isSubtensor() || v.isSubtensor() || v.scalar != T{1})
+	{
+	  auto u0 = u;
+	  auto s0 = s;
+	  auto v0 = v;
+	  if (u.isSubtensor() || u.scalar != T{1})
+	    u0 = u.make_compatible(none, {}, getDev());
+	  if (s.isSubtensor())
+	    s0 = s.make_compatible(none, {}, getDev());
+	  if (v.isSubtensor() || u.scalar != T{1})
+	    v0 = v.make_compatible(none, {}, getDev());
+	  svd(order_rows, order_cols, u, s, v);
+	  u0.copyTo(u);
+	  s0.copyTo(s);
+	  v0.copyTo(v);
+	  return;
+	}
+
+	bool some_is_local = dist == Local || v.dist == Local || s.dist == Local || v.dist == Local;
+	bool some_isnt_local = dist != Local || v.dist != Local || s.dist != Local || v.dist != Local;
+	if (some_is_local && some_isnt_local)
+	  throw std::runtime_error("svd: the input tensor or on of the output tensors "
+				   "is local/glocal and others are not!");
+
+	MPI_Comm comm =
+	  (dist == Local || dist == Glocal ? MPI_COMM_SELF : SB::detail::getDefaultComm());
+	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
+	
+	value_type* ptr = data();
+	value_type* u_ptr = u.data_for_writing();
+	real_value_type* s_ptr = s.data_for_writing();
+	value_type* v_ptr = v.data_for_writing();
+	superbblas::svd<N, Nu, Ns, Nv>(
+	  scalar / T(s.scalar), //
+	  p->p.data() + p_disp, dim, 1, order.c_str(), (const value_type**)&ptr,
+	  order_rows.c_str(), order_cols.c_str(),
+	  &ctx(), //
+	  u.p->p.data() + p_disp, u.dim, 1, u.order.c_str(), &u_ptr, &u.ctx(), //
+	  s.p->p.data() + p_disp, s.dim, 1, s.order.c_str(), &s_ptr, &s.ctx(), //
+	  v.p->p.data() + p_disp, v.dim, 1, v.order.c_str(), &v_ptr, &v.ctx(), //
+	  comm, superbblas::FastToSlow);
+
+	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
+	if (!is_managed() || !u.is_managed() || !s.is_managed() || !v.is_managed())
+	{
+	  u.sync();
+	  s.sync();
+	  v.sync();
+	  sync();
+	}
       }
 
       /// Return a view of this tensor where the elements are scaled by the given argument
@@ -4522,6 +4823,45 @@ namespace Chroma
       return r;
     }
 
+    /// Concatenate two tensors with the same dimensions
+    /// \param v: one of the given tensors
+    /// \param w: the other tensor
+    /// \param label: label along to concat
+    ///
+    /// Example:
+    ///
+    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("cs", {{Ns,Ns}});
+    ///   Tensor<2,Complex> r0 = concat(t, q, 'c');
+
+    template <std::size_t N, typename T>
+    Tensor<N, T> concat(const Tensor<N, T>& v, Tensor<N, T> w, char label)
+    {
+      // Shortcuts
+      if (!v)
+	return w;
+      if (!w)
+	return v;
+
+      // Check that all dimensions coincide excepting `label`
+      const auto& kvdims_v = v.kvdim();
+      const auto& kvdims_w = w.kvdim();
+      for (const auto& it : kvdims_v)
+      {
+	if (it.first == label)
+	  continue;
+	if (kvdims_w.count(it.first) == 0 || kvdims_w.at(it.first) != it.second)
+	  throw std::runtime_error(
+	    "concat: input tensors differ in a dimension that is not going to be concatenated");
+      }
+
+      // Proceed to concatenate
+      auto r = v.make_compatible(none, {{label, kvdims_v.at(label) + kvdims_w.at(label)}});
+      v.copyTo(r);
+      w.copyTo(r.kvslice_from_size({{label, kvdims_v.at(label)}}, {{label, kvdims_w.at(label)}}));
+
+      return r;
+    }
+
     /// Contract some dimension of the given tensors
     /// \param v: one tensor to contract
     /// \param w: the other tensor to contract
@@ -4774,6 +5114,36 @@ namespace Chroma
 	[](const typename detail::base_type<T>::type& t) { return std::sqrt(std::real(t)); });
     }
 
+    /// Compute the Frobenius norm of the whole tensor
+    /// \param v: tensor
+    ///
+    /// Example:
+    ///
+    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}});
+    ///   auto frob_norm = fnorm(t); 
+
+    template <std::size_t N, typename T>
+    typename detail::real_type<T>::type fnorm(const Tensor<N, T>& v)
+    {
+      // Quick shortcut
+      if (N == 0)
+	return 0;
+
+      // Extend the first dimension
+      const auto v0 = v.toComplex();
+      const char label = v0.order[0];
+      char new_label = detail::get_free_label(v0.order);
+      auto x = v0.split_dimension(label, std::string{label, new_label}, v0.kvdim().at(label));
+
+      // Contract the tensor on all labels excepting the new one; the result should be a single number
+      auto r = contract<1>(x.conj(), x, v0.order, OnHost,
+			   detail::compatible_replicated_distribution(x.dist));
+      if (r.volume() != 1)
+	throw std::runtime_error("wtf");
+
+      return std::sqrt(std::real(r.data()[0]));
+    }
+
     /// Compute the Cholesky factor of `v' and contract its inverse with `w`
     /// \param v: tensor to compute the Cholesky factor
     /// \param order_rows: labels that are rows of the matrices to factor
@@ -4819,6 +5189,36 @@ namespace Chroma
       r0.cholInv(std::move(v), order_rows, order_cols, w);
 
       return r0;
+    }
+
+    /// Normalize vectors
+    /// \param v: tensor
+    /// \param order_rows: rows labels
+    ///
+    /// Example:
+    ///
+    ///   Tensor<2,Complex> t("cs", {{Nc,Ns}}), q("Ss", {{Ns,Ns}});
+    ///   Tensor<2,Complex> r0 = contract<2>(t, q, "s"); // r0 dims are "cS"
+    ///   Tensor<3,Complex> r1 = contract<3>(t, q, ""); // r1 dims are "csS"
+    ///   Tensor<2,Complex> r2("cS", {{Nc,Ns}});
+    ///   contract<2>(t, q, "s", CopyTo, r2); // r2 = q * s
+    ///   Tensor<2,Complex> r3("cs", {{Nc,Ns}});
+    ///   contract<2>(t, q, "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s
+    ///   contract<2>(t, q.rename_dims({{'s','S'},{'S','s'}}).conj(), "s", CopyTo, r3, {{'s','S'}}); // r2 = q * s^*
+
+    template <std::size_t Nr, std::size_t N, typename T>
+    Tensor<N, T> vecnorm(const Tensor<N, T>& v, std::string order_rows)
+    {
+      if (N == 0)
+	return v;
+      char new_label0 = detail::get_free_label(v.order);
+      char new_label1 = detail::get_free_label(v.order + std::string{new_label0});
+      auto ve0 = v.split_dimension(v.order[0], std::string{new_label0, v.order[0]}, 1);
+      auto ve01 = ve0.split_dimension(v.order[0], std::string{new_label1, v.order[0]}, 1);
+      auto r = contract<N - Nr + 2>(v.conj(), ve01, order_rows);
+      return cholInv<N + 1>(r, std::string{new_label0}, std::string{new_label1}, ve0,
+			    std::string{new_label0})
+	.template collapse_dimensions<N>(std::string{new_label1, v.order[0]}, v.order[0]);
     }
 
     /// Solve the linear systems within tensor `v' and right-hand-sides `w`
@@ -4946,6 +5346,58 @@ namespace Chroma
       }
 
       return r0;
+    }
+
+    /// Return the singular values and vectors of a given matrix
+    /// \param x: tensor to compute the factors
+    /// \param order_rows: labels that are rows of the matrices to factor
+    /// \param order_cols: labels that are columns of the matrices to factor
+    /// \param index_label: label for indexing the singular triplets
+
+    template <std::size_t Nu, std::size_t Ns, std::size_t Nv, std::size_t Nx, typename T>
+    std::tuple<Tensor<Nu, T>, Tensor<Ns, typename detail::real_type<T>::type>, Tensor<Nv, T>>
+    svd(const Tensor<Nx, T>& x, const std::string& order_rows, const std::string& order_cols,
+	char index_label = '*')
+    {
+      if (detail::is_in(x.order, index_label))
+	throw std::runtime_error("svd: invalid `index_label`");
+
+      // Compute the repetition labels: x.order - (order_rows+order_cols)
+      std::string torder = detail::union_dimensions(x.order, "", order_rows + order_cols);
+
+      // Compute the output labels
+      std::string uorder = order_rows + std::string{index_label} + torder;
+      std::string sorder = std::string{index_label} + torder;
+      std::string vorder = order_cols + std::string{index_label} + torder;
+      if (Nu != uorder.size() || Ns != sorder.size() || Nv != vorder.size())
+	throw std::runtime_error(
+	  "svd: The dimension of the output tensor does not match the template arguments");
+
+      // Compute the number of singular triplets
+      auto index_size = std::min(x.volume(order_rows), x.volume(order_cols));
+
+      // Create the output matrices
+      auto new_labels = std::map<char, int>{{index_label, index_size}};
+      auto u = x.template make_compatible<Nu>(uorder, new_labels);
+      auto s = x.template make_compatible<Ns, typename detail::real_type<T>::type>(sorder, new_labels);
+      auto v = x.template make_compatible<Nv>(vorder, new_labels);
+
+      // Compute the svd
+      x.svd(order_rows, order_cols, u, s, v);
+
+      // Check the solution
+      if (superbblas::getDebugLevel() > 0)
+      {
+	auto r = contract<Nx>(contract<Nu>(u, s.template make_sure<T>(), ""), v.conj(),
+			      std::string{index_label});
+	x.scale(-1).addTo(r);
+	
+	auto eps = std::sqrt(std::numeric_limits<typename detail::real_type<T>::type>::epsilon());
+	if (fnorm(x) * eps > fnorm(r))
+	  throw std::runtime_error(std::string("svd: too much error"));
+      }
+
+      return {u, s, v};
     }
 
     /// Elementwise division
@@ -5103,10 +5555,11 @@ namespace Chroma
     }
 
     template <typename COMPLEX>
-    Tensor<1, COMPLEX> asTensorView(std::vector<COMPLEX>& v,
+    Tensor<1, COMPLEX> asTensorView(const std::vector<COMPLEX>& v,
 				    Distribution dist = OnEveryoneReplicated)
     {
-      return Tensor<1, COMPLEX>("i", Coor<1>{Index(v.size())}, OnHost, dist, v.data());
+      return Tensor<1, COMPLEX>("i", Coor<1>{Index(v.size())}, OnHost, dist,
+				const_cast<COMPLEX*>(v.data()));
     }
 
     inline Tensor<2, Complex> asTensorView(SpinMatrix& smat,
@@ -5205,6 +5658,9 @@ namespace Chroma
 	return max(r.make_sure(none, none, OnEveryoneReplicated));
     }
 
+    template <std::size_t N, typename T>
+    struct StorageTensor;
+
     /// Class for operating sparse tensors
     /// \tparam ND: number of domain dimensions
     /// \tparam NI: number of image dimensions
@@ -5238,6 +5694,7 @@ namespace Chroma
       Tensor<NI + 2, int> jj;	   ///< Coordinate of the first element on each block
       Tensor<NI + ND + 1, T> data; ///< Nonzero values
       Tensor<NI + ND + 1, T> kron; ///< Nonzero values for the Kronecker values
+      std::map<char, int> domain_extension;	      ///< domain neighbors
       std::shared_ptr<superbblas::BSR_handle> handle; ///< suparbblas sparse tensor handle
       value_type scalar;			      ///< Scalar factor of the tensor
       bool isImgFastInBlock;			      ///< whether the BSR blocks are in row-major
@@ -5249,7 +5706,8 @@ namespace Chroma
       /// Low-level constructor with the Kronecker BSR extension
       SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, Coor<ND> blkd, Coor<NI> blki, Coor<ND> krond,
 	       Coor<NI> kroni, Tensor<NI, int> ii, Tensor<NI + 2, int> jj,
-	       Tensor<NI + ND + 1, T> data, Tensor<NI + ND + 1, T> kron_data, value_type scalar,
+	       Tensor<NI + ND + 1, T> data, Tensor<NI + ND + 1, T> kron_data,
+	       const std::map<char, int>& domain_extension, value_type scalar,
 	       bool isImgFastInBlock, unsigned int nblockd, unsigned int nblocki,
 	       unsigned int nkrond, unsigned int nkroni)
 	: d(d.make_eg()),
@@ -5262,6 +5720,7 @@ namespace Chroma
 	  jj(jj),
 	  data(data),
 	  kron(kron_data),
+	  domain_extension(domain_extension),
 	  scalar(scalar),
 	  isImgFastInBlock(isImgFastInBlock),
 	  nblockd(nblockd),
@@ -5273,10 +5732,12 @@ namespace Chroma
 
       /// Low-level constructor without the Kronecker BSR extension
       SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, Coor<ND> blkd, Coor<NI> blki, Tensor<NI, int> ii,
-	       Tensor<NI + 2, int> jj, Tensor<NI + ND + 1, T> data, value_type scalar,
+	       Tensor<NI + 2, int> jj, Tensor<NI + ND + 1, T> data,
+	       const std::map<char, int>& domain_extension, value_type scalar,
 	       bool isImgFastInBlock, unsigned int nblockd, unsigned int nblocki)
 	: SpTensor(d, i, blkd, blki, detail::ones<ND>(), detail::ones<NI>(), ii, jj, data,
-		   Tensor<NI + ND + 1, T>(), scalar, isImgFastInBlock, nblockd, nblocki, 0, 0)
+		   Tensor<NI + ND + 1, T>(), domain_extension, scalar, isImgFastInBlock, nblockd,
+		   nblocki, 0, 0)
       {
       }
 
@@ -5309,9 +5770,10 @@ namespace Chroma
 
       SpTensor(Tensor<ND, T> d, Tensor<NI, T> i, unsigned int nblockd, unsigned int nblocki,
 	       unsigned int nkrond, unsigned int nkroni, unsigned int num_neighbors,
-	       bool isImgFastInBlock = false)
+	       const std::map<char, int>& domain_extension, bool isImgFastInBlock = false)
 	: d{d.make_eg()},
 	  i{i.make_eg()},
+	  domain_extension(domain_extension),
 	  scalar{value_type{1}},
 	  isImgFastInBlock{isImgFastInBlock},
 	  nblockd(nblockd),
@@ -5435,13 +5897,21 @@ namespace Chroma
 	  throw std::runtime_error("SpTensor::construct: unexpected distribution of the data");
 
 	// Superbblas needs the column coordinates to be local
+#if SUPERBBLAS_VERSION < 3
 	// Remove the local domain coordinates to jj
-	const auto localFrom = d.p->localFrom();
+	const auto new_d = d.extend_support(domain_extension);
+	const auto d_partition = new_d.p->p;
+	const auto localFrom = new_d.p->localFrom();
 	const auto domDim = d.dim;
 	auto localjj =
 	  jj.template transformWithCPUFunWithCoor<int>([&](const Coor<NI + 2>& c, const int& t) {
 	    return (t - localFrom[c[0]] + domDim[c[0]]) % domDim[c[0]];
 	  });
+#else
+	auto localjj = jj;
+	const auto d_partition =
+	  d.p->extend_support_removing_corners(kvcoors<ND>(d.order, domain_extension, 0)).p;
+#endif
 
 	std::string nonblock_img_labels(i.order.begin() + nblocki + nkroni, i.order.end());
 	if (!ii.isDistributedAs(this->i, nonblock_img_labels) ||
@@ -5458,18 +5928,27 @@ namespace Chroma
 	  throw std::runtime_error("Ups! Look into this");
 	const value_type* ptr = data.data();
 	const value_type* kron_ptr = kron.data();
-	MPI_Comm comm = (ii.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	MPI_Comm comm = (ii.dist == Local ? MPI_COMM_SELF : SB::detail::getDefaultComm());
 	superbblas::BSR_handle* bsr = nullptr;
 	if (nkrond == 0 && nkroni == 0)
 	{
 	  superbblas::create_bsr<ND, NI, value_type>(
-	    i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd, isImgFastInBlock, &iiptr,
-	    &jjptr, &ptr, &data.ctx(), comm, superbblas::FastToSlow, &bsr);
+	    i.p->p.data(), i.dim,
+#  if SUPERBBLAS_VERSION >= 3
+	    1,
+#  endif
+	    d_partition.data(), d.dim, d_partition.size() / d.p->p.size(), blki, blkd,
+	    isImgFastInBlock, &iiptr, &jjptr, &ptr, &data.ctx(), comm, superbblas::FastToSlow,
+	    &bsr);
 	}
 	else
 	{
 	  superbblas::create_kron_bsr<ND, NI, value_type>(
-	    i.p->p.data(), i.dim, d.p->p.data(), d.dim, 1, blki, blkd, kroni, krond,
+	    i.p->p.data(), i.dim,
+#  if SUPERBBLAS_VERSION >= 3
+	    1,
+#  endif
+	    d_partition.data(), d.dim, d_partition.size() / d.p->p.size(), blki, blkd, kroni, krond,
 	    isImgFastInBlock, &iiptr, &jjptr, &ptr, &kron_ptr, &data.ctx(), comm,
 	    superbblas::FastToSlow, &bsr);
 	}
@@ -5493,6 +5972,7 @@ namespace Chroma
 			      nkrond,
 			      nkroni,
 			      (unsigned int)jj.kvdim().at('u'),
+			      domain_extension,
 			      isImgFastInBlock};
 
 	r.ii = ii.getLocal();
@@ -5527,6 +6007,7 @@ namespace Chroma
 			      nkrond,
 			      nkroni,
 			      (unsigned int)jj.kvdim().at('u'),
+			      domain_extension,
 			      isImgFastInBlock};
 
 	r.ii = ii.getGlocal();
@@ -5594,6 +6075,12 @@ namespace Chroma
 	auto new_blki = detail::insert_coor(blki, i_pos, new_blki_pos);
 	new_blki[i_pos + 1] /= new_blki_pos;
 
+	// Update the domain extension
+	std::map<char, int> new_domain_extension;
+	for (const auto& it : domain_extension)
+	  new_domain_extension[it.first == dom_dim_label ? dom_new_labels[1] : it.first] =
+	    it.second;
+
 	// Create the returning tensor
 	SpTensor<ND + 1, NI + 1, T> r{
 	  new_d,
@@ -5603,6 +6090,7 @@ namespace Chroma
 	  nkrond + (nblockd <= d_pos && d_pos < nblockd + nkrond ? 1 : 0),
 	  nkroni + (nblocki <= i_pos && i_pos < nblocki + nkroni ? 1 : 0),
 	  (unsigned int)jj.kvdim().at('u'),
+	  new_domain_extension,
 	  isImgFastInBlock};
 
 	ii.split_dimension(img_dim_label, img_new_labels, img_step).copyTo(r.ii);
@@ -5643,6 +6131,13 @@ namespace Chroma
 	  r.construct();
 
 	return r;
+      }
+
+      /// Return the domain tensor with the support on each process
+
+      Tensor<ND, T> get_extended_domain() const
+      {
+	return d.extend_support(domain_extension);
       }
 
       /// Return a slice of the tensor starting at coordinate `dom_kvfrom`, `img_kvfrom` and taking
@@ -5844,8 +6339,8 @@ namespace Chroma
 	}
 
 	// Create the returning tensor
-	SpTensor<ND, NI, T> r{new_d,  new_i,  nblockd,	     nblocki,
-			      nkrond, nkroni, num_neighbors, isImgFastInBlock};
+	SpTensor<ND, NI, T> r{new_d,  new_i,	     nblockd,	       nblocki,		nkrond,
+			      nkroni, num_neighbors, domain_extension, isImgFastInBlock};
 	new_ii.copyTo(r.ii);
 	new_jj.kvslice_from_size({}, {{'u', num_neighbors}}).copyTo(r.jj);
 
@@ -6150,8 +6645,8 @@ namespace Chroma
 	}
 
 	// Create the returning tensor
-	SpTensor<ND, NI, T> r{new_d,  new_i,  nblockd,	     nblocki,
-			      nkrond, nkroni, num_neighbors, isImgFastInBlock};
+	SpTensor<ND, NI, T> r{new_d,  new_i,	     nblockd,	       nblocki,		nkrond,
+			      nkroni, num_neighbors, domain_extension, isImgFastInBlock};
 	new_ii.copyTo(r.ii);
 	new_jj.kvslice_from_size({}, {{'u', num_neighbors}}).copyTo(r.jj);
 
@@ -6332,8 +6827,8 @@ namespace Chroma
 	auto new_kron = kron ? kron.reorder(data_order) : kron;
 
 	SpTensor<ND, NI, T> r(new_d, new_i, new_blkd, new_blki, new_krond, new_kroni, new_ii,
-			      new_jj, new_data, new_kron, scalar, isImgFastInBlock, nblockd,
-			      nblocki, nkrond, nkroni);
+			      new_jj, new_data, new_kron, domain_extension, scalar,
+			      isImgFastInBlock, nblockd, nblocki, nkrond, nkroni);
 	if (is_constructed())
 	  r.construct();
 
@@ -6364,6 +6859,7 @@ namespace Chroma
 					 is_kron ? nkrond + 1 : 0,
 					 is_kron ? nkroni + 1 : 0,
 					 (unsigned int)jj.kvdim().at('u'),
+					 domain_extension,
 					 isImgFastInBlock};
 
 	// Copy the data to the new tensor
@@ -6444,6 +6940,7 @@ namespace Chroma
 			      nkrond,
 			      nkroni,
 			      (unsigned int)jj.kvdim().at('u'),
+			      domain_extension,
 			      isImgFastInBlock};
 
 	// Populate the new tensor
@@ -6541,12 +7038,12 @@ namespace Chroma
 	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const value_type**)&v_ptr, //
 	  T{0}, w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim, power_label,
 	  (value_type**)&w_ptr, //
-	  &data.ctx(), v.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD, superbblas::FastToSlow,
-	  nullptr, v.dist == Glocal);
+	  &data.ctx(), v.dist == Local ? MPI_COMM_SELF : SB::detail::getDefaultComm(),
+	  superbblas::FastToSlow, nullptr, v.dist == Glocal);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
-	if (!w.is_managed())
-	  superbblas::sync(data.ctx());
+	if (!v.is_managed() || !w.is_managed())
+	  data.sync();
       }
 
       void print(const std::string& name) const
@@ -6675,6 +7172,50 @@ namespace Chroma
 	detail::log(1, ss.str());
       }
 
+      void store(const std::string& filename) const
+      {
+	if (kron)
+	  throw std::runtime_error("store: unsupported kron operators");
+	const auto& metadata = "<info>" + repr() + "</info>";
+	auto sto = StorageTensor<NI + ND, T>(filename, metadata, i.order + d.order,
+					     detail::concat(i.size, d.size), SB::Sparse,
+					     SB::checksum_type::BlockChecksum, SB::LocalFSFile);
+
+	const auto& row_size = detail::to_kv(i.order, blki);
+	const auto& col_size = detail::to_kv(d.order, blkd);
+
+	// Get the coordinates for all nonzeros
+	auto ii_host =
+	  (ii.isSubtensor() ? ii.cloneOn(OnHost) : ii.make_sure(none, OnHost)).getLocal();
+	auto jj_host =
+	  (jj.isSubtensor() ? jj.cloneOn(OnHost) : jj.make_sure(none, OnHost)).getLocal();
+	auto data_host =
+	  (data.isSubtensor() ? data.cloneOn(OnHost) : data.make_sure(none, OnHost)).getLocal();
+	const int* ii_ptr = ii_host.data();
+	const Coor<ND>* jj_ptr = (Coor<ND>*)jj_host.data();
+	const auto& i_local_from = i.p->localFrom();
+	const auto& row_strides =
+	  superbblas::detail::get_strides<Index>(ii_host.size, superbblas::FastToSlow);
+	for (Index row_idx = 0, col0 = 0; row_idx < ii_host.volume(); ++row_idx)
+	{
+	  using superbblas::detail::operator+;
+	  const auto& row_first_coor =
+	    superbblas::detail::index2coor(row_idx, ii_host.size, row_strides) + i_local_from;
+	  const auto& row_from = detail::to_kv(ii_host.order, row_first_coor);
+	  auto sto_row = sto.kvslice_from_size(row_from, row_size);
+	  const auto& data_row = data_host.kvslice_from_size(row_from, row_size);
+	  for (std::size_t col = 0; col < ii_ptr[row_idx]; ++col, ++col0)
+	  {
+	    const auto& col_first_coor = jj_ptr[col0];
+	    if (col_first_coor[0] < 0)
+	      continue;
+	    const auto& col_from = detail::to_kv(d.order, col_first_coor);
+	    sto_row.kvslice_from_size(col_from, col_size)
+	      .copyFrom(data_row.kvslice_from_size({{'u', col}}, {{'u', 1}}));
+	  }
+	}
+      }
+
       /// Return a copy of the tensor in a different precision
       ///
       /// \tparam Q: new precision
@@ -6700,6 +7241,7 @@ namespace Chroma
 			      jj,
 			      data.template cast<Q>(),
 			      kron.template cast<Q>(),
+			      domain_extension,
 			      (Q)scalar,
 			      isImgFastInBlock,
 			      nblockd,
@@ -6719,7 +7261,7 @@ namespace Chroma
     template <std::size_t ND, std::size_t NI, typename T>
     SpTensor<ND, NI, T> getSparseIdentity(const SpTensor<ND, NI, T>& sp, const remap& m)
     {
-      SpTensor<ND, NI, T> r(sp.d, sp.i, sp.nblockd, sp.nblocki, sp.nkrond, sp.nkroni, 1,
+      SpTensor<ND, NI, T> r(sp.d, sp.i, sp.nblockd, sp.nblocki, sp.nkrond, sp.nkroni, 1, {},
 			    sp.isImgFastInBlock);
       r.ii.set(1);
       int tilde_pos = std::find(r.jj.order.begin(), r.jj.order.end(), '~') - r.jj.order.begin();
@@ -6798,7 +7340,8 @@ namespace Chroma
 	  filename + (filesystem_type == SharedFSFile
 			? std::string()
 			: std::string(".part_") + std::to_string(Layout::nodeNumber()));
-	MPI_Comm comm = filesystem_type == SharedFSFile ? MPI_COMM_WORLD : MPI_COMM_SELF;
+	MPI_Comm comm =
+	  filesystem_type == SharedFSFile ? SB::detail::getDefaultComm() : MPI_COMM_SELF;
 	superbblas::Storage_handle stoh;
 	superbblas::create_storage<N, T>(
 	  dim, superbblas::FastToSlow, use_filename.c_str(), metadata.c_str(), metadata.size(),
@@ -6826,7 +7369,7 @@ namespace Chroma
 	std::vector<char> metadatav;
 	std::vector<superbblas::IndexType> dimv;
 	superbblas::read_storage_header(filename.c_str(), superbblas::FastToSlow, values_dtype,
-					metadatav, dimv, MPI_COMM_WORLD);
+					metadatav, dimv, SB::detail::getDefaultComm());
 
 	// Check that storage tensor dimension and value type match template arguments
 	if (dimv.size() != N)
@@ -6851,10 +7394,10 @@ namespace Chroma
 
 	superbblas::Storage_handle stoh;
 	superbblas::open_storage<N, T>(filename.c_str(), false /* don't allow writing */,
-				       MPI_COMM_WORLD, &stoh);
+				       SB::detail::getDefaultComm(), &stoh);
 	ctx = std::shared_ptr<superbblas::detail::Storage_context_abstract>(
 	  stoh, [=](superbblas::detail::Storage_context_abstract* ptr) {
-	    superbblas::close_storage<N, T>(ptr, MPI_COMM_WORLD);
+	    superbblas::close_storage<N, T>(ptr, SB::detail::getDefaultComm());
 	  });
       }
 
@@ -6925,7 +7468,9 @@ namespace Chroma
 	}
 
 	using superbblas::detail::operator+;
-	return StorageTensor<N, T>(*this, order, this->from + from, size, scalar);
+	return StorageTensor<N, T>(
+	  *this, order, normalize_coor(this->from + normalize_coor(from, this->size), dim), size,
+	  scalar);
       }
 
       StorageTensor<N, T> scale(T s) const
@@ -6954,7 +7499,7 @@ namespace Chroma
 
 	for (auto s : size)
 	  if (s < 0)
-	    std::runtime_error("Invalid tensor size: it should be positive");
+	    throw std::runtime_error("Invalid tensor size: it should be positive");
       }
 
       /// Preallocate space for the storage file
@@ -6979,7 +7524,25 @@ namespace Chroma
 	if (detail::is_distribution_local(w.dist) && filesystem_type != LocalFSFile)
 	  throw std::runtime_error("A local tensor cannot be stored on a global tensor storage");
 
-	MPI_Comm comm = filesystem_type == SharedFSFile ? MPI_COMM_WORLD : MPI_COMM_SELF;
+	// Avoid saving ranges of the local support of the tensor that are also on other processes
+	if (filesystem_type == LocalFSFile && w.dist != Local && w.dist != Glocal &&
+	    sparsity == Sparse)
+	{
+	  // Get the unique ranges of this tensor on this proc
+	  for (const auto& range : w.p->get_unique_fragments(w.from, w.size))
+	  {
+	    using superbblas::detail::operator-;
+	    const auto& range_from = detail::normalize_coor(range[0] - w.from, w.dim);
+	    const auto& range_size = range[1];
+	    kvslice_from_size(detail::to_kv(w.order, range_from),
+			      detail::to_kv(w.order, range_size))
+	      .copyFrom(w.slice_from_size(range_from, range_size).getLocal());
+	  }
+	  return;
+	}
+
+	MPI_Comm comm =
+	  filesystem_type == SharedFSFile ? SB::detail::getDefaultComm() : MPI_COMM_SELF;
 	auto w0 = w;
 	auto w0_p = w0.p->p.data();
 	std::size_t w0_p_size = w0.p->p.size();
@@ -7019,7 +7582,8 @@ namespace Chroma
 	if (filesystem_type == LocalFSFile && !detail::is_distribution_local(w.dist))
 	  throw std::runtime_error("Unsupported a collective tensor from reading from a local file");
 
-	MPI_Comm comm = filesystem_type == SharedFSFile ? MPI_COMM_WORLD : MPI_COMM_SELF;
+	MPI_Comm comm =
+	  filesystem_type == SharedFSFile ? SB::detail::getDefaultComm() : MPI_COMM_SELF;
 	auto w0 = w;
 	auto w0_p = w0.p->p.data();
 	std::size_t w0_p_size = w0.p->p.size();
@@ -7035,7 +7599,7 @@ namespace Chroma
 				       w0.from, w0.dim, &w_ptr, &w0.ctx(), comm,
 				       superbblas::FastToSlow, superbblas::Copy);
 	if (!w0.is_managed())
-	  superbblas::sync(w0.ctx());
+	  w0.sync();
       }
     };
 
@@ -7332,9 +7896,24 @@ namespace Chroma
       Tensor<N, T> make_compatible_dom(const std::string& col_order,
 				       const std::map<char, int>& m) const
       {
-	return d.template make_compatible<N, T>(
-	  preferred_col_ordering == ColumnMajor ? std::string("%") + col_order : col_order + "%",
-	  '%', "", m);
+	// For column major, the column labels go to the slowest indices
+	if (preferred_col_ordering == ColumnMajor)
+	  return d.template make_compatible<N, T>(std::string("%") + col_order, '%', "", m);
+
+	// For the row major, the column labels go after the spin and color components
+	const auto my_tolower = [&](char ch) {
+	  return static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+	};
+	std::size_t pos = 0; // number of spin and color labels
+	for (const char c : d.order)
+	{
+	  if (my_tolower(c) != 'c' && my_tolower(c) != 's')
+	    break;
+	  ++pos;
+	}
+	std::string new_order = std::string(d.order.begin(), d.order.begin() + pos) + col_order +
+				std::string(d.order.begin() + pos, d.order.end());
+	return d.template make_compatible<N, T>(new_order, m);
       }
 
       /// Return compatible image tensors
@@ -7345,9 +7924,24 @@ namespace Chroma
       Tensor<N, T> make_compatible_img(const std::string& col_order,
 				       const std::map<char, int>& m) const
       {
-	return i.template make_compatible<N, T>(
-	  preferred_col_ordering == ColumnMajor ? std::string("%") + col_order : col_order + "%",
-	  '%', "", m);
+	// For column major, the column labels go to the slowest indices
+	if (preferred_col_ordering == ColumnMajor)
+	  return i.template make_compatible<N, T>(std::string("%") + col_order, '%', "", m);
+
+	// For the row major, the column labels go after the spin and color components
+	const auto my_tolower = [&](char ch) {
+	  return static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+	};
+	std::size_t pos = 0; // number of spin and color labels
+	for (const char c : i.order)
+	{
+	  if (my_tolower(c) != 'c' && my_tolower(c) != 's')
+	    break;
+	  ++pos;
+	}
+	std::string new_order = std::string(d.order.begin(), d.order.begin() + pos) + col_order +
+				std::string(d.order.begin() + pos, d.order.end());
+	return i.template make_compatible<N, T>(new_order, m);
       }
 
       /// Apply the operator
@@ -7981,7 +8575,9 @@ namespace Chroma
 	//   d) the excepting dimensions are the fastest index and have the same ordering in the origin and
 	//      the destination tensors.
 
-	auto v0 = v.reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}}).reorder("Xxyzt%", '%');
+	auto v0 = v.reshape_dimensions({{"Xx", "Xx"}}, {{'X', 2}})
+		    .reorder("Xxyzt%", '%')
+		    .coarse_dimensions("X");
 	auto r = v0.make_compatible();
 	for (int oddity = 0; oddity < 2; ++oddity)
 	{
@@ -8018,7 +8614,7 @@ namespace Chroma
 	//   d) the excepting dimensions are the fastest index and have the same ordering in the origin and
 	//      the destination tensors.
 
-	auto v0 = v.reorder("Xxyzt%", '%');
+	auto v0 = v.reorder("Xxyzt%", '%').coarse_dimensions("X");
 	auto r = v0.make_compatible();
 	for (int oddity = 0; oddity < 2; ++oddity)
 	{
@@ -8091,6 +8687,7 @@ namespace Chroma
 	auto i =
 	  op.i.reorder(dense_labels + std::string("xyztX"))
 	    .like_this(none, {}, OnDefaultDevice, compatible_oneveryone_distribution(op.i.dist))
+	    .coarse_dimensions("X")
 	    .make_eg();
 
 	// Get the blocking for the domain and the image
@@ -8348,21 +8945,22 @@ namespace Chroma
 	ones_blk.set(1);
 
 	// Create the sparse tensor
-	auto d_sop =
-	  (power == 0 ? i
-		      : i.extend_support({{'x', (max_dist_neighbors + real_maxX - 1) / real_maxX},
-					  {'y', max_dist_neighbors},
-					  {'z', max_dist_neighbors},
-					  {'t', max_dist_neighbors}}))
-	    .rename_dims(rd);
+	const auto dom_ext =
+	  (power == 0
+	     ? std::map<char, int>{}
+	     : std::map<char, int>{{rd.at('x'), (max_dist_neighbors + real_maxX - 1) / real_maxX},
+				   {rd.at('y'), max_dist_neighbors},
+				   {rd.at('z'), max_dist_neighbors},
+				   {rd.at('t'), max_dist_neighbors}});
 	const unsigned int Nkron = kronecker_label == 0 ? 0u : 1u;
-	SpTensor<NOp, NOp, COMPLEX> sop{d_sop,
+	SpTensor<NOp, NOp, COMPLEX> sop{i.rename_dims(rd),
 					i,
 					Nblk - Nkron,
 					Nblk - Nkron,
 					Nkron,
 					Nkron,
 					(unsigned int)neighbors.size(),
+					dom_ext,
 					coBlk == ColumnMajor};
 
 	// Copy the kronecker values
@@ -9381,12 +9979,12 @@ namespace Chroma
 	if (sendBuf == recvBuf)
 	{
 	  *ierr = MPI_Allreduce(MPI_IN_PLACE, recvBuf, *count, MPI_DOUBLE, MPI_SUM,
-				MPI_COMM_WORLD) != MPI_SUCCESS;
+				SB::detail::getDefaultComm()) != MPI_SUCCESS;
 	}
 	else
 	{
-	  *ierr = MPI_Allreduce(sendBuf, recvBuf, *count, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD) !=
-		  MPI_SUCCESS;
+	  *ierr = MPI_Allreduce(sendBuf, recvBuf, *count, MPI_DOUBLE, MPI_SUM,
+				SB::detail::getDefaultComm()) != MPI_SUCCESS;
 	}
       }
 
@@ -9456,7 +10054,7 @@ namespace Chroma
 	      eg, eg, nullptr, "", op_layout, op_layout,
 	      detail::getNeighbors(eg.kvdim(), 1 /* near-neighbors links only */, op_layout),
 	      ColumnMajor, false /* no kronecker op */},
-	    ColumnMajor, RowMajor, Chroma::SB::detail::ConsiderBlockingDense, "laplacian");
+	    RowMajor, ColumnMajor, Chroma::SB::detail::ConsiderBlockingDense, "laplacian");
 
 	  // Create an auxiliary struct for the PRIMME's matvec
 	  // NOTE: Please keep 'n' as the slowest index; the rows of vectors taken by PRIMME's matvec has dimensions 'cxyztX',
@@ -10265,12 +10863,13 @@ namespace Chroma
       inline Coor<Nd> get_total_disps(const PathNode& disps)
       {
 	Coor<Nd> counts{{}};
-	for (const auto it : disps.p)
+	for (const auto& it : disps.p)
 	{
 	  if (std::abs(it.first) > 0)
 	  {
 	    int dir = std::abs(it.first) - 1;
-	    counts[dir]++;
+	    if (dir < Nd)
+	      counts.at(dir)++;
 	  }
 	}
 	return counts;
@@ -10282,17 +10881,18 @@ namespace Chroma
       inline Coor<Nd> get_max_disp(const PathNode& disps)
       {
 	Coor<Nd> max_disp{{}};
-	for (const auto it : disps.p)
+	for (const auto& it : disps.p)
 	{
 	  Coor<Nd> disp{{}};
 	  if (std::abs(it.first) > 0)
 	  {
 	    int dir = std::abs(it.first) - 1;
-	    disp[dir] = 1;
+	    if (dir < Nd)
+	      disp.at(dir) = 1;
 	  }
 	  Coor<Nd> this_max_disp = get_max_disp(it.second);
 	  for (std::size_t i = 0; i < Nd; ++i)
-	    max_disp[i] = std::max(max_disp[i], this_max_disp[i] + disp[i]);
+	    max_disp.at(i) = std::max(max_disp.at(i), this_max_disp.at(i) + disp.at(i));
 	}
 	return max_disp;
       }
@@ -10430,7 +11030,7 @@ namespace Chroma
 	// Apply displacements on the right and call recursively
 	const int num_vecs = right.kvdim()['n'];
 	unsigned int node_disp = 0;
-	for (const auto it : disps.p)
+	for (const auto& it : disps.p)
 	{
 	  detail::log(1, "push on direction " + std::to_string(it.first));
 	  // Apply displacement on the right vectors
@@ -10727,7 +11327,7 @@ namespace Chroma
 
 	// Apply displacements on colorvec2 and call recursively
 	unsigned int node_disp = 0;
-	for (const auto it : disps.p)
+	for (const auto& it : disps.p)
 	{
 	  detail::log(1, "for disps, push on direction " + std::to_string(it.first));
 	  // Apply displacement on the current colorvec
@@ -10847,30 +11447,12 @@ namespace Chroma
 	    colorvec.release();
 	  }
 	  std::vector<Coor<3>> moms_list(moms.begin() + mfrom, moms.begin() + mfrom + msize);
-	  if (!deriv)
-	  {
-	    std::array<Tensor<Nin, COMPLEX>, 3> this_3_colorvec{this_colorvec, this_colorvec,
-								this_colorvec};
-	    ns_doMomDisp_colorContractions::doMomDisp_colorContractions<COMPLEX, Nin>(
-	      ut, std::move(this_3_colorvec), first_tslice + tfrom, tree_disps, deriv, 0,
-	      {this_moms, moms_list}, mfrom, max_cols.getSome(0), order_out_str,
-	      dev.getSome(OnDefaultDevice), dist_ret.getSome(dist), call);
-	  }
-	  else
-	  {
-	    // When using derivatives, each momenta has a different effect
-	    std::vector<COMPLEX> ones(msize, COMPLEX(1));
-	    Tensor<Nin + 1, COMPLEX> this_colorvec_m =
-	      this_colorvec.template like_this<Nin + 1>("%m", '%', "", {{'m', msize}});
-	    this_colorvec_m.contract(this_colorvec, {}, NotConjugate, asTensorView(ones),
-				     {{'i', 'm'}}, NotConjugate);
-	    std::array<Tensor<Nin + 1, COMPLEX>, 3> this_3_colorvec_m{
-	      this_colorvec_m, this_colorvec_m, this_colorvec_m};
-	    ns_doMomDisp_colorContractions::doMomDisp_colorContractions<COMPLEX, Nin + 1>(
-	      ut, std::move(this_3_colorvec_m), first_tslice + tfrom, tree_disps, deriv, 0,
-	      {this_moms, moms_list}, mfrom, max_cols.getSome(0), order_out_str,
-	      dev.getSome(OnDefaultDevice), dist_ret.getSome(dist), call);
-	  }
+	  std::array<Tensor<Nin, COMPLEX>, 3> this_3_colorvec{this_colorvec, this_colorvec,
+							      this_colorvec};
+	  ns_doMomDisp_colorContractions::doMomDisp_colorContractions<COMPLEX, Nin>(
+	    ut, std::move(this_3_colorvec), first_tslice + tfrom, tree_disps, deriv, 0,
+	    {this_moms, moms_list}, mfrom, max_cols.getSome(0), order_out_str,
+	    dev.getSome(OnDefaultDevice), dist_ret.getSome(dist), call);
 	}
       }
     }
@@ -10925,7 +11507,7 @@ namespace Chroma
 
 	// Apply displacements on right and call recursively
 	unsigned int node_disp = 0;
-	for (const auto it : disps.p)
+	for (const auto& it : disps.p)
 	{
 	  detail::log(1, "for disps, push on direction " + std::to_string(it.first));
 	  // Apply displacement on the right colorvec
@@ -11013,7 +11595,7 @@ namespace Chroma
 		    asTensorView(u[d])
 		      .kvslice_from_size({{'t', first_tslice + tfrom}}, {{'t', tsize}})
 		      .toComplex(), first_tslice + tfrom)
-		    .make_sure(none, dev, dist);
+		    .make_sure<COMPLEX>(none, dev, dist);
 	}
 
 	// Get the time-slice for colorvec
@@ -11169,6 +11751,26 @@ namespace Chroma
       }
     }
 
+    /// Return a Coor<3> from a multi1d
+    /// \param v: input to convert
+
+    inline Coor<3> toCoor(const multi1d<int>& v)
+    {
+      if (v.size() != 3)
+	throw std::runtime_error("invalid number of elements");
+      return Coor<3>{v[0], v[1], v[2]};
+    }
+
+    /// Return a Coor<3> from a vector
+    /// \param v: input to convert
+
+    inline Coor<3> toCoor(const std::vector<int>& v)
+    {
+      if (v.size() != 3)
+	throw std::runtime_error("invalid number of elements");
+      return Coor<3>{v[0], v[1], v[2]};
+    }
+
     /// Return a multi1d from std::vector
     /// \param v: vector to convert
 
@@ -11188,6 +11790,18 @@ namespace Chroma
     multi1d<T> tomulti1d(const std::array<T, N>& v)
     {
       multi1d<T> r(v.size());
+      for (int i = 0; i < v.size(); ++i)
+	r[i] = v[i];
+      return r;
+    }
+
+    /// Return a std::vector from multi1d
+    /// \param v: multi1d to convert
+
+    template <typename T>
+    std::vector<T> tovector(const multi1d<T>& v)
+    {
+      std::vector<T> r(v.size());
       for (int i = 0; i < v.size(); ++i)
 	r[i] = v[i];
       return r;

@@ -122,6 +122,29 @@ namespace Chroma
   void write(XMLWriter& w, const std::string& path, const QudaSchwarzMethod& t);
 
 
+	// Machinery to read QudaEigType and QudaEigSpectrumType
+	namespace QudaEigTypeEnv {
+		extern const std::string typeIDString;
+		extern bool registered; 
+		bool registerAll(void);
+	}
 
+
+	namespace QudaEigSpectrumTypeEnv {
+		extern const std::string typeIDString;
+		extern bool registered;
+		bool registerAll(void);
+	}
+
+	typedef Chroma::SingletonHolder<Chroma::EnumTypeMap<QudaEigType> > theQudaEigTypeMap;
+	typedef Chroma::SingletonHolder<Chroma::EnumTypeMap<QudaEigSpectrumType> > theQudaEigSpectrumTypeMap;
+
+	void read(QDP::XMLReader& r,  const std::string& path, QudaEigType& t);
+	void write(QDP::XMLWriter& w, const std::string& path, const QudaEigType& t);
+
+
+	void read(XMLReader& xml_in, const std::string& path, QudaEigSpectrumType& t);
+	void write(XMLWriter& xml_out, const std::string& path, const QudaEigSpectrumType& t);
 }
+
 #endif

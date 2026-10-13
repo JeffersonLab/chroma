@@ -116,7 +116,7 @@ void MInvRelCG_a(const LinearOperator<T>& A,
   Double chi_norm = sqrt(chi_norm_sq);
 
 
-  if( toBool( chi_norm < fuzz )) { 
+  if( toBool( chi_norm < Chroma::constant().fuzz )) { 
     n_count = 0;
 
     // The psi are all zero anyway at this point

@@ -49,7 +49,7 @@ namespace Chroma
 	read(paramtop, "mom_list", param.mom_list);
 
       param.mom2_min = 0;
-      if (paramtop.count("mom_min") > 0)
+      if (paramtop.count("mom2_min") > 0)
 	read(paramtop, "mom2_min", param.mom2_min);
 
       param.mom2_max = 0;
@@ -115,6 +115,16 @@ namespace Chroma
 	  param.aQuarkPhase.push_back(-i);
       }
 
+      param.use_superb_format = true;
+      if( paramtop.count("use_superb_format") == 1 ) {
+        read(paramtop, "use_superb_format", param.use_superb_format);
+      }
+
+      param.output_file_is_local = false;
+      if( paramtop.count("output_file_is_local") == 1 ) {
+        read(paramtop, "output_file_is_local", param.output_file_is_local);
+      }
+
       param.link_smearing = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
 
@@ -124,7 +134,9 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 3;
+      // In version <= 4, the antiquark phase was applied to the eigenvector before the dagger
+      // while in version >= 5, the antiquark phase is applied to daggered eigenvector
+      int version = 5;
 
       write(xml, "version", version);
       write(xml, "use_derivP", param.use_derivP);
@@ -140,6 +152,8 @@ namespace Chroma
       write(xml, "max_moms_in_contraction", param.max_moms_in_contraction);
       write(xml, "quarkPhase", SB::tomulti1d(param.quarkPhase));
       write(xml, "aQuarkPhase", SB::tomulti1d(param.aQuarkPhase));
+      write(xml, "use_superb_format", param.use_superb_format);
+      write(xml, "output_file_is_local", param.output_file_is_local);
       xml << param.link_smearing.xml;
 
       pop(xml);
@@ -522,8 +536,26 @@ namespace Chroma
 	    std::fabs((int)params.param.aQuarkPhase[i] - params.param.aQuarkPhase[i]) > 0)
 	  std::runtime_error("phase', `quarkPhase', and `aQuarkPhase' should be integer");
 	rightphase[i] = params.param.quarkPhase[i];
-	leftphase[i] = params.param.aQuarkPhase[i];
+	leftphase[i] = -params.param.aQuarkPhase[i];
       }
+      std::vector<SB::Coor<3>> phasings;	     ///< list of all phasings
+      phasings.push_back(leftphase);
+      int leftphase_index = 0;
+      int rightphase_index = 0;
+      if (rightphase != leftphase)
+      {
+	phasings.push_back(rightphase);
+	rightphase_index = 1;
+      }
+
+      // Compute the interval of t points to compute
+      int tfrom = params.param.t_source;   // First t-slice to compute
+      int tsize = params.param.Nt_forward; // Number of t-slices to compute
+      const int Nt = Layout::lattSize()[params.param.decay_dir];
+
+      // Make sure displacements are something sensible and transform to std objects
+      std::vector<std::vector<int>> displacement_list =
+	normalizeDisplacements(params.param.displacement_list);
 
       //
       // DB storage
@@ -557,7 +589,6 @@ namespace Chroma
 	  write(file_xml, "Config_info", gauge_xml);
 	  // Some tasks read the eigenvalues from metadata but they not used; so we are going to give fake values
 	  multi1d<multi1d<double>> evals(params.param.num_vecs);
-	  const int Nt = Layout::lattSize()[params.param.decay_dir];
 	  for (int i = 0; i < params.param.num_vecs; ++i)
 	  {
 	    evals[i].resize(Nt);
@@ -580,14 +611,63 @@ namespace Chroma
 	}
       };
 
-      // Compute the interval of t points to compute
-      int tfrom = params.param.t_source;   // First t-slice to compute
-      int tsize = params.param.Nt_forward; // Number of t-slices to compute
-      const int Nt = Layout::lattSize()[params.param.decay_dir];
+      /// Superb storage; dimension labels ijtdmhH:
+      /// i,j: eigenvector indices
+      /// t: time slice
+      /// d: displacements
+      /// m: momentum
+      /// h: phasing source
+      /// H: phasing sink
 
-      // Make sure displacements are something sensible and transform to std objects
-      std::vector<std::vector<int>> displacement_list =
-	normalizeDisplacements(params.param.displacement_list);
+      SB::StorageTensor<7, SB::ComplexD> st;
+      if (params.param.use_superb_format)
+      {
+	const char* order = "ijtdmhH";
+	XMLBufferWriter metadata_xml;
+	push(metadata_xml, "DBMetaData");
+	write(metadata_xml, "id", std::string("mesonElemOp"));
+	write(metadata_xml, "lattSize", QDP::Layout::lattSize());
+	write(metadata_xml, "decay_dir", params.param.decay_dir);
+	proginfo(metadata_xml); // Print out basic program info
+	write(metadata_xml, "Config_info", gauge_xml);
+	write(metadata_xml, "Params", params.param);
+	write(metadata_xml, "tensorOrder", order);
+	std::vector<multi1d<int>> disps;
+	for (int i=0; i<params.param.displacement_list.size(); ++i)
+	{
+	  disps.push_back(params.param.displacement_list[i]);
+	}
+	write(metadata_xml, "displacements", disps);
+	std::vector<multi1d<int>>  moms;
+	for (const auto& mom: mom_list)
+	  moms.push_back(SB::tomulti1d(mom));
+	write(metadata_xml, "moms", moms);
+	std::vector<multi1d<int>> phasings_xml;
+	for (const auto& it : phasings)
+	  phasings_xml.push_back(SB::tomulti1d(it));
+	write(metadata_xml, "phasings", phasings_xml);
+
+	pop(metadata_xml);
+
+	// NOTE: metadata_xml only has a valid value on Master node; so do a broadcast
+	std::string metadata = SB::broadcast(metadata_xml.str());
+
+	st = SB::StorageTensor<7, SB::ComplexD>(
+	  params.named_obj.meson_op_file, metadata, order,
+	  SB::kvcoors<7>(order, {{'i', params.param.num_vecs},
+				 {'j', params.param.num_vecs},
+				 {'t', Nt},
+				 {'d', disps.size()},
+				 {'m', moms.size()},
+				 {'h', phasings.size()},
+				 {'H', phasings.size()}}),
+	  SB::Sparse, SB::checksum_type::BlockChecksum,
+	  params.param.output_file_is_local ? SB::LocalFSFile : SB::SharedFSFile);
+	st.preallocate(params.param.num_vecs * params.param.num_vecs *
+		       tsize * displacement_list.size() * moms.size() *
+		       phasings.size() * sizeof(SB::ComplexD) /
+		       (params.param.output_file_is_local ? Layout::numNodes() : 1));
+      }
 
       //
       // Meson operators
@@ -614,8 +694,24 @@ namespace Chroma
 					this_tsize, params.param.num_vecs, SB::none);
 
 	// Call for storing the baryons
-	SB::ContractionFn<SB::Complex> call(
-	  [&](SB::Tensor<4, SB::Complex> tensor, int disp, int first_tslice, int first_mom) {
+	SB::ContractionFn<SB::Complex> call([&](SB::Tensor<4, SB::Complex> tensor, int disp,
+						int first_tslice, int first_mom) {
+	  StopWatch tstoring;
+	  tstoring.reset();
+	  tstoring.start();
+
+	  if (params.param.use_superb_format)
+	  {
+	    st.kvslice_from_size({{'t', first_tslice},
+				  {'m', first_mom},
+				  {'d', disp},
+				  {'h', rightphase_index},
+				  {'H', leftphase_index}},
+				 {{'d', 1}, {'h', 1}, {'H', 1}})
+	      .copyFrom(tensor);
+	  }
+	  else
+	  {
 	    // Only the master node writes the elementals and we assume that tensor is only supported on master
 	    assert(tensor.dist == SB::OnMaster);
 	    tensor = tensor.getLocal();
@@ -623,10 +719,6 @@ namespace Chroma
 	    {
 	      // Open the database
 	      open_db();
-
-	      StopWatch tstoring;
-	      tstoring.reset();
-	      tstoring.start();
 
 	      KeyMesonElementalOperator_t key;
 	      ValMesonElementalOperator_t val(
@@ -639,7 +731,7 @@ namespace Chroma
 	      {
 		for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
 		{
-		  key.t_slice = first_tslice + t;
+		  key.t_slice = (first_tslice + t) % Nt;
 		  key.mom = SB::tomulti1d(mom_list[first_mom + m]);
 		  key.displacement =
 		    SB::tomulti1d(displacement_list[disp]); // only right colorstd::vector
@@ -647,16 +739,18 @@ namespace Chroma
 		  qdp_db[0].insert(key, val);
 		}
 	      }
-
-	      tstoring.stop();
-	      time_storing += tstoring.getTimeInSeconds();
 	    }
-	  });
+	  }
+
+	  tstoring.stop();
+	  time_storing += tstoring.getTimeInSeconds();
+	});
 
 	// Do the contractions
 	SB::doMomDisp_contractions(u_smr, source_colorvec, leftphase, rightphase, mom_list,
 				   this_tfrom, displacement_list, params.param.use_derivP, call,
-				   SB::none, SB::OnDefaultDevice, SB::OnMaster,
+				   SB::none, SB::OnDefaultDevice,
+				   !params.param.use_superb_format ? SB::OnMaster : SB::OnEveryone,
 				   0 /* max_tslices_in_contraction==0 means to do all */,
 				   params.param.max_moms_in_contraction);
       }

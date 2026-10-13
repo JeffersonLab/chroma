@@ -7,32 +7,39 @@
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/invert/quda_solvers/enum_quda_io.h"
 #include "actions/ferm/invert/quda_solvers/quda_gcr_params.h"
-#include <string>
 #include "handle.h"
+#include <string>
 
-namespace Chroma 
+namespace Chroma
 {
-  struct SysSolverQUDACloverParams { 
+  struct SysSolverQUDACloverParams {
     SysSolverQUDACloverParams(XMLReader& xml, const std::string& path);
-    SysSolverQUDACloverParams() {
-      solverType=CG;
-      cudaPrecision=DEFAULT;
-      cudaReconstruct=RECONS_12;
-      cudaSloppyPrecision=DEFAULT;
-      cudaSloppyReconstruct=RECONS_12;
-      asymmetricP = false; //< Use asymmetric version of the linear operator
+    SysSolverQUDACloverParams() : GridSplitDims(Nd)
+    {
+      solverType = CG;
+      cudaPrecision = DEFAULT;
+      cudaReconstruct = RECONS_12;
+      cudaSloppyPrecision = DEFAULT;
+      cudaSloppyReconstruct = RECONS_12;
+      asymmetricP = true;  //< Use asymmetric version of the linear operator
       axialGaugeP = false; //< Fix Axial Gauge?
-      SilentFailP = false; //< If set to true ignore lack of convergence. Default is 'loud' 
-      RsdToleranceFactor = Real(10); //< Tolerate if the solution achived is better (less) than rsdToleranceFactor*RsdTarget
-      tuneDslashP = false ; //< v0.3 autotune feature
+      SilentFailP = false; //< If set to true ignore lack of convergence. Default is 'loud'
+      RsdToleranceFactor = Real(
+	10); //< Tolerate if the solution achived is better (less) than rsdToleranceFactor*RsdTarget
       verboseP = false;
       innerParamsP = false;
       backup_invP = false;
       dump_on_failP = false;
       Pipeline = 1;
+      SolutionCheckP = true;
+      GridSplitDims[0] = 1;
+      GridSplitDims[1] = 1;
+      GridSplitDims[2] = 1;
+      GridSplitDims[3] = 1;
     };
 
-    SysSolverQUDACloverParams( const SysSolverQUDACloverParams& p) {
+    SysSolverQUDACloverParams(const SysSolverQUDACloverParams& p)
+    {
       CloverParams = p.CloverParams;
       AntiPeriodicT = p.AntiPeriodicT;
       MaxIter = p.MaxIter;
@@ -48,16 +55,18 @@ namespace Chroma
       axialGaugeP = p.axialGaugeP;
       SilentFailP = p.SilentFailP;
       RsdToleranceFactor = p.RsdToleranceFactor;
-      tuneDslashP = p.tuneDslashP;
       innerParamsP = p.innerParamsP;
       innerParams = p.innerParams;
       backup_invP = p.backup_invP;
       backup_inv_param = p.backup_inv_param;
       dump_on_failP = p.dump_on_failP;
       Pipeline = p.Pipeline;
+      SolutionCheckP = p.SolutionCheckP;
+      GridSplitDims.resize(Nd);
+      for (int i = 0; i < Nd; i++)
+	GridSplitDims[i] = p.GridSplitDims[i];
     }
 
-   
     CloverFermActParams CloverParams;
     bool AntiPeriodicT;
     int MaxIter;
@@ -73,7 +82,6 @@ namespace Chroma
     bool axialGaugeP;
     bool SilentFailP;
     Real RsdToleranceFactor;
-    bool tuneDslashP;
     bool innerParamsP;
 
     // GCR Specific params
@@ -84,20 +92,17 @@ namespace Chroma
     bool backup_invP;
     GroupXML_t backup_inv_param;
     bool dump_on_failP;
-    
-    // Pipeline depth 
+
+    // Pipeline depth
     int Pipeline;
+    bool SolutionCheckP;
+    multi1d<int> GridSplitDims;
   };
 
   void read(XMLReader& xml, const std::string& path, SysSolverQUDACloverParams& p);
 
-  void write(XMLWriter& xml, const std::string& path, 
-	     const SysSolverQUDACloverParams& param);
-
-
+  void write(XMLWriter& xml, const std::string& path, const SysSolverQUDACloverParams& param);
 
 }
 
 #endif
-
-

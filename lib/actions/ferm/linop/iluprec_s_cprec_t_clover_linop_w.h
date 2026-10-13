@@ -13,6 +13,8 @@
 #include "actions/ferm/linop/clover_term_w.h"
 #include "actions/ferm/linop/iluprec_s_cprec_t_wilsonlike_linop_w.h"
 
+#if ! defined (QDP_IS_QDPJIT2)
+
 namespace Chroma 
 { 
   //! Clover Dirac Operator - Unpreconditioned in Space, Centrally Preconditioned in time
@@ -192,4 +194,5 @@ namespace Chroma
 #endif
 #endif
 
+#endif
 #endif

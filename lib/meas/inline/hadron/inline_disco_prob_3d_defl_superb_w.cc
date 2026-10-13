@@ -36,6 +36,28 @@ namespace Chroma
   namespace InlineDiscoProb3dDeflSuperb
   {
 
+    //! Displacement-mom combo input
+    void read(XMLReader& xml, const std::string& path,
+	      displacements_moms_combo_t& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "Displacements", input.displacement_list);
+      read(inputtop, "mom_list", input.mom_list);
+    }
+
+    //! Displacement-mom combo output
+    void write(XMLWriter& xml, const std::string& path,
+	       const displacements_moms_combo_t& input)
+    {
+      push(xml, path);
+
+      write(xml, "Displacements", input.displacement_list);
+      write(xml, "mom_list", input.mom_list);
+
+      pop(xml);
+    }
+
     //! Propagator input
     void read(XMLReader& xml, const std::string& path,
 	      InlineDiscoProb3dDeflSuperb::Params::NamedObject_t& input)
@@ -44,6 +66,10 @@ namespace Chroma
 
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "sdb_file", input.sdb_file);
+      if (inputtop.count("defl_sdb_file") == 1)
+	read(inputtop, "defl_sdb_file", input.defl_sdb_file);
+      if (inputtop.count("ip_sdb_file") == 1)
+	read(inputtop, "ip_sdb_file", input.ip_sdb_file);
     }
 
     //! Propagator output
@@ -54,6 +80,8 @@ namespace Chroma
 
       write(xml, "gauge_id", input.gauge_id);
       write(xml, "sdb_file", input.sdb_file);
+      write(xml, "delf_sdb_file", input.defl_sdb_file);
+      write(xml, "ip_sdb_file", input.ip_sdb_file);
 
       pop(xml);
     }
@@ -64,7 +92,12 @@ namespace Chroma
     {
       XMLReader inputtop(xml, path);
 
-      if (inputtop.count("Displacements") == 1)
+      if (inputtop.count("combos") == 1)
+      {
+	read(inputtop, "combos", param.combos_list);
+	param.max_path_length = -1;
+      }
+      else if (inputtop.count("Displacements") == 1)
       {
 	read(inputtop, "Displacements", param.alt_displacements);
 	param.max_path_length = -1;
@@ -157,6 +190,27 @@ namespace Chroma
       {
 	read(inputtop, "max_rhs", param.max_rhs);
       }
+
+      param.use_superb_format = true;
+      if( inputtop.count("use_superb_format") == 1 ) {
+        read(inputtop, "use_superb_format", param.use_superb_format);
+      }
+
+      param.num_vecs = 0;
+      if (inputtop.count("num_vecs") == 1)
+      {
+	read(inputtop, "num_vecs", param.num_vecs);
+      }
+
+      if (inputtop.count("LinkSmearing") == 1)
+      {
+	param.link_smearing = readXMLGroup(inputtop, "LinkSmearing", "LinkSmearingType");
+      }
+
+      param.max_tslices_in_contraction = 1;
+      if( inputtop.count("max_tslices_in_contraction") == 1 ) {
+        read(inputtop, "max_tslices_in_contraction", param.max_tslices_in_contraction);
+      }
     }
 
     //! Propagator output
@@ -177,7 +231,9 @@ namespace Chroma
       write(xml, "probing_power", param.probing_power);
       write(xml, "noise_vectors", param.noise_vectors);
       write(xml, "max_rhs", param.max_rhs);
+      write(xml, "use_superb_format", param.use_superb_format);
       xml << param.projParam.xml;
+      xml << param.link_smearing.xml;
 
       pop(xml);
     }
@@ -324,34 +380,41 @@ namespace Chroma
     using Traces = MesonMap<std::vector<std::complex<double>>>;
     using TracesVariance = MesonMap<std::vector<double>>;
 
+    struct combo_t {
+      displacement_list_t displacement_list;
+      SB::CoorMoms mom_list;
+    };
+
     void do_disco(Traces& db, const std::vector<std::shared_ptr<LatticeFermion>>& qbar,
 		  const std::vector<std::shared_ptr<LatticeFermion>>& q,
-		  const SB::CoorMoms& mom_list, int t_source, const multi1d<LatticeColorMatrix>& u,
-		  const std::vector<std::vector<int>>& disps)
+		  const std::vector<combo_t>& combos, int t_source,
+		  const multi1d<LatticeColorMatrix>& u, int max_tslices = 0)
     {
 
       const int Nt = Layout::lattSize()[3];
       const int a = qbar.size();
       assert(qbar.size() == q.size());
+      const int t0 = (t_source >= 0 ? t_source : 0);
+      const int tn = (t_source >= 0 ? 1 : Nt);
 
       // Copy q and qbar to tensor forms
       std::string q_order = "cxyzXnSst*";
       SB::Tensor<Nd + 6, SB::Complex> qt(
 	q_order,
-	SB::latticeSize<Nd + 6>(q_order, {{'t', 1}, {'n', 1}, {'S', Ns}, {'s', 1}, {'*', a}}));
+	SB::latticeSize<Nd + 6>(q_order, {{'t', tn}, {'n', 1}, {'S', Ns}, {'s', 1}, {'*', a}}));
       for (int i = 0; i < a; ++i)
 	SB::asTensorView(*q[i])
 	  .rename_dims({{'s', 'S'}})
-	  .kvslice_from_size({{'t', t_source}}, {{'t', 1}})
+	  .kvslice_from_size({{'t', t0}}, {{'t', tn}})
 	  .copyTo(qt.kvslice_from_size({{'*', i}}, {{'*', 1}}));
       std::string qbar_order = "cxyzXNQqt*";
       SB::Tensor<Nd + 6, SB::Complex> qbart(
 	qbar_order,
-	SB::latticeSize<Nd + 6>(qbar_order, {{'t', 1}, {'N', 1}, {'Q', Ns}, {'q', 1}, {'*', a}}));
+	SB::latticeSize<Nd + 6>(qbar_order, {{'t', tn}, {'N', 1}, {'Q', Ns}, {'q', 1}, {'*', a}}));
       for (int i = 0; i < a; ++i)
 	SB::asTensorView(*qbar[i])
 	  .rename_dims({{'s', 'Q'}})
-	  .kvslice_from_size({{'t', t_source}}, {{'t', 1}})
+	  .kvslice_from_size({{'t', t0}}, {{'t', tn}})
 	  .copyTo(qbart.kvslice_from_size({{'*', i}}, {{'*', 1}}));
 
       // Put all gamma matrices in a single tensor
@@ -364,45 +427,61 @@ namespace Chroma
 	}
       }
 
-      // Normalize paths: replace empty by [0]
-      std::vector<std::vector<int>> norm_disps;
-      norm_disps.reserve(disps.size());
-      for (const auto& it : disps)
-	norm_disps.push_back(it.size() == 0 ? std::vector<int>(1) : it);
+      MesonMap<bool> unique(16);
+      for (const auto& combo : combos)
+      {
+	const auto& disps = combo.displacement_list;
+	const auto& mom_list = combo.mom_list;
 
-      // Contract S and Q with all the gammas, and apply the displacements
-      std::string order_out = "gmNnsqt*";
-      auto call = [&](SB::Tensor<8, SB::Complex> r, int disp_index, int tfrom, int mfrom) {
-	// Gather all traces at the master node
-	SB::Tensor<8, SB::Complex> con =
-	  r.make_sure(order_out, SB::OnHost, SB::OnMaster).getLocal();
+	// Normalize paths: replace empty by [0]
+	std::vector<std::vector<int>> norm_disps;
+	norm_disps.reserve(disps.size());
+	for (const auto& it : disps)
+	  norm_disps.push_back(it.size() == 0 ? std::vector<int>(1) : it);
 
-	// Do the update only on the master node
-	if (con)
-	{
-	  if (r.kvdim().at('t') != 1)
-	    throw std::runtime_error("wtf");
-	  for (int mom = 0; mom < mom_list.size(); ++mom)
+	// Contract S and Q with all the gammas, and apply the displacements
+	std::string order_out = "gmNnsqt*";
+	auto call = [&](SB::Tensor<8, SB::Complex> r, int disp_index, int tfrom, int mfrom) {
+	  // Gather all traces at the master node
+	  SB::Tensor<8, SB::Complex> con =
+	    r.make_sure(order_out, SB::OnHost, SB::OnMaster).getLocal();
+
+	  // Do the update only on the master node
+	  if (con)
 	  {
-	    MesonKey k{tfrom % Nt, norm_disps[disp_index], mom_list[mfrom + mom]};
-
-	    auto it = db.find(k);
-	    if (it == db.end())
-	      it = db.insert({k, std::vector<std::complex<double>>(Ns * Ns)}).first;
-
-	    for (int ai = 0; ai < a; ++ai)
+	    int tsize = r.kvdim().at('t');
+	    if (tn == 1 && tsize != 1)
+	      throw std::runtime_error("wtf");
+	    for (int mom = 0; mom < mom_list.size(); ++mom)
 	    {
-	      for (int g = 0; g < Ns * Ns; ++g)
+	      for (int t = 0; t < tsize; ++t)
 	      {
-		it->second[g] += con.get({g, mom, 1, 1, 1, 1, 0, ai});
+		MesonKey k{(tfrom + t) % Nt, norm_disps[disp_index], mom_list[mfrom + mom]};
+
+		// Avoid adding the same mom-dist twice
+		if (unique.count(k) > 0)
+		  continue;
+		unique.insert({k, true});
+
+		auto it = db.find(k);
+		if (it == db.end())
+		  it = db.insert({k, std::vector<std::complex<double>>(Ns * Ns)}).first;
+
+		for (int ai = 0; ai < a; ++ai)
+		{
+		  for (int g = 0; g < Ns * Ns; ++g)
+		  {
+		    it->second[g] += con.get({g, mom, 1, 1, 1, 1, 0, ai});
+		  }
+		}
 	      }
 	    }
 	  }
-	}
-      };
-      SB::doMomGammaDisp_contractions<8, Nd + 6, Nd + 6, SB::Complex>(
-	u, std::move(qbart), std::move(qt), t_source /* first t_slize */, 0 /* save from */,
-	1 /* save size */, mom_list, gamma_mats, disps, false /*no deriv*/, call, order_out);
+	};
+	SB::doMomGammaDisp_contractions<8, Nd + 6, Nd + 6, SB::Complex>(
+	  u, qbart, qt, t0 /* first t_slize */, 0 /* save from */, tn /* save size */, mom_list,
+	  gamma_mats, disps, false /*no deriv*/, call, order_out, t_source >= 0 ? 1 : max_tslices);
+      }
     }
 
     // Update the mean and var for each observable in db
@@ -535,6 +614,125 @@ namespace Chroma
 	  QDPIO::cout << "Gamma[" << i << "]: avg_det = " << dbdet_avg[key][i] / n
 		      << " avg = " << dbmean_avg[key][i] / n << "   var = " << dbvar_avg[key][i] / n
 		      << std::endl;
+      }
+    }
+
+    template <typename Vector>
+    struct Hash {
+      std::size_t operator()(const Vector& k) const
+      {
+	auto h = std::hash<int>{}(0);
+	for (const auto& it : k)
+	  h = (h << 1) ^ std::hash<typename std::remove_const<
+			   typename std::remove_reference<decltype(it)>::type>::type>{}(it);
+	return h;
+      }
+    };
+
+    void write_sdb(const Traces& db, const std::string filename, const Params::Param_t& param,
+		   const XMLBufferWriter& gauge_xml, int first_computed_color,
+		   int num_computed_colors, int num_colors, int deflation_rank,
+		   bool use_new_format = true)
+    {
+      std::unordered_map<std::vector<int>, int, Hash<std::vector<int>>> disps_map(16);
+      std::unordered_map<SB::Coor<3>, int, Hash<SB::Coor<3>>> moms_map(16);
+      const std::string order = "itdm";
+
+      // Write the meta-data
+      XMLBufferWriter metadata_xml;
+      push(metadata_xml, "DBMetaData");
+      write(metadata_xml, "id", std::string("DiscoBlocks"));
+      write(metadata_xml, "lattSize", QDP::Layout::lattSize());
+      write(metadata_xml, "decay_dir", 3);
+      write(metadata_xml, "Params", param);
+      write(metadata_xml, "Config_info", gauge_xml);
+      write(metadata_xml, "first_computed_color", first_computed_color);
+      write(metadata_xml, "num_computed_colors", num_computed_colors);
+      write(metadata_xml, "num_colors", num_colors);
+      write(metadata_xml, "deflation_rank", deflation_rank);
+      if (use_new_format)
+      {
+	write(metadata_xml, "tensorOrder", order);
+	write(metadata_xml, "mass_label", param.mass_label);
+	std::unordered_set<std::vector<int>, Hash<std::vector<int>>> disps_set(16);
+	std::unordered_set<SB::Coor<3>, Hash<SB::Coor<3>>> moms_set(16);
+	for (const auto& it : db)
+	{
+	  disps_set.insert(it.first.disp);
+	  moms_set.insert(it.first.mom);
+	}
+	int i = 0;
+	std::vector<multi1d<int>> disps;
+	for (const auto& it : disps_set)
+	{
+	  disps.push_back(SB::tomulti1d(it));
+	  disps_map[it] = i++;
+	}
+	write(metadata_xml, "displacements", disps);
+	i = 0;
+	std::vector<multi1d<int>> moms;
+	for (const auto& it : moms_set)
+	{
+	  moms.push_back(SB::tomulti1d(it));
+	  moms_map[it] = i++;
+	}
+	write(metadata_xml, "moms", moms);
+      }
+      pop(metadata_xml);
+
+      if (!use_new_format)
+      {
+	if (Layout::nodeNumber() != 0)
+	  return;
+
+	// DB storage
+	LocalBinaryStoreDB<LocalSerialDBKey<KeyOperator_t>, LocalSerialDBData<ValOperator_t>>
+	  qdp_db;
+
+	std::string file_str(metadata_xml.str());
+	qdp_db.setMaxUserInfoLen(file_str.size());
+
+	//Slightly modify code to account for changes from multifile write.
+	//Be consistent with old mode of filename write.
+	qdp_db.open(filename, O_RDWR | O_CREAT, 0664);
+
+	qdp_db.insertUserdata(file_str);
+
+	KeyOperator_t key;
+	ValOperator_t val;
+	// Store all the data
+	for (const auto& it : db)
+	{
+	  key.t_slice = it.first.t_slice;
+	  key.disp = SB::tomulti1d(it.first.disp);
+	  key.mom = SB::tomulti1d(it.first.mom);
+	  key.mass_label = param.mass_label;
+	  for (int i = 0; i < Ns * Ns; i++)
+	    val.set({i}, it.second[i]);
+	  qdp_db.insert(key, val);
+	}
+	qdp_db.close();
+      }
+      else
+      {
+      	// NOTE: metadata_xml only has a valid value on Master node; so do a broadcast
+	std::string metadata = SB::broadcast(metadata_xml.str());
+
+	const int Nt = Layout::lattSize()[3];
+	auto st = SB::StorageTensor<4, SB::ComplexD>(
+	  filename, metadata, order,
+	  SB::kvcoors<4>(
+	    order, {{'i', Ns * Ns}, {'t', Nt}, {'d', disps_map.size()}, {'m', moms_map.size()}}),
+	  SB::Sparse, SB::checksum_type::BlockChecksum, SB::SharedFSFile);
+	st.preallocate(Ns * Ns * db.size());
+	for (const auto& it : db)
+	{
+	  st.kvslice_from_size({{'t', it.first.t_slice},
+				{'m', moms_map[it.first.mom]},
+				{'d', disps_map[it.first.disp]}},
+			       {{'t', 1}, {'m', 1}, {'d', 1}})
+	    .copyFrom(SB::asTensorView(it.second));
+	}
       }
     }
 
@@ -701,32 +899,46 @@ namespace Chroma
       // Initialize the slow Fourier transform phases
       int decay_dir = Nd - 1; // hadamard needs this for now
 
-      //
-      // If a list of momenta has been specified only need phases corresponding to these
-      //
-      SB::CoorMoms mom_list;
-      if (params.param.mom_list.size() == 0)
+      // Read the list of displacements and momenta
+      std::vector<combo_t> disp_mom_combos;
+      if (params.param.combos_list.size() > 0)
       {
-	mom_list = SB::getMomenta(params.param.mom2_min, params.param.mom2_max);
+	// a) If the user provided combos, read the combos
+	for (const auto& combo : params.param.combos_list)
+	{
+	  disp_mom_combos.push_back(
+	    combo_t{combo.displacement_list, SB::getMomenta(combo.mom_list)});
+	}
       }
       else
       {
-	mom_list = SB::getMomenta(params.param.mom_list);
-      }
+	// b) If the user provided a list of momenta and displacements, make them into a combo
 
-      // Process the displacements
-      std::vector<std::vector<int>> disps;
-      if (params.param.max_path_length < 0)
-      {
-	disps = params.param.alt_displacements;
-      }
-      else
-      {
-	disps.push_back(std::vector<int>()); // no displacement
-	for (int i = 1; i <= params.param.max_path_length; ++i)
-	  disps.push_back(std::vector<int>(i, 3)); // displacements on positive z-dir
-	for (int i = 1; i <= params.param.max_path_length; ++i)
-	  disps.push_back(std::vector<int>(i, -3)); // displacements on negative z-dir
+	SB::CoorMoms mom_list;
+	if (params.param.mom_list.size() == 0)
+	{
+	  mom_list = SB::getMomenta(params.param.mom2_min, params.param.mom2_max);
+	}
+	else
+	{
+	  mom_list = SB::getMomenta(params.param.mom_list);
+	}
+
+	// Process the displacements
+	std::vector<std::vector<int>> disps;
+	if (params.param.max_path_length < 0)
+	{
+	  disps = params.param.alt_displacements;
+	}
+	else
+	{
+	  disps.push_back(std::vector<int>()); // no displacement
+	  for (int i = 1; i <= params.param.max_path_length; ++i)
+	    disps.push_back(std::vector<int>(i, 3)); // displacements on positive z-dir
+	  for (int i = 1; i <= params.param.max_path_length; ++i)
+	    disps.push_back(std::vector<int>(i, -3)); // displacements on negative z-dir
+	}
+	disp_mom_combos.push_back(combo_t{disps, mom_list});
       }
 
       // number of colors
@@ -766,9 +978,93 @@ namespace Chroma
 	    *vk[ki] = *uk[ki] / getLambda(proj, k + ki);
 	  getU(proj, k, uk);
 
+	  // Compute the contribution of the projector for all the time slices requested by the user,
+	  // unless the user wants to store them in a file
+	  const int t_sources = params.named_obj.defl_sdb_file.size() > 0 ? -1 : params.param.t_sources.at(0);
+
 	  // Added to dbdet the results of \Omega*P*inv(A)=\Omega*V*inv(U'*A*V)*U', where \Omega are
-	  do_disco(dbdet, uk, vk, mom_list, params.param.t_sources.at(0),
-		   params.param.use_ferm_state_links ? state->getLinks() : u, disps);
+	  // local operators in spin and space
+	  do_disco(dbdet, uk, vk, disp_mom_combos, t_sources,
+		   params.param.use_ferm_state_links ? state->getLinks() : u,
+		   params.param.max_tslices_in_contraction);
+	}
+
+	// write out just the contribution of the projector on the loop
+	if (params.named_obj.defl_sdb_file.size() > 0)
+	{
+	  write_sdb(dbdet, params.named_obj.defl_sdb_file, params.param, gauge_xml, 0, 0, 0, rank,
+		    params.param.use_superb_format);
+	}
+
+	const int n_colorvecs = params.param.num_vecs;
+	if (params.named_obj.ip_sdb_file.size() > 0 && n_colorvecs > 0)
+	{
+	  // Smear the gauge field if needed
+	  multi1d<LatticeColorMatrix> u_smr = u;
+	  try
+	  {
+	    std::istringstream xml_l(params.param.link_smearing.xml);
+	    XMLReader linktop(xml_l);
+	    Handle<LinkSmearing> linkSmearing(TheLinkSmearingFactory::Instance().createObject(
+	      params.param.link_smearing.id, linktop, params.param.link_smearing.path));
+	    (*linkSmearing)(u_smr);
+	  } catch (const std::string& e)
+	  {
+	    QDPIO::cerr << ": Caught Exception link smearing: " << e << std::endl;
+	    QDP_abort(1);
+	  } catch (...)
+	  {
+	    QDPIO::cerr << ": Caught unexpected exception" << std::endl;
+	    QDP_abort(1);
+	  }
+
+	  // Compute colorvecs
+	  const int Nt = Layout::lattSize()[3];
+	  const int N_rhs = std::max(params.param.max_rhs, 1);
+	  std::vector<std::shared_ptr<LatticeFermion>> chis(N_rhs), sols(N_rhs);
+	  for (int col = 0; col < N_rhs; col++)
+	    chis[col].reset(new LatticeFermion);
+	  for (int col = 0; col < N_rhs; col++)
+	    sols[col].reset(new LatticeFermion);
+	  std::vector<double> ip(Ns * n_colorvecs, -1.0);
+	  for (int t = 0; t < Nt; ++t)
+	  {
+	    std::string order = "cxyzXtn";
+	    auto colorvecs =
+	      SB::ns_getColorvecs::computeColorvecs(u_smr, t, 1, n_colorvecs, order).first;
+	    for (int s = 0; s < Ns; ++s)
+	    {
+	      for (int i0 = 0, nvecs = std::min(N_rhs, n_colorvecs); i0 < n_colorvecs;
+		   i0 += nvecs, nvecs = std::min(N_rhs, n_colorvecs - i0))
+	      {
+		for (int i = i0, col = 0; col < nvecs; ++i, ++col)
+		{
+		  // chis[col][s] = colorvec[n=i]
+		  *chis[col] = zero;
+		  colorvecs.kvslice_from_size({{'n', i}}, {{'n', 1}})
+		    .copyTo(SB::asTensorView(*chis[col]).kvslice_from_size({{'t', t}, {'s', s}}));
+		  *sols[col] = zero;
+		}
+
+		std::vector<std::shared_ptr<LatticeFermion>> out(sols.begin(), sols.begin() + nvecs);
+		doVUAObliqueProjector(proj, out,
+				      std::vector<std::shared_ptr<const LatticeFermion>>(
+					chis.begin(), chis.begin() + nvecs));
+		for (int i = i0, col = 0; col < nvecs; ++i, ++col)
+		{
+		  ip[s + i * Ns] = SB::fnorm(SB::asTensorView(*sols[col]));
+		}
+	      }
+	    }
+	  }
+
+	  if (Layout::nodeNumber() == 0)
+	  {
+	    std::ofstream of(params.named_obj.ip_sdb_file);
+	    of << std::setprecision(15);
+	    for (const auto it : ip)
+	      of << it << std::endl;
+	  }
 	}
       }
 
@@ -777,6 +1073,7 @@ namespace Chroma
 		  << " secs" << std::endl;
 
       const int N_rhs = (std::max(params.param.max_rhs, 1) + Ns * Nc - 1) / Ns / Nc;
+      const int N_inv_rhs = std::max(params.param.max_rhs, 1);
       const int max_color = params.param.num_colors < 0
 			      ? Nsrc
 			      : std::min(Nsrc, params.param.first_color + params.param.num_colors);
@@ -796,7 +1093,7 @@ namespace Chroma
 	LatticeComplex vec;
 	LatticeReal rnd1, theta;
 	random(rnd1);
-	Real twopiN = Chroma::twopi / 4;
+	Real twopiN = Chroma::constant().twopi / 4;
 	theta = twopiN * floor(4 * rnd1);
 	vec = cmplx(cos(theta), sin(theta));
 	auto urnd =
@@ -804,7 +1101,9 @@ namespace Chroma
 	urand(urnd);
 	auto noise_vec =
 	  urnd.transformWithCPUFun<SB::Complex>([=](const typename SB::Complex::value_type& x) {
-	    return SB::Complex{std ::cos(M_PI / 2 * x), std::sin(M_PI / 2 * x)};
+	    return SB::Complex{
+	      static_cast<typename SB::Complex::value_type>(std::cos(M_PI / 2 * x)),
+	      static_cast<typename SB::Complex::value_type>(std::sin(M_PI / 2 * x))};
 	  });
 
 	// All the loops
@@ -851,9 +1150,16 @@ namespace Chroma
 	    }
 	  }
 
-	  SB::doInversion(
-	    PP, v_psi,
-	    std::vector<std::shared_ptr<const LatticeFermion>>(v_chi.begin(), v_chi.end()));
+	  for (int i0 = 0, in = std::min((int)v_chi.size(), N_inv_rhs); i0 < v_chi.size();
+	       i0 += in, in = std::min((int)v_chi.size() - i0, N_inv_rhs))
+	  {
+	    auto v_psi_i = std::vector<std::shared_ptr<LatticeFermion>>(v_psi.begin() + i0,
+									v_psi.begin() + i0 + in);
+	    auto v_chi_i = std::vector<std::shared_ptr<const LatticeFermion>>(
+	      v_chi.begin() + i0, v_chi.begin() + i0 + in);
+	    SB::doInversion(PP, v_psi_i, v_chi_i);
+	  }
+
 	  doVUAObliqueProjector(
 	    proj, v_prj,
 	    std::vector<std::shared_ptr<const LatticeFermion>>(v_psi.begin(), v_psi.end()));
@@ -864,8 +1170,8 @@ namespace Chroma
 	  // local operators in spin and space
 	  StopWatch swatch_dots;
 	  swatch_dots.start();
-	  do_disco(db, v_chi, v_q, mom_list, params.param.t_sources.at(0),
-		   params.param.use_ferm_state_links ? state->getLinks() : u, disps);
+	  do_disco(db, v_chi, v_q, disp_mom_combos, params.param.t_sources.at(0),
+		   params.param.use_ferm_state_links ? state->getLinks() : u);
 	  swatch_dots.stop();
 	  QDPIO::cout << "Computing inner products " << swatch_dots.getTimeInSeconds() << " secs"
 		      << std::endl;
@@ -896,52 +1202,9 @@ namespace Chroma
 		  << std::endl;
 
       // write out the results
-
-      if (Layout::nodeNumber() == 0)
-      {
-	// DB storage
-	LocalBinaryStoreDB<LocalSerialDBKey<KeyOperator_t>, LocalSerialDBData<ValOperator_t>>
-	  qdp_db;
-
-	// Open the file, and write the meta-data and the binary for this operator
-	XMLBufferWriter file_xml;
-
-	push(file_xml, "DBMetaData");
-	write(file_xml, "id", std::string("DiscoBlocks"));
-	write(file_xml, "lattSize", QDP::Layout::lattSize());
-	write(file_xml, "decay_dir", decay_dir);
-	write(file_xml, "Params", params.param);
-	write(file_xml, "Config_info", gauge_xml);
-	write(file_xml, "first_computed_color", params.param.first_color);
-	write(file_xml, "num_computed_colors", std::max(0, max_color - params.param.first_color));
-	write(file_xml, "num_colors", Nsrc);
-	pop(file_xml);
-
-	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size());
-
-	//Slightly modify code to account for changes from multifile write.
-	//Be consistent with old mode of filename write.
-	std::string file_name = params.named_obj.sdb_file;
-	qdp_db.open(file_name, O_RDWR | O_CREAT, 0664);
-
-	qdp_db.insertUserdata(file_str);
-
-	KeyOperator_t key;
-	ValOperator_t val;
-	// Store all the data
-	for (const auto& it : dbmean)
-	{
-	  key.t_slice = it.first.t_slice;
-	  key.disp = SB::tomulti1d(it.first.disp);
-	  key.mom = SB::tomulti1d(it.first.mom);
-	  key.mass_label = params.param.mass_label;
-	  for (int i = 0; i < Ns * Ns; i++)
-	    val.set({i}, it.second[i]);
-	  qdp_db.insert(key, val);
-	}
-	qdp_db.close();
-      }
+      write_sdb(dbmean, params.named_obj.sdb_file, params.param, gauge_xml,
+		params.param.first_color, std::max(0, max_color - params.param.first_color), Nsrc,
+		0, params.param.use_superb_format);
 
       pop(xml_out); // close last tag
 

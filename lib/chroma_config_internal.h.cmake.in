@@ -55,6 +55,12 @@
 /* Build SUPERB tasks */
 #cmakedefine BUILD_SB   @BUILD_SB@
 
+/* Build REDSTAR DATALIB tasks */
+#cmakedefine BUILD_REDSTAR_DATALIB   @BUILD_REDSTAR_DATALIB@
+
+/* Build MGPROTON */
+#cmakedefine BUILD_MGPROTON   @BUILD_MGPROTON@
+
 /* Build with PRIMME */
 #cmakedefine BUILD_PRIMME   @BUILD_PRIMME@
 

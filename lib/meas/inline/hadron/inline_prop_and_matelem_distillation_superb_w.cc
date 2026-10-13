@@ -36,6 +36,8 @@
 
 #include "chroma_config.h"
 
+#include <set>
+
 #ifdef BUILD_SB
 
 namespace Chroma 
@@ -66,6 +68,35 @@ namespace Chroma
       pop(xml);
     }
 
+    //! Propagator input
+    void read(XMLReader& xml, const std::string& path, Params::Param_t::Phasing_t& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "sink", input.snk);
+      if (input.snk.size() != Nd - 1)
+      {
+	throw std::runtime_error(std::string("phase sink should have ") + std::to_string(Nd - 1) +
+				 " components");
+      }
+      read(inputtop, "source", input.src);
+      if (input.src.size() != Nd - 1)
+      {
+	throw std::runtime_error(std::string("phase source should have ") + std::to_string(Nd - 1) +
+				 " components");
+      }
+    }
+
+    //! Propagator output
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t::Phasing_t& input)
+    {
+      push(xml, path);
+
+      write(xml, "sink", input.snk);
+      write(xml, "source", input.src);
+
+      pop(xml);
+    }
 
     //! Propagator input
     void read(XMLReader& xml, const std::string& path, Params::Param_t::Contract_t& input)
@@ -84,11 +115,24 @@ namespace Chroma
         read(inputtop, "max_rhs", input.max_rhs);
       }
 
-      input.phase.resize(Nd - 1);
-      for (int i = 0; i < Nd - 1; ++i)
-	input.phase[i] = 0;
-      if( inputtop.count("phase") == 1 ) {
-        read(inputtop, "phase", input.phase);
+      if (inputtop.count("phases") == 1)
+      {
+	read(inputtop, "phases", input.phases);
+      }
+      else if (inputtop.count("phase") == 1)
+      {
+	read(inputtop, "phase", input.phase);
+	if (input.phase.size() != Nd - 1)
+	{
+	  throw std::runtime_error(std::string("phase tag should have ") + std::to_string(Nd - 1) +
+				   " components");
+	}
+      }
+      else
+      {
+	input.phase.resize(Nd - 1);
+	for (int i = 0; i < Nd - 1; ++i)
+	  input.phase[i] = 0;
       }
 
       input.use_device_for_contractions = true;
@@ -96,7 +140,7 @@ namespace Chroma
         read(inputtop, "use_device_for_contractions", input.use_device_for_contractions);
       }
 
-      input.use_superb_format = false;
+      input.use_superb_format = true;
       if( inputtop.count("use_superb_format") == 1 ) {
 	read(inputtop, "use_superb_format", input.use_superb_format);
       }
@@ -120,6 +164,7 @@ namespace Chroma
       write(xml, "mass_label", input.mass_label);
       write(xml, "max_rhs", input.max_rhs);
       write(xml, "phase", input.phase);
+      write(xml, "phases", input.phases);
       write(xml, "use_superb_format", input.use_superb_format);
       write(xml, "output_file_is_local", input.output_file_is_local);
       write(xml, "use_device_for_contractions", input.use_device_for_contractions);
@@ -273,6 +318,50 @@ namespace Chroma
       snoop.reset();
       snoop.start();
 
+      // Parse the phase
+      std::vector<SB::Coor<3>> phasings;	     ///< list of all phasings
+      std::map<int, std::set<int>> phasing_pairs;    ///< phasing src -> list of phasing sink
+      if (params.param.contract.phase.size() > 0)
+      {
+	phasings.push_back(SB::toCoor(params.param.contract.phase));
+	phasing_pairs[0] = std::set<int>{0};
+      }
+      else if (params.param.contract.phases.size() > 0)
+      {
+	if (!params.param.contract.use_superb_format)
+	{
+	  throw std::runtime_error(
+	    "only the new format has support for `phases'; please set 'use_superb_format' to true");
+	}
+	for (const auto phasing_pair : params.param.contract.phases)
+	{
+	  auto src = SB::toCoor(phasing_pair.src);
+	  auto snk_neg = SB::toCoor(phasing_pair.snk);
+	  auto snk = SB::Coor<3>{-snk_neg[0], -snk_neg[1], -snk_neg[2]};
+	  int src_idx =
+	    std::find(phasings.begin(), phasings.end(), src) - phasings.begin();
+	  if (src_idx == phasings.size())
+	    phasings.push_back(src);
+	  int snk_idx =
+	    std::find(phasings.begin(), phasings.end(), snk) - phasings.begin();
+	  if (snk_idx == phasings.size())
+	    phasings.push_back(snk);
+	  if (phasing_pairs.count(src_idx) == 0)
+	  {
+	    phasing_pairs[src_idx] = std::set<int>{snk_idx};
+	  }
+	  else
+	  {
+	    phasing_pairs[src_idx].insert(snk_idx);
+	  }
+	}
+      }
+      else
+      {
+	phasings.push_back(SB::Coor<Nd - 1>{{}});
+	phasing_pairs[0] = std::set<int>{0};
+      }
+
       // Test and grab a reference to the gauge field
       multi1d<LatticeColorMatrix> u;
       XMLBufferWriter gauge_xml;
@@ -335,7 +424,7 @@ namespace Chroma
       std::vector<BinaryStoreDB<SerialDBKey<KeyPropElementalOperator_t>,
 				SerialDBData<ValPropElementalOperator_t>>>
 	qdp_db{};
-      SB::StorageTensor<6, SB::ComplexD> st;
+      SB::StorageTensor<8, SB::ComplexD> st;
 
       // Open the file, and write the meta-data and the binary for this operator
       if (!params.param.contract.use_superb_format)
@@ -371,7 +460,8 @@ namespace Chroma
 	//   n/N: source/sink eigenvector index
 	//   s/q: source/sink spin index
 	//   p/P: time slice source/sink
-	const char* order = "sqnNpP";
+	//   h/H: phasing source/sink
+	const char* order = "sqnNpPhH";
 	XMLBufferWriter metadata_xml;
 	push(metadata_xml, "DBMetaData");
 	write(metadata_xml, "id", std::string("propElemOp"));
@@ -382,40 +472,33 @@ namespace Chroma
 	write(metadata_xml, "Params", params.param);
 	write(metadata_xml, "mass_label", params.param.contract.mass_label);
 	write(metadata_xml, "tensorOrder", order);
+	std::vector<multi1d<int>> phasings_xml;
+	for (const auto& it : phasings)
+	  phasings_xml.push_back(SB::tomulti1d(it));
+	write(metadata_xml, "phasings", phasings_xml);
 	pop(metadata_xml);
 
 	// NOTE: metadata_xml only has a valid value on Master node; so do a broadcast
 	std::string metadata = SB::broadcast(metadata_xml.str());
 
-	st = SB::StorageTensor<6, SB::ComplexD>(
+	st = SB::StorageTensor<8, SB::ComplexD>(
 	  params.named_obj.prop_op_file, metadata, order,
-	  SB::kvcoors<6>(order, {{'s', Ns},
-				 {'q', Ns},
-				 {'n', params.param.contract.num_vecs},
-				 {'N', params.param.contract.num_vecs},
-				 {'p', Lt},
-				 {'P', Lt}}),
+	  SB::kvcoors<8>(order,
+			 {
+			   {'s', Ns},
+			   {'q', Ns},
+			   {'n', params.param.contract.num_vecs},
+			   {'N', params.param.contract.num_vecs},
+			   {'p', Lt},
+			   {'P', Lt},
+			   {'h', (int)phasings.size()},
+			   {'H', (int)phasings.size()},
+			 }),
 	  SB::Sparse, SB::checksum_type::BlockChecksum,
 	  params.param.contract.output_file_is_local ? SB::LocalFSFile : SB::SharedFSFile);
       }
 
       QDPIO::cout << "Finished opening peram file" << std::endl;
-
-      //
-      // Parse the phase
-      //
-      if (params.param.contract.phase.size() != Nd - 1)
-      {
-	QDPIO::cerr << "phase tag should have " << Nd - 1 << " components" << std::endl;
-	QDP_abort(1);
-      }
-      SB::Coor<Nd - 1> phase;
-      for (int i = 0; i < Nd - 1; ++i)
-      {
-	phase[i] = params.param.contract.phase[i];
-	if (std::fabs(phase[i] - params.param.contract.phase[i]) > 0)
-	  std::runtime_error("phase should be integer");
-      }
 
       //
       // Try the factories
@@ -458,90 +541,108 @@ namespace Chroma
 
 	  // Get `num_vecs` colorvecs, and `num_tslices` tslices starting from time-slice `first_tslice`
 	  SB::Tensor<Nd + 3, SB::Complex> colorvec = SB::getColorvecs<SB::Complex>(
-	    colorvecsSto, u, decay_dir, first_tslice, num_tslices, num_vecs, "cxyzXnt", phase, dev);
+	    colorvecsSto, u, decay_dir, first_tslice, num_tslices, num_vecs, "cxyzXnt", SB::Coor<3>{{}}, dev);
 
-	  // Get all eigenvectors for `t_source`
-	  auto source_colorvec = colorvec.kvslice_from_size(
-	    {{'t', SB::normalize_coor(t_source - first_tslice, Lt)}}, {{'t', 1}});
-
-	  for (int spin_source = 0; spin_source < Ns; ++spin_source)
+	  for (const auto& it : phasing_pairs)
 	  {
-	    // Invert the source for `spin_source` spin and retrieve `num_tslices` tslices starting from tslice `first_tslice`
-	    // NOTE: s is spin source, and S is spin sink
-	    SB::Tensor<Nd + 5, SB::Complex> quark_solns =
-	      SB::doInversion(PP, source_colorvec, t_source, first_tslice, num_tslices,
-			      {spin_source}, max_rhs, "cxyzXnSst");
+	    int phasing_src_idx = it.first;
 
-	    StopWatch snarss1;
-	    snarss1.reset();
-	    snarss1.start();
+	    // Get all eigenvectors for `t_source`
+	    auto source_colorvec = SB::phaseColorvecs(
+	      colorvec.kvslice_from_size({{'t', SB::normalize_coor(t_source - first_tslice, Lt)}},
+					 {{'t', 1}}),
+	      t_source, phasings[phasing_src_idx]);
 
-	    // Contract the distillation elements
-	    // NOTE: N: is colorvec in sink, and n is colorvec in source
-	    SB::Tensor<5, SB::Complex> elems(
-	      "NnSst", {num_vecs, num_vecs, Ns, 1, num_tslices}, SB::OnHost,
-	      !params.param.contract.use_superb_format ? SB::OnMaster : SB::OnEveryone);
-	    elems.contract(colorvec, {{'n', 'N'}}, SB::Conjugate, quark_solns, {},
-			   SB::NotConjugate);
-
-	    snarss1.stop();
-	    QDPIO::cout << "Time to contract for one spin source : " << snarss1.getTimeInSeconds()
-			<< " secs" << std::endl;
-
-	    snarss1.reset();
-	    snarss1.start();
-
-	    if (!params.param.contract.use_superb_format)
+	    for (int spin_source = 0; spin_source < Ns; ++spin_source)
 	    {
-	      ValPropElementalOperator_t val;
-	      val.mat.resize(num_vecs, num_vecs);
-	      val.mat = zero;
-	      auto local_elems = elems.getLocal();
-	      for (int i_tslice = 0; i_tslice < num_tslices; ++i_tslice)
+	      // Invert the source for `spin_source` spin and retrieve `num_tslices` tslices starting from tslice `first_tslice`
+	      // NOTE: s is spin source, and S is spin sink
+	      SB::Tensor<Nd + 5, SB::Complex> quark_solns =
+		SB::doInversion(PP, source_colorvec, t_source, first_tslice, num_tslices,
+				{spin_source}, max_rhs, "cxyzXnSst");
+
+	      StopWatch snarss1;
+	      snarss1.reset();
+	      snarss1.start();
+
+	      for (int phasing_snk_idx : it.second)
 	      {
-		for (int spin_sink = 0; spin_sink < Ns; ++spin_sink)
+		// Phase the sink
+		auto colorvec_snk =
+		  SB::phaseColorvecs(colorvec, first_tslice, phasings[phasing_snk_idx]);
+
+		// Contract the distillation elements
+		// NOTE: N: is colorvec in sink, and n is colorvec in source
+		SB::Tensor<5, SB::Complex> elems(
+		  "NnSst", {num_vecs, num_vecs, Ns, 1, num_tslices}, SB::OnHost,
+		  !params.param.contract.use_superb_format ? SB::OnMaster : SB::OnEveryone);
+		elems.contract(colorvec_snk, {{'n', 'N'}}, SB::Conjugate, quark_solns, {},
+			       SB::NotConjugate);
+
+		snarss1.stop();
+		QDPIO::cout << "Time to contract for one spin source : "
+			    << snarss1.getTimeInSeconds() << " secs" << std::endl;
+
+		snarss1.reset();
+		snarss1.start();
+
+		if (!params.param.contract.use_superb_format)
 		{
-		  KeyPropElementalOperator_t key;
-		  key.t_source = t_source;
-		  key.t_slice = SB::normalize_coor(i_tslice + first_tslice, Lt);
-		  key.spin_src = spin_source;
-		  key.spin_snk = spin_sink;
-		  key.mass_label = params.param.contract.mass_label;
-		  if (local_elems)
+		  ValPropElementalOperator_t val;
+		  val.mat.resize(num_vecs, num_vecs);
+		  val.mat = zero;
+		  auto local_elems = elems.getLocal();
+		  for (int i_tslice = 0; i_tslice < num_tslices; ++i_tslice)
 		  {
-		    for (int colorvec_sink = 0; colorvec_sink < num_vecs; ++colorvec_sink)
+		    for (int spin_sink = 0; spin_sink < Ns; ++spin_sink)
 		    {
-		      for (int colorvec_source = 0; colorvec_source < num_vecs; ++colorvec_source)
+		      KeyPropElementalOperator_t key;
+		      key.t_source = t_source;
+		      key.t_slice = SB::normalize_coor(i_tslice + first_tslice, Lt);
+		      key.spin_src = spin_source;
+		      key.spin_snk = spin_sink;
+		      key.mass_label = params.param.contract.mass_label;
+		      if (local_elems)
 		      {
-			std::complex<REAL> e =
-			  local_elems.get({colorvec_sink, colorvec_source, spin_sink, 0, i_tslice});
-			val.mat(colorvec_sink, colorvec_source).elem().elem().elem() =
-			  RComplex<REAL64>(e.real(), e.imag());
+			for (int colorvec_sink = 0; colorvec_sink < num_vecs; ++colorvec_sink)
+			{
+			  for (int colorvec_source = 0; colorvec_source < num_vecs;
+			       ++colorvec_source)
+			  {
+			    std::complex<REAL> e = local_elems.get(
+			      {colorvec_sink, colorvec_source, spin_sink, 0, i_tslice});
+			    val.mat(colorvec_sink, colorvec_source).elem().elem().elem() =
+			      RComplex<REAL64>(e.real(), e.imag());
+			  }
+			}
 		      }
+		      qdp_db[0].insert(key, val);
 		    }
 		  }
-		  qdp_db[0].insert(key, val);
+		}
+		else
+		{
+		  st.kvslice_from_size({{'s', spin_source},
+					{'p', t_source},
+					{'P', first_tslice},
+					{'h', phasing_src_idx},
+					{'H', phasing_snk_idx}},
+				       {{'s', 1}, {'p', 1}, {'P', num_tslices}, {'h', 1}, {'H', 1}})
+		    .copyFrom(elems.rename_dims({{'S', 'q'}, {'t', 'P'}}));
 		}
 	      }
-	    }
-	    else
-	    {
-	      st.kvslice_from_size({{'s', spin_source}, {'p', t_source}, {'P', first_tslice}},
-				   {{'s', 1}, {'p', 1}, {'P', num_tslices}})
-		.copyFrom(elems.rename_dims({{'S', 'q'}, {'t', 'P'}}));
-	    }
 
-	    snarss1.stop();
-	    QDPIO::cout << "Time to store the props : " << snarss1.getTimeInSeconds() << " secs"
-			<< std::endl;
+	      snarss1.stop();
+	      QDPIO::cout << "Time to store the props : " << snarss1.getTimeInSeconds() << " secs"
+			  << std::endl;
 	    } // for spin_source
-	  }   // for tt
+	  }   // for it
+	}     // for tt
 
-	  swatch.stop();
-	  QDPIO::cout << "Propagators computed: time= " << swatch.getTimeInSeconds() << " secs"
-		      << std::endl;
-	}
-      catch (const std::exception& e) 
+	swatch.stop();
+	QDPIO::cout << "Propagators computed: time= " << swatch.getTimeInSeconds() << " secs"
+		    << std::endl;
+      } catch (const std::exception& e)
       {
 	QDP_error_exit("%s: caught exception: %s\n", name.c_str(), e.what());
       }

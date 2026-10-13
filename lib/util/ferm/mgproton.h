@@ -49,13 +49,28 @@ namespace Chroma
 		    const multi1d<LatticeColorMatrix>& u);
     };
 
-    /// Multiple spin-color lattice fields
+    /// Callback function for doInversion
+    /// Arguments of the callback:
+    /// \param tensor: output tensor with order cSxyztXns,
+    ///        (c: color, S: sink spin, xyzt: lattice dims, X: even-odd, n: colorvec index, s: source spin)
+    /// \param first_s: first spin source (s) returned
+    /// \param first_n: first colorvec index (n) returned
+
+    template <typename COMPLEX = Complex>
+    using doInversionOnTSliceFn =
+      std::function<void(Tensor<Nd + 5, COMPLEX>, int first_s, int first_n)>;
+
+    template <typename COMPLEX_CHI>
+    void doInversion(const ChimeraSolver& sol, const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
+		     const Tensor<2, SB::Complex>& spin_sources, int max_rhs,
+		     const doInversionOnTSliceFn<SB::Complex>& call);
     template <typename COMPLEX_CHI>
     Tensor<Nd + 5, SB::Complex>
     doInversion(const ChimeraSolver& sol, const Tensor<Nd + 3, COMPLEX_CHI> chi, int t_source,
 		int first_tslice_out, int n_tslice_out, const std::vector<int>& spin_sources,
 		int max_rhs, const std::string& order_out = "cSxyztXns");
 
+    /// Multiple spin-color lattice fields
     using MultipleLatticeFermions = std::vector<std::shared_ptr<LatticeFermion>>;
     using ConstMultipleLatticeFermions = std::vector<std::shared_ptr<const LatticeFermion>>;
 

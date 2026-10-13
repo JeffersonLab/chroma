@@ -23,6 +23,7 @@ namespace Chroma
     int           NKrylov;             /*!< Number of vectors before restart */
     int           NDefl;               /*!< Number of deflation vectors */
     int           MaxIter;             /*!< Total Number of Iterations */
+    bool          Verbose;             /* verbose */
     GroupXML_t    PrecondParams;       /*!< Parameters for a preconditioner */
   };
 

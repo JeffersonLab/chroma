@@ -88,10 +88,11 @@ namespace Chroma
 			multi1d<DComplex>& g,
 			multi2d<DComplex>& Qk,
 			multi1d<DComplex>& Qk_tau,
-			int& ndim_cycle)
+			int& ndim_cycle,
+			bool verbose)
 
   {
-    const Subset& s = M.subset();      // Linear Operator Subset
+    const Subset& s = A.subset();      // Linear Operator Subset
     ndim_cycle = 0;     
 
     const int total_dim=n_krylov+n_deflate;
@@ -126,7 +127,7 @@ namespace Chroma
       }
 
       Double invwnorm = Double(1)/wnorm;
-      V[j+1] = invwnorm*w;
+      V[j+1][s] = invwnorm*w;
 
       // Done construcing H.
       // Now to incrementally update the R matrix
@@ -184,11 +185,13 @@ namespace Chroma
 #endif 
       // j-ndeflate is the 0 based iteration count
       // j-ndeflate+1 is the 1 based human readable iteration count
-      QDPIO::cout << "Iter " << j-n_deflate+1 << " || r || = " << accum_resid << " Target=" <<rsd_target << std::endl;
+      if (verbose)
+	QDPIO::cout << "Iter " << j-n_deflate+1 << " || r || = " << accum_resid << " Target=" <<rsd_target << std::endl;
 
       ndim_cycle = j+1;
-      if ( toBool( accum_resid <= rsd_target ) ) { 
-      	QDPIO::cout << "Flexible Arnoldi Cycle Converged at iter = " << j-n_deflate << std::endl;
+      if ( toBool( accum_resid <= rsd_target ) ) {
+	if (verbose)
+	  QDPIO::cout << "Flexible Arnoldi Cycle Converged at iter = " << j-n_deflate << std::endl;
 	return;
       }
     }
@@ -437,14 +440,15 @@ namespace Chroma
 					  multi1d<DComplex> &g,
 					  multi2d<DComplex> &Qk,
 					  multi1d<DComplex> &Qk_tau,
-					  int& ndim_cycle) const
+					  int& ndim_cycle,
+					  bool verbose) const
   {
     FlexibleArnoldiT<>(n_krylov, 
 		       n_deflate,
 		       rsd_target,
 		       (*A_),
 		       (*preconditioner_),
-		       V,Z,H,R,givens_rots,g, Qk, Qk_tau, ndim_cycle);
+		       V,Z,H,R,givens_rots,g, Qk, Qk_tau, ndim_cycle, verbose);
   }
 
 
@@ -460,6 +464,8 @@ namespace Chroma
   {
     START_CODE();
     SystemSolverResults_t res; // Value to return
+
+    bool verbose = invParam_.Verbose;
     
     const Subset& s = A_->subset();
     Double norm_rhs = sqrt(norm2(chi,s));   //  || b ||
@@ -715,11 +721,13 @@ namespace Chroma
 		      g_,
 		      Hk_QR_,
 		      Hk_QR_taus_,
-		      dim);
+		      dim,
+		      verbose);
       
       int iters_this_cycle = dim - n_deflate;
 
-      QDPIO::cout << "Arnoldi cycle finished: dim=" << dim << std::endl;
+      if (verbose)
+	QDPIO::cout << "Arnoldi cycle finished: dim=" << dim << std::endl;
       // Solve the least squares system for the lsq_coeffs coefficients
 #if 0
       LeastSquaresSolve(H_,c_,eta_, dim); // Solve Least Squares System
@@ -735,7 +743,8 @@ namespace Chroma
       psi[s] += dx;
 
 
-      QDPIO::cout << "FGMRESDR: Cycle finished with " << iters_this_cycle << " iterations" << std::endl;
+      if (verbose)
+	QDPIO::cout << "FGMRESDR: Cycle finished with " << iters_this_cycle << " iterations" << std::endl;
 
       // Recompute r
       r[s] = chi;
@@ -744,7 +753,8 @@ namespace Chroma
       
       // Recompute true norm
       r_norm = sqrt(norm2(r,s));
-      QDPIO::cout << "FGMRESDR: || r || = " << r_norm <<  " target = " << target << std::endl;
+      if (verbose)
+	QDPIO::cout << "FGMRESDR: || r || = " << r_norm <<  " target = " << target << std::endl;
 
       // Update total iters
       iters_total += iters_this_cycle;
@@ -758,7 +768,8 @@ namespace Chroma
     // Either we've exceeded max iters, or we have converged in either case set res:
     res.n_count = iters_total;
     res.resid = r_norm;
-    QDPIO::cout << "FGMRESDR: Done. Cycles=" << n_cycles << ", Iters=" << iters_total << " || r ||/|| b ||=" << r_norm / norm_rhs << " Target=" << invParam_.RsdTarget << std::endl;
+    if (verbose)
+      QDPIO::cout << "FGMRESDR: Done. Cycles=" << n_cycles << ", Iters=" << iters_total << " || r ||/|| b ||=" << r_norm / norm_rhs << " Target=" << invParam_.RsdTarget << std::endl;
     END_CODE();
     return res;
 

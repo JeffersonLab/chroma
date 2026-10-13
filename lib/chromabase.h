@@ -33,6 +33,13 @@ struct PropTypeTraits<LatticeDiracFermion>
   typedef LatticeDiracPropagator   Type_t;
 };
 
+#if defined (QDP_IS_QDPJIT2)
+template<>
+struct PropTypeTraits<LatticeFermion>
+{
+  typedef LatticePropagator   Type_t;
+};
+#endif
 
 template<>
 struct PropTypeTraits<LatticeStaggeredFermion>
@@ -45,15 +52,14 @@ struct PropTypeTraits<LatticeStaggeredFermion>
 enum PlusMinus {PLUS = 1, MINUS = -1};
 
 
-// Useful constants
-#if BASE_PRECISION == 32
-const Real fuzz = 1.0e-5;
-#elif BASE_PRECISION == 64
-const Real fuzz = 1.0e-10;
-#endif
-
-const Real twopi = 6.283185307179586476925286;
-
+  struct __chroma_constant
+  {
+    Real twopi;
+    Real fuzz;
+  };
+  const __chroma_constant& constant();
+  void constant_destroy();
+  
 
 // Hooks for various things
 #if defined(QDP_DEBUG_MEMORY)

@@ -17,6 +17,8 @@
 
 #include "meas/inline/io/named_objmap.h"
 
+#include <set>
+
 #define COLORVEC_MATELEM_TYPE_ZERO 0
 #define COLORVEC_MATELEM_TYPE_ONE 1
 #define COLORVEC_MATELEM_TYPE_MONE -1
@@ -55,6 +57,29 @@ namespace Chroma
 
       pop(xml);
     }
+
+    //! Phase-mom combo input
+    void read(XMLReader& xml, const std::string& path,
+	      phase_moms_combo_t& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "phase", input.phase);
+      read(inputtop, "mom_list", input.mom_list);
+    }
+
+    //! Phase-mom combo output
+    void write(XMLWriter& xml, const std::string& path,
+	       const phase_moms_combo_t& input)
+    {
+      push(xml, path);
+
+      write(xml, "phase", input.phase);
+      write(xml, "mom_list", input.mom_list);
+
+      pop(xml);
+    }
+
 
     // Reader for input parameters
     void read(XMLReader& xml, const std::string& path,
@@ -106,15 +131,37 @@ namespace Chroma
 	read(paramtop, "t_slices", param.t_slices);
       }
 
-      if (paramtop.count("phase") == 1)
+      if (paramtop.count("phases") == 1)
+      {
+	read(paramtop, "phases", param.phases);
+	for (const auto& phase : param.phases)
+	{
+	  if (phase.size() != Nd - 1)
+	  {
+	    throw std::runtime_error(std::string("each element of `phases' should have ") +
+				     std::to_string(Nd - 1) + " components");
+	  }
+	}
+      }
+      else if (paramtop.count("phase") == 1)
       {
 	read(paramtop, "phase", param.phase);
+	if (param.phase.size() != Nd - 1)
+	{
+	  throw std::runtime_error(std::string("phase should have ") + std::to_string(Nd - 1) +
+				   " components");
+	}
       }
-      else
+      else if (paramtop.count("combos") == 0)
       {
 	param.phase.resize(Nd - 1);
 	for (int i = 0; i < Nd - 1; ++i)
 	  param.phase[i] = 0;
+      }
+
+      if (paramtop.count("combos") == 1)
+      {
+	read(paramtop, "combos", param.alt_phase_moms_combos);
       }
 
       param.max_tslices_in_contraction = 0;
@@ -135,7 +182,7 @@ namespace Chroma
 	read(paramtop, "max_vecs", param.max_vecs);
       }
 
-      param.use_superb_format = false;
+      param.use_superb_format = true;
       if( paramtop.count("use_superb_format") == 1 ) {
         read(paramtop, "use_superb_format", param.use_superb_format);
       }
@@ -165,6 +212,8 @@ namespace Chroma
       write(xml, "Nt_forward", param.Nt_forward);
       write(xml, "t_slices", param.t_slices);
       write(xml, "phase", param.phase);
+      write(xml, "phases", param.phases);
+      write(xml, "combos", param.alt_phase_moms_combos);
       write(xml, "max_tslices_in_contraction", param.max_tslices_in_contraction);
       write(xml, "max_moms_in_contraction", param.max_moms_in_contraction);
       write(xml, "max_vecs", param.max_vecs);
@@ -535,7 +584,7 @@ namespace Chroma
       {
 	mom_list = SB::getMomenta(params.param.mom2_min, params.param.mom2_max);
       }
-      else
+      else if (params.param.mom_list.size() > 0)
       {
 	mom_list = SB::getMomenta(params.param.mom_list);
       }
@@ -565,17 +614,51 @@ namespace Chroma
       //
       // Parse the phase
       //
-      if (params.param.phase.size() != Nd - 1)
+      std::vector<SB::Coor<Nd - 1>> phasings;
+      if (params.param.phase.size() > 0)
       {
-	QDPIO::cerr << "phase tag should have " << Nd - 1 << " components" << std::endl;
-	QDP_abort(1);
+	phasings.push_back(SB::toCoor(params.param.phase));
       }
-      SB::Coor<Nd - 1> phase;
-      for (int i = 0; i < Nd - 1; ++i)
+      else if (params.param.phases.size() > 0)
       {
-	phase[i] = params.param.phase[i];
-	if (std::fabs(phase[i] - params.param.phase[i]) > 0)
-	  std::runtime_error("phase should be integer");
+	std::set<SB::Coor<Nd - 1>> phasings_set;
+	for (const auto& phase : params.param.phases)
+	  phasings_set.insert(SB::toCoor(phase));
+	if (phasings_set.size() > 1 && !params.param.use_superb_format)
+	  throw std::runtime_error("Unsupported computing several phasings with the old database "
+				   "format; set `use_superb_format' to true");
+	phasings = std::vector<SB::Coor<Nd - 1>>(phasings_set.begin(), phasings_set.end());
+      }
+      else if (params.param.alt_phase_moms_combos.size() == 0)
+      {
+	phasings.push_back(SB::Coor<Nd - 1>{{}});
+      }
+
+      // Create the phase-momenta combos
+      std::map<SB::Coor<Nd - 1>, std::set<SB::Coor<Nd - 1>>>
+	phase_moms_combos; ///< map from phase to moms
+      if (phasings.size() > 0 && mom_list.size() > 0)
+      {
+	for (const auto& phase : phasings)
+	  phase_moms_combos[phase].insert(mom_list.begin(), mom_list.end());
+      }
+      for (const auto& it : params.param.alt_phase_moms_combos)
+      {
+	const auto& moms = SB::getMomenta(it.mom_list);
+	phase_moms_combos[SB::toCoor(it.phase)].insert(moms.begin(), moms.end());
+      }
+
+      // Create a list of unique phases and momenta (used by superb format storage)
+      std::vector<SB::Coor<Nd - 1>> unique_phases;
+      std::vector<SB::Coor<Nd - 1>> unique_moms;
+      {
+	std::set<SB::Coor<Nd - 1>> unique_moms_s;
+	for (const auto& it : phase_moms_combos)
+	{
+	  unique_phases.push_back(it.first);
+	  unique_moms_s.insert(it.second.begin(), it.second.end());
+	}
+	unique_moms = std::vector<SB::Coor<Nd - 1>>(unique_moms_s.begin(), unique_moms_s.end());
       }
 
       // Make sure displacements are something sensible and transform to std objects
@@ -668,16 +751,23 @@ namespace Chroma
 	}
       };
 
+      if (!params.param.use_superb_format && phase_moms_combos.size() > 1)
+      {
+	throw std::runtime_error("unsupported to write multiple phasings on the same file with the "
+				 "old file format: set the xml tag use_superb_format to true");
+      }
+
       /// Superb storage; dimension labels ijktdm:
-      /// i,j,k: eigenvector indeces
+      /// i,j,k: eigenvector indices
       /// t: time slice
       /// d: concatenation of the left, middle and right displacements
       /// m: momentum
+      /// h: phasing
 
-      SB::StorageTensor<6, SB::ComplexD> st;
+      SB::StorageTensor<7, SB::ComplexD> st;
       if (params.param.use_superb_format)
       {
-	const char* order = "ijktdm";
+	const char* order = "ijktdmh";
 	XMLBufferWriter metadata_xml;
 	push(metadata_xml, "DBMetaData");
 	write(metadata_xml, "id", std::string("baryonElemOpSuperb"));
@@ -695,10 +785,13 @@ namespace Chroma
 	}
 	write(metadata_xml, "displacements_left_middle_right", disps);
 	std::vector<multi1d<int>>  moms;
-	for (const auto& mom: mom_list)
+	for (const auto& mom : unique_moms)
 	  moms.push_back(SB::tomulti1d(mom));
 	write(metadata_xml, "moms", moms);
-	write(metadata_xml, "phase", params.param.phase);
+	std::vector<multi1d<int>> phasings;
+	for (const auto& it : unique_phases)
+	  phasings.push_back(SB::tomulti1d(it));
+	write(metadata_xml, "phasings", phasings);
 
 	// Some tasks read the eigenvalues from metadata but they not used; so we are going to give fake values
 	multi1d<multi1d<double>> evals(params.param.num_vecs);
@@ -716,18 +809,22 @@ namespace Chroma
 	// NOTE: metadata_xml only has a valid value on Master node; so do a broadcast
 	std::string metadata = SB::broadcast(metadata_xml.str());
 
-	st = SB::StorageTensor<6, SB::ComplexD>(
+	st = SB::StorageTensor<7, SB::ComplexD>(
 	  params.named_obj.baryon_op_file, metadata, order,
-	  SB::kvcoors<6>(order, {{'i', params.param.num_vecs},
+	  SB::kvcoors<7>(order, {{'i', params.param.num_vecs},
 				 {'j', params.param.num_vecs},
 				 {'k', params.param.num_vecs},
 				 {'t', Nt},
 				 {'d', displacement_list.size()},
-				 {'m', moms.size()}}),
+				 {'m', moms.size()},
+				 {'h', phasings.size()}}),
 	  SB::Sparse, SB::checksum_type::BlockChecksum,
 	  params.param.output_file_is_local ? SB::LocalFSFile : SB::SharedFSFile);
+	int num_moms = 0;
+	for (const auto& it : phase_moms_combos)
+	  num_moms += it.second.size();
 	st.preallocate(params.param.num_vecs * params.param.num_vecs * params.param.num_vecs *
-		       t_slices_to_write.size() * displacement_list.size() * moms.size() *
+		       t_slices_to_write.size() * displacement_list.size() * num_moms *
 		       sizeof(SB::ComplexD) /
 		       (params.param.output_file_is_local ? Layout::numNodes() : 1));
       }
@@ -766,72 +863,92 @@ namespace Chroma
 	  int this_tfrom = (tfrom + tfrom0) % Nt;
 
 	  // Get num_vecs colorvecs on time-slice t_source
-	  SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	  SB::Tensor<Nd + 3, SB::Complex> colorvec =
 	    SB::getColorvecs<SB::Complex>(colorvecsSto, u, params.param.decay_dir, this_tfrom,
-					  this_tsize, params.param.num_vecs, "cxyzXnt", phase);
+					  this_tsize, params.param.num_vecs, "cxyzXnt");
 
-	  // Call for storing the baryons
-	  SB::ColorContractionFn<SB::Complex> call(
-	    [&](SB::Tensor<5, SB::Complex> tensor, int disp, int first_tslice, int first_mom) {
-	      StopWatch tstoring;
-	      tstoring.reset();
-	      tstoring.start();
+	  for (int phase_idx = 0; phase_idx < unique_phases.size(); ++phase_idx)
+	  {
+	    SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
+	      SB::phaseColorvecs(colorvec, this_tfrom, unique_phases.at(phase_idx));
+	    // Call for storing the baryons
+	    const auto& moms_set = phase_moms_combos.at(unique_phases.at(phase_idx));
+	    const auto& moms = SB::CoorMoms(moms_set.begin(), moms_set.end());
+	    SB::ColorContractionFn<SB::Complex> call(
+	      [&](SB::Tensor<5, SB::Complex> tensor, int disp, int first_tslice, int first_mom) {
+		StopWatch tstoring;
+		tstoring.reset();
+		tstoring.start();
 
-	      if (params.param.use_superb_format)
-	      {
-		for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
+		if (params.param.use_superb_format)
 		{
-		  if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
-		    continue;
-		  st.kvslice_from_size(
-		      {{'t', (first_tslice + t) % Nt}, {'d', disp}, {'m', first_mom}},
-		      {{'t', 1}, {'d', 1}, {'m', tensor.kvdim()['m']}})
-		    .copyFrom(tensor.kvslice_from_size({{'t', t}}, {{'t', 1}}));
-		}
-	      }
-	      else
-	      {
-		// Only the master node writes the elementals and we assume that tensor is only supported on master
-		assert(tensor.dist == SB::OnMaster);
-		tensor = tensor.getLocal();
-		if (tensor) // if the local tensor isn't empty, ie this node holds the tensor
-		{
-		  // Open the database
-		  open_db();
-
-		  KeyBaryonElementalOperator_t key;
-		  ValBaryonElementalOperator_t val(params.param.num_vecs);
-
-		  for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
+		  for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
 		  {
-		    if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
-		      continue;
-		    for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
+		    int mom_idx =
+		      std::find(unique_moms.begin(), unique_moms.end(), moms.at(first_mom + m)) -
+		      unique_moms.begin();
+		    if (mom_idx == unique_moms.size())
+		      throw std::runtime_error("this shouldn't happen");
+		    for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
 		    {
-		      key.t_slice = (first_tslice + t) % Nt;
-		      key.left = SB::tomulti1d(displacement_list[disp][0]);
-		      key.middle = SB::tomulti1d(displacement_list[disp][1]);
-		      key.right = SB::tomulti1d(displacement_list[disp][2]);
-		      key.mom = SB::tomulti1d(mom_list[first_mom + m]);
-		      tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}})
-			.copyTo(val);
-		      qdp_db[0].insert(key, val);
+		      if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
+			continue;
+
+		      st.kvslice_from_size({{'t', (first_tslice + t) % Nt},
+					    {'d', disp},
+					    {'m', mom_idx},
+					    {'h', phase_idx}},
+					   {{'t', 1}, {'d', 1}, {'m', 1}, {'h', 1}})
+			.copyFrom(
+			  tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}}));
 		    }
 		  }
 		}
-	      }
+		else
+		{
+		  // Only the master node writes the elementals and we assume that tensor is only supported on master
+		  assert(tensor.dist == SB::OnMaster);
+		  tensor = tensor.getLocal();
+		  if (tensor) // if the local tensor isn't empty, ie this node holds the tensor
+		  {
+		    // Open the database
+		    open_db();
 
-	      tstoring.stop();
-	      time_storing += tstoring.getTimeInSeconds();
-	    });
+		    KeyBaryonElementalOperator_t key;
+		    ValBaryonElementalOperator_t val(params.param.num_vecs);
 
-	  // Do the color-contraction
-	  SB::doMomDisp_colorContractions(
-	    u_smr, source_colorvec, mom_list, this_tfrom, displacement_list,
-	    params.param.use_derivP, call, 0 /* it means to do all */,
-	    params.param.max_moms_in_contraction, params.param.max_vecs, SB::none,
-	    SB::OnDefaultDevice,
-	    params.param.use_superb_format ? SB::none : SB::Maybe<SB::Distribution>(SB::OnMaster));
+		    for (int t = 0, numt = tensor.kvdim()['t']; t < numt; ++t)
+		    {
+		      if (t_slices_to_write.count((first_tslice + t) % Nt) == 0)
+			continue;
+		      for (int m = 0, numm = tensor.kvdim()['m']; m < numm; ++m)
+		      {
+			key.t_slice = (first_tslice + t) % Nt;
+			key.left = SB::tomulti1d(displacement_list[disp][0]);
+			key.middle = SB::tomulti1d(displacement_list[disp][1]);
+			key.right = SB::tomulti1d(displacement_list[disp][2]);
+			key.mom = SB::tomulti1d(mom_list[first_mom + m]);
+			tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}})
+			  .copyTo(val);
+			qdp_db[0].insert(key, val);
+		      }
+		    }
+		  }
+		}
+
+		tstoring.stop();
+		time_storing += tstoring.getTimeInSeconds();
+	      });
+
+	    // Do the color-contraction
+	    SB::doMomDisp_colorContractions(
+	      u_smr, source_colorvec, moms, this_tfrom,
+	      displacement_list, params.param.use_derivP, call, 0 /* it means to do all */,
+	      params.param.max_moms_in_contraction, params.param.max_vecs, SB::none,
+	      SB::OnDefaultDevice,
+	      params.param.use_superb_format ? SB::none
+					     : SB::Maybe<SB::Distribution>(SB::OnMaster));
+	  }
 	}
       } catch (const std::exception& e)
       {

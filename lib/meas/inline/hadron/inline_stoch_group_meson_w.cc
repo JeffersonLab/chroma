@@ -37,11 +37,6 @@ namespace Chroma
     const int N_quarks = 2;
 	
 	
-    //
-    // The spin basis matrix to goto Dirac
-    //
-    SpinMatrix rotate_mat(adj(DiracToDRMat()));
-
     // Reader for input parameters
     void read(XMLReader& xml, const std::string& path, InlineStochGroupMesonEnv::Params::Param_t& param)
     {
@@ -449,6 +444,11 @@ namespace Chroma
     SmearedDispObjects::smearSource(int qnum, 
 				    const KeySmearedQuark_t & key)
     {
+      //
+      // The spin basis matrix to goto Dirac
+      //
+      SpinMatrix rotate_mat(adj(DiracToDRMat()));
+      
       std::map<KeySmearedQuark_t, SmearedQuark_t> & qmap = smeared_src_maps[qnum];
 
       //If entry is not in std::map create it
@@ -517,6 +517,11 @@ namespace Chroma
     SmearedDispObjects::smearSolution(int qnum , 
 				      const KeySmearedQuark_t & key)
     {
+      //
+      // The spin basis matrix to goto Dirac
+      //
+      SpinMatrix rotate_mat(adj(DiracToDRMat()));
+
       std::map<KeySmearedQuark_t, SmearedQuark_t> & qmap = smeared_soln_maps[qnum];
 
       //If entry is not in std::map create it

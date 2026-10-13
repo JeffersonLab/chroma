@@ -27,7 +27,9 @@ namespace Chroma
    *      M  =  A + (d+M) - (1/2) D'
    */
   class EvenOddPrecCloverLinOp : public EvenOddPrecLogDetLinearOperator<LatticeFermion, 
-				 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
+									multi1d<LatticeColorMatrix>,
+									multi1d<LatticeColorMatrix> >,
+				 public MGCoarsenableOperator<LatticeFermion>
   {
   public:
     // Typedefs to save typing
@@ -121,6 +123,44 @@ namespace Chroma
     //! Get the log det of the even even part
     Double logDetEvenEvenLinOp(void) const; 
 
+
+    MGOperatorForm mgForm() const override
+    {
+      return MGOperatorForm::EVEN_ODD_PRECONDITIONED;
+    }
+
+    const Subset& paritySubset(int p) const override { return rb[p]; }
+
+    bool hasLocal    (int p, int q) const override { return p == q; }
+    bool hasDirection(int p, int q) const override { return p != q; }
+
+    void applyLocal(LatticeFermion& chi, const LatticeFermion& psi,
+                    enum PlusMinus isign, int p, int q) const override
+    {
+      assert(p == q);
+      clov.apply(chi, psi, isign, p);          // A_ee (p=0) or A_oo (p=1)
+      getFermBC().modifyF(chi, rb[p]);
+    }
+
+    void applyDirection(LatticeFermion& chi, const LatticeFermion& psi,
+                        enum PlusMinus isign, int dir, int p, int q) const override
+    {
+      assert(q == 1 - p);
+      D.applyDirection(chi, psi, isign, dir, p); // H_eo (p=0) or H_oe (p=1)
+      Real mhalf = -0.5;
+      chi[rb[p]] *= mhalf;
+      getFermBC().modifyF(chi, rb[p]);
+    }
+
+    void liftToEven(LatticeFermion& v_e, const LatticeFermion& v_o) const override
+    {
+      LatticeFermion t1, t2;
+      evenOddLinOp(t1, v_o, PLUS);             // H_eo v_o   (includes -1/2)
+      evenEvenInvLinOp(t2, t1, PLUS);          // A_ee^{-1} H_eo v_o
+      v_e[rb[0]] = -t2;
+    }
+
+    
   private:
     mutable LatticeFermion tmp1;
     mutable LatticeFermion tmp2;

@@ -11,6 +11,8 @@
 #include "actions/ferm/invert/inv_eigcg2_array.h"
 #include "actions/ferm/invert/norm_gram_schm.h"
 
+#if ! defined (QDP_IS_QDPJIT2)
+
 //for debugging
 //#include "octave.h"
 #define TEST_ALGORITHM
@@ -246,3 +248,5 @@ namespace Chroma
 
 
 }
+
+#endif

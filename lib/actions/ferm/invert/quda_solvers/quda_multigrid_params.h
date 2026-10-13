@@ -4,10 +4,13 @@
 #include "chromabase.h"
 #include <string>
 #include "actions/ferm/invert/quda_solvers/enum_quda_io.h"
-
+#include "actions/ferm/invert/quda_solvers/quda_eig_params.h"
 
 namespace Chroma 
 {
+
+  struct MGEig; // Forward declare
+
 
   struct MULTIGRIDSolverParams {
     
@@ -35,6 +38,7 @@ namespace Chroma
     multi1d<int> nu_pre;
     multi1d<int> nu_post;
     multi1d< multi1d<int> > blocking;
+		multi1d<int> nvec_batch;
     int outer_gcr_nkrylov;
     int precond_gcr_nkrylov;
     std::string cycle_type;
@@ -44,8 +48,12 @@ namespace Chroma
     multi1d<Real> rsdTargetSubspaceCreate;
     multi1d<int> maxIterSubspaceRefresh;
     
+    // Deflation params
+    bool got_mg_eig_params; // Don't trust zero size in 
+    multi1d<MGEig> mg_eig_params;
+
     MULTIGRIDSolverParams(XMLReader& xml, const std::string& path);
-    MULTIGRIDSolverParams() {
+    MULTIGRIDSolverParams() : got_mg_eig_params(false) {
 
       relaxationOmegaMG =Real(1.0);
       relaxationOmegaOuter = Real(1.0);
@@ -65,6 +73,7 @@ namespace Chroma
       }
       blocking.resize(mg_levels-1);
       nvec.resize(mg_levels-1);
+			nvec_batch.resize(mg_levels-1);
       nu_pre.resize(mg_levels-1);
       nu_post.resize(mg_levels-1);
       maxIterSubspaceCreate.resize(mg_levels-1);
@@ -87,7 +96,7 @@ namespace Chroma
     	  nu_pre[l] = 2;
     	  nu_post[l] = 2;
     	  nvec[l] = 16;
-
+				nvec_batch[l]=1; // the batch size for Nvec solves is 1 by default
     	  // Default params:
     	  maxIterSubspaceCreate[l] = 500;
     	  rsdTargetSubspaceCreate[l] = 5.0e-6;
@@ -111,13 +120,22 @@ namespace Chroma
       check_multigrid_setup= true;
       cycle_type = "MG_VCYCLE";
 
-    };
-
+    }
   };
+
   void read(XMLReader& xml, const std::string& path, MULTIGRIDSolverParams& p);
  
   void write(XMLWriter& xml, const std::string& path, 
 	     const MULTIGRIDSolverParams& param);
+
+  struct MGEig {
+    int level;
+    QudaEigParam eig_p;
+    MGEig() : eig_p(newQudaEigParam()){};
+  };
+
+  void read(XMLReader& xml, const std::string& path, MGEig& p);
+  void write(XMLWriter& xml, const std::string& path, const MGEig& p);
 
 }
 #endif

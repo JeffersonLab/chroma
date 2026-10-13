@@ -5,6 +5,7 @@
 
 #include "actions/ferm/invert/quda_solvers/enum_quda_io.h"
 #include <string>
+#include "actions/ferm/invert/quda_solvers/xml_array_utils.h"
 
 namespace Chroma {
 
@@ -135,7 +136,78 @@ namespace Chroma {
   }
 
 
+	// The Eigensolver Type
+	namespace QudaEigTypeEnv {
+		bool registerAll(void) {
+			bool success = true;
 
+			// Thick Restarted Lanczos
+			success = theQudaEigTypeMap::Instance().registerPair(std::string("TR_LANCZOS"), 
+																																	QUDA_EIG_TR_LANCZOS);
+
+		  // Block Thick Restarted Lanczos
+			success &= theQudaEigTypeMap::Instance().registerPair(std::string("BLK_TR_LANCZOS"), 
+																																	QUDA_EIG_BLK_TR_LANCZOS);
+
+			// Implicitly Restarted Arnoldi
+			success &= theQudaEigTypeMap::Instance().registerPair(std::string("IR_ARNOLDI"), 
+																																	QUDA_EIG_IR_ARNOLDI);
+
+			// Block Implicitly Restarted Arnoldi
+			success &= theQudaEigTypeMap::Instance().registerPair(std::string("BLK_IR_ARNOLDI"), 
+																																	QUDA_EIG_BLK_IR_ARNOLDI);
+			return success;
+		}
+
+		bool registered = registerAll();	
+		const std::string typeIDString = "QudaEigType_s";
+  }
+	
+	namespace QudaEigSpectrumTypeEnv {
+		bool registerAll(void) {
+			bool success = true;
+
+			success = theQudaEigSpectrumTypeMap::Instance().registerPair(std::string("LM"),
+										QUDA_SPECTRUM_LM_EIG);
+
+			success &= theQudaEigSpectrumTypeMap::Instance().registerPair(std::string("SM"),
+										QUDA_SPECTRUM_SM_EIG);
+
+			success &= theQudaEigSpectrumTypeMap::Instance().registerPair(std::string("LR"),
+										QUDA_SPECTRUM_LR_EIG);
+
+			success &= theQudaEigSpectrumTypeMap::Instance().registerPair(std::string("SR"),
+										QUDA_SPECTRUM_SR_EIG);
+			
+			success &= theQudaEigSpectrumTypeMap::Instance().registerPair(std::string("LI"),
+										QUDA_SPECTRUM_LI_EIG);
+
+			success &= theQudaEigSpectrumTypeMap::Instance().registerPair(std::string("SI"),
+										QUDA_SPECTRUM_SI_EIG);
+
+			return success;
+		}
+		bool registered = registerAll();
+		const std::string typeIDString = "QudaEigSpectrumType_s";
+  }
+	
+	void read(XMLReader& xml_in, const std::string& path, QudaEigType& t) {
+		Chroma::theQudaEigTypeMap::Instance().read( Chroma::QudaEigTypeEnv::typeIDString, xml_in, path, t);
+	}
+
+	void write(XMLWriter& xml_out, const std::string& path, const QudaEigType& t) {
+		Chroma::theQudaEigTypeMap::Instance().write( Chroma::QudaEigTypeEnv::typeIDString, xml_out, path, t);
+	}
+	
+	void read(XMLReader& xml_in, const std::string& path, QudaEigSpectrumType& t) {
+		Chroma::theQudaEigSpectrumTypeMap::Instance().read( Chroma::QudaEigSpectrumTypeEnv::typeIDString,
+				xml_in, path, t);
+	}
+
+	void write(XMLWriter& xml_out, const std::string& path, const QudaEigSpectrumType& t) {
+		Chroma::theQudaEigSpectrumTypeMap::Instance().write( Chroma::QudaEigSpectrumTypeEnv::typeIDString,
+				xml_out, path, t);
+	}
 
 
 }

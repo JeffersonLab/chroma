@@ -1,0 +1,162 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{enumitem}
+
+\title{Chroma Native SMD Design}
+\author{}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Overview}
+This document specifies a native Stochastic Molecular Dynamics (SMD) implementation
+in Chroma. The design follows the paper \href{https://arxiv.org/pdf/1105.4749}{arXiv:1105.4749} and \href{https://luscher.web.cern.ch/luscher/notes/smd-ergodicity.pdf}{Luscher's notes}. The implementation is orthogonal to existing HMC
+code: new modules and a new executable are added, while changes to existing files
+are minimal and limited to build and registration glue.
+
+\section{Goals}
+\begin{itemize}[leftmargin=*]
+  \item Provide an SMD driver that uses existing Chroma monomials, actions, and integrators.
+  \item Support three variants:
+    \begin{itemize}
+      \item GHMC-style SMD with accept/reject.
+      \item SMD without accept/reject but with action evaluation (for diagnostics).
+      \item SMD without accept/reject and without action evaluation (fast mode).
+    \end{itemize}
+  \item Provide a new XML-driven executable (\texttt{smd}) similar to \texttt{hmc}.
+  \item Keep integrators unchanged (Omelyan, minnorm2/4, force-gradient).
+\end{itemize}
+
+
+\section{Algorithm Summary}
+The SMD trajectory is composed of a partial momentum refresh, molecular dynamics
+integration, and optional accept/reject. The algorithm follows the common pattern:
+\begin{enumerate}
+  \item Refresh momenta with friction parameter \(\gamma\) and effective step size \(\Delta t\).
+  \item Refresh pseudo-fermions (as in HMC initialization).
+  \item Integrate the equations of motion using a selected symplectic integrator.
+  \item Optionally accept/reject based on \(\Delta H\).
+\end{enumerate}
+
+The refresh step uses a standard Ornstein--Uhlenbeck update with an effective
+step size \(\Delta t\) set to the outermost trajectory length:
+\begin{equation}
+  P \leftarrow c_1 P + c_2 \eta, \quad c_1 = e^{-\gamma\Delta t},\quad c_2 = \sqrt{1-c_1^2}
+\end{equation}
+where \(\eta\) is a Gaussian momentum field.
+In Chroma, \(\Delta t\) is taken as the outermost integrator \(\tau\) (the total
+MD time for the update). For nested integrators, sub-integrator step sizes are
+internal to the MD evolution and do not enter the refresh.
+
+\section{Mapping to Chroma Components}
+\subsection{Existing Components Reused}
+\begin{itemize}[leftmargin=*]
+  \item Monomials and actions: existing HMC monomial factory and action registry.
+  \item Integrators: existing LCM integrators (Omelyan, minnorm2/4, force-gradient), as well as nested integrators for multi-time scale integration
+  \item RNG and lattice field types: QDP++ and Chroma utilities.
+  \item Configuration I/O: existing gauge config reader/writer and XML output helpers.
+\end{itemize}
+
+
+\subsection{New Components}
+\begin{itemize}[leftmargin=*]
+  \item \texttt{update/molecdyn/smd}: SMD driver and params.
+  \item \texttt{mainprogs/main/smd.cc}: new executable, XML-driven.
+  \item \texttt{py\_chroma} binding: run SMD from Python without XML.
+\end{itemize}
+
+\section{Module and File Layout}
+\begin{itemize}[leftmargin=*]
+  \item \texttt{src/chroma/lib/update/molecdyn/smd/smd.h}
+  \item \texttt{src/chroma/lib/update/molecdyn/smd/smd.cc}
+  \item \texttt{src/chroma/lib/update/molecdyn/smd/smd\_params.h}
+  \item \texttt{src/chroma/lib/update/molecdyn/smd/smd\_params.cc}
+  \item \texttt{src/chroma/mainprogs/main/smd.cc}
+  \item \texttt{src/chroma/mainprogs/main/compare\_gauge.cc}
+\end{itemize}
+
+Only build and registration glue should touch existing files.
+
+\section{SMD Parameters}
+ A minimal parameter set includes:
+\begin{itemize}[leftmargin=*]
+  \item \texttt{gamma}: friction parameter (>0).
+  \item \texttt{AcceptReject}: accept/reject on (\texttt{True}) or off (\texttt{False}).
+  \item \texttt{actions}: list of action indices (as in HMC).
+  \item \texttt{monomials}: standard Chroma monomial list.
+  \item \texttt{integrator}: standard Chroma integrator parameters with explicit
+        step counts (\texttt{n\_steps}) and trajectory length (\texttt{tau}).
+\end{itemize}
+
+\section{Execution Flow}
+\subsection{High-Level Flow}
+\begin{enumerate}
+  \item Load gauge configuration, momenta and set gauge BC/state.
+  	\item if momenta file is not present initialize with gaussian.
+  \item Build monomials and integrator from XML.
+  \item Initialize SMD state (momenta and pseudo-fermions).
+  \item For each update:
+    \begin{enumerate}
+      \item Refresh momenta (and pseudo-fermions if configured).
+      \item Integrate MD equations for one trajectory segment.
+      \item Optional accept/reject; if rejected, restore previous fields and flip momenta.
+      \item Save configuration and  momenta if needed and log XML.
+    \end{enumerate}
+\end{enumerate}
+
+\subsection{Accept/Reject Variants}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Full SMD (GHMC):} accept/reject on each update (\texttt{AcceptReject=True}).
+  \item \textbf{No-acc with actions:} skip accept/reject, still compute action start/end.
+  \item \textbf{No-acc fast:} skip accept/reject and skip action evaluation.
+\end{itemize}
+
+\section{XML Interface (Executable)}
+The \texttt{smd} executable should mirror \texttt{hmc} structure and reuse existing
+blocks for configuration I/O and measurements. A skeletal XML layout:
+\begin{lstlisting}[basicstyle=\ttfamily\small]
+<smd>
+  <UpdateParams>
+    <n_updates>10</n_updates>
+    <save_interval>1</save_interval>
+    <start_update_num>0</start_update_num>
+    <cfg_file>...</cfg_file>
+    <cfg_type>...</cfg_type>
+  </UpdateParams>
+
+  <SMDParams>
+    <gamma>0.3</gamma>
+    <AcceptReject>True</AcceptReject>
+  </SMDParams>
+
+  <Monomials> ... </Monomials>
+  <MDIntegrator> ... </MDIntegrator>
+
+  <Measurements> ... optional ... </Measurements>
+</smd>
+\end{lstlisting}
+
+
+\section{Data Ownership and State}
+\begin{itemize}[leftmargin=*]
+  \item The SMD driver owns transient momentum and pseudo-fermion fields.
+  \item Gauge field is managed by existing Chroma gauge state.
+  \item On reject: restore gauge field and momenta; flip momentum sign.
+  \item On accept: renormalize gauge links and leave field updated.
+\end{itemize}
+
+\section{Logging and Diagnostics}
+\begin{itemize}[leftmargin=*]
+  \item Report start/end action contributions and \(\Delta H\).
+  \item Report acceptance rate when \texttt{AcceptReject=True}.
+  \item Log integrator statistics as in HMC (forces, solver stats).
+\end{itemize}
+
+
+
+\end{document}

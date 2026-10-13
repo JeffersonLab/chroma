@@ -24,7 +24,8 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-  void readWupp(multi1d<LatticeColorMatrix>& u, const std::string& cfg_file) 
+#if ! defined (QDP_IS_QDPJIT2)
+void readWupp(multi1d<LatticeColorMatrix>& u, const std::string& cfg_file) 
 {
   START_CODE();
 
@@ -119,7 +120,13 @@ namespace Chroma {
 
   END_CODE();
 }
-
+#else
+void readWupp(multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
+{
+  QDPIO::cerr << __func__ << " not implemented." << std::endl;
+  QDP_abort(1);
+}
+#endif
 
 
 //! Read a Wupp configuration file

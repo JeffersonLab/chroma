@@ -18,6 +18,18 @@ namespace Chroma
   {
     bool registerAll();
 
+    // Momentum list
+    using mom_list_t = std::vector<std::vector<int>>;
+
+    // Displacements-momenta combo
+    struct phase_moms_combo_t {
+      std::vector<int> phase;
+      mom_list_t mom_list;
+    };
+
+    // Phase-momenta combos
+    using phase_moms_combos_t = std::vector<phase_moms_combo_t>;
+
 
     //! Parameter structure
     /*! \ingroup inlinehadron */
@@ -50,7 +62,9 @@ namespace Chroma
 	int			Nt_forward;		/*!< Nt_forward */
 	int			t_source;		/*!< t_source */
 	multi1d<int> 		t_slices; 		/*!< alternative to Nt_forward and t_source */
-	multi1d<float>          phase;         		/*!< Phase to apply to colorvecs */
+	multi1d<int>            phase;         		/*!< Phase to apply to colorvecs */
+	std::vector<std::vector<int>>  phases;          /*!< Alternative array of phasings to compute */
+        phase_moms_combos_t     alt_phase_moms_combos;  /*!< Alternative array of phase-momenta combos */
 	int 			max_tslices_in_contraction; /*! maximum number of contracted tslices simultaneously */
 	int 			max_moms_in_contraction;/*! maximum number of contracted momenta simultaneously */
 	int 			max_vecs;               /*! maximum number of columns from the first tensor being contracted */

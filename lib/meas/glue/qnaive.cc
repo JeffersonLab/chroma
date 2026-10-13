@@ -662,7 +662,7 @@ namespace Chroma
     }
 
     /* Topological charge */
-    qtop /= ( 16*16*twopi*twopi );
+    qtop /= ( 16*16 * Chroma::constant().twopi * Chroma::constant().twopi );
     QDPIO::cout << "qtop = " << qtop << std::endl;
 
     END_CODE();

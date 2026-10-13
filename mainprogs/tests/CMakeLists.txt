@@ -136,23 +136,47 @@ target_include_directories(t_symm_prec PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 if ( Chroma_ENABLE_LAPACK )
-add_executable(t_inv_fgmres_dr 
-	t_inv_fgmres_dr.cc 
-	chroma_gtest_env.h
-	fgmres_dr_tests.cc
+  add_executable(t_inv_fgmres_dr 
+	  t_inv_fgmres_dr.cc 
+	  chroma_gtest_env.h
+	  fgmres_dr_tests.cc
 	)
 
-if (QDP_IS_QDPJIT)
-  set_target_properties( t_inv_fgmres_dr PROPERTIES CXX_STANDARD 20 )
+  if (QDP_IS_QDPJIT)
+    set_target_properties( t_inv_fgmres_dr PROPERTIES CXX_STANDARD 20 )
     
-  if( QDP_BACKEND_L0 )
-    find_package(PkgConfig REQUIRED)
-    pkg_search_module(PKG_LLVMSPIRV REQUIRED LLVMSPIRVLib)
-    target_link_libraries(t_inv_fgmres_dr PUBLIC ${PKG_LLVMSPIRV_LIBRARIES})
-    target_link_options(t_inv_fgmres_dr PUBLIC ${PKG_LLVMSPIRV_LDFLAGS})
+    if( QDP_BACKEND_L0 )
+      find_package(PkgConfig REQUIRED)
+      pkg_search_module(PKG_LLVMSPIRV REQUIRED LLVMSPIRVLib)
+      target_link_libraries(t_inv_fgmres_dr PUBLIC ${PKG_LLVMSPIRV_LIBRARIES})
+      target_link_options(t_inv_fgmres_dr PUBLIC ${PKG_LLVMSPIRV_LDFLAGS})
+    endif()
   endif()
+
+  target_link_libraries( t_inv_fgmres_dr PUBLIC Chroma::chromalib GTest)
+  target_include_directories(t_inv_fgmres_dr PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
-target_link_libraries( t_inv_fgmres_dr PUBLIC Chroma::chromalib GTest)
-target_include_directories(t_inv_fgmres_dr PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+if( Chroma_ENABLE_QUDA )
+  add_executable(t_mg_params
+    t_mg_params.cc
+    chroma_gtest_env.h  
+    mgparams_tests.cc
+    mgparams_tests.h
+  )
+
+  if (QDP_IS_QDPJIT)
+    set_target_properties( t_mg_params PROPERTIES CXX_STANDARD 20 )
+  
+    if( QDP_BACKEND_L0 )
+      find_package(PkgConfig REQUIRED)
+      pkg_search_module(PKG_LLVMSPIRV REQUIRED LLVMSPIRVLib)
+      target_link_libraries(t_mg_params PUBLIC ${PKG_LLVMSPIRV_LIBRARIES})
+      target_link_options(t_mg_params PUBLIC ${PKG_LLVMSPIRV_LDFLAGS})
+    endif()
+  endif()
+
+  target_link_libraries( t_mg_params PUBLIC Chroma::chromalib GTest)
+  target_include_directories(t_mg_params PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+ 
 endif()

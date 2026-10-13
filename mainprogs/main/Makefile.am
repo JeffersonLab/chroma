@@ -10,9 +10,9 @@ INCFLAGS=-I$(TOPDIR)/mainprogs/main -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 #
 # Any other compiler flags
 #
-AM_CXXFLAGS = $(INCFLAGS) @MGPROTO_CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ @GMP_CXXFLAGS@ @QOP_MG_CXXFLAGS@ @CXXFLAGS@ 
-AM_LDFLAGS = -L$(BUILDDIR)/lib @MGPROTO_LDFLAGS@ @QDPXX_LDFLAGS@ @BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @LDFLAGS@
-LDADD = -lchroma @MGPROTO_LIBS@ @QUDA_LIBS@ @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @GMP_LIBS@  @LIBS@ 
+AM_CXXFLAGS = $(INCFLAGS) @MGPROTO_CXXFLAGS@ @REDSTAR_DATALIB_CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ @GMP_CXXFLAGS@ @QOP_MG_CXXFLAGS@ @CXXFLAGS@ 
+AM_LDFLAGS = -L$(BUILDDIR)/lib @MGPROTO_LDFLAGS@ @REDSTAR_DATALIB_LDFLAGS@ @QDPXX_LDFLAGS@ @BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @LDFLAGS@
+LDADD = -lchroma @MGPROTO_LIBS@ @QUDA_LIBS@ @REDSTAR_DATALIB_LIBS@ @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @GMP_LIBS@  @LIBS@ 
 
 if BUILD_MDWF
 AM_CXXFLAGS += @MDWF_CXXFLAGS@
@@ -99,6 +99,12 @@ AM_LDFLAGS  += @QMT_LDFLAGS@
 LDADD += @QMT_LIBS@
 endif
 
+if BUILD_REDSTAR_DATALIB
+AM_CXXFLAGS += @REDSTAR_DATALIB_CXXFLAGS@
+AM_LDFLAGS += @REDSTAR_DATALIB_LDFLAGS@
+LDADD	+= @REDSTAR_DATALIB_LIBS@
+endif
+
 if BUILD_SB
 AM_CXXFLAGS += @SB_CXXFLAGS@
 AM_LDFLAGS += @SB_LDFLAGS@
@@ -137,7 +143,8 @@ HDRS =
 bin_PROGRAMS = chroma  \
         purgaug \
         cfgtransf \
-        const_hmc hmc spectrum_s
+        const_hmc hmc smd spectrum_s
+bin_PROGRAMS += compare_gauge
 
 # Wilson specific programs
 check_PROGRAMS = collect_propcomp qpropgfix qproptrev qpropqio qproptransf wallformfac 
@@ -173,6 +180,7 @@ collect_propcomp_SOURCES = collect_propcomp.cc
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
 spectrum_s_SOURCES= spectrum_s.cc
 hmc_SOURCES= hmc.cc
+smd_SOURCES= smd.cc
 const_hmc_SOURCES= const_hmc.cc
 purgaug_SOURCES= purgaug.cc
 wallformfac_SOURCES= wallformfac.cc
@@ -182,6 +190,7 @@ qpropadd_SOURCES= qpropadd.cc
 qpropgfix_SOURCES= qpropgfix.cc
 qproptrev_SOURCES= qproptrev.cc
 cfgtransf_SOURCES= cfgtransf.cc
+compare_gauge_SOURCES= compare_gauge.cc
 
 #
 # The latter rule will always try to rebuild libchroma.a when you 

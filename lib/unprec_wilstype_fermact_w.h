@@ -27,6 +27,12 @@ namespace Chroma
 
     //! Produce a linear operator for this action
     virtual UnprecLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const = 0;
+
+    //! Produce a linear operator for this action
+    LinearOperator<T>* genLinOp(Handle<FermState<T, P, Q>> state) const override
+    {
+      return linOp(state);
+    }
   };
 
 

@@ -40,7 +40,7 @@ namespace Chroma
     LatticeReal r_l = sqrt(r[1]*r[1] + r[2]*r[2] + r[3]*r[3]);
   
     // Normalize
-    LatticeBoolean lbtmp = r_l > fuzz;
+    LatticeBoolean lbtmp = r_l > Chroma::constant().fuzz;
     LatticeReal lftmp = sin(r_l) / where(lbtmp, r_l, LatticeReal(1));
 
     /* Euler expand SU(2) lie algebra element to SU(2) lie group element */

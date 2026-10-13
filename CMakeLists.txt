@@ -24,9 +24,11 @@ option(Chroma_ENABLE_QUDA  "Enable the QUDA Library for GPUs" OFF)
 #option(Chroma_ENABLE_QUDA_MG_DUMP "Enable to dump on failed QUDA solves" OFF)
 option(Chroma_ENABLE_QPHIX  "Enable QPhiX Solvers" OFF)
 option(Chroma_ENABLE_MGPROTO "Enable MG-Proto" OFF)
+option(Chroma_ENABLE_MGPROTON "Enable MGPROTON" OFF)
 option(Chroma_ENABLE_LAPACK "Enable Lapack Binding in QDPLapack" OFF)
 option(Chroma_ENABLE_OPENMP "Enable OpenMP" OFF)
 option(Chroma_ENABLE_SUPERBBLAS  "Enable tasks using Superbblas" OFF)
+option(Chroma_ENABLE_REDSTAR_DATALIB  "Enable tasks using redstar-datalib" OFF)
 option(Chroma_ENABLE_PRIMME  "Build with PRIMME" OFF)
 option(Chroma_ENABLE_CUDA  "Build with CUDA" OFF)
 option(Chroma_ENABLE_ROCM  "Build with ROCM" OFF)
@@ -53,6 +55,7 @@ option(Chroma_QPHIX_DSLASH "Set to ON to enable QPhiX Dslash. QDP-JIT builds wit
 option(Chroma_USE_MGPROTO "Use the MGProto Multigrid solver" OFF)
 
 set(SUPERBBLAS_DIR "" CACHE PATH "path to superbblas installation")
+set(REDSTAR_DATALIB_DIR "" CACHE PATH "path to redstar-datalib installation")
 set(PRIMME_DIR "" CACHE PATH "path to PRIMME installation")
 
 ##################
@@ -79,7 +82,7 @@ endif()
 list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
 
 find_package(GMP)
-if( GMP_FOUND ) 
+if( GMP_FOUND )
    set(BUILD_GMP_REMEZ 1) # For the header file
 endif()
 # Create an imported target
@@ -95,7 +98,7 @@ if(Chroma_ENABLE_OPENMP)
   if( NOT OpenMP_FOUND )
   	find_package(OpenMP REQUIRED)
   endif()
-  
+
   if( NOT Threads_FOUND )
   	find_package(Threads REQUIRED)
   endif()
@@ -118,7 +121,7 @@ endif()
 # 2nd: Deal with QPhiX
 ##########################
 if( Chroma_ENABLE_QPHIX )
-#  
+#
 #  Deal with QPhix
 #  find_package(QPhiX)
 endif()
@@ -163,9 +166,9 @@ endif()
 # 5th: Deal with MDWF
 ###########################
 if( Chroma_ENABLE_MDWF )
-# 
+#
 # Gonna need to write a find module for this
-# 
+#
 endif()
 
 ####################################################
@@ -187,7 +190,7 @@ if( Chroma_ENABLE_LAPACK )
   set(QDPLapack_BINDING "lapack")
 endif()
 add_subdirectory(other_libs/qdp-lapack)
- 
+
 ###########################
 # 6th: Deal with superbblas
 ###########################
@@ -196,7 +199,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
 
   include(FindBLAS)
   find_package(BLAS REQUIRED)
-  
+
   if( QDP_BACKEND_ROCM AND NOT HIP_CPP_CONFIG )
      find_package(HIP REQUIRED)
      execute_process(
@@ -223,10 +226,22 @@ if( Chroma_ENABLE_SUPERBBLAS )
 
   set(BUILD_SB 1)
 
+  # Deal with MGPROTON
+  if( Chroma_ENABLE_MGPROTON)
+    message(STATUS "Enabling MGPROTON")
+    set(BUILD_MGPROTON 1)
+  endif()
+
   # Deal with PRIMME
   if( Chroma_ENABLE_PRIMME )
     message(STATUS "Enabling PRIMME")
     set(BUILD_PRIMME 1)
+  endif()
+
+  # Deal with redstar-datalib
+  if( Chroma_ENABLE_REDSTAR_DATALIB )
+    message(STATUS "Enabling redstar-datalib")
+    set(BUILD_REDSTAR_DATALIB 1)
   endif()
 endif()
 
@@ -236,11 +251,11 @@ endif()
 #####################################
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lib/chroma_config_internal.h.cmake.in
 			   lib/chroma_config_internal.h)
-			
+
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib/chroma_config_internal.h DESTINATION include)
 
 # Now we are ready to build in lib
-# Heaven help us. 
+# Heaven help us.
 
 add_subdirectory(lib)
 add_subdirectory(mainprogs/main)
@@ -250,7 +265,7 @@ add_subdirectory(mainprogs/tests)
 # if needed
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindGMP.cmake
 		DESTINATION lib/cmake/Chroma )
-		  
+
 #install the export description of the targets
 install(EXPORT ChromaTargets
         FILE ChromaTargets.cmake

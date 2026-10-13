@@ -510,8 +510,8 @@ namespace Chroma
 		    const multi1d<LatticeColorMatrix>& u,
 		    int mu, int length,
 		    int mom)
-  {
-    Real angle = twopi*mom / Real(Layout::lattSize()[mu]);
+  {    
+    Real angle = Chroma::constant().twopi * mom / Real(Layout::lattSize()[mu]);
     Complex phase = cmplx(cos(angle),sin(angle));
 
     return (Real(1) + conj(phase))*displace<T>(u, F, -length, mu, QDP::all) - (Real(1) + phase)*displace<T>(u, F, length, mu, QDP::all);

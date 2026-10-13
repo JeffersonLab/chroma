@@ -42,8 +42,10 @@ namespace Chroma
 	int			t_source;		/*!< t_source */
 	int                     max_tslices_in_contraction;  /*! maximum number of contracted tslices simultaneously */
 	int                     max_moms_in_contraction;  /*! maximum number of contracted momenta simultaneously */
-	std::vector<float>          quarkPhase;         /*!< Phase to apply to the right colorvecs (quarks) */
-	std::vector<float>          aQuarkPhase;        /*!< Phase to apply to the left colorvecs (antiquarks) */
+	std::vector<int>          quarkPhase;         /*!< Phase to apply to the right colorvecs (quarks) */
+	std::vector<int>          aQuarkPhase;        /*!< Phase to apply to the left colorvecs (antiquarks) */
+	bool                    use_superb_format;  /*!< Whether use the superb format for storing the elementals */
+	bool                    output_file_is_local;   /*!< Whether the output file is in a not shared filesystem */
       };
 
       struct NamedObject_t

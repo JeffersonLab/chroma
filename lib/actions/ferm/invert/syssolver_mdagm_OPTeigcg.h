@@ -20,6 +20,8 @@
 
 #include "util/info/unique_id.h"
 
+#if ! defined (QDP_IS_QDPJIT2)
+
 namespace Chroma
 {
 
@@ -282,5 +284,6 @@ namespace Chroma
 
 
 
+#endif 
 #endif 
 

@@ -340,19 +340,6 @@ public:
 		quda_inv_param.output_location = QUDA_CUDA_FIELD_LOCATION;
 #endif
 
-		// Autotuning
-		if( invParam.tuneDslashP ) {
-			QDPIO::cout << "Enabling Dslash Autotuning" << std::endl;
-
-			quda_inv_param.tune = QUDA_TUNE_YES;
-			mg_inv_param.tune = QUDA_TUNE_YES;
-		}
-		else {
-			QDPIO::cout << "Disabling Dslash Autotuning" << std::endl;
-
-			quda_inv_param.tune = QUDA_TUNE_NO;
-			mg_inv_param.tune = QUDA_TUNE_NO;
-		}
 
 
 		// Setup padding

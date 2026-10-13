@@ -413,6 +413,8 @@ nobase_include_HEADERS = \
 	update/molecdyn/hmc/lcm_hmc.h \
 	update/molecdyn/hmc/const_lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
+	update/molecdyn/smd/smd.h \
+	update/molecdyn/smd/lcm_smd.h \
 	update/molecdyn/monomial/monomial.h \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
@@ -932,6 +934,9 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.h \
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h \
+	meas/inline/hadron/inline_inverter_test_w.h \
+	meas/inline/hadron/inline_inverter_test_superb_w.h \
+	meas/inline/hadron/inline_corr_superb_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
@@ -989,7 +994,8 @@ nobase_include_HEADERS += \
 	meas/inline/smear/inline_link_smear.h \
 	meas/inline/io/inline_read_map_obj_disk.h \
 	meas/inline/io/inline_copy_map_obj.h \
-	meas/inline/io/inline_write_timeslice_map_obj_disk.h
+	meas/inline/io/inline_write_timeslice_map_obj_disk.h \
+	meas/inline/io/inline_cmd.h
 
 # Taken out for now
 #	
@@ -1064,6 +1070,10 @@ if BUILD_MGPROTO
 AM_CXXFLAGS += @MGPROTO_CXXFLAGS@
 endif
 
+if BUILD_REDSTAR_DATALIB
+AM_CXXFLAGS += @REDSTAR_DATALIB_CXXFLAGS@
+endif
+
 if BUILD_SB
 AM_CXXFLAGS += @SB_CXXFLAGS@
 endif
@@ -1082,6 +1092,7 @@ lib_LIBRARIES = libchroma.a
 #     chroma/scripts/build_libchroma_sources.pl
 #
 libchroma_a_SOURCES = \
+	constant.cc \
 	actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
         actions/ferm/fermstates/hex_fermstate_params.cc \
@@ -1857,6 +1868,9 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.cc \
+	meas/inline/hadron/inline_inverter_test_w.cc \
+	meas/inline/hadron/inline_inverter_test_superb_w.cc \
+	meas/inline/hadron/inline_corr_superb_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
@@ -1917,7 +1931,8 @@ libchroma_a_SOURCES += \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
 	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
-	meas/inline/smear/inline_link_smear.cc
+	meas/inline/smear/inline_link_smear.cc \
+	meas/inline/io/inline_cmd.cc
 
 # Taken out for now
 
@@ -2197,4 +2212,3 @@ if BUILD_GTEST
 nobase_include_HEADERS += gtest/gtest.h
 libchroma_a_SOURCES += gtest/gtest-all.cc
 endif
-
