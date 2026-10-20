@@ -7,7 +7,7 @@
 
 #include "actions/ferm/invert/bicgstab_kernels_naive.h"
 
-#ifdef BUILD_SCALARSITE_BICGSTAB
+#if defined(BUILD_SCALARSITE_BICGSTAB) && !defined(QDP_IS_QDPJIT)
 #warning "Using Scalarsite BiCGStab Kernels"
 #include "actions/ferm/invert/bicgstab_kernels_scalarsite.h"
 #endif
@@ -20,7 +20,7 @@ namespace Chroma {
     void initKernels()
     {
 
-#ifdef BUILD_SCALARSITE_BICGSTAB
+#if defined(BUILD_SCALARSITE_BICGSTAB) && !defined(QDP_IS_QDPJIT)
       initScalarSiteKernels();
 #endif
 
@@ -30,7 +30,7 @@ namespace Chroma {
     inline
     void finishKernels()
     {
-#ifdef BUILD_SCALARSITE_BICGSTAB
+#if defined(BUILD_SCALARSITE_BICGSTAB) && !defined(QDP_IS_QDPJIT)
       finishScalarSiteKernels();
 #endif
     }

@@ -655,7 +655,6 @@ list(APPEND ChromaLIB_HEADERS
 	actions/ferm/linop/lwldslash_3d_qdp_w.h
 	actions/ferm/linop/clover_term_w.h
 	actions/ferm/linop/clover_term_base_w.h
-	actions/ferm/linop/clover_term_qdp_w.h
 	actions/ferm/linop/eoprec_clover_linop_w.h
 	actions/ferm/linop/seoprec_clover_linop_w.h
 	actions/ferm/linop/shifted_linop_w.h
@@ -1562,7 +1561,6 @@ target_sources(chromalib PRIVATE
 	actions/ferm/linop/unprec_w12_linop_w.cc 
 	actions/ferm/linop/unprec_wilson_linop_w.cc 
 	actions/ferm/linop/clover_term_base_w.cc 
-	actions/ferm/linop/clover_term_qdp_w.cc 
 	actions/ferm/linop/eoprec_clover_linop_w.cc 
 	actions/ferm/linop/seoprec_clover_linop_w.cc 
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.cc 
@@ -1921,6 +1919,14 @@ if( Chroma_ENABLE_CPP_WILSON_DSLASH )
   		actions/ferm/linop/lwldslash_w_cppd.cc
   )
   target_link_libraries(chromalib PUBLIC CPPWilsonDslash::dslash )
+endif()
+
+#######################################################
+# QDP++ clover term: not with QDP-JIT (JIT clover term)
+#######################################################
+if( NOT QDP_IS_QDPJIT )
+  list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_qdp_w.h)
+  target_sources(chromalib PRIVATE actions/ferm/linop/clover_term_qdp_w.cc)
 endif()
 
 #######################################################

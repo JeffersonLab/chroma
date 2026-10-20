@@ -444,9 +444,9 @@ namespace Chroma
 #    endif
 
 #  else // BUILD_QUDA
-    std::cout << "Initializing QMP part" << std::endl;
+    //std::cout << "Initializing QMP part" << std::endl;
     QDP_initialize_QMP(argc, argv);
-    std::cout << "Setting device" << std::endl;
+    //std::cout << "Setting device" << std::endl;
 #    ifdef QDP_USE_COMM_SPLIT_INIT
     int dev = QDP_setGPUCommSplit();
 #    else

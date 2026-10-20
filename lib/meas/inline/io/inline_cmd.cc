@@ -167,6 +167,7 @@ namespace Chroma
 
     void InlineMeas::operator()(unsigned long update_no, XMLWriter& xml_out)
     {
+#if ! defined (QDP_IS_QDPJIT)
       START_CODE();
 
       QDPIO::cout << InlineExecuteCmdEnv::name << ": executing command";
@@ -255,6 +256,7 @@ namespace Chroma
       QDPIO::cout << InlineExecuteCmdEnv::name << ": ran successfully" << std::endl;
 
       END_CODE();
+#endif // ! QDP_IS_QDPJIT
     }
   }
 }

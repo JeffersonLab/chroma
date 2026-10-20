@@ -8,7 +8,6 @@ option(Chroma_ENABLE_SSE3 "Use SSE3 Optimizations" OFF)
 option(Chroma_ENABLE_SANITIZERS "Enable memory and address sanitizers" OFF)
 #option(Chroma_ENABLE_CG_SOLVER_RESTART "Enable A single Restart in the CG Solvers" OFF)
 #option(Chroma_ENABLE_MDWF "Use MDWF Solver From MIT" OFF)
-#koption(Chroma_ENABLE_LLVM_WILSON_DSLASH "Use LLVM Based Wilson Dslash (QDP-JIT builds only)" OFF)
 #option(Chroma_ENABLE_STATIC_PACKED_GAUGE "Use static space for packed gauges" OFF)
 #option(Chroma_ENABLE_SSED_CLOVER "Use SSE Double Prec for Clover Op" OFF)
 option(Chroma_ENABLE_JIT_CLOVER "Use JIT-ed Clover Operator (QDP-JIT builds only" OFF)
@@ -108,6 +107,14 @@ endif()
 # 1st: QDPXX
 ###################
 find_package(QDPXX REQUIRED)
+
+# With QDP-JIT the clover term is the JIT one: the QDP++ clover term
+# (clover_term_qdp_w.h) is not built
+if( QDP_IS_QDPJIT AND NOT Chroma_ENABLE_JIT_CLOVER )
+  message(STATUS "Chroma: QDP is QDP-JIT, enabling the JIT clover term (Chroma_ENABLE_JIT_CLOVER)")
+  set(Chroma_ENABLE_JIT_CLOVER ON)
+  set(BUILD_JIT_CLOVER_TERM 1)
+endif()
 
 if( Chroma_ENABLE_SANITIZERS )
        include(cmake/CheckSanitizeOpts.cmake)
