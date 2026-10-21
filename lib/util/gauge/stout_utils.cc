@@ -875,12 +875,12 @@ namespace Chroma
 #ifdef QDP_IS_QDPJIT
 #warning "Stouting disabled, as building with QDP-JIT but the JIT Clover term is disabled."
 #else
-#warning "Using QDP++ stouting"
+// Using QDP++ stouting
       dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
 #endif
       
 #else
-      #warning "Using QDP-JIT stouting"
+      // Using QDP-JIT stouting
 #if defined(QDP_IS_QDPJIT2)
       function_get_fs_bs( Q,QQ,f,b1,b2,dobs );
 #else

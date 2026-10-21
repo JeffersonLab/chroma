@@ -13,7 +13,7 @@
 #if defined(BUILD_LAPACK) && defined(BUILD_OPT_EIGCG)
 #include "meas/inline/hadron/inline_laplace_eigs.h"
 #else
-#warning "Not Building Inline Laplace Eigs"
+// Not building inline Laplace eigs
 #endif
 
 #include "meas/inline/hadron/inline_prop_3pt_w.h"

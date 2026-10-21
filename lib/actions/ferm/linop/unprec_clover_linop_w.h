@@ -42,19 +42,19 @@ namespace Chroma
     ~UnprecCloverLinOp() {}
 
     //! Return the fermion BC object for this linear operator
-    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
+    const FermBC<T,P,Q>& getFermBC() const override {return D.getFermBC();}
 
     //! Creation routine
     void create(Handle< FermState<T,P,Q> > fs,
 		const CloverFermActParams& param_);
 
     //! Apply the operator onto a source std::vector
-    void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
+    void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const override;
 
     //! Derivative of unpreconditioned Clover dM/dU
     void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 	       const LatticeFermion& chi, const LatticeFermion& psi, 
-	       enum PlusMinus isign) const;
+	       enum PlusMinus isign) const override;
 
     MGOperatorForm mgForm() const override
     { return MGOperatorForm::UNPRECONDITIONED; }
@@ -83,7 +83,7 @@ namespace Chroma
     }
 
     //! Return flops performed by the operator()
-    unsigned long nFlops() const;
+    unsigned long nFlops() const override;
 
   private:
     CloverFermActParams param;

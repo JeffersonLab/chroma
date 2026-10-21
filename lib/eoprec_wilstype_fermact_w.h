@@ -28,7 +28,7 @@ namespace Chroma
 
     //! Override to produce an even-odd prec. linear operator for this action
     /*! Covariant return rule - override base class function */
-    virtual EvenOddPrecLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const = 0;
+    virtual EvenOddPrecLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const override = 0;
 
     //! Produce a linear operator for this action
     LinearOperator<T>* genLinOp(Handle<FermState<T, P, Q>> state) const override
@@ -39,7 +39,7 @@ namespace Chroma
     //! Return quark prop solver, solution of unpreconditioned system
     /*! Default implementation provided */
     virtual SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
-				   const GroupXML_t& invParam) const;
+				   const GroupXML_t& invParam) const override;
   };
 
 

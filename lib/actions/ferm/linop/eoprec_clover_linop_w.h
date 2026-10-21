@@ -55,7 +55,7 @@ namespace Chroma
     }
 
     //! Return the fermion BC object for this linear operator
-    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
+    const FermBC<T,P,Q>& getFermBC() const override {return D.getFermBC();}
 
     //! Creation routine
     void create(Handle< FermState<T,P,Q> > fs,
@@ -63,65 +63,65 @@ namespace Chroma
 
     //! Apply the the even-even block onto a source std::vector
     void evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-		       enum PlusMinus isign) const;
+		       enum PlusMinus isign) const override;
 
     //! Apply the inverse of the even-even block onto a source std::vector
     void evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-			  enum PlusMinus isign) const;
+			  enum PlusMinus isign) const override;
   
     //! Apply the the even-odd block onto a source std::vector
     void evenOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-		      enum PlusMinus isign) const;
+		      enum PlusMinus isign) const override;
 
     //! Apply the the odd-even block onto a source std::vector
     void oddEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-		      enum PlusMinus isign) const;
+		      enum PlusMinus isign) const override;
 
     //! Apply the the odd-odd block onto a source std::vector
     void oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-		     enum PlusMinus isign) const;
+		     enum PlusMinus isign) const override;
 
     // Override inherited one with a few more funkies
     void operator()(LatticeFermion& chi, const LatticeFermion& psi, 
-		    enum PlusMinus isign) const;
+		    enum PlusMinus isign) const override;
 
     //! Apply the even-even block onto a source std::vector
     void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			    const LatticeFermion& chi, const LatticeFermion& psi, 
-			    enum PlusMinus isign) const;
+			    enum PlusMinus isign) const override;
 
   //! Apply the even-even block onto a source std::vector
     void derivEvenEvenLinOpMP(multi1d<LatticeColorMatrix>& ds_u, 
 			    const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
-			    enum PlusMinus isign) const;
+			    enum PlusMinus isign) const override;
 
     void derivLogDetEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-				  enum PlusMinus isign) const;
+				  enum PlusMinus isign) const override;
 
     //! Apply the the even-odd block onto a source std::vector
     void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const LatticeFermion& chi, const LatticeFermion& psi, 
-			   enum PlusMinus isign) const;
+			   enum PlusMinus isign) const override;
  
     //! Apply the the odd-even block onto a source std::vector
     void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const LatticeFermion& chi, const LatticeFermion& psi, 
-			   enum PlusMinus isign) const;
+			   enum PlusMinus isign) const override;
 
     //! Apply the the odd-odd block onto a source std::vector
     void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			  const LatticeFermion& chi, const LatticeFermion& psi, 
-			  enum PlusMinus isign) const;
+			  enum PlusMinus isign) const override;
 
     void derivOddOddLinOpMP(multi1d<LatticeColorMatrix>& ds_u, 
 			    const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
-			    enum PlusMinus isign) const;
+			    enum PlusMinus isign) const override;
 
     //! Return flops performed by the operator()
-    unsigned long nFlops() const;
+    unsigned long nFlops() const override;
 
     //! Get the log det of the even even part
-    Double logDetEvenEvenLinOp(void) const; 
+    Double logDetEvenEvenLinOp(void) const override; 
 
 
     MGOperatorForm mgForm() const override

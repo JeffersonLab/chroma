@@ -50,7 +50,7 @@ namespace Chroma
     }
 
     //! Return the fermion BC object for this linear operator
-    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
+    const FermBC<T,P,Q>& getFermBC() const override {return D.getFermBC();}
 
     //! Creation routine
     void create(Handle< FermState<T,P,Q> > fs,
@@ -58,53 +58,53 @@ namespace Chroma
 
     //! Apply the the even-even block onto a source std::vector
     void unprecEvenEvenLinOp(T& chi, const T& psi,
-		       enum PlusMinus isign) const;
+		       enum PlusMinus isign) const override;
 
     //! Apply the inverse of the even-even block onto a source std::vector
     void unprecEvenEvenInvLinOp(T& chi, const T& psi,
-			  enum PlusMinus isign) const;
+			  enum PlusMinus isign) const override;
   
     //! Apply the the odd-odd block onto a source std::vector
      void unprecOddOddLinOp(T& chi, const T& psi,
- 		     enum PlusMinus isign) const;
+ 		     enum PlusMinus isign) const override;
 
      //! Apply the inverse of the odd-odd block onto a source std::vector
      void unprecOddOddInvLinOp(T& chi, const T& psi,
- 			enum PlusMinus isign) const;
+ 			enum PlusMinus isign) const override;
 
     //! Apply the the even-odd block onto a source std::vector
     void unprecEvenOddLinOp(T& chi, const T& psi,
-		      enum PlusMinus isign) const ;
+		      enum PlusMinus isign) const override;
 
     //! Apply the the odd-even block onto a source std::vector
     void unprecOddEvenLinOp(T& chi, const T& psi,
-		      enum PlusMinus isign) const ;
+		      enum PlusMinus isign) const override;
 
 
 
     // Deriv of A_ee
     virtual void derivUnprecEvenEvenLinOp(P& ds_u, const T& chi, const T& psi,
-    		enum PlusMinus isign) const;
+    		enum PlusMinus isign) const override;
 
     // Deriv of A_oo
     virtual void derivUnprecOddOddLinOp(P& ds_u, const T& chi, const T& psi,
-    		enum PlusMinus isign) const;
+    		enum PlusMinus isign) const override;
 
     // Deriv of  D_eo
     virtual void derivUnprecEvenOddLinOp(P& ds_u, const T& chi, const T& psi,
-    		enum PlusMinus isign) const;
+    		enum PlusMinus isign) const override;
 
     // Deriv of  D_oe
     virtual void derivUnprecOddEvenLinOp(P& ds_u, const T& chi, const T& psi,
-    		enum PlusMinus isign) const;
+    		enum PlusMinus isign) const override;
   
     //! Apply the even-even block onto a source std::vector
     void derivLogDetEvenEvenLinOp(P& ds_u,
-				  enum PlusMinus isign) const;
+				  enum PlusMinus isign) const override;
 
     //! Apply the odd-odd block onto a source std::vector
     void derivLogDetOddOddLinOp(P& ds_u,
-				enum PlusMinus isign) const;
+				enum PlusMinus isign) const override;
 
     // Override inherited one with a few more funkies
     //
@@ -122,13 +122,13 @@ namespace Chroma
 			enum PlusMinus isign) const override;
 
     //! Return flops performed by the operator()
-    unsigned long nFlops() const;
+    unsigned long nFlops() const override;
 
     //! Get the log det of the even even part
-    Double logDetEvenEvenLinOp(void) const; 
+    Double logDetEvenEvenLinOp(void) const override; 
 
     //! Get the log det of the odd odd part
-    Double logDetOddOddLinOp(void) const; 
+    Double logDetOddOddLinOp(void) const override; 
 
   private:
     CloverFermActParams param;
