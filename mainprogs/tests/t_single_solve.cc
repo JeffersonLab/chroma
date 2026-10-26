@@ -1,5 +1,8 @@
 #include "chroma.h"
 
+// Program calculates just one spin/color position
+// Input: like hadspec.ini.cml: Cfg, Source, Propagator
+
 using namespace Chroma;
 
 struct SingleSolve_input_t

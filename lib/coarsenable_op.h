@@ -10,8 +10,9 @@ namespace Chroma
 
   enum class MGOperatorForm
     {
-      UNPRECONDITIONED,         // M
-      EVEN_ODD_PRECONDITIONED   // S_o = M_oo - M_oe M_ee^{-1} M_eo
+      UNPRECONDITIONED,                  // M
+      EVEN_ODD_PRECONDITIONED,           // S_o = M_oo - M_oe M_ee^{-1} M_eo
+      SYMMETRIC_EVEN_ODD_PRECONDITIONED  // 1 - M_oo^{-1} M_oe M_ee^{-1} M_eo
     };
 
 
@@ -103,8 +104,8 @@ namespace Chroma
       }
 
     const Subset& expect =
-      (c->mgForm() == MGOperatorForm::EVEN_ODD_PRECONDITIONED)
-      ? c->paritySubset(1) : all;
+      (c->mgForm() == MGOperatorForm::UNPRECONDITIONED)
+      ? all : c->paritySubset(1);
 
     if (op.subset().numSiteTable() != expect.numSiteTable())
       {

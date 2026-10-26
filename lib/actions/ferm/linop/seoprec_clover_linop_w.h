@@ -12,6 +12,7 @@
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/clover_term_w.h"
+#include "coarsenable_op.h"
 
 
 namespace Chroma 
@@ -25,28 +26,36 @@ namespace Chroma
    * The kernel for Clover fermions is
    *
    *      M  =  A + (d+M) - (1/2) D'
+   *
    */
-  class SymEvenOddPrecCloverLinOp : public SymEvenOddPrecLogDetLinearOperator<LatticeFermion, 
-									      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
+  class SymEvenOddPrecCloverLinOpT : public SymEvenOddPrecLogDetLinearOperator<T_, multi1d<U_>, multi1d<U_> >,
+				     public MGCoarsenableOperator<T_>
   {
   public:
     // Typedefs to save typing
-    typedef LatticeFermion               T;
-    typedef multi1d<LatticeColorMatrix>  P;
-    typedef multi1d<LatticeColorMatrix>  Q;
+    typedef T_           T;
+    typedef multi1d<U_>  P;
+    typedef multi1d<U_>  Q;
+
+    //! A real number in the precision of T
+    typedef typename std::conditional< std::is_same< typename WordType<T>::Type_t , REAL32 >::value ,
+				       RealF , RealD >::type RealT;
+    static_assert( std::is_same< typename WordType<RealT>::Type_t , typename WordType<T>::Type_t >::value ,
+		   "SymEvenOddPrecCloverLinOpT: RealT must have the precision of T" );
 
     //! Partial constructor
-    SymEvenOddPrecCloverLinOp() {}
+    SymEvenOddPrecCloverLinOpT() {}
 
     //! Full constructor
-    SymEvenOddPrecCloverLinOp(Handle< FermState<T,P,Q> > fs,
+    SymEvenOddPrecCloverLinOpT(Handle< FermState<T,P,Q> > fs,
 			      const CloverFermActParams& param_)
     {
       create(fs,param_);
     }
 
     //! Destructor is automatic
-    ~SymEvenOddPrecCloverLinOp() {
+    ~SymEvenOddPrecCloverLinOpT() {
     }
 
     //! Return the fermion BC object for this linear operator
@@ -130,15 +139,76 @@ namespace Chroma
     //! Get the log det of the odd odd part
     Double logDetOddOddLinOp(void) const override; 
 
+
+    MGOperatorForm mgForm() const override
+    {
+      return MGOperatorForm::SYMMETRIC_EVEN_ODD_PRECONDITIONED;
+    }
+
+    const Subset& paritySubset(int p) const override { return rb[p]; }
+
+    bool hasLocal    (int p, int q) const override { return p == q; }
+    bool hasDirection(int p, int q) const override { return p != q; }
+
+    void applyLocal(T& chi, const T& psi,
+                    enum PlusMinus isign, int p, int q) const override
+    {
+      assert(p == q);
+      chi[rb[p]] = psi;
+      getFermBC().modifyF(chi, rb[p]);
+    }
+
+    void applyDirection(T& chi, const T& psi,
+                        enum PlusMinus isign, int dir, int p, int q) const override
+    {
+      assert(q == 1 - p);
+      T t;
+      RealT mhalf = -0.5;
+      if (isign == PLUS)
+        {
+          D.applyDirection(t, psi, isign, dir, p);  // output cb = p
+          t[rb[p]] *= mhalf;
+          invclov.apply(chi, t, isign, p);
+        }
+      else
+        {
+          invclov.apply(t, psi, isign, q);
+          D.applyDirection(chi, t, isign, dir, p);
+          chi[rb[p]] *= mhalf;
+        }
+      getFermBC().modifyF(chi, rb[p]);
+    }
+
+    void liftToEven(T& v_e, const T& v_o) const override
+    {
+      T t1, t2;
+      D.apply(t1, v_o, PLUS, 0);                  // D_eo v_o
+      invclov.apply(t2, t1, PLUS, 0);             // A_ee^{-1} D_eo v_o
+      RealT half = 0.5;
+      v_e[rb[0]] = half * t2;                     // -A_ee^{-1} (-1/2 D_eo) v_o
+      getFermBC().modifyF(v_e, rb[0]);
+    }
+
   private:
     CloverFermActParams param;
-    WilsonDslash D;
-    CloverTerm   clov;
-    CloverTerm   invclov;  // needed for even-even and odd-odd
+    DslashT D;
+    CloverT clov;
+    CloverT invclov;  // needed for even-even and odd-odd
     mutable double clov_apply_time;
     mutable double clov_deriv_time;
     mutable StopWatch swatch;
   };
+
+
+  using SymEvenOddPrecCloverLinOp = SymEvenOddPrecCloverLinOpT<LatticeFermion, LatticeColorMatrix, WilsonDslash, CloverTerm>;
+  extern template class SymEvenOddPrecCloverLinOpT<LatticeFermion, LatticeColorMatrix, WilsonDslash, CloverTerm>;
+
+#if BASE_PRECISION == 64
+  using SymEvenOddPrecCloverLinOpF = SymEvenOddPrecCloverLinOpT<LatticeFermionF, LatticeColorMatrixF, WilsonDslashF, CloverTermF>;
+  extern template class SymEvenOddPrecCloverLinOpT<LatticeFermionF, LatticeColorMatrixF, WilsonDslashF, CloverTermF>;
+#else
+  using SymEvenOddPrecCloverLinOpF = SymEvenOddPrecCloverLinOp;
+#endif
 
 
 
