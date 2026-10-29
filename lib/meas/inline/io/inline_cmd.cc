@@ -242,7 +242,7 @@ namespace Chroma
 #else
 	  procs.resize(0);
 	  procs.push_back(Layout::nodeNumber());
-	  remaining_cmds = failed_cmds;
+	  remaining_cmds = local_failed_cmds;
 #endif
 	}
 	if (remaining_cmds.size() > 0)
