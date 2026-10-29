@@ -11,28 +11,27 @@
 // Activate redstar-datalib support for superbblas and with gpus
 #  define USE_SUPERBBLAS
 #  define USE_SUPERBBLAS_WITH_GPU_SUPPORT
-#endif
 
-#ifdef BUILD_REDSTAR_DATALIB
-#include "algs/superb_contractions.h"
-#include "hadron/process_corrs.h"
-#include "io/adat_xmlio.h"
-#include "io/baryon_superb.h"
-#include "io/genprop4.h"
-#include "io/meson_superb.h"
-#include "io/prop_superb.h"
+#  ifdef BUILD_REDSTAR_DATALIB
+#    include "algs/superb_contractions.h"
+#    include "hadron/process_corrs.h"
+#    include "io/adat_xmlio.h"
+#    include "io/baryon_superb.h"
+#    include "io/genprop4.h"
+#    include "io/meson_superb.h"
+#    include "io/prop_superb.h"
 
-#include "handle.h"
-#include "meas/glue/mesplq.h"
-#include "meas/inline/abs_inline_measurement_factory.h"
-#include "meas/inline/hadron/inline_corr_superb_w.h"
-#include "meas/inline/io/named_objmap.h"
-#include "meas/inline/make_xml_file.h"
-#include "meas/smear/link_smearing_aggregate.h"
-#include "meas/smear/link_smearing_factory.h"
-#include "util/ferm/mgproton.h"
-#include "util/ferm/superb_contractions.h"
-#include "util/info/proginfo.h"
+#    include "handle.h"
+#    include "meas/glue/mesplq.h"
+#    include "meas/inline/abs_inline_measurement_factory.h"
+#    include "meas/inline/hadron/inline_corr_superb_w.h"
+#    include "meas/inline/io/named_objmap.h"
+#    include "meas/inline/make_xml_file.h"
+#    include "meas/smear/link_smearing_aggregate.h"
+#    include "meas/smear/link_smearing_factory.h"
+#    include "util/ferm/mgproton.h"
+#    include "util/ferm/superb_contractions.h"
+#    include "util/info/proginfo.h"
 
 namespace Chroma
 {
@@ -100,8 +99,7 @@ namespace Chroma
     }
 
     // Reader for input parameters
-    void read(XMLReader& xml, const std::string& path,
-	      InlineCorrSuperbEnv::Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, InlineCorrSuperbEnv::Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
 
@@ -256,8 +254,7 @@ namespace Chroma
     }
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const std::string& path,
-	       const InlineCorrSuperbEnv::Params& param)
+    void write(XMLWriter& xml, const std::string& path, const InlineCorrSuperbEnv::Params& param)
     {
       param.writeXML(xml, path);
     }
@@ -364,7 +361,7 @@ namespace Chroma
       }
     }
 
-#  if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+#    if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
     const std::vector<int>& get_local_ranks()
     {
       static const auto ranks = [] { return SBN::detail::get_ranks(MPI_COMM_SELF); }();
@@ -421,7 +418,7 @@ namespace Chroma
       return SBN::superbblas_implementation::detail::Distribution(kind, dim, distributed_directions,
 								  fs, ranks, comm);
     }
-#  endif // defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+#    endif // defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
 
     /// Return a view of the tensor object
     /// \param t: tensor
@@ -438,7 +435,7 @@ namespace Chroma
       const SBN::Coor dim(t.dim.begin(), t.dim.end());
       static_assert(std::is_same<SB::ComplexD, SBN::value_type>::value,
 		    "superbnova has an invalid type");
-#  if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+#    if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
       auto op_ptr = t.data();
       const auto dev = t.getDev();
       const auto ctx =
@@ -450,14 +447,14 @@ namespace Chroma
       auto p = std::make_shared<SBN::superbblas_implementation::detail::Distribution>(
 	get_sbn_distribution(t.order, t.dist, *t.p));
       return SBN::Tensor{from, size, dim, t.order, alloc, p, t.scalar, t.conjugate, 0, 0, {}};
-#  else
+#    else
       if (!allow_copy)
 	throw std::runtime_error("unsupported");
       const auto trep = t.make_sure(SB::none, SB::OnHost, SB::OnEveryoneReplicated);
       auto p = (const std::complex<double>*)trep.data();
       auto alloc = std::make_shared<std::vector<std::complex<double>>>(p, p + SBN::volume(dim));
       return SBN::Tensor{from, size, dim, trep.order, alloc, trep.scalar, trep.conjugate, 0, 0, {}};
-#  endif
+#    endif
     }
 
     struct ColorvecCache {
@@ -1218,15 +1215,15 @@ namespace Chroma
 			       int spin_size, bool conj, int ev_from, int ev_size,
 			       SB::Tensor<Nd + 5, SB::Complex> tensor)
     {
-	make_space_to_add_entry_in_cache(cache, max_cache_size);
-	for (auto& it : cache)
-	  it.first++;
-	if (max_cache_size > 0)
-	{
-	  cache.push_back({0, mass_phase_tsource_slices_spin_ev_from_size_conj_tensor{
-				mass_label, phase, t_source, first_tslice, num_tslices, spin_from,
-				spin_size, ev_from, ev_size, conj, tensor}});
-	}
+      make_space_to_add_entry_in_cache(cache, max_cache_size);
+      for (auto& it : cache)
+	it.first++;
+      if (max_cache_size > 0)
+      {
+	cache.push_back({0, mass_phase_tsource_slices_spin_ev_from_size_conj_tensor{
+			      mass_label, phase, t_source, first_tslice, num_tslices, spin_from,
+			      spin_size, ev_from, ev_size, conj, tensor}});
+      }
     }
 
     /// Return the props
@@ -1386,8 +1383,7 @@ namespace Chroma
 	    //          [V_t1' D^{-\dagger} V_t0]' =
 	    //          [\g_5 V_t1' D^{-1} V_t0 \g_5]' =
 	    //          \g_5 [V_t1' D^{-1} V_t0]' \g_5
-	    const auto& ti0 =
-	      SBN::toTensor(val.op, is_swap ? "wvSs" : "vwsS");
+	    const auto& ti0 = SBN::toTensor(val.op, is_swap ? "wvSs" : "vwsS");
 	    auto ti = SBN::slice_kv(is_swap ? SBN::conj(ti0) : ti0, //
 				    {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}},
 				    {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}});
@@ -1807,15 +1803,14 @@ namespace Chroma
 	const auto& PP = get_prop(mass_label);
 
 	// Invert a source and get the time slices
-	const auto& get_inv_tslice =
-	  [&](int t_slice, const SB::Coor<3>& phase, const SB::Tensor<2, SB::Complex>& spins,
-	      int spin_from, int spin_size, int ev_from, int ev_size, bool do_conj) {
-
+	const auto& get_inv_tslice = [&](int t_slice, const SB::Coor<3>& phase,
+					 const SB::Tensor<2, SB::Complex>& spins, int spin_from,
+					 int spin_size, int ev_from, int ev_size, bool do_conj) {
 	  // Look at the cache
 	  SB::Tensor<Nd + 5, SB::Complex> cache_tensor;
 	  cache_tensor =
-	      find_entry_in_cache(cache, mass_label, phase, t_slice, t_source, num_tslices,
-				  spin_from, spin_size, do_conj, ev_from, ev_size, Lt);
+	    find_entry_in_cache(cache, mass_label, phase, t_slice, t_source, num_tslices, spin_from,
+				spin_size, do_conj, ev_from, ev_size, Lt);
 	  if (cache_tensor)
 	    return cache_tensor;
 
@@ -1938,7 +1933,7 @@ namespace Chroma
 	QDPIO::cerr << " code only works for Nc=3 and Ns=4\n";
 	QDP_abort(111);
       }
-#  if QDP_NC == 3
+#    if QDP_NC == 3
 
       StopWatch snoop;
       snoop.reset();
@@ -2128,17 +2123,17 @@ namespace Chroma
 	};
 
       const bool zeroUnsmearedGraphsP = true;
-#    if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
+#      if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
       // Set default device
       SBN::get_default_gpu_device() = SB::detail::get_default_gpu_device();
-#    endif
-#    if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+#      endif
+#      if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
       // Gather the current rank and the other ranks participating in this chroma
       // NOTE: they first time they are invoked may involve communications, please do it before calling the previous callbacks
       get_local_ranks();
       get_global_ranks();
       get_global_comm();
-#    endif
+#      endif
       const auto& corr = Hadron::evaluate_graphs_with_superb(
 	corr_graph, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
 	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward,
@@ -2167,7 +2162,7 @@ namespace Chroma
       QDPIO::cout << name << ": total time = " << snoop.getTimeInSeconds() << " secs" << std::endl;
 
       QDPIO::cout << name << ": ran successfully" << std::endl;
-#  endif
+#    endif
 
       END_CODE();
     } // func
@@ -2177,4 +2172,5 @@ namespace Chroma
 
 } // namespace Chroma
 
-#endif // BUILD_REDSTAR_DATALIB
+#  endif // BUILD_REDSTAR_DATALIB
+#endif	 // BUILD_SB

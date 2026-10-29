@@ -11,27 +11,25 @@
 // Activate redstar-datalib support for superbblas and with gpus
 #  define USE_SUPERBBLAS
 #  define USE_SUPERBBLAS_WITH_GPU_SUPPORT
-#endif
 
-#ifdef BUILD_REDSTAR_DATALIB
-#  include "algs/superb_tensor.h"
-#endif
+#  ifdef BUILD_REDSTAR_DATALIB
+#    include "algs/superb_tensor.h"
+#  endif
 
-#include "meas/inline/io/inline_cmd.h"
-#include "meas/inline/abs_inline_measurement_factory.h"
-#include "qdp.h"
-#include <cstdlib>
+#  include "meas/inline/abs_inline_measurement_factory.h"
+#  include "meas/inline/io/inline_cmd.h"
+#  include "qdp.h"
+#  include <cstdlib>
 
-#include "util/ferm/superb_contractions.h"
+#  include "util/ferm/superb_contractions.h"
 
-namespace Chroma 
-{ 
-  namespace InlineExecuteCmdEnv 
-  { 
+namespace Chroma
+{
+  namespace InlineExecuteCmdEnv
+  {
     namespace
     {
-      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					      const std::string& path) 
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, const std::string& path)
       {
 	return new InlineMeas(Params(xml_in, path));
       }
@@ -110,19 +108,19 @@ namespace Chroma
       std::string cmd;
       if (constrain_to_gpu)
       {
-#if defined(SUPERBBLAS_USE_GPU)
+#  if defined(SUPERBBLAS_USE_GPU)
 	const int gpu_device = SB::detail::getGpuContext()->device;
 	cmd =
-#  ifdef SUPERBBLAS_USE_CUDA
+#    ifdef SUPERBBLAS_USE_CUDA
 	  std::string("CUDA_VISIBLE_DEVICES=") +
-#  else
+#    else
 	  std::string("ROCR_VISIBLE_DEVICES=") +
-#  endif
+#    endif
 	  std::to_string(gpu_device) + std::string(" ") + cmd0;
-#else
+#  else
 	throw std::runtime_error(
 	  "chroma compiled without gpu support but requested constrain_to_gpu=true");
-#endif // SUPERBBLAS_USE_GPU
+#  endif // SUPERBBLAS_USE_GPU
       }
       else
       {
@@ -130,11 +128,11 @@ namespace Chroma
       }
       std::cout << "on proc " << Layout::nodeNumber() << " executing " << cmd << std::endl;
       int ret = std::system(cmd.c_str());
-#if defined(_WIN32)
+#  if defined(_WIN32)
       const auto exit_code = ret;
-#else
+#  else
       const auto exit_code = WEXITSTATUS(ret);
-#endif
+#  endif
       std::cout << "on proc " << Layout::nodeNumber() << " result " << exit_code << std::endl;
       return exit_code;
     }
@@ -167,7 +165,7 @@ namespace Chroma
 
     void InlineMeas::operator()(unsigned long update_no, XMLWriter& xml_out)
     {
-#if ! defined (QDP_IS_QDPJIT)
+#  if !defined(QDP_IS_QDPJIT)
       START_CODE();
 
       QDPIO::cout << InlineExecuteCmdEnv::name << ": executing command";
@@ -224,7 +222,7 @@ namespace Chroma
 		local_failed_cmds.push_back(index);
 	    }
 	  }
-#ifdef BUILD_REDSTAR_DATALIB
+#    ifdef BUILD_REDSTAR_DATALIB
 	  const auto& failed_cmds = SBN::gather(local_failed_cmds, SB::detail::getDefaultComm());
 	  procs.resize(0);
 	  for (int proc = 0; proc < failed_cmds.size(); ++proc)
@@ -239,11 +237,11 @@ namespace Chroma
 	  {
 	    remaining_cmds.insert(remaining_cmds.end(), indices.begin(), indices.end());
 	  }
-#else
+#    else
 	  procs.resize(0);
 	  procs.push_back(Layout::nodeNumber());
 	  remaining_cmds = local_failed_cmds;
-#endif
+#    endif
 	}
 	if (remaining_cmds.size() > 0)
 	{
@@ -256,7 +254,8 @@ namespace Chroma
       QDPIO::cout << InlineExecuteCmdEnv::name << ": ran successfully" << std::endl;
 
       END_CODE();
-#endif // ! QDP_IS_QDPJIT
+#  endif // ! QDP_IS_QDPJIT
     }
   }
 }
+#endif // BUILD_SB
