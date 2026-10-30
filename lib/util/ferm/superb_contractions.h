@@ -13,7 +13,12 @@
 #ifdef BUILD_SB
 
 // Activate the MPI support in Superbblas
-#  define SUPERBBLAS_USE_MPI
+#  ifndef CHROMA_SB_SINGLE
+#    define SUPERBBLAS_USE_MPI
+#    define CHROMA_SB_COMM_ARG(comm) , comm
+#  else
+#    define CHROMA_SB_COMM_ARG(comm)
+#  endif
 //#  define SUPERBBLAS_USE_MPIIO
 
 #  include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -56,6 +61,14 @@ namespace Chroma
 
   namespace SB
   {
+
+#ifdef CHROMA_SB_SINGLE
+    using SBComm = int;
+    constexpr SBComm SBWorld = 0, SBSelf = 0;
+#else
+    using SBComm = MPI_Comm;
+    const SBComm SBWorld = MPI_COMM_WORLD, SBSelf = MPI_COMM_SELF;
+#endif
 
     using Index = superbblas::IndexType;   ///< Default index type, `int` for now
     using Complex = std::complex<REAL>;	   ///< Default chroma complex precision
@@ -3635,15 +3648,15 @@ namespace Chroma
 	  throw std::runtime_error("Invalid operation from an example tensor");
 
 	value_type* ptr = data_for_writing();
-	MPI_Comm comm =
-	  (dist == OnMaster || dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	SBComm comm =
+	  (dist == OnMaster || dist == Local || dist == Glocal ? SBSelf : SBWorld);
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	if (dist != OnMaster || Layout::nodeNumber() == 0)
 	{
 	  superbblas::copy<N, N>(value_type{0}, p->p.data() + p_disp, 1, order.c_str(), from, size,
 				 dim, (const value_type**)&ptr, nullptr, &ctx(),
 				 p->p.data() + p_disp, 1, order.c_str(), from, dim, &ptr, nullptr,
-				 &ctx(), comm, superbblas::FastToSlow, superbblas::Copy);
+				 &ctx() CHROMA_SB_COMM_ARG(comm), superbblas::FastToSlow, superbblas::Copy);
 	  // Force synchronization in superbblas stream if the allocation isn't managed by superbblas
 	  if (!is_managed())
 	    sync();
@@ -3883,24 +3896,24 @@ namespace Chroma
 	// Shortcuts for who is involved in the operation
 	bool do_operation = true;
 	int p_disp = 0;
-	MPI_Comm comm = MPI_COMM_WORLD;
+	SBComm comm = SBWorld;
 	// a) if the origin and destination tensors have full support on the master node
 	// and the destination tensor is only supported on the master node, the operation
 	// only happens on the master node
 	if ((dist == OnMaster || dist == OnEveryoneReplicated) && w.dist == OnMaster)
 	{
 	  do_operation = Layout::nodeNumber() == 0;
-	  comm = MPI_COMM_SELF;
+	  comm = SBSelf;
 	}
 	// b) if the origin and destination tensors are replicated on every node or they are
 	// local, the operation happens locally on each node
 	else if ((dist == OnEveryoneReplicated && w.dist == OnEveryoneReplicated) || dist == Local)
 	{
-	  comm = MPI_COMM_SELF;
+	  comm = SBSelf;
 	}
 	// c) any is glocal
 	if (dist == Glocal || w.dist == Glocal) {
-	  comm = MPI_COMM_SELF;
+	  comm = SBSelf;
 	  p_disp = p->MpiProcRank();
 	}
 
@@ -3911,7 +3924,7 @@ namespace Chroma
 				  p->p.data() + p_disp, 1, order.c_str(), from, size, dim,
 				  (const value_type**)&ptr, (const float**)&m0ptr, &ctx(),
 				  w.p->p.data() + p_disp, 1, w.order.c_str(), w.from, w.dim, &w_ptr,
-				  (const float**)&m1ptr, &w.ctx(), comm, superbblas::FastToSlow,
+				  (const float**)&m1ptr, &w.ctx() CHROMA_SB_COMM_ARG(comm), superbblas::FastToSlow,
 				  action == CopyTo ? superbblas::Copy : superbblas::Add,
 				  &req /*, copying_trash == doCopyingTrash*/);
 	  w.allocation->append_pending_operation(req);
@@ -4003,7 +4016,7 @@ namespace Chroma
 	  throw std::runtime_error("contract: one of the contracted tensors or the output tensor "
 				   "is local/glocal and others are not!");
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	SBComm comm = (dist == Local || dist == Glocal ? SBSelf : SBWorld);
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	
 	value_type* v_ptr = v.data();
@@ -4022,7 +4035,7 @@ namespace Chroma
 	  w.p->p.data() + p_disp, w.from, w.size, w.dim, 1, orderw_.c_str(), conjw_,
 	  (const value_type**)&w_ptr, &w.ctx(), //
 	  detail::cond_conj(conjugate, beta), p->p.data() + p_disp, from, size, dim, 1,
-	  order_.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow, &req);
+	  order_.c_str(), &ptr, &ctx() CHROMA_SB_COMM_ARG(comm), superbblas::FastToSlow, &req);
 	allocation->append_pending_operation(req);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
@@ -4088,14 +4101,14 @@ namespace Chroma
 	if (std::fabs(std::imag(v.scalar)) != 0 || std::real(v.scalar) < 0)
 	  throw std::runtime_error("cholInv: unsupported a negative or imaginary scale");
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	SBComm comm = (dist == Local || dist == Glocal ? SBSelf : SBWorld);
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	
 	value_type* v_ptr = v.data();
 	value_type* w_ptr = w.data();
 	value_type* ptr = data_for_writing();
 	superbblas::cholesky<Nv>(v.p->p.data() + p_disp, v.dim, 1, v.order.c_str(), &v_ptr,
-				 order_rows.c_str(), order_cols.c_str(), &v.ctx(), comm,
+				 order_rows.c_str(), order_cols.c_str(), &v.ctx() CHROMA_SB_COMM_ARG(comm),
 				 superbblas::FastToSlow);
 	superbblas::trsm<Nv, Nw, N>(
 	  w.scalar / std::sqrt(v.scalar) / scalar, //
@@ -4104,7 +4117,7 @@ namespace Chroma
 	  &v.ctx(), //
 	  w.p->p.data() + p_disp, w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr,
 	  &w.ctx(), //
-	  p->p.data() + p_disp, dim, 1, order.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow);
+	  p->p.data() + p_disp, dim, 1, order.c_str(), &ptr, &ctx() CHROMA_SB_COMM_ARG(comm), superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!v.is_managed() || !w.is_managed() || !is_managed())
@@ -4137,12 +4150,12 @@ namespace Chroma
 
 	v.copyTo(*this);
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	SBComm comm = (dist == Local || dist == Glocal ? SBSelf : SBWorld);
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 
 	value_type* ptr = data_for_writing();
 	superbblas::inversion<Nv>(p->p.data() + p_disp, dim, 1, order.c_str(), &ptr,
-				  order_rows.c_str(), order_cols.c_str(), &ctx(), comm,
+				  order_rows.c_str(), order_cols.c_str(), &ctx() CHROMA_SB_COMM_ARG(comm),
 				  superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
@@ -4211,7 +4224,7 @@ namespace Chroma
 	if (v.dist == OnEveryoneReplicated && detail::isDistributedOnEveryone(w.dist))
 	  v = v.make_suitable_for_contraction(w);
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	SBComm comm = (dist == Local || dist == Glocal ? SBSelf : SBWorld);
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	
 	value_type* v_ptr = v.data();
@@ -4224,7 +4237,7 @@ namespace Chroma
 	  &v.ctx(), //
 	  w.p->p.data() + p_disp, w.dim, 1, w.order.c_str(), (const value_type**)&w_ptr,
 	  &w.ctx(), //
-	  p->p.data() + p_disp, dim, 1, order.c_str(), &ptr, &ctx(), comm, superbblas::FastToSlow);
+	  p->p.data() + p_disp, dim, 1, order.c_str(), &ptr, &ctx() CHROMA_SB_COMM_ARG(comm), superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!v.is_managed() || !w.is_managed() || !is_managed())
@@ -4285,7 +4298,7 @@ namespace Chroma
 	  throw std::runtime_error("svd: the input tensor or on of the output tensors "
 				   "is local/glocal and others are not!");
 
-	MPI_Comm comm = (dist == Local || dist == Glocal ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	SBComm comm = (dist == Local || dist == Glocal ? SBSelf : SBWorld);
 	auto p_disp = (dist == Glocal ? p->MpiProcRank() : 0);
 	
 	value_type* ptr = data();
@@ -4299,8 +4312,8 @@ namespace Chroma
 	  &ctx(), //
 	  u.p->p.data() + p_disp, u.dim, 1, u.order.c_str(), &u_ptr, &u.ctx(), //
 	  s.p->p.data() + p_disp, s.dim, 1, s.order.c_str(), &s_ptr, &s.ctx(), //
-	  v.p->p.data() + p_disp, v.dim, 1, v.order.c_str(), &v_ptr, &v.ctx(), //
-	  comm, superbblas::FastToSlow);
+	  v.p->p.data() + p_disp, v.dim, 1, v.order.c_str(), &v_ptr, &v.ctx() CHROMA_SB_COMM_ARG(comm), //
+	  superbblas::FastToSlow);
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!is_managed() || !u.is_managed() || !s.is_managed() || !v.is_managed())
@@ -5878,7 +5891,7 @@ namespace Chroma
 	  throw std::runtime_error("Ups! Look into this");
 	const value_type* ptr = data.data();
 	const value_type* kron_ptr = kron.data();
-	MPI_Comm comm = (ii.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD);
+	SBComm comm = (ii.dist == Local ? SBSelf : SBWorld);
 	superbblas::BSR_handle* bsr = nullptr;
 	if (nkrond == 0 && nkroni == 0)
 	{
@@ -5888,7 +5901,7 @@ namespace Chroma
 	    1,
 #  endif
 	    d_partition.data(), d.dim, d_partition.size() / d.p->p.size(), blki, blkd,
-	    isImgFastInBlock, &iiptr, &jjptr, &ptr, &data.ctx(), comm, superbblas::FastToSlow,
+	    isImgFastInBlock, &iiptr, &jjptr, &ptr, &data.ctx() CHROMA_SB_COMM_ARG(comm), superbblas::FastToSlow,
 	    &bsr);
 	}
 	else
@@ -5899,7 +5912,7 @@ namespace Chroma
 	    1,
 #  endif
 	    d_partition.data(), d.dim, d_partition.size() / d.p->p.size(), blki, blkd, kroni, krond,
-	    isImgFastInBlock, &iiptr, &jjptr, &ptr, &kron_ptr, &data.ctx(), comm,
+	    isImgFastInBlock, &iiptr, &jjptr, &ptr, &kron_ptr, &data.ctx() CHROMA_SB_COMM_ARG(comm),
 	    superbblas::FastToSlow, &bsr);
 	}
 	handle = std::shared_ptr<superbblas::BSR_handle>(
@@ -6907,8 +6920,12 @@ namespace Chroma
 	  v.p->p.data(), 1, orderv.c_str(), v.from, v.size, v.dim, (const value_type**)&v_ptr, //
 	  T{0}, w.p->p.data(), orderw.c_str(), w.from, w.size, w.dim, power_label,
 	  (value_type**)&w_ptr, //
-	  &data.ctx(), v.dist == Local ? MPI_COMM_SELF : MPI_COMM_WORLD, superbblas::FastToSlow,
-	  nullptr, v.dist == Glocal);
+	  &data.ctx() CHROMA_SB_COMM_ARG(v.dist == Local ? SBSelf : SBWorld), superbblas::FastToSlow,
+	  nullptr
+#  ifndef CHROMA_SB_SINGLE
+          , v.dist == Glocal
+#  endif
+        );
 
 	// Force synchronization in superbblas stream if the destination allocation isn't managed by superbblas
 	if (!v.is_managed() || !w.is_managed())
@@ -7209,21 +7226,21 @@ namespace Chroma
 	  filename + (filesystem_type == SharedFSFile
 			? std::string()
 			: std::string(".part_") + std::to_string(Layout::nodeNumber()));
-	MPI_Comm comm = filesystem_type == SharedFSFile ? MPI_COMM_WORLD : MPI_COMM_SELF;
+	SBComm comm = filesystem_type == SharedFSFile ? SBWorld : SBSelf;
 	superbblas::Storage_handle stoh;
 	superbblas::create_storage<N, T>(
 	  dim, superbblas::FastToSlow, use_filename.c_str(), metadata.c_str(), metadata.size(),
-	  checksum, comm, &stoh);
+	  checksum CHROMA_SB_COMM_ARG(comm), &stoh);
 	ctx = std::shared_ptr<superbblas::detail::Storage_context_abstract>(
 	  stoh, [=](superbblas::detail::Storage_context_abstract* ptr) {
-	    superbblas::close_storage<N, T>(ptr, comm);
+	    superbblas::close_storage<N, T>(ptr CHROMA_SB_COMM_ARG(comm));
 	  });
 
 	// If the tensor to store is dense, create the block here; otherwise, create the block on copy
 	if (sparsity == Dense)
 	{
 	  superbblas::PartitionItem<N> p{Coor<N>{{}}, dim};
-	  superbblas::append_blocks<N, T>(&p, 1, dim, stoh, comm, superbblas::FastToSlow);
+	  superbblas::append_blocks<N, T>(&p, 1, dim, stoh CHROMA_SB_COMM_ARG(comm), superbblas::FastToSlow);
 	}
       }
 
@@ -7237,7 +7254,7 @@ namespace Chroma
 	std::vector<char> metadatav;
 	std::vector<superbblas::IndexType> dimv;
 	superbblas::read_storage_header(filename.c_str(), superbblas::FastToSlow, values_dtype,
-					metadatav, dimv, MPI_COMM_WORLD);
+					metadatav, dimv CHROMA_SB_COMM_ARG(SBWorld));
 
 	// Check that storage tensor dimension and value type match template arguments
 	if (dimv.size() != N)
@@ -7261,11 +7278,10 @@ namespace Chroma
 	}
 
 	superbblas::Storage_handle stoh;
-	superbblas::open_storage<N, T>(filename.c_str(), false /* don't allow writing */,
-				       MPI_COMM_WORLD, &stoh);
+	superbblas::open_storage<N, T>(filename.c_str(), false /* don't allow writing */ CHROMA_SB_COMM_ARG(SBWorld), &stoh);
 	ctx = std::shared_ptr<superbblas::detail::Storage_context_abstract>(
 	  stoh, [=](superbblas::detail::Storage_context_abstract* ptr) {
-	    superbblas::close_storage<N, T>(ptr, MPI_COMM_WORLD);
+	    superbblas::close_storage<N, T>(ptr CHROMA_SB_COMM_ARG(SBWorld));
 	  });
       }
 
@@ -7409,7 +7425,7 @@ namespace Chroma
 	  return;
 	}
 
-	MPI_Comm comm = filesystem_type == SharedFSFile ? MPI_COMM_WORLD : MPI_COMM_SELF;
+	SBComm comm = filesystem_type == SharedFSFile ? SBWorld : SBSelf;
 	auto w0 = w;
 	auto w0_p = w0.p->p.data();
 	std::size_t w0_p_size = w0.p->p.size();
@@ -7424,14 +7440,14 @@ namespace Chroma
 	if (sparsity == Sparse)
 	{
 	  superbblas::append_blocks<Nw, N, T>(w0_p, w0_p_size, w0.order.c_str(), w0.from,
-					      w0.size, w0.dim, order.c_str(), from, ctx.get(), comm,
+					      w0.size, w0.dim, order.c_str(), from, ctx.get() CHROMA_SB_COMM_ARG(comm),
 					      superbblas::FastToSlow);
 	}
 
 	Tw* w_ptr = w0.data();
 	superbblas::save<Nw, N, Tw, T>(detail::safe_div<Tw>(w.scalar, scalar), w0_p, 1,
 				       w0.order.c_str(), w0.from, w0.size, w0.dim, (const Tw**)&w_ptr,
-				       &w0.ctx(), order.c_str(), from, ctx.get(), comm,
+				       &w0.ctx(), order.c_str(), from, ctx.get() CHROMA_SB_COMM_ARG(comm),
 				       superbblas::FastToSlow);
       }
 
@@ -7449,7 +7465,7 @@ namespace Chroma
 	if (filesystem_type == LocalFSFile && !detail::is_distribution_local(w.dist))
 	  throw std::runtime_error("Unsupported a collective tensor from reading from a local file");
 
-	MPI_Comm comm = filesystem_type == SharedFSFile ? MPI_COMM_WORLD : MPI_COMM_SELF;
+	SBComm comm = filesystem_type == SharedFSFile ? SBWorld : SBSelf;
 	auto w0 = w;
 	auto w0_p = w0.p->p.data();
 	std::size_t w0_p_size = w0.p->p.size();
@@ -7462,7 +7478,7 @@ namespace Chroma
 	Tw* w_ptr = w0.data_for_writing();
 	superbblas::load<N, Nw, T, Tw>(detail::safe_div<T>(scalar, w.scalar), ctx.get(),
 				       order.c_str(), from, size, w0_p, 1, w0.order.c_str(),
-				       w0.from, w0.dim, &w_ptr, &w0.ctx(), comm,
+				       w0.from, w0.dim, &w_ptr, &w0.ctx() CHROMA_SB_COMM_ARG(comm),
 				       superbblas::FastToSlow, superbblas::Copy);
 	if (!w0.is_managed())
 	  w0.sync();
@@ -9781,6 +9797,11 @@ namespace Chroma
       extern "C" inline void primmeGlobalSum(void* sendBuf, void* recvBuf, int* count,
 					     primme_params* primme, int* ierr)
       {
+#ifdef CHROMA_SB_SINGLE
+        if (sendBuf != recvBuf)
+          std::memcpy(recvBuf, sendBuf, *count * sizeof(double));
+        *ierr = 0;
+#else
 	if (sendBuf == recvBuf)
 	{
 	  *ierr = MPI_Allreduce(MPI_IN_PLACE, recvBuf, *count, MPI_DOUBLE, MPI_SUM,
@@ -9791,6 +9812,7 @@ namespace Chroma
 	  *ierr = MPI_Allreduce(sendBuf, recvBuf, *count, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD) !=
 		  MPI_SUCCESS;
 	}
+#endif
       }
 
       /// Compute the eigenpairs of the laplacian operator on the spatial dimensions using PRIMME
