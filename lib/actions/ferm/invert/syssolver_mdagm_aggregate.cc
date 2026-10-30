@@ -1,3 +1,4 @@
+#include "chroma_config.h"
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -10,7 +11,9 @@
 #include "actions/ferm/invert/syssolver_mdagm_ibicgstab.h"
 #include "actions/ferm/invert/syssolver_mdagm_cg_timing.h"
 #include "actions/ferm/invert/syssolver_mdagm_cg_array.h"
+#ifdef BUILD_OPT_LAPACK
 #include "actions/ferm/invert/syssolver_mdagm_eigcg.h"
+#endif
 #include "actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.h"
 #include "actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_mdagm_rel_ibicgstab_clover.h"
@@ -21,7 +24,6 @@
 #endif
 //New include above...
 
-#include "chroma_config.h"
 #ifdef BUILD_QUDA
 #include "actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_multigrid_w.h"
@@ -54,7 +56,9 @@ namespace Chroma
 	success &= MdagMSysSolverBiCGStabEnv::registerAll();
 	success &= MdagMSysSolverIBiCGStabEnv::registerAll();
 #if ! defined (QDP_IS_QDPJIT2)
+#ifdef BUILD_OPT_LAPACK
 	success &= MdagMSysSolverEigCGEnv::registerAll();
+#endif
 #endif
 	success &= MdagMSysSolverRichardsonCloverEnv::registerAll();
 	success &= MdagMSysSolverReliableBiCGStabCloverEnv::registerAll();

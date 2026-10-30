@@ -18,7 +18,9 @@
 
 #include "util/info/unique_id.h"
 
-#ifdef BUILD_OPT_EIGCG
+#include "chroma_config.h"
+
+#ifdef BUILD_OPT_LAPACK
 
 #include "actions/ferm/invert/syssolver_linop_OPTeigbicg.h"
 

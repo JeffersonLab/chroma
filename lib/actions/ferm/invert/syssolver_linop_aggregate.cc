@@ -3,6 +3,7 @@
  */
 
 
+#include "chroma_config.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 
 #include "actions/ferm/invert/syssolver_linop_cg.h"
@@ -11,18 +12,23 @@
 #include "actions/ferm/invert/syssolver_linop_bicrstab.h"
 #include "actions/ferm/invert/syssolver_linop_mr.h"
 #include "actions/ferm/invert/syssolver_linop_cg_timing.h"
+#ifdef BUILD_OPT_LAPACK
 #include "actions/ferm/invert/syssolver_linop_eigcg.h"
+#endif
+#ifdef BUILD_OPT_LAPACK
 #include "actions/ferm/invert/syssolver_linop_eigbicg.h"
+#endif
 #include "actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_cg_clover.h"
+#ifdef BUILD_OPT_LAPACK
 #include "actions/ferm/invert/syssolver_linop_fgmres_dr.h"
+#endif
 #include "actions/ferm/invert/projector_random.h"
 #include "actions/ferm/invert/projector_null.h"
 
 
-#include "chroma_config.h"
 #ifdef BUILD_QUDA
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.h"
@@ -32,7 +38,9 @@
 #endif
 
 #include "actions/ferm/invert/syssolver_linop_cg_array.h"
+#ifdef BUILD_OPT_LAPACK
 #include "actions/ferm/invert/syssolver_linop_eigcg_array.h"
+#endif
 
 #ifdef BUILD_QOP_MG
 #include "actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h"
@@ -79,13 +87,19 @@ namespace Chroma
 	success &= LinOpSysSolverIBiCGStabEnv::registerAll();
 	success &= LinOpSysSolverMREnv::registerAll();
 	success &= LinOpSysSolverCGTimingEnv::registerAll();
+#ifdef BUILD_OPT_LAPACK
 	success &= LinOpSysSolverEigCGEnv::registerAll();
+#endif
+#ifdef BUILD_OPT_LAPACK
 	success &= LinOpSysSolverEigBiCGEnv::registerAll();
+#endif
 	success &= LinOpSysSolverRichardsonCloverEnv::registerAll();
 	success &= LinOpSysSolverReliableBiCGStabCloverEnv::registerAll();
 	success &= LinOpSysSolverReliableIBiCGStabCloverEnv::registerAll();
 	success &= LinOpSysSolverReliableCGCloverEnv::registerAll();
+#ifdef BUILD_OPT_LAPACK
 	success &= LinOpSysSolverFGMRESDREnv::registerAll();
+#endif
 	success &= ProjectorRandomEnv::registerAll();
 	success &= ProjectorNullEnv::registerAll();
 
@@ -140,7 +154,9 @@ namespace Chroma
 	success &= LinOpSysSolverMDWFArrayEnv::registerAll();
 #endif
 #if ! defined (QDP_IS_QDPJIT2)
+#ifdef BUILD_OPT_LAPACK
 	success &= LinOpSysSolverEigCGArrayEnv::registerAll();
+#endif
 #endif
 	registered = true;
       }

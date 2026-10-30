@@ -10,7 +10,7 @@
 #include "meas/inline/hadron/inline_create_colorvecs.h"
 #include "meas/inline/hadron/inline_create_colorvecs_superb.h"
 
-#if defined(BUILD_LAPACK) && defined(BUILD_OPT_EIGCG)
+#if defined(BUILD_OPT_LAPACK)
 #include "meas/inline/hadron/inline_laplace_eigs.h"
 #else
 // Not building inline Laplace eigs
@@ -22,8 +22,12 @@
 #include "meas/inline/hadron/inline_disco_prob_defl_superb_w.h"
 #include "meas/inline/hadron/inline_disco_prob_3d_defl_superb_w.h"
 #include "meas/inline/hadron/inline_disco_eoprec_w.h"
+#ifdef BUILD_OPT_LAPACK
 #include "meas/inline/hadron/inline_disco_eo_eigcg_w.h"
+#endif
+#ifdef BUILD_OPT_LAPACK
 #include "meas/inline/hadron/inline_disco_eigcg_w.h"
+#endif
 
 
 #include "meas/inline/hadron/inline_static_light_spec_w.h"
@@ -69,8 +73,10 @@
 #include "meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h"
 #include "meas/inline/hadron/inline_baryon_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.h"
+#include "meas/inline/hadron/inline_baryon_matelem_colorvec_ylm_superb_w.h"
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h"
+#include "meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.h"
 #include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_w.h"
 #include "meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.h"
 #include "meas/inline/hadron/inline_eigenvalues_superb_w.h"
@@ -133,7 +139,7 @@ namespace Chroma
 
 	success &= InlineMultiPropagatorEnv::registerAll();  // save space
 	success &= InlineSeqSourceEnv::registerAll();
-#if defined(BUILD_LAPACK) && defined(BUILD_OPT_EIGCG)
+#if defined(BUILD_OPT_LAPACK)
 	success &= InlineLaplaceEigsEnv::registerAll();
 #endif
 	success &= InlineSeqPropTestEnv::registerAll();
@@ -148,8 +154,12 @@ namespace Chroma
 	success &= InlineProp3ptEnv::registerAll();
 	success &= InlineDiscoEnv::registerAll();
 	success &= InlineDiscoEOPrecEnv::registerAll();
+#ifdef BUILD_OPT_LAPACK
 	success &= InlineDiscoEoEigCGEnv::registerAll();
+#endif
+#ifdef BUILD_OPT_LAPACK
 	success &= InlineDiscoEigCGEnv::registerAll();
+#endif
 	success &= InlineDiscoProbDefl::registerAll();
 #ifdef BUILD_SB
 	success &= InlineDiscoProbDeflSuperb::registerAll();
@@ -197,10 +207,12 @@ namespace Chroma
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();
 #ifdef BUILD_SB
 	success &= InlineBaryonMatElemColorVecSuperbEnv::registerAll();
+	success &= InlineBaryonMatElemColorVecYlmSuperbEnv::registerAll();
 #endif
 	success &= InlineMesonMatElemColorVecEnv::registerAll();
 #ifdef BUILD_SB
 	success &= InlineMesonMatElemColorVecSuperbEnv::registerAll();
+	success &= InlineMesonMatElemColorVecYlmSuperbEnv::registerAll();
 #endif
 	success &= InlineGenPropMatElemColorVecEnv::registerAll();
 	success &= InlineGenPropMatElemDAColorVecEnv::registerAll();

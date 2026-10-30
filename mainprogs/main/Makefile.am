@@ -65,8 +65,10 @@ LDADD  += -lqla_c99 -lqla_cmath -lqla_d3 -lqla_d -lqla_df3 -lqla_df -lqla_dq3 -l
 
 endif
 
+if BUILD_OPT_LAPACK
 AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/lib
 LDADD += -lqdp-lapack
+endif
 
 if BUILD_SSE_WILSON_DSLASH
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
