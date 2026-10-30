@@ -39,24 +39,6 @@ typedef CPPWilsonDslashD WilsonDslash;
 } // End Namespace Chroma
 
 
-#elif defined BUILD_LLVM_WILSON_DSLASH
-
-#warning "Using LLVM Dslash"
-
-#include "lwldslash_llvm_w.h"
-#include "lwldslash_w.h"
-
-namespace Chroma {
-typedef LLVMWilsonDslashD WilsonDslashD;
-typedef QDPWilsonDslashF WilsonDslashF;
-
-#if BASE_PRECISION == 32
-typedef QDPWilsonDslashF WilsonDslash;
-#else 
-typedef LLVMWilsonDslashD WilsonDslash;
-#endif
-}
-
 #elif defined(CHROMA_QPHIX_DSLASH_ENABLED)
 #include "qphix_singleton.h"
 #ifdef CHROMA_BUILDING_QPHIX_DSLASH

@@ -46,8 +46,7 @@ namespace Chroma
 
   template<typename T, typename P, typename Q> 
   class QDPWilsonDslashT :
-    public WilsonDslashBase<T, P, Q>,
-    public MGCoarsenableOperator<T>
+    public WilsonDslashBase<T, P, Q>
   {
   public:
 
@@ -92,8 +91,8 @@ namespace Chroma
     void apply (T& chi, const T& psi, enum PlusMinus isign, int cb) const;
 
 
-    void applyDirection(LatticeFermion& chi,
-			const LatticeFermion& psi,
+    void applyDirection(T& chi,
+			const T& psi,
 			enum PlusMinus isign,
 			int dir) const
     {
@@ -101,8 +100,8 @@ namespace Chroma
       applyDirection( chi , psi , isign , dir, 1 );
     }
 
-    void applyDirection(LatticeFermion& chi,
-			const LatticeFermion& psi,
+    void applyDirection(T& chi,
+			const T& psi,
 			enum PlusMinus isign,
 			int dir, int cb) const
     {
@@ -181,7 +180,7 @@ namespace Chroma
 
 
     
-    void applyLocal (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const
+    void applyLocal (T& chi, const T& psi, enum PlusMinus isign) const
     {
     }
 

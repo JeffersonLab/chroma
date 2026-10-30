@@ -22,6 +22,9 @@ namespace Chroma
   //! Get input list
   std::vector<std::string>& getInputFileList();
 
+  //! Get output list
+  const std::vector<std::string>& getOutputFileList();
+
   //! Get input file name
   std::string getXMLInputFileName();
 

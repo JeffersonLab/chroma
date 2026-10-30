@@ -21,9 +21,6 @@
 /* Using Lapack */
 #cmakedefine BUILD_LAPACK	@BUILD_LAPACK@
 
-/* Build with the LLVM wilson library */
-#cmakedefine BUILD_LLVM_WILSON_DSLASH @BUILD_LLVM_WILSON_DSLASH@
-
 /* Build with the MDWF (Moebious DFW) library */
 #cmakedefine BUILD_MDWF    @BUILD_MDWF@
 

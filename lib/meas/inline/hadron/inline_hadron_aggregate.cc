@@ -13,7 +13,7 @@
 #if defined(BUILD_OPT_LAPACK)
 #include "meas/inline/hadron/inline_laplace_eigs.h"
 #else
-#warning "Not Building Inline Laplace Eigs"
+// Not building inline Laplace eigs
 #endif
 
 #include "meas/inline/hadron/inline_prop_3pt_w.h"
@@ -238,9 +238,9 @@ namespace Chroma
 	success &= InlineInverterTestEnv::registerAll();
 #ifdef BUILD_SB
 	success &= InlineInverterTestSuperbEnv::registerAll();
-#endif
-#ifdef BUILD_REDSTAR_DATALIB
+#  ifdef BUILD_REDSTAR_DATALIB
 	success &= InlineCorrSuperbEnv::registerAll();
+#  endif
 #endif
 //	success &= InlineStochLaphQuarkEnv::registerAll();
 //	success &= InlineStochLaphBaryonEnv::registerAll();

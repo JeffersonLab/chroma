@@ -117,7 +117,7 @@ endif
 HDRS =
 
 ## Production tests:
-bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array t_leapfrog t_lwldslash_new t_minvert t_meas_wilson_flow 
+bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array t_leapfrog t_lwldslash_new t_minvert t_meas_wilson_flow t_single_solve
 
 #
 # add the programs to build in here
@@ -184,6 +184,7 @@ endif
 #
 t_su3_SOURCES = t_su3.cc
 t_mesplq_SOURCES = t_mesplq.cc
+t_single_solve_SOURCES = t_single_solve.cc
 t_seqsource_SOURCES = t_seqsource.cc
 t_remez_SOURCES = t_remez.cc
 t_ape_smear_SOURCES = t_ape_smear.cc

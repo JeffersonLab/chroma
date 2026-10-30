@@ -655,7 +655,6 @@ list(APPEND ChromaLIB_HEADERS
 	actions/ferm/linop/lwldslash_3d_qdp_w.h
 	actions/ferm/linop/clover_term_w.h
 	actions/ferm/linop/clover_term_base_w.h
-	actions/ferm/linop/clover_term_qdp_w.h
 	actions/ferm/linop/eoprec_clover_linop_w.h
 	actions/ferm/linop/seoprec_clover_linop_w.h
 	actions/ferm/linop/shifted_linop_w.h
@@ -1069,6 +1068,7 @@ list(APPEND ChromaLIB_HEADERS
 	meas/inline/io/inline_read_map_obj_disk.h
 	meas/inline/io/inline_copy_map_obj.h
 	meas/inline/io/inline_write_timeslice_map_obj_disk.h
+	meas/inline/io/inline_cmd.h
 )
 
 
@@ -1554,7 +1554,6 @@ target_sources(chromalib PRIVATE
 	actions/ferm/linop/unprec_w12_linop_w.cc 
 	actions/ferm/linop/unprec_wilson_linop_w.cc 
 	actions/ferm/linop/clover_term_base_w.cc 
-	actions/ferm/linop/clover_term_qdp_w.cc 
 	actions/ferm/linop/eoprec_clover_linop_w.cc 
 	actions/ferm/linop/seoprec_clover_linop_w.cc 
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.cc 
@@ -1832,6 +1831,7 @@ target_sources(chromalib PRIVATE
 	meas/inline/schrfun/inline_sfpcac_w.cc 
 	meas/inline/smear/inline_smear_aggregate.cc 
 	meas/inline/smear/inline_link_smear.cc
+	meas/inline/io/inline_cmd.cc 
 )
 
 # Taken Out of original build Makefile.am
@@ -1910,6 +1910,14 @@ if( Chroma_ENABLE_CPP_WILSON_DSLASH )
   		actions/ferm/linop/lwldslash_w_cppd.cc
   )
   target_link_libraries(chromalib PUBLIC CPPWilsonDslash::dslash )
+endif()
+
+#######################################################
+# QDP++ clover term: not with QDP-JIT (JIT clover term)
+#######################################################
+if( NOT QDP_IS_QDPJIT )
+  list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_qdp_w.h)
+  target_sources(chromalib PRIVATE actions/ferm/linop/clover_term_qdp_w.cc)
 endif()
 
 #######################################################
@@ -2087,10 +2095,7 @@ foreach( file ${ChromaLIB_HEADERS})
   install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/${file} DESTINATION include/${basedir} )
 endforeach()
 
-set(Chroma_CXX_STANDARD "17")
-if (QDP_IS_QDPJIT)
-  set(Chroma_CXX_STANDARD "20")
-endif()
+set(Chroma_CXX_STANDARD "20")
 
 set_target_properties( chromalib PROPERTIES CXX_STANDARD ${Chroma_CXX_STANDARD} )
 set_target_properties( chromalib PROPERTIES CXX_EXTENSIONS OFF )

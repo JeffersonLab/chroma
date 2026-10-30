@@ -50,10 +50,10 @@ namespace Chroma
       cfs(a.cfs), param(a.param) {}
 
     //! Produce a linear operator for this action
-    EvenOddPrecLogDetLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const;
+    EvenOddPrecLogDetLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const override;
 
     //! Produce the gamma_5 hermitian operator H_w
-    LinearOperator<LatticeFermion>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const 
+    LinearOperator<LatticeFermion>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const override 
       { 
 	return new lgherm<LatticeFermion>(linOp(state));
       }
@@ -67,7 +67,7 @@ namespace Chroma
 
   protected:
     //! Return the fermion BC object for this action
-    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+    const CreateFermState<T,P,Q>& getCreateState() const override {return *cfs;}
 
     //! Assignment
     void operator=(const EvenOddPrecCloverFermAct& a) {}

@@ -9,6 +9,14 @@
 
 
 #if defined(BUILD_JIT_CLOVER_TERM)
+#if defined(QDP_IS_QDPJIT2)
+void function_get_fs_bs(const LatticeColorMatrix& Q,
+			const LatticeColorMatrix& QQ,
+			multi1d<LatticeComplex>& f,
+			multi1d<LatticeComplex>& b1,
+			multi1d<LatticeComplex>& b2,
+			bool dobs);
+#else
 void function_get_fs_bs_exec(JitFunction& function, 
 			     const LatticeColorMatrix& Q,
 			     const LatticeColorMatrix& QQ,
@@ -22,6 +30,7 @@ void function_get_fs_bs_build(JitFunction& function,
 			      multi1d<LatticeComplex>& f,
 			      multi1d<LatticeComplex>& b1,
 			      multi1d<LatticeComplex>& b2);
+#endif
 #endif
 
 
@@ -866,16 +875,20 @@ namespace Chroma
 #ifdef QDP_IS_QDPJIT
 #warning "Stouting disabled, as building with QDP-JIT but the JIT Clover term is disabled."
 #else
-#warning "Using QDP++ stouting"
+// Using QDP++ stouting
       dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
 #endif
       
 #else
-      #warning "Using QDP-JIT stouting"
+      // Using QDP-JIT stouting
+#if defined(QDP_IS_QDPJIT2)
+      function_get_fs_bs( Q,QQ,f,b1,b2,dobs );
+#else
       static JitFunction function;
       if (function.empty())
 	function_get_fs_bs_build( function, Q,QQ,f,b1,b2 );
       function_get_fs_bs_exec(function, Q,QQ,f,b1,b2,dobs );
+#endif
 #endif
 
       swatch.stop();

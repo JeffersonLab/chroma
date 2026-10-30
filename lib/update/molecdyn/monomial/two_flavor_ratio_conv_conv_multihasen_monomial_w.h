@@ -359,9 +359,10 @@ namespace Chroma
 			}
 
 		protected:
-			// override base class getPhi()
-			virtual const T& getPhi(void) const {};
-			virtual T& getPhi(void) {};
+			// override base class getPhi(); not meaningful with multiple
+			// Hasenbusch terms, so return the first one
+			virtual const T& getPhi(void) const { return phi[0]; }
+			virtual T& getPhi(void) { return phi[0]; }
 			// pesudo-fermion field for each Hasenbusch term
 			virtual T& getPhi(int i) {
 				return phi[i];

@@ -45,9 +45,9 @@ namespace Chroma
       cfs(a.cfs), param(a.param) {}
 
     //! Produce a linear operator for this action
-    UnprecLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const;
+    UnprecLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const override;
 
-    LinearOperator<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const 
+    LinearOperator<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const override 
       { 
 	return new lgherm<T>(linOp(state));
       }
@@ -61,7 +61,7 @@ namespace Chroma
 
   protected:
     //! Return the fermion BC object for this action
-    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+    const CreateFermState<T,P,Q>& getCreateState() const override {return *cfs;}
 
     // Hide partial constructor
     UnprecCloverFermAct() {}

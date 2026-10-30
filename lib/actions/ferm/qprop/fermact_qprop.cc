@@ -37,7 +37,7 @@ namespace Chroma
     ~FermActQprop() {}
 
     //! Return the subset on which the operator acts
-    const Subset& subset() const {return all;}
+    const Subset& subset() const override {return all;}
 
     //! Solver the linear system
     /*!
@@ -45,7 +45,7 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    SystemSolverResults_t operator() (T& psi, const T& chi) const
+    SystemSolverResults_t operator() (T& psi, const T& chi) const override
     {
       START_CODE();
 

@@ -136,10 +136,10 @@ namespace Chroma
     virtual ~SymEvenOddPrecLogDetLinearOperator() {}
 
     //! Only defined on the odd lattice
-    const Subset& subset() const {return rb[1];}
+    const Subset& subset() const override {return rb[1];}
 
     //! Return the fermion BC object for this linear operator
-    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
+    virtual const FermBC<T,P,Q>& getFermBC() const override = 0;
 
 	//! Apply the even-even block onto a source std::vector
 	/*! This does not need to be optimized */

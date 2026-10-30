@@ -15,6 +15,8 @@
 
 #include "meas/inline/io/inline_rng.h"
 
+#include "meas/inline/io/inline_cmd.h"
+
 
 #include "meas/inline/io/inline_xml_write_obj.h"
 
@@ -86,6 +88,10 @@ namespace Chroma
 	success &= InlineEigenBinLimeColVecReadNamedObjEnv::registerAll();
 
 	success &= InlineXMLWriteNamedObjEnv::registerAll();
+
+#ifdef BUILD_SB
+	success &= InlineExecuteCmdEnv::registerAll();
+#endif
 
 
 	// QIO USQCD DD PAIRS Reader

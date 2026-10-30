@@ -42,7 +42,7 @@ namespace Chroma
     ~ProjectorRandom() {}
 
     //! Return the subset on which the operator acts
-    const Subset& subset() const
+    const Subset& subset() const override
     {
       return A->subset();
     }
