@@ -105,6 +105,11 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
 
+      // Required: this changes the interpretation of disconnected diagrams.
+      read(paramtop, "average_1pt_diagrams", param.average_1pt_diagrams);
+      if (param.average_1pt_diagrams)
+        throw std::string("CORR_SUPERB: average_1pt_diagrams=true is unsupported");
+
       param.num_vecs = 0;
       read(paramtop, "num_vecs", param.num_vecs);
 
@@ -172,6 +177,7 @@ namespace Chroma
     {
       push(xml, path);
 
+      write(xml, "average_1pt_diagrams", param.average_1pt_diagrams);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "max_rhs", param.max_rhs);
       write(xml, "flavor_to_mass", param.flavor_to_mass);
@@ -329,12 +335,11 @@ namespace Chroma
     get_sbn_distribution(const std::string& order, const SB::Distribution& dist,
 			 const SB::detail::TensorPartition<N>& p)
     {
-      const auto kind = p.isLocal
-			  ? SBN::superbblas_implementation::detail::Distribution::Local
-			  : SBN::superbblas_implementation::detail::Distribution::Distributed;
+      const auto kind = SBN::superbblas_implementation::detail::Distribution::Distributed;
+      const auto comm = p.isLocal ? SBN::get_local_comm() : SBN::get_global_comm();
       const auto dim = SBN::Coor(p.dim.begin(), p.dim.end());
       std::vector<unsigned char> distributed_directions;
-      if (kind != SBN::superbblas_implementation::detail::Distribution::Local)
+      if (!p.isLocal)
       {
 	if (dist != SB::OnMaster && !(dist.size() > 2 && dist.at(0) == '_' && dist.at(1) == '_'))
 	{
@@ -356,7 +361,7 @@ namespace Chroma
 	}
       }
       return SBN::superbblas_implementation::detail::Distribution(kind, dim, distributed_directions,
-								  fs);
+								  fs, comm.ranks, comm.comm);
     }
 #  endif // defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
 
@@ -467,7 +472,7 @@ namespace Chroma
 	  {
 	    if (val.op.size1() < num_vecs || val.op.size2() < num_vecs)
 	      throw std::runtime_error("got a meson with insufficient number of vectors");
-	    auto ti = SBN::toTensor(val.op, "vw", SBN::Options::Distribution::Local);
+	    auto ti = SBN::toTensor(val.op, "vw");
 	    ti = Hadron::detail::apply_vertex_perm(ti, p, "vw");
 	    ti = SBN::slice_kv(ti, //
 			       {{'v', ev_from.at(0)}, {'w', ev_from.at(0)}},
@@ -669,7 +674,7 @@ namespace Chroma
 	    if (val.data().op.size1() < num_vecs || val.data().op.size2() < num_vecs ||
 		val.data().op.size3() < num_vecs)
 	      throw std::runtime_error("got a baryon with insufficient number of vectors");
-	    auto ti = SBN::toTensor(val.data().op, "vwx", SBN::Options::Distribution::Local);
+	    auto ti = SBN::toTensor(val.data().op, "vwx");
 	    ti = Hadron::detail::apply_vertex_perm(ti, perms.at(i), "vwx");
 	    ti = SBN::slice_kv(ti, SBN::get_scoor("vwx", ev_from), SBN::get_scoor("vwx", ev_size));
 	    SBN::copyTo(do_conj.at(i) ? SBN::conj(ti) : ti, baryon_i);
@@ -894,7 +899,7 @@ namespace Chroma
 	    //          [\g_5 V_t1' D^{-1} V_t0 \g_5]' =
 	    //          \g_5 [V_t1' D^{-1} V_t0]' \g_5
 	    const auto& ti0 =
-	      SBN::toTensor(val.op, is_swap ? "wvSs" : "vwsS", SBN::Options::Distribution::Local);
+	      SBN::toTensor(val.op, is_swap ? "wvSs" : "vwsS");
 	    auto ti = SBN::slice_kv(is_swap ? SBN::conj(ti0) : ti0, //
 				    {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}},
 				    {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}});
@@ -1285,6 +1290,11 @@ namespace Chroma
     void InlineMeas::func(unsigned long update_no, XMLWriter& xml_out)
     {
       START_CODE();
+      if (params.param.average_1pt_diagrams)
+      {
+        QDPIO::cerr << "CORR_SUPERB: average_1pt_diagrams=true is unsupported" << std::endl;
+        QDP_abort(1);
+      }
       if (Nc != 3)
       { /* Code is specific to Ns=4 and Nc=3. */
 	QDPIO::cerr << " code only works for Nc=3 and Ns=4\n";
@@ -1463,7 +1473,7 @@ namespace Chroma
       SBN::get_default_gpu_device() = SB::detail::get_default_gpu_device();
 #    endif
       const auto& corr = Hadron::evaluate_graphs_with_superb(
-	corr_graph, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
+	corr_graph, zeroUnsmearedGraphsP, params.param.average_1pt_diagrams, prop_callback, baryon_callback, meson_callback,
 	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward);
 
       QDPIO::cout << "Storing the correlation functions" << std::endl;

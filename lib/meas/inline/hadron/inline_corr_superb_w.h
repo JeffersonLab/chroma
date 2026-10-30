@@ -34,6 +34,7 @@ namespace Chroma
 
       struct Param_t
       {
+        bool average_1pt_diagrams = false;
 	// Flavor to mass entry
 	struct FlavorToMass {
 	  char flavor;
