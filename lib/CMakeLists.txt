@@ -2011,11 +2011,16 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_prop_and_matelem_distillation_superb_w.h
      meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.h
      meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.h
+     meas/inline/hadron/inline_baryon_matelem_colorvec_ylm_superb_w.h
+     meas/inline/hadron/baryon_derivative_ylm.h
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h
+     meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.h 
+     meas/inline/hadron/meson_derivative_ylm.h
      meas/inline/hadron/inline_create_colorvecs_superb.h
      meas/inline/hadron/inline_eigenvalues_superb_w.h
      meas/inline/hadron/inline_inverter_test_superb_w.h
      meas/inline/hadron/inline_corr_superb_w.h
+     util/ferm/clebsch.h
   )
   target_sources(chromalib PRIVATE 
      meas/inline/hadron/inline_disco_prob_defl_superb_w.cc
@@ -2023,11 +2028,16 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_prop_and_matelem_distillation_superb_w.cc
      meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.cc
      meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.cc 
+     meas/inline/hadron/inline_baryon_matelem_colorvec_ylm_superb_w.cc
+     meas/inline/hadron/baryon_derivative_ylm.cc
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.cc 
+     meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.cc 
+     meas/inline/hadron/meson_derivative_ylm.cc
      meas/inline/hadron/inline_create_colorvecs_superb.cc
      meas/inline/hadron/inline_eigenvalues_superb_w.cc
      meas/inline/hadron/inline_inverter_test_superb_w.cc
      meas/inline/hadron/inline_corr_superb_w.cc
+     util/ferm/clebsch.cc
   )
   target_include_directories(chromalib PUBLIC ${SUPERBBLAS_DIR}/include)
   add_library(superbblas STATIC IMPORTED )
