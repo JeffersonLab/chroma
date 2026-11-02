@@ -46,6 +46,8 @@ namespace Chroma
 	  ChromaProp_t prop;
 	};
 
+	bool average_1pt_diagrams = false; /*!< Explicit legacy diagram averaging; matches NPT when enabled */
+	bool zeroUnsmearedGraphsP = true; /*!< Match the corresponding NPT setting; legacy default true */
 	int 			num_vecs;               /*! rank of the distillation basis */
 	int 			max_rhs;                /*! maximum rhs to solve at once */
 	int 			max_vecs_in_contraction_for_baryons; /*! maximum vecs to contract at once with baryons */

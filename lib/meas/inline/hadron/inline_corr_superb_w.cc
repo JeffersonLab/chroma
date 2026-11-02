@@ -105,6 +105,10 @@ namespace Chroma
 
       param.num_vecs = 0;
       read(paramtop, "num_vecs", param.num_vecs);
+      param.average_1pt_diagrams=false;
+      if(paramtop.count("average_1pt_diagrams"))read(paramtop,"average_1pt_diagrams",param.average_1pt_diagrams);
+      param.zeroUnsmearedGraphsP=true;
+      if(paramtop.count("zeroUnsmearedGraphsP"))read(paramtop,"zeroUnsmearedGraphsP",param.zeroUnsmearedGraphsP);
 
       param.max_rhs = 1;
       if (paramtop.count("max_rhs") > 0)
@@ -205,6 +209,8 @@ namespace Chroma
       push(xml, path);
 
       write(xml, "num_vecs", param.num_vecs);
+      write(xml,"zeroUnsmearedGraphsP",param.zeroUnsmearedGraphsP);
+      write(xml,"average_1pt_diagrams",param.average_1pt_diagrams);
       write(xml, "max_rhs", param.max_rhs);
       write(xml, "max_vecs_in_contraction_for_baryons", param.max_vecs_in_contraction_for_baryons);
       write(xml, "max_moms_in_contraction_for_baryons", param.max_moms_in_contraction_for_baryons);
@@ -869,7 +875,7 @@ namespace Chroma
       auto perm_disps =
 	std::array<std::vector<int>, 3>{std::vector<int>{}, std::vector<int>{}, std::vector<int>{}};
       for (std::size_t i = 0; i < 3; ++i)
-	perm_disps.at(perm.at(i)) = disps.at(i);
+	perm_disps.at(i) = disps.at(perm.at(i)); // Gather, as in do_perm(origin_slots, perm).
       perm_key.left = std::move(perm_disps.at(0));
       perm_key.middle = std::move(perm_disps.at(1));
       perm_key.right = std::move(perm_disps.at(2));
@@ -1692,11 +1698,16 @@ namespace Chroma
 	  if (!has_local_support(genprop_i))
 	    continue;
 
-	  // Check that tslice is inside t_source and t_sink
 	  const auto& key = genprop_keys.at(i);
-	  if (SB::normalize_coor(key.t_sink - key.t_source, Lt) <
-	      SB::normalize_coor(key.t_slice - key.t_source, Lt))
-	    continue;
+          // Match NPT: the insertion interval is the shorter unoriented arc.
+          // A reversed line must be read through gamma-five hermiticity,
+          // rather than discarded by an oriented interval test.
+          int source = key.t_source, sink = key.t_sink;
+          if (SB::normalize_coor(sink-source, Lt) > SB::normalize_coor(source-sink, Lt))
+            std::swap(source, sink);
+          // Equal endpoints represent a full diagonal GenProp, not a zero-length interval.
+          if (source != sink && SB::normalize_coor(key.t_slice-source, Lt) > SB::normalize_coor(sink-source, Lt))
+            continue;
 
 	  bool is_swap = (perms.at(i) != SBN::Coor{0, 1, 2, 3});
 	  bool this_conj = do_conj.at(i);
@@ -1708,7 +1719,22 @@ namespace Chroma
 	  const auto& val_size = toCoor4(val.size);
 	  const auto& val_order =
 	    SBN::relabel(SBN::remap{{'v', 'N'}, {'w', 'n'}, {'s', 'q'}, {'S', 's'}}, val.order);
-	  if (db.get(key, val_from, toCoor4(val.size), val_order, data(val)) != 0)
+          bool reversed = false;
+          int lookup_status = db.get(key, val_from, toCoor4(val.size), val_order, data(val));
+          auto reverse_key = key;
+          if (lookup_status != 0) {
+            std::swap(reverse_key.t_source, reverse_key.t_sink);
+            reverse_key.phasing_sink = -reverse_key.phasing_sink;
+            std::swap(reverse_key.phasing_source, reverse_key.phasing_sink);
+            reverse_key.phasing_sink = -reverse_key.phasing_sink;
+            reverse_key.displacement = Hadron::detail::reverseDisp(key.displacement);
+            reverse_key.mom = -key.mom;
+            const auto reverse_order = SBN::relabel(
+              SBN::remap{{'v','n'}, {'w','N'}, {'s','s'}, {'S','q'}}, val.order);
+            lookup_status = db.get(reverse_key, val_from, toCoor4(val.size), reverse_order, data(val));
+            reversed = lookup_status == 0;
+          }
+          if (lookup_status != 0)
 	  {
 	    // We can't miss keys when testing
 	    if (testing)
@@ -1721,9 +1747,22 @@ namespace Chroma
 	  }
 	  else
 	  {
-	    const auto& ti =
-	      Hadron::detail::contractSpins(Hadron::detail::contractSpins(dr_left, val), dr_right);
-
+            auto ti = Hadron::detail::contractSpins(
+              Hadron::detail::contractSpins(dr_left, val), dr_right);
+            if (reversed) {
+              const int eta[] = {1,-1,-1,-1,-1,-1,-1,1,-1,-1,-1,1,-1,1,1,1};
+              ADAT::Array<int> lattice(Nd);
+              for (int mu=0; mu<Nd; ++mu) lattice[mu] = Layout::lattSize()[mu];
+              const auto phase = double(eta[key.g]) * Hadron::momPhase(
+                Hadron::constructMom4d(reverse_key.mom),
+                Hadron::dispMomMask(reverse_key.displacement), lattice);
+              const auto left_g5 = Hadron::detail::contractSpins(dr_left,
+                Hadron::detail::chromaGamma5());
+              const auto right_g5 = Hadron::detail::contractSpins(
+                Hadron::detail::chromaGamma5(), dr_right);
+              ti = Hadron::detail::contractSpins(Hadron::detail::contractSpins(
+                left_g5, SBN::scale(SBN::conj(val), phase)), right_g5);
+            }
 	    SBN::copyTo(ti, genprop_i);
 
 	    // If testing, also record it as a missing genprop
@@ -2122,7 +2161,7 @@ namespace Chroma
 	    ev_from, ev_size, dist_labels, params.param.testing);
 	};
 
-      const bool zeroUnsmearedGraphsP = true;
+      const bool zeroUnsmearedGraphsP = params.param.zeroUnsmearedGraphsP;
 #      if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
       // Set default device
       SBN::get_default_gpu_device() = SB::detail::get_default_gpu_device();
@@ -2134,10 +2173,67 @@ namespace Chroma
       get_global_ranks();
       get_global_comm();
 #      endif
-      const auto& corr = Hadron::evaluate_graphs_with_superb(
-	corr_graph, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
-	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward,
-	QDPIO::cout, SB::detail::getDefaultComm());
+      auto evaluate = [&](Hadron::CorrGraphMap_t& graphs, int origin) {
+        return Hadron::evaluate_graphs_with_superb(
+          graphs, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
+          genprop_callback, flavor_to_mass, nev, origin, params.param.Nt_forward,
+          QDPIO::cout, SB::detail::getDefaultComm());
+      };
+      auto corr = [&]() {
+        if (!params.param.average_1pt_diagrams) return evaluate(corr_graph, params.param.t_origin);
+        // Preserve legacy NPT's average of products: shift every one-point
+        // component together, and never average the connected/mixed diagrams.
+        auto regular = corr_graph;
+        auto averaged = corr_graph;
+        regular.corr_graph_map.clear();
+        averaged.corr_graph_map.clear();
+        for (const auto& item : corr_graph.corr_graph_map) {
+          auto ordinary = item.second;
+          auto onept = item.second;
+          ordinary.diagrams.clear();
+          onept.diagrams.clear();
+          for (const auto& diagram : item.second.diagrams) {
+            bool all_onept = !diagram.first.empty();
+            for (int index : diagram.first)
+              all_onept = all_onept && corr_graph.int_graph_list.at(index).stich.num_npt == 1;
+            if (all_onept) onept.diagrams.insert(diagram.first, diagram.second);
+            else ordinary.diagrams.insert(diagram.first, diagram.second);
+          }
+          if (ordinary.diagrams.size() != 0) regular.corr_graph_map.insert(item.first, ordinary);
+          if (onept.diagrams.size() != 0) averaged.corr_graph_map.insert(item.first, onept);
+        }
+        decltype(evaluate(corr_graph, params.param.t_origin)) result;
+        if (regular.corr_graph_map.size() != 0) result = evaluate(regular, params.param.t_origin);
+        if (averaged.corr_graph_map.size() != 0) {
+          const int Lt = QDP::Layout::lattSize()[params.param.decay_dir];
+          for (int shift = 0; shift < Lt; ++shift) {
+            auto part = evaluate(averaged, (params.param.t_origin + shift) % Lt);
+            for (const auto& item : part) {
+              if (!result.exist(item.first)) {
+                ENSEM::VectorComplex zero;
+                zero.resizeObs(params.param.Nt_forward);
+                zero = ENSEM::Real(0);
+                result.insert(item.first, zero);
+              }
+              result[item.first] += item.second / ENSEM::Real(Lt);
+            }
+          }
+        }
+        // Empty diagram selections are exact zeros, not absent output keys.
+        if (QDP::Layout::primaryNode()) {
+          for (const auto& item : corr_graph.corr_graph_map) {
+            if (!result.exist(item.first)) {
+              if (item.second.diagrams.size() != 0)
+                throw std::runtime_error("Missing nonempty correlator after diagram averaging");
+              ENSEM::VectorComplex zero;
+              zero.resizeObs(params.param.Nt_forward);
+              zero = ENSEM::Real(0);
+              result.insert(item.first, zero);
+            }
+          }
+        }
+        return result;
+      }();
 
       // Clear cache
       cache.clear();
