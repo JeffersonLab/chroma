@@ -472,7 +472,7 @@ namespace Chroma
       int num_vecs;			   // max vecs
       std::vector<int> from_pos_to_tslice; // from position in v to tslice
       std::vector<int> hits;		   // number of hist in each position
-      std::vector<bool> in_use;		   // whether the position is in use
+      std::vector<unsigned int> in_use;	   // whether the position is in use
       SB::Tensor<Nd + 3, SB::ComplexD> v;  // cache of colorvecs
     };
 
@@ -516,7 +516,7 @@ namespace Chroma
 	if (colorvecCache.from_pos_to_tslice.at(i) == tslice)
 	{
 	  colorvecCache.hits.at(i)++;
-	  colorvecCache.in_use.at(i) = true;
+	  colorvecCache.in_use.at(i)++;
 	  return colorvecCache.v.kvslice_from_size({{'t', (int)i}}, {{'t', 1}, {'n', num_vecs}});
 	}
       }
@@ -527,11 +527,11 @@ namespace Chroma
       {
 	for (std::size_t i = 1; i < colorvecCache.hits.size(); ++i)
 	{
-	  if (!colorvecCache.in_use.at(i) &&
+	  if (colorvecCache.in_use.at(i) == 0 &&
 	      colorvecCache.hits.at(pos_with_less_hits) > colorvecCache.hits.at(i))
 	    pos_with_less_hits = i;
 	}
-	if (colorvecCache.in_use.at(pos_with_less_hits))
+	if (colorvecCache.in_use.at(pos_with_less_hits) > 0)
 	  throw std::runtime_error("get_colorvec: too small number of entries");
       }
       else
@@ -539,13 +539,13 @@ namespace Chroma
 	pos_with_less_hits = colorvecCache.from_pos_to_tslice.size();
 	colorvecCache.from_pos_to_tslice.push_back(-1);
 	colorvecCache.hits.push_back(0);
-	colorvecCache.in_use.push_back(false);
+	colorvecCache.in_use.push_back(0);
       }
 
       // Fill the selected entry with the colorvec
       colorvecCache.from_pos_to_tslice.at(pos_with_less_hits) = tslice;
       colorvecCache.hits.at(pos_with_less_hits) = 0;
-      colorvecCache.in_use.at(pos_with_less_hits) = true;
+      colorvecCache.in_use.at(pos_with_less_hits)++;
       const auto decay_dir = 3;
       const auto colorvec = SB::getColorvecs<SB::Complex>(colorvecsSto, u, decay_dir, tslice, 1,
 							  colorvecCache.num_vecs, SB::none);
@@ -628,11 +628,11 @@ namespace Chroma
 	  {
 	    for (std::size_t i = 1; i < colorvecCache.hits.size(); ++i)
 	    {
-	      if (!colorvecCache.in_use.at(i) &&
+	      if (colorvecCache.in_use.at(i) == 0 &&
 		  colorvecCache.hits.at(pos_with_less_hits) > colorvecCache.hits.at(i))
 		pos_with_less_hits = i;
 	    }
-	    if (colorvecCache.in_use.at(pos_with_less_hits))
+	    if (colorvecCache.in_use.at(pos_with_less_hits) > 0)
 	      throw std::runtime_error("prefetch_colorvec: too small number of entries");
 	  }
 	  else
@@ -640,13 +640,13 @@ namespace Chroma
 	    pos_with_less_hits = colorvecCache.from_pos_to_tslice.size();
 	    colorvecCache.from_pos_to_tslice.push_back(-1);
 	    colorvecCache.hits.push_back(0);
-	    colorvecCache.in_use.push_back(false);
+	    colorvecCache.in_use.push_back(0);
 	  }
 
 	  // Fill the selected entry with the colorvec
 	  colorvecCache.from_pos_to_tslice.at(pos_with_less_hits) = *it;
 	  colorvecCache.hits.at(pos_with_less_hits) = 0;
-	  colorvecCache.in_use.at(pos_with_less_hits) = false;
+	  colorvecCache.in_use.at(pos_with_less_hits) = 0;
 	  colorvec.kvslice_from_size({{'t', t}}, {{'t', 1}})
 	    .copyTo(
 	      colorvecCache.v.kvslice_from_size({{'t', (int)pos_with_less_hits}}, {{'t', 1}}));
@@ -660,7 +660,9 @@ namespace Chroma
       {
 	if (colorvecCache.from_pos_to_tslice.at(i) == tslice)
 	{
-	  colorvecCache.in_use.at(i) = false;
+	  if (colorvecCache.in_use.at(i) == 0)
+	    throw std::runtime_error("release_from_colorvec_cache: tslice not in use");
+	  colorvecCache.in_use.at(i)--;
 	  return;
 	}
       }
@@ -1489,6 +1491,7 @@ namespace Chroma
 	sinks_colorvecs = sinks_colorvecs.rename_dims({{'n', 'N'}, {'t', 'T'}});
 
 	// Function to contract with all sinks
+	const int Lt = Layout::lattSize()[decay_dir];
 	const auto contract_with_sink = [&](SB::Tensor<Nd + 5, SB::Complex> tensor,
 					    int first_spin_src, int first_n) {
 	  for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
@@ -1496,7 +1499,8 @@ namespace Chroma
 	    const auto& r =
 	      SB::contract<6>(
 		sinks_colorvecs.kvslice_from_size({{'T', t_sink_index}}, {{'T', 1}}).conj(),
-		tensor.kvslice_from_size({{'t', t_sinks.at(t_sink_index) - t_source}}, {{'t', 1}}),
+		tensor.kvslice_from_size(
+		  {{'t', SB::normalize_coor(t_sinks.at(t_sink_index) - t_source, Lt)}}, {{'t', 1}}),
 		"cXxyz")
 		.rename_dims({{'s', 'S'}, {'S', 's'}});
 	    const auto& ti = Hadron::detail::contractSpins(
@@ -1516,7 +1520,6 @@ namespace Chroma
 	};
 
 	// Look into the cache
-	const int Lt = Layout::lattSize()[decay_dir];
 	int num_tslices = 0;
 	for (const auto t_sink : t_sinks)
 	  num_tslices = std::max(num_tslices, 1 + SB::normalize_coor(t_sink - t_source, Lt));
