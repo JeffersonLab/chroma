@@ -4,6 +4,7 @@
 
 
 #include "handle.h"
+#include "util/ferm/superb_contractions.h"
 #include "meas/inline/glue/inline_glue_diag_matelem_colorvec.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/smear/link_smearing_aggregate.h"
@@ -54,6 +55,15 @@ namespace Chroma
       read(paramtop, "displacement_list", param.displacement_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
+      #ifdef BUILD_SB
+      param.use_superb_format=true;
+#else
+      param.use_superb_format=false;
+#endif
+      if(paramtop.count("use_superb_format"))read(paramtop,"use_superb_format",param.use_superb_format);
+#ifndef BUILD_SB
+      if(param.use_superb_format)throw std::runtime_error("SUPERB output requires a BUILD_SB Chroma build");
+#endif
 
       param.link_smearing  = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
@@ -72,6 +82,7 @@ namespace Chroma
       write(xml, "displacement_list", param.displacement_list);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);
+      write(xml,"use_superb_format",param.use_superb_format);
      xml << param.link_smearing.xml;
 
       pop(xml);
@@ -380,7 +391,7 @@ namespace Chroma
 	qdp_db;
 
       // Open the file, and write the meta-data and the binary for this operator
-      if (! qdp_db.fileExists(params.named_obj.glue_op_file))
+      if (!params.param.use_superb_format && ! qdp_db.fileExists(params.named_obj.glue_op_file))
       {
 	XMLBufferWriter file_xml;
 
@@ -402,12 +413,33 @@ namespace Chroma
 
 	qdp_db.insertUserdata(file_str);
       }
-      else
+      else if (!params.param.use_superb_format)
       {
 	qdp_db.open(params.named_obj.glue_op_file, O_RDWR, 0664);
       }
 
 
+#ifdef BUILD_SB
+      // Native diagonal glue elemental: vector, time, displacement, momentum.
+      std::vector<multi1d<int>> disps,moms;
+      std::set<std::vector<int>> unique_disps;
+      for(int l=0;l<params.param.displacement_list.size();++l){
+        auto d=normDisp(params.param.displacement_list[l]);std::vector<int> v(d.size());for(int j=0;j<d.size();++j)v[j]=d[j];
+        if(!unique_disps.insert(v).second)throw std::runtime_error("Duplicate normalized glue displacement");disps.push_back(d);
+      }
+      for(int m=0;m<phases.numMom();++m)moms.push_back(phases.numToMom(m));
+      SB::StorageTensor<4,SB::ComplexD> tensor_store;
+      if(params.param.use_superb_format){
+        XMLBufferWriter meta;push(meta,"DBMetaData");write(meta,"id",std::string("glueElemOp"));write(meta,"storage_version",1);
+        write(meta,"tensorOrder",std::string("ntdm"));write(meta,"operator_convention",name);
+        write(meta,"lattSize",Layout::lattSize());write(meta,"decay_dir",params.param.decay_dir);proginfo(meta);
+        write(meta,"Params",params.param);write(meta,"Config_info",gauge_xml);write(meta,"Weights",getEigenValues(eigen_source,params.param.num_vecs));
+        write(meta,"displacements",disps);write(meta,"moms",moms);pop(meta);
+        tensor_store=SB::StorageTensor<4,SB::ComplexD>(params.named_obj.glue_op_file,SB::broadcast(meta.str()),"ntdm",
+          SB::Coor<4>{{params.param.num_vecs,phases.numSubsets(),int(disps.size()),phases.numMom()}},SB::Sparse,SB::checksum_type::BlockChecksum,SB::SharedFSFile);
+      }
+
+#endif
       //
       // Glue operators
       //
@@ -487,8 +519,17 @@ namespace Chroma
 //	  QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << std::endl; 
 	  for(int t=0; t < phases.numSubsets(); ++t)
 	  {
-	    qdp_db.insert(buf[t].key, buf[t].val);
+	    if(!params.param.use_superb_format)qdp_db.insert(buf[t].key,buf[t].val);
 	  }
+
+#ifdef BUILD_SB
+        if(params.param.use_superb_format){
+          const int n=params.param.num_vecs,nt=phases.numSubsets();
+          SB::Tensor<2,SB::ComplexD> block("nt",SB::Coor<2>{{n,nt}},SB::OnHost,SB::OnMaster);
+          if(Layout::primaryNode())for(int t=0;t<nt;++t)for(int i=0;i<n;++i){auto z=buf[t].val.data().op(i);block.data()[i+n*t]=SB::ComplexD(toDouble(real(z)),toDouble(imag(z)));}
+          tensor_store.kvslice_from_size({{'d',l},{'m',mom_num}},{{'d',1},{'m',1}}).copyFrom(block);
+        }
+#endif
 
 	} // mom_num
 

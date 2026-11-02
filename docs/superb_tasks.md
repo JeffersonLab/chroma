@@ -1322,3 +1322,12 @@ Main options:
 * `solver_coarse`: solver for the coarse operator, $V^* D V$, where $V$ is the prolongator.
 * `solver_smoother`: solver for the correction (post-smoothing).
 * `proj`: projector options onto the coarse operator, $V^* D V$.
+
+## Tetraquark elementals
+
+The native Chroma tetraquark task and its rank-seven SUPERB schema are described
+in [Tetraquark elemental SUPERB storage](tetraquark-superb.md).
+
+## Glue elementals
+
+See [Glue elemental SUPERB storage](glue-superb.md) for the native schema and validation.

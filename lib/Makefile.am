@@ -335,6 +335,7 @@ nobase_include_HEADERS = \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ferm/eigeninfo.h \
 	util/ferm/subset_ev_pair.h \
+	util/ferm/colorvec_mod_reader.h \
 	util/ferm/subset_vectors.h \
 	util/ferm/block_subset.h \
 	util/ferm/block_couplings.h \
@@ -929,6 +930,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/baryon_derivative_ylm.h \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_ylm_superb_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.h \
+	meas/inline/hadron/inline_tetraquark_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.h \
 	meas/inline/hadron/meson_derivative_ylm.h \
@@ -1855,6 +1857,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/baryon_derivative_ylm.cc \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_ylm_superb_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_tetraquark_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.cc \
 	meas/inline/hadron/meson_derivative_ylm.cc \
