@@ -1,3 +1,4 @@
+#include "util/ferm/colorvec_mod_reader.h"
 // -*- C++ -*-
 /*! \file                                                                    
  * \brief Copy, permuting, contracting tensors with superbblas
@@ -9508,11 +9509,13 @@ namespace Chroma
 
     typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, Tensor<Nd, ComplexF>> MODS_t;
     typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, Tensor<Nd, ComplexF>> MOD_t;
+    typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, Tensor<Nd, ComplexD>> MODS_D_t;
 
     // Represent either FILEDB or S3T handle for file containing distillation vectors
 
     struct ColorvecsStorage {
-      std::shared_ptr<MODS_t> mod;	   // old storage
+      std::shared_ptr<MODS_t> mod;
+      std::shared_ptr<MODS_D_t> mod_d; // Double MOD payload; retain double staging buffers.	   // old storage
       StorageTensor<Nd + 2, ComplexD> s3t; // cxyztn
       bool is_dummy; /// whether to create random numbers
     };
@@ -10034,8 +10037,8 @@ namespace Chroma
       /// \param order_: order of the output tensor for the eigenvectors
       /// \return: a tensor containing the eigenvectors
 
-      template <typename COMPLEX = ComplexF>
-      Tensor<Nd + 3, COMPLEX> getColorvecs(MODS_t& eigen_source, int decay_dir, int from_tslice,
+      template <typename COMPLEX = ComplexF, typename STORED = ComplexF>
+      Tensor<Nd + 3, COMPLEX> getColorvecs(QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, Tensor<Nd, STORED>>& eigen_source, int decay_dir, int from_tslice,
 					   int n_tslices, int n_colorvecs,
 					   const Maybe<const std::string>& order_ = none,
 					   DeviceHost dev = OnDefaultDevice)
@@ -10050,14 +10053,14 @@ namespace Chroma
 	  order, latticeSize<Nd + 3>(order, {{'t', n_tslices}, {'n', n_colorvecs}}), dev);
 
 	// Allocate a single time slice colorvec in natural ordering, as colorvec are stored
-	Tensor<Nd, ComplexF> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
+	Tensor<Nd, STORED> tnat("cxyz", latticeSize<Nd>("cxyz", {{'x', Layout::lattSize()[0]}}),
 				  OnHost, OnMaster);
 
 	// Allocate a single time slice colorvec in case of using RB ordering
-	Tensor<Nd + 1, ComplexF> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
+	Tensor<Nd + 1, STORED> trb("cxyzX", latticeSize<Nd + 1>("cxyzX"), OnHost, OnMaster);
 
 	// Allocate all colorvecs for the same time-slice
-	Tensor<Nd + 2, ComplexF> t("cxyzXn", latticeSize<Nd + 2>("cxyzXn", {{'n', n_colorvecs}}),
+	Tensor<Nd + 2, STORED> t("cxyzXn", latticeSize<Nd + 2>("cxyzXn", {{'n', n_colorvecs}}),
 				   OnHost, OnMaster);
 
 	const int Nt = Layout::lattSize()[decay_dir];
@@ -10326,6 +10329,10 @@ namespace Chroma
 	throw std::runtime_error(ss.str());
       }
 
+      if (!sto.s3t && colorvecMODPrecision(metadata)==64) {
+        sto.mod->close();sto.mod.reset();
+        sto.mod_d=std::make_shared<MODS_D_t>();sto.mod_d->open(colorvec_files);sto.mod_d->setDebug(0);
+      }
       return sto;
     }
 
@@ -10334,15 +10341,9 @@ namespace Chroma
 
     inline void closeColorvecStorage(ColorvecsStorage& sto)
     {
-      if (!sto.s3t)
-      {
-	sto.s3t.release();
-      }
-      else if (sto.mod)
-      {
-	sto.mod->close();
-	sto.mod.reset();
-      }
+      if (sto.s3t) sto.s3t.release();
+      if (sto.mod) {sto.mod->close();sto.mod.reset();}
+      if (sto.mod_d) {sto.mod_d->close();sto.mod_d.reset();}
     }
 
     /// Phase colorvecs
@@ -10406,6 +10407,11 @@ namespace Chroma
       {
 	r = ns_getColorvecs::getColorvecs<COMPLEX>(sto.s3t, u, decay_dir, from_tslice, n_tslices,
 						   n_colorvecs, order, dev);
+      }
+      else if (sto.mod_d)
+      {
+        r = ns_getColorvecs::getColorvecs<COMPLEX>(*sto.mod_d, decay_dir, from_tslice, n_tslices,
+                                                 n_colorvecs, order, dev);
       }
       else if (sto.mod)
       {

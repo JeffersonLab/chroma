@@ -1,3 +1,4 @@
+#include "util/ferm/colorvec_mod_reader.h"
 /*! \file
  * \brief Compute propagators from distillation
  *
@@ -209,13 +210,13 @@ namespace Chroma
   {
     //----------------------------------------------------------------------------
     // Convenience type
-    typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MOD_t;
+    typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVector> > MOD_t;
 
     // Convenience type
-    typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MODS_t;
+    typedef ColorvecMODReader MODS_t;
 
     // Convenience type
-    typedef QDP::MapObjectMemory<KeyTimeSliceColorVec_t, SubLatticeColorVectorF> SUB_MOD_t;
+    typedef QDP::MapObjectMemory<KeyTimeSliceColorVec_t, SubLatticeColorVector> SUB_MOD_t;
 
     // Anonymous namespace
     namespace
@@ -229,7 +230,7 @@ namespace Chroma
 	SubEigenMap(MODS_t& eigen_source_, int decay_dir, bool zero_colorvecs) : eigen_source(eigen_source_), time_slice_set(decay_dir), zero_colorvecs(zero_colorvecs) {}
 
 	//! Getter
-	const SubLatticeColorVectorF& getVec(int t_source, int colorvec_src) const;
+	const SubLatticeColorVector& getVec(int t_source, int colorvec_src) const;
 
 	//! The set to be used in sumMulti
 	const Set& getSet() const {return time_slice_set.getSet();}
@@ -249,7 +250,7 @@ namespace Chroma
 
       //----------------------------------------------------------------------------
       //! Getter
-      const SubLatticeColorVectorF& SubEigenMap::getVec(int t_source, int colorvec_src) const
+      const SubLatticeColorVector& SubEigenMap::getVec(int t_source, int colorvec_src) const
       {
 	// The key
 	KeyTimeSliceColorVec_t src_key(t_source, colorvec_src);
@@ -259,15 +260,15 @@ namespace Chroma
 	  QDPIO::cout << __func__ << ": on t_source= " << t_source << "  colorvec_src= " << colorvec_src << std::endl;
 
 	  // No need to initialize with 'zero' - we are returning a subtype.
-	  LatticeColorVectorF vec_srce;
+	  LatticeColorVector vec_srce;
 
 	  if (!zero_colorvecs)
 	    {
-	      TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source);
+	      TimeSliceIO<LatticeColorVector> time_slice_io(vec_srce, t_source);
 	      eigen_source.get(src_key, time_slice_io);
 	    }
 	  
-	  SubLatticeColorVectorF tmp(getSet()[t_source], vec_srce);
+	  SubLatticeColorVector tmp(getSet()[t_source], vec_srce);
 
 	  sub_eigen.insert(src_key, tmp);
 	}
@@ -804,7 +805,7 @@ namespace Chroma
 		    // The perambulator part
 		    // Loop over time
 
-#ifndef BUILD_JIT_CONTRACTION_KERNELS
+#if !defined(BUILD_JIT_CONTRACTION_KERNELS) || BASE_PRECISION == 64
 		    for(int t_slice = 0; t_slice < Lt; ++t_slice)
 		      {
 		        // Loop over all the keys
@@ -839,7 +840,7 @@ namespace Chroma
 
 		            //QDPIO::cout << "spin_snk = " << spin_snk << ", count = " << count << "\n";
 		        
-		            multi1d<SubLatticeColorVectorF*> vec_ptr( count );
+                            multi1d<SubLatticeColorVector*> vec_ptr( count );
 		            multi1d<ComplexD*> contr_ptr( count );
 
 		            int run_count = 0;
@@ -855,7 +856,7 @@ namespace Chroma
 		                // Pack pointers to the vectors and matrix elements
 		                //
 		                for (int i=0 ; i < num_vecs ; ++i ) {
-		          	vec_ptr[run_count] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( key->t_slice , i ) );
+                                vec_ptr[run_count] = const_cast<SubLatticeColorVector*>( &sub_eigen_map.getVec( key->t_slice , i ) );
 		          	contr_ptr[run_count] = &peram[*key].mat( i , colorvec_src );
 		          	++run_count;
 		                }
@@ -884,10 +885,10 @@ namespace Chroma
 		                //
 		                // Pack pointers to the vectors and matrix elements
 		                //
-		                multi1d<SubLatticeColorVectorF*> vec_ptr( num_vecs );
+                                multi1d<SubLatticeColorVector*> vec_ptr( num_vecs );
 		                multi1d<ComplexD*> contr_ptr( num_vecs );
 		                for (int i=0 ; i < num_vecs ; ++i ) {
-		          	vec_ptr[i] = const_cast<SubLatticeColorVectorF*>( &sub_eigen_map.getVec( t_slice , i ) );
+                                vec_ptr[i] = const_cast<SubLatticeColorVector*>( &sub_eigen_map.getVec( t_slice , i ) );
 		          	contr_ptr[i] = &peram[*key].mat( i , colorvec_src );
 		                }
 		    

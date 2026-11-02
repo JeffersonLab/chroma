@@ -230,7 +230,7 @@ namespace Chroma
       }
       else
       {
-	for (float i : input.quarkPhase)
+	for (const auto i : input.quarkPhase)
 	  input.aQuarkPhase.push_back(-i);
       }
     }
@@ -1189,7 +1189,7 @@ namespace Chroma
 	    }
 
 	    // Get num_vecs colorvecs on time-slice t_source
-	    SB::Tensor<Nd + 3, SB::ComplexF> source_colorvec = SB::getColorvecs(
+	    SB::Tensor<Nd + 3, SB::Complex> source_colorvec = SB::getColorvecs<SB::Complex>(
 	      colorvecsSto, u, decay_dir, t_source, 1, num_vecs, SB::none, sourcePhase, dev);
 
 	    // Invert the source for all spins and retrieve num_tslices_active
@@ -1209,7 +1209,7 @@ namespace Chroma
 	    }
 
 	    // Get num_vecs colorvecs on time-slice t_sink
-	    SB::Tensor<Nd + 3, SB::ComplexF> sink_colorvec = SB::getColorvecs(
+	    SB::Tensor<Nd + 3, SB::Complex> sink_colorvec = SB::getColorvecs<SB::Complex>(
 	      colorvecsSto, u, decay_dir, t_sink, 1, num_vecs, SB::none, negSinkPhase, dev);
 
 	    // Invert the sink for all spins and retrieve num_tslices_active time-slices starting from
