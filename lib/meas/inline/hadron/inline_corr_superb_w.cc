@@ -17,6 +17,7 @@
 #    include "hadron/process_corrs.h"
 #    include "io/adat_xmlio.h"
 #    include "io/baryon_superb.h"
+#    include "io/disco_superb.h"
 #    include "io/genprop4.h"
 #    include "io/meson_superb.h"
 #    include "io/prop_superb.h"
@@ -152,6 +153,8 @@ namespace Chroma
 	read(paramtop, "genprops", param.genprop_files);
       }
 
+      if (paramtop.count("discos") > 0) read(paramtop, "discos", param.disco_files);
+
       param.decay_dir = 3;
 
       param.Nt_forward = 0;
@@ -225,6 +228,7 @@ namespace Chroma
       write(xml, "baryons", param.baryon_files);
       write(xml, "props", param.prop_files);
       write(xml, "genprops", param.genprop_files);
+      write(xml, "discos", param.disco_files);
       write(xml, "Nt_forward", param.Nt_forward);
       write(xml, "ensemble", param.ensemble);
       write(xml, "testing", param.testing);
@@ -2105,6 +2109,19 @@ namespace Chroma
       const bool zero_values_for_outside_t_slices = true;
       storage_genprop.open(params.param.genprop_files, nev, zero_values_for_outside_t_slices);
 
+      ADATIO::StorageDisco storage_disco;
+      storage_disco.open(params.param.disco_files);
+      const Hadron::disco_elementals_callback disco_callback =
+        [&](const Hadron::KeyTwoQuarkDiscoOperator_t& key) {
+          Hadron::ValTwoQuarkDiscoOperator_t value;
+          if (storage_disco.get(key, value) != 0) {
+            std::ostringstream message;
+            message << "DISCO key missing or incomplete: " << key;
+            throw std::runtime_error(message.str());
+          }
+          return value;
+        };
+
       /// Inverted distillation vectors cache
       Cache cache;
       const auto max_cache_size = 3;
@@ -2177,7 +2194,7 @@ namespace Chroma
         return Hadron::evaluate_graphs_with_superb(
           graphs, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
           genprop_callback, flavor_to_mass, nev, origin, params.param.Nt_forward,
-          QDPIO::cout, SB::detail::getDefaultComm());
+          QDPIO::cout, SB::detail::getDefaultComm(), disco_callback);
       };
       auto corr = [&]() {
         if (!params.param.average_1pt_diagrams) return evaluate(corr_graph, params.param.t_origin);

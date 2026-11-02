@@ -63,6 +63,7 @@ namespace Chroma
 	std::vector<std::string>  meson_files;          /*!< list of meson files */
 	std::vector<std::string>  baryon_files;         /*!< list of baryons files */
 	std::vector<std::string>  prop_files;           /*!< list of props files */
+	std::vector<std::string>  disco_files;         /*!< Disconnected-loop files */
 	std::vector<std::string>  genprop_files;        /*!< list of genprops files */
 	std::string             ensemble;               /*!< ensemble name */
 	bool                      testing;              /*!< whether to do tests */

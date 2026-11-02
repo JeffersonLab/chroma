@@ -1099,11 +1099,12 @@ namespace Chroma
 	auto urnd =
 	  SB::Tensor<4, typename SB::Complex::value_type>("xyzX", SB::latticeSize<4>("xyzX"));
 	urand(urnd);
+	// Quantize uniform [0,1) samples into the four Z4 phases.
 	auto noise_vec =
 	  urnd.transformWithCPUFun<SB::Complex>([=](const typename SB::Complex::value_type& x) {
 	    return SB::Complex{
-	      static_cast<typename SB::Complex::value_type>(std::cos(M_PI / 2 * x)),
-	      static_cast<typename SB::Complex::value_type>(std::sin(M_PI / 2 * x))};
+	      static_cast<typename SB::Complex::value_type>(std::cos(M_PI / 2 * std::floor(4 * x))),
+	      static_cast<typename SB::Complex::value_type>(std::sin(M_PI / 2 * std::floor(4 * x)))};
 	  });
 
 	// All the loops
