@@ -47,6 +47,7 @@ namespace Chroma
 	  ChromaProp_t prop;
 	};
 
+	bool zeroUnsmearedGraphsP = true; /*!< Match the corresponding NPT setting; legacy default true */
 	int 			num_vecs;               /*! rank of the distillation basis */
 	int 			max_rhs;                /*! maximum rhs to solve at once */
 	int                     decay_dir;              /*!< Decay direction */

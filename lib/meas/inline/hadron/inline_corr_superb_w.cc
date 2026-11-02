@@ -6,7 +6,9 @@
 
 #ifdef BUILD_SB
 // Activate the MPI support in Superbblas
-#  define SUPERBBLAS_USE_MPI
+#  ifndef CHROMA_SB_SINGLE
+#    define SUPERBBLAS_USE_MPI
+#  endif
 
 // Activate redstar-datalib support for superbblas and with gpus
 #  define USE_SUPERBBLAS
@@ -112,6 +114,8 @@ namespace Chroma
 
       param.num_vecs = 0;
       read(paramtop, "num_vecs", param.num_vecs);
+      param.zeroUnsmearedGraphsP=true;
+      if(paramtop.count("zeroUnsmearedGraphsP"))read(paramtop,"zeroUnsmearedGraphsP",param.zeroUnsmearedGraphsP);
 
       param.max_rhs = 0;
       if (paramtop.count("max_rhs") > 0)
@@ -179,6 +183,7 @@ namespace Chroma
 
       write(xml, "average_1pt_diagrams", param.average_1pt_diagrams);
       write(xml, "num_vecs", param.num_vecs);
+      write(xml,"zeroUnsmearedGraphsP",param.zeroUnsmearedGraphsP);
       write(xml, "max_rhs", param.max_rhs);
       write(xml, "flavor_to_mass", param.flavor_to_mass);
       write(xml, "flavor_to_prop", param.flavor_to_prop);
@@ -536,8 +541,8 @@ namespace Chroma
 	  for (auto it = range.first; it != range.second; ++it)
 	  {
 	    const auto& [p, index] = it->second;
-	    auto ti = SBN::relabel(toTensor(tensor), {{'i', 'v'}, {'j', 'w'}});
-	    ti = Hadron::detail::apply_vertex_perm(ti, perms.at(index), "vw");
+	    auto ti = SBN::relabel(toTensor(tensor), {{'i', 'w'}, {'j', 'v'}});
+	    ti = Hadron::detail::apply_vertex_perm(ti, p, "vw");
 	    ti = SBN::slice_kv(ti, //
 			       {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}},
 			       {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}});
@@ -559,41 +564,8 @@ namespace Chroma
     inline std::tuple<Hadron::KeyBaryonElementalOperator_t, int>
     get_perm_baryon_key(const Hadron::KeyBaryonElementalOperator_t& key, const SB::Coor<3>& perm)
     {
-      // Get the new key
-      auto perm_key = key;
-      const auto& disps = std::array<std::vector<int>, 3>{key.left, key.middle, key.right};
-      auto perm_disps =
-	std::array<std::vector<int>, 3>{std::vector<int>{}, std::vector<int>{}, std::vector<int>{}};
-      for (std::size_t i = 0; i < 3; ++i)
-	perm_disps.at(perm.at(i)) = disps.at(i);
-      perm_key.left = std::move(perm_disps.at(0));
-      perm_key.middle = std::move(perm_disps.at(1));
-      perm_key.right = std::move(perm_disps.at(2));
-
-      // List all permutation of three elements; and the sign is the evenness of the number of single exchanges
-      const std::vector<std::pair<std::array<int, 3>, int>> perm_and_sign_list{
-	{SB::Coor<3>{0, 1, 2}, 1},  //
-	{SB::Coor<3>{0, 2, 1}, -1}, //
-	{SB::Coor<3>{1, 0, 2}, -1}, //
-	{SB::Coor<3>{1, 2, 0}, 1},  //
-	{SB::Coor<3>{2, 0, 1}, 1},  //
-	{SB::Coor<3>{2, 1, 0}, -1}  //
-      };
-
-      // Find scalar
-      int scalar = 0;
-      for (const auto& it : perm_and_sign_list)
-      {
-	if (it.first == perm)
-	{
-	  scalar = it.second;
-	  break;
-	}
-      }
-      if (scalar == 0)
-	throw std::runtime_error("wtf");
-
-      return {perm_key, scalar};
+      return Hadron::detail::permute_baryon_key(
+        key, SBN::Coor(perm.begin(), perm.end()));
     }
 
     /// Return the baryons without spins
@@ -876,6 +848,7 @@ namespace Chroma
 	    {
 	      if (is_swap)
 	      {
+                std::swap(key.t_slice, key.t_source);
 		key.phasing_sink = -key.phasing_sink;
 		std::swap(key.phasing_source, key.phasing_sink);
 		key.phasing_sink = -key.phasing_sink;
@@ -995,7 +968,8 @@ namespace Chroma
 	      const auto& index = it->second;
 	      auto tii = SBN::relabel(ti, {{'n', 'w'}, {'N', 'v'}, {'s', 'r'}, {'S', 's'}});
 	      SBN::copyTo(
-		tii, SBN::slice_kv(props, {{'s', sink_spin}, {'i', index}}, {{'s', 1}, {'i', 1}}));
+		tii, SBN::slice_kv(props, {{'s', sink_spin}, {'w', first_n}, {'i', index}},
+				   {{'s', 1}, {'w', SBN::get_kv_size(tii).at('w')}, {'i', 1}}));
 	    }
 	  }
 	};
@@ -1105,6 +1079,16 @@ namespace Chroma
 	  if (!has_local_support(genprop_i))
 	    continue;
 	  const auto& key = genprop_keys.at(i);
+          // Match NPT: the insertion interval is the shorter unoriented arc.
+          // A reversed line must be read through gamma-five hermiticity,
+          // rather than discarded by an oriented interval test.
+          const int Lt = Layout::lattSize()[Nd-1];
+          int source = key.t_source, sink = key.t_sink;
+          if (SB::normalize_coor(sink-source, Lt) > SB::normalize_coor(source-sink, Lt))
+            std::swap(source, sink);
+          // Equal endpoints represent a full diagonal GenProp, not a zero-length interval.
+          if (source != sink && SB::normalize_coor(key.t_slice-source, Lt) > SB::normalize_coor(sink-source, Lt))
+            continue;
 	  bool is_swap = (perms.at(i) != SBN::Coor{0, 1, 2, 3});
 	  bool this_conj = do_conj.at(i);
 	  if (is_swap || this_conj)
@@ -1115,15 +1099,43 @@ namespace Chroma
 	  const auto& val_size = toCoor4(val.size);
 	  const auto& val_order =
 	    SBN::relabel(SBN::remap{{'v', 'N'}, {'w', 'n'}, {'s', 'q'}, {'S', 's'}}, val.order);
-	  if (db.get(key, val_from, toCoor4(val.size), val_order, data(val)) != 0)
+          bool reversed = false;
+          int lookup_status = db.get(key, val_from, toCoor4(val.size), val_order, data(val));
+          auto reverse_key = key;
+          if (lookup_status != 0) {
+            std::swap(reverse_key.t_source, reverse_key.t_sink);
+            reverse_key.phasing_sink = -reverse_key.phasing_sink;
+            std::swap(reverse_key.phasing_source, reverse_key.phasing_sink);
+            reverse_key.phasing_sink = -reverse_key.phasing_sink;
+            reverse_key.displacement = Hadron::detail::reverseDisp(key.displacement);
+            reverse_key.mom = -key.mom;
+            const auto reverse_order = SBN::relabel(
+              SBN::remap{{'v','n'}, {'w','N'}, {'s','s'}, {'S','q'}}, val.order);
+            lookup_status = db.get(reverse_key, val_from, toCoor4(val.size), reverse_order, data(val));
+            reversed = lookup_status == 0;
+          }
+          if (lookup_status != 0)
 	  {
 	    local_missing_genprops.push_back({key, first_local_genprop + i});
 	  }
 	  else
 	  {
-	    const auto& ti =
-	      Hadron::detail::contractSpins(Hadron::detail::contractSpins(dr_left, val), dr_right);
-
+            auto ti = Hadron::detail::contractSpins(
+              Hadron::detail::contractSpins(dr_left, val), dr_right);
+            if (reversed) {
+              const int eta[] = {1,-1,-1,-1,-1,-1,-1,1,-1,-1,-1,1,-1,1,1,1};
+              ADAT::Array<int> lattice(Nd);
+              for (int mu=0; mu<Nd; ++mu) lattice[mu] = Layout::lattSize()[mu];
+              const auto phase = double(eta[key.g]) * Hadron::momPhase(
+                Hadron::constructMom4d(reverse_key.mom),
+                Hadron::dispMomMask(reverse_key.displacement), lattice);
+              const auto left_g5 = Hadron::detail::contractSpins(dr_left,
+                Hadron::detail::chromaGamma5());
+              const auto right_g5 = Hadron::detail::contractSpins(
+                Hadron::detail::chromaGamma5(), dr_right);
+              ti = Hadron::detail::contractSpins(Hadron::detail::contractSpins(
+                left_g5, SBN::scale(SBN::conj(val), phase)), right_g5);
+            }
 	    SBN::copyTo(ti, genprop_i);
 	  }
 	}
@@ -1468,7 +1480,7 @@ namespace Chroma
 					ev_size, dist_labels, perm);
 	};
 
-      const bool zeroUnsmearedGraphsP = true;
+      const bool zeroUnsmearedGraphsP = params.param.zeroUnsmearedGraphsP;
 #    if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
       SBN::get_default_gpu_device() = SB::detail::get_default_gpu_device();
 #    endif
