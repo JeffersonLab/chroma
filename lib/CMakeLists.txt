@@ -2021,6 +2021,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_inverter_test_superb_w.h
      meas/inline/hadron/inline_corr_superb_w.h
      util/ferm/clebsch.h
+     meas/inline/hadron/inline_tetraquark_matelem_colorvec_w.h
   )
   target_sources(chromalib PRIVATE 
      meas/inline/hadron/inline_disco_prob_defl_superb_w.cc
@@ -2038,6 +2039,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_inverter_test_superb_w.cc
      meas/inline/hadron/inline_corr_superb_w.cc
      util/ferm/clebsch.cc
+     meas/inline/hadron/inline_tetraquark_matelem_colorvec_w.cc
   )
   target_include_directories(chromalib PUBLIC ${SUPERBBLAS_DIR}/include)
   add_library(superbblas STATIC IMPORTED )

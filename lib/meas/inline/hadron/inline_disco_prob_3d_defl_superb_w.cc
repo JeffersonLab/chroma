@@ -5,36 +5,43 @@
  */
 
 #include "chroma_config.h"
-#if defined(BUILD_REDSTAR_DATALIB) && defined(BUILD_SB)
-#define USE_SUPERBBLAS
-#include "io/disco_superb.h"
-#endif
-#include "inline_disco_prob_3d_defl_superb_w.h"
-#include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/fermacts_aggregate_w.h"
-#include "fermact.h"
-#include "meas/glue/mesplq.h"
-#include "meas/hadron/greedy_coloring.h"
-#include "meas/inline/abs_inline_measurement_factory.h"
-#include "meas/inline/io/named_objmap.h"
-#include "meas/inline/make_xml_file.h"
-#include "qdp_stdio.h"
-#include "util/ferm/key_prop_colorvec.h"
-#include "util/ferm/key_val_db.h"
-#include "util/ferm/map_obj/map_obj_aggregate_w.h"
-#include "util/ferm/map_obj/map_obj_factory_w.h"
-#include "util/ferm/mgproton.h"
-#include "util/ferm/subset_vectors.h"
-#include "util/ferm/superb_contractions.h"
-#include "util/ferm/transf.h"
-#include "util/info/proginfo.h"
-
-#include <regex>
-#include <cassert>
-#include <complex>
-#include <string>
 
 #ifdef BUILD_SB
+// Activate the MPI support in Superbblas
+#  define SUPERBBLAS_USE_MPI
+
+// Activate redstar-datalib support for superbblas and with gpus
+#  define USE_SUPERBBLAS
+#  define USE_SUPERBBLAS_WITH_GPU_SUPPORT
+
+#  if defined(BUILD_REDSTAR_DATALIB)
+#    include "io/disco_superb.h"
+#  endif
+
+#  include "actions/ferm/fermacts/fermact_factory_w.h"
+#  include "actions/ferm/fermacts/fermacts_aggregate_w.h"
+#  include "fermact.h"
+#  include "inline_disco_prob_3d_defl_superb_w.h"
+#  include "meas/glue/mesplq.h"
+#  include "meas/hadron/greedy_coloring.h"
+#  include "meas/inline/abs_inline_measurement_factory.h"
+#  include "meas/inline/io/named_objmap.h"
+#  include "meas/inline/make_xml_file.h"
+#  include "qdp_stdio.h"
+#  include "util/ferm/key_prop_colorvec.h"
+#  include "util/ferm/key_val_db.h"
+#  include "util/ferm/map_obj/map_obj_aggregate_w.h"
+#  include "util/ferm/map_obj/map_obj_factory_w.h"
+#  include "util/ferm/mgproton.h"
+#  include "util/ferm/subset_vectors.h"
+#  include "util/ferm/superb_contractions.h"
+#  include "util/ferm/transf.h"
+#  include "util/info/proginfo.h"
+
+#  include <cassert>
+#  include <complex>
+#  include <regex>
+#  include <string>
 
 namespace Chroma
 {
