@@ -54,6 +54,7 @@ namespace Chroma
 	mom_list_t mom_list;	    /*!< Alternative array of momenta to generate */
 	displacements_moms_combos_t combos_list; /*!< Alternative list of disps and momenta */
 	std::vector<int>  t_sources;      /*!< Array of time slice sources */
+	std::vector<std::string> mass_labels; /*!< Complete dictionary for direct one-file output; empty retains old output */
 	std::string mass_label ; /*! a std::string flag maybe used in analysis*/
         int max_rhs;            /*! maximum number of linear systems solved simultaneously */
 	ChromaProp_t prop;

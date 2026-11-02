@@ -4,6 +4,11 @@
  * Propagator calculation on a color vector
  */
 
+#include "chroma_config.h"
+#if defined(BUILD_REDSTAR_DATALIB) && defined(BUILD_SB)
+#define USE_SUPERBBLAS
+#include "io/disco_superb.h"
+#endif
 #include "inline_disco_prob_3d_defl_superb_w.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
@@ -24,6 +29,7 @@
 #include "util/ferm/transf.h"
 #include "util/info/proginfo.h"
 
+#include <regex>
 #include <cassert>
 #include <complex>
 #include <string>
@@ -139,6 +145,14 @@ namespace Chroma
       }
 
       read(inputtop, "mass_label", param.mass_label);
+      if (inputtop.count("mass_labels")>0) read(inputtop,"mass_labels",param.mass_labels);
+      if (!param.mass_labels.empty()) {
+        auto labels=param.mass_labels;std::sort(labels.begin(),labels.end());
+        if (labels.front().empty() || std::adjacent_find(labels.begin(),labels.end())!=labels.end() ||
+            std::find(labels.begin(),labels.end(),param.mass_label)==labels.end())
+          throw std::runtime_error("Invalid direct DISCO mass_labels dictionary");
+      }
+
 
       read(inputtop, "Propagator", param.prop);
 
@@ -224,6 +238,8 @@ namespace Chroma
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "mom_list", param.mom_list);
       write(xml, "mass_label", param.mass_label);
+      write(xml,"mass_labels",param.mass_labels);
+      write(xml,"t_sources",param.t_sources);
 
       write(xml, "Propagator", param.prop);
       write(xml, "use_ferm_state_links", param.use_ferm_state_links);
@@ -632,8 +648,43 @@ namespace Chroma
     void write_sdb(const Traces& db, const std::string filename, const Params::Param_t& param,
 		   const XMLBufferWriter& gauge_xml, int first_computed_color,
 		   int num_computed_colors, int num_colors, int deflation_rank,
-		   bool use_new_format = true)
+		   bool use_new_format = true, const std::string& generation_context = "")
     {
+      if (!param.mass_labels.empty()) {
+#ifdef BUILD_REDSTAR_DATALIB
+        std::string error;
+        if (Layout::nodeNumber()==0) {
+          try {
+            if (!use_new_format || first_computed_color!=0 || num_computed_colors!=num_colors || num_colors<=0)
+              throw std::runtime_error("Direct DISCO collections require native storage and complete probing colors");
+            auto common=param;
+            common.mass_label="COLLECTION";common.t_sources.clear();
+            common.prop.fermact.xml=std::regex_replace(common.prop.fermact.xml,
+              std::regex("<Mass>[^<]*</Mass>"),"<Mass>COLLECTION_MASS</Mass>");
+            XMLBufferWriter contract_xml;write(contract_xml,"Param",common);
+            const auto contract=contract_xml.str()+gauge_xml.str()+generation_context;
+            XMLBufferWriter actual_xml;write(actual_xml,"Param",param);
+            std::vector<std::pair<Hadron::KeyTwoQuarkDiscoOperator_t,Hadron::ValTwoQuarkDiscoOperator_t>> records;
+            for (const auto& item:db) {
+              Hadron::KeyTwoQuarkDiscoOperator_t key;
+              key.t_slice=item.first.t_slice;key.disp=item.first.disp;key.mass_label=param.mass_label;
+              key.mom.resize(3);for(int d=0;d<3;++d)key.mom[d]=item.first.mom[d];
+              Hadron::ValTwoQuarkDiscoOperator_t value;value.op=item.second;
+              records.push_back({key,value});
+            }
+            ADATIO::StorageDisco::append_mass_time(filename,SB::tovector(Layout::lattSize()),
+              param.mass_labels,records,contract,param.prop.fermact.xml,
+              actual_xml.str()+gauge_xml.str());
+          } catch(const std::exception& e) {error=e.what();}
+        }
+        error=SB::broadcast(error);
+        if (!error.empty()) throw std::runtime_error(error);
+        return;
+#else
+        throw std::runtime_error("Direct DISCO collections require BUILD_REDSTAR_DATALIB");
+#endif
+      }
+
       std::unordered_map<std::vector<int>, int, Hash<std::vector<int>>> disps_map(16);
       std::unordered_map<SB::Coor<3>, int, Hash<SB::Coor<3>>> moms_map(16);
       const std::string order = "itdm";
@@ -785,6 +836,9 @@ namespace Chroma
 
 	// Read in the output propagator/source configuration info
 	read(paramtop, "NamedObject", named_obj);
+        if (!param.mass_labels.empty() && !named_obj.defl_sdb_file.empty())
+          throw std::runtime_error("Direct DISCO stores combined loops; separate deflation output is unsupported");
+
 
 	// Possible alternate XML file pattern
 	if (paramtop.count("xml_file") != 0)
@@ -993,7 +1047,7 @@ namespace Chroma
 	if (params.named_obj.defl_sdb_file.size() > 0)
 	{
 	  write_sdb(dbdet, params.named_obj.defl_sdb_file, params.param, gauge_xml, 0, 0, 0, rank,
-		    params.param.use_superb_format);
+		    params.param.use_superb_format, params.named_obj.gauge_id+":"+std::to_string(update_no));
 	}
 
 	const int n_colorvecs = params.param.num_vecs;
@@ -1205,7 +1259,7 @@ namespace Chroma
       // write out the results
       write_sdb(dbmean, params.named_obj.sdb_file, params.param, gauge_xml,
 		params.param.first_color, std::max(0, max_color - params.param.first_color), Nsrc,
-		0, params.param.use_superb_format);
+		0, params.param.use_superb_format, params.named_obj.gauge_id+":"+std::to_string(update_no));
 
       pop(xml_out); // close last tag
 
