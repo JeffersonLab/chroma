@@ -2060,10 +2060,23 @@ if( Chroma_ENABLE_SUPERBBLAS )
   endif()
 
   if( Chroma_ENABLE_REDSTAR_DATALIB )
-     target_include_directories(chromalib PUBLIC ${REDSTAR_DATALIB_DIR}/include)
-     add_library(redstar-datalib STATIC IMPORTED )
-     set_target_properties( redstar-datalib PROPERTIES IMPORTED_LOCATION ${REDSTAR_DATALIB_DIR}/lib/libadat.a )
-     target_link_libraries(chromalib PUBLIC redstar-datalib )
+     find_program(DATALIB_CONFIG datalib-config
+       PATHS "${REDSTAR_DATALIB_DIR}/bin" NO_DEFAULT_PATH)
+     if(NOT DATALIB_CONFIG)
+       message(FATAL_ERROR "datalib-config was not found in REDSTAR_DATALIB_DIR/bin")
+     endif()
+     foreach(flag cxxflags ldflags libs filedb-cxxflags filedb-ldflags filedb-libs)
+       execute_process(COMMAND "${DATALIB_CONFIG}" "--${flag}"
+         RESULT_VARIABLE datalib_status OUTPUT_VARIABLE datalib_${flag}
+         OUTPUT_STRIP_TRAILING_WHITESPACE)
+       if(NOT datalib_status EQUAL 0)
+         message(FATAL_ERROR "datalib-config --${flag} failed")
+       endif()
+       separate_arguments(datalib_${flag} NATIVE_COMMAND "${datalib_${flag}}")
+     endforeach()
+     target_compile_options(chromalib PUBLIC ${datalib_cxxflags} ${datalib_filedb-cxxflags})
+     target_link_options(chromalib PUBLIC ${datalib_ldflags} ${datalib_filedb-ldflags})
+     target_link_libraries(chromalib PUBLIC ${datalib_libs} ${datalib_filedb-libs})
   endif()
 
   if( QDP_BACKEND_ROCM OR Chroma_ENABLE_ROCM)

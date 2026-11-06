@@ -226,7 +226,9 @@ namespace Chroma
 	success &= InlineInverterTestEnv::registerAll();
 #ifdef BUILD_SB
 	success &= InlineInverterTestSuperbEnv::registerAll();
+#ifdef BUILD_REDSTAR_DATALIB
 	success &= InlineCorrSuperbEnv::registerAll();
+#endif
 #endif
 //	success &= InlineStochLaphQuarkEnv::registerAll();
 //	success &= InlineStochLaphBaryonEnv::registerAll();

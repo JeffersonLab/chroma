@@ -4,7 +4,7 @@
 
 #include "chroma_config.h"
 
-#ifdef BUILD_SB
+#if defined(BUILD_SB) && defined(BUILD_REDSTAR_DATALIB)
 // Activate the MPI support in Superbblas
 #  ifndef CHROMA_SB_SINGLE
 #    define SUPERBBLAS_USE_MPI
@@ -13,16 +13,14 @@
 // Activate redstar-datalib support for superbblas and with gpus
 #  define USE_SUPERBBLAS
 #  define USE_SUPERBBLAS_WITH_GPU_SUPPORT
-#endif
 
-#include "algs/superb_contractions.h"
-#include "hadron/process_corrs.h"
-#include "io/adat_xmlio.h"
-#include "io/baryon_superb.h"
-#include "io/disco_superb.h"
-#include "io/genprop4.h"
-#include "io/meson_superb.h"
-#include "io/prop_superb.h"
+#include "datalib/superb/superb_contractions.h"
+#include "datalib/storage/corr_output.h"
+#include "datalib/superb/baryon_superb.h"
+#include "datalib/superb/disco_superb.h"
+#include "datalib/superb/genprop4.h"
+#include "datalib/superb/meson_superb.h"
+#include "datalib/superb/prop_superb.h"
 
 #include "handle.h"
 #include "meas/glue/mesplq.h"
@@ -36,7 +34,6 @@
 #include "util/ferm/superb_contractions.h"
 #include "util/info/proginfo.h"
 
-#ifdef BUILD_SB
 namespace Chroma
 {
   /*!
@@ -425,7 +422,7 @@ namespace Chroma
     /// \param alloc: allocation for the returned tensor
 
     inline SBN::Tensor
-    get_meson_elementals(const ADATIO::StorageMeson& db, const SB::ColorvecsStorage& colorvecsSto,
+    get_meson_elementals(const Datalib::TensorStorage::StorageMeson& db, const SB::ColorvecsStorage& colorvecsSto,
 			 const multi1d<LatticeColorMatrix>& u,
 			 const multi1d<LatticeColorMatrix>& u_smr,
 			 const std::vector<Hadron::KeyMesonElementalOperator_t>& meson_keys,
@@ -517,10 +514,10 @@ namespace Chroma
 	for (const auto& [meson_key, perm, index] : missing_mesons_in_some_process)
 	{
 	  const auto& k = tslice_left_right_phases{
-	    meson_key.t_slice, ADATIO::detail::toCoor(meson_key.phasing_sink),
-	    ADATIO::detail::toCoor(meson_key.phasing_source)};
+	    meson_key.t_slice, Datalib::TensorStorage::detail::toCoor(meson_key.phasing_sink),
+	    Datalib::TensorStorage::detail::toCoor(meson_key.phasing_source)};
 	  auto& v = from_tslice_left_right_phases_to_momenta_displacement[k];
-	  auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(meson_key.mom));
+	  auto mom_index = get_index(std::get<0>(v), Datalib::TensorStorage::detail::toCoor(meson_key.mom));
 	  auto disp_index = get_index(std::get<1>(v), meson_key.displacement);
 	  std::get<2>(v).insert({{mom_index, disp_index}, {perm, index}});
 	}
@@ -586,7 +583,7 @@ namespace Chroma
     /// \param alloc: allocation for the returned tensor
 
     inline SBN::Tensor
-    get_baryon_elementals(const ADATIO::StorageBaryon& db, const SB::ColorvecsStorage& colorvecsSto,
+    get_baryon_elementals(const Datalib::TensorStorage::StorageBaryon& db, const SB::ColorvecsStorage& colorvecsSto,
 			  const multi1d<LatticeColorMatrix>& u,
 			  const multi1d<LatticeColorMatrix>& u_smr,
 			  const std::vector<Hadron::KeyBaryonElementalOperator_t>& baryon_keys,
@@ -632,7 +629,7 @@ namespace Chroma
 	const auto& local_baryons =
 	  SBN::slice_kv(SBN::get_local_tensor(baryons), {{'i', first_local_baryon}},
 			{{'i', (int)baryon_keys.size()}});
-	ADATIO::SerialDBData<Hadron::ValBaryonElementalOperator_t> val;
+	Datalib::Storage::SerialDBData<Hadron::ValBaryonElementalOperator_t> val;
 	for (std::size_t i = 0; i < baryon_keys.size(); ++i)
 	{
 	  const auto& baryon_i = SBN::slice_kv(local_baryons, {{'i', i}}, {{'i', 1}});
@@ -684,9 +681,9 @@ namespace Chroma
 	for (const auto& [baryon_key, scalar, do_conj, index] : missing_baryons_in_some_process)
 	{
 	  const auto& k =
-	    tslice_phase{baryon_key.t_slice, ADATIO::detail::toCoor(baryon_key.phasing)};
+	    tslice_phase{baryon_key.t_slice, Datalib::TensorStorage::detail::toCoor(baryon_key.phasing)};
 	  auto& v = from_tslice_and_phase_to_momenta_displacement[k];
-	  auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(baryon_key.mom));
+	  auto mom_index = get_index(std::get<0>(v), Datalib::TensorStorage::detail::toCoor(baryon_key.mom));
 	  auto disp_index = get_index(
 	    std::get<1>(v), displacement_t{baryon_key.left, baryon_key.middle, baryon_key.right});
 	  std::get<2>(v).insert({{mom_index, disp_index}, {scalar, do_conj, index}});
@@ -754,7 +751,7 @@ namespace Chroma
     /// \param alloc: allocation for the returned tensor
 
     inline SBN::Tensor
-    get_prop_elementals(const ADATIO::StorageProp4& db, const SB::ColorvecsStorage& colorvecsSto,
+    get_prop_elementals(const Datalib::TensorStorage::StorageProp4& db, const SB::ColorvecsStorage& colorvecsSto,
 			const multi1d<LatticeColorMatrix>& u,
 			const std::function<SB::ChimeraSolver(std::string)>& get_prop, int max_rhs,
 			const std::vector<Hadron::KeyProp4ElementalOperator_t>& prop_keys,
@@ -918,8 +915,8 @@ namespace Chroma
 	for (const auto& [prop_key, do_conj, index] : missing_props_in_some_process)
 	{
 	  const auto& k = mass_tsource_source_sink_phases_conj{
-	    prop_key.mass_label, prop_key.t_source, ADATIO::detail::toCoor(prop_key.phasing_source),
-	    ADATIO::detail::toCoor(prop_key.phasing_sink), do_conj};
+	    prop_key.mass_label, prop_key.t_source, Datalib::TensorStorage::detail::toCoor(prop_key.phasing_source),
+	    Datalib::TensorStorage::detail::toCoor(prop_key.phasing_sink), do_conj};
 	  from_mass_tsource_source_sink_phases_conj_to_tsink_and_indices[k].insert(
 	    {prop_key.t_slice, index});
 	}
@@ -1001,7 +998,7 @@ namespace Chroma
     /// \param alloc: allocation for the returned tensor
 
     inline SBN::Tensor get_genprop_elementals(
-      const ADATIO::StorageGenprop4& db, const SB::ColorvecsStorage& colorvecsSto,
+      const Datalib::TensorStorage::StorageGenprop4& db, const SB::ColorvecsStorage& colorvecsSto,
       const multi1d<LatticeColorMatrix>& u,
       const std::function<SB::ChimeraSolver(std::string)>& get_prop, int max_rhs,
       const std::vector<Hadron::KeyGenProp4ElementalOperator_t>& genprop_keys,
@@ -1068,7 +1065,7 @@ namespace Chroma
 	      SBN::get_local_tensor(genprops), {{'i', first_local_genprop}},
 	      {{'i', (int)genprop_keys.size()}}),
 	    {{'r', 's'}, {'s', 'S'}});
-	auto val = SBN::create_tensor({ev_size.at(0), ev_size.at(1), ENSEM::Ns, ENSEM::Ns}, "vwsS",
+	auto val = SBN::create_tensor({ev_size.at(0), ev_size.at(1), Datalib::TensorStorage::spin_count, Datalib::TensorStorage::spin_count}, "vwsS",
 				      SBN::Options::Distribution::Local, SBN::Options::Alloc::Host);
 	auto toCoor4 = [](const SBN::Coor& coor) {
 	  if (coor.size() != 4)
@@ -1128,7 +1125,7 @@ namespace Chroma
               Hadron::detail::contractSpins(dr_left, val), dr_right);
             if (reversed) {
               const int eta[] = {1,-1,-1,-1,-1,-1,-1,1,-1,-1,-1,1,-1,1,1,1};
-              ADAT::Array<int> lattice(Nd);
+              XMLArray::Array<int> lattice(Nd);
               for (int mu=0; mu<Nd; ++mu) lattice[mu] = Layout::lattSize()[mu];
               const auto phase = double(eta[key.g]) * Hadron::momPhase(
                 Hadron::constructMom4d(reverse_key.mom),
@@ -1179,11 +1176,11 @@ namespace Chroma
 	{
 	  const auto& k = mass_tsource_sink_phase_source_sink_t{
 	    genprop_key.mass, genprop_key.t_source, genprop_key.t_sink,
-	    ADATIO::detail::toCoor(genprop_key.phasing_source),
-	    ADATIO::detail::toCoor(genprop_key.phasing_sink)};
+	    Datalib::TensorStorage::detail::toCoor(genprop_key.phasing_source),
+	    Datalib::TensorStorage::detail::toCoor(genprop_key.phasing_sink)};
 	  auto& v =
 	    from_mass_tsource_sink_phase_source_sink_to_moms_disps_gammas_and_tslides_vs_indices[k];
-	  const auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(genprop_key.mom));
+	  const auto mom_index = get_index(std::get<0>(v), Datalib::TensorStorage::detail::toCoor(genprop_key.mom));
 	  const auto disp_index = get_index(std::get<1>(v), genprop_key.displacement);
 	  const auto gamma_index = get_index(std::get<2>(v), genprop_key.g);
 	  const auto tslide_index = get_index(std::get<3>(v), genprop_key.t_slice);
@@ -1424,8 +1421,8 @@ namespace Chroma
 
       QDPIO::cout << "Opening corr graph " << params.named_obj.corr_graph_file << std::endl;
       Hadron::CorrGraphMap_t corr_graph;
-      ADATIO::BinaryFileReader bin(params.named_obj.corr_graph_file);
-      read(bin, corr_graph);
+      Datalib::Binary::BinaryFileReader bin(params.named_obj.corr_graph_file);
+      Hadron::read(bin, corr_graph);
       bin.close();
 
       // Check that the corr graph lattice size coincides with chroma's
@@ -1436,20 +1433,20 @@ namespace Chroma
       }
 
       QDPIO::cout << "Opening mesons" << std::endl;
-      Hadron::StorageMeson storage_meson;
+      Datalib::TensorStorage::StorageMeson storage_meson;
       storage_meson.open(params.param.meson_files, nev);
       QDPIO::cout << "Opening baryons" << std::endl;
-      Hadron::StorageBaryon storage_baryon;
+      Datalib::TensorStorage::StorageBaryon storage_baryon;
       storage_baryon.open(params.param.baryon_files, nev);
       QDPIO::cout << "Opening props" << std::endl;
-      Hadron::StorageProp4 storage_prop;
+      Datalib::TensorStorage::StorageProp4 storage_prop;
       storage_prop.open(params.param.prop_files, nev);
       QDPIO::cout << "Opening genprops" << std::endl;
-      Hadron::StorageGenprop4 storage_genprop;
+      Datalib::TensorStorage::StorageGenprop4 storage_genprop;
       const bool zero_values_for_outside_t_slices = true;
       storage_genprop.open(params.param.genprop_files, nev, zero_values_for_outside_t_slices);
 
-      ADATIO::StorageDisco storage_disco;
+      Datalib::TensorStorage::StorageDisco storage_disco;
       storage_disco.open(params.param.disco_files);
       const Hadron::disco_elementals_callback disco_callback =
         [&](const Hadron::KeyTwoQuarkDiscoOperator_t& key) {
@@ -1508,9 +1505,8 @@ namespace Chroma
       QDPIO::cout << "Storing the correlation functions" << std::endl;
       if (Layout::nodeNumber() == 0)
       {
-	const int decay_dir = 3;
-	Hadron::writeCorrMap(corr, params.param.ensemble, corr_graph.layout.latt_size, decay_dir,
-			     params.param.t_origin, params.named_obj.corr_file);
+	Datalib::Storage::writeCorrelators(corr, params.param.ensemble, corr_graph.layout,
+                                          params.param.t_origin, params.named_obj.corr_file);
       }
 
       // Close colorvecs storage
@@ -1533,4 +1529,4 @@ namespace Chroma
 
 } // namespace Chroma
 
-#endif // BUILD_SB
+#endif // BUILD_SB && BUILD_REDSTAR_DATALIB

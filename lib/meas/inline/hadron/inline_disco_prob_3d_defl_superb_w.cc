@@ -7,7 +7,7 @@
 #include "chroma_config.h"
 #if defined(BUILD_REDSTAR_DATALIB) && defined(BUILD_SB)
 #define USE_SUPERBBLAS
-#include "io/disco_superb.h"
+#include "datalib/superb/disco_superb.h"
 #endif
 #include "inline_disco_prob_3d_defl_superb_w.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -672,7 +672,7 @@ namespace Chroma
               Hadron::ValTwoQuarkDiscoOperator_t value;value.op=item.second;
               records.push_back({key,value});
             }
-            ADATIO::StorageDisco::append_mass_time(filename,SB::tovector(Layout::lattSize()),
+            Datalib::TensorStorage::StorageDisco::append_mass_time(filename,SB::tovector(Layout::lattSize()),
               param.mass_labels,records,contract,param.prop.fermact.xml,
               actual_xml.str()+gauge_xml.str());
           } catch(const std::exception& e) {error=e.what();}

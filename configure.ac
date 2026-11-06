@@ -425,14 +425,15 @@ AC_ARG_WITH(superbblas,
   [ with_superbblas="no" ]
 )
 
-AC_ARG_WITH(redstar-datalib,
-  AC_HELP_STRING(
-    [--with-redstar-datalib=DIR],
-    [Build Chroma with redstar-datalib installed in DIR]
-  ),
-  [ REDSTAR_DATALIB_HOME="${with_redstar_datalib}" ],
-  [ with_redstar_datalib="no" ]
-)
+AC_ARG_WITH([datalib],
+  AS_HELP_STRING([--with-datalib=DIR], [Build CORR_SUPERB with standalone datalib installed in DIR]),
+  [DATALIB_PREFIX="$withval"], [DATALIB_PREFIX=no])
+AC_ARG_WITH([redstar-datalib],
+  AS_HELP_STRING([--with-redstar-datalib=DIR], [Alias for --with-datalib=DIR]),
+  [AS_IF([test "x$DATALIB_PREFIX" != xno && test "x$DATALIB_PREFIX" != "x$withval"],
+    [AC_MSG_ERROR([Select a single datalib installation])])
+   DATALIB_PREFIX="$withval"])
+
 
 AC_ARG_WITH(primme,
   AC_HELP_STRING(
@@ -1403,23 +1404,23 @@ AM_CONDITIONAL(BUILD_SB,
 # redstar-datalib 
 ################################################################################
 
-if test "X${REDSTAR_DATALIB_HOME}X" != "XX";
-then
-  AC_SUBST(REDSTAR_DATALIB_CXXFLAGS, "-I${REDSTAR_DATALIB_HOME}/include" ) 
-  AC_SUBST(REDSTAR_DATALIB_LDFLAGS, "-L${REDSTAR_DATALIB_HOME}/lib" )
-  AC_SUBST(REDSTAR_DATALIB_LIBS,"-ladat")
-  AC_MSG_NOTICE([ Enabling SUPERB tasks using redstar-datalib installation in ${REDSTAR_DATALIB_HOME}])
-  AC_DEFINE([BUILD_REDSTAR_DATALIB], [], [Build redstar-datalib tasks])
-else
-  if test "X${with_redstar_datalib}X" != "XnoX";
-  then
-    AC_MSG_NOTICE([ Enabling redstar-datalib tasks using redstar-datalib installation given in the CXXFLAGS, LDFLAGS, and LIBS flags ])
-    AC_DEFINE([BUILD_REDSTAR_DATALIB], [], [Build redstar-datalib tasks])
-  fi
-fi
-
-AM_CONDITIONAL(BUILD_REDSTAR_DATALIB,
-	[test "x${with_redstar_datalib}x" != "xnox" ])
+AS_IF([test "x$DATALIB_PREFIX" != xno], [
+  DATALIB_CONFIG="$DATALIB_PREFIX/bin/datalib-config"
+  AS_IF([test ! -x "$DATALIB_CONFIG"], [AC_MSG_ERROR([datalib-config is required])])
+  REDSTAR_DATALIB_CXXFLAGS=`"$DATALIB_CONFIG" --cxxflags`
+  REDSTAR_DATALIB_CXXFLAGS="$REDSTAR_DATALIB_CXXFLAGS `"$DATALIB_CONFIG" --filedb-cxxflags`" ||
+    AC_MSG_ERROR([CORR_SUPERB requires datalib's FILEDB component])
+  REDSTAR_DATALIB_LDFLAGS="`"$DATALIB_CONFIG" --ldflags` `"$DATALIB_CONFIG" --filedb-ldflags`"
+  REDSTAR_DATALIB_LIBS="`"$DATALIB_CONFIG" --libs` `"$DATALIB_CONFIG" --filedb-libs`"
+  dnl The auxiliary programs also link libchroma and need its static dependencies.
+  LDFLAGS="$LDFLAGS $REDSTAR_DATALIB_LDFLAGS"
+  LIBS="$REDSTAR_DATALIB_LIBS $LIBS"
+  AC_DEFINE([BUILD_REDSTAR_DATALIB], [], [Build standalone datalib tasks])
+])
+AC_SUBST([REDSTAR_DATALIB_CXXFLAGS])
+AC_SUBST([REDSTAR_DATALIB_LDFLAGS])
+AC_SUBST([REDSTAR_DATALIB_LIBS])
+AM_CONDITIONAL([BUILD_REDSTAR_DATALIB], [test "x$DATALIB_PREFIX" != xno])
 
 ################################################################################
 # PRIMME 
