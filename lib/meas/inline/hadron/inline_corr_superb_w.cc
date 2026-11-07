@@ -555,6 +555,60 @@ namespace Chroma
 					       {{'t', 1}, {'n', num_vecs}});
     }
 
+    /// Return the distillation vectors on a time-slice
+    /// \param colorvecCache: cache of distillation vectors
+    /// \param colrovecSto:  distillation vectors storage
+    /// \param u: unsmeared links (for computing distillation vector on the fly)
+    /// \param tslice: the timeslice of the distillation of vectors to return
+    /// \param num_vecs: the first distillation vectors to return
+    /// NOTE: the function caches requested distillation vectors to avoid recomputing them
+
+    inline SB::Tensor<Nd + 3, SB::ComplexD>
+    get_colorvec_local(ColorvecCache& colorvecCache, const SB::ColorvecsStorage& colorvecsSto,
+		       const multi1d<LatticeColorMatrix>& u, int tslice, int num_vecs)
+    {
+      // Make sure that the number of vectors is the same and the cache is not empty
+      if (colorvecCache.num_vecs < num_vecs || colorvecCache.from_pos_to_tslice.size() == 0)
+      {
+	throw std::runtime_error("wtf");
+      }
+
+      const auto all_tslices = SBN::gather(tslice, SB::detail::getDefaultComm());
+
+      const auto order = "cxyztXn";
+      auto r = SB::local_support_tensor<SB::ComplexD, Nd + 3 + 1>(
+	order, SB::latticeSize<Nd + 3>(order, {{'n', num_vecs}, {'t', 1}}));
+      const auto p_label = r.order.at(0);
+
+      // Look for the time-slices
+      for (int p = 0; p < Layout::numNodes(); ++p)
+      {
+	const auto tslice = all_tslices.at(p);
+	if (tslice < 0)
+	  continue;
+	bool found_it = false;
+	for (std::size_t i = 0; i < colorvecCache.from_pos_to_tslice.size(); ++i)
+	{
+	  if (colorvecCache.from_pos_to_tslice.at(i) == tslice)
+	  {
+	    colorvecCache.v.kvslice_from_size({{'t', (int)i}}, {{'t', 1}, {'n', num_vecs}})
+	      .copyTo(r.kvslice_from_size({{p_label, p}}, {{p_label, 1}}));
+	    found_it = true;
+	    break;
+	  }
+	}
+	if (!found_it)
+	  throw std::runtime_error("wtf");
+      }
+
+      if (tslice < 0)
+	return {};
+
+      // Return the local field
+      return r.getLocal().collapse_dimensions<Nd + 3>(
+	std::string{r.order.begin(), r.order.begin() + 2}, r.order.at(1), false);
+    }
+
     /// Pre-compute distillation vectors on the requested time-slices if needed
     /// \param colorvecCache: cache of distillation vectors
     /// \param colrovecSto:  distillation vectors storage
@@ -959,25 +1013,19 @@ namespace Chroma
 		 ev_from.at(2) + ev_size.at(2));
 
       // Create output tensor
-      SBN::Tensor baryons = SBN::create_tensor_with_local_components(
-	SBN::concat(ev_size, {-(int)baryon_keys.size()}), "vwxi", dist_labels,
-	SBN::Options::Alloc::Device, 0, 0, SBN::Options::IsEg::False, {}, get_global_comm());
+      SBN::Tensor baryons =
+	SBN::create_tensor(SBN::concat(ev_size, {(int)baryon_keys.size()}), "vwxi",
+			   SBN::Options::Distribution::Local, SBN::Options::Alloc::Device);
 
       // Try to get the mesons from the storage and annotate the missing keys
       std::vector<std::tuple<Hadron::KeyBaryonElementalOperator_t, int, bool, int>>
 	local_missing_baryons;
       {
 	local_missing_baryons.reserve(baryon_keys.size());
-	const auto first_local_baryon = SBN::get_local_srange(baryons).at(0).at('i');
-	const auto& local_baryons =
-	  SBN::slice_kv(SBN::get_local_tensor(baryons), {{'i', first_local_baryon}},
-			{{'i', (int)baryon_keys.size()}});
 	ADATIO::SerialDBData<Hadron::ValBaryonElementalOperator_t> val;
 	for (std::size_t i = 0; i < baryon_keys.size(); ++i)
 	{
-	  const auto& baryon_i = SBN::slice_kv(local_baryons, {{'i', i}}, {{'i', 1}});
-	  if (!has_local_support(baryon_i))
-	    continue;
+	  const auto& baryon_i = SBN::slice_kv(baryons, {{'i', i}}, {{'i', 1}});
 	  const auto& key = baryon_keys.at(i);
 	  if (db.get(key, val) != 0)
 	  {
@@ -990,8 +1038,7 @@ namespace Chroma
 
 	    // Record missing baryon
 	    const auto& [norm_key, scalar] = get_perm_baryon_key(key, perms.at(i));
-	    local_missing_baryons.push_back(
-	      {norm_key, scalar, do_conj.at(i), first_local_baryon + i});
+	    local_missing_baryons.push_back({norm_key, scalar, do_conj.at(i), i});
 	  }
 	  else
 	  {
@@ -1007,8 +1054,7 @@ namespace Chroma
 	    if (testing)
 	    {
 	      const auto& [norm_key, scalar] = get_perm_baryon_key(key, perms.at(i));
-	      local_missing_baryons.push_back(
-		{norm_key, scalar, do_conj.at(i), first_local_baryon + i});
+	      local_missing_baryons.push_back({norm_key, scalar, do_conj.at(i), i});
 	    }
 	  }
 	}
@@ -1024,12 +1070,11 @@ namespace Chroma
 
       // Recompile for each missing time slice, the phases, momenta, and displacement to compute
       using displacement_t = std::array<std::vector<int>, 3>;
-      using tslice_phase = std::tuple<int, SB::Coor<3>>;
       using momenta_displacements_indices = std::tuple<
 	Hadron::detail::unordered_map<SB::Coor<3>, int>,
 	Hadron::detail::unordered_map<displacement_t, int>,
 	Hadron::detail::unordered_multimap<std::array<int, 2>, std::tuple<int, bool, int>>>;
-      Hadron::detail::unordered_map<tslice_phase, momenta_displacements_indices>
+      std::map<int, std::map<SB::Coor<3>, momenta_displacements_indices>>
 	from_tslice_and_phase_to_momenta_displacement;
       const auto get_index = [=](auto& map, const auto& value) {
 	const auto s = map.size();
@@ -1043,72 +1088,108 @@ namespace Chroma
 	  r.at(it.second) = it.first;
 	return r;
       };
+      std::set<int> local_missing_tslices;
+      for (const auto& [baryon_key, scalar, do_conj, index] : local_missing_baryons)
+      {
+	const auto t_slice = baryon_key.t_slice;
+	const auto phase = ADATIO::detail::toCoor(baryon_key.phasing);
+	local_missing_tslices.insert(t_slice);
+	auto& v = from_tslice_and_phase_to_momenta_displacement[t_slice][phase];
+	auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(baryon_key.mom));
+	auto disp_index = get_index(
+	  std::get<1>(v), displacement_t{baryon_key.left, baryon_key.middle, baryon_key.right});
+	std::get<2>(v).insert({{mom_index, disp_index}, {scalar, do_conj, index}});
+      }
+
+      // Gather all the time-slice missing and figure out the maximum number of
+      // time-slices used in a single process
+      std::size_t max_tslices_in_a_process = 0;
       std::vector<int> missing_tslices;
-      for (const auto& missing_baryons_in_some_process :
-	   SBN::gather(local_missing_baryons, SB::detail::getDefaultComm()))
       {
-	for (const auto& [baryon_key, scalar, do_conj, index] : missing_baryons_in_some_process)
-	{
-	  const auto& k =
-	    tslice_phase{baryon_key.t_slice, ADATIO::detail::toCoor(baryon_key.phasing)};
-	  if (from_tslice_and_phase_to_momenta_displacement.count(k) == 0)
-	    missing_tslices.push_back(baryon_key.t_slice);
-	  auto& v = from_tslice_and_phase_to_momenta_displacement[k];
-	  auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(baryon_key.mom));
-	  auto disp_index = get_index(
-	    std::get<1>(v), displacement_t{baryon_key.left, baryon_key.middle, baryon_key.right});
-	  std::get<2>(v).insert({{mom_index, disp_index}, {scalar, do_conj, index}});
-	}
+	const auto all_missing_tslices =
+	  SBN::gather(std::vector<int>(local_missing_tslices.begin(), local_missing_tslices.end()),
+		      SB::detail::getDefaultComm());
+	std::set<int> missing_tslices_set;
+	for (const auto& it : all_missing_tslices)
+	  missing_tslices_set.insert(it.begin(), it.end());
+	missing_tslices = std::vector<int>(missing_tslices_set.begin(), missing_tslices_set.end());
+	for (const auto& it : all_missing_tslices)
+	  max_tslices_in_a_process = std::max(max_tslices_in_a_process, it.size());
       }
 
+      // Prefetch the colorvecs that are going to be used
       prefetch_colorvec(colorvecCache, colorvecsSto, u, missing_tslices, num_vecs);
-      for (const auto& it : from_tslice_and_phase_to_momenta_displacement)
+      for (const auto t_slice : missing_tslices)
+	get_colorvec(colorvecCache, colorvecsSto, u, t_slice, num_vecs);
+
+      // Compute the baryons
+      std::size_t num_tslices_computed = 0;
+      for (const auto& [tslice, from_phase_to_momenta_displacement] :
+	   from_tslice_and_phase_to_momenta_displacement)
       {
-	const int t_slice = std::get<0>(it.first);
-	const auto& phase = std::get<1>(it.first);
-	const auto& moms = get_vector(std::get<0>(it.second));
-	const auto& disps = get_vector(std::get<1>(it.second));
-	const auto& mom_disp_to_index = std::get<2>(it.second);
+	// Gather the gauge fields on this time-slice
+	const auto& u_smr_on_tslice = SB::get_gauge_links_on_tslice_local(u_smr, tslice);
 
-	// Get num_vecs colorvecs on time-slice t_slice
-	const int decay_dir = 3;
+	// Get colorvecs for this time-slice
 	SB::Tensor<Nd + 3, SB::Complex> source_colorvec =
-	  get_colorvec(colorvecCache, colorvecsSto, u, t_slice, num_vecs);
-	source_colorvec = SB::phaseColorvecs(source_colorvec, t_slice, phase);
+	  get_colorvec_local(colorvecCache, colorvecsSto, u, tslice, num_vecs);
 
-	// Callback
-	const auto call = SB::ColorContractionFn<SB::Complex>(
-	  [&](SB::Tensor<5, SB::ComplexD> tensor, int disp, int first_tslice, int first_mom) {
-	    const int num_mom = tensor.kvdim().at('m');
-	    for (int m = 0; m < num_mom; ++m)
-	    {
-	      auto range = mom_disp_to_index.equal_range({first_mom + m, disp});
-	      for (auto it = range.first; it != range.second; ++it)
+	// Compute the baryons for this time-slice
+	for (const auto& it : from_phase_to_momenta_displacement)
+	{
+	  const auto& phase = it.first;
+	  const auto& moms = get_vector(std::get<0>(it.second));
+	  const auto& disps = get_vector(std::get<1>(it.second));
+	  const auto& mom_disp_to_index = std::get<2>(it.second);
+
+	  // Get num_vecs colorvecs on time-slice t_slice
+	  const int decay_dir = 3;
+	  const auto& source_colorvec_phased = SB::phaseColorvecs(source_colorvec, tslice, phase);
+
+	  // Callback
+	  const auto call = SB::ColorContractionFn<SB::Complex>(
+	    [&](SB::Tensor<5, SB::ComplexD> tensor, int disp, int first_tslice, int first_mom) {
+	      const int num_mom = tensor.kvdim().at('m');
+	      for (int m = 0; m < num_mom; ++m)
 	      {
-		const auto& [scalar, do_conj, index] = it->second;
-		auto ti = SBN::relabel(toTensor(tensor.kvslice_from_size({{'m', m}}, {{'m', 1}})),
-				       {{'i', 'v'}, {'j', 'w'}, {'k', 'x'}});
-		ti =
-		  SBN::slice_kv(ti, //
-				{{'v', ev_from.at(0)}, {'w', ev_from.at(1)}, {'x', ev_from.at(2)}},
-				{{'v', ev_size.at(0)}, {'w', ev_size.at(1)}, {'x', ev_size.at(2)}});
-		if (do_conj)
-		  ti = SBN::conj(ti);
-		SBN::copyTo(SBN::scale(ti, (double)scalar),
-			    SBN::slice_kv(baryons, {{'i', index}}, {{'i', 1}}));
+		auto range = mom_disp_to_index.equal_range({first_mom + m, disp});
+		for (auto it = range.first; it != range.second; ++it)
+		{
+		  const auto& [scalar, do_conj, index] = it->second;
+		  auto ti = SBN::relabel(toTensor(tensor.kvslice_from_size({{'m', m}}, {{'m', 1}})),
+					 {{'i', 'v'}, {'j', 'w'}, {'k', 'x'}});
+		  ti = SBN::slice_kv(
+		    ti, //
+		    {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}, {'x', ev_from.at(2)}},
+		    {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}, {'x', ev_size.at(2)}});
+		  if (do_conj)
+		    ti = SBN::conj(ti);
+		  SBN::copyTo(SBN::scale(ti, (double)scalar),
+			      SBN::slice_kv(baryons, {{'i', index}}, {{'i', 1}}));
+		}
 	      }
-	    }
-	  });
+	    });
 
-	// Do the contractions
-	const bool use_derivP = true;
-	SB::doMomDisp_colorContractions(u_smr, source_colorvec.make_sure<SB::ComplexD>(), moms,
-					t_slice, disps, use_derivP, call,
-					0 /* it means to do all */, max_moms_in_contraction,
-					max_vecs, SB::none, SB::OnDefaultDevice, SB::OnEveryone);
+	  // Do the contractions
+	  const bool use_derivP = true;
+	  SB::doMomDisp_colorContractions_local(
+	    u_smr_on_tslice, source_colorvec_phased.make_sure<SB::ComplexD>(), moms, tslice, disps,
+	    use_derivP, call, 0 /* it means to do all */, max_moms_in_contraction, max_vecs,
+	    SB::none, SB::OnDefaultDevice);
+	}
 
-	release_from_colorvec_cache(colorvecCache, t_slice);
+	num_tslices_computed++;
       }
+
+      // Help gathering time-slices for other processes
+      for (; num_tslices_computed < max_tslices_in_a_process; ++num_tslices_computed)
+      {
+	SB::get_gauge_links_on_tslice_local(u_smr, -1);
+	get_colorvec_local(colorvecCache, colorvecsSto, u, -1, num_vecs);
+      }
+
+      for (const auto t_slice : missing_tslices)
+	release_from_colorvec_cache(colorvecCache, t_slice);
 
       // If testing, make sure that recomputed baryons are similar to the ones got from storage
       if (testing)
@@ -1127,7 +1208,7 @@ namespace Chroma
       QDPIO::cout << "reading/generating baryons took " << _t.stopAndGetElapsedTime() << " s"
 		  << std::endl;
 
-      return SBN::get_local_tensor_tight(baryons);
+      return baryons;
     }
 
     using mass_phase_tsource_slices_spin_ev_from_size_conj_tensor =

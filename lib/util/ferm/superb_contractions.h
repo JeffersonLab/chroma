@@ -120,6 +120,14 @@ namespace Chroma
     /// Whether to copy or add the values into the destination tensor (see Tensor::doAction)
     enum Action { CopyTo, AddTo };
 
+    /// Operator's layout
+    enum OperatorLayout {
+      NaturalLayout,	     ///< natural ordering
+      XEvenOddLayout,	     ///< X:(x+y+z+t)%2, x:x/2, y:y, z:z, t:t
+      XEvenOddLayoutZeroOdd, ///< X:(x+y+z+t+1)%2, x:x/2, y:y, z:z, t:t
+      EvensOnlyLayout	     ///< x:x/2, y:y, z:z, t:t for all (x+y+z+t)%2==0
+    };
+
     /// Auxiliary class for initialize Maybe<T> with no value
     struct None {
     };
@@ -349,35 +357,56 @@ namespace Chroma
     }
 
     template <std::size_t N>
+    Coor<N> latticeSize(const std::string& order, const std::map<char, int>& m,
+			OperatorLayout layout)
+    {
+      std::map<char, int> m0;
+      switch (layout)
+      {
+      case NaturalLayout:
+	// No red-black ordering
+	m0 = {{'x', Layout::lattSize()[0]},
+	      {'y', Layout::lattSize()[1]},
+	      {'z', Layout::lattSize()[2]},
+	      {'t', Layout::lattSize()[3]},
+	      {'X', 1},
+	      {'s', Ns},
+	      {'c', Nc},
+	      {'.', 2}};
+	break;
+      case XEvenOddLayout:
+      case XEvenOddLayoutZeroOdd:
+      case EvensOnlyLayout:
+	// Red-black ordering
+	assert(Layout::lattSize()[0] % 2 == 0);
+	m0 = {{'x', Layout::lattSize()[0] / 2},
+	      {'y', Layout::lattSize()[1]},
+	      {'z', Layout::lattSize()[2]},
+	      {'t', Layout::lattSize()[3]},
+	      {'X', layout != EvensOnlyLayout ? 2 : 1},
+	      {'s', Ns},
+	      {'c', Nc},
+	      {'.', 2}};
+	break;
+      default: throw std::runtime_error("Unsupported layout");
+      }
+      for (const auto& it : m)
+	m0[it.first] = it.second;
+      return kvcoors<N>(order, m0, 0, NoThrow);
+    }
+
+    template <std::size_t N>
     Coor<N> latticeSize(const std::string& order, const std::map<char, int>& m = {})
     {
 #  if QDP_USE_LEXICO_LAYOUT
       // No red-black ordering
-      std::map<char, int> m0 = {{'x', Layout::lattSize()[0]},
-				{'y', Layout::lattSize()[1]},
-				{'z', Layout::lattSize()[2]},
-				{'t', Layout::lattSize()[3]},
-				{'X', 1},
-				{'s', Ns},
-				{'c', Nc},
-				{'.', 2}};
+      return latticeSize<N>(order, m, OperatorLayout::NaturalLayout);
 #  elif QDP_USE_CB2_LAYOUT
       // Red-black ordering
-      assert(Layout::lattSize()[0] % 2 == 0);
-      std::map<char, int> m0 = {{'x', Layout::lattSize()[0] / 2},
-				{'y', Layout::lattSize()[1]},
-				{'z', Layout::lattSize()[2]},
-				{'t', Layout::lattSize()[3]},
-				{'X', 2},
-				{'s', Ns},
-				{'c', Nc},
-				{'.', 2}};
+      return latticeSize<N>(order, m, OperatorLayout::XEvenOddLayout);
 #  else
       throw std::runtime_error("Unsupported layout");
 #  endif
-      for (const auto& it : m)
-	m0[it.first] = it.second;
-      return kvcoors<N>(order, m0, 0, NoThrow);
     }
 
     // Replace a label by another label
@@ -7588,14 +7617,6 @@ namespace Chroma
       ColumnMajor, ///< row-major ordering, the fastest index is the row
     };
 
-    /// Operator's layout
-    enum OperatorLayout {
-      NaturalLayout,	     ///< natural ordering
-      XEvenOddLayout,	     ///< X:(x+y+z+t)%2, x:x/2, y:y, z:z, t:t
-      XEvenOddLayoutZeroOdd, ///< X:(x+y+z+t+1)%2, x:x/2, y:y, z:z, t:t
-      EvensOnlyLayout	     ///< x:x/2, y:y, z:z, t:t for all (x+y+z+t)%2==0
-    };
-
     /// Return whether the layout is XEvenOddLayout or XEvenOddLayoutZeroOdd
     /// \param layout: layout to test
 
@@ -10700,6 +10721,57 @@ namespace Chroma
     // High-level chroma operations
     //
 
+    /// Get a local support of the given Gauge field on a time-slice
+    /// \param u: gauge links on each lattice direction
+    /// \param tslice: time-slice
+
+    inline std::vector<Tensor<Nd + 3, Complex>>
+    get_gauge_links_on_tslice_local(const multi1d<LatticeColorMatrix>& u, int tslice)
+    {
+      // Get all timeslices
+      auto tslices = local_support_tensor<int, 2>("i", {1}, OnHost);
+      tslices.getLocal().set({{0, 0}}, tslice);
+      tslices = tslices.make_sure(none, none, OnEveryoneReplicated);
+
+      // Create the output fields
+      const auto order = "ijXxyzt";
+      std::vector<Tensor<Nd + 3 + 1, Complex>> ut;
+      ut.reserve(Nd);
+      for (std::size_t i = 0; i < Nd; ++i)
+      {
+	ut.push_back(local_support_tensor<Complex, Nd + 3 + 1>(
+	  order, latticeSize<Nd + 3>(order, {{'i', Nc}, {'j', Nc}, {'t', 1}}, NaturalLayout)));
+      }
+
+      // Do the copy
+      for (int p = 0; p < Layout::numNodes(); ++p)
+      {
+	const auto tslice = tslices.get({p, 0});
+	if (tslice < 0)
+	  continue;
+	for (unsigned int i = 0; i < Nd; i++)
+	{
+	  const auto p_label = ut.at(i).order.at(0);
+	  detail::toNaturalOrdering(
+	    asTensorView(u[i]).kvslice_from_size({{'t', tslice}}, {{'t', 1}}).toComplex(), tslice)
+	    .copyTo(ut.at(i).kvslice_from_size({{p_label, p}}, {{p_label, 1}}));
+	}
+      }
+
+      if (tslice < 0)
+	return {};
+
+      // Return the local field
+      std::vector<Tensor<Nd + 3, Complex>> r;
+      r.reserve(Nd);
+      for (std::size_t i = 0; i < Nd; ++i)
+      {
+	r.push_back(ut.at(i).getLocal().collapse_dimensions<Nd + 3>(
+	  std::string{ut.at(i).order.at(0), 'i'}, 'i', false));
+      }
+      return r;
+    }
+
     namespace detail
     {
       /// Path Node
@@ -11304,6 +11376,94 @@ namespace Chroma
 	    ut, std::move(this_3_colorvec), first_tslice + tfrom, tree_disps, deriv, 0,
 	    {this_moms, moms_list}, mfrom, max_cols.getSome(0), order_out_str,
 	    dev.getSome(OnDefaultDevice), dist_ret.getSome(dist), call);
+	}
+      }
+    }
+
+    /// Contract three LatticeColorvec with different momenta and displacements.
+    /// \param colorvecs: lattice color tensor on several t_slices, ctxyzXn
+    /// \param moms: momenta tensor on several t_slices, mtxyzX
+    /// \param disps: list of displacements/derivatives
+    /// \param deriv: if true, do right nabla derivatives
+    /// \param call: function to call for each combination of disps0, disps1, and disps2
+    /// \param order_out: coordinate order of the output tensor, a permutation of ijkmt where
+    ///        i, j, and k are the n index in colorvecs; and m is the momentum index
+
+    template <std::size_t Nin, typename COMPLEX>
+    void doMomDisp_colorContractions_local(
+      const std::vector<Tensor<Nd + 3, Complex>>& u, Tensor<Nin, COMPLEX> colorvec,
+      const CoorMoms& moms, Index first_tslice,
+      const std::vector<std::array<std::vector<int>, 3>>& disps, bool deriv,
+      const ColorContractionFn<COMPLEX>& call, Maybe<int> max_active_tslices = none,
+      Maybe<int> max_active_momenta = none, Maybe<int> max_cols = none,
+      const Maybe<std::string>& order_out = none, Maybe<DeviceHost> dev = none)
+    {
+      const std::string order_out_str = order_out.getSome("ijkmt");
+      detail::check_order_contains(order_out_str, "ijkmt");
+      detail::check_order_contains(colorvec.order, "cxyzXtn");
+
+      // Form a tree with the displacement paths
+      detail::PathNode tree_disps = ns_doMomDisp_colorContractions::get_tree(disps);
+
+      // Get what directions are going to be used and the maximum number of displacements in memory
+      Coor<Nd> active_dirs = get_max_disp(tree_disps);
+      Coor<Nd> counts = get_total_disps(tree_disps);
+
+      // Check that all tensors have the same number of time
+      int Nt = colorvec.kvdim()['t'];
+
+      int max_t = max_active_tslices.getSome(Nt);
+      if (max_t <= 0)
+	max_t = Nt;
+
+      int Nmom = moms.size();
+      int max_active_moms = max_active_momenta.getSome(Nmom);
+      if (max_active_moms <= 0)
+	max_active_moms = Nmom;
+
+      // Iterate over time-slices
+      for (int tfrom = 0, tsize = std::min(max_t, Nt); tfrom < Nt;
+	   tfrom += tsize, tsize = std::min(max_t, Nt - tfrom))
+      {
+	detail::log(1, "color contracting " + std::to_string(tsize) +
+			 " tslices from tslice= " + std::to_string(first_tslice + tfrom));
+
+	// Make a copy of the time-slicing of u[d] also supporting left and right
+	std::vector<Tensor<Nd + 3, COMPLEX>> ut(Nd);
+	for (unsigned int d = 0; d < Nd - 1; d++)
+	{
+	  ut[d] = u[d].kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}).make_sure(none, dev, Local);
+	}
+
+	// Get the time-slice for colorvec
+	auto this_colorvec =
+	  detail::toNaturalOrdering(colorvec.kvslice_from_size({{'t', tfrom}}, {{'t', tsize}}),
+				    first_tslice + tfrom)
+	    .make_sure(none, dev, Local);
+
+	// Loop over the momenta
+	for (int mfrom = 0, msize = std::min(max_active_moms, Nmom); mfrom < Nmom;
+	     mfrom += msize, msize = std::min(max_active_moms, Nmom - mfrom))
+	{
+	  auto this_moms =
+	    this_colorvec.template make_compatible<Nd + 1, COMPLEX>("xyzXm", {{'m', msize}});
+	  for (int m = 0; m < msize; ++m)
+	  {
+	    ns_getColorvecs::getPhaseNatural<COMPLEX>(moms[mfrom + m], this_moms.getDev(), Local)
+	      .copyTo(this_moms.kvslice_from_size({{'m', m}}, {{'m', 1}}));
+	  }
+
+	  if (tfrom + tsize >= Nt && mfrom + msize >= Nmom)
+	  {
+	    colorvec.release();
+	  }
+	  std::vector<Coor<3>> moms_list(moms.begin() + mfrom, moms.begin() + mfrom + msize);
+	  std::array<Tensor<Nin, COMPLEX>, 3> this_3_colorvec{this_colorvec, this_colorvec,
+							      this_colorvec};
+	  ns_doMomDisp_colorContractions::doMomDisp_colorContractions<COMPLEX, Nin>(
+	    ut, std::move(this_3_colorvec), first_tslice + tfrom, tree_disps, deriv, 0,
+	    {this_moms, moms_list}, mfrom, max_cols.getSome(0), order_out_str,
+	    dev.getSome(OnDefaultDevice), Local, call);
 	}
       }
     }
