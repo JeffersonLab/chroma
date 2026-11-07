@@ -873,27 +873,23 @@ namespace Chroma
     }
 
     inline std::tuple<Hadron::KeyBaryonElementalOperator_t, int>
-    get_perm_baryon_key(const Hadron::KeyBaryonElementalOperator_t& key, const SB::Coor<3>& perm)
+    get_perm_baryon_key(const Hadron::KeyBaryonElementalOperator_t& key, const SBN::Coor& perm)
     {
       // Get the new key
+      auto disps = std::array<std::vector<int>, 3>{key.left, key.middle, key.right};
       auto perm_key = key;
-      const auto& disps = std::array<std::vector<int>, 3>{key.left, key.middle, key.right};
-      auto perm_disps =
-	std::array<std::vector<int>, 3>{std::vector<int>{}, std::vector<int>{}, std::vector<int>{}};
-      for (std::size_t i = 0; i < 3; ++i)
-	perm_disps.at(i) = disps.at(perm.at(i)); // Gather, as in do_perm(origin_slots, perm).
-      perm_key.left = std::move(perm_disps.at(0));
-      perm_key.middle = std::move(perm_disps.at(1));
-      perm_key.right = std::move(perm_disps.at(2));
+      perm_key.left = std::move(disps.at(perm.at(0)));
+      perm_key.middle = std::move(disps.at(perm.at(1)));
+      perm_key.right = std::move(disps.at(perm.at(2)));
 
       // List all permutation of three elements; and the sign is the evenness of the number of single exchanges
-      const std::vector<std::pair<std::array<int, 3>, int>> perm_and_sign_list{
-	{SB::Coor<3>{0, 1, 2}, 1},  //
-	{SB::Coor<3>{0, 2, 1}, -1}, //
-	{SB::Coor<3>{1, 0, 2}, -1}, //
-	{SB::Coor<3>{1, 2, 0}, 1},  //
-	{SB::Coor<3>{2, 0, 1}, 1},  //
-	{SB::Coor<3>{2, 1, 0}, -1}  //
+      const std::vector<std::pair<SBN::Coor, int>> perm_and_sign_list{
+	{SBN::Coor{0, 1, 2}, 1},  //
+	{SBN::Coor{0, 2, 1}, -1}, //
+	{SBN::Coor{1, 0, 2}, -1}, //
+	{SBN::Coor{1, 2, 0}, 1},  //
+	{SBN::Coor{2, 0, 1}, 1},  //
+	{SBN::Coor{2, 1, 0}, -1}  //
       };
 
       // Find scalar
@@ -993,7 +989,7 @@ namespace Chroma
 	    }
 
 	    // Record missing baryon
-	    const auto& [norm_key, scalar] = get_perm_baryon_key(key, toCoor3(perms.at(i)));
+	    const auto& [norm_key, scalar] = get_perm_baryon_key(key, perms.at(i));
 	    local_missing_baryons.push_back(
 	      {norm_key, scalar, do_conj.at(i), first_local_baryon + i});
 	  }
@@ -1010,7 +1006,7 @@ namespace Chroma
 	    // If testing, also record it as a missing baryon
 	    if (testing)
 	    {
-	      const auto& [norm_key, scalar] = get_perm_baryon_key(key, toCoor3(perms.at(i)));
+	      const auto& [norm_key, scalar] = get_perm_baryon_key(key, perms.at(i));
 	      local_missing_baryons.push_back(
 		{norm_key, scalar, do_conj.at(i), first_local_baryon + i});
 	    }
