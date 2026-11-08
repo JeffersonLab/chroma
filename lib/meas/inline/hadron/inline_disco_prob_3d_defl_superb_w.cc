@@ -7,6 +7,11 @@
 #include "chroma_config.h"
 #if defined(BUILD_REDSTAR_DATALIB) && defined(BUILD_SB)
 #define USE_SUPERBBLAS
+// Keep QDP's XMLArray definitions at the Chroma boundary.
+#include <xml_array.h>
+#include <xml_array2d.h>
+#include <xml_array3d.h>
+#include <xml_array4d.h>
 #include "datalib/superb/disco_superb.h"
 #endif
 #include "inline_disco_prob_3d_defl_superb_w.h"

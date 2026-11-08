@@ -14,6 +14,11 @@
 #  define USE_SUPERBBLAS
 #  define USE_SUPERBBLAS_WITH_GPU_SUPPORT
 
+// Keep QDP's XMLArray definitions at the Chroma boundary.
+#include <xml_array.h>
+#include <xml_array2d.h>
+#include <xml_array3d.h>
+#include <xml_array4d.h>
 #include "datalib/superb/superb_contractions.h"
 #include "datalib/storage/corr_output.h"
 #include "datalib/superb/baryon_superb.h"
