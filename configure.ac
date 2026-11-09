@@ -1404,6 +1404,7 @@ AM_CONDITIONAL(BUILD_SB,
 # redstar-datalib 
 ################################################################################
 
+AS_IF([test "x$DATALIB_PREFIX" = xno],[AC_MSG_ERROR([--with-datalib=DIR is required for Chroma FILEDB support])])
 AS_IF([test "x$DATALIB_PREFIX" != xno], [
   DATALIB_CONFIG="$DATALIB_PREFIX/bin/datalib-config"
   AS_IF([test ! -x "$DATALIB_CONFIG"], [AC_MSG_ERROR([datalib-config is required])])

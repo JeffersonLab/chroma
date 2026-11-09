@@ -2211,3 +2211,5 @@ if BUILD_GTEST
 nobase_include_HEADERS += gtest/gtest.h
 libchroma_a_SOURCES += gtest/gtest-all.cc
 endif
+
+nobase_include_HEADERS += util/ferm/filedb_qdp.h

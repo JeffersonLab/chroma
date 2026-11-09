@@ -7,7 +7,7 @@
 #define __key_val_db_h__
 
 #include "chromabase.h"
-#include "qdp_db.h"
+#include "util/ferm/filedb_qdp.h"
 
 namespace Chroma
 {
