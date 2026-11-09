@@ -73,20 +73,6 @@ namespace Chroma {
     readArray(paramtop, "SmootherSchwarzCycle", smootherSchwarzCycle, 1);
 
     read(paramtop, "NullVectors", nvec);
-    read(paramtop, "Pre-SmootherApplications", nu_pre);
-    read(paramtop, "Post-SmootherApplications", nu_post);
-    if (nvec.size() != mg_levels-1 ) {
- 
-      QDPIO::cout<<"Warning. There are "<< blocking.size() 
-		 << " blockings but only " << nvec.size() << " sets of NullVectors" << std::endl;
-      QDP_abort(1);
-    }
-    if (nu_pre.size() != mg_levels-1 ) {
- 
-      QDPIO::cout<<"Error. There are "<< (mg_levels-1)  
-		 << " blockings but only " << nu_pre.size() << " sets pre-smoothing iterations" << std::endl;
-      QDP_abort(1);
-    }
 
 		{
 			int paramcount = paramtop.count("NullVectorsBatchSize");
@@ -109,7 +95,39 @@ namespace Chroma {
 				nvec_batch.resize(mg_levels-1);
 				for( int i=0; i < mg_levels-1; i++) nvec_batch[i] = 1;
 			}	
-		}	
+		}
+	
+		{
+			int paramcount = paramtop.count("MatrixAccelerateCoarse");
+			if( paramcount == 1 ) {
+				read(paramtop, "MatrixAccelerateCoarse", matrix_accelerate_coarse);
+				if( matrix_accelerate_coarse.size() != mg_levels - 1 ) {
+					QDPIO::cout << "MatrixAccelerateCoarse, if given, needs to be of size mg_levels -1 "
+											<< "since it applies only to coarse levels\n";
+					QDP_abort(1);
+				}
+			}
+			else {
+				matrix_accelerate_coarse.resize(mg_levels-1);
+				for(int i=0; i < mg_levels-1; i++) matrix_accelerate_coarse[i] = false;
+			}
+		}
+
+
+    read(paramtop, "Pre-SmootherApplications", nu_pre);
+    read(paramtop, "Post-SmootherApplications", nu_post);
+    if (nvec.size() != mg_levels-1 ) {
+ 
+      QDPIO::cout<<"Warning. There are "<< blocking.size() 
+		 << " blockings but only " << nvec.size() << " sets of NullVectors" << std::endl;
+      QDP_abort(1);
+    }
+    if (nu_pre.size() != mg_levels-1 ) {
+ 
+      QDPIO::cout<<"Error. There are "<< (mg_levels-1)  
+		 << " blockings but only " << nu_pre.size() << " sets pre-smoothing iterations" << std::endl;
+      QDP_abort(1);
+    }
 
 
 
@@ -280,6 +298,7 @@ namespace Chroma {
     write(xml, "SchwarzType", p.schwarzType);
     write(xml, "NullVectors", p.nvec);
 		write(xml, "NullVectorsBatchSize", p.nvec_batch);
+		write(xml, "MatrixAccelerateCoarse", p.matrix_accelerate_coarse);
     write(xml, "MultiGridLevels", p.mg_levels);
     write(xml, "GenerateNullSpace", p.generate_nullspace);
     write(xml, "GenerateAllLevels", p.generate_all_levels);
