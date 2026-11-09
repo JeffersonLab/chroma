@@ -2029,6 +2029,7 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_inverter_test_superb_w.cc
      meas/inline/hadron/inline_corr_superb_w.cc
   )
+  target_compile_definitions(chromalib PUBLIC USE_SUPERBBLAS USE_SUPERBBLAS_WITH_GPU_SUPPORT)
   target_include_directories(chromalib PUBLIC ${SUPERBBLAS_DIR}/include)
   add_library(superbblas STATIC IMPORTED )
   set_target_properties( superbblas PROPERTIES IMPORTED_LOCATION ${SUPERBBLAS_DIR}/lib/libsuperbblas.a )

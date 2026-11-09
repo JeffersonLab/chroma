@@ -1404,6 +1404,12 @@ AM_CONDITIONAL(BUILD_SB,
 # redstar-datalib 
 ################################################################################
 
+dnl Export the same storage layout to clients that include datalib directly.
+DATALIB_PROFILE_CXXFLAGS=
+AS_IF([test "x${with_superbblas}" != xno],
+  [DATALIB_PROFILE_CXXFLAGS="-DUSE_SUPERBBLAS -DUSE_SUPERBBLAS_WITH_GPU_SUPPORT"])
+AC_SUBST([DATALIB_PROFILE_CXXFLAGS])
+
 AS_IF([test "x$DATALIB_PREFIX" = xno],[AC_MSG_ERROR([--with-datalib=DIR is required for Chroma storage support])])
 AS_IF([test "x$DATALIB_PREFIX" != xno], [
   DATALIB_CONFIG="$DATALIB_PREFIX/bin/datalib-config"
