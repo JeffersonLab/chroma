@@ -15,7 +15,8 @@
 #include "meas/inline/make_xml_file.h"
 #include "qdp_stdio.h"
 #include "util/ferm/key_prop_colorvec.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/disco_superb.h>
 #include "util/ferm/map_obj/map_obj_aggregate_w.h"
 #include "util/ferm/map_obj/map_obj_factory_w.h"
 #include "util/ferm/mgproton.h"
@@ -872,7 +873,7 @@ namespace Chroma
       if (Layout::nodeNumber() == 0)
       {
 	// DB storage
-	LocalBinaryStoreDB<LocalSerialDBKey<KeyOperator_t>, LocalSerialDBData<ValOperator_t>>
+	Datalib::TensorStorage::StorageDisco
 	  qdp_db;
 
 	// Open the file, and write the meta-data and the binary for this operator
@@ -890,14 +891,14 @@ namespace Chroma
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size());
+	{ qdp_db.record_options().metadata_capacity = file_str.size(); }
 
 	//Slightly modify code to account for changes from multifile write.
 	//Be consistent with old mode of filename write.
 	std::string file_name = params.named_obj.sdb_file;
-	qdp_db.open(file_name, O_RDWR | O_CREAT, 0664);
+	{ if (qdp_db.open_records(file_name, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	qdp_db.insertUserdata(file_str);
+	{ if (qdp_db.write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
 
 	KeyOperator_t key;
 	ValOperator_t val;
@@ -910,9 +911,9 @@ namespace Chroma
 	  key.mass_label = params.param.mass_label;
 	  for (int i = 0; i < Ns * Ns; i++)
 	    val.set({i}, it.second[i]);
-	  qdp_db.insert(key, val);
+	  { if (qdp_db.put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
 	}
-	qdp_db.close();
+	{ if (qdp_db.close_records() != 0) QDP_error_exit("record storage close failed"); }
       }
 
       pop(xml_out); // close last tag

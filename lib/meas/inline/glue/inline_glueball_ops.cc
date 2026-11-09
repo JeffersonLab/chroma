@@ -12,7 +12,8 @@
 #include "meas/glue/mesplq.h"
 #include "meas/glue/mesfield.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/glueball_superb.h>
 #include "util/gauge/key_glue_matelem.h"
 #include "util/gauge/taproj.h"
 #include "util/ft/sftmom.h"
@@ -411,11 +412,16 @@ namespace Chroma
       //
       // DB storage
       //
-      BinaryStoreDB< SerialDBKey<KeyGlueElementalOperator_t>, SerialDBData<ValGlueElementalOperator_t> > 
+      Datalib::TensorStorage::StorageGlue
 	qdp_db;
+      qdp_db.record_options().cache_bytes = 50*1024*1024;
+      qdp_db.record_options().configurations = 1;
 
       // Open the file, and write the meta-data and the binary for this operator
-      if (! qdp_db.fileExists(params.named_obj.glue_op_file))
+      bool record_file_exists_1 = false;
+      if (Layout::primaryNode()) record_file_exists_1 = Datalib::TensorStorage::StorageRecords::record_file_exists(params.named_obj.glue_op_file);
+      QDPInternal::broadcast(record_file_exists_1);
+      if (!record_file_exists_1)
       {
 	XMLBufferWriter file_xml;
 
@@ -436,15 +442,15 @@ namespace Chroma
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size());
+	{ if (Layout::primaryNode()) qdp_db.record_options().metadata_capacity = file_str.size(); }
 
-	qdp_db.open(params.named_obj.glue_op_file, O_RDWR | O_CREAT, 0664);
+	{ if (Layout::primaryNode() && qdp_db.open_records(params.named_obj.glue_op_file, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	qdp_db.insertUserdata(file_str);
+	{ if (Layout::primaryNode() && qdp_db.write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
       }
       else
       {
-	qdp_db.open(params.named_obj.glue_op_file, O_RDWR, 0664);
+	{ if (Layout::primaryNode() && qdp_db.open_records(params.named_obj.glue_op_file, O_RDWR, 0664) != 0) QDP_error_exit("record storage open failed"); }
       }
 
 
@@ -506,18 +512,18 @@ namespace Chroma
 
 	      for(int t=0; t < phases.numSubsets(); ++t)
 	      {
-		buf.key.key().t_slice       = t;
-		buf.key.key().mom           = phases.numToMom(mom_num);
-		buf.key.key().left          = i + 1;
-		buf.key.key().right         = j + 1;
-		buf.key.key().displacement  = disp;
+		buf.key.t_slice       = t;
+		buf.key.mom           = phases.numToMom(mom_num);
+		buf.key.left          = i + 1;
+		buf.key.right         = j + 1;
+		buf.key.displacement  = disp;
 
 		// Should not be a phase
-		buf.val.data().op.resize(1);
-		buf.val.data().op(0) = op_sum[t];
+		buf.val.op.resize(1);
+		buf.val.op(0) = op_sum[t];
 
 //		QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << std::endl; 
-		qdp_db.insert(buf.key, buf.val);
+		{ if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(buf.key), encodeStorageRecord(buf.val)) != 0) QDP_error_exit("record storage insert failed"); }
 
 	      } // end for t
 	    } // end for i

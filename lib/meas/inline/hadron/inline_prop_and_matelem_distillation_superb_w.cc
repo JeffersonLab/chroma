@@ -18,7 +18,8 @@
 #include "util/ferm/key_prop_distillation.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_prop_matelem.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/prop_superb.h>
 #include "util/ferm/transf.h"
 #include "util/ferm/spin_rep.h"
 #include "util/ferm/diractodr.h"
@@ -421,8 +422,7 @@ namespace Chroma
       //
       // DB storage
       //
-      std::vector<BinaryStoreDB<SerialDBKey<KeyPropElementalOperator_t>,
-				SerialDBData<ValPropElementalOperator_t>>>
+      std::vector<Datalib::TensorStorage::StorageProp4>
 	qdp_db{};
       SB::StorageTensor<8, SB::ComplexD> st;
 
@@ -430,7 +430,12 @@ namespace Chroma
       if (!params.param.contract.use_superb_format)
       {
 	qdp_db.resize(1);
-	if (!qdp_db[0].fileExists(params.named_obj.prop_op_file))
+        qdp_db[0].record_options().cache_bytes = 50*1024*1024;
+        qdp_db[0].record_options().configurations = 1;
+	bool record_file_exists_1 = false;
+      if (Layout::primaryNode()) record_file_exists_1 = Datalib::TensorStorage::StorageRecords::record_file_exists(params.named_obj.prop_op_file);
+      QDPInternal::broadcast(record_file_exists_1);
+      if (!record_file_exists_1)
 	{
 	  XMLBufferWriter file_xml;
 	  push(file_xml, "DBMetaData");
@@ -443,15 +448,15 @@ namespace Chroma
 	  pop(file_xml);
 
 	  std::string file_str(file_xml.str());
-	  qdp_db[0].setMaxUserInfoLen(file_str.size());
+	  { if (Layout::primaryNode()) qdp_db[0].record_options().metadata_capacity = file_str.size(); }
 
-	  qdp_db[0].open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
+	  { if (Layout::primaryNode() && qdp_db[0].open_records(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	  qdp_db[0].insertUserdata(file_str);
+	  { if (Layout::primaryNode() && qdp_db[0].write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
 	}
 	else
 	{
-	  qdp_db[0].open(params.named_obj.prop_op_file, O_RDWR, 0664);
+	  { if (Layout::primaryNode() && qdp_db[0].open_records(params.named_obj.prop_op_file, O_RDWR, 0664) != 0) QDP_error_exit("record storage open failed"); }
 	}
       }
       else
@@ -616,7 +621,7 @@ namespace Chroma
 			  }
 			}
 		      }
-		      qdp_db[0].insert(key, val);
+		      { if (Layout::primaryNode() && qdp_db[0].put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
 		    }
 		  }
 		}

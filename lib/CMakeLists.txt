@@ -854,7 +854,7 @@ list(APPEND ChromaLIB_HEADERS
 	util/ferm/key_timeslice_colorvec.h
 	util/ferm/key_prop_distillation.h
 	util/ferm/key_prop_distillution.h
-	util/ferm/key_val_db.h
+	util/ferm/storage_io.h
 	util/ferm/crc48.h
 	util/ferm/distillution_noise.h
 	util/ferm/spin_rep.h

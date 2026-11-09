@@ -18,7 +18,8 @@
 #include "util/ferm/key_timeslice_colorvec.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_prop_matelem.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/prop_superb.h>
 #include "util/ferm/transf.h"
 #include "util/ferm/spin_rep.h"
 #include "util/ferm/diractodr.h"
@@ -662,10 +663,15 @@ namespace Chroma
       //
       // DB storage
       //
-      BinaryStoreDB< SerialDBKey<KeyPropElementalOperator_t>, SerialDBData<ValPropElementalOperator_t> > qdp_db;
+      Datalib::TensorStorage::StorageProp4 qdp_db;
+      qdp_db.record_options().cache_bytes = 50*1024*1024;
+      qdp_db.record_options().configurations = 1;
 
       // Open the file, and write the meta-data and the binary for this operator
-      if (! qdp_db.fileExists(params.named_obj.prop_op_file))
+      bool record_file_exists_1 = false;
+      if (Layout::primaryNode()) record_file_exists_1 = Datalib::TensorStorage::StorageRecords::record_file_exists(params.named_obj.prop_op_file);
+      QDPInternal::broadcast(record_file_exists_1);
+      if (!record_file_exists_1)
       {
 	XMLBufferWriter file_xml;
 
@@ -680,15 +686,15 @@ namespace Chroma
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size());
+	{ if (Layout::primaryNode()) qdp_db.record_options().metadata_capacity = file_str.size(); }
 
-	qdp_db.open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
+	{ if (Layout::primaryNode() && qdp_db.open_records(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	qdp_db.insertUserdata(file_str);
+	{ if (Layout::primaryNode() && qdp_db.write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
       }
       else
       {
-	qdp_db.open(params.named_obj.prop_op_file, O_RDWR, 0664);
+	{ if (Layout::primaryNode() && qdp_db.open_records(params.named_obj.prop_op_file, O_RDWR, 0664) != 0) QDP_error_exit("record storage open failed"); }
       }
 
       QDPIO::cout << "Finished opening peram file" << std::endl;
@@ -873,7 +879,7 @@ namespace Chroma
 		  } // for colorvec_sink
 		  
 		  // write out
-		  qdp_db.insert(*key, tmp);
+		  { if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(*key), encodeStorageRecord(tmp)) != 0) QDP_error_exit("record storage insert failed"); }
 
 		} // for key
 	      } // for t_slice
@@ -898,7 +904,7 @@ namespace Chroma
 		++key)
 	    {
 	      // Insert/write to disk
-	      qdp_db.insert(*key, peram[*key]);
+	      { if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(*key), encodeStorageRecord(peram[*key])) != 0) QDP_error_exit("record storage insert failed"); }
 	    } // for key
 #endif
 	    

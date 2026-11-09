@@ -9511,7 +9511,7 @@ namespace Chroma
     typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, Tensor<Nd, ComplexF>> MOD_t;
     typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, Tensor<Nd, ComplexD>> MODS_D_t;
 
-    // Represent either FILEDB or S3T handle for file containing distillation vectors
+    // Represent either MOD or S3T handle for file containing distillation vectors
 
     struct ColorvecsStorage {
       std::shared_ptr<MODS_t> mod;
@@ -10028,7 +10028,7 @@ namespace Chroma
       }
 #  endif // BUILD_PRIMME
 
-      /// Read colorvecs from a FILEDB
+      /// Read colorvecs from a MOD
       /// \param eigen_source: database handle
       /// \param decay_dir: something we assume is always three
       /// \param from_tslice: first tslice to read
@@ -10249,7 +10249,7 @@ namespace Chroma
       }
     }
 
-    /// Read colorvecs from either a FILEDB or S3T file
+    /// Read colorvecs from either a MOD or S3T file
     /// \param colorvec_files: filenames
     /// \return: a handle
 
@@ -10436,7 +10436,7 @@ namespace Chroma
     /// \param from_tslice: first tslice to read
     /// \param n_tslices: number of tslices to read
     /// \param n_colorvecs: number of eigenpairs to read
-    /// \param use_s3t_storage: if true S3T is used, otherwise FILEDB
+    /// \param use_s3t_storage: if true S3T is used, otherwise MOD
     /// \param fingerprint: whether to store only a few sites of each colorvecs
     /// \param phase: apply a phase to the eigenvectors
     /// \param colorvec_file_src: if given, read the colorvecs from that file and if they

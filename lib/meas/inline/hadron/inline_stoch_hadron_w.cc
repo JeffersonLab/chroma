@@ -28,7 +28,9 @@
 
 #include "meas/inline/io/named_objmap.h"
 
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/baryon_superb.h>
+#include <datalib/superb/meson_superb.h>
 
 namespace Chroma{ 
   namespace InlineStochHadronEnv{ 
@@ -854,32 +856,33 @@ namespace Chroma{
 	for(it=LocalMesonOps.begin();it!=LocalMesonOps.end();it++){
 	  MesonOp op = it->second ;
 	  // DB storage
-	  //BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<HadronOperator > > 
-	  BinaryStoreDB< SerialDBKey<HadronKey>, SerialDBData<MesonOpData > > qdp_db;
-	  qdp_db.setMaxUserInfoLen(UserData_xml.str().size());
-	  qdp_db.open(op.file, O_RDWR | O_CREAT, 0664);
-	  qdp_db.insertUserdata(UserData_xml.str());
+	  Datalib::TensorStorage::StorageMeson qdp_db;
+      qdp_db.record_options().cache_bytes = 50*1024*1024;
+      qdp_db.record_options().configurations = 1;
+	  { if (Layout::primaryNode()) qdp_db.record_options().metadata_capacity = UserData_xml.str().size(); }
+	  { if (Layout::primaryNode() && qdp_db.open_records(op.file, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
+	  { if (Layout::primaryNode() && qdp_db.write_metadata(UserData_xml.str()) != 0) QDP_error_exit("record storage insertUserdata failed"); }
 
-	  SerialDBKey<HadronKey> key ;
+	  HadronKey key ;
 	  //HadronKey key ;
-	  key.key().gamma = op.g ;
+	  key.gamma = op.g ;
 	  // loop over the momentum projection
 	  for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num){
-	    key.key().p = phases.numToMom(mom_num);
+	    key.p = phases.numToMom(mom_num);
 	    for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
-	      key.key().t0 = participating_timeslices[t0] ;
-	      key.key().t = key.key().t0 ; // creation ops leave on one time slice only
-	      key.key().qn.resize(2);
+	      key.t0 = participating_timeslices[t0] ;
+	      key.t = key.t0 ; // creation ops leave on one time slice only
+	      key.qn.resize(2);
 	      //first do the sources
-	      key.key().type = MESON_SRC_SRC ;
+	      key.type = MESON_SRC_SRC ;
 	      QDPIO::cout<<"   Doing MESON_SRC_SRC"<<std::endl ;
 	      for(int q(0);q< quarks.size() ;q++){
-		key.key().qn[0]=q;
+		key.qn[0]=q;
 		for(int q1(0);q1< quarks.size() ;q1++)
 		  if(q!=q1){
-		    key.key().qn[1] = q1 ;
-		    SerialDBData<MesonOpData > val ;
-		    val.data().resize(quarks[q]->getDilSize(t0));
+		    key.qn[1] = q1 ;
+		    MesonOpData  val ;
+		    val.resize(quarks[q]->getDilSize(t0));
 		    //SerialDBData< HadronOperator > val ;
 		    QDPIO::cout<<"   quarks: "<<q<<" "<<q1 <<std::endl ;
 		    for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
@@ -893,29 +896,29 @@ namespace Chroma{
 			LatticeFermion quark = src[q1][t0][d1];
 			DComplex cc ;
 			//meson(cc,op.g,phases[mom_num],quark_bar,quark,   
-			//      phases.getSet()[key.key().t]);
+			//      phases.getSet()[key.t]);
 			//if(toBool(real(cc)!=0.0) && toBool(imag(cc)!=0.0))
-			//  val.data().data[Key(d,d1)] = cc ;
-			meson(val.data().data(d,d1),op.g,phases[mom_num],
-			      quark_bar,quark, phases.getSet()[key.key().t]);
+			//  val.data[Key(d,d1)] = cc ;
+			meson(val.data(d,d1),op.g,phases[mom_num],
+			      quark_bar,quark, phases.getSet()[key.t]);
 		      }// dilutions d
 		    }// dilutions d1
-		    qdp_db.insert(key, val);
+		    { if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
 		  } // quark 2
 	      } // quark 1 
 	      
-	      key.key().type = MESON_SOL_SOL ;
+	      key.type = MESON_SOL_SOL ;
 	      QDPIO::cout<<"   Doing MESON_SOL_SOL"<<std::endl ;
 	      for(int q(0);q< quarks.size() ;q++){
-		key.key().qn[0]=q;
+		key.qn[0]=q;
 		for(int q1(q+1);q1< quarks.size() ;q1++){
-		  key.key().qn[1] = q1 ;
+		  key.qn[1] = q1 ;
 		  QDPIO::cout<<"   quarks: "<<q<<" "<<q1<<std::endl ;
-		  SerialDBData<MesonOpData > val ;
-		  val.data().resize(quarks[q]->getDilSize(t0));
+		  MesonOpData  val ;
+		  val.resize(quarks[q]->getDilSize(t0));
 		  //SerialDBData< HadronOperator > val ;
 		  for(int t(0);t<phases.numSubsets();t++){
-		    key.key().t = t ;
+		    key.t = t ;
 		    for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
 		      LatticeFermion quark_bar = smearedSol[q][t0][d] ;
 		      quark_bar = Gamma(Ns-1)*quark_bar ;
@@ -923,34 +926,34 @@ namespace Chroma{
 			//QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
 			//QDPIO::cout<<" dilution: "<<d<<" "<<d1<<std::endl ;
 			LatticeFermion quark =  smearedSol[q1][t0][d1] ;
-			meson(val.data().data(d,d1),op.g,phases[mom_num],
-			      quark_bar,quark, phases.getSet()[key.key().t]);
+			meson(val.data(d,d1),op.g,phases[mom_num],
+			      quark_bar,quark, phases.getSet()[key.t]);
 			//DComplex cc ;
 			//meson(cc,op.g,phases[mom_num],quark_bar,quark,
-			//      phases.getSet()[key.key().t]);
+			//      phases.getSet()[key.t]);
 			//if(toBool(real(cc)!=0.0)&&toBool(imag(cc)!=0.0))
-			//  val.data().data[Key(d,d1)] = cc ;
+			//  val.data[Key(d,d1)] = cc ;
 		      }// dilutions d
 		    }// dilutions d1
-		    qdp_db.insert(key, val);
+		    { if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
 		  } // loop over time
 		} // quark 2
 	      } // quark 1 
 	      
 
-	      key.key().type = MESON_SRC_SOL ;
+	      key.type = MESON_SRC_SOL ;
 	      QDPIO::cout<<"   Doing MESON_SRC_SOL"<<std::endl  ;
               for(int q(0);q< quarks.size() ;q++){
-                key.key().qn[0]=q;
+                key.qn[0]=q;
                 for(int q1(0);q1< quarks.size() ;q1++){
-                  key.key().qn[1] = q1 ;
+                  key.qn[1] = q1 ;
 		  QDPIO::cout<<"   quarks: "<<q<<" "<<q1<<std::endl ;
-		  SerialDBData<MesonOpData > val ;
-                  val.data().resize(quarks[q]->getDilSize(t0));
+		  MesonOpData  val ;
+                  val.resize(quarks[q]->getDilSize(t0));
 		  //SerialDBData< HadronOperator > val ;
 		  for (int tt = 0 ; tt < participating_timeslices.size() ; ++tt){
 		    int t = participating_timeslices[tt] ;
-		    key.key().t = t ;
+		    key.t = t ;
 		    for ( int d(0) ; d < quarks[q]->getDilSize(tt); d++){
 		      //LatticeFermion quark_bar = quarks[q]->dilutedSource(tt,d);
 		      LatticeFermion quark_bar = src[q][tt][d] ;
@@ -959,13 +962,13 @@ namespace Chroma{
 			//QDPIO::cout<<" dilution: "<<d<<" "<<d1<<std::endl ;
 			LatticeFermion quark =  smearedSol[q1][t0][d1] ;
 			//DComplex cc ;
-			meson(val.data().data(d,d1),op.g,phases[mom_num],quark_bar,quark,
-			      phases.getSet()[key.key().t]);
+			meson(val.data(d,d1),op.g,phases[mom_num],quark_bar,quark,
+			      phases.getSet()[key.t]);
 			//if(toBool(real(cc)!=0.0)&&toBool(imag(cc)!=0.0))
-			//val.data().data[Key(d,d1)] = cc ;
+			//val.data[Key(d,d1)] = cc ;
 		      }// dilutions d1                                   
 		    }// dilutions d                                        
-		    qdp_db.insert(key, val);
+		    { if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
 		  } // loop over time                                              
 		} // quark 2                                                             
 	      } // quark 1          
@@ -980,36 +983,38 @@ namespace Chroma{
 	std::map<std::string, BaryonOp>::iterator it ;
 	for(it=LocalBaryonOps.begin();it!=LocalBaryonOps.end();it++){
 	  BaryonOp op = it->second ;
-	  BinaryStoreDB< SerialDBKey<HadronKey>, SerialDBData<BaryonOpData > > qdp_db;
-	  qdp_db.setMaxUserInfoLen(UserData_xml.str().size());
-	  qdp_db.open(op.file, O_RDWR | O_CREAT, 0664);
-	  qdp_db.insertUserdata(UserData_xml.str());
+	  Datalib::TensorStorage::StorageBaryon qdp_db;
+      qdp_db.record_options().cache_bytes = 50*1024*1024;
+      qdp_db.record_options().configurations = 1;
+	  { if (Layout::primaryNode()) qdp_db.record_options().metadata_capacity = UserData_xml.str().size(); }
+	  { if (Layout::primaryNode() && qdp_db.open_records(op.file, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
+	  { if (Layout::primaryNode() && qdp_db.write_metadata(UserData_xml.str()) != 0) QDP_error_exit("record storage insertUserdata failed"); }
 
-	  SerialDBKey<HadronKey> key ;
+	  HadronKey key ;
 	  //HadronKey key ;
-	  key.key().gamma = op.g ;
+	  key.gamma = op.g ;
 	  // loop over the momentum projection
 	  for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num){
-	    key.key().p = phases.numToMom(mom_num);
+	    key.p = phases.numToMom(mom_num);
 	    for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
-	      key.key().t0 = participating_timeslices[t0] ;
-	      key.key().t = key.key().t0 ; // creation ops leave on one time slice only
-	      key.key().qn.resize(3);
+	      key.t0 = participating_timeslices[t0] ;
+	      key.t = key.t0 ; // creation ops leave on one time slice only
+	      key.qn.resize(3);
 	      //first do the sources
-	      key.key().type = BARYON_SRC ;
+	      key.type = BARYON_SRC ;
 	      QDPIO::cout<<"   Doing BARYON_SRC "<<std::endl ;
 	      for(int q0(0);q0< quarks.size() ;q0++){
-		key.key().qn[0]=q0;
+		key.qn[0]=q0;
 		for(int q1(0);q1< quarks.size() ;q1++)
 		  if(q0!=q1){
-		    key.key().qn[1]=q1;
+		    key.qn[1]=q1;
 		    for(int q2(0);q2< quarks.size() ;q2++)
 		      if((q1!=q2)&&(q0!=q2)){		    
-			key.key().qn[2] = q2 ;
+			key.qn[2] = q2 ;
 			QDPIO::cout<<"   quarks: "<<q0<<" "<<q1<<" "<<q2<<std::endl ;
 			//SerialDBData< HadronOperator > val ;
-			SerialDBData< BaryonOpData > val ;
-			val.data().resize(quarks[q0]->getDilSize(t0));
+			 BaryonOpData  val ;
+			val.resize(quarks[q0]->getDilSize(t0));
 			for ( int d0(0) ; d0 < quarks[q0]->getDilSize(t0); d0++){
 			  //LatticeFermion quark0 = quarks[q0]->dilutedSource(t0,d0);
 			  LatticeFermion quark0 = src[q0][t0][d0];
@@ -1023,35 +1028,35 @@ namespace Chroma{
 			      LatticeFermion quark2 = src[q2][t0][d2];
 			      multi1d<DComplex> cc ;
 			      baryon(cc,op.g,phases[mom_num],quark0,quark1,quark2,   
-				     phases.getSet()[key.key().t]);
-			      val.data().data(d0,d1,d2) = cc ;
+				     phases.getSet()[key.t]);
+			      val.data(d0,d1,d2) = cc ;
 			      //for(int s(0);s<Ns;s++)
 			      //if(toBool(real(cc[s])!=0.0) && toBool(imag(cc[s])!=0.0))
-			      //  val.data().data[Key(d0,d1,d2,s)] = cc[s] ;
+			      //  val.data[Key(d0,d1,d2,s)] = cc[s] ;
 			    }// dilutions d2
 			  }//dilutions d1
 			}// dilutions d0
-			qdp_db.insert(key, val);
+			{ if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
 		      } // quark 2
 		  } // quark 1 
 	      } // quark 0 
 
 	      
 	      // Then next block needs work
-	      key.key().type = BARYON_SOL ;
+	      key.type = BARYON_SOL ;
 	      QDPIO::cout<<"   Doing BARYON_SOL "<<std::endl ;
 	      for(int q0(0);q0< quarks.size() ;q0++){
-		key.key().qn[0]=q0;
+		key.qn[0]=q0;
 		for(int q1(q0+1);q1< quarks.size() ;q1++){
-		  key.key().qn[1] = q1 ;
+		  key.qn[1] = q1 ;
 		  for(int q2(q1+1);q2< quarks.size() ;q2++){
-		    key.key().qn[2] = q2 ;
+		    key.qn[2] = q2 ;
 		    QDPIO::cout<<"   quarks: "<<q0<<" "<<q1<<" "<<q2 <<std::endl ;
 		    //SerialDBData< HadronOperator > val ;
-		    SerialDBData< BaryonOpData > val ;
-		    val.data().resize(quarks[q0]->getDilSize(t0));
+		     BaryonOpData  val ;
+		    val.resize(quarks[q0]->getDilSize(t0));
 		    for(int t(0);t<phases.numSubsets();t++){
-		      key.key().t = t ;
+		      key.t = t ;
 		      for ( int d0(0) ; d0 < quarks[q0]->getDilSize(t0); d0++){
 			LatticeFermion quark0 = smearedSol[q0][t0][d0] ;
 			for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
@@ -1063,15 +1068,15 @@ namespace Chroma{
 			    
 			    multi1d<DComplex> cc ;
 			    baryon(cc,op.g,phases[mom_num],quark0,quark1,quark2,
-				   phases.getSet()[key.key().t]);
-			    val.data().data(d0,d1,d2) = cc ;
+				   phases.getSet()[key.t]);
+			    val.data(d0,d1,d2) = cc ;
 			    //for(int s(0);s<Ns;s++)
 			    //  if(toBool(real(cc[s])!=0.0) && toBool(imag(cc[s])!=0.0))
-			    //  val.data().data[Key(d0,d1,d2,s)] = cc[s] ;
+			    //  val.data[Key(d0,d1,d2,s)] = cc[s] ;
 			  }// dilutions d0
 			}// dilutions d1
 		      }//dilutions d2
-		      qdp_db.insert(key, val);
+		      { if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
 		    } // loop over time
 		  } // quark 2
 		} // quark 1 

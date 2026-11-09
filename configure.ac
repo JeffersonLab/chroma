@@ -1404,15 +1404,15 @@ AM_CONDITIONAL(BUILD_SB,
 # redstar-datalib 
 ################################################################################
 
-AS_IF([test "x$DATALIB_PREFIX" = xno],[AC_MSG_ERROR([--with-datalib=DIR is required for Chroma FILEDB support])])
+AS_IF([test "x$DATALIB_PREFIX" = xno],[AC_MSG_ERROR([--with-datalib=DIR is required for Chroma storage support])])
 AS_IF([test "x$DATALIB_PREFIX" != xno], [
   DATALIB_CONFIG="$DATALIB_PREFIX/bin/datalib-config"
   AS_IF([test ! -x "$DATALIB_CONFIG"], [AC_MSG_ERROR([datalib-config is required])])
   REDSTAR_DATALIB_CXXFLAGS=`"$DATALIB_CONFIG" --cxxflags`
-  REDSTAR_DATALIB_CXXFLAGS="$REDSTAR_DATALIB_CXXFLAGS `"$DATALIB_CONFIG" --filedb-cxxflags`" ||
-    AC_MSG_ERROR([CORR_SUPERB requires datalib's FILEDB component])
-  REDSTAR_DATALIB_LDFLAGS="`"$DATALIB_CONFIG" --ldflags` `"$DATALIB_CONFIG" --filedb-ldflags`"
-  REDSTAR_DATALIB_LIBS="`"$DATALIB_CONFIG" --libs` `"$DATALIB_CONFIG" --filedb-libs`"
+  REDSTAR_DATALIB_CXXFLAGS="$REDSTAR_DATALIB_CXXFLAGS `"$DATALIB_CONFIG" --storage-cxxflags`" ||
+    AC_MSG_ERROR([CORR_SUPERB requires datalib's storage component])
+  REDSTAR_DATALIB_LDFLAGS="`"$DATALIB_CONFIG" --ldflags` `"$DATALIB_CONFIG" --storage-ldflags`"
+  REDSTAR_DATALIB_LIBS="`"$DATALIB_CONFIG" --libs` `"$DATALIB_CONFIG" --storage-libs`"
   dnl The auxiliary programs also link libchroma and need its static dependencies.
   LDFLAGS="$LDFLAGS $REDSTAR_DATALIB_LDFLAGS"
   LIBS="$REDSTAR_DATALIB_LIBS $LIBS"

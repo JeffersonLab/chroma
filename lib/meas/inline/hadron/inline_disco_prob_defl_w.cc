@@ -19,7 +19,8 @@
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "meas/inline/make_xml_file.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/disco_superb.h>
 #include "meas/inline/io/named_objmap.h"
 #include "meas/hadron/greedy_coloring.h"
 
@@ -242,8 +243,8 @@ namespace Chroma
     }
     
     struct KeyVal_t{
-      SerialDBKey <KeyOperator_t> k ;
-      SerialDBData<ValOperator_t> v ;
+      KeyOperator_t k ;
+      ValOperator_t v ;
     };
 
     //! KeyOperator reader    
@@ -799,7 +800,7 @@ namespace Chroma
       if (Layout::nodeNumber() == 0)
       {
 	// DB storage
-	LocalBinaryStoreDB<LocalSerialDBKey<KeyOperator_t>, LocalSerialDBData<ValOperator_t>>
+	Datalib::TensorStorage::StorageDisco
 	  qdp_db;
 
 	// Open the file, and write the meta-data and the binary for this operator
@@ -814,30 +815,30 @@ namespace Chroma
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size());
+	{ qdp_db.record_options().metadata_capacity = file_str.size(); }
 
 	//Slightly modify code to account for changes from multifile write.
 	//Be consistent with old mode of filename write.
 	std::string file_name = params.named_obj.sdb_file;
-	qdp_db.open(file_name, O_RDWR | O_CREAT, 0664);
+	{ if (qdp_db.open_records(file_name, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	qdp_db.insertUserdata(file_str);
+	{ if (qdp_db.write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
 
-	LocalSerialDBKey<KeyOperator_t> key;
-	LocalSerialDBData<ValOperator_t> val;
+	KeyOperator_t key;
+	ValOperator_t val;
 	std::map<KeyOperator_t, ValOperator_t>::iterator it;
 	// Store all the data
 	for (it = dbmean.begin(); it != dbmean.end(); it++)
 	{
-	  key.key() = it->first;
-	  key.key().mass_label = params.param.mass_label;
-	  val.data().op.resize(it->second.op.size());
+	  key = it->first;
+	  key.mass_label = params.param.mass_label;
+	  val.op.resize(it->second.op.size());
 	  for (int i(0); i < it->second.op.size(); i++)
-	    val.data().op[i] = it->second.op[i];
-	  qdp_db.insert(key, val);
+	    val.op[i] = it->second.op[i];
+	  { if (qdp_db.put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
 	}
 
-	qdp_db.close();
+	{ if (qdp_db.close_records() != 0) QDP_error_exit("record storage close failed"); }
       }
 
       pop(xml_out); // close last tag

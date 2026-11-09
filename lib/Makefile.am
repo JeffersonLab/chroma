@@ -768,7 +768,6 @@ nobase_include_HEADERS += \
 	util/ferm/key_timeslice_colorvec.h \
 	util/ferm/key_prop_distillation.h \
 	util/ferm/key_prop_distillution.h \
-	util/ferm/key_val_db.h \
 	util/ferm/crc48.h \
 	util/ferm/distillution_noise.h \
         util/ferm/spin_rep.h \
@@ -2212,4 +2211,5 @@ nobase_include_HEADERS += gtest/gtest.h
 libchroma_a_SOURCES += gtest/gtest-all.cc
 endif
 
-nobase_include_HEADERS += util/ferm/filedb_qdp.h
+
+nobase_include_HEADERS += util/ferm/storage_io.h

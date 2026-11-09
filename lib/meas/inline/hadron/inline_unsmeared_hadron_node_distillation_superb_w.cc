@@ -20,7 +20,9 @@
 #include "meas/smear/link_smearing_factory.h"
 #include "util/ferm/disp_soln_cache.h"
 #include "util/ferm/key_timeslice_colorvec.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/genprop4.h>
+#include <datalib/superb/meson_superb.h>
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/superb_contractions.h"
 #include "util/ferm/mgproton.h"
@@ -982,11 +984,9 @@ namespace Chroma
       //
       // DB storage
       //
-      std::vector<LocalBinaryStoreDB<LocalSerialDBKey<KeyUnsmearedMesonElementalOperator_t>,
-				     LocalSerialDBData<ValUnsmearedMesonElementalOperator_t>>>
+      std::vector<Datalib::TensorStorage::StorageMeson>
 	qdp_db;
-      std::vector<LocalBinaryStoreDB<LocalSerialDBKey<KeyGenProp4ElementalOperator_t>,
-				     LocalSerialDBData<ValGenProp4ElementalOperator_t>>>
+      std::vector<Datalib::TensorStorage::StorageGenprop4>
 	qdp4_db;
       SB::StorageTensor<10, SB::ComplexD> qdp5_db; // nNsSgdmtpP
 
@@ -1012,8 +1012,9 @@ namespace Chroma
 	if (!params.param.contract.use_genprop4_format)
 	{
 	  qdp_db.resize(1);
-	  qdp_db[0].setNumberBuckets(num_keys_gp4 * num_vecs * 2);
-	  if (!qdp_db[0].fileExists(filename))
+	  { qdp_db[0].record_options().buckets = num_keys_gp4 * num_vecs * 2; }
+	  bool record_file_exists_1 = Datalib::TensorStorage::StorageRecords::record_file_exists(filename);
+      if (!record_file_exists_1)
 	  {
 	    XMLBufferWriter file_xml;
 
@@ -1026,22 +1027,23 @@ namespace Chroma
 	    pop(file_xml);
 
 	    std::string file_str(file_xml.str());
-	    qdp_db[0].setMaxUserInfoLen(file_str.size());
+	    { qdp_db[0].record_options().metadata_capacity = file_str.size(); }
 
-	    qdp_db[0].open(filename, O_RDWR | O_CREAT, 0664);
+	    { if (qdp_db[0].open_records(filename, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	    qdp_db[0].insertUserdata(file_str);
+	    { if (qdp_db[0].write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
 	  }
 	  else
 	  {
-	    qdp_db[0].open(filename, O_RDWR, 0664);
+	    { if (qdp_db[0].open_records(filename, O_RDWR, 0664) != 0) QDP_error_exit("record storage open failed"); }
 	  }
 	}
 	else
 	{
 	  qdp4_db.resize(1);
-	  qdp4_db[0].setNumberBuckets(num_keys_gp4 * 2);
-	  if (!qdp4_db[0].fileExists(filename))
+	  { qdp4_db[0].record_options().buckets = num_keys_gp4 * 2; }
+	  bool record_file_exists_2 = Datalib::TensorStorage::StorageRecords::record_file_exists(filename);
+      if (!record_file_exists_2)
 	  {
 	    XMLBufferWriter file_xml;
 
@@ -1054,15 +1056,15 @@ namespace Chroma
 	    pop(file_xml);
 
 	    std::string file_str(file_xml.str());
-	    qdp4_db[0].setMaxUserInfoLen(file_str.size());
+	    { qdp4_db[0].record_options().metadata_capacity = file_str.size(); }
 
-	    qdp4_db[0].open(filename, O_RDWR | O_CREAT, 0664);
+	    { if (qdp4_db[0].open_records(filename, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	    qdp4_db[0].insertUserdata(file_str);
+	    { if (qdp4_db[0].write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
 	  }
 	  else
 	  {
-	    qdp4_db[0].open(filename, O_RDWR, 0664);
+	    { if (qdp4_db[0].open_records(filename, O_RDWR, 0664) != 0) QDP_error_exit("record storage open failed"); }
 	  }
 	}
 	QDPIO::cout << "Distillation file(s) opened" << std::endl;
@@ -1301,9 +1303,9 @@ namespace Chroma
 		if (!params.param.contract.use_genprop4_format)
 		{
 		  // Store
-		  LocalSerialDBKey<KeyUnsmearedMesonElementalOperator_t> key;
-		  LocalSerialDBData<ValUnsmearedMesonElementalOperator_t> val;
-		  val.data() = ValUnsmearedMesonElementalOperator_t(num_vecs);
+		  KeyUnsmearedMesonElementalOperator_t key;
+		  ValUnsmearedMesonElementalOperator_t val;
+		  val = ValUnsmearedMesonElementalOperator_t(num_vecs);
 
 		  for (int t = 0; t < tsize; ++t)
 		  {
@@ -1315,20 +1317,20 @@ namespace Chroma
 			{
 			  r.kvslice_from_size({{'g', g}, {'m', mom}, {'n', n}, {'t', t}},
 					      {{'g', 1}, {'m', 1}, {'n', 1}, {'t', 1}})
-			    .copyTo(val.data());
+			    .copyTo(val);
 
-			  key.key().derivP = params.param.contract.use_derivP;
-			  key.key().t_sink = t_sink;
-			  key.key().t_slice = SB::normalize_coor(
+			  key.derivP = params.param.contract.use_derivP;
+			  key.t_sink = t_sink;
+			  key.t_slice = SB::normalize_coor(
 			    !params.param.contract.do_summation ? t + tfrom : t_source + 1, Lt);
-			  key.key().t_source = t_source;
-			  key.key().colorvec_src = n;
-			  key.key().gamma = gammas[g];
-			  key.key().displacement = disps[disp_index];
-			  key.key().mom = SB::tomulti1d(moms[mfrom + mom]);
-			  key.key().mass = params.param.contract.mass_label;
+			  key.t_source = t_source;
+			  key.colorvec_src = n;
+			  key.gamma = gammas[g];
+			  key.displacement = disps[disp_index];
+			  key.mom = SB::tomulti1d(moms[mfrom + mom]);
+			  key.mass = params.param.contract.mass_label;
 
-			  qdp_db[0].insert(key, val);
+			  { if (qdp_db[0].put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
 			}
 		      }
 		    }
@@ -1337,9 +1339,9 @@ namespace Chroma
 		else
 		{
 		  // Store
-		  LocalSerialDBKey<KeyGenProp4ElementalOperator_t> key;
-		  LocalSerialDBData<ValGenProp4ElementalOperator_t> val;
-		  val.data() = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
+		  KeyGenProp4ElementalOperator_t key;
+		  ValGenProp4ElementalOperator_t val;
+		  val = ValGenProp4ElementalOperator_t(num_vecs, num_vecs);
 
 		  for (int t = 0; t < tsize; ++t)
 		  {
@@ -1349,18 +1351,18 @@ namespace Chroma
 		      {
 			r.kvslice_from_size({{'g', g}, {'m', mom}, {'t', t}},
 					    {{'g', 1}, {'m', 1}, {'t', 1}})
-			  .copyTo(val.data());
+			  .copyTo(val);
 
-			key.key().t_sink = t_sink;
-			key.key().t_slice = SB::normalize_coor(
+			key.t_sink = t_sink;
+			key.t_slice = SB::normalize_coor(
 			  !params.param.contract.do_summation ? t + tfrom : t_source + 1, Lt);
-			key.key().t_source = t_source;
-			key.key().g = gammas[g];
-			key.key().displacement = disps[disp_index];
-			key.key().mom = SB::tomulti1d(moms[mfrom + mom]);
-			key.key().mass = params.param.contract.mass_label;
+			key.t_source = t_source;
+			key.g = gammas[g];
+			key.displacement = disps[disp_index];
+			key.mom = SB::tomulti1d(moms[mfrom + mom]);
+			key.mass = params.param.contract.mass_label;
 
-			qdp4_db[0].insert(key, val);
+			{ if (qdp4_db[0].put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
 		      }
 		    }
 		  }
@@ -1402,9 +1404,9 @@ namespace Chroma
       if (db_is_open)
       {
 	for (auto& db : qdp_db)
-	  db.close();
+	  if (db.close_records() != 0) QDP_error_exit("record storage close failed");
 	for (auto& db : qdp4_db)
-	  db.close();
+	  if (db.close_records() != 0) QDP_error_exit("record storage close failed");
       }
 
       // Close colorvecs storage

@@ -13,7 +13,8 @@
 #include "meas/smear/displace.h"
 #include "meas/glue/mesplq.h"
 #include "qdp_map_obj.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/genprop4.h>
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
@@ -274,8 +275,8 @@ namespace Chroma
     //! Holds key and value as temporaries
     struct KeyValGenPropElementalOperator_t
     {
-      SerialDBKey<KeyGenPropElementalOperator_t>  key;
-      SerialDBData<ValGenPropElementalOperator_t> val;
+      KeyGenPropElementalOperator_t  key;
+      ValGenPropElementalOperator_t val;
     };
 
 
@@ -535,11 +536,16 @@ namespace Chroma
       //
       // DB storage
       //
-      BinaryStoreDB< SerialDBKey<KeyGenPropElementalOperator_t>, SerialDBData<ValGenPropElementalOperator_t> > 
+      Datalib::TensorStorage::StorageGenprop4
 	qdp_db;
+      qdp_db.record_options().cache_bytes = 50*1024*1024;
+      qdp_db.record_options().configurations = 1;
 
       // Open the file, and write the meta-data and the binary for this operator
-      if (! qdp_db.fileExists(params.named_obj.genprop_op_file))
+      bool record_file_exists_1 = false;
+      if (Layout::primaryNode()) record_file_exists_1 = Datalib::TensorStorage::StorageRecords::record_file_exists(params.named_obj.genprop_op_file);
+      QDPInternal::broadcast(record_file_exists_1);
+      if (!record_file_exists_1)
       {
 	XMLBufferWriter file_xml;
 
@@ -561,15 +567,15 @@ namespace Chroma
 	// Yukky, but add on a bunch of padding. 
 	// This is in case a latter task writes another metadata.
 	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size());
+	{ if (Layout::primaryNode()) qdp_db.record_options().metadata_capacity = file_str.size(); }
 
-	qdp_db.open(params.named_obj.genprop_op_file, O_RDWR | O_CREAT, 0664);
+	{ if (Layout::primaryNode() && qdp_db.open_records(params.named_obj.genprop_op_file, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	qdp_db.insertUserdata(file_str);
+	{ if (Layout::primaryNode() && qdp_db.write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
       }
       else
       {
-	qdp_db.open(params.named_obj.genprop_op_file, O_RDWR, 0664);
+	{ if (Layout::primaryNode() && qdp_db.open_records(params.named_obj.genprop_op_file, O_RDWR, 0664) != 0) QDP_error_exit("record storage open failed"); }
       }
 
 
@@ -648,17 +654,17 @@ namespace Chroma
 	      {
 		int t = tt % phases.numSubsets(); // mod back into a normal interval
 
-		buf[t].key.key().t_slice       = t;
-		buf[t].key.key().t_source      = t_source;
-		buf[t].key.key().t_sink        = t_sink;
-		buf[t].key.key().spin_r        = spin_r;
-		buf[t].key.key().spin_l        = spin_l;
-		buf[t].key.key().mass_label    = params.param.mass_label;
-		buf[t].key.key().mom           = phases.numToMom(mom_num);
-		buf[t].key.key().gamma         = gamma;
-		buf[t].key.key().displacement  = disp; // only right colorstd::vector
+		buf[t].key.t_slice       = t;
+		buf[t].key.t_source      = t_source;
+		buf[t].key.t_sink        = t_sink;
+		buf[t].key.spin_r        = spin_r;
+		buf[t].key.spin_l        = spin_l;
+		buf[t].key.mass_label    = params.param.mass_label;
+		buf[t].key.mom           = phases.numToMom(mom_num);
+		buf[t].key.gamma         = gamma;
+		buf[t].key.displacement  = disp; // only right colorstd::vector
 
-		buf[t].val.data().op.resize(num_vecs, Nc);
+		buf[t].val.op.resize(num_vecs, Nc);
 	      }
 
 	      for(int color_r = 0; color_r < Nc; ++color_r)
@@ -703,7 +709,7 @@ namespace Chroma
 		  for(int tt=t_start; tt <= t_end; ++tt)
 		  {
 		    int t = tt % phases.numSubsets(); // mod back into a normal interval
-		    buf[t].val.data().op(i,color_r) = op_sum[t];
+		    buf[t].val.op(i,color_r) = op_sum[t];
 		  }
 		} // end for i
 	      } // end for j
@@ -712,7 +718,7 @@ namespace Chroma
 	      for(int tt=t_start; tt <= t_end; ++tt)
 	      {
 		int t = tt % phases.numSubsets(); // mod back into a normal interval
-		qdp_db.insert(buf[t].key, buf[t].val);
+		{ if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(buf[t].key), encodeStorageRecord(buf[t].val)) != 0) QDP_error_exit("record storage insert failed"); }
 	      }
 
 	    } // end for spin_l

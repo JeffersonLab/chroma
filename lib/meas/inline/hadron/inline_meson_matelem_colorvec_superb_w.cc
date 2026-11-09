@@ -10,7 +10,8 @@
 #include "meas/smear/displace.h"
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/meson_superb.h>
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/superb_contractions.h"
 #include "util/info/proginfo.h"
@@ -561,8 +562,7 @@ namespace Chroma
       // DB storage
       // NOTE: Only the master node opens the storage and writes on it
       //
-      std::vector<LocalBinaryStoreDB<LocalSerialDBKey<KeyMesonElementalOperator_t>,
-				     LocalSerialDBData<ValMesonElementalOperator_t>>>
+      std::vector<Datalib::TensorStorage::StorageMeson>
 	qdp_db;
 
       // This function opens the output file
@@ -574,7 +574,8 @@ namespace Chroma
 	qdp_db.resize(1);
 
 	// Open the file, and write the meta-data and the binary for this operator
-	if (!qdp_db[0].fileExists(params.named_obj.meson_op_file))
+	bool record_file_exists_1 = Datalib::TensorStorage::StorageRecords::record_file_exists(params.named_obj.meson_op_file);
+      if (!record_file_exists_1)
 	{
 	  XMLBufferWriter file_xml;
 
@@ -599,15 +600,15 @@ namespace Chroma
 	  pop(file_xml);
 
 	  std::string file_str(file_xml.str());
-	  qdp_db[0].setMaxUserInfoLen(file_str.size());
+	  { qdp_db[0].record_options().metadata_capacity = file_str.size(); }
 
-	  qdp_db[0].open(params.named_obj.meson_op_file, O_RDWR | O_CREAT, 0664);
+	  { if (qdp_db[0].open_records(params.named_obj.meson_op_file, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	  qdp_db[0].insertUserdata(file_str);
+	  { if (qdp_db[0].write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
 	}
 	else
 	{
-	  qdp_db[0].open(params.named_obj.meson_op_file, O_RDWR, 0664);
+	  { if (qdp_db[0].open_records(params.named_obj.meson_op_file, O_RDWR, 0664) != 0) QDP_error_exit("record storage open failed"); }
 	}
       };
 
@@ -736,7 +737,7 @@ namespace Chroma
 		  key.displacement =
 		    SB::tomulti1d(displacement_list[disp]); // only right colorstd::vector
 		  tensor.kvslice_from_size({{'t', t}, {'m', m}}, {{'t', 1}, {'m', 1}}).copyTo(val);
-		  qdp_db[0].insert(key, val);
+		  { if (qdp_db[0].put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
 		}
 	      }
 	    }
@@ -757,7 +758,7 @@ namespace Chroma
 
       // Close db
       for (auto& db : qdp_db)
-	db.close();
+	if (db.close_records() != 0) QDP_error_exit("record storage close failed");
 
       // Close colorvecs storage
       SB::closeColorvecStorage(colorvecsSto);

@@ -11,7 +11,8 @@
 #include "meas/glue/mesplq.h"
 #include "meas/smear/disp_colvec_map.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/baryon_superb.h>
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
@@ -274,8 +275,8 @@ namespace Chroma
     //! Holds key and value as temporaries
     struct KeyValBaryonElementalOperator_t
     {
-      SerialDBKey<KeyBaryonElementalOperator_t>  key;
-      SerialDBData<ValBaryonElementalOperator_t> val;
+      KeyBaryonElementalOperator_t  key;
+      ValBaryonElementalOperator_t val;
     };
 
 
@@ -576,11 +577,16 @@ namespace Chroma
       //
       // DB storage
       //
-      BinaryStoreDB< SerialDBKey<KeyBaryonElementalOperator_t>, SerialDBData<ValBaryonElementalOperator_t> > 
+      Datalib::TensorStorage::StorageBaryon
 	qdp_db;
+      qdp_db.record_options().cache_bytes = 50*1024*1024;
+      qdp_db.record_options().configurations = 1;
 
       // Open the file, and write the meta-data and the binary for this operator
-      if (! qdp_db.fileExists(params.named_obj.baryon_op_file))
+      bool record_file_exists_1 = false;
+      if (Layout::primaryNode()) record_file_exists_1 = Datalib::TensorStorage::StorageRecords::record_file_exists(params.named_obj.baryon_op_file);
+      QDPInternal::broadcast(record_file_exists_1);
+      if (!record_file_exists_1)
       {
 	XMLBufferWriter file_xml;
 
@@ -596,15 +602,15 @@ namespace Chroma
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size());
+	{ if (Layout::primaryNode()) qdp_db.record_options().metadata_capacity = file_str.size(); }
 
-	qdp_db.open(params.named_obj.baryon_op_file, O_RDWR | O_CREAT, 0664);
+	{ if (Layout::primaryNode() && qdp_db.open_records(params.named_obj.baryon_op_file, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	qdp_db.insertUserdata(file_str);
+	{ if (Layout::primaryNode() && qdp_db.write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
       }
       else
       {
-	qdp_db.open(params.named_obj.baryon_op_file, O_RDWR, 0664);
+	{ if (Layout::primaryNode() && qdp_db.open_records(params.named_obj.baryon_op_file, O_RDWR, 0664) != 0) QDP_error_exit("record storage open failed"); }
       }
 
 
@@ -642,16 +648,16 @@ namespace Chroma
 	  multi1d<KeyValBaryonElementalOperator_t> buf(phases.numSubsets());
 	  for(int t=0; t < phases.numSubsets(); ++t)
 	  {
-	    buf[t].key.key().t_slice       = t;
-	    buf[t].key.key().left          = displacement_list[l].left;
-	    buf[t].key.key().middle        = displacement_list[l].middle;
-	    buf[t].key.key().right         = displacement_list[l].right;
-	    buf[t].key.key().mom           = phases.numToMom(mom_num);
-	    buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs,params.param.num_vecs);
+	    buf[t].key.t_slice       = t;
+	    buf[t].key.left          = displacement_list[l].left;
+	    buf[t].key.middle        = displacement_list[l].middle;
+	    buf[t].key.right         = displacement_list[l].right;
+	    buf[t].key.mom           = phases.numToMom(mom_num);
+	    buf[t].val.op.resize(params.param.num_vecs,params.param.num_vecs,params.param.num_vecs);
 
 	    // Build in some optimizations. 
 	    // At this very moment, optimizations turned off
-	    buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
+	    buf[t].val.type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
 	  }
 
 
@@ -690,7 +696,7 @@ namespace Chroma
 
 		for(int t=0; t < op_sum.size(); ++t)
 		{
-		  buf[t].val.data().op(i,j,k) = op_sum[t];
+		  buf[t].val.op(i,j,k) = op_sum[t];
 		}
 	      } // end for k
 	    } // end for j
@@ -699,7 +705,7 @@ namespace Chroma
 	  QDPIO::cout << "insert: mom_num= " << mom_num << " displacement num= " << l << std::endl; 
 	  for(int t=0; t < phases.numSubsets(); ++t)
 	  {
-	    qdp_db.insert(buf[t].key, buf[t].val);
+	    { if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(buf[t].key), encodeStorageRecord(buf[t].val)) != 0) QDP_error_exit("record storage insert failed"); }
 	  }
 
 	} // mom_num

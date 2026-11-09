@@ -5,7 +5,7 @@
  */
 
 
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
 #include "util/ferm/key_hadron_2pt_corr.h"
 
 #include "inline_barspec_db_w.h"
@@ -726,7 +726,9 @@ namespace Chroma
 
       //open the database
       //
-      BinaryStoreDB< SerialDBKey<KeyHadron2PtCorr_t>, SerialDBData<multi1d<ComplexD> > > qdp_db;
+      Datalib::TensorStorage::StorageRecords qdp_db;
+      qdp_db.record_options().cache_bytes = 50*1024*1024;
+      qdp_db.record_options().configurations = 1;
 
 
       // Now loop over the various fermion pairs
@@ -790,7 +792,10 @@ namespace Chroma
 	    prop_id[k] = params.param.states[s].flavor[k] ;
 	  }
 	  // Open the file, and write the meta-data and the binary for this state
-	  if (! qdp_db.fileExists(params.param.states[s].db)){
+	  bool record_file_exists_1 = false;
+      if (Layout::primaryNode()) record_file_exists_1 = Datalib::TensorStorage::StorageRecords::record_file_exists(params.param.states[s].db);
+      QDPInternal::broadcast(record_file_exists_1);
+      if (!record_file_exists_1){
 	    XMLBufferWriter file_xml;
 	  
 	    push(file_xml, "DBMetaData");
@@ -804,13 +809,13 @@ namespace Chroma
 	    pop(file_xml);
 	  
 	    std::string file_str(file_xml.str());
-	    qdp_db.setMaxUserInfoLen(file_str.size());	  
-	    qdp_db.open(params.param.states[s].db, O_RDWR | O_CREAT, 0664);
-	    qdp_db.insertUserdata(file_str);
+	    { if (Layout::primaryNode()) qdp_db.record_options().metadata_capacity = file_str.size(); }
+	    { if (Layout::primaryNode() && qdp_db.open_records(params.param.states[s].db, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
+	    { if (Layout::primaryNode() && qdp_db.write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
 	  }
 	  else
 	  {
-	    qdp_db.open(params.param.states[s].db, O_RDWR, 0664);
+	    { if (Layout::primaryNode() && qdp_db.open_records(params.param.states[s].db, O_RDWR, 0664) != 0) QDP_error_exit("record storage open failed"); }
 	  }
 
 
@@ -861,23 +866,23 @@ namespace Chroma
 	    
 	      for(int mom(0);mom<phases.numMom();mom++){
 		key.mom = phases.numToMom(mom);    /*<! Momentum  */
-		SerialDBKey<KeyHadron2PtCorr_t> K;
-		K.key() = key ;
-		SerialDBData<multi1d<ComplexD> >  V ;
-		V.data().resize(Nt);
+		KeyHadron2PtCorr_t K;
+		K = key ;
+		multi1d<ComplexD>   V ;
+		V.resize(Nt);
 		for(int t(0);t<Nt;t++){
 		  int t_eff = (t - t0 + Nt) % Nt;
 		  if ( bc_spec < 0 && (t_eff+t0) >= Nt)
-		    V.data()[t_eff] = -hsum[mom][t];
+		    V[t_eff] = -hsum[mom][t];
 		  else
-		    V.data()[t_eff] =  hsum[mom][t];
+		    V[t_eff] =  hsum[mom][t];
 		}//loop over time
-		qdp_db.insert(K,V);
+		{ if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(K), encodeStorageRecord(V)) != 0) QDP_error_exit("record storage insert failed"); }
 	      }// loop over momenta
 
 	    }// loop  over source ops
 	  }// loop over sink ops
-	  qdp_db.close() ;
+	  { if (Layout::primaryNode() && qdp_db.close_records() != 0) QDP_error_exit("record storage close failed"); }
 	}// loop over states
 	tictoc.stop();
 	QDPIO::cout << name << ": contraction time = "

@@ -28,7 +28,8 @@
 #include "util/ferm/transf.h"
 #include "meas/inline/io/named_objmap.h"
 
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/disco_superb.h>
 #include "actions/ferm/linop/linop_w.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
@@ -243,8 +244,8 @@ namespace Chroma{
     }
     
     struct KeyVal_t{
-      SerialDBKey <KeyOperator_t> k ;
-      SerialDBData<ValOperator_t> v ;
+      KeyOperator_t k ;
+      ValOperator_t v ;
     };
 
     //! KeyOperator reader    
@@ -722,7 +723,9 @@ namespace Chroma{
 
       
       // DB storage          
-      BinaryStoreDB<SerialDBKey<KeyOperator_t>,SerialDBData<ValOperator_t> > qdp_db;
+      Datalib::TensorStorage::StorageDisco qdp_db;
+      qdp_db.record_options().cache_bytes = 50*1024*1024;
+      qdp_db.record_options().configurations = 1;
 
       // Open the file, and write the meta-data and the binary for this operator
       {
@@ -737,24 +740,24 @@ namespace Chroma{
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size());
+	{ if (Layout::primaryNode()) qdp_db.record_options().metadata_capacity = file_str.size(); }
 
-	qdp_db.open(params.named_obj.op_db_file, O_RDWR | O_CREAT, 0664);
+	{ if (Layout::primaryNode() && qdp_db.open_records(params.named_obj.op_db_file, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	qdp_db.insertUserdata(file_str);
+	{ if (Layout::primaryNode() && qdp_db.write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
       }
 
       // Write the data
-      SerialDBKey <KeyOperator_t> key ;
-      SerialDBData<ValOperator_t> val ;
+      KeyOperator_t key ;
+      ValOperator_t val ;
       std::map< KeyOperator_t, ValOperator_t >::iterator it;
       for(it=data.begin();it!=data.end();it++){
-	key.key()  = it->first  ;
-	val.data().op.resize(it->second.op.size()) ;
+	key  = it->first  ;
+	val.op.resize(it->second.op.size()) ;
 	// normalize to number of quarks 
 	for(int i(0);i<it->second.op.size();i++)
-          val.data().op[i] = it->second.op[i]/toDouble(quarks.size());
-	qdp_db.insert(key,val) ;
+          val.op[i] = it->second.op[i]/toDouble(quarks.size());
+	{ if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
       }
 
       // Close the namelist output file XMLDAT

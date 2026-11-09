@@ -7,7 +7,7 @@
 #define __key_peram_distillution_h__
 
 #include "chromabase.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
 
 namespace Chroma
 {
@@ -40,8 +40,8 @@ namespace Chroma
   //! Holds key and value as temporaries
   struct KeyValPeramDistillution_t
   {
-    SerialDBKey<KeyPeramDistillution_t>  key;
-    SerialDBData<ValPeramDistillution_t> val;
+    KeyPeramDistillution_t  key;
+    ValPeramDistillution_t val;
   };
 
   //----------------------------------------------------------------------------

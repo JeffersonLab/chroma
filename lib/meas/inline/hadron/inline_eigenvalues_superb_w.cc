@@ -17,7 +17,7 @@
 #include "qdp_map_obj_memory.h"
 #include "qdp_disk_map_slice.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
 #include "util/ferm/transf.h"
 #include "util/ferm/spin_rep.h"
 #include "util/ferm/diractodr.h"
@@ -354,7 +354,7 @@ namespace Chroma
       // DB storage
       //
       std::vector<
-	LocalBinaryStoreDB<LocalSerialDBKey<KeyEigenpair_t>, LocalSerialDBData<ValEigenpair_t>>>
+	Datalib::TensorStorage::StorageRecords>
 	qdp_db;
 
       // Open the file, and write the meta-data and the binary for this operator
@@ -372,11 +372,11 @@ namespace Chroma
 
 	std::string file_str(file_xml.str());
 	qdp_db.resize(1);
-	qdp_db[0].setMaxUserInfoLen(file_str.size());
+	{ qdp_db[0].record_options().metadata_capacity = file_str.size(); }
 
-	qdp_db[0].open(params.named_obj.eigs_file, O_RDWR | O_CREAT, 0664);
+	{ if (qdp_db[0].open_records(params.named_obj.eigs_file, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	qdp_db[0].insertUserdata(file_str);
+	{ if (qdp_db[0].write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
       };
 
       //
@@ -413,11 +413,11 @@ namespace Chroma
 	StopWatch swatch0;
 	swatch0.reset();
 	swatch0.start();
-	LocalSerialDBKey<KeyEigenpair_t> key;
-	key.key().mass_label = params.param.contract.mass_label;
+	KeyEigenpair_t key;
+	key.mass_label = params.param.contract.mass_label;
 	for (int idx = 0; idx < values.size(); ++idx)
 	{
-	  key.key().idx = idx;
+	  key.idx = idx;
 	  auto v =
 	    SB::detail::toNaturalOrdering(vectors.kvslice_from_size({{'n', idx}}, {{'n', 1}}))
 	      .make_sure(SB::none, SB::OnHost, SB::OnMaster)
@@ -425,10 +425,10 @@ namespace Chroma
 	  if (v)
 	  {
 	    open_db();
-	    LocalSerialDBData<ValEigenpair_t> val;
-	    val.data().value = values[idx];
-	    v.copyTo(val.data());
-	    qdp_db[0].insert(key, val);
+	    ValEigenpair_t val;
+	    val.value = values[idx];
+	    v.copyTo(val);
+	    { if (qdp_db[0].put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
 	  }
 	}
 
@@ -444,7 +444,7 @@ namespace Chroma
       pop(xml_out);
 
       for (auto& db : qdp_db)
-	db.close();
+	if (db.close_records() != 0) QDP_error_exit("record storage close failed");
 
       snoop.stop();
       QDPIO::cout << name << ": total time = "

@@ -21,14 +21,16 @@
 #include "meas/smear/link_smearing_factory.h"
 #include "util/ferm/key_timeslice_colorvec.h"
 #include "util/ferm/disp_soln_cache.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/meson_superb.h>
 #include "util/info/proginfo.h"
 #include "util/ft/sftmom.h"
 #include "util/ft/time_slice_set.h"
 #include "io/xml_group_reader.h"
 #include "meas/inline/make_xml_file.h"
 
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
+#include <datalib/superb/meson_superb.h>
 #include "util/ferm/transf.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
@@ -384,8 +386,8 @@ namespace Chroma
     //! Holds key and value as temporaries
     struct KeyValUnsmearedMesonElementalOperator_t
     {
-      SerialDBKey<KeyUnsmearedMesonElementalOperator_t>  key;
-      SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
+      KeyUnsmearedMesonElementalOperator_t  key;
+      ValUnsmearedMesonElementalOperator_t val;
     };
 
 
@@ -1068,10 +1070,15 @@ namespace Chroma
       //
       // DB storage
       //
-      BinaryStoreDB< SerialDBKey<KeyUnsmearedMesonElementalOperator_t>, SerialDBData<ValUnsmearedMesonElementalOperator_t> > qdp_db;
+      Datalib::TensorStorage::StorageMeson qdp_db;
+      qdp_db.record_options().cache_bytes = 50*1024*1024;
+      qdp_db.record_options().configurations = 1;
 
       // Open the file, and write the meta-data and the binary for this operator
-      if (! qdp_db.fileExists(params.named_obj.dist_op_file))
+      bool record_file_exists_1 = false;
+      if (Layout::primaryNode()) record_file_exists_1 = Datalib::TensorStorage::StorageRecords::record_file_exists(params.named_obj.dist_op_file);
+      QDPInternal::broadcast(record_file_exists_1);
+      if (!record_file_exists_1)
       {
 	XMLBufferWriter file_xml;
 
@@ -1084,15 +1091,15 @@ namespace Chroma
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size());
+	{ if (Layout::primaryNode()) qdp_db.record_options().metadata_capacity = file_str.size(); }
 
-	qdp_db.open(params.named_obj.dist_op_file, O_RDWR | O_CREAT, 0664);
+	{ if (Layout::primaryNode() && qdp_db.open_records(params.named_obj.dist_op_file, O_RDWR | O_CREAT, 0664) != 0) QDP_error_exit("record storage open failed"); }
 
-	qdp_db.insertUserdata(file_str);
+	{ if (Layout::primaryNode() && qdp_db.write_metadata(file_str) != 0) QDP_error_exit("record storage insertUserdata failed"); }
       }
       else
       {
-	qdp_db.open(params.named_obj.dist_op_file, O_RDWR, 0664);
+	{ if (Layout::primaryNode() && qdp_db.open_records(params.named_obj.dist_op_file, O_RDWR, 0664) != 0) QDP_error_exit("record storage open failed"); }
       }
 
       QDPIO::cout << "Finished opening distillation file" << std::endl;
@@ -1234,8 +1241,8 @@ namespace Chroma
 									       disp)));
 	      
 		  // Keys and stuff
-		  SerialDBKey<KeyUnsmearedMesonElementalOperator_t>  key;
-		  SerialDBData<ValUnsmearedMesonElementalOperator_t> val;
+		  KeyUnsmearedMesonElementalOperator_t  key;
+		  ValUnsmearedMesonElementalOperator_t val;
 
 		  // The keys for the spin and displacements for this particular elemental operator
 		  // No displacement for left colorvector, only displace right colorvector
@@ -1245,16 +1252,16 @@ namespace Chroma
 		  {
 		    if (! active_t_slices[t]) {continue;}
 		
-		    buf[t].key.key().derivP        = params.param.contract.use_derivP;
-		    buf[t].key.key().t_sink        = t_sink;
-		    buf[t].key.key().t_slice       = t;
-		    buf[t].key.key().t_source      = t_source;
-		    buf[t].key.key().colorvec_src  = colorvec_src;
-		    buf[t].key.key().gamma         = gamma;
-		    buf[t].key.key().displacement  = disp;
-		    buf[t].key.key().mom           = mom;
-		    buf[t].key.key().mass          = params.param.contract.mass_label;
-		    buf[t].val.data().op.resize(sink_num_vecs,Ns,Ns);
+		    buf[t].key.derivP        = params.param.contract.use_derivP;
+		    buf[t].key.t_sink        = t_sink;
+		    buf[t].key.t_slice       = t;
+		    buf[t].key.t_source      = t_source;
+		    buf[t].key.colorvec_src  = colorvec_src;
+		    buf[t].key.gamma         = gamma;
+		    buf[t].key.displacement  = disp;
+		    buf[t].key.mom           = mom;
+		    buf[t].key.mass          = params.param.contract.mass_label;
+		    buf[t].val.op.resize(sink_num_vecs,Ns,Ns);
 		  }
 
 		  // Stream the sink vectors past the insertion
@@ -1275,7 +1282,7 @@ namespace Chroma
 			
 		      for (int spin_snk = 0; spin_snk < Ns; ++spin_snk)
 			for (int spin_src = 0; spin_src < Ns; ++spin_src)
-			  buf[t].val.data().op(colorvec_snk,spin_snk,spin_src) = peekSpin(gred, spin_snk, spin_src);
+			  buf[t].val.op(colorvec_snk,spin_snk,spin_src) = peekSpin(gred, spin_snk, spin_src);
 		    }
 		  }
 
@@ -1284,10 +1291,10 @@ namespace Chroma
 		  {
 		    if (! active_t_slices[t]) {continue;}
 
-		    //QDPIO::cout << "insert key= " << buf[t].key.key() << std::endl;
-		    //write(xml_out, "Insertion", buf[t].key.key());
+		    //QDPIO::cout << "insert key= " << buf[t].key << std::endl;
+		    //write(xml_out, "Insertion", buf[t].key);
 
-		    qdp_db.insert(buf[t].key, buf[t].val);
+		    { if (Layout::primaryNode() && qdp_db.put_record(encodeStorageRecord(buf[t].key), encodeStorageRecord(buf[t].val)) != 0) QDP_error_exit("record storage insert failed"); }
 		  }
 
 		  snarss2.stop(); 
@@ -1315,7 +1322,7 @@ namespace Chroma
       }
 
       // Close db
-      qdp_db.close();
+      { if (Layout::primaryNode() && qdp_db.close_records() != 0) QDP_error_exit("record storage close failed"); }
 
       // Close the xml output file
       pop(xml_out);     // UnsmearedHadronNode

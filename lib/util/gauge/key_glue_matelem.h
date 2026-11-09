@@ -7,7 +7,7 @@
 #define __key_glue_matelem_h__
 
 #include "chromabase.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
 
 namespace Chroma
 {
@@ -38,8 +38,8 @@ namespace Chroma
   //! Holds key and value as temporaries
   struct KeyValGlueElementalOperator_t
   {
-    SerialDBKey<KeyGlueElementalOperator_t>  key;
-    SerialDBData<ValGlueElementalOperator_t> val;
+    KeyGlueElementalOperator_t  key;
+    ValGlueElementalOperator_t val;
   };
 
   //----------------------------------------------------------------------------

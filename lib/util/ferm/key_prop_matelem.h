@@ -7,7 +7,7 @@
 #define __key_prop_matelem_h__
 
 #include "chromabase.h"
-#include "util/ferm/key_val_db.h"
+#include "util/ferm/storage_io.h"
 
 namespace Chroma
 {
@@ -38,8 +38,8 @@ namespace Chroma
   //! Holds key and value as temporaries
   struct KeyValPropElementalOperator_t
   {
-    SerialDBKey<KeyPropElementalOperator_t>  key;
-    SerialDBData<ValPropElementalOperator_t> val;
+    KeyPropElementalOperator_t  key;
+    ValPropElementalOperator_t val;
   };
 
   //----------------------------------------------------------------------------
