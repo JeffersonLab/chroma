@@ -29,8 +29,6 @@
 #include "meas/inline/io/named_objmap.h"
 
 #include "util/ferm/storage_io.h"
-#include <datalib/superb/baryon_superb.h>
-#include <datalib/superb/meson_superb.h>
 
 namespace Chroma{ 
   namespace InlineStochHadronEnv{ 
@@ -856,7 +854,7 @@ namespace Chroma{
 	for(it=LocalMesonOps.begin();it!=LocalMesonOps.end();it++){
 	  MesonOp op = it->second ;
 	  // DB storage
-	  Datalib::TensorStorage::StorageMeson qdp_db;
+	  Datalib::TensorStorage::StorageRecords qdp_db;
       qdp_db.record_options().cache_bytes = 50*1024*1024;
       qdp_db.record_options().configurations = 1;
 	  { if (Layout::primaryNode()) qdp_db.record_options().metadata_capacity = UserData_xml.str().size(); }
@@ -983,7 +981,7 @@ namespace Chroma{
 	std::map<std::string, BaryonOp>::iterator it ;
 	for(it=LocalBaryonOps.begin();it!=LocalBaryonOps.end();it++){
 	  BaryonOp op = it->second ;
-	  Datalib::TensorStorage::StorageBaryon qdp_db;
+	  Datalib::TensorStorage::StorageRecords qdp_db;
       qdp_db.record_options().cache_bytes = 50*1024*1024;
       qdp_db.record_options().configurations = 1;
 	  { if (Layout::primaryNode()) qdp_db.record_options().metadata_capacity = UserData_xml.str().size(); }
