@@ -66,3 +66,5 @@ field and write the result into  "t_mesplq.xml" .
 %
 
 Reorg datalib/FILEDB and CORR_SUPERB build notes: docs/datalib-reorg.md
+
+Reorg removal decisions: docs/removals.md

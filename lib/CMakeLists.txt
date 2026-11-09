@@ -1017,7 +1017,6 @@ list(APPEND ChromaLIB_HEADERS
 	meas/inline/hadron/inline_qprop_matmul_w.h
 	meas/inline/hadron/inline_qqqNucNuc_w.h
 	meas/inline/hadron/inline_stoch_baryon_w.h
-	meas/inline/hadron/inline_stoch_hadron_w.h
 	meas/inline/hadron/inline_stoch_meson_w.h
 	meas/inline/hadron/inline_stoch_group_baryon_w.h
 	meas/inline/hadron/inline_stoch_group_meson_w.h
@@ -1786,7 +1785,6 @@ target_sources(chromalib PRIVATE
 	meas/inline/hadron/inline_qprop_matmul_w.cc 
 	meas/inline/hadron/inline_qqqNucNuc_w.cc 
 	meas/inline/hadron/inline_stoch_baryon_w.cc 
-	meas/inline/hadron/inline_stoch_hadron_w.cc 
 	meas/inline/hadron/inline_stoch_meson_w.cc 
 	meas/inline/hadron/inline_stoch_group_baryon_w.cc 
 	meas/inline/hadron/inline_stoch_group_meson_w.cc 

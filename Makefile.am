@@ -29,3 +29,5 @@ report:
 
 
 EXTRA_DIST += docs/datalib-reorg.md
+
+EXTRA_DIST += docs/removals.md

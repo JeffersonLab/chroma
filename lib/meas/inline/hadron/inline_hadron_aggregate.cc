@@ -88,7 +88,6 @@
 #include "meas/inline/hadron/inline_qqqNucNuc_w.h"
 #include "meas/inline/hadron/inline_stoch_meson_w.h"
 #include "meas/inline/hadron/inline_stoch_baryon_w.h"
-#include "meas/inline/hadron/inline_stoch_hadron_w.h"
 #include "meas/inline/hadron/inline_stoch_group_baryon_w.h"
 #include "meas/inline/hadron/inline_stoch_group_meson_w.h"
 #include "meas/inline/hadron/inline_gauge_transf_obj.h"
@@ -220,7 +219,6 @@ namespace Chroma
 	success &= InlineHeavyHadSpecEnv::registerAll();
 	success &= InlineStochMesonEnv::registerAll();
 	success &= InlineStochBaryonEnv::registerAll();
-	success &= InlineStochHadronEnv::registerAll();
 	success &= InlineStochGroupBaryonEnv::registerAll();
 	success &= InlineStochGroupMesonEnv::registerAll();
 	success &= InlineInverterTestEnv::registerAll();
