@@ -27,3 +27,5 @@ report:
 	xsltproc $(top_srcdir)/scripts/regres_report_to_html.xsl $(top_builddir)/regres_report.xml > regres_report.html
 
 
+
+EXTRA_DIST += docs/datalib-reorg.md
