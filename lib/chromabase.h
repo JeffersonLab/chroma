@@ -73,4 +73,18 @@ enum PlusMinus {PLUS = 1, MINUS = -1};
 #endif
 }
 
+// Add macros that control superbblas usage of MPI and GPUs. Make sure they are defined before
+// any other header includes superbblas.h: datalib, I am watching you
+
+// Activate the MPI support in Superbblas
+#if defined(BUILD_SB) && !defined(CHROMA_SB_SINGLE)
+#  define SUPERBBLAS_USE_MPI
+#endif
+
+// Activate redstar-datalib support for superbblas and with gpus
+#if defined(BUILD_REDSTAR_DATALIB)
+#  define USE_SUPERBBLAS
+#  define USE_SUPERBBLAS_WITH_GPU_SUPPORT
+#endif
+
 #endif

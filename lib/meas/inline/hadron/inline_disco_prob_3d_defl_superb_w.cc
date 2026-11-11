@@ -4,7 +4,7 @@
  * Propagator calculation on a color vector
  */
 
-#include "chroma_config.h"
+#include "chromabase.h"
 #if defined(BUILD_REDSTAR_DATALIB) && defined(BUILD_SB)
 #define USE_SUPERBBLAS
 // Keep QDP's XMLArray definitions at the Chroma boundary.

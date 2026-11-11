@@ -1,4 +1,3 @@
-#include "util/ferm/colorvec_mod_reader.h"
 // -*- C++ -*-
 /*! \file                                                                    
  * \brief Copy, permuting, contracting tensors with superbblas
@@ -24,6 +23,7 @@
 #  include "qdp.h"
 #  include "qdp_map_obj_disk_multiple.h"
 #  include "superbblas.h"
+#  include "util/ferm/colorvec_mod_reader.h"
 #  include "util/ferm/key_timeslice_colorvec.h"
 #  include <algorithm>
 #  include <array>
