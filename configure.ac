@@ -354,6 +354,14 @@ AC_ARG_WITH(asqtadlevel3,
 )
 
 
+dnl Optional Apple GPU clover solvers. The C ABI also supports GCC Chroma
+dnl linked to an Apple Clang / libc++ Metal backend.
+AC_ARG_WITH([metal],
+  [AS_HELP_STRING([--with-metal=DIR], [Use MetalClover installed in DIR])],
+  [METAL_HOME="$withval"], [METAL_HOME=no])
+AS_IF([test "x$METAL_HOME" = xyes],
+  [AC_MSG_ERROR([--with-metal requires an installation prefix])])
+
 dnl support for MG Solver from QDP/C
 AC_ARG_WITH(qdpc,
   AC_HELP_STRING(
@@ -1294,6 +1302,45 @@ then
    AC_SUBST(CUDA_LDFLAGS,  ["-L${CUDA_LIBDIR} -Wl,-rpath,${CUDA_LIBDIR}"] )
    AC_SUBST(CUDA_LIBS,     ["-lcusolver -lcusparse -lcublas -lcublasLt -lcudart -lcuda"])
 fi
+
+dnl MetalClover header and C ABI link checks use QDP++'s selected C++ compiler.
+METAL_CXXFLAGS=""
+METAL_LDFLAGS=""
+METAL_LIBS=""
+AS_IF([test "x$METAL_HOME" != xno], [
+  AS_IF([test "$QDPXX_ND" != 4 || test "$QDPXX_NC" != 3 ||
+         test "$QDPXX_NS" != 4 || test "$QDPXX_PRECISION" != double],
+    [AC_MSG_ERROR([MetalClover requires a 4D Nc=3 Ns=4 FP64 QDP++ build])])
+  METAL_CXXFLAGS="-I${METAL_HOME}/include"
+  METAL_LDFLAGS="-L${METAL_HOME}/lib -Wl,-rpath,${METAL_HOME}/lib"
+  METAL_LIBS="-lmetalclover"
+  metal_saved_CPPFLAGS="$CPPFLAGS"
+  metal_saved_LDFLAGS="$LDFLAGS"
+  metal_saved_LIBS="$LIBS"
+  CPPFLAGS="$CPPFLAGS $METAL_CXXFLAGS"
+  LDFLAGS="$LDFLAGS $METAL_LDFLAGS"
+  LIBS="$METAL_LIBS $LIBS"
+  AC_LANG_PUSH([C++])
+  AC_MSG_CHECKING([for compatible MetalClover C ABI])
+  AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <metalclover/metalclover.h>
+#if METALCLOVER_ABI_VERSION != 1
+#error Unsupported MetalClover ABI
+#endif]], [[using namespace MetalCloverEnv;
+             metalclover_options o; metalclover_default_options(&o);
+             metalclover_context *c = 0; metalclover_destroy(c);]])],
+    [AC_MSG_RESULT([yes])],
+    [AC_MSG_FAILURE([MetalClover header/library not found or incompatible in $METAL_HOME])])
+  AC_LANG_POP([C++])
+  CPPFLAGS="$metal_saved_CPPFLAGS"
+  LDFLAGS="$metal_saved_LDFLAGS"
+  dnl libchroma is static; propagate the optional dependency to every executable.
+  LIBS="$METAL_LDFLAGS $METAL_LIBS $metal_saved_LIBS"
+  AC_DEFINE([BUILD_METAL], [1], [Build Apple Metal Clover SystemSolvers])
+])
+AC_SUBST([METAL_CXXFLAGS])
+AC_SUBST([METAL_LDFLAGS])
+AC_SUBST([METAL_LIBS])
+AM_CONDITIONAL([BUILD_METAL], [test "x$METAL_HOME" != xno])
 
 ###############################################
 # 

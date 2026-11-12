@@ -2211,3 +2211,9 @@ endif
 
 
 nobase_include_HEADERS += util/ferm/storage_io.h
+
+if BUILD_METAL
+AM_CXXFLAGS += @METAL_CXXFLAGS@
+nobase_include_HEADERS += actions/ferm/invert/metal_solvers/syssolver_linop_metal_clover.h
+libchroma_a_SOURCES += actions/ferm/invert/metal_solvers/syssolver_linop_metal_clover.cc
+endif

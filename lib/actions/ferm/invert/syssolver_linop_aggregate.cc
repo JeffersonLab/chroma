@@ -2,33 +2,35 @@
  *  \brief All MdagM system solver constructors
  */
 
-
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 
-#include "actions/ferm/invert/syssolver_linop_cg.h"
 #include "actions/ferm/invert/syssolver_linop_bicgstab.h"
-#include "actions/ferm/invert/syssolver_linop_ibicgstab.h"
 #include "actions/ferm/invert/syssolver_linop_bicrstab.h"
-#include "actions/ferm/invert/syssolver_linop_mr.h"
+#include "actions/ferm/invert/syssolver_linop_cg.h"
 #include "actions/ferm/invert/syssolver_linop_cg_timing.h"
-#include "actions/ferm/invert/syssolver_linop_eigcg.h"
 #include "actions/ferm/invert/syssolver_linop_eigbicg.h"
-#include "actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.h"
-#include "actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.h"
-#include "actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.h"
-#include "actions/ferm/invert/syssolver_linop_rel_cg_clover.h"
+#include "actions/ferm/invert/syssolver_linop_eigcg.h"
 #include "actions/ferm/invert/syssolver_linop_fgmres_dr.h"
-#include "actions/ferm/invert/projector_random.h"
-#include "actions/ferm/invert/projector_null.h"
+#include "actions/ferm/invert/syssolver_linop_ibicgstab.h"
+#include "actions/ferm/invert/syssolver_linop_mr.h"
+#include "actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.h"
+#include "actions/ferm/invert/syssolver_linop_rel_cg_clover.h"
+#include "actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.h"
+#include "actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.h"
 
+#include "actions/ferm/invert/projector_null.h"
+#include "actions/ferm/invert/projector_random.h"
 
 #include "chroma_config.h"
+#ifdef BUILD_METAL
+#include "actions/ferm/invert/metal_solvers/syssolver_linop_metal_clover.h"
+#endif
 #ifdef BUILD_QUDA
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_multigrid_w.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_multigrid_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h"
 #endif
 
 #include "actions/ferm/invert/syssolver_linop_cg_array.h"
@@ -43,109 +45,104 @@
 #endif
 
 #ifdef BUILD_QPHIX
-#include "actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.h"
 #include "actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h"
+#include "actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.h"
 #endif
 
 #ifdef BUILD_MGPROTO
-#include  "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.h"
+#include "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto.h"
 #ifdef BUILD_QPHIX
-#include  "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.h"
-#include  "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix_eo.h"
-#include  "actions/ferm/invert/mg_proto/syssolver_linop_ali_mg_proto_qphix_eo.h"
-#include  "actions/ferm/invert/mg_proto/projector_clover_mg_proto_qphix.h"
+#include "actions/ferm/invert/mg_proto/projector_clover_mg_proto_qphix.h"
+#include "actions/ferm/invert/mg_proto/syssolver_linop_ali_mg_proto_qphix_eo.h"
+#include "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix.h"
+#include "actions/ferm/invert/mg_proto/syssolver_linop_clover_mg_proto_qphix_eo.h"
 #endif
 #endif
 
-namespace Chroma
-{
+namespace Chroma {
 
   //! Registration aggregator
-  namespace LinOpSysSolverEnv
-  {
+  namespace LinOpSysSolverEnv {
     //! Local registration flag
     static bool registered = false;
 
     //! Register all the factories
-    bool registerAll() 
-    {
-      bool success = true; 
-      if (! registered)
-      {
-	// 4D system solvers
-	success &= LinOpSysSolverCGEnv::registerAll();
-	success &= LinOpSysSolverBiCGStabEnv::registerAll();
-	success &= LinOpSysSolverBiCRStabEnv::registerAll();
-	success &= LinOpSysSolverIBiCGStabEnv::registerAll();
-	success &= LinOpSysSolverMREnv::registerAll();
-	success &= LinOpSysSolverCGTimingEnv::registerAll();
-	success &= LinOpSysSolverEigCGEnv::registerAll();
-	success &= LinOpSysSolverEigBiCGEnv::registerAll();
-	success &= LinOpSysSolverRichardsonCloverEnv::registerAll();
-	success &= LinOpSysSolverReliableBiCGStabCloverEnv::registerAll();
-	success &= LinOpSysSolverReliableIBiCGStabCloverEnv::registerAll();
-	success &= LinOpSysSolverReliableCGCloverEnv::registerAll();
-	success &= LinOpSysSolverFGMRESDREnv::registerAll();
-	success &= ProjectorRandomEnv::registerAll();
-	success &= ProjectorNullEnv::registerAll();
+    bool registerAll() {
+      bool success = true;
+      if (!registered) {
+        // 4D system solvers
+        success &= LinOpSysSolverCGEnv::registerAll();
+        success &= LinOpSysSolverBiCGStabEnv::registerAll();
+        success &= LinOpSysSolverBiCRStabEnv::registerAll();
+        success &= LinOpSysSolverIBiCGStabEnv::registerAll();
+        success &= LinOpSysSolverMREnv::registerAll();
+        success &= LinOpSysSolverCGTimingEnv::registerAll();
+        success &= LinOpSysSolverEigCGEnv::registerAll();
+        success &= LinOpSysSolverEigBiCGEnv::registerAll();
+        success &= LinOpSysSolverRichardsonCloverEnv::registerAll();
+        success &= LinOpSysSolverReliableBiCGStabCloverEnv::registerAll();
+        success &= LinOpSysSolverReliableIBiCGStabCloverEnv::registerAll();
+        success &= LinOpSysSolverReliableCGCloverEnv::registerAll();
+        success &= LinOpSysSolverFGMRESDREnv::registerAll();
+        success &= ProjectorRandomEnv::registerAll();
+        success &= ProjectorNullEnv::registerAll();
 
+#ifdef BUILD_METAL
+        success &= LinOpSysSolverMetalCloverEnv::registerAll();
+#endif
 #ifdef BUILD_QUDA
-	success &= LinOpSysSolverQUDACloverEnv::registerAll();
-	success &= LinOpSysSolverQUDAMULTIGRIDCloverEnv::registerAll();
-	success &= LinOpSysSolverQUDAWilsonEnv::registerAll();
-	success &= LinOpSysSolverQUDAMULTIGRIDWilsonEnv::registerAll();
-	success &= LinOpSysSolverQUDANEFEnv::registerAll();
+        success &= LinOpSysSolverQUDACloverEnv::registerAll();
+        success &= LinOpSysSolverQUDAMULTIGRIDCloverEnv::registerAll();
+        success &= LinOpSysSolverQUDAWilsonEnv::registerAll();
+        success &= LinOpSysSolverQUDAMULTIGRIDWilsonEnv::registerAll();
+        success &= LinOpSysSolverQUDANEFEnv::registerAll();
 #endif
 #ifdef BUILD_QOP_MG
-	success &= LinOpSysSolverQOPMGEnv::registerAll();
+        success &= LinOpSysSolverQOPMGEnv::registerAll();
 #endif
 
 #ifdef BUILD_QPHIX
-	success &= LinOpSysSolverQPhiXCloverEnv::registerAll();
-	success &= LinOpSysSolverQPhiXCloverIterRefineEnv::registerAll();
+        success &= LinOpSysSolverQPhiXCloverEnv::registerAll();
+        success &= LinOpSysSolverQPhiXCloverIterRefineEnv::registerAll();
 #endif
 
 #ifdef BUILD_MGPROTO
-	success &= LinOpSysSolverMGProtoCloverEnv::registerAll();
+        success &= LinOpSysSolverMGProtoCloverEnv::registerAll();
 #ifdef BUILD_QPHIX
-	success &= LinOpSysSolverMGProtoQPhiXCloverEnv::registerAll();
-	success &= LinOpSysSolverMGProtoQPhiXEOCloverEnv::registerAll();
-	success &= LinOpSysSolverMGProtoQPhiXALIEnv::registerAll();
-	success &= ProjectorMGProtoQPhiXCloverEnv::registerAll();
+        success &= LinOpSysSolverMGProtoQPhiXCloverEnv::registerAll();
+        success &= LinOpSysSolverMGProtoQPhiXEOCloverEnv::registerAll();
+        success &= LinOpSysSolverMGProtoQPhiXALIEnv::registerAll();
+        success &= ProjectorMGProtoQPhiXCloverEnv::registerAll();
 #endif
 #endif
-	registered = true;
+        registered = true;
       }
       return success;
     }
-  }
-
+  } // namespace LinOpSysSolverEnv
 
   //! Registration aggregator
-  namespace LinOpSysSolverArrayEnv
-  {
+  namespace LinOpSysSolverArrayEnv {
     //! Local registration flag
     static bool registered = false;
 
     //! Register all the factories
-    bool registerAll() 
-    {
-      bool success = true; 
-      if (! registered)
-      {
-	// 5D system solvers
-	success &= LinOpSysSolverCGArrayEnv::registerAll();
+    bool registerAll() {
+      bool success = true;
+      if (!registered) {
+        // 5D system solvers
+        success &= LinOpSysSolverCGArrayEnv::registerAll();
 
 #ifdef BUILD_MDWF
-	success &= LinOpSysSolverMDWFArrayEnv::registerAll();
+        success &= LinOpSysSolverMDWFArrayEnv::registerAll();
 #endif
-#if ! defined (QDP_IS_QDPJIT2)
-	success &= LinOpSysSolverEigCGArrayEnv::registerAll();
+#if !defined(QDP_IS_QDPJIT2)
+        success &= LinOpSysSolverEigCGArrayEnv::registerAll();
 #endif
-	registered = true;
+        registered = true;
       }
       return success;
     }
-  }
+  } // namespace LinOpSysSolverArrayEnv
 
-}
+} // namespace Chroma

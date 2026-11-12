@@ -3400,6 +3400,11 @@ namespace Chroma
     EigensolverFun<Nd + 7, COMPLEX> getInexactEigensolverGD(Operator<Nd + 7, COMPLEX> op,
 							    const Options& ops)
     {
+#ifndef BUILD_PRIMME
+      (void)op;
+      (void)ops;
+      throw std::runtime_error("Generalized Davidson requires --with-primme");
+#else
       using namespace detail;
 
       Tracker _t(std::string("setup gd solver "));
@@ -3543,6 +3548,7 @@ namespace Chroma
 	// Return
 	return std::make_tuple(evals, evecs.template cast<COMPLEX>());
       };
+#endif
     }
 
     template EigensolverFun<Nd + 7, SB::ComplexD>
@@ -3993,12 +3999,15 @@ namespace Chroma
 		       const doInversionOnTSliceFn<SB::Complex>& call)
       {
 	int num_vecs = chi.kvdim()['n'];
-	int num_spins = spin_sources.kvdim()['s'];
-	int max_step = std::max(num_vecs, max_rhs);
-	std::vector<std::shared_ptr<LatticeFermion>> chis(max_step), quark_solns(max_step);
-	for (int col = 0; col < max_step; col++)
-	  chis[col].reset(new LatticeFermion);
-	for (int col = 0; col < max_step; col++)
+        int num_spins = spin_sources.kvdim()['s'];
+        // Bound full-lattice temporaries to this RHS tile, not all colorvecs.
+        max_rhs = max_rhs > 0 ? max_rhs : num_vecs;
+        int max_step = std::min(num_vecs, max_rhs);
+        std::vector<std::shared_ptr<LatticeFermion>> chis(max_step),
+            quark_solns(max_step);
+        for (int col = 0; col < max_step; col++)
+          chis[col].reset(new LatticeFermion);
+        for (int col = 0; col < max_step; col++)
 	  quark_solns[col].reset(new LatticeFermion);
 
 	for (int spin_index = 0; spin_index < num_spins; ++spin_index)
@@ -4091,19 +4100,22 @@ namespace Chroma
 
 	// Create tensors with full support on the lattice
 	int num_vecs = chi.kvdim()['n'];
-	int num_spins = spin_sources.kvdim()['s'];
-	int max_step = std::max(num_vecs, max_rhs);
-	auto aux = chi.template make_compatible<Nd + 8>(
-	  op.preferred_col_ordering == ColumnMajor ? "0123csxyztXn" : "0123ncsxyztX",
-	  {{'n', max_step},
-	   {'t', Layout::lattSize()[3]},
-	   {'s', Ns},
-	   {'0', 1},
-	   {'1', 1},
-	   {'2', 1},
-	   {'3', 1}});
+        int num_spins = spin_sources.kvdim()['s'];
+        // Bound full-lattice temporaries to this RHS tile, not all colorvecs.
+        max_rhs = max_rhs > 0 ? max_rhs : num_vecs;
+        int max_step = std::min(num_vecs, max_rhs);
+        auto aux = chi.template make_compatible<Nd + 8>(
+            op.preferred_col_ordering == ColumnMajor ? "0123csxyztXn"
+                                                     : "0123ncsxyztX",
+            {{'n', max_step},
+             {'t', Layout::lattSize()[3]},
+             {'s', Ns},
+             {'0', 1},
+             {'1', 1},
+             {'2', 1},
+             {'3', 1}});
 
-	for (int spin_index = 0; spin_index < num_spins; ++spin_index)
+        for (int spin_index = 0; spin_index < num_spins; ++spin_index)
 	{
 	  for (int n0 = 0, n_step = std::min(max_rhs, num_vecs); n0 < num_vecs;
 	       n0 += n_step, n_step = std::min(n_step, num_vecs - n0))
@@ -4143,12 +4155,13 @@ namespace Chroma
 	Coor<N - 7> n_dim = latticeSize<N - 7>(n_order, chi.kvdim());
 	int n_vol = (N == 7 ? 1 : superbblas::detail::volume(n_dim));
 
-	Tensor<N, COMPLEX> r = chi.make_compatible(); // output tensor
-	int max_step = std::max(1, std::max(n_vol, max_rhs));
+        Tensor<N, COMPLEX> r = chi.make_compatible(); // output tensor
+        max_rhs = max_rhs > 0 ? max_rhs : n_vol;
+        int max_step = std::min(n_vol, max_rhs);
 
-	// Quick exit
-	if (n_vol == 0)
-	  return r;
+        // Quick exit
+        if (n_vol == 0)
+          return r;
 
 	if (N == 7)
 	{
@@ -4418,14 +4431,15 @@ namespace Chroma
       const int num_vecs = chi.kvdim()['n'];
 
       if (n_tslice_out > Layout::lattSize()[3])
-	throw std::runtime_error("Too many tslices");
+        throw std::runtime_error("Too many tslices");
 
       // Prepare spins
-      auto spins = SB::Tensor<2, SB::Complex>("Ss", {{Nc, (int)spin_sources.size()}}, SB::OnHost,
-					      SB::OnEveryoneReplicated);
+      auto spins =
+          SB::Tensor<2, SB::Complex>("Ss", {{Ns, (int)spin_sources.size()}},
+                                     SB::OnHost, SB::OnEveryoneReplicated);
       spins.set_zero();
       for (int spin_index = 0; spin_index < spin_sources.size(); ++spin_index)
-	spins.set({spin_sources.at(spin_index), spin_index}, 1.0);
+        spins.set({spin_sources.at(spin_index), spin_index}, 1.0);
 
       // Prepare output
       Tensor<Nd + 5, SB::Complex> psi(

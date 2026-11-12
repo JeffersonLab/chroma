@@ -305,3 +305,10 @@ build_chroma_libs:
 rebuild_other_libs:
 	cd $(BUILDDIR)/other_libs ; $(MAKE)
 
+
+if BUILD_METAL
+AM_CXXFLAGS += @METAL_CXXFLAGS@ @SB_CXXFLAGS@ @REDSTAR_DATALIB_CXXFLAGS@
+# Explicit real-gauge regression; it needs a local gauge file and action XML.
+EXTRA_PROGRAMS += t_metal_clover
+t_metal_clover_SOURCES = t_metal_clover.cc
+endif
