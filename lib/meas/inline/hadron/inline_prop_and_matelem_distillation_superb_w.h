@@ -49,8 +49,9 @@ namespace Chroma
 
 	  int           num_tries;      /*!< In case of bad things happening in the solution vectors, do retries */
 	  bool          use_device_for_contractions;  /*!< Whether use gpu for contractions if available */
-          int           max_rhs;        /*! maximum number of linear systems solved simultaneously */
-	  bool          use_superb_format;  /*!< Whether use the superb format for storing the elementals */
+          int max_rhs; /*! Physical spinor RHS cap: whole Ns-spin colorvecs, at
+                          least Ns */
+          bool          use_superb_format;  /*!< Whether use the superb format for storing the elementals */
 	  bool          output_file_is_local;   /*!< Whether the output file is in a not shared filesystem */
 	  multi1d<int>  phase;         /*!< Phase to apply to colorvecs */
 	  std::vector<Phasing_t> phases;/*!< Sink-source phases to apply to colorvecs */

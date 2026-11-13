@@ -51,11 +51,11 @@ namespace {
     }
   }
   void inverter(XMLBufferWriter &xml, const CloverFermActParams &p,
-                const multi1d<int> &blocks) {
+                const multi1d<int> &blocks, int rhs_batch = 3) {
     push(xml, "InvertParam");
     write(xml, "RsdTarget", Real(1e-12));
     write(xml, "MaxIter", 65536);
-    write(xml, "RHSBatch", 3);
+    write(xml, "RHSBatch", rhs_batch);
     write(xml, "Blocks", blocks);
     write(xml, "SecondFilter", 16);
     write(xml, "BottomIterations", 4);
@@ -71,6 +71,23 @@ namespace {
     pop(xml);
     pop(xml);
   }
+#ifdef BUILD_SB
+  struct RecordingQprop : SystemSolver<T> {
+    Handle<SystemSolver<T>> inner;
+    mutable std::vector<size_t> widths;
+    explicit RecordingQprop(Handle<SystemSolver<T>> solver) : inner(solver) {}
+    const Subset &subset() const override { return inner->subset(); }
+    SystemSolverResults_t operator()(T &x, const T &b) const override {
+      return (*inner)(x, b);
+    }
+    std::vector<SystemSolverResults_t>
+    operator()(const std::vector<std::shared_ptr<T>> &x,
+               const std::vector<std::shared_ptr<const T>> &b) const override {
+      widths.push_back(b.size());
+      return (*inner)(x, b);
+    }
+  };
+#endif
   double relative(const LinearOperator<T> &A, const T &x, const T &b) {
     T r = zero;
     A(r, x, PLUS);
@@ -308,6 +325,9 @@ int main(int argc, char **argv) {
       group.id = name;
       group.xml = inv.str();
       group.path = "/InvertParam";
+      XMLBufferWriter spin_inv;
+      inverter(spin_inv, params, blocks, 8);
+      group.xml = spin_inv.str();
       SB::ChimeraSolver chimera(action_group, group, u);
       auto solved = SB::doInversion(chimera, colorvec, source_time, 0, dims[3],
                                     {3}, 3, "cxyzXnSst");
@@ -330,12 +350,90 @@ int main(int argc, char **argv) {
                   << " max_rhs=3 source_spin=3 t_source=" << source_time
                   << " full_relative=" << residual << std::endl;
       }
+      auto *recording = new RecordingQprop(chimera.PP);
+      chimera.PP = Handle<SystemSolver<T>>(recording);
+      const SB::DistillationRHSPlan rounded(2, 7);
+      if (rounded.total_rhs != 8 || rounded.max_rhs != 4 ||
+          rounded.vecs_per_batch != 1 ||
+          SB::DistillationRHSPlan(3, 0).max_rhs != 12)
+        throw std::runtime_error("four-spin RHS normalization failed");
+      for (int vectors : {1, 3}) {
+        const SB::DistillationRHSPlan plan(vectors, vectors == 1 ? 1 : 10);
+        recording->widths.clear();
+        auto input_colorvec = colorvec.kvslice_from_size({}, {{'n', vectors}});
+        SB::Tensor<Nd + 5, SB::Complex> spin_solutions(
+            "cxyzXnSst",
+            SB::latticeSize<Nd + 5>(
+                "cxyzXnSst",
+                {{'n', vectors}, {'S', Ns}, {'s', Ns}, {'t', dims[3]}}),
+            SB::OnHost, SB::OnEveryoneReplicated);
+        SB::Tensor<5, SB::Complex> projected(
+            "NnSst", SB::Coor<5>{vectors, vectors, Ns, Ns, 1}, SB::OnHost,
+            SB::OnEveryoneReplicated);
+        for (int first_n = 0; first_n < vectors;
+             first_n += plan.vecs_per_batch) {
+          int count = std::min(plan.vecs_per_batch, vectors - first_n);
+          auto tile = SB::doInversion(chimera,
+                                      input_colorvec.kvslice_from_size(
+                                          {{'n', first_n}}, {{'n', count}}),
+                                      source_time, 0, dims[3], {0, 1, 2, 3},
+                                      plan.max_rhs, "cxyzXnSst");
+          tile.copyTo(spin_solutions.kvslice_from_size({{'n', first_n}},
+                                                       {{'n', count}}));
+          projected.kvslice_from_size({{'n', first_n}}, {{'n', count}})
+              .contract(
+                  input_colorvec, {{'n', 'N'}}, SB::Conjugate,
+                  tile.kvslice_from_size({{'t', source_time}}, {{'t', 1}}), {},
+                  SB::NotConjugate);
+        }
+        std::vector<size_t> expected_widths =
+            vectors == 1 ? std::vector<size_t>{4} : std::vector<size_t>{8, 4};
+        if (recording->widths != expected_widths)
+          throw std::runtime_error("four-spin qprop batching failed");
+        for (int col = 0; col < vectors; ++col)
+          for (int spin = 0; spin < Ns; ++spin) {
+            T b = zero, x = zero, sink = zero;
+            input_colorvec.kvslice_from_size({{'n', col}}, {{'n', 1}})
+                .rename_dims({{'n', 's'}})
+                .copyTo(SB::asTensorView(b).toComplex().kvslice_from_size(
+                    {{'s', spin}, {'t', source_time}}, {{'s', 1}, {'t', 1}}));
+            spin_solutions
+                .kvslice_from_size({{'n', col}, {'s', spin}},
+                                   {{'n', 1}, {'s', 1}})
+                .rename_dims({{'s', '!'}, {'S', 's'}})
+                .copyTo(SB::asTensorView(x).toComplex());
+            double residual = relative(*full, x, b);
+            if (!(residual <= 1e-12))
+              throw std::runtime_error(
+                  "four-spin full Chroma FP64 residual failed");
+            input_colorvec.kvslice_from_size({{'n', 0}}, {{'n', 1}})
+                .rename_dims({{'n', 's'}})
+                .copyTo(SB::asTensorView(sink).toComplex().kvslice_from_size(
+                    {{'s', 0}, {'t', source_time}}, {{'s', 1}, {'t', 1}}));
+            auto expected = innerProduct(sink, x);
+            std::complex<double> manual(toDouble(real(expected)),
+                                        toDouble(imag(expected)));
+            auto element = projected.getLocal().get({0, col, 0, spin, 0});
+            double element_error = std::abs(element - manual);
+            if (!(element_error <= 1e-11 * std::max(1., std::abs(manual))))
+              throw std::runtime_error(
+                  "four-spin perambulator index/contraction failed");
+            std::cout << "DISTILLATION_SPIN solver=" << name
+                      << " num_vecs=" << vectors
+                      << " physical_rhs=" << plan.total_rhs
+                      << " effective_max_rhs=" << plan.max_rhs
+                      << " vector=" << col << " source_spin=" << spin
+                      << " full_relative=" << residual
+                      << " projected_error=" << element_error << std::endl;
+          }
+      }
     }
 #endif
     std::cout
         << "PASS MetalBiCGClover and MetalMGClover: real LIME gauge, native "
            "stout state, "
-           "full/odd solves, batched qprop and Superb RHS tiles=3+2, "
+           "full/odd solves, batched qprop RHS tiles=3+2, four-spin "
+           "distillation, "
            "nonzero/exact guesses, zero RHS, "
            "native reconstruction, original CPU FP64 residuals <=1e-12"
         << std::endl;

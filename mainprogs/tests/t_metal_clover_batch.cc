@@ -28,17 +28,23 @@ namespace {
     x = (x ^ (x >> 27)) * 0x94d049bb133111ebull;
     return x ^ (x >> 31);
   }
-  void source(T &x, size_t column, const std::vector<int> &sites) {
-    double scale = 1 / std::sqrt(double(sites.size()) * 12);
-    for (size_t q = 0; q < sites.size(); ++q)
-      for (int c = 0; c < 3; ++c)
-        for (int spin = 0; spin < 4; ++spin) {
-          auto phase =
-              hash(q * 12 + c * 4 + spin + (20261113ull + column) * 771337) & 3;
-          auto &z = x.elem(sites[q]).elem(spin).elem(c);
-          z.real() = phase == 0 ? scale : phase == 1 ? -scale : 0;
-          z.imag() = phase == 2 ? scale : phase == 3 ? -scale : 0;
-        }
+  void source(T &x, size_t rhs, const std::vector<int> &sites,
+              int source_time) {
+    x = zero;
+    auto dims = Layout::lattSize();
+    size_t spatial = size_t(dims[0]) * dims[1] * dims[2];
+    size_t vector = rhs / Ns;
+    int source_spin = rhs % Ns;
+    double scale = 1 / std::sqrt(double(spatial) * 3);
+    for (size_t q = size_t(source_time) * spatial;
+         q < size_t(source_time + 1) * spatial; ++q)
+      for (int c = 0; c < 3; ++c) {
+        auto phase =
+            hash((q % spatial) * 3 + c + (20261113ull + vector) * 771337) & 3;
+        auto &z = x.elem(sites[q]).elem(source_spin).elem(c);
+        z.real() = phase == 0 ? scale : phase == 1 ? -scale : 0;
+        z.imag() = phase == 2 ? scale : phase == 3 ? -scale : 0;
+      }
   }
   void inverter(XMLBufferWriter &xml, const CloverFermActParams &p,
                 const std::string &name) {
@@ -75,13 +81,15 @@ namespace {
 int main(int argc, char **argv) {
   if (argc != 5) {
     std::cerr << "Usage: t_metal_clover_batch GAUGE_LIME ACTION_XML "
-                 "OUTPUT_PREFIX BASE_RHS\n";
+                 "OUTPUT_PREFIX BASE_NUM_VECS\n";
     return 2;
   }
   std::string gauge = argv[1], action_xml = argv[2], prefix = argv[3];
-  int base = std::stoi(argv[4]);
-  if (base < 1 || base > 96)
-    throw std::runtime_error("BASE_RHS must be 1..96");
+  int base_vectors = std::stoi(argv[4]);
+  if (base_vectors < 1 || base_vectors > 24)
+    throw std::runtime_error(
+        "BASE_NUM_VECS must be 1..24 (4..96 physical RHS)");
+  int base = Ns * base_vectors;
   int qargc = 1;
   QDP_initialize(&qargc, &argv);
   int status = 0;
@@ -133,10 +141,17 @@ int main(int argc, char **argv) {
     if (!csv)
       throw std::runtime_error("open output CSV");
     csv << std::setprecision(17)
-        << "method,rhs,caller_tile,seconds,seconds_per_rhs,rhs_per_second,max_"
+        << "method,num_vecs,source_spins,rhs,caller_tile,seconds,seconds_per_"
+           "rhs,"
+           "seconds_per_colorvec,rhs_per_second,max_"
            "full_relative,max_solution_difference,min_iterations,max_"
            "iterations,total_iterations\n";
     std::cout << std::setprecision(17);
+    const int source_time = 176 % dims[3];
+    std::cout << "DISTILLATION_SOURCES num_vecs=" << base_vectors
+              << " source_spins=" << Ns << " physical_rhs=" << base
+              << " t_source=" << source_time
+              << " seed_base=20261113 spin_fast=true" << std::endl;
     bool have_reference = false;
     for (const std::string name : {"MetalBiCGClover", "MetalMGClover"}) {
       XMLBufferWriter inv;
@@ -158,7 +173,7 @@ int main(int argc, char **argv) {
       auto extend = [&](int count) {
         while (int(sources.size()) < count) {
           auto b = std::make_shared<T>();
-          source(*b, sources.size(), sites);
+          source(*b, sources.size(), sites, source_time);
           sources.push_back(b);
           solutions.push_back(std::make_shared<T>(zero));
         }
@@ -172,7 +187,8 @@ int main(int argc, char **argv) {
         for (int i = 0; i < count; ++i)
           *solutions[i] = zero;
         std::vector<SystemSolverResults_t> results(count);
-        std::cout << "BATCH_BEGIN method=" << name << " rhs=" << count
+        std::cout << "BATCH_BEGIN method=" << name << " num_vecs=" << count / Ns
+                  << " source_spins=" << Ns << " rhs=" << count
                   << " caller_tile=" << tile << std::endl;
         StopWatch watch;
         watch.start();
@@ -246,21 +262,26 @@ int main(int argc, char **argv) {
         }
         have_reference = true;
         double elapsed = watch.getTimeInSeconds();
-        csv << name << ',' << count << ',' << tile << ',' << elapsed << ','
-            << elapsed / count << ',' << count / elapsed << ',' << max_residual
-            << ',' << max_difference << ',' << min_iterations << ','
-            << max_iterations << ',' << iterations << '\n';
+        csv << name << ',' << count / Ns << ',' << Ns << ',' << count << ','
+            << tile << ',' << elapsed << ',' << elapsed / count << ','
+            << elapsed / (count / Ns) << ',' << count / elapsed << ','
+            << max_residual << ',' << max_difference << ',' << min_iterations
+            << ',' << max_iterations << ',' << iterations << '\n';
         csv.flush();
-        std::cout << "BATCH_RESULT method=" << name << " rhs=" << count
-                  << " caller_tile=" << tile << " seconds=" << elapsed
+        std::cout << "BATCH_RESULT method=" << name
+                  << " num_vecs=" << count / Ns << " source_spins=" << Ns
+                  << " rhs=" << count << " caller_tile=" << tile
+                  << " seconds=" << elapsed
                   << " seconds_per_rhs=" << elapsed / count
+                  << " seconds_per_colorvec=" << elapsed / (count / Ns)
                   << " max_full_relative=" << max_residual
                   << " max_solution_difference=" << max_difference
                   << " K_min=" << min_iterations << " K_max=" << max_iterations
                   << std::endl;
       }
     }
-    std::cout << "PASS real 12^3x96 qprop scalar/batched 8/16 RHS, one reused "
+    std::cout << "PASS real 12^3x96 four-spin distillation qprop "
+                 "scalar/batched RHS, one reused "
                  "hierarchy, all full FP64 residuals <=1e-12"
               << std::endl;
   } catch (const std::exception &e) {

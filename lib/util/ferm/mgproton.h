@@ -49,6 +49,14 @@ namespace Chroma
 		    const multi1d<LatticeColorMatrix>& u);
     };
 
+    /// Distillation always inverts all Ns source spins per color eigenvector.
+    /// max_rhs is a physical spinor count, normalized down to whole colorvecs
+    /// with at least one complete colorvec; nonpositive means all colorvecs.
+    struct DistillationRHSPlan {
+      int num_vecs, total_rhs, max_rhs, vecs_per_batch;
+      DistillationRHSPlan(int vectors, int requested_max_rhs);
+    };
+
     /// Callback function for doInversion
     /// Arguments of the callback:
     /// \param tensor: output tensor with order cSxyztXns,

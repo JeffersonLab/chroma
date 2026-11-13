@@ -124,8 +124,8 @@ time-localized spin-3 sources through that exact array signature. This
 exercises Chroma's vector even/odd reduction and reconstruction around the
 Metal odd solver and checks every reconstructed field with the full native
 FP64 operator. The distillation helpers now bound their temporary full-lattice
-spinor pools by `min(num_vectors,max_rhs)` and use `Ns` for the spin-source
-matrix, allowing the fourth spin component. For a large perambulator job,
+spinor pools by the physical spinor RHS tile and use `Ns` for the source-spin
+matrix, allowing all four spin components. For a large perambulator job,
 set `max_rhs` to the available host memory as well as GPU memory. The
 measurement's full returned tensor still occupies caller memory; its existing
 callback form can contract or write solved tiles without retaining all full
@@ -187,10 +187,11 @@ are inside. An additional independent full check is performed after timing.
 ```sh
 make -C mainprogs/tests t_metal_clover_batch
 VECLIB_MAXIMUM_THREADS=1 OMP_NUM_THREADS=1 \
-  mainprogs/tests/t_metal_clover_batch gauge.lime action.xml /tmp/batch12 96
+  mainprogs/tests/t_metal_clover_batch gauge.lime action.xml /tmp/batch12 24
 ```
 
-This runs 96 RHS in each of the three modes and 192 RHS in tiles of 16.
+The current harness takes BASE_NUM_VECS: 24 vectors mean 96 physical RHS
+in each of the three modes, followed by 48 vectors / 192 RHS in tiles of 16.
 It is a single-rank test for the real 12³×96 action XML, with one scalar
 reference file and CSV output. Choose a fresh output prefix. The build requires
 MetalClover's additive batch API (`METALCLOVER_BATCH_API_VERSION >= 1`);
@@ -205,7 +206,9 @@ iteration budgets and scalar agreement; a GCC-built client passes against the
 Apple Clang backend. MetalClover's `BATCH_RHS.md` records the 96–192 RHS native
 qprop throughput measurements and the detailed counting/timing scope.
 
-On the real 12³×96 mass −0.0743 field, the same 96 sources took 3.358,
+The original batch timings used independent full-field random spinors;
+they are physical RHS counts, rather than color eigenvectors. On the real
+12³×96 mass −0.0743 field, the same 96 sources took 3.358,
 2.295 and 2.201 s/RHS for BiCGStab at GPU widths 1, 8 and 16; MG took
 2.488, 1.416 and 1.382 s/RHS. Width sixteen improved throughput by 1.53×
 and 1.80× respectively without changing iteration counts. The additional
@@ -215,3 +218,45 @@ FP64 checks and excluding setup. The one reused MG hierarchy took 19.714 s
 to construct. All full native residuals were below 2.433e-14, and the first
 96 full solutions agreed across methods/widths within 6.343e-13 relative.
 Peak process RSS was 14.547 GiB on the 32 GiB M1 Max (24 GPU cores).
+
+## Distillation source-spin structure
+
+For each source time and source phasing, `num_vecs` color eigenvectors
+produce `Ns * num_vecs` physical spinor RHS: four inversions per eigenvector.
+Source spin is the fast index, `rhs = Ns * vector + spin_source`. Sink spin
+is an output index and adds no inversions. The inline distillation measurement
+now supplies all source spins together, so even `num_vecs=1` reaches qprop
+as four RHS. The same solver object and hierarchy are reused throughout.
+
+`max_rhs` counts physical spinors. The measurement rounds a positive value
+down to a multiple of `Ns`, with at least `Ns`, and caps it at the total.
+Thus values 1–7 select four RHS (one colorvec), 8–11 select eight (two), and
+16 selects sixteen (four). A nonpositive cap selects the full collection.
+The input `num_vecs` is preserved. Logs distinguish the requested/effective
+cap, colorvecs per tile and total physical RHS per source time/phasing.
+The inverter's `RHSBatch` remains a separate GPU/memory cap and may split
+these caller groups; setting it to one remains useful for scalar controls.
+
+Full-field tiles are bounded by the normalized cap. All four source-spin
+projections are accumulated with explicit source-vector/source-spin/sink-spin
+indices before perambulator storage. Additional sink phasings reuse the same
+inversions. The generic colorvec qprop helper also batches across the supplied
+spin list, preserving its callback indices and arbitrary partial-spin callers.
+
+The throughput harness now generates one repeatable time-localized complex
+Z4 color vector per vector index and embeds it into spins 0–3 at
+`t_source=176 mod Lt`. Its CSV includes `num_vecs`, `source_spins`, physical
+`rhs`, seconds/RHS and seconds/colorvec. BASE_NUM_VECS is limited to 1–24;
+the last mode doubles it, retaining the 192-spinor memory bound. This changed
+source layout is separate from the original random-spinor timing evidence.
+
+The four-spin regression passed 64 native checks on the real 12³×96 gauge
+field, including one colorvec / four RHS in one GPU tile and three colorvecs /
+twelve RHS in tiles of eight plus four. The maximum full original Chroma
+FP64 residual for the new spin-source cases was 2.2152e-14; selected projected
+elements agreed with direct CPU inner products within 8.882e-16. The harness's
+one/two-vector smoke run also passed full-field scalar/batch/BiCGStab/MG
+comparisons, with maximum residual 2.1274e-14 and solution difference 4.054e-13.
+These validate qprop and the tiled source/contraction pattern; the complete
+inline perambulator file-I/O job was not run. Structured evidence is in
+MetalClover's `results/distillation-spins12/` directory.
