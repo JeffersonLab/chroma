@@ -18,6 +18,7 @@ namespace Chroma {
     MetalCloverEnv::metalclover_options options;
     double tolerance = 1e-12;
     int max_iterations = 65536;
+    int rhs_batch = 8;
   };
 
   // One serial Metal context (and MG hierarchy) is reused for every call.
@@ -43,6 +44,9 @@ namespace Chroma {
     lastArraySolveInfo() const {
       return last_array_info;
     }
+    const MetalCloverEnv::metalclover_batch_info &lastBatchSolveInfo() const {
+      return last_batch_info;
+    }
     const MetalCloverEnv::metalclover_solve_info &lastSolveInfo() const {
       return last_info;
     }
@@ -55,6 +59,7 @@ namespace Chroma {
     std::string name;
     std::vector<int> sites;
     mutable MetalCloverEnv::metalclover_solve_info last_info{};
+    mutable MetalCloverEnv::metalclover_batch_info last_batch_info{};
     mutable std::vector<MetalCloverEnv::metalclover_solve_info> last_array_info;
     static int apply(void *self, const void *in, void *out, size_t n);
     void pack(const T &field, void *buffer) const;

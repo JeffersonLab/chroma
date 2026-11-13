@@ -309,6 +309,7 @@ rebuild_other_libs:
 if BUILD_METAL
 AM_CXXFLAGS += @METAL_CXXFLAGS@ @SB_CXXFLAGS@ @REDSTAR_DATALIB_CXXFLAGS@
 # Explicit real-gauge regression; it needs a local gauge file and action XML.
-EXTRA_PROGRAMS += t_metal_clover
+EXTRA_PROGRAMS += t_metal_clover t_metal_clover_batch
 t_metal_clover_SOURCES = t_metal_clover.cc
+t_metal_clover_batch_SOURCES = t_metal_clover_batch.cc
 endif

@@ -55,6 +55,7 @@ namespace {
     push(xml, "InvertParam");
     write(xml, "RsdTarget", Real(1e-12));
     write(xml, "MaxIter", 65536);
+    write(xml, "RHSBatch", 3);
     write(xml, "Blocks", blocks);
     write(xml, "SecondFilter", 16);
     write(xml, "BottomIterations", 4);
@@ -212,11 +213,11 @@ int main(int argc, char **argv) {
     // Same array contract as SB::doInversion in the distillation measurement:
     // full spinors -> qprop vector wrapper -> reduced odd Metal vector solve.
     EvenOddPrecCloverFermAct action(create, params);
-    std::vector<std::shared_ptr<T>> array_solution(2), array_source(2);
-    std::vector<std::shared_ptr<const T>> constant_source(2);
-    std::vector<T> array_reference(2);
+    std::vector<std::shared_ptr<T>> array_solution(5), array_source(5);
+    std::vector<std::shared_ptr<const T>> constant_source(5);
+    std::vector<T> array_reference(5);
     int source_time = 176 % dims[3];
-    for (int col = 0; col < 2; ++col) {
+    for (int col = 0; col < 5; ++col) {
       array_solution[col] = std::make_shared<T>();
       array_source[col] = std::make_shared<T>();
       source(*array_source[col], 20261114 + col);
@@ -250,9 +251,9 @@ int main(int argc, char **argv) {
       for (auto &solution : array_solution)
         *solution = zero;
       auto results = (*prop)(array_solution, constant_source);
-      if (results.size() != 2)
+      if (results.size() != 5)
         throw std::runtime_error("qprop array result count");
-      for (int col = 0; col < 2; ++col) {
+      for (int col = 0; col < 5; ++col) {
         double residual =
             relative(*full, *array_solution[col], *array_source[col]);
         if (residual > 1e-12)
@@ -283,7 +284,7 @@ int main(int argc, char **argv) {
     XMLReader prop_metadata(metadata, "/DBMetaData/Params/Propagator");
     auto action_group = readXMLGroup(prop_metadata, "FermionAction", "FermAct");
     const std::string order = "cxyzXnt";
-    auto tensor_dims = SB::latticeSize<Nd + 3>(order, {{'n', 2}, {'t', 1}});
+    auto tensor_dims = SB::latticeSize<Nd + 3>(order, {{'n', 5}, {'t', 1}});
     SB::Tensor<Nd + 3, SB::Complex> colorvec(order, tensor_dims, SB::OnHost,
                                              SB::OnEveryoneReplicated);
     size_t values = 1;
@@ -309,8 +310,8 @@ int main(int argc, char **argv) {
       group.path = "/InvertParam";
       SB::ChimeraSolver chimera(action_group, group, u);
       auto solved = SB::doInversion(chimera, colorvec, source_time, 0, dims[3],
-                                    {3}, 1, "cxyzXnSst");
-      for (int col = 0; col < 2; ++col) {
+                                    {3}, 3, "cxyzXnSst");
+      for (int col = 0; col < 5; ++col) {
         T source_field = zero, solution_field = zero;
         colorvec.kvslice_from_size({{'n', col}}, {{'n', 1}})
             .rename_dims({{'n', 's'}})
@@ -326,7 +327,7 @@ int main(int argc, char **argv) {
           throw std::runtime_error(
               "SB distillation array full FP64 residual failed");
         std::cout << "SUPERB_ARRAY solver=" << name << " rhs=" << col
-                  << " max_rhs=1 source_spin=3 t_source=" << source_time
+                  << " max_rhs=3 source_spin=3 t_source=" << source_time
                   << " full_relative=" << residual << std::endl;
       }
     }
@@ -334,7 +335,8 @@ int main(int argc, char **argv) {
     std::cout
         << "PASS MetalBiCGClover and MetalMGClover: real LIME gauge, native "
            "stout state, "
-           "full/odd solves, two reused RHS, nonzero/exact guesses, zero RHS, "
+           "full/odd solves, batched qprop and Superb RHS tiles=3+2, "
+           "nonzero/exact guesses, zero RHS, "
            "native reconstruction, original CPU FP64 residuals <=1e-12"
         << std::endl;
   } catch (const std::exception &e) {

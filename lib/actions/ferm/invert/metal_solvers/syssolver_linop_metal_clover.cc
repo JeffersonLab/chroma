@@ -30,6 +30,7 @@ namespace Chroma {
     read(top, "RsdTarget", target);
     tolerance = toDouble(target);
     optional(top, "MaxIter", max_iterations);
+    optional(top, "RHSBatch", rhs_batch);
     optional(top, "Workers", options.workers);
     optional(top, "Restart", options.restart);
     optional(top, "NullVectors", options.null_candidates);
@@ -70,7 +71,8 @@ namespace Chroma {
     options.clover_t = aniso ? toDouble(clover.clovCoeffT) : options.clover_r;
     // FermState supplies already smeared, already boundary-modified links.
     options.apply_temporal_antiperiodic = 0;
-    if (!(tolerance > 0 && tolerance < 1) || max_iterations < 1)
+    if (!(tolerance > 0 && tolerance < 1) || max_iterations < 1 ||
+        rhs_batch < 1 || rhs_batch > 64)
       throw std::runtime_error("invalid Metal Clover stopping parameters");
   }
 
@@ -133,6 +135,7 @@ namespace Chroma {
     check(metalclover_create(&params.options, links.data(), &created));
     std::unique_ptr<metalclover_context, decltype(&metalclover_destroy)> guard(
         created, metalclover_destroy);
+    check(metalclover_set_rhs_batch(created, params.rhs_batch));
     // Compare the supplied Chroma operator with the backend before solving any
     // RHS.
     std::vector<Complex64> probe(sites.size() * 12), native(probe.size()),
@@ -269,29 +272,90 @@ namespace Chroma {
             throw std::runtime_error(
                 "Metal Clover array fields must be disjoint");
       }
-      last_array_info.clear();
-      last_array_info.reserve(sources.size());
-      std::vector<SystemSolverResults_t> results;
-      results.reserve(sources.size());
       StopWatch watch;
       watch.start();
-      uint64_t flops = 0;
-      // The caller owns the array; only this column's extra FP64 fields and
-      // one GPU workspace are resident in the backend. Hierarchy is reused.
-      for (size_t i = 0; i < sources.size(); ++i) {
-        results.push_back((*this)(*solutions[i], *sources[i]));
-        last_array_info.push_back(last_info);
-        flops += last_info.nominal_operator_flops;
+      size_t count = sources.size(), n = sites.size() * 12;
+      last_array_info.assign(count, {});
+      std::vector<std::vector<Complex64>> b(count), x(count);
+      std::vector<const void *> inputs(count);
+      std::vector<void *> outputs(count);
+      for (size_t i = 0; i < count; ++i) {
+        b[i].resize(n);
+        x[i].resize(n);
+        pack(*sources[i], b[i].data());
+        pack(*solutions[i], x[i].data());
+        inputs[i] = b[i].data();
+        outputs[i] = x[i].data();
+      }
+      auto *self = const_cast<LinOpSysSolverMetalClover *>(this);
+      size_t failed = SIZE_MAX;
+      int status =
+          full
+              ? metalclover_solve_full_array(context, count, inputs.data(),
+                                             outputs.data(), params.tolerance,
+                                             params.max_iterations, apply, self,
+                                             last_array_info.data(), &failed)
+              : metalclover_solve_odd_array(context, count, inputs.data(),
+                                            outputs.data(), params.tolerance,
+                                            params.max_iterations, apply, self,
+                                            last_array_info.data(), &failed);
+      check(status);
+      check(metalclover_get_batch_info(context, &last_batch_info));
+      std::vector<SystemSolverResults_t> results(count);
+      for (size_t i = 0; i < count; ++i) {
+        unpack(*solutions[i], x[i].data());
+        StopWatch residual_watch;
+        residual_watch.start();
+        T residual = zero;
+        (*A)(residual, *solutions[i], PLUS);
+        residual[subset()] = *sources[i] - residual;
+        double absolute = std::sqrt(toDouble(norm2(residual, subset())));
+        double source = std::sqrt(toDouble(norm2(*sources[i], subset())));
+        if (!std::isfinite(absolute) ||
+            absolute > params.tolerance * (source > 0 ? source : 1))
+          throw std::runtime_error(
+              "final original Chroma FP64 batch residual failed");
+        residual_watch.stop();
+        double checked_seconds = residual_watch.getTimeInSeconds();
+        last_array_info[i].residual_seconds += checked_seconds;
+        last_batch_info.residual_seconds += checked_seconds;
+        results[i].n_count = last_array_info[i].krylov_iterations;
+        results[i].resid = absolute;
+        QDPIO::cout << name << " batch_rhs=" << i
+                    << " iterations=" << results[i].n_count
+                    << " outer=" << last_array_info[i].outer_iterations
+                    << " relative_residual="
+                    << absolute / (source > 0 ? source : 1) << std::endl;
       }
       watch.stop();
-      QDPIO::cout << name << " array: rhs=" << sources.size()
-                  << " resident_GPU_rhs=1 hierarchy_reused=true seconds="
-                  << watch.getTimeInSeconds()
+      last_batch_info.seconds = watch.getTimeInSeconds();
+      last_batch_info.nominal_operator_gflops =
+          last_batch_info.seconds > 0
+              ? double(last_batch_info.nominal_operator_flops) /
+                    (1e9 * last_batch_info.seconds)
+              : 0;
+      for (size_t i = 0; i < count; ++i) {
+        last_array_info[i].seconds = last_batch_info.seconds / count;
+        last_array_info[i].nominal_operator_gflops =
+            last_array_info[i].seconds > 0
+                ? double(last_array_info[i].nominal_operator_flops) /
+                      (1e9 * last_array_info[i].seconds)
+                : 0;
+      }
+      if (count)
+        last_info = last_array_info.back();
+      QDPIO::cout << name << " array: rhs=" << count << " resident_GPU_rhs="
+                  << last_batch_info.maximum_resident_rhs
+                  << " gpu_tiles=" << last_batch_info.tiles
+                  << " hierarchy_reused=true seconds="
+                  << last_batch_info.seconds << " fine_schur_dispatches="
+                  << std::to_string(last_batch_info.fine_schur_dispatches)
+                  << " nominal_operator_flops="
+                  << std::to_string(last_batch_info.nominal_operator_flops)
+                  << " batch_workspace_seconds="
+                  << last_batch_info.workspace_seconds
                   << " nominal_operator_GFLOP_per_s="
-                  << (watch.getTimeInSeconds() > 0
-                          ? double(flops) / (1e9 * watch.getTimeInSeconds())
-                          : 0)
-                  << std::endl;
+                  << last_batch_info.nominal_operator_gflops << std::endl;
       return results;
     } catch (const std::exception &e) {
       QDPIO::cerr << name << ": " << e.what() << std::endl;

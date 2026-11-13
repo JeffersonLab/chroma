@@ -1325,9 +1325,16 @@ AS_IF([test "x$METAL_HOME" != xno], [
   AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <metalclover/metalclover.h>
 #if METALCLOVER_ABI_VERSION != 1
 #error Unsupported MetalClover ABI
+#endif
+#if !defined(METALCLOVER_BATCH_API_VERSION) || METALCLOVER_BATCH_API_VERSION < 1
+#error MetalClover batch API required
 #endif]], [[using namespace MetalCloverEnv;
              metalclover_options o; metalclover_default_options(&o);
-             metalclover_context *c = 0; metalclover_destroy(c);]])],
+             metalclover_context *c = 0;
+             metalclover_batch_info info;
+             metalclover_set_rhs_batch(c, 8);
+             metalclover_get_batch_info(c, &info);
+             metalclover_destroy(c);]])],
     [AC_MSG_RESULT([yes])],
     [AC_MSG_FAILURE([MetalClover header/library not found or incompatible in $METAL_HOME])])
   AC_LANG_POP([C++])
