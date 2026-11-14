@@ -262,8 +262,8 @@ The new spin-source cases had maximum full original Chroma FP64 residual
 2.0404e-14 and projected-element difference 8.882e-16 against direct CPU
 inner products. The updated spin-major harness smoke test also passed its
 full-solution comparisons with maximum residual 2.4445e-14 and BiCGStab/MG
-difference 2.5393e-13. The full inline file-I/O and full 5,184-vector jobs
-were not run. MetalClover's `results/eloy-spin-batching12/` contains the
+difference 2.5393e-13. At that regression stage the full inline file-I/O and full
+5,184-vector jobs were not run; the separate streaming job is recorded below. MetalClover's `results/eloy-spin-batching12/` contains the
 structured evidence and exact source/binary hashes.
 
 
@@ -311,3 +311,25 @@ idle-sleep prevention, session logs, final native checksum rereading, NPY/journa
 validation and a whole-file SHA256 completion report. Its `UNSMEARED_T0.md`
 documents the output reader and exact real-field production inputs. The large
 output and eigenvector files are not committed.
+
+
+The full streaming run on configuration 1000 completed on 2026-11-14. All
+5,184 supplied t=0 eigenvectors and four source spins (20,736 physical RHS)
+passed both full original Chroma CPU FP64 residual checks at 1e-12. The maximum
+relative residual was 2.4063810813519627e-14. One solver/hierarchy served all
+1,296 width-sixteen array calls in one uninterrupted session. The subsequent
+completed-output resume verifier reread all 20,736 column checksums successfully.
+
+The 6,879,707,264-byte complex128 point-sink NPY file is retained at
+`/Users/admin/Downloads/MetalClover-results/cfg1000-t0-unsmeared.npy`.
+Its SHA256 is
+`3b017ee3fd6989514f3ac23f79859082442da18b3fb201c278d14fd85c8ffc51`.
+Total solve-session wall time, including input, setup, both residual checks and
+streamed output, was 30,140.426 s (8 h 22 min 20 s). Peak process RSS was
+5.955 GiB on an M1 Max with 24 GPU cores and 32 GiB memory. Nominal dispatched
+GPU operator work divided by this wall time was 277.49 GFLOP/s; CPU FP64 and
+Krylov-vector arithmetic are excluded from that numerator. Final checksum
+rereading and SHA256 are outside this timing. MetalClover's
+`results/unsmeared-t0-5184/` records the complete column journal, metadata,
+logs, resource samples, frozen hashes and production validation. The original
+projected perambulator measurement and helper were unchanged for this addition.
