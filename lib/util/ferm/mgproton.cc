@@ -10,7 +10,6 @@
 #include "util/ferm/superb_contractions.h"
 #include "util/ferm/superb_options.h"
 
-#include <limits>
 #include <set>
 
 #ifdef BUILD_SB
@@ -18,18 +17,6 @@ namespace Chroma
 {
   namespace SB
   {
-
-    DistillationRHSPlan::DistillationRHSPlan(int vectors, int requested_max_rhs)
-        : num_vecs(vectors) {
-      if (vectors < 1 || vectors > std::numeric_limits<int>::max() / Ns)
-        throw std::runtime_error("invalid distillation num_vecs");
-      total_rhs = Ns * vectors;
-      max_rhs = requested_max_rhs <= 0
-                    ? total_rhs
-                    : std::min(total_rhs,
-                               std::max(Ns, (requested_max_rhs / Ns) * Ns));
-      vecs_per_batch = max_rhs / Ns;
-    }
 
     /// Verbosity level for solvers
     enum Verbosity {
@@ -4011,54 +3998,57 @@ namespace Chroma
 		       const Tensor<2, SB::Complex>& spin_sources, int max_rhs,
 		       const doInversionOnTSliceFn<SB::Complex>& call)
       {
-        const int num_vecs = chi.kvdim()['n'];
-        const int num_spins = spin_sources.kvdim()['s'];
-        if (num_vecs == 0 || num_spins == 0)
-          return;
-        if (num_vecs > std::numeric_limits<int>::max() / num_spins)
-          throw std::runtime_error("too many colorvec/spin RHS");
-        const int total_rhs = num_vecs * num_spins;
-        max_rhs = max_rhs > 0 ? std::min(max_rhs, total_rhs) : total_rhs;
-        // Spin is the fast RHS index, so even one colorvec supplies Ns solves.
-        // Only this bounded tile owns full-lattice source/solution fields.
-        std::vector<std::shared_ptr<LatticeFermion>> chis(max_rhs),
-            quark_solns(max_rhs);
-        for (int col = 0; col < max_rhs; ++col) {
-          chis[col] = std::make_shared<LatticeFermion>();
-          quark_solns[col] = std::make_shared<LatticeFermion>();
-        }
-        for (int first = 0; first < total_rhs; first += max_rhs) {
-          int count = std::min(max_rhs, total_rhs - first);
-          for (int col = 0; col < count; ++col) {
-            int n = (first + col) / num_spins;
-            int spin_index = (first + col) % num_spins;
-            *chis[col] = zero;
-            SB::contract<Nd + 5>(
-                chi.kvslice_from_size({{'n', n}}, {{'n', 1}}),
-                spin_sources.kvslice_from_size({{'s', spin_index}}, {{'s', 1}})
-                    .template cast<COMPLEX_CHI>(),
-                "")
-                .rename_dims({{'s', '!'}, {'S', 's'}})
-                .copyTo(SB::asTensorView(*chis[col])
-                            .kvslice_from_size({{'t', t_source}}));
-            *quark_solns[col] = zero;
-          }
-          auto results =
-              PP(std::vector<std::shared_ptr<LatticeFermion>>(
-                     quark_solns.begin(), quark_solns.begin() + count),
-                 std::vector<std::shared_ptr<const LatticeFermion>>(
-                     chis.begin(), chis.begin() + count));
-          if (results.size() != size_t(count))
-            throw std::runtime_error("colorvec/spin result count mismatch");
-          for (int col = 0; col < count; ++col)
-            call(asTensorView(*quark_solns[col])
-                     .rename_dims({{'s', 'S'}})
-                     .toComplex()
-                     .template make_sure<SB::Complex>()
-                     .append_dimension('s')
-                     .append_dimension('n'),
-                 (first + col) % num_spins, (first + col) / num_spins);
-        }
+	int num_vecs = chi.kvdim()['n'];
+        int num_spins = spin_sources.kvdim()['s'];
+        // Bound full-lattice temporaries to this RHS tile, not all colorvecs.
+        max_rhs = max_rhs > 0 ? max_rhs : num_vecs;
+        int max_step = std::min(num_vecs, max_rhs);
+        std::vector<std::shared_ptr<LatticeFermion>> chis(max_step),
+            quark_solns(max_step);
+        for (int col = 0; col < max_step; col++)
+          chis[col].reset(new LatticeFermion);
+        for (int col = 0; col < max_step; col++)
+	  quark_solns[col].reset(new LatticeFermion);
+
+	for (int spin_index = 0; spin_index < num_spins; ++spin_index)
+	{
+	  for (int n0 = 0, n_step = std::min(max_rhs, num_vecs); n0 < num_vecs;
+	       n0 += n_step, n_step = std::min(n_step, num_vecs - n0))
+	  {
+	    for (int n = n0, col = 0; col < n_step; ++n, ++col)
+	    {
+	      // Put the colorvec sources for the t_source on chis
+	      // chis[col] = chi[n=n0] x spin_sources[s=spin_index]
+	      *chis[col] = zero;
+	      SB::contract<Nd + 5>(chi.kvslice_from_size({{'n', n}}, {{'n', 1}}),
+				   spin_sources.kvslice_from_size({{'s', spin_index}}, {{'s', 1}})
+				     .template cast<COMPLEX_CHI>(),
+				   "")
+		.rename_dims({{'s', '!'}, {'S', 's'}})
+		.copyTo(SB::asTensorView(*chis[col]).kvslice_from_size({{'t', t_source}}));
+
+	      *quark_solns[col] = zero;
+	    }
+
+	    // Solve
+	    std::vector<SystemSolverResults_t> res =
+	      PP(std::vector<std::shared_ptr<LatticeFermion>>(quark_solns.begin(),
+							      quark_solns.begin() + n_step),
+		 std::vector<std::shared_ptr<const LatticeFermion>>(chis.begin(),
+								    chis.begin() + n_step));
+
+	    for (int n = n0, col = 0; col < n_step; ++n, ++col)
+	    {
+	      call(asTensorView(*quark_solns[col])
+		     .rename_dims({{'s', 'S'}})
+		     .toComplex()
+		     .template make_sure<SB::Complex>()
+		     .append_dimension('s')
+		     .append_dimension('n'),
+		   spin_index, n);
+	    }
+	  }
+	}
       }
 
       /// Apply the inverse to LatticeFermion tensors

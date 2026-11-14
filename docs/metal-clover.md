@@ -219,44 +219,49 @@ to construct. All full native residuals were below 2.433e-14, and the first
 96 full solutions agreed across methods/widths within 6.343e-13 relative.
 Peak process RSS was 14.547 GiB on the 32 GiB M1 Max (24 GPU cores).
 
-## Distillation source-spin structure
+## Eloy's distillation caller with a batched Metal backend
 
-For each source time and source phasing, `num_vecs` color eigenvectors
-produce `Ns * num_vecs` physical spinor RHS: four inversions per eigenvector.
-Source spin is the fast index, `rhs = Ns * vector + spin_source`. Sink spin
-is an output index and adds no inversions. The inline distillation measurement
-now supplies all source spins together, so even `num_vecs=1` reaches qprop
-as four RHS. The same solver object and hierarchy are reused throughout.
+The production measurement retains Eloy's original source-spin outer loop,
+eigenvector batching within each spin, contractions and storage organization.
+`num_vecs` eigenvectors still require `Ns * num_vecs` physical inversions per
+source time and phasing. That total does not require coalescing all source
+spins in one call. One solver object and MG hierarchy serve all the loops.
 
-`max_rhs` counts physical spinors. The measurement rounds a positive value
-down to a multiple of `Ns`, with at least `Ns`, and caps it at the total.
-Thus values 1–7 select four RHS (one colorvec), 8–11 select eight (two), and
-16 selects sixteen (four). A nonpositive cap selects the full collection.
-The input `num_vecs` is preserved. Logs distinguish the requested/effective
-cap, colorvecs per tile and total physical RHS per source time/phasing.
-The inverter's `RHSBatch` remains a separate GPU/memory cap and may split
-these caller groups; setting it to one remains useful for scalar controls.
+`max_rhs` is the physical spinor count in a caller batch; with a fixed source
+spin it also counts the eigenvectors in that call. A positive cap is used
+without rounding, and **max_rhs=1 is valid**. For three vectors at cap two,
+each spin sends batches of two and one. For 5,184 vectors at cap sixteen,
+four spins produce 1,296 calls and 20,736 inversions. There is no small cap
+on production `num_vecs`. The Metal `RHSBatch` is a separate device/memory cap;
+set both to sixteen for the largest width in the existing measured comparison.
 
-Full-field tiles are bounded by the normalized cap. All four source-spin
-projections are accumulated with explicit source-vector/source-spin/sink-spin
-indices before perambulator storage. Additional sink phasings reuse the same
-inversions. The generic colorvec qprop helper also batches across the supplied
-spin list, preserving its callback indices and arbitrary partial-spin callers.
+The original perambulator measurement and header are restored byte-for-byte
+from the pre-overhaul branch. Its helper retains the localized bounded
+source/solution pools and `Ns` spin dimension fix. Metal's true array backend,
+shared gauge/clover/hierarchy data, per-column convergence and full original
+Chroma CPU FP64 residual checks remain in place.
 
-The throughput harness now generates one repeatable time-localized complex
-Z4 color vector per vector index and embeds it into spins 0–3 at
-`t_source=176 mod Lt`. Its CSV includes `num_vecs`, `source_spins`, physical
-`rhs`, seconds/RHS and seconds/colorvec. BASE_NUM_VECS is limited to 1–24;
-the last mode doubles it, retaining the 192-spinor memory bound. This changed
-source layout is separate from the original random-spinor timing evidence.
+The measurement contracts and stores one source-spin channel and sink phasing
+at a time, removing the overhaul's simultaneous four-spin projected buffers.
+Sink eigenvector projection can reduce retained data when the basis is
+truncated. `max_rhs` bounds inversion temporaries; the returned tensor,
+eigenvectors and projected output still consume memory. The existing callback
+interface remains available for a separate streaming unsmeared-output writer.
 
-The four-spin regression passed 64 native checks on the real 12³×96 gauge
-field, including one colorvec / four RHS in one GPU tile and three colorvecs /
-twelve RHS in tiles of eight plus four. The maximum full original Chroma
-FP64 residual for the new spin-source cases was 2.2152e-14; selected projected
-elements agreed with direct CPU inner products within 8.882e-16. The harness's
-one/two-vector smoke run also passed full-field scalar/batch/BiCGStab/MG
-comparisons, with maximum residual 2.1274e-14 and solution difference 4.054e-13.
-These validate qprop and the tiled source/contraction pattern; the complete
-inline perambulator file-I/O job was not run. Structured evidence is in
-MetalClover's `results/distillation-spins12/` directory.
+The throughput harness keeps BASE_NUM_VECS and explicit physical-RHS reporting,
+but now follows the production spin-outer ordering at source time zero. It
+compares caller caps 1, 8 and 16 and doubles the vector count in the last mode.
+A single vector therefore makes four one-RHS calls even with a larger cap.
+Its 24/48-vector memory bound is test-only, not a production restriction.
+The previous coalescing test evidence at commit `bc151f436` remains historical.
+
+The restored real-gauge regression passed all 64 native checks at source time
+zero. Both inverters respected `max_rhs=1` (four separate one-RHS calls for
+one eigenvector) and `max_rhs=2` (2+1 batches for each spin of three vectors).
+The new spin-source cases had maximum full original Chroma FP64 residual
+2.0404e-14 and projected-element difference 8.882e-16 against direct CPU
+inner products. The updated spin-major harness smoke test also passed its
+full-solution comparisons with maximum residual 2.4445e-14 and BiCGStab/MG
+difference 2.5393e-13. The full inline file-I/O and full 5,184-vector jobs
+were not run. MetalClover's `results/eloy-spin-batching12/` contains the
+structured evidence and exact source/binary hashes.

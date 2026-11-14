@@ -147,11 +147,13 @@ int main(int argc, char **argv) {
            "full_relative,max_solution_difference,min_iterations,max_"
            "iterations,total_iterations\n";
     std::cout << std::setprecision(17);
-    const int source_time = 176 % dims[3];
+    const int source_time = 0;
     std::cout << "DISTILLATION_SOURCES num_vecs=" << base_vectors
               << " source_spins=" << Ns << " physical_rhs=" << base
               << " t_source=" << source_time
-              << " seed_base=20261113 spin_fast=true" << std::endl;
+              << " seed_base=20261113 spin_fast_index=true "
+                 "submission_order=spin_major"
+              << std::endl;
     bool have_reference = false;
     for (const std::string name : {"MetalBiCGClover", "MetalMGClover"}) {
       XMLBufferWriter inv;
@@ -192,17 +194,24 @@ int main(int argc, char **argv) {
                   << " caller_tile=" << tile << std::endl;
         StopWatch watch;
         watch.start();
-        for (int i = 0; i < count; i += tile) {
-          int end = std::min(count, i + tile);
-          auto out = std::vector<std::shared_ptr<T>>(solutions.begin() + i,
-                                                     solutions.begin() + end);
-          auto in = std::vector<std::shared_ptr<const T>>(
-              sources.begin() + i, sources.begin() + end);
-          auto result = (*prop)(out, in);
-          if (result.size() != size_t(end - i))
-            throw std::runtime_error("array result count mismatch");
-          std::copy(result.begin(), result.end(), results.begin() + i);
-        }
+        // Match Eloy's production measurement: batch eigenvectors within
+        // each source spin. max_rhs=1 remains a strict one-field caller cap.
+        for (int spin = 0; spin < Ns; ++spin)
+          for (int first = 0; first < count / Ns; first += tile) {
+            int end = std::min(count / Ns, first + tile);
+            std::vector<std::shared_ptr<T>> out;
+            std::vector<std::shared_ptr<const T>> in;
+            for (int vector = first; vector < end; ++vector) {
+              size_t column = size_t(vector) * Ns + spin;
+              out.push_back(solutions[column]);
+              in.push_back(sources[column]);
+            }
+            auto result = (*prop)(out, in);
+            if (result.size() != size_t(end - first))
+              throw std::runtime_error("array result count mismatch");
+            for (int vector = first; vector < end; ++vector)
+              results[size_t(vector) * Ns + spin] = result[vector - first];
+          }
         watch.stop();
         double max_residual = 0, max_difference = 0;
         int min_iterations = 65536, max_iterations = 0;
@@ -280,7 +289,7 @@ int main(int argc, char **argv) {
                   << std::endl;
       }
     }
-    std::cout << "PASS real 12^3x96 four-spin distillation qprop "
+    std::cout << "PASS real 12^3x96 Eloy spin-major distillation qprop "
                  "scalar/batched RHS, one reused "
                  "hierarchy, all full FP64 residuals <=1e-12"
               << std::endl;

@@ -527,158 +527,129 @@ namespace Chroma
 	//
 	const int num_vecs            = params.param.contract.num_vecs;
 	const multi1d<int>& t_sources = params.param.contract.t_sources;
-        const SB::DistillationRHSPlan rhs_plan(num_vecs,
-                                               params.param.contract.max_rhs);
-        std::vector<int> spin_sources(Ns);
-        for (int spin = 0; spin < Ns; ++spin)
-          spin_sources[spin] = spin;
-        QDPIO::cout << "Distillation: num_vecs=" << num_vecs
-                    << " source_spins=" << Ns
-                    << " physical_rhs_per_t_source_and_phase="
-                    << rhs_plan.total_rhs
-                    << " requested_max_rhs=" << params.param.contract.max_rhs
-                    << " effective_max_rhs=" << rhs_plan.max_rhs
-                    << " colorvecs_per_batch=" << rhs_plan.vecs_per_batch
-                    << std::endl;
+	const int max_rhs             = params.param.contract.max_rhs;
 
-        // Set place for doing the contractions
-        SB::DeviceHost dev = params.param.contract.use_device_for_contractions
-                                 ? SB::OnDefaultDevice
-                                 : SB::OnHost;
+	// Set place for doing the contractions
+	SB::DeviceHost dev =
+	  params.param.contract.use_device_for_contractions ? SB::OnDefaultDevice : SB::OnHost;
 
-        // Loop over each time source
-        for (int tt = 0; tt < t_sources.size(); ++tt) {
-          int t_source = t_sources[tt]; // This is the actual time-slice.
-          QDPIO::cout << "t_source = " << t_source << std::endl;
+	// Loop over each time source
+	for (int tt = 0; tt < t_sources.size(); ++tt)
+	{
+	  int t_source = t_sources[tt]; // This is the actual time-slice.
+	  QDPIO::cout << "t_source = " << t_source << std::endl;
 
-          // Compute the first tslice and the number of tslices involved in the
-          // contraction
-          int first_tslice = SB::normalize_coor(
-              t_source - params.param.contract.Nt_backward, Lt);
-          int num_tslices =
-              std::min(params.param.contract.Nt_backward +
-                           std::max(1, params.param.contract.Nt_forward),
-                       Lt);
+	  // Compute the first tslice and the number of tslices involved in the contraction
+	  int first_tslice = SB::normalize_coor(t_source - params.param.contract.Nt_backward, Lt);
+	  int num_tslices = std::min(
+	    params.param.contract.Nt_backward + std::max(1, params.param.contract.Nt_forward), Lt);
 
-          // Get `num_vecs` colorvecs, and `num_tslices` tslices starting from
-          // time-slice `first_tslice`
-          SB::Tensor<Nd + 3, SB::Complex> colorvec =
-              SB::getColorvecs<SB::Complex>(colorvecsSto, u, decay_dir,
-                                            first_tslice, num_tslices, num_vecs,
-                                            "cxyzXnt", SB::Coor<3>{{}}, dev);
+	  // Get `num_vecs` colorvecs, and `num_tslices` tslices starting from time-slice `first_tslice`
+	  SB::Tensor<Nd + 3, SB::Complex> colorvec = SB::getColorvecs<SB::Complex>(
+	    colorvecsSto, u, decay_dir, first_tslice, num_tslices, num_vecs, "cxyzXnt", SB::Coor<3>{{}}, dev);
 
-          for (const auto &it : phasing_pairs) {
-            int phasing_src_idx = it.first;
+	  for (const auto& it : phasing_pairs)
+	  {
+	    int phasing_src_idx = it.first;
 
-            // Get all eigenvectors for `t_source`
-            auto source_colorvec = SB::phaseColorvecs(
-                colorvec.kvslice_from_size(
-                    {{'t', SB::normalize_coor(t_source - first_tslice, Lt)}},
-                    {{'t', 1}}),
-                t_source, phasings[phasing_src_idx]);
+	    // Get all eigenvectors for `t_source`
+	    auto source_colorvec = SB::phaseColorvecs(
+	      colorvec.kvslice_from_size({{'t', SB::normalize_coor(t_source - first_tslice, Lt)}},
+					 {{'t', 1}}),
+	      t_source, phasings[phasing_src_idx]);
 
-            // Retain projected perambulator elements, not every full spinor.
-            // Full fields are bounded by max_rhs, with all source spins
-            // together.
-            std::vector<SB::Tensor<5, SB::Complex>> projected;
-            for (size_t sink = 0; sink < it.second.size(); ++sink) {
-              projected.emplace_back(
-                  "NnSst", SB::Coor<5>{num_vecs, num_vecs, Ns, Ns, num_tslices},
-                  SB::OnHost,
-                  !params.param.contract.use_superb_format ? SB::OnMaster
-                                                           : SB::OnEveryone);
-            }
-            for (int first_n = 0; first_n < num_vecs;
-                 first_n += rhs_plan.vecs_per_batch) {
-              int count = std::min(rhs_plan.vecs_per_batch, num_vecs - first_n);
-              auto source_tile = source_colorvec.kvslice_from_size(
-                  {{'n', first_n}}, {{'n', count}});
-              auto quark_solns = SB::doInversion(
-                  PP, source_tile, t_source, first_tslice, num_tslices,
-                  spin_sources, rhs_plan.max_rhs, "cxyzXnSst");
-              int sink = 0;
-              for (int phasing_snk_idx : it.second) {
-                auto colorvec_snk = SB::phaseColorvecs(
-                    colorvec, first_tslice, phasings[phasing_snk_idx]);
-                projected[sink++]
-                    .kvslice_from_size({{'n', first_n}}, {{'n', count}})
-                    .contract(colorvec_snk, {{'n', 'N'}}, SB::Conjugate,
-                              quark_solns, {}, SB::NotConjugate);
-              }
-            }
-            int sink = 0;
-            for (int phasing_snk_idx : it.second) {
-              const auto all_spins = projected[sink++];
-              for (int spin_source = 0; spin_source < Ns; ++spin_source) {
-                auto elems = all_spins.kvslice_from_size({{'s', spin_source}},
-                                                         {{'s', 1}});
-                StopWatch snarss1;
-                snarss1.start();
+	    for (int spin_source = 0; spin_source < Ns; ++spin_source)
+	    {
+	      // Invert the source for `spin_source` spin and retrieve `num_tslices` tslices starting from tslice `first_tslice`
+	      // NOTE: s is spin source, and S is spin sink
+	      SB::Tensor<Nd + 5, SB::Complex> quark_solns =
+		SB::doInversion(PP, source_colorvec, t_source, first_tslice, num_tslices,
+				{spin_source}, max_rhs, "cxyzXnSst");
 
-                if (!params.param.contract.use_superb_format) {
-                  ValPropElementalOperator_t val;
-                  val.mat.resize(num_vecs, num_vecs);
-                  val.mat = zero;
-                  auto local_elems = elems.getLocal();
-                  for (int i_tslice = 0; i_tslice < num_tslices; ++i_tslice) {
-                    for (int spin_sink = 0; spin_sink < Ns; ++spin_sink) {
-                      KeyPropElementalOperator_t key;
-                      key.t_source = t_source;
-                      key.t_slice =
-                          SB::normalize_coor(i_tslice + first_tslice, Lt);
-                      key.spin_src = spin_source;
-                      key.spin_snk = spin_sink;
-                      key.mass_label = params.param.contract.mass_label;
-                      if (local_elems) {
-                        for (int colorvec_sink = 0; colorvec_sink < num_vecs;
-                             ++colorvec_sink) {
-                          for (int colorvec_source = 0;
-                               colorvec_source < num_vecs; ++colorvec_source) {
-                            std::complex<REAL> e =
-                                local_elems.get({colorvec_sink, colorvec_source,
-                                                 spin_sink, 0, i_tslice});
-                            val.mat(colorvec_sink, colorvec_source)
-                                .elem()
-                                .elem()
-                                .elem() = RComplex<REAL64>(e.real(), e.imag());
-                          }
-                        }
-                      }
-                      {
-                        if (Layout::primaryNode() &&
-                            qdp_db[0].put_record(encodeStorageRecord(key),
-                                                 encodeStorageRecord(val)) != 0)
-                          QDP_error_exit("record storage insert failed");
-                      }
-                    }
-                  }
-                } else {
-                  st.kvslice_from_size({{'s', spin_source},
-                                        {'p', t_source},
-                                        {'P', first_tslice},
-                                        {'h', phasing_src_idx},
-                                        {'H', phasing_snk_idx}},
-                                       {{'s', 1},
-                                        {'p', 1},
-                                        {'P', num_tslices},
-                                        {'h', 1},
-                                        {'H', 1}})
-                      .copyFrom(elems.rename_dims({{'S', 'q'}, {'t', 'P'}}));
-                }
-                snarss1.stop();
-                QDPIO::cout << "Time to store the props : "
-                            << snarss1.getTimeInSeconds() << " secs"
-                            << std::endl;
-              } // for spin_source
-            } // for phasing_snk_idx
-          } // for it
-        } // for tt
+	      StopWatch snarss1;
+	      snarss1.reset();
+	      snarss1.start();
 
-        swatch.stop();
-        QDPIO::cout << "Propagators computed: time= "
-                    << swatch.getTimeInSeconds() << " secs" << std::endl;
-      } catch (const std::exception &e) {
-        QDP_error_exit("%s: caught exception: %s\n", name.c_str(), e.what());
+	      for (int phasing_snk_idx : it.second)
+	      {
+		// Phase the sink
+		auto colorvec_snk =
+		  SB::phaseColorvecs(colorvec, first_tslice, phasings[phasing_snk_idx]);
+
+		// Contract the distillation elements
+		// NOTE: N: is colorvec in sink, and n is colorvec in source
+		SB::Tensor<5, SB::Complex> elems(
+		  "NnSst", {num_vecs, num_vecs, Ns, 1, num_tslices}, SB::OnHost,
+		  !params.param.contract.use_superb_format ? SB::OnMaster : SB::OnEveryone);
+		elems.contract(colorvec_snk, {{'n', 'N'}}, SB::Conjugate, quark_solns, {},
+			       SB::NotConjugate);
+
+		snarss1.stop();
+		QDPIO::cout << "Time to contract for one spin source : "
+			    << snarss1.getTimeInSeconds() << " secs" << std::endl;
+
+		snarss1.reset();
+		snarss1.start();
+
+		if (!params.param.contract.use_superb_format)
+		{
+		  ValPropElementalOperator_t val;
+		  val.mat.resize(num_vecs, num_vecs);
+		  val.mat = zero;
+		  auto local_elems = elems.getLocal();
+		  for (int i_tslice = 0; i_tslice < num_tslices; ++i_tslice)
+		  {
+		    for (int spin_sink = 0; spin_sink < Ns; ++spin_sink)
+		    {
+		      KeyPropElementalOperator_t key;
+		      key.t_source = t_source;
+		      key.t_slice = SB::normalize_coor(i_tslice + first_tslice, Lt);
+		      key.spin_src = spin_source;
+		      key.spin_snk = spin_sink;
+		      key.mass_label = params.param.contract.mass_label;
+		      if (local_elems)
+		      {
+			for (int colorvec_sink = 0; colorvec_sink < num_vecs; ++colorvec_sink)
+			{
+			  for (int colorvec_source = 0; colorvec_source < num_vecs;
+			       ++colorvec_source)
+			  {
+			    std::complex<REAL> e = local_elems.get(
+			      {colorvec_sink, colorvec_source, spin_sink, 0, i_tslice});
+			    val.mat(colorvec_sink, colorvec_source).elem().elem().elem() =
+			      RComplex<REAL64>(e.real(), e.imag());
+			  }
+			}
+		      }
+		      { if (Layout::primaryNode() && qdp_db[0].put_record(encodeStorageRecord(key), encodeStorageRecord(val)) != 0) QDP_error_exit("record storage insert failed"); }
+		    }
+		  }
+		}
+		else
+		{
+		  st.kvslice_from_size({{'s', spin_source},
+					{'p', t_source},
+					{'P', first_tslice},
+					{'h', phasing_src_idx},
+					{'H', phasing_snk_idx}},
+				       {{'s', 1}, {'p', 1}, {'P', num_tslices}, {'h', 1}, {'H', 1}})
+		    .copyFrom(elems.rename_dims({{'S', 'q'}, {'t', 'P'}}));
+		}
+	      }
+
+	      snarss1.stop();
+	      QDPIO::cout << "Time to store the props : " << snarss1.getTimeInSeconds() << " secs"
+			  << std::endl;
+	    } // for spin_source
+	  }   // for it
+	}     // for tt
+
+	swatch.stop();
+	QDPIO::cout << "Propagators computed: time= " << swatch.getTimeInSeconds() << " secs"
+		    << std::endl;
+      } catch (const std::exception& e)
+      {
+	QDP_error_exit("%s: caught exception: %s\n", name.c_str(), e.what());
       }
 
       // Close colorvecs storage

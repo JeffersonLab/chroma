@@ -233,7 +233,7 @@ int main(int argc, char **argv) {
     std::vector<std::shared_ptr<T>> array_solution(5), array_source(5);
     std::vector<std::shared_ptr<const T>> constant_source(5);
     std::vector<T> array_reference(5);
-    int source_time = 176 % dims[3];
+    int source_time = 0;
     for (int col = 0; col < 5; ++col) {
       array_solution[col] = std::make_shared<T>();
       array_source[col] = std::make_shared<T>();
@@ -352,44 +352,32 @@ int main(int argc, char **argv) {
       }
       auto *recording = new RecordingQprop(chimera.PP);
       chimera.PP = Handle<SystemSolver<T>>(recording);
-      const SB::DistillationRHSPlan rounded(2, 7);
-      if (rounded.total_rhs != 8 || rounded.max_rhs != 4 ||
-          rounded.vecs_per_batch != 1 ||
-          SB::DistillationRHSPlan(3, 0).max_rhs != 12)
-        throw std::runtime_error("four-spin RHS normalization failed");
       for (int vectors : {1, 3}) {
-        const SB::DistillationRHSPlan plan(vectors, vectors == 1 ? 1 : 10);
+        const int max_rhs = vectors == 1 ? 1 : 2;
         recording->widths.clear();
         auto input_colorvec = colorvec.kvslice_from_size({}, {{'n', vectors}});
-        SB::Tensor<Nd + 5, SB::Complex> spin_solutions(
-            "cxyzXnSst",
-            SB::latticeSize<Nd + 5>(
-                "cxyzXnSst",
-                {{'n', vectors}, {'S', Ns}, {'s', Ns}, {'t', dims[3]}}),
-            SB::OnHost, SB::OnEveryoneReplicated);
+        auto spin_solutions =
+            SB::doInversion(chimera, input_colorvec, source_time, 0, dims[3],
+                            {0, 1, 2, 3}, max_rhs, "cxyzXnSst");
         SB::Tensor<5, SB::Complex> projected(
             "NnSst", SB::Coor<5>{vectors, vectors, Ns, Ns, 1}, SB::OnHost,
             SB::OnEveryoneReplicated);
-        for (int first_n = 0; first_n < vectors;
-             first_n += plan.vecs_per_batch) {
-          int count = std::min(plan.vecs_per_batch, vectors - first_n);
-          auto tile = SB::doInversion(chimera,
-                                      input_colorvec.kvslice_from_size(
-                                          {{'n', first_n}}, {{'n', count}}),
-                                      source_time, 0, dims[3], {0, 1, 2, 3},
-                                      plan.max_rhs, "cxyzXnSst");
-          tile.copyTo(spin_solutions.kvslice_from_size({{'n', first_n}},
-                                                       {{'n', count}}));
-          projected.kvslice_from_size({{'n', first_n}}, {{'n', count}})
-              .contract(
-                  input_colorvec, {{'n', 'N'}}, SB::Conjugate,
-                  tile.kvslice_from_size({{'t', source_time}}, {{'t', 1}}), {},
-                  SB::NotConjugate);
-        }
-        std::vector<size_t> expected_widths =
-            vectors == 1 ? std::vector<size_t>{4} : std::vector<size_t>{8, 4};
+        projected.contract(
+            input_colorvec, {{'n', 'N'}}, SB::Conjugate,
+            spin_solutions.kvslice_from_size({{'t', source_time}}, {{'t', 1}}),
+            {}, SB::NotConjugate);
+        const std::vector<size_t> expected_widths =
+            vectors == 1 ? std::vector<size_t>{1, 1, 1, 1}
+                         : std::vector<size_t>{2, 1, 2, 1, 2, 1, 2, 1};
         if (recording->widths != expected_widths)
-          throw std::runtime_error("four-spin qprop batching failed");
+          throw std::runtime_error("Eloy spin-major qprop batching failed");
+        std::cout << "ELOY_BATCH solver=" << name << " num_vecs=" << vectors
+                  << " source_spins=" << Ns << " physical_rhs=" << Ns * vectors
+                  << " max_rhs=" << max_rhs
+                  << " qprop_calls=" << recording->widths.size() << " widths=";
+        for (size_t i = 0; i < recording->widths.size(); ++i)
+          std::cout << (i ? "," : "") << recording->widths[i];
+        std::cout << std::endl;
         for (int col = 0; col < vectors; ++col)
           for (int spin = 0; spin < Ns; ++spin) {
             T b = zero, x = zero, sink = zero;
@@ -405,7 +393,7 @@ int main(int argc, char **argv) {
             double residual = relative(*full, x, b);
             if (!(residual <= 1e-12))
               throw std::runtime_error(
-                  "four-spin full Chroma FP64 residual failed");
+                  "spin-major full Chroma FP64 residual failed");
             input_colorvec.kvslice_from_size({{'n', 0}}, {{'n', 1}})
                 .rename_dims({{'n', 's'}})
                 .copyTo(SB::asTensorView(sink).toComplex().kvslice_from_size(
@@ -417,12 +405,11 @@ int main(int argc, char **argv) {
             double element_error = std::abs(element - manual);
             if (!(element_error <= 1e-11 * std::max(1., std::abs(manual))))
               throw std::runtime_error(
-                  "four-spin perambulator index/contraction failed");
-            std::cout << "DISTILLATION_SPIN solver=" << name
-                      << " num_vecs=" << vectors
-                      << " physical_rhs=" << plan.total_rhs
-                      << " effective_max_rhs=" << plan.max_rhs
-                      << " vector=" << col << " source_spin=" << spin
+                  "spin-major perambulator index/contraction failed");
+            std::cout << "ELOY_SPIN solver=" << name << " num_vecs=" << vectors
+                      << " physical_rhs=" << Ns * vectors
+                      << " max_rhs=" << max_rhs << " vector=" << col
+                      << " source_spin=" << spin
                       << " full_relative=" << residual
                       << " projected_error=" << element_error << std::endl;
           }
@@ -432,8 +419,8 @@ int main(int argc, char **argv) {
     std::cout
         << "PASS MetalBiCGClover and MetalMGClover: real LIME gauge, native "
            "stout state, "
-           "full/odd solves, batched qprop RHS tiles=3+2, four-spin "
-           "distillation, "
+           "full/odd solves, batched qprop RHS tiles=3+2, Eloy spin-major "
+           "distillation max_rhs=1/2, "
            "nonzero/exact guesses, zero RHS, "
            "native reconstruction, original CPU FP64 residuals <=1e-12"
         << std::endl;
