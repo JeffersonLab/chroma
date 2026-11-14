@@ -265,3 +265,49 @@ full-solution comparisons with maximum residual 2.4445e-14 and BiCGStab/MG
 difference 2.5393e-13. The full inline file-I/O and full 5,184-vector jobs
 were not run. MetalClover's `results/eloy-spin-batching12/` contains the
 structured evidence and exact source/binary hashes.
+
+
+## Streaming unsmeared time-zero output
+
+The separate `t_metal_clover_unsmeared` program uses the existing public
+`SB::doInversion` callback. It leaves Eloy's projected perambulator measurement
+and helper unchanged. Build it explicitly with MetalClover and SuperbBLAS enabled:
+
+```sh
+make -C mainprogs/tests t_metal_clover_unsmeared
+mainprogs/tests/t_metal_clover_unsmeared \
+  gauge.lime action.xml eigs.t_0.mod1000 /path/to/output-prefix \
+  0 5184 16 MetalMGClover
+```
+
+Arguments after the prefix are first vector, vector count, physical caller RHS
+cap and method (`MetalMGClover` or `MetalBiCGClover`). The current program targets
+one rank, 12³×96, source and sink at time zero. Four source spins for 5,184
+color eigenvectors require 20,736 physical inversions. The original spin-major
+loop and one solver/hierarchy span the whole collection; cap one is supported.
+The device cap is sixteen. Stored FP32 MOD eigenvectors are promoted to FP64
+without changing ordering or phases.
+
+Every full solution must pass both the original native qprop FP64 residual
+and a separate `UnprecCloverLinOp` CPU FP64 evaluation at relative tolerance
+1e-12. The latter checks all 96 sink times before retaining only time zero.
+The output is point sinks, without sink eigenvector projection. The version-1
+NumPy file is complex128, C order, with axes
+`(source_vector, source_spin, z, y, x, sink_colour, sink_spin)` and shape
+`(5184,4,12,12,12,3,4)`. Spatial order is natural x-fastest order, converted
+explicitly from QDP layout. The complete file occupies about 6.41 GiB.
+
+The `.meta.xml` sidecar includes action/source metadata and file hashes;
+`.columns.csv` journals residuals, source norms, iterations and column checksums.
+Payload space is reserved before inversion. A `.state` checkpoint is published
+atomically after syncing every accepted batch. SIGTERM/SIGINT stops after the
+current batch with exit 75. Resume with the same arguments plus `--resume`;
+immutable metadata and all committed payload checksums are verified first.
+An already complete resume only verifies the output and skips MG setup.
+`--stop-after-batches N` supports bounded recovery tests.
+
+MetalClover's `metal-bsr-prototype/run_unsmeared.py` adds process/disk monitoring,
+idle-sleep prevention, session logs, final native checksum rereading, NPY/journal
+validation and a whole-file SHA256 completion report. Its `UNSMEARED_T0.md`
+documents the output reader and exact real-field production inputs. The large
+output and eigenvector files are not committed.

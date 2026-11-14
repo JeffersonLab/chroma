@@ -312,4 +312,8 @@ AM_CXXFLAGS += @METAL_CXXFLAGS@ @SB_CXXFLAGS@ @REDSTAR_DATALIB_CXXFLAGS@
 EXTRA_PROGRAMS += t_metal_clover t_metal_clover_batch
 t_metal_clover_SOURCES = t_metal_clover.cc
 t_metal_clover_batch_SOURCES = t_metal_clover_batch.cc
+if BUILD_SB
+EXTRA_PROGRAMS += t_metal_clover_unsmeared
+t_metal_clover_unsmeared_SOURCES = t_metal_clover_unsmeared.cc
+endif
 endif
