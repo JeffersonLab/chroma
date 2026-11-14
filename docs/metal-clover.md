@@ -333,3 +333,30 @@ rereading and SHA256 are outside this timing. MetalClover's
 `results/unsmeared-t0-5184/` records the complete column journal, metadata,
 logs, resource samples, frozen hashes and production validation. The original
 projected perambulator measurement and helper were unchanged for this addition.
+
+
+## Standard perambulator postprocessing
+
+MetalClover's separate `project_perambulator.cc` converter can project the
+accepted time-zero point sinks onto the same supplied sink eigenvectors,
+forming `V_dagger M_inverse V` without repeating inversions. It writes the same
+standard FILEDB/SDB `propElemOp` keys and FP64 matrix values as the original
+measurement. For configuration 1000 with 5,184 vectors, the source-t=0 to
+sink-t=0 file contains sixteen 5,184×5,184 spin-block records with mass label
+`light`. The original ordering, phases and anisotropic stout-clover action
+are preserved.
+
+The verified full-size file is
+`/Users/admin/Downloads/MetalClover-results/szscl3_12_96_b1p50_t_x4p300_um0p0743_n1p265.prop.n5184.light.t0_0.sdb1000`.
+Its SHA256 is
+`d987f2a56d393e8941d5315c8d842762f22c6299b2cd506947cb060c5acabef4`.
+Native conversion and complete validation took 271.028 s, with largest direct
+QDP contraction error 5.7913e-15 (norm-scaled) and full gamma5 Hermiticity
+relative Frobenius discrepancy 1.0800e-14. All sixteen complete record values
+passed Chroma decoding and bitwise serialization checks. The independent
+DataLib `StorageProp4` reader recognizes the full-size file, and its complete
+spin/vector mapping was verified on a four-vector pilot. Original full CPU
+FP64 residual checks are inherited from the accepted solutions, whose input
+SHA256 was rechecked before projection. MetalClover's `STANDARD_PERAMBULATOR.md`
+and `results/standard-peram-t0-5184/` contain the converter instructions and
+reproducible evidence. The original measurement and solver code are unchanged.
