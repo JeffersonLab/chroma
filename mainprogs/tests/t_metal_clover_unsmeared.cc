@@ -1,4 +1,4 @@
-// Stream a source-t=0 to unsmeared sink-t=0 propagator using Eloy's callback.
+// Stream a same-time unsmeared propagator slice using Eloy's callback.
 #include "actions/ferm/fermacts/eoprec_clover_fermact_w.h"
 #include "actions/ferm/fermstates/ferm_createstate_aggregate_w.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
@@ -349,24 +349,26 @@ int main(int argc, char **argv) {
   if (argc < 9) {
     std::cerr << "Usage: t_metal_clover_unsmeared GAUGE ACTION_XML EIG_MOD "
                  "PREFIX FIRST_VECTOR NUM_VECTORS MAX_RHS METHOD [--resume] "
-                 "[--stop-after-batches N]\n";
+                 "[--stop-after-batches N] [--time T]\n";
     return 2;
   }
   std::string gauge = argv[1], action_path = argv[2], eig_path = argv[3],
               prefix = argv[4], method = argv[8];
   int first = std::stoi(argv[5]), count = std::stoi(argv[6]),
-      cap = std::stoi(argv[7]), stop_after = 0;
+      cap = std::stoi(argv[7]), stop_after = 0, time_slice = 0;
   bool resume = false;
   for (int i = 9; i < argc; ++i) {
     if (std::string(argv[i]) == "--resume")
       resume = true;
+    else if (std::string(argv[i]) == "--time" && i + 1 < argc)
+      time_slice = std::stoi(argv[++i]);
     else if (std::string(argv[i]) == "--stop-after-batches" && i + 1 < argc)
       stop_after = std::stoi(argv[++i]);
     else
       throw std::runtime_error("unknown option");
   }
   if (first < 0 || count < 1 || first + count > 5184 || cap < 1 || cap > 64 ||
-      stop_after < 0 ||
+      stop_after < 0 || time_slice < 0 || time_slice >= 96 ||
       (method != "MetalMGClover" && method != "MetalBiCGClover"))
     throw std::runtime_error("invalid production arguments");
   int qargc = 1;
@@ -383,6 +385,10 @@ int main(int argc, char **argv) {
     if (dims.size() != 4 || dims[0] != 12 || dims[1] != 12 || dims[2] != 12 ||
         dims[3] != 96)
       throw std::runtime_error("this production harness targets 12^3x96");
+    multi1d<int> action_times;
+    read(metadata, "/DBMetaData/Params/Contractions/t_sources", action_times);
+    if (action_times.size() != 1 || action_times[0] != time_slice)
+      throw std::runtime_error("action source time does not match --time");
     Layout::setLattSize(dims);
     Layout::create();
     if (Layout::numNodes() != 1)
@@ -421,16 +427,16 @@ int main(int argc, char **argv) {
     int available = 0, time = 0;
     read(eigen_xml, "/MODMetaData/num_vecs", available);
     read(eigen_xml, "/MODMetaData/t_slice", time);
-    if (available != 5184 || time != 0)
+    if (available != 5184 || time != time_slice)
       throw std::runtime_error(
-          "expected all 5184 supplied eigenvectors at t=0");
+          "expected all 5184 supplied eigenvectors at the requested time");
     int precision = colorvecMODPrecision(eigen_metadata);
     XMLBufferWriter output_meta;
     push(output_meta, "MetalCloverUnsmeared");
     write(output_meta, "format_version", 1);
     write(output_meta, "lattSize", dims);
-    write(output_meta, "source_time", 0);
-    write(output_meta, "sink_time", 0);
+    write(output_meta, "source_time", time_slice);
+    write(output_meta, "sink_time", time_slice);
     write(output_meta, "first_vector", first);
     write(output_meta, "num_vectors", count);
     write(output_meta, "source_spins", Ns);
@@ -460,9 +466,9 @@ int main(int argc, char **argv) {
       SB::closeColorvecStorage(eigen_store);
       throw AlreadyComplete{};
     }
-    auto all_eigenvectors =
-        SB::getColorvecs<SB::ComplexD>(eigen_store, u, 3, 0, 1, first + count,
-                                       "cxyzXnt", SB::Coor<3>{{}}, SB::OnHost);
+    auto all_eigenvectors = SB::getColorvecs<SB::ComplexD>(
+        eigen_store, u, 3, time_slice, 1, first + count, "cxyzXnt",
+        SB::Coor<3>{{}}, SB::OnHost);
     auto eigenvectors =
         all_eigenvectors.kvslice_from_size({{'n', first}}, {{'n', count}});
     SB::closeColorvecStorage(eigen_store);
@@ -480,10 +486,11 @@ int main(int argc, char **argv) {
               << " method=" << method
               << " hierarchy_instances=" << (method == "MetalMGClover" ? 1 : 0)
               << " vectors=" << count << " physical_rhs=" << output.total
-              << " source_time=0 sink_time=0" << std::endl;
+              << " source_time=" << time_slice << " sink_time=" << time_slice
+              << std::endl;
     std::vector<int> sites(size_t(dims[0]) * dims[1] * dims[2]);
     multi1d<int> coord(4);
-    coord[3] = 0;
+    coord[3] = time_slice;
     for (size_t i = 0; i < sites.size(); ++i) {
       size_t q = i;
       for (int d = 0; d < 3; ++d) {
@@ -523,7 +530,7 @@ int main(int argc, char **argv) {
             eigen_tile.kvslice_from_size({{'n', n}}, {{'n', 1}})
                 .rename_dims({{'n', 's'}})
                 .copyTo(SB::asTensorView(b).toComplex().kvslice_from_size(
-                    {{'s', spin}, {'t', 0}}, {{'s', 1}, {'t', 1}}));
+                    {{'s', spin}, {'t', time_slice}}, {{'s', 1}, {'t', 1}}));
             full(r, x, PLUS);
             r -= b;
             double norm = std::sqrt(toDouble(norm2(b))),
@@ -549,7 +556,7 @@ int main(int argc, char **argv) {
             io.stop();
             output.write_seconds += io.getTimeInSeconds();
           };
-      SB::doInversion(solver, eigen_tile, 0, spins, width, callback);
+      SB::doInversion(solver, eigen_tile, time_slice, spins, width, callback);
       if (output.completed != prior + width)
         throw std::runtime_error("incomplete callback batch");
       output.qprop_seconds += audit->last_seconds;
@@ -570,7 +577,8 @@ int main(int argc, char **argv) {
     }
     overall.stop();
     std::cout << (status == 75 ? "PAUSED" : "PASS")
-              << " unsmeared_t0 completed_rhs=" << output.completed
+              << " unsmeared_slice time=" << time_slice
+              << " completed_rhs=" << output.completed
               << " total_rhs=" << output.total
               << " session_seconds=" << overall.getTimeInSeconds()
               << " qprop_seconds=" << output.qprop_seconds

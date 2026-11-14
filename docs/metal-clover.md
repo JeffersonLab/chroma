@@ -282,7 +282,9 @@ mainprogs/tests/t_metal_clover_unsmeared \
 
 Arguments after the prefix are first vector, vector count, physical caller RHS
 cap and method (`MetalMGClover` or `MetalBiCGClover`). The current program targets
-one rank, 12³×96, source and sink at time zero. Four source spins for 5,184
+one rank, 12³×96, with source and retained sink at the same time.
+The native `--time T` option selects that time (default zero); action XML
+`t_sources` and supplied eigenvector metadata must agree with it. Four source spins for 5,184
 color eigenvectors require 20,736 physical inversions. The original spin-major
 loop and one solver/hierarchy span the whole collection; cap one is supported.
 The device cap is sixteen. Stored FP32 MOD eigenvectors are promoted to FP64
@@ -360,3 +362,23 @@ FP64 residual checks are inherited from the accepted solutions, whose input
 SHA256 was rechecked before projection. MetalClover's `STANDARD_PERAMBULATOR.md`
 and `results/standard-peram-t0-5184/` contain the converter instructions and
 reproducible evidence. The original measurement and solver code are unchanged.
+
+
+## Selecting another source time
+
+The standalone unsmeared writer accepts `--time T` for any T in [0,95] on
+this 12³×96 geometry, and the MetalClover Python controller passes the same
+option. Both source construction and retained sink extraction use T. Each
+full four-dimensional native qprop and independent CPU FP64 residual check
+uses the actual source time before retaining the selected slice. The writer
+rejects action/eigenvector time labels that disagree with the request.
+Default time zero preserves the previous checkpoint metadata layout.
+
+For the source/sink t=1 repeat, the supplied file is
+`/Users/admin/Downloads/unitary_distillation/eigs_mod.n5184/1000/eigs.t_1.mod1000`.
+MetalClover's `results/perambulator-t1-5184/action.xml` changes only the
+contraction source-time list to one; all fermion-action parameters and the
+gauge field are identical to the completed time-zero run. The projector
+infers the common source/sink time from accepted point-file metadata and
+writes it to the standard perambulator keys and XML. The target standard
+filename ends in `.prop.n5184.light.t0_1.sdb1000`.
