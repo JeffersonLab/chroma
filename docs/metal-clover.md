@@ -322,7 +322,7 @@ relative residual was 2.4063810813519627e-14. One solver/hierarchy served all
 1,296 width-sixteen array calls in one uninterrupted session. The subsequent
 completed-output resume verifier reread all 20,736 column checksums successfully.
 
-The 6,879,707,264-byte complex128 point-sink NPY file is retained at
+The 6,879,707,264-byte complex128 point-sink NPY file was originally saved at
 `/Users/admin/Downloads/MetalClover-results/cfg1000-t0-unsmeared.npy`.
 Its SHA256 is
 `3b017ee3fd6989514f3ac23f79859082442da18b3fb201c278d14fd85c8ffc51`.
@@ -402,3 +402,20 @@ time-two queue started automatically after time-one solve, standard projection,
 verification and independent reader checks all finished. It uses the same
 physics and numerical code, with a separate hierarchy reused for its complete
 20,736-RHS collection; `results/perambulator-t2-5184/` records that run.
+
+
+The user also requested the full source/sink time-three repeat after time two.
+Its detached local queue waits for the complete time-two pipeline, including
+standard-file verification and the independent reader, and checks free disk
+space before starting. It uses `eigs.t_3.mod1000`, all 5,184 vectors and four
+source spins, the unchanged fermion action and numerical code, one hierarchy
+and the same full CPU FP64 checks. Phone disconnection does not stop these
+local pipelines. MetalClover records this in `results/perambulator-t3-5184/`.
+
+With explicit user approval, the intermediate time-zero and time-one point-sink
+NPY payloads were removed after matching their accepted SHA256 hashes and
+rechecking both retained standard perambulator hashes. Every final standard
+perambulator, original gauge/eigenvector input, log and accepted residual record
+is retained. The exact storage cleanup is recorded in MetalClover at
+`results/perambulator-t3-5184/intermediate-cleanup.json`. Historical point-file
+hashes above identify the verified inputs used to generate those final files.
