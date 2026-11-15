@@ -382,3 +382,23 @@ gauge field are identical to the completed time-zero run. The projector
 infers the common source/sink time from accepted point-file metadata and
 writes it to the standard perambulator keys and XML. The target standard
 filename ends in `.prop.n5184.light.t0_1.sdb1000`.
+
+
+The complete time-one run finished successfully on 2026-11-15 UTC: 20,736 RHS,
+one reused hierarchy, and all original full Chroma CPU FP64 residual checks at
+1e-12. Maximum residual was 2.3818484661997255e-14. The solve-session wall time
+was 30,095.368 s; nominal dispatched GPU operator work over that complete solve
+wall was 278.07 GFLOP/s with CPU FP64/vector arithmetic excluded from the
+numerator. Maximum sampled solve RSS was 5.954 GiB. Standard projection and
+complete readback/symmetry verification took another 273.205 s, with full
+projected gamma5 relative Frobenius discrepancy 1.08109966010116e-14.
+
+The verified standard file ends in `.prop.n5184.light.t0_1.sdb1000`; its SHA256
+is `820f87e336648a40cd579043ba87efa6e03dd5fa4e935179e16f83778dd88cc5`.
+It contains source/sink time one in all sixteen actual spin-block keys.
+MetalClover's `results/perambulator-t1-5184/` records all column residuals,
+checksums, complete-file verification, timings and exact provenance. The local
+time-two queue started automatically after time-one solve, standard projection,
+verification and independent reader checks all finished. It uses the same
+physics and numerical code, with a separate hierarchy reused for its complete
+20,736-RHS collection; `results/perambulator-t2-5184/` records that run.
