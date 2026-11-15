@@ -433,3 +433,29 @@ passed. The standard file ends in `.prop.n5184.light.t0_2.sdb1000`; SHA256 is
 MetalClover records complete evidence in `results/perambulator-t2-5184/`.
 The queued time-three run started automatically at 09:00:39 UTC after all
 time-two checks passed, with the same settings and a new reused hierarchy.
+
+
+The full time-three calculation completed on 2026-11-15 UTC: all 20,736 RHS,
+one reused hierarchy/session, maximum full CPU FP64 residual
+2.4644485165869945e-14. Solve-session wall was 30,172.532 s, with nominal
+dispatched GPU operator work over that wall of 277.93 GFLOP/s. Standard
+projection and complete native validation took 285.502 s; full projected
+gamma5 relative Frobenius discrepancy was 1.08170893841624e-14. All sixteen
+record readbacks, direct QDP contractions and independent DataLib key checks
+passed. The standard file ends in `.prop.n5184.light.t0_3.sdb1000`; SHA256 is
+`346a37dbea6ed810e8a209e42fc482c895366024dc12e00d199466731e88ebd8`.
+MetalClover stores complete evidence in `results/perambulator-t3-5184/`.
+
+The requested time-four repeat started automatically at 17:29:49 UTC after
+those checks and complete evidence capture. Following the same procedure,
+time-two/time-three unsmeared point intermediates were then retired only after
+point/standard SHA256 rechecks and confirming the intermediates were not open.
+Every standard perambulator, original input and accepted log/check is retained;
+MetalClover records the exact cleanup in
+`results/perambulator-t4-5184/intermediate-cleanup.json`. The detached time-four
+queue and pipeline run locally, independently of the user connection.
+
+Here smearing means the gauge links in the fermion action: Chroma
+`STOUT_FERM_STATE`, two spatial stout steps with rho=0.14 and orthog_dir=3.
+The hopping and clover terms use that fermion state. Source and sink projections
+use the supplied eigenvectors with their original ordering and phases.
