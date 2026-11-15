@@ -419,3 +419,17 @@ perambulator, original gauge/eigenvector input, log and accepted residual record
 is retained. The exact storage cleanup is recorded in MetalClover at
 `results/perambulator-t3-5184/intermediate-cleanup.json`. Historical point-file
 hashes above identify the verified inputs used to generate those final files.
+
+
+The complete time-two repeat finished successfully on 2026-11-15 UTC: all
+20,736 RHS, one hierarchy/session, maximum full CPU FP64 residual
+2.4405605444115193e-14. Solve-session wall was 30,198.007 s, with nominal
+dispatched GPU operator work over that wall of 277.49 GFLOP/s. Standard
+projection and complete native validation took 276.066 s; full projected
+gamma5 relative Frobenius discrepancy was 1.08481565710146e-14. All sixteen
+record readbacks, direct QDP contractions and independent DataLib key checks
+passed. The standard file ends in `.prop.n5184.light.t0_2.sdb1000`; SHA256 is
+`94d47408815e44c6fe90d3aa21d38f9af956e5c0367ddcca3f92dbf789d2e4c9`.
+MetalClover records complete evidence in `results/perambulator-t2-5184/`.
+The queued time-three run started automatically at 09:00:39 UTC after all
+time-two checks passed, with the same settings and a new reused hierarchy.
