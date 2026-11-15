@@ -459,3 +459,20 @@ Here smearing means the gauge links in the fermion action: Chroma
 `STOUT_FERM_STATE`, two spatial stout steps with rho=0.14 and orthog_dir=3.
 The hopping and clover terms use that fermion state. Source and sink projections
 use the supplied eigenvectors with their original ordering and phases.
+
+
+The full source/sink time-five repeat is also queued locally after successful
+time-four solve, standard projection, complete verification and independent
+reader checks. It uses `eigs.t_5.mod1000`, all 5,184 vectors and four source
+spins, the unchanged fermion action, one hierarchy reused across all 20,736 RHS
+and both full CPU FP64 checks at 1e-12. Connection loss does not stop either
+local job. MetalClover records staging and frozen hashes in
+`results/perambulator-t5-5184/`.
+
+Space was reclaimed from four obsolete temporary benchmark payloads only after
+matching their archived SHA256 hashes and confirming they were not open; the
+running time-four source, binaries, library and scripts remain unchanged. Before
+starting time five, the queue saves complete accepted time-four evidence and,
+if necessary, retires only its validated unsmeared point intermediate after
+point/standard SHA256 rechecks. Every standard perambulator and original input
+is retained, and the queue rechecks at least 17 GiB free before starting.
