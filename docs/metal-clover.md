@@ -476,3 +476,21 @@ starting time five, the queue saves complete accepted time-four evidence and,
 if necessary, retires only its validated unsmeared point intermediate after
 point/standard SHA256 rechecks. Every standard perambulator and original input
 is retained, and the queue rechecks at least 17 GiB free before starting.
+
+
+Source/sink times six through ten are queued locally in sequence after time
+five: 103,680 additional physical RHS, with 5,184 eigenvectors and four spins
+at every time. The action, cap of sixteen RHS, one reused hierarchy per time
+and both full Chroma CPU FP64 checks at 1e-12 are unchanged. Each job waits
+for complete preceding validation and finalization; time ten also saves its
+own complete evidence. Numerical executables, libraries and controllers have
+private byte-identical runtime copies. The detached workers and idle-sleep
+prevention do not depend on a phone/chat connection.
+
+MetalClover records the batch in `results/perambulator-t6-t10-5184/`, with
+per-time actions, hashes and scripts in the corresponding individual records.
+A storage forecast covers all remaining standard outputs. Old generated
+artifacts were transparently compressed with complete SHA256 verification;
+original inputs, numerical datasets and perambulators are preserved. Only
+fully accepted point intermediates are retired after evidence capture and
+point/standard SHA256 rechecks. Every standard perambulator is retained.
