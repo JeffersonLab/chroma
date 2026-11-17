@@ -518,3 +518,28 @@ performed. The supervisor checks the current budget every thirty seconds and
 releases workers automatically only after sufficient space and complete preceding
 validation are available. MetalClover records inputs, hashes, scripts, verified
 launches and the initial budget in `results/perambulator-t11-t20-5184/`.
+
+
+On 2026-11-17 the user replaced the cfg1000 time-eleven through time-twenty
+extension with cfg1020 diagonal blocks P(1,1) through P(10,10). All superseded
+waiting workers and their storage supervisor were stopped and their exits
+verified. Cfg1000 continues through complete time-ten validation and finalization
+before the first cfg1020 job starts. No standard files or original inputs were
+removed. New cfg1020 jobs retain all established checks and 20,736 RHS per time,
+cap sixteen, one reused hierarchy per collection and both full Chroma CPU FP64
+residual checks at 1e-12. The private numerical runtime is unchanged.
+
+The cfg1020 LIME payload's SciDAC checksums pass, and all eight fermion-action
+entries in its header agree with the validated action. Each supplied t=0..10
+MOD eigenvector file contains 5,184 finite values in `MODMetaData/Weights`,
+stored in descending order; vector ordering, phases and weights are preserved.
+The diagonal queue's storage forecast passes while retaining every standard.
+MetalClover records metadata, hashes, launch/dependency proofs and control tests
+in `results/cfg1020-t0-t10-5184/` and the corresponding per-time records.
+
+Previous cfg1000 jobs retained only equal source/sink times. Their P(0,0)
+output does not contain P(1,0)..P(10,0), and no existing cfg1020 perambulator was
+found in the checked data/output paths. The user chose diagonal blocks first;
+source-zero cross-time blocks remain deferred. They need one source-zero bank
+plus multi-sink export support and additional storage for ten more standard
+blocks. They cannot be recovered from the saved diagonal blocks alone.
