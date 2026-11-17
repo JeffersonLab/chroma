@@ -494,3 +494,27 @@ artifacts were transparently compressed with complete SHA256 verification;
 original inputs, numerical datasets and perambulators are preserved. Only
 fully accepted point intermediates are retired after evidence capture and
 point/standard SHA256 rechecks. Every standard perambulator is retained.
+
+
+The complete source/sink time-four, time-five and time-six collections have now
+passed all 20,736 RHS, one hierarchy/session, both original full Chroma CPU FP64
+checks at 1e-12, standard full-record readback, direct QDP contractions, gamma5
+Hermiticity and the independent DataLib reader. Maximum full relative residuals
+were respectively 2.40512e-14, 2.50563e-14 and 2.43416e-14. All standard files
+remain; complete evidence is in MetalClover's individual run records. Only
+accepted point intermediates were retired after the recorded checksum rechecks.
+
+Source/sink times eleven through twenty are queued sequentially after time ten,
+with 207,360 additional physical RHS and the same action, cap of sixteen, one
+reused hierarchy per time and full checks. New detached workers leave the
+existing time-seven solve and times eight through ten unchanged. They share
+the frozen private runtime, which must remain available until time twenty ends.
+Phone/chat connection loss does not stop the workers or storage supervisor.
+
+The extension is currently held by its full-sequence storage guard: approximately
+65 GiB additional free space is needed to retain every standard perambulator.
+No external volume was mounted, and no additional cleanup/compression was
+performed. The supervisor checks the current budget every thirty seconds and
+releases workers automatically only after sufficient space and complete preceding
+validation are available. MetalClover records inputs, hashes, scripts, verified
+launches and the initial budget in `results/perambulator-t11-t20-5184/`.
