@@ -543,3 +543,14 @@ found in the checked data/output paths. The user chose diagonal blocks first;
 source-zero cross-time blocks remain deferred. They need one source-zero bank
 plus multi-sink export support and additional storage for ten more standard
 blocks. They cannot be recovered from the saved diagonal blocks alone.
+
+
+A user-requested idle test window on 2026-11-17 Eastern suspended the active
+cfg1000 time-ten native solve/controllers and queued cfg1020 starts in place.
+The same processes resumed after 1,544.714 seconds, with one solver session and
+one hierarchy preserved; full FP64 checks continued passing. New Wick
+contraction completed its six benchmark runs and byte audit during that window.
+Raw session wall timings include the pause and were not rewritten. MetalClover
+stores the exact identities, bounded-resume watchdog, peer completion marker
+and active-RHS resume proof in `results/cpu-idle-wick-20261117-224910/`, with a
+`manual-idle-window.json` note in the cfg1000 time-ten record.
