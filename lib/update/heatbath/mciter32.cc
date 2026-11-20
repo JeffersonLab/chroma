@@ -15,7 +15,7 @@
 #include "update/heatbath/su2_hb_update.h"
 
 #if 1
-#warning "FIXME"
+// FIXME
 const int igluetmp = 1;
 const Real GlueCoeffRT(0.0);
 const Real GlueCoeffPG(0.0);

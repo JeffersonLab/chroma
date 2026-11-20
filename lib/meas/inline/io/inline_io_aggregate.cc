@@ -89,7 +89,9 @@ namespace Chroma
 
 	success &= InlineXMLWriteNamedObjEnv::registerAll();
 
+#ifdef BUILD_SB
 	success &= InlineExecuteCmdEnv::registerAll();
+#endif
 
 
 	// QIO USQCD DD PAIRS Reader

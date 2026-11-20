@@ -3,6 +3,9 @@
 #include "chromabase.h"
 #include "chroma_config.h"
 
+// Kernels on the QDP++ site layout (scalarsite); not used with QDP-JIT
+#ifndef QDP_IS_QDPJIT
+
 /* The funky kernels used by BiCGStab.
    These versions should always work... */
 
@@ -738,5 +741,7 @@ namespace Chroma {
 }
 
 
+
+#endif // QDP_IS_QDPJIT
 
 #endif

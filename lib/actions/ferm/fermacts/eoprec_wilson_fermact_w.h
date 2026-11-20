@@ -51,21 +51,21 @@ namespace Chroma
       cfs(a.cfs), param(a.param) {}
 
     //! Produce a linear operator for this action
-    EvenOddPrecConstDetLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const;
+    EvenOddPrecConstDetLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const override;
 
     //! Produce the gamma_5 hermitian operator H_w
-    LinearOperator<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const 
+    LinearOperator<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const override 
       { 
 	return new lgherm<LatticeFermion>(linOp(state));
       }
 
     //! Return a linear operator solver for this action to solve M*psi=chi 
     LinOpSystemSolver<T>* invLinOp(Handle< FermState<T,P,Q> > state,
-				   const GroupXML_t& invParam) const;
+				   const GroupXML_t& invParam) const override;
 
     //! Return a linear operator solver for this action to solve MdagM*psi=chi 
     MdagMSystemSolver<T>* invMdagM(Handle< FermState<T,P,Q> > state,
-				   const GroupXML_t& invParam) const;
+				   const GroupXML_t& invParam) const override;
 
     //! Return a projector after this action
     Projector<T>* projector(Handle< FermState<T,P,Q> > state,
@@ -80,7 +80,7 @@ namespace Chroma
 
   protected:
     //! Return the fermion BC object for this action
-    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+    const CreateFermState<T,P,Q>& getCreateState() const override {return *cfs;}
 
     //! Partial constructor
     EvenOddPrecWilsonFermAct() {}

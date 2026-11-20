@@ -1,3 +1,4 @@
+#include "util/ferm/colorvec_mod_reader.h"
 /*! \file
  * \brief Inline measurement that construct unsmeared hadron nodes using distillation
  */
@@ -225,13 +226,13 @@ namespace Chroma
   { 
     //----------------------------------------------------------------------------
     // Convenience type
-    typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MOD_t;
+    typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVector> > MOD_t;
 
     // Convenience type
-    typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MODS_t;
+    typedef ColorvecMODReader MODS_t;
 
     // Convenience type
-    typedef QDP::MapObjectMemory<KeyTimeSliceColorVec_t, SubLatticeColorVectorF> SUB_MOD_t;
+    typedef QDP::MapObjectMemory<KeyTimeSliceColorVec_t, SubLatticeColorVector> SUB_MOD_t;
 
   } // end namespace
 
@@ -705,9 +706,9 @@ namespace Chroma
       swatch.reset();
       swatch.start();
 
-      LatticeColorVectorF vec_srce = zero;
+      LatticeColorVector vec_srce = zero;
       KeyTimeSliceColorVec_t src_key(t_slice, colorvec_ind);
-      TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_slice);
+      TimeSliceIO<LatticeColorVector> time_slice_io(vec_srce, t_slice);
       eigen_source.get(src_key, time_slice_io);
 
       // Loop over each spin source

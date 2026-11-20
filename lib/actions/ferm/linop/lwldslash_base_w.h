@@ -79,6 +79,19 @@ namespace Chroma
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
 
+    //! Hopping term in one direction, output on checkerboard cb
+    /*!
+     * Used by the clover operators for multigrid coarsening (CoarsenableOp).
+     * QDPWilsonDslash implements it; the other Dslash implementations
+     * (CPP, LLVM, QPhiX) are not used for coarsening.
+     */
+    void applyDirection(T& chi, const T& psi, enum PlusMinus isign,
+			int dir, int cb) const
+    {
+      QDPIO::cerr << "WilsonDslash: applyDirection is not implemented for this Dslash" << std::endl;
+      QDP_abort(1);
+    }
+
   protected:
     //! Get the anisotropy parameters
     virtual const multi1d<Real>& getCoeffs() const = 0;

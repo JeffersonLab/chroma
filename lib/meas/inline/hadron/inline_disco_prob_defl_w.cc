@@ -26,6 +26,7 @@
 #include <cassert>
 #include <string>
 #include <complex>
+#include <vector>
 
 namespace Chroma 
 { 
@@ -68,16 +69,15 @@ namespace Chroma
 	read(inputtop,"p_num",param.p_num);
         read(inputtop,"p_file",param.p_file);
 	param.use_p_list = true;
-        int c1[param.p_num],c2[param.p_num],c3[param.p_num];
-	int n,m,l,i=1,lines;
+        std::vector<int> c1,c2,c3;
+	int n,m,l,lines;
 	std::ifstream read(param.p_file);
 	while(read>>n>>m>>l){
-	  c1[i]=n;
-	  c2[i]=m;
-	  c3[i]=l;
-	  i++;
+	  c1.push_back(n);
+	  c2.push_back(m);
+	  c3.push_back(l);
 	}
-	lines=i-1;//Total number of momenta.
+	lines=c1.size();//Total number of momenta.
 	param.p_list.resize(lines, Nd - 1);
 	for(int mom = 0; mom < lines; mom++)
 	{

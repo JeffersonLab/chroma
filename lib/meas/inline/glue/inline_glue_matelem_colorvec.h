@@ -29,6 +29,11 @@ namespace Chroma
 
       struct Param_t
       {
+	#ifdef BUILD_SB
+        bool use_superb_format = true;
+#else
+        bool use_superb_format = false;
+#endif
 	int                     mom2_max;               /*!< (mom)^2 <= mom2_max */
 	int                     displacement_length;    /*!< Displacement length for creat. and annih. ops */
 	int                     num_vecs;               /*!< Number of color vectors to use */

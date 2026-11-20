@@ -249,7 +249,7 @@ namespace Chroma
       chrono_bufMY(new CircularBuffer<T>(max_chrono)){}
 
 
-    void reset(void) {
+    void reset(void) override {
       chrono_bufX->reset();
       chrono_bufY->reset();
       chrono_bufMX->reset();
@@ -339,7 +339,7 @@ namespace Chroma
 
     void predictX(T& X,
 		  const LinearOperator<T>& M,
-		  const T& chi) 
+		  const T& chi) override 
     {
       START_CODE();
       StopWatch swatch;
@@ -379,7 +379,7 @@ namespace Chroma
 
     void predictY(T& Y,
 		  const LinearOperator<T>& M,
-		  const T& chi) 
+		  const T& chi) override 
      {
       START_CODE();
       StopWatch swatch;
@@ -514,7 +514,7 @@ namespace Chroma
 	
 	
 
-    void newXVector(const T& X) 
+    void newXVector(const T& X) override 
     {
       START_CODE();
 
@@ -529,7 +529,7 @@ namespace Chroma
     }
 
 
-    void newYVector(const T& Y) 
+    void newYVector(const T& Y) override 
     {
       START_CODE();
 

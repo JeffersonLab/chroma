@@ -66,6 +66,10 @@ namespace Chroma {
 // Bottom line, if no optimised Dslash-s exist then the naive QDP Dslash
 // becomes the WilsonDslash
 
+#if defined(QDP_IS_QDPJIT)
+#error "With QDP-JIT the JIT clover term is used (BUILD_JIT_CLOVER_TERM, Chroma_ENABLE_JIT_CLOVER)"
+#endif
+
 #include "clover_term_qdp_w.h"
 namespace Chroma {
   using CloverTerm  = QDPCloverTerm;

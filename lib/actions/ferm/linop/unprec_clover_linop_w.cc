@@ -17,14 +17,10 @@ namespace Chroma
   void UnprecCloverLinOp::create(Handle< FermState<T,P,Q> > fs,
 				 const CloverFermActParams& param_)
   {
-    //   QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << std::endl;
-
     param = param_;
 
     A.create(fs, param);
     D.create(fs, param.anisoParam);
-
-    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << std::endl;
   }
 
 
@@ -58,8 +54,6 @@ namespace Chroma
 			   const LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
   {
-    // A. deriv will resize
-    
     A.deriv(ds_u, chi, psi, isign);
 
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
@@ -81,4 +75,6 @@ namespace Chroma
     return site_flops*Layout::sitesOnNode();
   }
 
+
+  
 } // End Namespace Chroma

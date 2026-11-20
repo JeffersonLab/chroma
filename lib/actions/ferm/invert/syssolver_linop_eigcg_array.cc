@@ -1,3 +1,6 @@
+#include "chroma_config.h"
+
+#ifdef BUILD_OPT_LAPACK
 /*! \file
  *  \brief Solve a M*psi=chi linear system array by EigCG2
  */
@@ -250,3 +253,5 @@ namespace Chroma
 }
 
 #endif
+
+#endif // BUILD_OPT_LAPACK

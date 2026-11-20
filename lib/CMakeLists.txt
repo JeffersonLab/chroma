@@ -29,6 +29,7 @@ set(ChromaLIB_HEADERS
 	handle.h
 	lib.h
 	linearop.h
+	coarsenable_op.h
 	eo_linop.h
     eoprec_linop.h
     eoprec_constdet_linop.h
@@ -655,12 +656,9 @@ list(APPEND ChromaLIB_HEADERS
 	actions/ferm/linop/lwldslash_base_3d_w.h
 	actions/ferm/linop/lwldslash_3d_qdp_w.h
 	actions/ferm/linop/clover_term_w.h
-    actions/ferm/linop/clov_triang_qdp_w.h
+    actions/ferm/linop/exp_clover_term_w.h
 	actions/ferm/linop/clover_term_base_w.h
 	actions/ferm/linop/exp_clover_term_base_w.h
-	actions/ferm/linop/clover_term_qdp_w.h
-    actions/ferm/linop/exp_clover_term_w.h
-	actions/ferm/linop/exp_clover_term_qdp_w.h
 	actions/ferm/linop/eoprec_clover_linop_w.h
     actions/ferm/linop/eoprec_exp_clover_linop_w.h
 	actions/ferm/linop/seoprec_clover_linop_w.h
@@ -1017,6 +1015,7 @@ list(APPEND ChromaLIB_HEADERS
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.h
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h
+        meas/inline/hadron/inline_tetraquark_matelem_colorvec_w.h
 	meas/inline/hadron/inline_inverter_test_w.h
 	meas/inline/hadron/inline_mres_w.h
 	meas/inline/hadron/inline_qpropqio_w.h
@@ -1110,8 +1109,6 @@ target_sources(chromalib PRIVATE
 	actions/ferm/invert/invsumr.cc 
 	actions/ferm/invert/inv_gmresr_cg_array.cc 
 	actions/ferm/invert/inv_minres_array.cc 
-	actions/ferm/invert/inv_eigcg2.cc 
-	actions/ferm/invert/inv_eigcg2_array.cc 
 	actions/ferm/invert/inv_rel_cg1.cc 
 	actions/ferm/invert/inv_rel_cg2.cc 
 	actions/ferm/invert/inv_rel_gmresr_cg.cc 
@@ -1146,8 +1143,6 @@ target_sources(chromalib PRIVATE
 	actions/ferm/invert/syssolver_linop_cg.cc 
 	actions/ferm/invert/syssolver_linop_cg_timing.cc 
 	actions/ferm/invert/syssolver_linop_cg_array.cc 
-	actions/ferm/invert/syssolver_linop_eigcg.cc 
-	actions/ferm/invert/syssolver_linop_eigcg_array.cc 
 	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.cc 
 	actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.cc 
 	actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.cc 
@@ -1162,14 +1157,11 @@ target_sources(chromalib PRIVATE
 	actions/ferm/invert/syssolver_mdagm_rel_ibicgstab_clover.cc 
 	actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc 
 	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc 
-	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc 
-	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc 
 	actions/ferm/invert/syssolver_polyprec_cg.cc 
 	actions/ferm/invert/syssolver_linop_bicgstab.cc 
 	actions/ferm/invert/syssolver_linop_bicrstab.cc 
 	actions/ferm/invert/syssolver_linop_ibicgstab.cc 
 	actions/ferm/invert/syssolver_linop_mr.cc 
-	actions/ferm/invert/syssolver_linop_fgmres_dr.cc 
 	actions/ferm/invert/multi_syssolver_cg_params.cc 
 	actions/ferm/invert/multi_syssolver_mr_params.cc 
 	actions/ferm/invert/multi_syssolver_linop_aggregate.cc 
@@ -1474,12 +1466,12 @@ target_sources(chromalib PRIVATE
 	actions/ferm/fermacts/eoprec_zolo_nef_fermact_array_w.cc 
 	actions/ferm/fermacts/eoprec_ovext_fermact_array_w.cc 
 	actions/ferm/fermacts/clover_fermact_params_w.cc 
-	actions/ferm/fermacts/eoprec_clover_fermact_w.cc 
-    actions/ferm/fermacts/eoprec_exp_clover_fermact_w.cc
+	actions/ferm/fermacts/eoprec_clover_fermact_w.cc
+    actions/ferm/fermacts/eoprec_exp_clover_fermact_w.cc 
 	actions/ferm/fermacts/seoprec_clover_fermact_w.cc 
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc 
-	actions/ferm/fermacts/unprec_clover_fermact_w.cc 
-    actions/ferm/fermacts/unprec_exp_clover_fermact_w.cc
+	actions/ferm/fermacts/unprec_clover_fermact_w.cc
+    actions/ferm/fermacts/unprec_exp_clover_fermact_w.cc 
 	actions/ferm/fermacts/nef_fermact_params_w.cc 
 	actions/ferm/fermacts/eoprec_slic_fermact_w.cc 
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc 
@@ -1571,14 +1563,13 @@ target_sources(chromalib PRIVATE
 	actions/ferm/linop/unprec_w12_linop_w.cc 
 	actions/ferm/linop/unprec_wilson_linop_w.cc 
 	actions/ferm/linop/clover_term_base_w.cc 
-	actions/ferm/linop/clover_term_qdp_w.cc 
 	actions/ferm/linop/eoprec_clover_linop_w.cc
-    actions/ferm/linop/eoprec_exp_clover_linop_w.cc  
+    actions/ferm/linop/eoprec_exp_clover_linop_w.cc   
 	actions/ferm/linop/seoprec_clover_linop_w.cc 
 	actions/ferm/linop/eoprec_clover_dumb_linop_w.cc 
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.cc 
-	actions/ferm/linop/unprec_clover_linop_w.cc 
-    actions/ferm/linop/unprec_exp_clover_linop_w.cc
+	actions/ferm/linop/unprec_clover_linop_w.cc
+    actions/ferm/linop/unprec_exp_clover_linop_w.cc 
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.cc 
 	actions/ferm/linop/eoprec_slic_linop_w.cc 
 	actions/ferm/linop/eoprec_slrc_linop_w.cc 
@@ -1756,8 +1747,6 @@ target_sources(chromalib PRIVATE
 	meas/inline/hadron/inline_disco_w.cc 
 	meas/inline/hadron/inline_disco_prob_defl_w.cc
 	meas/inline/hadron/inline_disco_eoprec_w.cc 
-	meas/inline/hadron/inline_disco_eigcg_w.cc 
-	meas/inline/hadron/inline_disco_eo_eigcg_w.cc 
 	meas/inline/hadron/inline_distillution_noise.cc 
 	meas/inline/hadron/inline_prop_distillation_w.cc 
 	meas/inline/hadron/inline_prop_distillation_stoch_w.cc 
@@ -1791,6 +1780,7 @@ target_sources(chromalib PRIVATE
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.cc 
 	meas/inline/hadron/inline_genprop_matelem_da_colorvec_w.cc 
 	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.cc 
+        meas/inline/hadron/inline_tetraquark_matelem_colorvec_w.cc
 	meas/inline/hadron/inline_inverter_test_w.cc 
 	meas/inline/hadron/inline_mres_w.cc 
 	meas/inline/hadron/inline_qpropqio_w.cc 
@@ -1935,11 +1925,18 @@ if( Chroma_ENABLE_CPP_WILSON_DSLASH )
 endif()
 
 #######################################################
+# QDP++ clover term: not with QDP-JIT (JIT clover term)
+#######################################################
+if( NOT QDP_IS_QDPJIT )
+  list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_qdp_w.h actions/ferm/linop/exp_clover_term_qdp_w.h)
+  target_sources(chromalib PRIVATE actions/ferm/linop/clover_term_qdp_w.cc)
+endif()
+
+#######################################################
 # JIT CLOVER/STOUTING
 #######################################################
 if( Chroma_ENABLE_JIT_CLOVER )
-  list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit_w.h)
-  list(APPEND ChromaLIB_HEADERS actions/ferm/linop/exp_clover_term_jit_w.h)
+  list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit_w.h actions/ferm/linop/exp_clover_term_jit_w.h)
   list(APPEND ChromaLIB_HEADERS actions/ferm/linop/clover_term_jit2_w.h)
   target_sources(chromalib PRIVATE util/gauge/stout_utils_jit.cc)
   target_sources(chromalib PRIVATE util/gauge/stout_utils_jit2.cc)
@@ -2034,11 +2031,16 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_prop_and_matelem_distillation_superb_w.h
      meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.h
      meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.h
+     meas/inline/hadron/inline_baryon_matelem_colorvec_ylm_superb_w.h
+     meas/inline/hadron/baryon_derivative_ylm.h
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.h
+     meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.h 
+     meas/inline/hadron/meson_derivative_ylm.h
      meas/inline/hadron/inline_create_colorvecs_superb.h
      meas/inline/hadron/inline_eigenvalues_superb_w.h
      meas/inline/hadron/inline_inverter_test_superb_w.h
      meas/inline/hadron/inline_corr_superb_w.h
+     util/ferm/clebsch.h
   )
   target_sources(chromalib PRIVATE 
      meas/inline/hadron/inline_disco_prob_defl_superb_w.cc
@@ -2046,11 +2048,16 @@ if( Chroma_ENABLE_SUPERBBLAS )
      meas/inline/hadron/inline_prop_and_matelem_distillation_superb_w.cc
      meas/inline/hadron/inline_unsmeared_hadron_node_distillation_superb_w.cc
      meas/inline/hadron/inline_baryon_matelem_colorvec_superb_w.cc 
+     meas/inline/hadron/inline_baryon_matelem_colorvec_ylm_superb_w.cc
+     meas/inline/hadron/baryon_derivative_ylm.cc
      meas/inline/hadron/inline_meson_matelem_colorvec_superb_w.cc 
+     meas/inline/hadron/inline_meson_matelem_colorvec_ylm_superb_w.cc 
+     meas/inline/hadron/meson_derivative_ylm.cc
      meas/inline/hadron/inline_create_colorvecs_superb.cc
      meas/inline/hadron/inline_eigenvalues_superb_w.cc
      meas/inline/hadron/inline_inverter_test_superb_w.cc
      meas/inline/hadron/inline_corr_superb_w.cc
+     util/ferm/clebsch.cc
   )
   target_include_directories(chromalib PUBLIC ${SUPERBBLAS_DIR}/include)
   add_library(superbblas STATIC IMPORTED )
@@ -2138,3 +2145,19 @@ install(TARGETS chromalib EXPORT ChromaTargets
       
 add_library(Chroma::chromalib ALIAS chromalib)
 
+
+if(BUILD_OPT_LAPACK)
+  target_sources(chromalib PRIVATE
+    meas/inline/hadron/inline_disco_eo_eigcg_w.cc
+    meas/inline/hadron/inline_laplace_eigs.cc
+    meas/inline/hadron/inline_disco_eigcg_w.cc
+    actions/ferm/invert/syssolver_linop_OPTeigbicg.cc
+    actions/ferm/invert/syssolver_linop_eigcg_array.cc
+    actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc
+    actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc
+    actions/ferm/invert/syssolver_linop_fgmres_dr.cc
+    actions/ferm/invert/inv_eigcg2.cc
+    actions/ferm/invert/inv_eigcg2_array.cc
+    actions/ferm/invert/syssolver_linop_eigcg.cc
+  )
+endif()

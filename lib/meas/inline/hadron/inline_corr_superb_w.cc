@@ -11,28 +11,28 @@
 // Activate redstar-datalib support for superbblas and with gpus
 #  define USE_SUPERBBLAS
 #  define USE_SUPERBBLAS_WITH_GPU_SUPPORT
-#endif
 
-#ifdef BUILD_REDSTAR_DATALIB
-#include "algs/superb_contractions.h"
-#include "hadron/process_corrs.h"
-#include "io/adat_xmlio.h"
-#include "io/baryon_superb.h"
-#include "io/genprop4.h"
-#include "io/meson_superb.h"
-#include "io/prop_superb.h"
+#  ifdef BUILD_REDSTAR_DATALIB
+#    include "algs/superb_contractions.h"
+#    include "hadron/process_corrs.h"
+#    include "io/adat_xmlio.h"
+#    include "io/baryon_superb.h"
+#    include "io/disco_superb.h"
+#    include "io/genprop4.h"
+#    include "io/meson_superb.h"
+#    include "io/prop_superb.h"
 
-#include "handle.h"
-#include "meas/glue/mesplq.h"
-#include "meas/inline/abs_inline_measurement_factory.h"
-#include "meas/inline/hadron/inline_corr_superb_w.h"
-#include "meas/inline/io/named_objmap.h"
-#include "meas/inline/make_xml_file.h"
-#include "meas/smear/link_smearing_aggregate.h"
-#include "meas/smear/link_smearing_factory.h"
-#include "util/ferm/mgproton.h"
-#include "util/ferm/superb_contractions.h"
-#include "util/info/proginfo.h"
+#    include "handle.h"
+#    include "meas/glue/mesplq.h"
+#    include "meas/inline/abs_inline_measurement_factory.h"
+#    include "meas/inline/hadron/inline_corr_superb_w.h"
+#    include "meas/inline/io/named_objmap.h"
+#    include "meas/inline/make_xml_file.h"
+#    include "meas/smear/link_smearing_aggregate.h"
+#    include "meas/smear/link_smearing_factory.h"
+#    include "util/ferm/mgproton.h"
+#    include "util/ferm/superb_contractions.h"
+#    include "util/info/proginfo.h"
 
 namespace Chroma
 {
@@ -100,13 +100,16 @@ namespace Chroma
     }
 
     // Reader for input parameters
-    void read(XMLReader& xml, const std::string& path,
-	      InlineCorrSuperbEnv::Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, InlineCorrSuperbEnv::Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
 
       param.num_vecs = 0;
       read(paramtop, "num_vecs", param.num_vecs);
+      param.average_1pt_diagrams=false;
+      if(paramtop.count("average_1pt_diagrams"))read(paramtop,"average_1pt_diagrams",param.average_1pt_diagrams);
+      param.zeroUnsmearedGraphsP=true;
+      if(paramtop.count("zeroUnsmearedGraphsP"))read(paramtop,"zeroUnsmearedGraphsP",param.zeroUnsmearedGraphsP);
 
       param.max_rhs = 1;
       if (paramtop.count("max_rhs") > 0)
@@ -149,6 +152,8 @@ namespace Chroma
       {
 	read(paramtop, "genprops", param.genprop_files);
       }
+
+      if (paramtop.count("discos") > 0) read(paramtop, "discos", param.disco_files);
 
       param.decay_dir = 3;
 
@@ -207,6 +212,8 @@ namespace Chroma
       push(xml, path);
 
       write(xml, "num_vecs", param.num_vecs);
+      write(xml,"zeroUnsmearedGraphsP",param.zeroUnsmearedGraphsP);
+      write(xml,"average_1pt_diagrams",param.average_1pt_diagrams);
       write(xml, "max_rhs", param.max_rhs);
       write(xml, "max_vecs_in_contraction_for_baryons", param.max_vecs_in_contraction_for_baryons);
       write(xml, "max_moms_in_contraction_for_baryons", param.max_moms_in_contraction_for_baryons);
@@ -221,6 +228,7 @@ namespace Chroma
       write(xml, "baryons", param.baryon_files);
       write(xml, "props", param.prop_files);
       write(xml, "genprops", param.genprop_files);
+      write(xml, "discos", param.disco_files);
       write(xml, "Nt_forward", param.Nt_forward);
       write(xml, "ensemble", param.ensemble);
       write(xml, "testing", param.testing);
@@ -256,8 +264,7 @@ namespace Chroma
     }
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const std::string& path,
-	       const InlineCorrSuperbEnv::Params& param)
+    void write(XMLWriter& xml, const std::string& path, const InlineCorrSuperbEnv::Params& param)
     {
       param.writeXML(xml, path);
     }
@@ -364,7 +371,7 @@ namespace Chroma
       }
     }
 
-#  if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+#    if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
     const std::vector<int>& get_local_ranks()
     {
       static const auto ranks = [] { return SBN::detail::get_ranks(MPI_COMM_SELF); }();
@@ -421,7 +428,7 @@ namespace Chroma
       return SBN::superbblas_implementation::detail::Distribution(kind, dim, distributed_directions,
 								  fs, ranks, comm);
     }
-#  endif // defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+#    endif // defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
 
     /// Return a view of the tensor object
     /// \param t: tensor
@@ -438,7 +445,7 @@ namespace Chroma
       const SBN::Coor dim(t.dim.begin(), t.dim.end());
       static_assert(std::is_same<SB::ComplexD, SBN::value_type>::value,
 		    "superbnova has an invalid type");
-#  if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+#    if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
       auto op_ptr = t.data();
       const auto dev = t.getDev();
       const auto ctx =
@@ -450,14 +457,14 @@ namespace Chroma
       auto p = std::make_shared<SBN::superbblas_implementation::detail::Distribution>(
 	get_sbn_distribution(t.order, t.dist, *t.p));
       return SBN::Tensor{from, size, dim, t.order, alloc, p, t.scalar, t.conjugate, 0, 0, {}};
-#  else
+#    else
       if (!allow_copy)
 	throw std::runtime_error("unsupported");
       const auto trep = t.make_sure(SB::none, SB::OnHost, SB::OnEveryoneReplicated);
       auto p = (const std::complex<double>*)trep.data();
       auto alloc = std::make_shared<std::vector<std::complex<double>>>(p, p + SBN::volume(dim));
       return SBN::Tensor{from, size, dim, trep.order, alloc, trep.scalar, trep.conjugate, 0, 0, {}};
-#  endif
+#    endif
     }
 
     struct ColorvecCache {
@@ -465,9 +472,17 @@ namespace Chroma
       int num_vecs;			   // max vecs
       std::vector<int> from_pos_to_tslice; // from position in v to tslice
       std::vector<int> hits;		   // number of hist in each position
-      std::vector<bool> in_use;		   // whether the position is in use
+      std::vector<unsigned int> in_use;	   // whether the position is in use
       SB::Tensor<Nd + 3, SB::ComplexD> v;  // cache of colorvecs
     };
+
+    /// Return the distillation vectors on a time-slice
+    /// \param colorvecCache: cache of distillation vectors
+    /// \param colrovecSto:  distillation vectors storage
+    /// \param u: unsmeared links (for computing distillation vector on the fly)
+    /// \param tslice: the timeslice of the distillation of vectors to return
+    /// \param num_vecs: the first distillation vectors to return
+    /// NOTE: the function caches requested distillation vectors to avoid recomputing them
 
     inline SB::Tensor<Nd + 3, SB::ComplexD> get_colorvec(ColorvecCache& colorvecCache,
 							 const SB::ColorvecsStorage& colorvecsSto,
@@ -501,7 +516,7 @@ namespace Chroma
 	if (colorvecCache.from_pos_to_tslice.at(i) == tslice)
 	{
 	  colorvecCache.hits.at(i)++;
-	  colorvecCache.in_use.at(i) = true;
+	  colorvecCache.in_use.at(i)++;
 	  return colorvecCache.v.kvslice_from_size({{'t', (int)i}}, {{'t', 1}, {'n', num_vecs}});
 	}
       }
@@ -512,11 +527,11 @@ namespace Chroma
       {
 	for (std::size_t i = 1; i < colorvecCache.hits.size(); ++i)
 	{
-	  if (!colorvecCache.in_use.at(i) &&
+	  if (colorvecCache.in_use.at(i) == 0 &&
 	      colorvecCache.hits.at(pos_with_less_hits) > colorvecCache.hits.at(i))
 	    pos_with_less_hits = i;
 	}
-	if (colorvecCache.in_use.at(pos_with_less_hits))
+	if (colorvecCache.in_use.at(pos_with_less_hits) > 0)
 	  throw std::runtime_error("get_colorvec: too small number of entries");
       }
       else
@@ -524,13 +539,13 @@ namespace Chroma
 	pos_with_less_hits = colorvecCache.from_pos_to_tslice.size();
 	colorvecCache.from_pos_to_tslice.push_back(-1);
 	colorvecCache.hits.push_back(0);
-	colorvecCache.in_use.push_back(false);
+	colorvecCache.in_use.push_back(0);
       }
 
       // Fill the selected entry with the colorvec
       colorvecCache.from_pos_to_tslice.at(pos_with_less_hits) = tslice;
       colorvecCache.hits.at(pos_with_less_hits) = 0;
-      colorvecCache.in_use.at(pos_with_less_hits) = true;
+      colorvecCache.in_use.at(pos_with_less_hits)++;
       const auto decay_dir = 3;
       const auto colorvec = SB::getColorvecs<SB::Complex>(colorvecsSto, u, decay_dir, tslice, 1,
 							  colorvecCache.num_vecs, SB::none);
@@ -540,13 +555,114 @@ namespace Chroma
 					       {{'t', 1}, {'n', num_vecs}});
     }
 
+    /// Pre-compute distillation vectors on the requested time-slices if needed
+    /// \param colorvecCache: cache of distillation vectors
+    /// \param colrovecSto:  distillation vectors storage
+    /// \param u: unsmeared links (for computing distillation vector on the fly)
+    /// \param tslices: the timeslices of the distillation of vectors to return
+    /// \param num_vecs: the first distillation vectors to return
+    /// NOTE: the function caches requested distillation vectors to avoid recomputing them
+
+    inline void prefetch_colorvec(ColorvecCache& colorvecCache,
+				  const SB::ColorvecsStorage& colorvecsSto,
+				  const multi1d<LatticeColorMatrix>& u, std::vector<int> tslices,
+				  int num_vecs)
+    {
+      const auto decay_dir = 3;
+      const int Lt = Layout::lattSize()[decay_dir];
+
+      // Invalidate the whole cache if the number of vectors is different
+      if (colorvecCache.num_vecs < num_vecs)
+      {
+	colorvecCache.from_pos_to_tslice.resize(0);
+	colorvecCache.hits.resize(0);
+	colorvecCache.in_use.resize(0);
+	colorvecCache.v = SB::Tensor<Nd + 3, SB::ComplexD>();
+      }
+
+      // Initialize the cache if it is empty
+      if (colorvecCache.from_pos_to_tslice.size() == 0)
+      {
+	colorvecCache.num_vecs = num_vecs;
+	const auto order = "cxyztXn";
+	colorvecCache.v = SB::Tensor<Nd + 3, SB::ComplexD>(
+	  order,
+	  SB::latticeSize<Nd + 3>(
+	    order, {{'t', colorvecCache.max_cache_size}, {'n', colorvecCache.num_vecs}}),
+	  SB::OnDefaultDevice);
+      }
+
+      // Look for the tslices not present on the cache and sort them
+      std::vector<int> new_tslices;
+      for (const auto tslice : tslices)
+      {
+	if (std::find(colorvecCache.from_pos_to_tslice.begin(),
+		      colorvecCache.from_pos_to_tslice.end(),
+		      tslice) == colorvecCache.from_pos_to_tslice.end())
+	{
+	  new_tslices.push_back(tslice);
+	}
+      }
+      std::sort(new_tslices.begin(), new_tslices.end());
+      new_tslices.erase(std::unique(new_tslices.begin(), new_tslices.end()), new_tslices.end());
+
+      // Look for consecutive sequences of time-slices and compute them all at once
+      for (auto it = new_tslices.begin(); it != new_tslices.end();)
+      {
+	// Look for consecutive time-slices
+	int num_tslices = 1;
+	for (auto it0 = it + 1;
+	     it0 != new_tslices.end() && *it0 == SB::normalize_coor(*it + num_tslices, Lt);
+	     ++it0, ++num_tslices)
+	  ;
+
+	// Compute them
+	const auto colorvec = SB::getColorvecs<SB::Complex>(
+	  colorvecsSto, u, decay_dir, *it, num_tslices, colorvecCache.num_vecs, SB::none);
+
+	for (int t = 0; t < num_tslices; ++t, ++it)
+	{
+	  // Look for the entry with less hits or add a new entry
+	  std::size_t pos_with_less_hits = 0;
+	  if (colorvecCache.from_pos_to_tslice.size() >= colorvecCache.max_cache_size)
+	  {
+	    for (std::size_t i = 1; i < colorvecCache.hits.size(); ++i)
+	    {
+	      if (colorvecCache.in_use.at(i) == 0 &&
+		  colorvecCache.hits.at(pos_with_less_hits) > colorvecCache.hits.at(i))
+		pos_with_less_hits = i;
+	    }
+	    if (colorvecCache.in_use.at(pos_with_less_hits) > 0)
+	      throw std::runtime_error("prefetch_colorvec: too small number of entries");
+	  }
+	  else
+	  {
+	    pos_with_less_hits = colorvecCache.from_pos_to_tslice.size();
+	    colorvecCache.from_pos_to_tslice.push_back(-1);
+	    colorvecCache.hits.push_back(0);
+	    colorvecCache.in_use.push_back(0);
+	  }
+
+	  // Fill the selected entry with the colorvec
+	  colorvecCache.from_pos_to_tslice.at(pos_with_less_hits) = *it;
+	  colorvecCache.hits.at(pos_with_less_hits) = 0;
+	  colorvecCache.in_use.at(pos_with_less_hits) = 0;
+	  colorvec.kvslice_from_size({{'t', t}}, {{'t', 1}})
+	    .copyTo(
+	      colorvecCache.v.kvslice_from_size({{'t', (int)pos_with_less_hits}}, {{'t', 1}}));
+	}
+      }
+    }
+
     inline void release_from_colorvec_cache(ColorvecCache& colorvecCache, int tslice)
     {
       for (std::size_t i = 0; i < colorvecCache.from_pos_to_tslice.size(); ++i)
       {
 	if (colorvecCache.from_pos_to_tslice.at(i) == tslice)
 	{
-	  colorvecCache.in_use.at(i) = false;
+	  if (colorvecCache.in_use.at(i) == 0)
+	    throw std::runtime_error("release_from_colorvec_cache: tslice not in use");
+	  colorvecCache.in_use.at(i)--;
 	  return;
 	}
       }
@@ -677,6 +793,7 @@ namespace Chroma
 	  r.at(it.second) = it.first;
 	return r;
       };
+      std::vector<int> missing_tslices;
       for (const auto& missing_mesons_in_some_process :
 	   SBN::gather(local_missing_mesons, SB::detail::getDefaultComm()))
       {
@@ -685,6 +802,8 @@ namespace Chroma
 	  const auto& k = tslice_left_right_phases{
 	    meson_key.t_slice, ADATIO::detail::toCoor(meson_key.phasing_sink),
 	    ADATIO::detail::toCoor(meson_key.phasing_source)};
+	  if (from_tslice_left_right_phases_to_momenta_displacement.count(k) == 0)
+	    missing_tslices.push_back(meson_key.t_slice);
 	  auto& v = from_tslice_left_right_phases_to_momenta_displacement[k];
 	  auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(meson_key.mom));
 	  auto disp_index = get_index(std::get<1>(v), meson_key.displacement);
@@ -692,6 +811,7 @@ namespace Chroma
 	}
       }
 
+      prefetch_colorvec(colorvecCache, colorvecsSto, u, missing_tslices, num_vecs);
       for (const auto& it : from_tslice_left_right_phases_to_momenta_displacement)
       {
 	const auto& [t_source, left_phase, right_phase] = it.first;
@@ -753,27 +873,23 @@ namespace Chroma
     }
 
     inline std::tuple<Hadron::KeyBaryonElementalOperator_t, int>
-    get_perm_baryon_key(const Hadron::KeyBaryonElementalOperator_t& key, const SB::Coor<3>& perm)
+    get_perm_baryon_key(const Hadron::KeyBaryonElementalOperator_t& key, const SBN::Coor& perm)
     {
       // Get the new key
+      auto disps = std::array<std::vector<int>, 3>{key.left, key.middle, key.right};
       auto perm_key = key;
-      const auto& disps = std::array<std::vector<int>, 3>{key.left, key.middle, key.right};
-      auto perm_disps =
-	std::array<std::vector<int>, 3>{std::vector<int>{}, std::vector<int>{}, std::vector<int>{}};
-      for (std::size_t i = 0; i < 3; ++i)
-	perm_disps.at(perm.at(i)) = disps.at(i);
-      perm_key.left = std::move(perm_disps.at(0));
-      perm_key.middle = std::move(perm_disps.at(1));
-      perm_key.right = std::move(perm_disps.at(2));
+      perm_key.left = std::move(disps.at(perm.at(0)));
+      perm_key.middle = std::move(disps.at(perm.at(1)));
+      perm_key.right = std::move(disps.at(perm.at(2)));
 
       // List all permutation of three elements; and the sign is the evenness of the number of single exchanges
-      const std::vector<std::pair<std::array<int, 3>, int>> perm_and_sign_list{
-	{SB::Coor<3>{0, 1, 2}, 1},  //
-	{SB::Coor<3>{0, 2, 1}, -1}, //
-	{SB::Coor<3>{1, 0, 2}, -1}, //
-	{SB::Coor<3>{1, 2, 0}, 1},  //
-	{SB::Coor<3>{2, 0, 1}, 1},  //
-	{SB::Coor<3>{2, 1, 0}, -1}  //
+      const std::vector<std::pair<SBN::Coor, int>> perm_and_sign_list{
+	{SBN::Coor{0, 1, 2}, 1},  //
+	{SBN::Coor{0, 2, 1}, -1}, //
+	{SBN::Coor{1, 0, 2}, -1}, //
+	{SBN::Coor{1, 2, 0}, 1},  //
+	{SBN::Coor{2, 0, 1}, 1},  //
+	{SBN::Coor{2, 1, 0}, -1}  //
       };
 
       // Find scalar
@@ -873,7 +989,7 @@ namespace Chroma
 	    }
 
 	    // Record missing baryon
-	    const auto& [norm_key, scalar] = get_perm_baryon_key(key, toCoor3(perms.at(i)));
+	    const auto& [norm_key, scalar] = get_perm_baryon_key(key, perms.at(i));
 	    local_missing_baryons.push_back(
 	      {norm_key, scalar, do_conj.at(i), first_local_baryon + i});
 	  }
@@ -890,7 +1006,7 @@ namespace Chroma
 	    // If testing, also record it as a missing baryon
 	    if (testing)
 	    {
-	      const auto& [norm_key, scalar] = get_perm_baryon_key(key, toCoor3(perms.at(i)));
+	      const auto& [norm_key, scalar] = get_perm_baryon_key(key, perms.at(i));
 	      local_missing_baryons.push_back(
 		{norm_key, scalar, do_conj.at(i), first_local_baryon + i});
 	    }
@@ -927,6 +1043,7 @@ namespace Chroma
 	  r.at(it.second) = it.first;
 	return r;
       };
+      std::vector<int> missing_tslices;
       for (const auto& missing_baryons_in_some_process :
 	   SBN::gather(local_missing_baryons, SB::detail::getDefaultComm()))
       {
@@ -934,6 +1051,8 @@ namespace Chroma
 	{
 	  const auto& k =
 	    tslice_phase{baryon_key.t_slice, ADATIO::detail::toCoor(baryon_key.phasing)};
+	  if (from_tslice_and_phase_to_momenta_displacement.count(k) == 0)
+	    missing_tslices.push_back(baryon_key.t_slice);
 	  auto& v = from_tslice_and_phase_to_momenta_displacement[k];
 	  auto mom_index = get_index(std::get<0>(v), ADATIO::detail::toCoor(baryon_key.mom));
 	  auto disp_index = get_index(
@@ -942,6 +1061,7 @@ namespace Chroma
 	}
       }
 
+      prefetch_colorvec(colorvecCache, colorvecsSto, u, missing_tslices, num_vecs);
       for (const auto& it : from_tslice_and_phase_to_momenta_displacement)
       {
 	const int t_slice = std::get<0>(it.first);
@@ -1031,7 +1151,7 @@ namespace Chroma
       {
 	std::size_t index = 0;
 	for (std::size_t i = 1; i < cache.size(); ++i)
-	  if (cache.at(i).first < cache.at(index).first)
+	  if (cache.at(i).first > cache.at(index).first)
 	    index = i;
 	std::swap(cache.at(index), cache.back());
 	cache.pop_back();
@@ -1070,7 +1190,9 @@ namespace Chroma
 	    cache_spin_from + cache_spin_size >= spin_from + spin_size &&
 	    cache_ev_from <= ev_from && cache_ev_from + cache_ev_size >= ev_from + ev_size)
 	{
-	  cache.at(cache_idx).first++;
+	  for (auto& it : cache)
+	    it.first++;
+	  cache.at(cache_idx).first = 0;
 	  return t.kvslice_from_size({{'t', norm_first_tslice},
 				      {'s', spin_from - cache_spin_from},
 				      {'n', ev_from - cache_ev_from}},
@@ -1102,6 +1224,8 @@ namespace Chroma
 			       SB::Tensor<Nd + 5, SB::Complex> tensor)
     {
       make_space_to_add_entry_in_cache(cache, max_cache_size);
+      for (auto& it : cache)
+	it.first++;
       if (max_cache_size > 0)
       {
 	cache.push_back({0, mass_phase_tsource_slices_spin_ev_from_size_conj_tensor{
@@ -1267,8 +1391,7 @@ namespace Chroma
 	    //          [V_t1' D^{-\dagger} V_t0]' =
 	    //          [\g_5 V_t1' D^{-1} V_t0 \g_5]' =
 	    //          \g_5 [V_t1' D^{-1} V_t0]' \g_5
-	    const auto& ti0 =
-	      SBN::toTensor(val.op, is_swap ? "wvSs" : "vwsS");
+	    const auto& ti0 = SBN::toTensor(val.op, is_swap ? "wvSs" : "vwsS");
 	    auto ti = SBN::slice_kv(is_swap ? SBN::conj(ti0) : ti0, //
 				    {{'v', ev_from.at(0)}, {'w', ev_from.at(1)}},
 				    {{'v', ev_size.at(0)}, {'w', ev_size.at(1)}});
@@ -1350,6 +1473,7 @@ namespace Chroma
 	// Get num_vecs colorvecs on time-slice t_sink
 	SB::Tensor<Nd + 3, SB::Complex> sinks_colorvecs =
 	  source_colorvec.like_this(SB::none, {{'n', ev_size.at(0)}, {'t', t_sinks.size()}});
+	prefetch_colorvec(colorvecCache, colorvecsSto, u, t_sinks, num_vecs);
 	for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
 	{
 	  SB::Tensor<Nd + 3, SB::Complex> sink_colorvec =
@@ -1363,6 +1487,7 @@ namespace Chroma
 	sinks_colorvecs = sinks_colorvecs.rename_dims({{'n', 'N'}, {'t', 'T'}});
 
 	// Function to contract with all sinks
+	const int Lt = Layout::lattSize()[decay_dir];
 	const auto contract_with_sink = [&](SB::Tensor<Nd + 5, SB::Complex> tensor,
 					    int first_spin_src, int first_n) {
 	  for (int t_sink_index = 0; t_sink_index < t_sinks.size(); ++t_sink_index)
@@ -1370,7 +1495,8 @@ namespace Chroma
 	    const auto& r =
 	      SB::contract<6>(
 		sinks_colorvecs.kvslice_from_size({{'T', t_sink_index}}, {{'T', 1}}).conj(),
-		tensor.kvslice_from_size({{'t', t_sinks.at(t_sink_index) - t_source}}, {{'t', 1}}),
+		tensor.kvslice_from_size(
+		  {{'t', SB::normalize_coor(t_sinks.at(t_sink_index) - t_source, Lt)}}, {{'t', 1}}),
 		"cXxyz")
 		.rename_dims({{'s', 'S'}, {'S', 's'}});
 	    const auto& ti = Hadron::detail::contractSpins(
@@ -1390,7 +1516,6 @@ namespace Chroma
 	};
 
 	// Look into the cache
-	const int Lt = Layout::lattSize()[decay_dir];
 	int num_tslices = 0;
 	for (const auto t_sink : t_sinks)
 	  num_tslices = std::max(num_tslices, 1 + SB::normalize_coor(t_sink - t_source, Lt));
@@ -1493,7 +1618,6 @@ namespace Chroma
       bool testing)
     {
       SB::Tracker _t("generate genprops");
-      std::cout << "enter " << SBN::get_rank() << std::endl;
       QDPIO::cout << "reading/generating genprops..." << std::endl;
 
       if (!zero_values_for_outside_t_slices)
@@ -1577,11 +1701,16 @@ namespace Chroma
 	  if (!has_local_support(genprop_i))
 	    continue;
 
-	  // Check that tslice is inside t_source and t_sink
 	  const auto& key = genprop_keys.at(i);
-	  if (SB::normalize_coor(key.t_sink - key.t_source, Lt) <
-	      SB::normalize_coor(key.t_slice - key.t_source, Lt))
-	    continue;
+          // Match NPT: the insertion interval is the shorter unoriented arc.
+          // A reversed line must be read through gamma-five hermiticity,
+          // rather than discarded by an oriented interval test.
+          int source = key.t_source, sink = key.t_sink;
+          if (SB::normalize_coor(sink-source, Lt) > SB::normalize_coor(source-sink, Lt))
+            std::swap(source, sink);
+          // Equal endpoints represent a full diagonal GenProp, not a zero-length interval.
+          if (source != sink && SB::normalize_coor(key.t_slice-source, Lt) > SB::normalize_coor(sink-source, Lt))
+            continue;
 
 	  bool is_swap = (perms.at(i) != SBN::Coor{0, 1, 2, 3});
 	  bool this_conj = do_conj.at(i);
@@ -1593,7 +1722,22 @@ namespace Chroma
 	  const auto& val_size = toCoor4(val.size);
 	  const auto& val_order =
 	    SBN::relabel(SBN::remap{{'v', 'N'}, {'w', 'n'}, {'s', 'q'}, {'S', 's'}}, val.order);
-	  if (db.get(key, val_from, toCoor4(val.size), val_order, data(val)) != 0)
+          bool reversed = false;
+          int lookup_status = db.get(key, val_from, toCoor4(val.size), val_order, data(val));
+          auto reverse_key = key;
+          if (lookup_status != 0) {
+            std::swap(reverse_key.t_source, reverse_key.t_sink);
+            reverse_key.phasing_sink = -reverse_key.phasing_sink;
+            std::swap(reverse_key.phasing_source, reverse_key.phasing_sink);
+            reverse_key.phasing_sink = -reverse_key.phasing_sink;
+            reverse_key.displacement = Hadron::detail::reverseDisp(key.displacement);
+            reverse_key.mom = -key.mom;
+            const auto reverse_order = SBN::relabel(
+              SBN::remap{{'v','n'}, {'w','N'}, {'s','s'}, {'S','q'}}, val.order);
+            lookup_status = db.get(reverse_key, val_from, toCoor4(val.size), reverse_order, data(val));
+            reversed = lookup_status == 0;
+          }
+          if (lookup_status != 0)
 	  {
 	    // We can't miss keys when testing
 	    if (testing)
@@ -1606,9 +1750,22 @@ namespace Chroma
 	  }
 	  else
 	  {
-	    const auto& ti =
-	      Hadron::detail::contractSpins(Hadron::detail::contractSpins(dr_left, val), dr_right);
-
+            auto ti = Hadron::detail::contractSpins(
+              Hadron::detail::contractSpins(dr_left, val), dr_right);
+            if (reversed) {
+              const int eta[] = {1,-1,-1,-1,-1,-1,-1,1,-1,-1,-1,1,-1,1,1,1};
+              ADAT::Array<int> lattice(Nd);
+              for (int mu=0; mu<Nd; ++mu) lattice[mu] = Layout::lattSize()[mu];
+              const auto phase = double(eta[key.g]) * Hadron::momPhase(
+                Hadron::constructMom4d(reverse_key.mom),
+                Hadron::dispMomMask(reverse_key.displacement), lattice);
+              const auto left_g5 = Hadron::detail::contractSpins(dr_left,
+                Hadron::detail::chromaGamma5());
+              const auto right_g5 = Hadron::detail::contractSpins(
+                Hadron::detail::chromaGamma5(), dr_right);
+              ti = Hadron::detail::contractSpins(Hadron::detail::contractSpins(
+                left_g5, SBN::scale(SBN::conj(val), phase)), right_g5);
+            }
 	    SBN::copyTo(ti, genprop_i);
 
 	    // If testing, also record it as a missing genprop
@@ -1688,15 +1845,14 @@ namespace Chroma
 	const auto& PP = get_prop(mass_label);
 
 	// Invert a source and get the time slices
-	const auto& get_inv_tslice =
-	  [&](int t_slice, const SB::Coor<3>& phase, const SB::Tensor<2, SB::Complex>& spins,
-	      int spin_from, int spin_size, int ev_from, int ev_size, bool do_conj) {
-
+	const auto& get_inv_tslice = [&](int t_slice, const SB::Coor<3>& phase,
+					 const SB::Tensor<2, SB::Complex>& spins, int spin_from,
+					 int spin_size, int ev_from, int ev_size, bool do_conj) {
 	  // Look at the cache
 	  SB::Tensor<Nd + 5, SB::Complex> cache_tensor;
 	  cache_tensor =
-	      find_entry_in_cache(cache, mass_label, phase, t_slice, t_source, num_tslices,
-				  spin_from, spin_size, do_conj, ev_from, ev_size, Lt);
+	    find_entry_in_cache(cache, mass_label, phase, t_slice, t_source, num_tslices, spin_from,
+				spin_size, do_conj, ev_from, ev_size, Lt);
 	  if (cache_tensor)
 	    return cache_tensor;
 
@@ -1819,7 +1975,7 @@ namespace Chroma
 	QDPIO::cerr << " code only works for Nc=3 and Ns=4\n";
 	QDP_abort(111);
       }
-#  if QDP_NC == 3
+#    if QDP_NC == 3
 
       StopWatch snoop;
       snoop.reset();
@@ -1952,9 +2108,22 @@ namespace Chroma
       const bool zero_values_for_outside_t_slices = true;
       storage_genprop.open(params.param.genprop_files, nev, zero_values_for_outside_t_slices);
 
+      ADATIO::StorageDisco storage_disco;
+      storage_disco.open(params.param.disco_files);
+      const Hadron::disco_elementals_callback disco_callback =
+        [&](const Hadron::KeyTwoQuarkDiscoOperator_t& key) {
+          Hadron::ValTwoQuarkDiscoOperator_t value;
+          if (storage_disco.get(key, value) != 0) {
+            std::ostringstream message;
+            message << "DISCO key missing or incomplete: " << key;
+            throw std::runtime_error(message.str());
+          }
+          return value;
+        };
+
       /// Inverted distillation vectors cache
       Cache cache;
-      const auto max_cache_size = 2;
+      const auto max_cache_size = 3;
 
       // Initialize the colorvec cache
       ColorvecCache colorvecCache{params.param.Nt_forward + 1, 0};
@@ -2008,22 +2177,79 @@ namespace Chroma
 	    ev_from, ev_size, dist_labels, params.param.testing);
 	};
 
-      const bool zeroUnsmearedGraphsP = true;
-#    if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
+      const bool zeroUnsmearedGraphsP = params.param.zeroUnsmearedGraphsP;
+#      if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
       // Set default device
       SBN::get_default_gpu_device() = SB::detail::get_default_gpu_device();
-#    endif
-#    if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
+#      endif
+#      if defined(USE_SUPERBBLAS) && !defined(SUPERBNOVA_DEBUG)
       // Gather the current rank and the other ranks participating in this chroma
       // NOTE: they first time they are invoked may involve communications, please do it before calling the previous callbacks
       get_local_ranks();
       get_global_ranks();
       get_global_comm();
-#    endif
-      const auto& corr = Hadron::evaluate_graphs_with_superb(
-	corr_graph, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
-	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward,
-	SB::detail::getDefaultComm());
+#      endif
+      auto evaluate = [&](Hadron::CorrGraphMap_t& graphs, int origin) {
+        return Hadron::evaluate_graphs_with_superb(
+          graphs, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
+          genprop_callback, flavor_to_mass, nev, origin, params.param.Nt_forward,
+          QDPIO::cout, SB::detail::getDefaultComm(), disco_callback);
+      };
+      auto corr = [&]() {
+        if (!params.param.average_1pt_diagrams) return evaluate(corr_graph, params.param.t_origin);
+        // Preserve legacy NPT's average of products: shift every one-point
+        // component together, and never average the connected/mixed diagrams.
+        auto regular = corr_graph;
+        auto averaged = corr_graph;
+        regular.corr_graph_map.clear();
+        averaged.corr_graph_map.clear();
+        for (const auto& item : corr_graph.corr_graph_map) {
+          auto ordinary = item.second;
+          auto onept = item.second;
+          ordinary.diagrams.clear();
+          onept.diagrams.clear();
+          for (const auto& diagram : item.second.diagrams) {
+            bool all_onept = !diagram.first.empty();
+            for (int index : diagram.first)
+              all_onept = all_onept && corr_graph.int_graph_list.at(index).stich.num_npt == 1;
+            if (all_onept) onept.diagrams.insert(diagram.first, diagram.second);
+            else ordinary.diagrams.insert(diagram.first, diagram.second);
+          }
+          if (ordinary.diagrams.size() != 0) regular.corr_graph_map.insert(item.first, ordinary);
+          if (onept.diagrams.size() != 0) averaged.corr_graph_map.insert(item.first, onept);
+        }
+        decltype(evaluate(corr_graph, params.param.t_origin)) result;
+        if (regular.corr_graph_map.size() != 0) result = evaluate(regular, params.param.t_origin);
+        if (averaged.corr_graph_map.size() != 0) {
+          const int Lt = QDP::Layout::lattSize()[params.param.decay_dir];
+          for (int shift = 0; shift < Lt; ++shift) {
+            auto part = evaluate(averaged, (params.param.t_origin + shift) % Lt);
+            for (const auto& item : part) {
+              if (!result.exist(item.first)) {
+                ENSEM::VectorComplex zero;
+                zero.resizeObs(params.param.Nt_forward);
+                zero = ENSEM::Real(0);
+                result.insert(item.first, zero);
+              }
+              result[item.first] += item.second / ENSEM::Real(Lt);
+            }
+          }
+        }
+        // Empty diagram selections are exact zeros, not absent output keys.
+        if (QDP::Layout::primaryNode()) {
+          for (const auto& item : corr_graph.corr_graph_map) {
+            if (!result.exist(item.first)) {
+              if (item.second.diagrams.size() != 0)
+                throw std::runtime_error("Missing nonempty correlator after diagram averaging");
+              ENSEM::VectorComplex zero;
+              zero.resizeObs(params.param.Nt_forward);
+              zero = ENSEM::Real(0);
+              result.insert(item.first, zero);
+            }
+          }
+        }
+        return result;
+      }();
 
       // Clear cache
       cache.clear();
@@ -2048,7 +2274,7 @@ namespace Chroma
       QDPIO::cout << name << ": total time = " << snoop.getTimeInSeconds() << " secs" << std::endl;
 
       QDPIO::cout << name << ": ran successfully" << std::endl;
-#  endif
+#    endif
 
       END_CODE();
     } // func
@@ -2058,4 +2284,5 @@ namespace Chroma
 
 } // namespace Chroma
 
-#endif // BUILD_REDSTAR_DATALIB
+#  endif // BUILD_REDSTAR_DATALIB
+#endif	 // BUILD_SB

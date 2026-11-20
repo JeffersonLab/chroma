@@ -183,12 +183,12 @@ namespace Chroma
 	  QDP_abort(1);
 	}
 
-#ifndef BUILD_LAPACK
+#ifndef BUILD_OPT_LAPACK
 	QDPIO::cout << "WARNING: LAPACK Is not built!!!" << std::endl;
 	QDPIO::cout << "WARNING: SUBSPACE Augmentation requires it!!!!" << std::endl;
 	QDPIO::cout << "WARNING: Using the solver with NDefl > 0 will fail!!! " << std::endl;
 	QDPIO::cout << "WARNING: Run this version with NDefl = 0 only!!!!" << std::endl;
-	QDPIO::cout << "WARNING: OR reconfigure with --enable-lapack=lapack" << std::endl;
+	QDPIO::cout << "WARNING: OR reconfigure with --enable-opt-lapack" << std::endl;
 
 	if( invParam_.NDefl > 0 ) { 
 	  QDPIO::cout << " invParam.NDefl > 0: This mode is not supported without LAPACK" <<std::endl;
@@ -204,6 +204,18 @@ namespace Chroma
       }
 
 
+    LinOpSysSolverFGMRESDR(Handle< LinearOperator<T> > A,
+			   Handle< LinOpSystemSolver<T> > precond ,
+			   const SysSolverFGMRESDRParams& invParam) : 
+      A_(A), preconditioner_(precond), invParam_(invParam)
+      {
+	// Initialize stuff
+	InitMatrices();
+      }
+
+
+
+    
     //! Initialize the internal matrices
     void InitMatrices();
     
@@ -234,7 +246,8 @@ namespace Chroma
 			 multi1d<DComplex>& g,
 			 multi2d<DComplex>& Qk, 
 			 multi1d<DComplex>& Qk_tau,
-			 int&  ndim_cycle) const;
+			 int&  ndim_cycle,
+			 bool verbose) const;
 
     void LeastSquaresSolve(const multi2d<DComplex>& R, 
 			   const multi1d<DComplex>& rhs,

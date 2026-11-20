@@ -33,6 +33,7 @@
 #include "meas/hadron/BuildingBlocks_w.h"
 
 #include <iostream>
+#include <vector>
 
 namespace Chroma {
 
@@ -209,8 +210,8 @@ void BkwdFrwdTr( const LatticePropagator &             B,
       // counts number of momenta permutations per canonical ordering
       GBB_NMomPerms(f,o) ++;
 
-      float real_part[ T2 - T1 + 1 ];
-      float imag_part[ T2 - T1 + 1 ];
+      std::vector<float> real_part( T2 - T1 + 1 );
+      std::vector<float> imag_part( T2 - T1 + 1 );
 
       // Fill correlator
       for( int t = T1; t <= T2; t ++ )

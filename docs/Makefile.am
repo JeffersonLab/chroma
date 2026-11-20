@@ -64,3 +64,5 @@ clean:
 # Clean everything (uninstall and then local clean)
 #
 distclean: clean uninstall-docDATA 
+
+EXTRA_DIST = tetraquark-superb.md glue-superb.md

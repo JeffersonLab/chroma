@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
     {
       Chroma::setXMLInputFileName(Chroma::getInputFileList().at(list_index));
       std::shared_ptr<std::ostream> out;
-      if (Chroma::getOutputFileList().size() > 0 &&
+      if (Layout::primaryNode() && Chroma::getOutputFileList().size() > 0 &&
 	  Chroma::getOutputFileList().at(list_index).size() > 0)
       {
 	out = std::shared_ptr<std::ostream>(

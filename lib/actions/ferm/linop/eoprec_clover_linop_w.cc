@@ -16,7 +16,8 @@ namespace Chroma
    * \param u_ 	    gauge field     	       (Read)
    * \param param_  fermion kappa   	       (Read)
    */
-  void EvenOddPrecCloverLinOp::create(Handle< FermState<T,P,Q> > fs, 
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
+  void EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::create(Handle< FermState<T,P,Q> > fs, 
 				      const CloverFermActParams& param_)
   {
     START_CODE();
@@ -42,8 +43,9 @@ namespace Chroma
   }
 
   //! Apply the the odd-odd block onto a source std::vector
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
   void 
-  EvenOddPrecCloverLinOp::oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::oddOddLinOp(T& chi, const T& psi, 
 				      enum PlusMinus isign) const
   {
     START_CODE();
@@ -58,8 +60,9 @@ namespace Chroma
 
 
   //! Apply the the even-even block onto a source std::vector
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
   void 
-  EvenOddPrecCloverLinOp::evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::evenEvenLinOp(T& chi, const T& psi, 
 					enum PlusMinus isign) const
   {
     START_CODE();
@@ -74,8 +77,9 @@ namespace Chroma
   }
 
   //! Apply the inverse of the even-even block onto a source std::vector
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
   void 
-  EvenOddPrecCloverLinOp::evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::evenEvenInvLinOp(T& chi, const T& psi, 
 					   enum PlusMinus isign) const
   {
     START_CODE();
@@ -97,14 +101,15 @@ namespace Chroma
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    */
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
   void 
-  EvenOddPrecCloverLinOp::evenOddLinOp(LatticeFermion& chi, 
-				       const LatticeFermion& psi, 
+  EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::evenOddLinOp(T& chi, 
+				       const T& psi, 
 				       enum PlusMinus isign) const
   {
     START_CODE();
 
-    Real mhalf = -0.5;
+    RealT mhalf = -0.5;
 
     D.apply(chi, psi, isign, 0);
     chi[rb[0]] *= mhalf;
@@ -120,14 +125,15 @@ namespace Chroma
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    */
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
   void 
-  EvenOddPrecCloverLinOp::oddEvenLinOp(LatticeFermion& chi, 
-				       const LatticeFermion& psi, 
+  EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::oddEvenLinOp(T& chi, 
+				       const T& psi, 
 				       enum PlusMinus isign) const
   {
     START_CODE();
 
-    Real mhalf = -0.5;
+    RealT mhalf = -0.5;
 
     D.apply(chi, psi, isign, 1);
     chi[rb[1]] *= mhalf;
@@ -142,13 +148,14 @@ namespace Chroma
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    */
-  void EvenOddPrecCloverLinOp::operator()(LatticeFermion & chi, 
-					  const LatticeFermion& psi, 
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
+  void EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::operator()(T & chi, 
+					  const T& psi, 
 					  enum PlusMinus isign) const
   {
     START_CODE();
 
-    Real mquarter = -0.25;
+    RealT mquarter = -0.25;
   
     //  tmp1_o  =  D_oe   A^(-1)_ee  D_eo  psi_o
     D.apply(tmp1, psi, isign, 0);
@@ -170,14 +177,15 @@ namespace Chroma
 
     // Twisted Term?
     if( param.twisted_m_usedP ){ 
+      RealT twisted_m = toDouble(param.twisted_m);
       // tmp1 = i mu gamma_5 tmp1
       tmp1[rb[1]] = (Gamma(15) * timesI(psi));
       
       if( isign == PLUS ) {
-	chi[rb[1]] += param.twisted_m * tmp1;
+	chi[rb[1]] += twisted_m * tmp1;
       }
       else {
-	chi[rb[1]] -= param.twisted_m * tmp1;
+	chi[rb[1]] -= twisted_m * tmp1;
       }
     }
 
@@ -186,9 +194,10 @@ namespace Chroma
 
 
   //! Apply the even-even block onto a source std::vector
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
   void 
-  EvenOddPrecCloverLinOp::derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-					     const LatticeFermion& chi, const LatticeFermion& psi, 
+  EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::derivEvenEvenLinOp(P& ds_u, 
+					     const T& chi, const T& psi, 
 					     enum PlusMinus isign) const
   {
     START_CODE();
@@ -202,9 +211,10 @@ namespace Chroma
   }
 
   //! Apply the even-even block onto a source std::vector
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
   void 
-  EvenOddPrecCloverLinOp::derivEvenEvenLinOpMP(multi1d<LatticeColorMatrix>& ds_u, 
-					       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+  EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::derivEvenEvenLinOpMP(P& ds_u, 
+					       const multi1d<T>& chi, const multi1d<T>& psi, 
 					       enum PlusMinus isign) const
   {
     START_CODE();
@@ -218,8 +228,9 @@ namespace Chroma
   }
 
   //! Apply the even-even block onto a source std::vector
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
   void 
-  EvenOddPrecCloverLinOp::derivLogDetEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
+  EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::derivLogDetEvenEvenLinOp(P& ds_u,
 						   enum PlusMinus isign) const
   {
     START_CODE();
@@ -231,24 +242,26 @@ namespace Chroma
   }
 
   //! Apply the the even-odd block onto a source std::vector
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
   void 
-  EvenOddPrecCloverLinOp::derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-					    const LatticeFermion& chi, const LatticeFermion& psi, 
+  EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::derivEvenOddLinOp(P& ds_u, 
+					    const T& chi, const T& psi, 
 					    enum PlusMinus isign) const
   {
     START_CODE();
     ds_u.resize(Nd);
     D.deriv(ds_u, chi, psi, isign, 0);
     for(int mu=0; mu < Nd; mu++) { 
-      ds_u[mu]  *= Real(-0.5);
+      ds_u[mu]  *= RealT(-0.5);
     }
     END_CODE();
   }
  
   //! Apply the the odd-even block onto a source std::vector
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
   void 
-  EvenOddPrecCloverLinOp::derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-					    const LatticeFermion& chi, const LatticeFermion& psi, 
+  EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::derivOddEvenLinOp(P& ds_u, 
+					    const T& chi, const T& psi, 
 					    enum PlusMinus isign) const
   {
     START_CODE();
@@ -256,16 +269,17 @@ namespace Chroma
 
     D.deriv(ds_u, chi, psi, isign, 1);
     for(int mu=0; mu < Nd; mu++) { 
-     ds_u[mu]  *= Real(-0.5);
+     ds_u[mu]  *= RealT(-0.5);
     }
     END_CODE();
   }
 
   // Inherit this
   //! Apply the the odd-odd block onto a source std::vector
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
   void 
-  EvenOddPrecCloverLinOp::derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-					   const LatticeFermion& chi, const LatticeFermion& psi, 
+  EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::derivOddOddLinOp(P& ds_u, 
+					   const T& chi, const T& psi, 
 					   enum PlusMinus isign) const
   {   
     START_CODE();
@@ -278,9 +292,10 @@ namespace Chroma
     END_CODE();
   }
 
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
   void 
-  EvenOddPrecCloverLinOp::derivOddOddLinOpMP(multi1d<LatticeColorMatrix>& ds_u, 
-					       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+  EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::derivOddOddLinOpMP(P& ds_u, 
+					       const multi1d<T>& chi, const multi1d<T>& psi, 
 					       enum PlusMinus isign) const
   {
     START_CODE();
@@ -294,7 +309,8 @@ namespace Chroma
   }
 
   //! Return flops performed by the operator()
-  unsigned long EvenOddPrecCloverLinOp::nFlops() const
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
+  unsigned long EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::nFlops() const
   {
     unsigned long cbsite_flops = 2*D.nFlops()+2*clov.nFlops()+4*Nc*Ns;
     if(  param.twisted_m_usedP ) { 
@@ -305,7 +321,15 @@ namespace Chroma
 
   //! Get the log det of the even even part
   // BUt for now, return zero for testing.
-  Double EvenOddPrecCloverLinOp::logDetEvenEvenLinOp(void) const  {
+  template<typename T_, typename U_, typename DslashT, typename CloverT>
+  Double EvenOddPrecCloverLinOpT<T_,U_,DslashT,CloverT>::logDetEvenEvenLinOp(void) const  {
     return invclov.cholesDet(0);
   }
+
+
+  template class EvenOddPrecCloverLinOpT<LatticeFermion, LatticeColorMatrix, WilsonDslash, CloverTerm>;
+#if BASE_PRECISION == 64
+  template class EvenOddPrecCloverLinOpT<LatticeFermionF, LatticeColorMatrixF, WilsonDslashF, CloverTermF>;
+#endif
+
 } // End Namespace Chroma

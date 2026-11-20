@@ -69,7 +69,8 @@ namespace Chroma
 	  const Real& MRovpar,
 	  const Real& RsdMR, 
 	  int MaxMR, 
-	  enum PlusMinus isign)
+	  enum PlusMinus isign,
+	  bool Verbose)
   {
     START_CODE();
 
@@ -87,7 +88,8 @@ namespace Chroma
     Double d;
     int k;
 
-    QDPIO::cout << "InvMR: starting" << std::endl;
+    if (Verbose)
+      QDPIO::cout << "InvMR: starting" << std::endl;
     FlopCounter flopcount;
     flopcount.reset();
     StopWatch swatch;
@@ -110,7 +112,8 @@ namespace Chroma
     Double cp = norm2(r, s);                 /* 2 Nc Ns  flops */
     flopcount.addSiteFlops(4*Nc*Ns, s);
 
-//  QDPIO::cout << "InvMR: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << std::endl;
+    if (Verbose)
+      QDPIO::cout << "InvMR: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << std::endl;
 
     /*  IF |r[0]| <= RsdMR |Chi| THEN RETURN; */
     if ( toBool(cp  <=  rsd_sq) )
@@ -155,13 +158,17 @@ namespace Chroma
       /*  cp  =  | r[k] |**2 */
       cp = norm2(r, s);    flopcount.addSiteFlops(4*Nc*Ns,s);
 
-//    QDPIO::cout << "InvMR: k = " << k << "  cp = " << cp << std::endl;
+      if (Verbose)
+	QDPIO::cout << "InvMR: k = " << k << "  cp = " << cp << std::endl;
     }
     res.n_count = k;
     res.resid   = sqrt(cp);
     swatch.stop();
-    QDPIO::cout << "InvMR: k = " << k << "  cp = " << cp << std::endl;
-    flopcount.report("invmr", swatch.getTimeInSeconds());
+    if (Verbose)
+      {
+	QDPIO::cout << "InvMR: k = " << k << "  cp = " << cp << std::endl;
+	flopcount.report("invmr", swatch.getTimeInSeconds());
+      }
     revertFromFastMemoryHint(psi,true);
 
     // Compute the actual residual
@@ -171,8 +178,8 @@ namespace Chroma
       res.resid = sqrt(actual_res);
     }
 
-    if ( res.n_count == MaxMR )
-      QDPIO::cerr << "Nonconvergence Warning" << std::endl;
+    if ( (res.n_count == MaxMR) && Verbose)
+      QDPIO::cerr << "MR Nonconvergence Warning" << std::endl;
     
     END_CODE();
     return res;
@@ -188,9 +195,10 @@ namespace Chroma
 	const Real& MRovpar,
 	const Real& RsdMR, 
 	int MaxMR,
-	enum PlusMinus isign)
+	enum PlusMinus isign,
+	bool Verbose)
   {
-    return InvMR_a(M, chi, psi, MRovpar, RsdMR, MaxMR, isign);
+    return InvMR_a(M, chi, psi, MRovpar, RsdMR, MaxMR, isign, Verbose);
   }
 
 
@@ -203,9 +211,10 @@ namespace Chroma
 	const Real& MRovpar,
 	const Real& RsdMR, 
 	int MaxMR,
-	enum PlusMinus isign)
+	enum PlusMinus isign,
+	bool Verbose)
   {
-    return InvMR_a(M, chi, psi, MRovpar, RsdMR, MaxMR, isign);
+    return InvMR_a(M, chi, psi, MRovpar, RsdMR, MaxMR, isign, Verbose);
   }
 
   /*! @} */  // end of group invert

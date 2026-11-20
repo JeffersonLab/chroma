@@ -21,7 +21,7 @@ exec_prefix_set=no
 
 version="@VERSION@"
 
-extra_libs="-lqdp-lapack"
+extra_libs=""
 sse_dslash_enabled="@SSE_DSLASH_ENABLED@"
 cpp_dslash_enabled="@CPP_DSLASH_ENABLED@"
 qopdp_mg_enabled="@QOP_MG_ENABLED@"

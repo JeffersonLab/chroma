@@ -12,14 +12,18 @@ INCFLAGS=-I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 #
 AM_CXXFLAGS = $(INCFLAGS) @MGPROTO_CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ @GMP_CXXFLAGS@ @QOP_MG_CXXFLAGS@ @CXXFLAGS@
 
+if BUILD_OPT_LAPACK
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
                -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
+endif
 
 AM_LDFLAGS = -L$(BUILDDIR)/lib @MGPROTO_LDFLAGS@ @QDPXX_LDFLAGS@ @BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @LDFLAGS@
 LDADD = -lchroma @MGPROTO_LIBS@ @QUDA_LIBS@ @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @GMP_LIBS@  @LIBS@
 
+if BUILD_OPT_LAPACK
 AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/lib
 LDADD += -lqdp-lapack
+endif
 
 if BUILD_SSE_WILSON_DSLASH
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
@@ -113,7 +117,7 @@ endif
 HDRS =
 
 ## Production tests:
-bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array t_leapfrog t_lwldslash_new t_minvert t_meas_wilson_flow 
+bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array t_leapfrog t_lwldslash_new t_minvert t_meas_wilson_flow t_single_solve
 
 #
 # add the programs to build in here
@@ -169,14 +173,18 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
     t_monomial_force \
     t_clover \
     t_db \
-    t_solver_accum \
-    t_eigcginv
+    t_solver_accum
+
+if BUILD_OPT_LAPACK
+check_PROGRAMS += t_eigcginv
+endif
 
 #
 # The programs and their dependencies
 #
 t_su3_SOURCES = t_su3.cc
 t_mesplq_SOURCES = t_mesplq.cc
+t_single_solve_SOURCES = t_single_solve.cc
 t_seqsource_SOURCES = t_seqsource.cc
 t_remez_SOURCES = t_remez.cc
 t_ape_smear_SOURCES = t_ape_smear.cc
@@ -277,10 +285,13 @@ t_minvert_quda_SOURCES = t_minvert_quda.cc
 endif
 
 if BUILD_GTEST
-check_PROGRAMS += t_inv_fgmres_dr  t_symm_prec
+check_PROGRAMS += t_symm_prec
+if BUILD_OPT_LAPACK
+check_PROGRAMS += t_inv_fgmres_dr
 	
 t_inv_fgmres_dr_SOURCES = t_inv_fgmres_dr.cc chroma_gtest_env.h \
 	fgmres_dr_tests.cc
+endif
 	
 t_symm_prec_SOURCES = t_symm_prec.cc chroma_gtest_env.h \
 	symm_prec_xml.h symm_prec_tests.cc

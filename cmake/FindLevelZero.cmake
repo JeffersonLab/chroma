@@ -20,7 +20,7 @@ mark_as_advanced(LevelZero_LIBRARY LevelZero_INCLUDE_DIR)
 
 # ${CMAKE_DL_LIBS}
 if(LevelZero_FOUND)
-    list(APPEND LevelZero_LIBRARIES ${LevelZero_LIBRARY}/libze_loader.so)
+    list(APPEND LevelZero_LIBRARIES ${LevelZero_LIBRARY})
     list(APPEND LevelZero_INCLUDE_DIRS ${LevelZero_INCLUDE_DIR})
     if(OpenCL_FOUND)
         list(APPEND LevelZero_INCLUDE_DIRS ${OpenCL_INCLUDE_DIRS})

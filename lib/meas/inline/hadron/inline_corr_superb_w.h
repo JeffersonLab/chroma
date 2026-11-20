@@ -46,6 +46,8 @@ namespace Chroma
 	  ChromaProp_t prop;
 	};
 
+	bool average_1pt_diagrams = false; /*!< Explicit legacy diagram averaging; matches NPT when enabled */
+	bool zeroUnsmearedGraphsP = true; /*!< Match the corresponding NPT setting; legacy default true */
 	int 			num_vecs;               /*! rank of the distillation basis */
 	int 			max_rhs;                /*! maximum rhs to solve at once */
 	int 			max_vecs_in_contraction_for_baryons; /*! maximum vecs to contract at once with baryons */
@@ -61,6 +63,7 @@ namespace Chroma
 	std::vector<std::string>  meson_files;          /*!< list of meson files */
 	std::vector<std::string>  baryon_files;         /*!< list of baryons files */
 	std::vector<std::string>  prop_files;           /*!< list of props files */
+	std::vector<std::string>  disco_files;         /*!< Disconnected-loop files */
 	std::vector<std::string>  genprop_files;        /*!< list of genprops files */
 	std::string             ensemble;               /*!< ensemble name */
 	bool                      testing;              /*!< whether to do tests */

@@ -33,6 +33,11 @@ InvBiCGStab_a(const LinearOperator<T>& A,
 
 
   Double rsd_sq =  RsdBiCGStab*RsdBiCGStab*chi_sq;
+  if ( toBool( rsd_sq == 0.0 ) )
+    {
+      QDPIO::cout << "Detected zero target relative residuum. Using absolute target residuum." << std::endl;
+      rsd_sq = (RsdBiCGStab * RsdBiCGStab);
+    }
 
   // First get r = r0 = chi - A psi
   T r;

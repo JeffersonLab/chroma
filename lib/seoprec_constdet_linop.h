@@ -130,7 +130,7 @@ namespace Chroma
     virtual ~SymEvenOddPrecConstDetLinearOperator() {}
 
     //! Return the fermion BC object for this linear operator
-    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
+    virtual const FermBC<T,P,Q>& getFermBC() const override = 0;
 
     //! Apply the inverse of the even-even block onto a source std::vector
     virtual void unprecEvenEvenInvLinOp(T& chi, const T& psi,

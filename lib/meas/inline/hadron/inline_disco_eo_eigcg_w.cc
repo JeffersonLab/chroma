@@ -1,3 +1,6 @@
+#include "chroma_config.h"
+
+#ifdef BUILD_OPT_LAPACK
 
 /*! \file
  * \brief Inline measurement 3pt_prop
@@ -1200,3 +1203,5 @@ namespace Chroma{
     } 
   }  // namespace InlineDiscoEoEigCGEnv
 }// namespace chroma
+
+#endif // BUILD_OPT_LAPACK
