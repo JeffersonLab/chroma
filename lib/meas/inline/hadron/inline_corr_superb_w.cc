@@ -1105,7 +1105,7 @@ namespace Chroma
 	SB::doMomDisp_colorContractions(u_smr, source_colorvec.make_sure<SB::ComplexD>(), moms,
 					t_slice, disps, use_derivP, call,
 					0 /* it means to do all */, max_moms_in_contraction,
-					max_vecs, SB::none, SB::OnDefaultDevice, SB::OnEveryone);
+					max_vecs, SB::none, SB::OnDefaultDevice, SB::OnMaster);
 
 	release_from_colorvec_cache(colorvecCache, t_slice);
       }
@@ -2081,19 +2081,6 @@ namespace Chroma
 	return mass_to_prop.at(mass);
       };
 
-      QDPIO::cout << "Opening corr graph " << params.named_obj.corr_graph_file << std::endl;
-      Hadron::CorrGraphMap_t corr_graph;
-      ADATIO::BinaryFileReader bin(params.named_obj.corr_graph_file);
-      read(bin, corr_graph);
-      bin.close();
-
-      // Check that the corr graph lattice size coincides with chroma's
-      if (SB::tovector(QDP::Layout::lattSize()) != corr_graph.layout.latt_size)
-      {
-	QDPIO::cerr << "The lattice size of the corr graph file does not coincide" << std::endl;
-	QDP_abort(1);
-      }
-
       QDPIO::cout << "Opening mesons" << std::endl;
       Hadron::StorageMeson storage_meson;
       storage_meson.open(params.param.meson_files, nev);
@@ -2177,7 +2164,6 @@ namespace Chroma
 	    ev_from, ev_size, dist_labels, params.param.testing);
 	};
 
-      const bool zeroUnsmearedGraphsP = params.param.zeroUnsmearedGraphsP;
 #      if defined(QDP_IS_QDPJIT) && defined(SUPERBBLAS_USE_GPU)
       // Set default device
       SBN::get_default_gpu_device() = SB::detail::get_default_gpu_device();
@@ -2189,67 +2175,27 @@ namespace Chroma
       get_global_ranks();
       get_global_comm();
 #      endif
-      auto evaluate = [&](Hadron::CorrGraphMap_t& graphs, int origin) {
-        return Hadron::evaluate_graphs_with_superb(
-          graphs, zeroUnsmearedGraphsP, prop_callback, baryon_callback, meson_callback,
-          genprop_callback, flavor_to_mass, nev, origin, params.param.Nt_forward,
-          QDPIO::cout, SB::detail::getDefaultComm(), disco_callback);
-      };
-      auto corr = [&]() {
-        if (!params.param.average_1pt_diagrams) return evaluate(corr_graph, params.param.t_origin);
-        // Preserve legacy NPT's average of products: shift every one-point
-        // component together, and never average the connected/mixed diagrams.
-        auto regular = corr_graph;
-        auto averaged = corr_graph;
-        regular.corr_graph_map.clear();
-        averaged.corr_graph_map.clear();
-        for (const auto& item : corr_graph.corr_graph_map) {
-          auto ordinary = item.second;
-          auto onept = item.second;
-          ordinary.diagrams.clear();
-          onept.diagrams.clear();
-          for (const auto& diagram : item.second.diagrams) {
-            bool all_onept = !diagram.first.empty();
-            for (int index : diagram.first)
-              all_onept = all_onept && corr_graph.int_graph_list.at(index).stich.num_npt == 1;
-            if (all_onept) onept.diagrams.insert(diagram.first, diagram.second);
-            else ordinary.diagrams.insert(diagram.first, diagram.second);
-          }
-          if (ordinary.diagrams.size() != 0) regular.corr_graph_map.insert(item.first, ordinary);
-          if (onept.diagrams.size() != 0) averaged.corr_graph_map.insert(item.first, onept);
-        }
-        decltype(evaluate(corr_graph, params.param.t_origin)) result;
-        if (regular.corr_graph_map.size() != 0) result = evaluate(regular, params.param.t_origin);
-        if (averaged.corr_graph_map.size() != 0) {
-          const int Lt = QDP::Layout::lattSize()[params.param.decay_dir];
-          for (int shift = 0; shift < Lt; ++shift) {
-            auto part = evaluate(averaged, (params.param.t_origin + shift) % Lt);
-            for (const auto& item : part) {
-              if (!result.exist(item.first)) {
-                ENSEM::VectorComplex zero;
-                zero.resizeObs(params.param.Nt_forward);
-                zero = ENSEM::Real(0);
-                result.insert(item.first, zero);
-              }
-              result[item.first] += item.second / ENSEM::Real(Lt);
-            }
-          }
-        }
-        // Empty diagram selections are exact zeros, not absent output keys.
-        if (QDP::Layout::primaryNode()) {
-          for (const auto& item : corr_graph.corr_graph_map) {
-            if (!result.exist(item.first)) {
-              if (item.second.diagrams.size() != 0)
-                throw std::runtime_error("Missing nonempty correlator after diagram averaging");
-              ENSEM::VectorComplex zero;
-              zero.resizeObs(params.param.Nt_forward);
-              zero = ENSEM::Real(0);
-              result.insert(item.first, zero);
-            }
-          }
-        }
-        return result;
-      }();
+
+      const auto& [corr, latt_size] = Hadron::evaluate_graphs_with_superb(
+	params.named_obj.corr_graph_file, params.param.zeroUnsmearedGraphsP,
+	params.param.average_1pt_diagrams, prop_callback, baryon_callback, meson_callback,
+	genprop_callback, flavor_to_mass, nev, params.param.t_origin, params.param.Nt_forward,
+	QDPIO::cout, SB::detail::getDefaultComm(), disco_callback);
+
+      // Check that the corr graph lattice size coincides with chroma's
+      {
+	const auto& qdp_layout = QDP::Layout::lattSize();
+	if (				   //
+	  qdp_layout[0] != latt_size[0] || //
+	  qdp_layout[1] != latt_size[1] || //
+	  qdp_layout[2] != latt_size[2] || //
+	  qdp_layout[3] != latt_size[3]	   //
+	)
+	{
+	  QDPIO::cerr << "The lattice size of the corr graph file does not coincide" << std::endl;
+	  QDP_abort(1);
+	}
+      }
 
       // Clear cache
       cache.clear();
@@ -2260,20 +2206,21 @@ namespace Chroma
       {
 	QDPIO::cout << "Storing the correlation functions" << std::endl;
 	const int decay_dir = 3;
-	Hadron::writeCorrMap(corr, params.param.ensemble, corr_graph.layout.latt_size, decay_dir,
+	Hadron::writeCorrMap(corr, params.param.ensemble, latt_size, decay_dir,
 			     params.param.t_origin, params.named_obj.corr_file);
       }
 
-      // Close colorvecs storage
-      SB::closeColorvecStorage(colorvecsSto);
+	// Close colorvecs storage
+	SB::closeColorvecStorage(colorvecsSto);
 
-      // Close the namelist output file XMLDAT
-      pop(xml_out); // CorrSuperb
+	// Close the namelist output file XMLDAT
+	pop(xml_out); // CorrSuperb
 
-      snoop.stop();
-      QDPIO::cout << name << ": total time = " << snoop.getTimeInSeconds() << " secs" << std::endl;
+	snoop.stop();
+	QDPIO::cout << name << ": total time = " << snoop.getTimeInSeconds() << " secs"
+		    << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << std::endl;
+	QDPIO::cout << name << ": ran successfully" << std::endl;
 #    endif
 
       END_CODE();

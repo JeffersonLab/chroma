@@ -11126,27 +11126,24 @@ namespace Chroma
 	{
 	  detail::log(1, "contracting for disp_index=" + std::to_string(disps.disp_index));
 
+	  const auto Nmom = moms.first.kvdim()['m'];
+	  const int imax = max_cols > 0 ? max_cols :colorvecs[0].kvdim()['n'];
+
 	  // Create the output tensor
 	  Tensor<5, COMPLEX> colorvec012m =
 	    colorvecs[0].template like_this<5, COMPLEX>(order_out,
 							{{'i', colorvecs[0].kvdim()['n']},
 							 {'j', colorvecs[1].kvdim()['n']},
 							 {'k', colorvecs[2].kvdim()['n']},
-							 {'m', moms.first.kvdim()['m']}},
+							 {'m', Nmom}},
 							dev, dist);
 
 	  // Contract colorvec2 and moms
-	  Tensor<Nd + 4, COMPLEX> colorvec2m =
+	  Tensor<Nd + 4, COMPLEX> colorvec2m_aux =
 	    colorvecs[2]
 	      .template like_this<Nd + 4, COMPLEX>("ncm%xyzXt", '%', "",
-						   {{'m', moms.first.kvdim()['m']}})
+						   {{'m', std::max(Nmom, imax)}})
 	      .rename_dims({{'n', 'k'}});
-	  colorvec2m.contract(colorvecs[2].rename_dims({{'n', 'k'}}), {}, NotConjugate, moms.first,
-			      {}, NotConjugate);
-
-	  int imax = max_cols;
-	  if (imax <= 0)
-	    imax = colorvecs[0].kvdim()['n'];
 
 	  for (int i0 = 0, i1 = colorvecs[0].kvdim()['n'], isize = std::min(imax, i1); i0 < i1;
 	       i0 += isize, isize = std::min(imax, i1 - i0))
@@ -11167,9 +11164,21 @@ namespace Chroma
 	    colorvec0.release();
 	    colorvec1.release();
 
-	    // Contract colorvec01 and colorvec2m
-	    colorvec012m.kvslice_from_size({{'i', i0}}, {{'i', isize}})
-	      .contract(std::move(colorvec01), {}, NotConjugate, colorvec2m, {}, NotConjugate);
+	    // Loop over the momenta
+	    for (int mfrom = 0, msize = std::min(imax, Nmom); mfrom < Nmom;
+		 mfrom += msize, msize = std::min(imax, Nmom - mfrom))
+	    {
+	      // Contract colorvec2 and moms
+	      auto colorvec2m = colorvec2m_aux.kvslice_from_size({}, {{'m', msize}});
+	      colorvec2m.contract(colorvecs[2].rename_dims({{'n', 'k'}}), {}, NotConjugate,
+				  moms.first.kvslice_from_size({{'m', mfrom}}, {{'m', msize}}), {},
+				  NotConjugate);
+
+	      // Contract colorvec01 and colorvec2m
+	      colorvec012m
+		.kvslice_from_size({{'i', i0}, {'m', mfrom}}, {{'i', isize}, {'m', msize}})
+		.contract(std::move(colorvec01), {}, NotConjugate, colorvec2m, {}, NotConjugate);
+	    }
 	  }
 
 	  // Do whatever
@@ -11297,12 +11306,11 @@ namespace Chroma
 	  {
 	    colorvec.release();
 	  }
-	  std::vector<Coor<3>> moms_list(moms.begin() + mfrom, moms.begin() + mfrom + msize);
 	  std::array<Tensor<Nin, COMPLEX>, 3> this_3_colorvec{this_colorvec, this_colorvec,
 							      this_colorvec};
 	  ns_doMomDisp_colorContractions::doMomDisp_colorContractions<COMPLEX, Nin>(
 	    ut, std::move(this_3_colorvec), first_tslice + tfrom, tree_disps, deriv, 0,
-	    {this_moms, moms_list}, mfrom, max_cols.getSome(0), order_out_str,
+	    {this_moms, {}}, mfrom, max_cols.getSome(0), order_out_str,
 	    dev.getSome(OnDefaultDevice), dist_ret.getSome(dist), call);
 	}
       }
