@@ -11177,7 +11177,7 @@ namespace Chroma
 	      // Contract colorvec01 and colorvec2m
 	      colorvec012m
 		.kvslice_from_size({{'i', i0}, {'m', mfrom}}, {{'i', isize}, {'m', msize}})
-		.contract(std::move(colorvec01), {}, NotConjugate, colorvec2m, {}, NotConjugate);
+		.contract(colorvec01, {}, NotConjugate, colorvec2m, {}, NotConjugate);
 	    }
 	  }
 
