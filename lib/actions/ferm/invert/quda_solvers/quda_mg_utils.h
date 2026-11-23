@@ -11,6 +11,7 @@
 #include "chromabase.h"
 
 #include <quda.h>
+#include <quda_arch.h>
 #include "meas/inline/io/named_objmap.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_multigrid_clover_params.h"
 
@@ -227,7 +228,14 @@ namespace Chroma {
 
 				} 
 
-				for (int i=0; i<mg_param.n_level; i++) {
+#ifdef QUDA_MMA_AVAILABLE 
+			  mg_param.dslash_use_mma[0] = QUDA_BOOLEAN_FALSE; // this value is ignored for now, set it to FALSE
+				for (int i=0; i < mg_param.n_level-1; ++i) {
+					mg_param.setup_use_mma[i] = QUDA_BOOLEAN_TRUE;
+					mg_param.dslash_use_mma[i+1] = ip.matrix_accelerate_coarse[i] ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE; 
+				} 
+#endif
+				for (int i=0; i < mg_param.n_level; i++) {
 					for (int j=0; j< Nd; j++) {
 						if( i < mg_param.n_level-1 ) {
 							mg_param.geo_block_size[i][j] = ip.blocking[i][j];
