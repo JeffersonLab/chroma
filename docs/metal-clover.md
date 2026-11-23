@@ -554,3 +554,26 @@ Raw session wall timings include the pause and were not rewritten. MetalClover
 stores the exact identities, bounded-resume watchdog, peer completion marker
 and active-RHS resume proof in `results/cpu-idle-wick-20261117-224910/`, with a
 `manual-idle-window.json` note in the cfg1000 time-ten record.
+
+
+On 2026-11-23 the user resumed the cfg1020 diagonal sequence after the November
+21 disk-space pause. Cfg1000 through time ten and cfg1020 times one through
+five have complete acceptance records. The original cfg1020 time-six solve
+finished all 20,736 RHS with one hierarchy/session and maximum full relative
+residual 2.586792573545587e-14. A missing temporary launcher subsequently stopped
+its checksum verifier. Exact frozen runtime bytes were restored and backed up
+outside temporary storage; completed-output verification and standard conversion
+resume without any new inversions or hierarchy. Numerical code and parameters
+remain unchanged.
+
+Detached time-seven through time-ten workers retain both full Chroma FP64
+checks at 1e-12 and every standard perambulator. Each worker uses a forecast
+through its own time, so a fully funded prefix can run while later jobs wait
+for disk space. The full-sequence forecast remains separate and reports any
+remaining deficit honestly. A runtime guardian verifies the durable backup,
+repairs only missing files and refreshes temporary-file timestamps; unexpected
+present-file changes are rejected. Phone/chat disconnection does not stop the
+local jobs. All original failure/pause records, recovery control fixtures and
+resumed process identities are recorded in MetalClover under
+`results/cfg1020-t6-recovery-20261121/`. Cfg1000 times eleven through twenty
+remain cancelled, and cfg1020 source-zero cross-time blocks remain deferred.
