@@ -577,3 +577,21 @@ local jobs. All original failure/pause records, recovery control fixtures and
 resumed process identities are recorded in MetalClover under
 `results/cfg1020-t6-recovery-20261121/`. Cfg1000 times eleven through twenty
 remain cancelled, and cfg1020 source-zero cross-time blocks remain deferred.
+
+
+Cfg1020 diagonal collections through source/sink time seven completed all
+20,736 RHS per time with the established full checks. Time seven's maximum
+full FP64 relative residual is 2.6009830652109176e-14; native completed-output
+verification, all sixteen standard record readbacks, direct QDP contractions,
+gamma5 and independent DataLib reader passed. The retained standard file's
+full SHA256 was freshly rechecked against the accepted output.
+
+On November 24 the user explicitly stopped production after time seven. Waiting
+times eight through ten were cancelled before any pipeline or inversion started;
+their workers and runtime/storage supervisor were verified exited. All standard
+perambulators and original inputs remain. No further automatic production is
+authorized. MetalClover stores final evidence in
+`results/cfg1020-stop-after-t7-20261124/` and
+`results/cfg1020-perambulator-t7-5184/`. Recorded solve timings include the idle
+test windows, and pipeline timings also include the resolved filesystem-access
+stall; the raw measurements were preserved.
